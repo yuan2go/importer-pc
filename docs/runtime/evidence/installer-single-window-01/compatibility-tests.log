@@ -1,0 +1,13 @@
+PASS Win10 22H2/Win11 x64 functional target classification: 19045
+PASS Win10 22H2/Win11 x64 functional target classification: 22000
+PASS Win10 22H2/Win11 x64 functional target classification: 22631
+PASS Win10 22H2/Win11 x64 functional target classification: 26100
+PASS Win10 22H2/Win11 x64 functional target classification: 26200
+PASS older Win10 baseline stays explicit and separately unqualified: 14393
+PASS older Win10 baseline stays explicit and separately unqualified: 17763
+PASS older Win10 baseline stays explicit and separately unqualified: 19044
+PASS Windows8 is outside runtime floor
+PASS original Windows10 build is outside runtime floor
+PASS 32bit Windows is not called x64 compatible
+PASS ARM64 emulation is separately unqualified
+PASS 12 pure compatibility policy checks; synthetic OS tuples, not actual Win10 or alternative CPU execution

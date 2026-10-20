@@ -218,9 +218,10 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d248542c38ed9f5d4f0863c979a2bf03b0547fb25054890d0f9236cdce22d721",
+      "sha256": "c807a0f48d2794629b1898f4406d4cf14135e89970286cab39ca2ccacd9efca3",
       "size_bytes": 9817,
-      "git_blob": "4f07f412a822614aee06f52834b5f89d894b6124"
+      "git_blob": "269a972a9c082de2028dcc6c2a222248e156c12f",
+      "pre_publication_no_test_git_blob": "4f07f412a822614aee06f52834b5f89d894b6124"
     },
     {
       "path": "config/compatibility/wcs-to-plc.json",
@@ -240,11 +241,12 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "14e4b26a464a755d3f156eacb856f51247d3a4acde2a6d739bfd7bb38fd563d0",
+      "sha256": "33b834b5c7cc83c745f144c96e052de053faba28a89402cf59f62f10c94f1a0d",
       "size_bytes": 7745,
-      "git_blob": "80e54b98407283f951a48ba2cc39eaf92c79b32a",
+      "git_blob": "f5d3a52c641bcfb681a8b00185c6e00921c99b9c",
       "previous_git_blob": "3a2e764a2f4a35a2c3be44dbff4770d4b744a4ab",
-      "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
+      "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e",
+      "pre_publication_no_test_git_blob": "80e54b98407283f951a48ba2cc39eaf92c79b32a"
     },
     {
       "path": "config/direct-plc/business.json",
@@ -387,9 +389,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5fc33177845a8a5e325c65d91737eb00a0faa0e0f4b99307cc6cab87a609b47f",
-      "size_bytes": 8843,
-      "git_blob": "ea396dd70304f07de69b40b784e361ca58123dd3",
+      "sha256": "ba653f76b23a72eabda3abd4a5137de4ae83869c027b5ac3def97e8b4764ce8b",
+      "size_bytes": 9870,
+      "git_blob": "16ce28bf6c5c5e89e7ab83eb0e54f349756cc9b7",
       "version": "ui-task-redesign-01",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
@@ -409,7 +411,8 @@
         "version": "installer-release-info-01",
         "status": "current_source_or_preserved_evidence",
         "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization"
-      }
+      },
+      "pre_publication_no_test_git_blob": "ea396dd70304f07de69b40b784e361ca58123dd3"
     },
     {
       "path": "docs/archive/pre-acquisition-lifecycle-p2/README.md",
@@ -28869,10 +28872,11 @@
       "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
       "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "351cc2a005f23b7140ffee4c92e7fc5e62410a22900793d3d6459e22b5132420",
-      "size_bytes": 4030,
-      "git_blob": "595090a02df4bd156185db6afd314d0987a157be",
-      "previous_git_blob": "255a695766ca329121a670846519cc09ca36976b"
+      "sha256": "0da8c8ca87bf684a89daf0c3dbe9e87e4cc4ae9808631ccf0807af269da00812",
+      "size_bytes": 4193,
+      "git_blob": "2be1ad4d0a6509051804e84096d02f6674472c90",
+      "previous_git_blob": "255a695766ca329121a670846519cc09ca36976b",
+      "pre_publication_no_test_git_blob": "595090a02df4bd156185db6afd314d0987a157be"
     },
     {
       "path": "scripts/seal.py",
@@ -28963,9 +28967,10 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "4b862c401a40aa43735ced7b7de5db417a33b30833f8e9a7e9deda8a339e4275",
+      "sha256": "ba6831b6efef07331ba324fb52c2252e83275be79a70c524b9069111d6e9f793",
       "size_bytes": 18965,
-      "git_blob": "a501d02ea18f3e24140fae23c8b15bbaab263891"
+      "git_blob": "67ca261879bbef04fc5a1259285b98b55b6decc3",
+      "pre_publication_no_test_git_blob": "a501d02ea18f3e24140fae23c8b15bbaab263891"
     },
     {
       "path": "scripts/test_build_process.py",
@@ -29110,10 +29115,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "e77dd1c3afa85a3e7ad8eee09b6d6f44fd39b188cb12c7d45ad54d80acf26487",
+      "sha256": "e345a020afbfea365430502fb91705dfbba49450e90937bfcd92d40819f509d8",
       "size_bytes": 188,
-      "git_blob": "e38ff0ba7c9d6f0752092157029f258b96c0e366",
-      "previous_git_blob": "5815d026c332bbd1eaec37d271eaf65a2745578f"
+      "git_blob": "98a4a54d3a76fee138c32dc9c00877ff4f1a0f63",
+      "previous_git_blob": "5815d026c332bbd1eaec37d271eaf65a2745578f",
+      "pre_publication_no_test_git_blob": "e38ff0ba7c9d6f0752092157029f258b96c0e366"
     },
     {
       "path": "src/Ipc.Application.Contracts/OptionalCapabilities.cs",
@@ -29134,10 +29140,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "9ac75e3f662e42ef3849b796f424ad154ce79a79e7819f78b13dfaf235a6c446",
-      "size_bytes": 8392,
-      "git_blob": "1e7191ccd313a6b7eae56172d5122320dedf9536",
-      "previous_git_blob": "793dac8284693f22eb7bf919f65bd88d556d6360"
+      "sha256": "ef405e5ea971e0901317ebd3ee35ae5fc210ec8414a5c6161c6d545748ef8cbb",
+      "size_bytes": 9042,
+      "git_blob": "4a1afae46ec883c6d39d8a61b9836a2036ddb1bf",
+      "previous_git_blob": "793dac8284693f22eb7bf919f65bd88d556d6360",
+      "pre_publication_no_test_git_blob": "1e7191ccd313a6b7eae56172d5122320dedf9536"
     },
     {
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
@@ -29291,10 +29298,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "f682ffc6d56c1f58774c098f1cf42b178903b5f03e1ea33a80614f19ebeb2b53",
+      "sha256": "ec71ab6faf82a514295af5d0a8dceac510ce91ef00bd7107d9003ca3661a568f",
       "size_bytes": 339,
-      "git_blob": "09ceb5d4ea192c9a60af01d217efea7d882a05a9",
-      "previous_git_blob": "a1e679e8836d8696f0e1f1d7199cbe93effe7d0f"
+      "git_blob": "d50099ff204fbf0c5a10191cc3f6f0f9b35cca11",
+      "previous_git_blob": "a1e679e8836d8696f0e1f1d7199cbe93effe7d0f",
+      "pre_publication_no_test_git_blob": "09ceb5d4ea192c9a60af01d217efea7d882a05a9"
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
@@ -29476,10 +29484,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "9ab112720e6ac4d4369818cf91551fa12e70b6618155c078a7e2b02d6a9f10a8",
-      "size_bytes": 4322,
-      "git_blob": "b165785da9b0436cc2b80706ec4d97fb1b0bfcb0",
-      "previous_git_blob": "6852da73469c4757bd4c08c46cb331f28e93cedf"
+      "sha256": "8655639b6f84431620593b115212738c206571edc5d0986754b3f237676d393b",
+      "size_bytes": 4697,
+      "git_blob": "878e26239997a74c87a13cc638ae896f877c3b1e",
+      "previous_git_blob": "6852da73469c4757bd4c08c46cb331f28e93cedf",
+      "pre_publication_no_test_git_blob": "b165785da9b0436cc2b80706ec4d97fb1b0bfcb0"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/FlowResults.cs",
@@ -29532,10 +29541,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "c18a1e9c9c819b09930f98ffb578587543cd64b79fd61082ee8b13382015319a",
-      "size_bytes": 21486,
-      "git_blob": "d4bbd6fdb4f84c44cdb3af5f40cc7a89fd17ab95",
-      "previous_git_blob": "4cd8f10ac3c322f1da85b32e60742bdd3e610325"
+      "sha256": "e2f29ed5cf62286acabc1f7e6996059dc023e04c72ac64e9c03d2e2958746702",
+      "size_bytes": 22123,
+      "git_blob": "f23ba1c2cd282a084e0cf560a6484f5d8d5e7f85",
+      "previous_git_blob": "4cd8f10ac3c322f1da85b32e60742bdd3e610325",
+      "pre_publication_no_test_git_blob": "d4bbd6fdb4f84c44cdb3af5f40cc7a89fd17ab95"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -29555,10 +29565,11 @@
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs",
-      "sha256": "6db992adf378fca353ecf462a51ea7edce62cef142dd7d0117336ac98dd5c38d",
-      "size_bytes": 7400,
-      "git_blob": "f07620bd2624bce9870685109c06f1901296dcbf",
-      "previous_git_blob": "c2bf208d3ccd486c6066f3c2e25b76a6f5eb7b7a"
+      "sha256": "fe3ce9bf4f70a09766a6849629829859c4902d86027352f9b707b72a686ec269",
+      "size_bytes": 7536,
+      "git_blob": "c550231de082ec82424fe177756d54bb2e25f5e8",
+      "previous_git_blob": "c2bf208d3ccd486c6066f3c2e25b76a6f5eb7b7a",
+      "pre_publication_no_test_git_blob": "f07620bd2624bce9870685109c06f1901296dcbf"
     },
     {
       "version": "audit03-delivery-1.2.8",
@@ -29770,11 +29781,12 @@
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
       "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "1b92ac7620edaa47f0cccba77e8282e941ecaf4d267e1c81969454fe869fdc38",
-      "size_bytes": 32943,
-      "git_blob": "2664aa48b2fbb442f7b4b5748a505462aa8dbe40",
+      "sha256": "a66690edc2ea39250b874d6cde891bb6d904611136b3f3260ff24baca6958297",
+      "size_bytes": 33833,
+      "git_blob": "38febe44d7af1ff8c382d120e1c637e7844696a0",
       "previous_git_blob": "b8778e6ba71396bc184658696a12b548ce0958aa",
-      "pre_publication_merge_git_blob": "2e98969df94d3451e6f531e26a1200da2da46822"
+      "pre_publication_merge_git_blob": "2e98969df94d3451e6f531e26a1200da2da46822",
+      "pre_publication_no_test_git_blob": "2664aa48b2fbb442f7b4b5748a505462aa8dbe40"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
@@ -29918,10 +29930,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "2d2fc063f04fe096de298fbdde1a00ef99719261b2e50c012181d9386d18ee21",
-      "size_bytes": 16538,
-      "git_blob": "1f563a8fba116221538a58d03b06a5e1fd1a7d0f",
-      "previous_git_blob": "3fd312d6479f348757c4ec86b5ddf3ae9b028380"
+      "sha256": "3b5856ee2ed85dcf14c059e0eba791f1ceb61e05d45e511134c0f21e1f8da729",
+      "size_bytes": 16668,
+      "git_blob": "b9f14344cf77f357283d46e13e0e63175eb0d269",
+      "previous_git_blob": "3fd312d6479f348757c4ec86b5ddf3ae9b028380",
+      "pre_publication_no_test_git_blob": "1f563a8fba116221538a58d03b06a5e1fd1a7d0f"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
@@ -29966,10 +29979,11 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
-      "sha256": "e196faf96f73b7cfd37db5c14cd76328355c969b3592cdcee0b99e1eb0d9fa87",
-      "size_bytes": 22196,
-      "git_blob": "2c66a310a63ecf643296336dfa143f653541053d",
-      "previous_git_blob": "3686c14582ed6b53000d17f2a2b98612bcbad2d9"
+      "sha256": "22a4bc02b4d10ede82ab321ad2bae7ae22fadb09aa12184b06ce3f99d1dd8aa7",
+      "size_bytes": 22695,
+      "git_blob": "42174c4574d7c1066f0184f3c268af94d6607697",
+      "previous_git_blob": "3686c14582ed6b53000d17f2a2b98612bcbad2d9",
+      "pre_publication_no_test_git_blob": "2c66a310a63ecf643296336dfa143f653541053d"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
@@ -29978,10 +29992,11 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
-      "sha256": "61e70d6da184961fed0f2c872b8a4a2f14d693070cc9724f2c6f759c0e523c4c",
-      "size_bytes": 9757,
-      "git_blob": "8b306829b4e44ab23389dd5d050cb504c3406c7d",
-      "previous_git_blob": "bca78958b3339945ea130d216f8b5949203033cd"
+      "sha256": "98eba03bef0c44af7ec96db2ae58caf707905678940a5d6c094bf20955b86da1",
+      "size_bytes": 9937,
+      "git_blob": "4a5f7b43204bc9ed290b900f3bf2b92cc3073119",
+      "previous_git_blob": "bca78958b3339945ea130d216f8b5949203033cd",
+      "pre_publication_no_test_git_blob": "8b306829b4e44ab23389dd5d050cb504c3406c7d"
     },
     {
       "version": "sportmaster-visual-productization-01",
@@ -30115,10 +30130,11 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fb5a64c96964919348d53b9f87181bf5e70832fff301d43bc528e03605c226e2",
-      "size_bytes": 2677,
-      "git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e",
-      "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4"
+      "sha256": "218de1722f803c9b5d298d7caa2db51f4ca3cc7f54070884fa67bf74ef445623",
+      "size_bytes": 4094,
+      "git_blob": "52c97be03c44b6949ed9cbdecaee3730b885617c",
+      "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4",
+      "pre_publication_no_test_git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
@@ -30127,10 +30143,11 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "42ca5ea9459095f92b5e2434d91ec8a09c8ce4be7b15dd99590fca40fbb8ccaf",
+      "sha256": "2f36e12ac379295a7e06a93becb079bd1f3290ccd3b125f8402230c664430025",
       "size_bytes": 340,
-      "git_blob": "1b029d5c0f7561f4232848710f4e29f17acb68d8",
-      "previous_git_blob": "9422eca0dc7f914a51c999cdc39726b058c16821"
+      "git_blob": "f35a5d470d14b7ce81c5b7dc91d51d0b3cac14e6",
+      "previous_git_blob": "9422eca0dc7f914a51c999cdc39726b058c16821",
+      "pre_publication_no_test_git_blob": "1b029d5c0f7561f4232848710f4e29f17acb68d8"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
@@ -30232,10 +30249,11 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ca18641df61c849901cbf06c379060ea847837c7156233dcadda089e70eed303",
-      "size_bytes": 18395,
-      "git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
-      "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295"
+      "sha256": "b536851aa4391f53cf338384db2b5ba4ebd105e284d02d8e4277307e7ecc524d",
+      "size_bytes": 18309,
+      "git_blob": "8ac6a21dd2535a622240fc2cf9d78cd20fe10f49",
+      "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
+      "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
@@ -31086,10 +31104,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "15569a25f47196a073d4879624a64c0f83a3be5fe2c72fc651a6d655c7fb4c8b",
+      "sha256": "8feb43db9d3821fa60b47ca0fe33fc10e99cedfea4eb6c6f2e09747ad9a68237",
       "size_bytes": 339,
-      "git_blob": "c2d7f34dce4d0a452960853bf70f33be971332bb",
-      "previous_git_blob": "b8dbd1665ce943d0a5615141aaff701ae2ad89c0"
+      "git_blob": "6f4481500cce978ea61f9fd148ec282f49552bb1",
+      "previous_git_blob": "b8dbd1665ce943d0a5615141aaff701ae2ad89c0",
+      "pre_publication_no_test_git_blob": "c2d7f34dce4d0a452960853bf70f33be971332bb"
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
@@ -31232,15 +31251,16 @@
     },
     {
       "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
-      "sha256": "94d5727d3c5d06ed2890d60869b3d685c2242df93ed8a7fe746bac218499cdb2",
-      "size_bytes": 3145,
-      "git_blob": "963b59fabe19e297b43cb921fede28894523a12c",
+      "sha256": "60e71868606ef7363c85022e7b0081d6d99727c3df3faf5479ed4a6dac4add02",
+      "size_bytes": 3518,
+      "git_blob": "28ea426f5e225a4d30461583fb5ecc516200e2b9",
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "5ff23942170dd502020267a4f18d26fdce1e6fe0"
+      "previous_git_blob": "5ff23942170dd502020267a4f18d26fdce1e6fe0",
+      "pre_publication_no_test_git_blob": "963b59fabe19e297b43cb921fede28894523a12c"
     },
     {
       "path": "src/Ipc.Assembly/OriginalParcelQuery.cs",
@@ -31272,10 +31292,11 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d6fa5832c6a738ed545875094394275f0ea7f442384db8398cb3905faa434ce7",
-      "size_bytes": 36943,
-      "git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf",
-      "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629"
+      "sha256": "02ea014c43efd6e916e2a6f6aafa46ff8bb7cc8e7e5d06eaea2bfd4623f483d9",
+      "size_bytes": 38107,
+      "git_blob": "41c8d475374f2befe6edaf8d77a1a63524e3e4aa",
+      "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
+      "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
     {
       "path": "src/Ipc.Assembly/ParcelCli.cs",
@@ -31597,16 +31618,17 @@
     },
     {
       "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
-      "version": "parallel-reconciliation-20261020-02",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "7f64b24ab555dd5aa5c036d5f0ecb3547fbf05b2f3dabd9ff59e896413fc4050",
-      "size_bytes": 10908,
-      "git_blob": "dcfef5a65428d4d4f299771293a3515fb6da5a94",
+      "sha256": "7a8f3c544728eac383fb270579ba18b97cf442a1faf04c9fd68ee96ccb34b4f9",
+      "size_bytes": 11645,
+      "git_blob": "669abca7f63deacd229dad51220ceebccedff805",
       "previous_git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4",
-      "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef"
+      "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef",
+      "pre_publication_no_test_git_blob": "0f193e84f334655a4eaa2398645da1cb6454f2ff"
     },
     {
       "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
@@ -32111,9 +32133,10 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "c1988ded520d199806176bb9ec62ef1a921395a5aaacc27dd8a210871533aa8f",
+      "sha256": "e903dff828aae6b7f570531ae2532f8c5c22b8e42b739d0bb029150ae6f76f82",
       "size_bytes": 755,
-      "git_blob": "a9526eb443e8ec767a85cc891b82e381f4200717"
+      "git_blob": "886a148c9e31033ef445b6f11fdc13c381b21c43",
+      "pre_publication_no_test_git_blob": "a9526eb443e8ec767a85cc891b82e381f4200717"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
@@ -32133,9 +32156,10 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "855e72d014e9049eb77aad123f9812dbc7305a049780147ce7f0470694bbb98b",
-      "size_bytes": 4649,
-      "git_blob": "bb48333d31eb52a88cf13306fb6251e1e4a2bbf3"
+      "sha256": "523ccface6af694dc48a7349c52a84feb81f7bda9e147a4348cf6855ca9b8d50",
+      "size_bytes": 4650,
+      "git_blob": "234180cf35b6f4d203fb2e73c55a20e29d770ded",
+      "pre_publication_no_test_git_blob": "bb48333d31eb52a88cf13306fb6251e1e4a2bbf3"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
@@ -32144,9 +32168,10 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c2b0cf4d6bdbdb1ed58d9aa5b0326905ab9b4faf527143ea151d50f13542f65f",
-      "size_bytes": 8795,
-      "git_blob": "b884d885c13397f8023aa436f3b219b3556d9932"
+      "sha256": "8570d1c2cb40ad511d030ac1afdc2b72e1baae55daebf0e07963ba13d2b92831",
+      "size_bytes": 8803,
+      "git_blob": "75f31c068cecbaecbe716695b5ca430d6a66efde",
+      "pre_publication_no_test_git_blob": "b884d885c13397f8023aa436f3b219b3556d9932"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/extension.build.json",
@@ -32166,9 +32191,10 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "3b2654c3efad44ff1cf3cb4e768f4c516d23354b4c4f653be82f0171165ac779",
+      "sha256": "fbd5d721f596a5cf9f55b086d9905588b6bd60ac167d537f6971a55b2581275a",
       "size_bytes": 210,
-      "git_blob": "b44152bdae4cf90f81d6c132f803c4b5050442e8"
+      "git_blob": "98e891e8cfb24d81d8a9170c4f55a7f7f93f4ef7",
+      "pre_publication_no_test_git_blob": "b44152bdae4cf90f81d6c132f803c4b5050442e8"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/modules.json",
@@ -32307,15 +32333,16 @@
     },
     {
       "path": "src/Ipc.Platform/DeviceCapabilities.cs",
-      "sha256": "64c924590f181986ac202aa04d57831592354be371943e86c630ee33b6a81ed4",
-      "size_bytes": 3119,
-      "git_blob": "dcc50220b6e953985391b931d5c2cb540ddfd6b6",
+      "sha256": "3231a5f036db3660cfe54dbed86fff5bf05915bbbe8ca1f9eee074336b445211",
+      "size_bytes": 3288,
+      "git_blob": "7369778370fc46b6b07c1addae20783dcf6f7091",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "97e00fb6217c38458de6cb7b5a5ae7b0eccdc799"
+      "previous_git_blob": "97e00fb6217c38458de6cb7b5a5ae7b0eccdc799",
+      "pre_publication_no_test_git_blob": "dcc50220b6e953985391b931d5c2cb540ddfd6b6"
     },
     {
       "path": "src/Ipc.Platform/ExtensionConsumers.cs",
@@ -33238,10 +33265,11 @@
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
       "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "e8b9718db3a868d0793496190910e7942ee7b559e06eb612425b927c2a353a2a",
-      "size_bytes": 3316,
-      "git_blob": "1d7d21f9f677c91845bfe1f23cf50ea87099d528",
-      "previous_git_blob": "b17fdaf9649a7cb17e1ffbc22d18ac52f66f96da"
+      "sha256": "123f5d3d5b979e9188834cd3237820ee885311e4ca4ad56a715f75961fc6ef40",
+      "size_bytes": 3818,
+      "git_blob": "72ca4d715c181b606d1b698e2f9667732ebad2ab",
+      "previous_git_blob": "b17fdaf9649a7cb17e1ffbc22d18ac52f66f96da",
+      "pre_publication_no_test_git_blob": "1d7d21f9f677c91845bfe1f23cf50ea87099d528"
     },
     {
       "path": "tests/Ipc.Application.Verification/OptionalCapabilities.cs",
@@ -33262,10 +33290,11 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "baad6ec4b2371ed279ec3481441ce3370f809a1ea90fcac0fa250a7b0e44128f",
-      "size_bytes": 19194,
-      "git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
-      "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c"
+      "sha256": "b00310d559e0c34399cc73fac8d27c44c9de50c88e033788b8d4973fd5d16479",
+      "size_bytes": 19510,
+      "git_blob": "6d6b7ed455cd332a8509111524108dfeef2b243c",
+      "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
+      "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b"
     },
     {
       "path": "tests/Ipc.Application.Verification/QualificationVerification.cs",
@@ -33388,9 +33417,10 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "c5b9120292086a888952fed6647e89f2ce6924c6855dd9eb690d37d5aa8338e5",
+      "sha256": "42d30eeb2df515de5a27963dbc6d7a681c71757abf5e5515182486c241960f88",
       "size_bytes": 8146,
-      "git_blob": "20761f9966775cd3ee8d21f6076566b8e8a98b4f"
+      "git_blob": "3bdad8b0d16fd818783d9832ce6065fa798ad03c",
+      "pre_publication_no_test_git_blob": "20761f9966775cd3ee8d21f6076566b8e8a98b4f"
     },
     {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
@@ -33467,10 +33497,11 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
-      "sha256": "a010fd5bde878728a599ca01dd0b36e3e52c518c16f8ae678166c227ae5c2148",
-      "size_bytes": 1431,
-      "git_blob": "c1053073bd16f1fe4a61692851bdcc8a8fb919a0",
-      "previous_git_blob": "139f525c5eed7ee03180fbd289d9b9346f1835c2"
+      "sha256": "10b56a0cc6673c0d815a88ceb22ab28bca90720bf82a2a2773f7ee8cd7336ad5",
+      "size_bytes": 1690,
+      "git_blob": "5b479ffc06b4ff8b9c11c03483857e0206866d30",
+      "previous_git_blob": "139f525c5eed7ee03180fbd289d9b9346f1835c2",
+      "pre_publication_no_test_git_blob": "c1053073bd16f1fe4a61692851bdcc8a8fb919a0"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
@@ -36234,9 +36265,10 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.Contracts/ParcelInputs.cs",
-      "sha256": "85d54553b75ea7793aa87633046ff027756e3c14de9e0340ba4bbdeed4639b53",
-      "size_bytes": 547,
-      "git_blob": "db368b0bc5e62cc906169f565e84927fd8637511"
+      "sha256": "20cad6176a4851ddc57df869b0084417d25d5522d92f8c009ff1854bc1d3e6ee",
+      "size_bytes": 669,
+      "git_blob": "c225cd7181baf83e169a0ebe8b91f479f8840dc7",
+      "pre_publication_no_test_git_blob": "db368b0bc5e62cc906169f565e84927fd8637511"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36256,9 +36288,10 @@
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
-      "sha256": "9b8c4da9a5e45e8e246ae6c298f5c04e3b9e3fc710db806fa388a9b34b4a24a6",
-      "size_bytes": 10096,
-      "git_blob": "4a4e7b2e15e587a57f96b52e9b878df93fea6689"
+      "sha256": "b8b7994d9e52fa1c202923dcfbb04e757554e9890612134b5458a87f0d932029",
+      "size_bytes": 10891,
+      "git_blob": "f0be662bd8c02511d2d2f56322941258d5dda7ff",
+      "pre_publication_no_test_git_blob": "4a4e7b2e15e587a57f96b52e9b878df93fea6689"
     },
     {
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
@@ -36267,10 +36300,11 @@
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
-      "sha256": "3724fb2ba489f977cdabd44fd01631df0d2fefa2b431d26180c1a0369ae429fa",
-      "size_bytes": 31116,
-      "git_blob": "858e246531da51131b4d190e97978b23abe1bafe",
-      "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695"
+      "sha256": "c12c5236d737aa98eb383677c5affe105c1bc272682e0836e76e81901b102f03",
+      "size_bytes": 33701,
+      "git_blob": "bd33d156569e6df3d80e2d4e562400cf6f617d6b",
+      "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695",
+      "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36279,9 +36313,10 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelInputs.cs",
-      "sha256": "648d2a154e3b75e4b21f6208009a8364cf942b20856001117e3ef8aee3cc7480",
-      "size_bytes": 2857,
-      "git_blob": "5153eafac5b0d8171c11df954fdacf478f281fab"
+      "sha256": "0029a5b65203f03f2a20309e912efd8621f9f47bb03f44152f651f6ad679f482",
+      "size_bytes": 2907,
+      "git_blob": "b678e19799c622cdb22037b9c3f47ded142fd3da",
+      "pre_publication_no_test_git_blob": "5153eafac5b0d8171c11df954fdacf478f281fab"
     },
     {
       "version": "ux-maintenance-p2-04",
@@ -36301,9 +36336,10 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialInputs.cs",
-      "sha256": "bf1b2d4d1f0e39c09769c77b23d3a7521ea2cc39b2f07b41bd88a5ba71544b62",
-      "size_bytes": 16506,
-      "git_blob": "86bee2e03b7cfef408dd9c8d37eb5be9c230da6a"
+      "sha256": "5be071a8b85f7fe24e909c46fded89cf53b86af833e136631f388e892a54988b",
+      "size_bytes": 16587,
+      "git_blob": "6c93094a8ecb73db8a6af78e9311e353649b99f4",
+      "pre_publication_no_test_git_blob": "86bee2e03b7cfef408dd9c8d37eb5be9c230da6a"
     },
     {
       "version": "ux-commercial-rereview-03",
@@ -37478,9 +37514,10 @@
       "purpose": "User-authorized task artifacts or licensed project skill installation",
       "source": "PR37/38 and user no-test publication request 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "22243c4f0e3aaab5ac1922627d5a803aef02cbd47f7a4107fd93577ff1cbe1f4",
-      "size_bytes": 16282,
-      "git_blob": "46b77d70da872e06369d7f6330d7f4d22c2dbe4d"
+      "sha256": "1499eb4d759700fe32c8073a647116493b1b954e13ecc27ab482d2418e770d5a",
+      "size_bytes": 16406,
+      "git_blob": "a5776d77d6b37f414943cb3b5e9a4209ae2d005a",
+      "pre_publication_no_test_git_blob": "46b77d70da872e06369d7f6330d7f4d22c2dbe4d"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/UPSTREAM.json",
@@ -39470,10 +39507,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "50bafe643478a92bc71caf13dee32e755820a11749b5c86ca9f311bb81724169",
-      "size_bytes": 2980,
-      "git_blob": "9d8e500b18ce308e057337b1e706b4f260e08b4e",
-      "previous_git_blob": "8a3d5b1e5d4c33fbc4e5c1c6774ddb8240d4a93a"
+      "sha256": "8492981f3b3d647433cd4964dd3ee043bf6b2dfd081bd5e3111f52727edc605c",
+      "size_bytes": 3156,
+      "git_blob": "e6543e440187900cebe66ced2d259f699d07512e",
+      "previous_git_blob": "8a3d5b1e5d4c33fbc4e5c1c6774ddb8240d4a93a",
+      "pre_publication_no_test_git_blob": "9d8e500b18ce308e057337b1e706b4f260e08b4e"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs",
@@ -39482,11 +39520,12 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "a879fe6149d75d7501a8d7c60fa6a22dd07a37a7f3f5339bb7728d9658aa1ffa",
-      "size_bytes": 13542,
-      "git_blob": "ac647ffcaae26bd289abe21dfef384354b1499ce",
+      "sha256": "8d3795892ea5a5c3be7d826550f5906e955a16b64a96d800369e887f5fa7768f",
+      "size_bytes": 16106,
+      "git_blob": "4f3681429f827e299b9e019ec83841d0565f44c9",
       "previous_git_blob": "08f837a4ccffdd32b185e5b295079376d7a2ed20",
-      "pre_publication_merge_git_blob": "16e295dc3591dc6f6b9b65b943b512e6ee8984ec"
+      "pre_publication_merge_git_blob": "16e295dc3591dc6f6b9b65b943b512e6ee8984ec",
+      "pre_publication_no_test_git_blob": "ac647ffcaae26bd289abe21dfef384354b1499ce"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs",
@@ -39495,36 +39534,39 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "37c79a2b4ba54b942e1d47f2a3e8070c2d7c0b3dc5605e65ecad7cd7024de01f",
-      "size_bytes": 10039,
-      "git_blob": "ce3ec2b39c5696747e0261219f5745b97de44bd1",
+      "sha256": "dbb24f41acf6feac0c1a1b2eeff51764c7a052795b9c515457f864ba46a770ad",
+      "size_bytes": 10547,
+      "git_blob": "304542fe37cbe1797f5e66897f9f3c70bf3dc0de",
       "previous_git_blob": "7154ef80b87189dbb186e73a037691e4a0185c3e",
-      "pre_publication_merge_git_blob": "ef9bc6b87866a290082f5fecd42c135526396137"
+      "pre_publication_merge_git_blob": "ef9bc6b87866a290082f5fecd42c135526396137",
+      "pre_publication_no_test_git_blob": "ce3ec2b39c5696747e0261219f5745b97de44bd1"
     },
     {
       "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
-      "version": "parallel-reconciliation-20261020-02",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ebd789958ab4c6f7d2661a59dba5ee6cbb150b4372176741a5e4b4ce53eab0b4",
-      "size_bytes": 36176,
-      "git_blob": "5e96a64afe36ad0c32d87456df503d81c6188757",
-      "previous_git_blob": "78bb92b4654726a7bc811eba824dbdc2de10f471"
+      "sha256": "46cc1dd15b8eed5e530f994b81ae6c458b58debffbff9226b36a81cbdc01b5c2",
+      "size_bytes": 39657,
+      "git_blob": "8387b67883e7879d53ff692f0bf70e45b8eb5d09",
+      "previous_git_blob": "78bb92b4654726a7bc811eba824dbdc2de10f471",
+      "pre_publication_no_test_git_blob": "57a650b6b3ff5a862e64c1ea9c0c7118db2bdfe8"
     },
     {
       "path": "src/Ipc.Desktop/StartupWorkflows.cs",
-      "version": "installer-release-info-01",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b298999c0ac68a18e8216997194da39c3e013e0c43592953a02659290b486404",
-      "size_bytes": 51600,
-      "git_blob": "8270b53a73b20d60ee8df38120446443e78f4894",
+      "sha256": "6b2ba047473ac9f93b3ca58b40a0aafd5ff95c5e3c080247878ec783160d9d9b",
+      "size_bytes": 50609,
+      "git_blob": "407f8ed539b444122922bb6d4ffc24671feb2126",
       "previous_git_blob": "a9e4e1381e13729b7dbcd77574d1d9c1b1dee8aa",
-      "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01"
+      "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01",
+      "pre_publication_no_test_git_blob": "65470c322ace93ebb62e2d522a25823d4a481bc6"
     },
     {
       "path": "src/Ipc.Platform/DeploymentMedia.cs",
@@ -39551,14 +39593,14 @@
     },
     {
       "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
-      "version": "parallel-reconciliation-20261020-02",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "2354917daa3315363055b959a64d77f3c6972ce41f3eba4a6d382ca8761580aa",
-      "size_bytes": 17170,
-      "git_blob": "736f10691e5d45758b3a154dc138fc6fac9469ab",
+      "sha256": "96a388abd00d4f7f65084687405d5b9538864ef386251e144779b50bdc42f635",
+      "size_bytes": 17247,
+      "git_blob": "4bb81bc46342269c7937aaff1a498d97b41453f0",
       "previous_git_blob": "39fb4591731b6602aa8b6f006c66a99108504374"
     },
     {
@@ -40284,13 +40326,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "978406fc7ba72cee1edb7ffa9dc4bffc2031bce50dec98eba9d47d351a8e4344",
-      "size_bytes": 3186,
-      "git_blob": "92392e0b8228e99847657034aa596310eaea0bba",
-      "version": "installer-release-info-01",
+      "sha256": "269f3f5fc4bad37455a670dfc01c27ba16dc3ac01aa45375cae226f5617ed0f0",
+      "size_bytes": 3372,
+      "git_blob": "92ea88553ea6e898122a058400036e5ef133e5e6",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "a4ff46f83fb85d8b0fe78c5002fd10c00a2add62",
@@ -41150,14 +41192,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/PersistentConfigurationDrafts.cs",
-      "sha256": "ca1ad4d9982144bce30f4e2fbede2461a1448acfa7661f82df249b2992bc5a53",
-      "size_bytes": 6831,
-      "git_blob": "40a977373529c5e7f7566f861892d0603f21b1eb",
+      "sha256": "d918d138e52f02a6935ed98cee407300892199a2028baf25a0929ad309d8552f",
+      "size_bytes": 6857,
+      "git_blob": "a10e2a602602d62329e3ec687ddbd70440fbd69d",
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_publication_no_test_git_blob": "40a977373529c5e7f7566f861892d0603f21b1eb"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ProductBrand.cs",
@@ -41230,14 +41273,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs",
-      "sha256": "2a4cf1f3193544ac494e9ba564053cdebc2fd797057066378bd31b8ea7da951e",
-      "size_bytes": 7834,
-      "git_blob": "29947d90d2771dca09be5ec4d1b14a1caf8fa38f",
+      "sha256": "05dad0f8d5529399aec2d2edbdf47856fa56d514e3e197fc6e6ff4125eb25243",
+      "size_bytes": 8018,
+      "git_blob": "3fa7490f254a0394ab5b1b43e28fbeec5b7c0002",
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_publication_no_test_git_blob": "29947d90d2771dca09be5ec4d1b14a1caf8fa38f"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs",
@@ -41615,14 +41659,14 @@
     },
     {
       "path": "scripts/release_build.py",
-      "version": "UNIFIED-RELEASE-01",
-      "status": "public_generic_source_or_execution_evidence",
-      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
-      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8f8711395da30542dba02608107e2fa6d7d0d07c0d85140233e4a47964672608",
-      "size_bytes": 3258,
-      "git_blob": "f288676aee14e623b5756c5a80d6a58bb6e7aa0f"
+      "sha256": "d6ba5dccf470af21ad0596d76e28b86c51b759b982fda80e1486cd720bceeb7f",
+      "size_bytes": 3348,
+      "git_blob": "c48852f9eb0f4208978f4bcb9658f3a7cb35eabb"
     },
     {
       "path": "scripts/test_unified_release.py",
@@ -48090,57 +48134,57 @@
     {
       "path": "scripts/package-installer.py",
       "storage_scope": "public_repository",
-      "sha256": "42be1d34ec332845b23ec549d21ccd8fabda1edb1bd85e54d1105257f72a4f32",
-      "size_bytes": 8379,
-      "git_blob": "af50f3ae36feff122fd59304a7cd5e51caa67a47",
-      "version": "installer-release-info-01",
+      "sha256": "22bd28250a2a6563d9f3d5571d2949fd33dc7e7494a32fa0d164a0cb923f8ed3",
+      "size_bytes": 9084,
+      "git_blob": "62f0ddee82930e7da0be8051102f230142aadfbe",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "scripts/test_installer_package.py",
       "storage_scope": "public_repository",
-      "sha256": "5d8c7a28d6dd4c7726d554619935d0466c6b7a03494987b5590f3f2c1463bb13",
-      "size_bytes": 4811,
-      "git_blob": "1b976a2cca4df6545a00173d8efdab345632ef96",
-      "version": "installer-release-info-01",
+      "sha256": "91d7290976403339cf23a2ee286dc628fe135edea2e40229d9fe707d7166bd5f",
+      "size_bytes": 5667,
+      "git_blob": "6713c2f1c8c2dd9f32990d4b44a11b2e2182580b",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "src/Ipc.Installer/App.xaml",
       "storage_scope": "public_repository",
-      "sha256": "318763696ff37322ed972ea836827e5ea2376be0f65c2c734388aaaa629049b0",
-      "size_bytes": 804,
-      "git_blob": "7bb960241db497319c9a2122d90caa11605e0a92",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "6b22615346d3b6a2b4ce78b53764b987f7ec7f33f3431f150e0e3c1a38d44af5",
+      "size_bytes": 458,
+      "git_blob": "e3a1f3e63c1dad4b04e1bb2aea84fdb6ec978a8b",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "src/Ipc.Installer/App.xaml.cs",
       "storage_scope": "public_repository",
-      "sha256": "e8dd43c92d9713ad9fdcf2e09a25f8b365a1af1da6322c07082d2cab0a5bc98d",
-      "size_bytes": 107,
-      "git_blob": "d2b20bc0a4dc9b7643d59650fc7e1a1e02ea514c",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "ded16a10653dbd9b106b3a677a6cc33ea00abfb6f6f7997e90462ba8b69bd83b",
+      "size_bytes": 1129,
+      "git_blob": "1576cb8b509aba2704ec5fe9138a36f9051f0103",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "src/Ipc.Installer/InstallerPayload.cs",
       "storage_scope": "public_repository",
-      "sha256": "8090e949aceffbd07ffabb59c33a81a4918a387d99ceb8c823d3fd7c9016081b",
-      "size_bytes": 7663,
-      "git_blob": "bf1f7f6e3214341988006c1af87b9138b068309d",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "b5e7a9f26b31332fe62b46a219a45ff8331c9febf387f6bde811f41d73a36cc9",
+      "size_bytes": 7756,
+      "git_blob": "662f39ccbe3f949ebe264b65026ad856e99ef96a",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "src/Ipc.Installer/InstallerWindow.xaml",
@@ -48167,13 +48211,13 @@
     {
       "path": "src/Ipc.Installer/Ipc.Installer.csproj",
       "storage_scope": "public_repository",
-      "sha256": "f5b14262335829138c64470e7d64074d6a85bb3aa7e23b160331ad523b0dae2b",
-      "size_bytes": 1694,
-      "git_blob": "21e1f06e5307a6d55c0b711ea13f98ddc262549a",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "263ef934b8625065668b027d80a76c08864aaff70b4f8d2cfcb80d81b5ca7cec",
+      "size_bytes": 2233,
+      "git_blob": "cce1a1f61f9f82ce6fd8b135cdd46ff0b58fb519",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "src/Ipc.Installer/app.manifest",
@@ -48211,13 +48255,13 @@
     {
       "path": "tests/Ipc.Installer.Verification/Program.cs",
       "storage_scope": "public_repository",
-      "sha256": "0138b73086329c8a337343bd0f3f324cc291d50d08d58763243349c3e5395150",
-      "size_bytes": 6341,
-      "git_blob": "05c4f08dd6aa6d8ffa9c54272a08b61c4c7848c7",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "e268401e325a8ce7270d9c8da669422611a424363ae8f08515fe4cd6ee927ae6",
+      "size_bytes": 6474,
+      "git_blob": "124ae917aab2ee3860c4ff9155fcfab2eedc34dc",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "tests/Ipc.Installer.Verification/packages.lock.json",
@@ -48567,9 +48611,10 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "0bd1b06c48e2cf9b7bad1ef4835d7f49906c6a9cbdd2181792930158e0bb575f",
+      "sha256": "9e3c10af6ce8a2d48af0522ef9fc6c16ade5a7c82dd538bd48fe9a7d3863e468",
       "size_bytes": 518,
-      "git_blob": "1ca5fed2997f53b4296141ed357a99ff71ed896e"
+      "git_blob": "e9f1268055ba86d59d6f516249ba4eb6cfbd0532",
+      "pre_publication_no_test_git_blob": "1ca5fed2997f53b4296141ed357a99ff71ed896e"
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
@@ -48578,9 +48623,10 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "59a5f20db2a0c43bbee97e6e19171abbef6688a2df9f41dc071c4697e91b9b37",
-      "size_bytes": 10436,
-      "git_blob": "fe9a96fe04d07040c0c7d985e6dadb0111c2b78d"
+      "sha256": "dd770d2c697ade2e6939a3fde71ccdc1fadb735377179ab43d913586d1b0341d",
+      "size_bytes": 10007,
+      "git_blob": "d8da2f1bf57543f4a55103e30d9a9eeda2a12089",
+      "pre_publication_no_test_git_blob": "fe9a96fe04d07040c0c7d985e6dadb0111c2b78d"
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/extension.build.json",
@@ -48732,9 +48778,10 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d013702b9470c6a2c5f8cf5e3cf5d5db141c661f7a41366448d792ac3f6362b6",
-      "size_bytes": 12945,
-      "git_blob": "245e9094c4444112718fe61984d1e3942abebf5d"
+      "sha256": "57da8c8d9781ecb0a9ddea470c5034babf142d8121706ab4ca8195380a8a2f43",
+      "size_bytes": 13318,
+      "git_blob": "7b0992c6318d2d4f3e104dcef1160b7563c003f4",
+      "pre_publication_no_test_git_blob": "245e9094c4444112718fe61984d1e3942abebf5d"
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json",
@@ -48970,24 +49017,24 @@
     {
       "path": "src/Ipc.Platform/DeploymentShortcuts.cs",
       "storage_scope": "public_repository",
-      "sha256": "07f29da8f285eab57e24309c026f46ffb9b27aff71e3e42191adb5da1366a485",
-      "size_bytes": 4467,
-      "git_blob": "90d9b805ef34715be9d22f49caff261eebcf59cf",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "b88b0627f2ff3d91e7c451d155302fb4f09ed77cd49b04e0cc3ffb28e4bcc41d",
+      "size_bytes": 6649,
+      "git_blob": "47bc4d110ce8af87f8efdb390e7ca32a77b12c27",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "tests/Ipc.Application.Verification/InstallerOptions.cs",
       "storage_scope": "public_repository",
-      "sha256": "cbb6f7ecc258de70b5a9f52f64cda85132901fce7ff3625b4da3eeb25246ba5f",
-      "size_bytes": 4876,
-      "git_blob": "c26cdc6c3da8ad0995cc1aa91ea35a3c30c9bb6e",
-      "version": "parallel-reconciliation-20261020-02",
+      "sha256": "62e9c5b4d22f31ae152c8eee0e2cd81e7e43b4e59d51102840986ddc114afcc5",
+      "size_bytes": 6559,
+      "git_blob": "6c316cf7e71447a822ac23e60e66d3eb3de49726",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
       "path": "docs/archive/sportmaster-native-gallery-20261020-0e79e73/README.md",
@@ -50136,13 +50183,13 @@
     {
       "path": "docs/runtime/installer-release-info-01.md",
       "storage_scope": "public_repository",
-      "sha256": "bb59c3c47e525e6e34ee711567e24be94ed82afccd1923a3f800c72cb6630f63",
-      "size_bytes": 7217,
-      "git_blob": "db2307e4ba1ce98ad04a1d3468b98fc33e21a891",
-      "version": "installer-release-info-01",
+      "sha256": "cf7db3bc86cf4b829489a99735bfeefad8fdcb51de181bc288328da9013d9d82",
+      "size_bytes": 7548,
+      "git_blob": "b857b12402dd21ce10a3b8e18fe15df6cf3d2db6",
+      "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "pre_installer_info_publication_git_blob": "8180a7027356c6562d55452807bfe83b5d8ca950"
     },
     {
@@ -50491,15 +50538,16 @@
     },
     {
       "path": "docs/design/sportmaster-task-redesign-01.md",
-      "sha256": "2df7ba56fa4a4de7a52faa37678685d37099b4718dc8e92504a3a6f4efed946f",
-      "size_bytes": 15751,
-      "git_blob": "c0ad592e1e6cf896bba9e07c4eb8315a41c942c5",
+      "sha256": "0ca05233f98d222cf9a735505918482ba1215ade5ecf8c0b6e6ee1a8b3a4081a",
+      "size_bytes": 16059,
+      "git_blob": "4cae5600e83661ed894f1b265c83b580b3feebff",
       "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
       "storage_scope": "public_repository",
-      "pre_observable_ui_quality_sha256": "b5f651b9253989cc7d60c09d43c67097d7f654e5d9c985fe7a5543546bb46285"
+      "pre_observable_ui_quality_sha256": "b5f651b9253989cc7d60c09d43c67097d7f654e5d9c985fe7a5543546bb46285",
+      "pre_publication_no_test_git_blob": "c0ad592e1e6cf896bba9e07c4eb8315a41c942c5"
     },
     {
       "path": "docs/runtime/evidence/ui-task-redesign-01/publication-checks.json",
@@ -51729,27 +51777,29 @@
     },
     {
       "path": "docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "bd51e677e8ea4b68efb118889bb5bbf91f038d6aec2e02c6e035ac76dde6de7d",
-      "size_bytes": 3719,
-      "git_blob": "43324cb8de60096b4ab284ede77e92bf0c7aaeed",
+      "sha256": "be70cf078ff6604f8ce11628d0c94d256ede5458f7e02620031f41d7aaae00ea",
+      "size_bytes": 3964,
+      "git_blob": "1247cbb062d5fc899bfb9cf02d6627753a546229",
       "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
       "storage_scope": "public_repository",
-      "pre_observable_ui_quality_sha256": "7dcaef99e962d06d2f3615762e164c1389f0617271d7fe028509432550c1509c"
+      "pre_observable_ui_quality_sha256": "7dcaef99e962d06d2f3615762e164c1389f0617271d7fe028509432550c1509c",
+      "pre_publication_no_test_git_blob": "43324cb8de60096b4ab284ede77e92bf0c7aaeed"
     },
     {
       "path": "docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "e178ce481cb6569dc0d37be854461bad46f40dfc6fd333c3d28d9a7fcce1a83b",
-      "size_bytes": 11968,
-      "git_blob": "a5722c4442c24aa9833fd3ff7745d0719fef7750",
+      "sha256": "9674c57b51ec4ab05aacc18394c1700a0c994069bc8cfdc9d61574c68e94148e",
+      "size_bytes": 12355,
+      "git_blob": "35c89f24d32a8af66ff43c5e7b1308a49d5a1b08",
       "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
       "storage_scope": "public_repository",
-      "pre_observable_ui_quality_sha256": "172c1c84607910a2a0e51ce77aa9c55ee1f59b7e24880e956b099a64c6d7a812"
+      "pre_observable_ui_quality_sha256": "172c1c84607910a2a0e51ce77aa9c55ee1f59b7e24880e956b099a64c6d7a812",
+      "pre_publication_no_test_git_blob": "a5722c4442c24aa9833fd3ff7745d0719fef7750"
     },
     {
       "path": "docs/runtime/rcs-heartbeat-01.md",
@@ -51775,14 +51825,15 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs",
-      "sha256": "39b474be7a4b5da3257b8edfa97f860ca027e6a41485f44ea8c2b50317666fc2",
-      "size_bytes": 6595,
-      "git_blob": "d6639995000ad2461160eb8bcfe2b4daa66b3b62",
+      "sha256": "51f96c2a1a47305ab3625281415538fe3d761b592206de8d85eac1781c4997b6",
+      "size_bytes": 5037,
+      "git_blob": "e35fe74229b0f92db1db9c97212ffe9254d7e39a",
       "version": "rcs-heartbeat-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized RCS station heartbeat implementation, synthetic verification and configuration/deployment guidance",
       "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_publication_no_test_git_blob": "d6639995000ad2461160eb8bcfe2b4daa66b3b62"
     },
     {
       "path": "tests/Ipc.Application.Verification/RcsHeartbeat.cs",
@@ -51794,6 +51845,644 @@
       "purpose": "Authorized RCS station heartbeat implementation, synthetic verification and configuration/deployment guidance",
       "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/CONSERVATIVE-ENVIRONMENT.json",
+      "storage_scope": "public_repository",
+      "sha256": "0a8eab60ff0e90068876db459d00a09c0b88200988ff198d41a7a39d475dc448",
+      "size_bytes": 734,
+      "git_blob": "c012b346becc7df1096cdb1e3b52c9d8abf9b20a",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/E2E.log",
+      "storage_scope": "public_repository",
+      "sha256": "b1366f77d2c272872056c3b47af13a06a87ae67507cee8e5c8ca41d01befd9d7",
+      "size_bytes": 7325,
+      "git_blob": "c61d81ab1c238584561d44c93a4348d3e3249147",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/MONITOR.json",
+      "storage_scope": "public_repository",
+      "sha256": "44070b1b105ed0d3b23209051eaa03ed0f0a446932448bbbd112829ccd3dfb33",
+      "size_bytes": 357,
+      "git_blob": "06c66889d22734d26b60dba0838e4514a178572e",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/NORMAL-ENVIRONMENT.json",
+      "storage_scope": "public_repository",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "size_bytes": 731,
+      "git_blob": "5b4cce80e98fab8f04ff4560bdc022b8b9b77ec8",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/Probe.cs.txt",
+      "storage_scope": "public_repository",
+      "sha256": "095a1e74bf7d1c26cd4641efc2042293db38d811640a84cbdafdabe8ba53997b",
+      "size_bytes": 33046,
+      "git_blob": "af2073856ae5d6f93e72ef067a9baf7932a29ebf",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/Probe.csproj.txt",
+      "storage_scope": "public_repository",
+      "sha256": "cf4386271104d97da1d67da4dfb33fe045bb9484114f577bd10cb56c873fd67e",
+      "size_bytes": 332,
+      "git_blob": "d271e71dd3f87c14d1c936d6d32e915adc8a7434",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/README.md",
+      "storage_scope": "public_repository",
+      "sha256": "de4c3e71ff16f59a080b11a21c913b799bc520fc7c982d717cc42dc71a0d1781",
+      "size_bytes": 4457,
+      "git_blob": "28ef64df07e712028caaee749cef133d87625084",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "11653129598dbeaf09ee2a36f85280e4149570fd0b130622cd325982b3d6a622",
+      "size_bytes": 474,
+      "git_blob": "59f4355816be6b6c2be967203c463a43580c2f77",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/actual-conservative-workstation.png",
+      "storage_scope": "public_repository",
+      "sha256": "70886f61d4ad8c0893c4b87148b816928bd64b71396bc9020508d7e94423fe3a",
+      "size_bytes": 68643,
+      "git_blob": "85ac97cbbd7859130cff0aa46e850cee9bf9436a",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/actual-preparation.png",
+      "storage_scope": "public_repository",
+      "sha256": "1bd74221b2d8672c494ebdf1b490fd3f8d2392ad8fb3796fa55a67e75862a2ad",
+      "size_bytes": 57194,
+      "git_blob": "d0b3975c03710fea0d8ba9e513966f033f567751",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/actual-workstation.png",
+      "storage_scope": "public_repository",
+      "sha256": "70886f61d4ad8c0893c4b87148b816928bd64b71396bc9020508d7e94423fe3a",
+      "size_bytes": 68643,
+      "git_blob": "85ac97cbbd7859130cff0aa46e850cee9bf9436a",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/attempts-and-log-custody.json",
+      "storage_scope": "public_repository",
+      "sha256": "0382452317a9f776ba4fee962224db88d4d279ac6db8c54f8b9b0a03df3aec44",
+      "size_bytes": 5357,
+      "git_blob": "99778d69a91c09417048f256e09627a3e10793af",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/change-guards.log",
+      "storage_scope": "public_repository",
+      "sha256": "5adf7c66fb27548c38effcb4391b809bb2a11e918c63e05f380f36f0a432f1f0",
+      "size_bytes": 702,
+      "git_blob": "efc06c40713848f4eacab0bee5f55426f9ccc75c",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/compatibility-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "88e002fe78e3c3c7290e73aebc6b8cfa261e49b5a17f6e0cc0b3b6ad6928bc25",
+      "size_bytes": 853,
+      "git_blob": "7fab579df2c17a25442adcfc034db3c96a00063d",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/delivery.json",
+      "storage_scope": "public_repository",
+      "sha256": "717bc2c6baa9edc80ea6f45b7648f122b4bd37252bd57f446c4afa5e05a90d9d",
+      "size_bytes": 1905,
+      "git_blob": "935720426b8456a0cb87fd321528bb5260ccf782",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/evidence-sha256.json",
+      "storage_scope": "public_repository",
+      "sha256": "c61f2d36917433f191e296985f8d12341f5cf3c4ed90887acc51f923241c6c66",
+      "size_bytes": 2056,
+      "git_blob": "3c8928afe18eef97e582e99de3b81438c9415264",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/guide-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "b18f2f86216eed7057ad4a80b1006ad74b863839a52775ab8664219637fccbe1",
+      "size_bytes": 420,
+      "git_blob": "2713ea230beee136ca0e77c74bdd249a8044ce9b",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/packager-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "02fb4dfbf3e7845704af593c88b35c1c61930f78a94660cb9fe4cae243a7dc08",
+      "size_bytes": 1054,
+      "git_blob": "b7c9a362514a19b035b1b26e15b836382621aecb",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/payload-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "4460216ea29191fed3957bcd3ce18f65db739f23c7d8279318f764de680a8eb9",
+      "size_bytes": 1342,
+      "git_blob": "a09cd086fd49184f44bb8478f5386c28f9886d98",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/payload-verification.json",
+      "storage_scope": "public_repository",
+      "sha256": "eadaf0fa03dbc290d174eeaba1436a6855651ebbd921f00f9613856180b6b274",
+      "size_bytes": 4593,
+      "git_blob": "6eb55bd974edc526ae184ebb46f7a2a2ac51bc69",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/payload-verification.py.txt",
+      "storage_scope": "public_repository",
+      "sha256": "96faaec7e55f97bdd87950e1a0b54ecad3b2ee1ff27971c3156e81c04e9b5017",
+      "size_bytes": 2975,
+      "git_blob": "18b2acbdb22acccaf331ac1ea1a0cc64f4e3df11",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/shortcut-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "a44b798e5976d8f82c31fb1d7188af4db291b443456488f1f81aa5de1ba7c563",
+      "size_bytes": 1480,
+      "git_blob": "57a5104fd80aa9ae21797f98e1771955e293e63d",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-single-window-01/unified-package-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "f195dfc4baba0aec7ec1912f988e697e43ed242a651cd86ecdcbd472f23e3e05",
+      "size_bytes": 2125,
+      "git_blob": "24b4648302005d51ceae29fa2bfb2f4a7ac4115d",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/installer-single-window-01.md",
+      "storage_scope": "public_repository",
+      "sha256": "453cf27d5ef09012b6c00c951da0236fa1a0c75e25c389f87500471da72b20cc",
+      "size_bytes": 6171,
+      "git_blob": "7b0dbd8a73969c17878bf481fe478da60d136311",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/windows-client-compatibility-01.md",
+      "storage_scope": "public_repository",
+      "sha256": "5812bde2e472caa14d125d1fc34265e1cc8ff0b63ca16d2474792d2117d1dea4",
+      "size_bytes": 4588,
+      "git_blob": "1e16d6464c2602ed3f5255b2f3306b7afffcd699",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INSTALLER-SINGLE-WINDOW-01.md",
+      "storage_scope": "public_repository",
+      "sha256": "3340e02ca57a8c5f8b53513b05dc01b84f11cdcf952043ca6934e04859341246",
+      "size_bytes": 3667,
+      "git_blob": "1614552840e3d321b39370da18268b7a7e95483e",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "src/Ipc.Installer/InstallerPreparation.cs",
+      "storage_scope": "public_repository",
+      "sha256": "3fde5a992172db31851ffc579220142b3f21229ca5870fc5379bf8e9207ee4f2",
+      "size_bytes": 3674,
+      "git_blob": "c7ab37930adfc91a5cb10b6b9ed22bc8e3a1fb21",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.direct-plc.win-x64.lock.json",
+      "storage_scope": "public_repository",
+      "sha256": "d8769f58533473087ecd3ddfbbcb4a9ddab92f3f6269de7fa958c7b9fa245494",
+      "size_bytes": 18419,
+      "git_blob": "e0352453d0ed20d49b9d4c53fb61410e99b6f7f0",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.sportmaster.win-x64.lock.json",
+      "storage_scope": "public_repository",
+      "sha256": "265ad566eb13074d6efc793a5aa55c69e39020c391eed1ea1f336174a9be1157",
+      "size_bytes": 18665,
+      "git_blob": "3c17055ccb038eda5ab84fc89bb3366db8460b1b",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.wcs-to-plc.win-x64.lock.json",
+      "storage_scope": "public_repository",
+      "sha256": "455706969f7fab3b880e58a2d80bfff5898b98bc37f7558cf022897d651fb9b6",
+      "size_bytes": 18653,
+      "git_blob": "14f3823cb8536effe98b81ea1243a059a3454c5f",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsClientCompatibility.cs",
+      "storage_scope": "public_repository",
+      "sha256": "b837f81c82007d892f5140183b20d7c1a403dde12e0f941a1ecb9091a8c297f0",
+      "size_bytes": 3498,
+      "git_blob": "7c45083abbb6fe90152e9304303e639040a8b42d",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/InstallerChangeGuards.cs",
+      "storage_scope": "public_repository",
+      "sha256": "dcfceb378e7b81f4d73b568be7fa797589ecd2f1f873bb78450d4e1f8f1e03cf",
+      "size_bytes": 4774,
+      "git_blob": "f6546028519b74895d9dc16950a381b8e7f88219",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/WindowsClientCompatibilityChecks.cs",
+      "storage_scope": "public_repository",
+      "sha256": "34f7f5d8aa9ad6188fc9838d24123efe4e8e25f282f5b137ff4bd5183b9fcd50",
+      "size_bytes": 1769,
+      "git_blob": "f1dfbd4a518a6e8306bc6e8a42d16c1eb3760dc3",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/desktop-shortcut-name-01.md",
+      "storage_scope": "public_repository",
+      "sha256": "1e4e6bfe4af8f81e7901eef17ca16d031a6943b8045f7a436c4548fc96a33c1b",
+      "size_bytes": 2967,
+      "git_blob": "a6b62f872865a926b9f77bb67e946077a6679740",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-DESKTOP-NAME-01.md",
+      "storage_scope": "public_repository",
+      "sha256": "e946b5dc61e17bbbc97fa2a19c60555e668ddd8d5ce780b696da3f16cdfdf006",
+      "size_bytes": 1633,
+      "git_blob": "25752231c5912f1ecbb521b79669f31787755d82",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/desktop-shortcut-name-01/change-guards.log",
+      "storage_scope": "public_repository",
+      "sha256": "5adf7c66fb27548c38effcb4391b809bb2a11e918c63e05f380f36f0a432f1f0",
+      "size_bytes": 702,
+      "git_blob": "efc06c40713848f4eacab0bee5f55426f9ccc75c",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/desktop-shortcut-name-01/shortcut-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "71a9eaab8a60a45f151a72b3358049412c776331505aedc3a956b9937cbcd200",
+      "size_bytes": 1711,
+      "git_blob": "16cffb19a4ffe618741bea7516445a9fcca5536e",
+      "version": "installer-single-window-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Single installation window, one guarded consent and exact native verification",
+      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "docs/design/parameter-refactor-01.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "18e3bb6d1ac18450f39df819c6a17276c3ec6a657dac759b1a0f67885ac1e393",
+      "size_bytes": 5235,
+      "git_blob": "c644b1fc9135e1c034a6f19b65c0ebbda34541a0"
+    },
+    {
+      "path": "docs/runtime/parameter-refactor-01.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "a770fd2bab75adddddb1bfcb0ea1a4331f0dc853b3cc04a328088d270bf61a9b",
+      "size_bytes": 324,
+      "git_blob": "c01f775a8091faa14380fdd104d1f7fddb24ad83"
+    },
+    {
+      "path": "docs/runtime/publication-parameter-snapshot-20261020.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "d8d4dfb53d0a6362674adfe98d2226757035d240c76ebccd3460aab0e1e93da1",
+      "size_bytes": 4873,
+      "git_blob": "72dcbdac5d2b4be8969a6fb885a7daca06c38693"
+    },
+    {
+      "path": "docs/runtime/publication-pr69-pr71-20261020.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "5934059703313094fb3a678189e76e5d7ed0358bd14c1af14443e1f5887a79de",
+      "size_bytes": 4155,
+      "git_blob": "a1356c2f3beacb5c5b9552115b73cec9e287878c",
+      "pre_publication_no_test_git_blob": "43d95cbed6d93e893d27718b9ba5c406c807ae04"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/BarcodeFiltering.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "5cb708d2744ea1cdb6c5ee8237d8842217908abc64bf5f7e5a8eaa5297292bb5",
+      "size_bytes": 470,
+      "git_blob": "bed0e37e004a9b0625764ed52f1993eaaca53fad"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/SystemParameterDefaults.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "1387c903f419ea7033b9d6f25d05cc2ff93e48fd60c69a95b8c81db8286cab42",
+      "size_bytes": 456,
+      "git_blob": "030bce3f55d16ed1dedec7396b6ba857654e3c40"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "9975156f022250147c4eda7777608ad3420909d81c1e58e10871980939ce5547",
+      "size_bytes": 3861,
+      "git_blob": "ec35bee512c21ab28d47f8d702fb80167b199810"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "acf451a0c5f956b90cd2d2f4ebbbfa5ed4d38aad796e6c6c445a9b56fe7cc61f",
+      "size_bytes": 4109,
+      "git_blob": "3107c9f5252fd29cba8ea3524675774f8fb7b6fe"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "123d87cb7ae7a45940874b276e0d2fc2326b264cb8269290db2aafc395d02d19",
+      "size_bytes": 12770,
+      "git_blob": "66f07a0074e8daa242a3efe5264937d4c42014b1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "b93e748de3c9532e74de7f4c502a56df7d94b9ef1141b6368daa9a67adbbb858",
+      "size_bytes": 3658,
+      "git_blob": "00dc31dde70f29333591ce5761271dc328cba338"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ConfigurationSubmission.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "81b489b572824ce02db50d1a52535af64c6793ef25cf3ff3e8af08cbf137644b",
+      "size_bytes": 2472,
+      "git_blob": "0cc18b0e90e5be28004f7357dd9efd2b73d13724"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "08817bf72fc18e15e6bf6824c82b3688010aa3ed28d2998b38144d4c24c87e53",
+      "size_bytes": 2094,
+      "git_blob": "4ab123bb249e1fb0a138e11e3ea39ecc839950a9"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ParameterRefactor.cs",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "5cd944294904ccac80f88b03034ad1d724c48cbb204018b1789966b829f113af",
+      "size_bytes": 10495,
+      "git_blob": "253c271aabb4e193523bddd631f0f5a918925cfa"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/artifact-upload-receipts.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "2f922b75291e3e129f5b9abc00b0b5778a63e9d56b53dc12aa16af6e37106104",
+      "size_bytes": 3347,
+      "git_blob": "2b865b2000f8522d98c53b2ba9013220ae447559"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/DELIVERY.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "717bc2c6baa9edc80ea6f45b7648f122b4bd37252bd57f446c4afa5e05a90d9d",
+      "size_bytes": 1905,
+      "git_blob": "935720426b8456a0cb87fd321528bb5260ccf782"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "0f1b588eb2bb5ddd72fa9a5b149e32306e2a637e3c823b3220ef61ed3bc7ab9d",
+      "size_bytes": 568,
+      "git_blob": "52add5af2f3df335b244ca8e46f1f8322dad10db"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "671795e9c0995e26a2ccf4d8504c5a6070b93027d045902b48786764dbadd96f",
+      "size_bytes": 1433,
+      "git_blob": "cd2d5336fa0aade82500027026cf023e2205f228"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "ae60c19f425864fddae16bdcadbda788986336d8a7ee60254f237947a07fc02d",
+      "size_bytes": 278,
+      "git_blob": "7ef634fd8c34692277e13d03f1352724c81aa676"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/merge-receipt.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "64aecbb1addffe90b1643e6ffee2efa7440ba47dc37823f69e3bab52811321b6",
+      "size_bytes": 1067,
+      "git_blob": "3b86fed5947fe990a0d6bf43d432dc6183041489"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "faaf332b5369a5bbac1a861b406be10826409751ed79ac4f2b629c158a7449a9",
+      "size_bytes": 599,
+      "git_blob": "4bf1fb3223211bdcb665f2f59887666d1aa3b26c"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "a6f92157c8db4b55defa740333e4e99ce655760424576bfc37f7ea4bf54bd7e6",
+      "size_bytes": 1765,
+      "git_blob": "e45c23d7d0c2e18bcda7c6185b9f083ade5686fb"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "1d4df3df1e3b8a5917110428eb5a4d998c248de5391a2c6c1c16e2c58462efd6",
+      "size_bytes": 373,
+      "git_blob": "47d5fd7c13a2c71e82f6a0f6f5511d0401c4a839"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/sportmaster-rcs-task-1.2.0.ipcx.identity.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "1ffa32587464cc240a14888586af0e5456dcc7609d16c01a5172f4d6671bd5ea",
+      "size_bytes": 1310,
+      "git_blob": "9ec59ee998fcc8e607af17dc4a00f20d23f1c2c6"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -53842,5 +54531,59 @@
     "component_version": "1.2.0",
     "contracts_version": "1.11.0",
     "field_validation": "NOT_RUN"
+  },
+  "installer_single_window_01": {
+    "WorkPackage": "WP-IPC-INSTALLER-SINGLE-WINDOW-01",
+    "BaseMain": "12d20b2269a69049b6e8aeb03916d8dba6c9e055",
+    "Report": "docs/runtime/installer-single-window-01.md",
+    "State": "ACTUAL_LOCAL_UPGRADE_PASS",
+    "RetiredCurrentSources": [
+      {
+        "path": "src/Ipc.Installer/InstallerWindow.xaml",
+        "storage_scope": "public_repository",
+        "sha256": "5831b9c296d0f7281d8d9b50ebc139a5f1100fe2ce5d7f893bbfec9bde94f0aa",
+        "size_bytes": 2626,
+        "git_blob": "601fd646aab0793d7d31a5447a3e1616642bfed4",
+        "version": "parallel-reconciliation-20261020-02",
+        "status": "current_source_or_preserved_evidence",
+        "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+        "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      },
+      {
+        "path": "src/Ipc.Installer/InstallerWindow.xaml.cs",
+        "storage_scope": "public_repository",
+        "sha256": "5e09958bfc75931f4e44bc1f480ae2ef5f9d20533cf6f25e8f988b0406c59139",
+        "size_bytes": 6418,
+        "git_blob": "3a572efab482cecd40fb2b887370b17511673705",
+        "version": "parallel-reconciliation-20261020-02",
+        "status": "current_source_or_preserved_evidence",
+        "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+        "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      }
+    ],
+    "RetiredSourceCommit": "e2e69292899c709056ce9ab6159bf01f6f18de6c",
+    "BusinessVersion": "UNCHANGED_SELECTED_MODULE_1.4.1",
+    "CompatibilityTargets": "Win10 22H2 Home/Pro x64 plus Win11 x64; actual Win10 NOT_RUN",
+    "ApplicationInstructionStrategy": "Generic IL; PublishAot=false and PublishReadyToRun=false",
+    "Historical7cAnd129": "UNCHANGED",
+    "RealEquipment": "NOT_RUN",
+    "Production": "NOT_APPROVED",
+    "SourceCommit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+    "InstallerSha256": "062bd4878ff5f5c6c03fc7b0d01a026c59b55703c5d35c04f218eb961b4954e6",
+    "ActualAssertions": 58,
+    "ConsentPrompts": 1,
+    "VisibleSetupWindows": 1,
+    "ConsoleWindows": 0
+  },
+  "prior_current_validated_delivery_before_single_window_01": {
+    "SourceCommit": "7c384540393b1e77ceeba048a87a3916dd1af63c",
+    "Report": "docs/runtime/installer-release-info-01.md",
+    "Identity": "docs/runtime/evidence/installer-release-info-01/delivery.json",
+    "WindowsActualUpgradeAssertions": 41,
+    "WindowsActualUpgrade": "PASS_LOCAL_SIMULATION",
+    "SupportedWindowsHostValidation": "NOT_RUN",
+    "Authenticode": "NOT_SIGNED",
+    "RealEquipment": "NOT_RUN_IN_THIS_INCREMENT",
+    "Production": "NOT_APPROVED"
   }
 }

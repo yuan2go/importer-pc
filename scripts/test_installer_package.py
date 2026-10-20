@@ -55,6 +55,19 @@ class InstallerPackageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'same frozen source'):
             installer.inspect_medium(self.path, 'b' * 40)
 
+    def test_reused_ui_closure_must_equal_payload_bytes(self):
+        self.files['desktop/Ipc.Desktop.dll'] = b'SYNTHETIC selected desktop'
+        self.files['desktop/Ipc.Assembly.dll'] = b'SYNTHETIC composition'
+        self.write()
+        binaries = self.path.parent / 'binaries'; binaries.mkdir()
+        for name in ('Ipc.Desktop.dll', 'Ipc.Assembly.dll'):
+            (binaries / name).write_bytes(self.files['desktop/' + name])
+        installer.verify_shared_binaries(self.path, binaries)
+        (binaries / 'Ipc.Assembly.dll').write_bytes(b'OTHER SOURCE')
+        with self.assertRaisesRegex(ValueError, 'bytes differ'): installer.verify_shared_binaries(self.path, binaries)
+        (binaries / 'Ipc.Assembly.dll').unlink()
+        with self.assertRaisesRegex(ValueError, 'bytes differ'): installer.verify_shared_binaries(self.path, binaries)
+
     def test_missing_detached_or_different_provenance_refused(self):
         original = dict(self.files)
         for change in ('missing', 'detached', 'different', 'module', 'version', 'divergent-copy'):

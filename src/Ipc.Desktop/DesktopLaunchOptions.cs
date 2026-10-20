@@ -1,11 +1,20 @@
 using System.IO;
 using Ipc.Platform;
+using Ipc.Application.Contracts;
 
 namespace Ipc.Desktop;
+
+internal enum DesktopStartupRoute { Runtime, FirstConfiguration, Repair }
 
 // Desktop-only selection: never persisted into business configuration or request identity.
 public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
 {
+    // Pending validity belongs to the runtime's controlled activation/fallback.
+    // A readable existing authority must never be mistaken for a new station.
+    internal static DesktopStartupRoute StartupRoute(StartupMaintenanceDocument document) =>
+        document.ExistingConfiguration ? DesktopStartupRoute.Runtime :
+        document.Candidate is null ? DesktopStartupRoute.Repair : DesktopStartupRoute.FirstConfiguration;
+
     public static DesktopLaunchOptions Parse(string[] args, string applicationId)
     {
         var options = new Dictionary<string, string>(StringComparer.Ordinal);

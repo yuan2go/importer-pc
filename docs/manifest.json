@@ -1706,9 +1706,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "cc2ca331aa1c6b8b2348367695ce1a52a6fdb08d03d256fdb80523f73235bbf9",
-      "size_bytes": 4398,
-      "git_blob": "1ca3db7821b888096dfba11ccdc4ac956018fb73",
+      "sha256": "b1e1de08c38fe07e6128d03af6a4889fd1fed89dc42943c9fbd573bf7e3995b0",
+      "size_bytes": 4472,
+      "git_blob": "5058ab26939629a1cb4a798d17c4b7f99ead0848",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -1723,9 +1723,9 @@
       "purpose": "Frozen release records and original synthetic verification evidence",
       "source": "Authorized unified release task; no restricted customer assets",
       "storage_scope": "public_repository",
-      "sha256": "4283c5bfb89a7e35a81128451dc5fd9c1bb486af08f24bc86613f9d28fdc4d7a",
-      "size_bytes": 2262,
-      "git_blob": "00bedc3c22563bdf8ae4161bd398c2ed9b79bdd7"
+      "sha256": "4fc1478c8fd358e24f58af620c82ff77a32da629848ae65c1e97e8136caf66fa",
+      "size_bytes": 2336,
+      "git_blob": "f276e9db1fb5fe96042f495dae3af2f51fedfe76"
     },
     {
       "path": ".gitignore",
@@ -2036,9 +2036,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "94eb9b74f3dfaa584a54d73d737689c86373f0cce24b786ae5b27f75578b9b60",
-      "size_bytes": 14796,
-      "git_blob": "017fc755562049a5fce0be2072ee167e3454efba",
+      "sha256": "6900aa4f7395a6fcf2403fc5951c7c2fbecabeaa4fe849ffb37321125a3ff890",
+      "size_bytes": 15023,
+      "git_blob": "b93c698bdb7052253dca977a1993bd370d9c54cd",
       "version": "PARAM-UX-02-20261020",
       "status": "parameter_v3_design_or_current_guidance",
       "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
@@ -53488,9 +53488,9 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
-      "sha256": "2e09d87d12ccb56cf2fa69206be2d1b7d97bdd54df81988d7ff2cb12ddd84fae",
-      "size_bytes": 1938,
-      "git_blob": "cbad688cc0a69dab2409c86d5be191bdcfe043bb"
+      "sha256": "1f97206fe10122a9f93ba50a5857728082887d7ef74d886750bff4202eec64cf",
+      "size_bytes": 2477,
+      "git_blob": "d9fba3bc53854459515978737c03252d9b6a2c1c"
     },
     {
       "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
@@ -53522,9 +53522,9 @@
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "3c18a4cc4cc7706494d99f762a1d3b38dc96c1154a1631db7d61c4c53a9a9773",
-      "size_bytes": 11683,
-      "git_blob": "e4de3a9e894311c9d2a2a2ff50a275b09704f05d",
+      "sha256": "fc2778793763fbf612a20323c50edb22f5b84c5abd3fa35fa58d040ffece0789",
+      "size_bytes": 11660,
+      "git_blob": "c8a43819a7b6ffd122ef30906d0f62bcf802dea1",
       "previous_git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4",
       "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef",
       "pre_publication_no_test_git_blob": "0f193e84f334655a4eaa2398645da1cb6454f2ff"
@@ -55409,9 +55409,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "3e15de2edd443bbf57421f4347776c2985acdd199c9f6c91cc92f2f812398bd9",
-      "size_bytes": 16602,
-      "git_blob": "518e0d6f9244dda30e355e5cc9c924640b253464"
+      "sha256": "19db78cd912fe417070528f9569d61bb921cbda4ea42fa87e63c044ba01545f8",
+      "size_bytes": 16640,
+      "git_blob": "a983eb42e4176aa026693d98fc5edc5b29bc1f74"
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs",
@@ -56542,6 +56542,94 @@
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/build-core.log",
+      "sha256": "4f2ffe2589e9f9e496ac2c29401c9c13e03e2b4c1888d132129e7b3d925d727b",
+      "size_bytes": 78,
+      "git_blob": "9af04fe7d732a0c497123ffa8d0148ad46021004",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/build-direct-plc.log",
+      "sha256": "3c92b4bde8e8a88918ff11b04da804c0a0e572da68c83d0db62012eb1ab8c20f",
+      "size_bytes": 78,
+      "git_blob": "5a1e4ef0edaa3cd0e955f14bf6d93d25fd6e4276",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/build-sportmaster.log",
+      "sha256": "a6779adbec079d03538c29f3542b076d97d0281c835e4a19709355c7178d466d",
+      "size_bytes": 78,
+      "git_blob": "0ec2f1f36ab5613a8c6723344ccdd17324ae8342",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/build-wcs-to-plc.log",
+      "sha256": "2c60adf077e3b925553054ca60303f4a7d89c01884d29bbb4cfc56bff3453b77",
+      "size_bytes": 78,
+      "git_blob": "748580ca37d4bdccbd8422443c4a9b69a4fa8b6b",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/configuration-confirmation.log",
+      "sha256": "84da2936e6289dad64d59fe7fc7228e10abad2f462fbaa8b950529896a085a35",
+      "size_bytes": 3893,
+      "git_blob": "1496fb04533527fc8c8982398360d92f39911d66",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/release-paths.log",
+      "sha256": "44269e96e64867c53a9a5dab5c755549d6de1e8bee80c37bc73d491d4d9d83f2",
+      "size_bytes": 2363,
+      "git_blob": "fea91208bfb5f8c27b7372197db0dd3ea5052150",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/pr73-review-followup-01.md",
+      "sha256": "05743df0255e94b57e6e2ceb8ede417ea695209ab21dfda080cfbb96f153a64c",
+      "size_bytes": 2514,
+      "git_blob": "022067ccf21c51e3ce15fb132eb805ad7d631aef",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.StartupRouting.cs",
+      "sha256": "95359c165c0311dfa17a726e7d347f0fc865fddce1a5d3907ae8734a8559bbb2",
+      "size_bytes": 5591,
+      "git_blob": "66d0793a1ef0c6e30d6e498b27dfbe36718f44af",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
+      "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -58884,5 +58972,14 @@
     "real_devices_rcs_field": "NOT_RUN",
     "source_identity": "docs/ui/parameter-settings-v3-20261020/SOURCE-STATE.json",
     "publication_scope": "Design/current guidance on main; production source via development branch and PR; no new installer release"
+  },
+  "pr73_review_followup": {
+    "base_commit": "dfec787",
+    "original_pr": 73,
+    "original_merged_commit": "de2b045",
+    "review_thread": "PRRT_kwDOVLQU8s6uSbPM",
+    "scope": "Desktop startup routing and Windows reserved design checkout only; parallel PR78 untouched",
+    "local_confirmation_assertions": 40,
+    "ci": "pending follow-up PR actual checks; historical failure preserved"
   }
 }

@@ -26,6 +26,7 @@ jobs:
           sparse-checkout: |
             /*
             !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

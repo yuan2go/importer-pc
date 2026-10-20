@@ -11,6 +11,7 @@ static partial class ArchitectureQuality
     public static async Task ConfigurationConfirmationChecks(string source, string evidence)
     {
         workspace = source; root = evidence; failures = 0;
+        await StartupRoutingChecks();
         var c = Config("sportmaster");
         async Task<BusinessReceipt> ConfirmOnce(ParcelRuntime app, string owner, string reason)
         { var snapshot = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "ConfirmConfiguration", owner, reason)); }

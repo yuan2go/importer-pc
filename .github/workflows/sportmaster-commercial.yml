@@ -28,8 +28,12 @@ jobs:
       - name: Freeze only the first commercial composition
         shell: pwsh
         run: |
-          python scripts/release-windows.py --profile sportmaster --source '${{ github.sha }}' --output C:/scd-release
+          # PR checkout is GitHub's exact merge commit, not an ancestor of main.
+          # --source is reserved for main-ancestor historical publication/reuse.
+          python scripts/release-windows.py --profile sportmaster --output C:/scd-release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen PR release differs from the checked merge commit' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
         run: |

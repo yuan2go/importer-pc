@@ -32,6 +32,7 @@ critique：四类页面完整继承，双位格口是主要结果；真正遗漏
 - [历史日期错误](visual/after-history-invalid-date-1100.png)、[支持拒绝](visual/after-support-invalid-date.png)展示保留无效范围与明确修正方法。
 - [工作台](visual/after-normal-1366.png)、[首配](visual/after-first-configuration.png)、[维护](visual/after-maintenance-1100.png)、[最小客户区](visual/after-minimum-client-800x420.png)为同版视觉旅程。
 - [整理助手修正](custody-helper-correction.json)保留误将不同 TFM 第三方资产要求字节相同的初次失败；现核验固定夹具引用来源，未改产品断言。
+- [首次 CI 失败身份](ci-first-failure.json)与[原错误片段](ci-first-failure.log)：显式历史来源的 main 祖先限制拒绝 PR 合并提交，打包/原生检查尚未执行。CI 改用当前检出 HEAD 的既有构建模式并明确检查 github.sha，不弱化正式发行来源守卫。最终 PR 当前 head 检查另行读取。
 
 `checks.json`校验原始机器记录与所选图片；Git manifest 另校验本目录全部提交。执行 `python docs/runtime/evidence/sportmaster-visual-01/main-closure-01/verify.py --media D:/sm-visual-closure-media-01`（提交前加 `--staged`），复核冻结输入、历史不变、变更路径/清单/证据及实际介质。不是全树历史归档 PASS 或批准签名验证。
 

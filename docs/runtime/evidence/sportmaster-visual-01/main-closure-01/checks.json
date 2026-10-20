@@ -2,6 +2,8 @@
   "before-date-repro.cs.txt": "3226769a9b4262098c86c85a337a37c2db327bdd9dc39d5488caa56f4bbc4378",
   "before-date-repro.csproj.txt": "f6805035c80bbb07ee8645e2b252da5dafdda75b60cca87b43ba99d0f599ed66",
   "before-date-repro.log": "16d5d6a0dfd21a9cc5676902cd4e7b67c1ff494135e26af6760f7a2e8321a185",
+  "ci-first-failure.json": "4031db09a01dc08ce8caacd45a10098dc5753318dd5be428c3d46990296b6c9e",
+  "ci-first-failure.log": "c8a8fdeaa9359345ac72905cf478e78a42eaa8f77581f6248eba159f136ef2a6",
   "commercial-gates.log": "e9aed13a65bdb4ed5a19387a3943e846c732dd0d9f8c12cb9f60c63bbdadace6",
   "custody-helper-correction.json": "6ecdd5346cb2efe8996b69319f7ce096b1b18c4636a4ae15a620dca07ee03ef1",
   "development-build.log": "307d8c74f2f1867791e161d0518b9e8a5fcdd4c20d07c1a1dc90c1d7dd16c181",

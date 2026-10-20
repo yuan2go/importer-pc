@@ -43421,9 +43421,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "cc1ba42fe3fb0f000181acfa1a86ef0110d1b367cabc0fbd4f4e10b4c03ec74e",
-      "size_bytes": 3688,
-      "git_blob": "1434d2b62543172decb4c37a1e3c389471353599",
+      "sha256": "58a128eb96be562626ce8d3014d4836fd9196e62d9dc19ad5de5ca04349b0b10",
+      "size_bytes": 4035,
+      "git_blob": "1b896733cad41fd7aa654468aa8f757808929fbe",
       "version": "SPORTMASTER-COMMERCIAL-DELIVERY-01",
       "status": "current_implementation_or_exact_evidence",
       "purpose": "Sportmaster first commercial composition; bounded engineering validation, lifecycle/field limitations retained",
@@ -46466,9 +46466,9 @@
       "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "8f9455343b69a509c0f535aee8358ff7e8da20b8ea96ad3ccc0a470f926056a6",
-      "size_bytes": 4563,
-      "git_blob": "ea6b303dcc872ffeee079eb2060173c5c8a14039"
+      "sha256": "5344f679a4a433aacea2a7cd22c47b6e402cfe2d0de291a08bcf43dc63ec3740",
+      "size_bytes": 4912,
+      "git_blob": "f7f9356d5df515001bc42cd8e54822bb096f0f79"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/before-date-repro.cs.txt",
@@ -46510,9 +46510,31 @@
       "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "d817899fa03aafef4aec290cffea923cf8b6e17a9af424db18746855b959c139",
-      "size_bytes": 2119,
-      "git_blob": "e0872fc052e4c239d6cbbf76a34325cef6595d51"
+      "sha256": "ce0b27b0e8ed9207c0f2764821214839366d559c23f887e182c981837644ca86",
+      "size_bytes": 2310,
+      "git_blob": "42316e6abcdc65970111dc9f5577ccb54ccc6e52"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/ci-first-failure.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "4031db09a01dc08ce8caacd45a10098dc5753318dd5be428c3d46990296b6c9e",
+      "size_bytes": 641,
+      "git_blob": "7667b8f0603dd0bd093e25aaca1c7c4481d5d16a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/ci-first-failure.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "c8a8fdeaa9359345ac72905cf478e78a42eaa8f77581f6248eba159f136ef2a6",
+      "size_bytes": 2129,
+      "git_blob": "da5332e6be98493ba992bca728b1351a5b84884f"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/commercial-gates.log",
@@ -46719,9 +46741,9 @@
       "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "a7e0535865bf490cc62fa04ee826de89d2e3e0bdcf51ecc8cc9f97a861c583fc",
-      "size_bytes": 6507,
-      "git_blob": "53d867830abbef35f996c5c9635bd35e6b23e1ff"
+      "sha256": "2ca8ad54f49a80cb10f6a5d0bbf35e924c731b52aeafd827a1381cfd38a82434",
+      "size_bytes": 7185,
+      "git_blob": "898e048873195c81c15585c88fd4ad36612ab95c"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

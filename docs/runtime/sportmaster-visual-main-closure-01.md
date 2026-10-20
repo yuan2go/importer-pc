@@ -32,6 +32,8 @@
 
 本轮没有修改业务、驱动或存储内核，未重跑无关全量测试。CI 自有工程门禁的执行与结果单独保管。证据整理助手首次错误要求不同目标的第三方 SQLite provider 字节也相同而失败；实际 deps.json 分别声明 net6.0 与 net6.0-windows7.0 资产，原 dfc2ab6 亦如此。已按现有夹具实际引用路径核验，全部自有共享 DLL、库存及 ZIP 的断言保留。该失败和修正见证据，没有删改产品断言。
 
+首次 PR59 CI [39358622729](https://github.com/yuan2go/importer-pc/actions/runs/39358622729)在原生检查前 FAIL：PR57 继承的显式 `--source` 要求 main 祖先，而 PR 临时合并提交是 main 后继。保留[原始错误片段及身份](evidence/sportmaster-visual-01/main-closure-01/ci-first-failure.json)，该次原生检查为 NOT_RUN。现仅修正 CI 调用：使用发行器既有缺省模式构建当前检出的精确 HEAD，并额外断言 RELEASE.SourceCommit 等于 github.sha；历史来源发行的祖先限制、完整包/库存及业务断言保持。最终当前 head 的 CI 结果以 PR 检查为准，不能以本地 PASS 覆盖这次失败。
+
 ## 运行与复核
 
 完整介质解压后运行 `Setup.cmd`，由原受保护安装机制登记账户/目录/权限。指定账户非提权从开始菜单或 `desktop/Ipc.Desktop.exe` 启动；Sportmaster 缺省新版 supply-station，显式 `--ui classic` 兼容。`Maintenance.cmd` 为独立启动修复；系统“已安装应用”或 `desktop/Ipc.Desktop.exe --product-maintenance` 为安装维护。真实未满足的 Production 资格继续拒绝。

@@ -1,0 +1,61 @@
+Window: "启动修复 · 离线维护", App: Ipc.Desktop.exe.
+	0 窗口 启动修复 · 离线维护 Secondary Actions: Raise
+		1 标题栏 (settable, string) Value: 启动修复 · 离线维护
+			2 菜单栏 系统 ID: MenuBar
+				3 菜单项目 系统
+			4 按钮 最小化
+			5 按钮 最大化
+			6 按钮 关闭
+		7 文本 启动修复 · 离线维护
+		8 窗格 离线维护：未启动设备或业务；保存只生成待生效修订。 扩展库存未配置或不可用：Extension directory must be provisioned by maintenance。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。
+			9 文本 离线维护：未启动设备或业务；保存只生成待生效修订。 扩展库存未配置或不可用：Extension directory must be provisioned by maintenance。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。
+		10 组 完整诊断（可选择复制）
+			11 按钮 完整诊断（可选择复制） ID: HeaderSite
+				12 文本 完整诊断（可选择复制）
+		13 窗格
+			14 选项卡 ID: StartupTasks
+				15 选项卡项 (selectable) 1 目录与工位
+					16 文本 1 目录与工位
+					17 文本 先核对原目录和工位。改变目录后显式重新读取；目录授权仍由受保护安装机制执行。
+					18 文本 原配置目录（包含 business.json）
+					19 编辑 (settable, string) 原配置目录（包含 business.json） Value: D:\projects\importer-pc-v2-ui\.artifacts\pr74-smoke\config
+					20 按钮 选择文件夹…
+						21 文本 选择文件夹…
+					22 文本 原数据根（保留 Simulation/Production、站和 Application 层级）
+					23 编辑 (settable, string) 原数据根（保留 Simulation/Production、站和 Application 层级） Value: D:\projects\importer-pc-v2-ui\.artifacts\pr74-smoke\data
+					24 按钮 选择文件夹…
+						25 文本 选择文件夹…
+					26 文本 sportmaster · station-01 · Production · 修订 0 · MissingConfiguration 工位身份只读；设备尚未启动。可先保存未完成草稿。
+					27 组 配置身份与检查边界
+						28 按钮 配置身份与检查边界 ID: HeaderSite
+							29 文本 配置身份与检查边界
+				30 选项卡项 (selectable) 2 设备与参数
+					31 文本 2 设备与参数
+				32 选项卡项 (selectable) 3 参数说明
+					33 文本 3 参数说明
+				34 选项卡项 (selectable) 4 检查与启动
+					35 文本 4 检查与启动
+				36 选项卡项 (selectable) 恢复与维护
+					37 文本 恢复与维护
+			38 滚动条 (settable, float) Value: 0 ID: VerticalScrollBar
+				39 按钮 (disabled) ID: PART_LineUpButton
+				40 按钮 (disabled) ID: PageUp
+				41 按钮 (disabled) ID: PageDown
+				42 缩略 (disabled)
+				43 按钮 (disabled) ID: PART_LineDownButton
+		44 按钮 读取所选配置
+			45 文本 读取所选配置
+		46 按钮 保存未完成草稿
+			47 文本 保存未完成草稿
+		48 按钮 继续已保存草稿
+			49 文本 继续已保存草稿
+		50 按钮 离线帮助
+			51 文本 离线帮助
+		52 按钮 上一步
+			53 文本 上一步
+		54 按钮 下一步
+			55 文本 下一步
+
+Document text: ```
+D:\projects\importer-pc-v2-ui\.artifacts\pr74-smoke\data
+```

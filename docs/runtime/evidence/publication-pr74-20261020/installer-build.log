@@ -1,0 +1,36 @@
+Installer build workspace: C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.24 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Installer\Ipc.Installer.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 78 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 42 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 45 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 49 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 73 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 35 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 73 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 109 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Installer -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\intermediates\bin\Ipc.Installer\release_win-x64\Ipc.Installer.dll
+  Ipc.Installer -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-lmd2ze5j\publish\
+{"Installer": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\pr74-release\\installer\\CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe", "Sha256": "38b531ccb7b3c2f05e3a7a0c67395633a6bf66f80b070493590f73fd8391fbc4", "SourceCommit": "1878be50d5befdbb56249e5d39a61deb023fe51e", "Payload": {"ApplicationId": "sportmaster", "SourceCommit": "1878be50d5befdbb56249e5d39a61deb023fe51e", "SourceBranch": "origin/main", "BusinessModuleShortName": "SM", "BusinessVersion": "1.6.0", "Sha256": "f773eada17f7c92e693ae35478c94d2bd23720e90cf34f81904801b30ff6d726", "ZipBytes": 106388013, "UnpackedBytes": 242330073, "FileCount": 733}, "DeliveryFiles": 1, "Authenticode": "NOT_SIGNED", "ActualWindowsInstallation": "NOT_RUN"}

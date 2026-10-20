@@ -1,0 +1,40 @@
+Window: "安装 · 菜鸟供包台", App: CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe.
+	0 窗口 安装 · 菜鸟供包台 Secondary Actions: Raise
+		1 标题栏 (settable, string) Value: 安装 · 菜鸟供包台
+			2 菜单栏 系统 ID: MenuBar
+				3 菜单项目 系统
+			4 按钮 最小化
+			5 按钮 最大化
+			6 按钮 关闭
+		7 图像
+		8 文本 菜鸟供包台
+		9 文本 1 安装选项 2 确认安装 3 安装完成
+		10 文本 安装菜鸟供包台
+		11 文本 业务模块版本 1.6.0 · Windows 64 位
+		12 文本 选择安装位置和快捷方式，然后点击下一步。
+		13 窗格
+			21 文本 安装目录
+			22 编辑 (settable, string) 安装目录 Value: C:\Program Files\CainiaoSupplyStation
+			23 按钮 浏览安装目录
+				24 文本 浏览…
+			25 文本 升级保留旧版本和原始数据。
+			26 复选框 在开始菜单创建快捷方式
+				27 文本 在开始菜单创建快捷方式
+			28 复选框 在桌面创建快捷方式
+				29 文本 在桌面创建快捷方式
+			30 文本 数据目录
+			31 编辑 (settable, string) 数据目录 Value: C:\Users\yuan\AppData\Local\ImporterPc\installation-check-2e0578e0043a4891bf1bbd0e0ec21039\data
+			32 按钮 浏览数据目录
+				33 文本 浏览…
+			34 组 高级设置（运行账户、工位与维护）
+				35 按钮 高级设置（运行账户、工位与维护） ID: HeaderSite
+					36 文本 高级设置（运行账户、工位与维护）
+			37 文本 安装不启动设备；新工位默认 Simulation（模拟）。
+		17 按钮 下一步
+			18 文本 下一步
+		19 按钮 取消
+			20 文本 取消
+
+Document text: ```
+C:\Users\yuan\AppData\Local\ImporterPc\installation-check-2e0578e0043a4891bf1bbd0e0ec21039\data
+```

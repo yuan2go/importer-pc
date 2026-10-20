@@ -1,0 +1,52 @@
+{
+  "SourceCommit": "1878be50d5befdbb56249e5d39a61deb023fe51e",
+  "SourceBranch": "origin/main",
+  "BusinessVersion": "1.6.0",
+  "PullRequest": 74,
+  "Merged": true,
+  "MergeTreeEqualsPassedPrHead": true,
+  "PriorCi": {
+    "Run": 39440449649,
+    "Head": "15241b2a200904ee1c55202d28348fc5b7df2782",
+    "Conclusion": "success",
+    "Repeated": false
+  },
+  "Packaging": {
+    "FrozenGitExport": true,
+    "LockedDependencies": true,
+    "MediaFiles": 733,
+    "AppDesktopSharedDlls": 12,
+    "InstallerDesktopSharedDlls": 15,
+    "InstallerFileVersion": "1.6.0.0",
+    "CompiledBusinessIdentity": "PASS"
+  },
+  "WindowsNativeSmoke": {
+    "Environment": "Windows 11 Home 10.0.22631 x64; actual desktop scaling 125%",
+    "DesktopMissingConfigurationMaintenance": "PASS",
+    "DesktopRecoveryAndStop": "PASS",
+    "InstallerPreparationAndOptions": "PASS",
+    "InstallerSameObservedHwnd": 11602632,
+    "InstallerCancelAndTemporaryCleanup": "PASS",
+    "DeploymentRegistrationUnchanged": true,
+    "BusinessDatabaseCreated": false,
+    "InstallerProcessExited": true,
+    "DesktopProcessExited": true
+  },
+  "NotRun": [
+    "Installation/UAC/upgrade/rollback on this new source",
+    "Win10 Home/Pro and target industrial PC",
+    "Other DPI/touch/CPU/clean supported OS",
+    "Exact signed extension closure",
+    "Real SDK/camera/RCS and site physical acceptance"
+  ],
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Authenticode": "NOT_SIGNED",
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.6.0-1878be50d5be",
+  "Prerelease": true,
+  "KnownIssue": {
+    "Review": "https://github.com/yuan2go/importer-pc/pull/74#discussion_r4326168214",
+    "Description": "Schema-3 daily editor hides SessionLifetimeMs for bound Login; startup draft is different.",
+    "Status": "SOURCE_CONFIRMED_NOT_FIXED_IN_MERGE_PUBLICATION_SCOPE"
+  },
+  "Scope": "Merge, frozen Windows package, native preparation/cancel and isolated startup; no production code changes or unrelated suite reruns."
+}

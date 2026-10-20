@@ -1,4 +1,6 @@
-> 当前交付：[V2 实施与运行](docs/runtime/ui-task-redesign-01.md)、[本版验收](docs/runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源 WPF 高清图](docs/ui/sportmaster-v2-wpf-20261020/README.md)。实施基准 main `de2b045`，最终生产源码 `26bb7b9`；原型、本机 Windows 与真实设备分别计证。
+> 当前安装包：[SM v1.6.0 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.0-1878be50d5be/CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe)。PR74 已合并，固定源 `1878be50d5be`；[发布记录、哈希与已知问题](docs/runtime/publication-pr74-20261020.md)。未签名预发布，真实设备/现场待验。
+>
+> [V2 实施与运行](docs/runtime/ui-task-redesign-01.md)、[原版 UI 验证](docs/runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[WPF 高清图](docs/ui/sportmaster-v2-wpf-20261020/README.md)仍保留各自构建身份。原型、本机 Windows、安装冒烟与真实设备分别计证。
 
 # importer-pc
 
@@ -22,14 +24,14 @@ Sportmaster、DirectPlc、WcsToPlc是独立主流程。Sportmaster左右读码�
 
 | 任务 | 有效入口 |
 | --- | --- |
-| 人工安装、升级与依赖 | [单窗口/一次授权](docs/runtime/installer-single-window-01.md)、[固定桌面名称](docs/runtime/desktop-shortcut-name-01.md)、[原产物下载与发布回执](docs/runtime/publication-pr69-pr71-20261020.md)、[发行依赖](docs/runtime/installer-release-info-01.md) |
+| 人工安装、升级与依赖 | [当前1.6.0下载及回执](docs/runtime/publication-pr74-20261020.md)、[单窗口/一次授权](docs/runtime/installer-single-window-01.md)、[固定桌面名称](docs/runtime/desktop-shortcut-name-01.md)、[发行依赖](docs/runtime/installer-release-info-01.md) |
 | 首配、故障修复与数据恢复 | [安装与启动修复](docs/runtime/startup-deployment-02.md)、[商业操作手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md) |
 | 架构、构建与扩展 | [框架](docs/design/framework.md)、[Application运行](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md) |
 
-继承菜鸟品牌、首配、单窗口单EXE安装、目录/快捷方式、一次UAC与普通权限启动、BUILD-INFO，不重建安装平台。最新已上传单窗口SM1.4.1介质来自 `27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`，58项为该原Windows主机Simulation记录；心跳portable CLI/签名夹具来自 `3f8a58ba32887df07f6a7817b64afa693f903c50`。原7c/41项保留历史，两类新介质均不改标为ba80参数快照或V2；详见[发布范围](docs/runtime/publication-pr69-pr71-20261020.md)。
+继承菜鸟品牌、首配、单窗口单EXE安装、目录/快捷方式、一次UAC与普通权限启动、BUILD-INFO，不重建安装平台。当前SM1.6.0来自已合并main `1878be50d5befdbb56249e5d39a61deb023fe51e`，本轮验证同源构建、完整介质、安装准备/取消和客户端隔离启动，未重验完整安装/UAC/升级。历史SM1.4.1介质 `27b0d8f` 的58项、原7c的41项及心跳portable CLI/签名夹具 `3f8a58ba` 各守原来源，详见[历史发布范围](docs/runtime/publication-pr69-pr71-20261020.md)。
 
 ## 证据与历史
 
-[UI状态](docs/ui/STATUS.md)区分 V2 设计、现有 WPF 和原验证。[V1 设计归档入口](docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)保留原45状态/48张PNG/95个物理文件及原哈希；95不是页面数。[v1.1及34张PNG](docs/ui/ss-ui-vis-001-v1.1/README.md)是历史模拟设计，不是本次强制布局。原失败、D/RV和各版介质身份保留；原型模拟 QA 按其实际记录判断，本次未新增生产代码构建、Windows/设备或现场 PASS，未来代码变更仍须做必要验证。
+[UI状态](docs/ui/STATUS.md)区分 V2 设计、现有 WPF 和原验证。[V1 设计归档入口](docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)保留原45状态/48张PNG/95个物理文件及原哈希；95不是页面数。[v1.1及34张PNG](docs/ui/ss-ui-vis-001-v1.1/README.md)是历史模拟设计。原失败、D/RV和各版介质身份保留；原型模拟 QA、UI 实施与本次发布验证分别记录，均不能代替真实设备或现场验收。
 
 遵守 [公开范围](docs/baseline/PUBLICATION.md)，不纳入未许可SDK、客户资料、凭据或生产数据。清理前入口原字节见 [归档](docs/archive/pre-ui-task-redesign-20261020/README.md)。

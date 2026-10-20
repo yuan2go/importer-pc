@@ -1,0 +1,51 @@
+{
+  "SourceCommit": "92586bf44cde7efb6cec1538d7b9654ee518c0fb",
+  "Status": "PASS",
+  "NativeAssertions": 24,
+  "LoadedPublishedAssemblies": [
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "8a5390dbbd2b242547fd3411f9a63ce227872cb67ca90fd9b6c89e6861fb480b"
+    },
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "c20c3b02a9326641f14b138dfd93d23370fc1f06b4d00b7b7c935bae09dca89f"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "638426fc8b83f20deb123c5af3ca5adf2be7c568c1543d8a10f0ace9b0e96465"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "2c7768954e58c57babdfba64ff6b81f9fde0e16520070490e2fe9da60cbac2cb"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "48dc48d8696b9a008af2494a23e27a72dc382c0b36c38720b0ceca4b4399eb49"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "2c118bd124d608f5ae0746bc120f68df5d26c43dbbf5efcef5868c7689d3ff59"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "2d8844da4fe7da0f40e15695e8f9af5ee1ba14952ae03cb54ee947e4e7cd9b19"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "cafaf03648b04099397f8fef7eebf5fa8d0e1a049d2803d7a0499d118407da52"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "83889a2df95c591d3d43e962478db96494052373a54fa8dc995689d5f5cbeb69"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "ba02e1f3f7da8e6e198ea4246c74e692c27e1e846428bfac1d7cae7b5af1a480"
+    }
+  ],
+  "ImageSha256": "5f6279399b4333ccb974abd09e431146e492d7dc07688221b71bc1dae9377a87",
+  "Method": "Actual HWND/Dispatcher; isolated synthetic runtime; final published DLL bytes",
+  "PhysicalDevice": "NOT_RUN",
+  "ExactPublishedProductionDlls": true
+}

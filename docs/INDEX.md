@@ -1,4 +1,4 @@
-> 当前下载：[SM v1.6.0 Windows 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.0-1878be50d5be/CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe)。PR74已合并main，固定源`1878be50d5be`；[发布记录、SHA256、已知问题与待验边界](runtime/publication-pr74-20261020.md)。未签名预发布。
+> 当前下载：[SM v1.6.1 Windows 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76已合并main，固定源`92586bf44cde`；[发布记录、SHA256与待验边界](runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏；未签名预发布。
 >
 > 当前局部修复：[已绑定登录的会话时长字段](runtime/login-session-lifetime-fix-01.md)，基于main `837370e`，原1.6.0发布及其未修复记录保留原身份。V2原实施、设计、PR73及其他介质验证各守原版本。
 
@@ -63,7 +63,8 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 
 | 对象 | 证据与适用范围 |
 | --- | --- |
-| 当前 SM v1.6.0 安装包 | [PR74合并与发布回执](runtime/publication-pr74-20261020.md)。固定main源1878be50d5be，733文件同源介质与15个安装器共享DLL一致；原生准备/取消及隔离客户端启动通过，完整安装/设备/现场待验。 |
+| 当前 SM v1.6.1 安装包 | [登录会话修复与发布](runtime/publication-login-session-20261020.md)。固定main源92586bf，734文件介质、最终DLL聚焦24项和实际键盘输入、安装准备/取消通过；完整安装/设备/现场待验。 |
+| 历史 SM v1.6.0 安装包 | [PR74合并与发布回执](runtime/publication-pr74-20261020.md)。固定源1878be50d5be，原733文件及会话字段未修复记录保持原身份。 |
 | 新设计与模拟QA | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
 | 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
 | V2 当前 WPF 实现 | [UIR-00～06 实施](runtime/ui-task-redesign-01.md)、[本版验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)。固定源 `26bb7b9` 完成参数、首配、三组作业和相关维护闭环；32 张 WPF PNG、本机输入和发布启动各记边界。 |

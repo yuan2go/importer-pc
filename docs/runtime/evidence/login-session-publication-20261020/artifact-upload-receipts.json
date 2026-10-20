@@ -1,0 +1,82 @@
+{
+  "id": 418557941,
+  "tag": "installer-sm-v1.6.1-92586bf44cde",
+  "source_commit": "92586bf44cde7efb6cec1538d7b9654ee518c0fb",
+  "url": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.6.1-92586bf44cde",
+  "published_at": "2026-10-20T15:27:52Z",
+  "prerelease": true,
+  "assets": [
+    {
+      "id": 659702260,
+      "name": "BUILD-INFO.json",
+      "size": 498,
+      "digest": "sha256:79917a215663edca5d24bd52bd2112d5698539a5b804ffbdcd95f3026fe5f964",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/BUILD-INFO.json"
+    },
+    {
+      "id": 659700297,
+      "name": "CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe",
+      "size": 177645964,
+      "digest": "sha256:97e32a18c85f9fb7c0d304fab74e4c7f7acdf1cd31fccd4e02a2ccc9be41609b",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe"
+    },
+    {
+      "id": 659702152,
+      "name": "DELIVERY.json",
+      "size": 814,
+      "digest": "sha256:5543a3393ea4276be215e30dcd2d21b4c9d072417c8f741e07ecebb71fe0174c",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/DELIVERY.json"
+    },
+    {
+      "id": 659702221,
+      "name": "PUBLICATION.json",
+      "size": 1788,
+      "digest": "sha256:285649bacb682f4eddfe9907136302074906174a7870eecefb72b7d7e17432bb",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/PUBLICATION.json"
+    },
+    {
+      "id": 659702304,
+      "name": "SHA256SUMS",
+      "size": 360,
+      "digest": "sha256:7f3a1f96f861e4a0fc1db6e86d3c20f3306c62801cc9546f1cdc339efeac47cd",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/SHA256SUMS"
+    }
+  ],
+  "draft_upload_responses": [
+    {
+      "id": 659700297,
+      "name": "CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe",
+      "size": 177645964,
+      "digest": "sha256:97e32a18c85f9fb7c0d304fab74e4c7f7acdf1cd31fccd4e02a2ccc9be41609b",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/untagged-1ce4bf8ee46ea46ff514/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe"
+    },
+    {
+      "id": 659702152,
+      "name": "DELIVERY.json",
+      "size": 814,
+      "digest": "sha256:5543a3393ea4276be215e30dcd2d21b4c9d072417c8f741e07ecebb71fe0174c",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/untagged-1ce4bf8ee46ea46ff514/DELIVERY.json"
+    },
+    {
+      "id": 659702221,
+      "name": "PUBLICATION.json",
+      "size": 1788,
+      "digest": "sha256:285649bacb682f4eddfe9907136302074906174a7870eecefb72b7d7e17432bb",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/untagged-1ce4bf8ee46ea46ff514/PUBLICATION.json"
+    },
+    {
+      "id": 659702260,
+      "name": "BUILD-INFO.json",
+      "size": 498,
+      "digest": "sha256:79917a215663edca5d24bd52bd2112d5698539a5b804ffbdcd95f3026fe5f964",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/untagged-1ce4bf8ee46ea46ff514/BUILD-INFO.json"
+    },
+    {
+      "id": 659702304,
+      "name": "SHA256SUMS",
+      "size": 360,
+      "digest": "sha256:7f3a1f96f861e4a0fc1db6e86d3c20f3306c62801cc9546f1cdc339efeac47cd",
+      "browser_download_url": "https://github.com/yuan2go/importer-pc/releases/download/untagged-1ce4bf8ee46ea46ff514/SHA256SUMS"
+    }
+  ]
+}

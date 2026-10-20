@@ -1,0 +1,57 @@
+[
+  {
+    "Name": "Ipc.Desktop.UiVerification",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Desktop.UiVerification.dll",
+    "Sha256": "6E2947B281853665258B48D2CD5F14C73F52C873F4FF65D6739AB14D9F47E012"
+  },
+  {
+    "Name": "Ipc.Platform",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Platform.dll",
+    "Sha256": "8A5390DBBD2B242547FD3411F9A63CE227872CB67CA90FD9B6C89E6861FB480B"
+  },
+  {
+    "Name": "Ipc.Application.Contracts",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Application.Contracts.dll",
+    "Sha256": "C20C3B02A9326641F14B138DFD93D23370FC1F06B4D00B7B7C935BAE09DCA89F"
+  },
+  {
+    "Name": "Ipc.Application.ParcelFlow",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Application.ParcelFlow.dll",
+    "Sha256": "638426FC8B83F20DEB123C5AF3CA5ADF2BE7C568C1543D8A10F0ACE9B0E96465"
+  },
+  {
+    "Name": "Ipc.Application.ParcelFlow.Desktop",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Application.ParcelFlow.Desktop.dll",
+    "Sha256": "2C7768954E58C57BABDFBA64FF6B81F9FDE0E16520070490E2FE9DA60CBAC2CB"
+  },
+  {
+    "Name": "Ipc.Application.Sportmaster",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Application.Sportmaster.dll",
+    "Sha256": "48DC48D8696B9A008AF2494A23E27A72DC382C0B36C38720B0CECA4B4399EB49"
+  },
+  {
+    "Name": "Ipc.Platform.Storage",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Platform.Storage.dll",
+    "Sha256": "2C118BD124D608F5AE0746BC120F68DF5D26C43DBBF5EFCEF5868C7689D3FF59"
+  },
+  {
+    "Name": "Ipc.Components",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Components.dll",
+    "Sha256": "2D8844DA4FE7DA0F40E15695E8F9AF5EE1BA14952AE03CB54EE947E4E7CD9B19"
+  },
+  {
+    "Name": "Ipc.Integrations",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Integrations.dll",
+    "Sha256": "CAFAF03648B04099397F8FEF7EEBF5FA8D0E1A049D2803D7A0499D118407DA52"
+  },
+  {
+    "Name": "Ipc.Drivers",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Drivers.dll",
+    "Sha256": "83889A2DF95C591D3D43E962478DB96494052373A54FA8DC995689D5F5CBEB69"
+  },
+  {
+    "Name": "Ipc.Reference.Protocol",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\login-session-release\\frozen-fixture\\Ipc.Reference.Protocol.dll",
+    "Sha256": "BA02E1F3F7DA8E6E198EA4246C74E692C27E1E846428BFAC1D7CAE7B5AF1A480"
+  }
+]

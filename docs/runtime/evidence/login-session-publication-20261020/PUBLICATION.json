@@ -1,0 +1,40 @@
+{
+  "SourceCommit": "92586bf44cde7efb6cec1538d7b9654ee518c0fb",
+  "SourceBranch": "origin/main",
+  "BusinessVersion": "1.6.1",
+  "ImplementationPr": 76,
+  "ImplementationHead": "280f76883c32d1c68cc7f029b6918d5eb1a65bb2",
+  "MergedTreeEqualsVerifiedHead": true,
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.6.1-92586bf44cde",
+  "Prerelease": true,
+  "Authenticode": "NOT_SIGNED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "ResolvedIssue": "PR74 review discussion_r4326168214: bound daily operator session lifetime hidden",
+  "Authority": "Original login role selection and shared ConfigurationPolicyDraft; Application CAS/pause/authorization/receipt guards unchanged",
+  "Verification": {
+    "PreMergeNativeAssertions": 24,
+    "FinalPublishedDllNativeAssertions": 24,
+    "VersionTests": 17,
+    "GuideTests": 2,
+    "SharedConsumerBuilds": [
+      "Sportmaster",
+      "DirectPlc",
+      "WcsToPlc"
+    ],
+    "MediaFiles": 734,
+    "AppDesktopSharedDlls": 12,
+    "InstallerDesktopSharedDlls": 15,
+    "ActualLoadedPublishedDlls": 10,
+    "NativeKeyboard": "PASS_EDIT_SEARCH_RETURN_VALUE_RETAINED",
+    "InstallerPreparationCancel": "PASS_NATIVE",
+    "DeploymentRegistrationUnchanged": true
+  },
+  "CI": "Full unrelated PR workflow intentionally skipped via skip-ci; no old CI relabelled; focused evidence and protected normal merge retained",
+  "NotRun": [
+    "Full installation/UAC/upgrade/rollback for this source",
+    "Real SDK/device/RCS/site physical acceptance",
+    "Exact signed extension closure and production approval",
+    "Target industrial PC/Win10/other DPI/touch/CPU/clean supported OS"
+  ],
+  "HistoricalEvidence": "PR74/1.6.0 and old D/RV/installation evidence unchanged; new record supersedes current download only"
+}

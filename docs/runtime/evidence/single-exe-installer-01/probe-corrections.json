@@ -1,0 +1,6 @@
+{
+  "Status": "INVALID_PROBE_ASSUMPTION_CORRECTED",
+  "Observed": "Native module enumeration did not expose a separate coreclr.dll; the actual native welcome page was already open. Initial raw logs remain local.",
+  "Correction": "Inspect the loaded System.Private.CoreLib.dll path to verify the bundled runtime location, retaining the no-shared-runtime assertion; no installer code or runtime checks changed",
+  "FinalResult": "17 actual EXE assertions PASS"
+}

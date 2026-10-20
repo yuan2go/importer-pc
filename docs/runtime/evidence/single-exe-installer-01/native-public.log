@@ -1,0 +1,19 @@
+PASS standalone EXE has the intended product and file-description names
+PASS field delivery contains exactly one EXE without sidecars
+PASS actual single file opens the native welcome page without a shared runtime root
+PASS runtime core library is loaded from the bundled runtime rather than the developer SDK shared framework
+PASS cancel action remains inside the small native window
+PASS actual process exits normally with code zero
+PASS cancelling welcome creates no preparation workspace
+PASS actual process exits normally with code zero
+PASS cancelling actual preparation cleans the private workspace and does not open setup
+ActualProgress=1.0550000247118771
+PASS actual single-file payload opens the original native deployment wizard
+PASS actual byte-based preparation progress is exposed through native automation
+PASS expanded payload retains the exact frozen source identity
+PASS the original wizard accepts the embedded inventory and reaches directory/account selection
+PASS actual process exits normally with code zero
+PASS actual process exits normally with code zero
+PASS closing the original setup cleans this run's extracted medium
+PASS the external delivery remains one EXE after all runs
+NOT_RUN actual UAC installation, upgrade/uninstall, devices, SDK, RCS and field acceptance.

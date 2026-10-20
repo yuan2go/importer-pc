@@ -11,7 +11,7 @@ public sealed class ProductSupportWindow : Window
     public ProductSupportWindow(IParcelApplication application, string? operationId)
     {
         ProductBrand.Apply(this);
-        Title = "Importer PC · 帮助与支持"; FontSize = 16; Width = 880; Height = 720; MinWidth = 580; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        Title = "菜鸟供包台 · 帮助与支持"; FontSize = 16; Width = 880; Height = 720; MinWidth = 580; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         var tabs = new TabControl();
         tabs.Items.Add(new TabItem { Header = "离线帮助", Content = ProductHelp.CreateView() });
         var body = new StackPanel { Margin = new(16) }; var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };

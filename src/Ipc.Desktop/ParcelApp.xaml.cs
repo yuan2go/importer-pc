@@ -118,7 +118,8 @@ sealed class ParcelStartupWindow : Window
     public bool AllowClose { get; set; }
     public ParcelStartupWindow()
     {
-        Title = "启动与恢复 · Importer PC"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
+        Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
+        Title = "启动与恢复 · 菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         var grid = new Grid { Margin = new Thickness(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });

@@ -38,7 +38,7 @@ public partial class MainWindow : Window
         // area before responsive layout measures its client area (including at 150% DPI).
         Width = Math.Min(Width, SystemParameters.WorkArea.Width);
         Height = Math.Min(Height, SystemParameters.WorkArea.Height);
-        Title = "供包参考工位 · " + (runtime.Mode?.ToString() ?? "NotReady");
+        Title = "菜鸟供包台 · " + (runtime.Mode?.ToString() ?? "NotReady");
         RuntimeIdentity.Text = $"运行实例 {runtime.RuntimeId} · 所有窗口共享此业务实例与发送器";
         ModeBadge.Text = runtime.Mode == RunMode.Simulation ? "SIMULATION" : "PRODUCTION · 未就绪";
         if (runtime.Application is null) model.GlobalStatus = "未就绪 · " + string.Join("；", runtime.RuntimeDiagnostics);

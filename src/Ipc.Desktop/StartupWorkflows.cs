@@ -91,7 +91,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · 菜鸟供包台" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
@@ -166,7 +166,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
         });
-        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
+        Action("离线帮助", () => { new Window { Owner = this, Title = "菜鸟供包台 · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
@@ -384,7 +384,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
     string[] packages = [];
     int step;
     readonly Button next, back;
-    public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · Importer PC")
+    public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · 菜鸟供包台")
     {
         this.launch = launch;
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
@@ -419,7 +419,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         Message("步骤 " + (step + 1) + " / 4 · 安装不启动设备或业务。日常运行保持未提权，安装和维护通过 Windows 授权。");
         if (step == 0)
         {
-            Note("从可信分发渠道取得并完整解压 Windows 安装包。下一步校验程序目录的登记、来源及全部文件；散列完整性不代替发布者信任。");
+            Note("安装文件已准备好。下一步将检查版本与完整性，然后选择程序目录、运行账户和数据位置。");
             Note("源目录：" + Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")));
             Note("升级和修复使用并排版本；原程序、配置、数据和租约保留。失败可在此重试，旧部署登记保持可用。"); next.Content = "检查安装媒介";
         }

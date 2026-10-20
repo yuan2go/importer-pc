@@ -1,0 +1,6 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "a7de058d5877b8fa797e2292271181b4272ac244",
+  "Assertions": 17,
+  "Scope": "Actual standalone EXE: welcome, native preparation, cancellation, original setup handoff and close; no installation or device operation"
+}

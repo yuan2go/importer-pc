@@ -1,0 +1,6 @@
+Installer build workspace: C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-4kjpw3pt
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-4kjpw3pt\source\src\Ipc.Installer\Ipc.Installer.csproj (用时 661 毫秒)。
+  Ipc.Installer -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-4kjpw3pt\intermediates\bin\Ipc.Installer\release_win-x64\Ipc.Installer.dll
+  Ipc.Installer -> C:\Users\yuan\AppData\Local\Temp\ipc-installer-build-4kjpw3pt\publish\
+{"Installer": "D:\\releases\\���񹩰�̨��װ����-01.exe", "Sha256": "2284d542f65299f53b2e6cec10e6ac7e1e52ee59dfc2ff9c487fc4deb27f0c9f", "SourceCommit": "a7de058d5877b8fa797e2292271181b4272ac244", "Payload": {"ApplicationId": "sportmaster", "SourceCommit": "a7de058d5877b8fa797e2292271181b4272ac244", "BusinessVersion": "1.4.0", "Sha256": "04bb4541f7364b5a45469c7afcf52339036aa1fbb4d4ae801214526fb6e134f9", "ZipBytes": 106224225, "UnpackedBytes": 242468306, "FileCount": 747}, "DeliveryFiles": 1, "Authenticode": "NOT_SIGNED", "ActualWindowsInstallation": "NOT_RUN"}

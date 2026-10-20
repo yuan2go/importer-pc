@@ -1,12 +1,13 @@
 
 # 原生安装、启动修复与独立基础配置
+> 单 EXE 交付增量见[菜鸟供包台安装程序](single-exe-installer-01.md)：现场双击一个 EXE，自动准备固定介质后进入本页原生向导。原 ZIP 仍为兼容介质，历史验证按原来源保留。
 > COMM-00～10 当前操作见[产品操作指南](commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 本指南属于 STARTUP-DEPLOYMENT-02，适用于本次新发布的 Sportmaster、DirectPlc、WcsToPlc Windows 候选。旧媒介按其 SourceCommit 和随包指南操作。本实现采用 Windows 程序/数据分离、按需提升、并排部署和失败保旧等实践；不宣称 MSI 事务、工业标准认证或现场验收通过。Windows 原生 UAC/ACL/快捷方式及实际窗口交互为 NOT_RUN，真实 SDK/设备/合同为 BLOCKED，Production 仍为 NotReady。
 
 ## 安装及升级
 
-1. 从可信渠道取得完整 Windows ZIP，按独立交付记录核对 ZIP 身份，解压到新目录。双击 `Setup.cmd`，或首次双击 `application.cmd`。不需要 PowerShell、手工 JSON、hash、目录或 ACL。
+1. 单 EXE 发行：从可信渠道取得 `菜鸟供包台安装程序.exe`，双击后点击“下一步”，自动校验并准备文件，然后进入原生向导；无需现场解压、运行脚本或预装 .NET。旧 ZIP 兼容发行仍需解压后双击 `Setup.cmd` 或 `application.cmd`。两种方式均不要求手工 JSON、hash 或 ACL。
 2. 向导检查 app/desktop 发布登记、同一 Application/SourceCommit、全部登记文件及外层 SHA256SUMS。多余程序文件、链接、变化文件明确失败。散列只证明字节完整性，不能代替分发来源可信。
 3. 选择已有 Windows 运行账户、数据根和包含 business.json 的配置来源。默认使用当前用户和 `%LOCALAPPDATA%\ImporterPc\data`；升级自动带入已登记位置。保留原数据位置，不能通过换空根掩盖未决责任。UAC 过滤后的管理员用户可正常运行；真正提升的日常进程继续被拒绝。已有机器政策绑定其他 SID 时保留原政策，不能在此静默换账户。
 4. 可选选择独立批准的信任文件和原始离线签名扩展包。程序计算 hash，按签名、精确身份、依赖和合同校验；安装期间不执行模块或 SDK。无扩展时全部留空即可。软件不产生测试/Production 信任、不安装厂商 SDK、不把旧宿主资格复用于新宿主。已有信任仅接受相同字节，轮换保持独立审查。

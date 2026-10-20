@@ -28,8 +28,12 @@ jobs:
       - name: Freeze only the first commercial composition
         shell: pwsh
         run: |
-          python scripts/release-windows.py --profile sportmaster --source '${{ github.sha }}' --output C:/scd-release
+          # PR checkout is GitHub's exact merge commit, not an ancestor of main.
+          # --source is reserved for main-ancestor historical publication/reuse.
+          python scripts/release-windows.py --profile sportmaster --output C:/scd-release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen PR release differs from the checked merge commit' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
         run: |
@@ -40,6 +44,22 @@ jobs:
             # The helper validates the actual production FAIL JSON and throws on
             # any engineering failure. Its last native exit=1 is that expected
             # policy refusal, rather than this step's outcome.
+            exit 0
+          } catch {
+            [Console]::Error.WriteLine($_)
+            exit 1
+          }
+      - name: Native visual interactions on the same frozen medium
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          try {
+            $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+            $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
+            if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }
+            $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/visual -VisualProductization
+            if (-not $?) { throw 'Frozen visual verification did not return successfully' }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)
@@ -61,6 +81,10 @@ jobs:
             C:/scd-evidence/wpf/RUN.log
             C:/scd-evidence/wpf/WINDOWS-WPF.log
             C:/scd-evidence/wpf/*.png
+            C:/scd-evidence/visual/RESULT.json
+            C:/scd-evidence/visual/RUN.log
+            C:/scd-evidence/visual/WINDOWS-WPF.log
+            C:/scd-evidence/visual/*.png
             C:/scd-evidence/removal/RESULT.json
             C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json

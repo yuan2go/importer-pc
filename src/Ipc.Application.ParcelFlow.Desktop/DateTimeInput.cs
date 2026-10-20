@@ -21,13 +21,30 @@ public sealed class DateTimeInput : UserControl
     public DateTimeInput()
     {
         var panel = new StackPanel(); var fields = new WrapPanel();
+        hint.TextWrapping = TextWrapping.Wrap;
+        System.Windows.Automation.AutomationProperties.SetLiveSetting(hint, System.Windows.Automation.AutomationLiveSetting.Polite);
         fields.Children.Add(Labelled("日期", date)); fields.Children.Add(Labelled("时间", clock)); fields.Children.Add(Labelled("UTC偏移", offset));
         var clear = new Button { Content = "清除", VerticalAlignment = VerticalAlignment.Bottom, Margin = new(0) };
         clear.Click += (_, _) => { SetCurrentValue(TimestampProperty, ""); ReadTimestamp(); };
         fields.Children.Add(clear); panel.Children.Add(fields); panel.Children.Add(hint); Content = panel;
-        date.SelectedDateChanged += (_, _) => { invalidDate = null; WriteTimestamp(); }; clock.TextChanged += (_, _) => WriteTimestamp(); offset.TextChanged += (_, _) => WriteTimestamp();
-        date.CalendarClosed += (_, _) => { invalidDate = null; WriteTimestamp(); };
-        date.DateValidationError += (_, e) => { e.ThrowException = false; if (!syncing) { invalidDate = e.Text; SetCurrentValue(TimestampProperty, "无效日期：" + e.Text); hint.Text = "日期无效，请用日历选择或重新填写。"; } };
+        date.SelectedDateChanged += (_, _) => { if (syncing) return; invalidDate = null; WriteTimestamp(); }; clock.TextChanged += (_, _) => WriteTimestamp(); offset.TextChanged += (_, _) => WriteTimestamp();
+        date.DateValidationError += (_, e) =>
+        {
+            e.ThrowException = false;
+            if (syncing) return;
+            syncing = true;
+            try
+            {
+                invalidDate = e.Text;
+                // Native DatePicker otherwise restores its old SelectedDate after rejecting text.
+                // Drop that stale selection, but retain an invalid filter until an explicit correction
+                // or Clear. Opening/closing the calendar alone is not a correction.
+                date.SelectedDate = null;
+                SetCurrentValue(TimestampProperty, "无效日期：" + e.Text);
+                hint.Text = "日期输入“" + e.Text + "”无效，尚未应用。请重新填写、用日历选择，或明确清除范围。";
+            }
+            finally { syncing = false; }
+        };
     }
     static StackPanel Labelled(string label, Control field)
     {

@@ -1,0 +1,11 @@
+{
+  "run": 39358622729,
+  "job": 118419247517,
+  "head": "e72695a3d44a95b0b7cb7c514b2480943109b3a5",
+  "checkout": "94639550701c4305cf4bdca094b1a8ed8eada067",
+  "reason": "Explicit --source requires main ancestor; PR merge commit is a descendant; packaging refused before native journeys",
+  "status": "FAIL",
+  "native_journeys": "NOT_RUN: freeze refused before build",
+  "url": "https://github.com/yuan2go/importer-pc/actions/runs/39358622729",
+  "resolution": "CI builds its checked HEAD via existing default mode and asserts RELEASE SourceCommit equals github.sha. Explicit historical --source ancestor restriction remains unchanged."
+}

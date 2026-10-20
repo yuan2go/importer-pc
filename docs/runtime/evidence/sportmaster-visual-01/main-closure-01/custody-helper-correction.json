@@ -1,0 +1,16 @@
+{
+  "status": "INITIAL_CUSTODY_HELPER_FAIL_CORRECTED",
+  "phase": "Post-verification evidence sealing, not a product or native fixture failure",
+  "initial_assertion": "Mistakenly required each referenced third-party DLL to match every app/desktop filename peer",
+  "actual": {
+    "package": "SQLitePCLRaw.provider.e_sqlite3/2.1.14",
+    "app_asset": "lib/net6.0/SQLitePCLRaw.provider.e_sqlite3.dll",
+    "app_sha256": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474",
+    "desktop_asset": "lib/net6.0-windows7.0/SQLitePCLRaw.provider.e_sqlite3.dll",
+    "desktop_sha256": "04d57c32e7f780a9040776b8b0dc6ba59d42dfcc9363521ac4fd6b800b6de500",
+    "declared_by": "Corresponding frozen host deps.json; the same distinction is present in the unchanged historical dfc2ab6 medium"
+  },
+  "resolution": "Check each actual binary origin selected by the existing frozen WPF verifier, and retain all own shared Ipc DLL equality plus full inventories/ZIP checks through the unified release verifier",
+  "native_product_assertions_removed_or_weakened": [],
+  "scope": "The fixture uses app SQLite assets and desktop WPF assemblies. Full installed desktop lifecycle and production qualification remain unverified."
+}

@@ -1,0 +1,5 @@
+SourceCommit=26bb7b9488b98cc0ce44ef6cf74df7c493153b0a
+Windows 11 Home Chinese 10.0.22631 x64; WPF scale 125%; work area 1536x816 DIP.
+Real keyboard: select StationCode, Ctrl+A, type FINAL-DRAFT-125; Ctrl+F/type 队列; Enter locates QueueCapacity; Ctrl+F/type StationCode/Enter preserves exact draft.
+Mouse: open independent Save Preparation; auth, reason and receipt action fully visible; type synthetic reason; return to form retains FINAL-DRAFT-125 and full editor viewport.
+No credentials supplied, no save, no real device commands. WPF fixture uses published DLLs with synthetic ports.

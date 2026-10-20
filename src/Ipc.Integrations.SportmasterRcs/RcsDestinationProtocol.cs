@@ -46,7 +46,8 @@ internal static class RcsDestinationProtocol
             if (code is not null) throw new InvalidDataException("RCS success contradicts its error code");
             var slot = Text(data, "chuteCode", 64);
             return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
-                Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null));
+                Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
+                AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
         }
         if (string.IsNullOrWhiteSpace(code)) throw new InvalidDataException("RCS rejection requires an error code");
         if (code == "NEED_UNPACK")
@@ -69,6 +70,10 @@ internal static class RcsDestinationProtocol
         var number = value.GetDecimal(); return number >= 0 ? number : throw new InvalidDataException("RCS negative measurement");
     }
     static string Text(JsonElement e, string name, int maximum) => OptionalText(e, name, maximum) ?? throw new InvalidDataException("RCS missing field: " + name);
+    // Added response fields are optional for older peers/receipts. Preserve response
+    // text exactly; numeric request quantity is a different fact and is never a fallback.
+    static string? AddedText(JsonElement e, string name, int maximum) =>
+        !e.TryGetProperty(name, out _) ? null : OptionalText(e, name, maximum);
     static string? OptionalText(JsonElement e, string name, int maximum)
     {
         var value = e.GetProperty(name); if (value.ValueKind == JsonValueKind.Null) return null;

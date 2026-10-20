@@ -1,24 +1,63 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using Ipc.Application.Contracts;
+using System.Windows.Input;
+using System.Windows.Documents;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Shared by offline first configuration and the running editor. Native controls keep
-// focus, selection and scroll while snapshots refresh; only a deliberate reload replaces Model.
-public sealed class ParameterSettingsControl : UserControl
+// Same complete draft in startup and daily settings. Polling never rebuilds controls.
+public sealed partial class ParameterSettingsControl : UserControl
 {
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     readonly TabControl categories = new() { Name = "ParameterCategories" };
     readonly StackPanel errors = new();
-    readonly Dictionary<string, (int Category, FrameworkElement Control)> locations = [];
-    readonly List<(CapabilityDraft Draft, System.ComponentModel.PropertyChangedEventHandler Handler)> subscriptions = [];
+    readonly Dictionary<string, Location> locations = [];
+    readonly List<Action> unsubscribe = [];
+    readonly List<ObjectPage> pages = [];
+    readonly List<ListBox> navigators = [];
+    sealed record ObjectPage(int Category, string Title, StackPanel Body, ScrollViewer Scroll)
+    { public override string ToString() => Title; }
+    sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help);
+    int? categoryScope;
+    public event EventHandler? MaintenanceRequested;
     public ParameterSettingsControl()
     {
-        var root = new DockPanel(); var errorScroll = new ScrollViewer { Content = errors, MaxHeight = 132, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; DockPanel.SetDock(errorScroll, Dock.Top); root.Children.Add(errorScroll); root.Children.Add(categories); Content = root;
+        Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
+        var root = new DockPanel { Background = Brush("#F1F4F7") };
+        var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); root.Children.Add(searchBar);
+        var summary = new ScrollViewer { Content = errors, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        DockPanel.SetDock(summary, Dock.Top); root.Children.Add(summary);
+        var body = new Grid(); body.Children.Add(categories); body.Children.Add(searchResults); root.Children.Add(body); Content = root;
+        PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control) { search.Focus(); search.SelectAll(); e.Handled = true; }
+            else if (e.Key == Key.Escape && search.Text.Length > 0) { search.Clear(); e.Handled = true; }
+        };
+    }
+    public void ShowCategory(int? index)
+    {
+        categoryScope = index;
+        foreach (TabItem tab in categories.Items) tab.Visibility = index is null || categories.Items.IndexOf(tab) == index ? Visibility.Visible : Visibility.Collapsed;
+        if (index is not null) categories.SelectedIndex = index.Value;
+        RefreshSearch();
+    }
+    public bool NavigateTo(string path)
+    {
+        if (!locations.TryGetValue(path, out var location)) return false;
+        search.Clear();
+        if (categoryScope is not null && categoryScope != location.Page.Category) ShowCategory(location.Page.Category);
+        categories.SelectedIndex = location.Page.Category;
+        navigators[location.Page.Category].SelectedItem = location.Page;
+        for (DependencyObject? parent = location.Control; parent is not null; parent = LogicalTreeHelper.GetParent(parent) ?? (parent is Visual ? VisualTreeHelper.GetParent(parent) : null))
+            if (parent is Expander details) details.IsExpanded = true;
+        UpdateLayout();
+        location.Control.BringIntoView();
+        location.Control.Focus();
+        return true;
     }
     static void ModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -27,144 +66,127 @@ public sealed class ParameterSettingsControl : UserControl
         if (e.NewValue is ParameterEditorModel next) next.ValidationChanged += view.ShowIssues;
         view.Render();
     }
-    static TextBlock Text(string value, bool heading = false) => new() { Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 18 : 14,
-        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 18 : 4, 0, 6) };
-    StackPanel Category(string title)
+    static TextBlock Text(string value, bool heading = false) => new()
     {
-        var panel = new StackPanel { Margin = new(18, 4, 18, 18) };
-        categories.Items.Add(new TabItem { Header = title, Content = new ScrollViewer { Content = panel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }); return panel;
+        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 20 : 14,
+        Foreground = Brush(heading ? "#183047" : "#586B80"),
+        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
+    };
+    static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
+    void Category(string title)
+    {
+        var grid = new Grid(); TextElement.SetFontWeight(grid, FontWeights.Normal); grid.ColumnDefinitions.Add(new() { Width = new(176) }); grid.ColumnDefinitions.Add(new());
+        var nav = new ListBox { BorderThickness = new(0, 0, 1, 0), BorderBrush = Brush("#CCD6E1"), Background = Brush("#F7F9FC"), Padding = new(8), HorizontalContentAlignment = HorizontalAlignment.Stretch };
+        nav.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
+        ScrollViewer.SetHorizontalScrollBarVisibility(nav, ScrollBarVisibility.Disabled);
+        AutomationProperties.SetName(nav, title + "对象");
+        var content = new ContentControl { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
+        nav.SelectionChanged += (_, _) => { if (nav.SelectedItem is ObjectPage page) content.Content = page.Scroll; };
+        grid.SizeChanged += (_, _) => grid.ColumnDefinitions[0].Width = new(grid.ActualWidth < 760 ? 136 : 176);
+        Grid.SetColumn(content, 1); grid.Children.Add(nav); grid.Children.Add(content);
+        categories.Items.Add(new TabItem { Header = title, MinHeight = 44, Content = grid }); navigators.Add(nav);
     }
-    void Input(Panel panel, string label, object source, string property, string path, int category, string? help = null, bool multiline = false)
+    ObjectPage Page(int category, string title, string guidance)
     {
-        panel.Children.Add(Text(label));
-        var box = new TextBox { MinHeight = multiline ? 72 : 36, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        var body = new StackPanel { Margin = new(20, 0, 20, 16), MaxWidth = 1120, HorizontalAlignment = HorizontalAlignment.Stretch };
+        body.Children.Add(Text(title, true)); if (guidance.Length > 0) body.Children.Add(Text(guidance));
+        var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
+        var page = new ObjectPage(category, title, body, scroll); pages.Add(page); navigators[category].Items.Add(page); return page;
+    }
+    ParameterFormPanel Form(ObjectPage page, string? title = null)
+    {
+        if (title is not null) page.Body.Children.Add(Text(title, true));
+        var form = new ParameterFormPanel(); page.Body.Children.Add(form); return form;
+    }
+    void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
+    {
+        var field = new StackPanel { Margin = new(0, 2, 16, 8) };
+        var caption = Text(label); caption.Foreground = Brush("#263B50"); caption.FontSize = 15;
+        field.Children.Add(caption); field.Children.Add(control);
+        AutomationProperties.SetName(control, path); AutomationProperties.SetHelpText(control, help ?? label);
+        if (help is not null) field.Children.Add(Text(help));
+        var error = Text(""); error.Foreground = Brush("#B02D35"); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
+        form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
+    }
+    TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
+    {
+        var box = new TextBox { MinHeight = multiline ? 72 : 44, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, FontSize = 16 };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-        AutomationProperties.SetName(box, path); box.ToolTip = help ?? label; panel.Children.Add(box); locations[path] = (category, box);
-        if (help is not null) panel.Children.Add(Text(help));
+        Field(form, label, box, help, path, page); return box;
+    }
+    void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)
+    {
+        var choice = new ComboBox { ItemsSource = values, MinHeight = 44 };
+        choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+        Field(form, label, choice, help, path, page);
+    }
+    void Readonly(ObjectPage page, string label, string value)
+    {
+        var row = new DockPanel { Margin = new(0, 0, 0, 8), LastChildFill = true };
+        var caption = Text(label); caption.Margin = new(0, 10, 16, 0); DockPanel.SetDock(caption, Dock.Left); row.Children.Add(caption);
+        var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 36, BorderThickness = new(0), Background = Brushes.Transparent };
+        AutomationProperties.SetName(box, label); row.Children.Add(box); page.Body.Children.Add(row);
     }
     void Render()
     {
-        foreach (var subscription in subscriptions) subscription.Draft.PropertyChanged -= subscription.Handler; subscriptions.Clear();
-        var selected = categories.SelectedIndex; categories.Items.Clear(); locations.Clear(); errors.Children.Clear();
-        if (Model is not { } m) { errors.Children.Add(Text("正在读取完整配置与已安装描述；没有建立第二份配置。")); return; }
-        var system = Category("系统"); var business = Category("业务模块"); var drivers = Category("驱动"); var components = Category("组件");
-        system.Children.Add(Text("软件级参数", true)); system.Children.Add(Text("当前业务：" + m.ApplicationId + "。系统必需项均有软件默认值，缺配不阻止打开本编辑器。所有运行参数随完整修订保存，待受控重启。显示偏好仍按当前用户管理。"));
-        foreach (var f in new[] { ("工位外部编码（StationCode）", "StationCode", "软件默认取当前工作站标识；可独立修改，用于组件心跳，独立于取格口左右编码。旧账缺此字段时默认值只补入候选，明确保存后再应用"),
-            ("输入队列容量", "QueueCapacity", "1～4096；满时围栏拒收，需现场检查"), ("调用预算（ms）", "TimeoutMs", "100～30000；全局外呼预算"),
-            ("未清偿作业容量", "MaximumOperations", "1～100000；不是已完成包裹数"), ("常驻历史条数", "ResidentHistory", "1～10000；同库归档不释放磁盘"),
-            ("关键写入保留空间（MiB）", "MinimumFreeMiB", "1～1048576；不足时阻断新准入") }) Input(system, f.Item1, m.Policy, f.Item2, f.Item2, 0, f.Item3);
-        var backup = new CheckBox { Content = "启用受控计划备份", MinHeight = 36 }; backup.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(m.Policy.BackupEnabled)) { Source = m.Policy, Mode = BindingMode.TwoWay }); system.Children.Add(backup);
-        Input(system, "计划备份绝对目录", m.Policy, "BackupDirectory", "BackupDirectory", 0, "只在已暂停、维护授权有效且无外呼时执行；不自动删除原备份");
-        Input(system, "备份周期（分钟，15～10080）", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", 0);
-        Input(system, "备份容量上限（份，1～1000）", m.Policy, "BackupMaximumSets", "BackupMaximumSets", 0);
-        business.Children.Add(Text(m.ApplicationId + " 业务参数", true));
-        if (m.ApplicationId == "sportmaster")
+        var selected = categories.SelectedIndex;
+        var objects = navigators.Select(n => (n.SelectedItem as ObjectPage)?.Title).ToArray();
+        foreach (var action in unsubscribe) action(); unsubscribe.Clear();
+        categories.Items.Clear(); locations.Clear(); errors.Children.Clear(); pages.Clear(); navigators.Clear();
+        if (Model is not { } m) { errors.Children.Add(Text("正在读取完整配置与已安装描述…")); return; }
+        foreach (var name in new[] { "系统", "业务模块", "驱动", "组件" }) Category(name);
+        BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
+        foreach (var draft in m.Readers.Concat(m.Components))
         {
-            Input(business, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", 1, "整串匹配；单次25ms、总计100ms预算。旧配置未声明规则时保持严格单码兼容；新首配须填写规则，可暂存未完成输入。不自动生成生产规则，新规则仅影响新准入。", true);
-            var sample = new TextBox { AcceptsReturn = true, MinHeight = 96, MaxLength = 65536, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            AutomationProperties.SetName(sample, "条码筛选样例"); business.Children.Add(Text("本地候选样例（每行一个，同一次观察；不外呼、不保存）")); business.Children.Add(sample);
-            var result = Text("尚未测试"); var test = new Button { Content = "测试候选筛选", MinHeight = 40, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 4) };
-            test.Click += async (_, _) =>
-            {
-                var pattern = m.Policy.BarcodePattern; var raw = sample.Text; test.IsEnabled = false; result.Text = "正在执行有界本地测试…";
-                try
-                {
-                    var reply = await Task.Run(() => m.Preview(new(pattern), raw.Replace("\r", "").Split('\n')));
-                    result.Text = m.Policy.BarcodePattern != pattern || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" : reply.Outcome + " · " + reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches;
-                }
-                catch (Exception ex) { result.Text = "测试未完成：" + ex.Message + "；输入保留。"; }
-                finally { test.IsEnabled = true; }
-            };
-            business.Children.Add(test); business.Children.Add(result);
+            PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.Provider)) Render(); };
+            draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
         }
-        else
-        {
-            EnumChoice(business, "重量来源", m.Policy, nameof(m.Policy.WeightSource), Enum.GetValues<WeightSource>());
-            EnumChoice(business, "重量单位", m.Policy, nameof(m.Policy.Unit), Enum.GetValues<WeightUnit>());
-            Input(business, "重量精度（0～6）", m.Policy, "Precision", "Precision", 1);
-            Input(business, "配置重量（所选kg/g）", m.Policy, "ConfiguredWeight", "ConfiguredWeight", 1, "仅配置重量模式生效；不等于实测重量");
-            Input(business, "测量新鲜度（ms）", m.Policy, "MaximumAgeMs", "MaximumAgeMs", 1);
-            Input(business, "本件等待期限（ms）", m.Policy, "WaitTimeoutMs", "WaitTimeoutMs", 1);
-            EnumChoice(business, "重量有效性时机", m.Policy, nameof(m.Policy.Validity), Enum.GetValues<WeightValidity>());
-            if (m.Components.Any(x => x.Kind == "camera"))
-            {
-                EnumChoice(business, "图像上传时机", m.Policy, nameof(m.Policy.UploadStrategy), Enum.GetValues<UploadStrategy>());
-                Input(business, "单件图像最大字节", m.Policy, "ImageBytes", "ImageBytes", 1);
-                Input(business, "图像缓存总字节", m.Policy, "TotalBytes", "TotalBytes", 1);
-                Input(business, "图像待处理件数", m.Policy, "MaximumPending", "MaximumPending", 1);
-            }
-        }
-        drivers.Children.Add(Text("Application 声明的读码实例", true)); drivers.Children.Add(Text("Sportmaster 固定左右两个实例；可共用同一驱动包，连接和参数独立。身份与数量只读，参数只来自精确安装描述。"));
-        foreach (var reader in m.Readers) Capability(drivers, reader, 2);
-        components.Children.Add(Text("业务组件", true)); components.Children.Add(Text("Sportmaster 左右共用一个逻辑RCS连接。quantity、指定格口、左右取格口编码及心跳间隔均归组件。"));
-        foreach (var component in m.Components.Where(x => x.Bound || x.Enabled)) Capability(components, component, 3);
-        categories.SelectedIndex = Math.Clamp(selected, 0, 3); ShowIssues(this, EventArgs.Empty);
-    }
-    static void EnumChoice(Panel panel, string label, object source, string property, Array values)
-    {
-        panel.Children.Add(Text(label)); var choice = new ComboBox { ItemsSource = values, MinHeight = 36 };
-        choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-        AutomationProperties.SetName(choice, property); panel.Children.Add(choice);
-    }
-    void Capability(Panel panel, CapabilityDraft draft, int category)
-    {
-        var section = new StackPanel(); panel.Children.Add(section);
-        void RenderSection() { section.Children.Clear(); CapabilityFields(section, draft, category); }
-        System.ComponentModel.PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.Provider)) RenderSection(); };
-        draft.PropertyChanged += handler; subscriptions.Add((draft, handler)); RenderSection();
-    }
-    sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
-    void CapabilityFields(Panel panel, CapabilityDraft draft, int category)
-    {
-        panel.Children.Add(Text((draft.Kind == "observation" ? draft.Role + " · 读码实例 " : "组件实例 ") + draft.InstanceId, true));
-        panel.Children.Add(Text("稳定身份/目标：" + draft.Target + "\n" + draft.ProviderIdentity));
-        if (draft.Role is "operator-login" or "default-scale")
-        {
-            var optional = new CheckBox { Content = "绑定此可选能力（仍需业务策略适用）", MinHeight = 36 };
-            optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); panel.Children.Add(optional);
-        }
-        var choices = draft.Providers.Select(p => new ProviderChoice(p.Implementation + " @ " + p.Version + " · " + p.Module, p)).ToArray();
-        var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 36 };
-        AutomationProperties.SetName(providers, draft.InstanceId + "/Provider"); providers.ToolTip = "只选择已安装的精确版本；身份/数量/用途保持Application声明";
-        providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
-        panel.Children.Add(providers);
-        if (draft.Provider is null) { panel.Children.Add(Text("缺少精确依赖：恢复原包或在高级维护中受控选择兼容版本。当前输入和绑定保留。")); return; }
-        if (draft.Kind != "observation") Input(panel, "组件连接目标", draft, "Target", draft.InstanceId + "/Target", category, draft.TargetBoundary);
-        if (draft.Parameters.Count == 0) panel.Children.Add(Text("此版本没有可配置参数。"));
-        foreach (var group in draft.Parameters.GroupBy(p => p.Field.Group))
-        {
-            panel.Children.Add(Text(group.Key, true));
-            foreach (var parameter in group)
-            {
-                var path = draft.InstanceId + "/" + parameter.Field.Key;
-                if (parameter.Field.Type is "choice" or "boolean")
-                {
-                    panel.Children.Add(Text(parameter.EditorLabel + (parameter.Field.Required ? " *" : "")));
-                    var choice = new ComboBox { ItemsSource = parameter.Field.Type == "boolean" ? new[] { "true", "false" } : parameter.Field.Choices, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
-                    choice.SetBinding(ComboBox.SelectedItemProperty, new Binding("Value") { Source = parameter, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-                    AutomationProperties.SetName(choice, path); panel.Children.Add(choice); locations[path] = (category, choice); panel.Children.Add(Text(parameter.EditorHelp));
-                }
-                else
-                {
-                    Input(panel, parameter.EditorLabel + (parameter.Field.Required ? " *" : "") + " " + parameter.Field.Unit, parameter, "Value", path, category, parameter.EditorHelp + " · 保存后待重启", parameter.IsList);
-                    if (locations[path].Control is TextBox box) { box.MaxLength = parameter.EditorMaximumLength; box.IsReadOnly = parameter.Field.ReadOnly; }
-                }
-            }
-        }
+        for (var i = 0; i < navigators.Count; i++) navigators[i].SelectedItem = pages.FirstOrDefault(p => p.Category == i && objects.ElementAtOrDefault(i) == p.Title) ?? pages.FirstOrDefault(p => p.Category == i);
+        categories.SelectedIndex = Math.Clamp(selected, 0, 3); ShowCategory(categoryScope); ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)
     {
-        errors.Children.Clear(); foreach (var item in locations.Values) item.Control.ClearValue(Control.BorderBrushProperty);
+        errors.Children.Clear();
+        foreach (var item in locations.Values.Distinct()) { item.Control.ClearValue(Control.BorderBrushProperty); item.Error.Text = ""; item.Error.Visibility = Visibility.Collapsed; }
         foreach (var issue in Model?.Issues ?? [])
         {
-            var button = new Button { Content = new TextBlock { Text = issue.Category + " / " + issue.Path + "：" + issue.Message, TextWrapping = TextWrapping.Wrap },
-                HorizontalContentAlignment = HorizontalAlignment.Left, Foreground = Brushes.Firebrick, Margin = new(4), MinHeight = 36 };
-            if (locations.TryGetValue(issue.Path, out var location))
+            var found = locations.TryGetValue(issue.Path, out var location);
+            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  → 定位" : "（完整候选检查，请查看维护详情）"), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(4), MinHeight = 44 };
+            if (found)
             {
-                location.Control.SetValue(Control.BorderBrushProperty, Brushes.Firebrick);
-                button.Click += (_, _) => { categories.SelectedIndex = location.Category; location.Control.BringIntoView(); location.Control.Focus(); };
+                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += issue.Message + "\n"; location.Error.Visibility = Visibility.Visible;
+                button.Click += (_, _) => NavigateTo(issue.Path);
             }
             errors.Children.Add(button);
         }
+    }
+}
+
+// Wide forms have two columns; compact forms retain readable controls and scroll.
+public sealed class ParameterFormPanel : Panel
+{
+    static int Columns(double width) => double.IsFinite(width) && width >= 720 ? 2 : 1;
+    protected override Size MeasureOverride(Size available)
+    {
+        var columns = Columns(available.Width); var width = double.IsFinite(available.Width) ? available.Width : 640; double height = 0;
+        for (var i = 0; i < InternalChildren.Count; i += columns)
+        {
+            double row = 0;
+            for (var j = i; j < Math.Min(i + columns, InternalChildren.Count); j++) { InternalChildren[j].Measure(new(width / columns, double.PositiveInfinity)); row = Math.Max(row, InternalChildren[j].DesiredSize.Height); }
+            height += row;
+        }
+        return new(width, height);
+    }
+    protected override Size ArrangeOverride(Size final)
+    {
+        var columns = Columns(final.Width); double y = 0;
+        for (var i = 0; i < InternalChildren.Count; i += columns)
+        {
+            var count = Math.Min(columns, InternalChildren.Count - i); double height = 0;
+            for (var j = 0; j < count; j++) height = Math.Max(height, InternalChildren[i + j].DesiredSize.Height);
+            for (var j = 0; j < count; j++) InternalChildren[i + j].Arrange(new Rect(j * final.Width / columns, y, final.Width / columns, height));
+            y += height;
+        }
+        return final;
     }
 }

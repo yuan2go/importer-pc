@@ -1,0 +1,4 @@
+C:\scd-evidence\wpf\Program.cs(33,61): error CS0103: The name 'VerifyTaskRedesign' does not exist in the current context [C:\scd-evidence\wpf\NativeMedia.csproj]
+C:\scd-evidence\wpf\Program.cs(34,71): error CS0103: The name 'VerifyParameterRefactor' does not exist in the current context [C:\scd-evidence\wpf\NativeMedia.csproj]
+
+The build failed. Fix the build errors and run again.

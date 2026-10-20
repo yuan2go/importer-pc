@@ -34,12 +34,12 @@ static partial class Program
         window.Show(); await Task.Delay(650); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel;
         Click(window, "站位与设备诊断"); await Task.Delay(100);
-        var diagnosticWindow = window.OwnedWindows.Cast<Window>().Single(x => x.Title == "站位与设备诊断 · 只读");
-        var diagnosticFields = Descendants(diagnosticWindow).OfType<TextBox>().ToArray();
-        Check(diagnosticFields.Length == 10 && diagnosticFields.All(x => x.IsReadOnly &&
+        var diagnosticPage = (FrameworkElement)((ContentControl)window.FindName("PageHost")).Content;
+        var diagnosticFields = Descendants(diagnosticPage).OfType<TextBox>().ToArray();
+        Check(vm.SelectedPage == "diagnostics" && diagnosticFields.Length == 24 && diagnosticFields.All(x => x.IsReadOnly &&
             x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Mode == System.Windows.Data.BindingMode.OneWay) &&
-            diagnosticFields.Any(x => x.Text == vm.Station), "native read-only diagnostics open and bind current facts without writing read-only properties");
-        diagnosticWindow.Close();
+            diagnosticFields.Any(x => x.Text == vm.Station), "native read-only diagnostics open and bind both positions and shared facts without writing read-only properties");
+        Click(window, "工作台");
         if (!baseline)
         {
             await vm.PauseAsync();
@@ -53,16 +53,19 @@ static partial class Program
             var type = desktopAssembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
             var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
-            for (var i = 0; i < 100 && Descendants(first).OfType<TabItem>().Count() < 5; i++) await Task.Delay(30);
-            for (var i = 0; i < 100 && !Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "读取所选配置") && b.IsEnabled); i++) await Task.Delay(30);
+            var busy = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            for (var i = 0; i < 100 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(30);
             first.UpdateLayout();
-            Check(Descendants(first).OfType<TabItem>().Count() == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")), "frozen desktop first configuration exposes task steps and existing guarded save");
+            var startupTasks = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            Check(!(bool)busy.GetValue(first)! && startupTasks.Items.Count == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")), "frozen desktop first configuration exposes five task steps and existing guarded save");
             Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "offline first configuration never starts the Application or creates a business database");
             Capture("first-configuration", first);
-            var policy = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "3 运行策略")); policy.IsSelected = true; first.UpdateLayout();
-            var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetName(b).StartsWith("调用超时")); timeout.Text = "1601";
+            var policy = startupTasks.Items.Cast<TabItem>().Single(t => Equals(t.Header, "1 业务模块")); policy.IsSelected = true; first.UpdateLayout();
+            Check(Descendants(first).OfType<ParameterSettingsControl>().Single().NavigateTo("TimeoutMs"), "first-configuration business budget locates the actual shared timeout field");
+            first.UpdateLayout();
+            var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "TimeoutMs"); timeout.Text = "1601";
             Check(timeout.IsEnabled && timeout.Focus(), "first-configuration native form becomes enabled and accepts keyboard focus after the read completes");
-            var review = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "4 检查与启动")); review.IsSelected = true; first.UpdateLayout(); policy.IsSelected = true; first.UpdateLayout();
+            var review = startupTasks.Items.Cast<TabItem>().Single(t => Equals(t.Header, "5 检查与完成")); review.IsSelected = true; first.UpdateLayout(); policy.IsSelected = true; first.UpdateLayout();
             Check(timeout.Text == "1601" && Descendants(first).OfType<TextBox>().Contains(timeout), "first-configuration step navigation retains the same native unsaved form controls");
             Capture("first-configuration-policy", first);
             type.GetProperty("ConfirmDiscardInputs", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(first, new Func<bool>(() => false)); first.Close();
@@ -121,7 +124,7 @@ static partial class Program
             Check(vm.Left.Operation?.Wcs?.Request.Id == originalRequest && vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.Id == rightOwner && factory.Resolves == 4 && factory.Queries == 1, "query reconciles the exact original request once without another send or replacing the right owner");
             var positions = Descendants(window).OfType<SupplyStationPosition>().ToArray();
             var left = positions.Single(p => ReferenceEquals(p.DataContext, vm.Left));
-            var details = Descendants(left).OfType<Expander>().First(); details.IsExpanded = true;
+            var details = Descendants(left).OfType<Expander>().Single(e => Equals(e.Header, "原作业与恢复详情")); details.IsExpanded = true;
             var code = (TextBox)left.FindName("CurrentBarcode");
             window.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Input);
             Check(code.Focus() && code.IsKeyboardFocused, "active native window grants initial keyboard focus before the refresh retention experiment");
@@ -215,8 +218,8 @@ static partial class Program
             support.Close();
         }
         var original = (await runtime.SnapshotAsync()).Operations;
-        foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "未识别到条码"),
-            (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "校验未通过"), (Codes: new[] { "A", "B" }, Status: "识别到多个条码") })
+        foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "本次识别失败 · 未取得包裹号"),
+            (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "本次识别未通过校验"), (Codes: new[] { "A", "B" }, Status: "本次识别失败 · 多个候选码") })
         {
             probe.Project = s => s with { Inputs = s.Inputs!.Select(input => input with {
                 Outcome = ParcelInputOutcome.Rejected, Reason = "SYNTHETIC InvalidCode or InvalidAdmissionId",

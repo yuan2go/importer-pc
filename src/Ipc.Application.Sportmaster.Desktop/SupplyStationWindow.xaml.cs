@@ -13,6 +13,7 @@ public partial class SupplyStationWindow : Window
     readonly Grid work = new();
     readonly HistoryPage history = new();
     readonly MaintenancePage maintenance = new();
+    FrameworkElement? diagnostics;
     readonly Func<Task>? stopOwner;
     readonly SupplyStationWindow root;
     readonly HashSet<SupplyStationWindow> windows;
@@ -26,6 +27,9 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
+        // Cached pages retain their binding source while detached from PageHost.
+        // Inherited DataContext would transiently clear/rebuild the draft controls.
+        maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
@@ -64,12 +68,12 @@ public partial class SupplyStationWindow : Window
     void SetPage(string page)
     {
         ViewModel.SelectedPage = page;
-        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, _ => work };
+        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     void Support_Click(object sender, RoutedEventArgs e) => new ProductSupportWindow(ViewModel.Application, ViewModel.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
-    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "设备与维护"); }
+    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "参数配置"); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
         if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();
@@ -123,8 +127,10 @@ public partial class SupplyStationWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
-            var dirty = affected.Count(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance));
-            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? ConfigurationCloseGuard.ConfirmDiscard(this, dirty)))
+            var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
+            var dirty = dirtyWindows.Length;
+            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty,
+                dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, "关闭")))
             {
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;

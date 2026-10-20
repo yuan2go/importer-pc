@@ -22,14 +22,50 @@ public partial class SupplyStationWindow
         new Window { Owner = this, DataContext = ViewModel, Title = "操作员身份", Width = 520, Height = 400, WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = body }.Show();
     }
     void Diagnostics_Click(object sender, RoutedEventArgs e)
+        => SetPage("diagnostics");
+    FrameworkElement CreateDiagnostics()
     {
         var body = new StackPanel { Margin = new(20) };
+        body.Children.Add(new TextBlock { Text = "诊断与恢复", FontSize = 24, FontWeight = FontWeights.SemiBold });
+        body.Children.Add(new TextBlock { Text = "客户端生命周期、心跳 HTTP 与业务回执分别核对。当前 RCS 协议未提供权威结果查询；重连不应用待生效配置，也不重发未知原请求。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 16) });
+        var positions = new Grid(); positions.ColumnDefinitions.Add(new()); positions.ColumnDefinitions.Add(new());
+        foreach (var (position, index) in new[] { (ViewModel.Left, 0), (ViewModel.Right, 1) })
+        {
+            var panel = new StackPanel { DataContext = position, Margin = new(0, 0, 16, 16) };
+            var title = new TextBlock { FontSize = 20, FontWeight = FontWeights.SemiBold }; title.SetBinding(TextBlock.TextProperty, new Binding("Heading")); panel.Children.Add(title);
+            foreach (var property in new[] { "ReaderId", "DeviceStatus", "Status", "BlockingReasons", "OriginalResponsibility", "OperationId", "RequestId" })
+            {
+                var text = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent };
+                text.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); panel.Children.Add(text);
+            }
+            var edit = new Button { Content = "查看本位驱动参数", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            edit.Click += async (_, _) =>
+            {
+                SetPage("maintenance");
+                await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取本位参数");
+                var draft = ViewModel.ReaderDrafts.FirstOrDefault(r => r.Original.DeviceId == position.ReaderId)?.Capability;
+                if (draft is not null) maintenance.NavigateToParameter(draft.InstanceId + "/Provider");
+                else ViewModel.Message = "本次候选未包含该设备身份；请核对原拓扑，未替换对象。";
+            };
+            panel.Children.Add(edit);
+            var original = new Button { Content = "查看本位原作业", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            original.SetBinding(IsEnabledProperty, new Binding("CanReconcile"));
+            original.Click += async (_, _) => { if (position.Operation is { } operation) await ShowDetailsAsync(operation); }; panel.Children.Add(original);
+            Grid.SetColumn(panel, index); positions.Children.Add(panel);
+        }
+        body.Children.Add(positions);
+        body.Children.Add(new TextBlock { Text = "共享服务与配置证据", FontSize = 20, FontWeight = FontWeights.SemiBold });
         foreach (var property in new[] { nameof(ViewModel.Station), nameof(ViewModel.TopologyStatus), nameof(ViewModel.Session), nameof(ViewModel.ConfigurationState), nameof(ViewModel.Health), nameof(ViewModel.CapacityState), nameof(ViewModel.BlockingReasons), nameof(ViewModel.AuxiliaryState), nameof(ViewModel.ReadStatus), nameof(ViewModel.Message) })
         {
             var text = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Margin = new(0, 0, 0, 12) };
             text.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); body.Children.Add(text);
         }
-        new Window { Owner = this, Title = "站位与设备诊断 · 只读", DataContext = ViewModel, Width = 760, Height = 560, MinWidth = 520, MinHeight = 360,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.Show();
+        var actions = new WrapPanel();
+        var reconnect = new Button { Content = "按当前运行配置受控重连", MinHeight = 44 }; reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)));
+        reconnect.Click += async (_, _) => await ViewModel.RunAsync(ViewModel.ReconnectAsync, "受控重连");
+        var maintenanceButton = new Button { Content = "维护与恢复操作", MinHeight = 44 };
+        maintenanceButton.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalMaintenance(); };
+        actions.Children.Add(reconnect); actions.Children.Add(maintenanceButton); body.Children.Add(actions);
+        return new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     }
 }

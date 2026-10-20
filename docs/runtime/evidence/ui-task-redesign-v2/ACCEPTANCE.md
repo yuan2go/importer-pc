@@ -1,0 +1,71 @@
+# UIR-00～06 · V2 实施与验收记录
+
+本轮完成软件实现范围、参数易用性续修与必要本机验证。真实设备、目标工控机和现场验收仍未执行。基准 main 为 `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，提交前再次 fetch 未变化、无其他开放 PR；原工作区 `codex/sportmaster-parameter-refactor` / `5fca596` 保持原状。
+
+## 固定源码与交付身份
+
+- 实施提交：`e21ec2c455bf31c88522593b48b4a1b1e8533a09`。
+- 最终生产源码：**`26bb7b9488b98cc0ce44ef6cf74df7c493153b0a`**，分支 `codex/sportmaster-v2-ui`；此后生产代码未变，证据、文档及 CI 冻结夹具衔接另行提交。
+- SM **1.6.0**，Application.Contracts **1.13.0**，RCS **1.3.0**；共享消费者 DirectPlc/WcsToPlc **1.4.3**，reference.parcel-capabilities 声明 **2.2.7**。Hikrobot **1.0.3** 不变。
+- 固定 Git 源导出的 win-x64 包：`sportmaster-v2-final-win.zip`，106388312 字节，SHA256 **`53ce2c5ca75e7a306e5450cdd29c63abb0a60cf30b78c463a2fd1226016d9e79`**。本地介质未上传 GitHub Release；不是已签名或现场批准的安装介质。
+- [BUILD-INFO](BUILD-INFO.json)、[构建日志](package-v2-final.log)、[实际 CLI 业务身份](business-identity-final.json)、[15 个生产 DLL 的字节身份及图片清单](../../../ui/sportmaster-v2-wpf-20261020/PROVENANCE.json)可以互相核对。构建日志仅将本机临时目录前缀替换为 `<LOCAL_TEMP>`，原日志留在本地。
+
+最终 WPF 验证进程从同源测试程序集运行，将上述固定包的 15 个生产 `Ipc.*.dll` 放入测试运行目录并逐一核对 SHA256。首配反射载入固定包的 `Ipc.Desktop.dll`；其余测试专用依赖不伪称发行组件。最终 32 张 PNG、Windows 输入记录和发布启动使用这套生产代码。
+
+## 本轮实际执行
+
+| 验证 | 结果及精确适用范围 |
+|---|---|
+| 受影响构建 | UiVerification、Sportmaster Desktop、DirectPlc Desktop、WcsToPlc Desktop、RCS、Application Verification 构建成功，0 警告/0 错误。最终固定源另由发行脚本锁定还原并发布成功；未重跑无关全仓测试 |
+| 本版原生 WPF 六任务 | **115 项 PASS**，[WINDOWS-WPF.log](WINDOWS-WPF.log)。最终发布 DLL，真实 HWND/Dispatcher，合成业务/端口；包含保存准备续修 |
+| 参数及原账风险 | [parameter-v2.log](parameter-v2.log) **35 项 PASS**。真实 Application/配置账结合合成端口；后写入 Rejected、异常丢回执、Unknown 原账核对、防重复提交、CAS、筛选、首配共模等。执行于开发树，之后该受测应用逻辑未再改变 |
+| RCS 协议和责任 | [rcs-v2.log](rcs-v2.log) **139 条 PASS 记录**（含完成标记）。合成 HTTP/响应、实际本地持久化；响应字符串/前导零/空值及非字符串拒绝、旧字节、独立位、原请求和数量号段恢复。不是客户 RCS 联调 |
+| 共享原生窗口 | [shared-window.log](shared-window.log) **231 条 PASS 记录**（含完成标记）。经典与供包台共享页、严格几何、焦点/原责任、停止/关闭/多窗生命周期；在独立保存准备窗口续修前执行。续修由最终 115 项覆盖，不把旧日志改标为最终二进制 |
+| 版本与发行文档 | `python -m unittest test_application_compatibility test_release_documents`：19 项通过；在 `scripts/` 运行。后续未改受测版本与发行文档机制，不重复此套件 |
+| 冻结介质页面续验 | [26 项 PASS](frozen-pages.log)、[结果与 DLL 身份](frozen-pages.json)。夹具 `5753ad7`、实际介质 `26bb7b9`；验证修正后的 CI 装配、五步首配和独立保存准备入口 |
+| 冻结介质视觉续验 | [119 项 PASS](frozen-visual.log)、[结果与 DLL 身份](frozen-visual.json)。夹具 `0e43d49`、实际介质 `26bb7b9`；原生诊断 OneWay、首配、焦点/选择、日期筛选、Unknown 原请求及完整最小视口矩阵 |
+| Windows 实际输入 | Windows 11 家庭中文版 **10.0.22631 x64 / 125%**，工作区 **1536×816 DIP**。鼠标打开参数/保存准备，键盘输入、Ctrl+F、Enter 定位和返回；具体步骤见 [INPUT-RECORD](../../../ui/sportmaster-v2-wpf-20261020/native/INPUT-RECORD.txt) |
+| 实际发布 EXE 启动 | [startup-smoke.json](startup-smoke.json)：独立空目录启动 `desktop/Ipc.Desktop.exe --maintenance`，缺包明确阻断业务；关闭维护回到恢复页，“停止并退出”关闭进程。未保存配置、未启动设备，隔离目录没有业务数据库 |
+| 图片与交接 | 32 张 WPF PNG、8 张 Windows 原生 JPEG；[图集](../../../ui/sportmaster-v2-wpf-20261020/README.md)。[151 项迁移](../../ui-task-redesign-v2-migration.md) = 54 个 V2 字段 + 58 个原字段/状态 + 39 个操作，保留原编号 |
+
+## 六任务与异常路径
+
+| 任务 | 本版验证与继承关系 |
+|---|---|
+| 左右连续供包 | 左处理/右成功、拒绝的新观察、Unknown、过期均检查整组 taskId/skuId/waveNo/quantity/chute 与原接受请求关联；旧责任单独保留。连续责任、防重与原号段由 RCS 风险验证补充 |
+| 修改指定相机 | 右实例定位和实际描述表单，心跳 bcr-code 与取格口 bcrCode 独立；共享站码冲突保留两原值并要求显式统一；不会以画面切换重建运行实例 |
+| 错误定位 | 协议目标、号段溢出、重复心跳身份和真实元数据错误定位；禁用指定格口不提交旧值但保留原始输入。跨分类搜索回到同一控件，空搜索有返回路径 |
+| 保存后判定生效 | 沿原完整候选/原账状态机，参数风险回归覆盖保存后失败、Unknown、CAS、防重与新旧编辑指纹；界面区分待重启/运行失败/失效。独立保存准备窗口只移动原认证与原因控件，无第二候选账，操作处理中不能关闭丢失责任 |
+| WCS/RCS 异常恢复 | 原请求历史、受影响位和精确驱动定位；诊断说明 RCS Query=false，不虚构查询或重发；原 HTTP 心跳事实与业务接受分开。该协议限制保持可见，不以“测试成功”伪装连接能力 |
+| 离开未保存 | 切页保留同一编辑器/选择/无效文本；继续、加密保留、放弃三路径，失败不得关闭，多窗草稿不合并；本机搜索及保存准备往返再次确认精确输入保留 |
+
+首配使用同一个完整候选模型，五步原生界面逐项载入；浏览和导航未建业务数据库、未启动设备。模板在本地副本预览，同版适用性失败保留整个原稿，站点/IP/秘密/编号/备份路径不进入模板。继承的安装 UAC、完整恢复集、Seed/Legacy 确认和部分启动责任机制未重新开发；本轮不把原历史安装/升级测试计为新 PASS。
+
+## 六项商业 UI 质量
+
+| 要求 | 本版证据 |
+|---|---|
+| 重点清楚 | 双位三组信息；当前任务失效与原责任并列、无旧格口冒充本包；作业状态图及当前任务关联断言 |
+| 组织一致 | 四导航、四分类对象及首配共模；系统/业务/驱动中已迁字段在组件只读引用；逐项迁移表 |
+| 密度合适 | 常用字段优先，安装身份折叠；移除重复标题，长对象名称换行，保存准备独立窗口；参数/业务/驱动/RCS 图 |
+| 细节完整 | 字段错误、空搜索、缺包、禁用原因、原保存结果、待重启、保存失败及三路径关闭；对应原生检查与图 |
+| 操作连贯 | 刷新不重建表单，跨页/搜索/保存准备留稿；慢操作仍可查看、滚动、编辑，提交保持串行；115 项及本机键鼠记录 |
+| 真实显示可靠 | 精确 1600×900、1366.4×768、1440×768、1100×600、911.2×512、800×420 DIP；不足空间保护/恢复人工确认保留；[客户区矩阵](CLIENT-MATRIX.log)。PNG 是 WPF backing，125% 本机输入另列 |
+
+开发过程中发现并实际修复了控件脱离视觉树导致重建、搜索结果/长对象对齐、保存准备挤压视口、原生捕获偏移以及测试关闭等待竞态。保留原最小视口与原责任断言，仅将无依据的固定短等待改为有界状态等待；旧文案断言随现行标签调整。开发失败输出保留在本机 `.artifacts`，最终结果不覆盖历史报告。
+
+## PR CI 衔接记录
+
+[PR #74](https://github.com/yuan2go/importer-pc/pull/74) 的[初次 CI](https://github.com/yuan2go/importer-pc/actions/runs/39438762411)在合并候选 `77a5b94896dfa0d7a6eb2fd1d46263a4855298f2` 的 WPF 夹具编译失败：冻结脚本手写源文件列表漏掉 `VerifyParameterRefactor` 与 `VerifyTaskRedesign` 的实现；核心业务和移除内核已通过。该次失败没有改写为成功，见 [原失败日志的可读副本](initial-ci-wpf.log)，仅规范化 UTF-8 BOM/换行。原日志 SHA256 `a36600f341b86910f9ccacbb635243cf168d0a5b7774f596faabb98d43052e62`；原 artifact ZIP SHA256 `18eaaac1a7f19a649cfa5c7b1ceb1cb93e625fa47cb366c5a9b26ef6551bae11`。
+
+脚本现在枚举同一固定 Git 提交的完整顶层 WPF 测试源文件。旧首配/诊断/草稿入口与识别文案断言已迁到现行五步、只读诊断页及保存准备窗口；原完整配置、DPAPI 原字节、目录守卫、关闭、焦点、选择与最小视口断言全部保留。上述 26/119 项来自修正夹具对原固定介质的实际执行，`FixtureMatchesMedium=false` 如实登记，因为仅测试代码晚于生产代码。PR 后续 CI 会重新冻结其精确合并候选，最终远端结果以 PR 检查页为准，不把本机结果改标为 GitHub runner 验证。
+
+## 未验及部署条件
+
+- **NOT_RUN**：Win10 22H2 Home/Pro、其他 CPU/DPI/触摸、目标工控机；本机工作区与 backing 不代表目标物理屏幕。
+- **NOT_RUN**：真实 Hikrobot SDK/设备、trigger 与实体关系、生产 RCS、现场物理流程、现场备份路径权限。软件暂停不是安全急停。
+- **未交付现场签名扩展闭包**：版本与兼容声明已同步；消费新公共契约的扩展须按精确版本重新构建、签名和核验。不得改旧签名包版本号后投入生产；Production 缺必需能力仍拒绝业务。
+- **未重复安装/升级测试**：安装实现继承，最终包只做发布启动及隔离维护冒烟；原单窗口安装 58 项、原升级 41 项各守历史 SourceCommit。
+- 设计原型 V1 48 图 / V2 67 图是已读的设计资料；本版新增的 32 张是 WPF 合成渲染。D/RV 历史状态、未获许可客户原稿及原发布资产不倒写、不补造批准。
+
+运行与部署入口见 [实施说明](../../ui-task-redesign-01.md)。最终证据文档在源码冻结后提交，因此包内 `SPORTMASTER-V2.md` 对应固定源时点；本仓库本页及图集承载后补的实际验证结果。

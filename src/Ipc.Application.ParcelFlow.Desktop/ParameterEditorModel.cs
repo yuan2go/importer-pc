@@ -7,10 +7,12 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed record ParameterIssue(string Category, string Path, string Message);
 // An editor over the existing complete draft, never a separately persisted configuration.
 public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string applicationId,
-    CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview)
+    CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, string stationId = "", ParcelConfigurationLocations? locations = null)
 {
     public ConfigurationPolicyDraft Policy { get; } = policy;
     public string ApplicationId { get; } = applicationId;
+    public string StationId { get; } = stationId;
+    public ParcelConfigurationLocations? Locations { get; } = locations;
     public CapabilityDraft[] Readers { get; } = readers;
     public CapabilityDraft[] Components { get; } = components;
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
@@ -24,18 +26,19 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         {
             var matching = Readers.Concat(Components).SelectMany(d => d.Parameters.Select(p => (Draft: d, Field: p.Field))).Where(x => message.Contains(x.Field.Key, StringComparison.Ordinal)).ToArray();
             if (matching.Length == 0) Issues.Add(new("完整候选", "", message));
-            else foreach (var item in matching) Issues.Add(new(item.Draft.Kind == "observation" ? "驱动" : "组件", item.Draft.InstanceId + "/" + item.Field.Key, message));
+            else foreach (var item in matching) Issues.Add(new(ParameterOwnership.CategoryName(ParameterOwnership.Category(item.Draft, item.Field.Key)), item.Draft.InstanceId + "/" + item.Field.Key, message));
         }
         ValidationChanged?.Invoke(this, EventArgs.Empty);
     }
-    public bool ValidateFields()
+    public bool ValidateFields(int? category = null)
     {
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
-        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue("系统", name, ex.Message); } }
+        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" ? "业务模块" : "系统", name, ex.Message); } }
         Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000);
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
+        Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
@@ -53,13 +56,32 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             catch (Exception ex) when (ex is ArgumentException or NotSupportedException or System.IO.PathTooLongException)
             { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
         }
-        foreach (var (draft, category) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))
+        foreach (var (draft, fieldCategory) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))
         {
-            if (draft.Provider is null) { Issue(category, draft.InstanceId, draft.ProviderIdentity); continue; }
-            var values = draft.Parameters.Where(p => p.Value.Length > 0).ToDictionary(p => p.Field.Key, p => p.Value);
+            if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
+            var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
-                Issue(category, draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
+                Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
+            if (ParameterOwnership.StationConflict(draft))
+                Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
+            if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
+                Issue("业务模块", draft.InstanceId + "/chute-code", "启用指定格口时须填写格口编码。");
+            if (ParameterOwnership.IsRcs(draft))
+            {
+                if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
+                    endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
+                    Issue("组件", draft.InstanceId + "/Target", "RCS目标须为 HTTP(S) /rcs/sorter/api，不能含凭据、查询串或片段。");
+                if (long.TryParse(values.GetValueOrDefault("request-id-base"), out var start) && long.TryParse(values.GetValueOrDefault("request-id-count"), out var count) &&
+                    (start < 0 || count < 1 || start > long.MaxValue - count))
+                    Issue("组件", draft.InstanceId + "/request-id-count", "请求编号起点与数量合计超出协议整数范围。");
+            }
         }
+        if (Components.Any(c => c.Bound && ParameterOwnership.IsRcs(c)))
+            foreach (var duplicate in Readers.Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
+                .Where(x => !string.IsNullOrWhiteSpace(x.Code)).GroupBy(x => x.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
+                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳 bcrCode 必须独立，不能重复。");
+        if (category is not null)
+            foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
         ValidationChanged?.Invoke(this, EventArgs.Empty); return Issues.Count == 0;
     }
 }

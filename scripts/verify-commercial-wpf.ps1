@@ -23,10 +23,13 @@ $refs=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll')
 $refs+=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll')
 $refs+=@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Desktop.dll'))
 $xml=($refs | Sort-Object FullName -Unique | ForEach-Object {'<Reference Include="'+$_.BaseName+'"><HintPath>'+[Security.SecurityElement]::Escape($_.FullName)+'</HintPath><Private>true</Private></Reference>'}) -join "`n"
-$sources=@('Program.cs','UxCommercialClosure.cs','CommercialPages.cs','VisualProductization.cs')
-& git -C $repo cat-file -e ($fixtureSource+':tests/Ipc.Desktop.UiVerification/AuditPerformance.cs') 2>$null
-$hasPerformance=$LASTEXITCODE -eq 0
-if($hasPerformance){$sources+='AuditPerformance.cs'}
+$sourcePaths=@(& git -C $repo ls-tree -r --name-only $fixtureSource -- tests/Ipc.Desktop.UiVerification)
+if($LASTEXITCODE -ne 0){throw 'Frozen native fixture tree is unavailable'}
+# Program dispatch and its partial implementations must come from one complete
+# pinned fixture. A hand-maintained subset omitted PARAM-01 and the V2 journeys.
+$sources=@($sourcePaths | Where-Object { $_ -match '^tests/Ipc.Desktop.UiVerification/[^/]+\.cs$' } | ForEach-Object { [IO.Path]::GetFileName($_) })
+if($sources -notcontains 'Program.cs'){throw 'Frozen native fixture has no entry point'}
+$hasPerformance=$sources -contains 'AuditPerformance.cs'
 if($AuditPerformance -and -not $hasPerformance){throw 'This frozen source has no audit performance fixture'}
 foreach($source in $sources){
  $content=& git -C $repo show ($fixtureSource+':tests/Ipc.Desktop.UiVerification/'+$source)

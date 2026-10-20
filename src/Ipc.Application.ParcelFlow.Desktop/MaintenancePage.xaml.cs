@@ -2,6 +2,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
+using System.IO;
+using Microsoft.Win32;
+using Ipc.Application.Contracts;
+using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class MaintenancePage : UserControl
 {
@@ -9,6 +13,7 @@ public partial class MaintenancePage : UserControl
     public MaintenancePage()
     {
         InitializeComponent();
+        MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalMaintenance();
         DataContextChanged += (_, _) =>
         {
             SelectReader(null); SelectInstance(null);
@@ -16,6 +21,32 @@ public partial class MaintenancePage : UserControl
         };
         Loaded += (_, _) => SyncSelections();
 
+    }
+    void PrepareSave_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        // Move the existing controls, not a second draft. Protected authorization
+        // must not consume the editor viewport or reset its scroll/selection.
+        var content = (ScrollViewer)SavePreparation.Content;
+        SavePreparation.Content = null; content.MaxHeight = double.PositiveInfinity;
+        var root = new DockPanel { Margin = new(20), DataContext = vm };
+        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right };
+        var back = new Button { Content = "返回表单", MinHeight = 44 };
+        var save = new Button { Content = "保存修改（待重启）", Style = (Style)FindResource("Primary") };
+        save.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanConfigure))); save.Click += Save_Click;
+        actions.Children.Add(back); actions.Children.Add(save); DockPanel.SetDock(actions, Dock.Bottom); root.Children.Add(actions);
+        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
+        feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.Feedback)));
+        var feedbackScroll = new ScrollViewer { Content = feedback, MaxHeight = 100, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        DockPanel.SetDock(feedbackScroll, Dock.Top); root.Children.Add(feedbackScroll); root.Children.Add(content);
+        var dialog = new Window { Owner = Window.GetWindow(this), Title = "保存准备", Content = root,
+            Width = Math.Min(780, SystemParameters.WorkArea.Width - 32), Height = Math.Min(540, SystemParameters.WorkArea.Height - 32),
+            MinWidth = 480, MinHeight = 300, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        back.Click += (_, _) => dialog.Close();
+        dialog.Closing += (_, args) => { if (vm.Busy) { args.Cancel = true; vm.Message = "当前操作处理中，完成后可返回；输入保留。"; } };
+        dialog.Loaded += (_, _) => { if (vm.CanConfigure) ChangeReason.Focus(); else MaintenanceProof.Focus(); };
+        try { dialog.ShowDialog(); }
+        finally { root.Children.Remove(content); content.MaxHeight = 180; SavePreparation.Content = content; }
     }
     void SyncSelections()
     {
@@ -32,10 +63,73 @@ public partial class MaintenancePage : UserControl
         MainParameterEditor.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
         AdvancedToggle.Content = show ? "返回参数" : "高级维护…";
     }
+    public void ShowTechnicalMaintenance()
+    {
+        TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
+        AdvancedToggle.Content = "返回参数";
+    }
+    public bool NavigateToParameter(string path)
+    {
+        TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible; AdvancedToggle.Content = "维护与迁移…";
+        return MainParameterEditor.NavigateTo(path);
+    }
+    async void ReviewChanges_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm) return;
+        await vm.RunAsync(() =>
+        {
+            new Window { Owner = Window.GetWindow(this), Title = "跨对象修改摘要", Width = 760, Height = 620,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Content = new TextBox { Text = vm.ReviewConfigurationChanges(), IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(20) } }.ShowDialog();
+            return Task.CompletedTask;
+        }, "查看完整配置变更");
+    }
+    async void ExportTemplate_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm) return;
+        await vm.RunAsync(() =>
+        {
+            var template = vm.ExportSiteTemplate(); var picker = new SaveFileDialog { FileName = "site-template.json", Filter = "同版安全模板|*.json" };
+            if (picker.ShowDialog(Window.GetWindow(this)) == true)
+            {
+                using var file = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); file.Write(Wire.Encode(template));
+                vm.Message = "同版安全模板已导出；不含站点、设备地址、目标、秘密、编号或业务数据。";
+            }
+            return Task.CompletedTask;
+        }, "导出安全模板");
+    }
+    async void ImportTemplate_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm) return;
+        await vm.RunAsync(() =>
+        {
+            var picker = new OpenFileDialog { Filter = "同版安全模板|*.json" }; if (picker.ShowDialog(Window.GetWindow(this)) != true) return Task.CompletedTask;
+            if (new FileInfo(picker.FileName).Length > 4 * 1024 * 1024) throw new InvalidDataException("模板超出配额");
+            var preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(File.ReadAllText(picker.FileName)));
+            var dialog = new Window { Owner = Window.GetWindow(this), Title = "模板适用对象与变更预览", Width = 760, Height = 620, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+            var body = new DockPanel { Margin = new(20) }; var apply = new Button { Content = "应用到草稿", MinHeight = 44 };
+            DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => dialog.DialogResult = true; body.Children.Add(apply);
+            body.Children.Add(new TextBox { IsReadOnly = true, Text = preview.Description, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+            dialog.Content = body; if (dialog.ShowDialog() == true) vm.ApplySiteTemplate(preview);
+            return Task.CompletedTask;
+        }, "比较模板与当前草稿");
+    }
     async void InspectSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectLastSaveAsync, "核对原配置保存结果"); }
-    async void Load_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿"); }
+    async void Load_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (ConfigurationCloseGuard.HasUnsaved(vm, this) && !await ConfigurationCloseGuard.ReviewUnsavedAsync(Window.GetWindow(this), 1, vm.SaveIncompleteEditorAsync, "重新读取")) return;
+        await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿");
+    }
     async void SaveEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveIncompleteEditorAsync, "加密保存未完成设置"); }
-    async void ContinueEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueIncompleteEditorAsync, "继续未完成设置"); }
+    async void ContinueEditor_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        // Saving here would replace the very draft selected for continuation.
+        if (ConfigurationCloseGuard.HasUnsaved(vm, this) && !await ConfigurationCloseGuard.ReviewUnsavedAsync(Window.GetWindow(this), 1, null, "读取原草稿")) return;
+        await vm.RunAsync(vm.ContinueIncompleteEditorAsync, "继续未完成设置");
+    }
     async void ConfirmationLoad_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadConfigurationConfirmationAsync, "读取待确认原账"); }
     async void InspectRestore_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectRestoreAsync, "读取原机恢复交接"); }
     async void ConfirmRestore_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmRestoreAsync, "确认恢复核对，保持暂停"); }
@@ -79,31 +173,14 @@ public partial class MaintenancePage : UserControl
         if (ReferenceEquals(sender, selectedReader)) RenderParameters(selectedReader, ReaderParameterForm);
         if (ReferenceEquals(sender, selectedInstance)) RenderParameters(selectedInstance, ParameterForm);
     }
-    static void RenderParameters(CapabilityDraft? selected, StackPanel? form)
+    void RenderParameters(CapabilityDraft? selected, StackPanel? form)
     {
         if (form is null) return;
         form.Children.Clear();
-        if (selected is not null) form.Children.Add(new TextBlock { Text = selected.ProviderIdentity, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 4, 0, 8) });
-        foreach (var p in selected?.Parameters ?? [])
-        {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
-            row.Children.Add(new TextBlock { Text = p.EditorLabel + (p.Field.Required ? " *" : "") + " " + p.Field.Unit, Width = 270, VerticalAlignment = VerticalAlignment.Center });
-            Control input;
-            if (p.Field.Type is "choice" or "boolean")
-            {
-                var choice = new ComboBox { ItemsSource = p.Field.Type == "boolean" ? new[] { "true", "false" } : p.Field.Choices, Width = 310 };
-                choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(nameof(p.Value)) { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); input = choice;
-            }
-            else
-            {
-                var text = new TextBox { Width = 310, MaxLength = p.EditorMaximumLength, IsReadOnly = p.Field.ReadOnly,
-                    AcceptsReturn = p.IsList, TextWrapping = p.IsList ? TextWrapping.Wrap : TextWrapping.NoWrap,
-                    MinHeight = p.IsList ? 90 : 44, MaxHeight = p.IsList ? 180 : double.PositiveInfinity,
-                    VerticalScrollBarVisibility = p.IsList ? ScrollBarVisibility.Auto : ScrollBarVisibility.Hidden };
-                text.SetBinding(TextBox.TextProperty, new Binding(nameof(p.Value)) { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); input = text;
-            }
-            input.ToolTip = p.EditorHelp; input.IsEnabled = !p.Field.ReadOnly;
-            row.Children.Add(input); form.Children.Add(row);
-        }
+        if (selected is null) return;
+        form.Children.Add(new TextBlock { Text = selected.ProviderIdentity, TextWrapping = TextWrapping.Wrap });
+        var edit = new Button { Content = "前往此对象的统一参数", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        edit.Click += (_, _) => NavigateToParameter(selected.InstanceId + "/Provider");
+        form.Children.Add(edit);
     }
 }

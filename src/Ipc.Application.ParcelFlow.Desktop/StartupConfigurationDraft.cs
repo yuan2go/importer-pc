@@ -43,7 +43,7 @@ public sealed class StartupConfigurationDraft
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
-    public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview) => new(Policy, original.ApplicationId, Readers, Capabilities, preview);
+    public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, ParcelConfigurationLocations? locations = null) => new(Policy, original.ApplicationId, Readers, Capabilities, preview, original.StationId, locations);
     public ParcelConfiguration Build()
     {
         // Missing inventory remains visible and the exact binding is preserved for application validation.
@@ -116,6 +116,22 @@ public sealed class StartupConfigurationDraft
         var replacement = new StartupConfigurationDraft(original, catalog);
         replacement.Restore(Capture());
         replacement.Restore(state);
+        return replacement;
+    }
+    public StartupConfigurationDraft WithTemplate(StartupEditorState state)
+    {
+        var current = Capture();
+        // Provider identity is portable; live targets, identifiers and parameter values are not.
+        // Overlay these local values after selecting the template's exact installed providers.
+        var replacement = WithRestored(state);
+        foreach (var (before, after) in Readers.Concat(Capabilities).Zip(replacement.Readers.Concat(replacement.Capabilities)))
+        {
+            var supported = after.Parameters.Select(p => p.Field.Key).ToHashSet();
+            if (before.Parameters.Any(p => p.Value.Length > 0 && !supported.Contains(p.Field.Key)))
+                throw new InvalidOperationException("模板提供者无法保留 " + before.InstanceId + " 的本机参数；请先通过驱动/组件页面显式迁移，当前草稿不变。");
+        }
+        replacement.Restore(new(current.Values.Where(x => !x.Key.EndsWith(".provider", StringComparison.Ordinal) &&
+            !state.Values.ContainsKey(x.Key)).ToDictionary(x => x.Key, x => x.Value)));
         return replacement;
     }
 }

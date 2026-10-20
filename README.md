@@ -1,3 +1,5 @@
+> 最新并发组合：[任务对照、裁决与最终证据](docs/runtime/parallel-task-reconciliation-20261020-02.md)。Sportmaster 现场主入口为[单 EXE 人工安装](docs/runtime/single-exe-installer-01.md)；旧 ZIP、图集和报告保持各自原源码身份。
+
 
 # importer-pc
 

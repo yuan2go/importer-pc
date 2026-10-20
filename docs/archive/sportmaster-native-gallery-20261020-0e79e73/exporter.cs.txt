@@ -1,0 +1,117 @@
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Application.Sportmaster;
+using Ipc.Application.Sportmaster.Desktop;
+using Ipc.Platform;
+
+static class Program
+{
+    static readonly string output = "D:/projects/importer-pc/.artifacts/ui-pages-20261020";
+    static readonly string repository = "D:/w/sm-clear";
+    static readonly List<object> shots = [];
+    [STAThread]
+    static int Main()
+    {
+        var app = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
+        app.Startup += async (_, _) => {
+            try { await Export(); app.Shutdown(0); }
+            catch(Exception e) { File.WriteAllText(Path.Combine(output,"EXPORT-ERROR.txt"),e.ToString()); app.Shutdown(1); }
+        };
+        return app.Run();
+    }
+    static async Task Export()
+    {
+        var sandbox = Path.Combine(output,"capture-data-"+Wire.Id()); Directory.CreateDirectory(sandbox);
+        var config = Path.Combine(sandbox,"config"); Directory.CreateDirectory(config);
+        File.Copy(Path.Combine(repository,"config/sportmaster/business.json"),Path.Combine(config,"business.json"),true);
+        var launch = new BusinessLaunch(config,Path.Combine(sandbox,"data"),null,null);
+        await using var runtime = new ParcelRuntime(launch,new SportmasterFlow(),new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => {} };
+        await runtime.StartAsync(default);
+        var window = (SupplyStationWindow)Presentation.Create(runtime,null,"standard");
+        window.Width=1440; window.Height=820; window.Show(); await Task.Delay(600); await window.ViewModel.RefreshDisplayAsync();
+        var vm=window.ViewModel;
+        Capture("01-workstation-waiting","工作台 · 等待读码","工作台",window);
+        await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
+        for(var i=0;i<150 && (vm.Left.Operation?.State!=ParcelState.SlotResolved || vm.Right.Operation?.State!=ParcelState.SlotResolved);i++) { await vm.RefreshDisplayAsync(); await Task.Delay(30); }
+        Capture("02-workstation-normal","工作台 · 取得格口","工作台",window);
+        var left=Descendants(window).OfType<SupplyStationPosition>().First();
+        Descendants(left).OfType<Expander>().First().IsExpanded=true; window.UpdateLayout();
+        Capture("03-workstation-details","工作台 · 作业详情","工作台",window);
+        Descendants(left).OfType<Expander>().First().IsExpanded=false;
+        Click(window,"作业记录"); await Task.Delay(300); await vm.OpenHistoryAsync();
+        Capture("04-history","作业记录","作业记录",window);
+        var history=(HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
+        ((Expander)history.FindName("HistoryFilters")).IsExpanded=true; window.UpdateLayout();
+        Capture("05-history-filters","作业记录 · 筛选条件","作业记录",window);
+        Click(window,"设备与维护");
+        for(var i=0;i<300 && vm.Busy;i++) await Task.Delay(30);
+        await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync,"读取设备维护页面");
+        var maintenance=(MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+        var tabs=Descendants(maintenance).OfType<TabControl>().Single();
+        for(var i=0;i<tabs.Items.Count;i++) {
+            tabs.SelectedIndex=i; window.UpdateLayout(); await Task.Delay(150);
+            var tab=(TabItem)tabs.Items[i];
+            foreach(var scroll in Descendants(tab).OfType<ScrollViewer>()) scroll.ScrollToTop();
+            window.UpdateLayout();
+            Capture($"{10+i:00}-maintenance-{i+1}","设备与维护 · "+tab.Header,"设备与维护",window);
+        }
+        Click(window,"工作台");
+        Click(window,"辅助窗口"); await Task.Delay(400);
+        var auxiliary=window.OwnedWindows.OfType<SupplyStationWindow>().Single();
+        Capture("22-auxiliary","辅助工作台","诊断与辅助窗口",auxiliary); auxiliary.Close();
+        var support=new ProductSupportWindow(runtime,vm.Left.Operation?.Id) { Owner=window }; support.Show(); await Task.Delay(150);
+        var supportTabs=(TabControl)support.Content;
+        for(var i=0;i<supportTabs.Items.Count;i++) {
+            supportTabs.SelectedIndex=i; support.UpdateLayout(); await Task.Delay(100);
+            Capture($"{23+i:00}-support-{i+1}","帮助与支持 · "+((TabItem)supportTabs.Items[i]).Header,"帮助与支持",support);
+        }
+        support.Close();
+        var desktop=System.Reflection.Assembly.LoadFrom(Path.Combine(repository,".artifacts/sportmaster-clear-media/desktop/Ipc.Desktop.dll"));
+        var type=desktop.GetType("Ipc.Desktop.StartupRepairWindow",true)!;
+        var first=(Window)Activator.CreateInstance(type,[launch with { DataRoot=Path.Combine(sandbox,"offline-data") },null,true])!;
+        first.Show();
+        for(var i=0;i<200 && !Descendants(first).OfType<Button>().Any(x=>Equals(x.Content,"读取所选配置") && x.IsEnabled);i++) await Task.Delay(30);
+        var startupTabs=Descendants(first).OfType<TabControl>().Single(x=>x.Items.Count==5);
+        for(var i=0;i<startupTabs.Items.Count;i++) {
+            startupTabs.SelectedIndex=i; first.UpdateLayout(); await Task.Delay(120);
+            foreach(var scroll in Descendants((DependencyObject)startupTabs.Items[i]).OfType<ScrollViewer>())scroll.ScrollToTop();
+            first.UpdateLayout();
+            Capture($"{30+i:00}-first-configuration-{i+1}","首次工位配置 · "+((TabItem)startupTabs.Items[i]).Header,"首次工位配置",first);
+        }
+        first.Close();
+        window.ConfirmDiscardDrafts=_=>true; window.Close(); await Task.Delay(200);
+        File.WriteAllText(Path.Combine(output,"pages.json"),System.Text.Json.JsonSerializer.Serialize(new { SourceCommit="0e79e73bdb6d7a1702373963295b192a803f28e7", Kind="Native WPF rendering; synthetic identity and ports; local export", Images=shots },new System.Text.Json.JsonSerializerOptions { WriteIndented=true }));
+    }
+    static void Capture(string key,string title,string group,Window window)
+    {
+        window.UpdateLayout(); var dpi=VisualTreeHelper.GetDpi(window);
+        var rect=new Rect(new Size(window.ActualWidth,window.ActualHeight));
+        var background=new DrawingVisual();
+        using(var drawing=background.RenderOpen()) drawing.DrawRectangle(window.Background??Brushes.White,null,rect);
+        var bitmap=new RenderTargetBitmap((int)Math.Ceiling(rect.Width*dpi.DpiScaleX),(int)Math.Ceiling(rect.Height*dpi.DpiScaleY),dpi.PixelsPerInchX,dpi.PixelsPerInchY,PixelFormats.Pbgra32);
+        bitmap.Render(background); bitmap.Render(window);var png=new PngBitmapEncoder();png.Frames.Add(BitmapFrame.Create(bitmap));
+        var file="images/"+key+".png";using(var stream=File.Create(Path.Combine(output,file)))png.Save(stream);
+        shots.Add(new {File=file,Title=title,Group=group,Width=bitmap.PixelWidth,Height=bitmap.PixelHeight});
+    }
+    static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {
+        yield return root;
+        for(var i=0;i<VisualTreeHelper.GetChildrenCount(root);i++)
+            foreach(var child in Descendants(VisualTreeHelper.GetChild(root,i)))yield return child;
+    }
+    static void Click(DependencyObject root,string label)
+    {
+        var button=Descendants(root).OfType<Button>().SingleOrDefault(x=>Equals(x.Content,label));
+        if(button is not null) { button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));return; }
+        var menu=Descendants(root).OfType<MenuItem>().SelectMany(MenuItems).Single(x=>Equals(x.Header,label));
+        menu.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+    }
+    static IEnumerable<MenuItem> MenuItems(MenuItem item) { yield return item;foreach(var child in item.Items.OfType<MenuItem>())foreach(var nested in MenuItems(child))yield return nested; }
+}

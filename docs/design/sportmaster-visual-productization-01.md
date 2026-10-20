@@ -1,4 +1,6 @@
-# Sportmaster 本轮设计与实施基准
+# Sportmaster 视觉产品化原设计 · 历史来源
+
+> 当前工作台视觉以 [UI-BASELINE-02](sportmaster-ui-baseline-02.md) 与 [本次整合设计](parallel-task-reconciliation-20261020.md) 为准。下文超大格口及纵向布局保留为 PR58 原设计记录，退出现行实施指引。原字节见 [归档](../archive/pre-parallel-reconciliation-20261020/README.md)。
 
 任务 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01；开工 origin/main `f3059d499cd4dbc60b443f0a54cac939b2e5db2f`。本文件在页面实现前形成，统一本轮设计、实施与验证范围。
 

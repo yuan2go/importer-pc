@@ -1,9 +1,8 @@
-# 当前实施入口：Sportmaster 原生视觉产品化
+# 当前整合入口 · 2026-10-20
 
-最新 main 续核：[设计增量](design/sportmaster-visual-main-closure-01.md)与[同版原生结果/精确介质](runtime/sportmaster-visual-main-closure-01.md)。PR58整套界面及PR57发行整合已继承；修复记录/支持的非法日期被日历关闭恢复为旧条件，并把完整视觉旅程接入既有Windows PR门禁。历史介质、D/RV及NOT_RUN/BLOCKED分别保留。
+[本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。工作台视觉以 [UI-BASELINE-02](design/sportmaster-ui-baseline-02.md) 为准；继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改。
 
-[本轮工作包](work-packages/WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01.md) · [编码前基准与替代关系](design/sportmaster-visual-productization-01.md) · [运行及本轮证据](runtime/sportmaster-visual-productization-01.md)。Sportmaster新UI为本轮实现后的缺省；旧版本/旧候选策略和原始验证保持原身份。以下商业化、架构、安装和恢复规范仍有效，历史发行不代表本轮源码已发布。
-
+现行操作依次读取商业交付手册、架构22、配置/恢复和扩展指南。下列源任务设计/结果用于追踪，不再各自宣称本次当前任务；历史免测和旧介质不得代替最终组合验证。清理前原字节见 [归档](archive/pre-parallel-reconciliation-20261020/README.md)。
 
 # 统一资料与实施入口
 

@@ -1,0 +1,79 @@
+{
+  "file": "/workspace/scratch/69927969969a/deliverables/Sportmaster-Field-Mapping.html",
+  "sha256": "aa9a373530c58030b13de2f1ee34d3af3dea36c25f044c97d1e3107204b7c842",
+  "bytes": 457840,
+  "time": "2026-10-20T04:48:45.038Z",
+  "viewport": {
+    "width": 1366,
+    "height": 900
+  },
+  "checks": [
+    {
+      "pass": true,
+      "message": "默认字段分类完整58项"
+    },
+    {
+      "pass": true,
+      "message": "打印区完整包含97项且不受当前分类影响"
+    },
+    {
+      "pass": true,
+      "message": "1366px宽度无水平溢出",
+      "evidence": {
+        "viewport": 1366,
+        "scroll": 1366,
+        "body": 1366
+      }
+    },
+    {
+      "pass": true,
+      "message": "可用只出现于隐藏校验详情的“新旧绑定”查到结果"
+    },
+    {
+      "pass": true,
+      "message": "隐藏详情搜索定位P26旧版绑定"
+    },
+    {
+      "pass": true,
+      "message": "搜索匹配时自动展开完整详情"
+    },
+    {
+      "pass": true,
+      "message": "匹配详情实际显示且未丢失文字"
+    },
+    {
+      "pass": true,
+      "message": "切换到操作分类后完整显示39项"
+    },
+    {
+      "pass": true,
+      "message": "操作分类选中状态明确"
+    },
+    {
+      "pass": true,
+      "message": "操作完整行为说明可展开查阅"
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "payload": {
+    "fields": 58,
+    "actions": 39,
+    "fieldKeys": 11,
+    "actionKeys": 7
+  },
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "pageErrors": 0,
+    "externalRequests": 0
+  },
+  "visualReview": {
+    "inspectedScreenshots": [
+      "field-mapping-readable.png",
+      "field-mapping-search.png",
+      "field-mapping-actions.png"
+    ],
+    "result": "已实际逐张查看三张浏览器截图：中文清楚，长来源截图名称自然换行，表单事实与建议分开，搜索结果与选中分类明确；未见文字遮挡或水平溢出。"
+  }
+}

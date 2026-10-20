@@ -1,0 +1,51 @@
+{
+  "checks": [
+    {
+      "name": "图集独立图像可读",
+      "pass": true,
+      "detail": "3200 × 1800 PNG · 1600 × 900 逻辑尺寸"
+    },
+    {
+      "name": "图集搜索保留匹配项",
+      "pass": true,
+      "detail": "15 个匹配场景"
+    },
+    {
+      "name": "下一张实际切换",
+      "pass": true
+    },
+    {
+      "name": "最后一张紧凑PNG入口",
+      "pass": true
+    },
+    {
+      "name": "交接HTML没有横向溢出",
+      "pass": true
+    },
+    {
+      "name": "交接包含实际冻结版本",
+      "pass": true
+    },
+    {
+      "name": "源文件可重建45场景",
+      "pass": true
+    },
+    {
+      "name": "重建保留保存/运行区分",
+      "pass": true
+    },
+    {
+      "name": "文档与重建无JS错误",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "文档与重建无外部HTTP请求",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "scope": "离线交付文件与源重建检查；非实机验收"
+}

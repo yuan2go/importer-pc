@@ -1,0 +1,48 @@
+{
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "focused": "f-left-port",
+  "input": {
+    "top": 570.015625,
+    "bottom": 609.015625,
+    "left": 854.5,
+    "right": 1312,
+    "height": 39
+  },
+  "field": {
+    "top": 544.515625,
+    "bottom": 654.953125,
+    "left": 854.5,
+    "right": 1312,
+    "height": 110.4375
+  },
+  "error": {
+    "top": 615.015625,
+    "bottom": 633.015625,
+    "left": 854.5,
+    "right": 1312,
+    "height": 18
+  },
+  "errorText": "请输入 1–65535 的整数端口，不要混用字母 O 与数字 0。",
+  "saveBar": {
+    "top": 666.5,
+    "bottom": 732,
+    "left": 364,
+    "right": 1331,
+    "height": 65.5
+  },
+  "workspace": {
+    "top": 44,
+    "bottom": 732,
+    "left": 150,
+    "right": 1366,
+    "height": 688,
+    "scrollTop": 48,
+    "scrollHeight": 894,
+    "clientHeight": 688
+  },
+  "inputScrollMargin": "0px",
+  "fieldScrollMargin": "0px"
+}

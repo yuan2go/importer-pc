@@ -1,11 +1,21 @@
-# UI 实现与分版本证据入口
+# UI状态：目标设计、现有实现与证据
 
-现有代码整合见 [组合报告](../runtime/parallel-task-reconciliation-20261020.md)；未完成原稿恢复草案仅 [归档](../archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不作为当前实现。下列 dfc2ab6 是 PR58 原证据，PR59 的日期与门禁见 [main续核](../runtime/sportmaster-visual-main-closure-01.md)，不能当作本轮组合已验证。
+## 当前目标
 
-PR58形成时由 [视觉产品化基准](../design/sportmaster-visual-productization-01.md) 统一，任务为 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8，源码开工main f3059d4，整合最新main 1e97740，最终运行源码dfc2ab6。本轮结果和Windows实测以[交付记录](../runtime/sportmaster-visual-productization-01.md)及[同版介质证据](../runtime/evidence/sportmaster-visual-01/README.md)为准；Windows125%合成检查与实际输入已经执行，目标安装、多DPI和真实接口/现场资格另列。
+[20261020完整设计入口](sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)是本次Sportmaster任务与参数配置重设计目标。依次阅读 [实施裁决](../design/sportmaster-task-redesign-01.md)、[UIR工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)和 [Codex实施提示](../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)；提交状态见 [入库记录](../runtime/ui-task-redesign-01-publication.md)。
 
-继续使用现有SupplyStationWindow/Position和共享Application。Sportmaster缺省转为supply-station，classic显式兼容；其他Application不改变缺省。当前观察、原作业、Unknown和失效守卫仍有效，格口取得不等于物理完成。标准/紧凑重排、客户区保护、原草稿CAS与原请求责任保持。
+**本次只交付设计、分析和计划。UIR-01～06未移植WPF，不能据原型或PNG声称新软件已实现。** 设计为45个命名界面状态、48张PNG；95是含重复格式、源码、QA及ZIP的原文件总数。ZIP因接口限制以11分片及校验恢复保存，不构成新增设计。
 
-[v1.1原稿与交接](ss-ui-vis-001-v1.1/README.md)及34张同源导出PNG保持原字节和形成时含义；本轮不得用HTML/旧截图代替Windows验证。原UI状态页的全部历史段落和旧版本/NOT_RUN表述已按原字节归档至[清理前入口](../archive/pre-sportmaster-visual-01/README.md)，原D/RV、历史失败与批准均不重写。
+## 现有WPF必须继承
 
-继承的55025ce合成原生验证见[PR47最终集成](../runtime/evidence/pr47-main-integration/README.md)，只证明其原SHA和范围；本轮Windows图像与输入须另行记录。真实SDK、合同、设备、现场及商业投产资格仍未由本轮授权或局部验证取得。
+复核基准 `e2e69292899c709056ce9ab6159bf01f6f18de6c` 已含PR62/63/64/66/67/68。默认supply-station与辅助窗口共享Application；字号/状态层级、OneWay诊断、单码拒绝分类、旧格口失效、原生日历及classic最小区修复均已存在。正常作业最低有效客户区800×420 DIP，缩小保护和恢复后人工确认不能取消。
+
+左右读码Reader与可选采图Camera不同；海康按真实五字段配置，无演示9000端口。对象页编辑同一完整候选，沿唯一CAS/Pending/Effective账与受控重启；Reconnect不应用Pending。当前RCS无权威Query、仅本地Health，不伪造测试或查询成功。菜鸟品牌、单EXE、英文SM命名、快捷方式和BUILD-INFO已实现。
+
+新的对象导航、字段错误定位、差异与生效解释、任务诊断、跨页左右摘要仍按UIR-01～06实施。无需重做上述机制，也不能只交一张首页代替完整任务闭环。
+
+## 验收与历史
+
+[组合原生证据](../runtime/parallel-task-reconciliation-20261020-02.md)保留233项组合和9项完成页检查的原来源；[SM安装发行](../runtime/installer-release-info-01.md)的41项实际升级/启动属于原7c源码和原主机Simulation。它们不是本次新UI的PASS。原生HWND backing surface与实际物理屏幕、输入、多DPI分别记录；真实相机/SDK、RCS和现场仍按实际未验条件处理。
+
+[v1.1及34张同源PNG](ss-ui-vis-001-v1.1/README.md)是历史模拟设计，不是本次强制页面或布局。原 [0e79e73截图集](../archive/sportmaster-native-gallery-20261020-0e79e73/README.md)、[PR58视觉结果](../runtime/sportmaster-visual-productization-01.md)和 [日期修复](../runtime/sportmaster-visual-main-closure-01.md)保持各自字节、源码及原结论；历史D/RV与失败不倒写。清理前状态页见 [归档](../archive/pre-ui-task-redesign-20261020/README.md)，公开材料遵守 [PUBLICATION](../baseline/PUBLICATION.md)。

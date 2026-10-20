@@ -1,0 +1,30 @@
+{
+  "review_scope": "22张实际查看，21个独立图像；不含14张维护与首配图",
+  "method": "view_image逐张查看",
+  "source_commit_claimed_by_attachment": "0e79e73bdb6d7a1702373963295b192a803f28e7",
+  "evidence_limit": "截图来自附件自述的WPF合成数据渲染；未验证源码、按钮行为、设备、性能或最新版本",
+  "images": [
+    {"file":"01-workstation-waiting.png","module":"Sportmaster","page":"作业","state":"左右等待扫码","facts":["左右投递位固定并列","读码就绪；目标格口未取得","查看详情/核对/继续按钮禁用"],"verify":["就绪判定与按钮启用条件","进入作业是否需要其他动作"],"new_destination":"作业/左右结果区","decision":"保留空间对应与自动入场；等待中性化，不增加每包确认"},
+    {"file":"02-workstation-normal.png","module":"Sportmaster","page":"作业","state":"左右已取得格口","facts":["条码000123456789与格口REFERENCE-07","两侧示例数据相同","顶部作业就绪"],"verify":["不得由相同合成条码推断串位","新扫码时清旧结果的真实时机"],"new_destination":"作业/左右结果区","decision":"格口优先；本包身份与结果时间保持；减少无用留白"},
+    {"file":"03-workstation-details.png","module":"Sportmaster","page":"作业详情","state":"左详情展开","facts":["相机键名、时间、原码、观察来源、关联GUID与英文原因可见"],"verify":["详情是否固定所选包裹","刷新是否切换对象"],"new_destination":"作业/固定包裹详情抽屉","decision":"先中文过程与下一步；技术原文按需展开"},
+    {"file":"04-history.png","module":"Sportmaster","page":"记录","state":"查询完成","facts":["快照列表","下一页、导出CSV、取消导出","时间/位/包裹/状态/格口/归档列","右侧恢复与JSON区域"],"verify":["归档列可编辑性","导出与分页快照","恢复动作条件"],"new_destination":"记录/列表与固定所选详情","decision":"中文左右位；高级恢复动作只在适用选中条目出现"},
+    {"file":"05-history-filters.png","module":"Sportmaster","page":"记录筛选","state":"筛选展开","facts":["条码文本、投递位文本、状态枚举、请求ID","开始含/结束不含；日期/时间/UTC偏移","今天/最近24小时/不限时间","高级时间原文与计数"],"verify":["枚举与格式","时区解释与边界","计数口径"],"new_destination":"记录/常用筛选与高级抽屉","decision":"位置改对象下拉；主筛选紧凑；保留区间语义"},
+    {"file":"22-auxiliary.png","module":"Sportmaster","page":"辅助工作台","state":"与02重复","facts":["与02图像完全相同"],"verify":["是否为第二屏、只读或可操作窗口"],"new_destination":"复用作业视图/第二屏入口按需","decision":"去重复视觉实现，保留已确认的窗口能力","duplicate_of":"02-workstation-normal.png"},
+    {"file":"23-support-1.png","module":"Platform服务于Sportmaster","page":"离线帮助","state":"安装首配文章","facts":["任务/故障搜索","安装首配、启动失败、日常异常、记录导出分组","草稿与待生效修订说明"],"verify":["搜索与离线资料版本"],"new_destination":"诊断与支持/离线帮助","decision":"围绕任务给步骤和预期结果，内部术语作为搜索别名"},
+    {"file":"24-support-2.png","module":"Platform服务于Sportmaster","page":"支持预览与关于","state":"范围填写未预览","facts":["所选原作业","开始含/结束不含最多7天","预览固定5分钟字样","本地摘要预览与保存分开"],"verify":["固定5分钟含义","7天实际校验","滚动外关于信息"],"new_destination":"诊断与支持/诊断摘要与关于","decision":"范围—预览内容—导出；不杜撰5分钟含义"},
+    {"file":"after-normal-1100.png","module":"Sportmaster","page":"紧凑作业","state":"左右成功","facts":["顶部主要导航收缩至工作台与更多","格口REFERENCE-07拆行"],"verify":["实际DPI与客户区"],"new_destination":"作业/尺寸适配","decision":"优先保全格口阅读；结果内容决定响应式排列"},
+    {"file":"after-normal-900.png","module":"Sportmaster","page":"窄作业","state":"左右成功","facts":["双列仍并列","格口多行，恢复按钮占底栏"],"verify":["最小有效生产宽度与阅读距离"],"new_destination":"作业/尺寸适配","decision":"关键结果不挤成窄列；定义可用尺寸假设"},
+    {"file":"after-minimum-client-800x420.png","module":"Sportmaster","page":"最小客户区作业","state":"左右成功","facts":["结果区内部滚动","格口换行","恢复按钮常驻"],"verify":["最低尺寸实际可用性"],"new_destination":"作业/最小尺寸策略","decision":"小于最低尺寸清楚提示；不能把可滚动当连续作业通过"},
+    {"file":"after-left-processing-right-valid-1366.png","module":"Sportmaster","page":"作业","state":"左处理中右成功","facts":["左未取得格口","右格口保留","顶部作业就绪"],"verify":["并发/乱序关联","新包生命周期"],"new_destination":"作业/独立状态","decision":"保留独立更新；全局接收能力与当前包结果分层"},
+    {"file":"after-unknown-rejected-1100.png","module":"Sportmaster","page":"作业","state":"左未知右拒绝","facts":["左提示不要重复放货并核对原请求","右提示业务拒绝与看详情","左核对可用右核对禁用"],"verify":["未知具体原因","原请求查询能力","拒绝可重试性"],"new_destination":"作业/按异常类型处理","decision":"核对与重试分开；拒绝显示原因；不统一重发"},
+    {"file":"after-stale-1100.png","module":"Sportmaster","page":"作业","state":"状态读取中断","facts":["最后成功读取时间","状态已失效与旧格口已失效","恢复新入场及多数命令禁用"],"verify":["新鲜度阈值","恢复后结果重建"],"new_destination":"作业/新鲜度警示与诊断","decision":"旧格口退出主结果；保留最后可信时间"},
+    {"file":"after-long-content-1100.png","module":"Sportmaster","page":"作业","state":"长条码长格口成功","facts":["长条码内滚动","长格口多行"],"verify":["长度与字符契约"],"new_destination":"作业/长内容策略","decision":"不省略影响动作的格口内容；完整值可查复制"},
+    {"file":"after-workstation-blocked-login.png","module":"Sportmaster","page":"作业","state":"认证及维护双阻断","facts":["操作员登录入口","等待认证与维护中理由","既有包裹结果仍绿色"],"verify":["登录组件适用性","多个阻断的解除关系"],"new_destination":"作业/接收限制与条件身份入口","decision":"不新增强制登录；逐条解释影响；旧包结果与新包接收分开"},
+    {"file":"after-history-filters-minimum.png","module":"Sportmaster","page":"记录","state":"小窗口筛选展开","facts":["仅部分筛选及滚动条可见","列表不在主区域"],"verify":["键盘顺序与滚动可达性"],"new_destination":"记录/紧凑常用筛选与高级面板","decision":"普通查询仍可看到结果"},
+    {"file":"after-history-expanded-minimum.png","module":"Sportmaster","page":"记录","state":"小窗口筛选收起","facts":["表头和恢复按钮可见","数据行与详细信息当前不可见"],"verify":["窗口最低高度与选择保持"],"new_destination":"记录/单独详情抽屉","decision":"减少多重滚动与工具条挤占"},
+    {"file":"after-history-invalid-date-1100.png","module":"Sportmaster","page":"记录","state":"开始日期无效","facts":["not-a-date错误说明","时间09:10:11及+08:00保留","旧查询快照说明仍可见"],"verify":["错误是否阻止查询","旧快照是否保持"],"new_destination":"记录/字段校验","decision":"就地具体错误；显示上次查询而非新筛选已生效"},
+    {"file":"after-support-invalid-date.png","module":"Platform服务于Sportmaster","page":"支持预览","state":"日期无效","facts":["日期错误就地可见","总体提示必须带明确时区","保存禁用"],"verify":["错误归因是否准确"],"new_destination":"诊断摘要/字段校验","decision":"日期时间时区错误分别定位，保留输入"},
+    {"file":"after-classic-1366.png","module":"Sportmaster","page":"经典兼容作业台","state":"身份维护阻断与成功旧结果","facts":["标题明确Sportmaster","相机内部键名","账号及另一输入、验证身份、登出","选择此位为命令目标","显式参考输入与核对/继续"],"verify":["另一身份输入含义","经典页独有能力","模拟入口边界"],"new_destination":"统一Sportmaster作业；模拟输入迁入调试","decision":"不归DirectPlc；对象附着动作替代全局命令目标"},
+    {"file":"published-startup.jpg","module":"Platform安装部署","page":"安装第1/4步","state":"初始","facts":["来源路径与安装媒介检查","完整诊断","导出无人值守计划","中断清理入口","上一步禁用"],"verify":["后续三步未提供","检查与恢复真实实现"],"new_destination":"安装向导/媒介检查；高级部署；条件恢复","decision":"突出主任务，计划与中断恢复按真实任务显示"}
+  ]
+}

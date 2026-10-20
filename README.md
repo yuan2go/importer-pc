@@ -1,51 +1,33 @@
-> 最新并发组合：[任务对照、裁决与最终证据](docs/runtime/parallel-task-reconciliation-20261020-02.md)。Sportmaster 现场主入口为[单 EXE 人工安装](docs/runtime/single-exe-installer-01.md)；旧 ZIP、图集和报告保持各自原源码身份。
-
-
 # importer-pc
 
-C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platform 提供机制，Application 拥有业务状态、守卫及 UI 契约，Driver 适配硬件，Component 适配外部服务。一个 Application 运行实例可服务多个页面和布局。
+C#/.NET 10 Windows 工位客户端与独立 Application 工程。Platform 提供机制，Application 拥有业务状态和命令守卫，Driver 连接设备，Component 适配外部服务；同一业务实例服务多个页面与窗口。
 
-## 当前工作入口
+## 当前任务：Sportmaster 任务与配置体验重设计
 
-**当前工作：[并发任务整合](docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md)**。任务对照、冲突裁决、最终组合验证与合并状态见 [本次报告](docs/runtime/parallel-task-reconciliation-20261020.md)。商业使用继续按 [同版交付手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md)，源任务历史证据保持原 SHA。
+从 [完整设计入口](docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md) 查看原型、高清图、字段映射和交接，再读 [实施裁决](docs/design/sportmaster-task-redesign-01.md)、[UIR 工作包](docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md) 与 [Codex 实施提示](docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。提交与材料核对见 [设计入库记录](docs/runtime/ui-task-redesign-01-publication.md)。
 
-继承 [COMM-00～10 实施结果](docs/runtime/commercial-productization-01-results.md)、PR44/45 的原生安装/独立维护和身份守卫。指定 Windows 账户以非提权进程运行；正常安装、启动和维护不要求 PowerShell，开发验收脚本另列依赖。新窗口只整理现有契约调用，不新建配置或部署权威。
+**本次仅交付设计资料、代码对照和实施计划；UIR-01～06尚未移植到 WPF。** 设计包含45个命名界面状态、48张PNG。95是含重复格式、源码、交接、QA及ZIP的原文件总数，不是95份界面设计。整包因接口限制以11分片和校验恢复保存，不增加设计数量。
 
-开始工作先读[统一索引](docs/INDEX.md)、[AGENTS](AGENTS.md)、本包及关联设计/实施/验收。修改代码前先清理相关过期当前指引，保留历史证据；继承最新 main，避免重做已完成能力。
+代码复核基准为 `e2e69292899c709056ce9ab6159bf01f6f18de6c`，已含PR62/63/64/66/67/68。实施时继承最新main；主攻对象配置、错误定位、差异与生效状态、任务诊断，复用已完成机制。完整导航见 [文档索引](docs/INDEX.md)，协作规则见 [AGENTS](AGENTS.md)。
 
-## 当前运行与组合
+## 已实现能力与业务边界
 
-Sportmaster、DirectPlc、WcsToPlc 保持三个独立主流程。Sportmaster 左右两个独立 reader/投递位，扫码取得上游格口，不下 PLC；DirectPlc 与 WcsToPlc 各单 reader/顺序位，分别走 PLC 与 WCS→PLC。Supply 和 Inspection 保留各自契约及入口，不套用 Parcel 的数据库或命令。
+Sportmaster、DirectPlc、WcsToPlc是独立主流程。Sportmaster左右读码相机取得上游格口并展示，无PLC下发或新增包裹预览；读码Reader与可选采图Camera不同。海康字段以实际驱动描述为准，没有原型中的通用9000端口。登录、称重等按真实组合适用，不新增每包确认。
 
-Sportmaster 缺省使用 supply-station，显式 `--ui classic` 保留兼容布局，导航及辅助窗口共享 Application、连接和原作业。登录、称重、采图、上传按实际已确认组合选择；Sportmaster 图片展示和长期图库不在范围，DirectPlc 完整 UI 继续延期。
+默认工作台与辅助窗口共享Application。诊断OneWay、长格口、原生日历和800×420 DIP有效客户区保护已实现。配置沿唯一CAS/Pending/Effective账，保存后受控重启；重连不应用配置。原请求不盲重发；当前RCS无权威Query，Health仅证明本地状态，不能显示远端业务已恢复。
 
-[Sportmaster RCS 组件](docs/runtime/sportmaster-rcs-task.md)只按已支持合同处理目标请求、NEED_UNPACK、拒绝与 Unknown，不提供未确认的拆包提交或自动重发。数据库、配置 schema、公共契约和包版本按[版本与组合证据](docs/runtime/version-compatibility-01.md)及实际介质清单读取；版本号本身不证明精确加载兼容或 Production 资格。
+## 安装、维护与开发
 
-## 安装、开发与维护
+| 任务 | 有效入口 |
+| --- | --- |
+| 人工安装、升级与依赖 | [英文SM单EXE及源码记录](docs/runtime/installer-release-info-01.md)、[发布下载记录](docs/runtime/publication-installer-release-info-20261020.md) |
+| 首配、故障修复与数据恢复 | [安装与启动修复](docs/runtime/startup-deployment-02.md)、[商业操作手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md) |
+| 架构、构建与扩展 | [框架](docs/design/framework.md)、[Application运行](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md) |
 
-安装交付收敛为普通人工安装包及必要说明，复用现有原生向导；不要求无人值守、响应文件或批量部署，详见[范围与过度设计检查](docs/runtime/installation-delivery-scope-01.md)。
+继承菜鸟品牌、原生首配、单EXE、目录/快捷方式及BUILD-INFO，不重建安装平台。已发布SM v1.4.1介质来自 `7c384540393b1e77ceeba048a87a3916dd1af63c`；原41项实际升级/启动只证明原主机Simulation范围，不证明新UI或真实设备已验。
 
-Windows 当前源码的原生流程、运行账户、配置来源及离线维护见[安装与启动修复](docs/runtime/startup-deployment-02.md)。首次使用见[首次运行](docs/runtime/getting-started.md)，升级/修复/恢复见[Windows 交付指南](docs/runtime/windows-application-delivery.md)和[配置、容量及恢复维护](docs/runtime/architecture-quality-closure-01.md)。商业化增量已沿原生部署内核实施，系统安装项是唯一部署登记的派生投影；自选程序根、首配修复、备份迁移和保留数据卸载见产品操作指南。
+## 证据与历史
 
-开发构建及发布入口见[Application 运行指南](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md)。使用 global.json 固定 SDK 和锁定依赖，仅按受影响范围执行必要验证。发布时从固定源码生成新介质，读取 ASSEMBLY.json、application-release.json、依赖锁和 SHA256SUMS，不改标旧产物。
+[UI状态](docs/ui/STATUS.md)区分新设计、现有WPF和原验证。[v1.1及34张PNG](docs/ui/ss-ui-vis-001-v1.1/README.md)是历史模拟设计，不是本次强制布局。原失败、D/RV和各版介质身份保留；本次未新增测试、构建、安装或现场PASS，未来代码变更仍须做必要验证。
 
-配置沿同一 CAS/Pending/Effective 账，资源成功后确认；停止失败保持资源与包租约。旧库升级先核未结业务和原件责任，不能通过升级消除 Unknown。原请求固定原报文、目标、合同及版本。软件暂停不是安全急停。
-
-## 源码与已发布介质
-
-[部署和全部入口门禁的合并/发布记录](docs/runtime/publication-deployment-20261019.md)区分最新合并源码与两组既有介质：
-
-|参考发布|固定源码及范围|
-|---|---|
-|[原生部署 reference](https://github.com/yuan2go/importer-pc/releases/tag/startup-deployment-reference-e79a8bf)|e79a8bf；原生安装与启动修复/UAC 增量，Sportmaster portable 及三个 win-x64 组合|
-|[全部入口 reference](https://github.com/yuan2go/importer-pc/releases/tag/runtime-all-entrypoints-reference-16ecb57)|16ecb57；Supply/Inspection portable 入口守卫，保持形成时共享账户政策|
-
-上表是历史形成时的参考资产。[后继统一发行](docs/runtime/windows-no-test-release-20261020.md)及本包结果各自记录精确源码；旧介质和原 PASS 不覆盖后继候选。旧“本次文档未构建/未发布”说明原字节见[清理前归档](docs/archive/pre-sportmaster-commercial-delivery-01/README.md)。
-
-## 证据与公开边界
-
-[UI 实物及完整交接](docs/ui/ss-ui-vis-001-v1.1/README.md)包含原 HTML/CSS/JS、PPTX 与同源导出 PNG；PNG 是设计导出，不能代替 WPF 运行截图。[UI 状态](docs/ui/STATUS.md)及各 Windows 后验单独记录。
-
-Windows 原生交互、Dispatcher/HWND、DPI/触控、UAC/ACL、系统安装维护及真实组合验证仍须按固定介质执行；未做部分保持 NOT_RUN。真实 SDK、RCS/WCS/PLC 合同、设备和现场资格按能力保留 BLOCKED/NotReady，Production 缺必需能力拒绝。历史 D/RV 和原失败不因局部参考 PASS 自动关闭。
-
-仓库为 public，[公开范围](docs/baseline/PUBLICATION.md)持续有效；客户全量资料仍 PUBLIC_SUBSET_ONLY。仅提交获授权通用代码、文档、衍生 WPF UI 与合成证据，原客户资料、凭据、生产数据、未许可 SDK/字体不进入公开交付。修改前当前入口的原字节见[商业化整理前归档](docs/archive/pre-commercial-productization-01/README.md)。
+遵守 [公开范围](docs/baseline/PUBLICATION.md)，不纳入未许可SDK、客户资料、凭据或生产数据。清理前入口原字节见 [归档](docs/archive/pre-ui-task-redesign-20261020/README.md)。

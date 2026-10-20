@@ -1,0 +1,19 @@
+{
+  "browser": "Chromium 155.0.8059.84",
+  "executablePath": "/workspace/scratch/69927969969a/.playwright-browsers/chrome-headless-shell-linux64/chrome-headless-shell",
+  "requires_exec_escalation_for_ipc": true,
+  "fonts": [
+    {
+      "file": "/workspace/scratch/69927969969a/assets/NotoSansCJKsc-Regular.otf",
+      "mapped_codepoints": 44810,
+      "missing_test_characters": []
+    },
+    {
+      "file": "/workspace/scratch/69927969969a/assets/NotoSansCJKsc-Bold.otf",
+      "mapped_codepoints": 44810,
+      "missing_test_characters": []
+    }
+  ],
+  "license": "/workspace/scratch/69927969969a/assets/Noto-OFL.txt",
+  "blank_screenshot_passed": true
+}

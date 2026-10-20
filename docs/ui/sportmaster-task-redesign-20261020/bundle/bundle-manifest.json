@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "purpose": "Byte-identical preservation of the original duplicate distribution ZIP; expanded deliverables are directly available in the parent directory.",
+  "original": {
+    "filename": "Sportmaster-Redesign-Package.zip",
+    "size_bytes": 42154441,
+    "sha256": "b6b7cfd3eb2567fb83cbae2dd15f21e85de703d07f3e3a635a398fe2047d5971"
+  },
+  "part_size_bytes": 4194304,
+  "parts": [
+    {
+      "index": 1,
+      "path": "Sportmaster-Redesign-Package.zip.part001",
+      "size_bytes": 4194304,
+      "sha256": "34fc5a3a52519aee3ac17b7660951a1cce7d4790b35a07c58c7c90597a24011c"
+    },
+    {
+      "index": 2,
+      "path": "Sportmaster-Redesign-Package.zip.part002",
+      "size_bytes": 4194304,
+      "sha256": "fb10dddd4ae18cf72c98041ce905864cdbad6c231de40549fdd02cbde76ddce9"
+    },
+    {
+      "index": 3,
+      "path": "Sportmaster-Redesign-Package.zip.part003",
+      "size_bytes": 4194304,
+      "sha256": "e460d6a6153d9ba073f5343020296cd1e14dcf6f553cf77746a1ecb9e219b36a"
+    },
+    {
+      "index": 4,
+      "path": "Sportmaster-Redesign-Package.zip.part004",
+      "size_bytes": 4194304,
+      "sha256": "cf59c637f3a5c21eb96361b487c9a95e858dcb235112c273e4c5daca7b6e9b76"
+    },
+    {
+      "index": 5,
+      "path": "Sportmaster-Redesign-Package.zip.part005",
+      "size_bytes": 4194304,
+      "sha256": "3046b2ce5e1a7c691a85e97ec24a17cebe1e8130f0afc4aa5a6cbd03c654acf1"
+    },
+    {
+      "index": 6,
+      "path": "Sportmaster-Redesign-Package.zip.part006",
+      "size_bytes": 4194304,
+      "sha256": "f36020735adbceeca205a48a11f665ebc5c8d7615c8e72dc13b8ab0320ef5e78"
+    },
+    {
+      "index": 7,
+      "path": "Sportmaster-Redesign-Package.zip.part007",
+      "size_bytes": 4194304,
+      "sha256": "786024a90b2c3c7e55292ef610c48cecc2bd41d9913e5b3ca0199e1b5ffac911"
+    },
+    {
+      "index": 8,
+      "path": "Sportmaster-Redesign-Package.zip.part008",
+      "size_bytes": 4194304,
+      "sha256": "34c6efd9202c2db05571b53b3e3419d49858002a8d6a0aaeb136878a0e217790"
+    },
+    {
+      "index": 9,
+      "path": "Sportmaster-Redesign-Package.zip.part009",
+      "size_bytes": 4194304,
+      "sha256": "ad16f159ff205a3dddd69697718ed21bc8318e53834d34fb40e782bf5200b011"
+    },
+    {
+      "index": 10,
+      "path": "Sportmaster-Redesign-Package.zip.part010",
+      "size_bytes": 4194304,
+      "sha256": "e58b0cce1e881c81ccaf6a93c82d5ace23ddd234e1da14fa7de2ba7313254771"
+    },
+    {
+      "index": 11,
+      "path": "Sportmaster-Redesign-Package.zip.part011",
+      "size_bytes": 211401,
+      "sha256": "10748dbc5532c83d4500b904c8724b5dfc6b2306f271604ca4c6afde2723107e"
+    }
+  ]
+}

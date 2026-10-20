@@ -1,110 +1,66 @@
-> 当前后续交付：Sportmaster/SM业务模块v1.4.1英文EXE，源码`7c384540393b1e77ceeba048a87a3916dd1af63c`，实际升级及正常启动41项PASS（本机Simulation，受支持系统/海康现场待验）。发行规范：[英文安装包、依赖与Git源码记录](runtime/installer-release-info-01.md)。本轮新增需求独立于下述已完成整合，旧安装包与原验证保持其精确身份。
+# 文档索引：Sportmaster 任务与配置体验重设计
 
-# 当前整合入口 · 2026-10-20 13:09续轮
-
-[本轮工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md) · [编码前裁决](design/parallel-task-reconciliation-20261020-02.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020-02.md)。整合#62工作台、#63驱动、#64品牌/单EXE和#65普通安装文档；原稿、原失败与前轮统计分别保留。此前仅合并现有代码的限制属于前轮，本次以重新授权的工作包为准。
-
-## 本轮纳入的现行增量
-
-- [工作台精简与原生验证](runtime/sportmaster-clear-workstation-01.md)：双位信息、原件与命令守卫。
-- [独立IP海康驱动](runtime/hikrobot-reader-01.md)：真实SDK/实体资格边界，左右由应用拓扑配置。
-- [名称与图标](runtime/cainiao-branding-01.md)、[单 EXE](runtime/single-exe-installer-01.md)和[安装选项/窗口衔接](runtime/single-exe-installer-options-02.md)：普通人工安装；最终组合身份见本轮报告。
-- [简化安装交付范围](runtime/installation-delivery-scope-01.md)：取消无人值守/批量的强制要求。
-
-## 前轮整合记录（历史）
-
-[本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。
-
-现行操作依次读取商业交付手册、架构22、配置/恢复和扩展指南。下列源任务设计/结果用于追踪，不再各自宣称本次当前任务；历史免测和旧介质不得代替最终组合验证。清理前原字节见 [归档](archive/pre-parallel-reconciliation-20261020/README.md)。
-
-# 统一资料与实施入口
-
-**继承的商业交付：[Sportmaster 首个商业交付组合](work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。** 起点 main `939462bee40c9eebe8eb2aa60860217afd95fcdd`，先提交设计，再实施。
-
-> 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
-
-继承商业交付组合的冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。后继UI实现与本轮介质以页首视觉产品化交付记录为准。
-
-安装交付范围修订（2026-10-20）：[普通安装包与必要说明、过度设计检查](runtime/installation-delivery-scope-01.md)。该修订优先于旧商业计划中的批量/无人值守安装要求；不改变历史源码、发行物和原验证结果。
+当前任务统一由下列设计和工作包管理。**本次只做设计入库、源码对照与实施计划；UIR-01～06尚未移植WPF，未新增软件运行或现场验收结果。** 代码复核冻结于 `e2e69292899c709056ce9ab6159bf01f6f18de6c`；实施时读取最新main及并行成果，不回退到原图源码。
 
 ## 1. 当前阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[本轮基准与清理](design/sportmaster-visual-productization-01.md)、[本轮运行与证据](runtime/sportmaster-visual-productization-01.md)，再读继承的[商业设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。
-2. [框架](design/framework.md)、[F 决策](design/framework-decisions.md)、[19 职责](design/application-capability-19.md)、[20 可靠性](design/capability-reliability-20.md)、[22 独立 Application](design/application-architecture-22.md)。
-3. 继承 [COMM-00～10](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的设计/实现/验收及 [PR47/53 最终证据](runtime/evidence/pr47-main-integration/README.md)，再读下表相关指南和代码。
-4. [D 决策](readiness/decision-pack.md)、[RV 状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md)及 [manifest](manifest.json)。原 D/RV 不倒写，UI 修改先读第4节全部实物与完整交接。
+| 顺序 | 入口与用途 |
+| --- | --- |
+| 1 | [AGENTS](../AGENTS.md)：工作范围、分支、现有机制与证据规则。 |
+| 2 | [完整设计入口](ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)：可点击原型、逐页高清图、字段/动作迁移、源码与QA。 |
+| 3 | [设计与真实代码的实施裁决](design/sportmaster-task-redesign-01.md)：对象、字段、配置、诊断及原型能力的真实边界。 |
+| 4 | [UIR-00～06工作包](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)：完整实施范围和六任务验收；[Codex实施提示](work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)用于下一轮执行。 |
+| 5 | [设计入库记录](runtime/ui-task-redesign-01-publication.md)：本次实际提交范围、材料数量、核对方法和未执行项。 |
 
-旧“当前实施/正在不测试发布/最终 main 没有出包”按各自时间保留于[清理前归档](archive/pre-sportmaster-commercial-delivery-01/README.md)。历史资产只覆盖其声明源码，不能代替后继候选；当前工作不沿用历史免测要求。
+新设计45个命名界面状态、48张高清/紧凑PNG，覆盖58项可辨认字段/状态及39项维护/首配动作。**95是原交付文件总数**，包含重复格式、源码、QA和整包；不是95个页面。因接口限制，原ZIP按11分片保存，附 [分片清单](ui/sportmaster-task-redesign-20261020/bundle/bundle-manifest.json) 和 [校验恢复脚本](ui/sportmaster-task-redesign-20261020/bundle/restore_bundle.py)，恢复保持原ZIP字节，不增加设计数量。
 
-## 2. 最新已实现源码与现行操作
+主导航目标是作业、记录、设备与设置、诊断。配置先选对象，再完成编辑、校验、完整修订保存及生效判断；日常修改不重复首次向导。原型中的地址、数值、版本和成功反馈均是模拟，实施按真实组件描述与Application契约映射。
 
-实施基座的 main 包含 PR #44 的原生四步安装、独立离线维护/基本配置、启动修复及备份恢复入口，和 PR #45 的全部运行入口身份门禁。指定 Windows 账户非提权日常运行，允许 UAC 过滤/deny-only 的管理员身份；真正提升、错误 SID、系统/服务账户仍拒绝。正常安装、启动与维护不依赖 PowerShell，显式高级脚本单独说明依赖。
+## 2. 当前代码已具备什么
 
-|任务|现行指南/代码证据|
-|---|---|
-|安装、首次运行、失败修复|[原生安装和修复](runtime/startup-deployment-02.md)、[首次运行](runtime/getting-started.md)、[Windows 交付维护](runtime/windows-application-delivery.md)|
-|独立基础配置与原恢复机制|[启动部署源码/结果](runtime/startup-deployment-02-results.md)、[全部入口身份政策](runtime/runtime-identity-preflight-02.md)|
-|Application 配置、资源及维护|[Application 运行](runtime/application-architecture-22.md)、[配置/恢复/容量](runtime/architecture-quality-closure-01.md)、[永久恢复与原失败](runtime/parcel-recovery-p2.md)|
-|精确扩展、版本与部署资格|[扩展开发](extensions/developer-guide.md)、[受控装配设计](design/controlled-extensions.md)、[版本和组合证据](runtime/version-compatibility-01.md)|
-|Sportmaster 业务与默认原生 UI|[RCS 设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[视觉产品化运行](runtime/sportmaster-visual-productization-01.md)、[旧可选UI入口替代说明](runtime/sportmaster-alternate-ui.md)|
-|Supply / Inspection 兼容入口|[Supply 首次操作](runtime/supply-getting-started.md)、[Supply 维护](runtime/operations.md)、[共同身份前置门禁](runtime/runtime-identity-preflight-02.md)|
-|本次文档发布范围|[文档交付记录](runtime/commercial-productization-01-docs-delivery.md)|
+基准已包含PR62工作台精简与诊断、PR63独立IP海康Reader、PR64品牌/单EXE、PR66组合及最小区修复、PR67英文业务命名与来源记录、PR68原字节发布。已完成内容不重新列为缺失机制；[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)与[安装发行说明](runtime/installer-release-info-01.md)保留精确来源。
 
-Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图库；DirectPlc 完整 UI 延期，WcsToPlc 独立主流程。登录/称重/采图/上传按实际产品组合和批准策略选装。Supply 使用自身 Storage/操作契约。业务/ABI/DB/schema/扩展版本从同一固定介质清单读取，不能仅凭版本号继承其他组合资格。
+- Sportmaster左右独立Reader/投递位，只取WCS格口，不下PLC、不新增图片预览。DirectPlc、WcsToPlc仍为独立Application；DirectPlc完整UI延期，Supply/Inspection保留各自契约。
+- Reader是读码观察来源，Camera是可选采图能力，不能因中文“相机”误绑。海康五字段已有真实描述，驱动不拥有左右概念，也没有演示9000端口。
+- 工作台、记录、维护和辅助窗口共享运行实例；长内容、焦点/选择/草稿、原生日历及旧格口失效保护保持。诊断OneWay已修，默认及classic最小区修复已完成。
+- 完整候选校验、唯一配置账、草稿CAS、加密未完成输入、配置审计与受控启动已存在。对象表单只改变编辑范围；保存不等于生效，重连不等于应用Pending。
+- 原件、观察、准入、请求和发送尝试分别保留。当前Sportmaster RCS声明Query=false，Health只证明本地生命周期；不可发假查询或把连接恢复当原请求成功。
+- 菜鸟品牌、原生首配/安装、英文SM单EXE、目录与两个快捷方式、完成后启动及BUILD-INFO均继承。普通人工安装不要求无人值守或批量平台。
 
-上表保留实施基座与原来源。COMM-00～10当前实现、复审修正及冻结介质统一见[实施结果](runtime/commercial-productization-01-results.md)与[PR47复审](reviews/pr47-commercial-productization-review.md)，不从旧计划段落推断当前缺失或已验收。
+## 3. 架构、运行与维护入口
 
-## 3. 源码、发布介质与验收分开
+| 任务 | 有效资料 |
+| --- | --- |
+| 分层及业务所有权 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md)、[能力职责](design/application-capability-19.md) |
+| 构建、装配与版本 | [Application运行](runtime/application-architecture-22.md)、[扩展开发](extensions/developer-guide.md)、[受控扩展](design/controlled-extensions.md)、[版本与组合](runtime/version-compatibility-01.md) |
+| 安装、依赖、首次运行 | [英文安装包与BUILD-INFO](runtime/installer-release-info-01.md)、[安装与启动修复](runtime/startup-deployment-02.md)、[首次运行](runtime/getting-started.md)、[安装范围](runtime/installation-delivery-scope-01.md) |
+| 配置、恢复及交付维护 | [商业操作手册](runtime/sportmaster-commercial-delivery-01-operations.md)、[配置/容量/恢复](runtime/architecture-quality-closure-01.md)、[Windows交付](runtime/windows-application-delivery.md)、[原请求恢复](runtime/parcel-recovery-p2.md) |
+| 海康和RCS真实边界 | [Reader运行与资格](runtime/hikrobot-reader-01.md)、[RCS协议与恢复](runtime/sportmaster-rcs-task.md) |
+| Supply/Inspection兼容使用 | [Supply首次操作](runtime/supply-getting-started.md)、[维护](runtime/operations.md)、[共同账户前置门禁](runtime/runtime-identity-preflight-02.md) |
 
-[PR #44/#45 历史发布记录](runtime/publication-deployment-20261019.md)记录当时政策与两个冻结来源；该文档任务未创建统一组合介质。下表仅为历史已发布资产，当前COMM候选/复审状态由本页顶部实施结果管理。
+实现继续使用现有C#/WPF、锁定SDK/依赖和应用命令守卫。UI不直接读写配置账或SQL，不因换页重建设备会话；软件暂停不是安全急停。当前任务的文件入口与必要契约补足集中在实施裁决中，不另建通用配置或部署权威。
 
-|已发布对象|精确范围|
-|---|---|
-|[startup-deployment-reference-e79a8bf](https://github.com/yuan2go/importer-pc/releases/tag/startup-deployment-reference-e79a8bf)|e79a8bfdc65328619c77013fb314eaaef4a35a2f；Sportmaster portable 和三个 win-x64；原生向导及更新的 UAC 政策|
-|[runtime-all-entrypoints-reference-16ecb57](https://github.com/yuan2go/importer-pc/releases/tag/runtime-all-entrypoints-reference-16ecb57)|16ecb571cba32188f62a6e6e677030cd589dbf48；Supply/Inspection portable；形成时账户政策，不含原生向导增量|
+## 4. 设计、源码、介质与验收分别记录
 
-历史 PASS 仅适用于相应源码/环境/介质。Windows 原生验收未执行部分仍 NOT_RUN，真实 SDK、合同、设备和现场资格仍按能力 BLOCKED；局部结果不构成商用投产批准。详细后验见[本包风险验收](runtime/validation/commercial-productization-01.md)、[启动部署 Windows](runtime/validation/startup-deployment-02-windows.md)、[质量维护 Windows](runtime/validation/architecture-quality-closure-01-windows.md)。
+| 对象 | 证据与适用范围 |
+| --- | --- |
+| 新设计与模拟QA | [设计入口](ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
+| 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
+| 已发布SM v1.4.1 | [原发行及41项证据](runtime/installer-release-info-01.md)、[原字节发布回执](runtime/publication-installer-release-info-20261020.md)。介质源码为 `7c384540393b1e77ceeba048a87a3916dd1af63c`，e2e文档提交不改标EXE来源。 |
+| 后续实现验收 | [UIR-06](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)、[既有Windows后验](runtime/validation/sportmaster-alternate-ui-windows.md)、[商业必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。按新源码执行受影响验证，原记录不改写。 |
 
-## 4. UI 实物与原生验收
+正常作业最低有效客户区仍是800×420 DIP；不足空间保护、恢复后人工确认和软件暂停继续保留。几何夹具的原生HWND backing surface保留严格断言，只证明原生布局，不等于物理屏幕、多DPI或触控通过。原7c的41项升级/启动属于原Windows主机Simulation；受支持系统、精确SDK、trigger实体关联、客户RCS和现场资格按真实证据另验。
 
-修改 UI 前完整读取 [v1.1 入口](ui/ss-ui-vis-001-v1.1/README.md)、[图册](ui/ss-ui-vis-001-v1.1/GALLERY.md)、[原 HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html)、分离 CSS/JS 和[完整交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md)。
+本次没有新增测试、构建、安装或现场PASS。该文档任务的未执行状态不免除以后代码变更的必要验证；缺外部协议时完成准确不可用说明及其余任务，不伪造绿色成功。
 
-[UI 当前状态](ui/STATUS.md)区分历史模拟设计、当前源码、跨构建和真实截图；34 张 PNG 是同源设计导出。不得把历史共享箱/数量/拆包演示直接套用 Sportmaster 或把模拟 gate 复制为业务逻辑。
+## 5. 历史来源与公开范围
 
-[Sportmaster Windows 后验](runtime/validation/sportmaster-alternate-ui-windows.md)、[Windows06](runtime/windows-06.md)/[原工作包](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)、[真实集成05](runtime/integration-05.md)/[原工作包](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)保留未验和外部条件，不因新文档自动关闭。
+| 历史资料 | 保留用途 |
+| --- | --- |
+| [v1.1原稿与34张PNG](ui/ss-ui-vis-001-v1.1/README.md) | 历史模拟设计与原交接，不是本次强制布局；共享箱/数量/拆包演示不能套入Sportmaster。 |
+| [0e79e73原生36图集](archive/sportmaster-native-gallery-20261020-0e79e73/README.md) | 本次理解功能的原截图与导出来源，不代表最新main。 |
+| [PR58视觉证据](runtime/sportmaster-visual-productization-01.md)、[日期续修](runtime/sportmaster-visual-main-closure-01.md) | 原冻结源码和验证方法，继承有效修复，保留原失败。 |
+| [商业实施](runtime/commercial-productization-01-results.md)、[PR47复核](reviews/pr47-commercial-productization-review.md)、[早期部署发布](runtime/publication-deployment-20261019.md) | 已有能力与精确历史介质的追溯入口，不是多套当前任务。 |
+| [本次清理前入口](archive/pre-ui-task-redesign-20261020/README.md) | README/INDEX/STATUS等e2e原字节及完整旧索引；旧文档继续可查。 |
 
-## 5. 继承任务、审查与历史证据
-
-以下入口用于追溯来源及仍有效的局部规则，不是多套并列的当前实施入口。
-
-|来源|保留入口|
-|---|---|
-|原生启动/部署与首次运行|[STARTUP-DEPLOYMENT-02 原工作包](work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)、[原结果](runtime/startup-deployment-02-results.md)、[首次运行01](work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)/[结果](runtime/windows-first-run-01-results.md)|
-|SID / 全部入口与维护 P2|[SID01](runtime/runtime-identity-preflight-01.md)、[全部入口02](runtime/runtime-identity-preflight-02.md)、[维护P2工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)/[结果](runtime/ux-maintenance-p2-04-results.md)|
-|UX 审查/整改与续修|[原审查](reviews/ux-commercial-quality-audit-01/README.md)、[UX闭环02](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)/[结果](runtime/ux-commercial-closure-02-results.md)、[续修03](runtime/ux-commercial-rereview-03-results.md)、[原实施计划](superpowers/plans/2026-10-19-ux-commercial-fix-01.md)|
-|商业审查03|[原报告和证据](reviews/commercial-quality-audit-03/README.md)、[交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)、[工程结果](runtime/commercial-audit03-delivery-results.md)、[PR34原结果](runtime/commercial-quality-fix-03-results.md)|
-|并发整合/PR27～32|[整合报告](runtime/parallel-task-reconciliation-01.md)、[起始清单](runtime/evidence/parallel-task-reconciliation-01/start-inventory.json)、[PR29原复审](reviews/parallel-task-reconciliation-01/pr29-original-review.md)、[PR32原审](reviews/parallel-task-reconciliation-01/pr32-original-review.md)、[PR27原审](reviews/pr27-ui-independent-review.md)|
-|版本/RCS/UI|[版本设计](design/version-compatibility-01.md)/[原结果](runtime/version-compatibility-01-results.md)/[续修](runtime/version-compatibility-01-rereview-results.md)、[RCS工作包](work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)/[证据](runtime/evidence/sportmaster-rcs-task/README.md)、[UI工作包](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)/[原结果](runtime/sportmaster-alternate-ui-results.md)|
-|PR31/32 永久恢复|[PR31原审](reviews/pr31-independent-rereview-f068156/README.md)、[恢复工作包](work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)、[32结果及证据](runtime/parcel-recovery-p2.md)|
-|审查02 / PR26|[原PDF和复核](reviews/architecture-quality-audit-02/README.md)、[实施结果](runtime/architecture-quality-audit-02-results.md)、[PR26原审](reviews/pr26-independent-78298b5/README.md)|
-|质量闭环01 / PR24 / PR23|[设计](design/architecture-quality-closure-01.md)、[PR24原审](reviews/pr24-independent-rereview-f862c2a/README.md)、[R01～R05](runtime/architecture-quality-closure-01-rereview-results.md)、[R03](runtime/architecture-quality-closure-01-r03-results.md)、[采集P2](runtime/acquisition-lifecycle-p2.md)|
-|17～22|[17](runtime/application-convergence-17-results.md)、[18](runtime/site-capabilities-18-results.md)、[19](runtime/application-capability-19-results.md)、[20](runtime/capability-reliability-20-results.md)、[备份健康](runtime/backup-health-recovery.md)、[20/21整合](runtime/pr20-21-integration.md)、[22结果](runtime/application-architecture-22-results.md)|
-|03～16 / 原资料归档|[14](runtime/conformance-fix-14.md)、[15](runtime/operation-closure-15.md)、[16](runtime/ui-maintainability-16.md)、[13](runtime/arch-extension-closure-13.md)、[12](runtime/extension-windows-delivery-12.md)、[11](runtime/review-followup-11.md)、[09](runtime/reference-validation-09.md)、[03](runtime/implementation.md)、[BASELINE-01](work-packages/WP-IPC-DESIGN-BASELINE-01.md)|
-
-原“不测试发布”任务回执：[部署](runtime/publication-deployment-20261019.md)、[维护P2/SID](runtime/publication-maintenance-20261019.md)、[UX](runtime/publication-ux-20261019.md)、[审查03](runtime/publication-audit03-20261019.md)、[早期发布](runtime/publication-20261019.md)。这些记录中的测试状态只属于原任务，不是后续免做必要测试的理由。
-
-## 6. 资料完整性与归档
-
-[工具说明](../tools/README.md)规定资料校验范围与原资产问题的记账，不通过新增例外掩盖历史失败。manifest 保存全树原条目与本次真实变更；本包文档检查不冒称全量历史资产 PASS。
-
-本次清理前的 README/INDEX/框架和相关运行指南原字节见[商业化整理前归档](archive/pre-commercial-productization-01/README.md)。更早的完整入口、历史细项仍保留于[并发整合前归档](archive/pre-parallel-task-reconciliation-01/README.md)及各阶段 pre-* 目录。原审查01 PDF 缺失、客户全量资料 PUBLIC_SUBSET_ONLY 和原 D/RV 状态分别保留。
-
-> 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
-
-> 历史统一发行工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。此句仅记录该次整合时状态，旧介质/原 PASS 保持原身份。
-
-## 已完成的历史冻结发行回执
-
-[本轮7acbb2c发行结果](runtime/unified-windows-release-01-results.md)含8套实际媒介和完整原始校验；它覆盖开工PR44/45/46，早于运行中另合并的PR47/DB8，不可冒充最新main或用于DB8。并发整合保留后合入的统一发行实现、旧原件及所有现行产品指引；本轮实际续建编排源码仅按hash归档于证据目录，当前操作仍按[现行统一发行](runtime/unified-release-01.md)。Windows实机NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。
-
-> [PR57 的55025ce历史八包交付](runtime/unified-release-latest-55025ce.md)保留原运行源码与原校验，不包含后继 PR56/58 的商业交付及新视觉成果。本轮只合并，不测试、不出包；[合并裁决与计数](runtime/publication-no-test-20261020-pr57-pr58.md)分别记录当前源码与历史介质。
+[公开范围](baseline/PUBLICATION.md)、[D决策](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)和原REQ/BR/CAPI编号持续有效。只提交获授权材料；凭据、生产数据、未许可SDK/客户资料不纳入。资料清单见 [manifest](manifest.json)，校验方法见 [工具说明](../tools/README.md)；历史资产问题不通过新增豁免或局部PASS消除。

@@ -1,0 +1,13 @@
+{
+  "BaseErrors": 267,
+  "CandidateErrors": 267,
+  "NewErrors": [],
+  "BaseCodes": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "CandidateCodes": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  }
+}

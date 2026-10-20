@@ -373,9 +373,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "012f109a5747841be6dd3f463fabf73645800fe7bbe918eab5b417188d316ccc",
-      "size_bytes": 14684,
-      "git_blob": "38be1f8774221e873b34692696e99ec25cb25fc6",
+      "sha256": "5f011552ab0e22c192c04efbc942158dfb1836b8210ba73ebbf35bce8373d532",
+      "size_bytes": 14960,
+      "git_blob": "f7feaa0d0349b43767e79fe5d506427d2d92763c",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -30174,10 +30174,10 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "92faa14ce31a3cdaf43df952a6ecac54644183b3be511f543c14f3c0cdfa670e",
       "size_bytes": 2450,
@@ -30209,10 +30209,10 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "0ce0771bdaa2bcead50fcde53e98d6c52d72339d1d18796575e9e67efe4ac7f7",
       "size_bytes": 9041,
@@ -40242,13 +40242,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "e6f3b751b7472ebd9e1f037060b76c0eefe87723bf5b5ebe1cbba69def860b43",
-      "size_bytes": 1688,
-      "git_blob": "3396b1fb1060e2fbbe1230ad56759c3206b43a99",
-      "version": "sportmaster-clear-workstation-01",
+      "sha256": "e711c29d517de73c0c5c8468688c1d0aceb531085d84cb23f2d8077788a56cde",
+      "size_bytes": 1830,
+      "git_blob": "a53302fe55b399d4e00b4f9d25a2de5619a1d0f4",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "a4ff46f83fb85d8b0fe78c5002fd10c00a2add62",
@@ -47781,6 +47781,314 @@
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
+      "path": "docs/design/hikrobot-reader-01.md",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bc7ad503a05ed44c57d54f01f29da7c5b1ddf0e341a1de314537be584e65bff3",
+      "size_bytes": 3559,
+      "git_blob": "3dc77a6974cc017c1aa294706de3562a01b614f0"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/archive-delta.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "759803f139195759effcf62cb7c210d687862bc880a0ce2814b492873fe7c47d",
+      "size_bytes": 269,
+      "git_blob": "6b6eceb6a2c7e971a3796bf8885871a97b244b4d"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/package-identity.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dfe42679137a9560c81fcab37c8c10c45fc6d89d5664fe036d3ee491b05e8d3c",
+      "size_bytes": 1320,
+      "git_blob": "d347c451b98db03f2340545d2f15f24deb841026"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9cc454300c5b1858b6213dbd9a9c0d70bac3b2cf4a122f4b3b1accb9fbc35910",
+      "size_bytes": 600,
+      "git_blob": "7bffa20e1c67f9271ee7912987d29bb72da89d04"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.log",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "966437dd4b8622ab9a3e6db87babb3c15a32009da6dbff8f5271061d9e1e3850",
+      "size_bytes": 424,
+      "git_blob": "4083cd3eb5bebf5b44afa0f0e805334ba425e544"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-test.log",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417",
+      "size_bytes": 2259,
+      "git_blob": "c606022cb2bbd664a6d55f7460ce2b0d0b33737f"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/verification.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8f8bd16de8707f1a9a72f48aa10f66fa896502dfc25aea06a97c00e5d63f923f",
+      "size_bytes": 2972,
+      "git_blob": "3eed5c04c3b4c985d4728f971bd04cc095287f8c"
+    },
+    {
+      "path": "docs/runtime/hikrobot-reader-01.md",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "33893aff08edf9648ba5bad73834210eb0697fb7f469a42f1948f8b2b8da844f",
+      "size_bytes": 9643,
+      "git_blob": "8b06395ab8819a71766614a521847126482196b5"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-HIKROBOT-READER-01.md",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "42f2742a81b6077856112bc0409c074c7a32a5d300ccc45f61291330e45f112c",
+      "size_bytes": 868,
+      "git_blob": "dc4d0facdca64e37005d8bdcc97dd0a6d9ce6630"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e424a850e875b0292daf706466c9131b71d68d10545cd4e1f50aaa8468f71fd9",
+      "size_bytes": 11837,
+      "git_blob": "c33182c4d84fca8b3e94446a4e8f2fc136ed734b"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6b69a0205937f620f4eaf0200eb5b6ed17cedd6a4b90ebbab8a8c24a23ff0ef6",
+      "size_bytes": 518,
+      "git_blob": "1bdc83f2d1ff86d0d780076ec7b6ec69803f6e1f"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "59a5f20db2a0c43bbee97e6e19171abbef6688a2df9f41dc071c4697e91b9b37",
+      "size_bytes": 10436,
+      "git_blob": "fe9a96fe04d07040c0c7d985e6dadb0111c2b78d"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/extension.build.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "41ee0937892361eb96487bbee55979bff92f5ebf93759738f15e8b17be8f76fd",
+      "size_bytes": 749,
+      "git_blob": "b67c0cf4d20c711bb3a845ddcb34f7724d39ffd2"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/extension.build.production.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "139b0f8ecbaf9a9ca8ba1baa56d54dc2de626647caa491bf127dd4d529344e86",
+      "size_bytes": 760,
+      "git_blob": "7d9b5fded735d62261ee9af42ae6a254f342e01f"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/manifest.production.template.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e6b4dfe0e40064c5b190e90a3bb23a64bf0e31ed02c3e168b6421c8d8bffe1a2",
+      "size_bytes": 474,
+      "git_blob": "63dbfb500f21b70d86bf81087363c361202aff48"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/manifest.template.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c65a28a6a4af055f9dd0ca06ade9e183ea1cbc5c0f2bb0c62747b40bc9a3d8ff",
+      "size_bytes": 474,
+      "git_blob": "e199a76deac673cd3fe29739db354eb265a7e1bc"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/modules.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "87c448e944d867d67f4e3c2f5303a1b92efd85ceb3ad9ee6316400f892547e11",
+      "size_bytes": 483,
+      "git_blob": "de7b4fb7387e3f76a755d1b021589bdb96655fe3"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.lock.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
+      "size_bytes": 61,
+      "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.win-x64.lock.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c30b149eb0b6c271aabe8d79d7b0318ba25f0bbd2ebf6a08faa3b67056bce9b3",
+      "size_bytes": 88,
+      "git_blob": "a3ee8487fd9dcb1607a898c92527c578ba511b3b"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/parameters.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "850658de0747f56e52ba6471f68189f1e22d56c8fc63741c63d4d3d31e086203",
+      "size_bytes": 1590,
+      "git_blob": "7a24ee6d87044309e708d926c344182f93f26319"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d270f7671e9471840a7b1801a2fa4d2f829e476ab942a33edf911920681877e4",
+      "size_bytes": 526,
+      "git_blob": "5706fce0b6332d29ed148392d188eacce65aefef"
+    },
+    {
+      "path": "src/Ipc.Platform/NativeSdkBoundary.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cb5a68e69742fb954b5ea74897fe7f22329cc8df69e1a0796d635c2b50d749d0",
+      "size_bytes": 8209,
+      "git_blob": "67219ffd36a3ecfe780c09977a6046ad09950f6a"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Ipc.Drivers.Hikrobot.Probe.csproj",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dd4f37be883e800097277fb7025b8ef91a47b4dfd719e43295c9670971511906",
+      "size_bytes": 342,
+      "git_blob": "1f5d3e2bcdd7f1e1fd690466fce2d6b1fc2b356e"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a6c34fb2bedcf8c22d47f8a18846c956dc8b13ddd73be803a46804aa25973c1c",
+      "size_bytes": 6374,
+      "git_blob": "80c6304be1b788388f2167eaea52c7002d38e5b2"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0032637da7b00384c91768cce5e323864a89140673de62b2655ab3e5f7ad2301",
+      "size_bytes": 3738,
+      "git_blob": "ab332ecf6f5f4684ab56e91115ab072e1ff14f2c"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d013702b9470c6a2c5f8cf5e3cf5d5db141c661f7a41366448d792ac3f6362b6",
+      "size_bytes": 12945,
+      "git_blob": "245e9094c4444112718fe61984d1e3942abebf5d"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fa13a7f0c4bb858d6d1c30df407eecd6ba6e8866153c2863626c14e641e7799a",
+      "size_bytes": 132,
+      "git_blob": "d5ea91deb9b7521d13b93d0a33ee7a05fe2507ce"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.win-x64.lock.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9b98c39c3c2bfd90c1d0bb1ef8cbef3e83189ad56550811e9bde2fc8421893d7",
+      "size_bytes": 159,
+      "git_blob": "9d2f5d155fa90f3dc60a89dc1879b37a1d2bf632"
+    },
+    {
       "path": "docs/runtime/installation-delivery-scope-01.md",
       "storage_scope": "public_repository",
       "sha256": "495b8c0929d45aa138dbdfcf1265c54e9efb9975c18ee0a252472e05dfc73409",
@@ -47797,10 +48105,10 @@
       "sha256": "3c193198bf84b30d83f6ff9a89642dd1fd1831aa84399c4420d77f3d645d315d",
       "size_bytes": 977,
       "git_blob": "99d3e3588f178064bbd6cc1c30ea0f7a1a1f9fab",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-minimum-client-800x420.png",
@@ -47808,10 +48116,10 @@
       "sha256": "04003cefdd84b0982f3fdf82416e3bdce49827e14050200bc159ae4365104aeb",
       "size_bytes": 57052,
       "git_blob": "a0305673ae7050b918b1b8caa83dff600155742d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-normal-1100.png",
@@ -47819,10 +48127,10 @@
       "sha256": "7bee844d2ee39869f16265163d660908699bee362435868e2016850fc0121fe8",
       "size_bytes": 63193,
       "git_blob": "573be0c34ed76b5dcc82b26298d31fc6e5d7d457",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-normal-1366.png",
@@ -47830,10 +48138,10 @@
       "sha256": "fb43d7a4834f346de32d6249b2c138763d339b6950353eeef180c3a0f7544064",
       "size_bytes": 79070,
       "git_blob": "ae895fd068760673a6702e9ecba1ac0d3fae84ee",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-unknown-rejected-1100.png",
@@ -47841,10 +48149,10 @@
       "sha256": "a15fe2764b6039a9123e8d47205e98b37e2c217ca3ae80db3bd53c13d9c6623e",
       "size_bytes": 77055,
       "git_blob": "623b2c4ac31d7fe0cd848a5107e59b76d89e127d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-workstation-blocked-login.png",
@@ -47852,10 +48160,10 @@
       "sha256": "c7e40d9629f04a5623f2c8ef262f7649ae06df116743a09c3aa6d2f14b914a97",
       "size_bytes": 86902,
       "git_blob": "0521ce03859dfe53e38563d235a91e2aef849191",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/classic-compatibility-failure.log",
@@ -47863,10 +48171,10 @@
       "sha256": "11fd792e2ab6f6c5ec6371e0a04932748a5108d63fa80f37fa20c29642b6cdef",
       "size_bytes": 10680,
       "git_blob": "7b49892ad5944b5eade64a379e1ce9b324d35408",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/development-visual.log",
@@ -47874,10 +48182,10 @@
       "sha256": "523bf8a9d34ba164f0d753df231396eb6ed556eb10779d61f35fc2a2823b46a5",
       "size_bytes": 9314,
       "git_blob": "b1143c03b6bb7b259d8cc8f2ccfa05aa4388ee16",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/frozen-result.json",
@@ -47885,10 +48193,10 @@
       "sha256": "642e736976235cf458e7af7d1cbf5755925fd20634f2e41f853ea8a8c00915c0",
       "size_bytes": 3145,
       "git_blob": "15d556e911e237e75c864c5346809d156f168b0a",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/frozen-visual.log",
@@ -47896,10 +48204,10 @@
       "sha256": "f2a0afa77d0cd0798302630158c33cf30de89b937dda044c51495600d0ea3c56",
       "size_bytes": 9870,
       "git_blob": "9002e4dec8185e4e7936873ef661082f47e8437d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/initial-projection-race.log",
@@ -47907,10 +48215,10 @@
       "sha256": "11338328c6804f66cd5054b452253583171d869a90b993070bf95b2cd2755580",
       "size_bytes": 3829,
       "git_blob": "90e5b150d58cfe3f1a7bd9433acdd71ae3b42cd4",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/native-selection.jpg",
@@ -47918,10 +48226,10 @@
       "sha256": "b2516a86a879470ddbd85b7f61fa4e1e7dd8ef47e79b1759008b8db988faa6cd",
       "size_bytes": 87600,
       "git_blob": "80f78b0a91974db0585075955c58b2a35b1944fb",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/native-workstation.jpg",
@@ -47929,10 +48237,10 @@
       "sha256": "ff69bd321a22e7bdecc3878ec2586927f8545862602c275f001e0b8bd4ee61e5",
       "size_bytes": 87710,
       "git_blob": "50e9813ab72a23c80173d885efb4511d5ee25fd4",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/published-startup.jpg",
@@ -47940,10 +48248,10 @@
       "sha256": "789d3e3dd788a7cfb69574853cab3fc89b8a136948b70958850913513953b7b4",
       "size_bytes": 61994,
       "git_blob": "1f0a3e05a2f9a8ed741f44ed30b2eae98c286469",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/supply-station-client-800x420-unknown-rejection.png",
@@ -47951,10 +48259,10 @@
       "sha256": "74cfaea76e73e58ba17ce03a8ca8f81a6b6d18ff205691f0a91a13d61f8ac96f",
       "size_bytes": 62056,
       "git_blob": "35321157962b0f5e7237c76d0c5d5e220e5a765d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/verify.py",
@@ -47962,10 +48270,10 @@
       "sha256": "e6ca211831057272a129d810f0f19e55363a692612b17dadc69d4fe4b933161e",
       "size_bytes": 1607,
       "git_blob": "35d75d8bfdc4d11a665fcdbec66888c5211f1058",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/sportmaster-clear-workstation-01.md",
@@ -47984,10 +48292,10 @@
       "sha256": "6e31a52ec0f439a8d1e3108635e6851135951e99c84d7a6b359bc10d1e3e125f",
       "size_bytes": 1772,
       "git_blob": "038c4493212a30dd0125972aff4005e103a62107",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -49850,5 +50158,15 @@
     "sdk_contract_equipment_and_field": "BLOCKED",
     "production": "NOT_APPROVED",
     "historical_d_rv": "UNCHANGED"
+  },
+  "hikrobot_reader_01": {
+    "base_main": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+    "report": "docs/runtime/hikrobot-reader-01.md",
+    "state": "IMPLEMENTED_TARGETED_TESTS_PASS_REAL_CONNECTION_IDLE_PASS",
+    "real_barcode_frames": 0,
+    "production_qualification": "NOT_APPROVED",
+    "historical_d_rv": "UNCHANGED",
+    "driver_version": "1.0.1",
+    "code_commit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4"
   }
 }

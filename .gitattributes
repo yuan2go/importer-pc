@@ -22,4 +22,7 @@ docs/runtime/evidence/sportmaster-audit-remediation-01/** -text whitespace=cr-at
 docs/archive/pre-parallel-reconciliation-20261020/** -text whitespace=cr-at-eol
 docs/archive/parallel-reconciliation-20261020-inflight-ui/** -text whitespace=cr-at-eol
 docs/runtime/evidence/parallel-reconciliation-20261020/** -text whitespace=cr-at-eol whitespace=cr-at-eol
+
+# Actual Windows driver verification stdout preserves captured bytes.
+docs/runtime/evidence/hikrobot-reader-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sportmaster-clear-01/** -text whitespace=cr-at-eol

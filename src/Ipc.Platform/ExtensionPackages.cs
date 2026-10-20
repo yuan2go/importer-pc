@@ -166,9 +166,7 @@ public static class ExtensionPackages
             throw new InvalidDataException("Invalid/private shared contract assembly");
         if (metadata.GetString(metadata.GetAssemblyDefinition().Name) != Path.GetFileNameWithoutExtension(path))
             throw new InvalidDataException("Managed assembly identity must match its signed filename");
-        foreach (var method in metadata.MethodDefinitions)
-            if ((metadata.GetMethodDefinition(method).Attributes & System.Reflection.MethodAttributes.PinvokeImpl) != 0)
-                throw new InvalidDataException("Native imports require a separately approved SDK boundary");
+        NativeSdkBoundary.ValidateImports(manifest, metadata);
         foreach (var module in manifest.Modules.Where(x => x.Assembly == path))
             if (!metadata.TypeDefinitions.Any(h => { var t = metadata.GetTypeDefinition(h); return metadata.GetString(t.Namespace) + "." + metadata.GetString(t.Name) == module.EntryType; }))
                 throw new InvalidDataException("Declared entry type missing (static metadata)");

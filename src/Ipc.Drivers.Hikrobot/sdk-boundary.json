@@ -1,0 +1,14 @@
+{
+  "SchemaVersion": 1,
+  "Sdk": "MvCodeReader",
+  "ValidatedVersion": "2.0.0.4",
+  "Platform": "Windows-x64",
+  "Transport": "GigE",
+  "DeviceDescriptorBytes": 572,
+  "CallbackCodeListOffset": 72,
+  "CodeRecordBytes": 4628,
+  "CodeLengthOffset": 4100,
+  "MaximumCodes": 300,
+  "MaximumCodeBytes": 4096,
+  "Semantics": "Read observations only. No SDK setting writes, software trigger, image retention, WCS or PLC calls. Trigger association requires independent deployment qualification and one-trigger-one-entity evidence."
+}

@@ -1,3 +1,4 @@
+> 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
 > 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
 
 # 当前整合入口 · 2026-10-20

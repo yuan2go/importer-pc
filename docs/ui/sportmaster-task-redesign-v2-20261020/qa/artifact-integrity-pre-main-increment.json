@@ -1,0 +1,92 @@
+{
+  "scope": "Design artifact integrity only; no production build/Windows/device test",
+  "sourceAnalysisCommit": "6784d08a7a8f5326607dda83e00d21bc2ed71632",
+  "prototypeSha256": "d592d46b02bea06d6579b580178fb3e15ff929dac1e11502360c89780f87020e",
+  "checks": [
+    {
+      "check": "source_rebuild_matches_reviewed_prototype",
+      "passed": true,
+      "detail": "d592d46b02bea06d6579b580178fb3e15ff929dac1e11502360c89780f87020e"
+    },
+    {
+      "check": "51_named_scenes_58_png",
+      "passed": true,
+      "detail": {
+        "named-scene": 51,
+        "viewport": 5,
+        "scroll-detail": 2
+      }
+    },
+    {
+      "check": "screen_id_uniqueness",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all_png_hashes_match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "final_render_has_no_recorded_issues",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current_fields_48_csv_json_equal",
+      "passed": true,
+      "detail": {
+        "csv": 48,
+        "json": 48
+      }
+    },
+    {
+      "check": "original_overlay_58_rows",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "chinese_glyphs_400",
+      "passed": true,
+      "detail": {
+        "distinct_source_characters": 652,
+        "missing": ""
+      }
+    },
+    {
+      "check": "chinese_glyphs_700",
+      "passed": true,
+      "detail": {
+        "distinct_source_characters": 652,
+        "missing": ""
+      }
+    },
+    {
+      "check": "demo_connect_csp_none",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current_v2_local_links",
+      "passed": true,
+      "detail": {
+        "count": 375,
+        "broken": []
+      }
+    },
+    {
+      "check": "v1_originals_preserved",
+      "passed": true,
+      "detail": {
+        "original_files": 108,
+        "changed": []
+      }
+    },
+    {
+      "check": "no_production_source_edits",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "allPassed": true
+}

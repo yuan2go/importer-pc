@@ -1,0 +1,84 @@
+{
+  "scope": "仅 V2 离线原型的必要交互；未连接 HTTP/设备，未做 WPF/Windows/DPI/安装/性能/现场验收",
+  "source": "/workspace/scratch/69927969969a/importer-pc/docs/ui/sportmaster-task-redesign-v2-20261020/Prototype.html",
+  "sourceSha256": "66a64ad3f75770ec4c5bf02150b2d5ea6a687acb416e78753eaeb5ff6584119f",
+  "startedAt": "2026-10-20T08:48:18.174Z",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "selectedChecks": [
+    "V2-T03",
+    "V2-T06"
+  ],
+  "checks": [
+    {
+      "id": "V2-T03",
+      "title": "已知数值边界与跨类别错误定位",
+      "scene": "system-station",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "当前代码明确范围的七个字段不会让 0 被标为校验通过",
+          "evidence": {
+            "draft.business.queueCapacity": "请输入 1–4096 范围内的整数。",
+            "draft.business.timeoutMs": "请输入 100–30000 ms 范围内的整数。",
+            "draft.business.maximumOperations": "请输入 1–100000 范围内的整数。",
+            "draft.system.residentHistory": "请输入 1–10000 条 范围内的整数。",
+            "draft.system.minimumFreeBytes": "请输入 1048576–1099511627776 bytes 范围内的整数。",
+            "draft.system.backupInterval": "请输入 15–10080 min 范围内的整数。",
+            "draft.system.backupMaximum": "请输入 1–1000 份 范围内的整数。"
+          }
+        },
+        {
+          "pass": true,
+          "message": "错误摘要跳转到业务模块的作业处理分组"
+        },
+        {
+          "pass": true,
+          "message": "首个错误输入在视口内并取得焦点"
+        },
+        {
+          "pass": true,
+          "message": "校验错误不会保存或改变运行值"
+        }
+      ]
+    },
+    {
+      "id": "V2-T06",
+      "title": "状态失效阻断恢复，原件未知按位保留",
+      "scene": "work-stale",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "快照失效时恢复按钮不可用"
+        },
+        {
+          "pass": true,
+          "message": "共享条件恢复后允许当前已就绪的右位恢复，符合 schema3 按位可用性"
+        },
+        {
+          "pass": true,
+          "message": "恢复操作不清左位未知原件，也不准入左位新包"
+        },
+        {
+          "pass": true,
+          "message": "右位完成后左位原请求仍保持未知，未自动重发或解除责任"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "browser": "155.0.8059.84",
+  "finishedAt": "2026-10-20T08:48:20.902Z",
+  "sourceStillSame": true,
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "pageErrors": 0,
+    "externalRequests": 0
+  }
+}

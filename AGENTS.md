@@ -13,9 +13,11 @@
 
 ## UI实现必须读取的实物基线
 
-Sportmaster本轮UI的现行任务与视觉目标为 `docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md`。修改页面前完整查看新交互原型、48张PNG、完整交接、58项字段/状态与39项操作迁移，再读 `docs/design/sportmaster-task-redesign-01.md` 的最新代码裁决和 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。原型中的示例值、保存/运行版本号和模拟成功不得直接成为生产逻辑；真实Driver/Integration参数与能力、唯一配置账和Application守卫优先。
+Sportmaster 本轮 UI 的现行任务与视觉目标为 `docs/ui/sportmaster-task-redesign-v2-20261020/README.md`。修改页面前实际查看 V2 交互原型、全部界面、HANDOFF、当前字段映射及原 58 项字段/状态和 39 项操作的迁移去向，再读 `docs/design/sportmaster-task-redesign-01.md` 与 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。V2 参数分为系统、业务模块、驱动、组件四类；首次配置是五步独立启动流程，不在日常导航中；左右相机框固定相机、扫描、任务三组信息。用户已确认的字段归属和新增 RCS 响应字段通过必要契约补齐；原型示例值、版本号和模拟成功不能成为生产默认或验收证据。
 
-旧 `docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列的页面主定义。编码前先清理本包相关过期当前指引，修正索引和替代关系；保留原件、编号及历史证据，已正确内容不重复改写。采用工业级、可维护的完整任务闭环，不做最小演示实现，也不为UI另造配置/部署/业务权威。Windows实机、原型模拟与真实设备验收分别记录。
+旧 `docs/ui/sportmaster-task-redesign-20261020/`（V1）、`docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列页面主定义。编码前先清理相关过期当前指引及冲突字段归属，修正索引和替代关系；原件、编号、原哈希与历史证据保留，已正确内容不重复改写。四类页面仍编辑同一完整候选，复用唯一配置账、Application 守卫及原请求责任，采用工业级完整任务闭环，不选择最小演示实现。必要测试覆盖实际改动风险；Windows 实机、原型模拟与真实设备验收分别记录。
+
+当前main已并入PR69单窗口安装、PR70心跳、PR71参数快照与PR72发布；完整V2仍待实现，PARAM-01不是已完成/已验证交付。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
 
 ## 项目级 UI/UX skill
 

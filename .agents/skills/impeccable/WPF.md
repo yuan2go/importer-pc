@@ -1,6 +1,6 @@
 # Importer-PC WPF adaptation
 
-Use Operate mode for the workstation, history, maintenance, startup and support. Read AGENTS.md and docs/design/sportmaster-visual-productization-01.md before edits. Existing UI baseline and business contract win over generic styling advice and categorical bans.
+Use Operate mode for the workstation, history, maintenance, startup and support. Read AGENTS.md, docs/ui/sportmaster-task-redesign-v2-20261020/README.md and docs/design/sportmaster-task-redesign-01.md before edits. Existing UI baseline and business contract win over generic styling advice and categorical bans.
 
 Run the upstream context launcher once per session; context does not recognize XAML as visual implementation. Use the documented incumbent XAML and current native screenshots as authority. No PRODUCT.md/ DESIGN.md duplication is necessary for this scoped refinement. Context failure is reported, not turned into a new product interview.
 

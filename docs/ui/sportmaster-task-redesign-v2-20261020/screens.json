@@ -1,0 +1,3476 @@
+[
+  {
+    "id": "work-normal",
+    "scene": "work-normal",
+    "title": "作业 · 每位三组信息",
+    "description": "设备、相机条码、RCS 任务固定分组；波次、任务、SKU、数量及格口同件展示。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/01-work-normal.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e7dfd874cc04095b60315a1a450c88c3a76c46fdfe88fe59fe6b2b9dc4e1fe16",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-processing",
+    "scene": "work-processing",
+    "title": "作业 · 左位条码已读，等待 RCS",
+    "description": "只更新左位，旧任务字段整组失效；右位保持自己的结果。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/02-work-processing.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "85d3042484de40ef0cde19256bde86cd31b8adab7ce6aeb48c46558f809cd744",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-waiting",
+    "scene": "work-waiting",
+    "title": "作业 · 等待相机读码",
+    "description": "无当前条码或任务，不保留上一件格口，不增加逐包确认。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/03-work-waiting.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "158a5b9be82ff2d9cb2a32d9583ec6f7fb0cc7fa5231cf25f638fd337a8428d1",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-rcs-outage",
+    "scene": "work-rcs-outage",
+    "title": "作业 · RCS 响应异常",
+    "description": "共享故障说明两路新请求影响，原件责任逐位保留。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/04-work-rcs-outage.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "633c89752d157c2d2929d14ba11997c8eed79369892372eb69010f22c4020131",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-camera-outage",
+    "scene": "work-camera-outage",
+    "title": "作业 · 左相机中断",
+    "description": "明确具体实例和影响；本场景右位仍具备准入条件。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/05-work-camera-outage.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "fc8e3c082bb7f51d5832b108e1395423dcaa044a70f754ea9be83720df477965",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-unknown",
+    "scene": "work-unknown",
+    "title": "作业 · 结果未知与明确拒绝",
+    "description": "本次条码保留，未知与拒绝分别表达，不提供伪查询或盲重试。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/06-work-unknown.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "75152d466ae0730dc6953c8be1dcb6881f6e54d12c437dd46c86024b7d078745",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-stale",
+    "scene": "work-stale",
+    "title": "作业 · 当前状态失效",
+    "description": "隐藏不可信的当前格口和任务字段，先恢复状态读取。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/07-work-stale.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "ce0e9e05f2ab287a222556d0548c9c5fe1b76bf5f46e68a60c0264812bd84c25",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-long",
+    "scene": "work-long",
+    "title": "作业 · 长条码与任务字段",
+    "description": "完整展示长条码、波次、任务号和 SKU；长格口不截断。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/08-work-long.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "12ec8fe772205594c9d2cfb8126068f34805a6d5403ec1505e6a0ced247ff32f",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 811,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 713.9375,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 515,
+        "clientHeight": 515,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 713.9375,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 515,
+        "clientHeight": 515,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-fields-missing",
+    "scene": "work-fields-missing",
+    "title": "作业 · 响应字段缺失",
+    "description": "未返回的波次或数量显示未返回，不拿请求数量或上一包补值。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/09-work-fields-missing.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "04943dd9602387ad5640d897ed1703948ab8a9c8fe9bfc81e06a801b44587849",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "system-station",
+    "scene": "system-station",
+    "title": "系统配置 · 供包台身份",
+    "description": "zoneId、projectId、stationCode 在系统中维护，业务规则通过独立类别引用。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/10-system-station.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e2d9894df7dd05a3a27f1a856d1abed80b3a6c0c25669feaa6a12f6f746d4334",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "system-records",
+    "scene": "system-records",
+    "title": "系统配置 · 记录与备份",
+    "description": "本机历史、磁盘和备份，使用明确单位与范围。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/11-system-records.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e794e36c1a8f0716ea52ae316e7309517ca09e31898a930e2cdfa2d0dba8a0eb",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "system-backup-disabled",
+    "scene": "system-backup-disabled",
+    "title": "系统配置 · 关闭计划备份",
+    "description": "关闭后只取消未来调度，既有完整恢复集保留；条件字段停止校验和提交。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/12-system-backup-disabled.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "9c6c090a35eea03b001c7bdec61146e51309ae3f6957f73d688ca0ce21a8783d",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "system-preferences",
+    "scene": "system-preferences",
+    "title": "系统配置 · 本机偏好",
+    "description": "普通显示偏好单独即时保存，不进入运行参数的重启流程。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/13-system-preferences.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "31749a145086c951535bbe78f6ef630c0fc19267424f9f3fa8d9e6f305a554c5",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "business-rules",
+    "scene": "business-rules",
+    "title": "业务模块配置 · 任务请求规则",
+    "description": "当前 Sportmaster 的请求数量、指定格口及条件必填字段，不切换 Application。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/14-business-rules.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "60edcd418ea5d8c625f6cc8c95a22e78a5605da09ec73ba9f84e1e3c608a5c34",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "business-chute-error",
+    "scene": "business-chute-error",
+    "title": "业务模块配置 · 指定格口校验失败",
+    "description": "启用指定格口必须填写编码；错误就近显示，其他输入保留。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/15-business-chute-error.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "5b84b033290c6861c68b0de1033c93dbaafb22f3f2af265bd6320b9cd81b781b",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 335.734375,
+        "bottom": 419.234375,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "business-runtime",
+    "scene": "business-runtime",
+    "title": "业务模块配置 · 作业处理",
+    "description": "当前 Application 的输入队列、调用超时与未清偿作业容量。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/16-business-runtime.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "4f1d496a110aab666b17201a0e8e3e3547e4b1bf409c5f95bf3b7fe36a1cf4cb",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-left",
+    "scene": "driver-left",
+    "title": "驱动配置 · 左位实例",
+    "description": "同一已安装驱动下的左位配置，IP 与 bcrCode 对象归属明确。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/17-driver-left.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "85a4e7556d2cf58dab9d91b0665fc3df4e037fd72573cc566c8259c189dcc058",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-right",
+    "scene": "driver-right",
+    "title": "驱动配置 · 右位实例",
+    "description": "同驱动第二个实例，配置和位置独立；实例数量由业务模块决定。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/18-driver-right.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "261924a358cb579d67debf4bd89704bec15b5f4518cf1ddc7b959b050fc0b98f",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-dirty",
+    "scene": "driver-dirty",
+    "title": "驱动配置 · 编辑未保存",
+    "description": "修改标记、当前对象与底部整站保存范围同时可见。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/19-driver-dirty.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "038a9d763c4ff943571e92e69e4dfa5b392513d0146157368e92f83d5b4341ae",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-invalid",
+    "scene": "driver-invalid",
+    "title": "驱动配置 · IP 输入错误",
+    "description": "错误定位当前实例，保留相机业务编码和其他输入。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/20-driver-invalid.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "66c4fca65322cd3250f3e74c48946b876e04d7948b9029428c5bdabc4e59e844",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 335.734375,
+        "bottom": 420.234375,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-conflict",
+    "scene": "driver-conflict",
+    "title": "驱动配置 · 两实例关联冲突",
+    "description": "重复 IP 或相机编码指出关联对象，不静默覆盖另一实例。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/21-driver-conflict.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "bfc18742f054f45fe2069231602bb5b40b93cc95c80c3dd0b0d71baf591c75f2",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 358.921875,
+        "bottom": 443.421875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-checking",
+    "scene": "driver-checking",
+    "title": "驱动配置 · 正在检查编辑副本",
+    "description": "检查不保存、不启动新设备连接，不把格式检查等同读码成功。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/22-driver-checking.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "df75018c330b605f7ebf3dac3441a2ef6871a365de06429160a93ea486c71dce",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-validating",
+    "scene": "config-validating",
+    "title": "参数配置 · 正在校验",
+    "description": "完整候选校验期间保留表单，禁止重复提交，不改变实际运行值。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/23-config-validating.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "7a0b28da79fe08bdbddf583558d63b41e91fc3bc9d23a59ef944b56458bf24b0",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "components",
+    "scene": "components",
+    "title": "组件配置 · 单一 RCS 连接",
+    "description": "一个组件连接服务左右两位；站点和相机映射只读引用可跳转。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/24-components.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "42f53d12e242729bc7c1d3ffdaaa930059a77106663532729aafb7aea9d5f503",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "components-failed",
+    "scene": "components-failed",
+    "title": "组件配置 · 地址可达性失败",
+    "description": "按检查对象与层级说明失败，保留输入，定位接口地址。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/25-components-failed.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "4c9b9a73e7467e3e5a81a6aed773037de74bf1821be99fbd68f7db07e0cce91b",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-save-review",
+    "scene": "config-save-review",
+    "title": "保存配置 · 关联修改与影响",
+    "description": "所有关联修改一次审阅；保存前整站软件暂停、排空与既有维护认证。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/26-config-save-review.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "cbcd8f75931ea5e5e14b7ea3efcf1735ce5363ec99a6260a566b021aa752f023",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-saving",
+    "scene": "config-saving",
+    "title": "保存配置 · 正在保存",
+    "description": "保留表单与输入，防重复提交，展示整站范围。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/27-config-saving.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "6fe13ee8d012450db32753f93d8d8bf424af97e7aec1c3374536374ade1e98b9",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-save-failed",
+    "scene": "config-save-failed",
+    "title": "保存配置 · 已确认未写入",
+    "description": "只有获得写入前拒绝证据才显示未保存，草稿仍可修正。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/28-config-save-failed.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "fb03ae87284d4c5214503f667ad94cf5876f2c6a78028659ce484dd6357bb6de",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 245.546875,
+        "bottom": 330.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-save-unknown",
+    "scene": "config-save-unknown",
+    "title": "保存配置 · 结果待核对",
+    "description": "可能落盘但回执失败，先比对候选与唯一配置账，禁止重复保存。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/29-config-save-unknown.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "490c92991a0e288f495862966202e0107503ca595a355f7e0fa33d2e443ea889",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 331.734375,
+        "bottom": 416.234375,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-pending",
+    "scene": "config-pending",
+    "title": "配置生效 · 已保存待重启",
+    "description": "保存内容与实际运行内容分开，不能把保存成功当已生效。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/30-config-pending.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "b94f8b5ad737abd469492eece4a607fa5676054d9437c36fccc3d760760cedee",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-applying",
+    "scene": "config-applying",
+    "title": "配置生效 · 正在受控重启",
+    "description": "采用当前 Restart 机制，读取启动确认后仍保持软件暂停。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/31-config-applying.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "33c11234dcbfe3d04d8f0d59bce1b56d46371ae87affbbf911c652447a74a58b",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-apply-failed",
+    "scene": "config-apply-failed",
+    "title": "配置生效 · 失败且旧运行已确认",
+    "description": "候选保留待生效，清楚说明当前仍用旧运行内容。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/32-config-apply-failed.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "b179d86d0c323f170c1066729c7ca60db1ba0980944eb346564eb5c3ca46cb5c",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 245.546875,
+        "bottom": 330.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-runtime-unknown",
+    "scene": "config-runtime-unknown",
+    "title": "配置生效 · 当前运行待确认",
+    "description": "不知道正在运行哪份配置时不提供正常恢复。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/33-config-runtime-unknown.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "b059658c960e790096aed176f1904aadba22cab50def1a5cc42a295ed170db6d",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 245.546875,
+        "bottom": 330.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "config-effective",
+    "scene": "config-effective",
+    "title": "配置生效 · 新内容已确认",
+    "description": "新配置已得到启动确认，现场准入和恢复接收仍单独判断。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/34-config-effective.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "5fe0b62079275c45af43eaee86b52eaa0e6fe44edfd12bff83051c13444c1313",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "unsaved",
+    "scene": "unsaved",
+    "title": "未保存离开 · 三个明确选择",
+    "description": "继续编辑、保留草稿离开、放弃本次修改；范围与结果明确。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/35-unsaved.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "469f28e3ac8386a81d8cbb54cad8d4bee05aeace4d6fb7e3ad8a2f02a283a3fb",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-module",
+    "scene": "setup-module",
+    "title": "首次启动 · 业务模块",
+    "description": "独立启动全窗，不显示日常侧栏；从已安装 Application 开始。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/36-setup-module.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "a7b718562a9ca62b5bd97acd5dd57cccce3462aec5ffd9d1d7edac52e0f5d616",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-system",
+    "scene": "setup-system",
+    "title": "首次启动 · 系统配置",
+    "description": "配置区域、项目、供包台编码与本机备份目录。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/37-setup-system.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "a088eac7df154e64511ab15fa70d6a20f457c99a77b13d44816cadddb293641b",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-devices",
+    "scene": "setup-devices",
+    "title": "首次启动 · 驱动实例",
+    "description": "Sportmaster 要求同一驱动两个相机实例，分别配置地址、编码与实体关联。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/38-setup-devices.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "21e4b688046026a57198519aec513aa6f8cb713cfa14fd1f25f5b8880dc5f6db",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-component",
+    "scene": "setup-component",
+    "title": "首次启动 · 组件连接",
+    "description": "配置唯一 RCS 连接与协议参数，前面步骤的身份和规则只读引用。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/39-setup-component.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "ee611ec047c145b32fe9a46cd48b7039a9e274018ddfda8de39479fa5df26205",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-review",
+    "scene": "setup-review",
+    "title": "首次启动 · 检查与完成",
+    "description": "检查字段、装配与真实链路分层，保存和启动分别确认。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/40-setup-review.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "230dbf7fcf4f0ac843fda530694c583ec363d48e13a400f43e305957254ca9de",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-pending",
+    "scene": "setup-pending",
+    "title": "首次启动 · 已保存尚未启动",
+    "description": "保存完成后仍明确提示待启动，不提前进入正常作业。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/41-setup-pending.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "8ca5efdc34fee42968476a56f0aa30b5fd33017608a6ebae97129097628ab02a",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "setup-complete",
+    "scene": "setup-complete",
+    "title": "首次启动 · 启动已确认",
+    "description": "完成后进入作业，后续修改直接进入四类参数配置。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/42-setup-complete.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "23b2eda81d460cc194798bb998866794a912b0d196a3ddb28aba1b8cb8c86d25",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": null,
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 756,
+        "bottom": 812,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 56,
+        "clientHeight": 56,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "history",
+    "scene": "history",
+    "title": "作业记录 · 查询与任务详情",
+    "description": "按稳定查询快照展示，包含对应任务字段。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/43-history.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "38be30a455c787d39694877279c9418ce29a853b4393e9411ad84cde9f3386d3",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 975,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "history-empty",
+    "scene": "history-empty",
+    "title": "作业记录 · 无匹配结果",
+    "description": "保留筛选，说明当前查询范围并提供清除入口。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/44-history-empty.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "a5177ee9884be091d0fd2514c4ba0327eca10adfb65c406520fac49e51032dba",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "history-invalid",
+    "scene": "history-invalid",
+    "title": "作业记录 · 日期范围错误",
+    "description": "定位筛选关系，保留其他输入。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/45-history-invalid.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e6751e981c8aed413ec95afbed167b8cbdef11d27707395be49950a38ce514d2",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 1081,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "diagnostics-outage",
+    "scene": "diagnostics-outage",
+    "title": "诊断 · RCS 异常与原请求",
+    "description": "心跳 HTTP 证据、业务确认与原请求责任分层显示，连接恢复不清偿原件。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/46-diagnostics-outage.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e445429c52bccad751deef307556f99ffa1b34538a9dc22ef38dc39a156b042e",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 1019,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "diagnostics-recovered",
+    "scene": "diagnostics-recovered",
+    "title": "诊断 · 地址恢复，原件仍待核对",
+    "description": "模拟修复外部连接后重新读取；网络恢复不清除原件责任。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/47-diagnostics-recovered.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "39b7cde5eeadd425c473fe1b7b4fca11bb3b0ad60f1e4afad4caef81197dc022",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 1019,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "maintenance",
+    "scene": "maintenance",
+    "title": "维护 · 备份与配置迁移",
+    "description": "完整恢复集与安全模板分开，按对象预览和受控恢复。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/48-maintenance.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "55e5117f68212b8de6cce7012c62fe99df9083c916b833a5b3314dc0654130df",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "migration-conflict",
+    "scene": "migration-conflict",
+    "title": "迁移 · 旧左右供包台编码不一致",
+    "description": "保留两个原值，明确处置后才能合并为系统 stationCode。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/49-migration-conflict.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "5c5943001f0278d1b8f733345b3b366e579bd0be055ec95ecbab714cbd932978",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "support-preview",
+    "scene": "support-preview",
+    "title": "支持 · 诊断摘要预览",
+    "description": "时间、对象、内容与秘密排除清楚，导出同一份有效预览。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/50-support-preview.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "942c9a8e65937bed1f6dd8344e0db459442f67109f0a085d68186edafee83613",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 825,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "install-review",
+    "scene": "install-review",
+    "title": "安装维护 · 普通 Windows 交付",
+    "description": "同窗自动准备、本地摘要、安装时一次 Windows 授权；普通客户端首次需要时再进入独立配置。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/51-install-review.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "bad2ade963922261e9e49a201a772bc1b1b27d3f7ae0629ef94cb72efcc3f7ac",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 0,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 762,
+        "bottom": 814,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 52,
+        "clientHeight": 52,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-1366x768",
+    "scene": "work-normal",
+    "title": "紧凑显示 · 1366 × 768",
+    "description": "逻辑视口检查，不能代替实际 Windows DPI 验收。",
+    "width": 1366,
+    "height": 768,
+    "kind": "viewport",
+    "file": "screens/52-work-1366x768.png",
+    "pixelWidth": 2732,
+    "pixelHeight": 1536,
+    "sha256": "ab57fbe94803d4e20cff092cbf43358dcaf228f2fcc0508e55743fc826c3dc8c",
+    "geometry": {
+      "bodyWidth": 1366,
+      "workspace": {
+        "top": 44,
+        "bottom": 708,
+        "left": 158,
+        "right": 1366,
+        "scrollHeight": 664,
+        "clientHeight": 664,
+        "display": "block"
+      },
+      "left": {
+        "top": 157,
+        "bottom": 635,
+        "left": 178,
+        "right": 753,
+        "scrollHeight": 476,
+        "clientHeight": 476,
+        "display": "block"
+      },
+      "right": {
+        "top": 157,
+        "bottom": 635,
+        "left": 771,
+        "right": 1346,
+        "scrollHeight": 476,
+        "clientHeight": 476,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-long-1280x720",
+    "scene": "work-long",
+    "title": "长字段 · 1280 × 720",
+    "description": "约对应 1920 × 1080、150% 缩放的逻辑空间，非 Windows 实测。",
+    "width": 1280,
+    "height": 720,
+    "kind": "viewport",
+    "file": "screens/53-work-long-1280x720.png",
+    "pixelWidth": 2560,
+    "pixelHeight": 1440,
+    "sha256": "1e56badef9bea8d73a050661560b2beb3056ae08ffe8f9d2b12073fe9c557fec",
+    "geometry": {
+      "bodyWidth": 1280,
+      "workspace": {
+        "top": 44,
+        "bottom": 660,
+        "left": 158,
+        "right": 1280,
+        "scrollHeight": 616,
+        "clientHeight": 616,
+        "display": "block"
+      },
+      "left": {
+        "top": 157,
+        "bottom": 640.5625,
+        "left": 178,
+        "right": 710,
+        "scrollHeight": 482,
+        "clientHeight": 482,
+        "display": "block"
+      },
+      "right": {
+        "top": 157,
+        "bottom": 640.5625,
+        "left": 728,
+        "right": 1260,
+        "scrollHeight": 482,
+        "clientHeight": 482,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-minimum-800x420",
+    "scene": "work-normal",
+    "title": "最小逻辑窗口 · 800 × 420",
+    "description": "保留三组核心信息和本次操作，较低空间采用紧凑显示。",
+    "width": 800,
+    "height": 420,
+    "kind": "viewport",
+    "file": "screens/54-work-minimum-800x420.png",
+    "pixelWidth": 1600,
+    "pixelHeight": 840,
+    "sha256": "d57ff748bbf70554cd262d9b903685ca91df9d44ff464af7d7bda215bbffd705",
+    "geometry": {
+      "bodyWidth": 800,
+      "workspace": {
+        "top": 38,
+        "bottom": 368,
+        "left": 64,
+        "right": 800,
+        "scrollHeight": 331,
+        "clientHeight": 330,
+        "display": "block"
+      },
+      "left": {
+        "top": 107.25,
+        "bottom": 366.84375,
+        "left": 78,
+        "right": 426,
+        "scrollHeight": 258,
+        "clientHeight": 258,
+        "display": "block"
+      },
+      "right": {
+        "top": 107.25,
+        "bottom": 366.84375,
+        "left": 438,
+        "right": 786,
+        "scrollHeight": 258,
+        "clientHeight": 258,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "display-protection-799x419",
+    "scene": "work-normal",
+    "title": "窗口不足 · 799 × 419 保护",
+    "description": "不支持的窗口显示保护提示；生产保留既有恢复确认。",
+    "width": 799,
+    "height": 419,
+    "kind": "viewport",
+    "file": "screens/55-display-protection-799x419.png",
+    "pixelWidth": 1598,
+    "pixelHeight": 838,
+    "sha256": "dac949d26410c78b0bea9be6636750d7817035cc000137780e76ed90d81691da",
+    "geometry": {
+      "bodyWidth": 799,
+      "workspace": {
+        "top": 38,
+        "bottom": 367,
+        "left": 64,
+        "right": 799,
+        "scrollHeight": 331,
+        "clientHeight": 329,
+        "display": "block"
+      },
+      "left": {
+        "top": 107.25,
+        "bottom": 366.84375,
+        "left": 78,
+        "right": 425.5,
+        "scrollHeight": 258,
+        "clientHeight": 258,
+        "display": "block"
+      },
+      "right": {
+        "top": 107.25,
+        "bottom": 366.84375,
+        "left": 437.5,
+        "right": 785,
+        "scrollHeight": 258,
+        "clientHeight": 258,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 38,
+        "bottom": 367,
+        "left": 0,
+        "right": 799,
+        "scrollHeight": 329,
+        "clientHeight": 329,
+        "display": "flex"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "driver-invalid-1280x720",
+    "scene": "driver-invalid",
+    "title": "紧凑参数页 · 字段错误",
+    "description": "对象、类别及保存固定可见，滚动仅发生在当前表单内。",
+    "width": 1280,
+    "height": 720,
+    "kind": "viewport",
+    "file": "screens/56-driver-invalid-1280x720.png",
+    "pixelWidth": 2560,
+    "pixelHeight": 1440,
+    "sha256": "26f40fb21afa66f2ad8fab3eb36b7541b03d250476c391ffa00e6d7621b86eb1",
+    "geometry": {
+      "bodyWidth": 1280,
+      "workspace": {
+        "top": 44,
+        "bottom": 660,
+        "left": 158,
+        "right": 1280,
+        "scrollHeight": 616,
+        "clientHeight": 616,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 597,
+        "bottom": 660,
+        "left": 158,
+        "right": 1280,
+        "scrollHeight": 62,
+        "clientHeight": 62,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 325.734375,
+        "bottom": 410.234375,
+        "left": 384,
+        "right": 1259,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "components-lower",
+    "scene": "components",
+    "title": "组件配置 · 下方参数与引用",
+    "description": "同一 RCS 页面向下滚动，仍显示对象头、分类与保存范围。",
+    "width": 1600,
+    "height": 900,
+    "kind": "scroll-detail",
+    "scroll": ".config-content",
+    "file": "screens/57-components-lower.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "4fb1e7331a9686de7751ff919255cb4fc3fa7b4bd7d8c47f446c2dd28944238a",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 322.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 84,
+        "clientHeight": 84,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "system-backup-lower",
+    "scene": "system-records",
+    "title": "系统配置 · 下方计划备份",
+    "description": "同一系统页面向下滚动，完整显示计划开关、目录与周期。",
+    "width": 1600,
+    "height": 900,
+    "kind": "scroll-detail",
+    "scroll": ".config-content",
+    "file": "screens/58-system-backup-lower.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "e0b8809ac222d8a82acd3ff0b9cea8376868b039b33843a68642e1cbb47ff159",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "business-barcode",
+    "scene": "business-barcode",
+    "title": "业务模块 · 条码筛选",
+    "description": "沿已有 Application 筛选合同；预置样例仅模拟，不执行用户正则。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/59-business-barcode.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "3a1e4d20dc1a139fefd268b1d3ce64086b73a6d25b71644eee89a4c9178436c4",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 237.546875,
+        "bottom": 321.046875,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "business-barcode-error",
+    "scene": "business-barcode-error",
+    "title": "条码筛选 · 规则错误",
+    "description": "本次规则错误就近定位，其他输入与运行规则保留。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/60-business-barcode-error.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "a1550dbe635cfa22544c43fbeb0ce4798bf0393aecd508977113f024b0b8e4d8",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "flex"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": {
+        "top": 773,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 66,
+        "clientHeight": 66,
+        "display": "flex"
+      },
+      "configHeader": {
+        "top": 335.734375,
+        "bottom": 419.234375,
+        "left": 425,
+        "right": 1575,
+        "scrollHeight": 83,
+        "clientHeight": 83,
+        "display": "flex"
+      },
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-filter-selected",
+    "scene": "work-filter-selected",
+    "title": "多候选 · 唯一选中",
+    "description": "相机原始候选经当前业务规则选出唯一条码，再取得本次任务。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/61-work-filter-selected.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "f7dea06f082b5a970781cae2ff47ba746ab61483e4f4ffa387d9b8fd208190eb",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 196.546875,
+        "bottom": 693.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-filter-none",
+    "scene": "work-filter-none",
+    "title": "条码筛选 · 无匹配",
+    "description": "本次没有匹配条码，不请求 RCS；旧格口不能作为本次结果。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/62-work-filter-none.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "01e16ff72c71ea56b88730df7ab9e03beaefb6e997efffb100ce7f832c41d13a",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-filter-multiple",
+    "scene": "work-filter-multiple",
+    "title": "条码筛选 · 多码歧义",
+    "description": "多个匹配条目均保留，不自动去重或让操作员手动选码。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/63-work-filter-multiple.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "1b211397a2fe720958ce2dd8774251453b0716b4c4cf4e19fe6392d347f041ba",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "work-filter-details",
+    "scene": "work-filter-details",
+    "title": "本次输入详情 · 候选与规则",
+    "description": "保序候选、完整性、筛选结论与规则指纹；不人工选码、不构造RCS请求。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/64-work-filter-details.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "cdb36aa39ca712054727057745a5b87977dc12401f7ff3a39855d948c3cb3868",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 176,
+        "right": 1600,
+        "scrollHeight": 800,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 200,
+        "right": 879,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "right": {
+        "top": 206.546875,
+        "bottom": 703.140625,
+        "left": 897,
+        "right": 1576,
+        "scrollHeight": 495,
+        "clientHeight": 495,
+        "display": "block"
+      },
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": null,
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "install-preparing",
+    "scene": "install-preparing",
+    "title": "安装 · 同窗自动准备",
+    "description": "准备阶段检查版本与完整性，不请求管理员授权；允许取消并保留选项。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/65-install-preparing.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "87a63b74545b3d83ee8dbb3017e53cdcedc97323b8cae0495f67fd9da89f1885",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 0,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 762,
+        "bottom": 814,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 52,
+        "clientHeight": 52,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "install-cancelled",
+    "scene": "install-cancelled",
+    "title": "安装 · 授权取消",
+    "description": "取消授权没有安装成功回执；保留本地审核摘要供明确续办。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/66-install-cancelled.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "986c9dc6a535fea5336e4705c70e5f47d7ee73cc9c511b013613db3d04167886",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 0,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 762,
+        "bottom": 814,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 52,
+        "clientHeight": 52,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  },
+  {
+    "id": "install-receipt-unknown",
+    "scene": "install-receipt-unknown",
+    "title": "安装 · 回执待核对",
+    "description": "保留原次安装摘要，先核对回执，不能因结果未知重复执行安装。",
+    "width": 1600,
+    "height": 900,
+    "kind": "named-scene",
+    "file": "screens/67-install-receipt-unknown.png",
+    "pixelWidth": 3200,
+    "pixelHeight": 1800,
+    "sha256": "976b2cab5f3d9b4204642b4681a9a7462b615bb68aa9acacd816b6688756b0f3",
+    "geometry": {
+      "bodyWidth": 1600,
+      "workspace": {
+        "top": 44,
+        "bottom": 840,
+        "left": 0,
+        "right": 1600,
+        "scrollHeight": 796,
+        "clientHeight": 796,
+        "display": "block"
+      },
+      "left": null,
+      "right": null,
+      "saveBar": null,
+      "configHeader": null,
+      "setupFooter": {
+        "top": 762,
+        "bottom": 814,
+        "left": 260,
+        "right": 1340,
+        "scrollHeight": 52,
+        "clientHeight": 52,
+        "display": "flex"
+      },
+      "protection": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "display": "none"
+      },
+      "textOverflow": []
+    }
+  }
+]

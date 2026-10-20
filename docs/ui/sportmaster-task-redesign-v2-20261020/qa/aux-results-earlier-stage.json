@@ -1,0 +1,257 @@
+{
+  "scope": "V2辅助原型必要任务验证；无真实设备、RCS、Windows或实际文件维护操作。",
+  "sourceHashes": {
+    "model.js": "0dc3d120ee42a6a91fee609931ad9869466f4a2d6a18e11bd91145bd429f499f",
+    "views.js": "ba10df12f863ea09caa02e1289713b5e112956d8d0bd724e96374b3fe8046b9a",
+    "aux.js": "045e1eeb72ceee265a097a9134b04b0fbc07083224c878a2b175baf2b87ab5fd",
+    "app.js": "2afdfa1810d9784e11d860a4e7fe548f65883f76b5a2801462da3db086adb547",
+    "scenarios.js": "a989f0ca4a5d248d9cfb00a18dd869ca7ca6070778ed3488235550c83d33f62f"
+  },
+  "prototypeSha256": "c548f4c2633900081b2a2638bc942015f0bc8fad85f35c7af025e016db70f378",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "startedAt": "2026-10-20T08:28:31.166Z",
+  "checks": [
+    {
+      "id": "A01",
+      "title": "记录日期错误、输入保留、空查询及明确快照",
+      "scene": "history",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "日期错误保留记录页"
+        },
+        {
+          "pass": true,
+          "message": "错误不执行查询或清空旧结果"
+        },
+        {
+          "pass": true,
+          "message": "其他输入保留"
+        },
+        {
+          "pass": true,
+          "message": "焦点定位本页日期字段"
+        },
+        {
+          "pass": true,
+          "message": "修正后明确更新查询快照"
+        },
+        {
+          "pass": true,
+          "message": "仅编辑筛选不会即时改变已有结果"
+        },
+        {
+          "pass": true,
+          "message": "空查询提供可恢复结果"
+        },
+        {
+          "pass": true,
+          "message": "空结果有明确提示"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A02",
+      "title": "RCS分层检查与外部修复保留原件责任",
+      "scene": "diagnostics-outage",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "传输检查失败明确可见"
+        },
+        {
+          "pass": true,
+          "message": "本地启动与传输失败同时表达"
+        },
+        {
+          "pass": true,
+          "message": "传输恢复不解决未知原件、不自动恢复"
+        },
+        {
+          "pass": true,
+          "message": "原请求保持"
+        },
+        {
+          "pass": true,
+          "message": "检查不保存或应用配置"
+        },
+        {
+          "pass": true,
+          "message": "原请求详情如实说明无查询能力"
+        },
+        {
+          "pass": true,
+          "message": "不提供伪业务查询按钮"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A03",
+      "title": "异步检查冻结目标且不落到切换后的对象",
+      "scene": "diagnostics-outage",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "原结果保存到RCS对象，不污染右相机"
+        },
+        {
+          "pass": true,
+          "message": "旧目标结果不能证明更换后的目标"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A04",
+      "title": "维护重连经过全站暂停认证且不消除未知结果",
+      "scene": "diagnostics-outage",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "缺少暂停与维护认证时先准备"
+        },
+        {
+          "pass": true,
+          "message": "重连只初始化本地，仍暂停、上游未恢复、原件仍未知"
+        },
+        {
+          "pass": true,
+          "message": "执行结果说明维持暂停"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A05",
+      "title": "支持摘要日期错误、预览同一内容导出与到期禁止",
+      "scene": "support-preview",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "超7天错误保持支持页"
+        },
+        {
+          "pass": true,
+          "message": "支持错误保留结束时间"
+        },
+        {
+          "pass": true,
+          "message": "导出当前同一份预览，没有重新采集"
+        },
+        {
+          "pass": true,
+          "message": "过期预览禁止导出并提示重做"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A06",
+      "title": "模板差异进入统一候选且现场连接保持",
+      "scene": "maintenance",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "导入前显示差异"
+        },
+        {
+          "pass": true,
+          "message": "只把白名单策略加入系统候选"
+        },
+        {
+          "pass": true,
+          "message": "不改设备IP或组件连接"
+        },
+        {
+          "pass": true,
+          "message": "没有保存或生效"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A07",
+      "title": "旧编码冲突阻止不明合并且58字段可查看",
+      "scene": "migration-conflict",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "不同供包台不可合并"
+        },
+        {
+          "pass": true,
+          "message": "完整列出原58字段编号及迁移索引"
+        },
+        {
+          "pass": true,
+          "message": "明确核对后只产生系统候选"
+        },
+        {
+          "pass": true,
+          "message": "核对不自动保存"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A08",
+      "title": "普通安装确认后进入独立首次启动",
+      "scene": "install-review",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "安装无日常侧栏"
+        },
+        {
+          "pass": true,
+          "message": "安装后进入首配第一步"
+        },
+        {
+          "pass": true,
+          "message": "首配无日常侧栏"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "A09",
+      "title": "完整备份模拟、隔离目录校验与恢复保持暂停",
+      "scene": "maintenance",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "备份维护经过软件暂停和认证"
+        },
+        {
+          "pass": true,
+          "message": "数据目录内子路径不当作隔离目录"
+        },
+        {
+          "pass": true,
+          "message": "独立目录通过模拟前检"
+        },
+        {
+          "pass": true,
+          "message": "隔离恢复演示结束仍暂停"
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "completedAt": "2026-10-20T08:28:43.109Z",
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "pageErrors": 0,
+    "externalRequests": 0
+  },
+  "currentAuxSha256": "045e1eeb72ceee265a097a9134b04b0fbc07083224c878a2b175baf2b87ab5fd",
+  "auxChangedDuringReview": false
+}

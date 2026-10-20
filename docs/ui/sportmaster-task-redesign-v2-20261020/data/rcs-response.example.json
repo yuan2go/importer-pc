@@ -1,0 +1,24 @@
+{
+  "requestId": 20260925003,
+  "result": [
+    {
+      "index": 1,
+      "success": true,
+      "code": null,
+      "message": null,
+      "args": null,
+      "command": "sorter.task.dest_request",
+      "data": {
+        "chuteCode": "IS-L-L1-1-01",
+        "length": null,
+        "width": null,
+        "height": null,
+        "weight": null,
+        "waveNo": "W00001",
+        "quantity": "1",
+        "taskId": "task-1790488002079",
+        "skuId": "1BC000"
+      }
+    }
+  ]
+}

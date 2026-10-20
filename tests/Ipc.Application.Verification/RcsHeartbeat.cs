@@ -134,7 +134,7 @@ static partial class SportmasterRcs
         var payload = Directory.CreateDirectory(Path.Combine(root, "heartbeat-signed-payload")).FullName;
         ExtensionPackages.ExtractVerified(packageFile, payload, trust, RunMode.Simulation, verified.PackageSha256);
         var module = verified.Manifest.Modules.Single(x => x.Id == "sportmaster-rcs-task");
-        Check(verified.Reference.Version == "1.2.0" && module.Requirements?.Query == false && module.Parameters.Single(p => p.Key == "heartbeat-interval-seconds").Default == "5",
+        Check(verified.Reference.Version == "1.2.1" && module.Requirements?.Query == false && module.Parameters.Single(p => p.Key == "heartbeat-interval-seconds").Default == "5",
             "signed immutable RCS package declares heartbeat schema and still has no original-query capability");
         var original = Binding(peer.Endpoint);
         var binding = original with { Version = verified.Reference.Version, Package = verified.Reference, Module = module.Id,

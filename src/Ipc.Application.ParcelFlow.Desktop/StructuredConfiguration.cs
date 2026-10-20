@@ -303,8 +303,9 @@ public partial class ParcelViewModel
     }
     public async Task ValidateStructuredConfigurationAsync()
     {
-        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); return; }
-        var candidate = BuildStructuredConfiguration(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
+        var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
+        if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         validationState = receipt.Status + " · " + receipt.Reason;
         if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
         Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "完整候选校验：" + validationState + "；未保存。";
@@ -312,7 +313,7 @@ public partial class ParcelViewModel
     public async Task SaveStructuredConfigurationAsync()
     {
         RequireFreshSnapshot();
-        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); return; }
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
         var result = await SubmitConfigurationAsync(expected, candidate);
         if (result.Status == "PendingRestart") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }

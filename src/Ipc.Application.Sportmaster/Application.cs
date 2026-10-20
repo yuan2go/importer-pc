@@ -16,7 +16,7 @@ public sealed class SportmasterFlow : FlowDefinition
             MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
-            StationCode: SystemParameterDefaults.StationCode(SystemParameterDefaults.InitialStationId));
+            StationCode: SystemParameterDefaults.StationCode(SystemParameterDefaults.InitialStationId), BarcodeFilter: new(""));
     }
     public override string[] PositionRoles => ["left", "right"];
     public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);

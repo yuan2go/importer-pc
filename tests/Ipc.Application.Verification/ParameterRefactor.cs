@@ -33,7 +33,7 @@ static class ParameterRefactor
         var maintenance = new ParcelStartupMaintenance(missingLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch), () => { });
         var missing = await maintenance.ReadAsync();
         Check(missing.Candidate is { Mode: RunMode.Production, QueueCapacity: 64, TimeoutMs: 1500, MaximumOperations: 10000, StationCode: "station-01" } && missing.ConfigurationStatus == "MissingConfiguration" && !File.Exists(Path.Combine(missingPath, "business.json")), "missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime");
-        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, missing.Candidate!, "Synthetic initial defaults");
+        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, missing.Candidate! with { BarcodeFilter = new("OK[0-9]+") }, "Synthetic initial defaults and explicit synthetic business rule");
         Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "explicit first save persists parameters without starting SDK, creating a business database, or inventing qualification");
         var invalidPath = Path.Combine(root, "invalid-config"); Directory.CreateDirectory(invalidPath); ExtensionStore.AtomicWrite(Path.Combine(invalidPath, "business.json"), c with { BarcodeFilter = new("[") });
         var invalidLaunch = new BusinessLaunch(invalidPath, Path.Combine(root, "invalid-data"), null, null);
@@ -87,18 +87,30 @@ static class ParameterRefactor
         Check(stale.Message.StartsWith("Conflict") && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
         var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.QueueCapacity = "bad"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
+        var heldProxy = DispatchProxy.Create<IParcelApplication, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
+        var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
+        heldVm.StructuredPolicy!.TimeoutMs = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        heldVm.StructuredPolicy.TimeoutMs = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;
+        heldProbe.FailInspection = false; await heldVm.InspectLastSaveAsync();
+        Check(heldVm.HasUnsavedConfiguration && heldVm.StructuredPolicy.TimeoutMs == "2100" && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 2000, "late authority inspection accepts only the pre-validation submission while newer input remains unsaved");
+        heldVm.StructuredPolicy.TimeoutMs = "2000"; Check(!heldVm.HasUnsavedConfiguration && heldProbe.StageCalls == 1, "returning to the inspected original candidate restores its exact clean baseline without resubmission");
+        var previewRevision = (await app.SnapshotAsync()).Configuration.Revision;
         var policy = new BarcodeFilterPolicy("OK[0-9]+"); var preview = await app.TestBarcodeFilterAsync(policy, ["bad", "OK003"]);
-        Check(preview.SelectedCode == "OK003" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "sample test shares the bounded matcher and has no configuration side effect");
+        Check(preview.SelectedCode == "OK003" && (await app.SnapshotAsync()).Configuration.Revision == previewRevision, "sample test shares the bounded matcher and has no configuration side effect");
         factory.Emit(reader, "Read", "third-entity", ["OK003"], "duplicate-original");
         var duplicate = await Wait(app, s => s.Inputs!.Any(x => x.Observation.SourceEventId == "duplicate-original"));
         Check(duplicate.Inputs!.Single(x => x.PositionId == "left").Outcome == ParcelInputOutcome.Duplicate && Wire.Encode(duplicate.Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "existing entity uses frozen policy while paused and cannot replay its original request");
     }
     public class SaveProbe : DispatchProxy
     {
-        public IParcelApplication Inner = null!; public bool FailInspection; public int StageCalls;
+        public IParcelApplication Inner = null!; public bool FailInspection, HoldValidation; public int StageCalls;
+        public TaskCompletionSource ValidationEntered = new(TaskCreationOptions.RunContinuationsAsynchronously), ValidationRelease = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        async Task<BusinessReceipt> Validate(ParcelConfiguration candidate)
+        { if (HoldValidation) { HoldValidation = false; ValidationEntered.TrySetResult(); await ValidationRelease.Task; } return await Inner.ValidateConfigurationAsync(candidate); }
         protected override object? Invoke(MethodInfo? method, object?[]? args)
         {
             if (method!.Name == nameof(IParcelApplication.InspectConfigurationSubmissionAsync) && FailInspection) throw new IOException("Synthetic authority read failure");
+            if (method.Name == nameof(IParcelApplication.ValidateConfigurationAsync)) return Validate((ParcelConfiguration)args![0]!);
             if (method.Name == nameof(IParcelApplication.StageConfigurationAsync)) StageCalls++;
             try { return method.Invoke(Inner, args); } catch (TargetInvocationException ex) { System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw(); throw; }
         }

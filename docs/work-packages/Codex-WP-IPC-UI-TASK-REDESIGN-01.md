@@ -5,7 +5,7 @@
 以下提示与[完整工作包](WP-IPC-UI-TASK-REDESIGN-01.md)配合使用。详细字段、交互和验收留在设计交接及源码裁决中，避免重复成多套规范。
 
 ```text
-在 yuan2go/importer-pc 最新 main 上，完整实施 WP-IPC-UI-TASK-REDESIGN-01 的 UIR-00～06，完成 Sportmaster Windows 客户端 UI 优化，优先解决参数配置的清楚、高效与可靠。
+在 yuan2go/importer-pc 最新 main 上，完整实施 WP-IPC-UI-TASK-REDESIGN-01 的 UIR-00～06，完成 Sportmaster Windows 客户端 UI 优化，继承已完成 PARAM-01 参数实现及其验证，完成余下完整 UI 范围，避免重建参数权威或回退四分类。
 
 先核验工作区、最新 main 和并行 PR。实际代码工作前，详细阅读 AGENTS.md、docs/INDEX.md、框架与决策、相关运行/安装文档，以及：
 - docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md（实际查看原型、全部界面、完整交接和字段/操作迁移表）

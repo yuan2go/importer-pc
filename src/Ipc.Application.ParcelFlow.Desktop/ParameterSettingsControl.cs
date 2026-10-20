@@ -60,7 +60,7 @@ public sealed class ParameterSettingsControl : UserControl
         business.Children.Add(Text(m.ApplicationId + " 业务参数", true));
         if (m.ApplicationId == "sportmaster")
         {
-            Input(business, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", 1, "整串匹配；单次25ms、总计100ms预算。旧配置留空保持严格单码兼容，不自动生成生产规则。新规则仅影响新准入。", true);
+            Input(business, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", 1, "整串匹配；单次25ms、总计100ms预算。旧配置未声明规则时保持严格单码兼容；新首配须填写规则，可暂存未完成输入。不自动生成生产规则，新规则仅影响新准入。", true);
             var sample = new TextBox { AcceptsReturn = true, MinHeight = 96, MaxLength = 65536, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             AutomationProperties.SetName(sample, "条码筛选样例"); business.Children.Add(Text("本地候选样例（每行一个，同一次观察；不外呼、不保存）")); business.Children.Add(sample);
             var result = Text("尚未测试"); var test = new Button { Content = "测试候选筛选", MinHeight = 40, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 4) };

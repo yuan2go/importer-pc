@@ -10,6 +10,9 @@ public partial class ParcelViewModel
     {
         if (submittingConfiguration || unconfirmedSubmission is not null)
             throw new InvalidOperationException("上次保存尚未确认；先核对权威修订，当前输入保留，禁止重复提交");
+        var capturedSignature = ConfigurationEditSignature();
+        var capturedDocument = configurationAuthority == "高级JSON" ? ConfigurationDraft : Ipc.Platform.Wire.Encode(candidate);
+        var capturedReason = ConfigurationReason;
         submittingConfiguration = true;
         try
         {
@@ -20,10 +23,10 @@ public partial class ParcelViewModel
                 Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return new("Rejected", validation.Reason, expected, "");
             }
             var owner = draftRuntimeId ?? throw new InvalidOperationException("先读取原运行实例");
-            submissionEditorSignature = ConfigurationEditSignature(); submissionEditorDocument = configurationAuthority == "高级JSON" ? ConfigurationDraft : Ipc.Platform.Wire.Encode(candidate);
+            submissionEditorSignature = capturedSignature; submissionEditorDocument = capturedDocument;
             unconfirmedSubmission = (owner, expected, candidate); validationState = "正在保存完整候选"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary));
             string? delivery;
-            try { var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, ConfigurationReason)); delivery = receipt.Status + " · " + receipt.Reason; }
+            try { var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, capturedReason)); delivery = receipt.Status + " · " + receipt.Reason; }
             catch (Exception ex) { delivery = ex.GetType().Name + " · " + ex.Message; }
             return await InspectSubmissionAsync(delivery);
         }

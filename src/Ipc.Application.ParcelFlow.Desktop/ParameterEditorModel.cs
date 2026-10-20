@@ -38,7 +38,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
-        if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || Policy.StationCode.Length > 0 && string.IsNullOrWhiteSpace(Policy.StationCode))
+        if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
             Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
         try { _ = Policy.BuildBackup(); } catch (InvalidOperationException ex) { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
         foreach (var (draft, category) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))

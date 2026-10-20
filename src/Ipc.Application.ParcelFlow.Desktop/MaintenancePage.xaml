@@ -3,7 +3,7 @@
   <StackPanel>
    <TextBlock Text="设备与设置" FontSize="21" FontWeight="Bold"/>
    <TextBlock Text="完整修订统一保存，待受控重启；设备重连不应用待生效配置。软件暂停不是安全急停。" TextWrapping="Wrap" Margin="0,4"/>
-   <TextBlock Text="{Binding ParameterConfigurationSummary}" TextWrapping="Wrap" Margin="0,4"/>
+   <ScrollViewer MaxHeight="72" VerticalScrollBarVisibility="Auto"><TextBlock Text="{Binding ParameterConfigurationSummary}" TextWrapping="Wrap" Margin="0,4"/></ScrollViewer>
    <WrapPanel><Button Content="检查完整候选" Click="ValidateStructured_Click"/><Button Content="保存修改（待重启）" Click="Save_Click" IsEnabled="{Binding CanConfigure}" ToolTip="先软件暂停、认证维护并填写变更原因；保存不等于生效" ToolTipService.ShowOnDisabled="True" Style="{StaticResource Primary}"/><Button Content="核对上次保存结果" Click="InspectSave_Click"/><Button x:Name="AdvancedToggle" Content="高级维护…" Click="AdvancedMaintenance_Click"/></WrapPanel>
    <Expander Header="维护身份、变更原因与草稿" Margin="0,4">
     <StackPanel>

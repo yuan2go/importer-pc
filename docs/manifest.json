@@ -41061,15 +41061,15 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "6c4eebff44ce28e766f8fedc8bbab678723bb4ed1f55a95bf49c4a91a7baa1d0",
-      "size_bytes": 6896,
-      "git_blob": "70f3c60d708a1b567a45bbfe3aadb38eddde06a7",
+      "sha256": "4383eda734aed64c8978516a561724c084344d1a3f2ef1d8407be8648096d861",
+      "size_bytes": 6840,
+      "git_blob": "1d634e229445a92fd7bf155ee014d0ef2c2f844b",
       "version": "sportmaster-audit-remediation-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "previous_git_blob": "76aeea31248dfc73de835d85e655e46766230abc"
+      "previous_git_blob": "70f3c60d708a1b567a45bbfe3aadb38eddde06a7"
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelProductServices.cs",
@@ -45700,15 +45700,15 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "4763d0d593577d3c4deda7fe7701cffecd99a508a77d613a32004afb97f7548a",
-      "size_bytes": 21138,
-      "git_blob": "0b6a191a16a968408e8316081ac9f011397956e7",
+      "sha256": "bb8c2aedce79d6d9bf6cc920d65dd7c46d7b8af12d008257eb75f5ceb1bcef78",
+      "size_bytes": 21408,
+      "git_blob": "e11724441b06b090841f2ece1b7cbafcb23ccdb3",
       "version": "sportmaster-audit-remediation-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "previous_git_blob": "940341ba73a4359294e26e62a7aac86d12949261"
+      "previous_git_blob": "0b6a191a16a968408e8316081ac9f011397956e7"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-visual-01/development/9247db6-stale-fixture/RESULT.json",

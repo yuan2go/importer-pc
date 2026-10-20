@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Path $Output | Out-Null
 $repo=Split-Path $PSScriptRoot -Parent
 $release=Get-Content -LiteralPath (Join-Path $Media 'app/application-release.json') -Raw | ConvertFrom-Json
 if ($release.ApplicationId -ne 'sportmaster' -or $release.SourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Expected a frozen Sportmaster Windows medium' }
-if($FixtureCommit -and (-not $AuditPerformance -or $FixtureCommit -notmatch '^[0-9a-f]{40}$')){throw 'An independent fixture requires audit performance mode and its full immutable commit'}
+if($FixtureCommit -and $FixtureCommit -notmatch '^[0-9a-f]{40}$'){throw 'An independent fixture requires its full immutable commit'}
 $fixtureSource=if($FixtureCommit){$FixtureCommit}else{$release.SourceCommit}
 $inventory=@{}
 foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {

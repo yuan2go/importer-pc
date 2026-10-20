@@ -99,7 +99,9 @@ static partial class Program
             var left = positions.Single(p => ReferenceEquals(p.DataContext, vm.Left));
             var details = Descendants(left).OfType<Expander>().First(); details.IsExpanded = true;
             var code = (TextBox)left.FindName("CurrentBarcode");
-            code.Focus(); code.Select(1, 4); var text = code.SelectedText;
+            window.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Input);
+            Check(code.Focus() && code.IsKeyboardFocused, "active native window grants initial keyboard focus before the refresh retention experiment");
+            code.Select(1, 4); var text = code.SelectedText;
             var scroll = (ScrollViewer)left.FindName("PositionDetailsScroll"); scroll.ScrollToVerticalOffset(20); await System.Windows.Threading.Dispatcher.Yield(); var offsetBefore = scroll.VerticalOffset;
             vm.Left.InspectionReason = "SYNTHETIC unsaved inspection";
             for (var i = 0; i < 8; i++) { await vm.RefreshDisplayAsync(); await Task.Delay(80); }

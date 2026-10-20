@@ -5,7 +5,7 @@ C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platfo
 
 ## 当前工作入口
 
-**当前工作：[Sportmaster 首个商业交付组合](docs/work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)**。先文档设计，再实施首配与维护任务、发布门禁、支持运维和 Windows 生命周期验收。操作见[同版交付手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md)，逐项结果与精确冻结介质见[本包结果](docs/runtime/sportmaster-commercial-delivery-01-results.md)。工程候选与现场投产资格分别判定。
+**当前工作：[并发任务整合](docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md)**。任务对照、冲突裁决、最终组合验证与合并状态见 [本次报告](docs/runtime/parallel-task-reconciliation-20261020.md)。商业使用继续按 [同版交付手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md)，源任务历史证据保持原 SHA。
 
 继承 [COMM-00～10 实施结果](docs/runtime/commercial-productization-01-results.md)、PR44/45 的原生安装/独立维护和身份守卫。指定 Windows 账户以非提权进程运行；正常安装、启动和维护不要求 PowerShell，开发验收脚本另列依赖。新窗口只整理现有契约调用，不新建配置或部署权威。
 
@@ -15,7 +15,7 @@ C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platfo
 
 Sportmaster、DirectPlc、WcsToPlc 保持三个独立主流程。Sportmaster 左右两个独立 reader/投递位，扫码取得上游格口，不下 PLC；DirectPlc 与 WcsToPlc 各单 reader/顺序位，分别走 PLC 与 WCS→PLC。Supply 和 Inspection 保留各自契约及入口，不套用 Parcel 的数据库或命令。
 
-Sportmaster 支持默认 classic 与可选 supply-station 布局，导航及辅助窗口共享 Application、连接和原作业。登录、称重、采图、上传按实际已确认组合选择；Sportmaster 图片展示和长期图库不在范围，DirectPlc 完整 UI 继续延期。
+Sportmaster 缺省使用 supply-station，显式 `--ui classic` 保留兼容布局，导航及辅助窗口共享 Application、连接和原作业。登录、称重、采图、上传按实际已确认组合选择；Sportmaster 图片展示和长期图库不在范围，DirectPlc 完整 UI 继续延期。
 
 [Sportmaster RCS 组件](docs/runtime/sportmaster-rcs-task.md)只按已支持合同处理目标请求、NEED_UNPACK、拒绝与 Unknown，不提供未确认的拆包提交或自动重发。数据库、配置 schema、公共契约和包版本按[版本与组合证据](docs/runtime/version-compatibility-01.md)及实际介质清单读取；版本号本身不证明精确加载兼容或 Production 资格。
 

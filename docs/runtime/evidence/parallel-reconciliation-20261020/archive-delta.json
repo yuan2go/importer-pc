@@ -1,0 +1,9 @@
+{
+  "start_errors": 267,
+  "final_errors": 267,
+  "new_errors": [],
+  "baseline_codes": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  }
+}

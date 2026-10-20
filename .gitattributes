@@ -52,3 +52,6 @@ docs/runtime/evidence/installer-single-window-01/** -text whitespace=cr-at-eol,-
 docs/archive/pre-ui-task-redesign-implementation-20261020/*.txt -text whitespace=cr-at-eol,-blank-at-eof
 docs/runtime/evidence/ui-task-redesign-v2/*.log -text whitespace=cr-at-eol
 docs/ui/sportmaster-v2-wpf-20261020/native/** -text whitespace=cr-at-eol
+
+# Immutable release receipts and native captures preserve their published bytes.
+docs/runtime/evidence/publication-pr74-20261020/** -text whitespace=cr-at-eol

@@ -1,0 +1,27 @@
+{
+  "SourceCommit": "1878be50d5befdbb56249e5d39a61deb023fe51e",
+  "Files": [
+    {
+      "File": "desktop-maintenance.jpg",
+      "Bytes": 97390,
+      "Sha256": "16805327f6902409d6148348992c08a78c7e9adb52ba1c5f422f64d4c5aac8cf"
+    },
+    {
+      "File": "desktop-recovery.jpg",
+      "Bytes": 30329,
+      "Sha256": "4dc25bb0cfbd92287529c66f7a74f5bf88c9296712635ae1035e9297c4a1ecc0"
+    },
+    {
+      "File": "installer-options.jpg",
+      "Bytes": 58568,
+      "Sha256": "aa8a75bc842e07e780451cf691f2dc414c8ede919995f528f1c06f05bc001f64"
+    },
+    {
+      "File": "installer-preparing.jpg",
+      "Bytes": 33741,
+      "Sha256": "99c1a3b7f3086dea0eef2e65121e3a7e1fd2db14ec4b0f80ea44f037259cc721"
+    }
+  ],
+  "Method": "Original @oai/sky native window captures; no image editing; synthetic/local installation-check environment",
+  "Limits": "Observed preparation/options on same HWND, not a high-frequency visibility/UAC or install acceptance test"
+}

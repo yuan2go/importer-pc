@@ -1,3 +1,5 @@
+> 当前下载：[SM v1.6.0 Windows 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.0-1878be50d5be/CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe)。PR74已合并main，固定源`1878be50d5be`；[发布记录、SHA256、已知问题与待验边界](runtime/publication-pr74-20261020.md)。未签名预发布。
+>
 > 当前实施：[V2 实施与验证记录](runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
 
 > PR73历史不测试发布、源码及产物下载边界见[发布报告](runtime/publication-pr73-20261020.md)。
@@ -10,7 +12,7 @@
 
 > 桌面名称增量：[固定显示“菜鸟供包台”与旧测试资源清理](runtime/desktop-shortcut-name-01.md)，新构建与下面原生结果分开记录。
 
-> 已验证安装体验交付：SM业务模块v1.4.1单EXE，冻结源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`。[单窗口/一次授权及58项实际安装启动记录](runtime/installer-single-window-01.md)；本机Simulation通过，Win10 22H2/其他CPU/海康现场待验。本包不包含下述UIR-01～06新设计的WPF移植，原7c发行身份保留。
+> 历史完整安装体验：SM业务模块v1.4.1单EXE，冻结源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`。[单窗口/一次授权及58项实际安装启动记录](runtime/installer-single-window-01.md)；本机Simulation通过，Win10 22H2/其他CPU/海康现场待验。该旧包不包含UIR-01～06移植，不能把其58项结果记为当前1.6.0通过，原7c发行身份保留。
 > 2026-10-20 RCS心跳实施增量见[配置、实现与验证](runtime/rcs-heartbeat-01.md)。本增量由用户另行授权；下文“本次只做设计”专指UIR设计入库任务，不限制本次RCS开发。
 
 # 文档索引：Sportmaster V2 任务与配置体验重设计
@@ -61,6 +63,7 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 
 | 对象 | 证据与适用范围 |
 | --- | --- |
+| 当前 SM v1.6.0 安装包 | [PR74合并与发布回执](runtime/publication-pr74-20261020.md)。固定main源1878be50d5be，733文件同源介质与15个安装器共享DLL一致；原生准备/取消及隔离客户端启动通过，完整安装/设备/现场待验。 |
 | 新设计与模拟QA | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
 | 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
 | V2 当前 WPF 实现 | [UIR-00～06 实施](runtime/ui-task-redesign-01.md)、[本版验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)。固定源 `26bb7b9` 完成参数、首配、三组作业和相关维护闭环；32 张 WPF PNG、本机输入和发布启动各记边界。 |

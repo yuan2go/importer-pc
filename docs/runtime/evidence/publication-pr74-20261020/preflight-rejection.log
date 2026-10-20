@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc-v2-ui\scripts\package-application.py", line 38, in <module>
+    raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
+ValueError: Commit exact runtime, configuration, packaging and shipped guides before publication

@@ -5,7 +5,7 @@
 ## 固定源码与交付身份
 
 - 实施提交：`e21ec2c455bf31c88522593b48b4a1b1e8533a09`。
-- 最终生产源码：**`26bb7b9488b98cc0ce44ef6cf74df7c493153b0a`**，分支 `codex/sportmaster-v2-ui`；此后仅整理文档、图片和 manifest。
+- 最终生产源码：**`26bb7b9488b98cc0ce44ef6cf74df7c493153b0a`**，分支 `codex/sportmaster-v2-ui`；此后生产代码未变，证据、文档及 CI 冻结夹具衔接另行提交。
 - SM **1.6.0**，Application.Contracts **1.13.0**，RCS **1.3.0**；共享消费者 DirectPlc/WcsToPlc **1.4.3**，reference.parcel-capabilities 声明 **2.2.7**。Hikrobot **1.0.3** 不变。
 - 固定 Git 源导出的 win-x64 包：`sportmaster-v2-final-win.zip`，106388312 字节，SHA256 **`53ce2c5ca75e7a306e5450cdd29c63abb0a60cf30b78c463a2fd1226016d9e79`**。本地介质未上传 GitHub Release；不是已签名或现场批准的安装介质。
 - [BUILD-INFO](BUILD-INFO.json)、[构建日志](package-v2-final.log)、[实际 CLI 业务身份](business-identity-final.json)、[15 个生产 DLL 的字节身份及图片清单](../../../ui/sportmaster-v2-wpf-20261020/PROVENANCE.json)可以互相核对。构建日志仅将本机临时目录前缀替换为 `<LOCAL_TEMP>`，原日志留在本地。

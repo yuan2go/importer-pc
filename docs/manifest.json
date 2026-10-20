@@ -41189,13 +41189,13 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "4383eda734aed64c8978516a561724c084344d1a3f2ef1d8407be8648096d861",
-      "size_bytes": 6840,
-      "git_blob": "1d634e229445a92fd7bf155ee014d0ef2c2f844b",
-      "version": "parallel-reconciliation-20261020",
-      "status": "current_source_or_preserved_evidence",
+      "sha256": "a18c9c309a147922a6dfbddc16262f14bfe2fc7e634e1b411ce753596c7158a7",
+      "size_bytes": 7181,
+      "git_blob": "8d2e81b62aff904f7da1d6e4a2bbb6033db04758",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "implementation_source",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
       "storage_scope": "public_repository",
       "previous_git_blob": "1bb1baa61cf46526f3401ce5d36451dc115096e9"
     },
@@ -41486,13 +41486,13 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
-      "sha256": "2b7ce9260371f62844d07b6a5788e3c22998c705627bde112be77bc090630743",
-      "size_bytes": 12560,
-      "git_blob": "11fb42762edc25cad84aa8e54045c88408ae5877",
-      "version": "sportmaster-visual-productization-01",
-      "status": "current_source_or_synthetic_evidence",
+      "sha256": "02f9252a00dab93a21ce51041441fa3b23b6cf1579853c2e33cb4d2619ffa9c3",
+      "size_bytes": 13024,
+      "git_blob": "59c024d05b06537ce425c18f8716fec65718f909",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "implementation_source",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
-      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
       "storage_scope": "public_repository",
       "previous_git_blob": "f123c3c37c1054bd004935fb78de70b6515d2b78"
     },
@@ -54458,9 +54458,9 @@
       "version": "UIR-00-06-V2-20261020",
       "status": "synthetic_validation_or_implementation",
       "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "sha256": "82ec8e843123f2087b0cc07d53689d7be2a0a40ecfc3f357178dcde6654ae23a",
-      "size_bytes": 8906,
-      "git_blob": "a683335dc0b8ce4b94ee070529dea25c87f29c14"
+      "sha256": "a6e4073b913b61c503a42a1ffc944b636ce92a7ca41d6da4cc94a779e0a8f3bf",
+      "size_bytes": 8943,
+      "git_blob": "ad179a576cf8d1dcec2d1665ae0d99a175677753"
     },
     {
       "path": "docs/runtime/evidence/ui-task-redesign-v2/BUILD-INFO.json",

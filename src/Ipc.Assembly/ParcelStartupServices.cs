@@ -95,6 +95,17 @@ public static class ParcelStartupServices
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Windows setup requires Windows");
         await ElevateAsync(new("Install", Deployment: request));
+        return InstalledReceipt(request);
+    }
+    public static async Task<DeploymentLocation> InstallWithPreflightAsync(WindowsDeploymentRequest request)
+    {
+        if (request.ChangePlanIdentity is not null) throw new InvalidDataException("交互安装由同一次授权检查原责任，不能传入旧计划");
+        var identity = await ElevateAsync(new("InstallWithPreflight", Deployment: request));
+        if (identity is not null && !ExtensionSchema.IsHash(identity)) throw new InvalidDataException("原部署计划回执无效");
+        return InstalledReceipt(request with { ChangePlanIdentity = identity });
+    }
+    static DeploymentLocation InstalledReceipt(WindowsDeploymentRequest request)
+    {
         var location = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new InvalidDataException("No installed deployment receipt");
         if (location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
             location.Shortcuts != request.Shortcuts || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
@@ -116,7 +127,7 @@ public static class ParcelStartupServices
         var request = Wire.Decode<StartupMaintenanceRequest>(ProtectedDraftPayload.Read(args[1]));
         if (request.Pipe is not { Length: 64 } || request.Pipe.Any(c => !char.IsAsciiHexDigit(c))) throw new InvalidDataException("Invalid maintenance receipt channel");
         string? failure = null, result = null;
-        try { if (request.Action is not ("Install" or "ReviewDeployment" or "ResumeRemoval")) RequireProtectedHelper(AppContext.BaseDirectory); result = ExecuteAsync(request).GetAwaiter().GetResult(); }
+        try { if (!MediaCommand(request.Action)) RequireProtectedHelper(AppContext.BaseDirectory); result = ExecuteAsync(request).GetAwaiter().GetResult(); }
         catch (Exception ex) { failure = ex.Message; Environment.ExitCode = 2; }
         using var pipe = new NamedPipeClientStream(".", request.Pipe, PipeDirection.Out);
         pipe.Connect(10000);
@@ -127,6 +138,21 @@ public static class ParcelStartupServices
     {
         switch (request.Action)
         {
+            case "InstallWithPreflight":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                var candidate = request.Deployment ?? throw new InvalidDataException("Missing deployment");
+                if (candidate.ChangePlanIdentity is not null) throw new InvalidDataException("Interactive installation refuses a stale supplied plan");
+                RequireMatchingMedia(candidate); _ = DeploymentMedia.Inspect(candidate.MediaRoot, ApplicationId); ValidateSeed(candidate);
+                var candidateSeed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(candidate.ConfigurationSource, "business.json")));
+                if (WindowsDeploymentSetup.Current(ApplicationId) is not null || File.Exists(Path.Combine(candidate.DataRoot, candidateSeed.Mode.ToString(), candidateSeed.StationId, ApplicationId, ApplicationId + ".db")))
+                {
+                    if (candidate.BackupDestination is null) throw new InvalidDataException("升级必须指定新的完整备份目标");
+                    var preview = Wire.Decode<StartupChangePreview>((await ExecuteAsync(new("ReviewDeployment", Deployment: candidate, Destination: candidate.BackupDestination)))!);
+                    if (!preview.Allowed) throw new InvalidOperationException("原责任阻止升级：" + preview.Summary);
+                    candidate = candidate with { ChangePlanIdentity = preview.Identity };
+                }
+                await ExecuteAsync(new("Install", Deployment: candidate));
+                return candidate.ChangePlanIdentity;
             case "ReviewDeployment":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var reviewedDeployment = request.Deployment ?? throw new InvalidDataException("缺少介质计划");
@@ -195,14 +221,14 @@ public static class ParcelStartupServices
                     if (install.ChangePlanIdentity is null || install.BackupDestination is null) throw new InvalidOperationException("升级/修复须先审阅原责任及完整备份计划");
                     var originalLaunch = previous is null ? new BusinessLaunch(install.ConfigurationSource, install.DataRoot, null, null) : new(previous.ConfigurationDirectory, previous.DataRoot, null, null);
                     await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, previous?.SourceCommit == install.SourceCommit ? "Repair" : "Upgrade", install.BackupDestination,
-                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, CreateShortcuts); return Task.CompletedTask; });
+                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); }); return Task.CompletedTask; });
                 }
                 else
                 {
                     _ = DeploymentMedia.Inspect(install.MediaRoot, ApplicationId);
                     WindowsDeploymentSetup.PrepareInitialDataRoot(install.DataRoot, install.RuntimeAccountSid);
                     using var owner = new ResourceLease(ownerDirectory, ["application-owner"]);
-                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, CreateShortcuts);
+                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); });
                 }
                 break;
             default: throw new InvalidDataException("Unknown maintenance action");
@@ -275,6 +301,15 @@ public static class ParcelStartupServices
     static void CreateShortcuts(DeploymentLocation location) => DeploymentShortcuts.Create(location,
         Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    static void CreateShortcuts(DeploymentLocation location, DeploymentLocation? previous)
+    {
+        var programs = Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms);
+        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+        DeploymentShortcuts.Create(location, programs, desktop, previous);
+        if (previous is not null && previous.ReleaseRoot != location.ReleaseRoot)
+            DeploymentShortcuts.Remove(previous, programs, desktop);
+    }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void RemoveShortcuts(DeploymentLocation location) => DeploymentShortcuts.Remove(location,
         Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
     static async Task<string?> ElevateAsync(StartupMaintenanceRequest request)
@@ -283,12 +318,13 @@ public static class ParcelStartupServices
         var directory = Path.GetDirectoryName(typeof(ParcelStartupServices).Assembly.Location)!;
         var helper = Path.Combine(directory, "Ipc.Assembly.exe");
         if (!File.Exists(helper)) helper = Path.GetFullPath(Path.Combine(directory, "..", "app", "Ipc.Assembly.exe"));
-        if (request.Action is not ("Install" or "ReviewDeployment" or "ResumeRemoval") && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
+        if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", "Ipc.Desktop.exe");
+        if (!MediaCommand(request.Action) && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
             helper = Path.Combine(installed.ReleaseRoot, "app", "Ipc.Assembly.exe");
         foreach (var assembly in new[] { typeof(ParcelStartupServices).Assembly, typeof(MachineRuntimeSetup).Assembly })
             if (Wire.FileHash(Path.Combine(Path.GetDirectoryName(helper)!, Path.GetFileName(assembly.Location))) != Wire.FileHash(assembly.Location))
                 throw new InvalidDataException("维护 helper 与当前客户端版本不匹配；请使用相同发布的开始菜单启动修复入口，原数据保留");
-        if (request.Action is not ("Install" or "ReviewDeployment" or "ResumeRemoval")) RequireProtectedHelper(Path.GetDirectoryName(helper)!);
+        if (!MediaCommand(request.Action)) RequireProtectedHelper(Path.GetDirectoryName(helper)!);
         var pipeName = Wire.Id() + Wire.Id();
         using var server = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
         var path = Path.Combine(Path.GetTempPath(), "ipc-maintenance-" + Wire.Id() + ".bin");
@@ -296,7 +332,7 @@ public static class ParcelStartupServices
         try
         {
             using var pinned = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var start = new ProcessStartInfo(helper) { UseShellExecute = true, Verb = "runas", WorkingDirectory = Path.GetDirectoryName(helper)! };
+            var start = new ProcessStartInfo(helper) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = Path.GetDirectoryName(helper)! };
             foreach (var arg in new[] { "--startup-command", path, Wire.FileHash(path) }) start.ArgumentList.Add(arg);
             using var budget = new CancellationTokenSource(TimeSpan.FromMinutes(10));
             var connection = server.WaitForConnectionAsync(budget.Token);
@@ -327,6 +363,7 @@ public static class ParcelStartupServices
         catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new UnauthorizedAccessException("已取消 Windows 维护授权；已有配置和数据保留，可重新操作。", ex); }
         finally { File.Delete(path); }
     }
+    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment" or "ResumeRemoval";
     static void RequireProtectedHelper(string directory)
     {
         var file = Path.Combine(directory, "application-release.json");

@@ -1,0 +1,74 @@
+{
+  "FocusedLogs": [
+    {
+      "Name": "packager-tests.log",
+      "OriginalRawSha256": "65b217dde810ba38086a1aeccccd614f0b05468a36f2e47fcc4ab50f7e7fbca1",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "payload-tests.log",
+      "OriginalRawSha256": "7f63bd5862b0d79cf1151ae0a8977289352991fe9efe0e42d26d1825c5b47a15",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "change-guards.log",
+      "OriginalRawSha256": "d0dd6d6f6275dce9000c03c66769945dd6c41dcf6e31876b39fb1ce99cbe82df",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "shortcut-tests.log",
+      "OriginalRawSha256": "4dd026230d4faaa2654a3c4245eea3f8de4db767ea7bbad359db220381c07c43",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "compatibility-tests.log",
+      "OriginalRawSha256": "22bd19e4dc6e733425aa21472f1785cea23c8bd38fce1540d05e874901b911c1",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "guide-tests.log",
+      "OriginalRawSha256": "261acfa80c9d1d428c251c4bcb927404260d57db147442d9ec89821f2f093cfb",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    },
+    {
+      "Name": "unified-package-tests.log",
+      "OriginalRawSha256": "2c3ec10c2818e539d29d3ebba7b03ffe0f853ae2bc046cbcd99c1c994fab2178",
+      "Transformation": "UTF-8/LF excerpt; removed local EvidenceRoot line only; not original raw bytes"
+    }
+  ],
+  "EarlierFailures": [
+    {
+      "Attempt": "pre-final source; original commercial-productization ordinary-token invocation",
+      "Result": "NOT_PASS_ENVIRONMENT_AUTHORITY",
+      "Reason": "Full suite stopped at original Windows RequireExtensionInstallerAuthority restore guard; NOT_PASS. Focused change-plan tests and final native installation are separate evidence.",
+      "OriginalRawSha256": "c7e77273d150ff8ab454286e9e83e84cfae56fbb0588fff9ccc296df658bd4a2",
+      "DiagnosticExcerpt": "Unhandled exception. System.UnauthorizedAccessException: Extension writes require a separate elevated installer; ordinary runtime is read-only\n   at Ipc.Platform.MachineRuntimePolicy.RequireExtensionInstallerAuthority() in <SOURCE_ROOT>\\src\\Ipc.Platform\\MachineRuntimePolicy.cs:line 36",
+      "ExcerptIsTransformed": true
+    },
+    {
+      "Attempt": "d93 experimental wrapper",
+      "Result": "FAILED_NOT_DELIVERED",
+      "Reason": "Standalone-only output guard rejected extra PDB files; no delivery.",
+      "OriginalRawSha256": "1cc90a58e2eb362379e13fe861b575073bffd5b6b77de76dab6e399ca76061e7",
+      "DiagnosticExcerpt": "Traceback (most recent call last):\n    raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))\nValueError: Installer is not a standalone EXE: ['Ipc.Application.Contracts.pdb', 'Ipc.Application.ParcelFlow.Desktop.pdb', 'Ipc.Application.ParcelFlow.pdb', 'Ipc.Application.Sportmaster.Desktop.pdb', 'Ipc.Application.Sportmaster.pdb', 'Ipc.Assembly.pdb', 'Ipc.Components.pdb', 'Ipc.Desktop.pdb', 'Ipc.Drivers.pdb', 'Ipc.Installer.exe', 'Ipc.Integrations.pdb', 'Ipc.Platform.pdb', 'Ipc.Platform.Storage.pdb', 'Ipc.Reference.Protocol.pdb', 'Ipc.Supply.Contracts.pdb', 'Ipc.Supply.pdb']",
+      "ExcerptIsTransformed": true
+    },
+    {
+      "Attempt": "985 experimental wrapper",
+      "Result": "FAILED_NOT_DELIVERED",
+      "Reason": "CopyOutputSymbolsToPublishDirectory=false alone left extra referenced PDB files; no delivery.",
+      "OriginalRawSha256": "be992195cef15c7a37a6593ee911d5c3f2723a35d8ece2a94cde9a2adab29ef8",
+      "DiagnosticExcerpt": "Traceback (most recent call last):\n    raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))\nValueError: Installer is not a standalone EXE: ['Ipc.Application.Contracts.pdb', 'Ipc.Application.ParcelFlow.Desktop.pdb', 'Ipc.Application.ParcelFlow.pdb', 'Ipc.Application.Sportmaster.Desktop.pdb', 'Ipc.Application.Sportmaster.pdb', 'Ipc.Assembly.pdb', 'Ipc.Components.pdb', 'Ipc.Desktop.pdb', 'Ipc.Drivers.pdb', 'Ipc.Installer.exe', 'Ipc.Integrations.pdb', 'Ipc.Platform.pdb', 'Ipc.Platform.Storage.pdb', 'Ipc.Reference.Protocol.pdb', 'Ipc.Supply.Contracts.pdb', 'Ipc.Supply.pdb']",
+      "ExcerptIsTransformed": true
+    },
+    {
+      "Attempt": "IncludeSymbolsInSingleFile experiment",
+      "Result": "FAILED_NOT_DELIVERED",
+      "Reason": "SDK rejected IncludeSymbolsInSingleFile with NETSDK1142; no delivery.",
+      "OriginalRawSha256": "9a3b0fd4f42ff06896316e33e41f542f42146fc9202b3eb68cd6042e93bf2da7",
+      "DiagnosticExcerpt": "D:\\tools\\dotnet\\sdk\\10.0.402\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Publish.targets(200,5): error NETSDK1142: 针对 .NET5 或更高版本发布时，不支持在单个文件包中包括符号。 [<LOCAL_USER>\\AppData\\Local\\Temp\\ipc-installer-build-4yzt0cxu\\source-snapshot\\src\\Ipc.Installer\\Ipc.Installer.csproj]",
+      "ExcerptIsTransformed": true
+    }
+  ],
+  "OriginalRawLogs": "Retained outside public Git; no failed result relabelled as final success."
+}

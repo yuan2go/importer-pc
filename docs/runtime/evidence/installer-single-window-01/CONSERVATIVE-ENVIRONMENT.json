@@ -1,0 +1,20 @@
+{
+  "OsVersion": "10.0.22631.0",
+  "Edition": "CoreCountrySpecific",
+  "DisplayVersion": "23H2",
+  "OsArchitecture": "X64",
+  "ProcessArchitecture": "X64",
+  "CpuModel": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx",
+  "LogicalProcessors": 8,
+  "Runtime": ".NET 10.0.13",
+  "RuntimeSse2Enabled": false,
+  "RuntimeAvxEnabled": false,
+  "RuntimeAvx2Enabled": false,
+  "Assessment": {
+    "CanStart": true,
+    "PrimaryTarget": true,
+    "Target": "Windows 11 x64",
+    "Reason": "\u5C5E\u4E8E\u672C\u8F6E\u529F\u80FD\u517C\u5BB9\u76EE\u6807\uFF1B\u5B9E\u673A\u9A8C\u8BC1\u3001\u5FAE\u8F6F\u652F\u6301\u5468\u671F\u53CA\u8BBE\u5907SDK\u8D44\u683C\u53E6\u884C\u6838\u5BF9\u3002"
+  },
+  "InventoryDiagnostic": null
+}

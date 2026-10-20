@@ -109,12 +109,12 @@ public static class InstallerPayload
         foreach (var area in new[] { "app", "desktop" })
         {
             using var release = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(target, area, "application-release.json"), cancellationToken));
-            if (release.RootElement.GetProperty("SourceCommit").GetString() != descriptor.SourceCommit || release.RootElement.GetProperty("ApplicationId").GetString() != descriptor.ApplicationId)
+            if (release.RootElement.GetProperty("SourceCommit").GetString() != descriptor.SourceCommit || release.RootElement.GetProperty("ApplicationId").GetString() != descriptor.ApplicationId || release.RootElement.GetProperty("BusinessVersion").GetString() != descriptor.BusinessVersion)
                 throw new InvalidDataException("安装包的程序版本不一致");
         }
         var executable = Path.Combine(target, "desktop", "Ipc.Desktop.exe");
         if (!File.Exists(executable)) throw new InvalidDataException("安装向导程序缺失");
-        progress?.Report(new("正在打开安装向导", "", 100));
+        progress?.Report(new("安装文件已就绪", "", 100));
         return executable;
     }
 }

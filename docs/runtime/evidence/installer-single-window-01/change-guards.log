@@ -1,0 +1,9 @@
+PASS original upgrade preflight preserves database and refuses Unknown=False
+PASS configuration changed after planning refuses deployment
+PASS stale plan creates neither backup nor deployment commit
+PASS fresh plan completes full backup before deployment callback while retaining original database
+PASS actual lost-after-commit reference leaves one original Unknown request
+PASS original upgrade preflight preserves database and refuses Unknown=True
+PASS a refused plan cannot enter backup or deployment callback
+PASS blocked upgrade preserves original bytes and never sends or commits again
+PASS 8 focused installer change guards; synthetic identity/authority only, no Windows restore or real devices

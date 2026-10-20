@@ -21,6 +21,17 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+        if (e.Args.SequenceEqual(new[] { "--environment-report" }))
+        {
+            Console.WriteLine(Wire.Encode(WindowsClientCompatibility.Capture())); Shutdown(0); return;
+        }
+        // WinExe installation helper: dispatch before creating any WPF window.
+        if (e.Args.FirstOrDefault() == "--startup-command")
+        {
+            try { await Task.Run(() => ParcelStartupServices.Handle(e.Args)); Shutdown(Environment.ExitCode); }
+            catch { Shutdown(2); }
+            return;
+        }
         base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try

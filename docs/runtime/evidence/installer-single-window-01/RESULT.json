@@ -1,0 +1,6 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+  "Assertions": 58,
+  "Scope": "Actual unprivileged single-EXE side-by-side upgrade, single persistent setup HWND, one observed actual Windows consent, no new visible console windows in 20ms samples, original Windows change plan and complete backup, configuration preservation, selected shortcuts and installed Simulation workstation startup. No devices or production qualification."
+}

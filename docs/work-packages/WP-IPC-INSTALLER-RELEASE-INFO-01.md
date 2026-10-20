@@ -4,7 +4,9 @@
 
 继承实际安装验证的 `12946f5beee51d448c44b1bfbb0669178d57eaf7`，当前 main 阅读基线 `97c73e73b21b2439f95186d7468bb0d0374b6d6e`；并行整合 PR66 正在收尾。独立 clone/分支实施，等 PR66 最终 main 后对齐、推送并单独创建 PR，不改共享工作树或重标原 129 EXE/30项结果。
 
-发行名称采用 `CainiaoSupplyStation_Setup_v<业务版本>_win-x64_<commit前8位>.exe`，EXE 文件属性版本同步实际业务版本。新安装默认程序根采用 `%ProgramFiles%\CainiaoSupplyStation`；升级保留已选目录和原数据，可显式选择新的英文程序根。原受保护路径批准机制和旧默认根保留，避免因名称调整破坏旧 helper/维护入口。
+续记：PR66已实际合并，独立分支对齐最终 main `a9b9be889ca9833ecf29e382f0fb082a028e2a0b` 后继续冻结。本轮只改变发行命名、首装建议目录、来源记录和随包说明，原安装/真实接口守卫保持。
+
+用户进一步明确一个固定包只有一个业务模块，文件名加该模块简写（Sportmaster确认SM），版本必须是该业务模块版本，不加入commit。因此本模块发行名称采用 `CainiaoSupplyStation_SM_Setup_v<业务版本>_win-x64.exe`，EXE 文件属性版本同步实际业务版本；分支/commit仅进入安装目录的来源记录。新安装默认程序根采用 `%ProgramFiles%\CainiaoSupplyStation`；升级保留已选目录和原数据，可显式选择新的英文程序根。原受保护路径批准机制和旧默认根保留，避免因名称调整破坏旧 helper/维护入口。
 
 冻结打包时从实际 Git 分支取得并核对 HEAD；detached 的 CI 介质明确记录 DETACHED，不能猜测 main，正式单 EXE 封装则要求显式指定可核实的源分支。生成相同的 `BUILD-INFO.json` 和 `BUILD-INFO.txt` 到完整发布目录及 app/desktop 入口目录，记录产品/业务版本、分支、完整 commit、源码时间、实际打包时间、目标架构。它们进入原发布登记和 SHA256SUMS，沿原安装复制及 ACL 校验保留，不在现场安装 Git，不复制 .git/凭据/机器配置。记录只供诊断，不成为第二套部署权威。
 

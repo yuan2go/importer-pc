@@ -1,3 +1,5 @@
+> 后续发行规范：[英文安装包、依赖与Git源码记录](runtime/installer-release-info-01.md)。本轮新增需求独立于下述已完成整合，旧安装包与原验证保持其精确身份。
+
 # 当前整合入口 · 2026-10-20 13:09续轮
 
 [本轮工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md) · [编码前裁决](design/parallel-task-reconciliation-20261020-02.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020-02.md)。整合#62工作台、#63驱动、#64品牌/单EXE和#65普通安装文档；原稿、原失败与前轮统计分别保留。此前仅合并现有代码的限制属于前轮，本次以重新授权的工作包为准。

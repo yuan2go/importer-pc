@@ -4,6 +4,8 @@ import json
 import re
 import subprocess
 
+MODULE_SHORT_NAMES = {'sportmaster': 'SM', 'direct-plc': 'DIRECTPLC', 'wcs-to-plc': 'WCSTOPLC'}
+
 
 def git(root, *args):
     return subprocess.check_output(['git', *args], cwd=root, text=True).strip()
@@ -28,6 +30,7 @@ def capture(root, source, source_branch, application, version, target):
     if git(root, 'rev-parse', 'HEAD') != source:
         raise ValueError('Source branch and frozen HEAD must identify the same commit')
     return dict(SchemaVersion=1, Product='CainiaoSupplyStation', ApplicationId=application,
+                BusinessModuleShortName=MODULE_SHORT_NAMES[application],
                 BusinessVersion=version, Target=target, SourceBranch=source_branch, SourceCommit=source,
                 SourceBranchVerified=verified,
                 SourceCommitUtc=datetime.datetime.fromisoformat(git(root, 'show', '-s', '--format=%cI', source)).astimezone(datetime.timezone.utc).isoformat(),
@@ -38,7 +41,7 @@ def capture(root, source, source_branch, application, version, target):
 def publish(output, record):
     text = ('CainiaoSupplyStation - Build information\n'
             + '\n'.join(f'{name}: {record[name]}' for name in
-                        ('ApplicationId', 'BusinessVersion', 'Target', 'SourceBranch', 'SourceCommit',
+                        ('ApplicationId', 'BusinessModuleShortName', 'BusinessVersion', 'Target', 'SourceBranch', 'SourceCommit',
                          'SourceCommitUtc', 'PackagedUtc', 'SourceRepository'))
             + '\n\nDiagnostic record only. The protected deployment registration remains authoritative.\n')
     encoded = json.dumps(record, ensure_ascii=False, indent=2) + '\n'
@@ -47,9 +50,9 @@ def publish(output, record):
         (directory / 'BUILD-INFO.txt').write_text(text, encoding='utf-8', newline='\n')
 
 
-def installer_name(version, source):
+def installer_name(application, version):
     if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version) or any(int(part) > 65535 for part in version.split('.')):
         raise ValueError('Installer needs a numeric three-part business version')
-    if not re.fullmatch(r'[0-9a-f]{40}', source):
-        raise ValueError('Installer needs a full frozen Git commit')
-    return f'CainiaoSupplyStation_Setup_v{version}_win-x64_{source[:8]}.exe'
+    if application not in MODULE_SHORT_NAMES:
+        raise ValueError('Installer needs a supported selected business module')
+    return f'CainiaoSupplyStation_{MODULE_SHORT_NAMES[application]}_Setup_v{version}_win-x64.exe'

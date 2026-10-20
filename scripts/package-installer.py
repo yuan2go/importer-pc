@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import tempfile
 import zipfile
-from release_provenance import capture as capture_provenance, installer_name
+from release_provenance import capture as capture_provenance, installer_name, MODULE_SHORT_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -49,7 +49,7 @@ def inspect_medium(path, source):
                 if hashlib.file_digest(stream, 'sha256').hexdigest() != expected:
                     raise ValueError('Payload hash mismatch: ' + name)
         releases = [json.loads(archive.read(area + '/application-release.json')) for area in ('app', 'desktop')]
-        if any(r['SourceCommit'] != source for r in releases) or releases[0]['ApplicationId'] != releases[1]['ApplicationId']:
+        if any(r['SourceCommit'] != source for r in releases) or any(releases[0][key] != releases[1][key] for key in ('ApplicationId', 'BusinessVersion')):
             raise ValueError('Installer and embedded medium must use the same frozen source')
         if releases[0]['ApplicationId'] not in ('sportmaster', 'direct-plc', 'wcs-to-plc') or 'desktop/ipc.desktop.exe' not in names:
             raise ValueError('Expected a complete supported Windows Application')
@@ -59,6 +59,7 @@ def inspect_medium(path, source):
         provenance = json.loads(provenance_bytes)
         if (provenance.get('SourceCommit') != source or provenance.get('BusinessVersion') != releases[0]['BusinessVersion']
                 or provenance.get('ApplicationId') != releases[0]['ApplicationId'] or provenance.get('Target') != 'win-x64'
+                or provenance.get('BusinessModuleShortName') != MODULE_SHORT_NAMES[releases[0]['ApplicationId']]
                 or not provenance.get('SourceBranch') or provenance.get('SourceBranchVerified') is not True
                 or provenance.get('FrozenGitExport') is not True):
             raise ValueError('Packaged build source record differs from this release')
@@ -68,6 +69,7 @@ def inspect_medium(path, source):
         with Path(path).open('rb') as stream:
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         return dict(ApplicationId=releases[0]['ApplicationId'], SourceCommit=source, SourceBranch=provenance['SourceBranch'],
+                    BusinessModuleShortName=provenance['BusinessModuleShortName'],
                     BusinessVersion=releases[0]['BusinessVersion'], Sha256=digest,
                     ZipBytes=Path(path).stat().st_size, UnpackedBytes=total, FileCount=len(names))
 
@@ -83,7 +85,7 @@ def main():
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     descriptor = inspect_medium(args.media.resolve(), source)
     capture_provenance(ROOT, source, descriptor['SourceBranch'], descriptor['ApplicationId'], descriptor['BusinessVersion'], 'win-x64')
-    name = installer_name(descriptor['BusinessVersion'], source)
+    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'])
     output = args.output.resolve()
     if output.suffix.lower() == '.exe':
         if output.name != name:

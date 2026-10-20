@@ -21,6 +21,7 @@ class InstallerPackageTests(unittest.TestCase):
         self.files = {'app/application-release.json': release, 'desktop/application-release.json': release,
                       'desktop/Ipc.Desktop.exe': b'SYNTHETIC NEVER EXECUTED'}
         record = json.dumps(dict(ApplicationId='sportmaster', SourceCommit=self.source, BusinessVersion='1.4.1',
+                                 BusinessModuleShortName='SM',
                                  SourceBranch='main', SourceBranchVerified=True, FrozenGitExport=True, Target='win-x64')).encode()
         for area in ('', 'app/', 'desktop/'):
             self.files[area + 'BUILD-INFO.json'] = record
@@ -46,6 +47,7 @@ class InstallerPackageTests(unittest.TestCase):
         self.assertEqual(descriptor['SourceCommit'], self.source)
         self.assertEqual(descriptor['FileCount'], 10)
         self.assertEqual(descriptor['SourceBranch'], 'main')
+        self.assertEqual(descriptor['BusinessModuleShortName'], 'SM')
         self.assertEqual(descriptor['ZipBytes'], self.path.stat().st_size)
 
     def test_different_runtime_source_is_rejected(self):
@@ -55,13 +57,15 @@ class InstallerPackageTests(unittest.TestCase):
 
     def test_missing_detached_or_different_provenance_refused(self):
         original = dict(self.files)
-        for change in ('missing', 'detached', 'different', 'divergent-copy'):
+        for change in ('missing', 'detached', 'different', 'module', 'version', 'divergent-copy'):
             self.files = dict(original)
             if change == 'missing': del self.files['BUILD-INFO.json']
             else:
                 record = json.loads(self.files['BUILD-INFO.json'])
                 if change == 'detached': record['SourceBranchVerified'] = False
                 elif change == 'different': record['SourceCommit'] = 'b' * 40
+                elif change == 'module': record['BusinessModuleShortName'] = 'OTHER'
+                elif change == 'version': record['BusinessVersion'] = '9.9.9'
                 else: record['PackagedUtc'] = 'CHANGED'
                 name = 'desktop/BUILD-INFO.json' if change == 'divergent-copy' else 'BUILD-INFO.json'
                 self.files[name] = json.dumps(record).encode()

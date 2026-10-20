@@ -110,7 +110,7 @@ internal static class Verification
     static void BufferChecks()
     {
         Check(Marshal.SizeOf<NativeMethods.FrameHeader>() == 96 && Marshal.OffsetOf<NativeMethods.FrameHeader>("Codes").ToInt32() == 72, "x64 callback prefix ABI matches SDK evidence");
-        var frame = Marshal.AllocHGlobal(96); var codes = Marshal.AllocHGlobal(4 + 2 * 4628);
+        var frame = Marshal.AllocHGlobal(96); var codes = Marshal.AllocHGlobal(4 + 3 * 4628);
         try
         {
             Marshal.StructureToPtr(new NativeMethods.FrameHeader { Trigger = 7, Frame = 9 }, frame, false);
@@ -119,7 +119,7 @@ internal static class Verification
             bool missingCodeRejected = false;
             try { NativeMethods.CopyFrame(frame, Encoding.UTF8); } catch (InvalidDataException) { missingCodeRejected = true; }
             Check(missingCodeRejected, "reported code without its native list faults instead of inventing no-code");
-            Marshal.Copy(new byte[4 + 2 * 4628], 0, codes, 4 + 2 * 4628);
+            Marshal.Copy(new byte[4 + 3 * 4628], 0, codes, 4 + 3 * 4628);
             Marshal.StructureToPtr(new NativeMethods.FrameHeader { Trigger = 7, Frame = 9, Codes = codes }, frame, false);
             var empty = NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true));
             Check(empty.Codes.Length == 0 && empty.Trigger == 7, "no-code frame preserves its own trigger");
@@ -127,6 +127,8 @@ internal static class Verification
             Check(NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true)).Codes.Single() == "A B ", "length-aware decode removes only terminal NUL and preserves spaces");
             Marshal.WriteInt32(codes, 2); Marshal.WriteInt32(codes, 4 + 4628 + 4100, 1); Marshal.WriteByte(codes, 8 + 4628, (byte)'C');
             Check(NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true)).Codes.Length == 2, "multiple codes remain multiple without selecting a winner");
+            Marshal.WriteInt32(codes, 3); Marshal.WriteInt32(codes, 4 + 2 * 4628 + 4100, 8); Marshal.Copy(Encoding.UTF8.GetBytes("VALID003"), 0, codes + 8 + 2 * 4628, 8);
+            Check(NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true)).Codes.SequenceEqual(["A B ", "C", "VALID003"]), "third candidate is preserved in original order for business filtering");
             Marshal.WriteInt32(codes, 301); bool countRejected = false;
             try { NativeMethods.CopyFrame(frame, Encoding.UTF8); } catch (InvalidDataException) { countRejected = true; }
             Check(countRejected, "out-of-ABI code count rejected before reading records");

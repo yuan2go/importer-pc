@@ -88,6 +88,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var hash = Wire.Hash(Wire.Encode(c));
             candidateQualification = DeploymentQualifications.Read(Path.Combine(Path.GetDirectoryName(trustFile!)!, "deployment-qualification." + hash + ".json"), trustPolicy!, mode, hash, Wire.FileHash(typeof(IParcelApplication).Assembly.Location));
         }
+#if !DIRECTPLC
+        if (c.Wcs?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
+        {
+            _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(c.Wcs);
+            _ = Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.HeartbeatMapping(c);
+        }
+#endif
         var bound = ParcelBindings.Bound(c);
         var bindings = bound.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId).ToArray();
         if (compatibility is not null)
@@ -111,6 +118,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); });
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
+            if (observationInstances.Where(x => x.PackageId == "hikrobot.idmvs-reader").GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
+                throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
+            foreach (var instance in observationInstances)
+            {
+                if (instance.PackageId == "hikrobot.idmvs-reader" && instance.Parameters.TryGetValue("device.ip", out var ip) &&
+                    (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
+                    throw new InvalidDataException("驱动/" + instance.Id + "/device.ip: 需要规范的设备IPv4地址");
+            }
             foreach (var package in c.Extensions.Packages)
             {
                 var verified = Store().VerifyInstalled(package);

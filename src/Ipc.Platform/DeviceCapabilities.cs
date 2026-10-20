@@ -20,7 +20,8 @@ public sealed record DeviceState(string DeviceId, string Epoch, long Sequence, D
 public sealed record DeviceHealthConfirmation(string DeviceId, string Epoch, DeviceHealth Health,
     DateTimeOffset ConfirmedAt, DateTimeOffset? ValidUntil, string Source);
 public sealed record Observation(string Id, string DeviceId, string Epoch, string SourceEventId, long Sequence,
-    string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt);
+    string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? CandidateIssue = null);
 public interface IObservationSource : IAsyncDisposable
 {
     string DeviceId { get; }

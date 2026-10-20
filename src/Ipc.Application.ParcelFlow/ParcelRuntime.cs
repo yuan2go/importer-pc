@@ -208,7 +208,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             var identity = SessionValid ? currentOperator : null;
             // Driver buffers remain driver-owned after callback return.
-            observation = observation with { Codes = observation.Codes?.ToArray() ?? [] };
+            var raw = observation.Codes ?? [];
+            var overflow = raw.Length > BarcodeFiltering.MaximumCandidates || raw.Any(x => x is null || x.Length > BarcodeFiltering.MaximumRawLength);
+            observation = observation with { Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
+                CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
         }
         if (positionQueues[positionId].Writer.TryWrite(item)) return true;
@@ -255,42 +258,47 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
             reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true || !reader.AcceptSequence(o))
         { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/freshness/reader confirmation; " + Wire.Encode(o)); return; }
-        var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind : o.Codes.Length == 0 ? "NoCode" : o.Codes.Length > 1 ? "MultipleCodes" :
-            o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ? "InvalidCode" :
-            !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : null;
-        if (rejection is not null)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created"), "ObservationRejected"); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         var priors = repository!.FindIdentities(o.AdmissionId, observationId);
+        // Re-observing an existing entity uses its original policy, never a newly applied rule.
+        var selection = definition.SelectBarcode(priors.FirstOrDefault()?.FrozenConfiguration ?? Effective, o);
+        var code = selection.SelectedCode;
+        var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
+            !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
+        if (rejection is not null)
+        {
+            foreach (var prior in priors) RecordIdentityConflict(prior, position, "Existing entity re-observed with rejected/ambiguous candidate evidence: " + selection.Outcome);
+            RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection), "ObservationRejected"); return;
+        }
         if (priors.Length > 0)
         {
-            var contradictions = priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != o.Codes[0] || (p.PositionId ?? "main") != position).ToArray();
+            var contradictions = priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != code || (p.PositionId ?? "main") != position).ToArray();
             foreach (var prior in contradictions)
-            { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + o.Codes[0]); }
+            { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + code); }
             RecordInput(Input(position, o, contradictions.Length == 0 ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Blocked,
-                contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id), "ObservationIdentityObserved");
+                contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
             return;
         }
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized"), "ObservationBlocked"); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized", selection: selection), "ObservationBlocked"); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Explicit archive/retention is required"), "RetentionBudget", paused: true); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Explicit archive/retention is required", selection: selection), "RetentionBudget", paused: true); return; }
         if (!AdmissionCapabilitiesReady(position) || !ImageCapacityAvailable())
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Required capability unhealthy or temporary image quota exhausted"), "AdmissionCapabilityBlocked"); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Required capability unhealthy or temporary image quota exhausted", selection: selection), "AdmissionCapabilityBlocked"); return; }
         var weight = WeightRules.Configured(Effective.Weight);
-        var op = new ParcelOperation(Wire.Id(), o.AdmissionId, o.Codes[0], observationId, o.ObservedAt,
+        var op = new ParcelOperation(Wire.Id(), o.AdmissionId, code!, observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
             Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
-            PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null);
+            PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null, BarcodeSelection: selection);
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
-        Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity", input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id));
+        Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity", input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await CaptureOriginalAsync(op).ConfigureAwait(false);

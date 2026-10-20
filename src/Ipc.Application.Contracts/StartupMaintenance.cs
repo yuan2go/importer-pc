@@ -18,6 +18,7 @@ public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, st
 // Independent of IBusinessRuntime: no device/session is required to inspect or repair startup.
 public interface IStartupMaintenance
 {
+    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<StartupMaintenanceDocument> ReadAsync();
     Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate);
     Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate);

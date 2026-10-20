@@ -162,7 +162,7 @@
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.2.0",
+          "Version": "1.2.1",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -233,7 +233,7 @@
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.2.0",
+          "Version": "1.2.1",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -280,7 +280,7 @@
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "1.0.2",
+          "Version": "1.0.3",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
         }
       ]
@@ -321,13 +321,13 @@
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.2.0",
+          "Version": "1.2.1",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "1.0.2",
+          "Version": "1.0.3",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
         }
       ]

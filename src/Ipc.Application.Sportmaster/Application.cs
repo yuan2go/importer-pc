@@ -6,8 +6,21 @@ namespace Ipc.Application.Sportmaster;
 public sealed class SportmasterFlow : FlowDefinition
 {
     public override string Id => "sportmaster";
+    public override ParcelConfiguration InitialConfiguration()
+    {
+        DeviceBinding[] readers = [new("parcel-reader", "manual", "sportmaster.reader.left", "1"), new("parcel-reader", "manual", "sportmaster.reader.right", "1")];
+        // A draft in Production with unavailable real dependencies cannot silently run a simulation.
+        return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
+            new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
+            new("integration", "reference-integration", "1.0.0", "sportmaster.integration", "reference://integration/unconfigured", "PARCEL-REFERENCE-v1", []), null,
+            MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
+            WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
+            Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
+            StationCode: SystemParameterDefaults.StationCode(SystemParameterDefaults.InitialStationId));
+    }
     public override string[] PositionRoles => ["left", "right"];
-    public override string[] ValidateBusiness(ParcelConfiguration c) => c.Wcs is null || c.Plc is not null ? ["Sportmaster capability dependencies do not match its flow"] : [];
+    public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);
+    public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>
         op.Wcs?.State == StageState.Unknown ? [ParcelStage.Wcs] : [];

@@ -49,5 +49,13 @@
     "Minimum": 1,
     "Maximum": 1024,
     "Description": "有界队列；溢出锁定Faulted，检查原实体后显式重连。"
+  },
+  {
+    "Key": "bcr-code",
+    "Group": "设备 / 身份",
+    "Label": "RCS 相机编码",
+    "Type": "string",
+    "MaximumLength": 256,
+    "Description": "上报RCS心跳时必填。保存外部业务编码，保留大小写；不代替设备IP、序列号或内部DeviceId。"
   }
 ]

@@ -1,3 +1,5 @@
+> 2026-10-20心跳增量：用户新增 `sorter.task.station_heartbeat`，默认5秒、组件参数可改；系统 `StationCode` 与Reader驱动 `bcr-code` 为心跳编码来源。实现/配置/验证边界见[心跳说明](../runtime/rcs-heartbeat-01.md)。下文“首项只实现取格口”保留01形成时范围，不限制本次新增命令；Query仍为false，旧请求原件不改。
+
 # Sportmaster RCS 分拣任务服务 · 01
 
 2026-10-19用户已确认实现、必要验证、提交推送及main PR。开工基线main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；当时PR26并行，执行中其已由独立授权合入main，本分支整合经过见末段。命名 `SportmasterRcsTaskService` / `sportmaster-rcs-task`。本增量继承22与质量闭环01，原D/RV、Supply CAPI含义及历史报告不改。

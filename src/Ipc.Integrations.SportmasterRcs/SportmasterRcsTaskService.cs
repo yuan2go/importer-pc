@@ -13,8 +13,8 @@ public sealed class SportmasterRcsTaskExtension : IWcsExtension
     public IWcsPort Create(CapabilityBinding binding) => new SportmasterRcsTaskService(binding);
 }
 
-/// <summary>RCS destination requests only. No query, retry, physical control or completion is implied.</summary>
-public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
+/// <summary>RCS destination requests and station heartbeat. Heartbeat never resolves a business request.</summary>
+public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer, IWcsRuntimeConfiguration
 {
     public const string Contract = "SPORTMASTER-RCS-SORTER-v1";
     public const int MaximumResponseBytes = 262144;
@@ -39,14 +39,24 @@ public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
     public Task StartAsync(CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        lock (lifecycle) { ObjectDisposedException.ThrowIf(disposed, this); running = true; }
+        lock (lifecycle)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (running) return Task.CompletedTask;
+            if (active != 0 || heartbeatTask is { IsCompleted: false }) throw new InvalidOperationException("RCS stop is still draining");
+            if (heartbeatStations is null) throw new InvalidDataException("RCS requires the effective station/reader configuration before start");
+            heartbeatStop?.Dispose(); heartbeatStop = new();
+            heartbeatFailure = null; heartbeatEvidence = "Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed";
+            running = true;
+            heartbeatTask = HeartbeatLoopAsync(heartbeatStop.Token);
+        }
         return Task.CompletedTask;
     }
     public Task<CapabilityHealth> HealthAsync(CancellationToken token)
     {
         token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
-        lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed, now, now.AddSeconds(3),
-            "RCS client local lifecycle/configuration readiness only; upstream health endpoint is not supplied"));
+        lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatFailure is null, now, now.AddSeconds(3),
+            "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence)));
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
@@ -129,12 +139,17 @@ public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
     }
     public async Task StopAsync(CancellationToken token)
     {
-        Task wait; lock (lifecycle) { running = false; wait = active == 0 ? Task.CompletedTask : drained!.Task; }
+        Task wait; lock (lifecycle)
+        {
+            running = false; heartbeatStop?.Cancel();
+            wait = Task.WhenAll(heartbeatTask ?? Task.CompletedTask, active == 0 ? Task.CompletedTask : drained!.Task);
+        }
         await wait.WaitAsync(token).ConfigureAwait(false);
     }
     public async ValueTask DisposeAsync()
     {
+        lock (lifecycle) disposed = true;
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
-        lock (lifecycle) { if (disposed) return; disposed = true; client.Dispose(); }
+        lock (lifecycle) { heartbeatStop?.Dispose(); heartbeatStop = null; client.Dispose(); }
     }
 }

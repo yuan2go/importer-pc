@@ -81,5 +81,6 @@
   "Retention": {
     "ResidentHistory": 200,
     "MinimumFreeBytes": 67108864
-  }
+  },
+  "StationCode": "SYNTHETIC-STATION"
 }

@@ -20,7 +20,7 @@ static partial class SportmasterRcs
     static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.1.1", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
-        ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000",
+        ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
         ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER"
     });
     static FrozenRequest Request(CapabilityBinding binding, string position = "left", string barcode = "SYNTH-0001")
@@ -57,6 +57,7 @@ static partial class SportmasterRcs
         await using var peer = new Peer(); var binding = Binding(peer.Endpoint);
         await using (var service = new SportmasterRcsTaskService(binding))
         {
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
             await service.StartAsync(CancellationToken.None);
             Check((await service.HealthAsync(CancellationToken.None)).Ready && peer.Requests.Count == 0, "lifecycle readiness sends no fabricated remote health request");
             foreach (var mode in new[] { "assigned", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
@@ -140,8 +141,20 @@ static partial class SportmasterRcs
         var restored=Path.Combine(root,"rcs-numeric-restored");ParcelRecovery.Restore(backup,Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId));
         await using(var app=await Open(restored))
         {
-            await Command(app,"Resume");app.EmitReferenceAt("right","numeric-restored-blocked","SYNTH-0001",Wire.Id());var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));
-            Check(s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Wcs is null&&peer.Requests.Count==posts&&s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Reason!.Contains("exhausted/retired"),"fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
+            var resume = await Command(app,"Resume");app.EmitReferenceAt("right","numeric-restored-blocked","SYNTH-0001",Wire.Id());
+            var s=await Wait(app,x=>x.Inputs?.Any(i=>i.Observation.AdmissionId=="numeric-restored-blocked")==true);
+            Check(resume.Status=="Rejected"&&s.Paused&&s.BlockingReasons.Any(r=>r.StartsWith("RestoreHandoffRequired",StringComparison.Ordinal))&&
+                !s.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked")&&peer.Requests.Count==posts,
+                "restored DB8 remains isolated before handoff; attempted admission cannot create a request or POST");
+            using var repository = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId),c.ApplicationId);
+            await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
+            var range = preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!)!;
+            try { repository.NextIntegrationPreparationSequence(range); throw new Exception("Restored retired range reused"); }
+            catch(InvalidDataException error)
+            {
+                Check(error.Message.Contains("exhausted/retired",StringComparison.Ordinal)&&repository.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived&&i.Operation.Wcs!.Request.IntegrationRequest!.RequestId==allocated),
+                    "fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
+            }
         }
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
@@ -334,7 +347,7 @@ static partial class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 7, "actual ParcelRuntime startup records numeric ownership semantics SQL7");
+            Check((long)command.ExecuteScalar()! == 8, "actual ParcelRuntime startup retains SQL7 numeric ownership with current SQL8 custody semantics");
         }
         try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
         catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
@@ -350,7 +363,7 @@ static partial class SportmasterRcs
         string durable, awaiting; string frozen;
         Dictionary<long, string> SqlHistory()
         {
-            using var db = new SqliteConnection("Data Source=" + Path.Combine(directory, "sportmaster.db")); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT version,sha FROM platform_migrations ORDER BY version";
+            using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(directory, "sportmaster.db"), Pooling = false }.ToString()); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT version,sha FROM platform_migrations ORDER BY version";
             using var r = c.ExecuteReader(); Dictionary<long, string> history = []; while (r.Read()) history.Add(r.GetInt64(0), r.GetString(1)); return history;
         }
         using (var original = new ParcelRepository(directory, "sportmaster", 5))
@@ -418,6 +431,7 @@ static partial class SportmasterRcs
         public ParcelPorts Create(ParcelConfiguration c)
         {
             var p = inner.Create(inner.Normalize(Reference(c))); var service = new SportmasterRcsTaskService(c.Wcs!);
+            service.ConfigureRuntime(c);
             var hashes = new Dictionary<string, string>(p.ImplementationHashes) { [c.Wcs!.InstanceId] = Wire.FileHash(typeof(SportmasterRcsTaskService).Assembly.Location) };
             // The unused reference integration never starts; dispose its owned resources.
             p.Wcs!.DisposeAsync().AsTask().GetAwaiter().GetResult(); return p with { Wcs = service, ImplementationHashes = hashes };

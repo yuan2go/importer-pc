@@ -1,0 +1,19 @@
+{
+  "baseline_main": "a9b9be889ca9833ecf29e382f0fb082a028e2a0b",
+  "merged_pr": 67,
+  "merge_sha": "0fe3cbfb31ef57d674c4040d7b3bd52bf469b46a",
+  "source_commit": "7c384540393b1e77ceeba048a87a3916dd1af63c",
+  "source_branch": "codex/installer-release-metadata",
+  "business": "sportmaster",
+  "module": "SM",
+  "business_version": "1.4.1",
+  "installer": "CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe",
+  "bytes": 172493384,
+  "sha256": "826f7ff47fd8bcddbe785a4a9e3cdbc92ec91cc512ca108e5de8050ca9a6b5f2",
+  "tests_in_publication_task": "NOT_RUN_BY_USER_REQUEST",
+  "build_repackage_install_runtime_in_publication_task": "NOT_RUN_BY_USER_REQUEST",
+  "historical_validation": "Original delivery record only; not rerun or expanded",
+  "sdk_redistributed": false,
+  "production": "NOT_APPROVED",
+  "old_assets_overwritten": false
+}

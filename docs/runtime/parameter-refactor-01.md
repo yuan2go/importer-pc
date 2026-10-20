@@ -106,4 +106,4 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 
 [首次远端检查](https://github.com/yuan2go/importer-pc/actions/runs/39406264803/job/118572825786)在 `0d4ee6d` 的 checkout 阶段因原型 `source/aux.js` Windows保留名失败，尚未执行构建/测试，不计为应用回归失败或PASS。现有Windows工作流改为非cone sparse checkout，仅不在工作副本落地该文件；Git blob和完整历史均保留。core.protectNTFS=false仅作用于checkout子进程；冻结导出器仅在只读git archive命令设置该选项，仍使用data_filter与extended-path目录，签名包SafePath和部署安全门禁不变。
 
-复用 [统一发行测试](../../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，见 [日志](evidence/parameter-refactor-01/release-windows-paths.log)。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。
+复用 [统一发行测试](../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，现有商业交付拒绝策略5项亦通过，见 [日志](evidence/parameter-refactor-01/release-windows-paths.log)。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。

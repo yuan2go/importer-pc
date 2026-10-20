@@ -52247,9 +52247,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "c4a5ac28f49dda88deb6a4dc9c294bf2a68fc9097c7e1459ebdebc87d6acb65f",
-      "size_bytes": 15080,
-      "git_blob": "b7209d4d2e0725af1c82f5a5801a3a36b98dc35e"
+      "sha256": "7fe636eb4f952c7f3a385613951f901ae439bebccb11433fc3d22da65cdae8e7",
+      "size_bytes": 15123,
+      "git_blob": "9f2e218af258fc220b4eae8f27bcc09b4e976fa6"
     },
     {
       "path": "docs/runtime/publication-parameter-snapshot-20261020.md",

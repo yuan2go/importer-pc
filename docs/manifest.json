@@ -36600,9 +36600,9 @@
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fff314ea06eb659ad22b1534013240bb8ac1bcb92359b2943716318329c2ca70",
-      "size_bytes": 27654,
-      "git_blob": "276a076a4744ee082c6d914066344752cdd61a99"
+      "sha256": "4a197990b28c147c96fa9410d311229578483ba44c87822850a163e77d5a58f7",
+      "size_bytes": 28391,
+      "git_blob": "c0bc19313d5d2b8a0ec2de54e2f5dc057824ac6e"
     },
     {
       "path": "docs/runtime/evidence/ux-commercial-closure-02/python-guides.log",

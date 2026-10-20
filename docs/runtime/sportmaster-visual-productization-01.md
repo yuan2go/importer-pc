@@ -1,5 +1,7 @@
 # Sportmaster 原生视觉产品化
 
+> main 续核：PR58 的整套视觉实现及 PR57 的发行整合已合入 main `e0beb5d32c6a24a7799ba698731566bca6a6833a`。本轮沿[续核设计](../design/sportmaster-visual-main-closure-01.md)修复共享日历的无效日期恢复路径：错误保持到明确更正/清除，关闭日历不再使用旧日期，记录与支持共用此规则。最终候选的源码与库存以其 `app/application-release.json` / `SHA256SUMS` 为准；下文 dfc2ab6 是先前已验证的历史介质，不代表后继源码身份。续核结果单独记账，目标 Windows 和现场资格仍须独立验收。
+
 任务 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01；开工main `f3059d499cd4dbc60b443f0a54cac939b2e5db2f`。[编码前基准](../design/sportmaster-visual-productization-01.md)、[清理前原字节](../archive/pre-sportmaster-visual-01/README.md)、[本轮证据](evidence/sportmaster-visual-01/README.md)分别管理目标、来源与实测。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8不变，无新生产NuGet、浏览器、字体或设备依赖。
 
 ## 实际使用
@@ -42,7 +44,7 @@ standard纵向条码/大格口，compact横向字段；小客户区使用更紧�
 
 整合增量：实施期间PR56合入main `1e97740f73fa1714505a128283f3df5bb96a5518`。最终组合完整继承其首配目录→设备→策略→检查启动四步及独立恢复页、未保存确认、检查失效/保存启动守卫、可搜索离线帮助、草稿和工程门禁修正与全部历史证据；本轮仅在其首配上补视觉分组/可复制诊断，未保留一套并行首配。原计划的三步组织由此替代，最终验证已重冻新组合，没有拼接旧PASS。PR57仍为独立发行任务。
 
-## 冻结交付身份与实测
+## 原轮冻结交付身份与实测（dfc2ab6）
 
 运行源码和同版原生夹具固定为 `dfc2ab68d263340037751651c442dd5b33023b32`；该提交相对9247db6仅修正维护展开区的验证定位，客户端代码相同。最终文档/证据及验证脚本的预览输出目录修正另行提交，不重标介质SourceCommit。
 

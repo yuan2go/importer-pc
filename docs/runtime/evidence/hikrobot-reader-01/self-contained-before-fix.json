@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "e80ab39937c0c3e8bee7fd2026ccf3490f7e3ab1",
+  "Kind": "ACTUAL_PUBLISHED_SELF_CONTAINED_TEST_FAILURE",
+  "Exception": "System.IO.InvalidDataException",
+  "Message": "Signed filename/assembly identity mismatch or private copy of shared contract/framework",
+  "ExitCode": -532462766,
+  "Cause": "The prior host treated all CoreLib-directory DLLs in self-contained output as framework assemblies.",
+  "FixSourceCommit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4",
+  "FinalValidation": "same signed-acceptance assertions retained and passed on final self-contained output"
+}

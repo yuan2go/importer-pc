@@ -52,3 +52,11 @@ Production仍需真实reader、维护认证、全部必需能力及未过期精�
 本轮曾在独立只读诊断进程尝试逐一初始化SDK目录全部DLL，初始化阻塞后终止该诊断。由此收紧为签名Preload清单；未将该尝试计为成功验证，也未修改或安装任何SDK文件。
 
 发布冒烟发现并修复原宿主自包含模式的框架身份识别缺陷：不再把CoreLib同目录全部DLL当框架，改从冻结宿主deps清单的明确Microsoft.NETCore.App runtimepack逐项核验身份；共享运行时仍只使用真正shared/Microsoft.NETCore.App目录。原自包含签名测试失败保留，不移除断言。最终驱动候选升为1.0.1；先前本地1.0.0工程包保持原SDK/宿主指纹，不覆盖。
+
+## 冻结交付回执
+
+最终实现及构建源码为 `ef553272327cd6c4f2a9509563d4e9609f18cdc4`，工程签名驱动包1.0.1、Sportmaster1.4.1；未发布Production介质。完整机器私有连接输出留在Git外。[验证汇总](evidence/hikrobot-reader-01/verification.json)、[实际自包含测试stdout](evidence/hikrobot-reader-01/self-test.log)、[签名包身份](evidence/hikrobot-reader-01/package-identity.json)和[原自包含失败](evidence/hikrobot-reader-01/self-contained-before-fix.json)分别保留范围。原生WPF仅构建通过，本轮没有重做UI交互验收。
+
+最终26项驱动断言及5组签名/原生政策验证通过，最终自包含程序真实连接5秒、0帧/0码、停止释放成功。工具单测在bundled Python/Pillow下为9通过/1环境错误；原main归档单测6通过/1相同WinError1314，无符号链接权限。没有跳过或移除该断言，也未把整套工具单测记为PASS。早期CRLF导出导致内容身份差异的资料检查按原Git blob重新核验，不修改文件原始证据来获得PASS。
+
+规范Git原字节完整资料核验：起始main及最终代码候选均267项既有错误（265项历史PPTX媒体类型、2项历史元数据标记），新增0；见[差异结果](evidence/hikrobot-reader-01/archive-delta.json)。后续证据说明提交仅增加本包回执/哈希，另核验其清单和链接，不反复扩大运行测试。

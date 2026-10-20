@@ -40242,9 +40242,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "d926a5fe8d2c2b465380b0d0a4f958f48bd78152af3c055295a32dc8d02ae58a",
-      "size_bytes": 1615,
-      "git_blob": "b4666718c5e6133c7183d8e0abda55cc0c11d8e8",
+      "sha256": "727312856c113b8614c94e1056e1559283852d9dd76e347bf09593209fc06052",
+      "size_bytes": 1757,
+      "git_blob": "d939345d268f058461cc3ae950503ff566036c70",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -47782,7 +47782,7 @@
     },
     {
       "path": "docs/design/hikrobot-reader-01.md",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47792,19 +47792,85 @@
       "git_blob": "3dc77a6974cc017c1aa294706de3562a01b614f0"
     },
     {
-      "path": "docs/runtime/hikrobot-reader-01.md",
-      "version": "hikrobot-reader-1.0.0",
+      "path": "docs/runtime/evidence/hikrobot-reader-01/archive-delta.json",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "65ccfcb37f3d7381563d251d006d8c5a39f0581c129fbe92e481db2b65e9d137",
-      "size_bytes": 8219,
-      "git_blob": "19cdaf5c28ce49cfcb00af82978eac41ffad21cb"
+      "sha256": "759803f139195759effcf62cb7c210d687862bc880a0ce2814b492873fe7c47d",
+      "size_bytes": 269,
+      "git_blob": "6b6eceb6a2c7e971a3796bf8885871a97b244b4d"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/package-identity.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dfe42679137a9560c81fcab37c8c10c45fc6d89d5664fe036d3ee491b05e8d3c",
+      "size_bytes": 1320,
+      "git_blob": "d347c451b98db03f2340545d2f15f24deb841026"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9cc454300c5b1858b6213dbd9a9c0d70bac3b2cf4a122f4b3b1accb9fbc35910",
+      "size_bytes": 600,
+      "git_blob": "7bffa20e1c67f9271ee7912987d29bb72da89d04"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.log",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "966437dd4b8622ab9a3e6db87babb3c15a32009da6dbff8f5271061d9e1e3850",
+      "size_bytes": 424,
+      "git_blob": "4083cd3eb5bebf5b44afa0f0e805334ba425e544"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/self-test.log",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417",
+      "size_bytes": 2259,
+      "git_blob": "c606022cb2bbd664a6d55f7460ce2b0d0b33737f"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-reader-01/verification.json",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8f8bd16de8707f1a9a72f48aa10f66fa896502dfc25aea06a97c00e5d63f923f",
+      "size_bytes": 2972,
+      "git_blob": "3eed5c04c3b4c985d4728f971bd04cc095287f8c"
+    },
+    {
+      "path": "docs/runtime/hikrobot-reader-01.md",
+      "version": "hikrobot-reader-1.0.1",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
+      "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "33893aff08edf9648ba5bad73834210eb0697fb7f469a42f1948f8b2b8da844f",
+      "size_bytes": 9643,
+      "git_blob": "8b06395ab8819a71766614a521847126482196b5"
     },
     {
       "path": "docs/work-packages/WP-IPC-HIKROBOT-READER-01.md",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47815,7 +47881,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47826,7 +47892,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47837,7 +47903,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47848,7 +47914,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/extension.build.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47859,7 +47925,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/extension.build.production.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47870,7 +47936,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/manifest.production.template.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47881,7 +47947,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/manifest.template.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47892,7 +47958,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/modules.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47903,7 +47969,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/packages.lock.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47914,7 +47980,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/packages.win-x64.lock.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47925,7 +47991,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/parameters.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47936,7 +48002,7 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47947,7 +48013,7 @@
     },
     {
       "path": "src/Ipc.Platform/NativeSdkBoundary.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47958,7 +48024,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Ipc.Drivers.Hikrobot.Probe.csproj",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47969,7 +48035,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47980,7 +48046,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -47991,7 +48057,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -48002,7 +48068,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -48013,7 +48079,7 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.win-x64.lock.json",
-      "version": "hikrobot-reader-1.0.0",
+      "version": "hikrobot-reader-1.0.1",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Generic IP-configured driver, qualified SDK boundary, synthetic verification or operations; no vendor SDK assets",
       "source": "WP-IPC-HIKROBOT-READER-01 explicit user authorization",
@@ -49890,6 +49956,8 @@
     "state": "IMPLEMENTED_TARGETED_TESTS_PASS_REAL_CONNECTION_IDLE_PASS",
     "real_barcode_frames": 0,
     "production_qualification": "NOT_APPROVED",
-    "historical_d_rv": "UNCHANGED"
+    "historical_d_rv": "UNCHANGED",
+    "driver_version": "1.0.1",
+    "code_commit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4"
   }
 }

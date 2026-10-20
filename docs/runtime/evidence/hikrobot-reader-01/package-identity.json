@@ -1,0 +1,26 @@
+{
+  "Package": "hikrobot.idmvs-reader-1.0.1.ipcx",
+  "PackageSha256": "a44f3121fa3f6dfc60e3e8a5d4e07a402f8c9fb94eadbba3fb2b713fd8861886",
+  "PluginSourceCommit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4",
+  "PluginSourceSha256": "85e611313f0aa3019e8b3c87fd5adf04e65ed44da4e3d41b61bb0de159223eaa",
+  "DefinitionSha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb",
+  "HostContractSha256": "6064da7f0f0852d424ca17ffe1332b138576a03d55b55192fbb9ce7d7e2f707a",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "6064da7f0f0852d424ca17ffe1332b138576a03d55b55192fbb9ce7d7e2f707a"
+  },
+  "Publisher": "hikrobot-engineering-test",
+  "Version": "1.0.1",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "e120b3740cdfe6d8319d9c287c0fee071a7e1237aa64d0b307795e66774b9372",
+  "TrustSha256": "1c145976bd5baa10055c3b5b559476b3e296c8d2957d6ac52e8c5f4e222f1e5b",
+  "PayloadSha256": {
+    "Ipc.Drivers.Hikrobot.dll": "4fe03fef4cb9bedaab60b354579a2a651e8a0a5000b91c2f86d35fefa6a767a1",
+    "sdk-boundary.json": "5a4b9f5d550cc267343e3491df633aca53b2aaa22e7b8a70c5284f3b633f6190"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

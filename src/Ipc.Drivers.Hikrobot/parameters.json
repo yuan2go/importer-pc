@@ -1,0 +1,53 @@
+[
+  {
+    "Key": "device.ip",
+    "Group": "设备 / 连接",
+    "Label": "相机 IPv4 地址",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 15,
+    "Description": "按明确IP枚举唯一GigE设备，不使用枚举下标，不修改设备IP。驱动与业务左右位置无关。"
+  },
+  {
+    "Key": "device.serial",
+    "Group": "设备 / 身份",
+    "Label": "预期序列号（可选）",
+    "Type": "string",
+    "MaximumLength": 32,
+    "Description": "填写时同时验证IP与序列号；空值仍使用实际序列号防止同设备重复占用。"
+  },
+  {
+    "Key": "entity.mode",
+    "Group": "输入 / 实体关联",
+    "Label": "实体关联策略",
+    "Type": "choice",
+    "Default": "observe-only",
+    "Choices": [
+      "observe-only",
+      "trigger"
+    ],
+    "Description": "observe-only只报告不可准入的观察。trigger须已有TriggerMode=On，且部署资格证明一触发一实体、重复帧及重连实体处置；驱动不改变触发设置。"
+  },
+  {
+    "Key": "code.encoding",
+    "Group": "输入 / 解码",
+    "Label": "条码字节编码",
+    "Type": "choice",
+    "Default": "utf-8",
+    "Choices": [
+      "utf-8",
+      "ascii"
+    ],
+    "Description": "严格解码，非法字节故障；不猜编码或替换字符。"
+  },
+  {
+    "Key": "queue.capacity",
+    "Group": "运行 / 容量",
+    "Label": "回调队列容量",
+    "Type": "integer",
+    "Default": "128",
+    "Minimum": 1,
+    "Maximum": 1024,
+    "Description": "有界队列；溢出锁定Faulted，检查原实体后显式重连。"
+  }
+]

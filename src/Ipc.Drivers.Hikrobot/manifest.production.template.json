@@ -1,0 +1,21 @@
+{
+  "SchemaVersion": 1,
+  "Id": "hikrobot.idmvs-reader",
+  "Runtime": "net10.0",
+  "Rid": "win-x64",
+  "ContractMajor": 1,
+  "Mode": "Production",
+  "Dependencies": [],
+  "Prerequisites": [
+    {
+      "Kind": "vendor-sdk",
+      "Identity": "MvCodeReaderCtrl.dll",
+      "Version": "2.0.0.4",
+      "Evidence": "5A4B9F5D550CC267343E3491DF633ACA53B2AAA22E7B8A70C5284F3B633F6190",
+      "Preload": [
+        "MVGigEVision.dll",
+        "MvSmtDevCtrl.dll"
+      ]
+    }
+  ]
+}

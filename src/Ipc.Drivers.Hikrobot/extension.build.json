@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Project": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
+  "SourceRoots": [
+    "src/Ipc.Drivers.Hikrobot"
+  ],
+  "BuildInputs": [
+    "Directory.Build.props",
+    "global.json",
+    "NuGet.Config"
+  ],
+  "Manifest": "src/Ipc.Drivers.Hikrobot/manifest.template.json",
+  "Modules": "src/Ipc.Drivers.Hikrobot/modules.json",
+  "ParameterSchemas": {
+    "idmvs-reader": "src/Ipc.Drivers.Hikrobot/parameters.json"
+  },
+  "Content": [
+    {
+      "Root": "build",
+      "Source": "Ipc.Drivers.Hikrobot.dll",
+      "Path": "Ipc.Drivers.Hikrobot.dll"
+    },
+    {
+      "Root": "source",
+      "Source": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
+      "Path": "sdk-boundary.json"
+    }
+  ],
+  "PublicContracts": []
+}

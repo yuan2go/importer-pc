@@ -340,7 +340,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {
             Store().RegisterConsumer(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db"));
-            use = Store().AcquireUse(deployment.Packages); loading = new(Store());
+            use = Store().AcquireUse(deployment.Packages); loading = new(Store(), qualification);
         }
         Dictionary<string, IControlledObservationSource> readers = [];
         foreach (var binding in ParcelBindings.Readers(c))

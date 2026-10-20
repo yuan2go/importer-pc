@@ -85,7 +85,17 @@ static partial class Program
             "classic and default share the friendly receipt projection while preserving the complete technical receipt");
         probe.Project = s => s with { State = "PartiallyReady" }; await classicVm.RefreshAsync();
         Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
-        probe.Project = null; Capture("classic-1366", classic); classic.Close();
+        probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
+            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = s.Configuration.Effective.MaintenanceLogin } } };
+        await classicVm.RefreshAsync(); classic.UpdateLayout();
+        var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
+        var login = (WrapPanel)classic.FindName("OperationalLogin");
+        Check(blockers.IsVisible && blockers.Text.Contains("authentication required") && blockers.Text.Contains("maintenance in progress") &&
+            login.IsVisible && ((PasswordBox)classic.FindName("LoginProof")).IsVisible &&
+            !((Expander)classic.FindName("StationDiagnostics")).IsExpanded,
+            "active blockers and optional operator login remain visible while technical diagnostics are collapsed");
+        Capture("classic-blocked-login", classic);
+        probe.Project = null; await classicVm.RefreshAsync(); Capture("classic-1366", classic); classic.Close();
         await Fit(1100, 650); Capture("normal-1100");
         if (!baseline)
         {

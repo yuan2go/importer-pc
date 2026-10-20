@@ -1,4 +1,6 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
+
+> 以下为前阶段形成时记录；当前操作以前述2026-10-20裁决为准。原增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
@@ -55,10 +57,10 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 版本升级与原件
 
-当前Application.Contracts ABI1.9.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
+当前Application.Contracts ABI1.10.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
-Parcel当前数据库7，SQL1～6及checksum保留；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障；SQL5将历史OutcomeReconciled恢复为Awaiting资料责任，SQL7保存数字请求永久唯一Owner、配置范围及恢复退役边界。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB7，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
+Parcel当前数据库8，SQL1～7及checksum保留；SQL8为首配修复、恢复交接和配置绑定备份策略的读者屏障；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障；SQL5将历史OutcomeReconciled恢复为Awaiting资料责任，SQL7保存数字请求永久唯一Owner、配置范围及恢复退役边界。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB8，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
 
 不得用改库、删除原件或强改迁移表作为部署升级步骤。新备份通过应用BackupAsync，包含完整配置、SQLite一致快照、原回执与尚存原图及完成清单；恢复到全新隔离目录，首次启动暂停。原请求、原WCS格口及PLC意图继续同T3事务，Unknown只查询原目标/实现，不盲重发。
 

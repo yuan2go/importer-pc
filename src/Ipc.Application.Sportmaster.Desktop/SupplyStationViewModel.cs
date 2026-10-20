@@ -23,20 +23,10 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         set { if (value is not ("workstation" or "history" or "maintenance")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); }
     }
     public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "设备与维护", _ => "工作台" };
-    public string OperatorFeedback => Feedback.Split(" · ", 2)[0] switch
-    {
-        "Persisted" => "操作已提交；请核对当前应用状态。",
-        "PendingRestart" => "配置已保存；等待受控重启生效。",
-        "Conflict" => "状态已变化；保留原对象，重新核对后再操作。",
-        "Rejected" => "操作未被接受；通过来源诊断查看完整回执。",
-        "NotReady" => "当前条件不允许操作；请核对阻断原因。",
-        _ => Feedback
-    };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
         PropertyChanged += (_, e) => { if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); } };
-        PropertyChanged += (_, e) => { if (e.PropertyName == nameof(Feedback)) Changed(nameof(OperatorFeedback)); };
     }
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {

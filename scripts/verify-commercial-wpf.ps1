@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -21,7 +21,12 @@ $refs=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll')
 $refs+=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll')
 $refs+=@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Desktop.dll'))
 $xml=($refs | Sort-Object FullName -Unique | ForEach-Object {'<Reference Include="'+$_.BaseName+'"><HintPath>'+[Security.SecurityElement]::Escape($_.FullName)+'</HintPath><Private>true</Private></Reference>'}) -join "`n"
-foreach($source in @('Program.cs','UxCommercialClosure.cs','CommercialPages.cs','VisualProductization.cs')){
+$sources=@('Program.cs','UxCommercialClosure.cs','CommercialPages.cs','VisualProductization.cs')
+& git -C $repo cat-file -e ($release.SourceCommit+':tests/Ipc.Desktop.UiVerification/AuditPerformance.cs') 2>$null
+$hasPerformance=$LASTEXITCODE -eq 0
+if($hasPerformance){$sources+='AuditPerformance.cs'}
+if($AuditPerformance -and -not $hasPerformance){throw 'This frozen source has no audit performance fixture'}
+foreach($source in $sources){
  $content=& git -C $repo show ($release.SourceCommit+':tests/Ipc.Desktop.UiVerification/'+$source)
  if($LASTEXITCODE -ne 0){throw 'Missing fixed native fixture'}
  [IO.File]::WriteAllLines((Join-Path $Output $source),[string[]]$content)
@@ -41,7 +46,7 @@ Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destinatio
 $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
- $mode=if($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
+ $mode=if($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
  $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
  if($Interactive){$nativeArguments += '--interactive'}
  & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
@@ -51,6 +56,7 @@ foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $
 if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')){
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
+ if($AuditPerformance -and (Test-Path -LiteralPath (Join-Path $evidence 'R02-performance.json'))){Copy-Item -LiteralPath (Join-Path $evidence 'R02-performance.json') -Destination $Output}
  if($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
  else { foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
   if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}

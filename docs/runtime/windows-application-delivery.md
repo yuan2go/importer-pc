@@ -1,3 +1,5 @@
+> 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
+
 > Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
 
 
@@ -64,10 +66,10 @@ $db = "$data\Simulation\reference-17\sportmaster\sportmaster.db"
 
 ## 升级中断、回退、修复、卸载与恢复
 
-1. Pause、核对并清偿业务/原件责任，Stop退出，使用匹配原发布执行Inspect及Backup。Inspect的OrdinaryUpgradeAllowed只表示原责任/原件hash检查结果，不能替代目标兼容/签名/设备资格。旧DB2～6未结不能先启动新程序升级；已证明终态但仍缺原raw的旧Attached仅走专用recover-legacy-receipt（CLI显式DB7，旧API默认5），保留资料责任。
+1. Pause、核对并清偿业务/原件责任，Stop退出，使用匹配原发布执行Inspect及Backup。Inspect的OrdinaryUpgradeAllowed只表示原责任/原件hash检查结果，不能替代目标兼容/签名/设备资格。旧DB2～6未结不能先启动新程序升级；已证明终态但仍缺原raw的旧Attached仅走专用recover-legacy-receipt（CLI显式DB8，旧API默认5），保留资料责任。
 2. 将新媒介解压至新版本目录，独立核hash、保护ACL/安装所需新不可变包；用新目录Diagnose核目标静态组合。配置修改沿原CAS/Pending/Effective，不以新seed覆盖历史。保留旧发布及全部恢复集。
 3. 显式用新release的Run、同一data根启动。迁移在来源Start前受守卫检查，SQL1～6不改；追加SQL7使旧6读者拒读。资源/SDK失败保留ActivationFailed、旧确认配置和Pending；停止失败的实例后修复依赖/候选，再显式restage或使用已确认Effective启动，不并行重建连接。对构造前、部分Start后、迁移/确认关键点断进程逐项留证。
-4. 升级中断后，先核DB实际版本/原尝试及是否发生外部副作用。已成为DB7的根不能交旧6程序，不回滚业务账。不覆盖库、删配置或清marker。优先用匹配当前发布完成本地原件恢复及依赖修复。旧发布仅可在原隔离备份上按其兼容能力核对原请求；不得启用新作业去重用旧RCS编号。
+4. 升级中断后，先核DB实际版本/原尝试及是否发生外部副作用。已成为DB8的根不能交旧7及更早程序，不回滚业务账。不覆盖库、删配置或清marker。优先用匹配当前发布完成本地原件恢复及依赖修复。旧发布仅可在原隔离备份上按其兼容能力核对原请求；不得启用新作业去重用旧RCS编号。
 5. 修复程序文件使用已核hash的同一媒介重新解压到新目录、保护并Verify，数据/包/信任原样保留；更换版本按升级路径。卸载只移除明确所选的快捷方式和已停用发行目录，数据根、机器政策、信任、Store、永久身份、备份和原件全部保留。扩展卸载沿ManageExtension，须所有当前/离线/备份消费者及原责任清偿；不删除登记绕过。不提供自动删除业务数据的卸载动作。
 6. 恢复到新的 `<root>/<原Mode>/<原Station>/<原Application>`，先PlanRestore验证完整集合/hash/容量，原根必须停用；不得在两个根同时操作设备。Restore成功仍隔离；核对原ID/报文、DB/配置/包/协议和实物，RCS来源范围退役，未决事实按原合同核对。没有权威终态依据不能Resume或重发。
 

@@ -22,20 +22,20 @@ public partial class App : System.Windows.Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        startup = new ParcelStartupWindow(); MainWindow = startup; startup.Show();
-        await Dispatcher.Yield(DispatcherPriority.Background);
+        startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
             var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" ? e.Args[0] : null;
-            if (mode == "--product-maintenance") { new ProductMaintenanceWindow { Owner = startup }.ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
+            if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
             selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {
-                new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog();
+                var setup = new StartupSetupWindow(selected.Business); MainWindow = setup; setup.ShowDialog();
                 startup.AllowClose = true; Shutdown(); return;
             }
             if (mode == "--maintenance") { await Repair(); return; }
+            startup.Show(); await Dispatcher.Yield(DispatcherPriority.Background);
             await StartSelected();
         }
         catch (Exception ex) { await Failed(ex); }
@@ -44,6 +44,7 @@ public partial class App : System.Windows.Application
     {
         try
         {
+            startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
             if (!firstConfigurationReviewed && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")))
@@ -81,21 +82,29 @@ public partial class App : System.Windows.Application
         selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"), null, null), DesktopLaunchOptions.DefaultUi(ApplicationId));
         Exception failure = error;
         try { await StopAsync(); } catch (Exception cleanup) { failure = new AggregateException("启动与清理失败，保留诊断", error, cleanup); }
+        startup.Show(); MainWindow = startup;
         startup.Fail(failure.ToString(), async () => { await StopAsync(); startup.AllowClose = true; Shutdown(2); },
             async () => { await StopAsync(); await StartSelected(); },
             async () => { await StopAsync(); await Repair(failure.Message); },
-            async () => { await StopAsync(); var setup = new StartupSetupWindow(selected.Business) { Owner = startup }; setup.ShowDialog(); if (setup.Launched) { startup.AllowClose = true; Shutdown(); } });
+            ShowSetup);
     }
     async Task Repair(string? failure = null, bool initialConfiguration = false)
     {
         // Stop and Dispose must both succeed before any repair UI can issue a mutation.
         await StopAsync(); selected ??= DesktopLaunchOptions.Parse([], ApplicationId);
-        var repair = new StartupRepairWindow(selected.Business, failure, initialConfiguration) { Owner = startup };
-        repair.ShowDialog();
+        var repair = new StartupRepairWindow(selected.Business, failure, initialConfiguration);
+        startup.Hide(); repair.ShowDialog();
         if (repair.ReplacementLaunched) { startup.AllowClose = true; Shutdown(); return; }
         if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(firstConfigurationReviewed: initialConfiguration); }
-        else startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
-            () => StartSelected(), () => Repair(), () => { new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog(); return Task.CompletedTask; });
+        else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
+            () => StartSelected(), () => Repair(), ShowSetup); }
+    }
+    async Task ShowSetup()
+    {
+        await StopAsync(); startup.Hide();
+        var setup = new StartupSetupWindow(selected!.Business); MainWindow = setup; setup.ShowDialog();
+        if (setup.Launched) { startup.AllowClose = true; Shutdown(); }
+        else { MainWindow = startup; startup.Show(); }
     }
     async Task StopAsync()
     {

@@ -9,7 +9,8 @@ public sealed record WindowsDeploymentRequest(string MediaRoot, string Applicati
     string RuntimeAccountSid, string DataRoot, string ConfigurationSource, RunMode Mode,
     string? TrustFile, string? TrustSha256, Dictionary<string, string> Packages, bool RepairSeed = false,
     Dictionary<string, string>? ConfigurationHashes = null, string? ProgramRoot = null, string? ExpectedRegistrationHash = null,
-    string? ChangePlanIdentity = null, string? BackupDestination = null);
+    string? ChangePlanIdentity = null, string? BackupDestination = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null);
 
 public static partial class WindowsDeploymentSetup
 {
@@ -141,7 +142,7 @@ public static partial class WindowsDeploymentSetup
             if (request.TrustFile is not null) ProvisionTrust(request, sid);
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
-                RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)));
+                RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             // The new shortcut is version-specific; existing shortcut remains usable on any failure.

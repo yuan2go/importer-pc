@@ -1,4 +1,4 @@
-> 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
+> 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)、[安装选项与空白启动窗口修正](runtime/single-exe-installer-options-02.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
 
 # 当前整合入口 · 2026-10-20
 

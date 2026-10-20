@@ -1,0 +1,13 @@
+# 安装选项与窗口生命周期修正
+
+2026-10-20，继承[原单 EXE 工作包](../work-packages/WP-IPC-SINGLE-EXE-INSTALLER-01.md)和 PR64。用户报告安装入口后方仍留空白启动页，且缺少直接可见的安装目录、开始菜单及桌面图标选项。原 a7de058 的17项 PASS 只覆盖准备/旧向导前两步，不能作为本轮安装体验已验收的证据。
+
+`ParcelApp.xaml.cs` 在路由到安装模式之前不再显示业务启动窗口；安装向导独立显示，结束后退出安装进程。发布文件未安装时仍进入安装，已安装程序仍按受保护位置登记正常启动。原日常启动、首配、恢复和 Production 守卫保留。
+
+`StartupSetupWindow` 自动校验介质，进入安装选项。安装目录和数据目录提供文本与文件夹选择；两个独立复选框控制开始菜单/公共桌面入口。账户、工位/模式、种子、信任和扩展收进高级设置，原维护和逐站计划保留高级入口。新工位默认使用本介质通用 Simulation 模板标识，实施可修改；不编造客户工位或批准资格。
+
+“下一步”审阅选项，“安装”调用原提升 helper。安装中仅显示等待状态，不能返回或关闭；取消 UAC/失败保留诊断并返回可重试摘要。完成页只有在实际 helper 成功、受保护登记回读且固定计划身份与选项相符时显示；可选运行所安装版本，点击“完成”关闭。不会把准备介质或关闭向导当成完成安装。
+
+`WindowsDeploymentRequest`、固定计划和 `DeploymentLocation` 携带 `DeploymentShortcutOptions`；`DeploymentBatch` 复核时保持选项。缺省 null 不序列化，历史固定请求散列及原开始菜单默认行为保持。`DeploymentShortcuts` 沿原 WScript.Shell 实现创建版本专用入口，指向安装目录中的桌面 EXE；运行入口无 `--setup` 参数，维护入口分别使用原参数。旧版入口仍保留，避免登记提交前替换原入口；移除精确处理开始菜单、桌面和旧 Importer PC 名称。
+
+本轮使用项目 ui-ux-pro-max 的 WPF 查询及 Impeccable Operate/WPF 适配；保持原实物基线、系统字体、业务信息和守卫，没有用网页/CDP结果代替原生 WPF 检查。原生检查区分真实分发 EXE 和反射设置的合成界面状态。真实 UAC 安装/升级/卸载、SDK/设备/RCS及现场若未执行继续 NOT_RUN；旧 D/RV 保持原身份。精确构建及验证结果随后登记于本页，不覆盖[旧证据](evidence/single-exe-installer-01/README.md)。

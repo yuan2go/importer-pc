@@ -14,7 +14,7 @@
 最终运行源码与同版夹具为 `967ebc8daf377a99561914d57bd807017dcf2d14`。后续提交仅补充本次文档、证据和 manifest，不改变被冻结的运行源码。
 
 - [最终介质](package-result.json)、[最终打包日志](package-final.log)：`D:/releases/cainiao-branding-03.zip`，746 项库存哈希、ZIP CRC 通过；ZIP SHA-256 为 `c6a31dcd1ff90979cfc767748c6bbb6ea12f5c9b8f90dcd0b878844474503579`。
-- [同版原生结果](frozen-wpf-result.json)、[38 项检查日志](frozen-wpf.log)、[夹具构建](frozen-wpf-build.log)：PASS，SourceCommit 与 FixtureSourceCommit 完全一致，验证前后介质库存不变。
+- [同版原生结果](frozen-wpf-result.json)、[38 项检查日志](frozen-wpf.log)：PASS，SourceCommit 与 FixtureSourceCommit 完全一致，验证前后介质库存不变。
 - 最终渲染：[标准工作台](final-workstation-1366.png)、[800×420 工作台](final-workstation-minimum.png)、[首次配置](final-first-configuration.png)。原生 125% DPI 合成截图，已查看最终工作台的标志、名称及最小布局。
 - [实际 EXE 结果](exe-smoke-result.json)：ProductName/FileDescription 均为“菜鸟供包台”，图标像素匹配，精确 HWND 标题为“安装与部署向导 · 菜鸟供包台”，退出码 0。[开发期探针失效与修正](probe-development-notes.json)保留了误读启动所有者标题及附着进程退出码不可用的原因；最终新启动进程保留句柄，仍要求原精确标题、图标和正常退出。
 

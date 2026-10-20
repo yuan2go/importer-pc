@@ -138,7 +138,7 @@ static partial class Program
                 "owner retry stops business once and leaves closed auxiliary timer stopped");
             classic.Close();
         }
-        await VerifyLegacyDraftClose(evidence, config, Check);
+        await VerifyLegacyDraftClose(evidence, config, Check, syntheticIdentity);
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
     }
     static void Click(DependencyObject root, string name)

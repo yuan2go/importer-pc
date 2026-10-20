@@ -1,0 +1,57 @@
+{
+  "source_commit": "220d35931a6e2174d35629a65a01a1b61cc39b21",
+  "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/parameters-sm-v1.5.0-220d35931a6e",
+  "tag": "parameters-sm-v1.5.0-220d35931a6e",
+  "assets": [
+    {
+      "name": "release-220d359-final.zip",
+      "size": 18568606,
+      "sha256": "0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/release-220d359-final.zip"
+    },
+    {
+      "name": "sportmaster-rcs-task-1.2.1.ipcx",
+      "size": 23854,
+      "sha256": "da02fde4ce44aa2074a75f878823eb70eb421819372ead3d879c6997119c43c3",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/sportmaster-rcs-task-1.2.1.ipcx"
+    },
+    {
+      "name": "hikrobot-idmvs-reader-1.0.3.ipcx",
+      "size": 21086,
+      "sha256": "ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/hikrobot-idmvs-reader-1.0.3.ipcx"
+    },
+    {
+      "name": "release-identity.json",
+      "size": 423,
+      "sha256": "4f546aa87e2e7b6357dfb8c903948c9ead8babd12ec38a1e6dd7a7ed14fdcc11",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/release-identity.json"
+    },
+    {
+      "name": "sportmaster-rcs-task-1.2.1.ipcx.identity.json",
+      "size": 1310,
+      "sha256": "ba190d176cdcdd92d491c2bee9db6b50d431b3e9258d39ebe90f564c4d3ab9db",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/sportmaster-rcs-task-1.2.1.ipcx.identity.json"
+    },
+    {
+      "name": "hikrobot-idmvs-reader-1.0.3.ipcx.identity.json",
+      "size": 1292,
+      "sha256": "f0179cc5d36dde0bf79901367411a3a4de64ec83d272c7b986de94841f2e470b",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/hikrobot-idmvs-reader-1.0.3.ipcx.identity.json"
+    },
+    {
+      "name": "PUBLICATION.json",
+      "size": 941,
+      "sha256": "35e492b387c066af3c03dd462fd4c54de205ca7380df01939f1561f53b77ae1f",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/PUBLICATION.json"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 685,
+      "sha256": "7fbb322c8455aa7e06a590e2eeb242f067788401e189ca1806dc85e8d1f15beb",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/parameters-sm-v1.5.0-220d35931a6e/SHA256SUMS"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false
+}

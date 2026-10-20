@@ -1,0 +1,26 @@
+{
+  "Package": "hikrobot-idmvs-reader-1.0.3.ipcx",
+  "PackageSha256": "ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319",
+  "PluginSourceCommit": "5cd89bd6a1a89004a663b62d25b1f707acd8ce1c",
+  "PluginSourceSha256": "473fff63ce4aafe402892eb573a4ac4e04511ec24edae456174da1bed5243d68",
+  "DefinitionSha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb",
+  "HostContractSha256": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3"
+  },
+  "Publisher": "synthetic-rcs-heartbeat",
+  "Version": "1.0.3",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "8e6098733b263eead1044d3980cdb80147124e317bb18dbe98cdc5500aa218d5",
+  "TrustSha256": "a592ae3dfc2c81faf43b29989d1f97632170171703a1fc5e26c771056586aeb5",
+  "PayloadSha256": {
+    "Ipc.Drivers.Hikrobot.dll": "15d8b1c129a1ba90b18bbcf06ced458834d44293f2fda55b6709f23cbc9fd317",
+    "sdk-boundary.json": "5a4b9f5d550cc267343e3491df633aca53b2aaa22e7b8a70c5284f3b633f6190"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

@@ -403,9 +403,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "ba505980daf116a5d1990ac77c550a6fd9a9c7a652788a52dce3bc575809f618",
-      "size_bytes": 12683,
-      "git_blob": "1b5e111228d44361a6b1a92a9cadaa1715813c95",
+      "sha256": "af8fa3ada66c76aabca93b130919e52c080789ae37117086b218023261d761be",
+      "size_bytes": 12800,
+      "git_blob": "71b876032ef2aaf4c035449929517dba990399bc",
       "version": "ui-task-redesign-v2-20261020",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Four-category configuration, first-launch lifecycle, three-group work UI, source analysis, handoff and concise implementation prompt; no new production UI claim",
@@ -54268,9 +54268,89 @@
       "version": "PUBLICATION-PR73-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized current code, report and existing artifact publication; no new tests or build",
-      "sha256": "825e14b01b54a7cab7ef2459d1c679c10ee52992d66f2368286967f842acf3e2",
-      "size_bytes": 2388,
-      "git_blob": "bc96a9fcbd6554a815c581d2a854cdf171303c09"
+      "sha256": "a9957531e3c97495bf6510012f8126a8775d5017bd9bebc22888b27e7723e983",
+      "size_bytes": 3801,
+      "git_blob": "97469d9ec9d3d5ab626d45ad207061fc8dbf3dca"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/artifact-upload-receipts.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "01adddcaf9735ba7f7bda2a04b79b8c019fac61d072c014721144d95bc65301b",
+      "size_bytes": 2803,
+      "git_blob": "b86f6399c57196768eaab9c7b5b0d1be6f864698"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "35e492b387c066af3c03dd462fd4c54de205ca7380df01939f1561f53b77ae1f",
+      "size_bytes": 941,
+      "git_blob": "c98e161500a40d5d1c9de1286b25a97c7262b1c9"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "9f5c048c1605092736d3aaaabc52a1f3a5042cd9fce68f8d2343a38dcc55a9d3",
+      "size_bytes": 2685,
+      "git_blob": "1ab82eef52ed9c07a993b19c392171398a2d50a4"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "7fbb322c8455aa7e06a590e2eeb242f067788401e189ca1806dc85e8d1f15beb",
+      "size_bytes": 685,
+      "git_blob": "d5f80e85f323d9f4cdf2122ebfb3619bd65f2ea7"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/hikrobot-idmvs-reader-1.0.3.ipcx.identity.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "f0179cc5d36dde0bf79901367411a3a4de64ec83d272c7b986de94841f2e470b",
+      "size_bytes": 1292,
+      "git_blob": "d673d3e2b699321eb2a0a98639ebc0953a5ea037"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/release-identity.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "4f546aa87e2e7b6357dfb8c903948c9ead8babd12ec38a1e6dd7a7ed14fdcc11",
+      "size_bytes": 423,
+      "git_blob": "c9ea09a91283fd27f64f325868f98a0f91b98c81"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/parameters-sm-v1.5.0-220d35931a6e/sportmaster-rcs-task-1.2.1.ipcx.identity.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "ba190d176cdcdd92d491c2bee9db6b50d431b3e9258d39ebe90f564c4d3ab9db",
+      "size_bytes": 1310,
+      "git_blob": "63f0b5368ffa82c762db1c26664ad1cb915cbc58"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr73-20261020/publication-scope.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR73-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original artifact upload receipts; no new tests or builds",
+      "sha256": "2a1fc738fabc83d1150fb61adc0554cf297bc9067bdc2800bd72e7850398058f",
+      "size_bytes": 742,
+      "git_blob": "fb71f67ac106438acf97b1a88b88f00d6ff26071"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

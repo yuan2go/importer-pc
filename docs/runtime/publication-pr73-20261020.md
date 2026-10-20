@@ -10,4 +10,18 @@
 
 仅上传获授权代码、项目报告/文档、合成证据及上述已有产物；不上传报价表、客户原稿、凭据、私钥、测试信任、SDK或生产数据。原工作区不切分支、不重置、不写索引；不通知其他任务。manifest仅更新暂存Git原字节的大小、SHA256和blob，保留main新增V2记录；删除PR73已经查明的两项过期InstallerWindow当前清单条目，原文件历史保留。
 
-实际合并SHA、去重提交数及远端上传回执在合并后追加。本轮计数以本页基线至最终origin/main的Git祖先差集为准，不累加分支ahead数。
+## 已上传的原执行产物
+
+[下载Release](https://github.com/yuan2go/importer-pc/releases/tag/parameters-sm-v1.5.0-220d35931a6e)已上传原文件，远端大小和SHA256回执与原交付身份一致：
+
+| 文件 | 字节数 | 原SourceCommit | SHA256 |
+|---|---:|---|---|
+| release-220d359-final.zip | 18568606 | 220d35931a6e2174d35629a65a01a1b61cc39b21 | 0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6 |
+| sportmaster-rcs-task-1.2.1.ipcx | 23854 | 5cd89bd6a1a89004a663b62d25b1f707acd8ce1c | da02fde4ce44aa2074a75f878823eb70eb421819372ead3d879c6997119c43c3 |
+| hikrobot-idmvs-reader-1.0.3.ipcx | 21086 | 5cd89bd6a1a89004a663b62d25b1f707acd8ce1c | ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319 |
+
+对应的release-identity、两个扩展identity、PUBLICATION及SHA256SUMS同时上传；原始[上传回执](evidence/publication-pr73-20261020/artifact-upload-receipts.json)与[本轮范围记录](evidence/publication-pr73-20261020/publication-scope.json)入库。ZIP是便携CLI Simulation候选，两个扩展为TestOnly，身份核对只读取归档/JSON及上传回执，没有运行产物。
+
+## 提交与计数方式
+
+PR73原有7个相对本轮main未合并的提交；本轮协调main的合并提交为 `168d56d95753a6a4e89663d8f14bdab4c7410a41`，本提交再记录原产物上传。最终GitHub合并结果及去重提交数在合并后读取，不预先编造合并SHA。计数以本页基线至最终origin/main的Git祖先差集为准，不累加分支ahead数。原工作区的代码和测试没有由本轮新增修改或执行。

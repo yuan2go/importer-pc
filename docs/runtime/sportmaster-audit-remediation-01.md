@@ -23,6 +23,8 @@ Windows 11 Home 22631 x64，Ryzen 5 3550H四核八线程、约16GB内存；SDK10
 
 同版完整视觉与首配/商业辅助页均PASS，前后库存未变；开发构建0警告/错误。原始日志、图像、逐DLL及来源见证据。旧`--ux-commercial-presentation`在缺机器政策时拒绝启动，记录为受阻，未改测试/政策换PASS。初次错误大写合成ID、未确认初始焦点的复合断言、开发BAML增量加载失败均保留原失败；合法ID、显式初始焦点及完整重建后保留原断言复验。
 
+文档封存de4b5b1与最新main ad6dc2e的完整Git树使用同一带Pillow解释器检查：均为265项PPTX媒介类型、2项历史metadata错误，无新增；整体仍FAIL。证据散列、8份原Git blob与三个同库存身份另验PASS，具体SHA及范围见[最终归档差额](evidence/sportmaster-audit-remediation-01/final-archive-delta.json)和[封存核验](evidence/sportmaster-audit-remediation-01/sealed-identity-check.json)。classic精确客户区未单独量测，图片旅程标签不能当尺寸，补验边界在图像元数据中明示。
+
 ## R-02测量与解释
 
 默认ResidentHistory=200、MaximumOperations=10000；300个不同合法实体/观察，左右交替，逐件等自身终态。ReferenceWcs也执行本地文件IO，没有真实网络。每档40次快照及深复制/容量/单次待回执探针，20次旧分页和20次实际UI冻结筛选/查询；nearest-rank P50/P95/P99与全部样本保留。各探针是独立实验，不能相加/相减伪造阶段归因。

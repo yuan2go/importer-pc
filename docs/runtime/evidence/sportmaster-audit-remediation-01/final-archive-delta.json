@@ -1,0 +1,17 @@
+{
+  "baseline": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+  "candidate": "de4b5b13c4299ab309084d08c29c33aa142d83af",
+  "method": "Canonical complete Git exports, core.autocrlf=false; same bundled Python with Pillow",
+  "counts": {
+    "main": {
+      "pptx_media_type_mismatch": 265,
+      "private_metadata_marker": 2
+    },
+    "head": {
+      "pptx_media_type_mismatch": 265,
+      "private_metadata_marker": 2
+    }
+  },
+  "new_errors": [],
+  "removed_errors": []
+}

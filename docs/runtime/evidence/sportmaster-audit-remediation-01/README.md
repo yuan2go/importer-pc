@@ -12,6 +12,8 @@
 
 最终同版复跑省略FixtureCommit，分别使用`-VisualProductization`、无该开关的辅助页模式、`-AuditPerformance`；三个新Output共享同一Media。下面独立夹具命令仅用于历史ff2e7a7样本。
 
+[最终归档差额](final-archive-delta.json)检查文档封存de4b5b1与最新main ad6dc2e的完整规范Git树：双方同为267项历史错误、无新增；[封存身份核验](sealed-identity-check.json)检查全部证据散列、8份原Git blob及三个同库存结果。后继只增加这两份回执及索引/manifest，不将历史全树FAIL写成PASS。
+
 ## 历史候选与失败追溯
 
 R-02分析介质来源`ff2e7a7459db148d0ed8dd4537489710b402635f`，独立夹具`504c187e1eeb87fa993424f11ee3406f1b06b56a`。夹具以包内DLL为引用，使用已有internal合成身份/端口接缝，客户端未增加绕过。两者生产源码/配置无差异，源码/介质/夹具三账独立。该ZIP仅在本地`.artifacts/auditfix-final.zip`，746项库存，不能据此宣布商业发布。
@@ -30,7 +32,7 @@ ff2e7a7旧性能资料为[基线样本](baseline-R02-performance.json)、[基线
 |[初次性能失败](failed-invalid-id.log)、[原件原因](failed-invalid-id-reason.json)|错误的大写合成ID被InvalidAdmissionId拒绝；没有作业/外部意图。先前推断的健康时序不是已证明原因；修正夹具合法ID，未改变准入规则|
 |[复合焦点断言失败](failed-focus-retention.log)|原夹具没有确认初始焦点；不能从该复合断言追溯哪个子项先失效。补激活/初始焦点断言，保留原刷新后完整断言；同一介质独立复验PASS，失败保留|
 |[开发增量加载失败](failed-incremental-xaml.log)|曾发生BAML/connectionId类型不一致；清理生成物并完整重建后复验通过，未删断言或改业务换PASS。包内原生结果独立记录|
-|[归档差额](archive-delta.json)|带Pillow的同一Python、Git原字节导出；main与候选同为265 PPTX类型、2历史metadata错误，整体仍FAIL，无新增/无豁免。运行源及日志不含生成bin/obj|
+|[最终归档差额](final-archive-delta.json)、[早期差额](archive-delta.json)|带Pillow的同一Python、Git原字节导出；双方同为265 PPTX类型、2历史metadata错误，整体仍FAIL，无新增/无豁免。运行源及日志不含生成bin/obj|
 |[公开副本处理](origins.json)、[文件散列](SHA256SUMS)|原日志只替换工作区/用户临时目录并统一LF，记录原始与公开hash；JSON/PNG原字节保留|
 
 ## 原生图像

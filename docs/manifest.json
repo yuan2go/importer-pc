@@ -46878,10 +46878,10 @@
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "sha256": "7951cfdd6a13206ca72aeb0db08e07dec98370e9fb32272418ade6b81498bd47",
-      "size_bytes": 8411,
-      "git_blob": "7a11e3295cba36c466b0ea708f587b14d85b3190",
-      "previous_git_blob": "eeb42646c83c87d26e05fa3bbdb2b5016c2db64e"
+      "sha256": "8f5ed241c76221dc9d9e6a41ac384f2c7cb639cf0049b368f8abe9a8a7325520",
+      "size_bytes": 8819,
+      "git_blob": "4c4b80a049a16c010f3a6e45fc17c099b761f570",
+      "previous_git_blob": "7a11e3295cba36c466b0ea708f587b14d85b3190"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-audit-remediation-01/SHA256SUMS",
@@ -46890,10 +46890,10 @@
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "sha256": "6123af83a18efbef522806e2fc8378c68c9d0a653479bafea5a0b45cba915a0d",
-      "size_bytes": 5114,
-      "git_blob": "08b8ccaf69147e6f4210ad7d15e167bc2090bcb9",
-      "previous_git_blob": "9cfef39ac105d2ef08c015e7fdcb7c5caf98d3a2"
+      "sha256": "d3e7fb69523ac8b222e0bd8070c081ef1f90e00feff2665605ddba95e3dd3e9d",
+      "size_bytes": 5298,
+      "git_blob": "d5f157681db388ee706a36c9b27f36aaa50cb92f",
+      "previous_git_blob": "08b8ccaf69147e6f4210ad7d15e167bc2090bcb9"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-audit-remediation-01/archive-delta.json",
@@ -47136,10 +47136,10 @@
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "sha256": "80e0ede530034b580051e4783e5abef8174bcbb23f83d1edc441487b871cd21b",
-      "size_bytes": 10947,
-      "git_blob": "f739992b033529e32c5c742f81df93d6e16d79ee",
-      "previous_git_blob": "7b718ecc17d9ef5ef169d86b57e0f9833b914f64"
+      "sha256": "5d88c6007297484699a305e017a1bc1afd47255b59742391d13c6a2766161c07",
+      "size_bytes": 11513,
+      "git_blob": "8552c46a7387e9d921c910d8f1600137a07f4d93",
+      "previous_git_blob": "f739992b033529e32c5c742f81df93d6e16d79ee"
     },
     {
       "path": "docs/work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md",
@@ -47148,10 +47148,10 @@
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "sha256": "4b66098fd9b242aa4031e411dd9adca74712b095e5fc8e8fefa3dd503b79d3ed",
-      "size_bytes": 3385,
-      "git_blob": "7ee81cff704bd82c304af206834189fa2ea6e9c7",
-      "previous_git_blob": "393633e21961c2a84d3bfa85832ea61d60445d50"
+      "sha256": "d18b32a16937137d536334437936ffeb517205863e09b3854a497245da005128",
+      "size_bytes": 3920,
+      "git_blob": "41b2c8240bdbdde91a7a4868d1673e0071c71b8e",
+      "previous_git_blob": "7ee81cff704bd82c304af206834189fa2ea6e9c7"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/AuditPerformance.cs",
@@ -47526,6 +47526,28 @@
       "sha256": "6446f25933eed8a954ad700c3522a0ca3ec173691daf0283351d94348cd1f4a0",
       "size_bytes": 92323,
       "git_blob": "2b149e3d3e4d01f2509d27d162a6fbe750cc16c3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-audit-remediation-01/final-archive-delta.json",
+      "version": "sportmaster-audit-remediation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
+      "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
+      "storage_scope": "public_repository",
+      "sha256": "f9206d3a5cddad4df06ea9ae07b76d003f8eaa02bedccfba9478d5569c04716d",
+      "size_bytes": 472,
+      "git_blob": "cb80485f38c19af50d58901ae829db4ff9b5a68d"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-audit-remediation-01/sealed-identity-check.json",
+      "version": "sportmaster-audit-remediation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
+      "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
+      "storage_scope": "public_repository",
+      "sha256": "0b683a13562f1e352676c5f76e7e6c42103c7faa2bc25ccc01dd72cc114934c2",
+      "size_bytes": 420,
+      "git_blob": "32f0904a1f9ec1d9181680b5f20ab2ace100c19f"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -8,7 +8,7 @@
    </StackPanel>
   </DockPanel>
   <StackPanel Grid.Row="2">
-   <Expander x:Name="SavePreparation" Header="保存准备：维护授权与变更原因" Margin="0,4" Visibility="Collapsed" Collapsed="SavePreparation_Collapsed">
+   <Expander x:Name="SavePreparation" Header="保存准备：维护授权与变更原因" Visibility="Collapsed">
     <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto"><StackPanel Margin="8">
      <TextBlock Text="{Binding ConfigurationSaveGuidance}" TextWrapping="Wrap" Foreground="#586B80"/>
      <WrapPanel><StackPanel><TextBlock Text="维护账号" FontSize="13"/><TextBox Text="{Binding MaintenanceSubject}" Width="150" AutomationProperties.Name="维护账号"/></StackPanel><StackPanel><TextBlock Text="维护口令" FontSize="13"/><PasswordBox x:Name="MaintenanceProof" Width="150" AutomationProperties.Name="维护口令"/></StackPanel><Button Content="认证维护权限" Click="Authorize_Click" IsEnabled="{Binding CanStartFreshOperation}" VerticalAlignment="Bottom"/></WrapPanel>

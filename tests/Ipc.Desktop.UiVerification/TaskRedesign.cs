@@ -94,10 +94,21 @@ static partial class Program
         search.Text = "没有这种字段"; window.UpdateLayout();
         Check(Descendants(editor).OfType<TextBlock>().Any(t => t.Text.StartsWith("未找到匹配参数")), "empty search explains how to return without changing the draft");
         search.Clear();
-        Click(maintenance, "保存准备…"); window.UpdateLayout();
-        Check(((Expander)maintenance.FindName("SavePreparation")).IsExpanded && Descendants(maintenance).OfType<TextBox>().Any(t => AutomationProperties.GetName(t) == "维护变更原因"), "save preparation exposes authorization and reason beside the guarded save action");
-        Capture("parameters-save-preparation", client);
-        ((Expander)maintenance.FindName("SavePreparation")).IsExpanded = false;
+        var editorHeight = editor.ActualHeight; var preparationSeen = false;
+        var preparationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+        preparationTimer.Tick += (_, _) =>
+        {
+            var dialog = window.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存准备");
+            if (dialog is null) return;
+            preparationSeen = Descendants(dialog).OfType<TextBox>().Any(t => AutomationProperties.GetName(t) == "维护变更原因") &&
+                Descendants(dialog).OfType<PasswordBox>().Any();
+            Capture("parameters-save-preparation", (FrameworkElement)dialog.Content);
+            Click(dialog, "返回表单");
+        };
+        preparationTimer.Start();
+        try { Click(maintenance, "保存准备…"); }
+        finally { preparationTimer.Stop(); }
+        Check(preparationSeen && editor.ActualHeight == editorHeight && station.Text == "SYNTHETIC-UNSAVED", "save preparation owns authorization and reason without shrinking or replacing the parameter draft");
         await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
         window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
@@ -141,7 +152,17 @@ static partial class Program
         void Capture(string name, FrameworkElement target)
         {
             target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
-            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32); bitmap.Render(target);
+            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+            // Capture the target's local visual bounds. Direct Render(target) also
+            // applies its parent offset, clipping margin-bearing dialog roots.
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                var bounds = new Rect(0, 0, target.ActualWidth, target.ActualHeight);
+                dc.DrawRectangle(Window.GetWindow(target)?.Background ?? Brushes.White, null, bounds);
+                dc.DrawRectangle(new VisualBrush(target) { Stretch = Stretch.Fill }, null, bounds);
+            }
+            bitmap.Render(visual);
             var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var output = File.Create(Path.Combine(evidence, name + ".png")); png.Save(output);
             lines.Add($"CAPTURE {name}: {target.ActualWidth}x{target.ActualHeight} DIP; Windows scale {dpi.DpiScaleX}/{dpi.DpiScaleY}");
         }

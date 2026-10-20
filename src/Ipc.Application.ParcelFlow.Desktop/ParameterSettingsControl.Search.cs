@@ -59,7 +59,7 @@ public sealed partial class ParameterSettingsControl
             var label = Text(hit.Value.Label); label.Foreground = Brush("#183047"); label.FontWeight = FontWeights.SemiBold;
             stack.Children.Add(label);
             stack.Children.Add(Text(ParameterOwnership.CategoryName(hit.Value.Page.Category) + " / " + hit.Value.Page.Title + "  ·  " + hit.Key));
-            var button = new Button { Content = stack, HorizontalContentAlignment = HorizontalAlignment.Stretch, MinHeight = 64, Margin = new(0, 0, 0, 4) };
+            var button = new Button { Content = stack, Style = (Style)Resources["ParameterResultAction"], MinHeight = 64, Margin = new(0, 0, 0, 4) };
             AutomationProperties.SetName(button, "定位参数 " + hit.Value.Label + " · " + hit.Value.Page.Title);
             button.Click += (_, _) => NavigateTo(hit.Key); searchItems.Children.Add(button);
         }

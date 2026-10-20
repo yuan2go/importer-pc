@@ -151,7 +151,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var issue in Model?.Issues ?? [])
         {
             var found = locations.TryGetValue(issue.Path, out var location);
-            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  → 定位" : "（完整候选检查，请查看维护详情）"), TextWrapping = TextWrapping.Wrap }, HorizontalContentAlignment = HorizontalAlignment.Left, Foreground = Brush("#B02D35"), Margin = new(4), MinHeight = 44 };
+            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  → 定位" : "（完整候选检查，请查看维护详情）"), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(4), MinHeight = 44 };
             if (found)
             {
                 location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += issue.Message + "\n"; location.Error.Visibility = Visibility.Visible;

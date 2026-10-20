@@ -24,14 +24,29 @@ public partial class MaintenancePage : UserControl
     }
     void PrepareSave_Click(object sender, RoutedEventArgs e)
     {
-        SavePreparation.Visibility = Visibility.Visible;
-        SavePreparation.IsExpanded = true;
-        if (DataContext is ParcelViewModel { CanConfigure: true }) ChangeReason.Focus();
-        else MaintenanceProof.Focus();
-    }
-    void SavePreparation_Collapsed(object sender, RoutedEventArgs e)
-    {
-        if (ReferenceEquals(e.OriginalSource, SavePreparation)) SavePreparation.Visibility = Visibility.Collapsed;
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        // Move the existing controls, not a second draft. Protected authorization
+        // must not consume the editor viewport or reset its scroll/selection.
+        var content = (ScrollViewer)SavePreparation.Content;
+        SavePreparation.Content = null; content.MaxHeight = double.PositiveInfinity;
+        var root = new DockPanel { Margin = new(20), DataContext = vm };
+        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right };
+        var back = new Button { Content = "返回表单", MinHeight = 44 };
+        var save = new Button { Content = "保存修改（待重启）", Style = (Style)FindResource("Primary") };
+        save.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanConfigure))); save.Click += Save_Click;
+        actions.Children.Add(back); actions.Children.Add(save); DockPanel.SetDock(actions, Dock.Bottom); root.Children.Add(actions);
+        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
+        feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.Feedback)));
+        var feedbackScroll = new ScrollViewer { Content = feedback, MaxHeight = 100, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        DockPanel.SetDock(feedbackScroll, Dock.Top); root.Children.Add(feedbackScroll); root.Children.Add(content);
+        var dialog = new Window { Owner = Window.GetWindow(this), Title = "保存准备", Content = root,
+            Width = Math.Min(780, SystemParameters.WorkArea.Width - 32), Height = Math.Min(540, SystemParameters.WorkArea.Height - 32),
+            MinWidth = 480, MinHeight = 300, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        back.Click += (_, _) => dialog.Close();
+        dialog.Closing += (_, args) => { if (vm.Busy) { args.Cancel = true; vm.Message = "当前操作处理中，完成后可返回；输入保留。"; } };
+        dialog.Loaded += (_, _) => { if (vm.CanConfigure) ChangeReason.Focus(); else MaintenanceProof.Focus(); };
+        try { dialog.ShowDialog(); }
+        finally { root.Children.Remove(content); content.MaxHeight = 180; SavePreparation.Content = content; }
     }
     void SyncSelections()
     {

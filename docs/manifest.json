@@ -31532,9 +31532,9 @@
     },
     {
       "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
-      "sha256": "9e2065fab1a6bf8609b5a243d836b93cc8e379370d4f37f8720627e3ce821642",
-      "size_bytes": 2769,
-      "git_blob": "1be7c70328752ae0c93701c995cec80a01a47d7a",
+      "sha256": "09539b4481081bb5d8701d3a6222654fb72c914f3e38892e88721c875ac37140",
+      "size_bytes": 2815,
+      "git_blob": "82cd8cce89284dd0ace1c3d28c1bfe04edb08933",
       "version": "cainiao-branding-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "User-authorized software name and image replacement; historical evidence retains original identity",

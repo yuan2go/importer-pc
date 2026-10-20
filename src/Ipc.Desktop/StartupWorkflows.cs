@@ -458,7 +458,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         else if (step == 1)
         {
             var current = WindowsDeploymentSetup.Current(ApplicationId);
-            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? TrustedProgramRoots.Default : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
+            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
             Note("升级保留旧版本和原始数据。");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu, MinHeight = 44 }; Body.Children.Add(startMenu);
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);

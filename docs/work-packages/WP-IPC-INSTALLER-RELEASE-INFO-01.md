@@ -6,7 +6,7 @@
 
 发行名称采用 `CainiaoSupplyStation_Setup_v<业务版本>_win-x64_<commit前8位>.exe`，EXE 文件属性版本同步实际业务版本。新安装默认程序根采用 `%ProgramFiles%\CainiaoSupplyStation`；升级保留已选目录和原数据，可显式选择新的英文程序根。原受保护路径批准机制和旧默认根保留，避免因名称调整破坏旧 helper/维护入口。
 
-冻结打包时从实际 Git 分支取得并核对 HEAD，detached 构建必须显式指定可核实的源分支，不猜测 main。生成相同的 `BUILD-INFO.json` 和 `BUILD-INFO.txt` 到完整发布目录及 app/desktop 入口目录，记录产品/业务版本、分支、完整 commit、源码时间、实际打包时间、目标架构。它们进入原发布登记和 SHA256SUMS，沿原安装复制及 ACL 校验保留，不在现场安装 Git，不复制 .git/凭据/机器配置。记录只供诊断，不成为第二套部署权威。
+冻结打包时从实际 Git 分支取得并核对 HEAD；detached 的 CI 介质明确记录 DETACHED，不能猜测 main，正式单 EXE 封装则要求显式指定可核实的源分支。生成相同的 `BUILD-INFO.json` 和 `BUILD-INFO.txt` 到完整发布目录及 app/desktop 入口目录，记录产品/业务版本、分支、完整 commit、源码时间、实际打包时间、目标架构。它们进入原发布登记和 SHA256SUMS，沿原安装复制及 ACL 校验保留，不在现场安装 Git，不复制 .git/凭据/机器配置。记录只供诊断，不成为第二套部署权威。
 
 基础客户端自包含 .NET/WPF 和 SQLite，正常安装/运行不要求单独安装 .NET、SQL Server、Git、Python、Node 或 PowerShell7。现场需要已有受支持的 Windows 11 x64、管理员安装授权及本地可用空间。海康设备依赖单列：当前独立 GigE 读码驱动适配 IDMVS/MvCodeReader SDK 2.0.0.4，厂商运行库/驱动及厂商要求的原生依赖由批准渠道安装，不把 SDK、原生资格或真实 RCS/WCS 配置伪装成已随基础 EXE 交付。未批准 SDK 再分发，不复制厂商二进制；缺少实际依赖或资格仍拒绝真实能力。
 

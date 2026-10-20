@@ -40242,9 +40242,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "07045cad5b5e5622367e2ff0fe78a2fffcca83810b1a2393e0a6318637499bfc",
-      "size_bytes": 3111,
-      "git_blob": "523623cf869d118c163efd97f7423142387511e7",
+      "sha256": "978406fc7ba72cee1edb7ffa9dc4bffc2031bce50dec98eba9d47d351a8e4344",
+      "size_bytes": 3186,
+      "git_blob": "92392e0b8228e99847657034aa596310eaea0bba",
       "version": "installer-release-info-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
@@ -40253,7 +40253,8 @@
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "a4ff46f83fb85d8b0fe78c5002fd10c00a2add62",
       "pre_windows_no_test_release_git_blob": "df7184653b0db09e6b19350dc7d89571e852b4da",
-      "pre_publication_pr57_pr58_git_blob": "ac73f6a6599d857fc50b3abecef3502fe724d039"
+      "pre_publication_pr57_pr58_git_blob": "ac73f6a6599d857fc50b3abecef3502fe724d039",
+      "pre_installer_info_publication_git_blob": "523623cf869d118c163efd97f7423142387511e7"
     },
     {
       "path": "docs/archive/pre-commercial-productization-01-implementation/README.md",
@@ -50093,13 +50094,14 @@
     {
       "path": "docs/runtime/installer-release-info-01.md",
       "storage_scope": "public_repository",
-      "sha256": "67f6881b2b1b0033f15bd6134b8bc54bfdd02abb2fe22a4f3dd5dc9851d1b669",
-      "size_bytes": 6858,
-      "git_blob": "8180a7027356c6562d55452807bfe83b5d8ca950",
+      "sha256": "bb59c3c47e525e6e34ee711567e24be94ed82afccd1923a3f800c72cb6630f63",
+      "size_bytes": 7217,
+      "git_blob": "db2307e4ba1ce98ad04a1d3468b98fc33e21a891",
       "version": "installer-release-info-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization"
+      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
+      "pre_installer_info_publication_git_blob": "8180a7027356c6562d55452807bfe83b5d8ca950"
     },
     {
       "path": "docs/work-packages/WP-IPC-INSTALLER-RELEASE-INFO-01.md",
@@ -50298,6 +50300,56 @@
       "status": "current_source_or_preserved_evidence",
       "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
       "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-installer-release-info-20261020/DELIVERY.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-INSTALLER-INFO-20261020",
+      "status": "original_artifact_publication_custody",
+      "source": "User-authorized merge and original-byte artifact upload; no tests/rebuild/repackage",
+      "sha256": "b3351165474b413a9de35da072c34b386bb40b28e3898051ee5ae4ae70edc9bc",
+      "size_bytes": 2862,
+      "git_blob": "b04afc552bada93a514d2edb5f8bc97ab81389d9"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-installer-release-info-20261020/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-INSTALLER-INFO-20261020",
+      "status": "original_artifact_publication_custody",
+      "source": "User-authorized merge and original-byte artifact upload; no tests/rebuild/repackage",
+      "sha256": "0725ecddf747c8a10cc2902dfb81f876df76654d86bc467031bf8a00e3411b6d",
+      "size_bytes": 831,
+      "git_blob": "303a1e7c90c9b76fa8b3bac39dbcd998cd75c12b"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-installer-release-info-20261020/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-INSTALLER-INFO-20261020",
+      "status": "original_artifact_publication_custody",
+      "source": "User-authorized merge and original-byte artifact upload; no tests/rebuild/repackage",
+      "sha256": "004fb1f17385e223a3380281af6d91387fc573c812e48ca40380e422e9a8ce00",
+      "size_bytes": 1433,
+      "git_blob": "15eea8acd6d2dabd2f6eebe2049d7c4e886e7200"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-installer-release-info-20261020/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-INSTALLER-INFO-20261020",
+      "status": "original_artifact_publication_custody",
+      "source": "User-authorized merge and original-byte artifact upload; no tests/rebuild/repackage",
+      "sha256": "c9a10e796903c77fa15a3915479dcf70066d2674e8ebd5298fa249fa44354316",
+      "size_bytes": 278,
+      "git_blob": "31690af7d5a24c0c8d202dbc7a39a7fd144c088c"
+    },
+    {
+      "path": "docs/runtime/publication-installer-release-info-20261020.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-INSTALLER-INFO-20261020",
+      "status": "original_artifact_publication_custody",
+      "source": "User-authorized merge and original-byte artifact upload; no tests/rebuild/repackage",
+      "sha256": "3a5a8abadc893c9635809970dcac02ee9f67c6d3de36374accf26d836de8f85e",
+      "size_bytes": 2888,
+      "git_blob": "259ef4180f58216a6a6033c4cf1e8ba5f856842c"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -23,10 +23,13 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     static string Hash(byte[] bytes) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
     (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) ReadState()
     {
-        var seedBytes = ReadBytes(Seed);
-        var seed = Wire.Decode<ParcelConfiguration>(Text(seedBytes));
-        var errors = definition.Validate(seed);
-        if (errors.Length != 0) throw new InvalidDataException("启动种子配置无效：" + string.Join("; ", errors));
+        var seedMissing = !File.Exists(Seed);
+        var seed = seedMissing ? definition.InitialConfiguration() : Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed)));
+        var seedHash = seedMissing ? "MissingSeed:" + Wire.Hash(Wire.Encode(seed)) : Hash(ReadBytes(Seed));
+        // Reading an editor cannot require all runtime parameters to be valid.
+        // Only the identity needed to locate the original authority is required here.
+        if (seed.ApplicationId != definition.Id || !ExtensionSchema.IsId(seed.StationId) || !Enum.IsDefined(seed.Mode))
+            throw new InvalidDataException("配置身份无法定位；可选择原配置/完整备份，不能猜测原业务目录");
         var directory = Path.GetFullPath(Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, definition.Id));
         RecoveryFiles.RequireOrdinaryAncestors(directory);
         var file = Path.Combine(directory, "configuration.json");
@@ -34,7 +37,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         {
             if (File.Exists(Path.Combine(directory, definition.Id + ".db")))
                 throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不创建新账");
-            return (seed, null, directory, file, Hash(seedBytes));
+            return (seed, null, directory, file, seedHash);
         }
         var bytes = ReadBytes(file);
         var envelope = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(Text(bytes));
@@ -58,7 +61,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             _ = ports.Normalize(candidate); // Select the original mode's inventory without constructing ports.
             return new(candidate, ports.Catalog(), state.Hash,
                 state.Envelope?.Revision ?? 0, state.Envelope is not null, state.Directory,
-                ["离线维护：未启动设备或业务；保存只生成待生效修订。", .. (state.Envelope?.Failure is { } failure ? new[] { failure } : Array.Empty<string>())], state.Envelope?.Status ?? "Seed");
+                ["离线维护：未启动设备或业务；保存只生成待生效修订。", .. (state.Envelope?.Failure is { } failure ? new[] { failure } : Array.Empty<string>())], state.Envelope?.Status ?? (File.Exists(Seed) ? "Seed" : "MissingConfiguration"));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException)
         { return new(null, ports.Catalog(), "", 0, false, null, [ex.Message, "原文件保留；可安装修复程序、选择正确配置目录或恢复完整备份，不能覆盖损坏原账。"]); }
@@ -82,6 +85,26 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var state = ReadState();
         if (state.Hash != expectedHash) throw new InvalidOperationException("配置已变化；重新读取并比较，不覆盖其他维护修改");
         RequireIdentity(state.Envelope?.Effective ?? state.Seed, candidate);
+        // Bootstrap is explicit maintenance over a missing seed, never a repair over old data.
+        if (state.Envelope is null && (state.Hash.StartsWith("MissingSeed:", StringComparison.Ordinal) || definition.Validate(state.Seed).Length > 0))
+        {
+            using var missingOwner = new ResourceLease(Path.GetFullPath(launch.ConfigurationDirectory), ["initial-configuration"]);
+            if (ReadState().Hash != expectedHash) throw new InvalidOperationException("配置已由其他窗口改变；输入保留，重新读取比较");
+            if (Directory.Exists(launch.DataRoot) && Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any())
+                throw new InvalidOperationException("数据根已有原业务库，缺少原种子不能创建新身份；选择原配置或恢复完整备份，当前参数输入保留");
+            var bootstrapErrors = definition.Validate(candidate);
+            if (bootstrapErrors.Length != 0) throw new InvalidDataException(string.Join("; ", bootstrapErrors));
+            await using var bootstrapFactory = factory(); candidate = bootstrapFactory.Normalize(candidate);
+            bootstrapFactory.ValidateStructure(candidate);
+            // Saving initial parameters is allowed without a live SDK/connection; real
+            // deployment qualification still gates normal runtime startup.
+            var bootstrapOperation = Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "startup-maintenance", Wire.Id());
+            Directory.CreateDirectory(bootstrapOperation);
+            if (File.Exists(Seed)) File.Copy(Seed, Path.Combine(bootstrapOperation, "original-business.json"), false);
+            ExtensionStore.AtomicWrite(Path.Combine(bootstrapOperation, "operation.json"), new { Actor = Environment.UserName, Reason = reason, BeforeHash = expectedHash, CandidateHash = Wire.Hash(Wire.Encode(candidate)), Status = "InitialParametersPrepared", OriginalMissing = !File.Exists(Seed) });
+            ExtensionStore.AtomicWrite(Seed, candidate);
+            return await ReadAsync();
+        }
         // The actual application-owner lease excludes live/starting instances.
         using var owner = new ResourceLease(state.Directory, ["application-owner"]);
         var locked = ReadState();

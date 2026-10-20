@@ -40,7 +40,12 @@ public static class ParcelPresentation
     public static bool IsInputFailure(ParcelInputSnapshot? input) => input?.Outcome is ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked;
     public static string InputText(ParcelInputSnapshot input) => input.Outcome switch
     {
-        ParcelInputOutcome.Rejected => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "本次识别失败 · 未取得包裹号" : input.Observation.Codes.Length > 1 ? "本次识别失败 · 多个候选码" : "本次识别未通过校验",
+        ParcelInputOutcome.Rejected => input.BarcodeSelection?.Outcome switch
+        {
+            "NoMatchingCode" => "条码筛选拒绝 · 没有匹配码", "AmbiguousCodes" => "条码筛选拒绝 · 多码歧义",
+            "IncompleteCandidates" => "候选不完整 · 拒绝准入", "FilterTimeout" => "条码筛选超时 · 拒绝准入", "InvalidPattern" => "筛选规则无效 · 拒绝准入",
+            _ => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "本次识别失败 · 未取得包裹号" : input.Observation.Codes.Length > 1 ? "本次识别失败 · 多个候选码" : "本次识别未通过校验"
+        },
         ParcelInputOutcome.Blocked => "本次输入未准入 · 请核对阻断原因",
         ParcelInputOutcome.Duplicate => "重复输入 · 未创建新作业",
         _ => "本次输入已准入"
@@ -49,8 +54,8 @@ public static class ParcelPresentation
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :
         "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n观察来源：" + input.Observation.DeviceId + " · " + input.Observation.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
-        "\n关联原作业：" + (input.OperationId ?? "未创建") + " · 原因：" + input.Reason;
-    public static string InputCode(ParcelInputSnapshot input) => input.Observation.Codes.Length == 0 ? "未识别到包裹号" : string.Join("\n", input.Observation.Codes);
+        "\n筛选：" + (input.BarcodeSelection is { } selected ? selected.Outcome + " · 选中码：" + (selected.SelectedCode ?? "无") + " · 有效码 " + selected.Matches : "旧观察未记录筛选证据") + "\n关联原作业：" + (input.OperationId ?? "未创建") + " · 原因：" + input.Reason;
+    public static string InputCode(ParcelInputSnapshot input) => input.Observation.Codes.Length == 0 ? "未识别到包裹号" : string.Join("\n", input.Observation.Codes.Take(6).Select(c => c.Length > 256 ? c[..256] + "…" : c)) + (input.Observation.Codes.Length > 6 ? "\n其余候选见原始输入证据（共" + input.Observation.Codes.Length + "个）" : "");
     public static string Health(CapabilityHealth health, DateTimeOffset now)
     {
         var localOnly = health.Detail.Contains("local lifecycle", StringComparison.OrdinalIgnoreCase);

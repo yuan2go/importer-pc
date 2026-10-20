@@ -6,4 +6,5 @@ namespace Ipc.Application.Contracts;
 public enum ParcelInputOutcome { Admitted, Rejected, Blocked, Duplicate }
 public sealed record ParcelInputSnapshot(string PositionId, Observation Observation, ParcelInputOutcome Outcome,
     string Reason, string? OperationId, DateTimeOffset RecordedAt,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null);

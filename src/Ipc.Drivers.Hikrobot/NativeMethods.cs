@@ -50,24 +50,20 @@ internal static class NativeMethods
         }
         var count = unchecked((uint)Marshal.ReadInt32(header.Codes));
         if (count > 300) throw new InvalidDataException("SDK code count exceeds ABI limit");
-        // The Application accepts at most 256 characters. Preserve multi-code as a
-        // multi-code rejection without allocating the SDK's complete 1.4 MB array.
+        // Copy every bounded SDK candidate. Business filtering belongs to Application;
+        // a third or later candidate can be the only valid business barcode.
         List<string> codes = [];
         for (var i = 0; i < count; i++)
         {
             var record = header.Codes + 4 + i * 4628;
             var length = unchecked((uint)Marshal.ReadInt32(record, 4100));
             if (length is 0 or > 4096) throw new InvalidDataException("SDK code length exceeds ABI limit");
-            if (length > 1024) return new(header.Trigger, header.Frame, header.Channel, header.Event, header.TimestampHigh, header.TimestampLow, [], "InvalidCode");
             byte[] bytes = new byte[length]; Marshal.Copy(record + 4, bytes, 0, bytes.Length);
             // Some SDKs count the terminating NUL in nLen. Remove that terminator
             // only, never trim barcode whitespace or replace undecodable bytes.
             var size = bytes.Length; if (bytes[^1] == 0) size--;
             var code = encoding.GetString(bytes, 0, size);
-            if (code.Length is 0 or > 256 || code.Any(char.IsControl))
-                return new(header.Trigger, header.Frame, header.Channel, header.Event, header.TimestampHigh, header.TimestampLow, [], "InvalidCode");
             codes.Add(code);
-            if (codes.Count == 2) break;
         }
         return new(header.Trigger, header.Frame, header.Channel, header.Event, header.TimestampHigh, header.TimestampLow,
             codes.ToArray(), header.FalseTrigger == 0 ? "Read" : "FalseTrigger");

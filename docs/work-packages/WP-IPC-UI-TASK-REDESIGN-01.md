@@ -1,3 +1,5 @@
+当前实施子包为 [PARAM-01](../design/parameter-refactor-01.md)，落实 UIR-00～03、05 的参数部分及 UIR-04/06 必要联动。四类入口取代参数区七对象入口；固定双 reader、共享单逻辑 RCS、业务正则与联合校验按本包裁决。状态见 [实施记录](../runtime/parameter-refactor-01.md)；下文“只提交设计”保留原交付语境。
+
 # WP-IPC-UI-TASK-REDESIGN-01
 
 ## 目标、基准与当前交付状态

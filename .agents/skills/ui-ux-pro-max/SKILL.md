@@ -11,7 +11,7 @@ Searchable local UI/UX guidance: 79 searchable styles (50 active), 192 product p
 
 Read the repository [AGENTS.md](../../../AGENTS.md) and [project skill notes](../README.md) before applying these recommendations. The current desktop implementation uses C#/.NET 10/WPF; use `--stack wpf` for implementation guidance. Search results do not authorize changing the framework, business rules, command guards, or device/integration boundaries.
 
-For page changes, first read the [UI baseline](../../../docs/ui/ss-ui-vis-001-v1.1/README.md), its gallery, original HTML, separate CSS/JS, and full UI handoff as required by AGENTS.md. Recommendations supplement that baseline. Generated design-system files do not replace approved project documents or establish Windows/SDK/site acceptance.
+For page changes, first read the [current UI baseline](../../../docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md), its prototype, 48 PNGs, full handoff and field/action migration as required by AGENTS.md. Parameter implementation follows docs/design/parameter-refactor-01.md; v1.1 is historical. Recommendations supplement that baseline. Generated design-system files do not replace approved project documents or establish Windows/SDK/site acceptance.
 
 ## When to Apply
 

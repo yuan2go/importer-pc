@@ -130,7 +130,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public ParcelStatusPresentation Presentation { get; private set; } = ParcelPresentation.Pending("正在初始化");
     public string Status => !owner.Fresh ? "状态已失效" : InputUnadmitted ? Input!.Outcome switch
     {
-        ParcelInputOutcome.Rejected => Input.Observation.Codes.Length switch { 0 => "未识别到条码", 1 => "校验未通过", _ => "识别到多个条码" },
+        ParcelInputOutcome.Rejected => ParcelPresentation.InputText(Input),
         ParcelInputOutcome.Blocked => "本次输入未准入",
         ParcelInputOutcome.Duplicate => "重复输入",
         _ => Presentation.Text

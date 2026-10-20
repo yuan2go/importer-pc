@@ -60,6 +60,6 @@ public partial class ParcelViewModel
         foreach (var c in CapabilityDrafts.Concat(ReaderDrafts.Select(r => r.Capability))) c.PropertyChanged += (_, _) => EditorChanged();
         foreach (var r in ConfigurationRoles) r.PropertyChanged += (_, _) => EditorChanged(); foreach (var p in PositionDrafts) p.PropertyChanged += (_, _) => EditorChanged();
         configurationAuthority = v["authority"]; ConfigurationDraft = v["json"]; ConfigurationReason = v["reason"];
-        NotifyConfigurationEditorState(); Message = "已继续加密草稿；当前编辑来源和无效输入保留。校验后才能保存Pending。";
+        RebuildParameterEditor(); NotifyConfigurationEditorState(); Message = "已继续加密草稿；当前编辑来源和无效输入保留。校验后才能保存Pending。";
     }
 }

@@ -46,7 +46,8 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelTopology? Topology = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelRetentionPolicy? Retention = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelBackupSchedule? BackupSchedule = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? StationCode = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? StationCode = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterPolicy? BarcodeFilter = null);
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);
@@ -61,7 +62,8 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AcquisitionIdentity? Acquisition = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PositionId = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool RecoveryRequired = false);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool RecoveryRequired = false,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null);
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
     string[] BlockingReasons, ParcelOperation[] Operations, CapabilityHealth[] Health,
     ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null, ParcelAvailability? Availability = null, PositionSnapshot[]? Positions = null, DeviceState[]? Devices = null, ParcelCapacity? Capacity = null, IdentityConflict[]? IdentityConflicts = null, string[]? AuxiliaryReasons = null,
@@ -69,6 +71,8 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
+    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
+    Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");
     Task<ParcelSnapshot> SnapshotAsync();
     Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50);
     Task<ParcelOperation?> OperationAsync(string id);

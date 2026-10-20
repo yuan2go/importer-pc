@@ -12,6 +12,8 @@
 
 继承商业交付组合的冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。后继UI实现与本轮介质以页首视觉产品化交付记录为准。
 
+安装交付范围修订（2026-10-20）：[普通安装包与必要说明、过度设计检查](runtime/installation-delivery-scope-01.md)。该修订优先于旧商业计划中的批量/无人值守安装要求；不改变历史源码、发行物和原验证结果。
+
 ## 1. 当前阅读顺序
 
 1. [AGENTS](../AGENTS.md)、[本轮基准与清理](design/sportmaster-visual-productization-01.md)、[本轮运行与证据](runtime/sportmaster-visual-productization-01.md)，再读继承的[商业设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。

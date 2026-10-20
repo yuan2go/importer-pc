@@ -21,6 +21,8 @@ Sportmaster 缺省使用 supply-station，显式 `--ui classic` 保留兼容布�
 
 ## 安装、开发与维护
 
+安装交付收敛为普通人工安装包及必要说明，复用现有原生向导；不要求无人值守、响应文件或批量部署，详见[范围与过度设计检查](docs/runtime/installation-delivery-scope-01.md)。
+
 Windows 当前源码的原生流程、运行账户、配置来源及离线维护见[安装与启动修复](docs/runtime/startup-deployment-02.md)。首次使用见[首次运行](docs/runtime/getting-started.md)，升级/修复/恢复见[Windows 交付指南](docs/runtime/windows-application-delivery.md)和[配置、容量及恢复维护](docs/runtime/architecture-quality-closure-01.md)。商业化增量已沿原生部署内核实施，系统安装项是唯一部署登记的派生投影；自选程序根、首配修复、备份迁移和保留数据卸载见产品操作指南。
 
 开发构建及发布入口见[Application 运行指南](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md)。使用 global.json 固定 SDK 和锁定依赖，仅按受影响范围执行必要验证。发布时从固定源码生成新介质，读取 ASSEMBLY.json、application-release.json、依赖锁和 SHA256SUMS，不改标旧产物。

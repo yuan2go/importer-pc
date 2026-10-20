@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 <workspace>\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 938 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 938 毫秒)。
+  已还原 <workspace>\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 938 毫秒)。
+  已还原 <workspace>\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 939 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 939 毫秒)。
+  已还原 <workspace>\src\Ipc.Platform\Ipc.Platform.csproj (用时 938 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 939 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 938 毫秒)。
+  已还原 <workspace>\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 49 毫秒)。
+  已还原 <workspace>\src\Ipc.Components\Ipc.Components.csproj (用时 31 毫秒)。
+  已还原 <workspace>\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 37 毫秒)。
+  已还原 <workspace>\src\Ipc.Integrations.SportmasterRcs\Ipc.Integrations.SportmasterRcs.csproj (用时 166 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 138 毫秒)。
+  已还原 <workspace>\src\Ipc.Application.DirectPlc\Ipc.Application.DirectPlc.csproj (用时 173 毫秒)。
+  已还原 <workspace>\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj (用时 147 毫秒)。
+  Ipc.Platform -> <workspace>\src\Ipc.Platform\bin\Debug\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> <workspace>\src\Ipc.Application.Contracts\bin\Debug\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <workspace>\src\Ipc.Platform.Storage\bin\Debug\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <workspace>\src\Ipc.Application.ParcelFlow\bin\Debug\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <workspace>\src\Ipc.Application.Sportmaster\bin\Debug\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> <workspace>\src\Ipc.Application.DirectPlc\bin\Debug\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> <workspace>\src\Ipc.Application.WcsToPlc\bin\Debug\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <workspace>\src\Ipc.Reference.Protocol\bin\Debug\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> <workspace>\src\Ipc.Components\bin\Debug\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> <workspace>\src\Ipc.Drivers\bin\Debug\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <workspace>\src\Ipc.Application.Supply.Contracts\bin\Debug\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <workspace>\src\Ipc.Integrations\bin\Debug\net10.0\Ipc.Integrations.dll
+  Ipc.Application.Supply -> <workspace>\src\Ipc.Application.Supply\bin\Debug\net10.0\Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> <workspace>\src\Ipc.Integrations.SportmasterRcs\bin\Debug\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> <workspace>\tests\Ipc.Application.Verification\bin\Debug\net10.0\Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:27.56

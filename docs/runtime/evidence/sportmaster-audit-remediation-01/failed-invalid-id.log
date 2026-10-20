@@ -1,0 +1,5 @@
+PERF total=0 resident=0 snapshot P50=4.27ms clone P50=0.58ms capacity P50=0.06ms
+FAIL System.InvalidOperationException: Synthetic operation never reached its own terminal result: SYNTHETIC-PERF-0
+   at Program.VerifyAuditPerformance(String root, String evidence, List`1 lines) in <workspace>\.artifacts\frozen-performance\AuditPerformance.cs:line 46
+   at Program.VerifyAuditPerformance(String root, String evidence, List`1 lines) in <workspace>\.artifacts\frozen-performance\AuditPerformance.cs:line 114
+   at Program.<>c__DisplayClass2_0.<<Main>b__0>d.MoveNext() in <workspace>\.artifacts\frozen-performance\Program.cs:line 31

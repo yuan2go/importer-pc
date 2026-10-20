@@ -1,0 +1,5 @@
+PERF total=0 resident=0 snapshot P50=1.88ms clone P50=0.27ms capacity P50=0.03ms
+PERF total=50 resident=50 snapshot P50=41.26ms clone P50=8.97ms capacity P50=5.58ms
+PERF total=199 resident=199 snapshot P50=138.44ms clone P50=20.93ms capacity P50=24.06ms
+PERF total=300 resident=101 snapshot P50=77.56ms clone P50=8.61ms capacity P50=12.32ms
+PASS R-02 samples completed with 300 independently correlated terminal results; no same-side overlap or production-policy changes.

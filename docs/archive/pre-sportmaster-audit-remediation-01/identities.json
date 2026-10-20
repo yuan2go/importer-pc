@@ -42,6 +42,12 @@
       "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/architecture-quality-closure-01.md.txt",
       "sha256": "8ebde8e412637474bdfac01b8c802b834b13ce9d17bdb6a4f71fe69ab136a4d4",
       "bytes": 24933
+    },
+    {
+      "source": "docs/INDEX.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/INDEX.md.txt",
+      "sha256": "835f5da3167454254ab133fa8c85f9c3a328d4d1cbb920ae50563ad321f556ba",
+      "bytes": 13729
     }
   ],
   "capture": "Exact Git blob bytes at source_commit; independent of Windows checkout newline conversion"

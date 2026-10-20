@@ -1,6 +1,6 @@
 > 当前增量：[Sportmaster审查整改工作包](work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)与[整改及R-02分析](runtime/sportmaster-audit-remediation-01.md)。继承已合并PR57/58；原视觉任务和历史证据保留各自身份。
 
-# 当前实施入口：Sportmaster 原生视觉产品化
+# 已合并实现基线：Sportmaster 原生视觉产品化
 
 [本轮工作包](work-packages/WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01.md) · [编码前基准与替代关系](design/sportmaster-visual-productization-01.md) · [运行及本轮证据](runtime/sportmaster-visual-productization-01.md)。Sportmaster新UI为本轮实现后的缺省；旧版本/旧候选策略和原始验证保持原身份。以下商业化、架构、安装和恢复规范仍有效，历史发行不代表本轮源码已发布。
 

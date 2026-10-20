@@ -1,0 +1,202 @@
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Automation;
+
+static class Program
+{
+    static string evidence = "", source = "";
+    static bool upgrade;
+    static readonly List<string> lines = [];
+    static int assertions;
+    static void Write(string text) { lines.Add(DateTimeOffset.Now.ToString("O") + " " + text); File.WriteAllLines(Path.Combine(evidence, "E2E.log"), lines); }
+    static void Check(bool value, string text) { if (!value) throw new InvalidOperationException(text); assertions++; Write("PASS " + text); }
+    static void Phase(string phase) { Write(phase); File.WriteAllText(Path.Combine(evidence, "PROGRESS.json"), JsonSerializer.Serialize(new { Phase = phase, At = DateTimeOffset.Now, Assertions = assertions })); }
+    [STAThread] static int Main(string[] args)
+    {
+        evidence = Path.GetFullPath(args[1]); Directory.CreateDirectory(evidence); source = args[2]; upgrade = args.Contains("--upgrade");
+        try { Run(Path.GetFullPath(args[0])).GetAwaiter().GetResult(); File.WriteAllText(Path.Combine(evidence, "RESULT.json"), JsonSerializer.Serialize(new { Status = "PASS", SourceCommit = source, Assertions = assertions, Scope = upgrade ? "Actual unprivileged single-EXE side-by-side upgrade, original Windows change plan and complete backup, configuration preservation, selected shortcuts, corrected completion guidance and installed Simulation workstation startup. No devices or production qualification." : "Actual unprivileged single-EXE install with native options, original Windows helper, protected registration, selected shortcuts, initial Simulation configuration and normal installed-app startup. No devices or production qualification." }, new JsonSerializerOptions { WriteIndented = true })); return 0; }
+        catch (Exception ex) { Write("FAIL " + ex); File.WriteAllText(Path.Combine(evidence, "RESULT.json"), JsonSerializer.Serialize(new { Status = "FAIL", SourceCommit = source, Assertions = assertions, Error = ex.ToString() })); return 1; }
+    }
+    static AutomationElement Root(nint handle) => AutomationElement.FromHandle(handle);
+    static AutomationElement? Find(nint handle, string name, ControlType type) => Root(handle).FindFirst(TreeScope.Descendants, new AndCondition(new PropertyCondition(AutomationElement.ControlTypeProperty, type), new PropertyCondition(AutomationElement.NameProperty, name)));
+    static AutomationElement Require(nint handle, string name, ControlType type) => Find(handle, name, type) ?? throw new IOException("Missing native control " + name);
+    static void Invoke(AutomationElement item) => ((InvokePattern)item.GetCurrentPattern(InvokePattern.Pattern)).Invoke();
+    static void Click(nint handle, string text) => Invoke(Require(handle, text, ControlType.Button));
+    static void Value(nint handle, string name, string value) => ((ValuePattern)Require(handle, name, ControlType.Edit).GetCurrentPattern(ValuePattern.Pattern)).SetValue(value);
+    static string Value(nint handle, string name) => ((ValuePattern)Require(handle, name, ControlType.Edit).GetCurrentPattern(ValuePattern.Pattern)).Current.Value;
+    static bool Checked(nint handle, string name) => ((TogglePattern)Require(handle, name, ControlType.CheckBox).GetCurrentPattern(TogglePattern.Pattern)).Current.ToggleState == ToggleState.On;
+    static void Toggle(nint handle, string name, bool desired) { if (Checked(handle, name) != desired) ((TogglePattern)Require(handle, name, ControlType.CheckBox).GetCurrentPattern(TogglePattern.Pattern)).Toggle(); }
+    static string Text(nint handle) => string.Join("\n", Root(handle).FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text)).Cast<AutomationElement>().Select(e => e.Current.Name));
+    static async Task Wait(Func<bool> predicate, string description, int seconds = 40)
+    {
+        var watch = Stopwatch.StartNew();
+        while (watch.Elapsed < TimeSpan.FromSeconds(seconds)) { if (predicate()) return; await Task.Delay(100); }
+        throw new TimeoutException(description);
+    }
+    static async Task<nint> Window(int id, string title, int seconds = 40) { nint result = 0; await Wait(() => (result = Native.Find(id, title)) != 0, "Window " + title, seconds); return result; }
+    static async Task Idle(nint window, string button)
+    {
+        await Task.Delay(200);
+        await Wait(() => { RejectFailure(window); return Find(window, button, ControlType.Button) is { Current.IsEnabled: true }; }, "Operation finish " + button, 90);
+    }
+    static void RejectFailure(nint window)
+    {
+        var text = Text(window);
+        if (!text.Contains("未完成：")) return;
+        Native.Capture(window, Path.Combine(evidence, "actual-failure.png")); throw new IOException("Actual application reported failure: " + text);
+    }
+    static Process Launch(string path) => Process.Start(new ProcessStartInfo(path) { UseShellExecute = false, WorkingDirectory = Path.GetDirectoryName(path)! }) ?? throw new IOException("No process for " + path);
+    static Process? InstalledProcess(string target) => Process.GetProcessesByName("Ipc.Desktop").FirstOrDefault(p => !p.HasExited && string.Equals(p.MainModule?.FileName, target, StringComparison.OrdinalIgnoreCase));
+    static async Task Exit(Process process) { await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(30)); Check(process.ExitCode == 0, "own process exited with code zero"); }
+    static async Task Run(string installer)
+    {
+        var machineRegistration = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc", "deployments", "sportmaster.json");
+        Check(File.Exists(machineRegistration) == upgrade, upgrade ? "upgrade test uses the existing isolated Simulation deployment" : "no existing sportmaster deployment registration to replace");
+        var program = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "菜鸟供包台");
+        var data = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "installation-check-" + Guid.NewGuid().ToString("N"), "data");
+        string? originalSeed = null, originalSeedHash = null, originalConfiguration = null, originalConfigurationHash = null, originalRelease = null;
+        var originalBackups = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (upgrade)
+        {
+            using var before = JsonDocument.Parse(File.ReadAllText(machineRegistration));
+            data = before.RootElement.GetProperty("DataRoot").GetString()!;
+            Check(data.Contains("installation-check-"), "upgrade retains only this test's independent data root");
+            originalSeed = Path.Combine(before.RootElement.GetProperty("ConfigurationDirectory").GetString()!, "business.json");
+            originalSeedHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(originalSeed)));
+            originalRelease = before.RootElement.GetProperty("ReleaseRoot").GetString()!;
+            using var seed = JsonDocument.Parse(File.ReadAllText(originalSeed));
+            var databaseDirectory = Path.Combine(data, seed.RootElement.GetProperty("Mode").GetString()!, seed.RootElement.GetProperty("StationId").GetString()!, "sportmaster");
+            originalConfiguration = Path.Combine(databaseDirectory, "configuration.json"); originalConfigurationHash = Hash(originalConfiguration);
+            Check(File.Exists(Path.Combine(databaseDirectory, "sportmaster.db")), "prior installed Simulation database exists before upgrade");
+            if (Directory.Exists(Path.Combine(data, "backups"))) originalBackups.UnionWith(Directory.GetFiles(Path.Combine(data, "backups"), "sportmaster-pre-upgrade-*.db"));
+        }
+        Phase("START_ACTUAL_STANDALONE_EXE");
+        using var bootstrap = Launch(installer);
+        var welcome = await Window(bootstrap.Id, "菜鸟供包台安装程序");
+        var welcomeNext = Root(welcome).FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.AutomationIdProperty, "Next")) ?? throw new IOException("Missing welcome Next control");
+        Invoke(welcomeNext);
+        Process? setupProcess = null; nint setup = 0;
+        await Wait(() => { foreach (var candidate in Process.GetProcessesByName("Ipc.Desktop")) { var handle = Native.Find(candidate.Id, "安装 · 菜鸟供包台"); if (handle != 0 && candidate.MainModule?.FileName?.Contains("ipc-installer-") == true) { setupProcess = candidate; setup = handle; return true; } candidate.Dispose(); } return false; }, "automatic setup handoff", 90);
+        using (setupProcess!)
+        {
+            await Idle(setup, "下一步");
+            Check(Find(setup, "安装目录", ControlType.Edit) is not null && Find(setup, "在开始菜单创建快捷方式", ControlType.CheckBox) is not null && Find(setup, "在桌面创建快捷方式", ControlType.CheckBox) is not null, "actual EXE automatically reaches directory and both shortcut choices");
+            Check(!Native.Visible(setupProcess!.Id, "启动与恢复 · 菜鸟供包台"), "no blank startup window behind setup");
+            Invoke(Require(setup, "浏览安装目录", ControlType.Button));
+            var folderPicker = await Window(setupProcess.Id, "安装目录");
+            Check(Find(folderPicker, "取消", ControlType.Button) is not null, "installation directory Browse opens the real Windows folder chooser");
+            Click(folderPicker, "取消"); await Idle(setup, "下一步");
+            Value(setup, "安装目录", program); Value(setup, "数据目录", data);
+            Toggle(setup, "在开始菜单创建快捷方式", upgrade); Toggle(setup, "在桌面创建快捷方式", true);
+            Native.Capture(setup, Path.Combine(evidence, "actual-options.png"));
+            Click(setup, "下一步"); await Idle(setup, "安装");
+            if (!upgrade)
+            {
+                Check(Text(setup).Contains("开始菜单快捷方式：不创建") && Text(setup).Contains("桌面快捷方式：创建"), "review reflects independently selected shortcut options");
+                Click(setup, "上一步"); await Idle(setup, "下一步");
+                Check(Value(setup, "安装目录") == program && Value(setup, "数据目录") == data && !Checked(setup, "在开始菜单创建快捷方式") && Checked(setup, "在桌面创建快捷方式"), "back preserves chosen directories and shortcut flags");
+                Toggle(setup, "在开始菜单创建快捷方式", true); Click(setup, "下一步"); await Idle(setup, "安装");
+            }
+            Check(Text(setup).Contains("开始菜单快捷方式：创建") && Text(setup).Contains("桌面快捷方式：创建"), "real installation reviewed with both shortcuts enabled");
+            Native.Capture(setup, Path.Combine(evidence, "actual-review.png"));
+            Phase("READY_FOR_REAL_INSTALLATION_WINDOWS_UAC"); Click(setup, "安装");
+            await Task.Delay(600);
+            await Wait(() => { RejectFailure(setup); return Find(setup, "完成", ControlType.Button) is { Current.IsEnabled: true }; }, "actual installation completion; inspect live installer for a failure or Windows UAC prompt", 600);
+            Native.Capture(setup, Path.Combine(evidence, "actual-complete.png"));
+            Check(File.Exists(machineRegistration), "real helper committed the authoritative machine registration");
+            using var receipt = JsonDocument.Parse(File.ReadAllText(machineRegistration)); var location = receipt.RootElement;
+            var release = location.GetProperty("ReleaseRoot").GetString()!;
+            Check(location.GetProperty("SourceCommit").GetString() == source && location.GetProperty("LifecycleState").GetString() == "Installed" && release.StartsWith(program + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) && location.GetProperty("DataRoot").GetString() == data, "installed registration matches frozen source and both selected directories");
+            Check(location.GetProperty("Shortcuts").GetProperty("StartMenu").GetBoolean() && location.GetProperty("Shortcuts").GetProperty("Desktop").GetBoolean(), "machine registration retains both selected shortcut options");
+            if (upgrade)
+            {
+                Check(Hash(originalSeed!) == originalSeedHash && Hash(originalConfiguration!) == originalConfigurationHash, "upgrade preserves seed and original configuration ledger byte for byte before startup");
+                Check(Directory.Exists(originalRelease!) && File.Exists(Path.Combine(originalRelease!, "deployment-location.json")), "side-by-side upgrade retains the prior installed release and receipt");
+                var backups = Directory.GetFiles(Path.Combine(data, "backups"), "sportmaster-pre-upgrade-*.db").Except(originalBackups, StringComparer.OrdinalIgnoreCase).ToArray();
+                Check(backups.Length == 1, "actual original installation change plan creates one new complete pre-upgrade backup");
+                using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(backups[0] + ".recovery", "COMPLETED.json")));
+                Check(manifest.RootElement.GetProperty("DatabaseHash").GetString() == Hash(backups[0]) && manifest.RootElement.GetProperty("Files").EnumerateObject().All(f => Hash(Path.Combine(backups[0] + ".recovery", f.Name)) == f.Value.GetString()), "actual pre-upgrade database and all recovery companions match completed manifest hashes");
+            }
+            var target = Path.Combine(release, "desktop", "Ipc.Desktop.exe");
+            var id = "sportmaster · " + source[..8] + " · " + Path.GetFileName(release)[^8..];
+            var desktopLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "菜鸟供包台 · " + id + ".lnk");
+            var menuLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "菜鸟供包台", id + " · 运行.lnk");
+            dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!)!;
+            try
+            {
+                foreach (var linkPath in new[] { desktopLink, menuLink })
+                {
+                    Check(File.Exists(linkPath), "actual selected shortcut exists: " + Path.GetFileName(linkPath));
+                    dynamic link = shell.CreateShortcut(linkPath);
+                    try { Check(string.Equals((string)link.TargetPath, target, StringComparison.OrdinalIgnoreCase) && (string)link.Arguments == "" && string.Equals((string)link.WorkingDirectory, release, StringComparison.OrdinalIgnoreCase), "actual shortcut targets installed normal app with no setup argument"); }
+                    finally { Marshal.FinalReleaseComObject(link); }
+                }
+            }
+            finally { Marshal.FinalReleaseComObject(shell); }
+            Check(Checked(setup, "安装完成后运行菜鸟供包台"), "completion offers checked normal app launch for the selected runtime account");
+            if (upgrade) Check(!Text(setup).Contains("请登录指定运行账户后运行程序"), "correct runtime account completion has no misleading account-switch instruction");
+            Phase("FINISH_AND_START_INSTALLED_APPLICATION"); Click(setup, "完成"); await Exit(setupProcess!); await Exit(bootstrap);
+            Process? running = null; await Wait(() => (running = InstalledProcess(target)) is not null, "installed EXE launched by Finish");
+            using (running!)
+            {
+                nint config = 0;
+                await Wait(() => (config = Native.Find(running!.Id, "首次工位配置 · 菜鸟供包台")) != 0 || Native.Find(running!.Id, "菜鸟供包台") != 0, "first configuration or actual workstation", 60);
+                if (config != 0)
+                {
+                    Phase("ACTUAL_FIRST_SIMULATION_CONFIGURATION");
+                    var tab = Require(config, "4 检查与启动", ControlType.TabItem); ((SelectionItemPattern)tab.GetCurrentPattern(SelectionItemPattern.Pattern)).Select();
+                    await Idle(config, "分层检查与变更预览"); Click(config, "分层检查与变更预览"); await Idle(config, "保存首配待生效…");
+                    Phase("SAVE_INITIAL_CONFIGURATION_WINDOWS_UAC"); Click(config, "保存首配待生效…"); await Idle(config, "分层检查与变更预览");
+                    Check(Text(config).Contains("保存后已读回状态"), "initial Simulation configuration saved through original maintenance flow");
+                    Click(config, "分层检查与变更预览"); await Idle(config, "按当前首配启动");
+                    Click(config, "按当前首配启动");
+                }
+                var workbench = await Window(running!.Id, "菜鸟供包台", 60); await Task.Delay(1500);
+                Check(!Native.Visible(running.Id, "安装 · 菜鸟供包台") && !Native.Visible(running.Id, "启动与恢复 · 菜鸟供包台") && Find(workbench, "暂停新入场", ControlType.Button) is not null, "installed normal app reaches the real workstation and closes startup/setup surfaces");
+                Check(!Text(workbench).Contains("启动未完成 / NotReady"), "actual workstation is distinct from startup failure surface");
+                Check(Text(workbench).Contains("左投递位") && Text(workbench).Contains("右投递位") && Text(workbench).Contains("Simulation") && !Text(workbench).Contains("状态读取中断"), "actual Simulation workstation reads its live snapshot and both independent positions");
+                Native.Capture(workbench, Path.Combine(evidence, "actual-workstation.png")); Native.Close(workbench); await Exit(running);
+            }
+            foreach (var link in new[] { desktopLink, menuLink })
+            {
+                Phase("START_FROM_ACTUAL_SHORTCUT " + Path.GetFileName(link));
+                Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+                Process? restarted = null; await Wait(() => (restarted = InstalledProcess(target)) is not null, "shortcut launches installed executable");
+                using (restarted!) { var workbench = await Window(restarted!.Id, "菜鸟供包台", 60); Check(!Native.Visible(restarted.Id, "安装 · 菜鸟供包台"), "actual shortcut starts workstation rather than installer"); Native.Close(workbench); await Exit(restarted); }
+            }
+            File.WriteAllText(Path.Combine(evidence, "INSTALLATION.json"), JsonSerializer.Serialize(new { SourceCommit = source, ProgramRoot = program, ReleaseRoot = release, DataRoot = data, DesktopShortcut = desktopLink, StartMenuShortcut = menuLink, Mode = "Simulation", MachineInstalled = true, RealDeviceOperations = false }, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        Phase("ALL_REAL_INSTALLATION_AND_STARTUP_CHECKS_PASSED");
+    }
+    static string Hash(string path) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)));
+}
+
+static class Native
+{
+    delegate bool Callback(nint window, nint data);
+    [DllImport("user32.dll")] static extern bool EnumWindows(Callback callback, nint data);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(nint window, out uint process);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(nint window, StringBuilder text, int count);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(nint window);
+    [DllImport("user32.dll")] static extern bool PostMessage(nint window, uint message, nint wParam, nint lParam);
+    [DllImport("user32.dll")] static extern bool GetWindowRect(nint window, out Rect rectangle);
+    [DllImport("user32.dll")] static extern bool PrintWindow(nint window, nint context, uint flags);
+    [StructLayout(LayoutKind.Sequential)] struct Rect { public int Left, Top, Right, Bottom; }
+    public static nint Find(int process, string title)
+    {
+        nint found = 0; EnumWindows((window, _) => { GetWindowThreadProcessId(window, out var owner); if (owner != process) return true; var name = new StringBuilder(512); GetWindowText(window, name, name.Capacity); if (name.ToString() == title && IsWindowVisible(window)) { found = window; return false; } return true; }, 0); return found;
+    }
+    public static bool Visible(int process, string title) => Find(process, title) != 0;
+    public static void Close(nint window) { if (!PostMessage(window, 0x0010, 0, 0)) throw new IOException("Cannot close own application window"); }
+    public static void Capture(nint window, string path)
+    {
+        if (!GetWindowRect(window, out var rectangle)) throw new IOException("Cannot read own application window");
+        using var bitmap = new System.Drawing.Bitmap(rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top);
+        using var graphics = System.Drawing.Graphics.FromImage(bitmap); var context = graphics.GetHdc();
+        try { if (!PrintWindow(window, context, 2)) throw new IOException("Cannot render own application window"); } finally { graphics.ReleaseHdc(context); }
+        bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+    }
+}

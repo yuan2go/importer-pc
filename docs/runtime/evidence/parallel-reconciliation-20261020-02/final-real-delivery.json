@@ -1,0 +1,40 @@
+{
+  "installer": "D:\\releases\\cainiao-final-12946f5\\菜鸟供包台安装程序.exe",
+  "installer_bytes": 172487240,
+  "installer_sha256": "9c4f084ea903970183179619462f4e14ab68cf4c7ced3ea1be2e2772df3b0ad1",
+  "source_commit": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+  "business_version": "1.4.1",
+  "media_zip": "D:/releases/cainiao-final-12946f5-media.zip",
+  "media_sha256": "e6c32e5b8fe0b09d5dd88263946e240592107a413f4d54ee594a558ec387697d",
+  "delivery_files": 1,
+  "actual_windows_upgrade_and_startup": "PASS",
+  "native_end_to_end_assertions": 30,
+  "completion_account_guidance": "PASS",
+  "custom_directory_and_native_browser": "PASS",
+  "start_menu_and_desktop_options": "PASS",
+  "original_windows_helper_and_uac": "PASS",
+  "original_configuration_bytes_and_prior_release_retained": "PASS",
+  "complete_preupgrade_backup_and_all_companion_hashes": "PASS",
+  "finish_launch_and_two_real_shortcut_restarts": "PASS",
+  "prior_clean_installation": {
+    "source": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+    "assertions": 26,
+    "evidence": "D:/releases/cainiao-e2e-b33fd49-02",
+    "delta_to_final": "Only completion guidance now tests the existing runtime-identity result directly; business guards unchanged"
+  },
+  "execution_mode": "Simulation",
+  "real_device_operations": false,
+  "field_acceptance": "NOT_RUN",
+  "authenticode": "NotSigned",
+  "fixture_sha256": "a62e3458fd4229d2a3b5840f5ac5c06780eea35c3ca70a7826207d91f5ae268f",
+  "fixture_project_sha256": "cf4386271104d97da1d67da4dfb33fe045bb9484114f577bd10cb56c873fd67e",
+  "raw_log_sha256": "5369fcc209a523edcad979a9aabf14ab23fd32ede4419686d432aa0f3d1f24fc",
+  "private_evidence_not_for_upload": [
+    "INSTALLATION.json",
+    "actual-options.png",
+    "actual-review.png",
+    "actual-complete.png"
+  ],
+  "public_candidate_screenshot": "actual-workstation.png",
+  "prior_failed_probe": "Original welcome-button accessible-name assumption in b33 attempt01 preserved; corrected to existing AutomationId; no installer bypass"
+}

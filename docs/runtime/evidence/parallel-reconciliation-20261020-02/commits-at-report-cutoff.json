@@ -1,0 +1,166 @@
+{
+  "StartMain": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+  "ReportCutoff": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+  "CurrentRemoteMain": "97c73e73b21b2439f95186d7468bb0d0374b6d6e",
+  "InitialSource": [
+    "0e79e73bdb6d7a1702373963295b192a803f28e7",
+    "1a5c60e9b3c34e37343be7ce5da99eec4e2779d9",
+    "37a46cee9a66838aac099f7fcad3c9dc9a24ed40",
+    "4181fa82a993ad07c1cb6f90d7ffcb48f14836f2",
+    "6e73250f56e09cfa1eaac9f7b8df650bbabdfd4f",
+    "7bbc1b84574f8e4c9be2374132c68e956f401512",
+    "910d05a815ab602e4671fd8508c780c246361fcf",
+    "967ebc8daf377a99561914d57bd807017dcf2d14",
+    "a7de058d5877b8fa797e2292271181b4272ac244",
+    "afc52a469e2f084cbfaa2def4f7d66a34444e491",
+    "cff767b25b9655583d428f49db84170a406bc0bd",
+    "dbd2426d16e89d75e82e3a93e0830a5ce5624d95",
+    "e80ab39937c0c3e8bee7fd2026ccf3490f7e3ab1",
+    "ef553272327cd6c4f2a9509563d4e9609f18cdc4"
+  ],
+  "DiscoveredSource": [
+    "107b82e4cb86108304148dba764fe2083a16753b",
+    "d10c51a97db91409f9a0056f40e37935627e5f76",
+    "de105a57967a1c86487312f8c48a6dc4425bee63"
+  ],
+  "New": [
+    {
+      "Sha": "0db01f9a75b84cc0579a63992645b8152d1d1c48",
+      "Kind": "content",
+      "Subject": "docs: govern PR62-65 integration scope and preserve prior task entry"
+    },
+    {
+      "Sha": "288ca6fed7bb2cd788675464f47bb04ae6f749e0",
+      "Kind": "merge",
+      "Subject": "Merge PR #65: simplify human installation delivery scope"
+    },
+    {
+      "Sha": "043dc0fbc46eb8a83583b3cc993aba2c7edd2d02",
+      "Kind": "merge",
+      "Subject": "merge: inherit approved installation documentation before workstation fixes"
+    },
+    {
+      "Sha": "bf3f68ff63494e6cff4849fb36b223963dd2fed4",
+      "Kind": "content",
+      "Subject": "fix: distinguish input validation and open read-only diagnostics; prepare native CI display"
+    },
+    {
+      "Sha": "f5f6f830dc23647f0172af9c91c3db683421c31a",
+      "Kind": "merge",
+      "Subject": "merge: preserve workstation and human installation task sources after document governance"
+    },
+    {
+      "Sha": "b47ac1ed70c3a12af4b623cc5d1292df03d6b5e4",
+      "Kind": "merge",
+      "Subject": "merge: retain independent IP reader and qualified native SDK boundary"
+    },
+    {
+      "Sha": "2b216de43acb715a496e7c8c172569db08eee3f8",
+      "Kind": "merge",
+      "Subject": "merge: combine approved product branding and single EXE with current reader and workstation"
+    },
+    {
+      "Sha": "a0ee21370caea34c982f1e0a1825c9e16a7dbf59",
+      "Kind": "content",
+      "Subject": "fix: keep native controls reachable at minimum clients and retain strict geometry on headless runners"
+    },
+    {
+      "Sha": "462c6678a0ed47ba0ad2f8c3c96d962a0e8d3dca",
+      "Kind": "merge",
+      "Subject": "merge: validate IP reader together with repaired workstation and installation scope"
+    },
+    {
+      "Sha": "fcf96a589bb4115219e6d101b5990534759d2137",
+      "Kind": "content",
+      "Subject": "docs: preserve complete native gallery and govern newly discovered installer handoff"
+    },
+    {
+      "Sha": "5903341666c29bf559e03f47784be1280a585681",
+      "Kind": "merge",
+      "Subject": "merge: inherit fully verified minimum-client repairs and reader source integration"
+    },
+    {
+      "Sha": "2cc6b5076d7920f72c7380e9a5c35dce9ad14a61",
+      "Kind": "merge",
+      "Subject": "merge: combine installer options with independent reader and repaired workstation"
+    },
+    {
+      "Sha": "767bf305820ed18e1c00838b8ae424cccd07cf28",
+      "Kind": "content",
+      "Subject": "fix: preserve retargeted shortcuts during installation removal"
+    },
+    {
+      "Sha": "5deb26490c7f5ebbc364e1914edf9602730054aa",
+      "Kind": "merge",
+      "Subject": "merge: preserve execution-discovered installer options and safe shortcut ownership"
+    },
+    {
+      "Sha": "a39370df05557cc2627b88a876415225922e652b",
+      "Kind": "content",
+      "Subject": "test: synchronize WPF native tracking bounds before exact client stress"
+    },
+    {
+      "Sha": "646e8b4b256d71243639f7bcfef5cf2b57479cfd",
+      "Kind": "merge",
+      "Subject": "merge: retain exact native geometry stress in reader combination"
+    },
+    {
+      "Sha": "36dc715cb007e0bab24f15c39e5eeafdb6d91c32",
+      "Kind": "merge",
+      "Subject": "merge: retain exact native geometry stress in final installer combination"
+    },
+    {
+      "Sha": "f1885ac53822f7152880f7e44059a57a752417f5",
+      "Kind": "content",
+      "Subject": "docs: map confirmed requirements and preserve installer handoff evidence"
+    },
+    {
+      "Sha": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+      "Kind": "merge",
+      "Subject": "merge: freeze all source task heads including qualified reader and installer options"
+    },
+    {
+      "Sha": "6415bb873d12ca5d759e4ced432d0f26f7fdecc9",
+      "Kind": "merge",
+      "Subject": "Merge PR #62: clarify workstation input and retain complete native geometry guards"
+    },
+    {
+      "Sha": "cf1450e30f38057ab15faa62e36607cc31ee83a1",
+      "Kind": "merge",
+      "Subject": "Merge PR #63: retain qualified independent IP reader with integrated workstation"
+    },
+    {
+      "Sha": "97c73e73b21b2439f95186d7468bb0d0374b6d6e",
+      "Kind": "merge",
+      "Subject": "Merge PR #64: integrate branded single EXE and guarded installation options"
+    },
+    {
+      "Sha": "255b61688ae9cf9d521a8f358244ba7f4c90d9d5",
+      "Kind": "merge",
+      "Subject": "Merge remote-tracking branch 'origin/main' into codex/parallel-task-reconciliation-20261020-02"
+    },
+    {
+      "Sha": "f9490d4616515b94e5928ca2847e133612956955",
+      "Kind": "content",
+      "Subject": "docs: reconcile complete canonical inventory and portable gallery references"
+    },
+    {
+      "Sha": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+      "Kind": "content",
+      "Subject": "fix: base installation completion guidance on runtime identity rather than inherited busy state"
+    }
+  ],
+  "Counts": {
+    "Source": 17,
+    "NewContent": 9,
+    "NewMerge": 16,
+    "UniqueRange": 42,
+    "TemporalNewIncludingSourceContinuation": {
+      "Content": 11,
+      "Merge": 17,
+      "Total": 28
+    }
+  },
+  "CountingRule": "git rev-list --count <StartMain>..<ReportCutoff>; disjoint source SHA set; no squash/rebase",
+  "CountingClarification": "New lists count reconciliation-authored commits; execution-discovered source continuation contributes two content and one merge separately. Temporal new plus fourteen initial source equals unique range."
+}

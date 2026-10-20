@@ -1,0 +1,36 @@
+2026-10-20T13:44:49.4500958+08:00 PASS upgrade test uses the existing isolated Simulation deployment
+2026-10-20T13:44:49.4948525+08:00 PASS upgrade retains only this test's independent data root
+2026-10-20T13:44:49.5035462+08:00 PASS prior installed Simulation database exists before upgrade
+2026-10-20T13:44:49.5058222+08:00 START_ACTUAL_STANDALONE_EXE
+2026-10-20T13:45:04.2577198+08:00 PASS actual EXE automatically reaches directory and both shortcut choices
+2026-10-20T13:45:04.2603289+08:00 PASS no blank startup window behind setup
+2026-10-20T13:45:06.0010109+08:00 PASS installation directory Browse opens the real Windows folder chooser
+2026-10-20T13:46:24.4912800+08:00 PASS real installation reviewed with both shortcuts enabled
+2026-10-20T13:46:24.5566909+08:00 READY_FOR_REAL_INSTALLATION_WINDOWS_UAC
+2026-10-20T13:46:50.5351652+08:00 PASS real helper committed the authoritative machine registration
+2026-10-20T13:46:50.5372300+08:00 PASS installed registration matches frozen source and both selected directories
+2026-10-20T13:46:50.5382183+08:00 PASS machine registration retains both selected shortcut options
+2026-10-20T13:46:50.5402788+08:00 PASS upgrade preserves seed and original configuration ledger byte for byte before startup
+2026-10-20T13:46:50.5420052+08:00 PASS side-by-side upgrade retains the prior installed release and receipt
+2026-10-20T13:46:50.5481100+08:00 PASS actual original installation change plan creates one new complete pre-upgrade backup
+2026-10-20T13:46:50.5733512+08:00 PASS actual pre-upgrade database and all recovery companions match completed manifest hashes
+2026-10-20T13:46:50.5940313+08:00 PASS actual selected shortcut exists: 菜鸟供包台 · sportmaster · 12946f5b · a22860dc.lnk
+2026-10-20T13:46:50.9068150+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T13:46:50.9230799+08:00 PASS actual selected shortcut exists: sportmaster · 12946f5b · a22860dc · 运行.lnk
+2026-10-20T13:46:50.9427782+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T13:46:51.0048278+08:00 PASS completion offers checked normal app launch for the selected runtime account
+2026-10-20T13:46:51.1086514+08:00 PASS correct runtime account completion has no misleading account-switch instruction
+2026-10-20T13:46:51.1096989+08:00 FINISH_AND_START_INSTALLED_APPLICATION
+2026-10-20T13:46:51.6868662+08:00 PASS own process exited with code zero
+2026-10-20T13:46:52.8051316+08:00 PASS own process exited with code zero
+2026-10-20T13:46:57.2506971+08:00 PASS installed normal app reaches the real workstation and closes startup/setup surfaces
+2026-10-20T13:46:57.4342963+08:00 PASS actual workstation is distinct from startup failure surface
+2026-10-20T13:46:58.2941255+08:00 PASS actual Simulation workstation reads its live snapshot and both independent positions
+2026-10-20T13:46:58.6266301+08:00 PASS own process exited with code zero
+2026-10-20T13:46:58.6279641+08:00 START_FROM_ACTUAL_SHORTCUT 菜鸟供包台 · sportmaster · 12946f5b · a22860dc.lnk
+2026-10-20T13:47:01.6541219+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T13:47:02.0168739+08:00 PASS own process exited with code zero
+2026-10-20T13:47:02.0183341+08:00 START_FROM_ACTUAL_SHORTCUT sportmaster · 12946f5b · a22860dc · 运行.lnk
+2026-10-20T13:47:04.8352439+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T13:47:05.3942526+08:00 PASS own process exited with code zero
+2026-10-20T13:47:05.4094026+08:00 ALL_REAL_INSTALLATION_AND_STARTUP_CHECKS_PASSED

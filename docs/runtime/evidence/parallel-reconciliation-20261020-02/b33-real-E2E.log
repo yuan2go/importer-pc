@@ -1,0 +1,34 @@
+2026-10-20T13:37:55.3791525+08:00 PASS no existing sportmaster deployment registration to replace
+2026-10-20T13:37:55.3986078+08:00 START_ACTUAL_STANDALONE_EXE
+2026-10-20T13:38:07.5044621+08:00 PASS actual EXE automatically reaches directory and both shortcut choices
+2026-10-20T13:38:07.5095621+08:00 PASS no blank startup window behind setup
+2026-10-20T13:38:10.0355814+08:00 PASS installation directory Browse opens the real Windows folder chooser
+2026-10-20T13:38:15.1204479+08:00 PASS review reflects independently selected shortcut options
+2026-10-20T13:38:15.5672286+08:00 PASS back preserves chosen directories and shortcut flags
+2026-10-20T13:38:19.3908091+08:00 PASS real installation reviewed with both shortcuts enabled
+2026-10-20T13:38:19.4363078+08:00 READY_FOR_REAL_INSTALLATION_WINDOWS_UAC
+2026-10-20T13:38:48.9388599+08:00 PASS real helper committed the authoritative machine registration
+2026-10-20T13:38:48.9502816+08:00 PASS installed registration matches frozen source and both selected directories
+2026-10-20T13:38:48.9513743+08:00 PASS machine registration retains both selected shortcut options
+2026-10-20T13:38:48.9766383+08:00 PASS actual selected shortcut exists: 菜鸟供包台 · sportmaster · b33fd497 · fb263fed.lnk
+2026-10-20T13:38:49.3745158+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T13:38:49.3881215+08:00 PASS actual selected shortcut exists: sportmaster · b33fd497 · fb263fed · 运行.lnk
+2026-10-20T13:38:49.3948833+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T13:38:49.4300141+08:00 PASS completion offers checked normal app launch for the selected runtime account
+2026-10-20T13:38:49.4312077+08:00 FINISH_AND_START_INSTALLED_APPLICATION
+2026-10-20T13:38:49.9275839+08:00 PASS own process exited with code zero
+2026-10-20T13:38:51.3675451+08:00 PASS own process exited with code zero
+2026-10-20T13:38:52.5155580+08:00 ACTUAL_FIRST_SIMULATION_CONFIGURATION
+2026-10-20T13:38:54.2726398+08:00 SAVE_INITIAL_CONFIGURATION_WINDOWS_UAC
+2026-10-20T13:39:04.6319687+08:00 PASS initial Simulation configuration saved through original maintenance flow
+2026-10-20T13:39:09.1950749+08:00 PASS installed normal app reaches the real workstation and closes startup/setup surfaces
+2026-10-20T13:39:09.4262380+08:00 PASS actual workstation is distinct from startup failure surface
+2026-10-20T13:39:10.1767769+08:00 PASS actual Simulation workstation reads its live snapshot and both independent positions
+2026-10-20T13:39:10.6308340+08:00 PASS own process exited with code zero
+2026-10-20T13:39:10.6326333+08:00 START_FROM_ACTUAL_SHORTCUT 菜鸟供包台 · sportmaster · b33fd497 · fb263fed.lnk
+2026-10-20T13:39:15.0250927+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T13:39:15.4899273+08:00 PASS own process exited with code zero
+2026-10-20T13:39:15.4911110+08:00 START_FROM_ACTUAL_SHORTCUT sportmaster · b33fd497 · fb263fed · 运行.lnk
+2026-10-20T13:39:19.9318865+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T13:39:20.3696725+08:00 PASS own process exited with code zero
+2026-10-20T13:39:20.3858350+08:00 ALL_REAL_INSTALLATION_AND_STARTUP_CHECKS_PASSED

@@ -1,0 +1,4 @@
+D:\w\rec2\src\Ipc.Desktop\StartupWorkflows.cs(6,34): error CS0234: 命名空间“Ipc.Application.ParcelFlow”中不存在类型或命名空间名“Desktop”(是否缺少程序集引用?) [D:\w\rec2\src\Ipc.Desktop\Ipc.Desktop.csproj]
+D:\w\rec2\src\Ipc.Desktop\StartupWorkflows.cs(101,5): error CS0246: 未能找到类型或命名空间名“StartupConfigurationDraft”(是否缺少 using 指令或程序集引用?) [D:\w\rec2\src\Ipc.Desktop\Ipc.Desktop.csproj]
+
+生成失败。请修复生成错误并重新运行。

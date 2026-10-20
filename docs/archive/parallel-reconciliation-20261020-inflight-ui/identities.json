@@ -1,0 +1,26 @@
+[
+  {
+    "source": "docs/design/sportmaster-ui-baseline-02.md",
+    "size_bytes": 2418,
+    "sha256": "4cd70dca52773ea2abf640b7a69b1de361529ebc1e57e989a05fee3ca57cb22c",
+    "state": "UNCOMMITTED_INCOMPLETE_NOT_ACTIVE"
+  },
+  {
+    "source": "docs/design/sportmaster-visual-productization-01.md",
+    "size_bytes": 4101,
+    "sha256": "513b0a867f2e6156ee430b54fb50aea54aa610c8318c74f0f0b171f1190566d7",
+    "state": "UNCOMMITTED_INCOMPLETE_NOT_ACTIVE"
+  },
+  {
+    "source": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+    "size_bytes": 3667,
+    "sha256": "6b86d4f9ee2093d0aaa4f03dc564c05af8a8036012fd10a543216236a81d8a4d",
+    "state": "UNCOMMITTED_INCOMPLETE_NOT_ACTIVE"
+  },
+  {
+    "source": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+    "size_bytes": 19165,
+    "sha256": "d44a44746b786860a468e47523b829794154249e5cdbcb583d5f2877d5bf5157",
+    "state": "UNCOMMITTED_INCOMPLETE_NOT_ACTIVE"
+  }
+]

@@ -1,6 +1,6 @@
 # 当前整合入口 · 2026-10-20
 
-[本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。工作台视觉以 [UI-BASELINE-02](design/sportmaster-ui-baseline-02.md) 为准；继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改。
+[本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。
 
 现行操作依次读取商业交付手册、架构22、配置/恢复和扩展指南。下列源任务设计/结果用于追踪，不再各自宣称本次当前任务；历史免测和旧介质不得代替最终组合验证。清理前原字节见 [归档](archive/pre-parallel-reconciliation-20261020/README.md)。
 

@@ -1,6 +1,6 @@
 # UI 实现与分版本证据入口
 
-当前整合和原稿层级恢复见 [UI-BASELINE-02](../design/sportmaster-ui-baseline-02.md) 与 [组合报告](../runtime/parallel-task-reconciliation-20261020.md)。下列 dfc2ab6 是 PR58 原证据，PR59 的日期与门禁见 [main续核](../runtime/sportmaster-visual-main-closure-01.md)，不能当作本轮组合已验证。
+现有代码整合见 [组合报告](../runtime/parallel-task-reconciliation-20261020.md)；未完成原稿恢复草案仅 [归档](../archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不作为当前实现。下列 dfc2ab6 是 PR58 原证据，PR59 的日期与门禁见 [main续核](../runtime/sportmaster-visual-main-closure-01.md)，不能当作本轮组合已验证。
 
 PR58形成时由 [视觉产品化基准](../design/sportmaster-visual-productization-01.md) 统一，任务为 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8，源码开工main f3059d4，整合最新main 1e97740，最终运行源码dfc2ab6。本轮结果和Windows实测以[交付记录](../runtime/sportmaster-visual-productization-01.md)及[同版介质证据](../runtime/evidence/sportmaster-visual-01/README.md)为准；Windows125%合成检查与实际输入已经执行，目标安装、多DPI和真实接口/现场资格另列。
 

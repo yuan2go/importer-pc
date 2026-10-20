@@ -1,0 +1,35 @@
+{
+  "start_main": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+  "code_commit": "4efb278baa45dbc99e607d26131ec2081e89be44",
+  "code_inputs": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
+      "sha256": "4a110f7e069ea0c37c2207efbb386f16db7c759ffd1e02e39b1cac7f86e29678"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
+      "sha256": "89d18170ca8fe8ddb26d0c982d3ed49b796b500b057795570eb6d6970f35ea4e"
+    }
+  ],
+  "environment": {
+    "os": "Windows 10.0.22631 x64",
+    "sdk": "10.0.402",
+    "runtime": "10.0.13",
+    "dpi": 1.25
+  },
+  "build": "PASS: 0 warnings/errors",
+  "native_assertions": 33,
+  "scope": "Local native WPF synthetic ports/identity; no SDK, equipment, production approval or full installation validation",
+  "excluded": "Unfinished UI draft source remains outside build; deferred integration patch is local only",
+  "pr60_start": {
+    "head": "fdbc3255471373cdbe8ed7217121e934aee7f851",
+    "base": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "draft": false,
+    "checks": "39361341179 success"
+  },
+  "protection": {
+    "protected": false,
+    "rulesets": [],
+    "api_gap": "rules/branches/main endpoint unsupported by connector; branch metadata and rulesets collection were read"
+  }
+}

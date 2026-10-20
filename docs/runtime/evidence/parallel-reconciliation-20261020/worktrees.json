@@ -1,0 +1,71 @@
+[
+  {
+    "path": "D:/projects/importer-pc",
+    "head": "4e23f01405f0c3c5a443711bb663bad76bce5f37",
+    "status": []
+  },
+  {
+    "path": "D:/ipc-scd-finalize",
+    "head": "60c0f2eebd3a7276f337ed5989934fd24b150fe4",
+    "status": []
+  },
+  {
+    "path": "D:/w/hik",
+    "head": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "status": []
+  },
+  {
+    "path": "D:/w/ipc-merge",
+    "head": "3bc7b1e2a050d083064c7783bfe1a46e8f338087",
+    "status": []
+  },
+  {
+    "path": "D:/w/ipc-release",
+    "head": "fd13f30242138020bd3810970cc372ae6a6a393b",
+    "status": []
+  },
+  {
+    "path": "D:/w/reconcile",
+    "head": "7f5c8d8fc63e93478ad32f8afc64fbf8fd845dc7",
+    "status": [
+      " M .gitattributes",
+      " M docs/INDEX.md",
+      " M docs/design/parallel-task-reconciliation-20261020.md",
+      " D docs/design/sportmaster-ui-baseline-02.md",
+      " M docs/design/sportmaster-visual-productization-01.md",
+      " M docs/runtime/parallel-task-reconciliation-20261020.md",
+      " M docs/ui/STATUS.md",
+      " M docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/README.md",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/docs/design/sportmaster-ui-baseline-02.md.txt",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/docs/design/sportmaster-visual-productization-01.md.txt",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/identities.json",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml.txt",
+      "?? docs/archive/parallel-reconciliation-20261020-inflight-ui/src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs.txt",
+      "?? docs/runtime/evidence/parallel-reconciliation-20261020/pr60-blocked-login.png",
+      "?? docs/runtime/evidence/parallel-reconciliation-20261020/pr60-local-build.log",
+      "?? docs/runtime/evidence/parallel-reconciliation-20261020/pr60-native.log",
+      "?? docs/runtime/evidence/parallel-reconciliation-20261020/verification.json"
+    ]
+  },
+  {
+    "path": "D:/w/sm-auditfix",
+    "head": "4efb278baa45dbc99e607d26131ec2081e89be44",
+    "status": []
+  },
+  {
+    "path": "D:/w/sm-ui",
+    "head": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "status": [
+      " M docs/design/sportmaster-visual-productization-01.md",
+      " M src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      " M src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "?? docs/design/sportmaster-ui-baseline-02.md"
+    ]
+  },
+  {
+    "path": "D:/w/sm-visual-closure",
+    "head": "744544718503114dcdc45af42d85ce05ea0dcdab",
+    "status": []
+  }
+]

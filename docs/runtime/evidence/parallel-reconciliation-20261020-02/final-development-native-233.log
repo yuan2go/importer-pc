@@ -1,0 +1,234 @@
+SYNTHETIC identity/ports injection: native WPF resources and interactions only; real UAC/policy/SDK/installation NOT_RUN
+PASS classic and alternate native windows load actual resources and snapshots
+PASS two UI choices share the same actual Application
+PASS both native position controls load their own theme dictionaries
+PASS native fixture enables actual optional operator authentication
+PASS native window reads actual two-position operations
+PASS left details and selected history identity agree
+PASS right details replace both selected row and command target
+PASS history navigation uses installed native page
+PASS maintenance navigation uses installed native page
+PASS native feedback is immediate and actual maintenance scope, reader grid and save control are disabled
+PASS native Pause remains enabled outside the busy maintenance scope
+PASS real Application Pause completes independently while native maintenance is held
+PASS native bound feedback retains read completion after Busy instead of a prior failure
+PASS ShellWindow native reader grid allows ordinary edits and protects stable device/role identity
+PASS native list editor accepts a legal multi-item JSON value longer than the per-item bound without truncation
+PASS reader and inventory selections retain independent parameter forms
+PASS native tab return and provider change preserve the selected reader's original parameter editor and value
+PASS native list defaults and schema read-only protection survive provider rerender
+PASS native reader text cell enters edit mode under actual global theme
+PASS native text editor commits instance identity to the single draft model
+PASS native controls retain all stable reader bindings and original configuration
+PASS native capability inventory is editable while kind remains read-only
+PASS native checkbox column enters edit mode
+PASS native checkbox commits enabled flag to original draft
+PASS native close cancellation preserves invalid raw draft, original CAS, selection and live window
+PASS native navigation preserves draft and selection source
+PASS native feedback is immediate and actual maintenance scope, reader grid and save control are disabled
+PASS native Pause remains enabled outside the busy maintenance scope
+PASS real Application Pause completes independently while native maintenance is held
+PASS native bound feedback retains read completion after Busy instead of a prior failure
+PASS SupplyStationWindow native reader grid allows ordinary edits and protects stable device/role identity
+PASS native list editor accepts a legal multi-item JSON value longer than the per-item bound without truncation
+PASS reader and inventory selections retain independent parameter forms
+PASS native tab return and provider change preserve the selected reader's original parameter editor and value
+PASS native list defaults and schema read-only protection survive provider rerender
+PASS native reader text cell enters edit mode under actual global theme
+PASS native text editor commits instance identity to the single draft model
+PASS native controls retain all stable reader bindings and original configuration
+PASS native capability inventory is editable while kind remains read-only
+PASS native checkbox column enters edit mode
+PASS native checkbox commits enabled flag to original draft
+PASS native close cancellation preserves invalid raw draft, original CAS, selection and live window
+PASS native navigation preserves draft and selection source
+PASS auxiliary window inherits UI and shares Application with independent model
+PASS closing auxiliary window keeps business owner alive
+PASS 50 receipt reasons and long messages scroll locally without consuming work area
+PASS bounded diagnostic display retains all original entries
+PASS position recovery actions stay within the effective client area under diagnostic backlog
+PASS position recovery actions stay within the effective client area under diagnostic backlog
+PASS classic actual client 1440.0x768.0 supports reflow target (1440, 768)
+PASS classic diagnostics header remains reachable in every supported client size
+PASS expanded classic diagnostics retain complete contents in a bounded local scroll
+PASS configured operator password stays visible and focusable in classic compact diagnostics
+PASS operator logout remains reachable beside its login controls
+PASS native classic logout reaches the real Application
+PASS native classic login reaches the real Application and clears the entered proof
+PASS expanding classic diagnostics retains independent fixed Pause
+PASS both positions expose actual barcode and result controls
+PASS classic (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS classic (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS classic (1440, 768) fixed operation remains visible
+PASS classic (1440, 768) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS classic actual client 1600.0x900.0 supports reflow target (1600, 900)
+PASS classic diagnostics header remains reachable in every supported client size
+PASS expanded classic diagnostics retain complete contents in a bounded local scroll
+PASS configured operator password stays visible and focusable in classic compact diagnostics
+PASS operator logout remains reachable beside its login controls
+PASS native classic logout reaches the real Application
+PASS native classic login reaches the real Application and clears the entered proof
+PASS expanding classic diagnostics retains independent fixed Pause
+PASS both positions expose actual barcode and result controls
+PASS classic (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS classic (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS classic (1600, 900) fixed operation remains visible
+PASS classic (1600, 900) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS classic actual client 1100.0x600.0 supports reflow target (1100, 600)
+PASS classic diagnostics header remains reachable in every supported client size
+PASS expanded classic diagnostics retain complete contents in a bounded local scroll
+PASS configured operator password stays visible and focusable in classic compact diagnostics
+PASS operator logout remains reachable beside its login controls
+PASS native classic logout reaches the real Application
+PASS native classic login reaches the real Application and clears the entered proof
+PASS expanding classic diagnostics retains independent fixed Pause
+PASS both positions expose actual barcode and result controls
+PASS classic (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS classic (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS classic (1100, 600) fixed operation remains visible
+PASS classic (1100, 600) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS classic actual client 911.2x512.0 supports reflow target (911, 512)
+PASS classic diagnostics header remains reachable in every supported client size
+PASS expanded classic diagnostics retain complete contents in a bounded local scroll
+PASS configured operator password stays visible and focusable in classic compact diagnostics
+PASS operator logout remains reachable beside its login controls
+PASS native classic logout reaches the real Application
+PASS native classic login reaches the real Application and clears the entered proof
+PASS expanding classic diagnostics retains independent fixed Pause
+PASS both positions expose actual barcode and result controls
+PASS classic (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS classic (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS classic (911, 512) fixed operation remains visible
+PASS classic (911, 512) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS classic actual client 800.0x420.0 supports reflow target (800, 420)
+PASS classic diagnostics header remains reachable in every supported client size
+PASS expanded classic diagnostics retain complete contents in a bounded local scroll
+PASS configured operator password stays visible and focusable in classic compact diagnostics
+PASS operator logout remains reachable beside its login controls
+PASS native classic logout reaches the real Application
+PASS native classic login reaches the real Application and clears the entered proof
+PASS expanding classic diagnostics retains independent fixed Pause
+PASS both positions expose actual barcode and result controls
+PASS classic (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS classic (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS classic (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS classic (800, 420) fixed operation remains visible
+PASS classic (800, 420) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS classic actual subminimum client protects and requests software Pause
+PASS classic recovered space retains protection without automatic Resume
+PASS classic explicit view confirmation clears only geometry protection
+PASS supply-station actual client 1440.0x768.0 supports reflow target (1440, 768)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS supply-station (1440, 768) fixed operation remains visible
+PASS supply-station (1440, 768) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 1600.0x900.0 supports reflow target (1600, 900)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS supply-station (1600, 900) fixed operation remains visible
+PASS supply-station (1600, 900) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 1100.0x600.0 supports reflow target (1100, 600)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS supply-station (1100, 600) fixed operation remains visible
+PASS supply-station (1100, 600) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 911.2x512.0 supports reflow target (911, 512)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS supply-station (911, 512) fixed operation remains visible
+PASS supply-station (911, 512) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 800.0x420.0 supports reflow target (800, 420)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS supply-station (800, 420) fixed operation remains visible
+PASS supply-station (800, 420) fixed operation remains visible
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual subminimum client protects and requests software Pause
+PASS supply-station recovered space retains protection without automatic Resume
+PASS supply-station explicit view confirmation clears only geometry protection
+PASS overlapping child and owner close drain the original pending read first
+PASS owner stop failure retains both overlapping windows and resumes their native timers
+PASS independent native auxiliary close after root failure is terminal
+PASS owner retry stops business once and leaves closed auxiliary timer stopped
+PASS classic native legacy conversion failure leaves the model unchanged but retains invalid editor text
+PASS classic native close detects conversion errors independently of model dirty state and cancellation preserves raw input and CAS
+PASS classic native close commits pending text before deciding whether to discard and still defaults to preserving it
+PASS classic explicit discard exits native Closing before closing and stops the actual Application once
+PASS supply-station native legacy conversion failure leaves the model unchanged but retains invalid editor text
+PASS supply-station native close detects conversion errors independently of model dirty state and cancellation preserves raw input and CAS
+PASS supply-station native close commits pending text before deciding whether to discard and still defaults to preserving it
+PASS supply-station explicit discard exits native Closing before closing and stops the actual Application once
+PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED

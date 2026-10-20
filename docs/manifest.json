@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01-20261020",
+  "work_package": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -153,9 +153,9 @@
       "sha256": "496aa33a4e974cd7cb58c235a486cb51b6a9625501294c5125149b7b253f2248",
       "size_bytes": 2325,
       "git_blob": "063ebf3c17f6c03454ff0d0bf2c378bbfa2293f0",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "dbacb964f5e42421b1fd351d323f81967dee9f31"
@@ -176,9 +176,9 @@
       "sha256": "5215b4ac79a3c3190da85e1e7ee9b5463c12586a2fd3881545a4a366639e1fdf",
       "size_bytes": 6156,
       "git_blob": "feed85a6ec15e0a7092cc6f27d1c6b7623464b3f",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "d5d1118683b400abdfb72c288c4eddc4cd935459",
@@ -199,9 +199,9 @@
     },
     {
       "path": "config/compatibility/sportmaster.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "3157f810052ee007d97c3422fea2b76b45a7fa636f79afa5ef8abdc66d81bb8d",
@@ -221,9 +221,9 @@
     },
     {
       "path": "config/compositions.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "d0eb579ae3409a8938e429ad21ca0399daedbee373d84da1703989813522c709",
@@ -376,9 +376,9 @@
       "sha256": "7b59ffeb191541fd2474acdddc0cafedfb55dfc27970467eda18a2663ad7c719",
       "size_bytes": 15488,
       "git_blob": "da07683e7f490e38f4f2fa9c82094578bfd9b342",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
@@ -3724,9 +3724,9 @@
       "git_blob": "467a7dbb5d1523470224bb18fafb7f12943f18af",
       "sha256": "727668c6b24486f6d4d55d8637d2dbec658e27035909470b84ef8970a673b681",
       "size_bytes": 4505,
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "collected": true,
@@ -3818,9 +3818,9 @@
     },
     {
       "path": "docs/design/controlled-extensions.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "4075ecd6621f9fb341f5d1039f269da3a9b2cbc7a30dec5c80c1aff513b9e062",
@@ -3844,9 +3844,9 @@
       "sha256": "2770d078e8b4ad850c35d2d6369b74b2ba5e6027b457cad880b602620009bb45",
       "size_bytes": 23064,
       "git_blob": "19830b19647c029472fa8dc393b5e332a591e1ad",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "26d52f0d1f13b7a619cc1cb951ffae35a1435440",
@@ -3857,9 +3857,9 @@
       "sha256": "c0e85bf168125397ad13b600d93543d8fd2aea19a8642a7a357d1d1f8834567e",
       "size_bytes": 39813,
       "git_blob": "100fe69d7bd528ff2a0fe56c9fb95049c62dacb7",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "133842f38ab117be36c8d40863152d013f68af7e",
@@ -3889,9 +3889,9 @@
     },
     {
       "path": "docs/extensions/developer-guide.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "786301e9303c6bcc41751ab7712f1d5ab286724029dc19f73c7a9025a16a3f27",
@@ -28822,9 +28822,9 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "8f0f3daf62af588e974f734b0b602dbf768418afa91da9b244e0bd8fe2f98f88",
@@ -29303,9 +29303,9 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc.Desktop/Presentation.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "e6cd10c9d491f556e61b743eda149acea48a5daedffb763fa8006bf407ad0a59",
@@ -29907,9 +29907,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "166917205fa9c46164962e8707179a1f96db41d17a20e9e703cf3544becd4323",
@@ -29967,9 +29967,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "8f7ad5151840ec425852b225ae78cec87a076ce145b8524a628f60c221a63d77",
@@ -30080,9 +30080,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "1a174b27aa4a4ce3b25c427dcc7869001bc5555bef669fc8829ce412d2e82b70",
@@ -30139,9 +30139,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Presentation.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "454c4e3ad2dd946c9d3e7935a5d866c4c04f35bf1bb9819b6090b5ffb76d3dae",
@@ -30151,9 +30151,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "59cee3a12110d4b3d1ca86a23d5e6ce501db0c654d9e549ae8b26724028e2375",
@@ -30174,10 +30174,10 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "92faa14ce31a3cdaf43df952a6ecac54644183b3be511f543c14f3c0cdfa670e",
       "size_bytes": 2450,
@@ -30185,9 +30185,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "ca18641df61c849901cbf06c379060ea847837c7156233dcadda089e70eed303",
@@ -30197,9 +30197,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "d7eae8ce65e0caff3f7317306f3fb1f8322acf6fa0452c1fc51f327d9e0b912e",
@@ -30209,10 +30209,10 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "0ce0771bdaa2bcead50fcde53e98d6c52d72339d1d18796575e9e67efe4ac7f7",
       "size_bytes": 9041,
@@ -30939,9 +30939,9 @@
     },
     {
       "path": "src/Ipc.Application.Supply.Desktop/MainWindow.xaml",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "1f7293ccebd22a0e3b9151818be89d7556161bd9f75f6018c2bd077204695b94",
@@ -30950,9 +30950,9 @@
     },
     {
       "path": "src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "bc71b29db9c794ff805eb4ad662229d885f79ad42fbe8aff57fe5fdffe5a00b2",
@@ -31098,9 +31098,9 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/Presentation.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "9715fd1438fb219d98e9c60a6bb665ed5ab345ea1fe060539d016fc169fb89e8",
@@ -31225,9 +31225,9 @@
     },
     {
       "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "baf65a90e0bb2ba4021f57767a8a9d82662766166022117e55fbcba90653f3e0",
@@ -31535,9 +31535,9 @@
       "sha256": "09539b4481081bb5d8701d3a6222654fb72c914f3e38892e88721c875ac37140",
       "size_bytes": 2815,
       "git_blob": "82cd8cce89284dd0ace1c3d28c1bfe04edb08933",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "bef4626a979cda21bc5f91398c4d38cf6298f494"
@@ -31555,9 +31555,9 @@
     },
     {
       "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "7f64b24ab555dd5aa5c036d5f0ecb3547fbf05b2f3dabd9ff59e896413fc4050",
@@ -32254,9 +32254,9 @@
     },
     {
       "path": "src/Ipc.Platform/DeploymentQualification.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "348ae0a43e0cbd729ac9e051b0035f132b59c25bfa868cc3cb372efd87045dec",
@@ -32299,9 +32299,9 @@
     },
     {
       "path": "src/Ipc.Platform/ExtensionContracts.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "bcf6777bd22bb715235a5b63e652eff8d7b0424c14fd9c2904b040aad743e8ee",
@@ -32311,9 +32311,9 @@
     },
     {
       "path": "src/Ipc.Platform/ExtensionLoading.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "1d00a5a0d56af3bb11972099eee3399f13ad7b3e50560231751cb4f6044f09ce",
@@ -32323,9 +32323,9 @@
     },
     {
       "path": "src/Ipc.Platform/ExtensionPackages.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "9963d49bc4202146a80b1594f9397f44624eceddc26173190a647dc2427eddb6",
@@ -32407,9 +32407,9 @@
       "sha256": "840316396e9428592bdd8fcc9210443ecb76fb54cc107620b9dc742cef4dfd67",
       "size_bytes": 8537,
       "git_blob": "9026d06b3f2eaf0da0ea97d45eeb0857c863325d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
@@ -33215,9 +33215,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "63e9fde12ce9d28ca0bff626dbaefbec23e7311958808876f41c8df0e03b1e2d",
@@ -33432,9 +33432,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "8aca6bd325d30bdf904fb2f0c1c6a2a32d66f571e8d184c4d08025ed72aa81c7",
@@ -33757,9 +33757,9 @@
       "sha256": "8519f850200595863bc6ed6e9c5182a576b18efbb043ae53274aaa6959adf71e",
       "size_bytes": 7375,
       "git_blob": "5dd4c275b9c5251ff1546cdd0d4835816bce0024",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "1871bf82df3b48d5e72509230631f536549355b6"
@@ -33769,9 +33769,9 @@
       "sha256": "5765745adf17b5a094c5b443464571ae3db49259ce523d2db24af81801693b63",
       "size_bytes": 19694,
       "git_blob": "4034c1fd01165b76a87b9cdc82e4c632cb12e46a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
@@ -34771,9 +34771,9 @@
     },
     {
       "path": "docs/runtime/windows-application-delivery.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "c3f91c60525f22e49aab68a8aa71e3b0afd8e6c7ea783e2832bbf5acc8a8bac9",
@@ -36595,9 +36595,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "4a197990b28c147c96fa9410d311229578483ba44c87822850a163e77d5a58f7",
@@ -39356,9 +39356,9 @@
     },
     {
       "path": "docs/runtime/startup-deployment-02.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "3b5850a39d9a1aa526677f6612e81c8e7cf657f4394dd5cdcd8dba64db7dc10c",
@@ -39461,9 +39461,9 @@
     },
     {
       "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "ebd789958ab4c6f7d2661a59dba5ee6cbb150b4372176741a5e4b4ce53eab0b4",
@@ -39473,9 +39473,9 @@
     },
     {
       "path": "src/Ipc.Desktop/StartupWorkflows.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "b54b82a9c8dc17fcd914c7387ab19c7dffaa71ad8bee15d696d8453b82f89c95",
@@ -39486,9 +39486,9 @@
     },
     {
       "path": "src/Ipc.Platform/DeploymentMedia.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "72e9eae1188d219eb3163a0cab7996d8e15d9c077e8cf41afe73a700f7ac2702",
@@ -39509,9 +39509,9 @@
     },
     {
       "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "2354917daa3315363055b959a64d77f3c6972ce41f3eba4a6d382ca8761580aa",
@@ -40163,11 +40163,11 @@
       "sha256": "9a8b5db1d59ef3e1c6b087c5d0e2f89828e90cd088e9bc09b30aab4401957cdd",
       "size_bytes": 37792,
       "git_blob": "ed1d0d1578b9fa9c3ce210d3ffb76de546b021f5",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "previous_git_blob": "5d30db01e2426e1c1e7bcff3c2237fbc86293595"
     },
     {
@@ -40175,11 +40175,11 @@
       "sha256": "50fcedeab75d2cbd3760436f54a506bd662a38f78f3c7dc01c6c51aba3e2a0dc",
       "size_bytes": 36953,
       "git_blob": "716784e0b464938b4ecd5c550fe7fd0468e9a5ee",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "previous_git_blob": "5781a0f4f562dcab84fc8a7f46bcf00498421d81"
     },
     {
@@ -40210,11 +40210,11 @@
       "sha256": "434062e183cf404092474eafc082d92c63a9a593ad52bdaba8ae4d2775d34093",
       "size_bytes": 25530,
       "git_blob": "507cb1de22e69d5b4e04fddb0424a41b026f9b3d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "previous_git_blob": "419659ee00a7788c3f07a04c482dc2e98527b7e1"
     },
     {
@@ -40222,32 +40222,32 @@
       "sha256": "100a3691a73505145da48ccabebfa1df9797535abc4514ec8e34e33a2c2d7285",
       "size_bytes": 2673,
       "git_blob": "577df3d7e1fec50e720e4ccb442aef24e802f69f",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source"
     },
     {
       "path": "docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md",
       "sha256": "afec3a985aa5150c4e1eebf97a5ae7a88ec1543bf8debeee4ae22675eea8bd2a",
       "size_bytes": 22115,
       "git_blob": "1027b2bcf1ccbfe3faa6c17fbbc66242557b206c",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "previous_git_blob": "38e72975342d6f6425d446842e1160399413b6d8"
     },
     {
       "path": ".gitattributes",
-      "sha256": "891f2b3c59cc36e817826a989f5f3b261f046ae3d509aed0ffef79e362b85ac3",
-      "size_bytes": 2674,
-      "git_blob": "5d33779e90afb69175a526ed178b49fba6837ee7",
-      "version": "parallel-reconciliation-20261020",
+      "sha256": "f47a87bbf62acbd88c54f6bfbbfcada90ac0de24e2170628b72d0e9dfaf503ec",
+      "size_bytes": 2799,
+      "git_blob": "2c1c657bd84ec597a75507caaa1762a5bf6735c5",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
@@ -40381,9 +40381,9 @@
       "sha256": "1d43ce3c06574bd0182dbdc2c45dfaaf9bd94466a410408fde141ddb477d592b",
       "size_bytes": 16333,
       "git_blob": "2d36b1c049fda48129ecee61873b692a04a0c989",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "4e656ee20b7955f73be0614e5e5748d93facdece"
@@ -41032,9 +41032,9 @@
       "sha256": "6f0c2531ef592f63e0720217f5c6a9fae0027929f3aab5e93b9b664ab8f0f3a9",
       "size_bytes": 540,
       "git_blob": "1adbe5bc43917653bed29b72db3e33751b80a5e6",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
@@ -41132,9 +41132,9 @@
       "sha256": "4409e0e7c69273ae589de7278edecca2fca7174cfcaff5b834252115f24cd37c",
       "size_bytes": 7579,
       "git_blob": "4e03920ee41f37a1c4a16e6b8f98864504c54792",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "48831eaaff5fc60a600fe83f9e633338c2114af7"
@@ -41144,9 +41144,9 @@
       "sha256": "7d5c34ff5a901cb406218bea42116bf805f462e8a2d69ba7f20c18b80ad9f3dd",
       "size_bytes": 4969,
       "git_blob": "ec62640dcb7c511cd3c876b8ce2e967a6571616e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "81d923a64f916fdaabe7d381ae04d2e6b48011f3"
@@ -41247,9 +41247,9 @@
       "sha256": "667fa18039bf83ee39ed0ee44f79912eb95ab2bba6bfa3d9ae0b7233e2e9c786",
       "size_bytes": 5197,
       "git_blob": "43edef0750eef7f6ffa0e32828bf1ca5ee053a8d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
@@ -41269,21 +41269,10 @@
       "sha256": "65f7d5bb4eed04e56eede791d8479d61107aedbc479138c27a0ee1a6d96c4f81",
       "size_bytes": 85370,
       "git_blob": "814212c5aa2d3b97872f64e7fcc41d7409c9d95b",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Desktop/Assets/importer-pc.svg",
-      "sha256": "247ffc8deea37ea02d71b684d0f4ce3fe3e0cd6367934472d46a8c6ffdc4cad7",
-      "size_bytes": 250,
-      "git_blob": "3b9c08a52f5a38669d237c678c258d982434f0c3",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository"
     },
     {
@@ -41291,9 +41280,9 @@
       "sha256": "56374e0f5874e34ddc0390562072999c5d52f8abea7795034a99146ebba46458",
       "size_bytes": 3936,
       "git_blob": "6eb9e3f6cf47569df5f357b94b64aefcc04ddbbf",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
@@ -41335,9 +41324,9 @@
       "sha256": "5a4ccdf3c1627b5cb9dca846df47c0ab3570c334a0f93ef6437edcbf433be0e0",
       "size_bytes": 11244,
       "git_blob": "5085421c25d98b21f9a04dcee0f19525a5e50581",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "07b063d4fa5aee05295e898ef4fe1767f0f6c524"
@@ -45697,9 +45686,9 @@
       "sha256": "a817aa793af77c2347770c371b5feb64b44efa4245dd517ab9ef5ab74de5e863",
       "size_bytes": 3003,
       "git_blob": "6e91f1d2527e72f2cd989cd216c18c205aebb133",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
@@ -45708,9 +45697,9 @@
       "sha256": "4e407cc83e58361c695ac33c2b6ad985469e9ed31e86368fa6c1b3c91f6ae3da",
       "size_bytes": 30015,
       "git_blob": "705b94b283477583745fc870a58a7b9d02cd9566",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob_before_visual_main_closure_01": "940341ba73a4359294e26e62a7aac86d12949261",
@@ -47786,9 +47775,9 @@
       "sha256": "495b8c0929d45aa138dbdfcf1265c54e9efb9975c18ee0a252472e05dfc73409",
       "size_bytes": 4761,
       "git_blob": "ab268fcb3272359e596c0df7aee090a91bf86f89",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47797,9 +47786,9 @@
       "sha256": "74c8b2a2250a0e3b9e7c2d3783db5c344d836fe5d05016327f33db211b1ea4e4",
       "size_bytes": 3654,
       "git_blob": "b93d2b3d53d67d102a8b1919886568c6c1afa120",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47808,9 +47797,9 @@
       "sha256": "be8233bd8b56316da8d04945cfc9a84f3b3fcb64dfcb914490e3ec46b31bd228",
       "size_bytes": 858,
       "git_blob": "9e7bd97a11bcfe8fb2396677fe5e4084343b4122",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47819,9 +47808,9 @@
       "sha256": "b12c9b143941ca20cb316e05d89b8cc9d412bd1d25a146e0c46c8a016cad3f87",
       "size_bytes": 1082914,
       "git_blob": "e02c19a7a4556edaf397c4c2f2a897a62b381cd2",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47830,9 +47819,9 @@
       "sha256": "708d6319819bbd2461cc6eb2cf2801148f41d779b05b38b46e75542a45c25110",
       "size_bytes": 3649,
       "git_blob": "75a6e170259a4cc2000c6d17271f192800a97a28",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47841,9 +47830,9 @@
       "sha256": "ab136100548e25919828cbbde29fc71d5ae0f462a691d28671e5200173de2d84",
       "size_bytes": 151,
       "git_blob": "f86bd10aae8268e657356daaef6264325bd9b493",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47852,9 +47841,9 @@
       "sha256": "4769860e01e3a30089b6ccd2f94c3fb42a5c9fde205c3ef40077fc934ff574fa",
       "size_bytes": 3496,
       "git_blob": "bd6c407f129b7492b62d1b61f74b4f6194387f54",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47863,9 +47852,9 @@
       "sha256": "54d3f6c18f338633930ec1ab2fcfc243acf48132a9cbd281b7cece13c86683a1",
       "size_bytes": 3802,
       "git_blob": "a4166ca1fbcc06f32ead995f8ccd5d1d6cc35b61",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47874,9 +47863,9 @@
       "sha256": "e348ec8083e2c8cf1d9e94ac2ed5d8042d6a72a7a616cef2fce5c65866bd2478",
       "size_bytes": 305,
       "git_blob": "ddbe6f90358539d91f1dd3ab576126700985c910",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47885,9 +47874,9 @@
       "sha256": "bedbe73116bf4c73c476172a60cd3257961633e75fbb76d8b31b3436158b73b6",
       "size_bytes": 313,
       "git_blob": "ae0d9d7c7ce260a47325551072ed9e8232a7e097",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47896,9 +47885,9 @@
       "sha256": "99581539b1268c14f0b03038e0a0de4a94aeb5d79a8a708eabc5e197ecee4783",
       "size_bytes": 3483,
       "git_blob": "c8f8f642a4be97a64000f1fff283f332b7cd9824",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47907,9 +47896,9 @@
       "sha256": "d7ab3fcb8677b492a1938c2016e701a2189fb69485cb7e1161103cac785479e2",
       "size_bytes": 111336,
       "git_blob": "61d268314bfc2c182872023010c5260385f0d2d4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47918,9 +47907,9 @@
       "sha256": "488726dac3035f2b96b0567233b76ce0ffacd885e82074f3372a75aa7394fe59",
       "size_bytes": 87902,
       "git_blob": "e95beec24c1ee0a2922f6dc9cdcd9ad22b8194c9",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47929,9 +47918,9 @@
       "sha256": "0d4392ca61721b36098f49bc471a0e62805e5d4d25563635e0f3c53f394e1508",
       "size_bytes": 61079,
       "git_blob": "79862d09df4952d404ce51f26880f6e7d34bf3a7",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47940,9 +47929,9 @@
       "sha256": "db1a50c9b2b61651184cd572bd1e4b28e49c97c80709c39ed9eccfb39e0351e1",
       "size_bytes": 3058,
       "git_blob": "3ecb5550f12cacff35dd31d06294a6e74ed439d1",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47951,9 +47940,9 @@
       "sha256": "3ca54cc7ceea2e7ef9fc3e9a0a845959bb6a9daf4b188aefa31dc68c75c23ebc",
       "size_bytes": 4257,
       "git_blob": "ad0d6c4d623bbc25363096dde136038a85999fb0",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47962,9 +47951,9 @@
       "sha256": "4b77dc26aa380266ea881f1cf4da16747658462ddc7f5a7874935f3224034d45",
       "size_bytes": 7605,
       "git_blob": "2274ce727d91ac265cf3a893d9cdd1f2dccd9e71",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47973,9 +47962,9 @@
       "sha256": "9ae231275a56e66894e7b79a053a08507728098bc1b324fa172cc61c5255c800",
       "size_bytes": 8311,
       "git_blob": "5afdd3b5294bec08cd61bd2988cf12b4d6848518",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47984,9 +47973,9 @@
       "sha256": "b1f44ed73619b5a6746541fcaf14c5b781776a129045a088d69991af6dee9c0f",
       "size_bytes": 482,
       "git_blob": "49fbcf6cacb7c4982564c2ba4fb6ffb94e3af3f0",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -47995,9 +47984,9 @@
       "sha256": "1f263f9e5465fb35d5ae13a439ec9804b2172e730b3584324c9c11f896955469",
       "size_bytes": 694,
       "git_blob": "f01929183ec3a65dc63dc14cb5368af9828216e1",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48006,9 +47995,9 @@
       "sha256": "360ef5cc66ebb46b6617824177dd7ef9c159c9ba7349b394e2a21729df9a61d9",
       "size_bytes": 2963,
       "git_blob": "63fe728744b9ecec328f7665984e3d9422b5426e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48017,9 +48006,9 @@
       "sha256": "93c779916419cfcad9db2f89242cf309eefdab5d91f754d6719fa25e4ed083d9",
       "size_bytes": 87875,
       "git_blob": "cb720898955bae0ade318f43fe6229a09ae3612d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48028,9 +48017,9 @@
       "sha256": "ec97d5f5c8b652457b9c86bd8351310b87ab125ec2cad9333e929c2c64ca6e57",
       "size_bytes": 61050,
       "git_blob": "272697823877cafc7fff46bb51f70eac263ae3de",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48039,9 +48028,9 @@
       "sha256": "5f3f55436b9b52b91450f5cd2cc821cd9324de7a9f4319dcae577635b058f25e",
       "size_bytes": 3814,
       "git_blob": "109c2752f4f245d99cb7b54f39e8320049bfd45b",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48050,9 +48039,9 @@
       "sha256": "445820810501f517967632cd1f01bd9ba82a3fef26954f7422354b0c4d955d97",
       "size_bytes": 2685,
       "git_blob": "115dade78db1b1957ffd335896909c41cb491518",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48061,9 +48050,9 @@
       "sha256": "858d6c43d3bd010a0b21e18e25ac3dbca6eaa36ffc70e98b9954a2aad79e09a5",
       "size_bytes": 6479,
       "git_blob": "8cf38107073fdb9fa3d84f086fefffeb74986a02",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48072,9 +48061,9 @@
       "sha256": "ac945f09d8797c1c99d85df6ae003ff908addd0374223416be57a416e50aa3a1",
       "size_bytes": 3062,
       "git_blob": "705b2032e2c1b2b706107ddbd603831cc09a2f73",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48083,9 +48072,9 @@
       "sha256": "318763696ff37322ed972ea836827e5ea2376be0f65c2c734388aaaa629049b0",
       "size_bytes": 804,
       "git_blob": "7bb960241db497319c9a2122d90caa11605e0a92",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48094,9 +48083,9 @@
       "sha256": "e8dd43c92d9713ad9fdcf2e09a25f8b365a1af1da6322c07082d2cab0a5bc98d",
       "size_bytes": 107,
       "git_blob": "d2b20bc0a4dc9b7643d59650fc7e1a1e02ea514c",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48105,9 +48094,9 @@
       "sha256": "8090e949aceffbd07ffabb59c33a81a4918a387d99ceb8c823d3fd7c9016081b",
       "size_bytes": 7663,
       "git_blob": "bf1f7f6e3214341988006c1af87b9138b068309d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48116,9 +48105,9 @@
       "sha256": "5831b9c296d0f7281d8d9b50ebc139a5f1100fe2ce5d7f893bbfec9bde94f0aa",
       "size_bytes": 2626,
       "git_blob": "601fd646aab0793d7d31a5447a3e1616642bfed4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48127,9 +48116,9 @@
       "sha256": "5e09958bfc75931f4e44bc1f480ae2ef5f9d20533cf6f25e8f988b0406c59139",
       "size_bytes": 6418,
       "git_blob": "3a572efab482cecd40fb2b887370b17511673705",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48138,9 +48127,9 @@
       "sha256": "f5b14262335829138c64470e7d64074d6a85bb3aa7e23b160331ad523b0dae2b",
       "size_bytes": 1694,
       "git_blob": "21e1f06e5307a6d55c0b711ea13f98ddc262549a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48149,9 +48138,9 @@
       "sha256": "bc0d76affe0ab0b7c4defe680065144bfa73506df8f5ded9b23f4087686e5c3c",
       "size_bytes": 574,
       "git_blob": "77b7e4aacb22b57a2287afc1949b0fd4bbee9b91",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48160,9 +48149,9 @@
       "sha256": "58564203ad37b946b6de652146b6cd9d3037ff84b7194097b49bdc479cf512b6",
       "size_bytes": 368,
       "git_blob": "b50bdef244a8dc21af662b742e9efce10cede353",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48171,9 +48160,9 @@
       "sha256": "ab5d364dacca82dd74b071b8addfc5e3dc6490eff9cf82edbd2ad7e50fb9e4bc",
       "size_bytes": 217,
       "git_blob": "183783e73c8a6c7d6ded7d091391fb32ddf69594",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48182,9 +48171,9 @@
       "sha256": "0138b73086329c8a337343bd0f3f324cc291d50d08d58763243349c3e5395150",
       "size_bytes": 6341,
       "git_blob": "05c4f08dd6aa6d8ffa9c54272a08b61c4c7848c7",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48193,9 +48182,9 @@
       "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
       "size_bytes": 61,
       "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48204,9 +48193,9 @@
       "sha256": "5d2a6cc4a2e2048abc53fd4717dbdab9ed0e1eeca363b9683256421b15fa4464",
       "size_bytes": 4442,
       "git_blob": "9ecb700f2c642d5ebb5504e62cc17c14ac937f4d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48215,9 +48204,9 @@
       "sha256": "6346d8208046a87002727f7c5e0a933a0fb7c1482ab832287f099d0d50eb876c",
       "size_bytes": 1047,
       "git_blob": "f6a38f1a110917eb468a8a9becdbfbcaeaa2e77a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48226,9 +48215,9 @@
       "sha256": "8deecb9c528dcc215ecd79ff36e9dccc5aa2353a9cb61bf5c2700e18fe8ff423",
       "size_bytes": 1119,
       "git_blob": "5fd9519b0f9f8d3d5fbeef23dd7b86e283e36411",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48237,9 +48226,9 @@
       "sha256": "91979d0184a85394a31bc4de57918feaf50293e2be86fff19ce3874557943d5d",
       "size_bytes": 98,
       "git_blob": "fcfd3596060bbcfc182ec8211f2315e0b38dd975",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48248,9 +48237,9 @@
       "sha256": "f17e74ae6d4c64bbf7742b3b4c4070447c991e5a061c812e883aa883e88edd81",
       "size_bytes": 100,
       "git_blob": "4ae72b51f7118e6fc421548708b8e68ca454a367",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48259,9 +48248,9 @@
       "sha256": "140e9d0c154db34d6b43b41afc04598465e204e49d4e3b5a84ed19f241591d25",
       "size_bytes": 285,
       "git_blob": "901bd3294b1df55acb0a01e4ece3478f1b1b6f1a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48270,9 +48259,9 @@
       "sha256": "1f41e51607678e88d8f2bd0866a7b0f27499a6e06ff50da75594d88699e4fb31",
       "size_bytes": 7629,
       "git_blob": "1050814a6073a88d61ba112028c375c97097ca90",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48281,9 +48270,9 @@
       "sha256": "ec85e039f9810a63df11852cb2766ae28ff7621d6a5b9dcdad83f571e1c49cc4",
       "size_bytes": 11973,
       "git_blob": "cd7b99b0eb98bcc46dba37a64ca453f3949e4444",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48292,9 +48281,9 @@
       "sha256": "98d66bbefc20d353794271df8e046412bd5d2564ca2b0663d3a2f6f4b1786ce8",
       "size_bytes": 266,
       "git_blob": "7d8ab0d76fd2fa91901f2cbe2021ac36d20f0a12",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48303,9 +48292,9 @@
       "sha256": "928bc9e54beb98967b8a7ac0570780f44b1c36d5c2732d7ba6d5a0601239cd99",
       "size_bytes": 1296,
       "git_blob": "65ebcface60bc4866884db2eb3c5bcb86f45697a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48314,9 +48303,9 @@
       "sha256": "9224d423791a633c2074a0672cb6ce1dd3fc42145b80fd95f55f282c95f8e856",
       "size_bytes": 254,
       "git_blob": "4e5dc18a708337ea2174eda9bd3b33e04800dec1",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48325,9 +48314,9 @@
       "sha256": "ec613eafda94b2199e866529f2cde251d1e0e909d1ee135b91aebab156a0d05b",
       "size_bytes": 837,
       "git_blob": "39c220e0b8ab2f264ab622ebb69a0275a8ab6241",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48336,9 +48325,9 @@
       "sha256": "01a9685662dd091542f57d04ab773327f3b73808b6e936ae22a8c54a52bb647c",
       "size_bytes": 103,
       "git_blob": "5cbdc80fb75e319cc9806bf4303eef3ebc9cc7e4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48347,9 +48336,9 @@
       "sha256": "c575de1787341155c91d8676811244ad442f62f7542d441c9e237db02996be40",
       "size_bytes": 1305,
       "git_blob": "c886706d28ada0a502f96036bfa961128286dca1",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48358,9 +48347,9 @@
       "sha256": "e01423f06ee550a2c1da7387d4f3f321ca12a34abecbd3425791b77a0abf65df",
       "size_bytes": 39444,
       "git_blob": "218eba2f1128bfaa3b1349a38ad6aed2b1ff432e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48369,9 +48358,9 @@
       "sha256": "45fc932728feaa67aec1e06bead0a21860aeb4aa2da89296c3da77badb614ae6",
       "size_bytes": 462,
       "git_blob": "ff18c96fe0cc2f37ea0facca6f8b170cf52768b3",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48380,9 +48369,9 @@
       "sha256": "e57d783f51a96c109c0f3680ad46b449edd10721ef1d606324978e704cd65d9c",
       "size_bytes": 1090,
       "git_blob": "d483bb3cc4070592f3bb4305bce7243e56b4bb8a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48391,9 +48380,9 @@
       "sha256": "85618056be812524101969d18756e1405e9b05d59a11582e4e0fbb5b901b9329",
       "size_bytes": 2504,
       "git_blob": "b607bafe75e3da792f0a4828b8d5edaab7fe5752",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48402,9 +48391,9 @@
       "sha256": "5aa1ab5cf5f223e6bf53485d2c3c2ed45ac730e9e99a96a6d24fc29c09855da5",
       "size_bytes": 38901,
       "git_blob": "52a68a047e8741669294f4aaa9cd659191d64863",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48413,16 +48402,16 @@
       "sha256": "ad353c7de7b4760f57e910261f6e17dc995c34ab271816fc5a58acf7be7368d6",
       "size_bytes": 41050,
       "git_blob": "30dff4f31fcda8981bccb7d8c9deb3838678b275",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/design/hikrobot-reader-01.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "bc7ad503a05ed44c57d54f01f29da7c5b1ddf0e341a1de314537be584e65bff3",
@@ -48431,9 +48420,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/archive-delta.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "759803f139195759effcf62cb7c210d687862bc880a0ce2814b492873fe7c47d",
@@ -48442,9 +48431,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/package-identity.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "dfe42679137a9560c81fcab37c8c10c45fc6d89d5664fe036d3ee491b05e8d3c",
@@ -48453,9 +48442,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "9cc454300c5b1858b6213dbd9a9c0d70bac3b2cf4a122f4b3b1accb9fbc35910",
@@ -48464,9 +48453,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/self-contained-before-fix.log",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "966437dd4b8622ab9a3e6db87babb3c15a32009da6dbff8f5271061d9e1e3850",
@@ -48475,9 +48464,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/self-test.log",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417",
@@ -48486,9 +48475,9 @@
     },
     {
       "path": "docs/runtime/evidence/hikrobot-reader-01/verification.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "8f8bd16de8707f1a9a72f48aa10f66fa896502dfc25aea06a97c00e5d63f923f",
@@ -48497,9 +48486,9 @@
     },
     {
       "path": "docs/runtime/hikrobot-reader-01.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "33893aff08edf9648ba5bad73834210eb0697fb7f469a42f1948f8b2b8da844f",
@@ -48508,9 +48497,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-HIKROBOT-READER-01.md",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "42f2742a81b6077856112bc0409c074c7a32a5d300ccc45f61291330e45f112c",
@@ -48519,9 +48508,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "e424a850e875b0292daf706466c9131b71d68d10545cd4e1f50aaa8468f71fd9",
@@ -48530,9 +48519,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "6b69a0205937f620f4eaf0200eb5b6ed17cedd6a4b90ebbab8a8c24a23ff0ef6",
@@ -48541,9 +48530,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "59a5f20db2a0c43bbee97e6e19171abbef6688a2df9f41dc071c4697e91b9b37",
@@ -48552,9 +48541,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/extension.build.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "41ee0937892361eb96487bbee55979bff92f5ebf93759738f15e8b17be8f76fd",
@@ -48563,9 +48552,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/extension.build.production.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "139b0f8ecbaf9a9ca8ba1baa56d54dc2de626647caa491bf127dd4d529344e86",
@@ -48574,9 +48563,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/manifest.production.template.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "e6b4dfe0e40064c5b190e90a3bb23a64bf0e31ed02c3e168b6421c8d8bffe1a2",
@@ -48585,9 +48574,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/manifest.template.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "c65a28a6a4af055f9dd0ca06ade9e183ea1cbc5c0f2bb0c62747b40bc9a3d8ff",
@@ -48596,9 +48585,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/modules.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "87c448e944d867d67f4e3c2f5303a1b92efd85ceb3ad9ee6316400f892547e11",
@@ -48607,9 +48596,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/packages.lock.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
@@ -48618,9 +48607,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/packages.win-x64.lock.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "c30b149eb0b6c271aabe8d79d7b0318ba25f0bbd2ebf6a08faa3b67056bce9b3",
@@ -48629,9 +48618,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/parameters.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "850658de0747f56e52ba6471f68189f1e22d56c8fc63741c63d4d3d31e086203",
@@ -48640,9 +48629,9 @@
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "d270f7671e9471840a7b1801a2fa4d2f829e476ab942a33edf911920681877e4",
@@ -48651,9 +48640,9 @@
     },
     {
       "path": "src/Ipc.Platform/NativeSdkBoundary.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "cb5a68e69742fb954b5ea74897fe7f22329cc8df69e1a0796d635c2b50d749d0",
@@ -48662,9 +48651,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Ipc.Drivers.Hikrobot.Probe.csproj",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "dd4f37be883e800097277fb7025b8ef91a47b4dfd719e43295c9670971511906",
@@ -48673,9 +48662,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "a6c34fb2bedcf8c22d47f8a18846c956dc8b13ddd73be803a46804aa25973c1c",
@@ -48684,9 +48673,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "0032637da7b00384c91768cce5e323864a89140673de62b2655ab3e5f7ad2301",
@@ -48695,9 +48684,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "d013702b9470c6a2c5f8cf5e3cf5d5db141c661f7a41366448d792ac3f6362b6",
@@ -48706,9 +48695,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "fa13a7f0c4bb858d6d1c30df407eecd6ba6e8866153c2863626c14e641e7799a",
@@ -48717,9 +48706,9 @@
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.win-x64.lock.json",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "sha256": "9b98c39c3c2bfd90c1d0bb1ef8cbef3e83189ad56550811e9bde2fc8421893d7",
@@ -48732,10 +48721,10 @@
       "sha256": "3c193198bf84b30d83f6ff9a89642dd1fd1831aa84399c4420d77f3d645d315d",
       "size_bytes": 977,
       "git_blob": "99d3e3588f178064bbd6cc1c30ea0f7a1a1f9fab",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-minimum-client-800x420.png",
@@ -48743,10 +48732,10 @@
       "sha256": "04003cefdd84b0982f3fdf82416e3bdce49827e14050200bc159ae4365104aeb",
       "size_bytes": 57052,
       "git_blob": "a0305673ae7050b918b1b8caa83dff600155742d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-normal-1100.png",
@@ -48754,10 +48743,10 @@
       "sha256": "7bee844d2ee39869f16265163d660908699bee362435868e2016850fc0121fe8",
       "size_bytes": 63193,
       "git_blob": "573be0c34ed76b5dcc82b26298d31fc6e5d7d457",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-normal-1366.png",
@@ -48765,10 +48754,10 @@
       "sha256": "fb43d7a4834f346de32d6249b2c138763d339b6950353eeef180c3a0f7544064",
       "size_bytes": 79070,
       "git_blob": "ae895fd068760673a6702e9ecba1ac0d3fae84ee",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-unknown-rejected-1100.png",
@@ -48776,10 +48765,10 @@
       "sha256": "a15fe2764b6039a9123e8d47205e98b37e2c217ca3ae80db3bd53c13d9c6623e",
       "size_bytes": 77055,
       "git_blob": "623b2c4ac31d7fe0cd848a5107e59b76d89e127d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/after-workstation-blocked-login.png",
@@ -48787,10 +48776,10 @@
       "sha256": "c7e40d9629f04a5623f2c8ef262f7649ae06df116743a09c3aa6d2f14b914a97",
       "size_bytes": 86902,
       "git_blob": "0521ce03859dfe53e38563d235a91e2aef849191",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/classic-compatibility-failure.log",
@@ -48798,10 +48787,10 @@
       "sha256": "11fd792e2ab6f6c5ec6371e0a04932748a5108d63fa80f37fa20c29642b6cdef",
       "size_bytes": 10680,
       "git_blob": "7b49892ad5944b5eade64a379e1ce9b324d35408",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/development-visual.log",
@@ -48809,10 +48798,10 @@
       "sha256": "523bf8a9d34ba164f0d753df231396eb6ed556eb10779d61f35fc2a2823b46a5",
       "size_bytes": 9314,
       "git_blob": "b1143c03b6bb7b259d8cc8f2ccfa05aa4388ee16",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/frozen-result.json",
@@ -48820,10 +48809,10 @@
       "sha256": "642e736976235cf458e7af7d1cbf5755925fd20634f2e41f853ea8a8c00915c0",
       "size_bytes": 3145,
       "git_blob": "15d556e911e237e75c864c5346809d156f168b0a",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/frozen-visual.log",
@@ -48831,10 +48820,10 @@
       "sha256": "f2a0afa77d0cd0798302630158c33cf30de89b937dda044c51495600d0ea3c56",
       "size_bytes": 9870,
       "git_blob": "9002e4dec8185e4e7936873ef661082f47e8437d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/initial-projection-race.log",
@@ -48842,10 +48831,10 @@
       "sha256": "11338328c6804f66cd5054b452253583171d869a90b993070bf95b2cd2755580",
       "size_bytes": 3829,
       "git_blob": "90e5b150d58cfe3f1a7bd9433acdd71ae3b42cd4",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/native-selection.jpg",
@@ -48853,10 +48842,10 @@
       "sha256": "b2516a86a879470ddbd85b7f61fa4e1e7dd8ef47e79b1759008b8db988faa6cd",
       "size_bytes": 87600,
       "git_blob": "80f78b0a91974db0585075955c58b2a35b1944fb",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/native-workstation.jpg",
@@ -48864,10 +48853,10 @@
       "sha256": "ff69bd321a22e7bdecc3878ec2586927f8545862602c275f001e0b8bd4ee61e5",
       "size_bytes": 87710,
       "git_blob": "50e9813ab72a23c80173d885efb4511d5ee25fd4",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/published-startup.jpg",
@@ -48875,10 +48864,10 @@
       "sha256": "789d3e3dd788a7cfb69574853cab3fc89b8a136948b70958850913513953b7b4",
       "size_bytes": 61994,
       "git_blob": "1f0a3e05a2f9a8ed741f44ed30b2eae98c286469",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/supply-station-client-800x420-unknown-rejection.png",
@@ -48886,10 +48875,10 @@
       "sha256": "74cfaea76e73e58ba17ce03a8ca8f81a6b6d18ff205691f0a91a13d61f8ac96f",
       "size_bytes": 62056,
       "git_blob": "35321157962b0f5e7237c76d0c5d5e220e5a765d",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-clear-01/verify.py",
@@ -48897,10 +48886,10 @@
       "sha256": "e6ca211831057272a129d810f0f19e55363a692612b17dadc69d4fe4b933161e",
       "size_bytes": 1607,
       "git_blob": "35d75d8bfdc4d11a665fcdbec66888c5211f1058",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/sportmaster-clear-workstation-01.md",
@@ -48908,9 +48897,9 @@
       "sha256": "a2b25504fa6ab2c3fe4cf0e7a5fea92ad829697c3d8615a7209d89cd34258929",
       "size_bytes": 7101,
       "git_blob": "456b4c927cd5ea28c19f83ad160d97b41672003e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48919,10 +48908,10 @@
       "sha256": "6e31a52ec0f439a8d1e3108635e6851135951e99c84d7a6b359bc10d1e3e125f",
       "size_bytes": 1772,
       "git_blob": "038c4493212a30dd0125972aff4005e103a62107",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/single-exe-installer-options-02.md",
@@ -48930,9 +48919,9 @@
       "sha256": "9ce78f8aaf01fd769c0fdaf182a74c8c7cdb0eb7cadbfbd453e51267a0fa735e",
       "size_bytes": 2952,
       "git_blob": "de9a2fcb0c7a358b8e2f230ea5949311b11a72fe",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48941,9 +48930,9 @@
       "sha256": "07f29da8f285eab57e24309c026f46ffb9b27aff71e3e42191adb5da1366a485",
       "size_bytes": 4467,
       "git_blob": "90d9b805ef34715be9d22f49caff261eebcf59cf",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48952,20 +48941,20 @@
       "sha256": "cbb6f7ecc258de70b5a9f52f64cda85132901fce7ff3625b4da3eeb25246ba5f",
       "size_bytes": 4876,
       "git_blob": "c26cdc6c3da8ad0995cc1aa91ea35a3c30c9bb6e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/archive/sportmaster-native-gallery-20261020-0e79e73/README.md",
       "storage_scope": "public_repository",
-      "sha256": "3d132103f6d6a891955e92d89413179ac6909b748e4a6446b0b947df3f2f7cdd",
-      "size_bytes": 652,
-      "git_blob": "b329867d08ec584a5f7de270e5f15827df8a1b9c",
-      "version": "parallel-reconciliation-20261020",
+      "sha256": "1036b4342815badcafa1458ed40e173f2c5d584b5106f85f278c1b282311baa9",
+      "size_bytes": 795,
+      "git_blob": "5b10b56bbd87f0c2615caa0546a0262f67eeaffe",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48974,9 +48963,9 @@
       "sha256": "141aa0af7bc98c2c214988d689eee1e9b738fc92ecfe9f9310be50a0c518396a",
       "size_bytes": 519,
       "git_blob": "ea5b4dc51fba54a74c07cb9eda8f7ce00b6e2a6b",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48985,9 +48974,9 @@
       "sha256": "ec07649051e8ec097739ceffec8d6d5762d25956e9f1f32bd0f8ced52512d4bc",
       "size_bytes": 3901,
       "git_blob": "28c580a948119c349214376d492ae4dfec1e91d8",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -48996,9 +48985,9 @@
       "sha256": "202a0e2713d5b45db780e258657f66623b222ac2393410424bbd041be7309dff",
       "size_bytes": 8359,
       "git_blob": "2aedb369b8906310c5de30e3b073aeb9f190b342",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49007,9 +48996,9 @@
       "sha256": "08b3af4d0310d2c24b76185a165e6ceaf174913cac05cf40c0617f16307ff381",
       "size_bytes": 76393,
       "git_blob": "c0771453ee17de08a46138b56e54a8eb6b8832b4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49018,9 +49007,9 @@
       "sha256": "02e4a1d1b97d6c1b3e413d59f4980428e0c6d159b291b55f28d75b1927f52462",
       "size_bytes": 77871,
       "git_blob": "ccbf011d5684523652c462d41dd9e999656e6789",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49029,9 +49018,9 @@
       "sha256": "c81fb09dfb223b0eaf9ed42d17bb55026d9526644d48d5d73bd758533f52f27b",
       "size_bytes": 104590,
       "git_blob": "10e47e0db7851a24d8cd739917da73f9d8492eed",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49040,9 +49029,9 @@
       "sha256": "311ccfbd60882e0c1936ec40e311abcbae9b761f301295fa0b0f6cb59b1856a0",
       "size_bytes": 111681,
       "git_blob": "cfe4583d91a6f455e4ce7ffae2c7f95a3fd4f012",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49051,9 +49040,9 @@
       "sha256": "9c7eb97074609182bd342875c9f121e1b716edb28b6bb054603b07248e04506e",
       "size_bytes": 113991,
       "git_blob": "f091621fe3d75da9a64d8a281938ce382c5869d2",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49062,9 +49051,9 @@
       "sha256": "f8c965300746d219f77887040dcb778d72e008f6bdee7427d0303d2c75372cb5",
       "size_bytes": 155397,
       "git_blob": "476ca682e102d51ca2ad7b881e88966684c34386",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49073,9 +49062,9 @@
       "sha256": "d6af37f1b152db815cb1552c01f2eeaf6f0736b2e3d53a57121fe5ae072c5044",
       "size_bytes": 137716,
       "git_blob": "f40d6200474efa40655b7fc22faaae9e72998bc3",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49084,9 +49073,9 @@
       "sha256": "5faa78c68f4e0af2144355c97bc35f2203f883affa3689c41b961622ad6929b7",
       "size_bytes": 117087,
       "git_blob": "12a326dc8115828619e53c5061eb066a15baee39",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49095,9 +49084,9 @@
       "sha256": "a26ad62216c2c98c16f31f7d460234ccb86a85e181dad6d82e887b8dc382ba45",
       "size_bytes": 119045,
       "git_blob": "a614725fcbfe73e9eae11667cc16153619ca8074",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49106,9 +49095,9 @@
       "sha256": "3568ad22eba373afe9560b3c9493adc27b89b2152cd24953ddccdc2460bf081d",
       "size_bytes": 130161,
       "git_blob": "8afe47be17b27c72790d8795acebc495f123c754",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49117,9 +49106,9 @@
       "sha256": "7880ad2f3a9d4203f91ac6c00686825ed32e70216d940f2eeb2d1e3eb8d59a76",
       "size_bytes": 120873,
       "git_blob": "c4e773b87664de50802b5993441f77bced2685cc",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49128,9 +49117,9 @@
       "sha256": "4709eb9b5b5a5b28361d7d3dd325d526e6ddddf6e8c0669dfa923e7aaca797fe",
       "size_bytes": 122234,
       "git_blob": "b6a85c6bb7a12e8bb528471d08d36f7eba862dca",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49139,9 +49128,9 @@
       "sha256": "8635a8dd8944ee5670e03cc1b008d77316c6b1973c6a485069c90e651eda76c2",
       "size_bytes": 119491,
       "git_blob": "27c762a1b1f2d0a3ef80a1d893871a8f356e58a0",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49150,9 +49139,9 @@
       "sha256": "b44eb13a00e100e8f4bc61ef9c0aa1a7abfb656d75b2d551c6fcdb79a6f24555",
       "size_bytes": 143292,
       "git_blob": "5fcf713df071451f3532474311e30ff470c38671",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49161,9 +49150,9 @@
       "sha256": "02e4a1d1b97d6c1b3e413d59f4980428e0c6d159b291b55f28d75b1927f52462",
       "size_bytes": 77871,
       "git_blob": "ccbf011d5684523652c462d41dd9e999656e6789",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49172,9 +49161,9 @@
       "sha256": "e49c936477b41f85a94996f712061a00c5556f54412b8675c49afb4618f86b55",
       "size_bytes": 59861,
       "git_blob": "b4aefb7128817a8551e10f7f72f7675c42d85a4b",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49183,9 +49172,9 @@
       "sha256": "c06b540b6fb123e438b1ce922980da8c2836c8f7243864f304e133a8490f2430",
       "size_bytes": 64961,
       "git_blob": "9e5793e0bfe306a9ca8dc5532b8656b74770cef4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49194,9 +49183,9 @@
       "sha256": "4a567b64a850ebb26b505bc8004067c4e78824ef61242442b540ae2817567ff5",
       "size_bytes": 109966,
       "git_blob": "f60772e903c2345e2074c756307ae771cf49fa16",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49205,9 +49194,9 @@
       "sha256": "b5c31f343d517e4e4c88dee8f616016d8d1b6c0e65dd0d30b07122af15401c16",
       "size_bytes": 94992,
       "git_blob": "e03fd3c1765b3dc6ac7b2fd1ce25562eefc27318",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49216,9 +49205,9 @@
       "sha256": "b5003600cd4c73df90df03ade90d9174bb67c35f0215f46f645bbe67f58566b9",
       "size_bytes": 75739,
       "git_blob": "622a04fc90b0f81114ddcc3689c0aa5dd336c9b6",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49227,9 +49216,9 @@
       "sha256": "90408415baba6a5f21b5ac0e45d4a8ce3cde32705092956065dbaa1ba6c252e0",
       "size_bytes": 78135,
       "git_blob": "861eb680479cb3982b846d52d95cc0bdf36954e8",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49238,9 +49227,9 @@
       "sha256": "a19fbc2744cf3d79cef683edd6ca43bc5c49e38075e8cfa55fe2ab9b6525bb9c",
       "size_bytes": 123673,
       "git_blob": "bb90dbfb1c2b081a7f940fc8f8a28026982bc776",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49249,9 +49238,9 @@
       "sha256": "214c24a26b8248acba75ce29c7952516b25d8e87de03b48153af52d1bd7eb4ab",
       "size_bytes": 120745,
       "git_blob": "9f019e92d79223f376302b5bd929bd6ff44990de",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49260,9 +49249,9 @@
       "sha256": "7aba1cdcac99b86547e0b4bf86fca892ae23640cb810451fb4c3ea3517b6177c",
       "size_bytes": 71288,
       "git_blob": "f033d60fbb736b3d6756275818d020903bd6a126",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49271,9 +49260,9 @@
       "sha256": "e8068287da025b2cc1895f769ef0e43d7357255fd16f8d38cae7191237c1fceb",
       "size_bytes": 58781,
       "git_blob": "eb3808f7b8df30c97645d3fb108f3d87fb7b85e6",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49282,9 +49271,9 @@
       "sha256": "c97fa764d00ce1da7cafb53f16e4fa35496bd10dd858edc2f27ba0091494dc5f",
       "size_bytes": 97982,
       "git_blob": "887d287129572bf327893b9ce60df0e2d9980347",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49293,9 +49282,9 @@
       "sha256": "c1570716684878f56b42b6ec9008b8a8367ff4cf195515c6dae3f0d8dff58e92",
       "size_bytes": 84240,
       "git_blob": "7edd77ad8789b4bb3bf8711892233997c9973c12",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49304,9 +49293,9 @@
       "sha256": "88df187f88eaaa1cc8624874768da1ab320bb4d66e7cbf1b49055516e32252a7",
       "size_bytes": 73671,
       "git_blob": "5caac111274e0c7b6e54d0e01f1d376003e331ed",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49315,9 +49304,9 @@
       "sha256": "04003cefdd84b0982f3fdf82416e3bdce49827e14050200bc159ae4365104aeb",
       "size_bytes": 57052,
       "git_blob": "a0305673ae7050b918b1b8caa83dff600155742d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49326,9 +49315,9 @@
       "sha256": "7bee844d2ee39869f16265163d660908699bee362435868e2016850fc0121fe8",
       "size_bytes": 63193,
       "git_blob": "573be0c34ed76b5dcc82b26298d31fc6e5d7d457",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49337,9 +49326,9 @@
       "sha256": "2b2b14aeee3d28c28cee02ccdfc09590c73e68abfa7a283c2b7001b900b5411f",
       "size_bytes": 58620,
       "git_blob": "e3995e12452372486512fa62a61b5ba327d5df0c",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49348,9 +49337,9 @@
       "sha256": "7a3a88670bb2d4600045c3578f44c8b671b0e19d95bc4c7e4e643d3cde8436f4",
       "size_bytes": 94856,
       "git_blob": "be35c8d847fcbba489fbc57a0525aeb1a785ba37",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49359,9 +49348,9 @@
       "sha256": "2bc87f3effb9ece68c2e8e4a87235cd3861f9da99a024043bc7194252c438996",
       "size_bytes": 74410,
       "git_blob": "e95a66f7031015413a1f4b598ecb9378a0c45228",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49370,9 +49359,9 @@
       "sha256": "a15fe2764b6039a9123e8d47205e98b37e2c217ca3ae80db3bd53c13d9c6623e",
       "size_bytes": 77055,
       "git_blob": "623b2c4ac31d7fe0cd848a5107e59b76d89e127d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49381,9 +49370,9 @@
       "sha256": "c7e40d9629f04a5623f2c8ef262f7649ae06df116743a09c3aa6d2f14b914a97",
       "size_bytes": 86902,
       "git_blob": "0521ce03859dfe53e38563d235a91e2aef849191",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49392,9 +49381,9 @@
       "sha256": "789d3e3dd788a7cfb69574853cab3fc89b8a136948b70958850913513953b7b4",
       "size_bytes": 61994,
       "git_blob": "1f0a3e05a2f9a8ed741f44ed30b2eae98c286469",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49403,9 +49392,9 @@
       "sha256": "a25dea2dfc6124df5c024a070e8f493fafd56cb758471b228d5a4168e08fe842",
       "size_bytes": 13628,
       "git_blob": "83656e6ed4a7c824d5c0195c9b8a271549fc7172",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49414,9 +49403,9 @@
       "sha256": "9f27ec8df1ec9504e8ef390fcb4609e55101907de8fa604f95b90fed0180feb4",
       "size_bytes": 10615,
       "git_blob": "f902897d042230a00e9d67b1bd2fa0a96c81457c",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49425,9 +49414,9 @@
       "sha256": "13db15d01578c4ce87992d23b819bfffa1137c0a2bf3a8c64a66d850dd2ef91b",
       "size_bytes": 3278,
       "git_blob": "222ba4103106436393d3b17cb49a471fbbdea905",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49436,9 +49425,9 @@
       "sha256": "318ccdedc3f1c924b9641bd5e2d028b8e27a92ca38aafde1329ee75e48bfdf33",
       "size_bytes": 2520,
       "git_blob": "104b90c3cbb383e72a3fc8590bca0babf17c040a",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49447,9 +49436,9 @@
       "sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417",
       "size_bytes": 2259,
       "git_blob": "c606022cb2bbd664a6d55f7460ce2b0d0b33737f",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49458,9 +49447,9 @@
       "sha256": "a9378ad81f87891e465d8f1b0276fda56817fa2e9c00c3ed1d994c4368d58aed",
       "size_bytes": 1333,
       "git_blob": "1cfa2a6b9a7f0de7558d81bcc8502cb3688dac73",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49469,9 +49458,9 @@
       "sha256": "f77b9ed2d96112acabae1199a653176d5d17a5263f947d838f3827002f7fd2ca",
       "size_bytes": 752,
       "git_blob": "6634fbbdaa6060843fcd8fd7b363e89787b9bca4",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49480,9 +49469,9 @@
       "sha256": "0ca113cf080de3e2bacd714c9295332765ca0f2df6789d7ab13c79584034621c",
       "size_bytes": 3145,
       "git_blob": "30a0e606218b8248d70bf7ac6a9f9720858634a8",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49491,9 +49480,9 @@
       "sha256": "4fcdb670e3d60c9f7ac102df5a59c9b20029cf18e05630e8303c6f90c1f6ab37",
       "size_bytes": 6574,
       "git_blob": "3810d96069524dba510c7bf51548e21ed52b4ed1",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49502,9 +49491,9 @@
       "sha256": "13398e4a71f13581298fab0cb93e3b2566a46c424c9810d9a25fbfec618453f7",
       "size_bytes": 3145,
       "git_blob": "bde5e261616db50325a1bc14b6f6d510d6c3d71f",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49513,9 +49502,9 @@
       "sha256": "a306639c277e18406d827b63d690ba081c18064615d06d026847dfbce0d782a2",
       "size_bytes": 4159,
       "git_blob": "77177433205d00260e0b59184f36832d303f771d",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49524,20 +49513,20 @@
       "sha256": "0d5e604a0865f78b7a070b9164e4794801f044139d90b1a639ff31bd7a1de411",
       "size_bytes": 428,
       "git_blob": "de3fcef8df72c5f52cbaec10ab0c3cb5b1d74d08",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
       "path": "docs/runtime/parallel-task-reconciliation-20261020-02.md",
       "storage_scope": "public_repository",
-      "sha256": "93fcff869d9a337c294713b9eb02344b1081073e418615026e99500e3c3237f3",
-      "size_bytes": 7905,
-      "git_blob": "ace76734c1addfb81ac0731f7a4debf4453bf611",
-      "version": "parallel-reconciliation-20261020",
+      "sha256": "6c4f5399e110a3dedd2975717a44562b518d0d406cc29c0d5b95dc6c26d721ca",
+      "size_bytes": 7939,
+      "git_blob": "8f43e6371c6d5a253e0e8719a185fefaa68d90c4",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49546,9 +49535,9 @@
       "sha256": "9ab9f2cfe0a6ea6bc4c2b62b092778aeb9a5d298b5b1724400202ea893c1dc5c",
       "size_bytes": 79070,
       "git_blob": "2118dd93b6c1236270bec3045503d2d951527e93",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49557,9 +49546,9 @@
       "sha256": "9b5c8897e54dbe13003a1ac9f3d2f3d4683e4e93c6165f2af5fdaa8b8bb1690e",
       "size_bytes": 2276,
       "git_blob": "d9dfdf2d30ed98c0154a95ce4e1287bccfbc77fa",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49568,9 +49557,9 @@
       "sha256": "bd67a4011f4065198bf64131549b6fad2704b13d023eddb680864c8874412423",
       "size_bytes": 63808,
       "git_blob": "65d5e5eaf4cb065913e183149c164ac917ee6f6e",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49579,9 +49568,9 @@
       "sha256": "6dd8999c4a6eef1cae1051823b62f04f56aa25b5f09445d3b0d8423a6c2bbc0e",
       "size_bytes": 10988,
       "git_blob": "b585d00707d1fc1168dbe544b3c474213c34b81b",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49590,9 +49579,9 @@
       "sha256": "00085cf4b1a57c720df6da6fdee5d1a64a733e8c34cc1e2e28fd6ea6509d44fe",
       "size_bytes": 1598,
       "git_blob": "59e842271b93f1531922c0c624caeea7acc2d342",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49601,9 +49590,9 @@
       "sha256": "d438978381c8486b49946a1f5a007efa56bbf0b3b02dd5b963d0d68ab7dafe24",
       "size_bytes": 620,
       "git_blob": "40c31baba78e3ef914fd08a9a353ae04cb4ec413",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49612,9 +49601,9 @@
       "sha256": "d3d1d32a396c2fca1a8845f76a6b236e5f5ec9911bdc3ff1a253bbc1e83b8d81",
       "size_bytes": 37685,
       "git_blob": "36f0e629c1ea99bdb6e302ed8aab9905eb642cd0",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49623,9 +49612,9 @@
       "sha256": "bb9e2630e13140cac8335ff1da7ee95024903780ae642190bb9a0269586c2cff",
       "size_bytes": 43196,
       "git_blob": "e6717037d7396aa54820b91f40d2eaa408f55ac9",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49634,9 +49623,9 @@
       "sha256": "6a5fea0655472ed32a878c36fbf4a35084f71254511aa8789ba3c3b57b8aab01",
       "size_bytes": 50575,
       "git_blob": "379d088089ad7047462146963963d3b25d52fe03",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     },
     {
@@ -49645,9 +49634,163 @@
       "sha256": "17d6c29fd6dc958c228139da9b21d65b94e998ed99eddfb197a56b90fe180ed9",
       "size_bytes": 6418,
       "git_blob": "7336feda96fc60ef86a1ce72d27cc2f74a852015",
-      "version": "parallel-reconciliation-20261020",
+      "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/archive/pre-parallel-reconciliation-20261020-02/README.md",
+      "storage_scope": "public_repository",
+      "sha256": "d38dde27af11918f4da2f0c518324968feb824ad3cbf5a6641d50a7dedbc9efe",
+      "size_bytes": 100,
+      "git_blob": "9b202acd2e9d6678e7f1c1eddc6a6e1c3b4e41db",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/archive/pre-parallel-reconciliation-20261020-02/README.md.txt",
+      "storage_scope": "public_repository",
+      "sha256": "cabf90d3f54ff55d9263511225593e59d15c197c00cd1f4239709492efdd4157",
+      "size_bytes": 5652,
+      "git_blob": "531f2fc456b9fb3b2c3d1eb67df4275cb8f2727e",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/archive/pre-parallel-reconciliation-20261020-02/docs/INDEX.md.txt",
+      "storage_scope": "public_repository",
+      "sha256": "e35c15c1613a18e18571fb6e1bb487a51e358a30d77a8d3ee47bd0400cbe8434",
+      "size_bytes": 14073,
+      "git_blob": "5495def8e7b6302d18eb1dfb69d56036cd074c02",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/archive/sportmaster-native-gallery-20261020-0e79e73/页面图集.md",
+      "storage_scope": "public_repository",
+      "sha256": "4c5d41d23b39801723cdf313b0e78a0ee1407381aff1cf78537ddbd1dae59b3a",
+      "size_bytes": 2594,
+      "git_blob": "47cf315c741debeac84a379e155c73018e1f07d1",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/archive/sportmaster-native-gallery-20261020-0e79e73/页面图集.md.txt",
+      "storage_scope": "public_repository",
+      "sha256": "3f98749b156c1b17bf488bef9ae887b040c48cbded3bfc0266a055c840abe3ea",
+      "size_bytes": 3760,
+      "git_blob": "3e47e23877187a1e9629f5910a888355fc521f73",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-assembly-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "7ede1c5a977d9979e9e700cd4886be56f369ef8b6de1541d935181cf8a0b257f",
+      "size_bytes": 2495,
+      "git_blob": "97b0ca46ff8e1b1cf9183f3b49d192c594d5b720",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-development-client-matrix.log",
+      "storage_scope": "public_repository",
+      "sha256": "7c0d363ed0bcf2bc8db6bf187b08153b07bae56ccb7d2ab5e3ff4faf6e99ed9e",
+      "size_bytes": 2745,
+      "git_blob": "f1ac91c4ae3f939ff0d5e77e8948ce95bdb6ca6c",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-development-native-233.log",
+      "storage_scope": "public_repository",
+      "sha256": "2d124703d1b41875900068aeb138f966a6c89f646bea480911467ff6abc2cb59",
+      "size_bytes": 19421,
+      "git_blob": "fa722c2077d7618b13712a675932b1a122023eb7",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-driver-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417",
+      "size_bytes": 2259,
+      "git_blob": "c606022cb2bbd664a6d55f7460ce2b0d0b33737f",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-installer-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "a9378ad81f87891e465d8f1b0276fda56817fa2e9c00c3ed1d994c4368d58aed",
+      "size_bytes": 1333,
+      "git_blob": "1cfa2a6b9a7f0de7558d81bcc8502cb3688dac73",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-native-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "9f871657ee68be2c3f94311b1a6f4e8d1473294ed1a5e94f5e62e5a73e06710e",
+      "size_bytes": 3185,
+      "git_blob": "a7f9834526373f254483a3b3e4d53deb375bfd50",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/final-packager-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "3ca5a9d41fbe4a87030e7a18131b261d676f12dc5077c9ac7cdbafb7a3d50c5a",
+      "size_bytes": 752,
+      "git_blob": "7970805cc4b51ed4fbbea26db28c1b97e6815deb",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-reconciliation-20261020-02/frozen-implementation-local.json",
+      "storage_scope": "public_repository",
+      "sha256": "5ca0a6ad4fdc9bd274e6f5e4fb865748a8f596cd3553cacede965ecf0636da6d",
+      "size_bytes": 517,
+      "git_blob": "b179b5ea275b7f4a19b96dc1e3de60900a45cd1d",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md",
+      "storage_scope": "public_repository",
+      "sha256": "2e35a7d4d05ed045a62f4d9f4afbd81c98e20386fc773eb95c6bdbf982c82551",
+      "size_bytes": 2334,
+      "git_blob": "41b4957d6ee81821e4ce29755adbcf29ecfc205d",
+      "version": "parallel-reconciliation-20261020-02",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     }
   ],
@@ -51511,5 +51654,88 @@
     "sdk_contract_equipment_and_field": "BLOCKED",
     "production": "NOT_APPROVED",
     "historical_d_rv": "UNCHANGED"
+  },
+  "preserved_source_task_metadata": {
+    "hikrobot_reader_01": {
+      "SourceCommit": "646e8b4b256d71243639f7bcfef5cf2b57479cfd",
+      "OriginalFacts": {
+        "base_main": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+        "report": "docs/runtime/hikrobot-reader-01.md",
+        "state": "IMPLEMENTED_TARGETED_TESTS_PASS_REAL_CONNECTION_IDLE_PASS",
+        "real_barcode_frames": 0,
+        "production_qualification": "NOT_APPROVED",
+        "historical_d_rv": "UNCHANGED",
+        "driver_version": "1.0.1",
+        "code_commit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4"
+      }
+    },
+    "cainiao_branding_01": {
+      "SourceCommit": "36dc715cb007e0bab24f15c39e5eeafdb6d91c32",
+      "OriginalFacts": {
+        "base_main": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+        "display_name": "菜鸟供包台",
+        "artwork": "src/Ipc.Desktop/Assets/cainiao.png",
+        "artwork_sha256": "b12c9b143941ca20cb316e05d89b8cc9d412bd1d25a146e0c46c8a016cad3f87",
+        "public_permission": "User explicitly replied 允许公开提交 on 2026-10-20",
+        "report": "docs/runtime/cainiao-branding-01.md",
+        "historical_d_rv": "UNCHANGED",
+        "runtime_source_commit": "967ebc8daf377a99561914d57bd807017dcf2d14",
+        "native_frozen_assertions": 38,
+        "native_frozen_result": "PASS",
+        "exe_smoke": "PASS",
+        "package_sha256": "c6a31dcd1ff90979cfc767748c6bbb6ea12f5c9b8f90dcd0b878844474503579",
+        "inventory_files": 746,
+        "windows_install_uac": "NOT_RUN",
+        "sdk_equipment_rcs_field": "NOT_RUN",
+        "production": "NOT_APPROVED"
+      }
+    },
+    "single_exe_installer_01": {
+      "SourceCommit": "36dc715cb007e0bab24f15c39e5eeafdb6d91c32",
+      "OriginalFacts": {
+        "base_main": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+        "report": "docs/runtime/single-exe-installer-01.md",
+        "state": "SINGLE_EXE_DELIVERED_NATIVE_PREPARATION_AND_SETUP_HANDOFF_PASS",
+        "deployment_authority": "Existing StartupSetupWindow/ParcelStartupServices/WindowsDeploymentSetup",
+        "historical_d_rv": "UNCHANGED",
+        "runtime_source_commit": "a7de058d5877b8fa797e2292271181b4272ac244",
+        "installer_sha256": "2284d542f65299f53b2e6cec10e6ac7e1e52ee59dfc2ff9c487fc4deb27f0c9f",
+        "installer_bytes": 172462152,
+        "delivery_files": 1,
+        "native_assertions": 17,
+        "payload_assertions": 27,
+        "packager_tests": 5,
+        "authenticode": "NOT_SIGNED",
+        "actual_uac_installation": "NOT_RUN",
+        "upgrade_uninstall": "NOT_RUN",
+        "sdk_devices_rcs_field": "NOT_RUN",
+        "production": "NOT_APPROVED"
+      }
+    },
+    "installation_delivery_scope_01": {
+      "SourceCommit": "37a46cee9a66838aac099f7fcad3c9dc9a24ed40",
+      "OriginalFacts": {
+        "date": "2026-10-20",
+        "baseline_commit": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+        "scope": "documentation_only",
+        "decision": "ordinary_manual_installer_and_necessary_instructions",
+        "report": "docs/runtime/installation-delivery-scope-01.md",
+        "runtime_code_changed": false,
+        "historical_evidence_changed": false,
+        "windows_installation_tests": "NOT_RUN",
+        "field_acceptance": "NOT_RUN"
+      }
+    }
+  },
+  "parallel_reconciliation_20261020_02": {
+    "WorkPackage": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01",
+    "ImplementationCommit": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+    "Report": "docs/runtime/parallel-task-reconciliation-20261020-02.md",
+    "OriginalSourceCommits": 14,
+    "DiscoveredSourceCommits": 3,
+    "ProductFlows": "Independent Sportmaster, DirectPlc, WcsToPlc; shared instance per application",
+    "Production": "NOT_APPROVED",
+    "CurrentDelivery": "Same-source single EXE; final identity and acceptance in integration report",
+    "HistoricalFacts": "Preserved source task metadata refers only to its explicit source; never inherited as final verification"
   }
 }

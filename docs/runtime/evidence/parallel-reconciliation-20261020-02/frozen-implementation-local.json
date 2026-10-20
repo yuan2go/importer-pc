@@ -1,0 +1,16 @@
+{
+  "CodeCommit": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+  "OS": "Windows 11 22631 x64",
+  "Dpi": 1.25,
+  "DotnetSdk": "10.0.402",
+  "WpfAssertions": 233,
+  "HikrobotAssertions": 26,
+  "NativePolicyGroups": 5,
+  "InstallerPreparationAssertions": 27,
+  "PackagerTests": 5,
+  "InstallerOptionsComAssertions": 18,
+  "Data": "SYNTHETIC_TEMPORARY_ROOTS",
+  "CameraSdkField": "NOT_RUN",
+  "UacInstall": "SEPARATE_VALIDATION_PENDING",
+  "NativeBacking1600x900": "PASS_NOT_PHYSICAL_MONITOR_ACCEPTANCE"
+}

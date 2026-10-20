@@ -68,12 +68,22 @@ static partial class Program
                 }
                 finally { gate.Release(); }
             }
-            // Normal and time/state-filtered history each retain their actual server query contract.
+            // Legacy pagination and the actual UI's frozen filtered query are measured separately.
             var historyMs = new List<double>();
             for (var i = 0; i < 20; i++)
             { var sw = Stopwatch.StartNew(); _ = await Task.Run(() => runtime.HistoryAsync(limit: 50)); historyMs.Add(sw.Elapsed.TotalMilliseconds); }
+            var filteredMs = new List<double>(); var selectionMs = new List<double>();
+            var history = (IParcelHistoryApplication)runtime;
+            for (var i = 0; i < 20; i++)
+            {
+                var sw = Stopwatch.StartNew();
+                var selection = await Task.Run(() => history.SelectHistoryAsync(new(Position: "left", State: ParcelState.SlotResolved, From: DateTimeOffset.UtcNow.AddHours(-1))));
+                selectionMs.Add(sw.Elapsed.TotalMilliseconds); sw.Restart();
+                _ = await Task.Run(() => history.QueryHistoryAsync(selection, limit: 50)); filteredMs.Add(sw.Elapsed.TotalMilliseconds);
+            }
             datasets.Add(new { Total = total, Resident = snapshot.Operations.Length, snapshot.Capacity, JsonBytes = Encoding.UTF8.GetByteCount(Wire.Encode(snapshot)),
                 Snapshot = Stats(snapshotMs), Clone = Stats(cloneMs), CapacityProjection = Stats(capacityMs), PendingReceiptQuery = Stats(pendingMs), HistoryPage50 = Stats(historyMs),
+                HistorySelection = Stats(selectionMs), FilteredHistoryPage50 = Stats(filteredMs),
                 AllocationBytes = GC.GetTotalAllocatedBytes(true) - allocated, CpuMs = (Process.GetCurrentProcess().TotalProcessorTime - cpu).TotalMilliseconds });
             lines.Add($"PERF total={total} resident={snapshot.Operations.Length} snapshot P50={Median(snapshotMs):F2}ms clone P50={Median(cloneMs):F2}ms capacity P50={Median(capacityMs):F2}ms");
         }

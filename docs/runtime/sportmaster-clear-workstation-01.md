@@ -24,13 +24,20 @@ Windows 11 22631 / x64 / 125% DPI，SDK 10.0.402。开发构建 0 警告、0 错
 
 扩展 `--commercial-productization-native` 检查发现未改动的 classic 兼容工作台在 800 × 420 下固定操作越界；其原 FAIL 保留，不声称全套兼容 UI 已通过。本轮默认 supply-station 单独完整验证，不删除 classic 断言。
 
-冻结介质、来源提交、发布启动及原生输入复核结果在本文件后续补录；上述开发验证不冒充冻结介质验证。
+冻结运行源码及夹具：`0e79e73bdb6d7a1702373963295b192a803f28e7`，已继承 PR61 文档整合。发布后的真实 DLL 以同源夹具执行 **100 项 PASS**，包括首配和完整默认工作台旅程；验证前后介质库存不变。[冻结结果](evidence/sportmaster-clear-01/frozen-result.json)、[日志](evidence/sportmaster-clear-01/frozen-visual.log)、[原生主屏](evidence/sportmaster-clear-01/native-workstation.jpg)、[极端最小窗口](evidence/sportmaster-clear-01/supply-station-client-800x420-unknown-rejection.png)。
+
+通过 computer-use 原生输入实际最大化窗口、点击条码后 Ctrl+A 完整选择 `000123456789`、展开详情、切到作业记录再返回，确认展开状态、原件和选择保留，再收起并关闭。截图为目标 HWND 的真实捕获；与测试中的 RenderTargetBitmap 图分别存放。没有访问真实设备或修改机器政策。
+
+实际发布 EXE 以 `--setup` 和隔离数据目录启动，正常进入步骤 1 / 4 后关闭；[启动截图](evidence/sportmaster-clear-01/published-startup.jpg)。没有执行安装、UAC、数据迁移或现场业务；这只证明发布启动冒烟。
+
+本地 win-x64 候选：`D:/w/sm-clear/.artifacts/sportmaster-clear-media.zip`，104298590 字节，SHA256 `c9ac614d885c465dee3cb2d1922c9c67e0315b82e6749688d697afee3946f060`。库存 SHA256 `6ABBC2DD9B4121274C5DDBADA194403A77ED21B915B6CAB56F228916CA522D20`；业务 1.4.0。候选不上传 Release，版本与资格仍按既有规则。[介质记录](evidence/sportmaster-clear-01/MEDIA.json)与[复核脚本](evidence/sportmaster-clear-01/verify.py)保存精确身份。
 
 ## 运行
 
 ```powershell
 D:/tools/dotnet/dotnet.exe build tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj -p:Application=Sportmaster -m:1 -nr:false
 D:/tools/dotnet/dotnet.exe tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll D:/w/sm-clear --visual-productization --interactive
+./scripts/verify-commercial-wpf.ps1 -Media D:/w/sm-clear/.artifacts/sportmaster-clear-media -Output <新证据目录> -Dotnet D:/tools/dotnet/dotnet.exe -VisualProductization -Interactive
 ```
 
 这是显式合成的原生预览，不连接现场。正式安装和默认启动继续使用现有受保护入口，缺失 Production 必需能力仍拒绝。未进行真实 SDK/设备、现场、物理触控、混合 DPI 或安装/UAC 验收。

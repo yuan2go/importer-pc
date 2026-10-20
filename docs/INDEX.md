@@ -1,4 +1,6 @@
-> 当前增量：[Sportmaster审查整改工作包](work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)与[整改及R-02分析](runtime/sportmaster-audit-remediation-01.md)。继承已合并PR57/58；原视觉任务和历史证据保留各自身份。
+> 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。继承 main PR60；旧视觉布局与证据保持原身份。
+>
+> 继承：[Sportmaster审查整改工作包](work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)与[整改及R-02分析](runtime/sportmaster-audit-remediation-01.md)。原视觉任务和历史证据保留各自身份。
 
 # 已合并实现基线：Sportmaster 原生视觉产品化
 

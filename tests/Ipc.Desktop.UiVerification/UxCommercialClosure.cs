@@ -250,7 +250,10 @@ static partial class Program
         };
         await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea");
-        foreach (var target in new[] { (1440, 900), (1100, 600), (911, 512), (800, 420) })
+        // A native top-level window is bounded by the active monitor. Reserve the
+        // non-client frame rather than requesting an impossible client at 125% DPI.
+        var large = ((int)Math.Min(1440, SystemParameters.WorkArea.Width - 32), (int)Math.Min(900, SystemParameters.WorkArea.Height - 48));
+        foreach (var target in new[] { large, (1100, 600), (911, 512), (800, 420) })
         {
             await SetClient(window, target.Item1, target.Item2);
             check(Math.Abs(client.ActualWidth - target.Item1) < 1 && Math.Abs(client.ActualHeight - target.Item2) < 1 && vm.ViewportFits,
@@ -266,6 +269,19 @@ static partial class Program
                     $"{ui} {target} barcode/result remains inside actual client without scrolling the entire page");
                 if (text.Name == "CurrentBarcode" || Equals(text.Tag, "CurrentBarcode"))
                 { text.SelectAll(); check(text.SelectedText == longCode, "long leading-zero barcode remains fully selectable for copy"); }
+            }
+            if (window is SupplyStationWindow)
+            {
+                foreach (var position in Descendants(host).OfType<SupplyStationPosition>())
+                {
+                    var body = (ScrollViewer)position.FindName("PositionBody");
+                    check(new[] { "CurrentBarcode", "CurrentSlot" }.All(name =>
+                    {
+                        var field = (TextBox)position.FindName(name);
+                        var bounds = field.TransformToAncestor(body).TransformBounds(new Rect(field.RenderSize));
+                        return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && field.ActualHeight >= 36;
+                    }), "failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility");
+                }
             }
             var summaries = Descendants(host).OfType<TextBlock>().Where(x => x.Name == "RetainedResponsibility" || Equals(x.Tag, "RetainedResponsibility")).ToArray();
             check(summaries.Length == 2 && summaries.All(x => x.IsVisible && Inside(x, client) && x.Text.Contains("待核对")), "both retained Unknown responsibilities remain visible alongside the new input rejection");

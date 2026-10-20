@@ -50491,14 +50491,15 @@
     },
     {
       "path": "docs/design/sportmaster-task-redesign-01.md",
-      "sha256": "b5f651b9253989cc7d60c09d43c67097d7f654e5d9c985fe7a5543546bb46285",
-      "size_bytes": 14977,
-      "git_blob": "21817d84687fa204749db7c10c275fbca26bcfde",
-      "version": "ui-task-redesign-01",
+      "sha256": "2df7ba56fa4a4de7a52faa37678685d37099b4718dc8e92504a3a6f4efed946f",
+      "size_bytes": 15751,
+      "git_blob": "c0ad592e1e6cf896bba9e07c4eb8315a41c942c5",
+      "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
-      "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
+      "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_observable_ui_quality_sha256": "b5f651b9253989cc7d60c09d43c67097d7f654e5d9c985fe7a5543546bb46285"
     },
     {
       "path": "docs/runtime/evidence/ui-task-redesign-01/publication-checks.json",
@@ -50513,14 +50514,15 @@
     },
     {
       "path": "docs/runtime/ui-task-redesign-01-publication.md",
-      "sha256": "603b18ee7b1374251de890a63a445d6a3f44d6ff57c0b85cafc5e28ca6360a84",
-      "size_bytes": 6280,
-      "git_blob": "1c9bce66153701da363c4757e84021fb3b44af47",
-      "version": "ui-task-redesign-01",
+      "sha256": "cd41018d9f5acc60b8b0e744ccb0a61848c28071a2563ed6909d5e7f6d7976dc",
+      "size_bytes": 7079,
+      "git_blob": "e4d943c2b0f4457b5c79788db810120d7017bd4d",
+      "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
-      "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
+      "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_observable_ui_quality_sha256": "603b18ee7b1374251de890a63a445d6a3f44d6ff57c0b85cafc5e28ca6360a84"
     },
     {
       "path": "docs/ui/sportmaster-task-redesign-20261020/MANIFEST.json",
@@ -51727,25 +51729,27 @@
     },
     {
       "path": "docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "7dcaef99e962d06d2f3615762e164c1389f0617271d7fe028509432550c1509c",
-      "size_bytes": 2818,
-      "git_blob": "25220b3298afd04d29cfec056ca1356ad01a8e4b",
-      "version": "ui-task-redesign-01",
+      "sha256": "bd51e677e8ea4b68efb118889bb5bbf91f038d6aec2e02c6e035ac76dde6de7d",
+      "size_bytes": 3719,
+      "git_blob": "43324cb8de60096b4ab284ede77e92bf0c7aaeed",
+      "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
-      "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
+      "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_observable_ui_quality_sha256": "7dcaef99e962d06d2f3615762e164c1389f0617271d7fe028509432550c1509c"
     },
     {
       "path": "docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "172c1c84607910a2a0e51ce77aa9c55ee1f59b7e24880e956b099a64c6d7a812",
-      "size_bytes": 9440,
-      "git_blob": "5e3f5fcf0541d077420de2f9f1b1277a1e4aef24",
-      "version": "ui-task-redesign-01",
+      "sha256": "e178ce481cb6569dc0d37be854461bad46f40dfc6fd333c3d28d9a7fcce1a83b",
+      "size_bytes": 11968,
+      "git_blob": "a5722c4442c24aa9833fd3ff7745d0719fef7750",
+      "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
-      "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
+      "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
       "source": "User explicit complete generated UI publication to main request, 2026-10-20",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_observable_ui_quality_sha256": "172c1c84607910a2a0e51ce77aa9c55ee1f59b7e24880e956b099a64c6d7a812"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -53766,5 +53770,26 @@
     "new_runtime_build_or_test": "NOT_RUN_DOCUMENT_TASK",
     "new_windows_or_field_verification": "NOT_RUN_NEW_UI_NOT_IMPLEMENTED",
     "publication_authorization": "User explicitly requested all generated UI artifacts on main; original customer material scope otherwise unchanged"
+  },
+  "ui_task_redesign_01_observable_quality": {
+    "source_commit": "12d20b2269a69049b6e8aeb03916d8dba6c9e055",
+    "user_request_date": "2026-10-20",
+    "criteria": [
+      "重点清楚",
+      "组织一致",
+      "密度合适",
+      "细节完整",
+      "操作连贯",
+      "真实显示可靠"
+    ],
+    "scope": "Existing prompt, implementation decision and work package acceptance, plus publication record",
+    "production_ui_or_original_design_artifacts_changed": false,
+    "new_runtime_test": "NOT_RUN_DOCUMENT_ONLY",
+    "checks": {
+      "modified_markdown_links_and_anchors": 15,
+      "modified_files": 4,
+      "manifest_sha256_updated": true
+    },
+    "historical_verification": "Preserved; no full archive scan or runtime verification repeated for this text addition"
   }
 }

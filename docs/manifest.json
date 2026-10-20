@@ -39478,9 +39478,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b54b82a9c8dc17fcd914c7387ab19c7dffaa71ad8bee15d696d8453b82f89c95",
-      "size_bytes": 51546,
-      "git_blob": "73f4b9ffb728e6f680f4835f7ba29616ccc36795",
+      "sha256": "2563559511251f57eb81bee2280667e7f3766c5848f16044a353895bae1c8d47",
+      "size_bytes": 51524,
+      "git_blob": "a3a6ff206c4bbb3c5bfdf1928ac482f2937ec59a",
       "previous_git_blob": "a9e4e1381e13729b7dbcd77574d1d9c1b1dee8aa",
       "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01"
     },

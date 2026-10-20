@@ -56611,9 +56611,9 @@
     },
     {
       "path": "docs/runtime/pr73-review-followup-01.md",
-      "sha256": "05743df0255e94b57e6e2ceb8ede417ea695209ab21dfda080cfbb96f153a64c",
-      "size_bytes": 2514,
-      "git_blob": "022067ccf21c51e3ce15fb132eb805ad7d631aef",
+      "sha256": "6c8477271382b66971600612c0e4045d7d337f9f4c333e3d63080019e2c9480d",
+      "size_bytes": 4299,
+      "git_blob": "998b07214e837747eadf7d974fd5df94fac17f5a",
       "version": "pr73-review-followup-01",
       "status": "current_navigation_or_verification",
       "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
@@ -56629,6 +56629,17 @@
       "status": "current_navigation_or_verification",
       "purpose": "PR73 startup fallback review closure and bounded synthetic verification",
       "source": "2026-10-21 user-authorized review/CI follow-up; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr73-review-followup-01/remote-ci-result.json",
+      "sha256": "d260e9c3afc9822cf195bef14f8e89953b3cc4242e2e60c9ffcc94df8ac56980",
+      "size_bytes": 2431,
+      "git_blob": "c59cb1b38be286fad7663cf5d39b57d5845cae82",
+      "version": "pr73-review-followup-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Actual successful Windows CI receipt identity and original review closure",
+      "source": "PR79 GitHub Actions 39465324737, synthetic verification only",
       "storage_scope": "public_repository"
     }
   ],
@@ -58980,6 +58991,7 @@
     "review_thread": "PRRT_kwDOVLQU8s6uSbPM",
     "scope": "Desktop startup routing and Windows reserved design checkout only; parallel PR78 untouched",
     "local_confirmation_assertions": 40,
-    "ci": "pending follow-up PR actual checks; historical failure preserved"
+    "ci": "PASS run39465324737 head5d722f8 merge5edfe080; receipt-only follow-up retains exact verified runtime source",
+    "review": "No findings on core fix2fcc1ca; original P1 thread resolved after successful CI"
   }
 }

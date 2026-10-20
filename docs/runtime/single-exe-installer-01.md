@@ -6,4 +6,10 @@
 
 技术依据：[Microsoft 单文件部署](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/)中的自包含和原生库内嵌方式；不裁剪 WPF、不新增运行时下载依赖。准备页沿现有品牌/系统字体、固定按钮和实际进度，不从参考 iFinD 复制资产或声明其许可。
 
-实现和最终验证进行中；完成后记录构建命令、精确来源、文件散列及未验边界。此前 `cainiao-branding-03.zip` 仍仅是原冻结 ZIP 介质，不重标为本次单 EXE。
+构建顺序：提交精确运行源码及随包指南，执行 `python scripts/package-application.py --application sportmaster --target win-x64 --output <新介质目录> --dotnet D:/tools/dotnet/dotnet.exe`；随后用 `python scripts/package-installer.py --media <同版介质ZIP> --output <新EXE路径> --dotnet D:/tools/dotnet/dotnet.exe`。封装器拒绝混用其他源码的 ZIP，不替换旧输出，现场只需交付生成的 EXE。构建工作目录保留供追踪，不是现场输入。
+
+安装文件会自动展开到当前 Windows 用户的随机私有临时目录。校验完成后仅调用内嵌的 `desktop/Ipc.Desktop.exe --setup`；安装政策和 Production 守卫不变。关闭向导后清理本次介质目录，取消准备不启动安装。失败显示可复制诊断；若文件占用阻止清理，保留具体错误与目录，不误称安装完成。Windows/.NET 自身单文件运行缓存不属于业务数据。
+
+没有提供 Authenticode 签名证书，因此生成 EXE 未签名；独立 SHA-256 可用于核对字节，不能替代分发来源可信。此处不生成临时“可信发布者”证书或虚构许可协议。
+
+最终交付身份和实际验证在完成后补记。此前 `cainiao-branding-03.zip` 仍仅是原冻结 ZIP 介质，不重标为本次单 EXE。安装准备和打开向导通过也不代表实际 UAC 安装、升级/卸载、SDK/设备或现场验收已通过。

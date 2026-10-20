@@ -419,7 +419,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         Message("步骤 " + (step + 1) + " / 4 · 安装不启动设备或业务。日常运行保持未提权，安装和维护通过 Windows 授权。");
         if (step == 0)
         {
-            Note("从可信分发渠道取得并完整解压 Windows 安装包。下一步校验程序目录的登记、来源及全部文件；散列完整性不代替发布者信任。");
+            Note("安装文件已准备好。下一步将检查版本与完整性，然后选择程序目录、运行账户和数据位置。");
             Note("源目录：" + Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")));
             Note("升级和修复使用并排版本；原程序、配置、数据和租约保留。失败可在此重试，旧部署登记保持可用。"); next.Content = "检查安装媒介";
         }

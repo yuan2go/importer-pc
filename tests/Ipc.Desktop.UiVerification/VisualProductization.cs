@@ -218,8 +218,8 @@ static partial class Program
             support.Close();
         }
         var original = (await runtime.SnapshotAsync()).Operations;
-        foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "未识别到条码"),
-            (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "校验未通过"), (Codes: new[] { "A", "B" }, Status: "识别到多个条码") })
+        foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "本次识别失败 · 未取得包裹号"),
+            (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "本次识别未通过校验"), (Codes: new[] { "A", "B" }, Status: "本次识别失败 · 多个候选码") })
         {
             probe.Project = s => s with { Inputs = s.Inputs!.Select(input => input with {
                 Outcome = ParcelInputOutcome.Rejected, Reason = "SYNTHETIC InvalidCode or InvalidAdmissionId",

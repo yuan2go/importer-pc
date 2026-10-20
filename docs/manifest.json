@@ -45830,9 +45830,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "9a191b93521b00a0b79a6baec8450c8b729242083cd33eabeb9ba2789c965e70",
-      "size_bytes": 30423,
-      "git_blob": "d677d32363d7277c61c652ed35e9dc1ea737f149",
+      "sha256": "38fb2d33b68e18db8aa599ec7ab8c794b3e9ca1641ab787a65b8264fafa2fc18",
+      "size_bytes": 30473,
+      "git_blob": "1f5465e871e1872e8d7a3404398453f4520b78ee",
       "version": "UIR-00-06-V2-20261020",
       "status": "implementation_source",
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",

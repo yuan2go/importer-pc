@@ -1,3 +1,9 @@
+# 当前整合入口 · 2026-10-20 13:09续轮
+
+[本轮工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md) · [编码前裁决](design/parallel-task-reconciliation-20261020-02.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020-02.md)。整合#62工作台、#63驱动、#64品牌/单EXE和#65普通安装文档；原稿、原失败与前轮统计分别保留。此前仅合并现有代码的限制属于前轮，本次以重新授权的工作包为准。
+
+## 前轮整合记录（历史）
+
 # 当前整合入口 · 2026-10-20
 
 [本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。

@@ -13,7 +13,11 @@ import zipfile
 def frozen_export(root, source, destination):
     destination.mkdir(parents=True)
     extraction = ('\\\\?\\' + str(destination)) if os.name == 'nt' else str(destination)
-    export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
+    # Reading a frozen Git tree must preserve historical Windows device names.
+    # Only this archive read relaxes Git's checkout guard; extraction still uses
+    # data_filter and an extended-length destination, never a Win32 device path.
+    archive_git = ['git', *(['-c', 'core.protectNTFS=false'] if os.name == 'nt' else [])]
+    export = subprocess.Popen([*archive_git, 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
     try:
         with tarfile.open(fileobj=export.stdout, mode='r|') as archive:
             def safe(member, target):

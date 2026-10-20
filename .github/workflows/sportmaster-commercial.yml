@@ -14,9 +14,18 @@ jobs:
     steps:
       - run: git config --global core.longpaths true
       - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
         with:
           fetch-depth: 0
           persist-credentials: false
+          # Preserve the Git blob; Windows worktrees cannot materialize AUX.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

@@ -41664,9 +41664,9 @@
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d6ba5dccf470af21ad0596d76e28b86c51b759b982fda80e1486cd720bceeb7f",
-      "size_bytes": 3348,
-      "git_blob": "c48852f9eb0f4208978f4bcb9658f3a7cb35eabb"
+      "sha256": "a9b56ba4a021e333257006f706bfc4d65881997969ec444a2ae2421a502a94c1",
+      "size_bytes": 3686,
+      "git_blob": "4bf8bdd50eb51406a5170d0207e16ed9880f4f44"
     },
     {
       "path": "scripts/test_unified_release.py",
@@ -41675,9 +41675,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "a79914cb0cd2cce74f75d74f8674d307a34962bc9336ed8b2d87ed293556d52e",
-      "size_bytes": 10491,
-      "git_blob": "355eb9b24c372b52e7d3c77e3323368ebb20f736",
+      "sha256": "30acd918910ea0fa1850ea987abe7d9b4a9f8c25f6f8302c0ebcf6c6768bf1d4",
+      "size_bytes": 12709,
+      "git_blob": "846142a15c29834f1e6a30bc13c622d0de630e73",
       "pre_publication_merge_git_blob": "6152b97df7660b9ca82fec69ca5f2407d81a94a1"
     },
     {
@@ -42425,9 +42425,9 @@
       "purpose": "Frozen release records and original synthetic verification evidence",
       "source": "Authorized unified release task; no restricted customer assets",
       "storage_scope": "public_repository",
-      "sha256": "4a6f829d2797f917ca7f905a4c135dbed3a4d0ab7821953802035b471da9760e",
-      "size_bytes": 1976,
-      "git_blob": "dcfe1df88b4d20e0d7195696e6052a6ea7dc8e06"
+      "sha256": "4283c5bfb89a7e35a81128451dc5fd9c1bb486af08f24bc86613f9d28fdc4d7a",
+      "size_bytes": 2262,
+      "git_blob": "00bedc3c22563bdf8ae4161bd398c2ed9b79bdd7"
     },
     {
       "path": "docs/runtime/evidence/unified-windows-release-01/BUILD.json",
@@ -43500,9 +43500,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "58a128eb96be562626ce8d3014d4836fd9196e62d9dc19ad5de5ca04349b0b10",
-      "size_bytes": 4035,
-      "git_blob": "1b896733cad41fd7aa654468aa8f757808929fbe",
+      "sha256": "cc2ca331aa1c6b8b2348367695ce1a52a6fdb08d03d256fdb80523f73235bbf9",
+      "size_bytes": 4398,
+      "git_blob": "1ca3db7821b888096dfba11ccdc4ac956018fb73",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -52247,9 +52247,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "ef042f60afd9e285aa02a25e9c4cf59191d6f2d94f05404e8bb9a24e74dbf638",
-      "size_bytes": 13869,
-      "git_blob": "6bf1ef5164ef6c20bd055cc4e5310543def1548d"
+      "sha256": "c4a5ac28f49dda88deb6a4dc9c294bf2a68fc9097c7e1459ebdebc87d6acb65f",
+      "size_bytes": 15080,
+      "git_blob": "b7209d4d2e0725af1c82f5a5801a3a36b98dc35e"
     },
     {
       "path": "docs/runtime/publication-parameter-snapshot-20261020.md",
@@ -52768,6 +52768,17 @@
       "status": "current_navigation_or_verification",
       "purpose": "Authorized PARAM-01 synthetic release verification evidence",
       "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/release-windows-paths.log",
+      "sha256": "411eb65ebe41201c3d212421398036efdd40e87c914aa11cb1e40a115b3d2266",
+      "size_bytes": 2363,
+      "git_blob": "404ed2ca95b37dd3bd87ec701ee86386a5a5c1d1",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Necessary Windows CI frozen export verification, synthetic data only",
+      "source": "PARAM-01 first CI checkout failure and targeted recovery",
       "storage_scope": "public_repository"
     }
   ],

@@ -99,4 +99,11 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 
 验证充分后停止扩大范围。当前参数范围已完成，完整 UI 余项和上述外部验收继续保留，不将其标为完成。
 
-最终清单核对发现 main 的 #69 已删除 InstallerWindow.xaml 及 .xaml.cs，而原 manifest 仍留两项当前条目；本包仅清除这两项过期清单记录，不恢复旧安装窗口。原文件/证据保留在 Git 历史（10c7335）。最终4725项索引原字节的 SHA256、大小及 Git blob 全部一致；这仅证明清单字节身份，不代替全量资产政策检查。
+最终清单核对发现 main 的 #69 已删除 InstallerWindow.xaml 及 .xaml.cs，而原 manifest 仍留两项当前条目；本包仅清除这两项过期清单记录，不恢复旧安装窗口。原文件/证据保留在 Git 历史（10c7335）。在该次提交核对的4725项索引原字节的 SHA256、大小及 Git blob 全部一致；这仅证明清单字节身份，不代替全量资产政策检查。
+
+
+## PR #73 的 Windows CI 入口修复
+
+[首次远端检查](https://github.com/yuan2go/importer-pc/actions/runs/39406264803/job/118572825786)在 `0d4ee6d` 的 checkout 阶段因原型 `source/aux.js` Windows保留名失败，尚未执行构建/测试，不计为应用回归失败或PASS。现有Windows工作流改为非cone sparse checkout，仅不在工作副本落地该文件；Git blob和完整历史均保留。core.protectNTFS=false仅作用于checkout子进程；冻结导出器仅在只读git archive命令设置该选项，仍使用data_filter与extended-path目录，签名包SafePath和部署安全门禁不变。
+
+复用 [统一发行测试](../../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，见 [日志](evidence/parameter-refactor-01/release-windows-paths.log)。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。

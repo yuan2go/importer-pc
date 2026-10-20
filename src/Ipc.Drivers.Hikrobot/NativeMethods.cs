@@ -16,6 +16,7 @@ internal static class NativeMethods
         [FieldOffset(20)] public uint TimestampHigh;
         [FieldOffset(24)] public uint TimestampLow;
         [FieldOffset(28)] public uint FalseTrigger;
+        [FieldOffset(36)] public byte HasCode;
         [FieldOffset(56)] public uint Event;
         [FieldOffset(60)] public uint Channel;
         [FieldOffset(72)] public nint Codes;
@@ -41,7 +42,12 @@ internal static class NativeMethods
     {
         if (pointer == 0) throw new InvalidDataException("Missing SDK frame metadata");
         var header = Marshal.PtrToStructure<FrameHeader>(pointer);
-        if (header.Codes == 0) throw new InvalidDataException("Missing SDK code list");
+        if (header.Codes == 0)
+        {
+            if (header.HasCode != 0) throw new InvalidDataException("SDK reported a code without its code list");
+            return new(header.Trigger, header.Frame, header.Channel, header.Event, header.TimestampHigh, header.TimestampLow,
+                [], header.FalseTrigger == 0 ? "Read" : "FalseTrigger");
+        }
         var count = unchecked((uint)Marshal.ReadInt32(header.Codes));
         if (count > 300) throw new InvalidDataException("SDK code count exceeds ABI limit");
         // The Application accepts at most 256 characters. Preserve multi-code as a

@@ -8,7 +8,7 @@
 
 Platform新增 [NativeSdkBoundary](../../src/Ipc.Platform/NativeSdkBoundary.cs)，原独立签名部署资格仍是本地SDK文件的批准权威；ParcelCapabilityFactory传递已验证的原资格。原ExtensionLoading构造入口保留，无资格仍拒绝原生SDK启动。SDK文件锁和已加载版本保持至进程退出，不能靠卸载托管扩展热换原生库。静态接受不等于安装、运行资格或现场批准。
 
-Sportmaster业务包版本1.4.1，新增 `hikrobot-engineering` / `hikrobot-rcs-engineering` 精确提供者组合，允许新reader 1.0.0与原内建参考能力/可选原RCS组合；没有批准新生产组合。Application.Contracts ABI1.10.0、Parcel DB8、SQL及原请求语义不变。Platform字节改变：新扩展必须针对实际冻结宿主重新构建/签名，旧精确包和未决请求不得覆盖或换身份。Supply/其他Application不自动继承此产品组合资格。
+Sportmaster业务包版本1.4.1，新增 `hikrobot-engineering` / `hikrobot-rcs-engineering` 精确提供者组合，允许新reader 1.0.1与原内建参考能力/可选原RCS组合；没有批准新生产组合。Application.Contracts ABI1.10.0、Parcel DB8、SQL及原请求语义不变。Platform字节改变：新扩展必须针对实际冻结宿主重新构建/签名，旧精确包和未决请求不得覆盖或换身份。Supply/其他Application不自动继承此产品组合资格。
 
 ## 先做独立连接验证
 
@@ -34,7 +34,7 @@ dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Debug/net10.0/Ipc.Drivers.Hikrobot.P
 ## 接入现有Application
 
 1. 选择同版冻结宿主，按原安装/维护流程准备指定账户、机级租约、独立信任和只读扩展Store。不要修改当前生产配置或在活动原请求上切换实现。
-2. 原 `scripts/build-extension.py` 使用 `--definition src/Ipc.Drivers.Hikrobot/extension.build.json --version 1.0.0 --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新ipcx路径> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码须已提交且干净。此声明为Simulation组合，真实相机输入仍为SDK来源；不是合成数据，也不是Production资格。生产构建用 `extension.build.production.json`，必须有独立非TestOnly发布者和完整真实组合批准；本轮未生成生产签名或批准。
+2. 原 `scripts/build-extension.py` 使用 `--definition src/Ipc.Drivers.Hikrobot/extension.build.json --version 1.0.1 --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新ipcx路径> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码须已提交且干净。此声明为Simulation组合，真实相机输入仍为SDK来源；不是合成数据，也不是Production资格。生产构建用 `extension.build.production.json`，必须有独立非TestOnly发布者和完整真实组合批准；本轮未生成生产签名或批准。
 3. 按原签名安装流程安装包。在现有维护页选择 `hikrobot.idmvs-reader/idmvs-reader`，实例填 `device.ip`；可选 `device.serial` 锁定预期序列号。驱动不含左右逻辑；原Reader的 `Driver=extension:<实例Id>`、`DeviceId` 与实例一致，由原schema3拓扑绑定本业务位置。单台设备的实际序列号机级租约防止多个别名双占。
 4. 默认 `entity.mode=observe-only`，向Application报告 `UncorrelatedRead`，保留码观察但不创建业务作业。只有取得一触发一实体、同触发多帧、计数器重置和重连后原实体处置证据，才显式选择 `trigger`；设备本来须已TriggerMode=On。UTF-8/ASCII为显式严格编码，不自动猜测。IP之外的字段都有安全默认，无需修改驱动源码。
 5. 保存完整候选配置，经原CAS/受控重启激活。包含必需SDK的组合，即使Simulation也要有原签名 DeploymentQualification。`Prerequisites`必须绑定实际精确Package和manifest中 `vendor-sdk/MvCodeReaderCtrl.dll/2.0.0.4` 声明，`Files`包含整个SDK目录全部DLL的绝对路径/hash（最多64）。保留manifest中 `Preload=[MVGigEVision.dll,MvSmtDevCtrl.dll]` 的精确顺序并随声明签名；只初始化这两个传输依赖及主DLL，其余DLL仅作安装字节校验/锁定；原生依赖限定本目录和System32，无PATH/工作目录修改。文件及祖先必须符合既有受保护程序路径/ACL政策；本地任意可写目录不能冒充批准的SDK安装。使用原 `scripts/sign-deployment-qualification.py` 离线签署已批准文档，不生成虚构批准人或现场证据。
@@ -50,3 +50,5 @@ Production仍需真实reader、维护认证、全部必需能力及未过期精�
 **真实读码帧：尚未收到；本轮连接窗口计数为0。** 实际扫码内容/码制/触发、物理拔网重连、真实双相机、长期SDK回调/内存/节拍、Application真实资格装配、RCS端到端和现场验收仍待验证。本轮不修改历史D-01/05/06/14批准或RV状态，不宣称旧HTML/原迁移完成，不变更仓库公开范围。
 
 本轮曾在独立只读诊断进程尝试逐一初始化SDK目录全部DLL，初始化阻塞后终止该诊断。由此收紧为签名Preload清单；未将该尝试计为成功验证，也未修改或安装任何SDK文件。
+
+发布冒烟发现并修复原宿主自包含模式的框架身份识别缺陷：不再把CoreLib同目录全部DLL当框架，改从冻结宿主deps清单的明确Microsoft.NETCore.App runtimepack逐项核验身份；共享运行时仍只使用真正shared/Microsoft.NETCore.App目录。原自包含签名测试失败保留，不移除断言。最终驱动候选升为1.0.1；先前本地1.0.0工程包保持原SDK/宿主指纹，不覆盖。

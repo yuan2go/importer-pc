@@ -113,6 +113,12 @@ internal static class Verification
         var frame = Marshal.AllocHGlobal(96); var codes = Marshal.AllocHGlobal(4 + 2 * 4628);
         try
         {
+            Marshal.StructureToPtr(new NativeMethods.FrameHeader { Trigger = 7, Frame = 9 }, frame, false);
+            Check(NativeMethods.CopyFrame(frame, Encoding.UTF8).Codes.Length == 0, "SDK no-code flag permits an absent optional code list");
+            Marshal.StructureToPtr(new NativeMethods.FrameHeader { HasCode = 1 }, frame, false);
+            bool missingCodeRejected = false;
+            try { NativeMethods.CopyFrame(frame, Encoding.UTF8); } catch (InvalidDataException) { missingCodeRejected = true; }
+            Check(missingCodeRejected, "reported code without its native list faults instead of inventing no-code");
             Marshal.Copy(new byte[4 + 2 * 4628], 0, codes, 4 + 2 * 4628);
             Marshal.StructureToPtr(new NativeMethods.FrameHeader { Trigger = 7, Frame = 9, Codes = codes }, frame, false);
             var empty = NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true));

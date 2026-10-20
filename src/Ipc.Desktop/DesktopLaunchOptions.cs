@@ -18,7 +18,7 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
                 throw new ArgumentException("启动参数缺值：" + key);
             if (!options.TryAdd(key, args[i + 1])) throw new ArgumentException("启动参数重复：" + key);
         }
-        var ui = options.GetValueOrDefault("--ui", "classic");
+        var ui = options.GetValueOrDefault("--ui", DefaultUi(applicationId));
         if (ui is not ("classic" or "supply-station") || ui == "supply-station" && applicationId != "sportmaster")
             throw new ArgumentException("此业务不支持指定UI：" + ui);
         var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
@@ -27,4 +27,5 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
             options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout")), ui);
     }
+    public static string DefaultUi(string applicationId) => applicationId == "sportmaster" ? "supply-station" : "classic";
 }

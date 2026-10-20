@@ -1,0 +1,10 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "1f6e5b853ad67bc3bd604564af238af615e933f7",
+  "MediumInventorySha256": "AEB5AE433EAEBA1D064F68BBC949003059C4202315A1AB62CB68D819CC993253",
+  "PlatformSha256": "3F5B1EF790E6374C1D0930314204103731FE06607FDBA6F95EECA0BFB2B73D31",
+  "Scope": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+  "ProtectedUninstall": "NOT_RUN",
+  "ActualRebootDeletion": "NOT_RUN",
+  "ExitCode": 0
+}

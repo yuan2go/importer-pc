@@ -22,7 +22,8 @@ GUIDES = {
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
-    'docs/runtime/sportmaster-alternate-ui.md': 'SPORTMASTER-UI.md',
+    'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md',
+    'docs/runtime/sportmaster-visual-productization-01.md': 'SPORTMASTER-UI.md',
     'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md'}
 ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 

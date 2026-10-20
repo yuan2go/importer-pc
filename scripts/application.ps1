@@ -8,7 +8,7 @@ param(
     [string]$File,
     [string]$Destination,
     [string]$RuntimeAccount,
-    [ValidateSet('classic','supply-station')][string]$Ui = 'classic'
+    [ValidateSet('classic','supply-station')][string]$Ui = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -48,6 +48,7 @@ function Invoke-App([string[]]$Arguments) {
 }
 $installed = Invoke-App @('--action','installed-location') | ConvertFrom-Json
 if ($Action -eq 'Verify') { [ordered]@{Status='FilesVerified';Application=$assembly.ApplicationId;SourceCommit=$assembly.SourceCommit;ManifestSha256=(Get-FileHash -LiteralPath (Join-Path $Release 'SHA256SUMS')).Hash;Windows='NOT_RUN';Production='NOT_QUALIFIED'} | ConvertTo-Json; return }
+if (-not $Ui) { $Ui = if ($assembly.ApplicationId -eq 'sportmaster') { 'supply-station' } else { 'classic' } }
 if ($Ui -eq 'supply-station' -and $assembly.ApplicationId -ne 'sportmaster') { throw 'supply-station belongs only to Sportmaster' }
 if (-not $DataRoot -and $Action -in @('Run','Console','Shortcut')) {
     $DataRoot = if ($null -ne $installed) { $installed.DataRoot } else { Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'ImporterPc/data' }

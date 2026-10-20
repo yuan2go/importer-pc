@@ -68,7 +68,7 @@ public partial class SupplyStationWindow : Window
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     void Support_Click(object sender, RoutedEventArgs e) => new ProductSupportWindow(ViewModel.Application, ViewModel.Selected?.Id) { Owner = this }.Show();
-    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
+    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "设备与维护"); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
@@ -83,6 +83,7 @@ public partial class SupplyStationWindow : Window
     void ApplyLayout()
     {
         ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
+        ViewModel.IsTight = ClientArea.ActualHeight < 540;
         FontSize = ViewModel.IsCompact ? 14 : 16; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
     }
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();

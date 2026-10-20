@@ -2,6 +2,35 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public static class ProductHelp
 {
+    public static System.Windows.FrameworkElement CreateView()
+    {
+        var panel = new System.Windows.Controls.Grid { Margin = new(16) };
+        panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
+        panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
+        panel.RowDefinitions.Add(new() { Height = new(1, System.Windows.GridUnitType.Star) });
+        var search = new System.Windows.Controls.TextBox { MinHeight = 44, FontSize = 16, ToolTip = "搜索任务或故障，例如首配、Unknown、备份、卸载" };
+        System.Windows.Automation.AutomationProperties.SetName(search, "搜索离线帮助");
+        var searchArea = new System.Windows.Controls.StackPanel();
+        searchArea.Children.Add(new System.Windows.Controls.TextBlock { Text = "搜索任务或故障 · 首配 / Unknown / 备份 / 卸载", FontSize = 16, Margin = new(4, 0, 4, 8) });
+        searchArea.Children.Add(search); panel.Children.Add(searchArea);
+        var topics = QuickStart.Replace("\r", "").Split("\n\n", StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
+        var list = new System.Windows.Controls.ListBox { MinHeight = 88, MaxHeight = 170, FontSize = 16, Margin = new(0, 8, 0, 12) };
+        System.Windows.Automation.AutomationProperties.SetName(list, "帮助任务");
+        System.Windows.Controls.Grid.SetRow(list, 1); panel.Children.Add(list);
+        var text = new System.Windows.Controls.TextBox { IsReadOnly = true, TextWrapping = System.Windows.TextWrapping.Wrap, FontSize = 16, VerticalContentAlignment = System.Windows.VerticalAlignment.Top, VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto };
+        System.Windows.Automation.AutomationProperties.SetName(text, "帮助正文");
+        System.Windows.Controls.Grid.SetRow(text, 2); panel.Children.Add(text);
+        void Filter()
+        {
+            var found = topics.Where(t => t.Contains(search.Text.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+            list.Items.Clear();
+            foreach (var topic in found) list.Items.Add(new System.Windows.Controls.ListBoxItem { Content = topic.Split('\n')[0], Tag = topic, MinHeight = 44 });
+            if (list.Items.Count > 0) list.SelectedIndex = 0;
+            else text.Text = "没有匹配的帮助。请尝试‘首配’、‘备份’或‘Unknown’；业务状态未改变。";
+        }
+        list.SelectionChanged += (_, _) => { if (list.SelectedItem is System.Windows.Controls.ListBoxItem item) text.Text = (string)item.Tag; };
+        search.TextChanged += (_, _) => Filter(); Filter(); return panel;
+    }
     public const string QuickStart = """
 Importer PC · 离线快速开始
 
@@ -14,6 +43,7 @@ Importer PC · 离线快速开始
 保存Pending只表示待生效。重试启动会重新检查并启动资源，全部成功后才确认。旧账成功启动但仍待维护确认时，在维护页读取原证据、认证并显式确认，随后按守卫恢复新入场。
 
 日常作业与异常
+Sportmaster默认进入双位工作台，兼容界面使用显式 --ui classic。展示设置中可切布局、打开辅助窗口、查看来源诊断；作业记录和设备维护只切页，不重建运行实例。其他业务保持自身启动方式。
 工作台、记录、设置和辅助窗共享一个运行实例。左右来源按已确认设备绑定路由，设备读码不依赖键盘焦点；失败观察不会借用上一件的格口。软件暂停只暂停新业务入场，不是安全急停。
 设备失联/健康过期：检查供电、连接和绑定，使用受控重连，取得新鲜健康后检查开工条件。对端拒绝：保留原结果，按原因处理当前实体。结果Unknown：保留原请求、目标、合同和报文，只按真实合同允许的查询/核对处理；不要重发、换地址重投或重复放货。告警已读不表示故障已恢复。
 存储或容量不足：停止受影响准入，保留原库/原件；检查目标卷、完整备份和迁移计划。归档减少常驻工作集，不等于释放磁盘。

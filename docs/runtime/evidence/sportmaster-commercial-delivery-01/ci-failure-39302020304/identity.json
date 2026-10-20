@@ -1,0 +1,9 @@
+{
+  "RunId": 39302020304,
+  "HeadCommit": "1f6e5b853ad67bc3bd604564af238af615e933f7",
+  "CheckoutSource": "7ab667e9e89006b17173b9fd02c6dc81f48d1303",
+  "Status": "FAIL",
+  "Reason": "In-flight health probe correctly refused editor persistence; fixture did not own a quiescent maintenance window",
+  "ArtifactId": 12212238244,
+  "ArtifactSha256": "c441e60b8d2ba16cc3a45e4aa549919cbcd24339e873a644524a36b108774be5"
+}

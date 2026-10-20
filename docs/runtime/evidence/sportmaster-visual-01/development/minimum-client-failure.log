@@ -1,0 +1,24 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner
+PASS left and right resolve independent operations on the shared live Application
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS repeated native snapshots retain focus, barcode selection, disclosure and unsaved inspection
+PASS native calendar editor preserves the original wall time and explicit nonlocal UTC offset
+PASS invalid native time propagates as invalid input instead of retaining an older query time
+PASS native clear-time action removes both exact time boundaries
+PASS native history row and command owner survive live snapshot refresh
+PASS page navigation preserves existing controls and independent drafts
+PASS auxiliary native window shares the same Application and device lifetime
+PASS Unknown/rejection never reuse a slot and retain the original request owner
+PASS failed snapshot invalidates displayed slot and new commands without clearing original responsibility
+SIZE window=900x520 client=885.6x482.4 DPI=1.25
+PASS compact recovery actions remain in actual client area
+FAIL System.InvalidOperationException: minimum native client keeps barcode, slot and full action buttons visible inside each position
+   at Program.<>c__DisplayClass12_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 111
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 122
+   at Program.<>c__DisplayClass1_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 31

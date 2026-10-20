@@ -1,0 +1,26 @@
+{
+  "source_commit": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+  "files": [
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "0f1e58347a4a25147c0aad624d3265b7b4f7bf387d70104766adb7540ab43af5"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "sha256": "95bddb8f59d3346484c6999f225efb06d9836425569a77077008e2f3c940ab67"
+    },
+    {
+      "path": "docs/runtime/sportmaster-alternate-ui.md",
+      "sha256": "8fb26c96db3388c7b68f85eeba6293fa4bfe0bd5f23e2ffc10aa4e202b2f2f3f"
+    },
+    {
+      "path": ".agents/skills/README.md",
+      "sha256": "ae7050982a294106c8898d0314af4b21da93cfd238cf2ea5f66abfe6f3d7b4e2"
+    },
+    {
+      "path": "docs/runtime/validation/sportmaster-alternate-ui-windows.md",
+      "sha256": "4a487960c2e2bb293ee291b39ba641d6ec7463b2e8d67ccad7a67d770aa29f69",
+      "note": "Additional stale current acceptance instructions discovered during implementation review; original bytes retained before replacing that checklist"
+    }
+  ]
+}

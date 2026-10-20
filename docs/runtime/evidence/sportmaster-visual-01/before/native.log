@@ -1,0 +1,11 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS left and right resolve independent operations on the shared live Application
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS Unknown/rejection never reuse a slot and retain the original request owner
+PASS failed snapshot invalidates displayed slot and new commands without clearing original responsibility
+SIZE window=900x520 client=885.6x482.4 DPI=1.25
+PASS compact recovery actions remain in actual client area
+PASS compact recovery actions remain in actual client area
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+NOT_RUN physical touch, hardware, mixed-monitor DPI, UAC installation and site acceptance.

@@ -1,0 +1,72 @@
+PASS new-site authoritative discovery offers first configuration without starting a runtime or creating a database
+PASS unavailable saved provider rejects the entire replacement draft
+PASS failed offline resume preserves every current unsaved field
+PASS first configuration uses the existing revision/repair authority and records machine custody before the first business database
+PASS a copied origin file without a fenced handoff cannot certify another source directory
+PASS explicit new-site configuration starts the approved candidate without first starting the reference seed
+PASS previous startup facts refuse a replacement empty database even without receipt or image custody
+PASS missing previously-started database preserves original ledger and retained database bytes without creating a new ledger
+PASS database without its original configuration ledger cannot start from a replacement seed
+PASS missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim
+PASS original custody without a database cannot be replaced by a new empty business ledger
+PASS missing-database rejection preserves raw custody and creates no replacement authority
+Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.
+PASS original unconfirmed configuration fails resource construction
+PASS settled DB7 migrates to DB8 before failed initial resources and retains the repair route
+PASS failed startup is durable and does not confirm Effective
+PASS incomplete draft resumes without becoming Pending or changing Effective
+PASS actual Windows DPAPI output excludes plaintext secret marker
+PASS concurrent stale draft cannot overwrite newer input
+PASS ordinary Pending still cannot bypass unconfirmed original
+PASS failed repair candidate retains the original Effective
+PASS candidate failure does not confirm or erase pending repair evidence
+PASS interrupted repair remains explicit-restage-only with original Effective
+PASS stale initial repair cannot overwrite a newer intent
+PASS repair intent keeps old Effective and confirmation until candidate resources succeed
+PASS correct candidate starts despite permanently broken original and confirms only after resource startup
+PASS original repair bytes and failed attempts remain in authoritative envelope
+PASS history/settings use the same runtime and cannot reconstruct readers
+PASS scheduled backup stays pending without authenticated pause and never pauses production itself
+PASS synthetic maintenance authentication grants the existing backup permission
+PASS actual in-flight health reservation blocks maintenance even after authentication
+PASS live in-flight maintenance guard rejects draft persistence without bypassing authorization
+PASS in-flight refusal preserves both encrypted draft bytes and current invalid editor input
+PASS maintenance becomes available only after the actual external reservation drains
+PASS running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration
+PASS scheduled path actually creates the original complete recovery set engine output
+PASS backup count budget leaves the prior complete set and reports failure without deletion
+PASS backup list verifies the actual scheduled complete set
+PASS scheduled complete backup actually restores to an isolated new root and retains the original root
+PASS complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input
+PASS upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes
+PASS new-site template excludes stable devices, endpoints, secrets, numeric ranges and original backup path
+PASS isolated recovery cannot be cleared through initial repair
+PASS refused repair preserves original envelope bytes
+PASS stable filtered cursor preserves separate same-code entities and excludes later admissions
+PASS history metrics cannot count slot resolution as physical completion
+PASS CSV uses safe explicit text plus exact UTF-8 base64 and the same frozen filter
+PASS export observes cancellation
+PASS cancelled export publishes no partial CSV and keeps an accurate receipt
+PASS export cannot overwrite an existing final result
+PASS lost-after-commit fixture creates one original Unknown request
+PASS previewed support bytes correlate original request without leaking barcode, payload, parameters or target
+PASS initial repair refuses existing Unknown responsibility
+PASS upgrade/uninstall preflight cannot bypass original Unknown responsibility
+PASS same-source repair can back up Unknown originals without changing the configuration or clearing responsibility
+PASS DB7 Unknown remains on its original reader before the DB8 migration
+PASS refused DB7 upgrade preserves original request database and format
+PASS restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown
+PASS full restore preserves the exact machine-bound source ciphertext
+PASS historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised
+PASS matching full backup fences the original Unknown owner before handoff commit and keeps the target isolated
+PASS same-machine source provenance follows the bounded original fenced lineage without issuing a replacement claim
+PASS retired original Unknown root cannot start a second business owner
+PASS DB7 reader refuses the new DB8 semantic floor before writable open
+PASS refused prior reader preserves original database bytes
+PASS DB7 restore source cannot retire before old readers are fenced by DB8
+PASS refused legacy handoff keeps the original reader and does not commit a false source fence
+PASS legacy root without original machine custody cannot be silently certified by copying a policy
+PASS legacy backup/repair never mints a new machine claim or a false source fence
+PASS repair preserves the full later envelope including ordinary stage and failed retry history
+PASS COMM CORE COMPLETE
+PASS frozen native batch preflight and duplicate receipt refusal; no installation/device startup

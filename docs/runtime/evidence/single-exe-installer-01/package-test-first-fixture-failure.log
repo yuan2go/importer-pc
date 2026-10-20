@@ -1,0 +1,18 @@
+...F.
+======================================================================
+FAIL: test_unsafe_archive_paths_rejected (test_installer_package.InstallerPackageTests.test_unsafe_archive_paths_rejected)
+----------------------------------------------------------------------
+ValueError: Missing or unlisted payload files
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\importer-pc\scripts\test_installer_package.py", line 62, in test_unsafe_archive_paths_rejected
+    with self.assertRaisesRegex(ValueError, 'Unsafe'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Unsafe" does not match "Missing or unlisted payload files"
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.059s
+
+FAILED (failures=1)

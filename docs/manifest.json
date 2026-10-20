@@ -47772,13 +47772,13 @@
     {
       "path": "docs/runtime/cainiao-branding-01.md",
       "storage_scope": "public_repository",
-      "sha256": "1d2378cd0399cd9ca98e46db5030269b8178eda813591d32bc25b323746c2d0a",
-      "size_bytes": 3453,
-      "git_blob": "51fae07c57ab3bbd66e7bcde2f91375d54cb01cd",
-      "version": "cainiao-branding-01",
+      "sha256": "74c8b2a2250a0e3b9e7c2d3783db5c344d836fe5d05016327f33db211b1ea4e4",
+      "size_bytes": 3654,
+      "git_blob": "b93d2b3d53d67d102a8b1919886568c6c1afa120",
+      "version": "single-exe-installer-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
-      "source": "2026-10-20 user request and explicit public artwork permission"
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
     },
     {
       "path": "src/Ipc.Desktop/Assets/README.md",
@@ -48014,13 +48014,13 @@
     {
       "path": "docs/runtime/single-exe-installer-01.md",
       "storage_scope": "public_repository",
-      "sha256": "5b32bff2d89257ca5b57d9293ef074eca6fcc690a823f42d1f42ab2f2bbb0f5f",
-      "size_bytes": 2529,
-      "git_blob": "ada9f2ebf684454fb5dea595e7aa9e02e917c9a2",
+      "sha256": "387cfbcb862bcc911c62519b01ae891f3921c2e557cae01375a190daf6ed1a5e",
+      "size_bytes": 3596,
+      "git_blob": "9e9dfad6244f8af9d705e5f02ce30fed9d5adeba",
       "version": "single-exe-installer-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Single-file manual installation reusing existing deployment authority and exact payload",
-      "source": "2026-10-20 user request for one double-click EXE installer"
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
     },
     {
       "path": "docs/work-packages/WP-IPC-SINGLE-EXE-INSTALLER-01.md",
@@ -48175,6 +48175,226 @@
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single-file manual installation reusing existing deployment authority and exact payload",
       "source": "2026-10-20 user request for one double-click EXE installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/README.md",
+      "storage_scope": "public_repository",
+      "sha256": "5d2a6cc4a2e2048abc53fd4717dbdab9ed0e1eeca363b9683256421b15fa4464",
+      "size_bytes": 4442,
+      "git_blob": "9ecb700f2c642d5ebb5504e62cc17c14ac937f4d",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/archive-tools-environment-block.log",
+      "storage_scope": "public_repository",
+      "sha256": "6346d8208046a87002727f7c5e0a933a0fb7c1482ab832287f099d0d50eb876c",
+      "size_bytes": 1047,
+      "git_blob": "f6a38f1a110917eb468a8a9becdbfbcaeaa2e77a",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/delivery.json",
+      "storage_scope": "public_repository",
+      "sha256": "8deecb9c528dcc215ecd79ff36e9dccc5aa2353a9cb61bf5c2700e18fe8ff423",
+      "size_bytes": 1119,
+      "git_blob": "5fd9519b0f9f8d3d5fbeef23dd7b86e283e36411",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/generated-output-path-test.log",
+      "storage_scope": "public_repository",
+      "sha256": "91979d0184a85394a31bc4de57918feaf50293e2be86fff19ce3874557943d5d",
+      "size_bytes": 98,
+      "git_blob": "fcfd3596060bbcfc182ec8211f2315e0b38dd975",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/guide-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "f17e74ae6d4c64bbf7742b3b4c4070447c991e5a061c812e883aa883e88edd81",
+      "size_bytes": 100,
+      "git_blob": "4ae72b51f7118e6fc421548708b8e68ca454a367",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/installer-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "140e9d0c154db34d6b43b41afc04598465e204e49d4e3b5a84ed19f241591d25",
+      "size_bytes": 285,
+      "git_blob": "901bd3294b1df55acb0a01e4ece3478f1b1b6f1a",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/media-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "1f41e51607678e88d8f2bd0866a7b0f27499a6e06ff50da75594d88699e4fb31",
+      "size_bytes": 7629,
+      "git_blob": "1050814a6073a88d61ba112028c375c97097ca90",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/native-probe.cs.txt",
+      "storage_scope": "public_repository",
+      "sha256": "ec85e039f9810a63df11852cb2766ae28ff7621d6a5b9dcdad83f571e1c49cc4",
+      "size_bytes": 11973,
+      "git_blob": "cd7b99b0eb98bcc46dba37a64ca453f3949e4444",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/native-probe.csproj.txt",
+      "storage_scope": "public_repository",
+      "sha256": "98d66bbefc20d353794271df8e046412bd5d2564ca2b0663d3a2f6f4b1786ce8",
+      "size_bytes": 266,
+      "git_blob": "7d8ab0d76fd2fa91901f2cbe2021ac36d20f0a12",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/native-public.log",
+      "storage_scope": "public_repository",
+      "sha256": "928bc9e54beb98967b8a7ac0570780f44b1c36d5c2732d7ba6d5a0601239cd99",
+      "size_bytes": 1296,
+      "git_blob": "65ebcface60bc4866884db2eb3c5bcb86f45697a",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/native-result.json",
+      "storage_scope": "public_repository",
+      "sha256": "9224d423791a633c2074a0672cb6ce1dd3fc42145b80fd95f55f282c95f8e856",
+      "size_bytes": 254,
+      "git_blob": "4e5dc18a708337ea2174eda9bd3b33e04800dec1",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/package-test-first-fixture-failure.log",
+      "storage_scope": "public_repository",
+      "sha256": "ec613eafda94b2199e866529f2cde251d1e0e909d1ee135b91aebab156a0d05b",
+      "size_bytes": 837,
+      "git_blob": "39c220e0b8ab2f264ab622ebb69a0275a8ab6241",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/package-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "01a9685662dd091542f57d04ab773327f3b73808b6e936ae22a8c54a52bb647c",
+      "size_bytes": 103,
+      "git_blob": "5cbdc80fb75e319cc9806bf4303eef3ebc9cc7e4",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/payload-tests.log",
+      "storage_scope": "public_repository",
+      "sha256": "c575de1787341155c91d8676811244ad442f62f7542d441c9e237db02996be40",
+      "size_bytes": 1305,
+      "git_blob": "c886706d28ada0a502f96036bfa961128286dca1",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/preparing.png",
+      "storage_scope": "public_repository",
+      "sha256": "e01423f06ee550a2c1da7387d4f3f321ca12a34abecbd3425791b77a0abf65df",
+      "size_bytes": 39444,
+      "git_blob": "218eba2f1128bfaa3b1349a38ad6aed2b1ff432e",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/probe-corrections.json",
+      "storage_scope": "public_repository",
+      "sha256": "45fc932728feaa67aec1e06bead0a21860aeb4aa2da89296c3da77badb614ae6",
+      "size_bytes": 462,
+      "git_blob": "ff18c96fe0cc2f37ea0facca6f8b170cf52768b3",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/single-exe-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "e57d783f51a96c109c0f3680ad46b449edd10721ef1d606324978e704cd65d9c",
+      "size_bytes": 1090,
+      "git_blob": "d483bb3cc4070592f3bb4305bce7243e56b4bb8a",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/startup-baseline-environment-block.log",
+      "storage_scope": "public_repository",
+      "sha256": "85618056be812524101969d18756e1405e9b05d59a11582e4e0fbb5b901b9329",
+      "size_bytes": 2504,
+      "git_blob": "b607bafe75e3da792f0a4828b8d5edaab7fe5752",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/welcome-small.png",
+      "storage_scope": "public_repository",
+      "sha256": "5aa1ab5cf5f223e6bf53485d2c3c2ed45ac730e9e99a96a6d24fc29c09855da5",
+      "size_bytes": 38901,
+      "git_blob": "52a68a047e8741669294f4aaa9cd659191d64863",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
+    },
+    {
+      "path": "docs/runtime/evidence/single-exe-installer-01/welcome.png",
+      "storage_scope": "public_repository",
+      "sha256": "ad353c7de7b4760f57e910261f6e17dc995c34ab271816fc5a58acf7be7368d6",
+      "size_bytes": 41050,
+      "git_blob": "30dff4f31fcda8981bccb7d8c9deb3838678b275",
+      "version": "single-exe-installer-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Exact single-EXE delivery and bounded Windows native verification",
+      "source": "2026-10-20 user request for a single EXE field installer"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -50059,8 +50279,20 @@
   "single_exe_installer_01": {
     "base_main": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
     "report": "docs/runtime/single-exe-installer-01.md",
-    "state": "IMPLEMENTED_PENDING_FROZEN_VERIFICATION",
+    "state": "SINGLE_EXE_DELIVERED_NATIVE_PREPARATION_AND_SETUP_HANDOFF_PASS",
     "deployment_authority": "Existing StartupSetupWindow/ParcelStartupServices/WindowsDeploymentSetup",
-    "historical_d_rv": "UNCHANGED"
+    "historical_d_rv": "UNCHANGED",
+    "runtime_source_commit": "a7de058d5877b8fa797e2292271181b4272ac244",
+    "installer_sha256": "2284d542f65299f53b2e6cec10e6ac7e1e52ee59dfc2ff9c487fc4deb27f0c9f",
+    "installer_bytes": 172462152,
+    "delivery_files": 1,
+    "native_assertions": 17,
+    "payload_assertions": 27,
+    "packager_tests": 5,
+    "authenticode": "NOT_SIGNED",
+    "actual_uac_installation": "NOT_RUN",
+    "upgrade_uninstall": "NOT_RUN",
+    "sdk_devices_rcs_field": "NOT_RUN",
+    "production": "NOT_APPROVED"
   }
 }

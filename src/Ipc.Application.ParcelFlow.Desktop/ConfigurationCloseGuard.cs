@@ -7,16 +7,19 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public static class ConfigurationCloseGuard
 {
     public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page)
+        => CommitAndFindInvalid(page) is not null || vm.HasUnsavedConfiguration;
+    public static FrameworkElement? CommitAndFindInvalid(DependencyObject root, bool enabledOnly = false)
     {
-        var invalid = false;
-        foreach (var node in Descendants(page))
+        FrameworkElement? first = null;
+        foreach (var node in Descendants(root))
         {
+            if (enabledOnly && node is UIElement { IsEnabled: false }) continue;
             if (node is TextBox text && !text.IsReadOnly) text.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
             if (node is DataGrid grid)
-                invalid |= !grid.CommitEdit(DataGridEditingUnit.Cell, true) || !grid.CommitEdit(DataGridEditingUnit.Row, true);
-            invalid |= Validation.GetHasError(node);
+                if (!grid.CommitEdit(DataGridEditingUnit.Cell, true) || !grid.CommitEdit(DataGridEditingUnit.Row, true)) first ??= grid;
+            if (Validation.GetHasError(node) && node is FrameworkElement field && (first is null || first is not TextBox && field is TextBox)) first = field;
         }
-        return invalid || vm.HasUnsavedConfiguration;
+        return first;
     }
     static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {

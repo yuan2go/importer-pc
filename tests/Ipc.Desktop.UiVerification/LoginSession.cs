@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Ipc.Application.Contracts;
@@ -52,14 +53,17 @@ static partial class Program
                 "maintenance authentication alone never makes an operator session applicable");
             var search = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "搜索参数");
             search.Text = "SessionLifetimeMs"; window.UpdateLayout();
-            Check(!Descendants(editor).OfType<Button>().Any(x => AutomationProperties.GetName(x).StartsWith("定位参数 操作员会话有效时长")),
+            var searchResults = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "参数搜索结果");
+            Check(searchResults.Items.Count == 0,
                 "search excludes the inapplicable session field");
             login.Selection = selected; window.UpdateLayout(); editor.NavigateTo("SessionLifetimeMs");
             Check(session.IsVisible && session.Text == "600000" && ReferenceEquals(session, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "SessionLifetimeMs")),
                 "rebinding reveals the same control and unsaved session value without rebuilding the editor");
             search.Text = "SessionLifetimeMs"; window.UpdateLayout();
-            var result = Descendants(editor).OfType<Button>().Single(x => AutomationProperties.GetName(x).StartsWith("定位参数 操作员会话有效时长"));
-            result.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
+            Check(searchResults.Items.Count == 1, "search offers the actual session editor without duplicate read-only technical matches");
+            search.Focus();
+            search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search), Environment.TickCount, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent });
+            window.UpdateLayout();
             Check(session.IsKeyboardFocused && search.Text.Length == 0, "search locates the actual bound session editor and restores its object page");
             session.Text = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
             Check(vm.ParameterEditor.Issues.Any(x => x.Path == "SessionLifetimeMs") && session.Text == "bad" && editor.NavigateTo("SessionLifetimeMs"),

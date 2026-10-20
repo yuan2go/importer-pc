@@ -10,10 +10,9 @@ public sealed partial class ParameterSettingsControl
 {
     void BuildSystem(ParameterEditorModel m)
     {
-        var station = Page(0, "站点标识", "取格口与心跳是不同用途。以下字段仍属于同一完整候选，旧请求保持原值。");
-        Readonly(station, "本地工作站标识 · StationId", m.StationId);
-        var form = Form(station);
-        Input(form, "心跳工位编码 · StationCode", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；不自动替换取格口站码。");
+        var station = Page(0, "供包台标识", "设置本站对外使用的编码。取格口和心跳分别维护，各自用途清楚。 ");
+        var hasRcs = m.Components.Any(ParameterOwnership.IsRcs);
+        var form = Form(station, hasRcs ? "取格口身份" : null);
         foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
         {
             foreach (var p in rcs.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) Parameter(form, station, rcs, p);
@@ -21,29 +20,54 @@ public sealed partial class ParameterSettingsControl
             if (left is not null && right is not null)
             {
                 var pair = new CommonStationParameter(left, right);
-                Input(form, "共同取格口站码 · stationCode", pair, "Value", rcs.InstanceId + "/left-station-code", station,
-                    pair.OriginalValues + "。填写此项即明确将左右候选统一为该值；尚未保存。");
+                if (ParameterOwnership.StationConflict(rcs))
+                {
+                    var conflict = Text("需要核对旧设置：左右取格口站码不同。" + pair.OriginalValues + "。请填写本站共同使用的编码。");
+                    conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
+                }
+                Input(form, "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的取格口请求共同使用此编码。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
+                Technical(station, "供包台编码", rcs.InstanceId + "/left-station-code / right-station-code", pair.OriginalValues + "。明确填写共同值才统一两个候选；原请求保持原值。");
             }
         }
-        var data = Page(0, "数据与记录", "保留空间不足时阻断新准入；同库归档不会释放磁盘。"); form = Form(data);
-        Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录投影；请从独立维护核对原部署。");
-        Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得目录，不推测当前工作目录。");
-        data.Body.Children.Add(Text("运行内只读。迁移须从独立维护处理原目录、完整备份及资源责任。"));
+        form = Form(station, hasRcs ? "心跳身份" : null);
+        Input(form, "工位编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
+        Technical(station, "本地工作站标识", "StationId", m.StationId);
+        Technical(station, "心跳工位编码", "StationCode", "不自动替换取格口 stationCode；长度1～256，不含控制字符。");
+        var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
         Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
-        Input(form, "关键写入保留空间", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB");
+        Input(form, "磁盘保留空间（MiB）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时阻断新准入。");
         SessionLifetime(form, data, m);
-        var backup = Page(0, "计划备份", "只在已暂停、维护授权有效且无外呼时执行；完整恢复集和原责任保持。");
-        var enabled = new CheckBox { Content = "启用受控计划备份", MinHeight = 44 };
-        enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay }); backup.Body.Children.Add(enabled);
+        data.Body.Children.Add(Text("存储位置", true));
+        Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
+        Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
+        Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
+        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、维护授权有效且无在途外呼时执行。");
+        var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };
+        enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
+        Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
-        Input(form, "备份绝对目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "关闭时不保存备份配置；输入可在本次草稿中保留。");
-        Input(form, "周期（分钟）", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080");
-        Input(form, "容量上限（份）", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000；不自动删除原备份");
-        var maintenance = Page(0, "维护与迁移", "模板只改变获准的通用策略和精确提供者草稿；站码、设备地址、目标及凭据不由模板填入。完整备份恢复与配置导入分别处理。");
-        var open = new Button { Content = "打开维护与迁移", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); maintenance.Body.Children.Add(open);
-        maintenance.Body.Children.Add(Text("维护入口包含显示偏好、加密草稿、模板差异、备份、已安装包与高级配置。首配中请使用本窗的维护操作。"));
+        Input(form, "备份目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "填写绝对路径。");
+        Input(form, "备份间隔（分钟）", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080 分钟");
+        Input(form, "备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000 份；到达上限后不自动删除原备份。");
+        if (BackupRequested is not null)
+        {
+            backup.Body.Children.Add(Text("手动备份", true));
+            backup.Body.Children.Add(Text("创建一份新的完整恢复集，保存到明确选择的路径。"));
+            var open = new Button { Content = "立即完整备份…", HorizontalAlignment = HorizontalAlignment.Left };
+            open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
+        }
+        Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
+        var display = Page(0, "显示偏好", "本机显示偏好按当前 Windows 用户保存，立即作用于当前窗口。");
+        display.Body.Children.Add(Text("窗口布局", true));
+        display.Body.Children.Add(Text("标准布局保留更宽的留白；紧凑布局适用于较小屏幕。窗口不足时会自动使用紧凑布局。"));
+        if (DisplayPreferencesRequested is not null)
+        {
+            var change = new Button { Content = "切换标准 / 紧凑布局", HorizontalAlignment = HorizontalAlignment.Left };
+            change.Click += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty); display.Body.Children.Add(change);
+        }
+        else display.Body.Children.Add(Text("完成首次配置后，可在作业窗口调整本机布局。"));
+        display.Body.Children.Add(Text("显示偏好不进入业务配置修订；不会启动设备或恢复新入场。"));
     }
     void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)
     {
@@ -69,12 +93,13 @@ public sealed partial class ParameterSettingsControl
     }
     void BuildBusiness(ParameterEditorModel m)
     {
-        var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", "当前业务 " + m.ApplicationId + "；此处不切换业务模块。"); var form = Form(page);
+        var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "从同一次观察的候选中选出唯一有效条码。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
-            Input(form, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", page, "整串匹配；单次25ms、总计100ms。旧null规则保持严格单码兼容；清空已有规则不会生成默认规则。", true);
+            Input(form, "条码筛选规则", m.Policy, "BarcodePattern", "BarcodePattern", page, "使用正则表达式匹配完整条码。清空已有规则不会生成默认规则。", true);
+            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。旧null规则保持严格单码兼容；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
-            var rules = Page(1, "请求规则", "请求数量是正整数；响应数量保留上游字符串，两者不互相代替。新配置只影响新作业。"); form = Form(rules);
+            var rules = Page(1, "取格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }
@@ -90,9 +115,9 @@ public sealed partial class ParameterSettingsControl
                 foreach (var f in new[] { ("单件图像最大字节", "ImageBytes"), ("图像缓存总字节", "TotalBytes"), ("图像待处理件数", "MaximumPending") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             }
         }
-        var budget = Page(1, "处理预算", "影响业务接纳与外呼预算；不改变原请求或认定物理完成。"); form = Form(budget);
-        Input(form, "输入队列容量", m.Policy, "QueueCapacity", "QueueCapacity", budget, "1～4096；满时围栏拒收");
-        Input(form, "调用预算（ms）", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
+        var budget = Page(1, "处理参数", "设置业务队列、外呼时限和未清偿作业容量。"); form = Form(budget);
+        Input(form, "输入队列容量", m.Policy, "QueueCapacity", "QueueCapacity", budget, "1～4096；队列满时拒收新输入。");
+        Input(form, "调用时限（ms）", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
         Input(form, "未清偿作业容量", m.Policy, "MaximumOperations", "MaximumOperations", budget, "1～100000");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)

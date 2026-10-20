@@ -2,66 +2,53 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
-    readonly TextBox search = new() { MinHeight = 44, MinWidth = 160, FontSize = 15, VerticalContentAlignment = VerticalAlignment.Center };
-    readonly StackPanel searchItems = new();
-    readonly TextBlock searchCount = new() { VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 0, 0), Foreground = Brush("#586B80") };
-    readonly ScrollViewer searchResults = new() { Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Background = System.Windows.Media.Brushes.White };
+    readonly TextBox search = new() { MinHeight = 38, FontSize = 14, VerticalContentAlignment = VerticalAlignment.Center };
+    readonly TextBlock searchCount = new() { Margin = new(4, 8, 0, 4), Foreground = Brush("#5A6878"), FontSize = 13 };
+    readonly ListBox searchResults = new() { Visibility = Visibility.Collapsed, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+    sealed record SearchHit(string Path, string Title, string Context);
     FrameworkElement BuildSearch()
     {
-        var bar = new Grid { Margin = new(0, 0, 0, 8) };
-        bar.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
-        bar.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        bar.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        var input = new Grid();
-        input.Children.Add(search);
-        var hint = Text("搜索参数名称、编码或对象  ·  Ctrl+F"); hint.IsHitTestVisible = false; hint.Margin = new(14, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center;
-        input.Children.Add(hint);
-        AutomationProperties.SetName(search, "搜索参数");
-        AutomationProperties.SetHelpText(search, "按名称、字段键、分类或对象搜索。回车定位第一个结果，Esc 返回表单；输入与草稿不会改变。");
-        searchResults.Content = searchItems;
-        AutomationProperties.SetName(searchResults, "参数搜索结果");
-        AutomationProperties.SetLiveSetting(searchCount, AutomationLiveSetting.Polite);
-        var clear = new Button { Content = "清除", MinHeight = 44, Visibility = Visibility.Collapsed };
+        var bar = new StackPanel { Margin = new(0, 0, 0, 8) };
+        var input = new Grid(); input.Children.Add(search);
+        var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = 13; hint.Margin = new(10, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
+        AutomationProperties.SetName(search, "搜索参数"); AutomationProperties.SetAutomationId(search, "ParameterSearch");
+        AutomationProperties.SetHelpText(search, "按名称、用途、技术键或实例搜索。回车定位首项，下方向键选择结果，Esc清除搜索。草稿保留。");
+        searchResults.ItemTemplate = (DataTemplate)Resources["ParameterSearchTemplate"];
+        ScrollViewer.SetHorizontalScrollBarVisibility(searchResults, ScrollBarVisibility.Disabled);
+        AutomationProperties.SetName(searchResults, "参数搜索结果"); AutomationProperties.SetLiveSetting(searchCount, AutomationLiveSetting.Polite);
+        var clear = new Button { Content = "清除搜索", MinHeight = 36, Visibility = Visibility.Collapsed, HorizontalAlignment = HorizontalAlignment.Left, Style = (Style)Resources["ParameterQuietAction"], Margin = new(0, 4, 0, 0) };
         clear.Click += (_, _) => { search.Clear(); search.Focus(); };
         search.TextChanged += (_, _) => { hint.Visibility = search.Text.Length == 0 ? Visibility.Visible : Visibility.Collapsed; clear.Visibility = search.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible; RefreshSearch(); };
         search.KeyDown += (_, e) =>
         {
-            if (e.Key == Key.Enter && searchItems.Children.OfType<Button>().FirstOrDefault() is { } first)
-            { first.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); e.Handled = true; }
+            if (e.Key == Key.Enter && searchResults.Items.OfType<SearchHit>().FirstOrDefault() is { } first) { NavigateTo(first.Path); e.Handled = true; }
+            else if (e.Key == Key.Down && searchResults.Items.Count > 0) { searchResults.SelectedIndex = 0; ((ListBoxItem?)searchResults.ItemContainerGenerator.ContainerFromIndex(0))?.Focus(); e.Handled = true; }
         };
-        Grid.SetColumn(clear, 1); Grid.SetColumn(searchCount, 2);
+        searchResults.PreviewKeyDown += (_, e) => { if (e.Key == Key.Enter && searchResults.SelectedItem is SearchHit hit) { NavigateTo(hit.Path); e.Handled = true; } };
+        searchResults.PreviewMouseLeftButtonUp += (_, e) =>
+        {
+            if (ItemsControl.ContainerFromElement(searchResults, e.OriginalSource as DependencyObject) is ListBoxItem { Content: SearchHit hit }) { NavigateTo(hit.Path); e.Handled = true; }
+        };
         bar.Children.Add(input); bar.Children.Add(clear); bar.Children.Add(searchCount); return bar;
     }
     void RefreshSearch()
     {
-        searchItems.Children.Clear();
-        var query = search.Text.Trim();
-        categories.Visibility = query.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+        var query = search.Text.Trim(); directory.Visibility = query.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
         searchResults.Visibility = query.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        searchCount.Text = "";
-        if (query.Length == 0) return;
+        searchCount.Text = ""; searchCount.Visibility = query.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+        if (query.Length == 0) { searchResults.ItemsSource = null; return; }
         var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var hits = locations.Where(x => (categoryScope is null || x.Value.Page.Category == categoryScope) && x.Value.Applicable?.Invoke() != false)
-            .GroupBy(x => x.Value.Control).Select(g => g.First())
-            .Where(x => terms.All(term => (x.Value.Label + " " + x.Key + " " + x.Value.Page.Title + " " +
-                ParameterOwnership.CategoryName(x.Value.Page.Category) + " " + x.Value.Help).Contains(term, StringComparison.OrdinalIgnoreCase))).ToArray();
-        searchCount.Text = hits.Length + " 项";
-        if (hits.Length == 0)
-            searchItems.Children.Add(Text("未找到匹配参数。可换用中文名称、英文键或设备名称；清除搜索返回全部对象。"));
-        foreach (var hit in hits)
-        {
-            var stack = new StackPanel();
-            var label = Text(hit.Value.Label); label.Foreground = Brush("#183047"); label.FontWeight = FontWeights.SemiBold;
-            stack.Children.Add(label);
-            stack.Children.Add(Text(ParameterOwnership.CategoryName(hit.Value.Page.Category) + " / " + hit.Value.Page.Title + "  ·  " + hit.Key));
-            var button = new Button { Content = stack, Style = (Style)Resources["ParameterResultAction"], MinHeight = 64, Margin = new(0, 0, 0, 4) };
-            AutomationProperties.SetName(button, "定位参数 " + hit.Value.Label + " · " + hit.Value.Page.Title);
-            button.Click += (_, _) => NavigateTo(hit.Key); searchItems.Children.Add(button);
-        }
+            .GroupBy(x => x.Value.Control).Select(g => new { First = g.First(), Keys = string.Join(" ", g.Select(x => x.Key)) })
+            .Where(x => terms.All(term => (x.First.Value.Label + " " + x.Keys + " " + x.First.Value.Page.Title + " " + ParameterOwnership.CategoryName(x.First.Value.Page.Category) + " " + x.First.Value.Help).Contains(term, StringComparison.OrdinalIgnoreCase)))
+            .Select(x => new SearchHit(x.First.Key, x.First.Value.Label, ParameterOwnership.CategoryName(x.First.Value.Page.Category) + " / " + x.First.Value.Page.Title)).ToArray();
+        searchCount.Text = hits.Length == 0 ? "没有匹配项，试试名称或技术键。" : hits.Length + " 项匹配";
+        searchCount.TextWrapping = TextWrapping.Wrap; searchResults.ItemsSource = hits;
     }
 }

@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Ipc.Application.Contracts;
@@ -69,6 +70,9 @@ static partial class Program
         Click(window, "参数配置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
         var maintenance = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
         var editor = (ParameterSettingsControl)maintenance.FindName("MainParameterEditor");
+        Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回作业")) &&
+            !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "作业")),
+            "focused settings replaces the daily sidebar with a visible return-to-work action");
         editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
         station.Text = "SYNTHETIC-UNSAVED"; station.Focus(); station.Select(2, 4);
         var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var busy = vm.RunAsync(() => pending.Task, "合成慢检查");
@@ -84,31 +88,50 @@ static partial class Program
         var search = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "搜索参数");
         search.Text = "队列"; window.UpdateLayout();
         Capture("parameters-search", client);
-        var hit = Descendants(editor).OfType<Button>().Single(x => AutomationProperties.GetName(x).StartsWith("定位参数 输入队列容量"));
-        hit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
+        var results = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "参数搜索结果");
+        Check(results.IsVisible && results.Items.Count > 0 && search.Focus(), "parameter search presents matches and accepts native keyboard input");
+        search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search)!, 0, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent }); window.UpdateLayout();
         Check(search.Text.Length == 0 && Descendants(editor).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused),
             "cross-category search locates and focuses the actual field without recreating editors");
         editor.NavigateTo("StationCode");
         var returnedStation = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
         Check(ReferenceEquals(station, returnedStation) && station.Text == "SYNTHETIC-UNSAVED", $"search and category navigation retain exact unsaved controls and input (same={ReferenceEquals(station, returnedStation)}, before={station.Text}, after={returnedStation.Text})");
         search.Text = "没有这种字段"; window.UpdateLayout();
-        Check(Descendants(editor).OfType<TextBlock>().Any(t => t.Text.StartsWith("未找到匹配参数")), "empty search explains how to return without changing the draft");
+        Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有匹配项")), "empty search explains how to return without changing the draft");
         search.Clear();
-        var editorHeight = editor.ActualHeight; var preparationSeen = false;
-        var preparationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
-        preparationTimer.Tick += (_, _) =>
+        var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
+        editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
+        var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "QueueCapacity");
+        var originalBudget = budget.Text; budget.Text = "bad";
+        ((Button)maintenance.FindName("SaveChanges")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await Until(() => !vm.Busy && vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity")); window.UpdateLayout();
+        Check(!window.OwnedWindows.OfType<Window>().Any(w => w.Title == "保存更改") && budget.Text == "bad" &&
+            budget.IsKeyboardFocused && station.Text == "SYNTHETIC-UNSAVED",
+            "save automatically finds the invalid field and preserves the draft without opening a review or submitting");
+        Capture("parameters-save-validation", client);
+        budget.Text = originalBudget; editor.NavigateTo("StationCode"); window.UpdateLayout();
+        Check(!vm.CanConfigure && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
+            "save review remains accessible before maintenance authorization");
+        var reviewSeen = false; double editorHeight = 0;
+        await ObserveSaveReviewAsync(window, maintenance, dialog =>
         {
-            var dialog = window.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存准备");
-            if (dialog is null) return;
-            preparationSeen = Descendants(dialog).OfType<TextBox>().Any(t => AutomationProperties.GetName(t) == "维护变更原因") &&
-                Descendants(dialog).OfType<PasswordBox>().Any();
-            Capture("parameters-save-preparation", (FrameworkElement)dialog.Content);
-            Click(dialog, "返回表单");
-        };
-        preparationTimer.Start();
-        try { Click(maintenance, "保存准备…"); }
-        finally { preparationTimer.Stop(); }
-        Check(preparationSeen && editor.ActualHeight == editorHeight && station.Text == "SYNTHETIC-UNSAVED", "save preparation owns authorization and reason without shrinking or replacing the parameter draft");
+            reviewSeen = !vm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
+                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
+            var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
+            Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
+                "native review displays the current station change from the validated complete candidate");
+            editorHeight = editor.ActualHeight;
+            Capture("parameters-save-review", (FrameworkElement)dialog.Content);
+        });
+        window.UpdateLayout();
+        Check(reviewSeen && editor.ActualHeight == editorHeight && station.Text == "SYNTHETIC-UNSAVED" &&
+            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
+            "one save review owns authorization and reason without holding Busy, shrinking the editor, or staging on cancel");
+        await vm.RunAsync(vm.SwitchToAdvancedConfigurationAsync, "合成：切换同一候选到高级编辑");
+        await vm.RunAsync(vm.LoadStructuredFromJsonAsync, "合成：采用同一候选到表单");
+        Check(vm.CanEditStructuredConfiguration && vm.GetConfigurationChangeItems().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED") &&
+            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
+            "adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it");
         await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
         window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)

@@ -149,7 +149,12 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
-        if (root is SupplyStationWindow) name = name switch { "设备与维护" => "参数配置", "工作台" => "作业", _ => name };
+        if (root is SupplyStationWindow station)
+        {
+            name = name switch { "设备与维护" => "参数配置", "工作台" => "作业", _ => name };
+            if (name == "参数配置" && station.ViewModel.SelectedPage == "maintenance") return;
+            if (name == "作业" && station.ViewModel.SelectedPage == "maintenance") name = "返回作业";
+        }
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
         if (button is not null) button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         else Descendants(root).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>().SelectMany(MenuItems)).Single(x => Equals(x.Header, name)).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -158,6 +163,50 @@ static partial class Program
             yield return item;
             foreach (var child in item.Items.OfType<MenuItem>()) foreach (var nested in MenuItems(child)) yield return nested;
         }
+    }
+    static async Task ObserveSaveReviewAsync(Window owner, MaintenancePage page, Action<Window> inspect)
+    {
+        var opened = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(80) };
+        timer.Tick += (_, _) =>
+        {
+            var dialog = owner.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存更改");
+            if (dialog is null) return;
+            timer.Stop();
+            Exception? failure = null;
+            try
+            {
+                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "需要时认证维护权限"));
+                if (authorization.IsVisible) authorization.IsExpanded = true;
+                dialog.UpdateLayout();
+                inspect(dialog);
+            }
+            catch (Exception ex) { failure = ex; }
+            try
+            {
+                var back = Descendants(dialog).OfType<Button>().Single(b => Equals(b.Content, "返回设置"));
+                if (!back.IsVisible || !back.IsEnabled) throw new InvalidOperationException("Save review cannot return to the current settings.");
+                back.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                if (dialog.IsVisible) throw new InvalidOperationException("Save review did not return after its read-only inspection.");
+            }
+            catch (Exception ex)
+            {
+                failure = failure is null ? ex : new AggregateException(failure, ex);
+                if (dialog.IsVisible) dialog.Close();
+            }
+            if (failure is null) opened.TrySetResult(); else opened.TrySetException(failure);
+        };
+        timer.Start();
+        try
+        {
+            var save = (Button)page.FindName("SaveChanges");
+            if (!save.IsVisible || !save.IsEnabled) throw new InvalidOperationException("The native save-review entry is not available.");
+            save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            // Opening now awaits complete-candidate validation. Keep the native
+            // observer alive after the async click returns, until the review closes.
+            await opened.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        }
+        finally { timer.Stop(); }
     }
     static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {

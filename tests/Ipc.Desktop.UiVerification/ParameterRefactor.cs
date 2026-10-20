@@ -38,14 +38,27 @@ static partial class Program
         var window = new Window { Title = "PARAM-01 原生交互验证 · 合成数据", Content = page, Width = 1600, Height = 900, WindowStartupLocation = WindowStartupLocation.CenterScreen };
         window.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         var control = Descendants(page).OfType<ParameterSettingsControl>().Single();
-        var categories = Descendants(control).OfType<TabControl>().Single();
-        Check(categories.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "系统", "业务模块", "驱动", "组件" }), "one shared native editor exposes exactly the four parameter categories");
+        var categoryTargets = new[]
+        {
+            (Category: "系统", Path: "StationCode"),
+            (Category: "业务模块", Path: "BarcodePattern"),
+            (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider"),
+            (Category: "组件", Path: vm.CapabilityDrafts[0].InstanceId + "/Provider")
+        };
+        foreach (var target in categoryTargets)
+        {
+            Check(control.NavigateTo(target.Path), target.Category + " is reachable through its actual parameter field");
+            window.UpdateLayout();
+            Check(Descendants(control).OfType<FrameworkElement>().Any(x => x.IsVisible && AutomationProperties.GetName(x) == target.Path),
+                target.Category + " navigation reveals the existing field in the shared editor");
+        }
+        control.NavigateTo("StationCode"); window.UpdateLayout();
         var station = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
         station.Text = "SYSTEM-EDIT"; Check(station.Focus(), "system parameter receives native keyboard focus"); station.Select(2, 4);
         var selection = station.SelectionStart; await vm.RefreshAsync(); await vm.RefreshAsync(); window.UpdateLayout();
         Check(station.Text == "SYSTEM-EDIT" && station.IsKeyboardFocused && station.SelectionStart == selection && station.SelectionLength == 4, "repeated real snapshots preserve input, focus and selection");
         Capture("parameters-system");
-        categories.SelectedIndex = 1; window.UpdateLayout();
+        Check(control.NavigateTo("BarcodePattern"), "business barcode policy is directly reachable without depending on a tab layout"); window.UpdateLayout();
         var pattern = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodePattern"); pattern.Text = "OK[0-9]+";
         var sample = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "条码筛选样例"); sample.Text = "noise\nother\nOK003";
         var test = Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "测试候选筛选"));
@@ -56,7 +69,7 @@ static partial class Program
         vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
         var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("QueueCapacity"));
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
-        Check(categories.SelectedIndex == 1 && Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
+        Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();
         foreach (var size in new[] { (1366d, 768d), (900d, 640d), (800d, 420d) })
         {
@@ -72,7 +85,7 @@ static partial class Program
         var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray(); driverConfig = driverConfig with { Reader = devices[0], Topology = c.Topology with { Readers = devices } };
         var offline = new StartupConfigurationDraft(driverConfig, new([descriptor], [package.Id], Packages: [new(package, [])]));
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();
-        var offlineTabs = Descendants(offlineEditor).OfType<TabControl>().Single(); offlineTabs.SelectedIndex = 2; window.UpdateLayout();
+        Check(offlineEditor.NavigateTo("reader.0/device.ip"), "left driver address is reachable by its stable field path"); window.UpdateLayout();
         var leftIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
         Check(leftIp.Text == "192.0.2.21" && offline.Readers.Length == 2 && offline.Readers[0].Provider == offline.Readers[1].Provider, "fixed two readers use one package and display only the selected object's parameters");
         Check(offlineEditor.NavigateTo("reader.1/device.ip"), "right instance is directly addressable by stable field path");

@@ -63,9 +63,15 @@ public partial class SupplyStationWindow
         var actions = new WrapPanel();
         var reconnect = new Button { Content = "按当前运行配置受控重连", MinHeight = 44 }; reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)));
         reconnect.Click += async (_, _) => await ViewModel.RunAsync(ViewModel.ReconnectAsync, "受控重连");
-        var maintenanceButton = new Button { Content = "维护与恢复操作", MinHeight = 44 };
-        maintenanceButton.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalMaintenance(); };
-        actions.Children.Add(reconnect); actions.Children.Add(maintenanceButton); body.Children.Add(actions);
+        var configurationState = new Button { Content = "已保存与运行中", MinHeight = 44 };
+        configurationState.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalTool(2); };
+        var originalLedger = new Button { Content = "原配置账核对", MinHeight = 44 };
+        originalLedger.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalTool(2); };
+        var restore = new Button { Content = "原机恢复后核对", MinHeight = 44 };
+        restore.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalTool(6); };
+        var originals = new Button { Content = "原作业与接收责任", MinHeight = 44 };
+        originals.Click += async (_, _) => { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); maintenance.ShowTechnicalTool(8); };
+        actions.Children.Add(reconnect); actions.Children.Add(configurationState); actions.Children.Add(originalLedger); actions.Children.Add(restore); actions.Children.Add(originals); body.Children.Add(actions);
         return new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     }
 }

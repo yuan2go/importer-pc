@@ -1,0 +1,10 @@
+{
+  "CodeCommit": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+  "BaselineCommit": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+  "BaselineErrors": 267,
+  "CandidateErrors": 267,
+  "Added": [],
+  "Removed": [],
+  "Historical": "265 original PPTX media-type mismatches; 2 original metadata markers; no exemptions added",
+  "Canonical": "Git index blobs, UTF-8, Python 3.12 with Pillow"
+}

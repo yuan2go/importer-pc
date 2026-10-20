@@ -1,5 +1,7 @@
 # 菜鸟供包台单 EXE 安装程序
 
+> 当前最终组合（2026-10-20）：源码 `12946f5beee51d448c44b1bfbb0669178d57eaf7`，单EXE 172487240字节，SHA256 `9c4f084ea903970183179619462f4e14ab68cf4c7ced3ea1be2e2772df3b0ad1`。目录/开始菜单/桌面选项、原helper完整备份及升级、完成与正常启动已在独立Simulation部署实际验证30项；b33前版干净安装26项另记。精确新旧身份、原始结果与未验边界见[整合报告](parallel-task-reconciliation-20261020-02.md)与[最终回执](evidence/parallel-reconciliation-20261020-02/final-real-delivery.json)。EXE本机交付于 `D:/releases/cainiao-final-12946f5/菜鸟供包台安装程序.exe`，仍未签名，真实设备/Production未验。
+
 > 后续安装选项与空白启动窗口整改见[修正记录](single-exe-installer-options-02.md)。下文 a7de058 / cainiao-single-exe-01 和17项 PASS 均为原版本历史交付，不代替后续版本验证。
 
 任务范围和开工裁决见[工作包](../work-packages/WP-IPC-SINGLE-EXE-INSTALLER-01.md)。目标是现场只需接收并双击一个 `菜鸟供包台安装程序.exe`，无需手工解压、脚本、.NET 安装或联网下载。内部继续使用既有安装向导，普通人工安装即可，不新增批量部署要求。
@@ -13,6 +15,10 @@
 安装文件会自动展开到当前 Windows 用户的随机私有临时目录。校验完成后仅调用内嵌的 `desktop/Ipc.Desktop.exe --setup`；安装政策和 Production 守卫不变。关闭向导后清理本次介质目录，取消准备不启动安装。失败显示可复制诊断；若文件占用阻止清理，保留具体错误与目录，不误称安装完成。Windows/.NET 自身单文件运行缓存不属于业务数据。
 
 没有提供 Authenticode 签名证书，因此生成 EXE 未签名；独立 SHA-256 可用于核对字节，不能替代分发来源可信。此处不生成临时“可信发布者”证书或虚构许可协议。
+
+## 首次单EXE交付回执（历史a7de058）
+
+以下原回执、原SHA和原限制保持形成时版本，不能当作后续组合的最终身份。
 
 最终现场文件：`D:/releases/cainiao-single-exe-01/菜鸟供包台安装程序.exe`，约164.5 MiB，目录中仅此一个文件。SHA-256：`2284d542f65299f53b2e6cec10e6ac7e1e52ee59dfc2ff9c487fc4deb27f0c9f`。运行源码、启动器和内嵌介质均固定为 `a7de058d5877b8fa797e2292271181b4272ac244`，后续仅补文档/证据。双击 EXE 后按“下一步”自动准备文件，再按原向导选择程序/数据位置和运行账户、审阅摘要并授权安装；安装成功的确认由原向导提供。
 

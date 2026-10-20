@@ -1,4 +1,4 @@
-> 当前实施：[V2 实施与验证记录](docs/runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
+> 当前交付：[V2 实施与运行](docs/runtime/ui-task-redesign-01.md)、[本版验收](docs/runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源 WPF 高清图](docs/ui/sportmaster-v2-wpf-20261020/README.md)。实施基准 main `de2b045`，最终生产源码 `26bb7b9`；原型、本机 Windows 与真实设备分别计证。
 
 # importer-pc
 

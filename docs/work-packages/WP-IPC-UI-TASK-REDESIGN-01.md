@@ -6,7 +6,7 @@
 
 ## 目标、基准与当前交付状态
 
-将 [V2 设计集](../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)落实为现有 Windows C#/WPF 客户端的完整任务体验，优先完成参数配置，再完成连续作业、异常诊断和维护配套。实施裁决见 [最新代码与设计差距](../design/sportmaster-task-redesign-01.md)。最新复核源为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`，执行时继续继承最新main及并行成果；#62/63/64/66/67/68及#69单窗口安装/#70心跳/#71参数快照/#72发布已合入。
+将 [V2 设计集](../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)落实为现有 Windows C#/WPF 客户端的完整任务体验，优先完成参数配置，再完成连续作业、异常诊断和维护配套。实施裁决见 [代码与设计差距](../design/sportmaster-task-redesign-01.md)。实施前静态复核源为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`；本次实际基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，继承 #62/63/64/66/67/68、#69 单窗口安装、#70 心跳、#71 参数快照、#72 发布及 #73 原 PARAM-01 实施。
 
 **当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** UIR-00资料和原型QA以V2最终清单/回执为准。已合入的 [PARAM-01](../design/parameter-refactor-01.md) 在ba80时是四分类WPF控件、条码筛选、首配共模和保存核对的未完成快照；PR73已完成原参数范围，V2目标继续复用并补完，不声称全部UIR尚未移植，也不借合并或历史PASS宣布全包完成。参数当前事实见[实施记录](../runtime/parameter-refactor-01.md)，安装/心跳介质及不测试合并范围见[发布回执](../runtime/publication-pr69-pr71-20261020.md)。V2 界面和图片数量见其索引。V1 的 45 状态、48 PNG 和 95 个物理文件保留原字节与形成时记录，属于历史设计，不叠加为本轮页面数。
 

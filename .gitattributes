@@ -47,3 +47,8 @@ docs/runtime/evidence/publication-installer-release-info-20261020/** -text
 
 # Exact final native captures and explicitly identified transformed excerpts.
 docs/runtime/evidence/installer-single-window-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# V2 custody: original guidance, captured logs and native input records keep exact bytes.
+docs/archive/pre-ui-task-redesign-implementation-20261020/*.txt -text whitespace=cr-at-eol,-blank-at-eof
+docs/runtime/evidence/ui-task-redesign-v2/*.log -text whitespace=cr-at-eol
+docs/ui/sportmaster-v2-wpf-20261020/native/** -text whitespace=cr-at-eol

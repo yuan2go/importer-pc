@@ -1,0 +1,49 @@
+Retained build workspace on failure: <LOCAL_TEMP>/ipc-publication-cuy1ek9d
+  正在确定要还原的项目…
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.49 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 50 毫秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 52 毫秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 58 毫秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 50 毫秒)。
+  Ipc.Platform -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc-v2-ui\.artifacts\sportmaster-v2-final-win\app\
+  正在确定要还原的项目…
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 1.18 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.05 秒)。
+  已还原 <LOCAL_TEMP>/ipc-publication-cuy1ek9d\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 1.05 秒)。
+  12 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> <LOCAL_TEMP>/ipc-publication-cuy1ek9d\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc-v2-ui\.artifacts\sportmaster-v2-final-win\desktop\
+{"Package": "D:\\projects\\importer-pc-v2-ui\\.artifacts\\sportmaster-v2-final-win.zip", "Sha256": "53ce2c5ca75e7a306e5450cdd29c63abb0a60cf30b78c463a2fd1226016d9e79", "SourceCommit": "26bb7b9488b98cc0ce44ef6cf74df7c493153b0a", "Application": "sportmaster", "Target": "win-x64", "BusinessVersion": "1.6.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "C7236741161ADC95D005EA4199A1F493C36D7D6BB6A90831B487A41BDE9951E4"}

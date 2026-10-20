@@ -1,0 +1,284 @@
+{
+  "source_commit": "26bb7b9488b98cc0ce44ef6cf74df7c493153b0a",
+  "baseline_main": "de2b045a6eb66c66cc22a237fb2c4e0f84f98e78",
+  "source_branch": "codex/sportmaster-v2-ui",
+  "production_assemblies": {
+    "Ipc.Application.Contracts.dll": "79d638e53ea5969f5cf6ff08bcd376dc3e45b6676da1d8902c10d58587eea143",
+    "Ipc.Application.ParcelFlow.Desktop.dll": "faaf4d9e34e4dd92ea85486dd43cf01398391e2ec0c6f73556b36007c762fa3e",
+    "Ipc.Application.ParcelFlow.dll": "17226ccbfb9fe4b0a71e22194282d746baa387a96b227fffb0716b3fce86e957",
+    "Ipc.Application.Sportmaster.Desktop.dll": "93db9e22d1ac5de4d7db315b725f30bbf6f4cee27ccde7290f44d20a5f15e3ef",
+    "Ipc.Application.Sportmaster.dll": "0153495babc228824ed519f0026592092aa666a32c592f521ce24663a001e69b",
+    "Ipc.Assembly.dll": "83b8d2cdd9b10a01c557883080fa6abe524a153c6992ca61e6c9559caa1340ca",
+    "Ipc.Components.dll": "183154eb1e2c2ba9be5ef72e2f8f9d14332fa30f67bf500129391d5bad637a65",
+    "Ipc.Desktop.dll": "604772ccea89f409fae8565a742792ce38abae88fc017325ff9e922f3923d617",
+    "Ipc.Drivers.dll": "8b42b2e2387cc67a45a7580d3f320004fd6d7e580efb68bed4651e2c944e5f6f",
+    "Ipc.Integrations.dll": "965d59d033c4bf0d82d5eaabc73bbb8d339e8e8c0c3549af5ee832a69477af71",
+    "Ipc.Platform.dll": "135955f1229ac286cfbd0dc19a9463269d9704f11afbc4023ccb7a4ab37c57ae",
+    "Ipc.Platform.Storage.dll": "74d63c8a1284e88a077174883b66d8a6e43f98bcbb9f6a7bf61823794f491da5",
+    "Ipc.Reference.Protocol.dll": "beea44976232c7457ea9e7324c911d2fc15fad17aac9df9593774d6fba8ce3a4",
+    "Ipc.Supply.Contracts.dll": "41d216e1335989ea93e2e6f495a5f4cb9d892083d6f5f735b4612fdba3fe9f78",
+    "Ipc.Supply.dll": "52c24287e356a1526857b7faf67979fbdec1a585d52ba9f8746ac774d2d7b572"
+  },
+  "verification_assembly_sha256": "aa295da882aaf70b574a0ed57f23d2315433427ea640eb9d614e35bb3330aa59",
+  "production_assemblies_match_frozen_package": true,
+  "package": {
+    "file": "sportmaster-v2-final-win.zip",
+    "sha256": "53ce2c5ca75e7a306e5450cdd29c63abb0a60cf30b78c463a2fd1226016d9e79",
+    "size_bytes": 106388312,
+    "distribution": "local build artifact; no GitHub release asset uploaded"
+  },
+  "windows": {
+    "edition": "Windows 11 Home Chinese",
+    "version": "10.0.22631",
+    "architecture": "x64",
+    "scale": 1.25,
+    "work_area_dip": [
+      1536,
+      816
+    ]
+  },
+  "rendering": "Actual WPF controls hosted in native HWND with Dispatcher, synthetic ports/data; DrawingVisual with window background and local-bounds VisualBrush. No image retouching.",
+  "png_scope": "Full shell, isolated actual shared parameter editor, five startup pages, close dialogs, exact native client geometry. PNG pixels = client DIPs * Windows scale; not physical target IPC validation.",
+  "native_scope": "Sky screenshots of actual published-DLL fixture keyboard/mouse interaction; published-maintenance/recovery use the actual published Ipc.Desktop.exe and isolated missing configuration.",
+  "png_count": 32,
+  "png_files": [
+    {
+      "path": "diagnostics.png",
+      "sha256": "7302802eb989ad4b115f42f7e23eeaf0c6e19671c385563bc257ef8fb1e56c6a",
+      "width_px": 1708,
+      "height_px": 960
+    },
+    {
+      "path": "history.png",
+      "sha256": "eacb1c038257f0e75e17c3fa48752ffb9ff56e44d51205ba9ef0e338b3fce743",
+      "width_px": 1708,
+      "height_px": 960
+    },
+    {
+      "path": "parameters-business-rules.png",
+      "sha256": "8431edf091159b3445a446785f411a2392cf9065f2f6b41101d851b7d67b92a6",
+      "width_px": 1690,
+      "height_px": 913
+    },
+    {
+      "path": "parameters-errors.png",
+      "sha256": "9e6cddcb91089c3158797db89b2ac74fc9a0be2cc0dfc1cbb25a4a168b123fc1",
+      "width_px": 1690,
+      "height_px": 913
+    },
+    {
+      "path": "parameters-rcs-component.png",
+      "sha256": "6de5594b911cc2159e0ce2e2481cd6e382604a7feb9466defa197c418c34e21a",
+      "width_px": 1690,
+      "height_px": 913
+    },
+    {
+      "path": "parameters-right-driver.png",
+      "sha256": "44b4c4aaf748cff451929c86b5662d2dd1c9c7628f2e663bcb78643ac76737b3",
+      "width_px": 1690,
+      "height_px": 913
+    },
+    {
+      "path": "parameters-save-preparation.png",
+      "sha256": "a65ee7a809392e875a49a74a9dd6dbc62fec31da4eedf854279bbc2d151fd258",
+      "width_px": 907,
+      "height_px": 578
+    },
+    {
+      "path": "parameters-search.png",
+      "sha256": "e3f9979f8a02293454042117df4fc7c81d5582ed4372396cc876c0cacdb1ec19",
+      "width_px": 1708,
+      "height_px": 960
+    },
+    {
+      "path": "parameters-station-conflict.png",
+      "sha256": "59072990117c3ff9d8b7cc325604a1c33af2d45235c0eeb26f6ed0641a503c3a",
+      "width_px": 1690,
+      "height_px": 913
+    },
+    {
+      "path": "parameters-system.png",
+      "sha256": "232da163fd0ffb79adc9dc84ee4bd03c922708c039d178d41306a937147bbdc9",
+      "width_px": 1708,
+      "height_px": 960
+    },
+    {
+      "path": "startup-step-1.png",
+      "sha256": "7e563574e09d869fbfdececadad074a8e19a060fd4ea6c751c641ad9de78cb17",
+      "width_px": 1122,
+      "height_px": 843
+    },
+    {
+      "path": "startup-step-2.png",
+      "sha256": "3f95298f26f8fda43a1b2792a6cc9e56a1f0f3113a328fe491e83f9ae5877629",
+      "width_px": 1122,
+      "height_px": 843
+    },
+    {
+      "path": "startup-step-3.png",
+      "sha256": "48523dd3915d43f75cf44e497889f01bc705f9603635e3ac02f33640e9b63bc2",
+      "width_px": 1122,
+      "height_px": 843
+    },
+    {
+      "path": "startup-step-4.png",
+      "sha256": "1765009beb35e00aa588484226439ad9a8ebc3b82b101be7a65d3bf7bf7e0d1a",
+      "width_px": 1122,
+      "height_px": 843
+    },
+    {
+      "path": "startup-step-5.png",
+      "sha256": "649950c3527e41c570531a4d5c89e32f91cf4cde68c3117ccfcdcc2fc1d21f66",
+      "width_px": 1122,
+      "height_px": 843
+    },
+    {
+      "path": "supply-station-v2-client-1100x600-unknown-rejection.png",
+      "sha256": "95b9763399bbc570933ae7cfd878b03a5897186ca3451de936d0e817ecf3e5e6",
+      "width_px": 1375,
+      "height_px": 750
+    },
+    {
+      "path": "supply-station-v2-client-1440x768-unknown-rejection.png",
+      "sha256": "9e1199072ff186ac4fdf95b51f31cef1f0bdb86e6d056325aa2ae53c35fb971d",
+      "width_px": 1800,
+      "height_px": 960
+    },
+    {
+      "path": "supply-station-v2-client-1600x900-unknown-rejection.png",
+      "sha256": "827234354f0e8382ff24e2f91f3464fa2e18335c9fe60fab2a5ff2a1ceeeb189",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "supply-station-v2-client-800x420-unknown-rejection.png",
+      "sha256": "65ab87aa9b58929ff71c451103b732836dbeac7c9f5669c8d603b3465e5bac38",
+      "width_px": 1000,
+      "height_px": 525
+    },
+    {
+      "path": "supply-station-v2-client-911x512-unknown-rejection.png",
+      "sha256": "a2622769cc2b833c850dd9721e66e354fa3d79d7b5479f99129c6504c5e3c27b",
+      "width_px": 1139,
+      "height_px": 640
+    },
+    {
+      "path": "unsaved-before-failure.png",
+      "sha256": "b9400d8d4757e9a2d40f876401d5955325f799eb27762fa07fc0d2403ce2f0d7",
+      "width_px": 697,
+      "height_px": 185
+    },
+    {
+      "path": "unsaved-cancel.png",
+      "sha256": "b9400d8d4757e9a2d40f876401d5955325f799eb27762fa07fc0d2403ce2f0d7",
+      "width_px": 697,
+      "height_px": 185
+    },
+    {
+      "path": "unsaved-decision.png",
+      "sha256": "b9400d8d4757e9a2d40f876401d5955325f799eb27762fa07fc0d2403ce2f0d7",
+      "width_px": 697,
+      "height_px": 185
+    },
+    {
+      "path": "unsaved-multiple.png",
+      "sha256": "eff4d666e03a49b34ea3c3cdccfd9677ddde27f97c14a99309a6345f9e386f4a",
+      "width_px": 697,
+      "height_px": 210
+    },
+    {
+      "path": "unsaved-save-failed.png",
+      "sha256": "2bb3adfba759182aa63e447dfd086db7c8fdd46c231f821044557646066b8a9e",
+      "width_px": 697,
+      "height_px": 210
+    },
+    {
+      "path": "work-assigned-1366.png",
+      "sha256": "54591476652b08ea3351f34c671f4a35405fc3f1dac1eb2f44c35433636810b7",
+      "width_px": 1708,
+      "height_px": 960
+    },
+    {
+      "path": "work-assigned-1600.png",
+      "sha256": "76bf04e01fb9fa3f34e84b15c1c920a4819c8737c9b6f6f581b735a3c2ac97f4",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "work-processing-1600.png",
+      "sha256": "a014aae3867a6062353642df65ed052b2d63a1b60811634e8a1e8fdeb66287a4",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "work-rejected-new-input.png",
+      "sha256": "860f1afa7618ae216a1c12ca1707badbf58733ee6a78596b2a6fae0454c89875",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "work-stale.png",
+      "sha256": "f10653c2b20f567aa72ede0ca6e49b2d43f746502a8b2e1c88f84942c07593d5",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "work-unknown.png",
+      "sha256": "302a86c32213a010badac8218338c790b68c40a66f16b4db6f53310975fdf79f",
+      "width_px": 2000,
+      "height_px": 1125
+    },
+    {
+      "path": "work-waiting-1600.png",
+      "sha256": "95b8cea5565391a60bdf940f05237cbbb01216178afea741247885f8316a56b6",
+      "width_px": 2000,
+      "height_px": 1125
+    }
+  ],
+  "native_files": [
+    {
+      "path": "native/draft-retained.jpg",
+      "sha256": "ecf72311241f8cce7e59b6684f93f6d4484333d4d94c75c2e6f87fda34cb6060"
+    },
+    {
+      "path": "native/INPUT-RECORD.txt",
+      "sha256": "474647e1fbed5fa4e154658f078a3cb1b6c03c93442d013cbe310267d133e451"
+    },
+    {
+      "path": "native/parameters.jpg",
+      "sha256": "5cf3f4082c97ebffbb8a2bbd48e3e930b906b512424d79020a3bed67183e031a"
+    },
+    {
+      "path": "native/published-maintenance.jpg",
+      "sha256": "6371e68511168ee4b860a3fa472e7cd81064d8919101932a20a4060a972e63c1"
+    },
+    {
+      "path": "native/published-recovery.jpg",
+      "sha256": "4399988a6e9afb0181fb8d709ad52a5f01f39dbae196c10c5816173b66729395"
+    },
+    {
+      "path": "native/return-from-save.jpg",
+      "sha256": "b9282c5e552cfd4bb206088f834a1d4da39fc702bb11f1b98c36dd4497fd7757"
+    },
+    {
+      "path": "native/save-preparation.jpg",
+      "sha256": "a62fbf278770e06520bdd096cdd4d42f37f63b6d87bdca9acf9963fcff26a0ac"
+    },
+    {
+      "path": "native/search.jpg",
+      "sha256": "a5f06f2af75345b76587d6abf5e82f8857f392c6c5fc6169214c0815fa593c75"
+    },
+    {
+      "path": "native/work.jpg",
+      "sha256": "d02a07c6ea651d9e775afcdaa41a263c7bbea3c625d76f4ee524fbea05213672"
+    }
+  ],
+  "not_run": [
+    "Win10 22H2 Home/Pro",
+    "other DPI and touch",
+    "target industrial PC",
+    "real Hikrobot SDK/device",
+    "production RCS",
+    "physical site acceptance"
+  ]
+}

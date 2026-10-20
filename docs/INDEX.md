@@ -24,8 +24,8 @@
 | 1 | [AGENTS](../AGENTS.md)：工作范围、分支、现有机制与证据规则。 |
 | 2 | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)：可点击原型、逐页高清图、字段/动作迁移、源码与QA。 |
 | 3 | [V2实施裁决](design/sportmaster-task-redesign-01.md)：目标、已有代码与差距；[PARAM-01裁决](design/parameter-refactor-01.md)及[实施快照](runtime/parameter-refactor-01.md)说明复用模型和待迁移范围。 |
-| 4 | [UIR-00～06工作包](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)：完整实施范围和六任务验收；[Codex实施提示](work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)用于下一轮执行。 |
-| 5 | [V2 发布记录](runtime/ui-task-redesign-v2-publication-20261020.md)：本轮材料范围、基准与核对；[V1 入库记录](runtime/ui-task-redesign-01-publication.md)保留原提交范围、数量与核对。 |
+| 4 | [UIR-00～06工作包](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与[实施提示](work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)：本包完整范围、六任务及六项商业 UI 质量要求。 |
+| 5 | [本版实施与运行](runtime/ui-task-redesign-01.md)、[验收证据](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源 WPF 图集](ui/sportmaster-v2-wpf-20261020/README.md)；[V2 设计入库记录](runtime/ui-task-redesign-v2-publication-20261020.md)与[V1 入库记录](runtime/ui-task-redesign-01-publication.md)保留原范围。 |
 
 V2 以命名界面状态和导出图片分别计数，实际数量见本版索引；源码、交接格式及归档文件不重复计作页面。原 58 项字段/状态、39 项操作的可辨认事实保留，当前迁移表明确各项在 V2 的去向。
 
@@ -40,7 +40,7 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 - 工作台、记录、维护和辅助窗口共享运行实例；长内容、焦点/选择/草稿、原生日历及旧格口失效保护保持。诊断OneWay已修，默认及classic最小区修复已完成。
 - 完整候选校验、唯一配置账、草稿CAS、加密未完成输入、审计与受控启动已存在；PARAM快照新增四分类共模、字段定位与保存结果Unknown/PendingRestart/NotSaved/Conflict核对。对象页不形成第二账，保存不等于生效，重连不应用Pending。
 - Sportmaster已有有界条码筛选、完整候选与选中码证据、本地多行样例及旧null严格单码兼容。V2保留这些能力并完善显示，不默认首码、去重伪造唯一或生成生产正则。
-- taskId/skuId 已有解析与应用传递；V2 补结构化展示及 waveNo/响应 quantity 的兼容传递、历史读取和当前投影，不能把新增目标写成已有实现。
+- taskId/skuId 沿原解析与应用传递；本版已补结构化展示及 waveNo/响应字符串 quantity 的兼容传递、历史读取和当前投影。新观察拒绝、Unknown 或失效时当前任务整组退出，原请求责任单独保留。
 - 原件、候选/筛选、准入、请求和发送尝试分别保留。RCS已有周期心跳及HTTP交付/失败证据，尚无应用确认合同且Query=false；不复制心跳、不发假查询，不把HTTP或连接恢复当原请求成功。
 - 菜鸟品牌、原生首配/安装、英文SM单EXE、单窗口准备/选项/摘要/完成、一次安装UAC、固定桌面入口、两个快捷方式及BUILD-INFO均继承。缺配可编辑与业务就绪分开；普通人工安装不要求无人值守或批量平台。
 
@@ -63,15 +63,16 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 | --- | --- |
 | 新设计与模拟QA | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
 | 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
-| PARAM当前实现及历史快照 | [PR73实施记录](runtime/parameter-refactor-01.md)、[PR71历史范围](runtime/publication-parameter-snapshot-20261020.md)。原参数范围已完成，V2字段重排与完整交互仍需完成；本轮最终合并树不测试。 |
+| V2 当前 WPF 实现 | [UIR-00～06 实施](runtime/ui-task-redesign-01.md)、[本版验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)。固定源 `26bb7b9` 完成参数、首配、三组作业和相关维护闭环；32 张 WPF PNG、本机输入和发布启动各记边界。 |
+| PARAM历史实施及快照 | [PR73实施记录](runtime/parameter-refactor-01.md)、[PR71历史范围](runtime/publication-parameter-snapshot-20261020.md)。保留原参数实施和不测试发布身份，不扩张为本轮验证。 |
 | 已发布单窗口SM v1.4.1 | [27b0d8f及58项原生记录](runtime/installer-single-window-01.md)、[下载/上传回执](runtime/publication-pr69-pr71-20261020.md)。原SourceCommit保留，不含后续固定名称、心跳或参数快照。 |
 | 已发布心跳Simulation | [3f8a58ba原验证](runtime/rcs-heartbeat-01.md)及[发布范围](runtime/publication-pr69-pr71-20261020.md)。portable CLI/签名夹具不是WPF安装包，不改标为最新main。 |
 | 历史7c安装发行 | [原41项证据](runtime/installer-release-info-01.md)、[原字节发布回执](runtime/publication-installer-release-info-20261020.md)。原SourceCommit和验收边界保留。 |
-| 后续实现验收 | [UIR-06](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)、[既有Windows后验](runtime/validation/sportmaster-alternate-ui-windows.md)、[商业必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。按新源码执行受影响验证，原记录不改写。 |
+| 本轮验证与现场待验 | [本版 UIR-06](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[既有Windows后验](runtime/validation/sportmaster-alternate-ui-windows.md)、[商业必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。本机 Windows 11 125% 与原生合成结果已记录；目标工控机、真实 SDK/RCS 和现场仍待验。 |
 
 正常作业最低有效客户区仍是800×420 DIP；不足空间保护、恢复后人工确认和软件暂停继续保留。几何夹具的原生HWND backing surface保留严格断言，只证明原生布局，不等于物理屏幕、多DPI或触控通过。原7c的41项升级/启动属于原Windows主机Simulation；受支持系统、精确SDK、trigger实体关联、客户RCS和现场资格按真实证据另验。
 
-本次原型QA以本版实际记录为准；V2文档合并未新增生产测试、构建、安装或现场PASS。此前PR69/70原证据与PR71/72不测试发布各守原范围。该设计任务的未执行状态不免除以后代码变更的必要验证；缺外部协议时完成准确不可用说明及其余任务，不伪造绿色成功。
+V2 原型入库时的 QA 和不测试合并记录属于设计阶段；本次代码的必要构建、风险验证及发布启动另见本版验收。此前 PR69/70 原证据与 PR71/72 不测试发布各守原范围。缺外部协议时明确不可用并保留维护路径，不伪造成功。
 
 ## 5. 历史来源与公开范围
 

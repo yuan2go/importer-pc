@@ -1,0 +1,26 @@
+{
+  "source_commit": "26bb7b9488b98cc0ce44ef6cf74df7c493153b0a",
+  "executable": "sportmaster-v2-final-win/desktop/Ipc.Desktop.exe",
+  "arguments": [
+    "--maintenance",
+    "--config",
+    "<isolated-root>/config",
+    "--data-root",
+    "<isolated-root>/data"
+  ],
+  "environment": "Windows 11 Home Chinese 10.0.22631 x64, 125%",
+  "observed": [
+    "offline maintenance opens",
+    "missing extension inventory explicitly prevents ready state",
+    "closing maintenance returns to startup/recovery",
+    "Stop and Exit closes owned process",
+    "no application database created under isolated root"
+  ],
+  "device_started": false,
+  "configuration_saved": false,
+  "install_upgrade_or_uac_test": "NOT_RUN; inherited installer unchanged",
+  "screenshots": [
+    "../../../ui/sportmaster-v2-wpf-20261020/native/published-maintenance.jpg",
+    "../../../ui/sportmaster-v2-wpf-20261020/native/published-recovery.jpg"
+  ]
+}

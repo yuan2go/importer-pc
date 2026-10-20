@@ -1,0 +1,22 @@
+{
+  "SourceCommit": "0e79e73bdb6d7a1702373963295b192a803f28e7",
+  "BaseMain": "9e5b6ab",
+  "Application": "sportmaster",
+  "Scope": "Synthetic native WPF; no machine provisioning or physical devices",
+  "InventorySha256": "6ABBC2DD9B4121274C5DDBADA194403A77ED21B915B6CAB56F228916CA522D20",
+  "InventoryCount": 746,
+  "ZipBytes": 104298590,
+  "ZipSha256": "C9AC614D885C465DEE3CB2D1922C9C67E0315B82E6749688D697AFEE3946F060",
+  "NativeInput": [
+    "Maximize via system menu",
+    "Click barcode and Ctrl+A: 000123456789",
+    "Expand left details",
+    "Navigate history then workbench: disclosure, original owner and selection retained",
+    "Collapse details and close"
+  ],
+  "PublishedStartup": "Actual Ipc.Desktop.exe --setup reached step 1/4 and closed without installation",
+  "Limitations": [
+    "Classic compatibility 800x420 fixed-action failure retained separately",
+    "Hardware, UAC installation, mixed DPI and site acceptance not run"
+  ]
+}

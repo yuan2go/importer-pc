@@ -106,15 +106,6 @@ public partial class SupplyStationWindow : Window
     {
         if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复新入场");
     }
-    async void Login_Click(object sender, RoutedEventArgs e)
-    {
-        var proof = LoginProof.Password; LoginProof.Clear();
-        if (ViewModel.Fresh) await ViewModel.RunAsync(() => ViewModel.LoginAsync(proof), "认证操作员");
-    }
-    async void Logout_Click(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel.Fresh) await ViewModel.RunAsync(ViewModel.LogoutAsync, "登出");
-    }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {

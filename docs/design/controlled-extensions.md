@@ -1,3 +1,5 @@
+> 2026-10-20 [海康驱动设计](hikrobot-reader-01.md)增加受控本地vendor-sdk加载边界：明确签名声明与独立部署资格后才允许原生导入，其他导入仍拒绝。下文CLOSURE-13的无条件禁止P/Invoke保留原阶段语境；本增量不允许任意路径、SDK随包或热换原生库。
+
 > 本包整改权威：[质量闭环设计](architecture-quality-closure-01.md)。22拓扑、19/20可靠性、框架F决策共同继承；本文中的历史实施和版本记录保持形成时范围。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。

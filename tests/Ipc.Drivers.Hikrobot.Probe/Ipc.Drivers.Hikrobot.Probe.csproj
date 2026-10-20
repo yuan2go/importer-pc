@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>true</Private></Reference>
+    <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/>
+  </ItemGroup>
+</Project>

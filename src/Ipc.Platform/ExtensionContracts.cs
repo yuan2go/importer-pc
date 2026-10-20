@@ -6,7 +6,11 @@ namespace Ipc.Platform;
 // All discovery data is signed, declarative metadata. Reading a schema never loads code.
 public sealed record ExtensionFile(string Path, long Length, string Sha256);
 public sealed record PackageReference(string Id, string Version, string ManifestSha256);
-public sealed record ExtensionPrerequisite(string Kind, string Identity, string Version, string Evidence);
+public sealed record ExtensionPrerequisite(string Kind, string Identity, string Version, string Evidence)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string[]? Preload { get; init; }
+}
 public sealed record ParameterField(string Key, string Group, string Label, string Type, bool Required = false,
     string? Default = null, int MaximumLength = 256, long? Minimum = null, long? Maximum = null,
     string[]? Choices = null, bool Sensitive = false, string? Description = null, string? Unit = null,

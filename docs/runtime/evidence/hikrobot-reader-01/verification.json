@@ -1,0 +1,67 @@
+{
+  "CodeCommit": "ef553272327cd6c4f2a9509563d4e9609f18cdc4",
+  "BaseMain": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+  "Windows": "ACTUAL_LOCAL_WINDOWS_X64",
+  "DotnetSdk": "10.0.402",
+  "VendorSdk": "MvCodeReader 2.0.0.4",
+  "DriverVersion": "1.0.1",
+  "BusinessVersion": "1.4.1",
+  "ApplicationContracts": "1.10.0",
+  "ParcelDatabase": 8,
+  "Builds": {
+    "SportmasterHost": "PASS",
+    "SportmasterWpf": "PASS_COMPILE_ONLY",
+    "StandaloneSelfContainedProbe": "PASS"
+  },
+  "DriverSelfTest": {
+    "Status": "PASS",
+    "Assertions": 26,
+    "Stdout": "self-test.log",
+    "Sha256": "424ea52363d2ff70973410b197e0dbee0aec5d0be7c69719001612711545f417"
+  },
+  "NativePolicyTests": {
+    "Status": "PASS",
+    "SignedStaticAcceptance": "PASS",
+    "UndeclaredWrongDuplicateImportOrPreload": "REJECTED",
+    "ActualAlcStartupWithoutQualification": "REJECTED",
+    "DeclarationWireRoundtrip": "PASS",
+    "ExpiredOrWrongPackageOrMissingFiles": "REJECTED"
+  },
+  "ActualCamera": {
+    "EnumerationCount": 1,
+    "Connection": "PASS",
+    "HealthDiscoveryAndParameterRead": "PASS",
+    "FinalCaptureSeconds": 5,
+    "ReadFrames": 0,
+    "CodeCount": 0,
+    "StopCloseDestroy": "PASS",
+    "DeviceSettingsChanged": false,
+    "ExternalRequests": 0,
+    "ModelIpSerialFirmwareAndRawOutput": "WITHHELD_LOCAL_ONLY"
+  },
+  "ExistingToolsTests": {
+    "CandidateRun": 10,
+    "Passed": 9,
+    "Errors": 1,
+    "BaselineArchiveTestsRun": 7,
+    "BaselinePassed": 6,
+    "BaselineErrors": 1,
+    "Error": "Windows WinError 1314 creating test symlink; unchanged baseline/candidate. Initial PATH Python lacked Pillow; bundled Python fixed image test. No assertions removed or skipped."
+  },
+  "RuntimeActivation": "NOT_RUN_MACHINE_POLICY_AND_INDEPENDENT_SDK_QUALIFICATION_NOT_PROVISIONED",
+  "RealBarcodeTriggerAndUnplug": "NOT_RUN",
+  "FullTwoCameraApplicationAndRcs": "NOT_RUN",
+  "Production": "NOT_APPROVED",
+  "HistoricalDAndRv": "UNCHANGED",
+  "PublishedProbeFiles": {
+    "Ipc.Drivers.Hikrobot.dll": "4662a4e4c37e320af50cc8942c0d296b712a5bc9d11c00e912fcfab4cb9d6d34",
+    "Ipc.Drivers.Hikrobot.pdb": "c322620195c363c79737ab4b7e934cdc6aad29d74d4497cbc0ef15a0527b9f1a",
+    "Ipc.Drivers.Hikrobot.Probe.deps.json": "bd6208ff19d76ecc87bfdcf129f95b6c42d1599f936ee63bcb4aeef13049b759",
+    "Ipc.Drivers.Hikrobot.Probe.dll": "6c188fc81813acf8ea60cc63918cfb7b15c2d09438bddc84f23c02756c36204d",
+    "Ipc.Drivers.Hikrobot.Probe.exe": "d5bf45d180271ddbc98efdacaaf7168fc6b41ef3092c2b1da091d9bf16445c1d",
+    "Ipc.Drivers.Hikrobot.Probe.pdb": "a1a1838650ea68ae21858a6f55c3932195cbd628a136bcb70fa398ac37803276",
+    "Ipc.Drivers.Hikrobot.Probe.runtimeconfig.json": "089a03f26e7e7601a28dc9278a2c8f742e35e1312640b2cd6ef2fe9c58429dab",
+    "Ipc.Platform.dll": "6064da7f0f0852d424ca17ffe1332b138576a03d55b55192fbb9ce7d7e2f707a",
+    "Ipc.Platform.pdb": "ad7021c44390c3ee79ade9e814e6434eb51b1a0bfe7d30fb319b48d3e15465b7"
+  }
+}

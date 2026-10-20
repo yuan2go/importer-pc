@@ -40,7 +40,7 @@ public static class DeploymentQualifications
     public static void RequirePrerequisites(DeploymentQualification? q, VerifiedExtension package)
     {
         foreach (var declaration in package.Manifest.Prerequisites)
-            if (q?.Prerequisites.Any(x => x.Package == package.Reference && x.Declaration == declaration && x.Files.Length > 0) != true)
+            if (q?.Prerequisites.Any(x => x.Package == package.Reference && Wire.Encode(x.Declaration) == Wire.Encode(declaration) && x.Files.Length > 0) != true)
                 throw new InvalidDataException("SDK/system-driver prerequisite lacks exact installed evidence: " + package.Manifest.Id + "/" + declaration.Identity);
     }
     public static string FileHash(string path)
@@ -51,6 +51,7 @@ public static class DeploymentQualifications
         RequireFile(file.Path);
         if (!string.Equals(FileHash(file.Path), file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualification evidence changed: " + System.IO.Path.GetFileName(file.Path));
     }
+    internal static void VerifyInstalledFile(QualificationFile file) => VerifyFile(file);
     static void RequireFile(string path)
     {
         if (!Path.IsPathFullyQualified(path) || !File.Exists(path)) throw new InvalidDataException("Qualification evidence must be an existing absolute file");

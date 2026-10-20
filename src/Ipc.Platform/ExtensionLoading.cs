@@ -7,6 +7,9 @@ namespace Ipc.Platform;
 // reach this class, after FINAL deployment validation and resource lease acquisition.
 public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
 {
+    readonly DeploymentQualification? nativeQualification;
+    public ExtensionLoading(ExtensionStore store, DeploymentQualification? nativeQualification) : this(store)
+        => this.nativeQualification = nativeQualification;
     readonly Dictionary<string, PackageLoadContext> contexts = [];
     readonly List<FileStream> pinned = [];
     public IControlledObservationSource Create(PackageReference package, ExtensionModule module, ExtensionInstance instance)
@@ -41,7 +44,7 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
                 pinned.Add(new FileStream(Path.Combine(directory, file.Path), FileMode.Open, FileAccess.Read, FileShare.Read));
             store.VerifyInstalled(package);
             var dependencies = verified.Manifest.Dependencies.Select(Context).ToArray();
-            context = new PackageLoadContext(directory, verified.Manifest.Files, dependencies); contexts.Add(package.ManifestSha256, context);
+            context = new PackageLoadContext(directory, verified.Manifest.Files, dependencies, verified.Manifest, package, nativeQualification); contexts.Add(package.ManifestSha256, context);
         }
         return context;
     }
@@ -52,7 +55,8 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
         contexts.Clear(); foreach (var file in pinned) file.Dispose(); pinned.Clear();
         // Unload is cooperative. No GC loop or 'unloaded successfully' claim is made here.
     }
-    sealed class PackageLoadContext(string directory, ExtensionFile[] files, PackageLoadContext[] dependencies) : AssemblyLoadContext(isCollectible: true)
+    sealed class PackageLoadContext(string directory, ExtensionFile[] files, PackageLoadContext[] dependencies,
+        ExtensionManifest manifest, PackageReference package, DeploymentQualification? qualification) : AssemblyLoadContext(isCollectible: true)
     {
         public Assembly LoadEntry(string file) => LoadFromAssemblyPath(Path.Combine(directory, file));
         protected override Assembly? Load(AssemblyName name)
@@ -77,7 +81,7 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
             if (files.Any(x => x.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && string.Equals(Path.GetFileNameWithoutExtension(x.Path), name, StringComparison.OrdinalIgnoreCase))) yield return this;
             foreach (var owner in dependencies.SelectMany(x => x.Owners(name))) yield return owner;
         }
-        protected override nint LoadUnmanagedDll(string name) => throw new DllNotFoundException("No approved native SDK boundary for " + name);
+        protected override nint LoadUnmanagedDll(string name) => NativeSdkBoundary.Load(manifest, package, qualification, name);
     }
 }
 

@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace Ipc.Platform;
 
@@ -9,9 +11,45 @@ namespace Ipc.Platform;
 public static class ManagedAssemblyPolicy
 {
     public sealed record Image(string Path, AssemblyName Identity, AssemblyName[] References);
-    static readonly Lazy<Dictionary<string, AssemblyName>> framework = new(() => Directory.GetFiles(
-        Path.GetDirectoryName(typeof(object).Assembly.Location)!, "*.dll").Select(TryIdentity).Where(x => x is not null)
-        .ToDictionary(x => x!.Name!, x => x!, StringComparer.OrdinalIgnoreCase));
+    static readonly Lazy<Dictionary<string, AssemblyName>> framework = new(ReadFramework);
+    static Dictionary<string, AssemblyName> ReadFramework()
+    {
+        var directory = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+        IEnumerable<string> paths;
+        if (new DirectoryInfo(directory).Parent?.Name == "Microsoft.NETCore.App")
+            paths = Directory.GetFiles(directory, "*.dll");
+        else
+        {
+            // Self-contained output mixes framework and application DLLs. Only the
+            // exact official runtime-pack inventory in this frozen host's deps file
+            // defines framework ownership; the directory/TPA/System.* prefix do not.
+            var entry = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidDataException("Frozen entry assembly required");
+            var deps = Path.ChangeExtension(entry, ".deps.json");
+            if (new FileInfo(deps).Length > 16 * 1024 * 1024) throw new InvalidDataException("Runtime dependency inventory quota exceeded");
+            using var document = JsonDocument.Parse(File.ReadAllBytes(deps));
+            var root = document.RootElement;
+            var target = root.GetProperty("targets").GetProperty(root.GetProperty("runtimeTarget").GetProperty("name").GetString()!);
+            var prefix = "runtimepack.Microsoft.NETCore.App.Runtime." + RuntimeInformation.RuntimeIdentifier + "/";
+            var packs = target.EnumerateObject().Where(p => p.Name.StartsWith(prefix, StringComparison.Ordinal) &&
+                root.GetProperty("libraries").GetProperty(p.Name).GetProperty("type").GetString() == "runtimepack").ToArray();
+            if (packs.Length != 1) throw new InvalidDataException("Exact self-contained core runtime pack required");
+            List<string> selected = [];
+            foreach (var file in packs[0].Value.GetProperty("runtime").EnumerateObject())
+            {
+                if (Path.GetFileName(file.Name) != file.Name || !file.Name.EndsWith(".dll", StringComparison.Ordinal))
+                    throw new InvalidDataException("Invalid core runtime pack file");
+                var path = Path.Combine(directory, file.Name);
+                var identity = AssemblyName.GetAssemblyName(path);
+                if (identity.Version?.ToString() != file.Value.GetProperty("assemblyVersion").GetString())
+                    throw new InvalidDataException("Runtime pack assembly identity mismatch");
+                selected.Add(path);
+            }
+            if (!selected.Contains(typeof(object).Assembly.Location, StringComparer.OrdinalIgnoreCase))
+                throw new InvalidDataException("Runtime inventory does not own the executing core library");
+            paths = selected;
+        }
+        return paths.Select(TryIdentity).Where(x => x is not null).ToDictionary(x => x!.Name!, x => x!, StringComparer.OrdinalIgnoreCase);
+    }
     static AssemblyName? TryIdentity(string file)
     { try { return AssemblyName.GetAssemblyName(file); } catch (BadImageFormatException) { return null; } }
     public static bool Exact(AssemblyName a, AssemblyName b) =>

@@ -1,0 +1,59 @@
+﻿id,original_field,source_screenshot,v1_location,v2_location,v2_resolution
+P01,维护账号,10-maintenance-1.png / 11-maintenance-2.png / 12-maintenance-3.png / 13-maintenance-4.png / 14-maintenance-5.png / 15-maintenance-6.png / 16-maintenance-7.png / 17-maintenance-8.png / 18-maintenance-9.png,维护操作 → 身份验证,维护操作 → 身份验证,只变更交互归属；原始截图事实继续保留。
+P02,维护口令,10-maintenance-1.png / 11-maintenance-2.png / 12-maintenance-3.png / 13-maintenance-4.png / 14-maintenance-5.png / 15-maintenance-6.png / 16-maintenance-7.png / 17-maintenance-8.png / 18-maintenance-9.png,维护操作 → 身份验证,维护操作 → 身份验证,只变更交互归属；原始截图事实继续保留。
+P03,维护变更原因,10-maintenance-1.png / 11-maintenance-2.png / 12-maintenance-3.png / 13-maintenance-4.png / 14-maintenance-5.png / 15-maintenance-6.png / 16-maintenance-7.png / 17-maintenance-8.png / 18-maintenance-9.png,配置变更 → 保存摘要,跨类配置变更 → 完整候选保存摘要,只变更交互归属；原始截图事实继续保留。
+P04,编辑来源,10-maintenance-1.png,高级 → 配置文本,系统配置 → 高级 → 编辑来源,只变更交互归属；原始截图事实继续保留。
+P05,配置修订 / 草稿CAS,10-maintenance-1.png / 11-maintenance-2.png,配置页固定状态区,设置公共状态区 → 草稿基线/CAS,只变更交互归属；原始截图事实继续保留。
+P06,Effective / Pending,10-maintenance-1.png / 11-maintenance-2.png / 12-maintenance-3.png,配置概览及每对象页固定状态区,设置公共状态区 → 保存/生效状态,只变更交互归属；原始截图事实继续保留。
+P07,稳定设备ID,10-maintenance-1.png,设置 → 设备 → 左位相机 → 标识,驱动配置 → 本位实例 → 稳定设备标识,只变更交互归属；原始截图事实继续保留。
+P08,原角色,10-maintenance-1.png,设置 → 设备 → 左位相机 → 标识,驱动配置 → 本位实例 → 业务用途,只变更交互归属；原始截图事实继续保留。
+P09,已安装提供者 / 精确组件来源,10-maintenance-1.png / 31-first-configuration-2.png,设置 → 设备 → 设备实例 → 驱动,驱动配置 → 已安装类型 → 实例,只变更交互归属；原始截图事实继续保留。
+P10,实例身份,10-maintenance-1.png,设置 → 设备 → 左位相机 → 技术详情,驱动配置 → 本位实例 → 实例身份,只变更交互归属；原始截图事实继续保留。
+P11,完整候选配置（高级）JSON,11-maintenance-2.png,设置 → 高级维护 → 配置文本,系统配置 → 高级 → 完整候选JSON,只变更交互归属；原始截图事实继续保留。
+P12,SchemaVersion,11-maintenance-2.png,设置 → 高级维护 → 配置文本 / 导入检查,系统配置 → 高级 → 格式信息,只变更交互归属；原始截图事实继续保留。
+P13,维护核对说明,12-maintenance-3.png,诊断与恢复 → 旧配置核对,参数配置 → 系统配置 → 维护与迁移 → 旧配置核对,只变更交互归属；原始截图事实继续保留。
+P14,原字节SHA256 / 原账状态,12-maintenance-3.png,诊断与恢复 → 旧配置核对 → 技术证据,参数配置 → 系统配置 → 维护与迁移 → 旧配置证据,只变更交互归属；原始截图事实继续保留。
+P15,Providers.Kind,13-maintenance-4.png,设置 → 组件 → 已安装组件详情,驱动配置/组件配置 → 已安装类型（按实际能力分类）,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P16,Providers.Implementation,13-maintenance-4.png,设置 → 组件 → 已安装组件详情,驱动配置/组件配置 → 类型详情,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P17,Providers.Version,13-maintenance-4.png,设置 → 组件 → 已安装组件详情,驱动配置/组件配置 → 类型详情,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P18,Providers.Contract,13-maintenance-4.png,设置 → 组件 → 已安装组件 → 技术详情,驱动配置/组件配置 → 类型技术详情,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P19,Providers.Parameters,13-maintenance-4.png,设置 → 对应设备或服务 → 参数,驱动配置/组件配置 → 指定实例 → 适用参数,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P20,Requirements.MeasuredWeight,13-maintenance-4.png,设置 → 组件 → 兼容性详情,驱动配置/组件配置 → 类型兼容性,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P21,Requirements.ImageAddress,13-maintenance-4.png,设置 → 组件 → 兼容性详情,驱动配置/组件配置 → 类型兼容性,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P22,Requirements.Query,13-maintenance-4.png,设置 → 组件 → 兼容性详情,组件配置 → RCS → 能力说明,当前RCS Query=false；不得以真实dest_request POST伪造查询或连接检查。
+P23,Requirements.PhysicalConfirmation,13-maintenance-4.png,设置 → 组件 → 兼容性详情,驱动配置/组件配置 → 类型兼容性,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P24,能力（新增类型下拉）,14-maintenance-5.png,设置 → 组件 → 添加组件实例,驱动配置/组件配置 → Application允许的实例管理,当前Sportmaster固定左右2 reader，RCS最多1实例；不能调用通用新增能力创建第三个未绑定reader。
+P25,启用,14-maintenance-5.png,设置 → 服务或可选能力 → 实例详情,驱动配置/组件配置 → 实例状态,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P26,旧版绑定,14-maintenance-5.png,设置 → 高级维护 → 旧版本迁移,系统配置 → 高级 → 旧配置迁移,只变更交互归属；原始截图事实继续保留。
+P27,已安装提供者,14-maintenance-5.png,设置 → 外部服务 / 可选能力 → 实例详情,驱动配置/组件配置 → 已安装类型选择,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P28,实例身份,14-maintenance-5.png,设置 → 外部服务 / 可选能力 → 技术详情,驱动配置/组件配置 → 实例技术详情,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P29,协议目标 / 读码身份,14-maintenance-5.png,设置 → 对应设备或服务 → 连接,驱动配置 → 设备身份；组件配置 → 连接目标,只变更交互归属；原始截图事实继续保留。
+P30,合同版本,14-maintenance-5.png,设置 → 外部服务 / 可选能力 → 技术详情,驱动配置/组件配置 → 接口技术详情,按实际硬件交换能力/外部服务职责分类，不能把所有非observation都称组件；安装不等于适用、绑定或激活。
+P31,称重来源,15-maintenance-6.png,设置 → 高级维护 → 旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 重量来源,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P32,称重单位,15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 重量单位,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P33,精度,15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 重量小数位,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P34,配置值,15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 配置重量,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P35,本件等待期限(ms),15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 等待称重期限,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P36,测量新鲜度(ms),15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 测量新鲜度,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P37,重量有效期,15-maintenance-6.png,旧版本迁移 → 称重策略,业务模块配置 → 适用业务策略/旧配置迁移 → 重量有效期,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P38,图片上传策略,15-maintenance-6.png,设置 → 高级维护 → 旧版本迁移 → 传图策略,业务模块配置 → 适用业务策略/旧配置迁移 → 上传策略,只在Application与已安装能力实际适用时出现；Sportmaster不因旧截图新增称重/采图/上传。范围/单位由当前契约复核，旧示例0不作默认。
+P39,离线签名包路径,17-maintenance-8.png,设置 → 组件 → 安装或更新,安装维护 → 驱动/组件包安装或更新,只变更交互归属；原始截图事实继续保留。
+P40,原包 SHA256,17-maintenance-8.png,设置 → 组件 → 安装检查 → 技术详情,安装维护 → 包校验,只变更交互归属；原始截图事实继续保留。
+P41,扩展库存状态,17-maintenance-8.png / 30-first-configuration-1.png,设置 → 组件 / 首次配置 → 安装检查,驱动配置/组件配置 → 库存状态；首启 → 已安装能力检查,只变更交互归属；原始截图事实继续保留。
+P42,原配置目录（包含business.json）,30-first-configuration-1.png,首次设置 → 工作站与目录；后续设置 → 工作站 → 数据与文件,首次启动配置 → 系统；后续系统配置 → 数据与文件,只变更交互归属；原始截图事实继续保留。
+P43,原数据根（保留Simulation/Production、站和Application层级）,30-first-configuration-1.png,首次设置 → 工作站与目录；后续设置 → 工作站 → 数据与文件,首次启动配置 → 系统；后续系统配置 → 数据与文件/迁移,只变更交互归属；原始截图事实继续保留。
+P44,工位身份摘要,30-first-configuration-1.png,设置固定对象标题；首次设置首屏,系统配置 → 本地身份与业务站点（各字段分开）,本地StationId与RCS stationCode分开，后者属于本轮用户确认的新系统字段；旧left/right冲突显式处理。
+P45,读码来源 · sportmaster.camera.left / right,31-first-configuration-2.png,设置 → 位置与绑定；首次设置 → 设备与服务,驱动配置 → 固定两个实例与投递位对应；首次启动 → 驱动实例,只变更交互归属；原始截图事实继续保留。
+P46,稳定设备身份（离线录入，待真实SDK核验）,31-first-configuration-2.png,设置 → 设备 → 设备识别,首次启动 → 驱动实例；后续驱动配置 → 标识/受控迁移,只变更交互归属；原始截图事实继续保留。
+P47,输入队列容量,32-first-configuration-3.png,设置 → Sportmaster → 处理与容量,业务模块配置 → Sportmaster → 运行与容量,只变更交互归属；原始截图事实继续保留。
+P48,调用超时（ms）,32-first-configuration-3.png,设置 → Sportmaster → 处理策略，或具体服务超时（需确认作用域）,业务模块配置 → Sportmaster → 运行与容量,只变更交互归属；原始截图事实继续保留。
+P49,作业容量,32-first-configuration-3.png,设置 → Sportmaster → 处理与容量,业务模块配置 → Sportmaster → 运行与容量,只变更交互归属；原始截图事实继续保留。
+P50,常驻历史条数（同库归档不释放磁盘）,32-first-configuration-3.png,设置 → 数据与记录 → 保留策略,系统配置 → 数据与备份,只变更交互归属；原始截图事实继续保留。
+P51,计划备份维护限制（文案）,32-first-configuration-3.png,设置 → 数据与恢复 → 备份策略,系统配置 → 数据与备份,只变更交互归属；原始截图事实继续保留。
+P52,维护原因（必填；保留审计与原配置字节）,33-first-configuration-4.png,首次设置 → 检查并保存,首次启动配置 → 检查并保存,只变更交互归属；原始截图事实继续保留。
+P53,浏览完整备份目录（最多256份；校验整个恢复集，保留无效项）,34-first-configuration-5.png,诊断与恢复 → 备份与恢复,参数配置 → 系统配置 → 维护与迁移 → 完整备份与隔离恢复,只变更交互归属；原始截图事实继续保留。
+P54,备份列表：时间 / 完整性 / 字节 / 备份,34-first-configuration-5.png,诊断与恢复 → 备份与恢复,参数配置 → 系统配置 → 维护与迁移 → 备份列表与完整性,只变更交互归属；原始截图事实继续保留。
+P55,恢复交接证据,16-maintenance-7.png,诊断与恢复 → 换机恢复 → 核对,参数配置 → 系统配置 → 维护与迁移 → 换机恢复,只变更交互归属；原始截图事实继续保留。
+P56,记录命令目标,18-maintenance-9.png,作业记录 → 选中异常 → 处置详情,作业记录 → 固定原作业 → 处置详情,查询/恢复按钮按实际协议；当前RCS无Query，不可把旧表中的“只查询”当成已支持查询。
+P57,确认已检查身份冲突旁输入框,18-maintenance-9.png,作业记录 → 异常详情 → 身份核对,作业记录/诊断 → 身份冲突核对,只变更交互归属；原始截图事实继续保留。
+P58,原接收发生 / 确切ID / RawDurable,18-maintenance-9.png,作业记录 → 异常详情 → 原始证据,作业记录/诊断 → 原接收责任与证据,只变更交互归属；原始截图事实继续保留。

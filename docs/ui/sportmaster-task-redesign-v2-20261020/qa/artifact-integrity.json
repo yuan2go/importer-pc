@@ -1,0 +1,89 @@
+{
+  "scope": "Design artifact integrity only; no production build, Windows or device test",
+  "sourceAnalysisCommit": "ba80d0ea90d86b24f9d9eebd20d075da34320972",
+  "prototypeSha256": "3d6ddf034c9f1a827ddecfe8b8d5421d95f1be83e1513e7b3fce1e2efc6732fb",
+  "checks": [
+    {
+      "check": "source_rebuild_matches_final_prototype",
+      "passed": true,
+      "detail": "3d6ddf034c9f1a827ddecfe8b8d5421d95f1be83e1513e7b3fce1e2efc6732fb"
+    },
+    {
+      "check": "60_named_states_67_png",
+      "passed": true,
+      "detail": {
+        "named-scene": 60,
+        "viewport": 5,
+        "scroll-detail": 2
+      }
+    },
+    {
+      "check": "screen_id_uniqueness",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all_png_hashes_match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "final_render_matches_source_and_has_no_recorded_issues",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "54_current_field_rows_csv_json_equal",
+      "passed": true,
+      "detail": {
+        "csv": 54,
+        "json": 54
+      }
+    },
+    {
+      "check": "58_original_field_state_overlay_rows",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "chinese_glyphs_400",
+      "passed": true,
+      "detail": {
+        "unique_source_characters": 680,
+        "missing": ""
+      }
+    },
+    {
+      "check": "chinese_glyphs_700",
+      "passed": true,
+      "detail": {
+        "unique_source_characters": 680,
+        "missing": ""
+      }
+    },
+    {
+      "check": "prototype_connect_csp_none",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "v2_local_links",
+      "passed": true,
+      "detail": {
+        "count": 498,
+        "broken": []
+      }
+    },
+    {
+      "check": "no_production_source_or_historical_ui_edits",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "necessary_qa_versions_preserved",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "allPassed": true
+}

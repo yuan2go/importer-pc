@@ -1,0 +1,308 @@
+{
+  "sourceAnalysisCommit": "ba80d0ea90d86b24f9d9eebd20d075da34320972",
+  "scope": "必要离线原型走查；各次结果保留真实被测版本，不代表 .NET/WPF/Windows/设备/RCS/性能验收",
+  "finalPrototypeSha256": "3d6ddf034c9f1a827ddecfe8b8d5421d95f1be83e1513e7b3fce1e2efc6732fb",
+  "distinctTasks": 6,
+  "initialRun": {
+    "source": "/workspace/scratch/69927969969a/importer-pc/docs/ui/sportmaster-task-redesign-v2-20261020/Prototype.html",
+    "sourceCommit": "ba80d0ea90d86b24f9d9eebd20d075da34320972",
+    "prototypeSha256": "43bb0a9efbb80bf35307d0d26ee19bdfa5822968363feb7b5ea681b80946e599",
+    "scope": "Only affected offline prototype tasks; no Windows, WPF, .NET regex, production transport, device or performance test",
+    "startedAt": "2026-10-20T10:42:51.711Z",
+    "checks": [
+      {
+        "id": "V2-L01",
+        "title": "指定左实例：输入错误、定位、修正、保存与待生效",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "四个参数类别明确可见"
+          },
+          {
+            "pass": true,
+            "message": "错误绑定左实例IP，不丢其他输入"
+          },
+          {
+            "pass": true,
+            "message": "同时编辑的取格口编码保留"
+          },
+          {
+            "pass": true,
+            "message": "右实例IP没有连带改变"
+          },
+          {
+            "pass": true,
+            "message": "保存候选与实际运行分别保留"
+          },
+          {
+            "pass": true,
+            "message": "修改取格口编码不覆盖心跳编码"
+          },
+          {
+            "pass": true,
+            "message": "保存后明确待生效，接收仍暂停"
+          }
+        ]
+      },
+      {
+        "id": "V2-L02",
+        "title": "本地条码样例：唯一匹配、旧结果过期、重复条目与清空校验",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "预置模拟样例得到唯一选中码，保留模拟标记"
+          },
+          {
+            "pass": true,
+            "message": "修改样例后旧结果失效"
+          },
+          {
+            "pass": true,
+            "message": "重复两个条目不去重为一个有效码"
+          },
+          {
+            "pass": true,
+            "message": "预置语法错误定位到规则字段"
+          },
+          {
+            "pass": true,
+            "message": "规则错误保留全部本地样例"
+          },
+          {
+            "pass": true,
+            "message": "新规则保存后仍不冒充运行规则"
+          },
+          {
+            "pass": true,
+            "message": "已有策略清空报错，不当成关闭"
+          }
+        ]
+      },
+      {
+        "id": "V2-L03",
+        "title": "筛选拒绝的当前结果、原始候选详情及另一位独立",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "筛选拒绝没有本次RCS请求与成功任务"
+          },
+          {
+            "pass": true,
+            "message": "左位明确说明未请求，原因与RCS拒绝分开"
+          },
+          {
+            "pass": true,
+            "message": "右位有效任务继续明确显示"
+          },
+          {
+            "pass": true,
+            "message": "详情含原顺序候选与规则指纹"
+          },
+          {
+            "pass": true,
+            "message": "只读详情不会构造请求"
+          },
+          {
+            "pass": true,
+            "message": "零匹配不把上一包格口带回当前区"
+          },
+          {
+            "pass": true,
+            "message": "多候选可经唯一选中后取得本次任务"
+          }
+        ]
+      },
+      {
+        "id": "V2-L04",
+        "title": "系统/组件心跳归属、间隔校验与首配独立生命周期",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "取格口站码与心跳工位编码分离"
+          },
+          {
+            "pass": true,
+            "message": "心跳间隔错误定位在唯一组件"
+          },
+          {
+            "pass": true,
+            "message": "跨类别校验保留关联编辑"
+          },
+          {
+            "pass": true,
+            "message": "首配没有日常侧栏"
+          },
+          {
+            "pass": true,
+            "message": "首配复用明确的心跳工位字段"
+          },
+          {
+            "pass": true,
+            "message": "常规导航没有首次配置入口"
+          }
+        ]
+      },
+      {
+        "id": "V2-L05",
+        "title": "心跳证据、只读连接检查与原件责任分开",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "诊断显示明确的心跳HTTP层"
+          },
+          {
+            "pass": true,
+            "message": "读取连接不会新造心跳回执"
+          },
+          {
+            "pass": true,
+            "message": "检查不清偿未知原件"
+          },
+          {
+            "pass": true,
+            "message": "模拟传输恢复仍保留原件Unknown"
+          },
+          {
+            "pass": true,
+            "message": "旧失败证据保留等待新周期，不因修复按钮伪造200"
+          }
+        ]
+      },
+      {
+        "id": "V2-L06",
+        "title": "同窗安装授权取消与未知回执核对，首配独立",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "本地摘要后才请求模拟授权，尚未安装完成"
+          },
+          {
+            "pass": true,
+            "message": "取消保留审核摘要，没有成功回执"
+          },
+          {
+            "pass": true,
+            "message": "回执未知不提供重复安装动作"
+          },
+          {
+            "pass": true,
+            "message": "只读模拟回执核对后同窗完成"
+          },
+          {
+            "pass": true,
+            "message": "普通客户端首配作为独立流程演示"
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "externalRequests": [],
+    "browser": "155.0.8059.84",
+    "finishedAt": "2026-10-20T10:43:02.316Z",
+    "passed": true
+  },
+  "targetedRun": {
+    "source": "/workspace/scratch/69927969969a/importer-pc/docs/ui/sportmaster-task-redesign-v2-20261020/Prototype.html",
+    "sourceCommit": "ba80d0ea90d86b24f9d9eebd20d075da34320972",
+    "prototypeSha256": "cf1bd2eab360d86f2e02c2aa84a796a61d0410ecc3b01fd458d8a93910ff0bce",
+    "scope": "Only affected offline prototype tasks; no Windows, WPF, .NET regex, production transport, device or performance test",
+    "startedAt": "2026-10-20T10:50:19.048Z",
+    "checks": [
+      {
+        "id": "V2-L01",
+        "title": "指定左实例：输入错误、定位、修正、保存与待生效",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "四个参数类别明确可见"
+          },
+          {
+            "pass": true,
+            "message": "错误绑定左实例IP，不丢其他输入"
+          },
+          {
+            "pass": true,
+            "message": "同时编辑的取格口编码保留"
+          },
+          {
+            "pass": true,
+            "message": "右实例IP没有连带改变"
+          },
+          {
+            "pass": true,
+            "message": "保存候选与实际运行分别保留"
+          },
+          {
+            "pass": true,
+            "message": "修改取格口编码不覆盖心跳编码"
+          },
+          {
+            "pass": true,
+            "message": "保存后明确待生效，接收仍暂停"
+          },
+          {
+            "pass": true,
+            "message": "未知写入结果不误称为已知未保存"
+          }
+        ]
+      },
+      {
+        "id": "V2-L03",
+        "title": "筛选拒绝的当前结果、原始候选详情及另一位独立",
+        "status": "PASS",
+        "assertions": [
+          {
+            "pass": true,
+            "message": "筛选拒绝没有本次RCS请求与成功任务"
+          },
+          {
+            "pass": true,
+            "message": "左位明确说明未请求，原因与RCS拒绝分开"
+          },
+          {
+            "pass": true,
+            "message": "右位有效任务继续明确显示"
+          },
+          {
+            "pass": true,
+            "message": "详情含原顺序候选与规则指纹"
+          },
+          {
+            "pass": true,
+            "message": "只读详情不会构造请求"
+          },
+          {
+            "pass": true,
+            "message": "零匹配不把上一包格口带回当前区"
+          },
+          {
+            "pass": true,
+            "message": "快照失效时持续状态栏不冒称当前运行已确认"
+          },
+          {
+            "pass": true,
+            "message": "多候选可经唯一选中后取得本次任务"
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "externalRequests": [],
+    "browser": "155.0.8059.84",
+    "finishedAt": "2026-10-20T10:50:22.321Z",
+    "passed": true
+  },
+  "finalPresentationOnlyChange": {
+    "change": "持续状态栏色调与文字语义统一：等待中性、处理中信息色、拒绝错误色、断线/未知警告；未修改业务、参数、保存或恢复状态机",
+    "functionalRetest": "NOT_RUN_FOR_COLOR_ONLY_CHANGE",
+    "evidence": "最终图像导出及逐图/定向视觉复核"
+  },
+  "allExecutedChecksPassed": true
+}

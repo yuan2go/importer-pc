@@ -1,0 +1,12 @@
+{
+  "changeKind": "read-only legacy destination copy only",
+  "changedLegacyIds": [
+    "P13",
+    "P14",
+    "P53",
+    "P54",
+    "P55"
+  ],
+  "auxSha256": "1e8ecf908617d1281078af63c9d798bf6d15a4ee59c992a4bd496e6b65f097a2",
+  "behaviorChangesAfterFiveCaseReview": false
+}

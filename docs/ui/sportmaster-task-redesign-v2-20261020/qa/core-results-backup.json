@@ -1,0 +1,74 @@
+{
+  "scope": "仅 V2 离线原型的必要交互；未连接 HTTP/设备，未做 WPF/Windows/DPI/安装/性能/现场验收",
+  "source": "/workspace/scratch/69927969969a/importer-pc/docs/ui/sportmaster-task-redesign-v2-20261020/Prototype.html",
+  "sourceSha256": "c593f703bdbd65d2249cb0a18474a61e86019f75604cffb5e7bc1059f43a20a5",
+  "startedAt": "2026-10-20T08:54:38.693Z",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "selectedChecks": [
+    "V2-T07"
+  ],
+  "checks": [
+    {
+      "id": "V2-T07",
+      "title": "计划备份关闭排除依赖，保存前重新开启保留输入",
+      "scene": "system-station",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "启用时相对目录和越界数值分别提示错误"
+        },
+        {
+          "pass": true,
+          "message": "关闭后依赖字段明确禁用"
+        },
+        {
+          "pass": true,
+          "message": "关闭后的无效目录与数值不会阻断完整候选校验"
+        },
+        {
+          "pass": true,
+          "message": "校验没有擦掉本次临时输入"
+        },
+        {
+          "pass": true,
+          "message": "关闭时保存候选排除全部依赖值，而非带入隐藏错误"
+        },
+        {
+          "pass": true,
+          "message": "保存前重新开启能恢复临时输入"
+        },
+        {
+          "pass": true,
+          "message": "重新开启后恢复依赖校验"
+        },
+        {
+          "pass": true,
+          "message": "界面说明关闭只取消后续计划、保留已有备份"
+        },
+        {
+          "pass": true,
+          "message": "关闭计划可保存为 Pending，已保存内容不混入临时字段"
+        },
+        {
+          "pass": true,
+          "message": "保存关闭计划后仍清楚保持旧运行配置，等待受控生效"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "browser": "155.0.8059.84",
+  "finishedAt": "2026-10-20T08:54:42.487Z",
+  "sourceStillSame": true,
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "pageErrors": 0,
+    "externalRequests": 0
+  }
+}

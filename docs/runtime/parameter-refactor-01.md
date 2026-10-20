@@ -1,3 +1,5 @@
+> 最新 V2 目标见[实施裁决](../design/sportmaster-task-redesign-01.md)。本页记录 PR73 原参数范围与原验证；本轮合并上传不测试、不构建，不扩大为 V2 或现场验收。
+
 # PARAM-01 参数正式重构：实现与验证
 
 2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
@@ -107,3 +109,21 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 [首次远端检查](https://github.com/yuan2go/importer-pc/actions/runs/39406264803/job/118572825786)在 `0d4ee6d` 的 checkout 阶段因原型 `source/aux.js` Windows保留名失败，尚未执行构建/测试，不计为应用回归失败或PASS。现有Windows工作流改为非cone sparse checkout，仅不在工作副本落地该文件；Git blob和完整历史均保留。core.protectNTFS=false仅作用于checkout子进程；冻结导出器仅在只读git archive命令设置该选项，仍使用data_filter与extended-path目录，签名包SafePath和部署安全门禁不变。
 
 复用 [统一发行测试](../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，现有商业交付拒绝策略5项亦通过，见 [日志](evidence/parameter-refactor-01/release-windows-paths.log)。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。
+
+
+## ba80 合并快照的源码对照（形成时历史，2026-10-20）
+
+以下保留V2设计轮对ba80的原静态对照。表中“继续完成”是当时判断；PR73已经完成的原参数范围见本文前述证据，V2新增目标仍待实施。
+
+
+仅静态读取，不新增构建/测试/Windows验证。PR71冻结 `5abe82071471d525686352c094dbb79dc7fea3ce` 已随 PR69/70/72 合入main `ba80d0ea90d86b24f9d9eebd20d075da34320972`；发布范围及原产物见[快照](publication-parameter-snapshot-20261020.md)和[发布回执](publication-pr69-pr71-20261020.md)。
+
+| 已有代码 | 当前可确认范围 | 继续完成 |
+|---|---|---|
+| `ParameterEditorModel` / `ParameterSettingsControl` | 四分类、真实描述参数、字段/对象错误、定位、基础输入与本地样例。 | 按V2重排唯一编辑归属及对象布局，完善状态/差异/键盘与尺寸体验。 |
+| `StartupConfigurationDraft`、启动入口 | 首配与日常共模、缺配可编辑与原责任保护路径。 | 五步独立首配、未完成续办、故障维护返回及正常页面感知。 |
+| `BarcodeFiltering` 及准入联动 | 完整候选、受限整串正则、唯一选中、歧义拒绝、旧null兼容与证据保留。 | 原生展示与必要风险验证；已有规则清空不得退回旧兼容。 |
+| 桌面/应用 `ConfigurationSubmission` | 规范化候选、配置账及原所有者核对；Unknown/PendingRestart/NotSaved/Conflict。 | 准确呈现结果、保留更新后的输入、冲突/未知的可执行下一步及最终验证。 |
+| `RcsConfigurationValidation` 与既有心跳 | 保存前静态联合校验；已有周期、编码、生命周期和HTTP证据。 | 保留两类编码的用途与历史，按V2迁移取格口字段；不把心跳传输当应用确认。 |
+
+三组相机任务展示、waveNo/响应quantity的兼容传递、完整对象维护与V2视觉尚有工作；taskId/skuId原有解析/应用传递继续复用。V2目标见[现行裁决](../design/sportmaster-task-redesign-01.md)，不以临时参数摆放反向覆盖用户字段归属。单窗口安装和已发布原介质继续保留各自SourceCommit，此参数快照及最终合并树未据此取得新安装或现场PASS。

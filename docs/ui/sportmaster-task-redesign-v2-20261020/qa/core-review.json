@@ -1,0 +1,111 @@
+{
+  "scope": "V2 必要离线原型交互定向复验证据汇总",
+  "status": "7 个必要任务在各自相关修改版本通过",
+  "checks": [
+    {
+      "id": "V2-T01",
+      "scope": "左右独立更新、旧任务整组失效、请求编号不重复、迟到模拟回调不覆盖新场景",
+      "status": "PASS",
+      "assertion_count": 6,
+      "source_sha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+      "evidence_file": "results-initial.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T02",
+      "scope": "四类编辑与错误保留、唯一候选 Pending、受控启动确认、旧请求目标与报文不漂移",
+      "status": "PASS",
+      "assertion_count": 11,
+      "source_sha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+      "evidence_file": "results-initial.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T03",
+      "scope": "七个已知数值范围与跨类别错误焦点定位",
+      "status": "PASS",
+      "assertion_count": 4,
+      "source_sha256": "66a64ad3f75770ec4c5bf02150b2d5ea6a687acb416e78753eaeb5ff6584119f",
+      "evidence_file": "results-targeted.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T04",
+      "scope": "保存结果未知期间锁定所有类别、禁止重复提交、按既有落盘修订收敛",
+      "status": "PASS",
+      "assertion_count": 7,
+      "source_sha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+      "evidence_file": "results-initial.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T05",
+      "scope": "后台更新保持输入焦点与选区，继续编辑／保留／放弃三种离开处理",
+      "status": "PASS",
+      "assertion_count": 5,
+      "source_sha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+      "evidence_file": "results-initial.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T06",
+      "scope": "失效证据阻断恢复；schema 3 共享条件恢复后仅健康位置准入，未知原件保持本位责任",
+      "status": "PASS",
+      "assertion_count": 4,
+      "source_sha256": "66a64ad3f75770ec4c5bf02150b2d5ea6a687acb416e78753eaeb5ff6584119f",
+      "evidence_file": "results-targeted.json",
+      "page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "id": "V2-T07",
+      "scope": "计划备份关闭排除依赖、暂存值重新开启恢复、关闭可保存 Pending 且运行值仍旧",
+      "status": "PASS",
+      "assertion_count": 10,
+      "source_sha256": "c593f703bdbd65d2249cb0a18474a61e86019f75604cffb5e7bc1059f43a20a5",
+      "evidence_file": "results-backup.json",
+      "page_errors": 0,
+      "external_requests": 0
+    }
+  ],
+  "unique_tasks_passed": 7,
+  "assertions_in_selected_checks": 47,
+  "page_errors": 0,
+  "external_requests": 0,
+  "notes": [
+    "这是对相关修改作定向复验后的合并覆盖，七个任务不是对同一个最终二进制作全套重跑。",
+    "初次 T03 因 QA 脚本漏点业务模块类别而超时；修正导航后定向通过，不计为产品故障。",
+    "初次 T06 的“任意未知原件阻断全站”预期不符合实际 schema 3 ParcelGuards，已废弃；仅采信后续按位恢复结果。",
+    "T02 请求数字 token 断言只核对示例请求中的数字类型；不能单凭该断言宣称响应数量协议保真已完成生产验证。",
+    "本次仅本地离线 HTML/JavaScript 原型；未连接真实 HTTP、相机、RCS、PLC 或 Windows 客户端。",
+    "目标 Windows 分辨率、缩放比例、键鼠/触摸实际输入、设备链路、安装和性能未验收。"
+  ],
+  "source_revisions": [
+    {
+      "evidence_file": "results-initial.json",
+      "source_sha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+      "started_at": "2026-10-20T08:44:17.696Z",
+      "finished_at": "2026-10-20T08:44:59.737Z",
+      "source_unchanged_during_run": true
+    },
+    {
+      "evidence_file": "results-targeted.json",
+      "source_sha256": "66a64ad3f75770ec4c5bf02150b2d5ea6a687acb416e78753eaeb5ff6584119f",
+      "started_at": "2026-10-20T08:48:18.174Z",
+      "finished_at": "2026-10-20T08:48:20.902Z",
+      "source_unchanged_during_run": true
+    },
+    {
+      "evidence_file": "results-backup.json",
+      "source_sha256": "c593f703bdbd65d2249cb0a18474a61e86019f75604cffb5e7bc1059f43a20a5",
+      "started_at": "2026-10-20T08:54:38.693Z",
+      "finished_at": "2026-10-20T08:54:42.487Z",
+      "source_unchanged_during_run": true
+    }
+  ]
+}

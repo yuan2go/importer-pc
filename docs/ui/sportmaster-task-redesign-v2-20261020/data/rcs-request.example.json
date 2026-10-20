@@ -1,0 +1,22 @@
+{
+  "source": "PDA",
+  "version": 1,
+  "requestId": 20260925003,
+  "locale": "zh_CN",
+  "data": [
+    {
+      "index": 1,
+      "command": "sorter.task.dest_request",
+      "params": {
+        "zoneId": 13421,
+        "projectId": 13421,
+        "loadCode": "BC0003",
+        "stationCode": "IS-L-L1-04",
+        "bcrCode": "IS-L-L1-04-PICK-1",
+        "specifiedChute": false,
+        "chuteCode": null,
+        "quantity": 1
+      }
+    }
+  ]
+}

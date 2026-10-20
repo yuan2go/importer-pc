@@ -1,0 +1,206 @@
+{
+  "scope": "仅 V2 离线原型的必要交互；未连接 HTTP/设备，未做 WPF/Windows/DPI/安装/性能/现场验收",
+  "source": "/workspace/scratch/69927969969a/importer-pc/docs/ui/sportmaster-task-redesign-v2-20261020/Prototype.html",
+  "sourceSha256": "cbe05a1791673277fd319a7892c78620d9d8b8e8152e8c1fdbe98d633998a98f",
+  "startedAt": "2026-10-20T08:44:17.696Z",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "checks": [
+    {
+      "id": "V2-T01",
+      "title": "左右并行、旧任务整组失效与迟到响应隔离",
+      "scene": "work-normal",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "左位新包等待 RCS 时旧任务整组失效"
+        },
+        {
+          "pass": true,
+          "message": "左位更新不改变右位包裹、任务或请求"
+        },
+        {
+          "pass": true,
+          "message": "左位可见任务区不泄漏上一件格口或任务号"
+        },
+        {
+          "pass": true,
+          "message": "两位独立完成各自新包"
+        },
+        {
+          "pass": true,
+          "message": "连续左右请求使用互不重复的编号",
+          "evidence": [
+            "20260925003",
+            "20260925004",
+            "20260925005",
+            "20260925006",
+            "20260925007"
+          ]
+        },
+        {
+          "pass": true,
+          "message": "上一场景的迟到响应不能覆盖新的本位扫描/等待状态"
+        }
+      ]
+    },
+    {
+      "id": "V2-T02",
+      "title": "四类编辑、保留错误、保存 Pending、重启确认与原请求冻结",
+      "scene": "work-normal",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "预览请求中的整数保持数字 token，响应数量仍为字符串"
+        },
+        {
+          "pass": true,
+          "message": "日常参数有四个明确类别"
+        },
+        {
+          "pass": true,
+          "message": "从其他类别发起校验会定位错误的右相机实例"
+        },
+        {
+          "pass": true,
+          "message": "错误标记落在实际输入字段"
+        },
+        {
+          "pass": true,
+          "message": "一次字段错误保留所有四类其他输入"
+        },
+        {
+          "pass": true,
+          "message": "编辑右实例没有修改左实例参数"
+        },
+        {
+          "pass": true,
+          "message": "保存形成一个 Pending 修订并保持整站软件暂停"
+        },
+        {
+          "pass": true,
+          "message": "保存并未切换实际运行配置"
+        },
+        {
+          "pass": true,
+          "message": "单次完整保存包含四类关联修改"
+        },
+        {
+          "pass": true,
+          "message": "受控重启取得新内容确认；新包接收仍暂停"
+        },
+        {
+          "pass": true,
+          "message": "应用新 system / business / driver / component 值后，旧包冻结请求保持原字节"
+        }
+      ]
+    },
+    {
+      "id": "V2-T03",
+      "title": "已知数值边界与跨类别错误定位",
+      "scene": "system-station",
+      "status": "FAIL",
+      "assertions": [],
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-action=\"business-section:runtime\"]').first()\u001b[22m\n"
+    },
+    {
+      "id": "V2-T04",
+      "title": "保存结果未知时锁定候选并禁止重复提交",
+      "scene": "config-save-unknown",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "结果未知期间左相机编辑被锁定"
+        },
+        {
+          "pass": true,
+          "message": "结果未知期间 system 也不可改写待核对候选"
+        },
+        {
+          "pass": true,
+          "message": "结果未知期间 business 也不可改写待核对候选"
+        },
+        {
+          "pass": true,
+          "message": "结果未知期间 components 也不可改写待核对候选"
+        },
+        {
+          "pass": true,
+          "message": "没有可重复保存的已启用按钮"
+        },
+        {
+          "pass": true,
+          "message": "核对收敛为已落盘修订，不创建额外修订"
+        },
+        {
+          "pass": true,
+          "message": "核对写入事实不会冒充应用成功"
+        }
+      ]
+    },
+    {
+      "id": "V2-T05",
+      "title": "后台更新保留焦点，未保存离开三种选择",
+      "scene": "driver-right",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "模拟后台结果更新后输入焦点与选区不变"
+        },
+        {
+          "pass": true,
+          "message": "后台刷新没有覆盖输入"
+        },
+        {
+          "pass": true,
+          "message": "继续编辑留在参数页"
+        },
+        {
+          "pass": true,
+          "message": "保留草稿后离开，编辑值没有投入运行"
+        },
+        {
+          "pass": true,
+          "message": "放弃本次修改回到已保存值；运行配置未改变"
+        }
+      ]
+    },
+    {
+      "id": "V2-T06",
+      "title": "状态失效与原件未知分别阻止恢复",
+      "scene": "work-stale",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "快照失效时恢复按钮不可用"
+        },
+        {
+          "pass": true,
+          "message": "传输恢复后，原请求未知仍不能由恢复按钮清除"
+        },
+        {
+          "pass": true,
+          "message": "检查恢复条件不会修改原件业务事实"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "browser": "155.0.8059.84",
+  "finishedAt": "2026-10-20T08:44:59.737Z",
+  "sourceStillSame": true,
+  "summary": {
+    "passed": 5,
+    "failed": 1,
+    "pageErrors": 0,
+    "externalRequests": 0
+  }
+}

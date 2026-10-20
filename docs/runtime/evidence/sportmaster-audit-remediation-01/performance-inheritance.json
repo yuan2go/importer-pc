@@ -1,0 +1,42 @@
+{
+  "analysis_source": "ff2e7a7459db148d0ed8dd4537489710b402635f",
+  "integrated_source": "892a40478d548fccd01dfb4543efeac48ff38d38",
+  "note": "Runtime code paths unchanged; performance fixture was independently corrected at 504c187. This does not re-label measured binary samples as integrated-medium measurements.",
+  "paths": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow",
+      "analysis": "87c0ed9c330fb91f8e06baf046fa3352a75f17db",
+      "integrated": "87c0ed9c330fb91f8e06baf046fa3352a75f17db"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts",
+      "analysis": "15f6823428bb98a1467d6c72482cf2b92a1a589b",
+      "integrated": "15f6823428bb98a1467d6c72482cf2b92a1a589b"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop",
+      "analysis": "54da4d82cb09cef4f95d2b859b927c83630d064e",
+      "integrated": "54da4d82cb09cef4f95d2b859b927c83630d064e"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage",
+      "analysis": "2a7ac3ec6f6c638cd2efc66ca22b18ba4c98a7b0",
+      "integrated": "2a7ac3ec6f6c638cd2efc66ca22b18ba4c98a7b0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
+      "analysis": "86931f60a9911cb46bfd973a15c78bd91fed7776",
+      "integrated": "86931f60a9911cb46bfd973a15c78bd91fed7776"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs",
+      "analysis": "bb6f1c966c1e94e0fb50bdf0b39203947bbe2f15",
+      "integrated": "bb6f1c966c1e94e0fb50bdf0b39203947bbe2f15"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/AuditPerformance.cs",
+      "analysis": "e516d96db7a5c25adaf80c521d009888c8e38467",
+      "integrated": "8e5ce2b31b9a4782092a8292038ca2c8ade8d755"
+    }
+  ]
+}

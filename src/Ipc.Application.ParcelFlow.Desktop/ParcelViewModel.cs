@@ -28,7 +28,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", Snapshot?.BlockingReasons ?? []);
     public string Status => !Fresh ? "快照已失效 · 旧状态仅供参考" : Snapshot?.State switch
     {
-        "Ready" => "作业就绪", "Paused" => "已暂停新入场", "NotReady" => "暂不可作业",
+        "Ready" => "作业就绪", "PartiallyReady" => "部分投递位可作业", "Blocked" => "暂不可作业", "Paused" => "已暂停新入场", "NotReady" => "暂不可作业",
         "Starting" => "正在启动", "Stopping" => "正在停止", "Stopped" => "已停止",
         null => "正在初始化", var state => state
     };
@@ -102,6 +102,16 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     long messageRevision;
     public string Message { get => message; set { message = value; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : Message;
+    public string OperatorFeedback => Feedback.Split(" · ", 2)[0] switch
+    {
+        "Persisted" => "操作已提交；请核对当前应用状态。",
+        "PendingRestart" => "配置已保存；等待受控重启生效。",
+        "Conflict" => "状态已变化；保留原对象，重新核对后再操作。",
+        "Rejected" => "操作未被接受；通过来源诊断查看完整回执。",
+        "NotReady" => "当前条件不允许操作；请核对阻断原因。",
+        _ => Feedback
+    };
+
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
     string configurationDraft = "";
     public string ConfigurationDraft { get => configurationDraft; set { configurationDraft = value; Changed(); NotifyConfigurationEditorState(); } }
@@ -249,5 +259,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public async Task ContinueAsync() { RequireFreshSnapshot(); var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ContinuePrepared", op.Id, InspectionReason); var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason; }
     public async Task ReconnectAsync() { RequireFreshSnapshot(); var r = await ServiceAsync(application.ReconnectAsync); Message = r.Status + " · " + r.Reason; }
     public async Task BackupAsync() { RequireFreshSnapshot(); var path = BackupPath; var r = await ServiceAsync(() => application.BackupAsync(path)); Message = r.Status + " · " + r.Reason; }
-    protected void Changed([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new(name));
+    protected void Changed([CallerMemberName] string? name = null)
+    {
+        PropertyChanged?.Invoke(this, new(name));
+        if (name == nameof(Feedback)) PropertyChanged?.Invoke(this, new(nameof(OperatorFeedback)));
+    }
 }

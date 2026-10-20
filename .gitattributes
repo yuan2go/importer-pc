@@ -15,3 +15,5 @@ docs/runtime/evidence/windows-no-test-release-20261020/** -text
 docs/runtime/evidence/sportmaster-visual-01/** -text whitespace=cr-at-eol
 docs/archive/pre-sportmaster-visual-01/** -text
 docs/runtime/evidence/sportmaster-commercial-delivery-01/** -text whitespace=cr-at-eol
+docs/archive/pre-sportmaster-audit-remediation-01/** -text whitespace=cr-at-eol,-blank-at-eof
+docs/runtime/evidence/sportmaster-audit-remediation-01/** -text whitespace=cr-at-eol

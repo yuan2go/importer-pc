@@ -1,0 +1,22 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available
+PASS frozen desktop first configuration exposes task steps and existing guarded save
+PASS offline first configuration never starts the Application or creates a business database
+PASS first-configuration native form becomes enabled and accepts keyboard focus after the read completes
+PASS first-configuration step navigation retains the same native unsaved form controls
+PASS integrated first-configuration guard refuses to discard an unsaved native draft
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner
+PASS left and right resolve independent operations on the shared live Application
+PASS classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand
+PASS classic and default share the friendly receipt projection while preserving the complete technical receipt
+PASS partial readiness is translated without changing the authoritative state or permissions
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+FAIL System.InvalidOperationException: repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection
+   at Program.<>c__DisplayClass13_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in <workspace>\.artifacts\final-native\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in <workspace>\.artifacts\final-native\VisualProductization.cs:line 106
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in <workspace>\.artifacts\final-native\VisualProductization.cs:line 180
+   at Program.<>c__DisplayClass2_0.<<Main>b__0>d.MoveNext() in <workspace>\.artifacts\final-native\Program.cs:line 32

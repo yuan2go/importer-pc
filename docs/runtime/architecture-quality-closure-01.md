@@ -1,3 +1,5 @@
+> 2026-10-20操作裁决：[审查整改](sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
+
 > 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
 > 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
@@ -7,7 +9,7 @@
 
 本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 
-PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页DB7、旧账确认与独立资料规则为当前操作，不以历史DB4候选或PASS替代。
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页旧DB7阶段的验证保持形成时身份；当前DB8操作见页首指引，旧账确认与独立资料规则继续适用，不以历史DB4候选或PASS替代。
 
 ## 容量及原件
 
@@ -27,7 +29,7 @@ Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。�
 
 Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。维护页“异常与恢复”或CLI的ReceiptResponsibilities（Owner=原OperationId）列出原发生ID/阶段/请求/来源/资料状态；ReconcileReceipt（Owner=原发生ID、Value=检查说明、ExpectedRevision=当前应用Revision）要求暂停和维护认证，仅适用于Awaiting且raw_hash为空、无原文件。只调用冻结原实现/原目标的Query，不Submit。原查询无结果、错误、不支持或冲突仍保留原发生、原图和包责任；有效权威终态只确认上传结果并关联新的Committed Query发生；旧发生保留缺raw资料责任，仍阻原图释放、归档及原包退休。SQL5把已有OutcomeReconciled旧行恢复为Awaiting并建立资料索引；已归档作业因原资料责任重新进入工作集，原归档JSON/hash在后续更新前另存版本。旧代码已释放或删除的图像只能如实保留缺口，不能由新Query、种子或迁移制造原字节。真正原文件仅从完整恢复集按原发生/清单hash恢复后本地T3清偿；缺原字节和合同处置依据时责任持续可见，不提供强制清除。Production须实际提供者支持权威原Query，缺合同仍BLOCKED。
 
-旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3/4普通启动在写库和SQL5前拒绝未明责任；repair-main-projection仅在原库租约及完整备份下修可证明主投影，保持旧schema，不构成完整升级步骤。缺raw的Attached场景改用下述recover-legacy-receipt：通过逐文件校验的匹配原发布、冻结配置/请求往返及原实现指纹，只启动原上传端口并Health/Query，不启动reader、不Submit。持久化独立Query原件和已证明主状态后，仅在所有外部业务已终结、每个缺raw均有权威依据时显式升级当前DB7；原发生仍Awaiting、原图/包和资料屏障保留。无结果、冲突、原发布/原图/合同缺失保持隔离，不先写未来迁移标记。
+旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3/4普通启动在写库和SQL5前拒绝未明责任；repair-main-projection仅在原库租约及完整备份下修可证明主投影，保持旧schema，不构成完整升级步骤。缺raw的Attached场景改用下述recover-legacy-receipt：通过逐文件校验的匹配原发布、冻结配置/请求往返及原实现指纹，只启动原上传端口并Health/Query，不启动reader、不Submit。持久化独立Query原件和已证明主状态后，仅在所有外部业务已终结、每个缺raw均有权威依据时显式升级当前DB8；原发生仍Awaiting、原图/包和资料屏障保留。无结果、冲突、原发布/原图/合同缺失保持隔离，不先写未来迁移标记。
 
 历史仅审计而无作用域的IdentityConflict须按持久Effective实际位恢复为待检查责任，schema1/2必须保护main，不能套用schema3的left/right。未确认冲突阻止Pending拓扑激活；已经错误持久化的legacy范围须保留旧body并追加修复审计，已确认项不重新武装。原审计没有设备/实体范围时保护所有可能位，明确显示资料不足。维护暂停/认证/说明后沿原AcknowledgeIdentityConflict解除；解除记录保留，重启不重复制造阻断。已有明确范围的冲突仍只影响相关位。
 
@@ -61,9 +63,9 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 ## 升级、回退与验证
 
-Parcel现行数据库7；SQL1～6/checksum逐字节继承。SQL5独立资料责任、SQL6原报文/拆包语义继续生效，SQL7追加数字请求唯一归属、已配置范围及恢复退役边界。普通DB2–6升级至7必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，CLI显式选择DB7，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为7的库不降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
+Parcel现行数据库8；SQL1～7/checksum逐字节继承。SQL8为商业维护读者屏障。SQL5独立资料责任、SQL6原报文/拆包语义继续生效，SQL7追加数字请求唯一归属、已配置范围及恢复退役边界。普通DB2–7升级至8必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，CLI显式选择DB8，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为8的库不降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts当前为ABI1.9.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts当前为ABI1.10.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 
@@ -85,7 +87,7 @@ dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Veri
 
 ## 审查02实际维护命令
 
-以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到当前DB7的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件。Awaiting分支只Query冻结原上传请求；旧DB4 OutcomeReconciled分支只验证已经持久的独立Query、主链raw及全部归档/未结责任，不调用新的Query，先建立完整备份和包含主体/原因/原发生/备份身份的迁移意图审计，再受控写SQL5/6/7（CLI选择7，旧API默认5）。任一旧Query原件、hash、owner或终态依据不完整则保留DB4，不能由已归档或历史ImageReleased掩盖。恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地完成已持久Query再决定是否需要外查。repair-main-projection仅修主投影，不能代替该升级流程。
+以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到当前DB7的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件。Awaiting分支只Query冻结原上传请求；旧DB4 OutcomeReconciled分支只验证已经持久的独立Query、主链raw及全部归档/未结责任，不调用新的Query，先建立完整备份和包含主体/原因/原发生/备份身份的迁移意图审计，再受控写SQL5/6/7（CLI选择8，旧API默认5）。任一旧Query原件、hash、owner或终态依据不完整则保留DB4，不能由已归档或历史ImageReleased掩盖。恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地完成已持久Query再决定是否需要外查。repair-main-projection仅修主投影，不能代替该升级流程。
 
 同请求回复ID须比较永久首次原hash，旧格式读取原occurrence原件；最近64条投影裁剪不移除该核验。不同字节进入LegacyQueryConflict并保有原责任、矛盾raw和旧版本；持久Query依据不要求仍在展示列表。
 

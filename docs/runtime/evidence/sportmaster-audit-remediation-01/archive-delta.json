@@ -1,0 +1,16 @@
+{
+  "baseline": "e0beb5d32c6a24a7799ba698731566bca6a6833a",
+  "candidate": "8d1474bbf21d604555b7a96a55b6f592ef10c03c",
+  "counts": {
+    "main": {
+      "pptx_media_type_mismatch": 265,
+      "private_metadata_marker": 2
+    },
+    "head": {
+      "pptx_media_type_mismatch": 265,
+      "private_metadata_marker": 2
+    }
+  },
+  "new_errors": [],
+  "removed_errors": []
+}

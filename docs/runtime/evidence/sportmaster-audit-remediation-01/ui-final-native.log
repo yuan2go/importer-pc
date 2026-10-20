@@ -1,0 +1,47 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available
+PASS frozen desktop first configuration exposes task steps and existing guarded save
+PASS offline first configuration never starts the Application or creates a business database
+PASS first-configuration native form becomes enabled and accepts keyboard focus after the read completes
+PASS first-configuration step navigation retains the same native unsaved form controls
+PASS integrated first-configuration guard refuses to discard an unsaved native draft
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner
+PASS left and right resolve independent operations on the shared live Application
+PASS classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand
+PASS classic and default share the friendly receipt projection while preserving the complete technical receipt
+PASS partial readiness is translated without changing the authoritative state or permissions
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS active native window grants initial keyboard focus before the refresh retention experiment
+PASS repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection
+PASS expanded filters use a bounded editing pane with full fixed query actions at minimum client size instead of clipping record/recovery controls
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS native calendar editor preserves the original wall time and explicit nonlocal UTC offset
+PASS invalid native time propagates as invalid input instead of retaining an older query time
+PASS rejected native date invalidates the bound history filter and removes the stale calendar selection
+PASS calendar dismissal and clock edits cannot restore a rejected date or broaden the query
+PASS explicitly selecting the original date corrects the error with the current clock and offset
+PASS valid typed date corrects the rejected value without reviving an older time or offset
+PASS native clear-time action removes both exact time boundaries
+PASS closing filter editing restores records and original command ownership without a new query or selection reset
+PASS native history row and command owner survive live snapshot refresh
+PASS history recovery actions remain fixed and fully visible at minimum client size while long inspection details scroll
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS page navigation preserves existing controls and independent drafts
+PASS auxiliary native window shares the same Application and device lifetime
+PASS support preview refuses a rejected date after calendar dismissal and keeps export disabled
+PASS explicit native clear removes the invalid support boundary
+PASS Unknown/rejection never reuse a slot and retain the original request owner
+PASS failed snapshot invalidates displayed slot and new commands without clearing original responsibility
+SIZE window=900x520 client=885.6x482.4 DPI=1.25
+PASS compact recovery actions remain in actual client area
+MINIMUM 左投递位 barcode=28 slot=62.4 actionsBottom=280.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+PASS compact recovery actions remain in actual client area
+MINIMUM 右投递位 barcode=28 slot=62.4 actionsBottom=280.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+NOT_RUN physical touch, hardware, mixed-monitor DPI, UAC installation and site acceptance.

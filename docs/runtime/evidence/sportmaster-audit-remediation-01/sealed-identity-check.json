@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "Scope": "Evidence hashes, archived original Git blobs and three same-source frozen result identities; not whole-archive PASS or field qualification",
+  "CodeCandidate": "934fd4af6a5b5587021892c0f9df169510115db8",
+  "DocumentationHead": "de4b5b13c4299ab309084d08c29c33aa142d83af",
+  "PreservedOriginals": 8,
+  "SameInventory": "39e100e98fe45fbef145d489202554da4543ae3407bbfacf52a1641b53999b24"
+}

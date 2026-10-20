@@ -1,0 +1,27 @@
+{
+  "Status": "PASS",
+  "Installer": "D:\\releases\\cainiao-single-exe-01\\菜鸟供包台安装程序.exe",
+  "InstallerBytes": 172462152,
+  "InstallerSha256": "2284d542f65299f53b2e6cec10e6ac7e1e52ee59dfc2ff9c487fc4deb27f0c9f",
+  "DeliveryFiles": 1,
+  "SourceCommit": "a7de058d5877b8fa797e2292271181b4272ac244",
+  "Payload": {
+    "ApplicationId": "sportmaster",
+    "SourceCommit": "a7de058d5877b8fa797e2292271181b4272ac244",
+    "BusinessVersion": "1.4.0",
+    "Sha256": "04bb4541f7364b5a45469c7afcf52339036aa1fbb4d4ae801214526fb6e134f9",
+    "ZipBytes": 106224225,
+    "UnpackedBytes": 242468306,
+    "FileCount": 747
+  },
+  "NativeAssertions": 17,
+  "PayloadAssertions": 27,
+  "PackagerTests": 5,
+  "Authenticode": "NotSigned",
+  "RawNativeLogSha256": "59cd5aa6b9b58ff61860970d319336ec5fdff95b644cdd316028faf2ccac7e2a",
+  "PrivateScreenshots": "Directory/account selection screenshots retained locally; not published because they contain local account and machine defaults",
+  "ActualUacInstallation": "NOT_RUN",
+  "UpgradeUninstall": "NOT_RUN",
+  "SdkDevicesRcsField": "NOT_RUN",
+  "Production": "NOT_APPROVED"
+}

@@ -1,0 +1,10 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "967ebc8daf377a99561914d57bd807017dcf2d14",
+  "Package": "D:\\releases\\cainiao-branding-03.zip",
+  "PackageSha256": "c6a31dcd1ff90979cfc767748c6bbb6ea12f5c9b8f90dcd0b878844474503579",
+  "InventorySha256": "0cba3068a772b67af703c9799fc938173a112940d4db6ce287bb8e82e183f179",
+  "InventoryFiles": 746,
+  "ZipCrc": "PASS",
+  "Scope": "Frozen Windows self-contained medium; no install, policy provisioning, device or external service operation"
+}

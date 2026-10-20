@@ -1,0 +1,17 @@
+..E....
+======================================================================
+ERROR: test_links_anchors_css_and_symlink_fail (test_verify_archive.ArchiveTests.test_links_anchors_css_and_symlink_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\projects\importer-pc\tools\test_verify_archive.py", line 78, in test_links_anchors_css_and_symlink_fail
+    (self.root / 'docs/link').symlink_to(self.root / 'README.md')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 1314] 客户端没有所需的特权。: 'C:\\Users\\yuan\\AppData\\Local\\Temp\\tmpjdawnfz9\\README.md' -> 'C:\\Users\\yuan\\AppData\\Local\\Temp\\tmpjdawnfz9\\docs\\link'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.718s
+
+FAILED (errors=1)

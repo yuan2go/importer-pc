@@ -17,12 +17,29 @@ abstract class StartupWorkflowWindow : Window
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected bool Busy;
-    protected StartupWorkflowWindow(string title)
+    protected StartupWorkflowWindow(string title, bool installation = false)
     {
         Form = Body;
         ProductBrand.Apply(this);
         Title = title; FontSize = 16; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
+        if (installation)
+        {
+            Width = 840; Height = 700; MinWidth = 760; MinHeight = 560; Background = Brushes.White;
+            var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
+            var rail = new StackPanel { Margin = new(24, 40, 24, 24) };
+            rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 80, Height = 80, HorizontalAlignment = HorizontalAlignment.Left });
+            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 20, FontWeight = FontWeights.Bold, Margin = new(0, 20, 0, 16) });
+            rail.Children.Add(new TextBlock { Text = "1  安装选项\n\n2  确认安装\n\n3  安装完成", TextWrapping = TextWrapping.Wrap });
+            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(237, 244, 255)), Child = rail }; layout.Children.Add(sidebar);
+            var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
+            content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            var header = new StackPanel(); header.Children.Add(new TextBlock { Text = "安装菜鸟供包台", FontSize = 24, FontWeight = FontWeights.Bold }); header.Children.Add(Status);
+            var options = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(options, 1);
+            Actions.HorizontalAlignment = HorizontalAlignment.Right; Grid.SetRow(Actions, 2);
+            content.Children.Add(header); content.Children.Add(options); content.Children.Add(Actions); layout.Children.Add(content); Content = layout;
+            Closing += (_, e) => { if (Busy) e.Cancel = true; }; return;
+        }
         var grid = new Grid { Margin = new(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold });
@@ -91,7 +108,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · 菜鸟供包台" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
@@ -166,7 +183,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
         });
-        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
+        Action("离线帮助", () => { new Window { Owner = this, Title = "菜鸟供包台 · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
@@ -375,36 +392,49 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
     public DeploymentLocation? Installed => installed;
     public bool Launched { get; private set; }
     TextBox account = null!, data = null!, configuration = null!, trust = null!, program = null!, station = null!, upgradeBackup = null!;
-    CheckBox repairSeed = null!, newSite = null!;
+    CheckBox repairSeed = null!, newSite = null!, startMenu = null!, desktopIcon = null!, runAfter = null!;
     ComboBox siteMode = null!;
     string newStation = "", selectedProgram = "", selectedBackup = "";
     string? enteredAccount, enteredData, enteredConfiguration, enteredTrust;
     bool? enteredNewSite, enteredRepair;
+    bool selectedStartMenu = true, selectedDesktop = true;
     RunMode selectedMode = RunMode.Simulation;
     string[] packages = [];
     int step;
-    readonly Button next, back;
-    public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · Importer PC")
+    readonly Button next, back, cancel;
+    public StartupSetupWindow(BusinessLaunch launch) : base("安装 · 菜鸟供包台", installation: true)
     {
         this.launch = launch;
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next);
-        Action("关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
-        Action("保存已审阅的无人值守计划…", () =>
-        {
-            if (reviewed is null || step != 2) throw new InvalidOperationException("先完成参数/组件检查并进入摘要");
-            var picker = new SaveFileDialog { FileName = "deployment-plan.json", Filter = "固定逐站部署计划|*.json" };
-            if (picker.ShowDialog(this) == true) { using var output = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); output.Write(Wire.Encode(DeploymentBatch.Freeze(reviewed))); Message("逐站计划已保存；不含业务数据库或请求。配置来源/原登记/包字节均固定，变化后须重新审阅。无人值守执行需要明确的Windows管理员部署会话。"); }
-            return Task.CompletedTask;
-        });
-        Action("继续退役程序的中断清理…", async () =>
-        {
-            var cleanupMedia = await Task.Run(() => DeploymentMedia.Inspect(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")), ApplicationId));
-            var registration = WindowsDeploymentSetup.Registration(ApplicationId);
-            var result = await Task.Run(() => ParcelStartupServices.ResumeRemovalAsync(cleanupMedia, Wire.FileHash(registration)));
-            Message(result.Status + "\n" + result.OperationFile + (result.RestartRequired ? "\n需重启Windows完成占用文件清理" : ""));
-        });
+        cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
+        next.IsDefault = true; cancel.IsCancel = true;
         Render();
+        Loaded += async (_, _) => await Run(Next);
+    }
+    Task SavePlan()
+    {
+        if (reviewed is null || step != 2) throw new InvalidOperationException("先完成参数/组件检查并进入摘要");
+        var picker = new SaveFileDialog { FileName = "deployment-plan.json", Filter = "固定逐站部署计划|*.json" };
+        if (picker.ShowDialog(this) == true) { using var output = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); output.Write(Wire.Encode(DeploymentBatch.Freeze(reviewed))); Message("逐站计划已保存；不含业务数据库或请求。配置来源/原登记/包字节均固定，变化后须重新审阅。无人值守执行需要明确的Windows管理员部署会话。"); }
+        return Task.CompletedTask;
+    }
+    async Task ResumeRemoval()
+    {
+        var cleanupMedia = await Task.Run(() => DeploymentMedia.Inspect(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")), ApplicationId));
+        var registration = WindowsDeploymentSetup.Registration(ApplicationId);
+        var result = await Task.Run(() => ParcelStartupServices.ResumeRemovalAsync(cleanupMedia, Wire.FileHash(registration)));
+        Message(result.Status + "\n" + result.OperationFile + (result.RestartRequired ? "\n需重启Windows完成占用文件清理" : ""));
+    }
+    TextBox InstallationFolder(string label, string value)
+    {
+        Note(label);
+        var row = new Grid { Margin = new(0, 0, 0, 8) }; row.ColumnDefinitions.Add(new()); row.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+        var box = new TextBox { Text = value, MinHeight = 44 }; System.Windows.Automation.AutomationProperties.SetName(box, label);
+        var browse = new Button { Content = "浏览…", MinHeight = 44, MinWidth = 80, Margin = new(8, 0, 0, 0) };
+        System.Windows.Automation.AutomationProperties.SetName(browse, "浏览" + label);
+        browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
+        Grid.SetColumn(browse, 1); row.Children.Add(box); row.Children.Add(browse); Form.Children.Add(row); return box;
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
     void CaptureInputs()
@@ -412,54 +442,67 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         if (step != 1) return;
         enteredAccount = account.Text; enteredData = data.Text; enteredConfiguration = configuration.Text; enteredTrust = trust.Text;
         selectedProgram = program.Text; selectedBackup = upgradeBackup.Text; enteredNewSite = newSite.IsChecked == true; enteredRepair = repairSeed.IsChecked == true;
+        selectedStartMenu = startMenu.IsChecked == true; selectedDesktop = desktopIcon.IsChecked == true;
     }
     void Render()
     {
-        Body.Children.Clear(); back.IsEnabled = step is 1 or 2;
-        Message("步骤 " + (step + 1) + " / 4 · 安装不启动设备或业务。日常运行保持未提权，安装和维护通过 Windows 授权。");
+        Body.Children.Clear(); Form = Body;
+        back.Visibility = step == 2 ? Visibility.Visible : Visibility.Collapsed;
+        cancel.Visibility = step == 3 ? Visibility.Collapsed : Visibility.Visible;
+        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和快捷方式，然后点击下一步。", 2 => "确认以下选项，点击安装后由 Windows 请求授权。", _ => "安装完成，可立即运行菜鸟供包台。" });
         if (step == 0)
         {
-            Note("从可信分发渠道取得并完整解压 Windows 安装包。下一步校验程序目录的登记、来源及全部文件；散列完整性不代替发布者信任。");
-            Note("源目录：" + Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")));
-            Note("升级和修复使用并排版本；原程序、配置、数据和租约保留。失败可在此重试，旧部署登记保持可用。"); next.Content = "检查安装媒介";
+            Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Margin = new(0, 24, 0, 24) });
+            Note("正在核对版本与完整性，完成后自动显示安装选项。"); next.Content = "重试检查";
         }
         else if (step == 1)
         {
             var current = WindowsDeploymentSetup.Current(ApplicationId);
-            Note("Application：" + ApplicationId + "\n来源：" + media!.SourceCommit);
+            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? TrustedProgramRoots.Default : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
+            Note("升级保留旧版本和原始数据。");
+            startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu, MinHeight = 44 }; Body.Children.Add(startMenu);
+            desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? launch.DataRoot);
+            var advanced = new StackPanel(); Body.Children.Add(new Expander { Header = "高级设置（运行账户、工位与维护）", Content = advanced, Margin = new(0, 20, 0, 12) }); Form = advanced;
             var defaultAccount = ParcelStartupServices.DefaultRuntimeAccount();
             account = Field("运行账户（已有 Windows 用户，如 机器名\\用户名；普通启动即可使用 UAC 过滤账户）", enteredAccount ?? reviewed?.RuntimeAccountSid ?? defaultAccount, _ => { });
-            data = Folder("数据根（升级时保留原数据位置）", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? launch.DataRoot);
-            program = Folder("程序根（本地固定卷、维护所有、运行账户只读；与数据分离）", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? TrustedProgramRoots.Default : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
-            newSite = new CheckBox { Content = "新工位：从本介质的通用模板收集首配（无数据库、请求或旧编号）", IsChecked = enteredNewSite ?? (current is null && reviewed is null), IsEnabled = current is null, MinHeight = 44 }; Body.Children.Add(newSite);
+            newSite = new CheckBox { Content = "新工位：使用介质通用模板", IsChecked = enteredNewSite ?? (current is null && reviewed is null), IsEnabled = current is null, MinHeight = 44 }; Form.Children.Add(newSite);
             station = Field("新工位标识（仅新工位填写；已部署身份只读）", newStation, v => newStation = v);
             Note("新工位模式：Simulation仅模拟；Production缺真实能力/合同/精确资格仍不能运行。模式和站标识写入后受原身份守卫约束。");
-            siteMode = new ComboBox { ItemsSource = Enum.GetValues<RunMode>(), SelectedItem = selectedMode, MinHeight = 44 }; siteMode.SelectionChanged += (_, _) => { if (siteMode.SelectedItem is RunMode value) selectedMode = value; }; Body.Children.Add(siteMode);
+            siteMode = new ComboBox { ItemsSource = Enum.GetValues<RunMode>(), SelectedItem = selectedMode, MinHeight = 44 }; siteMode.SelectionChanged += (_, _) => { if (siteMode.SelectedItem is RunMode value) selectedMode = value; }; Form.Children.Add(siteMode);
             configuration = Folder("高级：已有部署 / 批准的配置来源（初装复制，升级保留原种子）", enteredConfiguration ?? reviewed?.ConfigurationSource ?? current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config"));
             upgradeBackup = Folder("升级前完整备份目录（自动生成新的完整集合，不覆盖原备份）", selectedBackup.Length > 0 ? selectedBackup : Path.Combine(data.Text, "backups"));
-            repairSeed = new CheckBox { Content = "重新部署所选种子配置到新目录（用于种子损坏修复；原种子保留）", IsChecked = enteredRepair ?? reviewed?.RepairSeed ?? false, MinHeight = 44 }; Body.Children.Add(repairSeed);
+            repairSeed = new CheckBox { Content = "并排修复种子配置（保留原种子）", IsChecked = enteredRepair ?? reviewed?.RepairSeed ?? false, MinHeight = 44 }; Form.Children.Add(repairSeed);
             trust = Field("可选：独立离线信任文件（无扩展时可留空）", enteredTrust ?? reviewed?.TrustFile ?? "", _ => { });
             var chooseTrust = new Button { Content = "选择信任文件…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            chooseTrust.Click += (_, _) => { var selected = FilePick(this, "选择独立离线信任政策", "信任文件|*.json"); if (selected is not null) trust.Text = selected; }; Body.Children.Add(chooseTrust);
+            chooseTrust.Click += (_, _) => { var selected = FilePick(this, "选择独立离线信任政策", "信任文件|*.json"); if (selected is not null) trust.Text = selected; }; Form.Children.Add(chooseTrust);
             Note("不创建测试或 Production 信任。已安装信任只允许相同字节；轮换须另行审查。需要真实 SDK 的部署仍需独立安装及资格证据。");
             var selectedPackages = new TextBlock { Text = string.Join("\n", packages), TextWrapping = TextWrapping.Wrap };
             var choosePackages = new Button { Content = "选择可选离线扩展包…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             choosePackages.Click += (_, _) => { var picker = new OpenFileDialog { Title = "选择原始签名扩展包", Multiselect = true, Filter = "离线扩展包|*.zip;*.ipcpkg|所有文件|*.*" }; if (picker.ShowDialog(this) == true) { packages = picker.FileNames; selectedPackages.Text = string.Join("\n", packages); } };
-            Body.Children.Add(choosePackages); Body.Children.Add(selectedPackages); next.Content = "检查部署并查看摘要";
+            Form.Children.Add(choosePackages); Form.Children.Add(selectedPackages);
+            var cleanup = new Button { Content = "继续退役程序的中断清理…", MinHeight = 44, Margin = new(0, 12, 0, 0) }; cleanup.Click += async (_, _) => await Run(ResumeRemoval); Form.Children.Add(cleanup);
+            Form = Body;
+            Note("安装不启动设备；新工位默认 Simulation（模拟）。"); next.Content = "下一步";
         }
         else if (step == 2)
         {
             var r = reviewed!;
-            Note("请核对部署摘要。下一步仅提升固定安装 helper；未提权客户端不会创建机级策略。");
-            Note($"{r.ApplicationId}\n来源：{r.SourceCommit}\n运行账户 SID：{r.RuntimeAccountSid}\n数据：{r.DataRoot}\n种子来源：{r.ConfigurationSource}\n种子操作：{(r.RepairSeed ? "并排修复，原种子保留" : "初装复制，既有种子保留")}\n模式：{r.Mode}\n信任：{r.TrustFile ?? "未选择"}\n离线扩展：{r.Packages.Count}");
-            Note("程序目标：" + r.ProgramRoot + "\\releases\\新的版本目录\n机级策略与部署登记：%ProgramData%\\ImporterPc\n升级备份：" + (r.BackupDestination ?? "新工位尚无原库") + "\n开始菜单和系统已安装应用提供同源维护入口。安装完成后仍须首配与开工检查。");
+            Note("安装目录：" + r.ProgramRoot + "\n数据目录：" + r.DataRoot + "\n开始菜单快捷方式：" + (r.Shortcuts!.StartMenu ? "创建" : "不创建") + "\n桌面快捷方式：" + (r.Shortcuts.Desktop ? "创建" : "不创建") + "\n运行模式：" + r.Mode);
+            Note("安装期间请等待完成。升级保留旧版本、原始数据和配置。");
+            var details = new StackPanel(); Body.Children.Add(new Expander { Header = "查看安装详情与维护计划", Content = details, Margin = new(0, 16, 0, 12) }); Form = details;
+            Note($"{r.ApplicationId}\n来源：{r.SourceCommit}\n运行账户 SID：{r.RuntimeAccountSid}\n种子来源：{r.ConfigurationSource}\n信任：{r.TrustFile ?? "未选择"}\n升级备份：{r.BackupDestination ?? "新工位尚无原库"}");
             foreach (var component in components) Note("组件 " + component.Package + " @ " + component.Version + " · " + component.ExpandedBytes + "字节\n能力 " + string.Join(", ", component.Capabilities) + "\n精确依赖 " + string.Join(", ", component.Dependencies) + "\n系统前置条件 " + (component.Prerequisites.Length == 0 ? "本包未声明额外厂商安装项" : string.Join("；", component.Prerequisites)) + "\n仅签名/闭包检查；尚未绑定、激活、连接或允许业务。");
-            next.Content = "授权并安装";
+            var save = new Button { Content = "保存已审阅的无人值守计划…", MinHeight = 44 }; save.Click += async (_, _) => await Run(SavePlan); Form.Children.Add(save);
+            Form = Body; next.Content = "安装";
         }
         else
         {
-            Note("安装已读回确认。程序：" + installed!.ReleaseRoot + "\n配置：" + installed.ConfigurationDirectory + "\n数据：" + installed.DataRoot);
-            Note("已创建开始菜单快捷方式。旧版本和原始数据保留；此结果不代表 Windows 现场验收或 Production 准入。"); next.Content = "正常启动已安装程序";
+            Note("菜鸟供包台已安装到：\n" + installed!.ReleaseRoot);
+            Note("快捷方式已按所选选项处理。数据目录：\n" + installed.DataRoot);
+            runAfter = new CheckBox { Content = "安装完成后运行菜鸟供包台", IsChecked = ParcelStartupServices.IsRuntimeAccount(installed), IsEnabled = ParcelStartupServices.IsRuntimeAccount(installed), MinHeight = 44 }; Body.Children.Add(runAfter);
+            if (!runAfter.IsEnabled) Note("请登录指定运行账户后运行程序。");
+            next.Content = "完成";
         }
     }
     async Task Next()
@@ -467,7 +510,9 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         if (step == 0)
         {
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("安装向导需要 Windows");
-            media = await Task.Run(() => DeploymentMedia.Inspect(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")), ApplicationId)); step = 1; Render();
+            media = await Task.Run(() => DeploymentMedia.Inspect(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")), ApplicationId));
+            newStation = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(media.Root, "app", "config", "business.json"))).StationId;
+            step = 1; Render();
         }
         else if (step == 1)
         {
@@ -482,6 +527,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
                 await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, selectedMode)); configPath = seedDirectory;
             }
             reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, dataRoot, configPath, trustPath, selected, repair, selectedProgram));
+            reviewed = reviewed with { Shortcuts = new(selectedStartMenu, selectedDesktop) };
             components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
             if (WindowsDeploymentSetup.Current(ApplicationId) is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db")))
@@ -494,12 +540,22 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
             }
             step = 2; Render();
         }
-        else if (step == 2) { installed = await Task.Run(() => ParcelStartupServices.InstallAsync(reviewed!)); step = 3; Render(); }
+        else if (step == 2)
+        {
+            Message("正在安装菜鸟供包台，请在 Windows 授权窗口确认并等待安装完成。");
+            Body.Children.Clear(); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Margin = new(0, 24, 0, 24) });
+            Note("正在复制和校验程序、保存安装登记并创建所选快捷方式…");
+            try { installed = await Task.Run(() => ParcelStartupServices.InstallAsync(reviewed!)); step = 3; Render(); }
+            catch { Render(); throw; }
+        }
         else
         {
-            if (!ParcelStartupServices.IsRuntimeAccount(installed!)) { Message("安装完成。请登录指定运行账户，然后使用开始菜单运行入口。"); return; }
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Path.Combine(installed!.ReleaseRoot, "desktop", "Ipc.Desktop.exe")) { UseShellExecute = true, WorkingDirectory = installed.ReleaseRoot });
-            Launched = true;
+            if (runAfter.IsChecked == true)
+            {
+                if (!ParcelStartupServices.IsRuntimeAccount(installed!)) throw new InvalidOperationException("请登录指定运行账户后运行程序");
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Path.Combine(installed!.ReleaseRoot, "desktop", "Ipc.Desktop.exe")) { UseShellExecute = true, WorkingDirectory = installed.ReleaseRoot });
+                Launched = true;
+            }
             Busy = false; Close();
         }
     }

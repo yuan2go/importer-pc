@@ -97,6 +97,7 @@ public static class ParcelStartupServices
         await ElevateAsync(new("Install", Deployment: request));
         var location = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new InvalidDataException("No installed deployment receipt");
         if (location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
+            location.Shortcuts != request.Shortcuts || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
             !string.Equals(Path.GetFullPath(location.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Installation receipt differs from the selected deployment");
         return location;
@@ -271,35 +272,11 @@ public static class ParcelStartupServices
         }
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-    static void CreateShortcuts(DeploymentLocation location)
-    {
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Importer PC");
-        DeploymentPaths.RequireOrdinaryAncestors(folder); Directory.CreateDirectory(folder);
-        var shellType = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException("Windows shortcut service unavailable");
-        dynamic shell = Activator.CreateInstance(shellType)!;
-        try
-        {
-            foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
-            {
-                var path = Path.Combine(folder, location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + Path.GetFileName(location.ReleaseRoot)[^8..] + " · " + entry.Name + ".lnk");
-                DeploymentPaths.RequireOrdinaryAncestors(path);
-                dynamic shortcut = shell.CreateShortcut(path);
-                try { shortcut.TargetPath = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"); shortcut.Arguments = entry.Args; shortcut.WorkingDirectory = location.ReleaseRoot; shortcut.Description = "Importer PC " + location.ApplicationId; shortcut.Save(); }
-                finally { System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shortcut); }
-            }
-        }
-        finally { System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell); }
-    }
+    static void CreateShortcuts(DeploymentLocation location) => DeploymentShortcuts.Create(location,
+        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-    static void RemoveShortcuts(DeploymentLocation location)
-    {
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Importer PC");
-        foreach (var name in new[] { "运行", "启动修复", "安装维护" })
-        {
-            var file = Path.Combine(folder, location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + Path.GetFileName(location.ReleaseRoot)[^8..] + " · " + name + ".lnk");
-            DeploymentPaths.RequireOrdinaryAncestors(file); if (File.Exists(file)) File.Delete(file);
-        }
-    }
+    static void RemoveShortcuts(DeploymentLocation location) => DeploymentShortcuts.Remove(location,
+        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
     static async Task<string?> ElevateAsync(StartupMaintenanceRequest request)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();

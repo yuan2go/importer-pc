@@ -136,6 +136,8 @@ def markdown(text):
 # Runtime build outputs are not archival inputs. These exact project output roots and the
 # repository's dedicated publication directory are generated; docs/assets remain exhaustive.
 RUNTIME_PROJECTS = {
+    'src/Ipc.Installer',
+    'tests/Ipc.Installer.Verification',
     'src/Ipc.Components',
     'src/Ipc.Adapters',
     'src/Ipc.Application.Contracts',

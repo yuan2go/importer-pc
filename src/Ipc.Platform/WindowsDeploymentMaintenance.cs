@@ -19,7 +19,7 @@ public static partial class WindowsDeploymentSetup
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
         var executable = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(location.ReleaseRoot, "app", "application-release.json")));
-        key.SetValue("DisplayName", "Importer PC · " + location.ApplicationId);
+        key.SetValue("DisplayName", "菜鸟供包台 · " + location.ApplicationId);
         key.SetValue("DisplayVersion", (release.BusinessVersion ?? "reference") + " · " + location.SourceCommit[..12]);
         key.SetValue("Publisher", "Importer PC reference project"); key.SetValue("InstallLocation", location.ReleaseRoot);
         key.SetValue("DisplayIcon", executable); key.SetValue("UninstallString", "\"" + executable + "\" --product-maintenance");

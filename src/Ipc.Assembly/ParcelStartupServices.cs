@@ -221,14 +221,14 @@ public static class ParcelStartupServices
                     if (install.ChangePlanIdentity is null || install.BackupDestination is null) throw new InvalidOperationException("升级/修复须先审阅原责任及完整备份计划");
                     var originalLaunch = previous is null ? new BusinessLaunch(install.ConfigurationSource, install.DataRoot, null, null) : new(previous.ConfigurationDirectory, previous.DataRoot, null, null);
                     await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, previous?.SourceCommit == install.SourceCommit ? "Repair" : "Upgrade", install.BackupDestination,
-                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => CreateShortcuts(location, previous)); return Task.CompletedTask; });
+                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); }); return Task.CompletedTask; });
                 }
                 else
                 {
                     _ = DeploymentMedia.Inspect(install.MediaRoot, ApplicationId);
                     WindowsDeploymentSetup.PrepareInitialDataRoot(install.DataRoot, install.RuntimeAccountSid);
                     using var owner = new ResourceLease(ownerDirectory, ["application-owner"]);
-                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => CreateShortcuts(location, previous));
+                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); });
                 }
                 break;
             default: throw new InvalidDataException("Unknown maintenance action");

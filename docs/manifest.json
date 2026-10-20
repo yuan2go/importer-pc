@@ -39508,9 +39508,9 @@
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "42d29282fe84f2ce2f86b4422198c057940a7064954eab956e365c379c89f0de",
-      "size_bytes": 39328,
-      "git_blob": "266a8ab100f62b3fb0d09ba119280815d9146330",
+      "sha256": "dbd3a1737554468a3e90e96d66c744f50ee7db9867724002a49e63b291bf2041",
+      "size_bytes": 39492,
+      "git_blob": "57a650b6b3ff5a862e64c1ea9c0c7118db2bdfe8",
       "previous_git_blob": "78bb92b4654726a7bc811eba824dbdc2de10f471"
     },
     {
@@ -52091,9 +52091,9 @@
     {
       "path": "docs/runtime/desktop-shortcut-name-01.md",
       "storage_scope": "public_repository",
-      "sha256": "96a616fe60df8d6508d923cbaeb140d856f7100a792882c3d1e91d2c0e67a475",
-      "size_bytes": 2382,
-      "git_blob": "c54207c393fefecb552c07cb40cc48a44c420c73",
+      "sha256": "1e4e6bfe4af8f81e7901eef17ca16d031a6943b8045f7a436c4548fc96a33c1b",
+      "size_bytes": 2967,
+      "git_blob": "a6b62f872865a926b9f77bb67e946077a6679740",
       "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single installation window, one guarded consent and exact native verification",
@@ -52102,9 +52102,9 @@
     {
       "path": "docs/work-packages/WP-IPC-DESKTOP-NAME-01.md",
       "storage_scope": "public_repository",
-      "sha256": "175609018f1d3f104f2ea7cf2f9b41336649c05ef3abcd21b55e98fd52378a28",
-      "size_bytes": 1359,
-      "git_blob": "c7fe6705489a462215fc9b2368e79a160f88e15e",
+      "sha256": "e946b5dc61e17bbbc97fa2a19c60555e668ddd8d5ce780b696da3f16cdfdf006",
+      "size_bytes": 1633,
+      "git_blob": "25752231c5912f1ecbb521b79669f31787755d82",
       "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single installation window, one guarded consent and exact native verification",

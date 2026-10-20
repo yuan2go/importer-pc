@@ -22,4 +22,4 @@
 
 最终冻结EXE与实际原生验证另行补记：需记录安装窗口HWND、授权前后次数、可见控制台窗口、原数据/配置/备份、快捷方式和普通启动。未把编译/准备当实际安装，也不把本机Simulation当干净受支持Windows或海康/WCS/RCS现场验收；旧D/RV保持。
 
-用户补充的Win10 22H2 Home/Pro与多CPU功能兼容目标、只读诊断、通用IL措施及实际待验矩阵见[Windows兼容](windows-client-compatibility-01.md)。单窗口首次d93封装已通过共享DLL同字节检查，但额外PDB输出被单EXE约束拒绝，未交付；已改为不发布引用项目的独立符号文件，不删除单EXE断言，原失败保留。
+用户补充的Win10 22H2 Home/Pro与多CPU功能兼容目标、只读诊断、通用IL措施及实际待验矩阵见[Windows兼容](windows-client-compatibility-01.md)。单窗口首次d93封装已通过共享DLL同字节检查，但额外PDB输出被单EXE约束拒绝，未交付；仅设置CopyOutputSymbolsToPublishDirectory=false仍不足以排除引用符号，985尝试同样被拒绝；IncludeSymbolsInSingleFile实验被.NET10 SDK明确拒绝。最终对应用和包装器统一使用DebugType=embedded，将源码符号嵌入DLL并逐字节核对共用库；独立实验已确认输出只有一个EXE。未删除单EXE断言，原失败保留。

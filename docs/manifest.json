@@ -41578,9 +41578,9 @@
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8bbae12d114267bb19ba6cad3dff7915b17a3afe663313e970b07f34adc18fae",
-      "size_bytes": 3323,
-      "git_blob": "f3ae0864ac80e9b369a3716a4c521fcf698fe544"
+      "sha256": "d6ba5dccf470af21ad0596d76e28b86c51b759b982fda80e1486cd720bceeb7f",
+      "size_bytes": 3348,
+      "git_blob": "c48852f9eb0f4208978f4bcb9658f3a7cb35eabb"
     },
     {
       "path": "scripts/test_unified_release.py",
@@ -50332,9 +50332,9 @@
     {
       "path": "docs/runtime/installer-single-window-01.md",
       "storage_scope": "public_repository",
-      "sha256": "f09a255e91b1717a3d439c28e01fb4442b4dd17a296046b2f2b354ae11111e28",
-      "size_bytes": 3713,
-      "git_blob": "b965ba45f6574fc45cfd97beec45ea30ee453ccd",
+      "sha256": "810737c3ab7fc42b17cca74428656aa8bb99d6dedb1cecc0f5d94ecf3bc7115f",
+      "size_bytes": 3988,
+      "git_blob": "3dc737db45479b599dfca9ae82264b897bf87e30",
       "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single installation window, one guarded consent and exact native verification",

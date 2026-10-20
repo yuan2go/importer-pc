@@ -37,7 +37,7 @@ async Task Reject(byte[] data, PayloadDescriptor descriptor, string reason, Canc
 }
 try
 {
-    var release = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { ApplicationId = "sportmaster", SourceCommit = source }));
+    var release = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { ApplicationId = "sportmaster", SourceCommit = source, BusinessVersion = "test" }));
     var files = new Dictionary<string, byte[]> { ["app/application-release.json"] = release, ["desktop/application-release.json"] = release, ["desktop/Ipc.Desktop.exe"] = [1, 2, 3], ["config/中文.json"] = Encoding.UTF8.GetBytes("合成配置") };
     files["SHA256SUMS"] = Encoding.UTF8.GetBytes(string.Join("", files.Select(p => Convert.ToHexString(SHA256.HashData(p.Value)) + "  " + p.Key + "\n")));
     var valid = Zip(files); var descriptor = Descriptor(valid); var target = NextRoot();
@@ -74,6 +74,7 @@ try
     var changed = new Dictionary<string, byte[]>(files) { ["desktop/Ipc.Desktop.exe"] = [9] };
     var changedZip = Zip(changed); await Reject(changedZip, Descriptor(changedZip), "per-file mismatch rejected even with matching aggregate descriptor");
     await Reject(valid, descriptor with { SourceCommit = new string('b', 40) }, "mixed source identity rejected");
+    await Reject(valid, descriptor with { BusinessVersion = "other" }, "mixed business version rejected");
     Check(!File.Exists(Path.Combine(workspace, "escape")), "rejected archive entries do not escape the preparation root");
     Console.WriteLine($"PASS {checks} installer preparation checks; no executable launched or machine policy modified");
 }

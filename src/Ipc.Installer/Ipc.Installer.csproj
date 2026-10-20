@@ -16,8 +16,13 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
     <DebugType>embedded</DebugType>
+    <BusinessModule Condition="'$(BusinessModule)' == ''">Sportmaster</BusinessModule>
+    <NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$([System.String]::Copy('$(BusinessModule)').ToLowerInvariant()).win-x64.lock.json</NuGetLockFilePath>
+    <Version Condition="'$(InstallerBusinessVersion)' != ''">$(InstallerBusinessVersion)</Version>
+    <FileVersion Condition="'$(InstallerBusinessVersion)' != ''">$(InstallerBusinessVersion).0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Ipc.Desktop/Ipc.Desktop.csproj"/>
     <Resource Include="../Ipc.Desktop/Assets/importer-pc.ico" Link="Assets/importer-pc.ico"/>
     <Resource Include="../Ipc.Desktop/Assets/cainiao.png" Link="Assets/cainiao.png"/>
     <EmbeddedResource Include="$(InstallerPayload)" LogicalName="Ipc.Installer.payload.zip" Condition="'$(InstallerPayload)' != ''"/>

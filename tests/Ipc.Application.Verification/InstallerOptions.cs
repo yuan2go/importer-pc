@@ -25,6 +25,7 @@ static class InstallerOptions
         DeploymentShortcuts.Create(location with { Shortcuts = new(false, false) }, programs, desktop);
         Check(!Directory.Exists(programs) && !Directory.Exists(desktop), "unchecked choices create neither folder nor link");
         var chosen = location with { Shortcuts = new(true, true) };
+        Check(Path.GetFileName(DeploymentShortcuts.Plan(chosen, programs, desktop).Last().Path) == "菜鸟供包台.lnk", "desktop name is exactly the product name without module, commit or deployment suffix");
         DeploymentShortcuts.Create(chosen, programs, desktop); DeploymentShortcuts.Create(chosen, programs, desktop);
         dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!)!;
         try
@@ -35,6 +36,21 @@ static class InstallerOptions
                 try { Check(File.Exists(entry.Path) && string.Equals((string)link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) && (string)link.Arguments == entry.Arguments && string.Equals((string)link.WorkingDirectory, entry.WorkingDirectory, StringComparison.OrdinalIgnoreCase) && ((string)link.IconLocation).Contains("Ipc.Desktop.exe"), "actual COM shortcut readback: " + Path.GetFileName(entry.Path)); }
                 finally { Marshal.FinalReleaseComObject(link); }
             }
+            var upgraded = chosen with { SourceCommit = new string('b', 40), ReleaseRoot = Path.Combine(root, "release-87654321") };
+            DeploymentShortcuts.Create(upgraded, programs, desktop, chosen);
+            DeploymentShortcuts.Remove(chosen, programs, desktop);
+            var stable = DeploymentShortcuts.Plan(upgraded, programs, desktop).Last();
+            dynamic upgradedLink = shell.CreateShortcut(stable.Path);
+            try { Check(File.Exists(stable.Path) && string.Equals((string)upgradedLink.TargetPath, stable.Target, StringComparison.OrdinalIgnoreCase), "upgrade updates stable desktop target and old uninstall preserves the new entry"); }
+            finally { Marshal.FinalReleaseComObject(upgradedLink); }
+            var legacy = Path.Combine(desktop, "菜鸟供包台 · sportmaster · aaaaaaaa · 12345678.lnk");
+            dynamic legacyLink = shell.CreateShortcut(legacy);
+            try { legacyLink.TargetPath = Path.Combine(chosen.ReleaseRoot, "desktop", "Ipc.Desktop.exe"); legacyLink.Save(); }
+            finally { Marshal.FinalReleaseComObject(legacyLink); }
+            DeploymentShortcuts.Remove(chosen, programs, desktop);
+            Check(!File.Exists(legacy) && File.Exists(stable.Path), "legacy suffixed entry is removed by exact ownership without deleting current stable entry");
+            DeploymentShortcuts.Remove(upgraded, programs, desktop);
+            DeploymentShortcuts.Create(chosen, programs, desktop);
             var conflict = DeploymentShortcuts.Plan(chosen, programs, desktop).Last();
             dynamic other = shell.CreateShortcut(conflict.Path);
             try { other.TargetPath = Path.Combine(root, "other.exe"); other.Save(); } finally { Marshal.FinalReleaseComObject(other); }

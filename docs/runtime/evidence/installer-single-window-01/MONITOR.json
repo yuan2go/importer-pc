@@ -1,0 +1,9 @@
+{
+  "ConsentCount": 1,
+  "SetupWindowCount": 1,
+  "HiddenSamples": 0,
+  "ConsoleWindowCount": 0,
+  "Samples": 1043,
+  "IntervalMilliseconds": 20,
+  "Scope": "Polling of the actual installer HWND and new visible console handles; observed consent process IDs, no screenshot of other apps. Very short sub-20ms events are outside this sampling bound."
+}

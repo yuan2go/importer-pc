@@ -1,5 +1,8 @@
 当前已授权进入 PARAM-01 参数正式重构，四分类、业务条码筛选及配置闭环以 [实施裁决](design/parameter-refactor-01.md) 为准；原“本次只做设计”是设计入库阶段记录。完整 UI 工作包其余范围不因本包实施自动完成。
 
+> 桌面名称增量：[固定显示“菜鸟供包台”与旧测试资源清理](runtime/desktop-shortcut-name-01.md)，新构建与下面原生结果分开记录。
+
+> 已验证安装体验交付：SM业务模块v1.4.1单EXE，冻结源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`。[单窗口/一次授权及58项实际安装启动记录](runtime/installer-single-window-01.md)；本机Simulation通过，Win10 22H2/其他CPU/海康现场待验。本包不包含下述UIR-01～06新设计的WPF移植，原7c发行身份保留。
 > 2026-10-20 RCS心跳实施增量见[配置、实现与验证](runtime/rcs-heartbeat-01.md)。本增量由用户另行授权；下文“本次只做设计”专指UIR设计入库任务，不限制本次RCS开发。
 
 # 文档索引：Sportmaster 任务与配置体验重设计

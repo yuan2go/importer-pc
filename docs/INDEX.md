@@ -1,5 +1,7 @@
 > 参数 V3 原生交付收口：固定 main `767075abe62a77c30e70766bb5d3f1feca02686b`，开工无开放 PR。当前操作以 [1.7.0 原生说明](runtime/parameter-settings-v3-native-01.md) 为准；[原生截图、交付身份和验证边界](runtime/validation/parameter-settings-v3-native-01.md)沿 [PS-05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)记录。V3 设计原件及旧发行证据保持身份，旧 1.6.1 不包含 V3。
 
+> PR80 工程交付：同源 `bfec0a5672d846a865db62af9ef6a573a953f914` 的 Windows CI、V3 原生截图与 1.7.0 安装器已通过并下载核验。最新介质的本机启动/125%键鼠复测因 C 盘空间不足保留 NOT_RUN；完整安装生命周期、SDK/RCS及现场另行验收。ce9dcd3 是保留的中间证据，不作为最终身份。
+
 > 2026-10-21 PR78/79不测试合并、参数V3/启动回退来源与原CI产物下载见[本轮发布记录](runtime/publication-pr78-pr79-20261021.md)。原1.6.1安装包未重建，不能标为包含这两项增量。
 
 > PR73审查与CI后续：[受控启动回退修复](runtime/pr73-review-followup-01.md)，基于main dfec787。原PR已合并，本次通过独立后续PR完成原未解决P1及当前CI验证，不改写历史发布结果。

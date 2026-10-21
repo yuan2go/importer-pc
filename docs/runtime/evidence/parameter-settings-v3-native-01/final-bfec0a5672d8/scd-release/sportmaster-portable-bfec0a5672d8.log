@@ -1,0 +1,28 @@
+Retained build workspace on failure: C:\Users\RUNNER~1\AppData\Local\Temp\ipc-publication-68equsf9
+  Determining projects to restore...
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (in 24.78 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (in 24.78 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (in 24.78 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (in 24.78 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (in 8 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (in 2.47 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (in 2.45 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (in 2.48 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (in 2.48 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (in 8 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (in 9 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (in 8 ms).
+  Ipc.Platform -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-68equsf9\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> C:\scd-release\sportmaster-portable-bfec0a5672d8\app\
+{"Package": "C:\\scd-release\\sportmaster-portable-bfec0a5672d8.zip", "Sha256": "731cf7ec4e4d92c5ca5d42822f8c540b9838379c0db0ed9ccb03d810721fae53", "SourceCommit": "bfec0a5672d846a865db62af9ef6a573a953f914", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.7.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "C7236741161ADC95D005EA4199A1F493C36D7D6BB6A90831B487A41BDE9951E4"}

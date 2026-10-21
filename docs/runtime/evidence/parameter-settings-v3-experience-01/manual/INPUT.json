@@ -1,0 +1,17 @@
+{
+  "SourceCommit": "95ad990",
+  "Method": "Computer Use native SendInput and Windows capture on the owned synthetic WPF verification window",
+  "DpiScale": 1.25,
+  "Actions": [
+    "Ctrl+F; type Chinese search 协议来源; Enter navigates to the actual editor",
+    "Ctrl+A visibly selects SYNTHETIC; type 原生体验核验; Tab moves focus to protocol language",
+    "Mouse opens fixed bottom 设置工具 > 高级工具 > 已保存与运行中; 返回设置 preserves Chinese input and scroll"
+  ],
+  "Passed": true,
+  "Limits": [
+    "Synthetic capabilities only; no remote call or device control",
+    "No save/stage of the synthetic projected capability candidate",
+    "Literal Unicode input is not a full IME composition test",
+    "Window captures are unedited; capture overlay may be visible"
+  ]
+}

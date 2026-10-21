@@ -30,7 +30,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
+                if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
+                else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
                 else if (args.Contains("--login-session")) await VerifyLoginSession(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
@@ -222,9 +223,11 @@ public class ProjectionProbe : DispatchProxy
 {
     public IParcelApplication Inner = null!;
     public Func<ParcelSnapshot, ParcelSnapshot>? Project;
+    public CapabilityCatalog? Catalog;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
         if (method!.Name == nameof(IParcelApplication.SnapshotAsync)) return Snapshot();
+        if (method.Name == nameof(IParcelApplication.CapabilitiesAsync) && Catalog is not null) return Task.FromResult(Catalog);
         return method.Invoke(Inner, arguments);
     }
     async Task<ParcelSnapshot> Snapshot()

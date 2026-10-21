@@ -1,0 +1,31 @@
+SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.
+CAPTURE camera-1366: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1366, 768)
+PASS EXPERIENCE readable address dimensions at (1366, 768): 400,38.4
+CAPTURE rcs-1366: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1366, 768)
+PASS EXPERIENCE readable address dimensions at (1366, 768): 760,38.4
+CAPTURE camera-1092: 1092x613.6 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1092, 614)
+PASS EXPERIENCE readable address dimensions at (1092, 614): 372,38.4
+CAPTURE rcs-1092: 1092x613.6 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1092, 614)
+PASS EXPERIENCE readable address dimensions at (1092, 614): 760,38.4
+CAPTURE camera-800: 800x420 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (800, 420)
+PASS EXPERIENCE readable address dimensions at (800, 420): 400,38.4
+CAPTURE rcs-800: 800x420 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (800, 420)
+PASS EXPERIENCE readable address dimensions at (800, 420): 508,38.4
+PASS EXPERIENCE snapshot preserves raw invalid IP and selection
+PASS EXPERIENCE invalid address rejected by existing schema validation
+CAPTURE field-error: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE advanced request range stays directly reachable and focused
+CAPTURE request-range: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE request range uses progressive disclosure and search expands it
+FAIL System.InvalidOperationException: Sequence contains no matching element
+   at System.Linq.ThrowHelper.ThrowNoMatchException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)
+   at Program.VerifyParameterExperience(String root, String evidence, List`1 lines, Boolean interactive, Boolean baseline) in D:\projects\importer-pc-v3-audit\tests\Ipc.Desktop.UiVerification\ParameterExperience.cs:line 81
+   at Program.VerifyParameterExperience(String root, String evidence, List`1 lines, Boolean interactive, Boolean baseline) in D:\projects\importer-pc-v3-audit\tests\Ipc.Desktop.UiVerification\ParameterExperience.cs:line 90
+   at Program.<>c__DisplayClass6_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-v3-audit\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

@@ -102,9 +102,18 @@ static partial class Program
         Check(((HistoryPage)page.Content).ActualHeight > 200, "compact history collapses filters while keeping the fixed-query/export actions and detail area available");
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
         Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
-        Click(classic, "设备与维护"); await Task.Delay(250);
-        for (var i = 0; i < 100 && ((ParcelViewModel)classic.DataContext).Busy; i++) await Task.Delay(50);
         var parameterVm = (ParcelViewModel)classic.DataContext;
+        for (var i = 0; i < 100 && parameterVm.Busy; i++) await Task.Delay(50);
+        Check(!parameterVm.Busy, "history task completes before the deterministic busy-navigation case");
+        var releasePrevious = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var previousTask = parameterVm.RunAsync(() => releasePrevious.Task, "合成：经典布局首开参数前仍有任务");
+        try
+        {
+            Click(classic, "设备与维护");
+            Check(parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "classic first settings navigation waits for the existing task without replacing it");
+        }
+        finally { releasePrevious.TrySetResult(); await previousTask; }
+        for (var i = 0; i < 100 && (parameterVm.Busy || !parameterVm.HasLoadedConfiguration); i++) await Task.Delay(50);
         Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native parameter loading completes before automatic candidate review: " + parameterVm.Message);
         var maintenance = (MaintenancePage)page.Content;
         var tools = Descendants(maintenance).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>())

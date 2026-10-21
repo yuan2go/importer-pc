@@ -40,6 +40,10 @@ jobs:
         run: |
           # PR checkout is GitHub's exact merge commit, not an ancestor of main.
           # --source is reserved for main-ancestor historical publication/reuse.
+          # A local runner branch gives the installer a verifiable source name
+          # while retaining GitHub's exact checked merge commit; never pushed.
+          git switch -c codex/ci-sportmaster-${{ github.run_id }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/release-windows.py --profile sportmaster --output C:/scd-release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
@@ -77,6 +81,35 @@ jobs:
             [Console]::Error.WriteLine($_)
             exit 1
           }
+      - name: Package the verified medium as one native installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
+          if ($package.Count -ne 1) { throw 'Expected one verified Windows package' }
+          $media = Join-Path C:/scd-release $package[0].File
+          python scripts/package-installer.py --media $media --output C:/scd-installer *> C:/scd-installer-build.log
+          $result = $LASTEXITCODE
+          Get-Content C:/scd-installer-build.log -Tail 12
+          if ($result -ne 0) { throw 'Same-source installer packaging failed' }
+          $receipt = Get-Content C:/scd-installer-build.log -Tail 1 | ConvertFrom-Json
+          if ($receipt.SourceCommit -ne '${{ github.sha }}' -or $receipt.Payload.SourceCommit -ne '${{ github.sha }}') { throw 'Installer source differs from checked medium' }
+          $receipt | ConvertTo-Json -Depth 8 | Set-Content C:/scd-installer/INSTALLER.json -Encoding utf8NoBOM
+      - name: Retain installable same-source delivery
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sportmaster-installable-${{ github.sha }}
+          path: |
+            C:/scd-installer/*.exe
+            C:/scd-installer/INSTALLER.json
+            C:/scd-release/sportmaster-win-x64-*.zip
+            C:/scd-release/RELEASE.json
+            C:/scd-release/SHA256SUMS
+          compression-level: 0
+          retention-days: 30
+          if-no-files-found: error
       - name: Keep actual receipts including failures
         if: always()
         uses: actions/upload-artifact@v4
@@ -106,5 +139,7 @@ jobs:
             C:/scd-release/*.json
             C:/scd-release/*.log
             C:/scd-release/SHA256SUMS
+            C:/scd-installer-build.log
+            C:/scd-installer/INSTALLER.json
           retention-days: 30
           if-no-files-found: warn

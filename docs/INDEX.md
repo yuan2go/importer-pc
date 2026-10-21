@@ -7,6 +7,7 @@
 | 本轮功能取舍、合并来源与权限边界 | [统一工作包](work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md) |
 | 账号、参数权限、日志与部署兼容 | [当前操作与实现](runtime/operator-administrator-logs-01.md) |
 | 本轮验证、截图及未验边界 | [同版交付记录](runtime/validation/operator-administrator-logs-01.md) |
+| 本机全部项目文件、安装与数据的D盘迁移 | [D盘存储与运行](runtime/d-drive-storage-20261021.md) |
 | 框架与业务所有权 | [框架](design/framework.md)、[决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
 | 参数字段、完整候选及唯一账 | [参数继承](design/parameter-inheritance-02.md)、[93项迁移](design/parameter-legacy-migration-02.csv)、[PARAM-UX-02](design/parameter-settings-experience-02.md)、[V3基线](ui/parameter-settings-v3-20261020/README.md) |
 | 作业与首配合同 | [V2交接](ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)、[任务裁决](design/sportmaster-task-redesign-01.md)、[首配/TCP增量](runtime/startup-experience-03.md)；导航和权限由本轮替代 |

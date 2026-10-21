@@ -1,0 +1,13 @@
+{
+  "Status": "UNCHANGED_BASELINE_ERRORS",
+  "BaselineCommit": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+  "ProductSourceCommit": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "InputStagedTree": "72e721aefa46b1ed20a8b492e8288ca852834755",
+  "Scope": "Canonical Git blobs of implementation and final evidence before comparison/report wording finalization; unchanged verifier retains FAIL for historical publication issues",
+  "BaselineErrors": 298,
+  "CurrentErrors": 298,
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "BaselineReportSha256": "9c7cb064b8b50c70b836b4eac40eaeb7d712d01cd91645f71c3aa1bdc6c5a155",
+  "CurrentReportSha256": "6b2584314dc4589bbd0743185465bcca51ff5bfa2ce8d63086f0720b5db6b13e"
+}

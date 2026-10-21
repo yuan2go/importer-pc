@@ -1,0 +1,22 @@
+{
+  "Status": "PASS",
+  "ProductSourceCommit": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "InstalledVersion": "SM1.10.1",
+  "ActualUnpackagedWindowsInspection": true,
+  "PhysicalStorageRoot": "D:/ImporterPc.Deployment",
+  "OriginalFilesByteAndAclVerified": 1658,
+  "OriginalBytes": 485185502,
+  "OriginalFilesPreservedOnD": true,
+  "DeveloperTemporaryDirectoriesMoved": 74,
+  "PrivateOriginalFilesMovedOutsideRepository": 5,
+  "ShortcutsVerifiedOnD": 4,
+  "AuthenticationServiceRunning": true,
+  "SoftwareAdministratorProvisioned": false,
+  "DefaultAccountOrPasswordCreated": false,
+  "InstalledEnvironmentReportExitCode": 0,
+  "BusinessOrDeviceStarted": false,
+  "OriginalRequestAndConfigurationIdentitiesRetained": true,
+  "LegacyWindowsUserPathsResolveToD": true,
+  "Scope": "Actual approved same-machine move, backup, same-source installation and Windows filesystem/registry/service/shortcut inspection; no full installer UI, restart, second account, different-machine restore or field qualification",
+  "Privacy": "Aggregate only; private file inventories, SID, account/data/DPAPI payloads, original artwork and detailed machine receipts remain outside Git"
+}

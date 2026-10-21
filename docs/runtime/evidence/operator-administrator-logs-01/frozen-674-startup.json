@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "FixtureSourceCommit": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "Fixture": "The same frozen NativeMedia.csproj extracted for operator verification; invoked --startup-experience",
+  "Assertions": 93,
+  "UnchangedFrozenMedium": true,
+  "Scope": "Native WPF first configuration and real software reauthentication; synthetic configuration/endpoints, no devices"
+}

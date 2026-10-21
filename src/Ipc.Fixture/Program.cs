@@ -6,7 +6,7 @@ using Ipc.Supply;
 var argsMap = args.Chunk(2).ToDictionary(x => x[0], x => x.Length > 1 ? x[1] : "");
 var url = argsMap.GetValueOrDefault("--url", "http://127.0.0.1:18743/");
 if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Host != "127.0.0.1" || uri.Scheme != "http" || uri.AbsolutePath != "/") throw new InvalidDataException("SIMULATION fixture binds literal loopback only");
-var data = Path.GetFullPath(argsMap.GetValueOrDefault("--data", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "SimulationFixture")));
+var data = Path.GetFullPath(argsMap.GetValueOrDefault("--data", Path.Combine(WindowsStoragePaths.UserRoot, "SimulationFixture")));
 Directory.CreateDirectory(data);
 using var lease = new ResourceLease(data, ["fixture"]);
 using var receiver = new Receiver(Path.Combine(data, "receiver.db"));

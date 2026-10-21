@@ -1,4 +1,5 @@
 using System.Windows;
+using Ipc.Platform;
 using Ipc.Product;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,7 +21,7 @@ public partial class App : global::System.Windows.Application
             }
             var root = map.GetValueOrDefault("--config", System.IO.Path.Combine(AppContext.BaseDirectory, "config"));
             host = ProductHost.Build(new(System.IO.Path.Combine(root, "product.json"), System.IO.Path.Combine(root, "station.json"), System.IO.Path.Combine(root, "presentation.json"),
-                map.GetValueOrDefault("--data-root", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")), View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
+                map.GetValueOrDefault("--data-root", System.IO.Path.Combine(WindowsStoragePaths.UserRoot, "data")), View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
             await host.StartAsync();
             new MainWindow(host.Services.GetRequiredService<ProductRuntime>(), true).Show();
         }

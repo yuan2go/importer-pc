@@ -81,6 +81,13 @@ static class AdministratorBoundary
             for (var i = 0; i < 5; i++) Check(!client.Login("boundary-admin", "wrong"), "protected login failure counted " + i);
             Deny(() => new LocalAdministrator(root).Login("boundary-admin", password), "failure lockout is owned by the service and survives a new client");
         }
+        catch
+        {
+            var journal = Path.Combine(root, "security", "diagnostics", "runtime.jsonl");
+            if (File.Exists(journal))
+                foreach (var line in File.ReadLines(journal).Where(x => x.Contains("AdministratorServiceStopped", StringComparison.Ordinal)).TakeLast(2)) Console.WriteLine(line);
+            throw;
+        }
         finally { AdministratorBroker.RemoveIfUnused(root); }
         AsOrdinary(() =>
         {

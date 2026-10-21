@@ -36,7 +36,7 @@ public static partial class AdministratorBroker
         if (dataRoot.Contains('"')) throw new InvalidDataException("认证服务数据目录无效。");
         var declarationPath = Path.Combine(sourceApp, "application-release.json"); MachineRuntimePolicy.RequireProtectedEvidence(declarationPath);
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(declarationPath));
-        var hostParent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ImporterPc.Administrator");
+        var hostParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
         ProtectedDirectory(hostParent); ProtectedDirectory(Path.Combine(hostParent, "hosts"));
         var host = Path.Combine(hostParent, "hosts", release.SourceCommit + "-" + Wire.Id()); ProtectedDirectory(host);
         foreach (var file in release.Files.Append(new KeyValuePair<string, string>("application-release.json", Wire.FileHash(declarationPath))))

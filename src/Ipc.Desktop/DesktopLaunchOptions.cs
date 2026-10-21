@@ -35,7 +35,7 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
         return new(new(
             options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
-            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
+            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout")), ui);
     }
     public static string DefaultUi(string applicationId) => applicationId == "sportmaster" ? "supply-station" : "classic";

@@ -16,11 +16,11 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows())
         {
-            var root = requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "extensions", mode.ToString());
+            var root = requestedRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "extensions", mode.ToString());
             return (Path.GetFullPath(root), requestedTrust ?? Path.Combine(root, "trust.json"));
         }
         if (requestedRoot is not null || requestedTrust is not null) throw new InvalidDataException("Windows extensions require protected machine paths; user overrides forbidden");
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var directory = Path.Combine(machine, "extensions", mode.ToString());
         var trust = Path.Combine(machine, "extension-trust." + mode + ".json");
         foreach (var path in new[] { machine, Path.Combine(machine, "extensions"), directory })
@@ -43,7 +43,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows()) return portableRoot;
         RequireExtensionInstallerAuthority();
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var file = Path.Combine(machine, "runtime-policy.json");
         RejectLinks(machine); RejectLinks(file); RequireProtectedAcl(new DirectoryInfo(machine), null); RequireProtectedAcl(new FileInfo(file), null);
         var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(file));
@@ -70,7 +70,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     public static string ResolveLeaseRoot(string? requestedRoot)
     {
         if (!OperatingSystem.IsWindows())
-            return requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "leases");
+            return requestedRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "leases");
         return ResolveWindowsLeaseRoot(requestedRoot, requireOrdinaryAccount: false);
     }
     // Read-only startup gate: no directory, lock, configuration or database is created.
@@ -93,7 +93,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static string ResolveWindowsLeaseRoot(string? requestedRoot, bool requireOrdinaryAccount)
     {
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var policyFile = Path.Combine(machine, "runtime-policy.json");
         if (!Directory.Exists(machine) || !File.Exists(policyFile))
             throw new InvalidDataException("Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account");
@@ -117,7 +117,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows()) return;
         RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
-        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };
+        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) }.Concat(WindowsStoragePaths.ProtectedAnchor is { } anchor ? [anchor] : Array.Empty<string>()).ToArray();
         var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
         boundary ??= TrustedProgramRoots.RequireBoundary(new FileInfo(path).DirectoryName!);
         for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)

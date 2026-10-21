@@ -17,7 +17,7 @@ var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ParcelAs
 DeploymentLocation? installed = null;
 #endif
 var launch = new BusinessLaunch(options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
-    options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
+    options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),
     options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout"));
 await using var business = InstalledBusiness.Create().Create(launch);
 await business.StartAsync(CancellationToken.None);

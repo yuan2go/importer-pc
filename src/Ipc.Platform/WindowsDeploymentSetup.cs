@@ -14,7 +14,7 @@ public sealed record WindowsDeploymentRequest(string MediaRoot, string Applicati
 
 public static partial class WindowsDeploymentSetup
 {
-    public static string MachineRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+    public static string MachineRoot => WindowsStoragePaths.MachineRoot;
     public static string Registration(string application) => Path.Combine(MachineRoot, "deployments", application + ".json");
     public static DeploymentLocation? Current(string application)
     {

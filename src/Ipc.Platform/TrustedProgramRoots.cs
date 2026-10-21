@@ -6,7 +6,7 @@ namespace Ipc.Platform;
 
 public static class TrustedProgramRoots
 {
-    public static string Default => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ImporterPc");
+    public static string Default => WindowsStoragePaths.ProgramRoot("ImporterPc");
     static string RegistryFile => Path.Combine(WindowsDeploymentSetup.MachineRoot, "trusted-program-roots.json");
     public static bool Contains(string root, string path) => string.Equals(Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase) ||
         Path.GetFullPath(path).StartsWith(Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
@@ -67,7 +67,7 @@ public static class TrustedProgramRoots
         RequireAncestors(existing); return root;
     }
     [SupportedOSPlatform("windows")]
-    static void RequireAncestors(string path)
+    internal static void RequireAncestors(string path)
     {
         DeploymentPaths.RequireOrdinaryAncestors(path);
         var windowsAnchors = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };

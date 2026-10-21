@@ -21,7 +21,7 @@ public static partial class AdministratorBroker
         if (size == 0 || size >= name.Capacity) throw new Win32Exception(Marshal.GetLastWin32Error());
         var value = name.ToString(); return value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase) ? @"\\" + value[8..] : value.StartsWith(@"\\?\", StringComparison.Ordinal) ? value[4..] : value;
     }
-    public static string ProtectedRoot(string root) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc.Administrators", Key(root));
+    public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
     static string PipeName(string root) => "ImporterPc.Administrator.v1." + Key(root);
     public static bool IsManaged(string root)
@@ -108,7 +108,7 @@ public static partial class AdministratorBroker
                 var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
                 var request = JsonSerializer.Deserialize<AdministratorRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
                 bool installer = false;
-                pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
+                if (request.Action == "Provision") pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
                 object? value; bool expensive = request.Action is "Login" or "Provision" or "Maintain";
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
                 try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalAdministrator(root, true).HandleBrokerRequest(request, installer), budget.Token).ConfigureAwait(false); }
@@ -116,9 +116,9 @@ public static partial class AdministratorBroker
                 await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(new AdministratorRpcReply(JsonSerializer.SerializeToElement(value))), budget.Token).ConfigureAwait(false);
             }
             catch (OperationCanceledException) { }
-            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException)
+            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
             {
-                var code = error is AdministratorBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException ? "Unauthorized" : "Rejected";
+                var code = error is AdministratorBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
                 try { await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(new AdministratorRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code)), budget.Token).ConfigureAwait(false); }
                 catch (Exception send) when (send is IOException or OperationCanceledException) { }
             }

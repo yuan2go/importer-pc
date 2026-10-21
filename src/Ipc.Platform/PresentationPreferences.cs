@@ -8,7 +8,7 @@ public static class PresentationPreferences
     static string FileFor(string application, string surface)
     {
         if (!ExtensionSchema.IsId(application) || !ExtensionSchema.IsId(surface)) throw new InvalidDataException("Invalid presentation identity");
-        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "presentation", application + "." + surface + ".json");
+        var path = Path.Combine(WindowsStoragePaths.UserRoot, "presentation", application + "." + surface + ".json");
         DeploymentPaths.RequireOrdinaryAncestors(path); return path;
     }
     public static bool? Read(string application, string surface)

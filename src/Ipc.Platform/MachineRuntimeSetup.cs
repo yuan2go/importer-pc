@@ -31,7 +31,7 @@ public static class MachineRuntimeSetup
     }
 
     [SupportedOSPlatform("windows")]
-    static string MachineRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+    static string MachineRoot => WindowsStoragePaths.MachineRoot;
 
     [SupportedOSPlatform("windows")]
     static bool PolicyExists()

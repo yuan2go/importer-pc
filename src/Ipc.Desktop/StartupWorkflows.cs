@@ -661,7 +661,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (current is not null) Note("本次升级保留原有使用范围和数据。");
             allUsers.Checked += (_, _) => { if (current is null) { sharedInstallation = true; data.Text = Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"); } };
             onlyMe.Checked += (_, _) => { if (current is null) { sharedInstallation = false; data.Text = launch.DataRoot; } };
-            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
+            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
             Note("升级保留旧版本和原始数据。");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu, MinHeight = 44 }; Body.Children.Add(startMenu);
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);

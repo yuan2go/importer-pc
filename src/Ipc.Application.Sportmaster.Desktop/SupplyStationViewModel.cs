@@ -114,6 +114,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string Heading => PositionId == "main" ? "单读码兼容位" : requestedPosition == "left" ? "左投递位" : "右投递位";
     public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
+    public string ReaderIdentity { get; private set; } = "未配置";
     public ParcelOperation? Operation { get; private set; }
     public ParcelInputSnapshot? Input { get; private set; }
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
@@ -144,6 +145,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
         (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
+    public string ScanSummary => Input is null ? "等待本位相机读码" : "读取 " + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? 24 : (Operation!.Slot!.Length, IsCompact) switch
     { (<= 6, false) => 64, (<= 6, true) => 44, (<= 16, false) => 40, (<= 16, true) => 28, (_, false) => 28, _ => 24 };
@@ -177,6 +179,12 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "；下方原请求只属于该原作业，格口不属于本次观察。" : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
+    public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ? "新输入未建作业；原作业请查看详情。" :
+        CurrentTaskAvailable ? "按本次格口投递；下一包信息自动更新。" :
+        Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :
+        HasUncertainOriginal ? "查看原请求与诊断，勿重复放货。" :
+        Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
+        BlockingReasons.Length > 0 ? "查看本位诊断，核对准入条件。" : "读码后自动获取任务，无需逐包确认。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";
@@ -187,7 +195,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
     public bool CanAdmit { get; private set; }
     public bool CanReconcile { get; private set; }
-    public bool CanQueryOriginal => CanReconcile && Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
+    public bool CanQueryOriginal => CanReconcile && HasUncertainOriginal;
+    public bool HasUncertainOriginal => Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
+    public bool HasContinuation => Operation is { } op && owner.Snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
     public bool CanContinue { get; private set; }
     public ParcelOperation[] Recent { get; private set; } = [];
     public string InspectionReason { get; set; } = "";
@@ -204,6 +214,10 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         var position = snapshot?.Positions?.SingleOrDefault(x => x.Id == PositionId);
         var binding = snapshot is null ? null : ParcelBindings.Positions(snapshot.Configuration.Effective).SingleOrDefault(x => x.Id == PositionId);
         ReaderId = binding?.ReaderDeviceId ?? "未配置";
+        var reader = snapshot is null ? null : ParcelBindings.Readers(snapshot.Configuration.Effective).SingleOrDefault(r => r.DeviceId == ReaderId);
+        var extension = snapshot?.Configuration.Effective.Extensions?.Instances.SingleOrDefault(x => reader?.Driver == "extension:" + x.Id);
+        var address = extension?.Parameters.GetValueOrDefault("device.ip");
+        ReaderIdentity = string.IsNullOrWhiteSpace(address) ? ReaderId : address + " · " + ReaderId;
         var recent = snapshot?.Operations.Where(x => (x.PositionId ?? "main") == PositionId)
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
         Input = snapshot?.Inputs?.SingleOrDefault(x => x.PositionId == PositionId);
@@ -228,17 +242,18 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId),
+            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
-            (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ObservationIdentity), ObservationIdentity),
+            (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ScanSummary), ScanSummary), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
             (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
             (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
             (nameof(Admission), Admission), (nameof(RequestId), RequestId), (nameof(ResultReason), ResultReason),
             (nameof(ObservedAt), ObservedAt), (nameof(LatestInputSummary), LatestInputSummary), (nameof(ImageStatus), ImageStatus),
             (nameof(CanAdmit), CanAdmit), (nameof(CanReconcile), CanReconcile), (nameof(CanQueryOriginal), CanQueryOriginal), (nameof(CanContinue), CanContinue),
+            (nameof(HasUncertainOriginal), HasUncertainOriginal), (nameof(HasContinuation), HasContinuation), (nameof(NextStep), NextStep),
             (nameof(Recent), Recent), (nameof(InspectionReason), InspectionReason) })
         {
             if (published.TryGetValue(name, out var prior) && Equals(prior, value)) continue;

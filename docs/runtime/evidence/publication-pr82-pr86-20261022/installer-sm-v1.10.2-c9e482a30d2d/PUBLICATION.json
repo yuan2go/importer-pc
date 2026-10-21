@@ -1,0 +1,7 @@
+{
+  "source_commit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "old_versions_overwritten": false,
+  "scope": "2026-10-22按用户授权上传刚刚任务已经生成的原执行产物；本发布会话不测试、不构建、不打包、不安装或启动。SM1.10.2安装EXE、win-x64 ZIP和portable ZIP的SourceCommit均为c9e482a30d2d1643a498e7e7ba7f12563f46f3f5。原PR86最终head3b27c9b仅补报告，后继064030a改测试异常类型；不以文档或合并提交重标原介质。\n\nPR82～85已随PR86整合进入main；本机Windows授权升级、D盘原账模拟起停与CI等原验证各保留其精确来源和边界，详见docs/runtime/validation/operator-administrator-logs-01.md。原INSTALLER回执形成时ActualWindowsInstallation=NOT_RUN保留，不倒写；后来取得的1.10.2实际升级回执已在仓库单独记录。\n\n安装器未签名，Production资格、真实SDK/相机/RCS/现场、目标IPC/触控及未实际取得的重启/双账号/完整安装器交互仍待验。安装包不包含本机账号、运行数据、客户资料、SDK、字体或私钥。新独立预发布，不覆盖旧版本；安装与运行数据使用管理员配置的D盘受保护根，原数据和权限守卫继续有效。"
+}

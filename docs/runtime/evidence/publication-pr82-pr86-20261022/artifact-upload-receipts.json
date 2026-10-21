@@ -1,0 +1,53 @@
+[
+  {
+    "source_commit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.10.2-c9e482a30d2d",
+    "tag": "installer-sm-v1.10.2-c9e482a30d2d",
+    "assets": [
+      {
+        "name": "CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe",
+        "size": 178035322,
+        "sha256": "8fd0afe6a053dfe1b0db7da63a7a6812a94070f8369442daf63fe141dcc3ab88",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe"
+      },
+      {
+        "name": "sportmaster-win-x64-c9e482a30d2d.zip",
+        "size": 106636560,
+        "sha256": "1b2f978a97d811cd30b18f3e1967a60ae94e5839331eab935fb1ef3ce2ce2064",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/sportmaster-win-x64-c9e482a30d2d.zip"
+      },
+      {
+        "name": "sportmaster-portable-c9e482a30d2d.zip",
+        "size": 18680170,
+        "sha256": "f8bd542dd01fccfc8a9d819f4bd6829677cbcd6ca0005bf6b06d8d96f3f3695f",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/sportmaster-portable-c9e482a30d2d.zip"
+      },
+      {
+        "name": "INSTALLER.json",
+        "size": 790,
+        "sha256": "52462247784f37ee412b1b1ab65664eea8e3d92cbcea98a10e2334f6694b15c4",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/INSTALLER.json"
+      },
+      {
+        "name": "RELEASE.json",
+        "size": 24168,
+        "sha256": "5267ce21eb43d48672043f25cbafe4bb9326d5f764c57b225b5d29050538ba71",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/RELEASE.json"
+      },
+      {
+        "name": "PUBLICATION.json",
+        "size": 1306,
+        "sha256": "036fb4588421c78a887fd61b93cd6fac1e7eb045908f65009d2acebcaaab9076",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/PUBLICATION.json"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 566,
+        "sha256": "900a26501af7782e7a974566bb972635713e9b27e2c10be7474660be9002c81f",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/SHA256SUMS"
+      }
+    ],
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "rebuild": false
+  }
+]

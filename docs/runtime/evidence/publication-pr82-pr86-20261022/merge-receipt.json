@@ -1,0 +1,45 @@
+{
+  "baseline_main": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+  "main_after_pr86": "1df42b4f8a2ef0a2a51bea29c47187a2117cb9f4",
+  "unique_commits_before_this_receipt": 40,
+  "ordinary_commits_before_this_receipt": 32,
+  "merge_commits_before_this_receipt": 8,
+  "count_scope": "Git ancestry difference from baseline; excludes this receipt commit and its later PR merge; final count must be read after merge",
+  "merged_prs": [
+    {
+      "number": 82,
+      "merged": true,
+      "github_merge_commit_sha": "58abdbca13b4d9f3cd41360446920aad26427051",
+      "method": "indirect_via_pr86"
+    },
+    {
+      "number": 83,
+      "merged": true,
+      "github_merge_commit_sha": "0fea1b506b84437e519c62d9aa5d740043dfbad8",
+      "method": "indirect_via_pr86"
+    },
+    {
+      "number": 84,
+      "merged": true,
+      "github_merge_commit_sha": "0df396d823e12d8684cba240e4bab119ff581e74",
+      "method": "indirect_via_pr86"
+    },
+    {
+      "number": 85,
+      "merged": true,
+      "github_merge_commit_sha": "1923f372b1141d72d132fe0a56033cc120867d0e",
+      "method": "indirect_via_pr86"
+    },
+    {
+      "number": 86,
+      "merged": true,
+      "github_merge_commit_sha": "1df42b4f8a2ef0a2a51bea29c47187a2117cb9f4",
+      "method": "merge"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "build_repackage_install_runtime": "NOT_RUN_BY_USER_REQUEST",
+  "artifact_source_commit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "old_assets_overwritten": false,
+  "original_worktree_head_or_index_modified": false
+}

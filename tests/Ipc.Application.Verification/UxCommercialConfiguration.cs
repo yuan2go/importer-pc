@@ -134,7 +134,7 @@ static partial class ArchitectureQuality
         list.Value = legal;
         Check(list.IsList && list.EditorMaximumLength >= legal.Length && legal.Length > field.MaximumLength && list.Value == legal && ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = list.Value }).Length == 0,
             "P2 legal list longer than one item fits the editor and retains JSON escapes and empty items exactly");
-        Check(list.EditorLabel.Contains("JSON") && list.EditorHelp.Contains("16") && list.EditorHelp.Contains("256"), "P2 list syntax and per-item/count limits are explicit");
+        Check(list.EditorLabel.Contains("结构化数组") && list.EditorHelp.Contains("[\"标签1\",\"标签2\"]") && list.EditorHelp.Contains("16") && list.EditorHelp.Contains("256"), "P2 list syntax and per-item/count limits are explicit in the Chinese presentation");
         foreach (var value in new[] { "not json", Wire.Encode(Enumerable.Repeat("a", 17).ToArray()), Wire.Encode(new[] { new string('a', 257) }) })
             Check(ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = value }).Length != 0, "P2 existing schema still rejects invalid list: " + value[..Math.Min(30, value.Length)]);
         var provider = new CapabilityDescriptor("weight", "extension:synthetic.weight/provider", "1.0.0", "synthetic-v1", [], new(), new("synthetic.weight", "1.0.0", new string('A', 64)), "provider");

@@ -257,8 +257,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.13",
           "Microsoft.Extensions.Logging": "10.0.13",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.13",
-          "Microsoft.Extensions.Options": "10.0.13",
-          "System.Diagnostics.EventLog": "10.0.13"
+          "Microsoft.Extensions.Options": "10.0.13"
         }
       },
       "Microsoft.Extensions.Logging.EventSource": {
@@ -326,11 +325,6 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
-      "System.Diagnostics.EventLog": {
-        "type": "Transitive",
-        "resolved": "10.0.13",
-        "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
-      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -340,14 +334,14 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )",
+          "Ipc.Application.Contracts": "[1.14.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )"
+          "Ipc.Application.Contracts": "[1.14.0, )"
         }
       },
       "ipc.application.wcstoplc": {
@@ -365,7 +359,7 @@
       "ipc.assembly": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.WcsToPlc": "[1.0.0, )",
+          "Ipc.Application.WcsToPlc": "[1.5.0, )",
           "Ipc.Components": "[1.0.0, )",
           "Ipc.Drivers": "[1.0.0, )",
           "Ipc.Integrations": "[1.0.0, )",
@@ -409,7 +403,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )"
+          "Ipc.Application.Contracts": "[1.14.0, )"
         }
       },
       "Ipc.Supply": {
@@ -431,11 +425,6 @@
         "type": "Transitive",
         "resolved": "2.1.14",
         "contentHash": "h32f78UhMGzr3l2kO8t1+qp7ItqfbmyAFTLjBHqL13/kNeKOR6K6FhOQe/gOzlHnUSFAYNUt3JoVPAEjFRIB9g=="
-      },
-      "System.Diagnostics.EventLog": {
-        "type": "Transitive",
-        "resolved": "10.0.13",
-        "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
       }
     }
   }

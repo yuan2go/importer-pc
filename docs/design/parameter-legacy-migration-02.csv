@@ -21,15 +21,15 @@ weighterCheckTimesLong,称重分支 exe.config / 主控；早期圆通另有In,�
 weighterCheckThre,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
 weightCheckShortLong,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
 weighterCheckTimesIn,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
-minWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,本期实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
-maxWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,本期实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
+minWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,已实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
+maxWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,已实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
 maxWaitWeightTimeout,馆陶/漳州SDK升级等主控参数,用户盘点；旧读取源码未取得,本件等待有效重量的期限,Application,称重业务,WeightPolicy.WaitTimeoutMs → WeightExpired,已有复用,ms；100～300000；从本件ObservedAt起算,新作业冻结；超时独立状态,已有复用
 defaultWeightWhenMaxWaitWeightTimeouted,馆陶/漳州主控；观澜exe.config的Zero用途待核验,用户盘点；旧读取源码未取得,前者超时兜底，后者实际条件未知；不作为测量事实,Application,明确允许替代重量的合同,WeightSource.Configured仅表示显式配置来源,未提供自动兜底；现有超时/零/不稳拒绝不变,旧单位/触发/来源均需证据,不能用配置值掩盖测量失败,缺证待核实；自动兜底不继承
 defaultWeightWhenZero,馆陶/漳州主控；观澜exe.config的Zero用途待核验,用户盘点；旧读取源码未取得,前者超时兜底，后者实际条件未知；不作为测量事实,Application,明确允许替代重量的合同,WeightSource.Configured仅表示显式配置来源,未提供自动兜底；现有超时/零/不稳拒绝不变,旧单位/触发/来源均需证据,不能用配置值掩盖测量失败,缺证待核实；自动兜底不继承
 barcodeRegex,多分支 exe.config / config.json / 主控,用户盘点；旧读取源码未取得,业务允许条码规则,Application,Sportmaster,BarcodeFilter.Pattern → BarcodeFiltering.Select → 原准入,已有复用,1～2048字符；整串匹配；25ms单次/100ms总预算,完整候选、受控重启，规则指纹冻结,已有复用；无生产默认
-regexpBlacklist,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
-blackBarcodeRegex,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
-rejectExpression,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+regexpBlacklist,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,已实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+blackBarcodeRegex,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,已实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+rejectExpression,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,已实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
 regexpConfigs,按快递公司分类分支配置,用户盘点；旧读取源码未取得,分类规则集合与业务路由,Application,有分类业务的独立Application,当前Sportmaster不需要公司分类,无真实分类合同,名称/规则/优先级及歧义策略待合同,对应业务实施后受控生效,特定业务适用；本期不新增通用规则引擎
 barcodeRepeatGapMs,feat-refactor-new Importer_CS配置,用户盘点；旧读取源码未取得,重复码时间窗；同实体/同业务单/重复观察范围未明确,Application或驱动，取决于事实,对应业务,现有Observation/Epoch/Sequence/Admission/Position去重,已具备实体与观察防重；不增加跨左右条码吞码,旧ms窗口不能证明同实体,保留原身份守卫,废弃作为通用实体识别替代；具体用途待核实
 cameraModel,苏州/Spain等exe.config或JSON,用户盘点；旧读取源码未取得,设备实现与型号选择,Drivers,读码业务,CapabilityDescriptor / 精确已安装驱动,已支持按安装选择；海康型号范围沿SDK资格,仅实际安装描述，禁止自由填型号冒充支持,受控重启,已有复用
@@ -64,14 +64,14 @@ needLogin,邮政/四段/观澜exe.config；AGV设置调试组,用户盘点；旧
 deviceCode,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
 deviceName,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
 nameNumber,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
-defaultTitle,多分支配置；AGV设置常规组，偏好appsettings.json,用户盘点；旧读取源码未取得,显示标题，与内部/协议身份分开,系统本机显示,当前Parcel桌面业务,PresentationPreferences → 窗口站点显示,本期实现显示名称,可空；最多64非控制字符；空回退内部标识,当前用户单独保存，立即显示，不推进运行修订,本期实现；保持产品固定名称
-targetEff,多分支exe.config/JSON,用户盘点；旧读取源码未取得,目标效率显示，绝不是输送速度,系统本机显示,Sportmaster等有吞吐展示的业务,PresentationPreferences → 目标效率文字,本期实现显式件/小时目标显示,新范围1～100000件/小时或不显示；旧数值单位需确认,单独保存即时显示；不控制设备/业务,本期实现；只继承目标语义
+defaultTitle,多分支配置；AGV设置常规组，偏好appsettings.json,用户盘点；旧读取源码未取得,显示标题，与内部/协议身份分开,系统本机显示,当前Parcel桌面业务,PresentationPreferences → 窗口站点显示,已实现显示名称,可空；最多64非控制字符；空回退内部标识,当前用户单独保存，立即显示，不推进运行修订,本期实现；保持产品固定名称
+targetEff,多分支exe.config/JSON,用户盘点；旧读取源码未取得,目标效率显示，绝不是输送速度,系统本机显示,Sportmaster等有吞吐展示的业务,PresentationPreferences → 目标效率文字,已实现显式件/小时目标显示,新范围1～100000件/小时或不显示；旧数值单位需确认,单独保存即时显示；不控制设备/业务,本期实现；只继承目标语义
 incomeTitle,分支exe.config/主控,用户盘点；旧读取源码未取得,入/出业务区域标题,Application展示,有入出区域业务,Sportmaster是固定左/右位，不使用入/出标题,不适用当前双位语义,旧标题不改写左右角色,对应独立Application展示,特定业务适用
 outcomeTitle,分支exe.config/主控,用户盘点；旧读取源码未取得,入/出业务区域标题,Application展示,有入出区域业务,Sportmaster是固定左/右位，不使用入/出标题,不适用当前双位语义,旧标题不改写左右角色,对应独立Application展示,特定业务适用
 ColorMode,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
 language,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
 Language,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
-logRetentionDays,feat-spain本地JSON或主控,用户盘点；旧读取源码未取得,诊断日志保留天数；旧日志范围需核验,系统,Parcel业务运行,ParcelRetentionPolicy.DiagnosticLogDays → RuntimeJournal,本期实现非权威诊断保留,可空沿旧轮转；1～3650天；仍受原20MB容量约束,完整候选、受控重启；只清理诊断白名单文件,本期实现；不删审计/原件/图片
+logRetentionDays,feat-spain本地JSON或主控,用户盘点；旧读取源码未取得,诊断日志保留天数；旧日志范围需核验,系统,Parcel业务运行,ParcelRetentionPolicy.DiagnosticLogDays → RuntimeJournal,已实现非权威诊断保留,可空沿旧轮转；1～3650天；仍受原20MB容量约束,完整候选、受控重启；只清理诊断白名单文件,本期实现；不删审计/原件/图片
 图片保留/磁盘清理,AGV/重构线配置，原精确键名未提供,用户盘点；旧读取源码未取得,图片引用与存储清理，区别日志和常驻历史,系统机制；Application引用责任,图像业务,ParcelImages / RecoverImageCleanup / ImageReleased,引用责任驱动释放已有；未提供按天删原件,不能删除未决或被引用图片,按既有应用释放和恢复事实,已有复用；通用按天删证据策略不继承
 mode,多分支；江阴嵌套JSON,用户盘点；旧读取源码未取得,切换不同主流程；与Production/Simulation及驱动entity.mode不同,产品装配/独立Application,各独立业务,Sportmaster / DirectPlc / WcsToPlc,已独立装配，不加日常切换,不用于绕过生产资格,发布/部署选择,废弃通用主流程开关；保留明确运行模式
 bizType,多分支；江阴嵌套JSON,用户盘点；旧读取源码未取得,切换不同主流程；与Production/Simulation及驱动entity.mode不同,产品装配/独立Application,各独立业务,Sportmaster / DirectPlc / WcsToPlc,已独立装配，不加日常切换,不用于绕过生产资格,发布/部署选择,废弃通用主流程开关；保留明确运行模式

@@ -82,9 +82,15 @@ static partial class Program
         Check(control.NavigateTo("DisplayNameDraft"), "local display preferences are reachable in the single directory"); window.UpdateLayout();
         var displayName = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DisplayNameDraft");
         var efficiency = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "TargetEfficiencyDraft");
-        displayName.Text = "合成供包台"; efficiency.Text = "2400";
+        displayName.Text = "合成供包台";
+        displayName.Focus();
+        Check(displayName.MoveFocus(new System.Windows.Input.TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next)) && efficiency.IsKeyboardFocused,
+            "native forward keyboard traversal reaches target efficiency after display name");
+        efficiency.Text = "2400";
+        Check(vm.HasUnsavedDisplayPreferences, "native display input participates in the close guard before explicit apply");
         var configRevision = vm.Snapshot!.Configuration.Revision;
         Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "应用本机显示")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(!vm.HasUnsavedDisplayPreferences, "explicit local apply clears only the display draft state");
         Check(vm.StationDisplaySummary.Contains("合成供包台") && vm.StationDisplaySummary.Contains("2400 件/小时") && vm.Snapshot.Configuration.Revision == configRevision, "native display action updates its consumer independently of runtime save");
         Capture("parameters-display");
         Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");

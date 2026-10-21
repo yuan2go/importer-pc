@@ -9,10 +9,12 @@ public sealed class RuntimeJournal : IAsyncDisposable
     readonly Task worker;
     readonly Action<string> failure;
     sealed record RetentionChange(int? Days);
+    RetentionChange retention;
     public RuntimeJournal(string directory, Action<string> failure) : this(directory, failure, null) { }
     public RuntimeJournal(string directory, Action<string> failure, int? retentionDays)
     {
         ValidateDays(retentionDays);
+        retention = new(retentionDays);
         this.failure = failure;
         directory = Path.GetFullPath(directory);
         DeploymentPaths.RequireOrdinaryAncestors(directory);
@@ -21,10 +23,10 @@ public sealed class RuntimeJournal : IAsyncDisposable
         {
             try
             {
-                var days = retentionDays;
                 var path = Path.Combine(directory, "runtime.jsonl");
                 void Maintain()
                 {
+                    var days = Volatile.Read(ref retention).Days;
                     // These four diagnostic files are disposable metadata. Never
                     // enumerate arbitrary files or delete business/custody evidence.
                     for (var i = 0; i <= 3; i++) DeploymentPaths.RequireOrdinaryAncestors(i == 0 ? path : path + "." + i);
@@ -53,7 +55,7 @@ public sealed class RuntimeJournal : IAsyncDisposable
                     if (!await available) break;
                     while (queue.Reader.TryRead(out var entry))
                     {
-                        if (entry is RetentionChange policy) { days = policy.Days; Maintain(); continue; }
+                        if (entry is RetentionChange) { Maintain(); continue; }
                         Maintain();
                         var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
                         await File.AppendAllTextAsync(path, line + Environment.NewLine);
@@ -65,7 +67,14 @@ public sealed class RuntimeJournal : IAsyncDisposable
         });
     }
     static void ValidateDays(int? days) { if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "诊断日志保留天数须为1～3650"); }
-    public void ConfigureRetention(int? days) { ValidateDays(days); Write(new RetentionChange(days)); }
+    public void ConfigureRetention(int? days)
+    {
+        ValidateDays(days);
+        var next = new RetentionChange(days);
+        // A full diagnostic queue may drop metadata, never an activated policy.
+        // The worker observes this value on its next entry or maintenance tick.
+        Volatile.Write(ref retention, next); Write(next);
+    }
     public void Write(object metadata) { if (!queue.Writer.TryWrite(metadata)) failure("Diagnostic journal queue full; business audit remains in SQLite"); }
     public async ValueTask DisposeAsync() { queue.Writer.TryComplete(); await worker; }
 }

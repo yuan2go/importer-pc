@@ -1,0 +1,73 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-83470be7511c47d684c6ab336bee8fe1
+PASS PARAM01: save-time static preflight rejects StationCode without constructing a component
+PASS PARAM01: save-time static preflight rejects distinct without constructing a component
+PASS PARAM01: save-time static preflight rejects bcr-code without constructing a component
+PASS PARAM01: save-time static preflight rejects /rcs/sorter/api without constructing a component
+PASS PARAM01: missing legacy policy is omitted and round-trips without manufacturing a production rule
+PASS PARAM01: legacy policy retains strict single-code compatibility
+PASS PARAM01: third candidate is evaluated and original order is retained
+PASS PARAM01: matching is whole-string rather than substring
+PASS PARAM01: multiple valid candidates are ambiguous
+PASS PARAM01: whole-string alternation is evaluated correctly
+PASS PARAM01: invalid syntax produces a bounded rejection
+PASS PARAM01: catastrophic backtracking times out and does not select a code
+PASS PARAM01: incomplete and oversized candidate sets can never imply uniqueness
+PASS PARAM01: business configuration validation rejects malformed rules before save
+PASS PARAM01: missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime
+PASS PARAM01: explicit first save persists parameters without starting SDK, creating a business database, or inventing qualification
+PASS PARAM01: invalid business parameters remain editable while business startup is blocked
+PASS PARAM01: mandatory system values have explicit defaults; optional scheduled backup remains off
+PASS PARAM01: actual admission freezes the selected code and preserves all raw input candidates
+PASS PARAM01: NoMatchingCode creates no request and cannot reuse a previous slot
+PASS PARAM01: AmbiguousCodes creates no request and cannot reuse a previous slot
+PASS PARAM01: same code at independent positions remains two distinct entities
+PASS PARAM01: unchanged Effective never creates a pending restart revision
+PASS PARAM01: authority inspection identifies the same unchanged candidate without claiming pending or resubmitting
+PASS PARAM01: first configuration and daily editor preserve an identical complete candidate
+PASS PARAM01: post-write Rejected is reconciled from authority; saving does not apply the new rule
+PASS PARAM01: confirmed save accepts only its draft baseline and preserves the original request bytes
+PASS PARAM01: identical Pending remains idempotent after the no-change guard: PendingRestart / Identical candidate already saved; Effective unchanged
+PASS PARAM01: stale CAS cannot disguise itself as unchanged or discard Pending
+PASS PARAM01: unavailable authority inspection retains raw input and an explicit uncertain-save state
+PASS PARAM01: uncertain result prevents a second stage submission
+PASS PARAM01: later authority inspection confirms the original submission without resubmitting
+PASS PARAM01: CAS conflict preserves input and cannot replace the saved candidate
+PASS PARAM01: field errors are locatable and static validation cannot save or contact a device
+PASS PARAM01: backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save
+PASS PARAM01: late authority inspection accepts only the pre-validation submission while newer input remains unsaved
+PASS PARAM01: returning to the inspected original candidate restores its exact clean baseline without resubmission
+PASS PARAM01: sample test shares the bounded matcher and has no configuration side effect
+PASS PARAM01: existing entity uses frozen policy while paused and cannot replay its original request
+PASS PARAM-INHERIT: old single-pattern bytes and fingerprint remain unchanged
+PASS PARAM-INHERIT: allow/exclude returns precise candidate reasons and freezes both rules in fingerprint
+PASS PARAM-INHERIT: excluded-only observations reject; repeated valid entries never manufacture uniqueness
+PASS PARAM-INHERIT: exclusion matches the entire code rather than a substring
+PASS PARAM-INHERIT: invalid exclusion is field-addressable and pathological exclusion exhausts the same bounded budget
+PASS PARAM-INHERIT: exclusion never bypasses candidate completeness
+PASS PARAM-INHERIT: observation has consistent physical/service ownership
+PASS PARAM-INHERIT: weight has consistent physical/service ownership
+PASS PARAM-INHERIT: plc has consistent physical/service ownership
+PASS PARAM-INHERIT: camera has consistent physical/service ownership
+PASS PARAM-INHERIT: login has consistent physical/service ownership
+PASS PARAM-INHERIT: upload has consistent physical/service ownership
+PASS PARAM-INHERIT: integration has consistent physical/service ownership
+PASS PARAM-INHERIT: log retention deletes only expired diagnostic rotations, preserving recent diagnostics and authoritative/evidence files
+PASS PARAM-INHERIT: first and daily editors round-trip the same complete candidate including exclusion and retention
+PASS PARAM-INHERIT: display preferences persist through the existing local preference mechanism
+PASS PARAM-INHERIT: display has real consumers, preserves drafts during snapshots and never creates a runtime revision
+PASS PARAM-INHERIT: a new window reads the saved per-station display preference
+PASS PARAM-INHERIT: invalid display input remains editable without changing the active preference
+PASS PARAM-INHERIT: actual exclusion creates no business operation or external request
+PASS PARAM-INHERIT: encrypted editor draft preserves invalid display input without applying it or creating another configuration account
+PASS PARAM-INHERIT: review uses the same business/system field paths as navigation and errors
+PASS PARAM-INHERIT: new rules save as Pending while the active rule and original request stay frozen
+PASS PARAM-INHERIT: restart activates the exact saved policy without rewriting original requests
+PASS PARAM-INHERIT: an applicable Application can bind a second instance of the same driver without changing the reader
+PASS PARAM-INHERIT: removing a driver referenced by a position is still forbidden
+PASS PARAM-INHERIT: unbound candidate removal preserves the original default driver and installed packages
+PASS PARAM-INHERIT: out-of-range stable measurement remains rejected with diagnostic reason and no PLC request
+PASS PARAM-INHERIT: out-of-range samples never extend the deadline and timeout never substitutes a default weight
+PASS PARAM-INHERIT: inclusive range boundaries preserve stability and measurement identity checks
+PASS PARAM-INHERIT: configured weight outside the business range is rejected before runtime
+PASS PARAM-INHERIT: timeout recovery requires explicit inspected disposition through Application guards
+PASS PARAM-INHERIT: next same-code entity accepts its own in-range measurement and never reuses the rejected parcel measurement

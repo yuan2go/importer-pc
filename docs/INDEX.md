@@ -1,6 +1,8 @@
-> 参数继承增量源码已实现（Sportmaster 1.8.0 / 合同1.14.0）：[操作说明](runtime/parameter-inheritance-02.md)、[93项迁移裁决](design/parameter-legacy-migration-02.csv)。冻结介质和原生结果随后记录于原工作包；原版本和历史验收身份保持。
+> 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。
 
-> 2026-10-21 参数继承增量正在实施：基于 main `20251b4c`，继承 PR80 与审阅后的 PR81。当前有效裁决见[旧参数继承与所有权](design/parameter-inheritance-02.md)、[统一迁移表](design/parameter-legacy-migration-02.csv)，沿原[参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)推进。下方版本/状态均保留历史形成身份；PR80 的1.7.0介质不包含本轮新增行为。
+> 参数继承增量源码及工程交付已完成（Sportmaster 1.8.0 / 合同1.14.0）：[操作说明](runtime/parameter-inheritance-02.md)、[93项迁移裁决](design/parameter-legacy-migration-02.csv)。冻结介质和原生结果见上方交付验证；原版本和历史验收身份保持。
+
+> 2026-10-21 参数继承增量开工记录：基于 main `20251b4c`，继承 PR80 与审阅后的 PR81。当前有效裁决见[旧参数继承与所有权](design/parameter-inheritance-02.md)、[统一迁移表](design/parameter-legacy-migration-02.csv)，沿原[参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)推进。下方版本/状态均保留历史形成身份；PR80 的1.7.0介质不包含本轮新增行为。
 
 > PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。
 

@@ -1,0 +1,28 @@
+Retained build workspace on failure: C:\Users\RUNNER~1\AppData\Local\Temp\ipc-publication-f7u97ck4
+  Determining projects to restore...
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (in 6.17 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (in 6.17 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (in 6.17 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (in 6.17 sec).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (in 10 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (in 12 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (in 12 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (in 8 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (in 11 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (in 7 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (in 12 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (in 10 ms).
+  Ipc.Platform -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\runneradmin\AppData\Local\Temp\ipc-publication-f7u97ck4\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> C:\scd-release\sportmaster-portable-94a24cda27ff\app\
+{"Package": "C:\\scd-release\\sportmaster-portable-94a24cda27ff.zip", "Sha256": "cd9a6300a6bc766eac4d5bb5aef9202dd279a59d9f9b57e9eb5e505c7110c49a", "SourceCommit": "94a24cda27ffed71c126f92118b764c2c2b06862", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.8.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "C7236741161ADC95D005EA4199A1F493C36D7D6BB6A90831B487A41BDE9951E4"}

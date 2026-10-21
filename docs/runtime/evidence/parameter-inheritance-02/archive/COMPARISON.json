@@ -1,0 +1,10 @@
+{
+  "Baseline": "20251b4c10db76a37f4d204332e3e6cf68340429",
+  "ProductSource": "13663334b2a80f8b9d4e35968ee915851474eae4",
+  "RepairedScope": "Two historical Codex work-package files restored byte-for-byte; manifest checksum filename corrected; product inputs unchanged",
+  "CanonicalBytes": "git cat-file --batch, not Windows archive newline conversion",
+  "BaselineErrors": 298,
+  "CurrentErrors": 298,
+  "NewErrors": 0,
+  "Overall": "FAIL_UNCHANGED_HISTORICAL; no assertion/registry exemptions changed"
+}

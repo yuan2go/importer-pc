@@ -1,0 +1,12 @@
+CAPTURE work-waiting-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR left processing suppresses the entire task while right completes
+CAPTURE work-processing-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR all task fields correlate to each position's original accepted request
+CAPTURE work-assigned-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR work barcode accepts native focus
+PASS UIR polling preserves native selection and focus
+FAIL System.InvalidOperationException: rejected observation clears every current task field and retains original responsibility separately
+   at Program.<>c__DisplayClass11_0.<VerifyTaskRedesign>g__Check|0(Boolean value, String reason) in D:\projects\importer-pc-parameter\tests\Ipc.Desktop.UiVerification\TaskRedesign.cs:line 19
+   at Program.VerifyTaskRedesign(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-parameter\tests\Ipc.Desktop.UiVerification\TaskRedesign.cs:line 56
+   at Program.VerifyTaskRedesign(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-parameter\tests\Ipc.Desktop.UiVerification\TaskRedesign.cs:line 185
+   at Program.<>c__DisplayClass6_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-parameter\tests\Ipc.Desktop.UiVerification\Program.cs:line 35

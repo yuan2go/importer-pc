@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "13663334b2a80f8b9d4e35968ee915851474eae4",
+  "InstallerSha256": "4537ab01ea44fef6a381956504ebb48a69856aaf359c37d072e5dd5611923fd6",
+  "Installer": "PASS: native options shows version 1.8.0; payload prepared and isolated program/data paths editable",
+  "MissingConfiguration": "PASS: isolated --maintenance startup displays MissingConfiguration and explicitly leaves devices/business stopped",
+  "Recovery": "PASS: closing offline maintenance returns startup/recovery",
+  "CancelAndFinalExit": "NOT_CONFIRMED: Computer Use was stopped by the user physical Escape key; no further UI input issued",
+  "ActualInstallation": "NOT_RUN: no elevation/lifecycle setup performed",
+  "UpgradeRebootTwoAccounts": "NOT_RUN",
+  "RealDevices": "NOT_RUN",
+  "ScreenshotToolLimit": "Installer capture after the separate maintenance window opened returned an occluded rectangle inconsistent with the requested window; that image was not retained as installer evidence. Initial installer screen was visually verified in conversation."
+}

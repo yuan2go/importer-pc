@@ -7,6 +7,9 @@
 > 参数继承增量源码及工程交付已完成（Sportmaster 1.8.0 / 合同1.14.0）：[操作说明](runtime/parameter-inheritance-02.md)、[93项迁移裁决](design/parameter-legacy-migration-02.csv)。冻结介质和原生结果见上方交付验证；原版本和历史验收身份保持。
 
 > 2026-10-21 参数继承增量开工记录：基于 main `20251b4c`，继承 PR80 与审阅后的 PR81。当前有效裁决见[旧参数继承与所有权](design/parameter-inheritance-02.md)、[统一迁移表](design/parameter-legacy-migration-02.csv)，沿原[参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)推进。下方版本/状态均保留历史形成身份；PR80 的1.7.0介质不包含本轮新增行为。
+> 2026-10-21 作业主界面增量：[信息、操作与原生验证](runtime/workstation-information-01.md)。继承 V2 三组信息与 PR82；启动修复本轮不处理。
+
+> 2026-10-21 参数页精简续修：收起编辑时重复的作业摘要，压缩常规提示和间距，保存审阅按实际状态显示动作；[实现、原生截图及验证边界](runtime/parameter-settings-simplification-01.md)。沿用四类目录和完整配置合同，原V3图及介质保持身份。
 
 > PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。
 

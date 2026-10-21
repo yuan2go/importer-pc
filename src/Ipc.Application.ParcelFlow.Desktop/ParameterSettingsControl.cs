@@ -111,15 +111,15 @@ public sealed partial class ParameterSettingsControl : UserControl
     {
         Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 16 : 14,
         Foreground = Brush(heading ? "#1C3044" : "#5A6878"),
-        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 24 : 4, 0, heading ? 12 : 8)
+        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
     };
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
+        var body = new StackPanel { Margin = new(28, 20, 28, 20), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
         var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
-        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
+        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 12); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel());
@@ -138,8 +138,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
-        var field = new StackPanel { Margin = new(0, 0, 24, 16) };
-        var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 6);
+        var field = new StackPanel { Margin = new(0, 0, 24, 12) };
+        var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 4);
         field.Children.Add(caption); field.Children.Add(control);
         if (control is TextBox or ComboBox or PasswordBox)
         {
@@ -152,7 +152,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Preserve stable automation paths used by support and native verification.
         AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
-        if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 6, 0, 0); field.Children.Add(hint); }
+        // Routine schema hints remain available to assistive technology and in
+        // technical information, without adding a repeated line to every field.
+        var routine = help is not null && (help == "选择已声明的可用值" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
+        if (routine) control.ToolTip = help;
+        else if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0); field.Children.Add(hint); }
         var error = Text(""); error.Foreground = Brush("#B02D35"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
         // Refresh an already-shown local error after an actual edit and blur.

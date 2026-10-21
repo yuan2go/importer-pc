@@ -10,7 +10,7 @@ public sealed partial class ParameterSettingsControl
 {
     void BuildSystem(ParameterEditorModel m)
     {
-        var station = Page(0, "供包台标识", "设置本站对外使用的编码。取格口和心跳分别维护，各自用途清楚。 ");
+        var station = Page(0, "供包台标识", "取格口与心跳编码分别维护。");
         var hasRcs = m.Components.Any(ParameterOwnership.IsRcs);
         var form = Form(station, hasRcs ? "取格口身份" : null);
         foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))

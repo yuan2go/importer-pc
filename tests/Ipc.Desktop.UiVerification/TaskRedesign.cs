@@ -62,6 +62,19 @@ static partial class Program
         Check(vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002", "all task fields correlate to each position's original accepted request");
         Capture("work-assigned-1600", client);
         var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left));
+        Check(((TextBlock)leftControl.FindName("ReaderIdentity")).Text == vm.Left.ReaderId &&
+            ((TextBlock)leftControl.FindName("ScanSummary")).Text.Contains(vm.Left.ScanTime) &&
+            !((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && !((Button)leftControl.FindName("ContinueOriginal")).IsVisible &&
+            ((Button)leftControl.FindName("PositionDiagnostics")).IsVisible,
+            "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
+        var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
+        Click(leftControl, "本位诊断"); window.UpdateLayout();
+        Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text.StartsWith(vm.Left.Heading + "\n")),
+            "position diagnosis opens read-only context for the clicked reader");
+        Click(window, "工作台"); window.UpdateLayout();
+        Check(beforeDiagnostics == (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries) &&
+            ReferenceEquals(leftControl, Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left))),
+            "diagnosis round trip retains both original operations and native controls without sending or querying a business request");
         var barcode = (TextBox)leftControl.FindName("CurrentBarcode"); window.Activate(); Check(barcode.Focus(), "work barcode accepts native focus"); barcode.Select(1, 3);
         for (var i = 0; i < 4; i++) await vm.RefreshAsync();
         Check(barcode.IsKeyboardFocused && barcode.SelectionStart == 1 && barcode.SelectionLength == 3, "polling preserves native selection and focus");
@@ -70,11 +83,16 @@ static partial class Program
         Check(vm.Left.TaskId == "—" && vm.Left.SkuId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—" && vm.Left.Slot == "未取得" && vm.Right.TaskId == "TASK-right" && vm.Left.OriginalResponsibility.Length > 0, "rejected observation clears every current task field and retains original responsibility separately");
         Capture("work-rejected-new-input", client);
         probe.Project = s => WithTasks(s) with { Operations = WithTasks(s).Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Wcs = o.Wcs! with { State = StageState.Unknown }, Slot = null } : o).ToArray() };
-        await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
-        Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
+        await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
+        Check(((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && ((Button)leftControl.FindName("ReconcileOriginal")).IsEnabled &&
+            !((Button)leftControl.FindName("ContinueOriginal")).IsVisible && !vm.Right.HasUncertainOriginal,
+            "unknown original reveals only its guarded reconciliation action and leaves the other position independent");
         Capture("work-unknown", client);
         vm.MarkReadFailure("合成读取中断");
         Check(vm.Left.WaveNo == "已失效" && vm.Right.ResponseQuantity == "已失效" && !vm.Right.CurrentTaskAvailable, "stale snapshot invalidates all task fields together"); Capture("work-stale", client);
+        Check(((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && !((Button)leftControl.FindName("ReconcileOriginal")).IsEnabled &&
+            ((Button)leftControl.FindName("PositionDiagnostics")).IsEnabled,
+            "stale original retains its context with reconciliation disabled and read-only diagnosis available");
         probe.Project = WithTasks; await vm.RefreshAsync();
         await VerifyClientGeometry(window, vm, probe, evidence, "supply-station-v2", Check);
         probe.Project = WithTasks; await vm.RefreshAsync(); await SetClient(window, 1366, 768); Capture("work-assigned-1366", client);
@@ -127,6 +145,11 @@ static partial class Program
         search.Text = "没有这种字段"; window.UpdateLayout();
         Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有匹配项")), "empty search explains how to return without changing the draft");
         search.Clear();
+        window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout(); Capture("work-position-diagnostics", client);
+        Click(window, "返回当前对象设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
+        var directory = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "设置目录");
+        Check(directory.SelectedItem?.ToString() == "左相机" && ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED",
+            "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate");
         var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
         editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
         var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "QueueCapacity");
@@ -151,6 +174,8 @@ static partial class Program
             var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
             Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
                 "native review displays the current station change from the validated complete candidate");
+            Check(vm.Fresh && vm.Snapshot?.Paused == true && !Descendants(dialog).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
+                "confirmed pause is shown as a review condition without a redundant pause action");
             editorHeight = editor.ActualHeight;
             Capture("parameters-save-review", (FrameworkElement)dialog.Content);
         });
@@ -165,6 +190,8 @@ static partial class Program
             "adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it");
         await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
         window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
+        Check(((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
+            "returning to work restores the existing footer without a second settings mode line");
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;

@@ -54,6 +54,10 @@ static partial class Program
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
         Check(model.ComponentLabel(vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability!) == "维护认证", "daily component directory displays its existing business role");
+        window.UpdateLayout();
+        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
+            ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
+            "settings hides the duplicate job footer while retaining visible mode and software-pause boundary");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
@@ -66,6 +70,17 @@ static partial class Program
                 Check(bounds.Bottom <= client.ActualHeight + 1 && bounds.Right <= client.ActualWidth + 1 && save.ActualHeight >= 44, "save remains visible with full schema at " + size);
                 var first = Boxes().First(b => AutomationProperties.GetName(b) == (item.Item3 == "camera" ? "reader.0/device.ip" : "rcs.one/Target"));
                 Check(first.ActualWidth >= 240 && first.ActualHeight >= 36, "readable address dimensions at " + size + ": " + first.RenderSize);
+                if (size.Item1 == 1366 && item.Item3 == "rcs")
+                {
+                    var source = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/source");
+                    Check(!Descendants(control).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "最多 64 个字符") &&
+                        AutomationProperties.GetHelpText(source).Contains("64") && Equals(source.ToolTip, "最多 64 个字符"),
+                        "routine character limits leave the form body but remain accessible as field help");
+                    var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
+                    var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
+                    Check(heartbeatBounds.Top >= 0 && heartbeatBounds.Bottom <= control.ActualHeight + 1,
+                        "normal RCS connection and heartbeat inputs fit above the fixed save bar at 1366x768");
+                }
                 control.NavigateTo(AutomationProperties.GetName(first)); window.UpdateLayout();
                 var fieldBounds = first.TransformToAncestor(control).TransformBounds(new Rect(first.RenderSize));
                 Check(fieldBounds.Top >= -1 && fieldBounds.Bottom <= control.ActualHeight + 1, "field navigation scrolls the complete input above the fixed footer at " + size);

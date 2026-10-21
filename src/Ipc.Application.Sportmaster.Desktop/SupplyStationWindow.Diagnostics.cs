@@ -10,6 +10,13 @@ public partial class SupplyStationWindow
     readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     TextBlock? selectedDiagnostic;
     ParameterDiagnosticTarget? diagnosticTarget;
+    public void ShowPositionDiagnostics(SupplyStationPositionViewModel position)
+    {
+        var reader = ViewModel.Snapshot is { } snapshot ? Ipc.Application.Contracts.ParcelBindings.Readers(snapshot.Configuration.Effective)
+            .SingleOrDefault(r => r.DeviceId == position.ReaderId) : null;
+        var instance = reader?.Driver.StartsWith("extension:", StringComparison.Ordinal) == true ? reader.Driver["extension:".Length..] : position.ReaderId;
+        ShowObjectDiagnostics(new(instance, position.ReaderId, position.Heading));
+    }
     void ShowObjectDiagnostics(ParameterDiagnosticTarget target)
     {
         diagnosticTarget = target; SetPage("diagnostics");
@@ -43,7 +50,15 @@ public partial class SupplyStationWindow
         header.Children.Add(selectedDiagnostic);
         ViewModel.PropertyChanged += (_, e) => { if (diagnosticTarget is { } target && e.PropertyName == nameof(ViewModel.Fresh)) selectedDiagnostic.Text = target.Label + "\n" + ViewModel.ParameterRuntimeSummary(target); };
         var backToObject = new Button { Content = "返回当前对象设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        backToObject.Click += (_, _) => { SetPage("maintenance"); if (diagnosticTarget is { } target) maintenance.NavigateToParameter(target.InstanceId + "/Provider"); };
+        backToObject.Click += async (_, _) =>
+        {
+            var target = diagnosticTarget; SetPage("maintenance");
+            await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取关联对象参数");
+            if (target is null || !ViewModel.HasLoadedConfiguration || ViewModel.SelectedPage != "maintenance") return;
+            var instance = target.DeviceId is { } device ? ViewModel.ReaderDrafts.FirstOrDefault(r => r.Original.DeviceId == device)?.Capability.InstanceId : target.InstanceId;
+            if (instance is not null) maintenance.NavigateToParameter(instance + "/Provider");
+            else ViewModel.Message = "本次候选未包含该设备身份；请核对原拓扑，未替换对象。";
+        };
         header.Children.Add(backToObject);
         body.Children.Add(new TextBlock { Text = "客户端生命周期、心跳网络交付 与业务回执分别核对。当前调度协议未提供权威结果查询；重连不应用待生效配置，也不重发未知原请求。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 16) });
         var positions = new Grid(); positions.ColumnDefinitions.Add(new()); positions.ColumnDefinitions.Add(new());

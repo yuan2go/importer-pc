@@ -10,7 +10,7 @@ public sealed partial class ParameterSettingsControl
     {
         foreach (var reader in m.Readers)
         {
-            var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "编辑当前相机的连接和编码。实例数量及左右绑定由当前业务固定。");
+            var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "");
             Capability(page, reader);
         }
         if (m.Readers.Length == 0)

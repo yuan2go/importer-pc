@@ -1,0 +1,6 @@
+{
+  "SourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "ChangedRecordCount": 80,
+  "ShaSizeBlobMatch": true,
+  "Meaning": "Canonical Git records at frozen product commit; excludes subsequent fixture/receipt-only changes"
+}

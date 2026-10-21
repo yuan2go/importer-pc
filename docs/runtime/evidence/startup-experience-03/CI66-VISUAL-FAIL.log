@@ -1,0 +1,9 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS native read-only diagnostics open and bind both positions and shared facts without writing read-only properties
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available
+FAIL System.InvalidOperationException: frozen desktop first configuration exposes five task steps and existing guarded save
+   at Program.<>c__DisplayClass25_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in C:\scd-evidence\visual\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in C:\scd-evidence\visual\VisualProductization.cs:line 60
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in C:\scd-evidence\visual\VisualProductization.cs:line 277
+   at Program.<>c__DisplayClass6_0.<<Main>b__0>d.MoveNext() in C:\scd-evidence\visual\Program.cs:line 41

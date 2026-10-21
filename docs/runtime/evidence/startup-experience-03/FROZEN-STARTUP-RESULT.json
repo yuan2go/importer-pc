@@ -1,0 +1,11 @@
+{
+  "SourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "FixtureSourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "Passes": 89,
+  "Status": "PASS",
+  "ExitCode": 0,
+  "VerifiedMediumFiles": 736,
+  "MediumInventorySha256": "f6c9bb7d520e2fe314afd29fe6f3e872145c7a31bc5c9c544cb0e7172351af3a",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "Scope": "Published frozen DLLs, fixed-source fixture, synthetic loopback and native WPF; medium unchanged"
+}

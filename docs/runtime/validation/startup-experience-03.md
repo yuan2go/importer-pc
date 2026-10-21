@@ -31,3 +31,15 @@
 ## 冻结前资源键核对
 
 8955bb1保留本轮主体、87项初验及中间介质身份；该中间ZIP不作为最终推荐安装器。核对发现端口前导零可形成不同文本资源键，后续统一使用规范数值端口构造物理目标键。新增真实ResourceLease断言：不同ReaderId、80/00080不能同时取得同一目标；原租约释放后才可再次取得。新的[89项首配专项](../evidence/startup-experience-03/STARTUP-FINAL.log)通过，最终两份构建日志零警告/错误，原87项及原图不覆盖。[最终相机页](../evidence/startup-experience-03/final-startup-step-3.png)修正TCP包裹关联说明，[完成页](../evidence/startup-experience-03/final-installer-complete.png)保持底部运行选项。后继仅用新提交重新冻结，最终产品SourceCommit和安装器另列。
+
+## 最终本机交付与远端视觉断言后续
+
+最终产品源码固定为`981c7da5b74c4e788dbc82362e09a45267cd9ebc`。本机标准脚本生成SM 1.8.2同源介质及单EXE；[介质](../evidence/startup-experience-03/MEDIA.json)、[安装器](../evidence/startup-experience-03/INSTALLER.json)保留原SourceCommit。安装器SHA256 `346d5a9e28e2983038b589e588ef52595f93be41c34989920aaa5a24500bbd96`；ZIP SHA256 `d616fe3a3c9634d75c75897147cffde71519ea999f76986048e34180bc71976f`。共737文件（736条文件清单加SHA256SUMS自身）。封装校验全部共享DLL字节与介质一致。未签名，实际安装NOT_RUN。
+
+对最终发布DLL重新执行[225项原生V3](../evidence/startup-experience-03/FROZEN-V3.log)和[89项首配/TCP](../evidence/startup-experience-03/FROZEN-STARTUP.log)，均通过。两份回执的产品源/夹具源均为981c7da；736条介质文件全部重新验hash，未被验证修改。[冻结源80项当前变更的canonical清单](../evidence/startup-experience-03/FINAL-RECORDS.json)全部匹配，不把旧全仓库归档问题称为通过。
+
+产品源981c7da的[CI66](https://github.com/yuan2go/importer-pc/actions/runs/39583740263)实际构建合并测试源`8f6d6d7f41d1cacc3e5fd965a64bbcc9eb29bd4e`。政策、冻结发布、核心/原生/卸载与生产拒绝阶段通过；视觉阶段仍按旧按钮“保存首配待生效”断言而FAIL，后续参数/安装器阶段未执行。原[失败日志可读副本](../evidence/startup-experience-03/CI66-VISUAL-FAIL.log)、[原始ZIP字节](../evidence/startup-experience-03/CI66-FAILURE.zip)、[原身份/转换说明](../evidence/startup-experience-03/CI66.json)与[回执](../evidence/startup-experience-03/CI66-VISUAL-RESULT.json)保留，不记为绿灯。
+
+后续仅修改视觉夹具：检查新的保存并启动与无配置工具；更多菜单断言没有辅助窗口，通过程序化第二视图继续检查共享Application/连接生命周期。未恢复已删入口，未删除原共享责任断言。本机更新夹具[120项视觉PASS](../evidence/startup-experience-03/VISUAL-FIX.log)，零警告构建；新的远端结果单列。最终产品源码、配置、脚本和随包指南不变，后继夹具/交付回执提交不重标981c7da安装器SourceCommit。
+
+最终发布CLI业务身份及Desktop只读环境入口[冒烟通过](../evidence/startup-experience-03/ENTRY-SMOKE.json)，退出码0、stderr为空；没有运行设备或执行实际安装。

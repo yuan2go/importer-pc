@@ -57,7 +57,7 @@ static partial class Program
             for (var i = 0; i < 100 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(30);
             first.UpdateLayout();
             var startupTasks = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
-            Check(!(bool)busy.GetValue(first)! && startupTasks.Items.Count == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")), "frozen desktop first configuration exposes five task steps and existing guarded save");
+            Check(!(bool)busy.GetValue(first)! && startupTasks.Items.Count == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存并启动")) && !Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "配置工具…")), "frozen desktop first configuration exposes five steps and the combined guarded save/start without a tool menu");
             Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "offline first configuration never starts the Application or creates a business database");
             Capture("first-configuration", first);
             var policy = startupTasks.Items.Cast<TabItem>().Single(t => Equals(t.Header, "1 业务模块")); policy.IsSelected = true; first.UpdateLayout();
@@ -198,9 +198,9 @@ static partial class Program
             Click(window, "工作台"); await Task.Delay(100);
             Check(details.IsExpanded && vm.ConfigurationReason == "SYNTHETIC unsaved settings" && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "page navigation preserves existing controls and independent drafts");
             details.IsExpanded = false;
-            Click(window, "辅助窗口"); await Task.Delay(350);
-            var child = window.OwnedWindows.OfType<SupplyStationWindow>().Single();
-            Check(ReferenceEquals(child.ViewModel.Application, vm.Application) && child.ViewModel.Snapshot?.RuntimeId == vm.Snapshot?.RuntimeId, "auxiliary native window shares the same Application and device lifetime");
+            Check(!Descendants(window).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>()).SelectMany(m => m.Items.OfType<MenuItem>()).Any(m => Equals(m.Header, "辅助窗口")), "ordinary more menu has no auxiliary-window action");
+            var child = new SupplyStationWindow(application, null, "standard", owner: window); child.Show(); await Task.Delay(350);
+            Check(ReferenceEquals(child.ViewModel.Application, vm.Application) && child.ViewModel.Snapshot?.RuntimeId == vm.Snapshot?.RuntimeId, "programmatically attached native view retains the same Application and device lifetime");
             child.Close(); await Task.Delay(100);
             var support = new ProductSupportWindow(runtime, vm.Left.Operation?.Id) { Owner = window }; support.Show(); await Task.Delay(120);
             Capture("support-help", support); ((TabControl)support.Content).SelectedIndex = 1; support.UpdateLayout(); Capture("support-preview", support);

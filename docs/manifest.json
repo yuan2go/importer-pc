@@ -59209,9 +59209,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "38fb2d33b68e18db8aa599ec7ab8c794b3e9ca1641ab787a65b8264fafa2fc18",
-      "size_bytes": 30473,
-      "git_blob": "1f5465e871e1872e8d7a3404398453f4520b78ee",
+      "sha256": "58cd96ed1f271ac20731919ebf52171f54833e5e908ecb033b0998d164042fe4",
+      "size_bytes": 30813,
+      "git_blob": "9cb93ffb4503066344ac1ad5c7264260ea87f2fc",
       "version": "UIR-00-06-V2-20261020",
       "status": "implementation_source",
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
@@ -62598,9 +62598,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "6fbdd922610d811f3b9f07b3be98f6938c57e6eca97fd6614809b0535232c82f",
-      "size_bytes": 5040,
-      "git_blob": "a8688d6073a969d1eeba6206136e35166e294185"
+      "sha256": "10aa572f0a3c443fc5882e1d93b6b0231f00fa60497e8e12c10dc930ab15239b",
+      "size_bytes": 7516,
+      "git_blob": "0b64611350a986a2bac6301df25921acf3169158"
     },
     {
       "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
@@ -62678,6 +62678,160 @@
       "sha256": "31d1984eb0b02dcbfc91854a80423c605c211e3337f2ed66f24d9e8908790ada",
       "size_bytes": 3717,
       "git_blob": "1a7db9d13d537693ad1202dcb85ad80285bca113"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/CI66-FAILURE.zip",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "92f2885c956cf9e21763dca36ded999d4dd336d02b6281097c1d773c636a70ab",
+      "size_bytes": 225948,
+      "git_blob": "5afe4cb6b13f0dcc4fef9a06c81db4a1915a7cff"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/CI66-VISUAL-FAIL.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "0f8ad658da098ef22695fd3990b30977bca4b16cd5aa81e848c1751511018a9f",
+      "size_bytes": 1250,
+      "git_blob": "8181ac98cf160183e776ee13a8fbe912ec3513e2"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/CI66-VISUAL-RESULT.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "88a9d3e36ab7ab923001894a8a2858c6c3262ac2d7a6ae66e959b11528250f19",
+      "size_bytes": 3058,
+      "git_blob": "9b2585bba7ed9b7932dc51dae3d825bd452e4fdf"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/CI66.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "06add2b5c324ee0bdcc2c0314417ea12e344d68824803d15c80a659738f53d8c",
+      "size_bytes": 793,
+      "git_blob": "11a66324229268dda470fa8d382fe06544f35d90"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/ENTRY-SMOKE.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "1e460364e959d6bae8c6f694488c79f3b01cab310d833c1f5401d05bf3401453",
+      "size_bytes": 445,
+      "git_blob": "f30a63d65cdea376825f9f8a035a2adf02d3356e"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FINAL-RECORDS.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "692804af42cafd408ab66272e7acda7e3f4091639dbf38c3709c688880a52085",
+      "size_bytes": 234,
+      "git_blob": "e10de3ab982f57d92b5b171a1b09999aa146e3dd"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-STARTUP-RESULT.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "d7c5002ec68df66b73d932fb56ce463120b805b0ba364247a7b1062542ac596b",
+      "size_bytes": 465,
+      "git_blob": "5b4eac0d1ec80f9a21dc04ee16e790874c3a7f48"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-STARTUP.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "88282d2cf37076e66cfae6c18643f9de1eae5e5fb25cdf981a33d1310c526015",
+      "size_bytes": 7405,
+      "git_blob": "d68e68157e129b590ddbb992f786528deb1a4da1"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-V3-RESULT.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "5cbf156819daa6a3db27901da66a626d6e9a5697dbc2f3dcf926f8d35fec5933",
+      "size_bytes": 3058,
+      "git_blob": "8a09f4744660c5c15b78f8e261d66f6221f54ef8"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-V3.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "4212e11984a5355526b4ca0f06972fab13ab2fbc00bbc65a8fad601a8decae95",
+      "size_bytes": 23941,
+      "git_blob": "1dd276e83ba85740b5ee5565089bb0bb30e2edde"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/INSTALLER.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "b167cc2f86e048c7fa23fbff372f79d52107868852dca1330e2c0adffc9982bd",
+      "size_bytes": 796,
+      "git_blob": "b8c92cf15302f8c2f7752aab9dbb427a0a8e765f"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/MEDIA.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "a1150670a76a807e3b0233d3b803832b367eedca1f9b58f82fef4ad8c64e1a57",
+      "size_bytes": 481,
+      "git_blob": "d1debbc9d4465c6408b403ec9c8491fdd9ed5851"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/VISUAL-FIX-BUILD.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "b53b9b60b2e99a5f7103950d34072b3486565acaece9a64c2f7388fb567eb895",
+      "size_bytes": 2082,
+      "git_blob": "31acb58b3a7e194fb0baf50c054a0dc6ce1e34dc"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/VISUAL-FIX.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
+      "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "b68f020c4c9606e651d2f088649ce3ca35d081729b9c72c086abf88276cf9cf5",
+      "size_bytes": 11569,
+      "git_blob": "d181fcecfa14878c95e421c906e1550cab865b8c"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

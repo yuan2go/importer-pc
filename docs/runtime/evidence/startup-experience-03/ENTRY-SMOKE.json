@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "BusinessIdentity": {
+    "ApplicationId": "sportmaster",
+    "BusinessVersion": "1.8.2",
+    "CompatibilitySha256": "D81C02B9564865ECBFAA35657803B8984C01E5808AEB8970041A04ACEAB93F54"
+  },
+  "DesktopEntry": "--environment-report",
+  "DesktopExitCode": 0,
+  "StderrEmpty": true,
+  "Scope": "Read-only published entry; no business runtime, device or actual installation started"
+}

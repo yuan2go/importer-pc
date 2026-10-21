@@ -25,4 +25,16 @@
 
 这些是原生窗口程序化事件和渲染证据，不声称已做物理键鼠、IME、触控、目标工控机全DPI或现场验收。真实SDK/RCS、生产认证/实体资格、实际安装升级/重启/双账号、完整恢复后业务核对仍待验。D/RV与历史发行SourceCommit保持。原用户截图不上传。
 
-实施提交：`3f7e785ae313c0b4203c147a0f8113f27b6950bd`。之后仅补测试文案、manifest顺序与交付证据；冻结发行身份另以回执为准。原生日志记录源码级验证，不声称与随后冻结发行二进制逐字节相同。
+实施提交：`3f7e785ae313c0b4203c147a0f8113f27b6950bd`。后续首轮CI补修与最终冻结身份见下方回执，不将中间介质改标为最终版本。原生日志记录源码级验证，不声称与随后冻结发行二进制逐字节相同。
+
+
+## PR85 首轮远端检查与后续
+
+[首轮CI](https://github.com/yuan2go/importer-pc/actions/runs/39569567903)固定GitHub合并测试源`ccf7884cb5af50fdb6d4474ccf81de08a3b22f07`，不是本机源20171ab。冻结发布、核心和卸载内核验证通过；首配窗口测试仍按旧标题和分开的保存/启动入口断言，导致WPF及工程门禁FAIL，后续视觉/安装器步骤未运行。原[失败日志](../evidence/startup-experience-02/ci-first-WPF.log)、[WPF回执](../evidence/startup-experience-02/ci-first-WPF-result.json)和[工程拒绝](../evidence/startup-experience-02/ci-first-engineering.json)保留。
+
+后续断言改为检查可见且可用的“保存并启动”，不恢复多按钮。另修正本轮精简引入的诊断提示缺口：加密草稿解密失败或原配置无法读取时，主状态必须明确提示不可用并保留原文件；完整原因仍在诊断中。保留原DPAPI原字节、可编辑字段、焦点/未保存关闭保护断言。新版源码、复验及CI结果分别以实际后续回执记录，不将首轮FAIL覆盖。
+
+清单核对：[原始结果与比较](../evidence/startup-experience-02/archive-comparison.json)。两份Windows git archive受autocrlf转换，原全树检查分别FAIL 4320/4336，其中4022/4038项身份噪声已逐项证明仅为CRLF变化；没有修改校验器或添加豁免。另从Git对象逐项核验，基线5507项与候选5533项canonical SHA256/大小/Git blob均一致；原298条结构/政策问题完全相同（277个去重报告），新增0。全仓库仍不记为PASS。
+
+
+本机后续复验：商业原生页[31条PASS](../evidence/startup-experience-02/COMM-WPF-FIX.log)，包含真实DPAPI拒绝后原密文不变、明确草稿不可用提示、输入/焦点和关闭保护；首配专项[52条PASS](../evidence/startup-experience-02/STARTUP-CI-FIX.log)；视觉原生[119条PASS](../evidence/startup-experience-02/VISUAL-CI-FIX.log)。均为合成契约与原生程序化交互，不扩张为实际安装或现场证据。

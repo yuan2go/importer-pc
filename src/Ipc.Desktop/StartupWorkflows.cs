@@ -376,7 +376,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         Render();
         diagnosticDetails = string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
-        Message(initialConfiguration ? "填写当前供包台，或导入已有配置文件。" + (savedDraft is null ? "" : "已找到未完成内容，可从配置工具继续。") : diagnosticDetails);
+        Message(initialConfiguration
+            ? document.Candidate is null ? "无法读取配置，原文件已保留。请从配置工具选择原配置或查看诊断。"
+                : unavailableDraft is not null ? "草稿不可用：原文件已保留，可重新填写；详细原因见配置工具。"
+                : "填写当前供包台，或导入已有配置文件。" + (savedDraft is null ? "" : "已找到未完成内容，可从配置工具继续。")
+            : diagnosticDetails);
         }
         catch { Render(); throw; }
     }

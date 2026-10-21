@@ -47,8 +47,8 @@ static partial class Program
             Check(taskTabs.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "1 业务模块", "2 系统", "3 驱动", "4 组件", "5 检查与完成" }) && taskTabs.SelectedIndex == 0, "first configuration starts with business rules and separates system, drivers, components and completion");
             Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the first business task");
             await SelectTask(4);
-            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
-                Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
+            Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "保存并启动")) &&
+                !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存首配待生效…")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
             Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
             await SelectTask(0);

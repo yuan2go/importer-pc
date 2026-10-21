@@ -25,7 +25,7 @@ public sealed partial class ParameterSettingsControl
                     var conflict = Text("需要核对旧设置：左右取格口站码不同。" + pair.OriginalValues + "。请填写本站共同使用的编码。");
                     conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
                 }
-                Input(form, "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的取格口请求共同使用此编码。");
+                Input(Form(station), "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的取格口请求共同使用此编码。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
                 Technical(station, "供包台编码", rcs.InstanceId + "/left-station-code / right-station-code", pair.OriginalValues + "。明确填写共同值才统一两个候选；原请求保持原值。");
             }
@@ -48,6 +48,7 @@ public sealed partial class ParameterSettingsControl
         Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "填写绝对路径。");
+        form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份间隔（分钟）", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080 分钟");
         Input(form, "备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000 份；到达上限后不自动删除原备份。");
         if (BackupRequested is not null)

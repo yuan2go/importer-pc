@@ -58,13 +58,15 @@ public sealed partial class ParameterSettingsControl
         providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
         var details = new Expander { Header = "安装版本与实例身份", Content = identity, Margin = new(0, 20, 24, 0), IsExpanded = draft.Provider is null };
         if (draft.Provider is null) { var issue = Text("缺少精确依赖。恢复原安装包，或受控选择兼容版本后继续。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); page.Body.Children.Add(details); return; }
-        if (draft.Kind != "observation") Input(Form(page), ParameterOwnership.IsRcs(draft) ? "服务地址 *" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
+        var isRcs = ParameterOwnership.IsRcs(draft);
+        if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : null), isRcs ? "服务地址 *" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
-        var form = Form(page, draft.Kind == "observation" ? "连接" : null);
+        var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
-            if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding" or "entity.mode") advanced.Add(p);
+            if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") advanced.Add(p);
+            else if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding" or "entity.mode") advanced.Add(p);
             else if (draft.Kind != "observation" || p.Field.Key != "bcr-code") Parameter(form, page, draft, p);
         }
         if (draft.Kind == "observation")
@@ -78,7 +80,7 @@ public sealed partial class ParameterSettingsControl
                 foreach (var code in codes) Parameter(codeForm, page, draft, code);
             }
         }
-        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, "识别与缓冲"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
+        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : "识别与缓冲"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
         if (draft.Parameters.Count == 0) page.Body.Children.Add(Text("此版本没有可配置参数。"));
         page.Body.Children.Add(details);
     }

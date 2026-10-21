@@ -19,12 +19,12 @@ public partial class ParcelViewModel
             var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
             if (validation.Status != "Validated")
             {
-                validationState = "校验失败 · " + validation.Reason; ParameterEditor?.Report(validation.Reason);
+                configurationSubmissionOutcome = "Rejected"; configurationSubmissionDetail = validation.Reason; NotifyConfigurationReview(); validationState = "校验失败 · " + validation.Reason; ParameterEditor?.Report(validation.Reason);
                 Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return new("Rejected", validation.Reason, expected, "");
             }
             var owner = draftRuntimeId ?? throw new InvalidOperationException("先读取原运行实例");
             submissionEditorSignature = capturedSignature; submissionEditorDocument = capturedDocument;
-            unconfirmedSubmission = (owner, expected, candidate); validationState = "正在保存完整候选"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary));
+            unconfirmedSubmission = (owner, expected, candidate); NotifyConfigurationReview(); validationState = "正在保存完整候选"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary));
             string? delivery;
             try { var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, capturedReason)); delivery = receipt.Status + " · " + receipt.Reason; }
             catch (Exception ex) { delivery = ex.GetType().Name + " · " + ex.Message; }
@@ -38,10 +38,11 @@ public partial class ParcelViewModel
         ConfigurationSubmissionResult result;
         try { result = await ServiceAsync(() => application.InspectConfigurationSubmissionAsync(submitted.Owner, submitted.Revision, submitted.Candidate)); }
         catch (Exception ex) { result = new("Unknown", "核对暂不可用：" + ex.Message, submitted.Revision, ""); }
+        configurationSubmissionOutcome = result.Status; configurationSubmissionDetail = result.Reason;
         if (result.Status != "Unknown") unconfirmedSubmission = null;
         if (result.Status == "PendingRestart")
         {
-            savedEditorSignature = submissionEditorSignature; savedCandidate = submissionEditorDocument;
+            savedEditorSignature = submissionEditorSignature; savedCandidate = submissionEditorDocument; configurationReviewBaseline = submitted.Candidate; reviewedConfigurationSignature = null;
             Changed(nameof(HasUnsavedConfiguration));
             draftConfigurationRevision = result.Revision; Changed(nameof(DraftRevisionState));
             // The new draft hash comes from the same Application authority, never a UI file read.
@@ -50,7 +51,7 @@ public partial class ParcelViewModel
                 catch (Exception ex) { editorConfigurationHash = null; delivery = (delivery ?? "") + "；草稿基线暂不可读：" + ex.Message; }
         }
         validationState = (result.Status == "Unknown" ? "保存结果待核对；禁止重复提交" : result.Status) + " · " + result.Reason;
-        Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState + (delivery is null ? "" : "\n原保存回执：" + delivery); return result;
+        NotifyConfigurationReview(); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState + (delivery is null ? "" : "\n原保存回执：" + delivery); return result;
     }
     public async Task InspectLastSaveAsync() { _ = await InspectSubmissionAsync(); }
 }

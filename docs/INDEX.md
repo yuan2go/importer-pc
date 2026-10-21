@@ -1,3 +1,5 @@
+> 2026-10-21 PR78/79不测试合并、参数V3/启动回退来源与原CI产物下载见[本轮发布记录](runtime/publication-pr78-pr79-20261021.md)。原1.6.1安装包未重建，不能标为包含这两项增量。
+
 > PR73审查与CI后续：[受控启动回退修复](runtime/pr73-review-followup-01.md)，基于main dfec787。原PR已合并，本次通过独立后续PR完成原未解决P1及当前CI验证，不改写历史发布结果。
 
 > 当前下载：[SM v1.6.1 Windows 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76已合并main，固定源`92586bf44cde`；[发布记录、SHA256与待验边界](runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏；未签名预发布。

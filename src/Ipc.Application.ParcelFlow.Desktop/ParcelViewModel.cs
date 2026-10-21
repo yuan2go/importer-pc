@@ -266,6 +266,12 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (name == nameof(Feedback)) PropertyChanged?.Invoke(this, new(nameof(OperatorFeedback)));
         if (name == nameof(ParameterConfigurationSummary)) PropertyChanged?.Invoke(this, new(nameof(ParameterEditStatus)));
         if (name is nameof(ParameterConfigurationSummary) or nameof(Busy) or nameof(CanConfigure))
+            {
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationSaveGuidance)));
+            PropertyChanged?.Invoke(this, new(nameof(CanSubmitReviewedConfiguration)));
+            PropertyChanged?.Invoke(this, new(nameof(ConfigurationReviewIsCurrent)));
+            PropertyChanged?.Invoke(this, new(nameof(ConfigurationDraftStatusText)));
+            PropertyChanged?.Invoke(this, new(nameof(ConfigurationSavedStatusText)));
+        }
     }
 }

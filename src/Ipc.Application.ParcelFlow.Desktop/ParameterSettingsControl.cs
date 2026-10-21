@@ -8,56 +8,86 @@ using System.Windows.Input;
 using System.Windows.Documents;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Same complete draft in startup and daily settings. Polling never rebuilds controls.
+// One directory over one complete draft, shared by startup and daily settings.
+// Snapshot refreshes change bindings only; page switches retain every editor.
 public sealed partial class ParameterSettingsControl : UserControl
 {
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
-    readonly TabControl categories = new() { Name = "ParameterCategories" };
+    readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+    readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     readonly StackPanel errors = new();
+    readonly ScrollViewer errorSummary = new() { MaxHeight = 112, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Visibility = Visibility.Collapsed };
     readonly Dictionary<string, Location> locations = [];
     readonly List<Action> unsubscribe = [];
     readonly List<ObjectPage> pages = [];
-    readonly List<ListBox> navigators = [];
-    sealed record ObjectPage(int Category, string Title, StackPanel Body, ScrollViewer Scroll)
-    { public override string ToString() => Title; }
+    ICollectionView? directoryView;
+    readonly Dictionary<int, string> lastPages = [];
+    sealed record ObjectPage(int Category, string Title, StackPanel Body, ScrollViewer Scroll, StackPanel Technical)
+    {
+        public string GroupTitle => ParameterOwnership.CategoryName(Category);
+        public override string ToString() => Title;
+    }
     sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null);
     int? categoryScope;
     public event EventHandler? MaintenanceRequested;
+    public event EventHandler? BackupRequested;
+    public event EventHandler? DisplayPreferencesRequested;
     public ParameterSettingsControl()
     {
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        var root = new DockPanel { Background = Brush("#F1F4F7") };
-        var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); root.Children.Add(searchBar);
-        var summary = new ScrollViewer { Content = errors, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        DockPanel.SetDock(summary, Dock.Top); root.Children.Add(summary);
-        var body = new Grid(); body.Children.Add(categories); body.Children.Add(searchResults); root.Children.Add(body); Content = root;
+        FontSize = 14; FontWeight = FontWeights.Normal; Foreground = Brush("#25384B");
+        var root = new Grid { Background = Brushes.White };
+        root.ColumnDefinitions.Add(new() { Width = new(224) }); root.ColumnDefinitions.Add(new());
+        var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
+        var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
+        var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
+        root.Children.Add(new Border { Background = Brush("#F5F6F8"), BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 0, 1, 0), Child = rail });
+        var content = new DockPanel(); Grid.SetColumn(content, 1); root.Children.Add(content);
+        errorSummary.Content = errors; DockPanel.SetDock(errorSummary, Dock.Top); content.Children.Add(errorSummary); content.Children.Add(pageHost);
+        directory.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
+        directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
+        ScrollViewer.SetHorizontalScrollBarVisibility(directory, ScrollBarVisibility.Disabled);
+        AutomationProperties.SetName(directory, "设置目录");
+        AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，Tab进入表单。");
+        directory.SelectionChanged += (_, _) => { if (directory.SelectedItem is ObjectPage page) { lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; } };
+        root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 192 : 224);
+        Content = root;
         PreviewKeyDown += (_, e) =>
         {
             if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control) { search.Focus(); search.SelectAll(); e.Handled = true; }
-            else if (e.Key == Key.Escape && search.Text.Length > 0) { search.Clear(); e.Handled = true; }
+            else if (e.Key == Key.Escape && search.Text.Length > 0) { search.Clear(); search.Focus(); e.Handled = true; }
         };
     }
     public void ShowCategory(int? index)
     {
-        categoryScope = index;
-        foreach (TabItem tab in categories.Items) tab.Visibility = index is null || categories.Items.IndexOf(tab) == index ? Visibility.Visible : Visibility.Collapsed;
-        if (index is not null) categories.SelectedIndex = index.Value;
+        if (index is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(index));
+        categoryScope = index; directoryView?.Refresh();
+        if (directory.SelectedItem is not ObjectPage selected || index is not null && selected.Category != index)
+            directory.SelectedItem = pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
         RefreshSearch();
+    }
+    public bool ShowPage(int category, string title)
+    {
+        var page = pages.FirstOrDefault(p => p.Category == category && p.Title == title);
+        if (page is null) return false;
+        search.Clear();
+        if (categoryScope is not null && categoryScope != category) ShowCategory(category);
+        directory.SelectedItem = page; directory.ScrollIntoView(page); return true;
+    }
+    public bool FocusFirstIssue()
+    {
+        foreach (var issue in Model?.Issues ?? []) if (NavigateTo(issue.Path)) return true;
+        if (errors.Children.OfType<Button>().FirstOrDefault() is { } first) return first.Focus();
+        return false;
     }
     public bool NavigateTo(string path)
     {
         if (!locations.TryGetValue(path, out var location) || location.Applicable?.Invoke() == false) return false;
-        search.Clear();
-        if (categoryScope is not null && categoryScope != location.Page.Category) ShowCategory(location.Page.Category);
-        categories.SelectedIndex = location.Page.Category;
-        navigators[location.Page.Category].SelectedItem = location.Page;
+        ShowPage(location.Page.Category, location.Page.Title);
         for (DependencyObject? parent = location.Control; parent is not null; parent = LogicalTreeHelper.GetParent(parent) ?? (parent is Visual ? VisualTreeHelper.GetParent(parent) : null))
             if (parent is Expander details) details.IsExpanded = true;
-        UpdateLayout();
-        location.Control.BringIntoView();
-        location.Control.Focus();
-        return true;
+        UpdateLayout(); location.Control.BringIntoView(); location.Control.Focus(); return true;
     }
     static void ModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -68,81 +98,107 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     static TextBlock Text(string value, bool heading = false) => new()
     {
-        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 20 : 14,
-        Foreground = Brush(heading ? "#183047" : "#586B80"),
-        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
+        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 16 : 14,
+        Foreground = Brush(heading ? "#1C3044" : "#5A6878"),
+        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 24 : 4, 0, heading ? 12 : 8)
     };
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
-    void Category(string title)
-    {
-        var grid = new Grid(); TextElement.SetFontWeight(grid, FontWeights.Normal); grid.ColumnDefinitions.Add(new() { Width = new(176) }); grid.ColumnDefinitions.Add(new());
-        var nav = new ListBox { BorderThickness = new(0, 0, 1, 0), BorderBrush = Brush("#CCD6E1"), Background = Brush("#F7F9FC"), Padding = new(8), HorizontalContentAlignment = HorizontalAlignment.Stretch };
-        nav.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
-        ScrollViewer.SetHorizontalScrollBarVisibility(nav, ScrollBarVisibility.Disabled);
-        AutomationProperties.SetName(nav, title + "对象");
-        var content = new ContentControl { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
-        nav.SelectionChanged += (_, _) => { if (nav.SelectedItem is ObjectPage page) content.Content = page.Scroll; };
-        grid.SizeChanged += (_, _) => grid.ColumnDefinitions[0].Width = new(grid.ActualWidth < 760 ? 136 : 176);
-        Grid.SetColumn(content, 1); grid.Children.Add(nav); grid.Children.Add(content);
-        categories.Items.Add(new TabItem { Header = title, MinHeight = 44, Content = grid }); navigators.Add(nav);
-    }
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(20, 0, 20, 16), MaxWidth = 1120, HorizontalAlignment = HorizontalAlignment.Stretch };
-        body.Children.Add(Text(title, true)); if (guidance.Length > 0) body.Children.Add(Text(guidance));
-        var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
-        var page = new ObjectPage(category, title, body, scroll); pages.Add(page); navigators[category].Items.Add(page); return page;
+        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Stretch };
+        TextElement.SetFontWeight(body, FontWeights.Normal);
+        var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
+        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
+        var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
+        var page = new ObjectPage(category, title, body, scroll, new StackPanel()); pages.Add(page); return page;
     }
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {
-        if (title is not null) page.Body.Children.Add(Text(title, true));
+        if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 2) heading.Margin = new(0, 0, 0, 12); page.Body.Children.Add(heading); }
         var form = new ParameterFormPanel(); page.Body.Children.Add(form); return form;
+    }
+    ParameterFormPanel AdvancedForm(ObjectPage page, string title = "高级设置")
+    {
+        var form = new ParameterFormPanel();
+        page.Body.Children.Add(new Expander { Header = title, Content = form, Margin = new(0, 16, 0, 8), Padding = new(0, 8, 0, 0) }); return form;
     }
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
-        var field = new StackPanel { Margin = new(0, 2, 16, 8) };
-        var caption = Text(label); caption.Foreground = Brush("#263B50"); caption.FontSize = 15;
+        var field = new StackPanel { Margin = new(0, 0, 24, 16) };
+        var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 6);
         field.Children.Add(caption); field.Children.Add(control);
-        AutomationProperties.SetName(control, path); AutomationProperties.SetHelpText(control, help ?? label);
-        if (help is not null) field.Children.Add(Text(help));
-        var error = Text(""); error.Foreground = Brush("#B02D35"); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
+        if (control is TextBox or ComboBox)
+        {
+            // The field's layout slot supplies the width; the editor's cap keeps
+            // short values compact. Empty text and one digit use the same box.
+            control.HorizontalAlignment = HorizontalAlignment.Left;
+            control.SetBinding(WidthProperty, new Binding(nameof(ActualWidth)) { Source = field, Mode = BindingMode.OneWay });
+            if (control is ComboBox) control.MaxWidth = 400;
+        }
+        // Preserve stable automation paths used by support and native verification.
+        AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
+        AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
+        if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 6, 0, 0); field.Children.Add(hint); }
+        var error = Text(""); error.Foreground = Brush("#B02D35"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {
-        var box = new TextBox { MinHeight = multiline ? 72 : 44, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, FontSize = 16 };
+        var box = new TextBox { MinHeight = multiline ? 88 : 38, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
+            VerticalScrollBarVisibility = multiline ? ScrollBarVisibility.Auto : ScrollBarVisibility.Hidden, FontSize = 14, VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+        box.MaxWidth = multiline || property is "Target" or "BarcodePattern" or "BackupDirectory" ? 760 :
+            property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
         Field(form, label, box, help, path, page); return box;
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)
     {
-        var choice = new ComboBox { ItemsSource = values, MinHeight = 44 };
+        var choice = new ComboBox { ItemsSource = values, MinHeight = 38, FontSize = 14 };
         choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         Field(form, label, choice, help, path, page);
     }
     void Readonly(ObjectPage page, string label, string value)
     {
-        var row = new DockPanel { Margin = new(0, 0, 0, 8), LastChildFill = true };
-        var caption = Text(label); caption.Margin = new(0, 10, 16, 0); DockPanel.SetDock(caption, Dock.Left); row.Children.Add(caption);
-        var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 36, BorderThickness = new(0), Background = Brushes.Transparent };
+        var row = new StackPanel { Margin = new(0, 0, 24, 16) };
+        var caption = Text(label); caption.Margin = new(0, 0, 0, 4); row.Children.Add(caption);
+        var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 28, Padding = new(0), BorderThickness = new(0), Background = Brushes.Transparent };
         AutomationProperties.SetName(box, label); row.Children.Add(box); page.Body.Children.Add(row);
+    }
+    void Technical(ObjectPage page, string label, string path, string? detail = null)
+    {
+        var text = new TextBox { IsReadOnly = true, Text = label + " · " + path + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
+            TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Margin = new(0, 0, 0, 10), Padding = new(0), MinHeight = 28, FontSize = 13 };
+        page.Technical.Children.Add(text);
+        if (!locations.ContainsKey(path))
+        {
+            var error = Text(""); error.Visibility = Visibility.Collapsed; page.Technical.Children.Add(error);
+            locations[path] = new(page, text, error, label, detail ?? "");
+            AutomationProperties.SetName(text, path);
+        }
     }
     void Render()
     {
-        var selected = categories.SelectedIndex;
-        var objects = navigators.Select(n => (n.SelectedItem as ObjectPage)?.Title).ToArray();
+        var selected = directory.SelectedItem as ObjectPage;
+        var offsets = pages.ToDictionary(p => (p.Category, p.Title), p => p.Scroll.VerticalOffset);
         foreach (var action in unsubscribe) action(); unsubscribe.Clear();
-        categories.Items.Clear(); locations.Clear(); errors.Children.Clear(); pages.Clear(); navigators.Clear();
-        if (Model is not { } m) { errors.Children.Add(Text("正在读取完整配置与已安装描述…")); return; }
-        foreach (var name in new[] { "系统", "业务模块", "驱动", "组件" }) Category(name);
+        directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
+        if (Model is not { } m) { pageHost.Content = Text("正在读取设置与已安装模块…"); errorSummary.Visibility = Visibility.Collapsed; return; }
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
+        foreach (var page in pages)
+        {
+            if (page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "技术信息", Content = page.Technical, Margin = new(0, 24, 24, 0), Padding = new(0, 8, 0, 0) });
+            if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
+        }
         foreach (var draft in m.Readers.Concat(m.Components))
         {
             PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.Provider)) Render(); };
             draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
         }
-        for (var i = 0; i < navigators.Count; i++) navigators[i].SelectedItem = pages.FirstOrDefault(p => p.Category == i && objects.ElementAtOrDefault(i) == p.Title) ?? pages.FirstOrDefault(p => p.Category == i);
-        categories.SelectedIndex = Math.Clamp(selected, 0, 3); ShowCategory(categoryScope); ShowIssues(this, EventArgs.Empty); RefreshSearch();
+        directoryView = new ListCollectionView(pages); directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
+        directoryView.Filter = value => value is ObjectPage p && (categoryScope is null || p.Category == categoryScope);
+        directory.ItemsSource = directoryView;
+        directory.SelectedItem = pages.FirstOrDefault(p => p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? pages.FirstOrDefault(p => categoryScope is null || p.Category == categoryScope);
+        ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)
     {
@@ -151,24 +207,25 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var issue in Model?.Issues ?? [])
         {
             var found = locations.TryGetValue(issue.Path, out var location);
-            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  → 定位" : "（完整候选检查，请查看维护详情）"), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(4), MinHeight = 44 };
+            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(16, 2, 16, 2), MinHeight = 44 };
             if (found)
             {
-                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += issue.Message + "\n"; location.Error.Visibility = Visibility.Visible;
+                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + issue.Message; location.Error.Visibility = Visibility.Visible;
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
             errors.Children.Add(button);
         }
+        errorSummary.Visibility = errors.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }
 
-// Wide forms have two columns; compact forms retain readable controls and scroll.
+// At desktop widths two aligned columns; smaller windows keep one readable column.
 public sealed class ParameterFormPanel : Panel
 {
-    static int Columns(double width) => double.IsFinite(width) && width >= 720 ? 2 : 1;
+    static int Columns(double width) => double.IsFinite(width) && width >= 760 ? 2 : 1;
     protected override Size MeasureOverride(Size available)
     {
-        var columns = Columns(available.Width); var width = double.IsFinite(available.Width) ? available.Width : 640; double height = 0;
+        var columns = InternalChildren.Count <= 1 ? 1 : Columns(available.Width); var width = double.IsFinite(available.Width) ? available.Width : 640; double height = 0;
         for (var i = 0; i < InternalChildren.Count; i += columns)
         {
             double row = 0;
@@ -179,7 +236,7 @@ public sealed class ParameterFormPanel : Panel
     }
     protected override Size ArrangeOverride(Size final)
     {
-        var columns = Columns(final.Width); double y = 0;
+        var columns = InternalChildren.Count <= 1 ? 1 : Columns(final.Width); double y = 0;
         for (var i = 0; i < InternalChildren.Count; i += columns)
         {
             var count = Math.Min(columns, InternalChildren.Count - i); double height = 0;

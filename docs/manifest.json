@@ -108,7 +108,8 @@
     "static_path_complete": "指定整改调用链静态可见且本轮未发现同级缺口；不表示编译/运行/Windows/现场PASS",
     "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境",
     "document_verification_only": "仅本次文档来源、引用、哈希、范围和提交核验，不表示运行或现场验收",
-    "parameter_v3_design_or_current_guidance": "Current parameter design, navigation, source identity or stated verification boundary; does not imply native Windows or production PASS"
+    "parameter_v3_design_or_current_guidance": "Current parameter design, navigation, source identity or stated verification boundary; does not imply native Windows or production PASS",
+    "parameter_v3_source_crossbuild_pass_windows_not_run": "This frozen source cross-compiles with Sportmaster UiVerification; WPF tests and actual Windows/DPI are NOT_RUN"
   },
   "files": [
     {
@@ -2036,9 +2037,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "6900aa4f7395a6fcf2403fc5951c7c2fbecabeaa4fe849ffb37321125a3ff890",
-      "size_bytes": 15023,
-      "git_blob": "b93c698bdb7052253dca977a1993bd370d9c54cd",
+      "sha256": "addd07ff1231001e4d08206d75369ac034d9c7aa8c53b3567c5c77e9ad725ade",
+      "size_bytes": 15244,
+      "git_blob": "468d2282704c36f8764eceebe77b05742ea86f5c",
       "version": "PARAM-UX-02-20261020",
       "status": "parameter_v3_design_or_current_guidance",
       "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
@@ -2075,7 +2076,8 @@
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
       },
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_publication_pr78_pr79_git_blob": "b93c698bdb7052253dca977a1993bd370d9c54cd"
     },
     {
       "path": "docs/archive/parallel-reconciliation-20261020-inflight-ui/README.md",
@@ -50829,14 +50831,21 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "b05676a982ef6799c28abf9c5c6da39ca73c2982e33ed3f0ec6e8f59999d9237",
-      "size_bytes": 4160,
-      "git_blob": "940761852740c32ddab478586d32dce4eceb47b5"
+      "sha256": "6e00d4b42a1ee7999bd77ffc6f26e309d8bddfe0867b7f6578e41aa666d7122e",
+      "size_bytes": 4521,
+      "git_blob": "88d36903466db9a8b0d57ef500c724e183a1b1eb",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "940761852740c32ddab478586d32dce4eceb47b5",
+        "sha256": "b05676a982ef6799c28abf9c5c6da39ca73c2982e33ed3f0ec6e8f59999d9237",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationDraftState.cs",
@@ -50850,14 +50859,44 @@
       "git_blob": "88b1fdd53712ff5a34c6ac7d5ea57c0001e9317e"
     },
     {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs",
+      "sha256": "79a57df737259bb1d62bbfba368a6acb82dc7b6c23c5f04ab50e4270a0489220",
+      "size_bytes": 12923,
+      "git_blob": "d813037ea8dd5fa880287b9717aaca3a69cfec32",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs",
+      "sha256": "c216a930a6b41da40b59f2a6f377429074360acdcbf3e2f45e21358b15811eba",
+      "size_bytes": 17955,
+      "git_blob": "2ecae38417c14fe5d62efddced76d6e229abc147",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs",
       "storage_scope": "public_repository",
-      "version": "PUBLICATION-NO-TEST-20261020",
-      "status": "source_or_delivery_custody",
-      "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "9ec3d55cac55f95bcaaef8477a293a5da561b2768b2a46eb2dcb177ba74660af",
-      "size_bytes": 4150,
-      "git_blob": "14b6d2f54bccce4548772e82c3dd2415682bebd8"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "96e6cb3b6aa6f5606f038013e9b977eb26fafc066f867cbe9bcb4fb98cb5a0f4",
+      "size_bytes": 4526,
+      "git_blob": "3d5658e6bc421b0a42a7ee7ef266fe7451ecabaf",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "14b6d2f54bccce4548772e82c3dd2415682bebd8",
+        "sha256": "9ec3d55cac55f95bcaaef8477a293a5da561b2768b2a46eb2dcb177ba74660af",
+        "version": "PUBLICATION-NO-TEST-20261020",
+        "status": "source_or_delivery_custody",
+        "source": "User-authorized source and existing artifact publication; no tests or builds run"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationTemplates.cs",
@@ -50952,29 +50991,43 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "c613758cd6c25f1190470110f2000ee816ac5fb8bc9ec07b74ce3c6de9198609",
-      "size_bytes": 21888,
-      "git_blob": "c6ce291048eae71c671e532e1576a2093b457d58",
+      "sha256": "6b262f99bfc91001089810e611d45283ebc30c5a1322ce0e0d378eec27d41882",
+      "size_bytes": 23591,
+      "git_blob": "3dfd1bfb3329716d86419750a4e590e6df88c4cd",
       "previous_git_blob": "3686c14582ed6b53000d17f2a2b98612bcbad2d9",
-      "pre_publication_no_test_git_blob": "2c66a310a63ecf643296336dfa143f653541053d"
+      "pre_publication_no_test_git_blob": "2c66a310a63ecf643296336dfa143f653541053d",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "c6ce291048eae71c671e532e1576a2093b457d58",
+        "sha256": "c613758cd6c25f1190470110f2000ee816ac5fb8bc9ec07b74ce3c6de9198609",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "4ddb468492fa49f45246eef88e4ad5bf94b446c4ae44da3a31a7df0ceb6c1f98",
-      "size_bytes": 15285,
-      "git_blob": "b283fe078851b846b37c3772e7eb251c87b3f242",
+      "sha256": "58f8edcb7bad11a1edb2c4bf5f3434cab5e6cc898a79ee359247328ba1a3d0fd",
+      "size_bytes": 17864,
+      "git_blob": "8cde0284c1d63675ccbe73693f0e9397466e2895",
       "previous_git_blob": "bca78958b3339945ea130d216f8b5949203033cd",
-      "pre_publication_no_test_git_blob": "8b306829b4e44ab23389dd5d050cb504c3406c7d"
+      "pre_publication_no_test_git_blob": "8b306829b4e44ab23389dd5d050cb504c3406c7d",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "b283fe078851b846b37c3772e7eb251c87b3f242",
+        "sha256": "4ddb468492fa49f45246eef88e4ad5bf94b446c4ae44da3a31a7df0ceb6c1f98",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
@@ -50999,52 +51052,92 @@
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
       "storage_scope": "public_repository",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
-      "size_bytes": 6595,
-      "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "40b4c21b7e348aa9170c9758a2176d631fa8274017e79ce9345cb8c6a3eea04d",
+      "size_bytes": 10666,
+      "git_blob": "8c4b624fcfbe14918df4fdcb4deee988f57fa650",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
+        "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
       "storage_scope": "public_repository",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
-      "sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2",
-      "size_bytes": 10197,
-      "git_blob": "b01d4c6b46c216bd69d371f42282a8223fcec526"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "cec757d4529f8d36dfe7fc15ea19a9cac9530dd4156b63c8a6a358b784f5e1b3",
+      "size_bytes": 12427,
+      "git_blob": "d3bec6454ee61ca7ecd34af74de505396e22fe7f",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "b01d4c6b46c216bd69d371f42282a8223fcec526",
+        "sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Search.cs",
       "storage_scope": "public_repository",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
-      "sha256": "f4052ac57ef8679a53543a889ce0f73edf02d082e37720bd535130e7305e8a80",
-      "size_bytes": 4597,
-      "git_blob": "7e5cec9fbb1740519e4f0fc284c8f21aed90cde0"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "34255537b3108ec2d6568fc2eb6990f3fc3d36c48bf83f46debce90b1cc3c644",
+      "size_bytes": 4791,
+      "git_blob": "31217548eae78fdc113cd3707e747c147c663098",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "7e5cec9fbb1740519e4f0fc284c8f21aed90cde0",
+        "sha256": "f4052ac57ef8679a53543a889ce0f73edf02d082e37720bd535130e7305e8a80",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
       "storage_scope": "public_repository",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
-      "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
-      "size_bytes": 12923,
-      "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "582d1501179b94e8ced2161464290988bd15e92a1fa4854835877e7bada080ea",
+      "size_bytes": 17922,
+      "git_blob": "b25e60d2af34252abf3e1a318dbdfdbfdec0e0a6",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
+        "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
       "storage_scope": "public_repository",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "sha256": "b6c599ce02f4ed5941278ff64a7aea3c253c332a30da636d6a1591ab9be07fcb",
-      "size_bytes": 3895,
-      "git_blob": "bb5e024a1547f667a40e9f0dcfcaa3a04067315c"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "cc4d4ec5cc1cb9e40b6f9ab0b8e765f89ad0872b518e056d5e8367789141819b",
+      "size_bytes": 7962,
+      "git_blob": "3ca8b24e4f8d9a2177dd411baf2362448572c6e3",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "bb5e024a1547f667a40e9f0dcfcaa3a04067315c",
+        "sha256": "b6c599ce02f4ed5941278ff64a7aea3c253c332a30da636d6a1591ab9be07fcb",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "version": "sportmaster-visual-productization-01",
@@ -51094,15 +51187,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "51e708f6d4247d1b58e0671885388772251a38c3a538f66036eee888614a36cc",
-      "size_bytes": 20785,
-      "git_blob": "2868ba71f19888691845269e00ce2ec7c58bcc03",
-      "previous_git_blob": "8eda7cecd2205bc94d688fad21d3753ee145892c"
+      "sha256": "43fabd578c1987c7b77ea6dd500ed347cb789c1a310fb15b5c86b2a4e38cd2ed",
+      "size_bytes": 21155,
+      "git_blob": "cc25913605a0119f38d6a126ffc891850ab79acc",
+      "previous_git_blob": "8eda7cecd2205bc94d688fad21d3753ee145892c",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "2868ba71f19888691845269e00ce2ec7c58bcc03",
+        "sha256": "51e708f6d4247d1b58e0671885388772251a38c3a538f66036eee888614a36cc",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/PersistentConfigurationDrafts.cs",
@@ -51129,15 +51229,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ProductHelp.cs",
-      "sha256": "419dc3f09d9e630a3e5d7a92deda8476d4b714505f11dfd8182aee74c674f6a0",
-      "size_bytes": 9049,
-      "git_blob": "5225f61072ba07e27eb36ada3afaa6c6459840a5",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "630e092bc35011e590bde479d514db5d43882bddc1a91af4ec001ee287eff0f2",
+      "size_bytes": 9619,
+      "git_blob": "dac3cbab49633f1cb494f04fc8166dddb7cc4f13",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "48831eaaff5fc60a600fe83f9e633338c2114af7"
+      "previous_git_blob": "48831eaaff5fc60a600fe83f9e633338c2114af7",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "5225f61072ba07e27eb36ada3afaa6c6459840a5",
+        "sha256": "419dc3f09d9e630a3e5d7a92deda8476d4b714505f11dfd8182aee74c674f6a0",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ProductSupportWindow.cs",
@@ -51165,15 +51272,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "01507e9f011a920571410e8cbe52ae7ee7c808975720a3b5ff59fa55a8a612b8",
-      "size_bytes": 8318,
-      "git_blob": "a204c4ca8d9421cbd4538092d13aee31757dfb7f",
-      "previous_git_blob": "0015b46ae06c710e249fc779d879231ce0b413bd"
+      "sha256": "d1c5149daf32d71d0275a419113d5009d6c1865b2e5fb6e6af75f2bf8f7f8df4",
+      "size_bytes": 8422,
+      "git_blob": "0d7aa222439191540842731626c8eb8f311b8ef8",
+      "previous_git_blob": "0015b46ae06c710e249fc779d879231ce0b413bd",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "a204c4ca8d9421cbd4538092d13aee31757dfb7f",
+        "sha256": "01507e9f011a920571410e8cbe52ae7ee7c808975720a3b5ff59fa55a8a612b8",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs",
@@ -51201,17 +51315,24 @@
       "storage_scope": "public_repository"
     },
     {
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
-      "sha256": "dc1944e36991ea374667e728033885c80fafef41b777c452e52e4e7473c09426",
-      "size_bytes": 36587,
-      "git_blob": "0ceabc571771b84cc8d92164fac9478900a662a9",
+      "sha256": "e97e8718db6113c98d25e46aea29a1f03c44d7e1b9a120a3e07264678f89e52a",
+      "size_bytes": 36836,
+      "git_blob": "bd1a023249326c9c6dad31697eabea15fa1a68b2",
       "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695",
-      "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe"
+      "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "0ceabc571771b84cc8d92164fac9478900a662a9",
+        "sha256": "dc1944e36991ea374667e728033885c80fafef41b777c452e52e4e7473c09426",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.direct-plc.lock.json",
@@ -51991,51 +52112,79 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "1c40e3e51bcbe1e9e27ff7ce3c0cc299a851767c8b40f9ffb5114c0163ef4667",
-      "size_bytes": 20801,
-      "git_blob": "d7c6d37809d7527a80ce3e1d451c59881666debc",
+      "sha256": "cfeaff16b8bafd75e61ac79bc7c8a464523ffb62aa2c0b0eeacf95bee25b0f74",
+      "size_bytes": 22139,
+      "git_blob": "426e4ecfe72ca4d49b713a4d1462b56130c14608",
       "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
-      "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e"
+      "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "d7c6d37809d7527a80ce3e1d451c59881666debc",
+        "sha256": "1c40e3e51bcbe1e9e27ff7ce3c0cc299a851767c8b40f9ffb5114c0163ef4667",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
-      "sha256": "e17627fd66d15fc7f2d248b6a9216bd373b94035808589870757a8419410c5e1",
-      "size_bytes": 6369,
-      "git_blob": "058638bbc86bb8cb637d8a28ed8f9806916a0cc1",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "storage_scope": "public_repository"
+      "sha256": "40e8d078efa69195e36fae0685fb20474af817b9161ed7073af4e79061c30b9e",
+      "size_bytes": 7260,
+      "git_blob": "0f14b859eb8b72ab491f3760ac35fbac4995f2bc",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "storage_scope": "public_repository",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "058638bbc86bb8cb637d8a28ed8f9806916a0cc1",
+        "sha256": "e17627fd66d15fc7f2d248b6a9216bd373b94035808589870757a8419410c5e1",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "26c03ea0ec952f7e7621b2a390ccf59eaba8947185e3d4de4bb780fcb84731c8",
-      "size_bytes": 13035,
-      "git_blob": "4e0db0b810312c5488ec588d18398dcc182f6da5",
-      "previous_git_blob": "6528af261a22c598589cb204a66397154e5a991f"
+      "sha256": "32566b3b7d0c76dffe30920e93f9ecc4e9be468e523b75222bd394e24a38674a",
+      "size_bytes": 15388,
+      "git_blob": "bd67cee0438c84636ce568748e4f6fd23604bf95",
+      "previous_git_blob": "6528af261a22c598589cb204a66397154e5a991f",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "4e0db0b810312c5488ec588d18398dcc182f6da5",
+        "sha256": "26c03ea0ec952f7e7621b2a390ccf59eaba8947185e3d4de4bb780fcb84731c8",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "84fdfeaa5c20700da77e2146b791663f49b35ff0864dfc5bb5654832a4a970c2",
-      "size_bytes": 9543,
-      "git_blob": "b7f98e60c23630e8bd54de626a15087c39c2c513",
-      "previous_git_blob": "f4dde3c9a7ed91f31f00510127ac71794efe3da0"
+      "sha256": "9a23aba11d2a6f8a7091517ad473ad5c03cc2d06022208ff452aa72c07895013",
+      "size_bytes": 9695,
+      "git_blob": "a01df9181f83e75333c017e1ce265a63ff185624",
+      "previous_git_blob": "f4dde3c9a7ed91f31f00510127ac71794efe3da0",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "b7f98e60c23630e8bd54de626a15087c39c2c513",
+        "sha256": "84fdfeaa5c20700da77e2146b791663f49b35ff0864dfc5bb5654832a4a970c2",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
@@ -55997,15 +56146,22 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
-      "sha256": "00577291cacff41cd374c0c6077a848d759dccfe281aed2eaa3f033e3b6294f2",
-      "size_bytes": 13957,
-      "git_blob": "27032c7055060673632c4266a2052514dae473b0",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "b349536fdcefbe9a90035ccdcfa8623bbe4c541cecd19257d528605a5b8419ec",
+      "size_bytes": 14780,
+      "git_blob": "e180856509e8159a0c12bae2e7c205e777588c37",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f123c3c37c1054bd004935fb78de70b6515d2b78"
+      "previous_git_blob": "f123c3c37c1054bd004935fb78de70b6515d2b78",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "27032c7055060673632c4266a2052514dae473b0",
+        "sha256": "00577291cacff41cd374c0c6077a848d759dccfe281aed2eaa3f033e3b6294f2",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
@@ -56023,56 +56179,93 @@
     {
       "path": "tests/Ipc.Desktop.UiVerification/LoginSession.cs",
       "storage_scope": "public_repository",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
-      "size_bytes": 11562,
-      "sha256": "d5ca910f0b0f87423941741bdab1776e0f2dbc335e30f15d2da491f9308d2aad",
-      "git_blob": "79fdd56078f446840f2d5f9655059c5af504757c"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "size_bytes": 11758,
+      "sha256": "8a65ecf676deaf99d82b572958786e77d2ccffe1174417b94a66648ffb923861",
+      "git_blob": "b75bfda33348c6fec7ddc1dbc96c4b5793da9cbb",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "79fdd56078f446840f2d5f9655059c5af504757c",
+        "sha256": "d5ca910f0b0f87423941741bdab1776e0f2dbc335e30f15d2da491f9308d2aad",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs",
-      "sha256": "a234eb441810d0f3ff819917cf9b35e30508a2694f988d1a8eac0fbab799d47d",
-      "size_bytes": 10414,
-      "git_blob": "e984201a97a243832381290bfeec270e70fb7bb2",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "storage_scope": "public_repository"
+      "sha256": "b2a717008532f796e4faa08782e4d0ebec6deb1409a03b8d5f3cc1a56a637be1",
+      "size_bytes": 11084,
+      "git_blob": "2aa47b51f752b30a2d33cbe88ecca64e71bfd1e7",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "storage_scope": "public_repository",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "e984201a97a243832381290bfeec270e70fb7bb2",
+        "sha256": "a234eb441810d0f3ff819917cf9b35e30508a2694f988d1a8eac0fbab799d47d",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "3ab4a6c0d3e205f86d920fcd90afbea91bb1a6c9a9c6459a7488d60e28394c2b",
-      "size_bytes": 14046,
-      "git_blob": "f78b085b9b6a4bf181b2620b334b8bf0a28a5bfa",
-      "previous_git_blob": "882debfcfaf788c6fc1db895795c41bfcb952aeb"
+      "sha256": "f9391f77566e506a7f703a1e2275ba8d234e12d0d739a453d42e278795c18252",
+      "size_bytes": 16645,
+      "git_blob": "a3498d316092d6d58afdd39b2c43ad6bd7d8ddd9",
+      "previous_git_blob": "882debfcfaf788c6fc1db895795c41bfcb952aeb",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "f78b085b9b6a4bf181b2620b334b8bf0a28a5bfa",
+        "sha256": "3ab4a6c0d3e205f86d920fcd90afbea91bb1a6c9a9c6459a7488d60e28394c2b",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs",
       "storage_scope": "public_repository",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
-      "size_bytes": 23882,
-      "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d"
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "25e94028b7b8f2dbf52466e6bdfee0baa8b58888f04a0002d7caf97de2808c16",
+      "size_bytes": 26482,
+      "git_blob": "bb9636bf5986bd2a76bed4af10426bde1c63a96c",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d",
+        "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "PARAM-UX-02-source-20261020",
+      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
       "storage_scope": "public_repository",
-      "sha256": "0c3a3922962cebdd116f7f0f714e5e792a0ae943de046f26ff3c6ced0a767ff4",
-      "size_bytes": 27852,
-      "git_blob": "7d2b140df1a7a8d11518c4232c9df3853c946c3e"
+      "sha256": "1dbbdf77fc98086112e6fb083fca325d5c74e3f120fd1ecf2fce69322bf4ca8c",
+      "size_bytes": 27881,
+      "git_blob": "37eee94ed8d63537c8802ec314ec1581c1be45f1",
+      "pre_parameter_settings_v3_source_identity": {
+        "git_blob": "7d2b140df1a7a8d11518c4232c9df3853c946c3e",
+        "sha256": "0c3a3922962cebdd116f7f0f714e5e792a0ae943de046f26ff3c6ced0a767ff4",
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
@@ -56641,6 +56834,76 @@
       "purpose": "Actual successful Windows CI receipt identity and original review closure",
       "source": "PR79 GitHub Actions 39465324737, synthetic verification only",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/artifact-upload-receipts.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "802febecf14d5d88adc64573828609bb8ca577bd5d07c50aa048f073e4258da6",
+      "size_bytes": 1729,
+      "git_blob": "9b8013fa95d7bdf2bb2a4ab7b184bf5054d658b2"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/pr79-ci-evidence-5d722f8a4eeb/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "47eb18c6c073baaafd81a780783e7334225c502ff151f00a5bcfde27e67600d3",
+      "size_bytes": 1012,
+      "git_blob": "5a08d8b2063a6f3c8c21e58bede76c8390f03d0a"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/pr79-ci-evidence-5d722f8a4eeb/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "20a3f05102c560e97c071ed2323ff7ceef303bf264896f045f1095c46b9e6e27",
+      "size_bytes": 1647,
+      "git_blob": "7abc6584a64371a6692cd6a130ab6d76bd87c48c"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/pr79-ci-evidence-5d722f8a4eeb/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "47cb164a97e423a277841f07e91e8479013b1d3b54bfd4d23c7349ef6bc047df",
+      "size_bytes": 343,
+      "git_blob": "c2b4d840d45c23bec3745602dcd3666a3c401492"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/pr79-ci-evidence-5d722f8a4eeb/SOURCE-IDENTITY.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "64905075635cc9767436d96d0b51d14bfff7a5fd730096788c61811dbe6da1c6",
+      "size_bytes": 597,
+      "git_blob": "8688d0c3067cb8e273a2b489caea288b8f4e8f88"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr78-pr79-20261021/pr79-ci-evidence-5d722f8a4eeb/remote-ci-result.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "d260e9c3afc9822cf195bef14f8e89953b3cc4242e2e60c9ffcc94df8ac56980",
+      "size_bytes": 2431,
+      "git_blob": "c59cb1b38be286fad7663cf5d39b57d5845cae82"
+    },
+    {
+      "path": "docs/runtime/publication-pr78-pr79-20261021.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PR78-PR79-NO-TEST-20261021",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report merge and existing evidence upload; no tests or builds run",
+      "sha256": "8e9c5b4178369281b4576d9d652eae79762a939807ccbfe9a709e3255b8fef53",
+      "size_bytes": 3661,
+      "git_blob": "95160cbd53a6d87613cfb67c03ea9ab55a3a3c42"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -57878,7 +58141,7 @@
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/maintenance-publication-20261019/final-publication-receipt.json"
   },
-  "last_updated": "2026-10-20",
+  "last_updated": "2026-10-21",
   "runtime_identity_preflight_02": {
     "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
     "report": "docs/runtime/runtime-identity-preflight-02.md",
@@ -58982,7 +59245,8 @@
     "windows": "NOT_RUN",
     "real_devices_rcs_field": "NOT_RUN",
     "source_identity": "docs/ui/parameter-settings-v3-20261020/SOURCE-STATE.json",
-    "publication_scope": "Design/current guidance on main; production source via development branch and PR; no new installer release"
+    "publication_scope": "Design/current guidance on main; production source via development branch and PR; no new installer release",
+    "source_delivery": "Development branch for main PR; 25 source/test files; Windows verification pending"
   },
   "pr73_review_followup": {
     "base_commit": "dfec787",

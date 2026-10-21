@@ -1,0 +1,39 @@
+{
+  "source_commit": "5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b",
+  "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/pr79-ci-evidence-5d722f8a4eeb",
+  "tag": "pr79-ci-evidence-5d722f8a4eeb",
+  "assets": [
+    {
+      "name": "pr79-ci-passed.zip",
+      "size": 1895433,
+      "sha256": "00ddae3b8d4cedd9e3ffdc5cd786bc4415342d33c3a0953709f00708345f811d",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/pr79-ci-evidence-5d722f8a4eeb/pr79-ci-passed.zip"
+    },
+    {
+      "name": "SOURCE-IDENTITY.json",
+      "size": 597,
+      "sha256": "64905075635cc9767436d96d0b51d14bfff7a5fd730096788c61811dbe6da1c6",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/pr79-ci-evidence-5d722f8a4eeb/SOURCE-IDENTITY.json"
+    },
+    {
+      "name": "remote-ci-result.json",
+      "size": 2431,
+      "sha256": "d260e9c3afc9822cf195bef14f8e89953b3cc4242e2e60c9ffcc94df8ac56980",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/pr79-ci-evidence-5d722f8a4eeb/remote-ci-result.json"
+    },
+    {
+      "name": "PUBLICATION.json",
+      "size": 1012,
+      "sha256": "47eb18c6c073baaafd81a780783e7334225c502ff151f00a5bcfde27e67600d3",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/pr79-ci-evidence-5d722f8a4eeb/PUBLICATION.json"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 343,
+      "sha256": "47cb164a97e423a277841f07e91e8479013b1d3b54bfd4d23c7349ef6bc047df",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/pr79-ci-evidence-5d722f8a4eeb/SHA256SUMS"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false
+}

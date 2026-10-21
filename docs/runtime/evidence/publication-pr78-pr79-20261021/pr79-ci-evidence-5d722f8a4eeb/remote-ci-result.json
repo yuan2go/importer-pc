@@ -1,0 +1,57 @@
+{
+  "WorkflowRun": 39465324737,
+  "Job": 118775490050,
+  "HeadCommit": "5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b",
+  "MergeCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+  "Conclusion": "success",
+  "ArtifactId": 12284432859,
+  "ArtifactSha256": "00ddae3b8d4cedd9e3ffdc5cd786bc4415342d33c3a0953709f00708345f811d",
+  "Receipts": {
+    "scd-evidence/core/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS",
+      "Sha256": "20c6033201b0b355d37c0fcafd2cfdee2a9b0eb04921f9b4d2de7d22786790f8"
+    },
+    "scd-evidence/engineering-gate.json": {
+      "Status": "PASS",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": null,
+      "Sha256": "76e8ca96754bfe2ec0bc219afebe1c9dca8d0fc2e9e17d6a8a1eafb81a2991c3"
+    },
+    "scd-evidence/production-gate.json": {
+      "Status": "FAIL",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": null,
+      "Sha256": "e07b73b1ef161b03b557c4c988a6680306eacf7d3fc19c2c46257f22b0ebe698"
+    },
+    "scd-evidence/removal/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+      "Sha256": "012a59a222a41000ed1138ac95670f12c5dc4e685b386c17d61527e70906cce7"
+    },
+    "scd-evidence/visual/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "Sha256": "43bfd7277771292cc0d791233f499009364a4f608d910fb0f98a5c67d52aff08"
+    },
+    "scd-evidence/wpf/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "5edfe080157d415679a4798918589f64d4dcfe41",
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "Sha256": "43bfd7277771292cc0d791233f499009364a4f608d910fb0f98a5c67d52aff08"
+    }
+  },
+  "Review": {
+    "Commit": "2fcc1ca1c591a6d8ebefc56afa7d4e0775aff2a9",
+    "Findings": false,
+    "OriginalP1ThreadResolved": true
+  },
+  "Limitations": [
+    "Synthetic ports and native Windows CI only",
+    "Production FAIL is required gate refusal, not production acceptance",
+    "Real equipment/site NOT_RUN"
+  ]
+}

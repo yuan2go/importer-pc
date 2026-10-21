@@ -30,6 +30,7 @@ public partial class SupplyStationWindow : Window
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
+        maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
@@ -67,7 +68,7 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        ViewModel.SelectedPage = page;
+        ViewModel.SelectedPage = page; ApplyLayout();
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
@@ -88,7 +89,7 @@ public partial class SupplyStationWindow : Window
     {
         ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
         ViewModel.IsTight = ClientArea.ActualHeight < 540;
-        FontSize = ViewModel.IsCompact ? 14 : 16; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
+        FontSize = ViewModel.IsSettingsWorkspace || ViewModel.IsCompact ? 14 : 16; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
     }
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();
     void UpdateViewport()

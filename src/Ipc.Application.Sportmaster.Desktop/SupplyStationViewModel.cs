@@ -22,14 +22,22 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         Snapshot?.BlockingReasons.Length > 0 ? "有作业阻断" : Status;
     // Display copy only: never infer availability or remove the original blocking facts.
     public string WorkNotice => BlockingReasons;
+    const string PauseNotice = "Software admission paused; this is not an emergency stop";
+    public bool IsSettingsWorkspace => SelectedPage == "maintenance";
+    public bool SettingsHasAttention => !Fresh || Snapshot?.BlockingReasons.Any(x => x != PauseNotice) == true ||
+        Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true;
+    public string DisplayWorkNotice => !IsSettingsWorkspace || !Fresh ? WorkNotice :
+        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "软件暂停不是安全急停";
+    public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
+    public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
     public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
         SelectedPage == "workstation" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。" ? "" : OperatorFeedback;
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
-    public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数配置", "diagnostics" => "诊断与恢复", _ => "作业" };
+    public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数设置", "diagnostics" => "诊断与恢复", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
@@ -42,7 +50,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
-        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice)})Changed(name);
+        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)

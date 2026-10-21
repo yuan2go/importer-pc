@@ -66,8 +66,9 @@ public abstract class StartupWorkflowWindow : Window
         try { await action(); }
         catch (OperationCanceledException) when (CloseAfterCancellation) { Busy = false; Close(); }
         catch (Exception ex) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(ex.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
-        finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; }
+        finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; OperationCompleted(); }
     }
+    protected virtual void OperationCompleted() { }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
     protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
@@ -101,6 +102,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool rendering = true;
     string? savedInput, checkedInput;
     ParameterEditorModel? parameterEditor;
+    ParameterSettingsControl? parameterControl;
     bool startupSaveUncertain;
     bool lastSaveConfirmed;
     string? checkedCandidateHash;
@@ -200,13 +202,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (initialConfiguration && selectedTask < 4)
             {
                 if (parameterEditor is null) throw new InvalidOperationException("先读取可编辑候选；保留原目录和诊断。");
-                if (!parameterEditor.ValidateFields(new[] { 1, 0, 2, 3 }[selectedTask])) throw new InvalidOperationException("请修正本步骤标出的参数；其他步骤输入保留。");
-                if (selectedTask == 0 && parameterEditor.ApplicationId == "sportmaster")
-                {
-                    var pattern = parameterEditor.Policy.BarcodePattern;
-                    var result = await Task.Run(() => parameterEditor.Preview(new(pattern, string.IsNullOrWhiteSpace(parameterEditor.Policy.BarcodeExclusionPattern) ? null : parameterEditor.Policy.BarcodeExclusionPattern), ["__format_check__"]));
-                    if (result.Outcome is "InvalidPattern" or "FilterTimeout") { parameterEditor.Report(result.Detail); throw new InvalidOperationException("请修正条码规则后继续。"); }
-                }
+                if (!parameterEditor.ValidateFields(new[] { 1, 0, 2, 3 }[selectedTask])) { LocateFirstIssue(); throw new InvalidOperationException("请修正本步骤标出的参数；其他步骤输入保留。"); }
+                if (selectedTask == 0) await ValidateBarcodeRule();
             }
             tasks.SelectedIndex = Math.Min(initialConfiguration ? 4 : 3, tasks.SelectedIndex + 1);
             Message(tasks.SelectedIndex == 4 ? "核对设置后保存并启动。" : "继续填写当前步骤；内容会保留。");
@@ -232,14 +229,31 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
         Loaded += async (_, _) => await Run(async () => { try { await Read(); } finally { if (tasks is null) Render(); } });
     }
+    async Task ValidateBarcodeRule()
+    {
+        if (parameterEditor?.ApplicationId != "sportmaster") return;
+        var pattern = parameterEditor.Policy.BarcodePattern; var exclusion = parameterEditor.Policy.BarcodeExclusionPattern;
+        if (string.IsNullOrWhiteSpace(pattern) && string.IsNullOrWhiteSpace(exclusion)) return;
+        var result = await Task.Run(() => parameterEditor.Preview(new(pattern, string.IsNullOrWhiteSpace(exclusion) ? null : exclusion), ["__format_check__"]));
+        if (result.Outcome is "InvalidPattern" or "FilterTimeout")
+        {
+            parameterEditor.Report(result.Detail); LocateFirstIssue();
+            throw new InvalidOperationException("请修正条码规则后继续。");
+        }
+    }
     async Task CheckCandidate()
     {
         var candidate = RequireDraft();
+        await ValidateBarcodeRule();
         var report = await Task.Run(() => maintenance.CheckAsync(candidate));
         diagnosticDetails = string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason));
         checkedInput = null;
         if (report.Checks.Any(c => c.Status == "FAIL"))
+        {
+            foreach (var check in report.Checks.Where(c => c.Status == "FAIL")) parameterEditor?.Report(check.Reason);
+            LocateFirstIssue();
             throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => c.Layer + "：" + c.Reason)));
+        }
         checkedInput = Input(); checkedCandidateHash = report.CandidateHash;
         Message(report.Checks.Any(c => c.Status == "BLOCKED") ? "参数格式检查完成；部署条件尚未齐备。可保存设置，启动仍需处理部署条件。" : "配置检查已完成；保存和启动仍会核验实际条件。");
         diagnosticDetails = string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason));
@@ -348,8 +362,28 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (draft is null || document is null) throw new InvalidOperationException("先读取有效配置。损坏原账请使用完整备份恢复或安装修复。");
         RequireDirectories();
-        if (parameterEditor?.ValidateFields() == false) throw new InvalidOperationException("参数校验失败；点击错误定位，其他输入保留");
+        if (parameterEditor?.ValidateFields() == false) { LocateFirstIssue(); throw new InvalidOperationException("请修正已定位的参数；其他输入保留。"); }
         return draft.Build();
+    }
+    Action? focusAfterOperation;
+    protected override void OperationCompleted()
+    {
+        var focus = focusAfterOperation; focusAfterOperation = null;
+        if (focus is not null) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, focus);
+    }
+    void LocateFirstIssue()
+    {
+        var issue = parameterEditor?.Issues.FirstOrDefault();
+        if (issue is null) return;
+        var step = issue.Category switch { "业务模块" => 0, "系统" => 1, "驱动" => 2, "组件" => 3, _ => -1 };
+        if (initialConfiguration && step >= 0 && tasks is not null) tasks.SelectedIndex = step;
+        var control = parameterControl; var path = issue.Path; var expectedInput = Input();
+        if (step >= 0) focusAfterOperation = () =>
+        {
+            // Run releases disabled controls before this focus continuation.
+            // A newer edit must never be interrupted by this older validation.
+            if (!Busy && ReferenceEquals(control, parameterControl) && expectedInput == Input()) control?.NavigateTo(path);
+        };
     }
     void RequireDirectories()
     {
@@ -407,7 +441,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次引导与日常设置共用四类参数、精确描述和完整候选校验。固定位置、实例数量与身份不作为普通参数。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
-            sharedEditor = new ParameterSettingsControl { Model = parameterEditor, MinHeight = 300, Height = initialConfiguration ? 470 : 430 };
+            sharedEditor = parameterControl = new ParameterSettingsControl { Model = parameterEditor, MinHeight = 300, Height = initialConfiguration ? 470 : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);

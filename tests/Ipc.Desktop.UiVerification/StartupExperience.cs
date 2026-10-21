@@ -62,6 +62,17 @@ static partial class Program
             try { _ = StartupConfigurationFiles.Import(bad, reference, original, catalog); } catch (InvalidDataException) { rejected = true; }
             Check(rejected && original.Build().StationId == reference.StationId, "incompatible import is rejected without altering local input");
         }
+        first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        editor.Model.Policy.QueueCapacity = "bad"; Click(first, "保存并启动"); await Idle(first);
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + tabs.SelectedIndex);
+        editor.Model.Policy.QueueCapacity = "64"; editor.Model.Policy.BarcodePattern = "["; tabs.SelectedIndex = 4;
+        first.Activate(); Click(first, "保存并启动"); await Idle(first);
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + tabs.SelectedIndex + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
+        editor.Model.Policy.BarcodePattern = ""; tabs.SelectedIndex = 4;
         var fake = new StartupMaintenanceProbe(local with { Candidate = draft.Build() });
         type.GetField("maintenance", flags)!.SetValue(first, fake);
         fake.CheckStatus = "FAIL"; Click(first, "保存并启动"); await Idle(first);
@@ -149,6 +160,7 @@ static partial class Program
     sealed class StartupMaintenanceProbe(StartupMaintenanceDocument document) : IStartupMaintenance
     {
         public int Saves; public string CheckStatus = "PASS"; public bool SaveFailure, Uncertain, LoseReceipt;
+        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy p, string[] c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c));
         public Task<StartupMaintenanceDocument> ReadAsync() => Task.FromResult(document);
         public Task<StartupCheckReport> CheckAsync(ParcelConfiguration c) => Task.FromResult(new StartupCheckReport(Wire.Hash(Wire.Encode(c)), DateTimeOffset.UtcNow, [new("结构与业务字段", CheckStatus, "合成检查")]));
         public Task<StartupMaintenanceDocument> RepairInitialAsync(string hash, ParcelConfiguration c, string reason)

@@ -38,3 +38,6 @@
 
 
 本机后续复验：商业原生页[31条PASS](../evidence/startup-experience-02/COMM-WPF-FIX.log)，包含真实DPAPI拒绝后原密文不变、明确草稿不可用提示、输入/焦点和关闭保护；首配专项[52条PASS](../evidence/startup-experience-02/STARTUP-CI-FIX.log)；视觉原生[119条PASS](../evidence/startup-experience-02/VISUAL-CI-FIX.log)。均为合成契约与原生程序化交互，不扩张为实际安装或现场证据。
+
+
+最终首配补充：[56条专项PASS](../evidence/startup-experience-02/STARTUP-FINAL.log)与[31条商业原生PASS](../evidence/startup-experience-02/COMM-FINAL.log)。增加末步数值错误和异步正则错误自动返回真实字段、精确输入与键盘焦点保留；定位在操作结束、控件重新启用后执行，输入已变化时不抢焦点。恢复页从未完成态返回真实失败态时恢复原最小高度。之前4b5924c的[远端必需CI](https://github.com/yuan2go/importer-pc/actions/runs/39570927095)已全部通过；最终定位补丁的CI与冻结介质以之后回执为准，不将此PASS扩张到后继树。

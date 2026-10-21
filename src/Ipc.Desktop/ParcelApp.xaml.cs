@@ -165,7 +165,7 @@ sealed class ParcelStartupWindow : Window
         if (completedCall is not null) completed.Add(DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss zzz") + " · " + completedCall);
         diagnostic.Text = string.Join("\n", completed);
     }
-    public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); diagnostic.Visibility = Visibility.Visible; Height = 520; }
+    public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520; }
     public void ConfigurationPaused(Func<Task> close, Func<Task> resume)
     {
         title.Text = "供包台尚未完成配置";
@@ -186,13 +186,13 @@ sealed class ParcelStartupWindow : Window
         }
         Task FailedResume(Exception error)
         {
-            diagnostic.Visibility = Visibility.Visible; Height = 520;
+            diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
             detail.Text = "无法继续配置，请查看诊断后重试。"; diagnostic.Text = error.ToString(); return Task.CompletedTask;
         }
     }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
-        actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; Height = 520;
+        actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
         title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };

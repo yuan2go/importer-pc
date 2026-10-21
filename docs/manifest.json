@@ -56581,9 +56581,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "71305d5f3519574b0da53d89e22ce1b8ab93889fa4673f2709cf89537234fca6",
-      "size_bytes": 13232,
-      "git_blob": "aed4f8e228b750861bf186ef9faf08d722721082",
+      "sha256": "c8c25932597088a2d1c6fe9eae5c6e687326b2093860f858944bece66ee551db",
+      "size_bytes": 13283,
+      "git_blob": "1ef626faa67792708bdbafff7fcdb3fe56204517",
       "previous_git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4",
       "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef",
       "pre_publication_no_test_git_blob": "0f193e84f334655a4eaa2398645da1cb6454f2ff"
@@ -56606,9 +56606,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "14aaeb2d90369037f70a3d712ba83ef3ef0f51a05b6b547171390681ec68cab2",
-      "size_bytes": 61595,
-      "git_blob": "cce05f0c88829c38f854343e8bde65ab6394eb6a",
+      "sha256": "2e47528361a22fcdbc159df740271bbc5723cac4613075e4c202fc49fe73ed95",
+      "size_bytes": 63235,
+      "git_blob": "35df6bd01fa7e9a198e8db671846414e6bcfbc1f",
       "previous_git_blob": "a9e4e1381e13729b7dbcd77574d1d9c1b1dee8aa",
       "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01",
       "pre_publication_no_test_git_blob": "65470c322ace93ebb62e2d522a25823d4a481bc6"
@@ -62059,9 +62059,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "431ac42452365ead9c4e0c1428065d58c6e324d09ef2cfda656b0ab56980e518",
-      "size_bytes": 6818,
-      "git_blob": "bed867843a0327bda76e886f980a744c6a850ef1"
+      "sha256": "3969823297dade574387decc7d6694476572d514255d5b94c607665a9ad7f17a",
+      "size_bytes": 7469,
+      "git_blob": "a0e8d3d4ec79b9a18e8c3204d80c5059a296f604"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationFiles.cs",
@@ -62081,9 +62081,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "e952bc6bcd5b019b1e035793f3e54c7491eb0ae84a4d8b51e76a74c7f9233714",
-      "size_bytes": 17541,
-      "git_blob": "907d12036f5006d727a9609217dc9241eb7b8a10"
+      "sha256": "155e6393452c89b5479c473a218576a314c5311990e3d1a4eab28c344d5cffb5",
+      "size_bytes": 19788,
+      "git_blob": "0a7f7bdc0da1162707648a43e66dae4c9e13e06d"
     },
     {
       "path": "docs/runtime/evidence/startup-experience-02/COMM-WPF-FIX.log",
@@ -62205,6 +62205,50 @@
       "sha256": "69a9e2bd614d75e120d94b5f5a1612cfdaa8e90f9207b1135df6cf17b3300688",
       "size_bytes": 1998,
       "git_blob": "134fe1f9e85b8ebc5e0dd25817205b0e93180a06"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/COMM-FINAL.log",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final startup validation and native error-location evidence",
+      "source": "2026-10-21 user correction; final source and boundary in validation record",
+      "storage_scope": "public_repository",
+      "sha256": "d5d7250515782cd0e31eb16346043566b87643c28f0ab33a957915369d6c41c7",
+      "size_bytes": 3087,
+      "git_blob": "d9025516342b79b132888e98815d066884a50e22"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/STARTUP-FINAL.log",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final startup validation and native error-location evidence",
+      "source": "2026-10-21 user correction; final source and boundary in validation record",
+      "storage_scope": "public_repository",
+      "sha256": "81e7e21ae9aa654a2cb53f689a50f481fe207f0eb69db12e67b10f73a68f6da4",
+      "size_bytes": 4556,
+      "git_blob": "46bf2063dbf12b571fa81fc4a593d649abaa73aa"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/desktop-final-build.log",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final startup validation and native error-location evidence",
+      "source": "2026-10-21 user correction; final source and boundary in validation record",
+      "storage_scope": "public_repository",
+      "sha256": "d3a70bc17a700f0556f7fffcfe3cdbc645636ef6c49c5ff4d8e8686ed4729065",
+      "size_bytes": 2139,
+      "git_blob": "6b3736fcc669cf69f6296ea083f21d13c76b746a"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/ui-final-build.log",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final startup validation and native error-location evidence",
+      "source": "2026-10-21 user correction; final source and boundary in validation record",
+      "storage_scope": "public_repository",
+      "sha256": "622e6c3982f9022cc8d98c48d014385b40fab263040eaf8cd3842ea6a91bddca",
+      "size_bytes": 1998,
+      "git_blob": "c2656cda578b6320ecba93ce156a2f6ba9987f04"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

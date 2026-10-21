@@ -62059,9 +62059,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "3969823297dade574387decc7d6694476572d514255d5b94c607665a9ad7f17a",
-      "size_bytes": 7469,
-      "git_blob": "a0e8d3d4ec79b9a18e8c3204d80c5059a296f604"
+      "sha256": "8d7ff75e6b7c2ded5b6976031b1752e19bd50d4adddb97f8ca10f05e32c3a8ed",
+      "size_bytes": 10080,
+      "git_blob": "fb8ee69e84dad7ee5071198bc5cb1c746700507d"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationFiles.cs",
@@ -62249,6 +62249,83 @@
       "sha256": "622e6c3982f9022cc8d98c48d014385b40fab263040eaf8cd3842ea6a91bddca",
       "size_bytes": 1998,
       "git_blob": "c2656cda578b6320ecba93ce156a2f6ba9987f04"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/CI-FINAL.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "3d4f34e06e2a499e53d8f832eb7d9b40706917243af4261796222f277bb98d54",
+      "size_bytes": 577,
+      "git_blob": "ff692c9a4db7ce4ccea2012d5684900ac9a46316"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/ENTRY-SMOKE.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "aa044bed67b462ab4b9c71e58c1b37a9c8a6d188d1c69cd7628231dc85b5930b",
+      "size_bytes": 464,
+      "git_blob": "f178e8e40f48618220f653a6c39e7f9c7a9df742"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/FROZEN-WPF-RESULT.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "a7791df7201df9c1e53d7ddabb991baf1aca80df12c5c6298d64da50f06b2bbf",
+      "size_bytes": 3058,
+      "git_blob": "d36d49e1afbea99b5bdcfe44a0731738acfd0759"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/FROZEN-WPF.log",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "d5d7250515782cd0e31eb16346043566b87643c28f0ab33a957915369d6c41c7",
+      "size_bytes": 3087,
+      "git_blob": "d9025516342b79b132888e98815d066884a50e22"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/INSTALLER.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "0f903306aab71f947734d66108603526f9555a874f6a90cd42bc16b7e0896ca4",
+      "size_bytes": 796,
+      "git_blob": "f02c38f866b77468206a2eff06986ef2fffd8dc0"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/MEDIA.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "6200b6e72c3c9d2fd140f8a0f656cb6efcd5e5047b2bfdb3f9fa6f7f329304ec",
+      "size_bytes": 481,
+      "git_blob": "68a5be5b41fabb4d9e812fd48c169580aaf52095"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-02/final-records.json",
+      "version": "STARTUP-UX-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final same-source delivery and verification receipt",
+      "source": "2026-10-21 PR85; frozen product e3941dc; historical evidence retains identity",
+      "storage_scope": "public_repository",
+      "sha256": "bafe2842da5b426bd4459f0f29a976da0f23fc5c8c9833b4f1d7cf79b547861a",
+      "size_bytes": 109,
+      "git_blob": "46ea1ad3b1d67c941572fca02b32beb1afaacd31"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

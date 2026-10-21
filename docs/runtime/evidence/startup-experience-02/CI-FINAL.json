@@ -1,0 +1,12 @@
+{
+  "RunId": 39573180019,
+  "Url": "https://github.com/yuan2go/importer-pc/actions/runs/39573180019",
+  "HeadSourceCommit": "e3941dc871816c1c028209368237413c4f066591",
+  "MergeSourceCommit": "9975747f847ed6574dad6fd57819cbeda3baa1b4",
+  "Status": "completed",
+  "Conclusion": "success",
+  "InstallableArtifactId": 12333770382,
+  "EvidenceArtifactId": 12333635654,
+  "ExpiresDate": "2026-11-20",
+  "Scope": "Frozen core/ownership/recovery, WPF, visual/parameters and same-source installer packaging; synthetic dependencies. Production/site qualification remains unavailable."
+}

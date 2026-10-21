@@ -1,3 +1,5 @@
+> 2026-10-21 参数继承增量正在实施：基于 main `20251b4c`，继承 PR80 与审阅后的 PR81。当前有效裁决见[旧参数继承与所有权](design/parameter-inheritance-02.md)、[统一迁移表](design/parameter-legacy-migration-02.csv)，沿原[参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)推进。下方版本/状态均保留历史形成身份；PR80 的1.7.0介质不包含本轮新增行为。
+
 > 参数 V3 独立商业体验复核与定向完善：[原生前后证据、问题及验收边界](runtime/validation/parameter-settings-v3-experience-01.md)。本轮开发分支继承 PR80，不更改其冻结介质或历史结果。
 
 > 参数 V3 原生交付收口：固定 main `767075abe62a77c30e70766bb5d3f1feca02686b`，开工无开放 PR。当前操作以 [1.7.0 原生说明](runtime/parameter-settings-v3-native-01.md) 为准；[原生截图、交付身份和验证边界](runtime/validation/parameter-settings-v3-native-01.md)沿 [PS-05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)记录。V3 设计原件及旧发行证据保持身份，旧 1.6.1 不包含 V3。

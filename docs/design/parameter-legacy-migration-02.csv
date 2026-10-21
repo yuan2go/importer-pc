@@ -1,0 +1,92 @@
+﻿old_field,old_read_location,old_evidence,meaning,owner,application,new_consumer,current_support,units_and_validation,effect,decision
+code,多分支 Importer_CS.exe.config / 主控,用户盘点；旧读取源码未取得,旧供包台编号；与新内部/取格口/心跳身份的对应待核实,系统,对应业务,ParcelConfiguration.StationId / StationCode；RcsTaskOptions.Position,新身份链已支持；不自动转值,旧编码范围未核验；新协议编码1～256非控制字符,核对后完整候选、受控重启,缺证待核实：不得覆盖内部身份
+level,苏州/四段/观澜 exe.config；主控分支,用户盘点；旧读取源码未取得,层号与业务有效层；固定拓扑还是路由规则需看分支,Application,有层/段语义的业务,当前独立 Application 拓扑定义,Sportmaster无层号消费者,旧单位/范围待核验,对应业务合同明确后实现,特定业务适用；不加入Sportmaster
+effectiveLevel,苏州/四段/观澜 exe.config；主控分支,用户盘点；旧读取源码未取得,层号与业务有效层；固定拓扑还是路由规则需看分支,Application,有层/段语义的业务,当前独立 Application 拓扑定义,Sportmaster无层号消费者,旧单位/范围待核验,对应业务合同明确后实现,特定业务适用；不加入Sportmaster
+zoneId,AGV / 重构线 config.json 或主控；SettingsFieldRegistry.cs,用户盘点；旧读取源码未取得,全台取格口区域、项目、站码,系统,Sportmaster RCS,ParameterOwnership → RcsTaskOptions.Position → PrepareRequest,已有复用,zone/project正Int64；stationCode1～256；旧左右冲突显式核对,保存Pending、受控重启，仅新请求,已有复用；唯一编辑来源
+projectId,AGV / 重构线 config.json 或主控；SettingsFieldRegistry.cs,用户盘点；旧读取源码未取得,全台取格口区域、项目、站码,系统,Sportmaster RCS,ParameterOwnership → RcsTaskOptions.Position → PrepareRequest,已有复用,zone/project正Int64；stationCode1～256；旧左右冲突显式核对,保存Pending、受控重启，仅新请求,已有复用；唯一编辑来源
+stationCode,AGV / 重构线 config.json 或主控；SettingsFieldRegistry.cs,用户盘点；旧读取源码未取得,全台取格口区域、项目、站码,系统,Sportmaster RCS,ParameterOwnership → RcsTaskOptions.Position → PrepareRequest,已有复用,zone/project正Int64；stationCode1～256；旧左右冲突显式核对,保存Pending、受控重启，仅新请求,已有复用；唯一编辑来源
+plcIp,多分支 exe.config；馆陶及SDK升级以plcIp引导主控配置,用户盘点；旧读取源码未取得,分支可能用作主控引导/配置服务或硬件连接；不能凭名称断言,按实际端点：驱动/组件/部署,对应业务,原端点未核验；新PLC端口与WCS端口独立,旧协议映射未证明,地址、端口、协议需旧调用证据,明确合同后受控生效,缺证待核实；三字段不得静默合并
+plcIp1,多分支 exe.config；馆陶及SDK升级以plcIp引导主控配置,用户盘点；旧读取源码未取得,分支可能用作主控引导/配置服务或硬件连接；不能凭名称断言,按实际端点：驱动/组件/部署,对应业务,原端点未核验；新PLC端口与WCS端口独立,旧协议映射未证明,地址、端口、协议需旧调用证据,明确合同后受控生效,缺证待核实；三字段不得静默合并
+plcUrl,多分支 exe.config；馆陶及SDK升级以plcIp引导主控配置,用户盘点；旧读取源码未取得,分支可能用作主控引导/配置服务或硬件连接；不能凭名称断言,按实际端点：驱动/组件/部署,对应业务,原端点未核验；新PLC端口与WCS端口独立,旧协议映射未证明,地址、端口、协议需旧调用证据,明确合同后受控生效,缺证待核实；三字段不得静默合并
+wcsUrl,exe.config / config.json / 主控；AGV设置通信组,用户盘点；旧读取源码未取得,外部WCS/RCS服务地址，协议随分支不同,Integrations,Sportmaster/WcsToPlc/相应旧业务,CapabilityBinding.Target → RcsTaskOptions / IWcsPort,已有真实RCS映射；其他合同依安装描述,RCS为HTTP(S) /rcs/sorter/api；禁止凭据/query/fragment,完整候选、受控重启；旧请求原Target,已有复用；不能任意替换协议
+slaveIp,漳州/江阴/四段等 exe.config 或主控,用户盘点；旧读取源码未取得,硬件从站端点及通信实现选择,Drivers,DirectPlc/WcsToPlc,IPlcPort / 已安装plc描述,参考端口已支持；客户PLC协议缺口,端口/枚举按实际协议，不添加无消费者输入,绑定精确驱动后受控重启,特定业务适用；分类本期纠正
+slavePort,漳州/江阴/四段等 exe.config 或主控,用户盘点；旧读取源码未取得,硬件从站端点及通信实现选择,Drivers,DirectPlc/WcsToPlc,IPlcPort / 已安装plc描述,参考端口已支持；客户PLC协议缺口,端口/枚举按实际协议，不添加无消费者输入,绑定精确驱动后受控重启,特定业务适用；分类本期纠正
+plcType,漳州/江阴/四段等 exe.config 或主控,用户盘点；旧读取源码未取得,硬件从站端点及通信实现选择,Drivers,DirectPlc/WcsToPlc,IPlcPort / 已安装plc描述,参考端口已支持；客户PLC协议缺口,端口/枚举按实际协议，不添加无消费者输入,绑定精确驱动后受控重启,特定业务适用；分类本期纠正
+plcComType,漳州/江阴/四段等 exe.config 或主控,用户盘点；旧读取源码未取得,硬件从站端点及通信实现选择,Drivers,DirectPlc/WcsToPlc,IPlcPort / 已安装plc描述,参考端口已支持；客户PLC协议缺口,端口/枚举按实际协议，不添加无消费者输入,绑定精确驱动后受控重启,特定业务适用；分类本期纠正
+weighterSerialPortName,多分支 exe.config / 主控；SDK升级分支不含全部项,用户盘点；旧读取源码未取得,串口、报文解析及原始数值换算,Drivers,称重业务,IWeightSource；已安装weight描述,参考测量端口；旧串口协议/换算源码缺失,串口/协议/换算比例及单位待证据,精确驱动受控重启,特定业务适用；不捏造串口实现
+weighterProto,多分支 exe.config / 主控；SDK升级分支不含全部项,用户盘点；旧读取源码未取得,串口、报文解析及原始数值换算,Drivers,称重业务,IWeightSource；已安装weight描述,参考测量端口；旧串口协议/换算源码缺失,串口/协议/换算比例及单位待证据,精确驱动受控重启,特定业务适用；不捏造串口实现
+weighterDivisor,多分支 exe.config / 主控；SDK升级分支不含全部项,用户盘点；旧读取源码未取得,串口、报文解析及原始数值换算,Drivers,称重业务,IWeightSource；已安装weight描述,参考测量端口；旧串口协议/换算源码缺失,串口/协议/换算比例及单位待证据,精确驱动受控重启,特定业务适用；不捏造串口实现
+weighterCheckTimes,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
+weighterCheckTimesLong,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
+weighterCheckThre,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
+weightCheckShortLong,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
+weighterCheckTimesIn,称重分支 exe.config / 主控；早期圆通另有In,用户盘点；旧读取源码未取得,普通/轻薄件判稳窗口、波动和分界；In用途未核验,Drivers；若业务分类另归Application,称重业务,WeightMeasurement.Stable / 真实采集驱动,已有稳定质量事实；旧算法未核验,次数需采样周期；阈值单位待核验，不换算成猜测毫秒,驱动支持后受控重启,缺证待核实算法；保留质量事实
+minWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,本期实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
+maxWeight,称重分支 exe.config / 主控,用户盘点；旧读取源码未取得,允许处理的包裹重量上下限,Application,DirectPlc/WcsToPlc,ParcelConfiguration.WeightRange → WeightRules / WeightReady,本期实现可选业务范围,新规则使用Weight.Unit；0≤min≤max≤100000；未设不增加限制,完整候选、受控重启；作业冻结范围,本期实现；旧单位必须人工确认
+maxWaitWeightTimeout,馆陶/漳州SDK升级等主控参数,用户盘点；旧读取源码未取得,本件等待有效重量的期限,Application,称重业务,WeightPolicy.WaitTimeoutMs → WeightExpired,已有复用,ms；100～300000；从本件ObservedAt起算,新作业冻结；超时独立状态,已有复用
+defaultWeightWhenMaxWaitWeightTimeouted,馆陶/漳州主控；观澜exe.config的Zero用途待核验,用户盘点；旧读取源码未取得,前者超时兜底，后者实际条件未知；不作为测量事实,Application,明确允许替代重量的合同,WeightSource.Configured仅表示显式配置来源,未提供自动兜底；现有超时/零/不稳拒绝不变,旧单位/触发/来源均需证据,不能用配置值掩盖测量失败,缺证待核实；自动兜底不继承
+defaultWeightWhenZero,馆陶/漳州主控；观澜exe.config的Zero用途待核验,用户盘点；旧读取源码未取得,前者超时兜底，后者实际条件未知；不作为测量事实,Application,明确允许替代重量的合同,WeightSource.Configured仅表示显式配置来源,未提供自动兜底；现有超时/零/不稳拒绝不变,旧单位/触发/来源均需证据,不能用配置值掩盖测量失败,缺证待核实；自动兜底不继承
+barcodeRegex,多分支 exe.config / config.json / 主控,用户盘点；旧读取源码未取得,业务允许条码规则,Application,Sportmaster,BarcodeFilter.Pattern → BarcodeFiltering.Select → 原准入,已有复用,1～2048字符；整串匹配；25ms单次/100ms总预算,完整候选、受控重启，规则指纹冻结,已有复用；无生产默认
+regexpBlacklist,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+blackBarcodeRegex,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+rejectExpression,早期邮政 exe.config；SDK升级过滤规则；其他分支,用户盘点；旧读取源码未取得,业务排除规则；旧列表结构/匹配范围需核实,Application,Sportmaster,BarcodeFilter.ExclusionPattern → BarcodeFiltering.Select,本期实现可选整串排除,1～2048字符；共享执行预算；空UI表示未设,受控重启；本地候选测试不保存/不外呼,本期实现；不得把旧列表原文猜转为正则
+regexpConfigs,按快递公司分类分支配置,用户盘点；旧读取源码未取得,分类规则集合与业务路由,Application,有分类业务的独立Application,当前Sportmaster不需要公司分类,无真实分类合同,名称/规则/优先级及歧义策略待合同,对应业务实施后受控生效,特定业务适用；本期不新增通用规则引擎
+barcodeRepeatGapMs,feat-refactor-new Importer_CS配置,用户盘点；旧读取源码未取得,重复码时间窗；同实体/同业务单/重复观察范围未明确,Application或驱动，取决于事实,对应业务,现有Observation/Epoch/Sequence/Admission/Position去重,已具备实体与观察防重；不增加跨左右条码吞码,旧ms窗口不能证明同实体,保留原身份守卫,废弃作为通用实体识别替代；具体用途待核实
+cameraModel,苏州/Spain等exe.config或JSON,用户盘点；旧读取源码未取得,设备实现与型号选择,Drivers,读码业务,CapabilityDescriptor / 精确已安装驱动,已支持按安装选择；海康型号范围沿SDK资格,仅实际安装描述，禁止自由填型号冒充支持,受控重启,已有复用
+codeReaderManufacturer,苏州/Spain等exe.config或JSON,用户盘点；旧读取源码未取得,设备实现与型号选择,Drivers,读码业务,CapabilityDescriptor / 精确已安装驱动,已支持按安装选择；海康型号范围沿SDK资格,仅实际安装描述，禁止自由填型号冒充支持,受控重启,已有复用
+codeReaderModel,苏州/Spain等exe.config或JSON,用户盘点；旧读取源码未取得,设备实现与型号选择,Drivers,读码业务,CapabilityDescriptor / 精确已安装驱动,已支持按安装选择；海康型号范围沿SDK资格,仅实际安装描述，禁止自由填型号冒充支持,受控重启,已有复用
+smartCameraIPs[i].ip,AGV/多相机JSON；SettingsFieldRegistry通信组,用户盘点；旧读取源码未取得,指定实例设备IP,Drivers,Sportmaster左右Reader,device.ip → HikrobotOptions → 独立Reader连接,已有复用,规范IPv4；左右独立且不得同设备,受控重启；重连不应用Pending,已有复用；无任意数组增删
+smartCameraIPs[i].code,AGV/重构线JSON；SettingsFieldRegistry标识组,用户盘点；旧读取源码未取得,相机对外编码；取格口/心跳用途须分别核对,Drivers编辑；组件协议转换,Sportmaster,left/right-bcr-code 与 bcr-code 独立来源,已有复用,1～256；心跳左右不重复,受控重启；旧请求原值,已有复用；两用途不静默互换
+scannerPortName,苏州邮政 exe.config,用户盘点；旧读取源码未取得,扫码枪串口连接,Drivers,扫码枪业务,Reader观察端口；未取得串口驱动协议,现有Sportmaster海康不使用串口,串口及帧边界待实现依据,真实驱动安装后受控重启,特定业务适用
+cameraCheckCount,苏州/Spain/漳州等分支,用户盘点；旧读取源码未取得,解码复核、重复码复核或扫描等待；具体起算/采样未核验,Drivers或Application按真实职责,对应业务,既有完整候选和实体守卫,不得用次数字段替代实际实现,周期/次数/等待含义须旧代码证据,明确职责后受控生效,缺证待核实
+cameraCheckCount2,苏州/Spain/漳州等分支,用户盘点；旧读取源码未取得,解码复核、重复码复核或扫描等待；具体起算/采样未核验,Drivers或Application按真实职责,对应业务,既有完整候选和实体守卫,不得用次数字段替代实际实现,周期/次数/等待含义须旧代码证据,明确职责后受控生效,缺证待核实
+checkBarcodeCount,苏州/Spain/漳州等分支,用户盘点；旧读取源码未取得,解码复核、重复码复核或扫描等待；具体起算/采样未核验,Drivers或Application按真实职责,对应业务,既有完整候选和实体守卫,不得用次数字段替代实际实现,周期/次数/等待含义须旧代码证据,明确职责后受控生效,缺证待核实
+scanWaitCount,苏州/Spain/漳州等分支,用户盘点；旧读取源码未取得,解码复核、重复码复核或扫描等待；具体起算/采样未核验,Drivers或Application按真实职责,对应业务,既有完整候选和实体守卫,不得用次数字段替代实际实现,周期/次数/等待含义须旧代码证据,明确职责后受控生效,缺证待核实
+scanEnableChecker,苏州/Spain/漳州等分支,用户盘点；旧读取源码未取得,解码复核、重复码复核或扫描等待；具体起算/采样未核验,Drivers或Application按真实职责,对应业务,既有完整候选和实体守卫,不得用次数字段替代实际实现,周期/次数/等待含义须旧代码证据,明确职责后受控生效,缺证待核实
+triggerInterval,Spain系列等设备配置,用户盘点；旧读取源码未取得,设备触发间隔与解码码制,Drivers,真实设备支持的业务,Hikrobot当前不改触发/码制；entity.mode仅实体关联,未提供写SDK能力；缺合同局部阻断,旧间隔单位待核验；code.encoding是字符编码不是码制,真实SDK支持且授权后受控变更,特定业务适用；不添占位字段
+supportedCodeTypes,Spain系列等设备配置,用户盘点；旧读取源码未取得,设备触发间隔与解码码制,Drivers,真实设备支持的业务,Hikrobot当前不改触发/码制；entity.mode仅实体关联,未提供写SDK能力；缺合同局部阻断,旧间隔单位待核验；code.encoding是字符编码不是码制,真实SDK支持且授权后受控变更,特定业务适用；不添占位字段
+skipVol,漳州原分支/Spain；SDK升级分支不含原全部项,用户盘点；旧读取源码未取得,体积启用与测量设备选择,Application启用；Drivers采集,有体积需求业务,当前无体积业务合同或驱动,Sportmaster不适用,长度/体积单位及关联待合同,对应业务单独交付,特定业务适用
+volCameraManufacturer,漳州原分支/Spain；SDK升级分支不含原全部项,用户盘点；旧读取源码未取得,体积启用与测量设备选择,Application启用；Drivers采集,有体积需求业务,当前无体积业务合同或驱动,Sportmaster不适用,长度/体积单位及关联待合同,对应业务单独交付,特定业务适用
+volCameraModel,漳州原分支/Spain；SDK升级分支不含原全部项,用户盘点；旧读取源码未取得,体积启用与测量设备选择,Application启用；Drivers采集,有体积需求业务,当前无体积业务合同或驱动,Sportmaster不适用,长度/体积单位及关联待合同,对应业务单独交付,特定业务适用
+savePic,多分支exe.config/主控,用户盘点；旧读取源码未取得,业务采图/保存策略，不能把Reader当采图,Application；系统管存储,图像业务,ImagePolicy / ParcelImages / ImageReleased,参考图像链已支持；Sportmaster不适用,容量/关联/引用按原图像责任,受控重启；原件按责任释放,已有能力复用；不增加Sportmaster入口
+enableSavePic,多分支exe.config/主控,用户盘点；旧读取源码未取得,业务采图/保存策略，不能把Reader当采图,Application；系统管存储,图像业务,ImagePolicy / ParcelImages / ImageReleased,参考图像链已支持；Sportmaster不适用,容量/关联/引用按原图像责任,受控重启；原件按责任释放,已有能力复用；不增加Sportmaster入口
+ftpIp,观澜/四段exe.config；江阴嵌套ftp,用户盘点；旧读取源码未取得,FTP上传端点和认证,Integrations,FTP图像业务,IImageUploadPort / 精确upload描述,无获证FTP实现；不存明文密码或复制旧凭据,真实协议/凭据引用规则待合同,受控重启,特定业务适用；缺协议/凭据阻断本能力
+ftpPort,观澜/四段exe.config；江阴嵌套ftp,用户盘点；旧读取源码未取得,FTP上传端点和认证,Integrations,FTP图像业务,IImageUploadPort / 精确upload描述,无获证FTP实现；不存明文密码或复制旧凭据,真实协议/凭据引用规则待合同,受控重启,特定业务适用；缺协议/凭据阻断本能力
+ftpUsername,观澜/四段exe.config；江阴嵌套ftp,用户盘点；旧读取源码未取得,FTP上传端点和认证,Integrations,FTP图像业务,IImageUploadPort / 精确upload描述,无获证FTP实现；不存明文密码或复制旧凭据,真实协议/凭据引用规则待合同,受控重启,特定业务适用；缺协议/凭据阻断本能力
+ftpPassword,观澜/四段exe.config；江阴嵌套ftp,用户盘点；旧读取源码未取得,FTP上传端点和认证,Integrations,FTP图像业务,IImageUploadPort / 精确upload描述,无获证FTP实现；不存明文密码或复制旧凭据,真实协议/凭据引用规则待合同,受控重启,特定业务适用；缺协议/凭据阻断本能力
+cainiaoHttpPicServerUrl,圆通/观澜exe.config；江阴嵌套JSON,用户盘点；旧读取源码未取得,对应接收方图片服务及上传器选型,Integrations,对应图像业务,IImageUploadPort；当前参考上传合同,端口可复用，旧客户上传协议未核验,目标、认证、结果语义按实际组件,冻结旧上传请求；新参数受控重启,特定业务适用
+uploadPicUrl,圆通/观澜exe.config；江阴嵌套JSON,用户盘点；旧读取源码未取得,对应接收方图片服务及上传器选型,Integrations,对应图像业务,IImageUploadPort；当前参考上传合同,端口可复用，旧客户上传协议未核验,目标、认证、结果语义按实际组件,冻结旧上传请求；新参数受控重启,特定业务适用
+shentong.pic.server.*,圆通/观澜exe.config；江阴嵌套JSON,用户盘点；旧读取源码未取得,对应接收方图片服务及上传器选型,Integrations,对应图像业务,IImageUploadPort；当前参考上传合同,端口可复用，旧客户上传协议未核验,目标、认证、结果语义按实际组件,冻结旧上传请求；新参数受控重启,特定业务适用
+shenTongPicServer,圆通/观澜exe.config；江阴嵌套JSON,用户盘点；旧读取源码未取得,对应接收方图片服务及上传器选型,Integrations,对应图像业务,IImageUploadPort；当前参考上传合同,端口可复用，旧客户上传协议未核验,目标、认证、结果语义按实际组件,冻结旧上传请求；新参数受控重启,特定业务适用
+imgUploader,圆通/观澜exe.config；江阴嵌套JSON,用户盘点；旧读取源码未取得,对应接收方图片服务及上传器选型,Integrations,对应图像业务,IImageUploadPort；当前参考上传合同,端口可复用，旧客户上传协议未核验,目标、认证、结果语义按实际组件,冻结旧上传请求；新参数受控重启,特定业务适用
+skipLogin,邮政/四段/观澜exe.config；AGV设置调试组,用户盘点；旧读取源码未取得,是否要求作业登录的相反表达,Application策略；Integrations登录,Sportmaster/DirectPlc/WcsToPlc,Login角色 → OperatorSession / SessionValid,本期完善真实绑定编辑；已有运行守卫复用,只选择已安装登录；会话100～86400000ms,受控重启；关闭不取消维护授权,本期完善；统一正向表达
+needLogin,邮政/四段/观澜exe.config；AGV设置调试组,用户盘点；旧读取源码未取得,是否要求作业登录的相反表达,Application策略；Integrations登录,Sportmaster/DirectPlc/WcsToPlc,Login角色 → OperatorSession / SessionValid,本期完善真实绑定编辑；已有运行守卫复用,只选择已安装登录；会话100～86400000ms,受控重启；关闭不取消维护授权,本期完善；统一正向表达
+deviceCode,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
+deviceName,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
+nameNumber,登录/图片分支exe.config；早期圆通及当阳图片对接,用户盘点；旧读取源码未取得,对接方设备身份；nameNumber具体用途未核验,Integrations；共同身份可引用系统,对应接收方业务,当前不猜映射到StationId/StationCode,旧消费者缺证,长度/单位/语义待实际合同,明确映射后受控生效,缺证待核实；三者不合并
+defaultTitle,多分支配置；AGV设置常规组，偏好appsettings.json,用户盘点；旧读取源码未取得,显示标题，与内部/协议身份分开,系统本机显示,当前Parcel桌面业务,PresentationPreferences → 窗口站点显示,本期实现显示名称,可空；最多64非控制字符；空回退内部标识,当前用户单独保存，立即显示，不推进运行修订,本期实现；保持产品固定名称
+targetEff,多分支exe.config/JSON,用户盘点；旧读取源码未取得,目标效率显示，绝不是输送速度,系统本机显示,Sportmaster等有吞吐展示的业务,PresentationPreferences → 目标效率文字,本期实现显式件/小时目标显示,新范围1～100000件/小时或不显示；旧数值单位需确认,单独保存即时显示；不控制设备/业务,本期实现；只继承目标语义
+incomeTitle,分支exe.config/主控,用户盘点；旧读取源码未取得,入/出业务区域标题,Application展示,有入出区域业务,Sportmaster是固定左/右位，不使用入/出标题,不适用当前双位语义,旧标题不改写左右角色,对应独立Application展示,特定业务适用
+outcomeTitle,分支exe.config/主控,用户盘点；旧读取源码未取得,入/出业务区域标题,Application展示,有入出区域业务,Sportmaster是固定左/右位，不使用入/出标题,不适用当前双位语义,旧标题不改写左右角色,对应独立Application展示,特定业务适用
+ColorMode,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
+language,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
+Language,Spain/AGV常规设置；appsettings.json,用户盘点；旧读取源码未取得,本机主题与界面语言,系统本机显示,桌面产品,当前系统字体/浅色/简体中文；布局偏好已支持,仅现有真实支持项；RCS locale独立,无无效主题/语言选项,本机展示，不进运行修订,已有支持项保留；多语言主题本期不伪造
+logRetentionDays,feat-spain本地JSON或主控,用户盘点；旧读取源码未取得,诊断日志保留天数；旧日志范围需核验,系统,Parcel业务运行,ParcelRetentionPolicy.DiagnosticLogDays → RuntimeJournal,本期实现非权威诊断保留,可空沿旧轮转；1～3650天；仍受原20MB容量约束,完整候选、受控重启；只清理诊断白名单文件,本期实现；不删审计/原件/图片
+图片保留/磁盘清理,AGV/重构线配置，原精确键名未提供,用户盘点；旧读取源码未取得,图片引用与存储清理，区别日志和常驻历史,系统机制；Application引用责任,图像业务,ParcelImages / RecoverImageCleanup / ImageReleased,引用责任驱动释放已有；未提供按天删原件,不能删除未决或被引用图片,按既有应用释放和恢复事实,已有复用；通用按天删证据策略不继承
+mode,多分支；江阴嵌套JSON,用户盘点；旧读取源码未取得,切换不同主流程；与Production/Simulation及驱动entity.mode不同,产品装配/独立Application,各独立业务,Sportmaster / DirectPlc / WcsToPlc,已独立装配，不加日常切换,不用于绕过生产资格,发布/部署选择,废弃通用主流程开关；保留明确运行模式
+bizType,多分支；江阴嵌套JSON,用户盘点；旧读取源码未取得,切换不同主流程；与Production/Simulation及驱动entity.mode不同,产品装配/独立Application,各独立业务,Sportmaster / DirectPlc / WcsToPlc,已独立装配，不加日常切换,不用于绕过生产资格,发布/部署选择,废弃通用主流程开关；保留明确运行模式
+configType,漳州/Spain本地或主控；江阴配置管理服务→Config.json,用户盘点；旧读取源码未取得,配置来源选择/远程配置缓存,系统部署入口,有远程配置需求业务,当前唯一ConfigurationRevisions及Stage/Inspect,无已获证远程配置合同,必须同一校验/版本/审计/生效权威,未来接入仍经现有配置账,特定业务适用；不新建远程第二账
+importerMgrIp,漳州/Spain本地或主控；江阴配置管理服务→Config.json,用户盘点；旧读取源码未取得,配置来源选择/远程配置缓存,系统部署入口,有远程配置需求业务,当前唯一ConfigurationRevisions及Stage/Inspect,无已获证远程配置合同,必须同一校验/版本/审计/生效权威,未来接入仍经现有配置账,特定业务适用；不新建远程第二账
+robotIp,丹鸟机器人exe.config,用户盘点；旧读取源码未取得,机器人端点与相机监听端口，协议未知,Drivers或Integrations依合同,机器人业务,当前无机器人Application/协议,Sportmaster不适用,端口/权限/动作语义待证据,独立业务及真实协议验收,特定业务适用
+cameraServerPort,丹鸟机器人exe.config,用户盘点；旧读取源码未取得,机器人端点与相机监听端口，协议未知,Drivers或Integrations依合同,机器人业务,当前无机器人Application/协议,Sportmaster不适用,端口/权限/动作语义待证据,独立业务及真实协议验收,特定业务适用
+xlp,江阴嵌套JSON,用户盘点；旧读取源码未取得,小绿屏硬件连接；显示内容由业务决定,Drivers,小绿屏业务,当前无小绿屏驱动,Sportmaster不适用,地址/串口/协议待证据,对应驱动受控生效,特定业务适用
+mark.bcrNo,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
+mark.barcode,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
+mark.boxWeight,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
+mark.boxWeight.mistake,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
+weightZeroCheck,feat-spain配置,用户盘点；旧读取源码未取得,零点/空秤检查与业务阻断,Drivers质量；Application处置,称重业务,WeightRules现有非正/不稳/过期拒绝,质量事实复用；旧零点算法缺证,不将零值转默认测量,按真实采集及业务守卫,特定业务适用
+skipWeight,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.None仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
+skipToteCheck,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.None仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
+forceChutes,旧FormSystemConfig.cs用户引用30～50行,用户盘点；旧读取源码未取得,旧临时内存强制格口列表，重启不保留,Application维护,真实允许临时格口处置业务,RCS specified-chute是向上游请求，不覆盖上游,当前不提供本地强制格口,权限/原因/作用域需合同,临时动作与持久配置区分,特定业务适用；不可迁为相同功能
+AllowStartWithoutDevices,AGV设置调试组/重构线,用户盘点；旧读取源码未取得,界面启动与调试发包开关，不代表生产准入,启动诊断/应用守卫,当前产品,既有缺配可编辑；Production缺能力拒绝,已有启动隔离复用；不新增绕过,无设备可开设置，不伪造业务成功,不产生生产放行,废弃通用放行开关
+openSendWcsPkg,AGV设置调试组/重构线,用户盘点；旧读取源码未取得,界面启动与调试发包开关，不代表生产准入,启动诊断/应用守卫,当前产品,既有缺配可编辑；Production缺能力拒绝,已有启动隔离复用；不新增绕过,无设备可开设置，不伪造业务成功,不产生生产放行,废弃通用放行开关

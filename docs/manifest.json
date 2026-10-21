@@ -51400,10 +51400,10 @@
       "git_blob": "7b0c3ea4663a61357625d7520a3ecb7b05cc23f0",
       "sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
       "size_bytes": 629,
-      "version": "unchanged-from-39747a8",
-      "status": "inherited_baseline",
-      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
-      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.css",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository"
     },
     {
@@ -51411,10 +51411,10 @@
       "git_blob": "6c19c3e90a8829d58acb9d6d8ed2617d7c6cb30a",
       "sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
       "size_bytes": 1779,
-      "version": "unchanged-from-39747a8",
-      "status": "inherited_baseline",
-      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
-      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.json",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository"
     },
     {
@@ -64923,6 +64923,28 @@
       "sha256": "b7df4d9e031832d5a42ccba12239404d60cf5600ff9b400203a22b0b704726dd",
       "size_bytes": 13926,
       "git_blob": "68b177198c0476e5b95ee8e25aa42f049a708e7f",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/ui/sportmaster-task-redesign-20261020/source/aux.js",
+      "sha256": "2bcac072edc81a71c8cae09806c7986dbfa798f49068a28a9f0c57d2196b849c",
+      "size_bytes": 61577,
+      "git_blob": "a7bc98b493ba50ae88cbf924807626b315f8361e",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js",
+      "sha256": "1b82f61547590a44137b5419f0ff174dfcfb9cd7d6b712b9effa0eda486edb12",
+      "size_bytes": 89936,
+      "git_blob": "1ef04c538148c8e60f79004211091e7308f563bb",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",

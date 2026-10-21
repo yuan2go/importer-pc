@@ -1,28 +1,30 @@
 # OPS-ADMIN-LOGS-01 · 交付验证
 
-2026-10-21，开发分支 `codex/operator-admin-logs`，[PR86](https://github.com/yuan2go/importer-pc/pull/86)。开工及最终复核 main 均为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft）。整合85 `d52ade7` 与84 `587fbe8`，最终核对这四个PR的head均无后续源码差异，保留原PR和历史SourceCommit。最终产品为Sportmaster 1.10.1 / Contracts 1.15.0 / 配置schema3 / DB8；1.9.x、1.10.0及1.10.1早期冻结保留中间候选身份。
+2026-10-21，开发分支 `codex/operator-admin-logs`，[PR86](https://github.com/yuan2go/importer-pc/pull/86)。开工及最终复核 main 均为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft）。整合85 `d52ade7` 与84 `587fbe8`，最终核对这四个PR的head均无后续源码差异，保留原PR和历史SourceCommit。最终交付产品为Sportmaster 1.10.2 / Contracts 1.15.0 / 配置schema3 / DB8；1.9.x、1.10.0及1.10.1冻结保留中间候选身份。
 
 功能取舍见[工作包](../../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)，实际操作和安全边界见[当前指南](../operator-administrator-logs-01.md)。删除支持摘要的契约与实现，保留独立诊断、备份恢复和原业务审计。本轮不改写历史D/RV。
 
 ## 最终交付与本机D盘迁移
 
-推荐本机安装器 `CainiaoSupplyStation_SM_Setup_v1.10.1_win-x64.exe`，产品及固定原生夹具源码均为 **`674807df21087f992663469e6ead94ae9a4f9c8b`**。本机交付目录为 `D:/01_工作/供包台/交付/SM1.10.1-674807df/`，仅一个EXE且复制后hash核对一致；原构建留在 `.artifacts/ops-installer-1.10.1-ack/`，同源ZIP、库存与发布记录位于 `.artifacts/ops-release-1101-ack/`。后继 `8917115` 只修正CI证据目录，src/config无差异；本报告等收口提交也不重标介质。
+推荐安装器 `CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe`，产品及固定原生夹具源码为 **`c9e482a30d2d1643a498e7e7ba7f12563f46f3f5`**。本机交付目录 `D:/01_工作/供包台/交付/SM1.10.2-c9e482a3/` 仅一个EXE，复制后hash一致；原构建为 `.artifacts/ops-installer-1.10.2/`，同源ZIP与库存在 `.artifacts/ops-release-1102/`。后继064030a只修正测试对缺失接管证据的异常类型，src/config无差异；收口文档不重标介质。
 
 | 本机同源产物 | SHA-256 |
 |---|---|
-| 单文件安装器 | `1266f557b8c05f1d7f8e0ec536b0df56132d670eef8e14a7cdcf37055041b8e8` |
-| win-x64 ZIP，738项库存 | `b8a4ebca0f74f9284d3687238796147734013ccf2d6876204f2fc68025d98621` |
-| portable ZIP，112项库存 | `b401dd45c03b71a4f51b59e39271b2a1bb7e9d18dd8f70039b90930c5f8038be` |
+| 单文件安装器，178035322字节 | `8fd0afe6a053dfe1b0db7da63a7a6812a94070f8369442daf63fe141dcc3ab88` |
+| win-x64 ZIP，738项库存 | `1b2f978a97d811cd30b18f3e1967a60ae94e5839331eab935fb1ef3ce2ce2064` |
+| portable ZIP，112项库存 | `f8bd542dd01fccfc8a9d819f4bd6829677cbcd6ca0005bf6b06d8d96f3f3695f` |
 
-本机冻结DLL的管理员原生17项、首配93项通过，全部738项介质hash保持不变；当前关键截图均来自该冻结DLL。CI [run75](https://github.com/yuan2go/importer-pc/actions/runs/39619539493) 全部通过，其合并测试源码为 **`0de2e63a4505da8a2b25b8252d388c6a4465515e`**，与本机源码分别记录。CI真实SCM/System宿主及受限Windows令牌29条通过记录，含64次管道复用、密码登录、凭据读写/删除拒绝、首管批准、失败锁定、撤权、一次性票据及服务缺失拒绝。修正服务断开前未确认完整响应的真实竞争；客户端确认后才复用管道，不使用重试掩盖失败。
+本机冻结DLL管理员原生17项、首配93项通过，全部738项介质hash保持不变；当前截图来自该冻结DLL。CI [run78](https://github.com/yuan2go/importer-pc/actions/runs/39628940233) 全部通过，其合并测试源码为 **`c0ea40c337ba5aae2369e3e11fb96519e7985031`**，与本机冻结分别记录。真实SCM/System宿主及受限Windows令牌35条通过记录，覆盖64次管道复用、实际密码、首管批准、凭据读写/删除拒绝、锁定/撤权、一次性票据、服务缺失、同身份目录接管/重入、任意克隆及Production拒绝。CI77保留正确拒绝旧副本但夹具漏接FileNotFoundException的失败；修复没有删除拒绝断言。此前CI75/76分别保留原SourceCommit。
 
-CI冻结核心122条通过记录（其中管理员/日志52）、商业原生27、参数V3 227、视觉108，发布政策、原生安装器同源DLL核对和受控清理检查均通过。[CI可安装产物](https://github.com/yuan2go/importer-pc/actions/runs/39619539493/artifacts/12353194633)保留至2026-11-20，其SourceCommit保持上述CI合并树，不替代本机产物身份。
+CI78冻结核心125条通过记录（管理员/日志55）、商业原生27、管理员原生17、参数V3 227、视觉108，发布政策、安装器同源DLL核对与受控清理检查均通过。[CI可安装产物](https://github.com/yuan2go/importer-pc/actions/runs/39628940233/artifacts/12357059360)保留至2026-11-20，SourceCommit仍为CI合并树，不替代本机产物身份。
 
-公开归档按规范Git字节与最新main比较，均保留298项历史问题，本轮新增0；校验器原始状态仍为FAIL，未放宽规则。最终输入树及原报告hash见[本轮比较](../evidence/operator-administrator-logs-01/archive-comparison-final.json)，此前1.9.0比较回执另行保留。
+公开归档按规范Git字节对照最新main，双方均298项历史问题，包括重复项的多重集合完全相同，本轮新增0。校验器仍为FAIL，未放宽规则；输入树及原报告hash见[1.10.2比较](../evidence/operator-administrator-logs-01/archive-comparison-1.10.2.json)。历史比较和1.9.x/1.10.1回执均保留。
 
-用户追加“全部项目内容移到D盘，包括已安装程序和运行数据”已实际执行。74个遗留构建/验证目录、NuGet与dotnet开发缓存、5份仓库外私有原稿迁至D盘。1,658个原安装/配置/用户文件约485MB逐项内容和ACL核对后完成迁移，原件全部在D盘受保护回退目录；原始请求、配置账、DPAPI身份与草稿不改写。使用同源冻结介质完成原责任预检、完整备份和安装升级。正式安装、配置、用户数据及System认证宿主/账号根均位于 `D:/ImporterPc.Deployment/`；4个Windows快捷方式和系统安装登记已更新。普通、无Codex包身份的Windows进程再次核对实际路径、服务及登记为PASS，已安装EXE的 `--environment-report` 退出0。没有启动业务或设备，也没有创建默认管理员账号。
+用户要求的本机项目负载迁D盘已执行：74个遗留构建/验证目录、NuGet/dotnet开发缓存和5份仓库外私有原稿；1,658个原安装/配置/用户文件约485MB逐项内容及ACL核对，原件均在D盘受保护回退目录。正式程序、配置、运行数据及System认证宿主/账号根位于 `D:/ImporterPc.Deployment/`，4个快捷方式与安装登记指向D盘。首次目录数组错误、回退、MSIX路径隔离和后续修复全部保留。仅Windows系统登记/兼容入口元数据留C盘，未公开私有原稿、账号账或运行数据。
 
-迁移的首次目录数组格式失败、自动回退及MSIX路径隔离修复均保留在本机 `.artifacts/`。普通Windows环境已验证旧用户路径只作为D盘的兼容入口；受保护机器/账号路径直接使用D盘，不通过链接放宽守卫。仅系统登记和兼容入口元数据保留C盘。详见[D盘存储与运行](../d-drive-storage-20261021.md)。本次实际同机迁移/安装不扩大为完整安装器EXE交互、重启、双账号、换机恢复、真实SDK/RCS或现场验收通过。
+启动复核发现旧模拟来源凭证的目录仍绑定C盘。以本次c9e482冻结维护代码、经Windows授权在无包身份进程中核对原完整配置和每条原DB8记录、无作业/编号/测量责任后，先封存源，保留原ID及原密文，仅原子更新到同一物理D目录的定位。未签发新机器身份、未丢账或重发请求；生产/已有作业/任意克隆继续拒绝该入口。随后**实际已安装1.10.1（674807d）使用同一原模拟账启动并正常停止，退出0**；仅手动相机输入和reference接口，没有注入条码、连接真实设备或启动Production。此前仅安装登记的检查与这次业务启动分开记录。
+
+当前本机正式登记仍为1.10.1。1.10.2升级已备妥并尝试请求系统授权，但没有得到升级完成回执，不宣称已安装1.10.2；交付EXE已具备完整同源验证。未创建默认管理员，用户通过“登录与账号”自行选择真实凭据开通首管。详见[D盘存储与运行](../d-drive-storage-20261021.md)和[迁移启动增量](../evidence/operator-administrator-logs-01/d-storage-origin-closure.json)。同机迁移/启动不扩张为完整安装器EXE交互、重启、双账号、换机、真实SDK/RCS或现场验收。
 
 ## 本轮工程验证
 
@@ -30,14 +32,14 @@ CI冻结核心122条通过记录（其中管理员/日志52）、商业原生27�
 
 | 验证 | 结果与范围 |
 |---|---|
-| 核心 `--operator-administration` | 最终CI冻结52项PASS：真实密码哈希、首管不可覆盖、持久失败保护、退出/到期/账号撤销、一次性请求绑定helper授权、免登录管理员保护、参数保存守卫、轮转原始上下文、完整异常栈、307匹配/308时间记录全量导出、15000条流式导出与供包并发、正则超时/取消、未知防重、实际RCS无Query及Production缺保护拒绝。 |
+| 核心 `--operator-administration` | 最终CI78冻结55项PASS：真实密码哈希、首管不可覆盖、持久失败保护、退出/到期/账号撤销、一次性请求绑定helper授权、免登录管理员保护、参数保存守卫、轮转原始上下文、完整异常栈、307匹配/308时间记录全量导出、15000条流式导出与供包并发、正则超时/取消、未知防重、实际RCS无Query及Production缺保护拒绝。 |
 | `--parameter-refactor` | 最终提交8917115重建夹具81项PASS，含继承的四类完整候选、下限错误定位与拒绝首样本重启后身份冲突；与本机发布src/config无差异。 |
 | `--configuration-confirmation` | 41项PASS，暂停/排空、原确认身份、恢复与持久确认守卫；只对明确未准入状态有界等待，不吞异常。 |
 | `--parcel-recovery-p2` | 101项PASS，持久原次Query证据、重启与原请求不重发。 |
 | `--version-compatibility` | PASS，跨业务/篡改合同拒绝；原配置和Pending保留。 |
-| 原生 `--operator-administration` | 本机冻结674807及CI分别17项PASS、8张截图：常规/紧凑角色导航、真实账号显示、左右自动供包、完整候选跨退出保留、真实软件日志/原始异常路径与堆栈、800×420查询与取消、撤权关闭已打开页面。 |
+| 原生 `--operator-administration` | 本机冻结c9e482及CI78分别17项PASS、8张截图：常规/紧凑角色导航、真实账号显示、左右自动供包、完整候选跨退出保留、真实软件日志/原始异常路径与堆栈、800×420查询与取消、撤权关闭已打开页面。 |
 | 原生 `--parameter-v3` / `--visual-productization` | 最终CI冻结227 / 108项PASS，四类参数、保存核对、草稿/错误/焦点、条码与格口关联、800×420～1600×900客户区；此前219/102记录保留形成时身份。 |
-| 原生 `--startup-experience` | 本机冻结674807的93项PASS，五步完整候选、TCP/RCS静态配置、未知保存防重、首配/安装窗口及退出/到期后原候选重新登录。认证账可以创建，业务DB和设备租约不能在向导浏览时创建。 |
+| 原生 `--startup-experience` | 本机冻结c9e482的93项PASS，五步完整候选、TCP/RCS静态配置、未知保存防重、首配/安装窗口及退出/到期后原候选重新登录。认证账可以创建，业务DB和设备租约不能在向导浏览时创建。 |
 | 受影响Release构建 | 核心验证、原生验证、Sportmaster Desktop均0警告/0错误。 |
 | Python发布检查 | commercial_delivery 5、release_documents 2、release_build 1、unified_release 15项通过。首轮缺dotnet PATH及GBK解码失败保留，配置真实SDK路径、UTF-8和D盘TEMP后重跑通过。 |
 

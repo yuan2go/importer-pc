@@ -1,0 +1,22 @@
+{
+  "Status": "PASS_WITH_UNCOMPLETED_NEW_INSTALLER_UPGRADE",
+  "MaintenanceSource": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "InstalledSource": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "InstalledVersion": "SM1.10.1",
+  "DeliveryVersion": "SM1.10.2",
+  "PhysicalRoot": "D:/ImporterPc.Deployment",
+  "OriginalIdentityPreserved": true,
+  "OriginalOriginCiphertextPreservedOnD": true,
+  "OriginalRowsPreserved": true,
+  "EmptySimulationOnly": true,
+  "BeforeFirstSoftwareAdministrator": true,
+  "SourceRetiredBeforeRebind": true,
+  "OriginalLogicalDirectoryResolvesSameTarget": true,
+  "ExistingLedgerActualSimulationStartStopExitCode": 0,
+  "BarcodeInjected": false,
+  "ProductionOrPhysicalDevicesStarted": false,
+  "DefaultCredentialsCreated": false,
+  "Local1102Upgrade": "NOT_COMPLETED_NO_INSTALL_RECEIPT; current registration remains 1.10.1",
+  "Boundary": "Unpackaged Windows real filesystem/DPAPI/current installed EXE; synthetic configuration and reference ports, no production qualification",
+  "Privacy": "Aggregate only; SID, identities, original payloads, detailed inventory and machine receipts remain private on D"
+}

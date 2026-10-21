@@ -5,6 +5,9 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text.Json.Nodes;
 using Ipc.Platform;
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Assembly;
 using Microsoft.Win32.SafeHandles;
 
 static class AdministratorBoundary
@@ -15,12 +18,31 @@ static class AdministratorBoundary
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS BROKER: " + text); }
         void Deny(Action action, string text) { try { action(); throw new Exception("Expected denial: " + text); } catch (UnauthorizedAccessException) { Check(true, text); } }
+        var relocation = Path.GetFullPath(Path.Combine(evidence, "relocation")); Directory.CreateDirectory(relocation);
+        var legacy = Path.Combine(relocation, "legacy"); var target = Path.Combine(relocation, "target"); var retained = Path.Combine(relocation, "retained");
+        Directory.CreateDirectory(legacy); Directory.CreateDirectory(target); Directory.CreateDirectory(retained);
+        var configuration = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(media, "app/config/business.json"))) with { Mode = RunMode.Simulation };
+        ParcelMachineOrigin.EnsureNew(legacy, configuration);
+        var origin = Path.Combine(legacy, ParcelMachineOrigin.FileName); var hash = Wire.FileHash(origin);
+        var originalId = JsonNode.Parse(ProtectedDraftPayload.Read(origin))!["Id"]!.GetValue<string>();
+        File.Copy(origin, Path.Combine(target, ParcelMachineOrigin.FileName)); File.Copy(origin, Path.Combine(retained, ParcelMachineOrigin.FileName));
+        try { ParcelMachineOrigin.RebindUnusedSimulationDirectory(retained, target, configuration, hash); throw new Exception("Arbitrary clone accepted"); }
+        catch (InvalidDataException) { Check(Wire.FileHash(Path.Combine(target, ParcelMachineOrigin.FileName)) == hash, "arbitrary directory clone cannot change origin or acquire machine identity"); }
+        var oldDirectory = legacy + "-preserved"; Directory.Move(legacy, oldDirectory); Directory.CreateSymbolicLink(legacy, target);
+        var identity = ParcelMachineOrigin.RebindUnusedSimulationDirectory(retained, target, configuration, hash);
+        Check(identity == originalId && Wire.FileHash(Path.Combine(retained, ParcelMachineOrigin.FileName)) == hash, "approved same-physical-directory locator rebind keeps original identity and ciphertext backup");
+        ParcelMachineOrigin.Require(target, configuration);
+        Check(ParcelMachineOrigin.RebindUnusedSimulationDirectory(retained, target, configuration, hash) == originalId, "interrupted relocation resumes idempotently with the same identity");
+        try { ParcelMachineOrigin.RebindUnusedSimulationDirectory(retained, target, configuration with { Mode = RunMode.Production }, hash); throw new Exception("Production exception accepted"); }
+        catch (InvalidOperationException) { Check(true, "unused simulation exception never applies to production"); }
+        try { ParcelMachineOrigin.Require(oldDirectory, configuration); throw new Exception("Old clone accepted"); }
+        catch (InvalidDataException) { Check(true, "unchanged old copy still cannot become a second usable machine"); }
         var root = Path.GetFullPath(Path.Combine(evidence, "boundary-data"));
         if (Directory.Exists(root) || AdministratorBroker.IsManaged(root)) throw new InvalidOperationException("New isolated broker fixture root required");
         Directory.CreateDirectory(root);
         var fakePassword = "Untrusted-" + Guid.NewGuid().ToString("N");
         var untrusted = new LocalAdministrator(root); untrusted.Provision("untrusted-old", fakePassword);
-        var protectedParent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ImporterPc.Administrator");
+        var protectedParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
         void SecureDirectory(string path)
         {
             if (!System.IO.Directory.Exists(path)) new DirectoryInfo(path).Create(MachineRuntimeSetup.DirectoryAcl(new("S-1-5-32-545"), FileSystemRights.ReadAndExecute));
@@ -30,8 +52,8 @@ static class AdministratorBoundary
         var source = Path.Combine(protectedParent, "verification", Wire.Id()); SecureDirectory(source);
         foreach (var file in System.IO.Directory.GetFiles(Path.Combine(media, "app"), "*", SearchOption.AllDirectories))
         {
-            var target = Path.Combine(source, Path.GetRelativePath(Path.Combine(media, "app"), file)); SecureDirectory(Path.GetDirectoryName(target)!);
-            using var output = new FileInfo(target).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
+            var installedFile = Path.Combine(source, Path.GetRelativePath(Path.Combine(media, "app"), file)); SecureDirectory(Path.GetDirectoryName(installedFile)!);
+            using var output = new FileInfo(installedFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
             using var input = File.OpenRead(file); input.CopyTo(output); output.Flush(true);
         }
         using var current = WindowsIdentity.GetCurrent(); using var ordinary = Restricted(current.AccessToken);
@@ -45,6 +67,7 @@ static class AdministratorBoundary
             AsOrdinary(() =>
             {
                 using var identity = WindowsIdentity.GetCurrent(); Check(!new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator), "fixture uses a real Windows token with administrator membership disabled");
+                Deny(() => AdministratorBroker.RequireUnprovisionedInstaller(root), "ordinary Windows caller cannot invoke offline storage relocation");
                 Deny(() => new LocalAdministrator(root).Provision("forged-admin", password), "ordinary Windows caller cannot claim the first protected administrator");
             });
             client.Provision("boundary-admin", password); Check(client.Login("boundary-admin", password), "approved first account still needs its actual software password");

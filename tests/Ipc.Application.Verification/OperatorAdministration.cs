@@ -5,6 +5,7 @@ using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 using Ipc.Assembly;
+using Microsoft.Data.Sqlite;
 
 static class OperatorAdministration
 {
@@ -13,6 +14,20 @@ static class OperatorAdministration
     { try { await action(); throw new Exception("Expected rejection: " + message); } catch (T) { Check(true, message); } }
     public static async Task Run(string workspace, string root)
     {
+        var relocationSource = Path.Combine(root, "relocation-source"); var relocationTarget = Path.Combine(root, "relocation-target");
+        using (var unused = new ParcelRepository(relocationSource, "sportmaster")) { }
+        Directory.CreateDirectory(relocationTarget);
+        var sourceDatabase = Path.Combine(relocationSource, "sportmaster.db"); var targetDatabase = Path.Combine(relocationTarget, "sportmaster.db");
+        void Execute(string file, string sql) { using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Pooling = false }.ToString()); db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = sql; cmd.ExecuteNonQuery(); }
+        Execute(sourceDatabase, "INSERT INTO parcel_audit(at,event,owner,detail) VALUES('synthetic','Original','owner','preserve')");
+        File.Copy(sourceDatabase, targetDatabase);
+        Execute(targetDatabase, "INSERT INTO parcel_audit(at,event,owner,detail) VALUES('synthetic','Maintenance','owner','additional')");
+        ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase);
+        Check(true, "unused simulation relocation preserves every original row while allowing additional maintenance audit");
+        Execute(targetDatabase, "UPDATE parcel_audit SET detail='changed' WHERE event='Original'");
+        await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase)), "relocation refuses changed original audit instead of silently accepting a fresh ledger");
+        Execute(targetDatabase, "UPDATE parcel_audit SET detail='preserve' WHERE event='Original'; INSERT INTO parcel_operations VALUES('synthetic','admission','observation','{}')");
+        await Reject<InvalidOperationException>(() => Task.Run(() => ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase)), "even one original operation prevents the unused-simulation relocation exception");
         var data = Path.Combine(root, "admin-log-data"); var admin = LocalAdministrator.ForRoot(data);
         var password = "Synthetic-" + Guid.NewGuid().ToString("N");
         Check(!admin.Status().Provisioned && !admin.Status().Authorized, "no default account or password grants software authority");

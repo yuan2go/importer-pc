@@ -12,15 +12,7 @@ namespace Ipc.Platform;
 public static partial class AdministratorBroker
 {
     static string Key(string root) => Wire.Hash(CanonicalRoot(root).TrimEnd(Path.DirectorySeparatorChar).ToUpperInvariant())[..24];
-    static string CanonicalRoot(string root)
-    {
-        var full = Path.GetFullPath(root); if (!OperatingSystem.IsWindows() || !Directory.Exists(full)) return full;
-        using var directory = CreateFile(full, 0, 7, IntPtr.Zero, 3, 0x02000000, IntPtr.Zero);
-        if (directory.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
-        var name = new System.Text.StringBuilder(32768); var size = GetFinalPathNameByHandle(directory, name, name.Capacity, 0);
-        if (size == 0 || size >= name.Capacity) throw new Win32Exception(Marshal.GetLastWin32Error());
-        var value = name.ToString(); return value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase) ? @"\\" + value[8..] : value.StartsWith(@"\\?\", StringComparison.Ordinal) ? value[4..] : value;
-    }
+    static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
     public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
     static string PipeName(string root) => "ImporterPc.Administrator.v1." + Key(root);
@@ -42,6 +34,12 @@ public static partial class AdministratorBroker
     {
         if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的软件管理员认证服务；请使用同版安装器安装或修复。");
         if (!Call<AdministratorStatus>(root, new("Status")).Provisioned) throw new InvalidOperationException("请先由安装管理员开通首个软件管理员；未开放生产业务。");
+    }
+    public static void RequireUnprovisionedInstaller(string root)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (!IsManaged(root) || Call<AdministratorStatus>(root, new("Status")).Provisioned)
+            throw new UnauthorizedAccessException("此旧模拟目录迁移仅允许安装维护在首个软件管理员开通前执行；已开通部署使用原授权完整恢复流程。");
     }
     [SupportedOSPlatform("windows")]
     static void RequireServer(string root, SafePipeHandle pipe)
@@ -163,8 +161,6 @@ public static partial class AdministratorBroker
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern bool ConvertStringSecurityDescriptorToSecurityDescriptor(string text, uint revision, out IntPtr descriptor, out uint size);
     [DllImport("kernel32.dll")] static extern IntPtr LocalFree(IntPtr pointer);
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern SafePipeHandle CreateNamedPipe(string name, uint mode, uint pipeMode, uint instances, int outputSize, int inputSize, uint timeout, ref SecurityAttributes security);
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern SafeFileHandle CreateFile(string path, uint access, uint share, IntPtr security, uint creation, uint flags, IntPtr template);
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern uint GetFinalPathNameByHandle(SafeFileHandle file, System.Text.StringBuilder path, int size, uint flags);
 }
 
 public sealed partial class LocalAdministrator

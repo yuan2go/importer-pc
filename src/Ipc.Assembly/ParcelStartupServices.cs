@@ -40,6 +40,12 @@ public static class ParcelStartupServices
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
+    public static Task<UnusedSimulationRelocation> CompleteUnusedSimulationRelocationAsync(string original, string expectedOriginHash)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原安装登记。");
+        return Core(new(current.ConfigurationDirectory, current.DataRoot, null, null), installer: true).CompleteUnusedSimulationRelocationAsync(original, expectedOriginHash);
+    }
     public static string DefaultRuntimeAccount(bool currentUserOnly = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();

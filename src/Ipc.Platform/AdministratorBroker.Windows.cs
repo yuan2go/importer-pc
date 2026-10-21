@@ -96,6 +96,12 @@ public static partial class AdministratorBroker
         GC.KeepAlive(main); GC.KeepAlive(handler);
     }
     static readonly SemaphoreSlim passwordWork = new(1, 1);
+    static async Task Reply(NamedPipeServerStream pipe, AdministratorRpcReply reply, CancellationToken token)
+    {
+        await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(reply), token).ConfigureAwait(false);
+        var acknowledgment = new byte[1]; await pipe.ReadExactlyAsync(acknowledgment, token).ConfigureAwait(false);
+        if (acknowledgment[0] != 1) throw new InvalidDataException("认证响应接收确认无效。");
+    }
     [SupportedOSPlatform("windows")]
     static async Task Serve(string root, NamedPipeServerStream pipe, CancellationToken stopping)
     {
@@ -113,13 +119,13 @@ public static partial class AdministratorBroker
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
                 try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalAdministrator(root, true).HandleBrokerRequest(request, installer), budget.Token).ConfigureAwait(false); }
                 finally { if (expensive) passwordWork.Release(); }
-                await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(new AdministratorRpcReply(JsonSerializer.SerializeToElement(value))), budget.Token).ConfigureAwait(false);
+                await Reply(pipe, new AdministratorRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
             }
             catch (OperationCanceledException) { }
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
             {
                 var code = error is AdministratorBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
-                try { await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(new AdministratorRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code)), budget.Token).ConfigureAwait(false); }
+                try { await Reply(pipe, new AdministratorRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
                 catch (Exception send) when (send is IOException or OperationCanceledException) { }
             }
             finally { if (pipe.IsConnected) pipe.Disconnect(); }

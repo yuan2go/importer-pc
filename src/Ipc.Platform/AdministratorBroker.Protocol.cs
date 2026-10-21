@@ -33,7 +33,11 @@ public static partial class AdministratorBroker
         pipe.ConnectAsync(request.Action == "Status" ? 100 : 2000, budget.Token).GetAwaiter().GetResult();
         RequireServer(root, pipe.SafePipeHandle);
         WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(request), budget.Token).GetAwaiter().GetResult();
-        var response = JsonSerializer.Deserialize<AdministratorRpcReply>(ReadFrame(pipe, budget.Token).GetAwaiter().GetResult()) ?? throw new InvalidDataException("认证服务响应无效。");
+        var bytes = ReadFrame(pipe, budget.Token).GetAwaiter().GetResult();
+        // DisconnectNamedPipe discards unread bytes. Acknowledge the complete frame
+        // before the server reuses an instance, including rejected requests.
+        pipe.WriteAsync(new byte[] { 1 }, budget.Token).AsTask().GetAwaiter().GetResult();
+        var response = JsonSerializer.Deserialize<AdministratorRpcReply>(bytes) ?? throw new InvalidDataException("认证服务响应无效。");
         if (response.Error is not null)
         {
             if (response.Code == "BootstrapRequiresInstaller") throw new AdministratorBootstrapRequiredException(response.Error);

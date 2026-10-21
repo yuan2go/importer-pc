@@ -48,6 +48,7 @@ static class AdministratorBoundary
                 Deny(() => new LocalAdministrator(root).Provision("forged-admin", password), "ordinary Windows caller cannot claim the first protected administrator");
             });
             client.Provision("boundary-admin", password); Check(client.Login("boundary-admin", password), "approved first account still needs its actual software password");
+            Check(Enumerable.Range(0, 64).All(_ => client.InspectStatus().Authorized), "reused pipe instances retain each complete acknowledged reply across 64 round trips");
             var protectedCredentials = Path.Combine(AdministratorBroker.ProtectedRoot(root), "administrators.json");
             Check(!File.ReadAllText(protectedCredentials).Contains(password), "System store contains salted password hashes, not passwords");
             AsOrdinary(() =>

@@ -23,8 +23,8 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, true);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
-        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
@@ -164,13 +164,13 @@ static partial class Program
         Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
             (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
             "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");
-        Check(vm.IsAdministrator && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
+        Check(vm.IsManagementMode && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
             "save review is accessible under the authenticated software administrator");
         var reviewSeen = false; double editorHeight = 0;
         await ObserveSaveReviewAsync(window, maintenance, dialog =>
         {
             reviewSeen = !vm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                vm.IsAdministrator && !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
+                vm.IsManagementMode && !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
             var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
             Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
                 "native review displays the current station change from the validated complete candidate");
@@ -195,7 +195,7 @@ static partial class Program
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; AdministratorFixture.AuthorizeRoot(offline.DataRoot);
+            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; ManagementModeFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busyField = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);

@@ -57,9 +57,9 @@ public sealed partial class ParcelRuntime
             foreach (var resource in resources) maintainedResources.TryAdd(resource, 0);
             foreach (var port in selectedPorts)
                 if (capabilityHealth.TryGetValue(port.InstanceId, out var original)) capabilityHealth[port.InstanceId] = original with { Ready = false, Detail = "Maintenance in progress; original confirmation retained" };
-            repository.Commit(null, "MaintenanceStarted", Wire.Encode(new { Device = key, Actor = AdministratorIdentity, TimeoutMs = Effective.TimeoutMs }));
-            var actor = AdministratorIdentity!;
-            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Administrator.Require()); budget.CancelAfter(Effective.TimeoutMs);
+            repository.Commit(null, "MaintenanceStarted", Wire.Encode(new { Device = key, Actor = ManagementEvidence, TimeoutMs = Effective.TimeoutMs }));
+            var actor = ManagementEvidence!;
+            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Management.Require()); budget.CancelAfter(Effective.TimeoutMs);
             try
             {
                 await ExternalAsync(async () =>
@@ -83,7 +83,7 @@ public sealed partial class ParcelRuntime
                     budget.Token.ThrowIfCancellationRequested();
                     return true;
                 }).ConfigureAwait(false);
-                repository.Commit(null, "DeviceReconnected", "Actor=" + actor.Subject + "; device=" + key + "; no original request resent");
+                repository.Commit(null, "DeviceReconnected", "Actor=" + actor.AuditActor + "; device=" + key + "; no original request resent");
                 return new("Reconnected", "Selected lifecycle completed; software paused=" + repository.Paused + "; current health is required before dependent work", repository.Revision);
             }
             catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)

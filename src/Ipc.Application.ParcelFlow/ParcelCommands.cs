@@ -71,11 +71,11 @@ public sealed partial class ParcelRuntime
                     if (owner.Length != 3 || !Guid.TryParseExact(owner[0], "N", out var inspectedRuntime) || !long.TryParse(owner[1], out var configurationRevision))
                         return new("Rejected", "Owner must be runtimeIdN:configurationRevision:effectiveSha256", repository.Revision);
                     if (inspectedRuntime != runtimeId) return new("Conflict", "Runtime identity changed; inspect this instance before confirming Effective", repository.Revision);
-                    try { configuration!.ConfirmEffective(configurationRevision, owner[2], AdministratorIdentity!.Subject, command.Value); }
+                    try { configuration!.ConfirmEffective(configurationRevision, owner[2], ManagementEvidence!.AuditActor, command.Value); }
                     catch (InvalidOperationException ex) { return new("Conflict", ex.Message, repository.Revision); }
                     catch (InvalidDataException ex) { return new("Rejected", ex.Message, repository.Revision); }
                     repository.Commit(null, "ConfigurationEffectiveConfirmed", Wire.Encode(new { ConfigurationRevision = configuration!.Current.Revision,
-                        RuntimeId = runtimeId, EffectiveHash = owner[2], Maintenance = AdministratorIdentity!.Subject, Reason = command.Value }), command: command);
+                        RuntimeId = runtimeId, EffectiveHash = owner[2], Maintenance = ManagementEvidence!.AuditActor, Reason = command.Value }), command: command);
                     break;
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
                 case "Resume" when CanResume():
@@ -85,10 +85,10 @@ public sealed partial class ParcelRuntime
                     repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged; original=" + originalOverload, command: command, acknowledgedOverload: originalOverload);
                     Boundary?.Invoke("AfterOverloadAcknowledged"); RecoverOverloadAcknowledgement(); break;
                 case "AcknowledgeIdentityConflict" when CanConfigure && command.Owner is not null && identityConflicts.ContainsKey(command.Owner) && !string.IsNullOrWhiteSpace(command.Value):
-                    repository.Commit(null, "IdentityConflictAcknowledged", "Maintenance=" + AdministratorIdentity!.Subject + "; original=" + command.Owner + "; " + command.Value, command: command, clearConflict: command.Owner);
+                    repository.Commit(null, "IdentityConflictAcknowledged", "Maintenance=" + ManagementEvidence!.AuditActor + "; original=" + command.Owner + "; " + command.Value, command: command, clearConflict: command.Owner);
                     identityConflicts.Remove(command.Owner); break;
                 case "ArchiveHistory" when CanConfigure && !string.IsNullOrWhiteSpace(command.Value):
-                    ArchiveSettled(true, "Maintenance=" + AdministratorIdentity?.Subject + "; " + command.Value); break;
+                    ArchiveSettled(true, "Maintenance=" + ManagementEvidence?.AuditActor + "; " + command.Value); break;
                 case "ContinuePrepared" when command.Owner is not null && operations.TryGetValue(command.Owner, out var op) &&
                     CanContinue(op):
                     if (op.RecoveryRequired)
@@ -127,8 +127,8 @@ public sealed partial class ParcelRuntime
             if (stopped || configuration is null || !CanConfigure) return new("Rejected", "Pause and authenticate maintenance before configuration", repository?.Revision ?? 0);
             if (string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) return new("Rejected", "A maintenance change reason of 1..1024 characters is required", repository!.Revision);
             candidate = Wire.Decode<ParcelConfiguration>(Wire.Encode(candidate));
-            audit = new(Wire.Id(), DateTimeOffset.UtcNow, AdministratorIdentity, reason, configuration.Current.Revision, configuration.Current.Revision,
-                Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate);
+            audit = new(Wire.Id(), DateTimeOffset.UtcNow, currentOperator, reason, configuration.Current.Revision, configuration.Current.Revision,
+                Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate, Authorization: ManagementEvidence);
             repository!.Commit(null, "ConfigurationChangePrepared", Wire.Encode(audit), configurationAudit: audit);
             if (Effective.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("Topology schema downgrade/flattening is forbidden");
             var errors = definition.Validate(candidate);
@@ -150,7 +150,7 @@ public sealed partial class ParcelRuntime
                 repository.Commit(null, "ConfigurationPendingAlreadySaved", Wire.Encode(audit), configurationAudit: audit);
                 return new("PendingRestart", "Identical candidate already saved; Effective unchanged", repository.Revision);
             }
-            Administrator.Require();
+            Management.Require();
             configuration.Stage(expectedRevision, candidate);
             Diagnostic("参数", "配置已保存待重启", detail: "Revision=" + configuration.Current.Revision);
             Boundary?.Invoke("AfterConfigurationStaged");
@@ -179,7 +179,7 @@ public sealed partial class ParcelRuntime
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
             foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
             ParcelRecovery.CreateBackup(directory!, destination, Effective, configuration!.Current.Pending, repository.StorageBytes,
-                repository.Backup, factory.RegisterBackup, () => { Administrator.Require(); });
+                repository.Backup, factory.RegisterBackup, () => { Management.Require(); });
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
         }
         finally { gate.Release(); }

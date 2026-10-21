@@ -6,7 +6,7 @@ public sealed partial class ParcelRuntime
 {
     public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates)
     {
-        Administrator.Require();
+        Management.Require();
         // Offline, bounded, no configuration write or external/device operation.
         return Task.FromResult(BarcodeFiltering.Select(policy, candidates.ToArray()));
     }
@@ -15,7 +15,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            Administrator.Require();
+            Management.Require();
             if (stopped || owner != runtimeId || configuration is null || directory is null)
                 return new("Unknown", "原运行实例不可核对；保留输入，不重新提交", expectedRevision, "");
             var normalized = factory.Normalize(Wire.Decode<ParcelConfiguration>(Wire.Encode(candidate)));

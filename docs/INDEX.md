@@ -1,14 +1,14 @@
 > 2026-10-22 当前已合并PR82～86：[SM1.10.2单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[本轮不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
 
-# 文档索引 · 现场作业、软件管理员与日志
+# 文档索引 · 作业、管理模式与日志
 
-当前实施为 [OPS-ADMIN-LOGS-01](work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)。普通操作员只使用作业和作业记录；软件管理员增加参数设置、日志查询，并按需诊断恢复。正常读码后自动取得目标格口，无逐包点击。帮助与支持功能已从产品范围删除。
+当前纠偏实施为[MANAGEMENT-MODE-01](work-packages/WP-IPC-MANAGEMENT-MODE-01.md)：管理能力是防误改的管理模式，不是管理员账号。操作员身份独立，普通模式只使用作业/记录，管理模式开放参数和日志。正常读码自动取格口，帮助支持保持删除。旧1.10.2发行链接及证据为历史已交付版本，不代表模式增量已发布。
 
 | 阅读目的 | 当前入口 |
 |---|---|
-| 本轮功能取舍、合并来源与权限边界 | [统一工作包](work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md) |
-| 账号、参数权限、日志与部署兼容 | [当前操作与实现](runtime/operator-administrator-logs-01.md) |
-| 本轮验证、截图及未验边界 | [同版交付记录](runtime/validation/operator-administrator-logs-01.md) |
+| 当前模式语义与权限边界 | [管理模式工作包](work-packages/WP-IPC-MANAGEMENT-MODE-01.md)、[操作与实现](runtime/management-mode-01.md) |
+| 1.10.2历史账号/日志实现及纠偏替代关系 | [前版实现](runtime/operator-administrator-logs-01.md) |
+| 管理模式验证、截图及未验边界 | [本轮记录](runtime/validation/management-mode-01.md)；[前版1.10.2](runtime/validation/operator-administrator-logs-01.md) |
 | 本机全部项目文件、安装与数据的D盘迁移 | [D盘存储与运行](runtime/d-drive-storage-20261021.md) |
 | 框架与业务所有权 | [框架](design/framework.md)、[决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
 | 参数字段、完整候选及唯一账 | [参数继承](design/parameter-inheritance-02.md)、[93项迁移](design/parameter-legacy-migration-02.csv)、[PARAM-UX-02](design/parameter-settings-experience-02.md)、[V3基线](ui/parameter-settings-v3-20261020/README.md) |

@@ -122,7 +122,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     readonly TextBox config, data;
     string reason = "", backup = "", restoreRoot = "", backupCatalogRoot = "";
     public BusinessLaunch SelectedLaunch { get; private set; }
-    IAdministratorAccounts AdministratorAccounts => ParcelStartupServices.AdministratorAccounts(SelectedLaunch);
+    IManagementMode ManagementMode => ParcelStartupServices.ManagementMode(SelectedLaunch);
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
     public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次配置 · 菜鸟供包台" : "启动修复 · 离线维护")
@@ -135,10 +135,10 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
         pathFields = Body.Children.Cast<UIElement>().ToArray();
-        var administratorIdentity = new TextBlock { Text = "管理员未登录", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
+        var administratorIdentity = new TextBlock { Text = "普通模式", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
         SessionActions.Children.Add(administratorIdentity);
-        var administratorLogin = new Button { Content = "软件管理员登录…", MinHeight = 44 };
-        administratorLogin.Click += async (_, _) => { new AdministratorWindow(AdministratorAccounts) { Owner = this }.ShowDialog(); if (draft is null && !Busy) await Run(Read); };
+        var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
+        administratorLogin.Click += async (_, _) => { if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) await ManagementMode.ExitManagementModeAsync(); else new ManagementModeWindow(ManagementMode) { Owner = this }.ShowDialog(); if (draft is null && !Busy) await Run(Read); };
         SessionActions.Children.Add(administratorLogin);
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", CheckCandidate);
@@ -240,24 +240,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         bool checkingAuthority = false, authorityWasBlocked = false;
         string? statusBeforeAuthorityBlock = null;
-        const string authorityBlockedMessage = "管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。";
+        const string authorityBlockedMessage = "管理模式未开启或已到期；输入已保护，请使用重新进入管理模式后继续。";
         authorizationTimer.Tick += async (_, _) =>
         {
             if (checkingAuthority) return; checkingAuthority = true;
             try
             {
-                var identity = await AdministratorAccounts.AdministratorStatusAsync(); var allowed = identity.Authorized;
-                administratorIdentity.Text = allowed ? "管理员\n" + identity.Account : "管理员未登录"; administratorIdentity.ToolTip = administratorIdentity.Text;
+                var identity = await ManagementMode.ManagementModeStatusAsync(); var allowed = identity.Authorized;
+                administratorIdentity.Text = allowed ? "管理模式\n" + identity.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出" : "普通模式"; administratorIdentity.ToolTip = administratorIdentity.Text; administratorLogin.Content = allowed ? "退出管理模式" : "进入管理模式…";
                 Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
                 if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(authorityBlockedMessage); }
-                else if (allowed && authorityWasBlocked && Status.Text == authorityBlockedMessage) Message(statusBeforeAuthorityBlock ?? "管理员已登录，原填写内容已恢复。");
+                else if (allowed && authorityWasBlocked && Status.Text == authorityBlockedMessage) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，原填写内容已恢复。");
                 authorityWasBlocked = !allowed;
             }
-            catch (Exception error) { administratorIdentity.Text = "管理员未登录"; Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
+            catch (Exception error) { administratorIdentity.Text = "普通模式"; Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
             finally { checkingAuthority = false; }
         };
         Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
-        Loaded += async (_, _) => await Run(async () => { try { var admin = AdministratorAccounts; if (!(await admin.AdministratorStatusAsync()).Authorized) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
+        Loaded += async (_, _) => await Run(async () => { try { var admin = ManagementMode; if (!(await admin.ManagementModeStatusAsync()).Authorized) new ManagementModeWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
     }
     async Task ValidateBarcodeRule()
     {
@@ -368,13 +368,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
     new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
     {
-        if (label is not ("软件管理员登录…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
+        if (label is not ("进入管理模式…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
         await action();
     });
     async Task RequireMaintenance()
     {
         RequireDirectories();
-        if (!(await AdministratorAccounts.AdministratorStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先登录软件管理员；原输入保留。");
+        if (!(await ManagementMode.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先进入管理模式；原输入保留。");
         if (maintenance is null) throw new InvalidOperationException("先读取所选目录；失败读取不能沿用另一目录的维护实例。");
     }
     bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();

@@ -43,7 +43,7 @@ static class BackupHealthRecovery
         {
             var c = Config(); var (app, launch) = Create(c, "backup-links"); await using var owned = app;
             await app.StartAsync(CancellationToken.None); await Command(app, "Pause");
-            await AdministratorFixture.Authorize(app);
+            await ManagementModeFixture.Authorize(app);
             var live = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId);
             async Task Reject(string destination, string detail)
             {
@@ -81,7 +81,7 @@ static class BackupHealthRecovery
             // not a production adapter, approved deployment, or device operation.
             var c = Config(); var (app, launch) = Create(c, "restore-mode"); await using var owned = app;
             await app.StartAsync(CancellationToken.None); await Command(app, "Pause");
-            await AdministratorFixture.Authorize(app);
+            await ManagementModeFixture.Authorize(app);
             var backup = Path.Combine(root, "mode.db"); await app.BackupAsync(backup);
             var recovery = backup + ".recovery"; var configFile = Path.Combine(recovery, "configuration.json");
             var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configFile));
@@ -113,7 +113,7 @@ static class BackupHealthRecovery
             var (app, launch) = Create(c, "custody"); await using var owned = app; await app.StartAsync(CancellationToken.None);
             Check(app.EmitReference("original-parcel", "00001", "original-event"), "original image observation admitted");
             var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Upload?.State == StageState.Unknown); var op = s.Operations.Single();
-            await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
+            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             var originalDirectory = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId);
             var originalImage = Path.Combine(originalDirectory, op.Image!.RelativeFile); var originalHash = Wire.FileHash(originalImage);
             var backup = Path.Combine(root, "custody.db");

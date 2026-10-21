@@ -10,8 +10,8 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
 {
     internal Func<string> MaintenanceWorkspace { get; set; } = MachineRuntimeSetup.CreateMaintenanceWorkspace;
     string Seed => Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "business.json");
-    void Authorize() { if (requireAuthority is not null) requireAuthority(); else LocalAdministrator.ForRoot(launch.DataRoot).Require(); }
-    string Actor => authorizedActor?.Invoke() ?? LocalAdministrator.ForRoot(launch.DataRoot).Identity?.Subject ?? Environment.UserName;
+    void Authorize() { if (requireAuthority is not null) requireAuthority(); else LocalManagementMode.ForRoot(launch.DataRoot).Require(); }
+    string Actor => authorizedActor?.Invoke() ?? LocalManagementMode.ForRoot(launch.DataRoot).Evidence?.AuditActor ?? Environment.UserName;
     static byte[] ReadBytes(string path)
     {
         RecoveryFiles.RequireOrdinaryAncestors(path);
@@ -58,7 +58,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         // Launch routing discloses no configuration values and creates no data/accounts.
         try { var state = ReadState(false); return Task.FromResult(new StartupClassification(state.Envelope is not null, true, [])); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
-        { return Task.FromResult(new StartupClassification(false, false, ["原配置不可读取，请由管理员打开启动修复。", error.GetType().Name])); }
+        { return Task.FromResult(new StartupClassification(false, false, ["原配置不可读取，请由维护人员进入管理模式打开启动修复。", error.GetType().Name])); }
     }
     public async Task<StartupMaintenanceDocument> ReadAsync()
     {

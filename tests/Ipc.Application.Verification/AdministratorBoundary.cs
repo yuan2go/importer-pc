@@ -38,10 +38,10 @@ static class AdministratorBoundary
         try { ParcelMachineOrigin.Require(oldDirectory, configuration); throw new Exception("Old clone accepted"); }
         catch (Exception error) when (error is InvalidDataException or FileNotFoundException) { Check(true, "unchanged old copy still cannot become a second usable machine"); }
         var root = Path.GetFullPath(Path.Combine(evidence, "boundary-data"));
-        if (Directory.Exists(root) || AdministratorBroker.IsManaged(root)) throw new InvalidOperationException("New isolated broker fixture root required");
+        if (Directory.Exists(root) || ManagementModeBroker.IsManaged(root)) throw new InvalidOperationException("New isolated broker fixture root required");
         Directory.CreateDirectory(root);
         var fakePassword = "Untrusted-" + Guid.NewGuid().ToString("N");
-        var untrusted = new LocalAdministrator(root); untrusted.Provision("untrusted-old", fakePassword);
+        var untrusted = new LocalManagementMode(root); untrusted.ConfigurePassword(fakePassword);
         var protectedParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
         void SecureDirectory(string path)
         {
@@ -60,66 +60,112 @@ static class AdministratorBoundary
         void AsOrdinary(Action action) => WindowsIdentity.RunImpersonated(ordinary, action);
         try
         {
-            AdministratorBroker.Install(root, source); Check(AdministratorBroker.IsManaged(root), "SCM starts the real frozen System authentication host with protected credentials");
-            var client = new LocalAdministrator(root);
-            Check(!client.InspectStatus().Provisioned && !client.Login("untrusted-old", fakePassword), "old runtime-writable credentials do not become a protected administrator");
+            ManagementModeBroker.Install(root, source); Check(ManagementModeBroker.IsManaged(root), "SCM starts the real frozen System authentication host with protected credentials");
+            var client = new LocalManagementMode(root);
+            Check(!client.InspectStatus().Configured && !client.Enter(fakePassword), "old runtime-writable credentials do not become a protected management mode");
             var password = "Protected-" + Guid.NewGuid().ToString("N");
             AsOrdinary(() =>
             {
                 using var identity = WindowsIdentity.GetCurrent(); Check(!new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator), "fixture uses a real Windows token with administrator membership disabled");
-                Deny(() => AdministratorBroker.RequireUnprovisionedInstaller(root), "ordinary Windows caller cannot invoke offline storage relocation");
-                Deny(() => new LocalAdministrator(root).Provision("forged-admin", password), "ordinary Windows caller cannot claim the first protected administrator");
+                Deny(() => ManagementModeBroker.RequireUnprovisionedInstaller(root), "ordinary Windows caller cannot invoke offline storage relocation");
+                Deny(() => new LocalManagementMode(root).ConfigurePassword(password), "ordinary Windows caller cannot claim the first protected management mode");
             });
-            client.Provision("boundary-admin", password); Check(client.Login("boundary-admin", password), "approved first account still needs its actual software password");
+            client.ConfigurePassword(password); Check(client.Enter(password), "approved initial password still needs its actual software password");
             Check(Enumerable.Range(0, 64).All(_ => client.InspectStatus().Authorized), "reused pipe instances retain each complete acknowledged reply across 64 round trips");
-            var protectedCredentials = Path.Combine(AdministratorBroker.ProtectedRoot(root), "administrators.json");
+            var protectedCredentials = Path.Combine(ManagementModeBroker.ProtectedRoot(root), "management-mode.json");
             Check(!File.ReadAllText(protectedCredentials).Contains(password), "System store contains salted password hashes, not passwords");
+            Check(JsonNode.Parse(File.ReadAllText(protectedCredentials))!["Audit"]!.AsArray().Any(a=>a?["WindowsSid"]?.GetValue<string>()==current.User!.Value), "mode audit records the real Windows caller context without creating a software account");
             AsOrdinary(() =>
             {
                 Deny(() => File.ReadAllText(protectedCredentials), "runtime token cannot read protected password/session state");
                 Deny(() => File.WriteAllText(protectedCredentials, "{}"), "runtime token cannot replace protected credentials");
                 Deny(() => File.Delete(protectedCredentials), "runtime token cannot delete protected credentials or reopen bootstrap");
-                var operatorClient = new LocalAdministrator(root);
-                Check(operatorClient.Login("boundary-admin", password) && operatorClient.InspectStatus().Authorized, "software administrator authentication works under an ordinary Windows token");
-                operatorClient.Logout(); Check(!operatorClient.InspectStatus().Authorized, "ordinary-token software logout immediately revokes its grant");
+                var operatorClient = new LocalManagementMode(root);
+                Check(operatorClient.Enter(password) && operatorClient.InspectStatus().Authorized, "management-mode password validation works under an ordinary Windows token");
+                operatorClient.Exit(); Check(!operatorClient.InspectStatus().Authorized, "ordinary-token software logout immediately revokes its grant");
             });
             Check(!client.InspectStatus().Authorized, "another process/session login revokes the original protected session");
-            Check(client.Login("boundary-admin", password), "administrator can sign in again after session revocation");
+            Check(client.Enter(password), "management mode can be entered again after session revocation");
             var delegation = client.Delegate(new string('A', 64));
-            var helper = new LocalAdministrator(root); helper.ValidateDelegation(delegation, new string('A', 64), true);
+            var helper = new LocalManagementMode(root); helper.ValidateDelegation(delegation, new string('A', 64), true);
             Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), true), "protected helper authorization cannot be replayed");
             Deny(() => helper.ValidateDelegation(delegation with { RequestHash = new string('B', 64) }, new string('B', 64), true), "protected helper ticket cannot change its request");
-            client.Logout(); Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), false), "logout revokes an already-consumed helper authorization");
+            client.Exit(); Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), false), "logout revokes an already-consumed helper authorization");
             var held = protectedCredentials + ".verification-held"; File.Move(protectedCredentials, held);
             try
             {
-                try { client.Provision("replacement-admin", password); throw new Exception("Missing protected credentials reopened bootstrap"); }
+                try { client.ConfigurePassword(password); throw new Exception("Missing protected credentials reopened bootstrap"); }
                 catch (InvalidOperationException) { Check(true, "a missing provisioned credential file fails closed and cannot be overwritten"); }
             }
             finally { File.Move(held, protectedCredentials); }
-            Check(client.Login("boundary-admin", password), "original protected credentials remain usable after integrity repair");
+            Check(client.Enter(password), "original protected credentials remain usable after integrity repair");
             var authorization = client.Require();
             var store = JsonNode.Parse(File.ReadAllText(protectedCredentials))!; store["SessionExpires"] = DateTimeOffset.UtcNow.AddMinutes(-1);
             File.WriteAllText(protectedCredentials, store.ToJsonString());
-            Check(!client.InspectStatus().Authorized && authorization.IsCancellationRequested && File.ReadAllText(Path.Combine(root, "security/diagnostics/runtime.jsonl")).Contains("AdministratorSessionExpired"), "real broker expiry cancels client authority and writes an authentication audit");
-            for (var i = 0; i < 5; i++) Check(!client.Login("boundary-admin", "wrong"), "protected login failure counted " + i);
-            Deny(() => new LocalAdministrator(root).Login("boundary-admin", password), "failure lockout is owned by the service and survives a new client");
+            Check(!client.InspectStatus().Authorized && authorization.IsCancellationRequested && File.ReadAllText(Path.Combine(root, "security/diagnostics/runtime.jsonl")).Contains("ManagementModeExpired"), "real broker expiry cancels client authority and writes an authentication audit");
+            for (var i = 0; i < 5; i++) Check(!client.Enter("wrong"), "protected login failure counted " + i);
+            Deny(() => new LocalManagementMode(root).Enter(password), "failure lockout is owned by the service and survives a new client");
         }
         catch
         {
             var journal = Path.Combine(root, "security", "diagnostics", "runtime.jsonl");
             if (File.Exists(journal))
-                foreach (var line in File.ReadLines(journal).Where(x => x.Contains("AdministratorServiceStopped", StringComparison.Ordinal)).TakeLast(2)) Console.WriteLine(line);
+                foreach (var line in File.ReadLines(journal).Where(x => x.Contains("ManagementModeServiceStopped", StringComparison.Ordinal)).TakeLast(2)) Console.WriteLine(line);
             throw;
         }
-        finally { AdministratorBroker.RemoveIfUnused(root); }
+        finally { ManagementModeBroker.RemoveIfUnused(root); }
         AsOrdinary(() =>
         {
-            var fresh = new LocalAdministrator(root);
-            Check(AdministratorBroker.IsManaged(root) && !fresh.InspectStatus().Authorized, "protected authority anchor survives service removal; no fallback to the forged local store");
-            try { _ = fresh.Login("untrusted-old", fakePassword); throw new Exception("Service outage used mutable credentials"); }
+            var fresh = new LocalManagementMode(root);
+            Check(ManagementModeBroker.IsManaged(root) && !fresh.InspectStatus().Authorized, "protected authority anchor survives service removal; no fallback to the forged local store");
+            try { _ = fresh.Enter(fakePassword); throw new Exception("Service outage used mutable credentials"); }
             catch (Exception error) when (error is IOException or TimeoutException or UnauthorizedAccessException or OperationCanceledException) { Check(true, "missing service refuses authentication instead of silently succeeding"); }
         });
+        var legacyRoot = root + "-legacy"; Directory.CreateDirectory(legacyRoot);
+        ManagementModeBroker.Install(legacyRoot, source);
+        try
+        {
+            var oldPassword = "Legacy-" + Guid.NewGuid().ToString("N"); var newPassword = "Mode-" + Guid.NewGuid().ToString("N");
+            var salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+            var legacyFile = Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot), "administrators.json");
+            var legacyJson = System.Text.Json.JsonSerializer.Serialize(new { Accounts = new[] { new { Name = "old-maintainer", Salt = Convert.ToBase64String(salt), Hash = Convert.ToBase64String(System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(oldPassword, salt, 600000, System.Security.Cryptography.HashAlgorithmName.SHA256, 32)), Enabled = true } }, Failures = 0, LockedUntil = DateTimeOffset.MinValue });
+            using(var output = new FileInfo(legacyFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { output.Write(System.Text.Encoding.UTF8.GetBytes(legacyJson)); output.Flush(true); }
+            var legacyHash = Wire.FileHash(legacyFile); var mode = new LocalManagementMode(legacyRoot);
+            Check(mode.InspectStatus().NeedsLegacyConversion && !mode.InspectStatus().Authorized, "real protected legacy account credentials cannot silently become management mode");
+            Deny(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
+            AsOrdinary(() =>
+            {
+                var client = new LocalManagementMode(legacyRoot);
+                Check(!client.ConvertLegacyCredentials("old-maintainer", "wrong", newPassword), "ordinary-token legacy conversion still requires the real original password");
+                Check(client.ConvertLegacyCredentials("old-maintainer", oldPassword, newPassword) && !client.InspectStatus().Authorized, "ordinary-token verified legacy conversion creates one mode password without opening a grant");
+                Check(client.Enter(newPassword) && client.InspectStatus().Authorized, "converted protected mode uses a password-only ordinary-token entry");
+                var token = client.Require(); client.ChangePassword(newPassword + "-changed");
+                Check(token.IsCancellationRequested && !client.InspectStatus().Authorized, "protected password replacement cancels the original mode and its pending authority");
+                Deny(() => client.ConvertLegacyCredentials("old-maintainer", oldPassword, newPassword), "retained old credentials cannot reset an already converted management mode");
+            });
+            Check(Wire.FileHash(legacyFile) == legacyHash, "real protected conversion preserves the original legacy ciphertext/hash ledger bytes");
+            Check(mode.Enter(newPassword + "-changed"), "source mode can enter with its converted replacement password before migration");
+            var sourceModeFile=Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot),"management-mode.json");
+            Check(JsonNode.Parse(File.ReadAllText(sourceModeFile))!["SessionHash"] is not null, "migration fixture starts with a real active source grant");
+            var copiedGrant=mode.Delegate(new string('A',64));
+            var movedRoot=legacyRoot+"-moved"; Directory.CreateDirectory(movedRoot);
+            ManagementModeBroker.CopyCredentialsForMigration(legacyRoot,movedRoot);
+            ManagementModeBroker.Install(movedRoot,source);
+            try
+            {
+                var moved=new LocalManagementMode(movedRoot);
+                var movedState=JsonNode.Parse(File.ReadAllText(Path.Combine(ManagementModeBroker.ProtectedRoot(movedRoot),"management-mode.json")))!;
+                Check(moved.InspectStatus().Configured && !moved.InspectStatus().Authorized && movedState["SessionHash"] is null, "migration copies the single mode password and startup revokes copied sessions before service readiness");
+                Check(moved.Enter(newPassword+"-changed"), "migrated protected password works without a username");
+                Deny(()=>moved.ValidateDelegation(copiedGrant,new string('A',64),true),"copied old-session helper proof cannot survive target service startup or a new mode entry");
+                try { ManagementModeBroker.CopyCredentialsForMigration(legacyRoot,movedRoot); throw new Exception("Existing mode password overwritten"); }
+                catch(InvalidOperationException) { Check(true,"credential migration refuses overwriting an existing target mode password"); }
+                moved.Exit();
+            }
+            finally { ManagementModeBroker.RemoveIfUnused(movedRoot); }
+
+        }
+        finally { ManagementModeBroker.RemoveIfUnused(legacyRoot); }
         Console.WriteLine("PASS BROKER COMPLETE: actual SCM, System host, restricted Windows token and frozen binaries; no equipment or production qualification");
     }
     [SupportedOSPlatform("windows")]

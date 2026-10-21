@@ -123,12 +123,12 @@ static partial class SportmasterRcs
         async Task<ParcelRuntime> Open(string dataRoot)
         {
             var launch=new BusinessLaunch(configPath,dataRoot,null,null);var app=new ParcelRuntime(launch,new SportmasterFlow(),new Factory(new ParcelCapabilityFactory(launch)));
-            try{await app.StartAsync(default); await AdministratorFixture.Authorize(app);return app;}catch{await app.DisposeAsync();throw;}
+            try{await app.StartAsync(default); await ManagementModeFixture.Authorize(app);return app;}catch{await app.DisposeAsync();throw;}
         }
         async Task<BusinessReceipt> Command(ParcelRuntime app,string kind,string? owner=null,string? value=null)
         {var s=await app.SnapshotAsync();return await app.CommandAsync(new(Wire.Id(),s.Revision,kind,owner,value));}
         async Task Maintenance(ParcelRuntime app)
-        {await Command(app,"Pause");Check((await AdministratorFixture.Authorize(app)).Status=="Authorized","numeric-ID fixture explicitly authenticates maintenance");await Wait(app,s=>s.Availability!.Configure);}
+        {await Command(app,"Pause");Check((await ManagementModeFixture.Authorize(app)).Status=="Authorized","numeric-ID fixture explicitly authenticates maintenance");await Wait(app,s=>s.Availability!.Configure);}
         peer.Mode="assigned";string original;long allocated;var backup=Path.Combine(root,"rcs-numeric-history.backup.db");
         await using(var app=await Open(data))
         {
@@ -143,7 +143,7 @@ static partial class SportmasterRcs
             await Command(app,"Resume");app.EmitReferenceAt("right","numeric-blocked","SYNTH-0001",Wire.Id());
             var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));var op=s.Operations.Single(o=>o.AdmissionId=="numeric-blocked");
             Check(op.State==ParcelState.Blocked&&op.Wcs is null&&peer.Requests.Count==posts&&op.Reason!.Contains("numeric request ID"),"obsolete range is durably blocked before T1/attempt/POST without crashing the worker");
-            await Command(app,"Pause");await AdministratorFixture.Authorize(app);
+            await Command(app,"Pause");await ManagementModeFixture.Authorize(app);
             Check((await Command(app,"AbandonUnsubmitted",op.Id,"Synthetic entity inspected after ID allocation refusal")).Status=="Persisted","blocked unsent entity supports existing inspected disposition");
             await Wait(app,x=>x.Availability!.Configure);await Command(app,"ArchiveHistory",value:"Synthetic numeric history must retain allocation identity");
             using(var repo=new ParcelRepository(directory,c.ApplicationId))Check(repo.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived),"numeric allocation authority survives real transaction history archival");

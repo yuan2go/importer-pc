@@ -4,28 +4,30 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime : IWorkstationAdministration
 {
-    LocalAdministrator Administrator => LocalAdministrator.ForRoot(launch.DataRoot);
+    LocalManagementMode Management => LocalManagementMode.ForRoot(launch.DataRoot);
     SoftwareLogReader? logReader;
-    SoftwareLogReader Logs { get { Administrator.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
+    SoftwareLogReader Logs { get { Management.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
     void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
-    public Task<AdministratorStatus> AdministratorStatusAsync() => Task.Run(Administrator.InspectStatus);
-    public Task ProvisionAdministratorAsync(string account, string password) => Task.Run(() => { Administrator.Provision(account, password); Diagnostic("认证", "首个管理员已开通"); });
-    public async Task<bool> LoginAdministratorAsync(string account, string password)
+    public Func<string, Task>? ManagementPasswordSetupApproval { get; set; }
+    public Task<ManagementModeStatus> ManagementModeStatusAsync() => Task.Run(Management.InspectStatus);
+    public async Task ConfigureManagementPasswordAsync(string password)
+    { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); Diagnostic("管理模式", "管理密码已设置"); }
+    public async Task<bool> EnterManagementModeAsync(string password)
     {
-        var accepted = await Task.Run(() => Administrator.Login(account, password)).ConfigureAwait(false);
+        var accepted = await Task.Run(() => Management.Enter(password)).ConfigureAwait(false);
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            Diagnostic("认证", accepted ? "管理员登录成功" : "管理员登录失败", accepted ? "信息" : "警告");
-            repository?.Commit(null, accepted ? "SoftwareAdministratorAuthenticated" : "SoftwareAdministratorLoginFailed", accepted ? Administrator.Status().Account ?? "" : "Credential rejected");
+            Diagnostic("管理模式", accepted ? "已进入管理模式" : "管理密码验证失败", accepted ? "信息" : "警告");
+            repository?.Commit(null, accepted ? "ManagementModeEntered" : "ManagementModeEnterFailed", accepted ? Wire.Encode(new { Authorization = Management.Evidence, Operator = currentOperator }) : "Credential rejected");
             return accepted;
         }
         finally { gate.Release(); }
     }
-    public Task LogoutAdministratorAsync()
-    { Administrator.Logout(); Diagnostic("认证", "管理员已退出"); return Task.CompletedTask; }
-    public Task<AdministratorAccount[]> AdministratorAccountsAsync() => Task.Run(Administrator.Accounts);
-    public Task MaintainAdministratorAsync(string account, string? password, bool enabled) => Task.Run(() => { Administrator.Maintain(account, password, enabled); Diagnostic("认证", "管理员账号已修改，会话已撤销"); });
+    public Task ExitManagementModeAsync()
+    { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); return Task.CompletedTask; }
+    public Task ChangeManagementPasswordAsync(string password) => Task.Run(() => { Management.ChangePassword(password); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); });
+    public Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword) => Task.Run(() => Management.ConvertLegacyCredentials(oldAccount, oldPassword, newPassword));
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)
     { var logs = Logs; return Task.Run(() => logs.QueryAsync(query, selection, offset, token), token); }
     public Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token)

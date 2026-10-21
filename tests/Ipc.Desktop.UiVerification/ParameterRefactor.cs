@@ -19,7 +19,7 @@ static partial class Program
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
             var startupType = desktop.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
             var missingLaunch = new BusinessLaunch(Path.Combine(evidence, "missing-config"), Path.Combine(evidence, "missing-data"), null, null);
-            AdministratorFixture.AuthorizeRoot(missingLaunch.DataRoot);
+            ManagementModeFixture.AuthorizeRoot(missingLaunch.DataRoot);
             var first = (Window)Activator.CreateInstance(startupType, [missingLaunch, null, true])!; first.Show();
             var busy = startupType.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
@@ -33,7 +33,7 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
         var vm = new ParcelViewModel(runtime, "Sportmaster", "合成原生验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var page = new MaintenancePage { DataContext = vm };
         var window = new Window { Title = "PARAM-01 原生交互验证 · 合成数据", Content = page, Width = 1600, Height = 900, WindowStartupLocation = WindowStartupLocation.CenterScreen };

@@ -19,7 +19,7 @@ static partial class Program
     public static int Main(string[] args)
     {
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = (args.Contains("--task-redesign") || args.Contains("--operator-administration"))
+        var evidence = (args.Contains("--task-redesign") || (args.Contains("--management-mode") || args.Contains("--operator-administration")))
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
             : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
@@ -30,7 +30,7 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--operator-administration")) await VerifyOperatorAdministration(root, evidence, lines);
+                if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) await VerifyOperatorAdministration(root, evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
                 else if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
@@ -67,8 +67,8 @@ static partial class Program
         else runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
         await using (runtime)
         {
-            await runtime.StartAsync(CancellationToken.None); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
-            var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>();
+            await runtime.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
+            var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
             var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
             var stops = 0; var stopCalls = 0; var failNextStop = false;
             var classic = Presentation.Create(application, null, null, "classic");

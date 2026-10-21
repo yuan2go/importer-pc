@@ -456,7 +456,7 @@ static class SportmasterUi
         public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication, IAdministratorFixtureForwarder
+    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
     {
         public IParcelApplication InnerAdministration => inner;
         Func<Task<ParcelSnapshot>>? read;
@@ -474,7 +474,7 @@ static class SportmasterUi
         public Task<BusinessProjection> QueryAsync() => inner.QueryAsync();
         public Task<BusinessReceipt> LoginAsync(string subject, string proof) { Writes++; return inner.LoginAsync(subject, proof); }
         public Task<BusinessReceipt> LogoutAsync() { Writes++; return inner.LogoutAsync(); }
-        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof) { Writes++; return inner.AuthorizeMaintenanceAsync(subject, proof); }
+        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string proof) { Writes++; return inner.AuthorizeMaintenanceAsync(proof); }
         public Task<CapabilityCatalog> CapabilitiesAsync() => inner.CapabilitiesAsync();
         public Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity) { Writes++; return inner.ManageCapabilityAsync(action, identity); }
         public Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate) => inner.ValidateConfigurationAsync(candidate);

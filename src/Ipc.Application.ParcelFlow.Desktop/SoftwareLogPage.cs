@@ -63,7 +63,7 @@ public sealed class SoftwareLogControl : UserControl
         Unloaded += (_, _) => Revoke(); status.Text = "默认查询最近24小时。每页200条；双击查看上下文。展开可修改时间、筛选及导出全部。";
     }
     void InvalidateSelection() { pending?.Cancel(); selection = null; results.ItemsSource = null; detail.Clear(); }
-    public void Revoke() { pending?.Cancel(); selection = null; results.ItemsSource = null; detail.Clear(); status.Text = "查询已关闭；重新登录管理员后查询。"; }
+    public void Revoke() { pending?.Cancel(); selection = null; results.ItemsSource = null; detail.Clear(); status.Text = "查询已关闭；重新进入管理模式后查询。"; }
     static TextBox Input(string text) => new() { Text = text, MinHeight = 44, VerticalContentAlignment = VerticalAlignment.Center };
     SoftwareLogQuery ReadQuery()
     {
@@ -74,7 +74,7 @@ public sealed class SoftwareLogControl : UserControl
     async Task Run(Func<Task> action)
     {
         if (busy) return; pending?.Dispose(); pending = new(); busy = true; controls.IsEnabled = false;
-        try { if (!(await service.AdministratorStatusAsync()).Authorized) throw new UnauthorizedAccessException("请重新登录管理员。"); await action(); }
+        try { if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请重新进入管理模式。"); await action(); }
         catch (OperationCanceledException) { status.Text = "任务已取消或超时；未提交导出文件。"; }
         catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { status.Text = "正则执行超时，请缩短表达式或改用普通关键词。"; }
         catch (Exception error) { status.Text = error.Message; }

@@ -105,7 +105,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
         Ipc.Application.ParcelFlow.Desktop.SoftwareLogControl? logs;
-        void EnforceAdministratorView() { }
+        void EnforceManagementModeView() { }
         System.Windows.FrameworkElement CreateDiagnostics() => new();
         void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }
     }

@@ -141,7 +141,7 @@ static partial class Program
             await using var runtime = syntheticIdentity
                 ? new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } }
                 : (Ipc.Application.ParcelFlow.ParcelRuntime)SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
-            await runtime.StartAsync(CancellationToken.None); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+            await runtime.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
             var stops = 0; var decisions = 0;
             var window = Presentation.Create((IParcelApplication)runtime.Application, "sportmaster-maintenance", null, ui,
                 async () => { await runtime.StopAsync(CancellationToken.None); stops++; });

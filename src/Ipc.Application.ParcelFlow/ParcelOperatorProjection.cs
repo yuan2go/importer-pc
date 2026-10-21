@@ -28,9 +28,9 @@ public sealed partial class ParcelRuntime
         Capture = OperatorStage(op.Capture), Upload = OperatorStage(op.Upload), BarcodeSelection = null,
         ReaderBinding = op.ReaderBinding is null ? null : OperatorReader(op.ReaderBinding)
     };
-    ParcelHistoryPage OperatorHistory(ParcelHistoryPage page) => Administrator.Status().Authorized ? page : page with
+    ParcelHistoryPage OperatorHistory(ParcelHistoryPage page) => Management.Status().Authorized ? page : page with
     { Items = page.Items.Select(item => item with { Operation = OperatorOperation(item.Operation) }).ToArray() };
-    ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => Administrator.Status().Authorized ? s : s with
+    ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => Management.Status().Authorized ? s : s with
     {
         Configuration = s.Configuration with
         {

@@ -6,20 +6,37 @@ using System.Security.Principal;
 
 namespace Ipc.Platform;
 
-public static partial class AdministratorBroker
+public static partial class ManagementModeBroker
 {
     [SupportedOSPlatform("windows")]
     public static void CopyCredentialsForMigration(string originalRoot, string targetRoot)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var original = ProtectedRoot(originalRoot); var target = ProtectedRoot(targetRoot);
-        if (original.Equals(target, StringComparison.OrdinalIgnoreCase) || !File.Exists(Path.Combine(original, "PROVISIONED"))) return;
+        if (original.Equals(target, StringComparison.OrdinalIgnoreCase)) return;
+        var names = new[] { "MODE-CONFIGURED", "PROVISIONED", "administrators.json", "management-mode.json" };
+        var present = names.Where(n => File.Exists(Path.Combine(original,n))).ToArray(); if(present.Length == 0) return;
+        if(present.Contains("MODE-CONFIGURED") && !present.Contains("management-mode.json") || present.Contains("PROVISIONED") && !present.Contains("administrators.json")) throw new InvalidDataException("原管理模式或历史凭据缺失，保留原根修复，不能创建新密码覆盖。");
         ProtectedDirectory(Path.GetDirectoryName(target)!, true); ProtectedDirectory(target, true);
-        if (File.Exists(Path.Combine(target, "PROVISIONED")) || File.Exists(Path.Combine(target, "administrators.json"))) throw new InvalidOperationException("恢复目标已有受保护管理员账号，不能覆盖；请核对原责任。");
-        using var input = new FileStream(Path.Combine(original, "administrators.json"), FileMode.Open, FileAccess.Read, FileShare.Read);
-        if (input.Length > 1024 * 1024) throw new InvalidDataException("原管理员账超出限制。");
-        using (var marker = new FileInfo(Path.Combine(target, "PROVISIONED")).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.Read, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) marker.Flush(true);
-        using (var output = new FileInfo(Path.Combine(target, "administrators.json")).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { input.CopyTo(output); output.Flush(true); }
+        if (names.Any(n=>File.Exists(Path.Combine(target,n)))) throw new InvalidOperationException("恢复目标已有管理密码或历史凭据，不能覆盖；请核对原责任。");
+        var inputs = new List<(string Name, FileStream Stream)>();
+        try
+        {
+            // Pin all credential files without delete sharing: password/session
+            // replacement cannot race this offline copy. Source bytes are unchanged.
+            foreach(var name in present)
+            {
+                var file=Path.Combine(original,name); MachineRuntimePolicy.RequireProtectedEvidence(file);
+                var input=new FileStream(file,FileMode.Open,FileAccess.Read,FileShare.Read); inputs.Add((name,input));
+                if(input.Length>1024*1024) throw new InvalidDataException("原管理模式凭据超出迁移预算。");
+            }
+            foreach(var item in inputs)
+            {
+                using var output=new FileInfo(Path.Combine(target,item.Name)).Create(FileMode.CreateNew,FileSystemRights.FullControl,FileShare.None,16384,FileOptions.WriteThrough,MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
+                item.Stream.CopyTo(output); output.Flush(true);
+            }
+        }
+        finally { foreach(var item in inputs)item.Stream.Dispose(); }
         // The target service revokes copied sessions before publishing its RUNNING state.
     }
     [SupportedOSPlatform("windows")]
@@ -62,14 +79,14 @@ public static partial class AdministratorBroker
         using var manager = OpenSCManager(null, null, 1 | 2); if (manager.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
         using var existing = OpenService(manager, ServiceName(dataRoot), 0xF01FF);
         var previous = existing.IsInvalid ? null : ReadCommand(existing);
-        var displayName = "供包台软件管理员认证 " + Key(dataRoot)[..8];
+        var displayName = "供包台管理模式授权 " + Key(dataRoot)[..8];
         using var service = existing.IsInvalid ? CreateService(manager, ServiceName(dataRoot), displayName, 0xF01FF, 0x10, 2, 1, command, null, IntPtr.Zero, null, null, null) : OpenService(manager, ServiceName(dataRoot), 0xF01FF);
         if (service.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
         try
         {
             Stop(service);
             if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            Start(service); _ = Call<AdministratorStatus>(dataRoot, new("Status"));
+            Start(service); _ = Call<ManagementModeStatus>(dataRoot, new("Status"));
         }
         catch
         {
@@ -111,10 +128,10 @@ public static partial class AdministratorBroker
         {
             if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
             if (status.CurrentState == state) return;
-            if (state == 4 && status.CurrentState == 1) throw new IOException("管理员认证服务未能启动；原凭据和部署保留。");
+            if (state == 4 && status.CurrentState == 1) throw new IOException("管理模式授权服务未能启动；原凭据和部署保留。");
             Thread.Sleep(25);
         }
-        throw new TimeoutException("管理员认证服务未在期限内完成状态切换；原凭据保留。");
+        throw new TimeoutException("管理模式授权服务未在期限内完成状态切换；原凭据保留。");
     }
     [SupportedOSPlatform("windows")]
     static string ReadCommand(ServiceHandle service)

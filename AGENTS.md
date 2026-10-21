@@ -1,4 +1,6 @@
-> 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](docs/runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+> 2026-10-22用户纠偏优先：管理能力改为[管理模式](docs/runtime/management-mode-01.md)，不是管理员账号；本轮见[MANAGEMENT-MODE-01](docs/work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。旧账号说明及SM1.10.2证据保留历史适用范围。
+
+> SM1.10.2历史软件管理员、导航和日志实现见 [OPS-ADMIN-LOGS-01](docs/runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
 
 本机用户要求全部项目文件、安装与运行数据使用D盘。Windows开发命令先执行 `. ./scripts/project-environment.ps1`，将临时文件、dotnet用户目录及NuGet缓存保持在D盘；不改全机环境。受保护部署使用管理员配置的HKLM存储根，不以链接绕过权限检查。仓库外原稿与账号/现场数据只迁移，不加入Git。
 

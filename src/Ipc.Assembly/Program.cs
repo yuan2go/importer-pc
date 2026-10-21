@@ -1,7 +1,7 @@
 using Ipc.Platform;
 using Ipc.Assembly;
 
-if (AdministratorBroker.HandleService(args)) return;
+if (ManagementModeBroker.HandleService(args)) return;
 
 #if PARCEL
 if (DeploymentBatch.Handle(args)) return;

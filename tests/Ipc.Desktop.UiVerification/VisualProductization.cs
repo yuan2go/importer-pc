@@ -24,8 +24,8 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, !baseline);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
-        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>();
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = (SupplyStationWindow)Presentation.Create(application, null, "standard");
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -51,7 +51,7 @@ static partial class Program
         {
             var desktopAssembly = System.Reflection.Assembly.LoadFrom(desktopPath);
             var type = desktopAssembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; AdministratorFixture.AuthorizeRoot(offline.DataRoot);
+            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; ManagementModeFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busy = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
             for (var i = 0; i < 100 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(30);

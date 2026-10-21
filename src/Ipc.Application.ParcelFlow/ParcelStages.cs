@@ -41,7 +41,7 @@ public sealed partial class ParcelRuntime
             stage = stage with { State = StageState.Dispatching, Attempts = 1 };
             op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
         }
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, query ? Administrator.Require() : CancellationToken.None);
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, query ? Management.Require() : CancellationToken.None);
         budget.CancelAfter(Effective.TimeoutMs);
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
         StageReply? reply;
@@ -198,7 +198,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            Administrator.Require();
+            Management.Require();
             if (stopped || ports is null || !operations.TryGetValue(operationId, out var op)) return new("NotReady", "Original active operation unavailable; archived originals are read-only", repository?.Revision ?? 0);
             var requested = stage is null ? (ParcelStage?)null : ParseStage(stage);
             // Main dependencies first. An independent upload's missing raw never blocks a PLC/WCS query.

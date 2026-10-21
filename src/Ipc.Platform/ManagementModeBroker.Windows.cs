@@ -8,14 +8,15 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Ipc.Platform;
 
+// Legacy SCM/root names are retained for upgrade; v2 pipe and single-credential store define mode semantics.
 // A local credential boundary only. It never creates business ports or performs equipment work.
-public static partial class AdministratorBroker
+public static partial class ManagementModeBroker
 {
     static string Key(string root) => Wire.Hash(CanonicalRoot(root).TrimEnd(Path.DirectorySeparatorChar).ToUpperInvariant())[..24];
     static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
     public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
-    static string PipeName(string root) => "ImporterPc.Administrator.v1." + Key(root);
+    static string PipeName(string root) => "ImporterPc.ManagementMode.v2." + Key(root);
     public static bool IsManaged(string root)
     {
         if (!OperatingSystem.IsWindows()) return false;
@@ -32,14 +33,15 @@ public static partial class AdministratorBroker
     }
     public static void RequireProduction(string root)
     {
-        if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的软件管理员认证服务；请使用同版安装器安装或修复。");
-        if (!Call<AdministratorStatus>(root, new("Status")).Provisioned) throw new InvalidOperationException("请先由安装管理员开通首个软件管理员；未开放生产业务。");
+        if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。");
+        if (!Call<ManagementModeStatus>(root, new("Status")).Configured) throw new InvalidOperationException("请先设置管理密码；旧版凭据须先完成一次性转换，未开放生产业务。");
     }
     public static void RequireUnprovisionedInstaller(string root)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (!IsManaged(root) || Call<AdministratorStatus>(root, new("Status")).Provisioned)
-            throw new UnauthorizedAccessException("此旧模拟目录迁移仅允许安装维护在首个软件管理员开通前执行；已开通部署使用原授权完整恢复流程。");
+        var status = IsManaged(root) ? Call<ManagementModeStatus>(root, new("Status")) : null;
+        if (status is null || status.Configured || status.NeedsLegacyConversion)
+            throw new UnauthorizedAccessException("此旧模拟目录迁移仅允许安装维护在首次设置管理密码前执行；已配置管理密码的部署使用原授权完整恢复流程。");
     }
     [SupportedOSPlatform("windows")]
     static void RequireServer(string root, SafePipeHandle pipe)
@@ -70,7 +72,7 @@ public static partial class AdministratorBroker
             try
             {
                 MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(ProtectedRoot(root)), null);
-                new LocalAdministrator(root, true).RevokeBrokerSessions();
+                new LocalManagementMode(root, true).RevokeBrokerSessions();
                 var pipes = Enumerable.Range(0, 8).Select(i => CreateServer(root, i == 0)).ToArray();
                 try
                 {
@@ -85,7 +87,7 @@ public static partial class AdministratorBroker
             catch (Exception error)
             {
                 status.Win32ExitCode = 1066; status.ServiceSpecificExitCode = 1;
-                try { RuntimeJournal.AppendMetadata(Path.Combine(root, "security", "diagnostics"), new { At = DateTimeOffset.UtcNow, Source = "认证", Level = "错误", Event = "AdministratorServiceStopped", Detail = error.ToString() }); } catch (IOException) { }
+                try { RuntimeJournal.AppendMetadata(Path.Combine(root, "security", "diagnostics"), new { At = DateTimeOffset.UtcNow, Source = "认证", Level = "错误", Event = "ManagementModeServiceStopped", Detail = error.ToString() }); } catch (IOException) { }
             }
             finally { status.CurrentState = 1; status.ControlsAccepted = 0; SetServiceStatus(handle, ref status); }
         };
@@ -94,7 +96,7 @@ public static partial class AdministratorBroker
         GC.KeepAlive(main); GC.KeepAlive(handler);
     }
     static readonly SemaphoreSlim passwordWork = new(1, 1);
-    static async Task Reply(NamedPipeServerStream pipe, AdministratorRpcReply reply, CancellationToken token)
+    static async Task Reply(NamedPipeServerStream pipe, ManagementModeRpcReply reply, CancellationToken token)
     {
         await WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(reply), token).ConfigureAwait(false);
         var acknowledgment = new byte[1]; await pipe.ReadExactlyAsync(acknowledgment, token).ConfigureAwait(false);
@@ -110,20 +112,20 @@ public static partial class AdministratorBroker
             try
             {
                 var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
-                var request = JsonSerializer.Deserialize<AdministratorRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
-                bool installer = false;
-                if (request.Action == "Provision") pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
-                object? value; bool expensive = request.Action is "Login" or "Provision" or "Maintain";
+                var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
+                bool installer = false; string? windowsSid = null;
+                pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); windowsSid = client.User?.Value; if(request.Action == "ConfigurePassword") installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
+                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "ConvertLegacy";
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
-                try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalAdministrator(root, true).HandleBrokerRequest(request, installer), budget.Token).ConfigureAwait(false); }
+                try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid), budget.Token).ConfigureAwait(false); }
                 finally { if (expensive) passwordWork.Release(); }
-                await Reply(pipe, new AdministratorRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
+                await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
             }
             catch (OperationCanceledException) { }
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
             {
-                var code = error is AdministratorBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
-                try { await Reply(pipe, new AdministratorRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
+                var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
+                try { await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
                 catch (Exception send) when (send is IOException or OperationCanceledException) { }
             }
             finally { if (pipe.IsConnected) pipe.Disconnect(); }
@@ -163,10 +165,10 @@ public static partial class AdministratorBroker
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern SafePipeHandle CreateNamedPipe(string name, uint mode, uint pipeMode, uint instances, int outputSize, int inputSize, uint timeout, ref SecurityAttributes security);
 }
 
-public sealed partial class LocalAdministrator
+public sealed partial class LocalManagementMode
 {
     internal void RevokeBrokerSessions()
     {
-        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Accounts.Length > 0) Save(s with { SessionHash = null, SessionAccount = null, SessionExpires = null, Delegations = [] }, "AdministratorServiceStartedSessionsRevoked", null); }
+        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeServiceRestarted"); }
     }
 }

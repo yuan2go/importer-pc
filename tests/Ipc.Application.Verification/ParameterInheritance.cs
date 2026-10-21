@@ -41,7 +41,7 @@ static class ParameterInheritance
         string frozen;
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
-            await app.StartAsync(default); await AdministratorFixture.Authorize(app); var vm = new ParcelViewModel(app, "参数继承", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+            await app.StartAsync(default); await ManagementModeFixture.Authorize(app); var vm = new ParcelViewModel(app, "参数继承", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
             var startup = new StartupConfigurationDraft(vm.Snapshot!.Configuration.Effective, await app.CapabilitiesAsync());
             Check(Wire.Encode(startup.Build()) == Wire.Encode(vm.BuildStructuredConfiguration()) && vm.StructuredPolicy!.BarcodeExclusionPattern == rule.ExclusionPattern && vm.StructuredPolicy.DiagnosticLogDays == "2", "first and daily editors round-trip the same complete candidate including exclusion and retention");
             var revision = vm.Snapshot!.Configuration.Revision;
@@ -54,7 +54,7 @@ static class ParameterInheritance
             app.EmitReference("excluded", "OK001", Wire.Id()); await Wait(app, s => s.Inputs!.Any(x => x.BarcodeSelection?.Outcome == "ExcludedCodes"));
             Check((await app.SnapshotAsync()).Operations.Length == 0, "actual exclusion creates no business operation or external request");
             app.EmitReference("accepted", "OK003", Wire.Id()); var accepted = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved)); frozen = Wire.Encode(accepted.Operations.Single().Wcs);
-            await app.CommandAsync(new(Wire.Id(), accepted.Revision, "Pause")); await AdministratorFixture.Authorize(app);
+            await app.CommandAsync(new(Wire.Id(), accepted.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
             app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token); await Wait(app, s => s.Availability!.Configure);
             await vm.RefreshAsync(); vm.StructuredPolicy!.BarcodeExclusionPattern = "OK00[1-3]"; vm.StructuredPolicy.DiagnosticLogDays = "3"; vm.ConfigurationReason = "Synthetic inheritance revision";
             await vm.SaveIncompleteEditorAsync(); vm.DisplayNameDraft = "changed"; vm.TargetEfficiencyDraft = "1";
@@ -80,7 +80,7 @@ static class ParameterInheritance
         c = c with { Reader = isolatedReader, Topology = c.Topology! with { Readers = [isolatedReader], Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = isolatedReader.DeviceId }).ToArray() } };
         var path = Path.Combine(root, "inherit-weight"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default); await AdministratorFixture.Authorize(app);
+        await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var vm = new ParcelViewModel(app, "称重业务", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         foreach (var invalid in new[] { "", "bad", "-1", "1.0001" })
         {
@@ -117,7 +117,7 @@ static class ParameterInheritance
         await app.DisposeAsync();
         var replayConfig = Path.Combine(root, "replay-weight-config"); Directory.CreateDirectory(replayConfig); ExtensionStore.AtomicWrite(Path.Combine(replayConfig, "business.json"), c);
         var replayLaunch = new BusinessLaunch(replayConfig, Path.Combine(root, "replay-weight-data"), null, null);
-        await using var first = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await first.StartAsync(default); await AdministratorFixture.Authorize(first);
+        await using var first = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await first.StartAsync(default); await ManagementModeFixture.Authorize(first);
         first.EmitReference("range-replay", "001", Wire.Id()); await Wait(first, s => s.Operations.Any(x => x.AdmissionId == "range-replay"));
         var immutable = new WeightMeasurement(Wire.Id(), "range-replay", c.Scale.Target, 0.5m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
         first.EmitReferenceWeight(immutable); await Wait(first, s => s.Operations.Single(x => x.AdmissionId == "range-replay").Reason?.Contains("业务范围") == true);

@@ -129,11 +129,10 @@ public partial class ParcelViewModel
     public int DraftPending { get; set; }
     public string PackagePath { get; set; } = "";
     public string PackageSha256 { get; set; } = "";
-    public string MaintenanceSubject { get; set; } = "";
     public string InspectionReason { get; set; } = "";
     public async Task LoadCapabilitiesAsync()
     {
-        await RequireAdministratorAsync();
+        await RequireManagementModeAsync();
         await RefreshAsync();
         var loaded = Snapshot!;
         var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
@@ -209,7 +208,7 @@ public partial class ParcelViewModel
                 reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, loaded.Reader.DeviceId, true, reader.Parameters)]) : null
         };
     }
-    public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var subject = MaintenanceSubject; var r = await ServiceAsync(() => application.AuthorizeMaintenanceAsync(subject, proof)); Message = r.Status + " · " + r.Reason; }
+    public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var r = await ServiceAsync(() => application.AuthorizeMaintenanceAsync(proof)); Message = r.Status + " · " + r.Reason; }
     public async Task InstallAsync()
     {
         RequireFreshSnapshot();

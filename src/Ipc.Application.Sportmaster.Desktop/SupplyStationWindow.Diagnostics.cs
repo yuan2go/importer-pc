@@ -19,7 +19,7 @@ public partial class SupplyStationWindow
     }
     void ShowObjectDiagnostics(ParameterDiagnosticTarget target)
     {
-        if (!ViewModel.IsAdministrator) { ViewModel.Message = "请先登录软件管理员。"; return; }
+        if (!ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; return; }
         diagnosticTarget = target; SetPage("diagnostics");
         selectedDiagnostic!.Text = target.Label + "\n" + ViewModel.ParameterRuntimeSummary(target);
         UpdateLayout();

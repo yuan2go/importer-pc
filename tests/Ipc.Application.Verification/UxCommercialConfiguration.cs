@@ -212,7 +212,7 @@ static partial class ArchitectureQuality
         await vm.LoadCapabilitiesAsync();
         Check(held.CatalogReads == 2 && vm.StructuredPolicy!.WaitTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
     }
-    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IAdministratorFixtureForwarder
+    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
     {
         public IParcelApplication InnerAdministration => inner;
         public bool HoldNextStage;
@@ -228,7 +228,7 @@ static partial class ArchitectureQuality
         public Task<BusinessProjection> QueryAsync() => inner.QueryAsync();
         public Task<BusinessReceipt> LoginAsync(string subject, string proof) => inner.LoginAsync(subject, proof);
         public Task<BusinessReceipt> LogoutAsync() => inner.LogoutAsync();
-        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof) => inner.AuthorizeMaintenanceAsync(subject, proof);
+        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string proof) => inner.AuthorizeMaintenanceAsync(proof);
         public Task<CapabilityCatalog> CapabilitiesAsync() { CatalogReads++; return inner.CapabilitiesAsync(); }
         public Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity) => inner.ManageCapabilityAsync(action, identity);
         public Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate) => inner.ValidateConfigurationAsync(candidate);

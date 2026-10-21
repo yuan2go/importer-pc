@@ -20,7 +20,7 @@
     <TextBlock Text="扫描信息 · 本次条码" Style="{StaticResource StationLabel}"/><TextBox x:Name="CurrentBarcode" MinHeight="36" Text="{Binding Barcode,Mode=OneWay}" FontSize="30" FontWeight="SemiBold" Margin="0" AutomationProperties.Name="本次条码，可选择复制"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource StationValue}"><Setter Property="MaxHeight" Value="76"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="48"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox>
    <TextBlock x:Name="ScanSummary" Text="{Binding ScanSummary}" ToolTip="{Binding SelectionSummary}" FontSize="13" Foreground="{StaticResource StationMuted}" Margin="0,4,0,0"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    <Border Padding="0,4,0,0"><Border.Style><Style TargetType="Border"><Setter Property="MaxHeight" Value="240"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
-    <Expander Header="本次扫描候选与筛选依据" Visibility="{Binding DataContext.AdministratorVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Margin="0,8,0,0">
+    <Expander Header="本次扫描候选与筛选依据" Visibility="{Binding DataContext.ManagementModeVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Margin="0,8,0,0">
      <StackPanel><TextBlock Text="{Binding SelectionSummary}" TextWrapping="Wrap"/><TextBlock Text="{Binding ScanTime,StringFormat=读取时间：{0}}"/><TextBox Text="{Binding ObservationIdentity,Mode=OneWay}" Style="{StaticResource StationValue}"/><TextBlock Text="完整原始候选" Style="{StaticResource StationLabel}"/>
       <TextBox Text="{Binding RawCandidates,Mode=OneWay}" Style="{StaticResource StationValue}" MaxHeight="160" AutomationProperties.Name="完整原始条码候选"/>
       <TextBlock Text="业务选中码" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding SelectedCode,Mode=OneWay}" Style="{StaticResource StationValue}"/>
@@ -34,7 +34,7 @@
    </Grid>
   </Grid>
   <StackPanel Grid.Row="1" Margin="0,8,0,8">
-   <Expander Header="本次扫描候选与筛选依据" Margin="0,0,0,8"><Expander.Style><Style TargetType="Expander"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding DataContext.IsAdministrator,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></Expander.Style><StackPanel>
+   <Expander Header="本次扫描候选与筛选依据" Margin="0,0,0,8"><Expander.Style><Style TargetType="Expander"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding DataContext.IsManagementMode,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></Expander.Style><StackPanel>
     <TextBlock Text="{Binding SelectionSummary}" TextWrapping="Wrap"/><TextBlock Text="{Binding ScanTime,StringFormat=读取时间：{0}}"/><TextBox Text="{Binding ObservationIdentity,Mode=OneWay}" Style="{StaticResource StationValue}"/>
     <TextBlock Text="完整原始候选" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding RawCandidates,Mode=OneWay}" Style="{StaticResource StationValue}" MaxHeight="160"/>
     <TextBlock Text="业务选中码" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding SelectedCode,Mode=OneWay}" Style="{StaticResource StationValue}"/>
@@ -47,7 +47,7 @@
    </Grid>
 
   </StackPanel>
-  <Expander Grid.Row="2" Visibility="{Binding DataContext.AdministratorVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Header="原作业与恢复详情" IsExpanded="False" Margin="0,2,0,4" FontSize="16">
+  <Expander Grid.Row="2" Visibility="{Binding DataContext.ManagementModeVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Header="原作业与恢复详情" IsExpanded="False" Margin="0,2,0,4" FontSize="16">
    <ScrollViewer x:Name="PositionDetailsScroll" VerticalScrollBarVisibility="Auto"><ScrollViewer.Style><Style TargetType="ScrollViewer"><Setter Property="MaxHeight" Value="200"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="MaxHeight" Value="120"/></DataTrigger></Style.Triggers></Style></ScrollViewer.Style><StackPanel>
     <TextBlock Text="{Binding ReaderId}" Foreground="{StaticResource StationMuted}"/><TextBlock Text="{Binding DeviceStatus}"/><TextBlock Text="{Binding BlockingReasons}"/><TextBlock Text="{Binding ResultReason}" Foreground="{Binding Presentation.Foreground}"/><TextBlock Text="{Binding OriginalResponsibility}" Foreground="{StaticResource Warning}"/><TextBlock Text="{Binding LatestInputSummary}" FontSize="16"/><TextBlock Text="{Binding ObservedAt}" FontSize="14" Foreground="{StaticResource StationMuted}"/>
     <TextBlock Text="实体准入身份 · 当前观察" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding Admission,Mode=OneWay}" Style="{StaticResource StationValue}"/>
@@ -64,7 +64,7 @@
    <DockPanel LastChildFill="True">
     <WrapPanel DockPanel.Dock="Right">
      <Button Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationButton}" ToolTip="当前位保留的原作业与原请求；未准入的新观察另见扫描依据"/>
-     <Button x:Name="PositionDiagnostics" Visibility="{Binding DataContext.AdministratorVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Content="本位诊断" Click="Diagnostics_Click" Style="{StaticResource StationButton}"/>
+     <Button x:Name="PositionDiagnostics" Visibility="{Binding DataContext.ManagementModeVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Content="本位诊断" Click="Diagnostics_Click" Style="{StaticResource StationButton}"/>
 
      <Button x:Name="ContinueOriginal" Content="继续原阶段" Click="Continue_Click" IsEnabled="{Binding CanContinue}"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding CanContinue}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
     </WrapPanel>

@@ -10,4 +10,4 @@ public sealed record ParcelHistoryItem(long Sequence, bool Archived, ParcelOpera
 public sealed record ParcelHistoryPage(ParcelHistoryItem[] Items, long? NextBeforeSequence);
 public sealed record IdentityConflict(string Id, string OriginalOperation, string[] Positions, string Detail, DateTimeOffset At, bool Acknowledged = false);
 public sealed record ConfigurationChangeAudit(string Id, DateTimeOffset At, OperatorIdentity? Actor, string Reason,
-    long BeforeRevision, long AfterRevision, string BeforeHash, string CandidateHash, string Status, string? Result = null, ParcelConfiguration? BeforeEffective = null, ParcelConfiguration? BeforePending = null, ParcelConfiguration? Candidate = null);
+    long BeforeRevision, long AfterRevision, string BeforeHash, string CandidateHash, string Status, string? Result = null, ParcelConfiguration? BeforeEffective = null, ParcelConfiguration? BeforePending = null, ParcelConfiguration? Candidate = null, ManagementModeEvidence? Authorization = null);

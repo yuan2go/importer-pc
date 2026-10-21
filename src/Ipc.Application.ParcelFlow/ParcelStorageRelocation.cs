@@ -10,7 +10,7 @@ public sealed partial class ParcelStartupMaintenance
     public Task<UnusedSimulationRelocation> CompleteUnusedSimulationRelocationAsync(string original, string expectedOriginHash)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("目录接管须在原Windows机器由安装维护执行。");
-        AdministratorBroker.RequireUnprovisionedInstaller(launch.DataRoot); Authorize();
+        ManagementModeBroker.RequireUnprovisionedInstaller(launch.DataRoot); Authorize();
         var state = ReadState();
         if (state.Seed.Mode != RunMode.Simulation || state.Envelope is null || state.Envelope.Pending is not null)
             throw new InvalidOperationException("只有尚未供包且没有待生效配置的旧模拟部署可做目录迁移；保留生产和原请求责任。");

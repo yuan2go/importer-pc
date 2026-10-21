@@ -42,7 +42,7 @@ public sealed partial class ParameterSettingsControl
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
         Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
-        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、维护授权有效且无在途外呼时执行。");
+        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、管理模式有效且无在途外呼时执行。");
         var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };
         enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
         Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);
@@ -106,7 +106,7 @@ public sealed partial class ParameterSettingsControl
     }
     void BuildBusiness(ParameterEditorModel m)
     {
-        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。维护授权独立，关闭作业登录不会解除维护保护。");
+        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。管理模式独立，关闭作业登录不会解除维护保护。");
         if (m.OperatorLoginRole is { } role)
         {
             var selection = new ComboBox { ItemsSource = role.Choices, DisplayMemberPath = "Label", MinHeight = 38 };

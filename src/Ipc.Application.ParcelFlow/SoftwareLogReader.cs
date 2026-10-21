@@ -8,7 +8,7 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
 // Read-only snapshots pin the actual file objects across rename/delete rotation. No business lock.
-public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator administrator, string? securityDiagnostics = null, string? protectedRoot = null) : IDisposable
+public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode management, string? securityDiagnostics = null, string? protectedRoot = null) : IDisposable
 {
     sealed record Source(string Id, string Name, FileStream Stream, long Length);
     sealed record Selection(SoftwareLogQuery Query, Source[] Sources, DateTimeOffset At, CancellationToken Authority) : IDisposable
@@ -22,7 +22,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
     static string Redact(string text) => DiagnosticText.Protect(text);
     Selection Get(string id)
     {
-        administrator.Require();
+        management.Require();
         lock (sync)
         {
             if (!selections.TryGetValue(id, out var s) || s.Authority.IsCancellationRequested || DateTimeOffset.UtcNow - s.At > TimeSpan.FromMinutes(10))
@@ -32,7 +32,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
     }
     string Select(SoftwareLogQuery q)
     {
-        var authority = administrator.Require();
+        var authority = management.Require();
         if (q.From >= q.ToExclusive || q.ToExclusive - q.From > TimeSpan.FromDays(3660) || q.Keyword.Length > 2048 || q.Level.Length > 32 || q.Source.Length > 128) throw new InvalidDataException("请检查时间范围和检索条件长度。");
         _ = Matcher(q);
         List<Source> sources = [];
@@ -89,7 +89,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
             long offset = 0, number = 0; using var line = new MemoryStream();
             while (offset < source.Length)
             {
-                token.ThrowIfCancellationRequested(); administrator.Require();
+                token.ThrowIfCancellationRequested(); management.Require();
                 var count = await RandomAccess.ReadAsync(source.Stream.SafeFileHandle, buffer.AsMemory(0, (int)Math.Min(buffer.Length, source.Length - offset)), offset, token).ConfigureAwait(false);
                 if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
                 offset += count;
@@ -129,7 +129,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
             if (!more && Match(e, s.Query, matcher) && index++ >= skip) { if (page.Count == 200) more = true; else page.Add(e); }
         }
         s.Earliest = first; s.Latest = last;
-        administrator.Require(); return new(id, page.ToArray(), more, Notices(s));
+        management.Require(); return new(id, page.ToArray(), more, Notices(s));
     }
     public async Task<SoftwareLogContext> ContextAsync(string id, SoftwareLogLocation location, int before, int after, CancellationToken token)
     {
@@ -149,7 +149,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
             else { prior.Enqueue(e); if (prior.Count > before) prior.Dequeue(); }
         }
         if (!found) throw new IOException("所选原日志不在保留快照中，请重新查询。");
-        administrator.Require(); return new(result.ToArray(), [.. Notices(s), .. (prior.Count < before || after > 0 ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
+        management.Require(); return new(result.ToArray(), [.. Notices(s), .. (prior.Count < before || after > 0 ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
     }
     public async Task<long> ExportAsync(string id, string destination, bool range, int context, CancellationToken token)
     {
@@ -184,7 +184,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
                 }
                 await writer.FlushAsync(budget.Token); stream.Flush(true);
             }
-            budget.Token.ThrowIfCancellationRequested(); administrator.Commit(() => { budget.Token.ThrowIfCancellationRequested(); File.Move(temporary, destination, false); return true; }); return count;
+            budget.Token.ThrowIfCancellationRequested(); management.Commit(() => { budget.Token.ThrowIfCancellationRequested(); File.Move(temporary, destination, false); return true; }); return count;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }

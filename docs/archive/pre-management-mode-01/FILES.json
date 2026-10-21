@@ -1,0 +1,20 @@
+[
+  {
+    "path": "docs/INDEX.md",
+    "snapshot": "docs__INDEX.md.txt",
+    "sha256": "a9a5f2ba22b7182fe4519728aae6188b3d963ff0878a92aadffab7fc7206ddf6",
+    "source": "0bf86a0a588b75b95aa1963e8fe88dad976ca803"
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "snapshot": "docs__ui__STATUS.md.txt",
+    "sha256": "24145811ef16cc4f145af8a37fbb071631d5c31e9fc7a41ea5e2ac512a09f6c2",
+    "source": "0bf86a0a588b75b95aa1963e8fe88dad976ca803"
+  },
+  {
+    "path": "docs/runtime/operator-administrator-logs-01.md",
+    "snapshot": "docs__runtime__operator-administrator-logs-01.md.txt",
+    "sha256": "9563eb913d502098a7fe503d9b4095a6c9a090a9dd6bf387fe162ce8c311f256",
+    "source": "0bf86a0a588b75b95aa1963e8fe88dad976ca803"
+  }
+]

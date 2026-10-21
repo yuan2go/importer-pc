@@ -24,6 +24,9 @@ static class ParameterRefactor
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["preOK003", "OK003tail"]).Outcome == "NoMatchingCode", "matching is whole-string rather than substring");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["OK003", "OK004"]).Outcome == "AmbiguousCodes", "multiple valid candidates are ambiguous");
         Check(BarcodeFiltering.Select(new("a|ab"), ["ab"]).SelectedCode == "ab", "whole-string alternation is evaluated correctly");
+        Check(BarcodeFiltering.Validate(new("")) is null && BarcodeFiltering.Select(new(""), ["OK001"]).SelectedCode == "OK001", "empty rule is optional and keeps the single valid code without generating a regex");
+        Check(BarcodeFiltering.Select(new(""), ["OK001", "OK002"]).Outcome == "AmbiguousCodes" && BarcodeFiltering.Select(new(""), ["OK001", "OK001"]).Outcome == "AmbiguousCodes", "unfiltered and repeated candidates still require uniqueness");
+        Check(BarcodeFiltering.Select(new("", "BAD.*"), ["BAD001", "OK001"]).SelectedCode == "OK001", "optional allow rule supports an exclusion-only policy");
         Check(BarcodeFiltering.Select(new("["), ["X"]).Outcome == "InvalidPattern", "invalid syntax produces a bounded rejection");
         Check(BarcodeFiltering.Select(new("(a+)+$"), [new string('a', 500) + "!"]).Outcome == "FilterTimeout", "catastrophic backtracking times out and does not select a code");
         Check(BarcodeFiltering.Select(new("OK.*"), ["OK003"], "truncated").Outcome == "IncompleteCandidates" && BarcodeFiltering.Select(new("OK.*"), Enumerable.Repeat("noise", 300).Append("OK003").ToArray()).Outcome == "IncompleteCandidates", "incomplete and oversized candidate sets can never imply uniqueness");

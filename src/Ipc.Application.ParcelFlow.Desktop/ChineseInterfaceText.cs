@@ -6,6 +6,27 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Presentation only. Never write translated text into contracts, audit or drafts.
 public static class ChineseInterfaceText
 {
+    public static string BusinessName(string id) => id switch { "sportmaster" => "SM 供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => "当前业务" };
+    public static string ParameterName(string key, string? label = null) => key switch
+    {
+        "BarcodePattern" or "BarcodeFilter.Pattern" => "条码筛选规则", "BarcodeExclusionPattern" or "BarcodeFilter.ExclusionPattern" => "条码排除规则",
+        "decision" => "模拟业务结果", "reply-mode" => "模拟回执方式", "complete-on-query" => "查询时报告完成",
+        "queue" or "QueueCapacity" => "输入队列容量", "timeout" or "TimeoutMs" => "调用超时", "operations" or "MaximumOperations" => "作业容量",
+        "resident" or "ResidentHistory" => "常驻记录条数", "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
+        "StationCode" => "心跳供包台编码", "DiagnosticLogDays" => "诊断日志保留天数", "SessionLifetimeMs" => "登录会话时长",
+        "WeightSource" => "重量来源", "ConfiguredWeight" => "配置重量", "Unit" => "重量单位", "Validity" => "重量有效期",
+        "BackupEnabled" => "自动备份", "BackupDirectory" => "备份目录", "BackupIntervalMinutes" => "备份间隔", "BackupMaximumSets" => "备份保留份数",
+        "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "entity.mode" => "实体关联方式", "queue.capacity" => "驱动队列容量",
+        "source" => "协议来源", "locale" => "协议语言", "endpoint" => "服务地址", "subjects" => "允许登录的账号", "roles" => "账号权限",
+        _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
+    };
+    public static string ParameterMessage(string text)
+    {
+        if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
+        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "reply-mode", "decision" })
+            text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
+        return Notice(text);
+    }
     public static string Status(string value) => value switch
     {
         "Prepared" => "已准备", "Dispatching" => "发送中", "Unknown" => "结果待核对",

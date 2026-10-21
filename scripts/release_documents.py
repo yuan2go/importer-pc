@@ -22,7 +22,7 @@ GUIDES = {
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
-SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
+SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/startup-experience-02.md': 'FIRST-CONFIGURATION.md', 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/parameter-settings-v3-native-01.md': 'PARAMETERS.md',
     'docs/runtime/parameter-refactor-01.md': 'PARAMETERS-HISTORY.md',

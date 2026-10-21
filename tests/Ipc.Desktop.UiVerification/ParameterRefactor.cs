@@ -23,7 +23,7 @@ static partial class Program
             var busy = startupType.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
             var setupTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks"); setupTabs.SelectedIndex = 1; first.UpdateLayout();
-            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
+            Check(first.Title.Contains("首次配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
             Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
             first.Close();
         }
@@ -103,7 +103,7 @@ static partial class Program
         Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
         Capture("parameters-login");
         vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
-        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("QueueCapacity"));
+        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("输入队列容量") && !text.Text.Contains("QueueCapacity"));
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();

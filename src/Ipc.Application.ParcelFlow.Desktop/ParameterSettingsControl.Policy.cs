@@ -31,9 +31,9 @@ public sealed partial class ParameterSettingsControl
             }
         }
         form = Form(station, hasRcs ? "心跳身份" : null);
-        Input(form, "工位编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
+        Input(form, "供包台编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
-        Technical(station, "心跳工位编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
+        Technical(station, "心跳供包台编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
         var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
         Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
         Input(form, "磁盘保留空间（MiB，二进制兆字节）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时阻断新准入。");
@@ -123,9 +123,9 @@ public sealed partial class ParameterSettingsControl
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "从同一次观察的候选中选出唯一有效条码。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
-            Input(form, "条码筛选规则", m.Policy, "BarcodePattern", "BarcodePattern", page, "使用正则表达式匹配完整条码。清空已有规则不会生成默认规则。", true);
-            Input(form, "条码排除规则", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "选填；通过允许规则后，整串命中此正则的候选将被拒绝。留空不排除。", true);
-            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。旧null规则保持严格单码兼容；不默认选首码，不去重制造唯一候选。");
+            Input(form, "条码筛选规则（选填）", m.Policy, "BarcodePattern", "BarcodePattern", page, "选填；留空不筛选。填写后使用正则表达式匹配完整条码；多个候选仍须选出唯一条码。", true);
+            Input(form, "条码排除规则（选填）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "选填；整串命中此正则的候选将被拒绝。留空不排除。", true);
+            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；仍须唯一有效码；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
             var rules = Page(1, "取格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))

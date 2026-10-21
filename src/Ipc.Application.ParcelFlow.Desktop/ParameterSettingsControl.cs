@@ -233,10 +233,10 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var issue in Model?.Issues ?? [])
         {
             var found = locations.TryGetValue(issue.Path, out var location);
-            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(16, 2, 16, 2), MinHeight = 44 };
+            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + ChineseInterfaceText.ParameterMessage(issue.Message) + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(16, 2, 16, 2), MinHeight = 44 };
             if (found)
             {
-                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + issue.Message; location.Error.Visibility = Visibility.Visible;
+                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + ChineseInterfaceText.ParameterMessage(issue.Message); location.Error.Visibility = Visibility.Visible;
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
             errors.Children.Add(button);

@@ -17,7 +17,7 @@ public static class BarcodeFiltering
     public static string? Validate(BarcodeFilterPolicy? policy)
     {
         if (policy is null) return null; // explicit legacy single-code compatibility, never match-all
-        try { _ = Compile(policy.Pattern, TimeSpan.FromMilliseconds(25)); }
+        try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) _ = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.Pattern: " + ex.Message; }
         try { if (policy.ExclusionPattern is not null) _ = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.ExclusionPattern: " + ex.Message; }
@@ -38,14 +38,14 @@ public static class BarcodeFiltering
         var timer = Stopwatch.StartNew();
         try
         {
-            var regex = Compile(policy.Pattern, TimeSpan.FromMilliseconds(25));
+            var regex = string.IsNullOrWhiteSpace(policy.Pattern) ? null : Compile(policy.Pattern, TimeSpan.FromMilliseconds(25));
             var exclude = policy.ExclusionPattern is null ? null : Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25));
             List<string> matches = [];
             for (var index = 0; index < candidates.Length; index++)
             {
                 var code = candidates[index];
                 if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, matches.Count, "筛选总预算100ms已耗尽；没有准入或外呼");
-                var allowed = regex.IsMatch(code);
+                var allowed = regex?.IsMatch(code) ?? true;
                 if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, matches.Count, "筛选总预算100ms已耗尽；拒绝准入");
                 if (!ValidCode(code)) decisions.Add(new(index, "InvalidCode", "条码长度须为1～256且不含控制字符"));
                 else if (!allowed) decisions.Add(new(index, "NotAllowed", "未匹配允许规则"));

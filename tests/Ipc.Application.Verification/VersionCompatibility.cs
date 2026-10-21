@@ -18,7 +18,9 @@ static class VersionCompatibility
         {
             var assembly = flow.GetType().Assembly;
             var policy = BusinessCompatibility.Read(assembly);
-            var expectedVersion = flow.Id == "sportmaster" ? "1.5.0" : "1.4.2";
+            var module = flow.Id switch { "sportmaster" => "Sportmaster", "direct-plc" => "DirectPlc", _ => "WcsToPlc" };
+            var project = global::System.Xml.Linq.XDocument.Load(Path.Combine(workspace, "src", "Ipc.Application." + module, "Ipc.Application." + module + ".csproj"));
+            var expectedVersion = project.Descendants("Version").Single().Value;
             Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == expectedVersion, flow.Id + " compiled business version and embedded declaration");
             var configDirectory = Path.Combine(root, flow.Id, "config"); Directory.CreateDirectory(configDirectory);
             var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", flow.Id, "business.json")));
@@ -30,7 +32,9 @@ static class VersionCompatibility
             Pass(policy.Require(factory.SelectedProviders(config)) == "builtin-reference", flow.Id + " default and all optional provider versions declared");
             if (flow.Id == "sportmaster")
             {
-                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","extension:sportmaster.rcs-task/sportmaster-rcs-task","1.2.1","SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
+                var rcsProject = global::System.Xml.Linq.XDocument.Load(Path.Combine(workspace, "src", "Ipc.Integrations.SportmasterRcs", "Ipc.Integrations.SportmasterRcs.csproj"));
+                var rcsVersion = rcsProject.Descendants("Version").Single().Value;
+                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","extension:sportmaster.rcs-task/sportmaster-rcs-task",rcsVersion,"SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
                 Pass(policy.Require(rcs)=="sportmaster-rcs-builtin-reference","RCS and original optional capabilities match the same business declaration");
                 Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Version="1.0.2"}:p).ToArray()),"old immutable RCS version is not silently relabelled for new host");
             }

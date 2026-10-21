@@ -1,3 +1,5 @@
+> 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](../design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
+
 > 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](../runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。
 
 ## 2026-10-21 本轮增量执行

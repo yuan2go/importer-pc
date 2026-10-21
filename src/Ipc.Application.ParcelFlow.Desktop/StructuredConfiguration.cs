@@ -59,7 +59,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)),
             DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650));
         return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
-            BarcodeFilter = BarcodePattern.Length == 0 && BarcodeExclusionPattern.Length == 0 && c.BarcodeFilter is null ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
+            BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
             WeightRange = BuildWeightRange(),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),

@@ -78,7 +78,8 @@ public sealed partial class ParameterSettingsControl
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
-            if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") advanced.Add(p);
+            if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
+            else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") advanced.Add(p);
             else if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding" or "entity.mode") advanced.Add(p);
             else if (draft.Kind != "observation" || p.Field.Key != "bcr-code") Parameter(form, page, draft, p);
         }
@@ -93,7 +94,7 @@ public sealed partial class ParameterSettingsControl
                 foreach (var code in codes) Parameter(codeForm, page, draft, code);
             }
         }
-        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : "识别与缓冲"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
+        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
         if (draft.Parameters.Count == 0) page.Body.Children.Add(Text("此版本没有可配置参数。"));
         page.Body.Children.Add(details);
     }
@@ -102,10 +103,12 @@ public sealed partial class ParameterSettingsControl
         "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机网络地址", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
         "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
         "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言",
-        "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => p.EditorLabel
+        "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
     {
+        "subjects" => "模拟认证允许的账号；不会创建 Windows 账号。现场使用实际安装的认证服务。",
+        "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
         "zone-id" or "project-id" => "填写上游分配的正整数标识。", "quantity" => "1～2147483647；与上游响应数量分别保留。",
         "bcr-code" => "心跳上报使用，左右相机不得重复。", "left-bcr-code" or "right-bcr-code" => "本位取格口请求使用；与心跳编码分别配置。",
         "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "填写时同时核对网络地址和序列号。",

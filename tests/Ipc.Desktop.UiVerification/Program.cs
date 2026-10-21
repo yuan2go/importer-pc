@@ -223,9 +223,11 @@ public class ProjectionProbe : DispatchProxy
 {
     public IParcelApplication Inner = null!;
     public Func<ParcelSnapshot, ParcelSnapshot>? Project;
+    public CapabilityCatalog? Catalog;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
         if (method!.Name == nameof(IParcelApplication.SnapshotAsync)) return Snapshot();
+        if (method.Name == nameof(IParcelApplication.CapabilitiesAsync) && Catalog is not null) return Task.FromResult(Catalog);
         return method.Invoke(Inner, arguments);
     }
     async Task<ParcelSnapshot> Snapshot()

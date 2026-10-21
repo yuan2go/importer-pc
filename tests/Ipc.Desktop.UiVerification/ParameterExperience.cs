@@ -47,13 +47,12 @@ static partial class Program
         var visualConfig = config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices },
             Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true,
                 new() { ["device.ip"] = "192.0.2." + (21 + i), ["bcr-code"] = "HEART-" + i })).ToArray()) };
-        var draft = new StartupConfigurationDraft(visualConfig,
-            new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]));
-        var model = draft.CreateParameterEditor(runtime.TestBarcodeFilterAsync);
-        control.Model = model;
+        probe.Catalog = new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]);
         probe.Project = s => s with { Configuration = s.Configuration with { Effective = visualConfig }, Health =
             [new(binding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")] };
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
+        await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
+        Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
@@ -75,6 +74,7 @@ static partial class Program
         await SetClient(window, 1366, 768);
         control.NavigateTo("reader.0/device.ip"); var ip = Boxes().Single(b => AutomationProperties.GetName(b) == "reader.0/device.ip");
         ip.Text = "192.0.2.999"; ip.Select(2, 4); await vm.RefreshAsync(); window.UpdateLayout();
+        Check(vm.HasUnsavedConfiguration && ((Button)page.FindName("SaveChanges")).IsEnabled, "full schema edit updates the real save footer before validation");
         Check(ip.Text == "192.0.2.999" && ip.SelectionLength == 4, "snapshot preserves raw invalid IP and selection");
         Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })

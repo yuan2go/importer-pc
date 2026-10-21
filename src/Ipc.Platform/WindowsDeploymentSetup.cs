@@ -145,6 +145,7 @@ public static partial class WindowsDeploymentSetup
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
+            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") AdministratorBroker.Install(data, Path.Combine(releaseRoot, "app"));
             WriteProtected(operation, new { Status = "ReadyToCommit", Location = location, Previous = before, BusinessStarted = false }, sid);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
             // Stable desktop entry is a repairable projection of the committed deployment.

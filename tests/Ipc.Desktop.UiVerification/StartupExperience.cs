@@ -83,6 +83,22 @@ static partial class Program
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
         Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + tabs.SelectedIndex + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
         editor.Model.Policy.BarcodePattern = ""; tabs.SelectedIndex = 4;
+        var preservedPolicy = editor.Model.Policy; var reauthenticationPassword = "Reauthentication-" + Guid.NewGuid().ToString("N");
+        LocalAdministrator.ForRoot(launch.DataRoot).Maintain("relogin-admin", reauthenticationPassword, true);
+        await Task.Delay(1250); first.UpdateLayout();
+        var sessionLogin = Descendants(first).OfType<Button>().Single(b => Equals(b.Content, "软件管理员登录…"));
+        var protectedBody = (Panel)type.BaseType!.GetField("Body", flags)!.GetValue(first)!;
+        Check(protectedBody.Visibility == Visibility.Collapsed && sessionLogin.IsVisible && !((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(first)!).Children.Contains(sessionLogin), "revoked first-configuration session preserves an accessible login outside hidden fields and the four-action footer");
+        _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "软件管理员登录…")));
+        AdministratorWindow? loginWindow = null;
+        for (var i = 0; i < 100 && loginWindow is null; i++) { await Task.Delay(20); loginWindow = System.Windows.Application.Current.Windows.OfType<AdministratorWindow>().FirstOrDefault(); }
+        Check(loginWindow is not null, "fixed first-configuration login action opens the real software account window after revocation");
+        Descendants(loginWindow!).OfType<TextBox>().Single(t => t.Name == "AdministratorAccount").Text = "relogin-admin";
+        Descendants(loginWindow!).OfType<PasswordBox>().Single().Password = reauthenticationPassword; Click(loginWindow!, "登录");
+        for (var i = 0; i < 100 && !LocalAdministrator.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
+        await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64", "reauthentication restores the same unsaved complete candidate without restarting configuration");
+        Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {
             staticFactory.ValidateStructure(draft.Build());
@@ -97,7 +113,7 @@ static partial class Program
         fake.Uncertain = true; Click(first, "保存并启动"); await Idle(first); var attempts = fake.Saves;
         Click(first, "保存并启动"); await Idle(first);
         Check(fake.Saves == attempts && !Retry(first), "unknown save result blocks a duplicate submission and startup");
-        Check(!Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.EnumerateFiles(launch.DataRoot, "*lease*", SearchOption.AllDirectories).Any(), "first-run navigation and synthetic failure checks create no database or device owner; only administrator custody exists");
+        Check(!Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && Directory.EnumerateFiles(launch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(launch.DataRoot, "security/diagnostics/rotation.lease"))), "first-run navigation creates no database or device owner; administrator custody and its diagnostic rotation lock are separate");
         first.Close();
 
         // Exercise the real modal completion path with a fake application contract,

@@ -4,6 +4,7 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
+using Ipc.Assembly;
 
 static class OperatorAdministration
 {
@@ -19,6 +20,10 @@ static class OperatorAdministration
         admin.Provision("administrator", password);
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => admin.Provision("other", password)), "first-account bootstrap cannot overwrite existing accounts");
         Check(!File.ReadAllText(Path.Combine(data, "security/administrators.json")).Contains(password), "credential file contains salted hashes rather than passwords");
+        var missingRoot = Path.Combine(root, "missing-account-store"); var missing = new LocalAdministrator(missingRoot); missing.Provision("first-admin", password);
+        var missingFile = Path.Combine(missingRoot, "security/administrators.json"); File.Move(missingFile, missingFile + ".retained");
+        await Reject<InvalidDataException>(() => Task.Run(() => new LocalAdministrator(missingRoot).Status()), "provisioned marker prevents a missing credential file from reopening bootstrap");
+        await Reject<InvalidDataException>(() => Task.Run(() => new LocalAdministrator(missingRoot).Provision("replacement-admin", password)), "missing provisioned credentials cannot be silently replaced");
         for (var i = 0; i < 5; i++) Check(!admin.Login("administrator", "wrong"), "invalid credential grants no session " + i);
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => new LocalAdministrator(data).Login("administrator", password)), "persisted login lockout survives a new authenticator");
         // A separate store verifies the remaining session cases without bypassing lockout.
@@ -44,6 +49,11 @@ static class OperatorAdministration
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), seed);
         var launch = new BusinessLaunch(configRoot, data, null, null);
         var factory = new CommercialProductization.SyntheticFactory(launch);
+        await using (var realCatalog = new ParcelCapabilityFactory(launch))
+        {
+            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.3.1", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
+            await Reject<InvalidOperationException>(() => Task.Run(() => realCatalog.Validate(seed with { Mode = RunMode.Production })), "unprotected local account state cannot satisfy production authentication capability");
+        }
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default);
         await app.LoginAdministratorAsync("administrator", password);

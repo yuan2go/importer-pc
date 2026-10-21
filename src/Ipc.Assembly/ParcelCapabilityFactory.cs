@@ -30,7 +30,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     DeploymentQualification? qualification;
     public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
         ? "Production NotReady: exact deployment qualification missing/expired" : null;
-    public bool SimulationIdentity(CapabilityBinding b) => b.Package is null || Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
+    public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
     ExtensionStore Store()
     {
@@ -77,7 +77,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
-        if (requireQualification && c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || !LocalAdministrator.ForRoot(launch.DataRoot).Status().Provisioned || c.SchemaVersion != 3))
+        if (requireQualification && c.Mode == RunMode.Production) AdministratorBroker.RequireProduction(launch.DataRoot);
+        if (requireQualification && c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.SchemaVersion != 3))
             throw new InvalidDataException("Production NotReady: real reader, provisioned software administrator and explicit schema3 topology policy are required");
         if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
             throw new InvalidDataException("Malformed application extension deployment");
@@ -256,6 +257,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public CapabilityRequirements Requirements(CapabilityBinding binding)
     {
         RegisterContracts();
+        if (binding.Package is null && binding.Implementation == "sportmaster-rcs") return new(Query: false);
         return binding.Package is null ? ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == binding.Kind).Requirements
             : Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
     }

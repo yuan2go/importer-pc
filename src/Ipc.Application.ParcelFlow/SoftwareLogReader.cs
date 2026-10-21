@@ -40,6 +40,8 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
         {
             // Only the four files owned by RuntimeJournal, never user-supplied paths.
             foreach (var logRoot in new[] { diagnostics, securityDiagnostics }.OfType<string>())
+            RuntimeJournal.Capture(logRoot, () =>
+            {
             for (int i = 3; i >= 0; i--)
             {
                 var file = Path.Combine(logRoot, "runtime.jsonl" + (i == 0 ? "" : "." + i));
@@ -53,6 +55,8 @@ public sealed class SoftwareLogReader(string diagnostics, LocalAdministrator adm
                 catch (FileNotFoundException) { }
                 catch (DirectoryNotFoundException) { }
             }
+            return true;
+            });
             authority.ThrowIfCancellationRequested();
             var s = new Selection(q, sources.ToArray(), DateTimeOffset.UtcNow, authority); var id = Guid.NewGuid().ToString("N");
             lock (sync)

@@ -14,6 +14,7 @@ public abstract class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
     protected readonly WrapPanel Actions = new();
+    protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = 24, FontWeight = FontWeights.Bold };
@@ -53,7 +54,8 @@ public abstract class StartupWorkflowWindow : Window
         // Full diagnostics remain selectable through the named tools menu.
         Status.ToolTip = diagnostic;
         var scroll = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
-        grid.Children.Add(heading); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
+        var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions); sessionHeader.Children.Add(heading);
+        grid.Children.Add(sessionHeader); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
     }
     protected Button Action(string label, Func<Task> action)
@@ -120,6 +122,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     readonly TextBox config, data;
     string reason = "", backup = "", restoreRoot = "", backupCatalogRoot = "";
     public BusinessLaunch SelectedLaunch { get; private set; }
+    IAdministratorAccounts AdministratorAccounts => ParcelStartupServices.AdministratorAccounts(SelectedLaunch);
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
     public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次配置 · 菜鸟供包台" : "启动修复 · 离线维护")
@@ -132,7 +135,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
         pathFields = Body.Children.Cast<UIElement>().ToArray();
-        Action("软件管理员登录…", () => { new AdministratorWindow(LocalAdministrator.ForRoot(SelectedLaunch.DataRoot)) { Owner = this }.ShowDialog(); return Task.CompletedTask; });
+        var administratorIdentity = new TextBlock { Text = "管理员未登录", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
+        SessionActions.Children.Add(administratorIdentity);
+        var administratorLogin = new Button { Content = "软件管理员登录…", MinHeight = 44 };
+        administratorLogin.Click += async (_, _) => { new AdministratorWindow(AdministratorAccounts) { Owner = this }.ShowDialog(); if (draft is null && !Busy) await Run(Read); };
+        SessionActions.Children.Add(administratorLogin);
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", CheckCandidate);
         Action("保存未完成草稿", async () =>
@@ -235,12 +242,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         authorizationTimer.Tick += async (_, _) =>
         {
             if (checkingAuthority) return; checkingAuthority = true;
-            try { var allowed = (await Task.Run(() => LocalAdministrator.ForRoot(SelectedLaunch.DataRoot).Status())).Authorized; Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed; if (!allowed) Message("管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。"); }
+            try { var identity = await AdministratorAccounts.AdministratorStatusAsync(); var allowed = identity.Authorized; administratorIdentity.Text = allowed ? "管理员\n" + identity.Account : "管理员未登录"; administratorIdentity.ToolTip = administratorIdentity.Text; Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed; if (!allowed) Message("管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。"); }
             catch (Exception error) { Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
             finally { checkingAuthority = false; }
         };
         Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
-        Loaded += async (_, _) => await Run(async () => { try { var admin = LocalAdministrator.ForRoot(SelectedLaunch.DataRoot); if (!admin.Status().Authorized) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
+        Loaded += async (_, _) => await Run(async () => { try { var admin = AdministratorAccounts; if (!(await admin.AdministratorStatusAsync()).Authorized) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
     }
     async Task ValidateBarcodeRule()
     {
@@ -310,12 +317,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text };
         RetryRequested = true; CompleteDialog(); return Task.CompletedTask;
     }
-    Task ImportConfiguration()
+    async Task ImportConfiguration()
     {
-        RequireMaintenance();
+        await RequireMaintenance();
         if (draft is null || document?.Candidate is null) throw new InvalidOperationException("先读取当前配置。");
         var path = FilePick(this, "导入配置文件", "配置或设置模板|*.json");
-        if (path is null) return Task.CompletedTask;
+        if (path is null) return;
         if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("配置文件超出4兆字节限制。");
         var replacement = StartupConfigurationFiles.Import(File.ReadAllText(path), document.Candidate, draft, document.Catalog);
         var comparison = new Window { Owner = this, Title = "导入配置预览", Width = 720, Height = 560, WindowStartupLocation = WindowStartupLocation.CenterOwner };
@@ -324,8 +331,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => comparison.DialogResult = true; panel.Children.Add(apply);
         panel.Children.Add(new TextBox { Text = "仅导入设置，不保存、不启动。保留本供包台身份与模拟/生产用途。\n\n" + StartupConfigurationFiles.Describe(draft, replacement), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         comparison.Content = panel;
-        if (comparison.ShowDialog() == true) { draft = replacement; Render(false); Message("配置已导入填写区。检查后再保存并启动。"); }
-        return Task.CompletedTask;
+        if (comparison.ShowDialog() == true) { await RequireMaintenance(); draft = replacement; Render(false); Message("配置已导入填写区。检查后再保存并启动。"); }
     }
     void OpenTools()
     {
@@ -352,13 +358,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
     new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
     {
-        if (label is not ("软件管理员登录…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) RequireMaintenance();
+        if (label is not ("软件管理员登录…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
         await action();
     });
-    void RequireMaintenance()
+    async Task RequireMaintenance()
     {
         RequireDirectories();
-        LocalAdministrator.ForRoot(SelectedLaunch.DataRoot).Require();
+        if (!(await AdministratorAccounts.AdministratorStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先登录软件管理员；原输入保留。");
         if (maintenance is null) throw new InvalidOperationException("先读取所选目录；失败读取不能沿用另一目录的维护实例。");
     }
     bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();
@@ -471,7 +477,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var backupRows = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 100, MaxHeight = 260, RowHeight = 44 };
         foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
         var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        listBackups.Click += async (_, _) => await Run(async () => { RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
+        listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
         Body.Children.Add(listBackups); Body.Children.Add(backupRows);
         var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
         backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
@@ -481,12 +487,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         destination.TextChanged += (_, _) => { restoreRoot = destination.Text; recovery = null; };
         var plan = new Button { Content = "检查恢复计划", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var preview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80 };
-        plan.Click += async (_, _) => await Run(async () => { RequireMaintenance(); recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
+        plan.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
         Body.Children.Add(plan); Body.Children.Add(preview);
         var restore = new Button { Content = "按计划恢复到新目录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         restore.Click += async (_, _) => await Run(async () =>
         {
-            RequireMaintenance(); if (!MayDiscard()) return;
+            await RequireMaintenance(); if (!MayDiscard()) return;
             var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划");
             await Task.Run(() => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256));
             restoredPreview = selected; restoredBackup = backup;

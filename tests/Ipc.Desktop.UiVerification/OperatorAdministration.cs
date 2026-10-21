@@ -32,6 +32,10 @@ static partial class Program
             lines.Add($"CAPTURE {name}: {target.ActualWidth}x{target.ActualHeight} DIP; Windows scale {dpi.DpiScaleX}/{dpi.DpiScaleY}");
         }
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS OPS-NATIVE " + text); }
+        var rawRecord = System.Text.Json.JsonSerializer.Serialize(new { Path = @"C:\new\logs", Exception = "SyntheticException\n   at Source.Stack()" });
+        var formatter = typeof(SoftwareLogControl).GetMethod("OriginalRecord", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+        var formatted = (string)formatter.Invoke(null, [new SoftwareLogEntry(new("fixture", 1, "fixture", "运行/runtime.jsonl"), "合成", DateTimeOffset.UtcNow, "错误", rawRecord)])!;
+        Check(formatted.Contains(rawRecord) && formatted.Contains("SyntheticException\n   at Source.Stack()"), "raw context preserves Windows path escapes while decoding actual multiline exception values separately");
         lines.Add("Native WPF HWND/Dispatcher, synthetic ports and data. No real device or RCS calls.");
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };

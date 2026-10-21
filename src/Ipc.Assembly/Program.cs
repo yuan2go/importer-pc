@@ -1,6 +1,8 @@
 using Ipc.Platform;
 using Ipc.Assembly;
 
+if (AdministratorBroker.HandleService(args)) return;
+
 #if PARCEL
 if (DeploymentBatch.Handle(args)) return;
 if (ParcelStartupServices.Handle(args)) return;

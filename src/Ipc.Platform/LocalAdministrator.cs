@@ -12,12 +12,14 @@ public sealed record AdministratorDelegation(string Token, string Account, strin
 
 // Software authorization is independent of Windows launch qualification and parcel operators.
 // The deployment data-root ACL protects the store; no reusable password or default account exists.
-public sealed class LocalAdministrator
+public sealed partial class LocalAdministrator
 {
     static readonly System.Collections.Concurrent.ConcurrentDictionary<string, LocalAdministrator> stores = new(StringComparer.OrdinalIgnoreCase);
     public static LocalAdministrator ForRoot(string root) => stores.GetOrAdd(Path.GetFullPath(root), r => new(r));
-    readonly string directory, path;
-    readonly object sync = new();
+    readonly string directory, path, dataRoot, diagnosticDirectory;
+    readonly bool serviceAuthority;
+    static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> storeLocks = new(StringComparer.OrdinalIgnoreCase);
+    readonly object sync;
     string? account, credentialHash;
     string sessionId = "", sessionSecret = "";
     DateTimeOffset expires;
@@ -32,16 +34,33 @@ public sealed class LocalAdministrator
     sealed record Store(Credential[] Accounts, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
         string? SessionHash = null, string? SessionAccount = null, DateTimeOffset? SessionExpires = null, string[]? UsedDelegations = null, Delegation[]? Delegations = null);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(token)));
-    public LocalAdministrator(string root)
-    { directory = Path.Combine(Path.GetFullPath(root), "security"); path = Path.Combine(directory, "administrators.json"); }
+    public LocalAdministrator(string root) : this(root, false) { }
+    internal LocalAdministrator(string root, bool serviceAuthority)
+    {
+        dataRoot = Path.GetFullPath(root); this.serviceAuthority = serviceAuthority;
+        if (serviceAuthority)
+        {
+            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+            using var current = System.Security.Principal.WindowsIdentity.GetCurrent();
+            if (!current.IsSystem) throw new UnauthorizedAccessException("认证服务必须由Windows服务管理器以System身份启动。");
+        }
+        directory = serviceAuthority ? AdministratorBroker.ProtectedRoot(dataRoot) : Path.Combine(dataRoot, "security"); path = Path.Combine(directory, "administrators.json");
+        diagnosticDirectory = Path.Combine(dataRoot, "security", "diagnostics"); sync = storeLocks.GetOrAdd(path, _ => new());
+    }
     FileStream LockStore()
     {
         DeploymentPaths.RequireOrdinaryAncestors(path); Directory.CreateDirectory(directory);
-        return new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        return serviceAuthority && OperatingSystem.IsWindows()
+            ? new FileInfo(path + ".lock").Create(FileMode.OpenOrCreate, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.None, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))
+            : new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
     }
     Store Read()
     {
-        if (!File.Exists(path)) return new([], 0, default, []);
+        if (!File.Exists(path))
+        {
+            if (File.Exists(Path.Combine(directory, "PROVISIONED"))) throw new InvalidDataException("已开通的管理员凭据账缺失；禁止重新开通覆盖，请由安装管理员修复原账。");
+            return new([], 0, default, []);
+        }
         if (new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("管理员凭据账超出限制；保留原文件并联系维护人员。");
         var s = JsonSerializer.Deserialize<Store>(File.ReadAllText(path)) ?? throw new InvalidDataException("管理员凭据账损坏，禁止重新开通覆盖。");
         if (s.Accounts.Length is < 1 or > 64 || s.Accounts.Select(a => a.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != s.Accounts.Length || !s.Accounts.Any(a => a.Enabled))
@@ -54,15 +73,18 @@ public sealed class LocalAdministrator
         var temp = path + "." + Guid.NewGuid().ToString("N") + ".partial";
         try
         {
-            using (var stream = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            using (var stream = serviceAuthority && OperatingSystem.IsWindows()
+                ? new FileInfo(temp).Create(FileMode.CreateNew, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))
+                : new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             { JsonSerializer.Serialize(stream, s); stream.Flush(true); }
             File.Move(temp, path, true);
-            RuntimeJournal.AppendMetadata(Path.Combine(directory, "diagnostics"), new { At = DateTimeOffset.UtcNow, Source = "认证", Level = action == "AdministratorLoginFailed" ? "警告" : "信息", Event = action, Actor = account, TargetAccount = target });
+            RuntimeJournal.AppendMetadata(diagnosticDirectory, new { At = DateTimeOffset.UtcNow, Source = "认证", Level = action == "AdministratorLoginFailed" ? "警告" : "信息", Event = action, Actor = account, TargetAccount = target });
         }
         finally { if (File.Exists(temp)) File.Delete(temp); }
     }
     public AdministratorStatus Status()
     {
+        if (Remote) { lock (sync) { if (remoteStatusKnown && account is null) return new(knownProvisioned, null, null); } return RemoteStatus(); }
         lock (sync)
         {
             using var held = LockStore(); var s = Read();
@@ -71,6 +93,7 @@ public sealed class LocalAdministrator
             return new(s.Accounts.Length > 0, account, account is null ? null : expires);
         }
     }
+    public AdministratorStatus InspectStatus() => Remote ? RemoteStatus() : Status();
     public OperatorIdentity? Identity
     {
         get { var s = Status(); return s.Authorized ? new(s.Account!, s.Account!, "software-administrator", sessionId, expires.AddMinutes(-15), false, expires, ["maintenance"]) : null; }
@@ -94,11 +117,13 @@ public sealed class LocalAdministrator
     }
     public void Provision(string name, string password)
     {
+        if (Remote) { Rpc<bool>(new("Provision", Account: name, Password: password)); return; }
         var credential = Create(name, password);
-        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Accounts.Length != 0) throw new UnauthorizedAccessException("已开通管理员，请使用登录；不能覆盖原账号。"); Save(s with { Accounts = [credential] }, "AdministratorProvisioned", name); }
+        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Accounts.Length != 0) throw new UnauthorizedAccessException("已开通管理员，请使用登录；不能覆盖原账号。"); using (var marker = new FileStream(Path.Combine(directory, "PROVISIONED"), FileMode.CreateNew, FileAccess.Write, FileShare.Read)) marker.Flush(true); Save(s with { Accounts = [credential] }, "AdministratorProvisioned", name); }
     }
     public bool Login(string name, string password)
     {
+        if (Remote) return RemoteLogin(name, password);
         if (name.Length > 64 || password.Length > 256) return false;
         Credential? found;
         lock (sync)
@@ -124,11 +149,12 @@ public sealed class LocalAdministrator
         }
     }
     public void Logout()
-    { lock (sync) { try { using var held = LockStore(); var s = Read(); Save(s with { SessionHash = null, SessionAccount = null, SessionExpires = null }, "AdministratorLoggedOut", account); } finally { Revoke(); } } }
+    { if (Remote) { try { Rpc<bool>(new("Logout")); } finally { lock (sync) Revoke(); } return; } lock (sync) { try { using var held = LockStore(); var s = Read(); if (s.Accounts.Length > 0) Save(s with { SessionHash = null, SessionAccount = null, SessionExpires = null }, "AdministratorLoggedOut", account); } finally { Revoke(); } } }
     public AdministratorAccount[] Accounts()
-    { Require(); lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理员会话已失效。"); } return s.Accounts.Select(a => new AdministratorAccount(a.Name, a.Enabled)).ToArray(); } }
+    { if (Remote) return Rpc<AdministratorAccount[]>(new("Accounts")); Require(); lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理员会话已失效。"); } return s.Accounts.Select(a => new AdministratorAccount(a.Name, a.Enabled)).ToArray(); } }
     public void Maintain(string name, string? password, bool enabled)
     {
+        if (Remote) { Rpc<bool>(new("Maintain", Account: name, Password: password, Enabled: enabled)); lock (sync) Revoke(); return; }
         Require(); var replacement = password is null ? null : Create(name, password);
         lock (sync)
         {
@@ -145,6 +171,8 @@ public sealed class LocalAdministrator
     }
     public AdministratorDelegation Delegate(string requestHash)
     {
+        if (!ExtensionSchema.IsHash(requestHash)) throw new InvalidDataException("维护请求必须使用完整SHA-256身份。");
+        if (Remote) return Rpc<AdministratorDelegation>(new("Delegate", RequestHash: requestHash));
         Require();
         lock (sync)
         {
@@ -158,6 +186,7 @@ public sealed class LocalAdministrator
     }
     public void ValidateDelegation(AdministratorDelegation grant, string requestHash, bool consume)
     {
+        if (Remote) { Rpc<bool>(new("ValidateDelegation", RequestHash: requestHash, Grant: grant, Consume: consume)); return; }
         lock (sync)
         {
             using var held = LockStore(); var s = Read();

@@ -90,7 +90,26 @@ public sealed class SoftwareLogControl : UserControl
     {
         if (selection is null || results.SelectedItem is not SoftwareLogEntry entry) throw new InvalidOperationException("请先选择一条命中日志。");
         var size = ContextSize(); var result = await service.LogContextAsync(selection, entry.Location, size, size, pending!.Token); pending.Token.ThrowIfCancellationRequested();
-        detail.Text = string.Join("\n\n", result.Entries.Select(e => "[" + e.Location.File + ":" + e.Location.Line + "]\n" + e.Text.Replace("\\r\\n", "\r\n").Replace("\\n", "\n"))); status.Text = string.Join("\n", result.Notices);
+        detail.Text = string.Join("\n\n", result.Entries.Select(OriginalRecord)); status.Text = string.Join("\n", result.Notices);
+    }
+    static string OriginalRecord(SoftwareLogEntry entry)
+    {
+        // Keep raw JSON intact, including literal backslashes in Windows paths.
+        // Decode actual multiline string values separately for readable full stacks.
+        var text = "[" + entry.Location.File + ":" + entry.Location.Line + "]\n" + entry.Text;
+        try
+        {
+            using var json = System.Text.Json.JsonDocument.Parse(entry.Text); var multiline = new List<string>();
+            void Visit(System.Text.Json.JsonElement value, string path)
+            {
+                if (value.ValueKind == System.Text.Json.JsonValueKind.Object) foreach (var field in value.EnumerateObject()) Visit(field.Value, path + "/" + field.Name);
+                else if (value.ValueKind == System.Text.Json.JsonValueKind.Array) { int index = 0; foreach (var item in value.EnumerateArray()) Visit(item, path + "/" + index++); }
+                else if (value.ValueKind == System.Text.Json.JsonValueKind.String && value.GetString() is { } content && content.Contains('\n')) multiline.Add(path + ":\n" + content);
+            }
+            Visit(json.RootElement, ""); if (multiline.Count > 0) text += "\n\n原记录中的多行内容：\n" + string.Join("\n\n", multiline);
+        }
+        catch (System.Text.Json.JsonException) { }
+        return text;
     }
     async Task Export(bool range)
     {

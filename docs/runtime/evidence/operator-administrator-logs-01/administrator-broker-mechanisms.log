@@ -1,0 +1,53 @@
+EvidenceRoot=D:\projects\importer-pc\.artifacts\operator-admin-8312f2d1057a43c2a552865c7a430561
+PASS OPS: no default account or password grants software authority
+PASS OPS: direct service calls reject before provisioning
+PASS OPS: first-account bootstrap cannot overwrite existing accounts
+PASS OPS: credential file contains salted hashes rather than passwords
+PASS OPS: provisioned marker prevents a missing credential file from reopening bootstrap
+PASS OPS: missing provisioned credentials cannot be silently replaced
+PASS OPS: invalid credential grants no session 0
+PASS OPS: invalid credential grants no session 1
+PASS OPS: invalid credential grants no session 2
+PASS OPS: invalid credential grants no session 3
+PASS OPS: invalid credential grants no session 4
+PASS OPS: persisted login lockout survives a new authenticator
+PASS OPS: real password hash authentication succeeds
+PASS OPS: a copied helper ticket cannot change its server-bound request hash
+PASS OPS: a helper ticket cannot extend its server-bound expiry
+PASS OPS: a helper ticket cannot mint another one-use authorization
+PASS OPS: elevated helper delegation is single-use rather than Windows-only authorization
+PASS OPS: helper authorization is bound to the exact original maintenance request
+PASS OPS: account changes immediately revoke existing tasks and session
+PASS OPS: account revocation also invalidates an already-issued helper delegation
+PASS OPS: last enabled administrator remains protected
+PASS OPS: session expiry revokes authorization and pending task tokens
+PASS OPS: session expiry is recorded in the actual authentication journal
+PASS OPS: actual package-less RCS requirements reject unsupported authoritative query
+PASS OPS: unprotected local account state cannot satisfy production authentication capability
+PASS OPS: administrator login never creates or changes a parcel operator
+PASS OPS: administrator login and parameter catalog reads do not pause feeding
+PASS OPS: authenticated configuration save still requires pause and drain
+PASS OPS: optional operator login disabled still protects parameter reads
+PASS OPS: operator snapshot cannot expose the editable provider configuration
+PASS OPS: direct candidate validation rejects logged-out administrator
+PASS OPS: direct save cannot reuse a revoked administrator grant
+PASS OPS: grep query is bounded to 200 records per page
+PASS OPS: query results redact sensitive values before exposure
+PASS OPS: context uses original adjacent records across rotations, not previous/next matches
+PASS OPS: full original exception stacks survive query and context
+PASS OPS: export traverses every match beyond the current page
+PASS OPS: exports include original source/query range and exclude credentials
+PASS OPS: time-range export includes nonmatching records
+PASS OPS: overlapping original contexts export once without duplicates
+PASS OPS: export cannot write into managed business/log sources
+PASS OPS: existing export files remain protected
+PASS OPS: cancelled exports do not publish partial success
+PASS OPS: failed and cancelled exports clean partial files
+PASS OPS: invalid regex is reported without a shell invocation
+PASS OPS: catastrophic regex terminates under a per-record timeout
+PASS OPS: revoked sessions cannot read previously opened context
+PASS OPS: revoked sessions cannot export an old selection
+PASS OPS: both feeding positions advance correctly while querying logs without the business gate: 
+PASS OPS: streaming complete export and another admitted parcel both finish without sharing the business lock
+PASS OPS: lost reply retains one original unknown request
+PASS OPS: unsupported authoritative query and repeated input never resend or replace the frozen original request

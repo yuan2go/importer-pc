@@ -11,11 +11,14 @@ namespace Ipc.Assembly;
 
 public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? Launch = null, string? ExpectedHash = null,
     ParcelConfiguration? Candidate = null, string? Reason = null, string? Backup = null, string? Destination = null,
-    WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null, AdministratorDelegation? AdministratorGrant = null);
+    WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null, AdministratorDelegation? AdministratorGrant = null,
+    string? AdministratorAccount = null, string? AdministratorPassword = null);
 
 // Composition entry points for installation and offline maintenance; never creates IBusinessRuntime.
 public static class ParcelStartupServices
 {
+    public static IAdministratorAccounts AdministratorAccounts(BusinessLaunch launch) => new ParcelAdministratorAccounts(launch.DataRoot,
+        async (account, password) => { _ = await ExecuteAsync(new("ProvisionAdministrator", Launch: launch, AdministratorAccount: account, AdministratorPassword: password)); });
     static readonly AsyncLocal<Action?> delegatedAuthority = new();
     static readonly AsyncLocal<string?> delegatedPrincipal = new();
     static bool RequiresAdministrator(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore";
@@ -154,6 +157,9 @@ public static class ParcelStartupServices
     {
         switch (request.Action)
         {
+            case "ProvisionAdministrator":
+                LocalAdministrator.ForRoot(request.Launch?.DataRoot ?? throw new InvalidDataException("管理员数据目录缺失。")).Provision(request.AdministratorAccount ?? "", request.AdministratorPassword ?? "");
+                break;
             case "InstallWithPreflight":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var candidate = request.Deployment ?? throw new InvalidDataException("Missing deployment");

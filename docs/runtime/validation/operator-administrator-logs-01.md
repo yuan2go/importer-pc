@@ -1,6 +1,6 @@
 # OPS-ADMIN-LOGS-01 · 交付验证
 
-2026-10-21，开发分支 `codex/operator-admin-logs`。开工及发布前复核 main 为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft），无后继相关PR。整合85 `d52ade7` 与84 `587fbe8`，保留原PR和历史SourceCommit。最终产品为Sportmaster 1.9.1 / Contracts 1.15.0 / 配置schema3 / DB8；下述1.9.0为中间候选。
+2026-10-21，开发分支 `codex/operator-admin-logs`，[PR86](https://github.com/yuan2go/importer-pc/pull/86)。开工及发布前复核 main 为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft）。整合85 `d52ade7` 与84 `587fbe8`，保留原PR和历史SourceCommit。最终产品为Sportmaster 1.10.0 / Contracts 1.15.0 / 配置schema3 / DB8；1.9.0/1.9.1为被替代的中间候选。
 
 功能取舍见[工作包](../../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)，实际操作和安全边界见[当前指南](../operator-administrator-logs-01.md)。删除支持摘要的契约与实现，保留独立诊断、备份恢复和原业务审计。本轮不改写历史D/RV。
 
@@ -34,6 +34,16 @@
 ![紧凑日志](../evidence/operator-administrator-logs-01/administrator-logs-800.png)
 
 ## 发布身份与验证边界
+
+### 1.10.0权限边界补修
+
+PR86发现共享数据根的凭据账可被普通Windows用户替换，1.9.x不能作为最终推荐。现由本机System认证服务保管私有凭据/锁定/会话/授权，受保护锚点阻止服务缺失时回退；软件密码登录仍允许普通Windows用户，首次开通才要求安装管理员批准。首配与运行UI只调用应用账号契约。内置RCS真实Query=false，同时修正真实连接的模拟标识；日志文件打开与轮转使用短专用锁，扫描/导出不持有，原JSON路径和完整多行堆栈分别呈现。
+
+本机机制专项52、参数81及配置确认通过；原生管理员/日志17项和首配93项通过，包含真实登录窗口重新授权并保留原候选。实际SCM/System/受限Windows令牌测试已接入 `scripts/verify-administrator-broker.ps1` 和必需CI。本机普通用户在创建服务前被真实安装权限守卫拒绝，见[原失败](../evidence/operator-administrator-logs-01/broker-boundary-local-blocked.log)，不算Windows服务验证通过。最终发布源码、冻结结果和CI回执在交付后补记。
+
+![首配重新登录后保留原候选](../evidence/operator-administrator-logs-01/startup-session-restored.png)
+
+### 中间候选历史
 
 最终1.9.1补修PR83的既有P1/P2：越界测量原样本与拒绝事实同事务保存，重启后同ID改值进入原身份冲突守卫；重量下限无效/负数/精度错误定位下限并保留输入。PR82的MiB标签已有，校验文案一并统一。参数专项由75增至81项PASS。首配测试的“数据根不得存在”过期断言修正为禁止业务DB/设备租约，保留管理员元数据责任；新增重启夹具完整Dispose后再取得原资源租约，不放宽运行资源守卫。
 

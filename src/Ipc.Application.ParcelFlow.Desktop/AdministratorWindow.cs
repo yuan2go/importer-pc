@@ -9,9 +9,8 @@ public sealed class AdministratorWindow : Window
 {
     public AdministratorWindow(IWorkstationAdministration service) : this(service.AdministratorStatusAsync, service.ProvisionAdministratorAsync,
         service.LoginAdministratorAsync, service.LogoutAdministratorAsync, service.AdministratorAccountsAsync, service.MaintainAdministratorAsync) { }
-    public AdministratorWindow(LocalAdministrator service) : this(() => Task.FromResult(service.Status()),
-        (a, p) => Task.Run(() => service.Provision(a, p)), (a, p) => Task.Run(() => service.Login(a, p)),
-        () => Task.Run(service.Logout), () => Task.Run(service.Accounts), (a, p, e) => Task.Run(() => service.Maintain(a, p, e))) { }
+    public AdministratorWindow(IAdministratorAccounts service) : this(service.AdministratorStatusAsync, service.ProvisionAdministratorAsync,
+        service.LoginAdministratorAsync, service.LogoutAdministratorAsync, service.AdministratorAccountsAsync, service.MaintainAdministratorAsync) { }
     AdministratorWindow(Func<Task<AdministratorStatus>> status, Func<string, string, Task> provision, Func<string, string, Task<bool>> login,
         Func<Task> logout, Func<Task<AdministratorAccount[]>> accounts, Func<string, string?, bool, Task> maintain)
     {

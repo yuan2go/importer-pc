@@ -1,6 +1,15 @@
 using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
+public interface IAdministratorAccounts
+{
+    Task<AdministratorStatus> AdministratorStatusAsync();
+    Task ProvisionAdministratorAsync(string account, string password);
+    Task<bool> LoginAdministratorAsync(string account, string password);
+    Task LogoutAdministratorAsync();
+    Task<AdministratorAccount[]> AdministratorAccountsAsync();
+    Task MaintainAdministratorAsync(string account, string? password, bool enabled);
+}
 public interface IWorkstationAdministration
 {
     Task<AdministratorStatus> AdministratorStatusAsync();

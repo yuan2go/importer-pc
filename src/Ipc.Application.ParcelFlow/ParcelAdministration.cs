@@ -8,7 +8,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
     SoftwareLogReader? logReader;
     SoftwareLogReader Logs { get { Administrator.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
     void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
-    public Task<AdministratorStatus> AdministratorStatusAsync() => Task.Run(Administrator.Status);
+    public Task<AdministratorStatus> AdministratorStatusAsync() => Task.Run(Administrator.InspectStatus);
     public Task ProvisionAdministratorAsync(string account, string password) => Task.Run(() => { Administrator.Provision(account, password); Diagnostic("认证", "首个管理员已开通"); });
     public async Task<bool> LoginAdministratorAsync(string account, string password)
     {

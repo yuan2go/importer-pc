@@ -81,6 +81,8 @@ jobs:
             if (-not $?) { throw 'Frozen parameter V3 verification did not return successfully' }
             ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/operator-administration -OperatorAdministration
             if (-not $?) { throw 'Frozen administrator/log verification did not return successfully' }
+            ./scripts/verify-administrator-broker.ps1 -Media $media -Output C:/scd-evidence/administrator-broker
+            if (-not $?) { throw 'Actual Windows administrator boundary verification failed' }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)
@@ -140,6 +142,8 @@ jobs:
             C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
             C:/scd-evidence/parameters-v3/*.png
             C:/scd-evidence/operator-administration/*
+            C:/scd-evidence/administrator-broker/RESULT.json
+            C:/scd-evidence/administrator-broker/RUN.log
             C:/scd-evidence/removal/RESULT.json
             C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json

@@ -13,6 +13,7 @@ var root = args.Contains("--operator-administration") ? Path.Combine(workspace, 
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); AdministratorBoundary.Run(args[Array.IndexOf(args, "--administrator-broker-boundary") + 1], root); return; }
 if (args.Contains("--operator-administration")) { await OperatorAdministration.Run(workspace, root); return; }
 if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { InstallerOptions.Run(root); return; }

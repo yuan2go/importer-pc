@@ -56,6 +56,22 @@ public sealed class RuntimeJournal : IAsyncDisposable
         stream.Write(bytes); stream.Flush(true);
     }
     static void MaintainFiles(string directory, int? days)
+        => Capture(directory, () => { MaintainFilesUnlocked(directory, days); return true; });
+    // Cooperating writers and readers share only the brief file-open/rotation boundary.
+    // Scanning, regex, context and exports never hold this lock or a business lock.
+    public static T Capture<T>(string directory, Func<T> capture)
+    {
+        if (!Directory.Exists(directory)) return capture();
+        var path = Path.Combine(directory, "rotation.lease"); DeploymentPaths.RequireOrdinaryAncestors(path);
+        FileStream? held = null;
+        for (var attempt = 0; held is null; attempt++)
+        {
+            try { held = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None); }
+            catch (IOException error) when ((error.HResult & 0xffff) is 32 or 33 && attempt < 50) { Thread.Sleep(2); }
+        }
+        using (held) return capture();
+    }
+    static void MaintainFilesUnlocked(string directory, int? days)
     {
         var path = Path.Combine(directory, "runtime.jsonl");
                     // These four diagnostic files are disposable metadata. Never

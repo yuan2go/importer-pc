@@ -56193,9 +56193,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c14cb4508662a7f4d4dcb6d7667afecaae0b88a5015dfcfc91230b37b1f15840",
-      "size_bytes": 40377,
-      "git_blob": "54c1211e1097834e3b6a8d41b4e475d1544fd014",
+      "sha256": "1add73e8278025b40be0ad840e9d8ec6cca38be44978f507d754822308f12e2b",
+      "size_bytes": 40365,
+      "git_blob": "7a2fa3f67d95eb303be05b1ee8964ad43f3ad279",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -62598,9 +62598,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "f55788069e721b35a4940ea47ca94a2427ef0b66e10e9d59b83b2546bc0ad675",
-      "size_bytes": 4201,
-      "git_blob": "c6d6e9735b65a970758192ae55660ad767804914"
+      "sha256": "6fbdd922610d811f3b9f07b3be98f6938c57e6eca97fd6614809b0535232c82f",
+      "size_bytes": 5040,
+      "git_blob": "a8688d6073a969d1eeba6206136e35166e294185"
     },
     {
       "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
@@ -62609,9 +62609,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "b1fab8d84359da6c71eebe36eac33a4017921af4efc7eab52fbdbc36f30a9f58",
-      "size_bytes": 7911,
-      "git_blob": "5ad05604264b80e521b128e5e963afbe02a4edd0"
+      "sha256": "4f89ae594dc5a759cb149a14e84a4ef167f49a90969f7e3642ec94d45442dfb4",
+      "size_bytes": 8263,
+      "git_blob": "51dee92832143fa9203c4864380f8e0c52ce164c"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TcpLineReader.cs",
@@ -62620,9 +62620,64 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "ab5e05420c6daec124fde0ea97df88369c70d42ec3ba21aca8f4d7d8a7845d0c",
-      "size_bytes": 3754,
-      "git_blob": "26f3ca1183de9f3c6f01d02532a4fb4330c25a03"
+      "sha256": "4da735f0fd79b1dbbc75555d1e92bb5650ca3733f286dc1ab5e4d56efcc7b852",
+      "size_bytes": 5010,
+      "git_blob": "7e273914f91152c8715a3aa669f80c55fb13f178"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/STARTUP-FINAL.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final TCP endpoint ownership and native verification",
+      "source": "2026-10-21 explicit client-LF contract; prior evidence preserved",
+      "storage_scope": "public_repository",
+      "sha256": "88282d2cf37076e66cfae6c18643f9de1eae5e5fb25cdf981a33d1310c526015",
+      "size_bytes": 7405,
+      "git_blob": "d68e68157e129b590ddbb992f786528deb1a4da1"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/final-desktop-build.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final TCP endpoint ownership and native verification",
+      "source": "2026-10-21 explicit client-LF contract; prior evidence preserved",
+      "storage_scope": "public_repository",
+      "sha256": "2ea77f954613a702ccbe38b4e3abad6a775870cda0e8d646cfae70585fdf8f05",
+      "size_bytes": 3774,
+      "git_blob": "560b8b5864910aa21209a99a05881e9417d38a7a"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/final-installer-complete.png",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final TCP endpoint ownership and native verification",
+      "source": "2026-10-21 explicit client-LF contract; prior evidence preserved",
+      "storage_scope": "public_repository",
+      "sha256": "aecd461983bf7775d8b1ae76eb74329db2d5c6125c18ff56edd9f7435d865468",
+      "size_bytes": 54022,
+      "git_blob": "c25b4d6b12301375df214650c9446e933d4730df"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/final-startup-step-3.png",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final TCP endpoint ownership and native verification",
+      "source": "2026-10-21 explicit client-LF contract; prior evidence preserved",
+      "storage_scope": "public_repository",
+      "sha256": "757b9aabd3a044c4bbfbdc6b37209fe8d502a926bb65166d937cc4577a298e70",
+      "size_bytes": 69219,
+      "git_blob": "a7ab745b754528e319c6e8fb213fa1fa55ad9a0a"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/final-ui-build.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Final TCP endpoint ownership and native verification",
+      "source": "2026-10-21 explicit client-LF contract; prior evidence preserved",
+      "storage_scope": "public_repository",
+      "sha256": "31d1984eb0b02dcbfc91854a80423c605c211e3337f2ed66f24d9e8908790ada",
+      "size_bytes": 3717,
+      "git_blob": "1a7db9d13d537693ad1202dcb85ad80285bca113"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

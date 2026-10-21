@@ -35,6 +35,9 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
         if (!IPAddress.TryParse(p.GetValueOrDefault("device.ip"), out var address) || address.AddressFamily != AddressFamily.InterNetwork || address.ToString() != p["device.ip"] || address.Equals(IPAddress.Any) || address.Equals(IPAddress.Broadcast))
             throw new InvalidDataException("device.ip: 填写规范的相机 IPv4 地址");
     }
+    // Numerically identical ports must share the same physical resource key.
+    public static string EndpointIdentity(DeviceBinding binding) => binding.Parameters!["device.ip"] + ":" +
+        int.Parse(binding.Parameters["device.port"], System.Globalization.CultureInfo.InvariantCulture).ToString(System.Globalization.CultureInfo.InvariantCulture);
     public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> onHealth, CancellationToken token) =>
         throw new InvalidOperationException("Use the application-registered connection epoch");
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)

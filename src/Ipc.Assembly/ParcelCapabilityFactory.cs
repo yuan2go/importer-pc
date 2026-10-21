@@ -106,7 +106,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (r.Driver is not ("manual" or "tcp-line") && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
         var tcpReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line").ToArray();
         foreach (var tcp in tcpReaders) Ipc.Drivers.TcpLineObservationSource.Validate(tcp);
-        if (tcpReaders.GroupBy(r => r.Parameters!["device.ip"] + ":" + r.Parameters["device.port"]).Any(g => g.Count() > 1))
+        if (tcpReaders.GroupBy(r => Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)).Any(g => g.Count() > 1))
             throw new InvalidDataException("device.ip: 左右相机不能连接同一个 IP 和端口");
         if (c.Extensions is not null)
         {
@@ -373,7 +373,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         var deviceIds = ParcelBindings.Readers(c).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
             .Concat(ParcelBindings.Bound(c).Where(x => x.Kind is "weight" or "plc" or "camera").SelectMany(x => new[] { "device:" + x.Target, x.Kind + ":" + x.Target })).Distinct();
-        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line").Select(r => "reader:tcp:" + r.Parameters!["device.ip"] + ":" + r.Parameters["device.port"]));
+        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line").Select(r => "reader:tcp:" + Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)));
         devices = new(resourceRoot, deviceIds);
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {

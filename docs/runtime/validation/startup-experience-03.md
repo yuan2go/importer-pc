@@ -27,3 +27,7 @@
 新装默认所有Windows用户共享同一数据根、机器政策及资源租约；实际Users组ACL/UAC/双账号/安装升级/重启尚未执行。旧账户、数据根和模拟/生产身份升级时保留，不自动迁移至新空库。内置TCP默认仅观察，包裹关联须现场确认；真实认证、生产资格及原业务责任未满足继续拒绝业务，不将合成/本地就绪当在线或生产成功。
 
 真实相机/IP网络、真实RCS、SDK及目标IPC/现场仍待验；未控制真实设备、未上传用户截图/客户原稿/生产数据/SDK，D/RV未关闭。公开manifest原有历史问题不在本包扩张为修复。
+
+## 冻结前资源键核对
+
+8955bb1保留本轮主体、87项初验及中间介质身份；该中间ZIP不作为最终推荐安装器。核对发现端口前导零可形成不同文本资源键，后续统一使用规范数值端口构造物理目标键。新增真实ResourceLease断言：不同ReaderId、80/00080不能同时取得同一目标；原租约释放后才可再次取得。新的[89项首配专项](../evidence/startup-experience-03/STARTUP-FINAL.log)通过，最终两份构建日志零警告/错误，原87项及原图不覆盖。[最终相机页](../evidence/startup-experience-03/final-startup-step-3.png)修正TCP包裹关联说明，[完成页](../evidence/startup-experience-03/final-installer-complete.png)保持底部运行选项。后继仅用新提交重新冻结，最终产品SourceCommit和安装器另列。

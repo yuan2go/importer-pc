@@ -10,6 +10,19 @@ static partial class Program
     static async Task VerifyTcpLineReader(Action<bool, string> check)
     {
         async Task Until(Func<bool> condition) { for (var n = 0; n < 200 && !condition(); n++) await Task.Delay(10); check(condition(), "TCP bounded event wait completes"); }
+        var first = new DeviceBinding("parcel-reader", "tcp-line", "synthetic.one", "1") { Parameters = new() { ["device.ip"] = "127.0.0.1", ["device.port"] = "80" } };
+        var sameEndpoint = first with { DeviceId = "synthetic.two", Parameters = new(first.Parameters) { ["device.port"] = "00080" } };
+        TcpLineObservationSource.Validate(first); TcpLineObservationSource.Validate(sameEndpoint);
+        var leaseRoot = Path.Combine(Path.GetTempPath(), "ipc-tcp-lease-" + Wire.Id());
+        using (var held = new ResourceLease(leaseRoot, ["reader:tcp:" + TcpLineObservationSource.EndpointIdentity(first)]))
+        {
+            var refused = false;
+            try { using var duplicate = new ResourceLease(leaseRoot, ["reader:tcp:" + TcpLineObservationSource.EndpointIdentity(sameEndpoint)]); }
+            catch (IOException) { refused = true; }
+            check(refused, "equivalent numeric TCP ports with different reader names cannot acquire separate physical leases");
+        }
+        using (var after = new ResourceLease(leaseRoot, ["reader:tcp:" + TcpLineObservationSource.EndpointIdentity(sameEndpoint)]))
+            check(after.Resources.Length == 1, "physical TCP endpoint can be acquired only after the original lease releases");
         foreach (var scenario in new[] { "framing", "observe", "overflow", "invalid-utf8", "partial-eof", "reject" })
         {
             using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();

@@ -136,6 +136,8 @@ static partial class Program
             var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
             Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
                 "native review displays the current station change from the validated complete candidate");
+            Check(vm.Fresh && vm.Snapshot?.Paused == true && !Descendants(dialog).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
+                "confirmed pause is shown as a review condition without a redundant pause action");
             editorHeight = editor.ActualHeight;
             Capture("parameters-save-review", (FrameworkElement)dialog.Content);
         });
@@ -150,6 +152,8 @@ static partial class Program
             "adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it");
         await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
         window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
+        Check(((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
+            "returning to work restores the existing footer without a second settings mode line");
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;

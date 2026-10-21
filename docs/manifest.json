@@ -1692,19 +1692,28 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "1039e49fac7415c7beacb195f9fb65e39717d4ec31d7a7d193d694d81b4f0543",
-      "size_bytes": 4509,
-      "git_blob": "ac7f92cdfa1d319f25de3b0a63692d7c675d7f93",
-      "version": "PARAM-UX-02-PS05",
+      "sha256": "3ecd3e8a5c85ddfee6cd6aba8e57b9086ca699676b96227663c80ee835947beb",
+      "size_bytes": 4665,
+      "git_blob": "707fdb159df057ff99e14fad309342c3eef76336",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "a4ff46f83fb85d8b0fe78c5002fd10c00a2add62",
       "pre_windows_no_test_release_git_blob": "df7184653b0db09e6b19350dc7d89571e852b4da",
       "pre_publication_pr57_pr58_git_blob": "ac73f6a6599d857fc50b3abecef3502fe724d039",
-      "pre_installer_info_publication_git_blob": "523623cf869d118c163efd97f7423142387511e7"
+      "pre_installer_info_publication_git_blob": "523623cf869d118c163efd97f7423142387511e7",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "1039e49fac7415c7beacb195f9fb65e39717d4ec31d7a7d193d694d81b4f0543",
+        "size_bytes": 4509,
+        "git_blob": "ac7f92cdfa1d319f25de3b0a63692d7c675d7f93"
+      }
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
@@ -2052,13 +2061,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "cfeed62b2bbdabec0e7d3d19396c59d6ab7aea26f08dea14f7a701f699bb3209",
-      "size_bytes": 17100,
-      "git_blob": "1e5c743825ca02c04e7ca8d560cd1ee4a1f83394",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "sha256": "b485d47f4de1a5d5c6a572a6a5ab0a41e08307b1ea50839afb30ba0e9511a994",
+      "size_bytes": 17414,
+      "git_blob": "20271ade194000b7bbc624165d5fc5dddd0f8365",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
       "previous_git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2106,6 +2115,15 @@
         "version": "PARAM-UX-02-PS05",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "cfeed62b2bbdabec0e7d3d19396c59d6ab7aea26f08dea14f7a701f699bb3209",
+        "size_bytes": 17100,
+        "git_blob": "1e5c743825ca02c04e7ca8d560cd1ee4a1f83394"
       }
     },
     {
@@ -6991,16 +7009,25 @@
     },
     {
       "path": "docs/design/parameter-settings-experience-02.md",
-      "sha256": "92f3cec71c37ddb8fd9fde29cebbbf85b6b1d11da027404edf3124aafd623f57",
-      "size_bytes": 5522,
-      "git_blob": "2113adefc3cbb751f38cf4c25c58cc68e2a62a62",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "1f8b92468e45eb9bc5f9d0db92c301d7d11c8894b25c29237c918f85012d4818",
+      "size_bytes": 6337,
+      "git_blob": "12a531dbfd7582c0f9934a8cd047d414c1a58d8d",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+        "sha256": "92f3cec71c37ddb8fd9fde29cebbbf85b6b1d11da027404edf3124aafd623f57",
+        "size_bytes": 5522,
+        "git_blob": "2113adefc3cbb751f38cf4c25c58cc68e2a62a62"
+      }
     },
     {
       "path": "docs/design/sportmaster-commercial-delivery-01.md",
@@ -51845,13 +51872,13 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
-      "sha256": "e691632a46e41fbb9c6d65b127dda1aacf8a08a78e02e2636117c993704b7411",
-      "size_bytes": 13888,
-      "git_blob": "df6f696a5f284b3a6f58579c03e4abfdc58073c8",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "sha256": "471eeba3dfe117bfd773bb5afcdb9436f6ba2ac55d0b7740bc5c02b6355f5f61",
+      "size_bytes": 14280,
+      "git_blob": "100285d104e31641a7cd467dae6e4ecc22a9e873",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
       "remote_inclusion": "verify_published_main",
@@ -51868,6 +51895,15 @@
         "version": "PARAM-UX-02-PS05",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "e691632a46e41fbb9c6d65b127dda1aacf8a08a78e02e2636117c993704b7411",
+        "size_bytes": 13888,
+        "git_blob": "df6f696a5f284b3a6f58579c03e4abfdc58073c8"
       }
     },
     {
@@ -53693,14 +53729,23 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs",
-      "sha256": "24f2db5ea8047df34d8d79a3497f2747f17262abb2f5482c1ef45d6ccb4db70d",
-      "size_bytes": 18052,
-      "git_blob": "5e77fefe8082a980e2008e7388c346265e2664d5",
-      "version": "PARAM-UX-02-PS05",
+      "sha256": "cea64b21e9b1111217140f0e33ffa013b94014b67e9fa938b5af2fd5c4cfbc5a",
+      "size_bytes": 18156,
+      "git_blob": "d38b674c2018c02cae13e12f6769e68f09306b68",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "storage_scope": "public_repository"
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "storage_scope": "public_repository",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "24f2db5ea8047df34d8d79a3497f2747f17262abb2f5482c1ef45d6ccb4db70d",
+        "size_bytes": 18052,
+        "git_blob": "5e77fefe8082a980e2008e7388c346265e2664d5"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs",
@@ -53907,12 +53952,12 @@
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
-      "sha256": "4c5904ca1ea6332ab8c3f4a55a4da25571855e19461b911d62ac0b9c599e6e37",
-      "size_bytes": 13291,
-      "git_blob": "9047902c1cbcfaab2cc59d89817f49e3ce90289a",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "b021cafedeac1034ec185cfaaaf056dc448565fcd7209505f70407e7bfe8e54a",
+      "size_bytes": 13040,
+      "git_blob": "0ac0e60c9da8d7916e64f037714cad6cb6db2fc9",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -53920,24 +53965,33 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
       "pre_parameter_experience_01_identity": {
         "git_blob": "cc3b2c56a8150e454fc0e7d115fcf07ee7ae7e6c",
         "sha256": "845ee4bab40696ef0ca7ffee96251781863ef64d2438eb2304ae37951a6396be",
         "version": "PARAM-UX-02-PS05",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "4c5904ca1ea6332ab8c3f4a55a4da25571855e19461b911d62ac0b9c599e6e37",
+        "size_bytes": 13291,
+        "git_blob": "9047902c1cbcfaab2cc59d89817f49e3ce90289a"
       }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
-      "sha256": "8410fbf7ae9757cce7ddf03df7fb36292adb97615ecfd43e63c144b69d15d82f",
-      "size_bytes": 12629,
-      "git_blob": "f2d8b9b730e6d98e91603fb08fd8f2c7032e0c54",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "0bf14c47759978f2dbb0af8f37a012194ade26949eefb623d6cefa2142458e0d",
+      "size_bytes": 12577,
+      "git_blob": "3c7efca1fa4041044fd0cfc2e84bce0df840ebbb",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "b01d4c6b46c216bd69d371f42282a8223fcec526",
         "sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2",
@@ -53945,13 +53999,22 @@
         "status": "scoped_implementation_or_publication_evidence",
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
       },
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
       "pre_parameter_experience_01_identity": {
         "git_blob": "d3bec6454ee61ca7ecd34af74de505396e22fe7f",
         "sha256": "cec757d4529f8d36dfe7fc15ea19a9cac9530dd4156b63c8a6a358b784f5e1b3",
         "version": "PARAM-UX-02-source-20261020",
         "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
         "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "8410fbf7ae9757cce7ddf03df7fb36292adb97615ecfd43e63c144b69d15d82f",
+        "size_bytes": 12629,
+        "git_blob": "f2d8b9b730e6d98e91603fb08fd8f2c7032e0c54"
       }
     },
     {
@@ -53993,12 +54056,12 @@
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "c424587a8b0be061aef67a770e8c1f3a4ba2d5a71058497c326d6e4a83f6399d",
-      "size_bytes": 19608,
-      "git_blob": "a6db36517c282aa7bc70cbe00dba5c63bf26a3ed",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "64d8c1f2debbc7b6bc0fb9a476ce572e857d4a829ad7369dc6a2045f9156951a",
+      "size_bytes": 20000,
+      "git_blob": "ee3e3aa3fedf584ce150b6cddabd3be5deadc222",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
         "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
@@ -54006,7 +54069,16 @@
         "status": "scoped_implementation_or_publication_evidence",
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
       },
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities"
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "c424587a8b0be061aef67a770e8c1f3a4ba2d5a71058497c326d6e4a83f6399d",
+        "size_bytes": 19608,
+        "git_blob": "a6db36517c282aa7bc70cbe00dba5c63bf26a3ed"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
@@ -55014,14 +55086,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
-      "sha256": "9d54ef6a73c9fbc3603f5f5c2aab4605d7f4184e7eb4727f7ec59b1229c8bf1d",
-      "size_bytes": 22250,
-      "git_blob": "05b3a7854ca13a94ef78ff62c12a298ff623668f",
+      "sha256": "bf9d411bfc4f9bc32cc2d9a5b7be3722f148117982ca990b50e743e74b9d40f2",
+      "size_bytes": 22476,
+      "git_blob": "25fb904221e4829f92d7384f69a61a6c939f8ec9",
       "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
       "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
       "pre_parameter_settings_v3_source_identity": {
@@ -55037,6 +55109,15 @@
         "version": "PARAM-UX-02-source-20261020",
         "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
         "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "9d54ef6a73c9fbc3603f5f5c2aab4605d7f4184e7eb4727f7ec59b1229c8bf1d",
+        "size_bytes": 22250,
+        "git_blob": "05b3a7854ca13a94ef78ff62c12a298ff623668f"
       }
     },
     {
@@ -55059,14 +55140,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
-      "sha256": "5920466e31f260e483f02151460196d07723606513c733ed833ae885e77abc9d",
-      "size_bytes": 15397,
-      "git_blob": "342a2eceb9de08933904895bd6e02a3886cf3465",
+      "sha256": "11da2c4a21d64cbaa31cc096e349605f7f78dd3efcb60c7a7d838519d8d7f135",
+      "size_bytes": 16021,
+      "git_blob": "dfb880a5e5f0a08710a7692e02cc5908151367c5",
       "previous_git_blob": "6528af261a22c598589cb204a66397154e5a991f",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "4e0db0b810312c5488ec588d18398dcc182f6da5",
@@ -55074,6 +55155,15 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-source-20261020",
+        "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+        "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
+        "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+        "sha256": "5920466e31f260e483f02151460196d07723606513c733ed833ae885e77abc9d",
+        "size_bytes": 15397,
+        "git_blob": "342a2eceb9de08933904895bd6e02a3886cf3465"
       }
     },
     {
@@ -59135,14 +59225,23 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterV3.cs",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
       "storage_scope": "public_repository",
-      "sha256": "60b6d6e4c6e50812db153408d38cfe2323f25fe3e3c3ab9738b35718bc582935",
-      "size_bytes": 16824,
-      "git_blob": "5779c4c678b6530575798755f6b7e48899090c73"
+      "sha256": "a0219a853ab497c0e0278eaef29e679222d9f4a09a0b01f63bc1e7b399bb25cb",
+      "size_bytes": 17169,
+      "git_blob": "bf078b24b62d710a947da3fe4d6d3b0026713ba2",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "60b6d6e4c6e50812db153408d38cfe2323f25fe3e3c3ab9738b35718bc582935",
+        "size_bytes": 16824,
+        "git_blob": "5779c4c678b6530575798755f6b7e48899090c73"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
@@ -59173,12 +59272,12 @@
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "0d73bafe3edb9b5bfc3558fac62aa229e48052f4a3d3883b5fc0a19fbce5d877",
-      "size_bytes": 28108,
-      "git_blob": "c2b9bbbc2b000ccbdfd7401830f6a59b6524a912",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "907af4e94196918832b887fd2a22c209e878d2b7b153e42e6bad39d7f9fc611b",
+      "size_bytes": 28588,
+      "git_blob": "72bb9d47f4c4b3929a8751ed3cbad34f9d445496",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d",
         "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
@@ -59186,7 +59285,16 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities"
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "0d73bafe3edb9b5bfc3558fac62aa229e48052f4a3d3883b5fc0a19fbce5d877",
+        "size_bytes": 28108,
+        "git_blob": "c2b9bbbc2b000ccbdfd7401830f6a59b6524a912"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
@@ -60095,14 +60203,23 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterExperience.cs",
-      "sha256": "621ae240a8c3914cd7f5d14d4b1cbd5c8613e4b2ecad78b0e812bf143d18080a",
-      "size_bytes": 13616,
-      "git_blob": "0bc3cfb9cb96c685659885e9fdc9ac2110d23efb",
-      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "sha256": "33b2fefed129dc8d9c4c88c47349cb458dcba9866b26c1436c5c48382d355681",
+      "size_bytes": 15072,
+      "git_blob": "c3d97bf88615db94a14dd9a01ebc4ed40f1a7365",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
-      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
-      "storage_scope": "public_repository"
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "storage_scope": "public_repository",
+      "pre_parameter_simplification_source_identity": {
+        "version": "PARAM-UX-02-EXPERIENCE-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+        "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+        "sha256": "621ae240a8c3914cd7f5d14d4b1cbd5c8613e4b2ecad78b0e812bf143d18080a",
+        "size_bytes": 13616,
+        "git_blob": "0bc3cfb9cb96c685659885e9fdc9ac2110d23efb"
+      }
     },
     {
       "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/RESULT.json",
@@ -60268,6 +60385,72 @@
       "sha256": "364cb3b8af01c37b586800b7599b28e21f5eae23b1f9ec806579cf49fd10d84c",
       "size_bytes": 113640,
       "git_blob": "225c77e4608370ac223d31d9dbccd91113ba41cb"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-simplification-01/WINDOWS-WPF.log",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "0b6408aa10bf4131961b882c5708dc535b77acda3783750d8689d47de54da028",
+      "size_bytes": 19455,
+      "git_blob": "68122892e9ec6e592b631e143944c2207e130849"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-simplification-01/camera-1366.png",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "84c69b18e87738ae201929a5ecbf711360da4c9dbf4462c52dd94f2bcda9380f",
+      "size_bytes": 97553,
+      "git_blob": "7180091c2c5424a1dda41a528003c5f9a3a3b3ee"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-simplification-01/parameters-save-review.png",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "b92f83f961dd9867f8e27e32cae7d45166b533b61c44526abb5a62f93dc46c81",
+      "size_bytes": 64733,
+      "git_blob": "329747db402469f590c37e1d3f3007c2b3839c17"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-simplification-01/rcs-1366.png",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "0d20163bffe2b60c7124be5b56660e7e67a01600c02741dcece7c158457fb96e",
+      "size_bytes": 101643,
+      "git_blob": "9d4976e43237bd46aad53915f5c2731e84850fbd"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-simplification-01/rcs-800.png",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "56ad3777d1478a9b63a0a888cbf87534af7adc87248ae7b20ec16f50c4075270",
+      "size_bytes": 60603,
+      "git_blob": "6e0843277f5421e08a150309e741942171aa7678"
+    },
+    {
+      "path": "docs/runtime/parameter-settings-simplification-01.md",
+      "storage_scope": "public_repository",
+      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "sha256": "51d531c0ec64d9397d314cee60ff732892f509e263c78d28ea8d4f074751bd6c",
+      "size_bytes": 4189,
+      "git_blob": "bfe8180adbdeda5b11d008c26d946f5ac6783684"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -62669,5 +62852,16 @@
     "RealSdkRcsSite": "NOT_RUN",
     "IntegrationBase": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
     "Archive": "Initial canonical baseline/candidate both retain the same 298 historical issues; final changed-file manifest identities rechecked"
+  },
+  "parameter_settings_simplification_20261021": {
+    "BaseCommit": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+    "ContinuationHead": "fb2bba42614c129f7696e89b3d8593f5c65b7871",
+    "Report": "docs/runtime/parameter-settings-simplification-01.md",
+    "Evidence": "docs/runtime/evidence/parameter-settings-simplification-01",
+    "Native": "PASS: local Windows 125%, 183 PASS lines and 46 captures; synthetic HWND/Dispatcher runtime and ports",
+    "Build": "PASS: Sportmaster Desktop and native verification Release, zero warnings/errors",
+    "PublishedInstaller": "NOT_REBUILT",
+    "RealSdkRcsTargetIpcSite": "NOT_RUN",
+    "HistoricalEvidence": "Previous Chinese 139/177 results, V3 source and released media retain original identities"
   }
 }

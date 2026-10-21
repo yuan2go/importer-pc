@@ -24,10 +24,12 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public string WorkNotice => BlockingReasons;
     const string PauseNotice = "Software admission paused; this is not an emergency stop";
     public bool IsSettingsWorkspace => SelectedPage == "maintenance";
+    public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
+    { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
     public bool SettingsHasAttention => !Fresh || Snapshot?.BlockingReasons.Any(x => x != PauseNotice) == true ||
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true;
     public string DisplayWorkNotice => !IsSettingsWorkspace || !Fresh ? WorkNotice :
-        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "软件暂停不是安全急停";
+        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "";
     public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
     public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
     public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
@@ -50,7 +52,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
-        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground)})Changed(name);
+        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)

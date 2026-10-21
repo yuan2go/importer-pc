@@ -56,6 +56,10 @@ static partial class Program
         Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
+        var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
+        Check(Descendants(staleReview).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
+            "stale saved pause state cannot hide the independent pause action in review");
+        staleReview.Close();
         await Until(() => vm.Fresh);
         var probesRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         runtime.BeforeMonitorProbe = (_, token) => probesRelease.Task.WaitAsync(token);

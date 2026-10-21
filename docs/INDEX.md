@@ -1,3 +1,5 @@
+> 2026-10-21 参数页精简续修：收起编辑时重复的作业摘要，压缩常规提示和间距，保存审阅按实际状态显示动作；[实现、原生截图及验证边界](runtime/parameter-settings-simplification-01.md)。沿用四类目录和完整配置合同，原V3图及介质保持身份。
+
 > PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。
 
 > 参数 V3 独立商业体验复核与定向完善：[原生前后证据、问题及验收边界](runtime/validation/parameter-settings-v3-experience-01.md)。本轮开发分支继承 PR80，不更改其冻结介质或历史结果。

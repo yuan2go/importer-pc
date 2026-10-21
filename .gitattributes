@@ -65,3 +65,6 @@ docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/** -text w
 
 # Chinese interface native verification receipts retain captured bytes.
 docs/runtime/evidence/chinese-interface-copy-01/** -text whitespace=cr-at-eol
+
+# Parameter simplification native receipts retain captured bytes.
+docs/runtime/evidence/parameter-settings-simplification-01/** -text whitespace=cr-at-eol

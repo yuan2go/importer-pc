@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+  "ApplicationId": "sportmaster",
+  "BusinessVersion": "1.8.2",
+  "CompatibilitySha256": "D81C02B9564865ECBFAA35657803B8984C01E5808AEB8970041A04ACEAB93F54",
+  "DesktopExitCode": 0,
+  "BusinessExitCode": 0,
+  "StderrEmpty": true,
+  "Scope": "Read-only entry smoke; actual installation and equipment NOT_RUN",
+  "InventoryUnchanged": true,
+  "InventorySha256": "27D5CE98120C14433085B1D86F4A4D5F77033DC393DFAA4F43AA81F9E37BBDE2"
+}

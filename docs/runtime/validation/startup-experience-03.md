@@ -49,3 +49,15 @@
 复查发现旧模拟配置已绑定参考集成时，组件页误报RCS未安装，且未提供真实服务选择。补充显式“服务连接方式”，旧参考显示“本地模拟（旧配置）”，可选择随包RCS并填写现场地址；新装真实RCS无需多余选择。保留原站、用途、数据和严格生产守卫。本次包含产品修改，981c7da安装器不再是本轮推荐交付；原回执、哈希及验证不改写。后继候选从新SourceCommit冻结。
 
 修改后本机[90项首配](../evidence/startup-experience-03/LATEST-startup.log)、[225项参数V3](../evidence/startup-experience-03/LATEST-parameter-v3.log)、[31项商业原生](../evidence/startup-experience-03/LATEST-comm-native-pages.log)、[120项视觉](../evidence/startup-experience-03/LATEST-visual-productization.log)全部PASS；Desktop及原生夹具Release构建零警告/错误。测试增加明确切换RCS后可编辑真实地址的断言，未自动转换原用途。[CI67](https://github.com/yuan2go/importer-pc/actions/runs/39584824727)已成功，仅覆盖e8b368b，不扩张为本次后继修改验收。
+
+## 本轮推荐安装器：e55a63c
+
+产品SourceCommit为`e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee`，单EXE `CainiaoSupplyStation_SM_Setup_v1.8.2_win-x64.exe`，177848366字节。SHA256 `fc4e109fb4ed3fbec653839681b2949a5d1d8bcb8dd96d1269df82e0f8f16083`。介质ZIP SHA256 `e61688b39b08425dd3b6debf286798d3da54d2ae18fa625cfe7a8696fe461430`。[安装器回执](../evidence/startup-experience-03/RELEASE-INSTALLER.json)与[介质回执](../evidence/startup-experience-03/RELEASE-MEDIA.json)取代981c7da作为本轮推荐，旧文件不覆盖。后继交付文档提交不重标产品SourceCommit。
+
+发布DLL与同源固定夹具执行[225项参数V3](../evidence/startup-experience-03/RELEASE-FROZEN-V3.log)、[90项首配/TCP](../evidence/startup-experience-03/FROZEN-RELEASE-startup-experience.log)、[31项商业原生](../evidence/startup-experience-03/FROZEN-RELEASE-comm-native-pages.log)、[120项视觉](../evidence/startup-experience-03/FROZEN-RELEASE-visual-productization.log)，共466项PASS。[V3回执](../evidence/startup-experience-03/RELEASE-FROZEN-V3-RESULT.json)记录产品与夹具均为e55a63c；各专项回执在同目录。全部736条介质文件验证后hash保持一致，清单SHA256为`27d5ce98120c14433085b1d86f4a4d5f77033dc393dfaa4f43aa81f9e37bbde2`。封装脚本确认共享DLL逐字节一致。[只读CLI/Desktop入口](../evidence/startup-experience-03/ENTRY-RELEASE.json)退出码0、stderr为空；[101项本包当前变更记录](../evidence/startup-experience-03/RELEASE-RECORDS.json)与冻结Git字节、长度及blob完全一致，不扩张为全归档验证。
+
+[CI68](https://github.com/yuan2go/importer-pc/actions/runs/39585823307)关联PR head e55a63c，已成功完成政策、冻结、原生/核心/生产拒绝、视觉及安装器阶段。远端PR合并测试树与本机e55a63c介质验证保持各自身份；不把后继文档head尚未执行的CI记为通过。
+
+第一次冻结因C盘TEMP空间耗尽而失败，部分产物未交付；保留[失败日志](../evidence/startup-experience-03/BUILD-SPACE-FAILURE.log)和[原日志哈希/重试说明](../evidence/startup-experience-03/BUILD-SPACE-FAILURE.json)。未改变源码，以D盘TEMP/TMP和新的不可覆盖输出重跑成功。自动审批拒绝清理本次C盘生成的build-intermediates目录，仅返回blocked by policy，目录仍保留；没有清理其他任务或用户数据。
+
+安装器未签名；实际Windows安装/升级/UAC/双账号、真实相机/RCS与现场仍NOT_RUN，本轮没有生产资格或现场验收通过声明。

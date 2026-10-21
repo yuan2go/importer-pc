@@ -62598,9 +62598,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "cee425ff2c87b80dd95b833ebd20ece6fd895f5b6144a4281eec4af5d7c8bb15",
-      "size_bytes": 8705,
-      "git_blob": "0e4d36d7472e14de74cf407e89d0ca530dceda11"
+      "sha256": "fbdbe2c7a2254b56b0b7c011162c2e11e6891a792808a9c33ff44bc90e366188",
+      "size_bytes": 11267,
+      "git_blob": "5057c6e452b0b73e18906ec248fd88cadecb93ce"
     },
     {
       "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
@@ -62898,6 +62898,193 @@
       "sha256": "b68f020c4c9606e651d2f088649ce3ca35d081729b9c72c086abf88276cf9cf5",
       "size_bytes": 11569,
       "git_blob": "d181fcecfa14878c95e421c906e1550cab865b8c"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/BUILD-SPACE-FAILURE.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "8657bf26e107bedd538c97cd6ecb1a206743aa8c84f22aff1935d1a1adb2ab7e",
+      "size_bytes": 584,
+      "git_blob": "4d26ebef7451703795fbd32dbd98dd4b08e8c2c0"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/BUILD-SPACE-FAILURE.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "a90d53540bbe685008ca8973ee2d36573643a3514e2ecb54179e733166656c6f",
+      "size_bytes": 187642,
+      "git_blob": "54e108053d7430f9ea85b95ce720b5e207254443"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/ENTRY-RELEASE.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "4c2681eb3bcbb74ebefdec4239f66d9760b6f5135ddab7a0d83e92cb642f0725",
+      "size_bytes": 492,
+      "git_blob": "c9b814d66fde3a0e881e2bb7a40b259bc22535cc"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-comm-native-pages.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "8de9686ca5f9791cddfc54f0f2b0a7a063f4962c6fff967a9aa130d54d94561c",
+      "size_bytes": 327,
+      "git_blob": "c9c76ee9fbd93c5265623aaf0d21514d350b30a8"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-comm-native-pages.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "d5d7250515782cd0e31eb16346043566b87643c28f0ab33a957915369d6c41c7",
+      "size_bytes": 3087,
+      "git_blob": "d9025516342b79b132888e98815d066884a50e22"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-startup-experience.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "1b9d55216d763439f6f63b6814cc2b069eb8e389f222d0297ea30bbfd85148b9",
+      "size_bytes": 327,
+      "git_blob": "fd9d37580800389a4bafa22ca175edfbac4a47da"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-startup-experience.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "49d16b59b5cc1fc96928353a799f33b8d98e3a71dbde8294cdb368279cea39e1",
+      "size_bytes": 7557,
+      "git_blob": "c244dbee56de3c8b5a370498a1ea27983eae80b9"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-visual-productization.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "b4242575cd6c1cfe86bfd0907f30f398dd702c141454e959c7973a189ddf3714",
+      "size_bytes": 328,
+      "git_blob": "774d800626576accd57fe7d3611e85059b008b7f"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/FROZEN-RELEASE-visual-productization.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "b68f020c4c9606e651d2f088649ce3ca35d081729b9c72c086abf88276cf9cf5",
+      "size_bytes": 11569,
+      "git_blob": "d181fcecfa14878c95e421c906e1550cab865b8c"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-CI68.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "0fdada82aef391c555a6e54d63b9dc2f9c787aaa6682d3c817029499d5c7fadf",
+      "size_bytes": 360,
+      "git_blob": "9ca290b2c1d908b2c5e630d7f7f8df00b68b0ced"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-FROZEN-V3-RESULT.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "739da8e363c53372d08e26678ccbdb52b84542a535cd87961444ecc1e2131f37",
+      "size_bytes": 3058,
+      "git_blob": "7fcd89b8538b7e199626616ea5654d1db3a2fb06"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-FROZEN-V3.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "4212e11984a5355526b4ca0f06972fab13ab2fbc00bbc65a8fad601a8decae95",
+      "size_bytes": 23941,
+      "git_blob": "1dd276e83ba85740b5ee5565089bb0bb30e2edde"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-INSTALLER.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "b11c813efb21eef2bb26001b22022154945835bbf95e091432f7a4ce795f521f",
+      "size_bytes": 798,
+      "git_blob": "49d98f653ba17ee21319282635e9fe3c88873a87"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-MEDIA.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "fac133fe442b147b7307370f5da7381ed2a531d3f7bd740a8f3d448b8adf8905",
+      "size_bytes": 483,
+      "git_blob": "b1a37d191bd37737c67416a01435d6b3f46e0356"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-RECORDS.json",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "6cc502e8ce4c1f0660815d6bce1fa0686661e92e0d61fa660e1df76eb426fce7",
+      "size_bytes": 235,
+      "git_blob": "da893a44199652ca113c9984a1bae45422d7260f"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-installer-complete.png",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "aecd461983bf7775d8b1ae76eb74329db2d5c6125c18ff56edd9f7435d865468",
+      "size_bytes": 54022,
+      "git_blob": "c25b4d6b12301375df214650c9446e933d4730df"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/RELEASE-startup-step-3.png",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "757b9aabd3a044c4bbfbdc6b37209fe8d502a926bb65166d937cc4577a298e70",
+      "size_bytes": 69219,
+      "git_blob": "a7ab745b754528e319c6e8fb213fa1fa55ad9a0a"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

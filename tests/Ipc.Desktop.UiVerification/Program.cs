@@ -185,7 +185,7 @@ static partial class Program
             Exception? failure = null;
             try
             {
-                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "软件管理员账号"));
+                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "管理模式"));
                 if (authorization.IsVisible) authorization.IsExpanded = true;
                 dialog.UpdateLayout();
                 inspect(dialog);

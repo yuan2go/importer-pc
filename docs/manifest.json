@@ -59089,9 +59089,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "be5728862cc987d73aa014a1dc3669ddd30ccf5a6c11a6c2e49ce74b8116094f",
-      "size_bytes": 18339,
-      "git_blob": "2c795b6aa3be1e2eb6904e8342282a23eb450034",
+      "sha256": "a15569f9d82a702f9cf40689f5da99f0c8ff7298f47b2bc847f3d47bfe6e0e8a",
+      "size_bytes": 18330,
+      "git_blob": "63bd5f00772d961e31c37110c29affa9771d4a28",
       "previous_git_blob": "882debfcfaf788c6fc1db895795c41bfcb952aeb",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "f78b085b9b6a4bf181b2620b334b8bf0a28a5bfa",

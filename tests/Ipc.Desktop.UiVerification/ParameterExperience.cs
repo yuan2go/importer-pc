@@ -53,6 +53,7 @@ static partial class Program
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
+        Check(model.ComponentLabel(vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability!) == "维护认证", "daily component directory displays its existing business role");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {

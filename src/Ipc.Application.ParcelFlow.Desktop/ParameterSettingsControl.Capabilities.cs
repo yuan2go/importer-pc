@@ -20,8 +20,7 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var component in m.Components)
         {
-            var page = Page(3, ParameterOwnership.IsRcs(component) ? "RCS 连接" : component.Role switch
-            { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => component.Role + " · " + component.InstanceId },
+            var page = Page(3, ParameterOwnership.IsRcs(component) ? "RCS 连接" : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用一个 RCS 连接。保存后通过受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
             Capability(page, component);
             if (!ParameterOwnership.IsRcs(component)) continue;

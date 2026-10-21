@@ -1,0 +1,14 @@
+{
+  "Status": "NOT_UPGRADED",
+  "Date": "2026-10-22",
+  "RequestedBusinessVersion": "1.11.0",
+  "RequestedSourceCommit": "74921e4b3a757f2830b2be286bcee86833f66649",
+  "ActualRegisteredBusinessVersion": "1.10.2",
+  "ActualRegisteredSourceCommit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "ActualRegisteredLifecycle": "Installed",
+  "UacLaunchResult": "Windows returned user cancellation before the elevated helper started",
+  "InstallerReadyOnD": true,
+  "DefaultManagementPasswordCreated": false,
+  "BusinessOrDevicesStartedForThisUpgrade": false,
+  "Scope": "Actual local registration re-read after the unsuccessful UAC launch; this is not a passed installation or migration verification"
+}

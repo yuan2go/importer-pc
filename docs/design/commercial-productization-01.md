@@ -1,3 +1,5 @@
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+
 > 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](../runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
 
 # 商业化产品设计 · COMMERCIAL-PRODUCTIZATION-01

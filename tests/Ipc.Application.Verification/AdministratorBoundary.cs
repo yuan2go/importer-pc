@@ -163,7 +163,17 @@ static class AdministratorBoundary
                 moved.Exit();
             }
             finally { ManagementModeBroker.RemoveIfUnused(movedRoot); }
-
+            Check(mode.Enter(newPassword + "-changed"), "mode is active before the service-outage exit check");
+            var interruptedAuthority = mode.Require();
+            ManagementModeBroker.RemoveIfUnused(legacyRoot);
+            Check(!interruptedAuthority.IsCancellationRequested, "outage fixture preserves the client grant until an explicit exit");
+            var interruptedExit = Task.Run(() =>
+            {
+                try { mode.Exit(); return false; }
+                catch (Exception error) when (error is IOException or TimeoutException or UnauthorizedAccessException or OperationCanceledException) { return true; }
+            });
+            Check(SpinWait.SpinUntil(() => interruptedAuthority.IsCancellationRequested, TimeSpan.FromSeconds(1)), "exit cancels pending local authority before waiting for an unavailable broker");
+            Check(interruptedExit.GetAwaiter().GetResult(), "service-outage exit reports the unavailable server without restoring local authority");
         }
         finally { ManagementModeBroker.RemoveIfUnused(legacyRoot); }
         Console.WriteLine("PASS BROKER COMPLETE: actual SCM, System host, restricted Windows token and frozen binaries; no equipment or production qualification");

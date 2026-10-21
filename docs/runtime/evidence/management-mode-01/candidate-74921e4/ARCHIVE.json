@@ -1,0 +1,11 @@
+{
+  "Status": "NO_NEW_FINDINGS",
+  "Scope": "Unmodified public archive checker on exact baseline and product source exports",
+  "Baseline": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "SourceCommit": "74921e4b3a757f2830b2be286bcee86833f66649",
+  "BaselineFindings": 298,
+  "CurrentFindings": 298,
+  "Added": 0,
+  "Removed": 0,
+  "HistoricalFindingsRemain": true
+}

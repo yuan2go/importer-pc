@@ -1,3 +1,5 @@
+> 2026-10-21 作业主界面增量：[信息、操作与原生验证](runtime/workstation-information-01.md)。继承 V2 三组信息与 PR82；启动修复本轮不处理。
+
 > 2026-10-21 参数页精简续修：收起编辑时重复的作业摘要，压缩常规提示和间距，保存审阅按实际状态显示动作；[实现、原生截图及验证边界](runtime/parameter-settings-simplification-01.md)。沿用四类目录和完整配置合同，原V3图及介质保持身份。
 
 > PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。

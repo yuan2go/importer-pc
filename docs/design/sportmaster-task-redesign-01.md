@@ -1,3 +1,5 @@
+> 作业主界面当前增量：[信息与操作完善](../runtime/workstation-information-01.md)。仅调整运行信息和按状态出现的操作；原 V2 作业合同、PARAM-UX-02 参数及各历史证据继续保留。
+
 > 参数页面当前修订：[PARAM-UX-02](parameter-settings-experience-02.md) 与 [V3交付](../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
 
 > 当前实施：[V2 实施与验证记录](../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。

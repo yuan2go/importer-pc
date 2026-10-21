@@ -68,3 +68,6 @@ docs/runtime/evidence/chinese-interface-copy-01/** -text whitespace=cr-at-eol
 
 # Parameter simplification native receipts retain captured bytes.
 docs/runtime/evidence/parameter-settings-simplification-01/** -text whitespace=cr-at-eol
+
+# Workstation native receipts retain their actual captured bytes.
+docs/runtime/evidence/workstation-information-01/** -text whitespace=cr-at-eol

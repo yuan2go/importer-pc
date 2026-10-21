@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "3ecd3e8a5c85ddfee6cd6aba8e57b9086ca699676b96227663c80ee835947beb",
-      "size_bytes": 4665,
-      "git_blob": "707fdb159df057ff99e14fad309342c3eef76336",
-      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "sha256": "96d52cf2e9699d15f7e379383b800057e7d3acd9912f062ac99a9d578f31eb78",
+      "size_bytes": 4811,
+      "git_blob": "b2cd2c577061ce6d29b90ab4b59a3ded2c9284e3",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
-      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "a4ff46f83fb85d8b0fe78c5002fd10c00a2add62",
@@ -1713,6 +1713,15 @@
         "sha256": "1039e49fac7415c7beacb195f9fb65e39717d4ec31d7a7d193d694d81b4f0543",
         "size_bytes": 4509,
         "git_blob": "ac7f92cdfa1d319f25de3b0a63692d7c675d7f93"
+      },
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-SIMPLIFY-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+        "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+        "sha256": "3ecd3e8a5c85ddfee6cd6aba8e57b9086ca699676b96227663c80ee835947beb",
+        "size_bytes": 4665,
+        "git_blob": "707fdb159df057ff99e14fad309342c3eef76336"
       }
     },
     {
@@ -2061,13 +2070,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "b485d47f4de1a5d5c6a572a6a5ab0a41e08307b1ea50839afb30ba0e9511a994",
-      "size_bytes": 17414,
-      "git_blob": "20271ade194000b7bbc624165d5fc5dddd0f8365",
-      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "sha256": "ff21adfd4479fd0bf0123d58feedd3b8da6d04554bcceb0257713c4151814dbf",
+      "size_bytes": 17590,
+      "git_blob": "66dca5f94c354e99b368707f1373a9704c04f1b3",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
-      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
       "previous_git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2124,6 +2133,15 @@
         "sha256": "cfeed62b2bbdabec0e7d3d19396c59d6ab7aea26f08dea14f7a701f699bb3209",
         "size_bytes": 17100,
         "git_blob": "1e5c743825ca02c04e7ca8d560cd1ee4a1f83394"
+      },
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-SIMPLIFY-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+        "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+        "sha256": "b485d47f4de1a5d5c6a572a6a5ab0a41e08307b1ea50839afb30ba0e9511a994",
+        "size_bytes": 17414,
+        "git_blob": "20271ade194000b7bbc624165d5fc5dddd0f8365"
       }
     },
     {
@@ -7053,13 +7071,13 @@
     },
     {
       "path": "docs/design/sportmaster-task-redesign-01.md",
-      "sha256": "8c1067d67b4caad7f6a0de0cd992cd82d2e7fd6df0576dc52817556762517cc1",
-      "size_bytes": 34748,
-      "git_blob": "9b5a243080c0c52f76ab3d167070d8f8612f468a",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "f879edaf0c0caeac5170f405a62d27eb293ca28d23bf007b942aa774545d22f9",
+      "size_bytes": 34974,
+      "git_blob": "877eede12bca6e0239427788ef240c4ba19d9a29",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
       "pre_observable_ui_quality_sha256": "b5f651b9253989cc7d60c09d43c67097d7f654e5d9c985fe7a5543546bb46285",
       "pre_publication_no_test_git_blob": "c0ad592e1e6cf896bba9e07c4eb8315a41c942c5",
@@ -7078,7 +7096,16 @@
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+        "sha256": "8c1067d67b4caad7f6a0de0cd992cd82d2e7fd6df0576dc52817556762517cc1",
+        "size_bytes": 34748,
+        "git_blob": "9b5a243080c0c52f76ab3d167070d8f8612f468a"
+      }
     },
     {
       "path": "docs/design/sportmaster-visual-main-closure-01.md",
@@ -52120,13 +52147,13 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "e94c1edb398c874279562313d0fa7ce35db383274e916961400b4b39ce8a1ad6",
-      "size_bytes": 20559,
-      "git_blob": "89f7d4e1b09255a8f4743f56691b069781fa9bed",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "89be258705e2481431559144753fd44174cdd7f197aa5a659a570cb49a72b639",
+      "size_bytes": 20805,
+      "git_blob": "db5623a85a935d980e383357fadb65cba4535d73",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
       "pre_observable_ui_quality_sha256": "172c1c84607910a2a0e51ce77aa9c55ee1f59b7e24880e956b099a64c6d7a812",
       "pre_publication_no_test_git_blob": "a5722c4442c24aa9833fd3ff7745d0719fef7750",
@@ -52145,7 +52172,16 @@
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+        "sha256": "e94c1edb398c874279562313d0fa7ce35db383274e916961400b4b39ce8a1ad6",
+        "size_bytes": 20559,
+        "git_blob": "89f7d4e1b09255a8f4743f56691b069781fa9bed"
+      }
     },
     {
       "path": "docs/work-packages/WP-IPC-UNIFIED-RELEASE-01.md",
@@ -55052,26 +55088,44 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
-      "version": "UIR-00-06-V2-20261020",
-      "status": "implementation_source",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
-      "sha256": "cab97c7bed5ee773857540ea51b5e3c58fb21cb743e862a6af4bc6fa2b5497d1",
-      "size_bytes": 14184,
-      "git_blob": "7bb844672737cf92a6c612cb997420ed9547a435",
-      "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
+      "sha256": "4bf8f7cf119a42ac313c8c374c4879e0755966e5541a84d2177586b88c7a69b5",
+      "size_bytes": 16553,
+      "git_blob": "d790d467cef89d1b4171637c39ffa7fca8bf6f50",
+      "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e",
+      "pre_workstation_information_identity": {
+        "version": "UIR-00-06-V2-20261020",
+        "status": "implementation_source",
+        "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
+        "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+        "sha256": "cab97c7bed5ee773857540ea51b5e3c58fb21cb743e862a6af4bc6fa2b5497d1",
+        "size_bytes": 14184,
+        "git_blob": "7bb844672737cf92a6c612cb997420ed9547a435"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
-      "sha256": "648c2f9d37158d31b07c6d5768699e093b4673f7968353eee5c9d45131643433",
-      "size_bytes": 1156,
-      "git_blob": "b49b03e89fc24ac805fb761e38f11c3b3e296613"
+      "sha256": "0845a6a276722b520722fa53411302095555c31fda2c0e48ca76a694155b8a33",
+      "size_bytes": 1321,
+      "git_blob": "b1e814cbd42414519a78aea01286027fecd7825f",
+      "pre_workstation_information_identity": {
+        "version": "parallel-reconciliation-01",
+        "status": "current_navigation_or_verification",
+        "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+        "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+        "sha256": "648c2f9d37158d31b07c6d5768699e093b4673f7968353eee5c9d45131643433",
+        "size_bytes": 1156,
+        "git_blob": "b49b03e89fc24ac805fb761e38f11c3b3e296613"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
@@ -55086,14 +55140,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
-      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
-      "sha256": "bf9d411bfc4f9bc32cc2d9a5b7be3722f148117982ca990b50e743e74b9d40f2",
-      "size_bytes": 22476,
-      "git_blob": "25fb904221e4829f92d7384f69a61a6c939f8ec9",
+      "sha256": "9838b662c95206925bb5a33694484da39c1419c1b116b2ba60ed0ec67726ad0b",
+      "size_bytes": 24256,
+      "git_blob": "1ddea44c9b40963bb087de1062bd8b12a80657ce",
       "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
       "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
       "pre_parameter_settings_v3_source_identity": {
@@ -55118,17 +55172,26 @@
         "sha256": "9d54ef6a73c9fbc3603f5f5c2aab4605d7f4184e7eb4727f7ec59b1229c8bf1d",
         "size_bytes": 22250,
         "git_blob": "05b3a7854ca13a94ef78ff62c12a298ff623668f"
+      },
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-SIMPLIFY-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+        "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+        "sha256": "bf9d411bfc4f9bc32cc2d9a5b7be3722f148117982ca990b50e743e74b9d40f2",
+        "size_bytes": 22476,
+        "git_blob": "25fb904221e4829f92d7384f69a61a6c939f8ec9"
       }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
-      "sha256": "dbbe6e5342f742ffd7427ea5f179edea53b8a82c205d5579cc5fb3d64a8ef081",
-      "size_bytes": 8960,
-      "git_blob": "b61b57e3df3efbec27ed1a1d6d057d562147ca17",
-      "version": "PARAM-UX-02-PS05",
+      "sha256": "005a830ddc9d9dec85fb7be457869f32b5571deb893051f354904bcd563fd465",
+      "size_bytes": 10089,
+      "git_blob": "4aab78518124ad7f02c4105158d2d5b8810180df",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
       "storage_scope": "public_repository",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "058638bbc86bb8cb637d8a28ed8f9806916a0cc1",
@@ -55136,6 +55199,15 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+        "sha256": "dbbe6e5342f742ffd7427ea5f179edea53b8a82c205d5579cc5fb3d64a8ef081",
+        "size_bytes": 8960,
+        "git_blob": "b61b57e3df3efbec27ed1a1d6d057d562147ca17"
       }
     },
     {
@@ -59272,12 +59344,12 @@
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-SIMPLIFY-01",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
-      "sha256": "907af4e94196918832b887fd2a22c209e878d2b7b153e42e6bad39d7f9fc611b",
-      "size_bytes": 28588,
-      "git_blob": "72bb9d47f4c4b3929a8751ed3cbad34f9d445496",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "8c364078ea6194bb242e478b933ba72dc6b646509c0777813c388e80626e79d6",
+      "size_bytes": 31436,
+      "git_blob": "ba08c095fc4cf455e231558101824acb7c929b39",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d",
         "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
@@ -59285,7 +59357,7 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
       "pre_parameter_simplification_source_identity": {
         "version": "PARAM-UX-02-PS05",
         "status": "current_source_or_synthetic_evidence",
@@ -59294,6 +59366,15 @@
         "sha256": "0d73bafe3edb9b5bfc3558fac62aa229e48052f4a3d3883b5fc0a19fbce5d877",
         "size_bytes": 28108,
         "git_blob": "c2b9bbbc2b000ccbdfd7401830f6a59b6524a912"
+      },
+      "pre_workstation_information_identity": {
+        "version": "PARAM-UX-02-SIMPLIFY-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Parameter workspace simplification with shared editor, guards and original evidence preserved",
+        "source": "2026-10-21 user-authorized parameter simplification; main 3b883fe and PR82 fb2bba4",
+        "sha256": "907af4e94196918832b887fd2a22c209e878d2b7b153e42e6bad39d7f9fc611b",
+        "size_bytes": 28588,
+        "git_blob": "72bb9d47f4c4b3929a8751ed3cbad34f9d445496"
       }
     },
     {
@@ -60451,6 +60532,116 @@
       "sha256": "51d531c0ec64d9397d314cee60ff732892f509e263c78d28ea8d4f074751bd6c",
       "size_bytes": 4189,
       "git_blob": "bfe8180adbdeda5b11d008c26d946f5ac6783684"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/WINDOWS-WPF.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "75f9f9d2f531c2bdff6bd9068d8532dfd79ae6bca60c2692c24468535bd1fed0",
+      "size_bytes": 13425,
+      "git_blob": "4c65546a0cb85336127c1a6654257e453e9aa7d3"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/before-normal-1366.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "7cee1ef5b240c811562996e1c60b5f622cae6b2544f196251b52471376ae3ea6",
+      "size_bytes": 108956,
+      "git_blob": "03c6440e3f8384fae6f2b465507c68b71f4018e9"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/supply-station-v2-client-800x420-unknown-rejection.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "b99b033af68386971ee23bad1bd9e06ee465896ac0c3b0ac5ab328666879386b",
+      "size_bytes": 71319,
+      "git_blob": "3deff7f71ca645ac4d0d278ddfa0d016c0291731"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/work-assigned-1366.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "65780880efefb497130bcf07bc7888ea581384a986d06dbf41b693e2ce64cbf6",
+      "size_bytes": 105991,
+      "git_blob": "e03cf9defdf8a07f6aa46ac48809dae85b55edd7"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/work-assigned-1600.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "e7c168cba7f469538f3519e2d61302bd144615a5fdcbf8bc6354ae81fae58f05",
+      "size_bytes": 101626,
+      "git_blob": "6660db1813ae60120bd2f890246b6da9096f1908"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/work-position-diagnostics.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "154ecd095928944aeabc058b998af4698efefb478dbc35b0c3b24766131ecf2e",
+      "size_bytes": 106234,
+      "git_blob": "aca32b8f3e4754f9501bfe14678c7e14e16e1a38"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/work-unknown.png",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "9da612c09039e41b88e87a7ef86383b913b410b2d61ca193bd5076dd8a6e5a79",
+      "size_bytes": 135102,
+      "git_blob": "1b46a108540d4066d03d1c0d65d971adad2d6e7f"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/workstation-build.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "9cdde60e7a64fc4d5ee98abd4ebda03cd09c2dcb95b15b240e6288d74a837db6",
+      "size_bytes": 1906,
+      "git_blob": "03e3ad3037ca6e115f81bf693838bbce29168ba5"
+    },
+    {
+      "path": "docs/runtime/evidence/workstation-information-01/workstation-desktop-build.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "fd715dc55a8d6955f984eed79df1501234ef4d89a48fef84ea01ac894f36dfcd",
+      "size_bytes": 1956,
+      "git_blob": "e8830a8d47757d466d332756beff2fd1dd845a63"
+    },
+    {
+      "path": "docs/runtime/workstation-information-01.md",
+      "storage_scope": "public_repository",
+      "version": "UIR-WORKSTATION-INFORMATION-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Sportmaster workstation facts, guarded position actions and native synthetic evidence",
+      "source": "2026-10-21 user-authorized workstation information and operations refinement; PR82 58abdbc inherited",
+      "sha256": "a8f549df04ea48162811aa7e162cd73276130a708faef6656f44f44f0e9ba016",
+      "size_bytes": 5668,
+      "git_blob": "d2027c7560eb2d6f0088f568c40b3dff9e07437a"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -62863,5 +63054,18 @@
     "PublishedInstaller": "NOT_REBUILT",
     "RealSdkRcsTargetIpcSite": "NOT_RUN",
     "HistoricalEvidence": "Previous Chinese 139/177 results, V3 source and released media retain original identities"
+  },
+  "workstation_information_20261021": {
+    "SourceCommit": "ebe0be76bf1bfb6cffffc91063541bbba8d9d0ee",
+    "BaseMain": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+    "InheritedPr82Head": "58abdbca13b4d9f3cd41360446920aad26427051",
+    "Report": "docs/runtime/workstation-information-01.md",
+    "Evidence": "docs/runtime/evidence/workstation-information-01",
+    "Native": "PASS: Windows 125%, 126 PASS lines, 25 CAPTURE records and 29 PNGs including shared geometry; synthetic runtime/ports and native HWND/Dispatcher",
+    "Build": "PASS: Sportmaster Desktop and UiVerification Release, zero warnings/errors",
+    "PrototypeBrowserInteraction": "NOT_RUN: file protocol denied by browser policy; source and static design/native PNGs inspected",
+    "InstalledExeStartup": "NOT_RUN; installer not rebuilt",
+    "RealSdkRcsTargetIpcSite": "NOT_RUN",
+    "OriginalEvidence": "Original V2, V3, PR82 and installer identities preserved; no D/RV closure"
   }
 }

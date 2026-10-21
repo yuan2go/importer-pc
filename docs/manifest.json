@@ -63663,9 +63663,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
-      "sha256": "1ed6ea04454c622bca13dfd907b4dec0d5830c066d4751e676a6c2956a3a3159",
-      "size_bytes": 12932,
-      "git_blob": "85972569e4a63dc327372255f590a8b1e27e9c1f",
+      "sha256": "5076460195a846685380fbc4772348a4c55c70ba7417a5822ebda2588d815a17",
+      "size_bytes": 13634,
+      "git_blob": "3f60b314bc4a6cd3668c55bbe21dfcfb618a4aac",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",

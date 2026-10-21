@@ -45,6 +45,13 @@ static partial class Program
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
         var window = new SupplyStationWindow(runtime, null, "standard") { ConfirmDiscardDrafts = _ => true }; window.Show();
+        async Task AwaitLogTask(string operation)
+        {
+            var queryButton = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "查询"));
+            var deadline = DateTimeOffset.UtcNow.AddSeconds(15);
+            while (!queryButton.IsEnabled && DateTimeOffset.UtcNow < deadline) await Task.Delay(30);
+            Check(queryButton.IsEnabled, operation + " completes within its native UI time budget");
+        }
         var vm = window.ViewModel; await Task.Delay(300); await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea"); await SetClient(window, 1366, 768);
         Check(!vm.IsManagementMode && vm.AccountDisplay.Contains("免登录作业") && vm.AccountDisplay.Contains("普通模式"), "right-corner identity distinguishes unauthenticated administration and login-free operation");
@@ -73,10 +80,12 @@ static partial class Program
         Check(ReferenceEquals(candidate, vm.StructuredPolicy) && candidate.TimeoutMs == "28000", "re-authentication resumes the original candidate without reconstructing connections");
         Click(window, "返回作业"); Click(window, "日志查询"); await Task.Delay(100);
         Check(((ContentControl)window.FindName("PageHost")).Content is SoftwareLogControl, "administrator log navigation opens the real software-log query control");
-        Click(window, "查询"); await Task.Delay(500); window.UpdateLayout(); Capture("management-logs-1366", client);
+        Click(window, "查询"); await AwaitLogTask("log query"); window.UpdateLayout(); Capture("management-logs-1366", client);
         var grid = Descendants(window).OfType<DataGrid>().Single(); Check(grid.Items.Count > 0, "native log query displays actual runtime/authentication journal entries");
         var advanced = Descendants(window).OfType<Expander>().Single(); advanced.IsExpanded = true; window.UpdateLayout();
-        grid.SelectedIndex = 0; Click(window, "查看原始上下文"); await Task.Delay(250); Capture("management-log-context", client); advanced.IsExpanded = false;
+        grid.SelectedIndex = 0; Click(window, "查看原始上下文"); await AwaitLogTask("original context read");
+        Check(Descendants(window).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(((SoftwareLogEntry)grid.SelectedItem).Text), "native context retains the selected original log record");
+        Capture("management-log-context", client); advanced.IsExpanded = false;
         await SetClient(window, 800, 420); Capture("management-logs-800", client);
         Check(grid.IsVisible && grid.ActualHeight >= 32 && grid.TranslatePoint(new Point(0, 0), client).Y + grid.ActualHeight <= client.ActualHeight + 1, "compact log results remain inside the native viewport");
         Check(Descendants(window).OfType<Button>().Where(b => b.Content is string s && s is "查询" or "上一页" or "下一页").All(b => b.IsVisible && b.TranslatePoint(new Point(0, 0), client).Y + b.ActualHeight < grid.TranslatePoint(new Point(0, 0), client).Y + 1), "default compact query and paging actions are visible above results");

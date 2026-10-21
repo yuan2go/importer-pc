@@ -29,7 +29,7 @@ static partial class Program
         Click(first, "下一步"); await Idle(first);
         Check(tabs.SelectedIndex == 0 && !Status(first).Contains("BarcodeFilter"), "invalid optional rule stays on its field and exposes no internal variable in the status");
         editor.Model.Policy.BarcodePattern = ""; Click(first, "下一步"); await Idle(first);
-        Check(tabs.SelectedIndex == 1, "blank optional barcode rule advances without inventing a default filter; " + Status(first) + " " + string.Join("; ", editor.Model.Issues.Select(x => x.Message)));
+        Check(tabs.SelectedIndex == 1, "blank optional barcode rule advances without inventing a default filter");
         for (var i = 0; i < 5; i++)
         {
             tabs.SelectedIndex = i; first.UpdateLayout();

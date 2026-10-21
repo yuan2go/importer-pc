@@ -4,7 +4,7 @@ PASS STARTUP02 configuration file import is visible on step one
 PASS STARTUP02 operation completes within bounded native wait
 PASS STARTUP02 invalid optional rule stays on its field and exposes no internal variable in the status
 PASS STARTUP02 operation completes within bounded native wait
-PASS STARTUP02 blank optional barcode rule advances without inventing a default filter; 继续填写当前步骤；内容会保留。 
+PASS STARTUP02 blank optional barcode rule advances without inventing a default filter
 PASS STARTUP02 step 1 retains the same editor and input
 PASS STARTUP02 step 1 has at most four visible footer actions
 PASS STARTUP02 footer stays inside the native window on step 1

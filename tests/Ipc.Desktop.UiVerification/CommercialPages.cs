@@ -95,24 +95,33 @@ static partial class Program
         Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
         Click(classic, "设备与维护"); await Task.Delay(250);
         for (var i = 0; i < 100 && ((ParcelViewModel)classic.DataContext).Busy; i++) await Task.Delay(50);
-        Check(!((ParcelViewModel)classic.DataContext).Busy, "native parameter loading completes before opening protected save preparation");
-        var draftActionsVisible = false;
-        var preparationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
-        preparationTimer.Tick += (_, _) =>
+        var parameterVm = (ParcelViewModel)classic.DataContext;
+        Check(!parameterVm.Busy, "native parameter loading completes before automatic candidate review");
+        var maintenance = (MaintenancePage)page.Content;
+        var tools = Descendants(maintenance).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>())
+            .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "加密保存未完成设置")));
+        try
         {
-            var dialog = classic.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存准备");
-            if (dialog is null) return;
-            var draftActions = Descendants(dialog).OfType<Expander>().SingleOrDefault(e => Equals(e.Header, "草稿与重新读取"));
-            if (draftActions is not null) draftActions.IsExpanded = true;
-            dialog.UpdateLayout();
-            draftActionsVisible = Descendants(dialog).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "加密保存未完成设置")) &&
-                Descendants(dialog).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "继续未完成设置"));
-            dialog.Close();
-        };
-        preparationTimer.Start();
-        try { Click(page, "保存准备…"); }
-        finally { preparationTimer.Stop(); }
-        Check(draftActionsVisible, "native settings exposes persistent draft actions without replacing configuration authority");
+            tools.IsSubmenuOpen = true; classic.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
+            var actions = tools.Items.OfType<MenuItem>().ToArray();
+            Check(actions.Any(i => i.IsVisible && Equals(i.Header, "加密保存未完成设置")) &&
+                actions.Any(i => i.IsVisible && Equals(i.Header, "继续未完成设置")),
+                "native settings tools keep both persistent draft actions reachable outside the save review");
+        }
+        finally { tools.IsSubmenuOpen = false; }
+        maintenance.NavigateToParameter("StationCode"); classic.UpdateLayout();
+        var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "StationCode");
+        var originalStation = stationInput.Text; stationInput.Text = "NATIVE-REVIEW";
+        var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
+        await ObserveSaveReviewAsync(classic, maintenance, dialog =>
+        {
+            Check(!parameterVm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
+                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
+                "classic settings reviews the validated candidate with authorization and reason in one responsive window");
+        });
+        Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
+            "canceling native save review preserves the edited field and never stages the candidate");
+        stationInput.Text = originalStation;
         var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
         Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");
         var helpSearch = Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索离线帮助");

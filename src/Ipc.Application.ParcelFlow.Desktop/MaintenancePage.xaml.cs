@@ -10,43 +10,63 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class MaintenancePage : UserControl
 {
     CapabilityDraft? selectedReader, selectedInstance;
+    public event EventHandler? DisplayPreferencesRequested;
     public MaintenancePage()
     {
         InitializeComponent();
-        MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalMaintenance();
-        DataContextChanged += (_, _) =>
+        MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
+        MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(9);
+        MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
+        DataContextChanged += (_, e) =>
         {
+            if (e.OldValue is ParcelViewModel previous) previous.PropertyChanged -= EditorStateChanged;
+            if (e.NewValue is ParcelViewModel current) current.PropertyChanged += EditorStateChanged;
             SelectReader(null); SelectInstance(null);
             Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
         };
-        Loaded += (_, _) => SyncSelections();
-
+        Loaded += (_, _) => { SyncSelections(); if (MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor(); };
     }
-    void PrepareSave_Click(object sender, RoutedEventArgs e)
+    void EditorStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ParcelViewModel.CanEditFormConfiguration) && MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor();
+    }
+    async void SaveChanges_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm || vm.Busy) return;
-        // Move the existing controls, not a second draft. Protected authorization
-        // must not consume the editor viewport or reset its scroll/selection.
-        var content = (ScrollViewer)SavePreparation.Content;
-        SavePreparation.Content = null; content.MaxHeight = double.PositiveInfinity;
-        var root = new DockPanel { Margin = new(20), DataContext = vm };
-        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right };
-        var back = new Button { Content = "返回表单", MinHeight = 44 };
-        var save = new Button { Content = "保存修改（待重启）", Style = (Style)FindResource("Primary") };
-        save.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanConfigure))); save.Click += Save_Click;
-        actions.Children.Add(back); actions.Children.Add(save); DockPanel.SetDock(actions, Dock.Bottom); root.Children.Add(actions);
-        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
-        feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.Feedback)));
-        var feedbackScroll = new ScrollViewer { Content = feedback, MaxHeight = 100, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        DockPanel.SetDock(feedbackScroll, Dock.Top); root.Children.Add(feedbackScroll); root.Children.Add(content);
-        var dialog = new Window { Owner = Window.GetWindow(this), Title = "保存准备", Content = root,
-            Width = Math.Min(780, SystemParameters.WorkArea.Width - 32), Height = Math.Min(540, SystemParameters.WorkArea.Height - 32),
-            MinWidth = 480, MinHeight = 300, WindowStartupLocation = WindowStartupLocation.CenterOwner };
-        back.Click += (_, _) => dialog.Close();
-        dialog.Closing += (_, args) => { if (vm.Busy) { args.Cancel = true; vm.Message = "当前操作处理中，完成后可返回；输入保留。"; } };
-        dialog.Loaded += (_, _) => { if (vm.CanConfigure) ChangeReason.Focus(); else MaintenanceProof.Focus(); };
-        try { dialog.ShowDialog(); }
-        finally { root.Children.Remove(content); content.MaxHeight = 180; SavePreparation.Content = content; }
+        if (!vm.HasUnconfirmedConfigurationSubmission)
+        {
+            if (vm.CanEditFormConfiguration && ConfigurationCloseGuard.CommitAndFindInvalid(this, enabledOnly: true) is { } invalid)
+            {
+                vm.Message = "请修正标出的输入后再保存；全部输入已保留。";
+                FocusInvalidEditor(invalid); return;
+            }
+            bool ready = false;
+            await vm.RunAsync(async () => ready = await vm.PrepareConfigurationReviewAsync(), "检查要保存的设置");
+            if (!ready)
+            {
+                if (vm.CanEditFormConfiguration && vm.ParameterEditor?.Issues.Count > 0) { ShowParameterEditor(); MainParameterEditor.FocusFirstIssue(); }
+                else if (!vm.AdvancedConfigurationReadOnly) { ShowTechnicalTool(1); AdvancedJsonEditor.Focus(); AdvancedJsonEditor.BringIntoView(); }
+                return;
+            }
+        }
+        // The dialog owns protected focus, not the VM's async operation lane.
+        // Each authorization, pause and submit below retains its original guard.
+        var review = new ConfigurationSaveReviewWindow(Window.GetWindow(this), vm);
+        review.NavigateRequested += (_, path) => { ShowParameterEditor(); MainParameterEditor.NavigateTo(path); };
+        review.ShowDialog();
+    }
+    void FocusInvalidEditor(FrameworkElement editor)
+    {
+        for (DependencyObject? parent = editor; parent is not null; parent = LogicalTreeHelper.GetParent(parent) ?? (parent is System.Windows.Media.Visual ? System.Windows.Media.VisualTreeHelper.GetParent(parent) : null))
+        {
+            if (parent is TabItem tab && TechnicalTabs.Items.IndexOf(tab) is var index && index >= 0) ShowTechnicalTool(index);
+            if (parent is Expander details) details.IsExpanded = true;
+        }
+        UpdateLayout(); editor.BringIntoView(); editor.Focus();
+    }
+    void AuthorizeTool_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ParcelViewModel vm && !vm.Busy) new ConfigurationSaveReviewWindow(Window.GetWindow(this), vm, authorizationOnly: true).ShowDialog();
     }
     void SyncSelections()
     {
@@ -56,64 +76,75 @@ public partial class MaintenancePage : UserControl
         SelectReader(reader is not null && vm.ReaderDrafts.Contains(reader) ? reader.Capability : null);
         SelectInstance(instance is not null && vm.CapabilityDrafts.Contains(instance) ? instance : null);
     }
-    void AdvancedMaintenance_Click(object s, RoutedEventArgs e)
+    void TechnicalTool_Click(object sender, RoutedEventArgs e)
+    { if (sender is MenuItem { Tag: string index } && int.TryParse(index, out var page)) ShowTechnicalTool(page); }
+    void BackToSettings_Click(object sender, RoutedEventArgs e) => ShowParameterEditor();
+    void ShowParameterEditor()
     {
-        var show = TechnicalTabs.Visibility != Visibility.Visible;
-        TechnicalTabs.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-        MainParameterEditor.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
-        AdvancedToggle.Content = show ? "返回参数" : "高级维护…";
+        if (DataContext is ParcelViewModel { CanEditLegacyConfiguration: true }) { ShowTechnicalTool(5); return; }
+        if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
+        TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
+        BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "更改保留在当前草稿中";
     }
-    public void ShowTechnicalMaintenance()
+    public void ShowTechnicalMaintenance() => ShowTechnicalTool(0);
+    public void ShowTechnicalTool(int index)
     {
-        TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
-        AdvancedToggle.Content = "返回参数";
+        if (index < 0 || index >= TechnicalTabs.Items.Count) throw new ArgumentOutOfRangeException(nameof(index));
+        if (index == 5 && DataContext is ParcelViewModel { LegacyPolicyVisibility: Visibility.Collapsed }) return;
+        TechnicalTabs.SelectedIndex = index; TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
+        BackToSettings.Visibility = index == 5 && DataContext is ParcelViewModel { CanEditLegacyConfiguration: true } || index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;
+        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中 / 原配置账核对", "已安装模块描述", "能力实例库存", "旧版兼容参数", "原机恢复后核对", "安装与卸载组件", "原作业与接收责任", "创建完整备份", "设置模板" }[index];
     }
-    public bool NavigateToParameter(string path)
+    public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
+    void ReviewChanges_Click(object sender, RoutedEventArgs e)
     {
-        TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible; AdvancedToggle.Content = "维护与迁移…";
-        return MainParameterEditor.NavigateTo(path);
-    }
-    async void ReviewChanges_Click(object s, RoutedEventArgs e)
-    {
-        if (DataContext is not ParcelViewModel vm) return;
-        await vm.RunAsync(() =>
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        try { ConfigurationSaveReviewWindow.ShowChanges(Window.GetWindow(this), vm.GetConfigurationChangeItems(), vm.DraftRevisionState); }
+        catch (Exception error)
         {
-            new Window { Owner = Window.GetWindow(this), Title = "跨对象修改摘要", Width = 760, Height = 620,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Content = new TextBox { Text = vm.ReviewConfigurationChanges(), IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(20) } }.ShowDialog();
-            return Task.CompletedTask;
-        }, "查看完整配置变更");
+            vm.Message = "有输入尚不能组成完整设置：" + error.Message + "；输入保留。";
+            if (vm.CanEditFormConfiguration && vm.ParameterEditor is { } model) { model.ValidateFields(); ShowParameterEditor(); MainParameterEditor.FocusFirstIssue(); }
+        }
     }
     async void ExportTemplate_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm) return;
-        await vm.RunAsync(() =>
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        StartupSiteTemplate template;
+        try { template = vm.ExportSiteTemplate(); }
+        catch (Exception error) { vm.Message = "模板尚不能导出：" + error.Message + "；当前输入保留。"; return; }
+        var picker = new SaveFileDialog { FileName = "site-template.json", Filter = "同版安全设置模板|*.json" };
+        if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
+        await vm.RunAsync(async () =>
         {
-            var template = vm.ExportSiteTemplate(); var picker = new SaveFileDialog { FileName = "site-template.json", Filter = "同版安全模板|*.json" };
-            if (picker.ShowDialog(Window.GetWindow(this)) == true)
-            {
-                using var file = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); file.Write(Wire.Encode(template));
-                vm.Message = "同版安全模板已导出；不含站点、设备地址、目标、秘密、编号或业务数据。";
-            }
-            return Task.CompletedTask;
+            await using var file = new FileStream(picker.FileName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+            await using var writer = new StreamWriter(file); await writer.WriteAsync(Wire.Encode(template));
+            vm.Message = "同版安全设置模板已导出；不含站点、设备地址、目标、秘密、编号或业务数据。";
         }, "导出安全模板");
     }
     async void ImportTemplate_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm) return;
-        await vm.RunAsync(() =>
+        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        var picker = new OpenFileDialog { Filter = "同版安全设置模板|*.json" };
+        if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
+        ParcelViewModel.TemplatePreview? preview = null;
+        await vm.RunAsync(async () =>
         {
-            var picker = new OpenFileDialog { Filter = "同版安全模板|*.json" }; if (picker.ShowDialog(Window.GetWindow(this)) != true) return Task.CompletedTask;
             if (new FileInfo(picker.FileName).Length > 4 * 1024 * 1024) throw new InvalidDataException("模板超出配额");
-            var preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(File.ReadAllText(picker.FileName)));
-            var dialog = new Window { Owner = Window.GetWindow(this), Title = "模板适用对象与变更预览", Width = 760, Height = 620, WindowStartupLocation = WindowStartupLocation.CenterOwner };
-            var body = new DockPanel { Margin = new(20) }; var apply = new Button { Content = "应用到草稿", MinHeight = 44 };
-            DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => dialog.DialogResult = true; body.Children.Add(apply);
-            body.Children.Add(new TextBox { IsReadOnly = true, Text = preview.Description, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-            dialog.Content = body; if (dialog.ShowDialog() == true) vm.ApplySiteTemplate(preview);
-            return Task.CompletedTask;
+            preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(await File.ReadAllTextAsync(picker.FileName)));
         }, "比较模板与当前草稿");
+        if (preview is null) return;
+        var dialog = new Window { Owner = Window.GetWindow(this), Title = "模板适用对象与变更预览", Width = Math.Min(760, SystemParameters.WorkArea.Width - 24), Height = Math.Min(620, SystemParameters.WorkArea.Height - 24),
+            MinWidth = 440, MinHeight = 320, FontSize = 14, Background = System.Windows.Media.Brushes.White, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        dialog.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
+        var body = new DockPanel { Margin = new(24) }; var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 16, 0, 0) };
+        var cancel = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0), IsCancel = true }; cancel.Click += (_, _) => dialog.DialogResult = false;
+        var apply = new Button { Content = "应用到草稿", Style = (Style)dialog.Resources["ParameterPrimaryAction"] }; apply.Click += (_, _) => dialog.DialogResult = true;
+        actions.Children.Add(cancel); actions.Children.Add(apply); DockPanel.SetDock(actions, Dock.Bottom); body.Children.Add(actions);
+        body.Children.Add(new TextBox { IsReadOnly = true, Text = preview.Description, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        dialog.Content = body;
+        if (dialog.ShowDialog() != true) return;
+        try { vm.ApplySiteTemplate(preview); ShowParameterEditor(); }
+        catch (Exception error) { vm.Message = "模板未应用：" + error.Message + "；当前输入保留。"; }
     }
     async void InspectSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectLastSaveAsync, "核对原配置保存结果"); }
     async void Load_Click(object s, RoutedEventArgs e)
@@ -135,10 +166,10 @@ public partial class MaintenancePage : UserControl
     async void ConfirmRestore_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmRestoreAsync, "确认恢复核对，保持暂停"); }
     async void ConfirmationSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmConfigurationAsync, "确认已核对当前运行输入"); }
     async void ValidateFull_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ValidateAdvancedConfigurationAsync, "校验完整候选"); }
-    async void SaveFull_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveAdvancedConfigurationAsync, "保存完整待重启修订"); }
+
     async void ValidateStructured_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ValidateStructuredConfigurationAsync, "校验表单完整候选（不保存）"); }
-    async void Advanced_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SwitchToAdvancedConfigurationAsync, "显式切换高级JSON编辑"); }
-    async void StructuredFromJson_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadStructuredFromJsonAsync, "将当前高级JSON加载到表单"); }
+    async void Advanced_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { await vm.RunAsync(vm.SwitchToAdvancedConfigurationAsync, "显式切换高级JSON编辑"); if (!vm.AdvancedConfigurationReadOnly) ShowTechnicalTool(1); } }
+    async void StructuredFromJson_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { await vm.RunAsync(vm.LoadStructuredFromJsonAsync, "将当前高级JSON加载到表单"); if (vm.CanEditFormConfiguration) ShowParameterEditor(); } }
     async void AddInstance_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.AddCapabilityInstanceAsync, "新增未绑定能力实例"); }
     async void RemoveInstance_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.RemoveCapabilityInstanceAsync(Instances.SelectedItem as CapabilityDraft), "移除所选未绑定实例"); }
     async void Uninstall_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.UninstallSelectedPackageAsync, "安全卸载所选精确包"); }
@@ -148,11 +179,11 @@ public partial class MaintenancePage : UserControl
     async void Identity_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.AcknowledgeIdentityAsync, "确认已检查身份冲突"); }
     async void Receipts_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadReceiptResponsibilitiesAsync, "读取所选作业接收责任"); }
     async void ReceiptQuery_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ReconcileReceiptAsync, "核对原缺回执结果"); }
-    async void Save_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveCapabilitiesAsync, "保存表单待重启修订"); }
+
     async void Reconnect_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ReconnectAsync, "受控重连"); }
     async void Overload_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.CommandAsync("AcknowledgeOverload"), "确认已检查过载现场"); }
     async void Backup_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.BackupAsync, "创建一致备份"); }
-    async void Authorize_Click(object s, RoutedEventArgs e) { var proof = MaintenanceProof.Password; MaintenanceProof.Clear(); if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync(proof), "认证维护权限"); }
+
     async void Install_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InstallAsync, "验证签名并安装"); }
     async void Upload_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueUploadAsync, "继续未尝试附加上传"); }
     async void Abandon_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.AbandonAsync, "检查后取消未发送意图"); }

@@ -142,9 +142,9 @@ public partial class ParcelViewModel
         (!Fresh ? "  ·  状态已失效" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  运行配置待核对" : "");
     public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
-        Busy ? "当前操作处理中；可以继续查看和编辑，完成后重新检查候选。" :
-        !CanConfigure ? "保存前需暂停新入场并取得有效维护授权；Application 将再次检查资源和原件责任。可先检查完整候选。" :
-        "维护保存入口可用。填写变更原因并核对跨对象修改；提交仍由 Application 校验，保存后待受控重启。";
+        Busy ? "正在执行当前操作，请等待结果。暂停新入场仍可单独执行。" :
+        !CanConfigure ? "保存前需暂停新入场、取得维护授权，并等待当前外呼完成。历史原件按原责任保留。" :
+        "保存条件已满足。填写变更原因并核对更改；提交时由 Application 再次检查，保存后待受控重启。";
     public string ConfigurationEditorState
     {
         get
@@ -169,12 +169,12 @@ public partial class ParcelViewModel
     }
     void StartLegacyConfiguration(ParcelConfiguration c)
     {
-        structuredBase = null; configurationAuthority = "旧版表单"; savedCandidate = Wire.Encode(c); validationState = "尚未校验";
+        structuredBase = null; configurationReviewBaseline = c; configurationAuthority = "旧版表单"; savedCandidate = Wire.Encode(c); validationState = "尚未校验";
         ReaderDrafts.Clear(); PositionDrafts.Clear(); ConfigurationRoles.Clear(); StructuredPolicy = null;
         NotifyConfigurationEditorState();
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(LegacyPolicyVisibility)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -202,7 +202,7 @@ public partial class ParcelViewModel
             LocalRole("上游格口", "integration", c.Wcs), LocalRole("PLC", "plc", c.Plc), LocalRole("默认相机", "camera", c.Images?.Camera), LocalRole("图片上传", "upload", c.Images?.Uploader)];
         var positions = ParcelBindings.Positions(c).Select(position => new PositionConfigurationDraft(position, LocalChoices("weight", "沿用默认秤"), LocalChoices("camera", "沿用默认相机"))).ToArray();
         var policy = ConfigurationPolicyDraft.From(c);
-        structuredBase = c; configurationAuthority = "结构化表单"; validationState = "尚未校验";
+        structuredBase = c; configurationReviewBaseline = c; reviewedConfigurationSignature = null; configurationAuthority = "结构化表单"; validationState = "尚未校验";
         CapabilityDrafts.Clear(); ReaderDrafts.Clear(); PositionDrafts.Clear(); ConfigurationRoles.Clear();
         foreach (var draft in drafts) { draft.PropertyChanged += (_, _) => EditorChanged(); CapabilityDrafts.Add(draft); }
         foreach (var reader in readers) { reader.Capability.PropertyChanged += (_, _) => EditorChanged(); ReaderDrafts.Add(reader); }
@@ -338,7 +338,9 @@ public partial class ParcelViewModel
         // The operator may continue typing during validation. Adopt only the exact
         // document inspected by this action; leave a newer JSON draft untouched.
         if (ConfigurationDraft != sourceJson) { Message = "JSON在校验期间已修改；保留当前编辑，请重新加载表单。"; return; }
+        var originalReviewBaseline = configurationReviewBaseline;
         LoadStructuredConfiguration(c, catalog);
+        configurationReviewBaseline = originalReviewBaseline ?? c;
         savedEditorSignature = ""; savedCandidate = ""; EditorChanged(); Message = "已显式采用高级JSON作为表单草稿；未保存，原CAS保持。";
     }
     public Task SwitchToAdvancedConfigurationAsync()

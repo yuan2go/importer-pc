@@ -25,7 +25,7 @@ static partial class Program
         {
             await System.Windows.Threading.Dispatcher.Yield();
             var scope = (Grid)page.FindName("MaintenanceScope");
-            var save = Descendants(page).OfType<Button>().Single(x => Equals(x.Content, "保存修改（待重启）"));
+            var save = (Button)page.FindName("SaveChanges");
             check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") &&
                 scope.IsEnabled && ((ParameterSettingsControl)page.FindName("MainParameterEditor")).IsEnabled && !save.IsEnabled,
                 "native feedback is immediate; navigation and draft editing stay available while guarded save is disabled");
@@ -51,7 +51,9 @@ static partial class Program
         check(column.IsReadOnly && !readers.BeginEdit() && item.Capability.InstanceId == original,
             "native stable instance identity cannot be edited through the legacy inventory");
         check(vm.ReaderDrafts.Select(x => x.Original.DeviceId).SequenceEqual(vm.Snapshot!.Configuration.Effective.Topology!.Readers.Select(x => x.DeviceId)), "native controls retain all stable reader bindings and original configuration");
-        var tab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数")); tab.IsSelected = true; page.UpdateLayout();
+        var tools = (TabControl)page.FindName("TechnicalTabs");
+        var tab = tools.Items.OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数"));
+        page.ShowTechnicalTool(tools.Items.IndexOf(tab)); page.UpdateLayout();
         var instances = (DataGrid)page.FindName("Instances");
         check(!instances.IsReadOnly && instances.Columns[0].IsReadOnly, "native capability inventory is editable while kind remains read-only");
         var capability = vm.CapabilityDrafts.First(); var enabled = capability.Enabled;
@@ -121,8 +123,7 @@ static partial class Program
         finally
         {
             reader.Provider = readerProvider; inventory.Provider = inventoryProvider;
-            await vm.LoadCapabilitiesAsync(); page.ShowTechnicalMaintenance();
-            var tabs = (TabControl)page.FindName("TechnicalTabs"); tabs.SelectedIndex = 0;
+            await vm.LoadCapabilitiesAsync(); page.ShowTechnicalTool(0);
             ((DataGrid)page.FindName("ReaderInstances")).SelectedItem = vm.ReaderDrafts[0];
             ((DataGrid)page.FindName("Instances")).SelectedItem = vm.CapabilityDrafts.First();
             page.UpdateLayout(); await Dispatcher.Yield();
@@ -156,8 +157,9 @@ static partial class Program
                 for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
                 var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
                 page.ShowTechnicalMaintenance(); page.UpdateLayout();
-                var tab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "旧schema1/2策略"));
-                tab.IsSelected = true; window.UpdateLayout(); await Dispatcher.Yield();
+                var tools = (TabControl)page.FindName("TechnicalTabs");
+                var tab = tools.Items.OfType<TabItem>().Single(x => Equals(x.Header, "旧schema1/2策略"));
+                page.ShowTechnicalTool(tools.Items.IndexOf(tab)); window.UpdateLayout(); await Dispatcher.Yield();
                 var editor = Descendants(page).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(vm.DraftPrecision));
                 var before = vm.DraftPrecision; var revision = vm.DraftRevisionState;
                 editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();

@@ -3,7 +3,7 @@
   "work_package": "WP-IPC-OPERATOR-ADMIN-LOGS-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/operator-admin-logs",
+  "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -2052,9 +2052,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "de6a3654c7f80c066bc7ce8f2d57aae40a9b76970ca40e40849c7d50fda5586d",
-      "size_bytes": 3145,
-      "git_blob": "0d5a5d06ab85c63a4f26f6b0f217fa7efbbd00d1",
+      "sha256": "a9a5f2ba22b7182fe4519728aae6188b3d963ff0878a92aadffab7fc7206ddf6",
+      "size_bytes": 3547,
+      "git_blob": "589b2c3ccda0828eb12bac0a9f762f06cf55c3ac",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -6768,9 +6768,9 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "b042f8eb68034d9119b1359cc10de466eb81ecf6",
-      "sha256": "937014e0813ba103e54c43ca65e9a2a0a3da5118691faaa45809f68468e4e191",
-      "size_bytes": 8921,
+      "git_blob": "47889056368ad91f02c1f3171d3ac42e63e4f256",
+      "sha256": "ad55e84e06c508f314ee0d5f1e8c7c2e90640ef75b3b2add905bb01df3b289d1",
+      "size_bytes": 9620,
       "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
       "status": "scoped_implementation_or_publication_evidence",
       "purpose": "Four-category configuration, first-launch lifecycle, three-group work UI, source analysis, handoff and concise implementation prompt; no new production UI claim",
@@ -64782,6 +64782,86 @@
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
       "source": "2026-10-22 installed frozen SourceCommit c9e482a30d2d1643a498e7e7ba7f12563f46f3f5; no production/physical device qualification",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/artifact-upload-receipts.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "7520b358b680451105b1cd4c2d690297ff6e17906fdab04d42336528fa606ebb",
+      "size_bytes": 2455,
+      "git_blob": "0240c5432608e1a30c9d285e73574c9102325a3b"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/installer-sm-v1.10.2-c9e482a30d2d/INSTALLER.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "91f48b02efb3cb0bf07cfc46f12e38bf18f78624100c599990025947498e942c",
+      "size_bytes": 771,
+      "git_blob": "1d6c0c76536742b07ed0040c3bf5fd1e776a8aae"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/installer-sm-v1.10.2-c9e482a30d2d/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "036fb4588421c78a887fd61b93cd6fac1e7eb045908f65009d2acebcaaab9076",
+      "size_bytes": 1306,
+      "git_blob": "04d047065db7264ccb7484a3e7dbc7631159b496"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/installer-sm-v1.10.2-c9e482a30d2d/RELEASE.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "5267ce21eb43d48672043f25cbafe4bb9326d5f764c57b225b5d29050538ba71",
+      "size_bytes": 24168,
+      "git_blob": "484bc1f3df4056b2a415590d756b1fa8563acac3"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/installer-sm-v1.10.2-c9e482a30d2d/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "5ae078ac4492ce6c1cc3988ea88f66ce3ce6374fc0153bebe34b532b40adf49f",
+      "size_bytes": 2349,
+      "git_blob": "3a2817b8a3a06686a40877aab6bfe68e208eb8fc"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/installer-sm-v1.10.2-c9e482a30d2d/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "900a26501af7782e7a974566bb972635713e9b27e2c10be7474660be9002c81f",
+      "size_bytes": 566,
+      "git_blob": "8df54f46fcdde862b00a5407f65afc8154842828"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr82-pr86-20261022/merge-receipt.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "5261cd7b60e3b6deb397a075a7fa871e9f4a4ee48f09bdcf1d2fb479eea720d7",
+      "size_bytes": 1524,
+      "git_blob": "3c1a2a5c1f69ae0fc2d2e839673c5fe280f3d37a"
+    },
+    {
+      "path": "docs/runtime/publication-pr82-pr86-20261022.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-OPS-1102-NO-TEST-20261022",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized original software artifacts and actual merge/upload receipts; no new tests or builds",
+      "sha256": "719c05141ffd420c9dfb3dc7fd916bab857c77e343ea33e35426fd9c80507ef2",
+      "size_bytes": 4796,
+      "git_blob": "d5557d324f37e892803a4aa86220ca6a2414e3e5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -66019,7 +66099,7 @@
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/maintenance-publication-20261019/final-publication-receipt.json"
   },
-  "last_updated": "2026-10-21",
+  "last_updated": "2026-10-22",
   "runtime_identity_preflight_02": {
     "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
     "report": "docs/runtime/runtime-identity-preflight-02.md",

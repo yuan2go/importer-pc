@@ -1,3 +1,5 @@
+> 2026-10-22 当前已合并PR82～86：[SM1.10.2单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[本轮不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
+
 # 文档索引 · 现场作业、软件管理员与日志
 
 当前实施为 [OPS-ADMIN-LOGS-01](work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)。普通操作员只使用作业和作业记录；软件管理员增加参数设置、日志查询，并按需诊断恢复。正常读码后自动取得目标格口，无逐包点击。帮助与支持功能已从产品范围删除。

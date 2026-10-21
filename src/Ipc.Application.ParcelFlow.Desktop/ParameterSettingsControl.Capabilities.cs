@@ -22,6 +22,19 @@ public sealed partial class ParameterSettingsControl
         {
             var page = Page(3, ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用一个 调度系统连接。保存后通过受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
+            if (!ParameterOwnership.IsRcs(component))
+                foreach (var role in m.ComponentRoles)
+                {
+                    PropertyChangedEventHandler renamed = (_, e) =>
+                    {
+                        if (e.PropertyName != nameof(CapabilityRoleDraft.Selection)) return;
+                        var previous = page.Title;
+                        page.Title = m.ComponentLabel(component);
+                        if (lastPages.GetValueOrDefault(page.Category) == previous) lastPages[page.Category] = page.Title;
+                        RefreshSearch();
+                    };
+                    role.PropertyChanged += renamed; unsubscribe.Add(() => role.PropertyChanged -= renamed);
+                }
             Capability(page, component);
             if (!ParameterOwnership.IsRcs(component)) continue;
             var references = new StackPanel();
@@ -87,7 +100,8 @@ public sealed partial class ParameterSettingsControl
     {
         "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机网络地址", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
         "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
-        "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言", _ => p.EditorLabel
+        "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言",
+        "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => p.EditorLabel
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
     {

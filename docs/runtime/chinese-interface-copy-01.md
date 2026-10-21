@@ -18,8 +18,14 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 
 原生夹具使用隔离目录、合成配置和模拟端口，不连接真实设备。本轮新增检查确认：中文暂停提示保留应用原始事实；真实下拉控件显示中文，切换后仍保存原协议值。沿已有参数 V3 入口核对草稿、保存、恢复、错误定位、敏感引用、对象诊断及作业任务字段。
 
-本机 Windows 125% 最终结果：桌面及原生验证项目 Release 构建均通过，零警告/零错误；原生入口退出码为 0，[日志](evidence/chinese-interface-copy-01/WINDOWS-WPF.log)中有139条通过记录和32次截图。覆盖1366×768、1092×614和800×420逻辑客户区等既有检查；日志中的尺寸是原生窗口 backing surface，不冒充物理屏幕尺寸或目标工控机实测。已实际查看[作业页](evidence/chinese-interface-copy-01/work-assigned-1366.png)、[系统参数](evidence/chinese-interface-copy-01/parameters-system.png)和[已保存待重启](evidence/chinese-interface-copy-01/v3-saved-pending.png)，文案及相关布局正常；其余合成截图保留在本次本地验证目录。
+首次中文修改树的本机 Windows 125% 结果：桌面及原生验证项目 Release 构建均通过，零警告/零错误；原生入口退出码为 0，[日志](evidence/chinese-interface-copy-01/WINDOWS-WPF.log)中有139条通过记录和32次截图。覆盖1366×768、1092×614和800×420逻辑客户区等既有检查；日志中的尺寸是原生窗口 backing surface，不冒充物理屏幕尺寸或目标工控机实测。已实际查看[作业页](evidence/chinese-interface-copy-01/work-assigned-1366.png)、[系统参数](evidence/chinese-interface-copy-01/parameters-system.png)和[已保存待重启](evidence/chinese-interface-copy-01/v3-saved-pending.png)，文案及相关布局正常；其余合成截图保留在本次本地验证目录。
+
+上述139项属于首次中文修改树：其父提交 `7a7daf3` 已继承PR81初版体验代码，不解释为原始main `20251b4`单独通过。PR创建后核对远端，main已更新至 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`，包含PR81最终角色目录通知补修。本分支继续合并该main，保留角色选择监听、目录/页头更新与原编辑器引用，并把新增体验测试中的旧“RCS 连接”定位文案同步为“调度系统连接”，没有删改原断言。首次集成运行在旧标题定位处失败，修正后桌面及验证项目构建仍为零警告/零错误，完整`--parameter-v3`退出码0；[集成日志](evidence/chinese-interface-copy-01/integrated/WINDOWS-WPF.log)为177条通过记录、46次截图，包含PR81角色重绑/解绑、搜索、草稿、焦点和选区检查。原139项日志与截图保留；[集成作业页](evidence/chinese-interface-copy-01/integrated/work-assigned-1366.png)及[角色目录](evidence/chinese-interface-copy-01/integrated/role-labels.png)按新树另存。最终结果以本段集成范围为准。
 
 首轮新增暂停断言发现夹具初始未暂停，断言失败保留；改为显式提交暂停并等待读回后核对，未删除断言或修改业务初始状态。第二轮原生中文选项显示已通过，但新增提交检查对原仅用于显示的敏感字段描述执行完整校验，得到 `Invalid parameter definition: masked; Invalid parameter definition: reference`；为新增选择/提交检查建立独立、合规的选项描述后通过，原敏感显示断言保持。
+
+最终走查继续清理模拟组件中的回执方式、正常/不可用选项及未绑定身份组件类型名；保留真实实例编号和协议值。另一次集成回归在拒绝观察投影断言失败：现有`RefreshAsync`可合并正在运行的轮询，单次返回不保证新投影已送达。对应拒绝/未知两处改用既有有界等待读取到指定源状态后，再执行原完整任务字段断言；没有降低断言、修改业务投影或忽略失败。
+
+首轮中文树与开工main的公开归档检查均保留298项既有问题，新增为0，未增加豁免。检查在Git原始字节副本中进行；Windows归档的换行转换先依据已登记哈希恢复，未修改历史原件。该结论只对应首轮对比；集成main后的本次变更清单按最终暂存字节重新核验，不扩张为所有历史归档问题已关闭。
 
 本轮未发布安装包，不覆盖原 1.7.0/1.6.1 的 SourceCommit 或验证结论。真实 SDK、调度接口、目标工控机及现场验收未执行；D/RV 与旧 HTML 证据不变。Impeccable Operate 的文案检查用于本轮原生界面；网页检测不能代替 WPF 验证。

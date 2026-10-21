@@ -1,3 +1,5 @@
+> PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。
+
 > 参数 V3 独立商业体验复核与定向完善：[原生前后证据、问题及验收边界](runtime/validation/parameter-settings-v3-experience-01.md)。本轮开发分支继承 PR80，不更改其冻结介质或历史结果。
 
 > 2026-10-21 界面文案增量：按用户本轮要求，固定提示、任务标签及选项采用中文，替代历史设计中的双语提示；实际编码和原始技术证据保留原值。[实现、运行和验证边界](runtime/chinese-interface-copy-01.md)。既有 V3 布局、业务合同和已发布介质身份不变。

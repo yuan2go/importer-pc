@@ -58,7 +58,13 @@ public static class ChineseInterfaceText
         WeightValidity.UntilDispatch => "发送前持续有效", WeightValidity.AtAssociation => "关联时有效",
         UploadStrategy.BeforeMain => "主请求前上传", UploadStrategy.Attached => "附加上传",
         "observe-only" => "仅观察", "trigger" => "触发关联", "utf-8" => "通用字符编码", "ascii" => "基础英文字符编码",
-        "true" => "启用", "false" => "关闭", _ => value?.ToString() ?? "未设置"
+        "true" => "启用", "false" => "关闭", "normal" => "正常返回", "unavailable" => "不可用",
+        "lose-after-commit" => "提交后丢失回执", "accept" => "接受", "reject" => "拒绝", _ => value?.ToString() ?? "未设置"
+    };
+    public static string CapabilityKind(string kind) => kind switch
+    {
+        "login" => "身份认证", "weight" => "称重", "camera" => "图像采集", "upload" => "图像上传",
+        "integration" => "上游服务", "plc" => "控制器", "observation" => "读码来源", _ => "组件实例"
     };
 }
 

@@ -1,0 +1,226 @@
+CAPTURE work-waiting-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR left processing suppresses the entire task while right completes
+CAPTURE work-processing-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR all task fields correlate to each position's original accepted request
+CAPTURE work-assigned-1600: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR work barcode accepts native focus
+PASS UIR polling preserves native selection and focus
+PASS UIR rejected observation clears every current task field and retains original responsibility separately
+CAPTURE work-rejected-new-input: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR unknown stage cannot expose a retained accepted destination
+CAPTURE work-unknown: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR stale snapshot invalidates all task fields together
+CAPTURE work-stale: 1600x900 DIP; Windows scale 1.25/1.25
+PASS UIR supply-station-v2 actual client 1440.0x768.0 supports reflow target (1440, 768)
+PASS UIR both positions expose actual barcode and result controls
+PASS UIR supply-station-v2 (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR supply-station-v2 (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS UIR supply-station-v2 (1440, 768) fixed operation remains visible
+PASS UIR supply-station-v2 (1440, 768) fixed operation remains visible
+PASS UIR independent Pause remains enabled and reachable
+PASS UIR supply-station-v2 actual client 1600.0x900.0 supports reflow target (1600, 900)
+PASS UIR both positions expose actual barcode and result controls
+PASS UIR supply-station-v2 (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR supply-station-v2 (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS UIR supply-station-v2 (1600, 900) fixed operation remains visible
+PASS UIR supply-station-v2 (1600, 900) fixed operation remains visible
+PASS UIR independent Pause remains enabled and reachable
+PASS UIR supply-station-v2 actual client 1100.0x600.0 supports reflow target (1100, 600)
+PASS UIR both positions expose actual barcode and result controls
+PASS UIR supply-station-v2 (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR supply-station-v2 (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS UIR supply-station-v2 (1100, 600) fixed operation remains visible
+PASS UIR supply-station-v2 (1100, 600) fixed operation remains visible
+PASS UIR independent Pause remains enabled and reachable
+PASS UIR supply-station-v2 actual client 911.2x512.0 supports reflow target (911, 512)
+PASS UIR both positions expose actual barcode and result controls
+PASS UIR supply-station-v2 (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR supply-station-v2 (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS UIR supply-station-v2 (911, 512) fixed operation remains visible
+PASS UIR supply-station-v2 (911, 512) fixed operation remains visible
+PASS UIR independent Pause remains enabled and reachable
+PASS UIR supply-station-v2 actual client 800.0x420.0 supports reflow target (800, 420)
+PASS UIR both positions expose actual barcode and result controls
+PASS UIR supply-station-v2 (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR supply-station-v2 (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR long leading-zero barcode remains fully selectable for copy
+PASS UIR supply-station-v2 (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility
+PASS UIR both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS UIR supply-station-v2 (800, 420) fixed operation remains visible
+PASS UIR supply-station-v2 (800, 420) fixed operation remains visible
+PASS UIR independent Pause remains enabled and reachable
+PASS UIR supply-station-v2 actual subminimum client protects and requests software Pause
+PASS UIR supply-station-v2 recovered space retains protection without automatic Resume
+PASS UIR supply-station-v2 explicit view confirmation clears only geometry protection
+CAPTURE work-assigned-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS UIR history keeps selected original ownership and exposes added response fields
+CAPTURE history: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS UIR diagnostics remains read-only and explains the actual RCS query boundary
+CAPTURE diagnostics: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS UIR opening settings during another task retains a pending load instead of clearing or bypassing that task
+PASS UIR first settings load completes after the preceding task without a second navigation click
+PASS UIR focused settings replaces the daily sidebar with a visible return-to-work action
+PASS UIR slow operation keeps object viewing, scrolling and current editing available
+PASS UIR page navigation retains the same editor and unsaved draft
+CAPTURE parameters-system: 1366.4x768 DIP; Windows scale 1.25/1.25
+CAPTURE parameters-search: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS UIR parameter search presents matches and accepts native keyboard input
+PASS UIR cross-category search locates and focuses the actual field without recreating editors
+PASS UIR search and category navigation retain exact unsaved controls and input (same=True, before=SYNTHETIC-UNSAVED, after=SYNTHETIC-UNSAVED)
+PASS UIR empty search explains how to return without changing the draft
+PASS UIR save automatically finds the invalid field and preserves the draft without opening a review or submitting
+CAPTURE parameters-save-validation: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS UIR correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving
+PASS UIR save review remains accessible before maintenance authorization
+PASS UIR native review displays the current station change from the validated complete candidate
+CAPTURE parameters-save-review: 865.6x702.4 DIP; Windows scale 1.25/1.25
+PASS UIR one save review owns authorization and reason without holding Busy, shrinking the editor, or staging on cancel
+PASS UIR adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it
+PASS UIR old unequal station codes block saving without silently choosing a side
+PASS UIR conflicting legacy pair is visible with blank explicit migration input
+CAPTURE parameters-station-conflict: 1352x730.4 DIP; Windows scale 1.25/1.25
+PASS UIR explicit shared station edit projects both keys and false specified-chute omits inactive value
+PASS UIR inactive chute input remains in the raw draft
+PASS UIR corrected synthetic provider candidate passes field checks before normal-form captures
+CAPTURE parameters-business-rules: 1352x730.4 DIP; Windows scale 1.25/1.25
+CAPTURE parameters-right-driver: 1352x730.4 DIP; Windows scale 1.25/1.25
+PASS UIR right driver displays distinct heart and take-chute encodings
+CAPTURE parameters-rcs-component: 1352x730.4 DIP; Windows scale 1.25/1.25
+PASS UIR moved system values are read-only references on the RCS object
+PASS UIR safe template excludes heart station code, instance parameters and backup settings
+PASS UIR same-provider safe template preserves every local parameter and identity
+PASS UIR failed template import leaves the entire current draft untouched
+PASS UIR endpoint, overflowing request range and duplicated heartbeat identities locate exact editable fields
+CAPTURE parameters-errors: 1352x730.4 DIP; Windows scale 1.25/1.25
+CAPTURE unsaved-cancel: 557.6x147.5 DIP; Windows scale 1.25/1.25
+PASS UIR unsaved decision dialog completes the selected action and retains failed-save feedback
+PASS UIR cancel preserves editor without saving
+CAPTURE unsaved-decision: 557.6x147.5 DIP; Windows scale 1.25/1.25
+PASS UIR unsaved decision dialog completes the selected action and retains failed-save feedback
+PASS UIR explicit discard does not save
+CAPTURE unsaved-decision: 557.6x147.5 DIP; Windows scale 1.25/1.25
+PASS UIR unsaved decision dialog completes the selected action and retains failed-save feedback
+PASS UIR keep calls encrypted draft persistence exactly once before close
+CAPTURE unsaved-before-failure: 557.6x147.5 DIP; Windows scale 1.25/1.25
+CAPTURE unsaved-save-failed: 557.6x167.82 DIP; Windows scale 1.25/1.25
+PASS UIR unsaved decision dialog completes the selected action and retains failed-save feedback
+PASS UIR failed preservation cannot authorize closing
+CAPTURE unsaved-multiple: 557.6x167.82 DIP; Windows scale 1.25/1.25
+PASS UIR unsaved decision dialog completes the selected action and retains failed-save feedback
+PASS UIR multiple unsaved windows retain distinct candidates without merging them
+WPF synthetic runtime/ports; native HWND and Dispatcher. Physical target IPC, SDK/RCS and site acceptance NOT_RUN.
+PASS EXPERIENCE full schema uses the real shared editor and clean save baseline
+PASS EXPERIENCE daily component directory displays its existing business role
+SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.
+CAPTURE camera-1366: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1366, 768)
+PASS EXPERIENCE readable address dimensions at (1366, 768): 400,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (1366, 768)
+CAPTURE rcs-1366: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1366, 768)
+PASS EXPERIENCE readable address dimensions at (1366, 768): 760,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (1366, 768)
+CAPTURE camera-1092: 1092x613.6 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1092, 614)
+PASS EXPERIENCE readable address dimensions at (1092, 614): 372,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (1092, 614)
+CAPTURE rcs-1092: 1092x613.6 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (1092, 614)
+PASS EXPERIENCE readable address dimensions at (1092, 614): 760,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (1092, 614)
+CAPTURE camera-800: 800x420 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (800, 420)
+PASS EXPERIENCE readable address dimensions at (800, 420): 400,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (800, 420)
+CAPTURE camera-800-focused: 800x420 DIP; scale=1.25,1.25
+CAPTURE rcs-800: 800x420 DIP; scale=1.25,1.25
+PASS EXPERIENCE save remains visible with full schema at (800, 420)
+PASS EXPERIENCE readable address dimensions at (800, 420): 508,38.4
+PASS EXPERIENCE field navigation scrolls the complete input above the fixed footer at (800, 420)
+CAPTURE rcs-800-focused: 800x420 DIP; scale=1.25,1.25
+PASS EXPERIENCE full schema edit updates the real save footer before validation
+PASS EXPERIENCE snapshot preserves raw invalid IP and selection
+PASS EXPERIENCE invalid IPv4 rejected and localized before review
+CAPTURE field-error: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE driver canonical address rule retained: 127.1
+PASS EXPERIENCE driver canonical address rule retained: 192.0.2.01
+PASS EXPERIENCE driver canonical address rule retained: 0.0.0.0
+PASS EXPERIENCE driver canonical address rule retained: 255.255.255.255
+PASS EXPERIENCE driver canonical address rule retained: ::1
+PASS EXPERIENCE advanced request range stays directly reachable and focused
+CAPTURE request-range: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE request range uses progressive disclosure and search expands it
+PASS EXPERIENCE object navigation retains original editor and corrected input
+CAPTURE system: 1366.4x768 DIP; scale=1.25,1.25
+CAPTURE backup: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE backup path receives its own wide row
+CAPTURE stale: 1366.4x768 DIP; scale=1.25,1.25
+PASS EXPERIENCE stale evidence is never rendered as confirmed
+PASS EXPERIENCE role reassignment relabels old and new component directory entries immediately
+PASS EXPERIENCE role relabeling preserves selected object, editor, focus, selection and unsaved draft
+PASS EXPERIENCE updated role label navigates to the newly bound instance
+PASS EXPERIENCE role name is searchable on the newly bound instance
+PASS EXPERIENCE unbinding clears stale role names and search results
+CAPTURE role-labels: 1366.4x768 DIP; scale=1.25,1.25
+PASS PS05 Chinese pause/mode presentation preserves original application facts
+PASS PS05 unchanged native form disables save without requiring authentication
+PASS PS05 forced empty review remains non-submittable and creates no revision
+PASS PS05 live context updates preserve native selection and enable edited save before authorization
+PASS PS05 runtime context is derived from Effective rather than edited values
+CAPTURE v3-left-running: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 selected camera opens its existing native diagnostics with exact object context
+CAPTURE v3-object-diagnostics: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 object diagnostics returns to the cached form and preserves draft identity
+PASS PS05 stale snapshot cannot continue presenting a healthy connection
+PASS PS05 native save confirms Pending while Effective stays unchanged
+PASS PS05 confirmed Pending disables repeat save and labels the running configuration separately
+CAPTURE v3-saved-pending: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 RCS summary preserves local health evidence and Effective address without claiming remote acceptance
+PASS PS05 shared RCS diagnostics preserves its exact instance identity
+CAPTURE v3-rcs-running: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 native choice displays Chinese while selection retains its protocol value
+PASS PS05 Chinese choice change persists original protocol value without changing binding identity
+PASS PS05 sensitive and secret-reference values never appear in ordinary text editors
+PASS PS05 masked editing and object navigation preserve the exact reference instead of a sentinel
+PASS PS05 native password automation returns an empty value, never the reference
+CAPTURE v3-sensitive-reference: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 review masks secret-reference even without the Sensitive flag
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (1366, 768): footer=1226.3999999999999,656,120,44, client=1366.4,768, editorHeight=553.6, visible=True
+CAPTURE v3-size-1366x768: 1366.4x768 DIP; scale=1.25,1.25
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (1092, 614): footer=952,515.1999999999999,120,44, client=1092,613.6, editorHeight=420.8, visible=True
+CAPTURE v3-size-1092x614: 1092x613.6 DIP; scale=1.25,1.25
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (800, 420): footer=660,321.59999999999997,120,44, client=800,420, editorHeight=227.2, visible=True
+CAPTURE v3-size-800x420: 800x420 DIP; scale=1.25,1.25
+Native HWND/Dispatcher synthetic runtime; real SDK/RCS, target IPC, physical 100% DPI and touch NOT_RUN.

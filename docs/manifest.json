@@ -53910,9 +53910,9 @@
       "version": "STARTUP-UX-02",
       "status": "current_source_or_synthetic_evidence",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
-      "sha256": "6ba0a792ab6b7dba2893611d36c258a0e08df55e061800f3fca00d7926b53292",
-      "size_bytes": 15458,
-      "git_blob": "bcaad28db964b15584cca830c1ae7e6878a2ae44",
+      "sha256": "83fc9674903c8686d78b9b903f1d40b138cd403c69c31f9ad91cd63af07e8541",
+      "size_bytes": 15704,
+      "git_blob": "31269d5a55fe517cef36f8c3c0ceb934a3fb8fb1",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -62081,9 +62081,9 @@
       "purpose": "Authorized installation and first configuration experience; synthetic native evidence or current implementation",
       "source": "2026-10-21 user corrections; original contracts, D/RV and historical evidence retain identities",
       "storage_scope": "public_repository",
-      "sha256": "b5010e67f32994ffa17ccc398bfa16f6ce43159273848995429be15a19ab4e80",
-      "size_bytes": 22323,
-      "git_blob": "29fdd4bdef0a3585895018a3448910ddde0d04a7"
+      "sha256": "88fd266480b62cd90a32d25288979b43979a78d56e6da942215ff317ac17539d",
+      "size_bytes": 23698,
+      "git_blob": "eb64f0180dea29bfa4e79ddf02b73d76aa140245"
     },
     {
       "path": "docs/runtime/evidence/startup-experience-02/COMM-WPF-FIX.log",
@@ -62587,9 +62587,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "6a3cb9e62e84ab781f8453f7c7af51b6932318f3e39319d141fe56bd24758edc",
-      "size_bytes": 4556,
-      "git_blob": "fc1e56301aac1579cbe35c52a648316916b9c70e"
+      "sha256": "cb8cc2c511f33c1cba10d4cc5a85811cf7eda27a51ae8eaa8d2fd8cfced2fad6",
+      "size_bytes": 4866,
+      "git_blob": "6afce5d77a27f7f4ea8b58aeb5c2e8871dc6b995"
     },
     {
       "path": "docs/runtime/validation/startup-experience-03.md",
@@ -62598,9 +62598,9 @@
       "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
       "source": "2026-10-21 user clarification; independent source and validation boundaries",
       "storage_scope": "public_repository",
-      "sha256": "10aa572f0a3c443fc5882e1d93b6b0231f00fa60497e8e12c10dc930ab15239b",
-      "size_bytes": 7516,
-      "git_blob": "0b64611350a986a2bac6301df25921acf3169158"
+      "sha256": "cee425ff2c87b80dd95b833ebd20ece6fd895f5b6144a4281eec4af5d7c8bb15",
+      "size_bytes": 8705,
+      "git_blob": "0e4d36d7472e14de74cf407e89d0ca530dceda11"
     },
     {
       "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
@@ -62828,6 +62828,72 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Frozen delivery and explicit visual-fixture/CI follow-up",
       "source": "Frozen product 981c7da; fixture-only changes do not relabel media",
+      "storage_scope": "public_repository",
+      "sha256": "b68f020c4c9606e651d2f088649ce3ca35d081729b9c72c086abf88276cf9cf5",
+      "size_bytes": 11569,
+      "git_blob": "d181fcecfa14878c95e421c906e1550cab865b8c"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-comm-native-pages.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "d5d7250515782cd0e31eb16346043566b87643c28f0ab33a957915369d6c41c7",
+      "size_bytes": 3087,
+      "git_blob": "d9025516342b79b132888e98815d066884a50e22"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-desktop-last-build.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "fe511504ff301ce992b63ec93f9027c963d6011918d7b3b9b42e32907beb910c",
+      "size_bytes": 3774,
+      "git_blob": "37fede99cc623b83f54f96e33e2909fc8ba047cd"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-parameter-v3.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "4212e11984a5355526b4ca0f06972fab13ab2fbc00bbc65a8fad601a8decae95",
+      "size_bytes": 23941,
+      "git_blob": "1dd276e83ba85740b5ee5565089bb0bb30e2edde"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-startup.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "49d16b59b5cc1fc96928353a799f33b8d98e3a71dbde8294cdb368279cea39e1",
+      "size_bytes": 7557,
+      "git_blob": "c244dbee56de3c8b5a370498a1ea27983eae80b9"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-ui-last-build.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "e50e3bdad2b53bf088052497035a5d29af32b4998a775b8e04eb3376415d48f8",
+      "size_bytes": 3717,
+      "git_blob": "8c86c6e569e40acdf085c98f40006624780a68d6"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-experience-03/LATEST-visual-productization.log",
+      "version": "STARTUP-UX-03",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Installation and first configuration simplification and synthetic native verification",
+      "source": "Authorized user requirements; synthetic Windows evidence; no customer assets",
       "storage_scope": "public_repository",
       "sha256": "b68f020c4c9606e651d2f088649ce3ca35d081729b9c72c086abf88276cf9cf5",
       "size_bytes": 11569,

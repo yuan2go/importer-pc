@@ -32,7 +32,7 @@
 
 8955bb1保留本轮主体、87项初验及中间介质身份；该中间ZIP不作为最终推荐安装器。核对发现端口前导零可形成不同文本资源键，后续统一使用规范数值端口构造物理目标键。新增真实ResourceLease断言：不同ReaderId、80/00080不能同时取得同一目标；原租约释放后才可再次取得。新的[89项首配专项](../evidence/startup-experience-03/STARTUP-FINAL.log)通过，最终两份构建日志零警告/错误，原87项及原图不覆盖。[最终相机页](../evidence/startup-experience-03/final-startup-step-3.png)修正TCP包裹关联说明，[完成页](../evidence/startup-experience-03/final-installer-complete.png)保持底部运行选项。后继仅用新提交重新冻结，最终产品SourceCommit和安装器另列。
 
-## 最终本机交付与远端视觉断言后续
+## 981c7da候选交付与远端视觉断言后续（后续候选已替代）
 
 最终产品源码固定为`981c7da5b74c4e788dbc82362e09a45267cd9ebc`。本机标准脚本生成SM 1.8.2同源介质及单EXE；[介质](../evidence/startup-experience-03/MEDIA.json)、[安装器](../evidence/startup-experience-03/INSTALLER.json)保留原SourceCommit。安装器SHA256 `346d5a9e28e2983038b589e588ef52595f93be41c34989920aaa5a24500bbd96`；ZIP SHA256 `d616fe3a3c9634d75c75897147cffde71519ea999f76986048e34180bc71976f`。共737文件（736条文件清单加SHA256SUMS自身）。封装校验全部共享DLL字节与介质一致。未签名，实际安装NOT_RUN。
 
@@ -43,3 +43,9 @@
 后续仅修改视觉夹具：检查新的保存并启动与无配置工具；更多菜单断言没有辅助窗口，通过程序化第二视图继续检查共享Application/连接生命周期。未恢复已删入口，未删除原共享责任断言。本机更新夹具[120项视觉PASS](../evidence/startup-experience-03/VISUAL-FIX.log)，零警告构建；新的远端结果单列。最终产品源码、配置、脚本和随包指南不变，后继夹具/交付回执提交不重标981c7da安装器SourceCommit。
 
 最终发布CLI业务身份及Desktop只读环境入口[冒烟通过](../evidence/startup-experience-03/ENTRY-SMOKE.json)，退出码0、stderr为空；没有运行设备或执行实际安装。
+
+## 旧模拟配置连接选择补充
+
+复查发现旧模拟配置已绑定参考集成时，组件页误报RCS未安装，且未提供真实服务选择。补充显式“服务连接方式”，旧参考显示“本地模拟（旧配置）”，可选择随包RCS并填写现场地址；新装真实RCS无需多余选择。保留原站、用途、数据和严格生产守卫。本次包含产品修改，981c7da安装器不再是本轮推荐交付；原回执、哈希及验证不改写。后继候选从新SourceCommit冻结。
+
+修改后本机[90项首配](../evidence/startup-experience-03/LATEST-startup.log)、[225项参数V3](../evidence/startup-experience-03/LATEST-parameter-v3.log)、[31项商业原生](../evidence/startup-experience-03/LATEST-comm-native-pages.log)、[120项视觉](../evidence/startup-experience-03/LATEST-visual-productization.log)全部PASS；Desktop及原生夹具Release构建零警告/错误。测试增加明确切换RCS后可编辑真实地址的断言，未自动转换原用途。[CI67](https://github.com/yuan2go/importer-pc/actions/runs/39584824727)已成功，仅覆盖e8b368b，不扩张为本次后继修改验收。

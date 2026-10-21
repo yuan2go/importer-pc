@@ -62,12 +62,12 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var choices = draft.Providers.Where(p => !FirstConfiguration || p.Implementation != "manual" || p == draft.Provider).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation == "manual" ? "本地模拟（旧配置）" : p.Implementation.Contains("hikrobot", StringComparison.OrdinalIgnoreCase) ? "海康相机（SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
-        if (draft.Kind == "observation" && choices.Length > 1 || draft.Provider is null)
+        var choices = draft.Providers.Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟（旧配置）" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation.Contains("hikrobot", StringComparison.OrdinalIgnoreCase) ? "海康相机（SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null)
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
             providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
-            Field(Form(page), draft.Kind == "observation" ? "相机连接方式" : "选择已安装组件", providers, null, draft.InstanceId + "/Provider", page);
+            Field(Form(page), draft.Kind == "observation" ? "相机连接方式" : draft.Kind == "integration" ? "服务连接方式" : "选择已安装组件", providers, null, draft.InstanceId + "/Provider", page);
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
         }
         if (draft.Provider is null)
@@ -78,7 +78,7 @@ public sealed partial class ParameterSettingsControl
         {
             var missing = Text(draft.Kind == "observation"
                 ? "请选择 TCP/IP 连接方式，填写实际相机 IP 和端口。原模拟用途和历史数据仍保留。"
-                : "尚未安装现场 RCS 组件。请使用包含对应组件的安装包，当前不会连接模拟服务。");
+                : "当前为旧模拟连接。可在上方选择 RCS 服务，再填写现场服务地址；原用途和历史数据仍保留。");
             missing.Foreground = Brush("#915300"); page.Body.Children.Add(missing); return;
         }
         var isRcs = ParameterOwnership.IsRcs(draft);

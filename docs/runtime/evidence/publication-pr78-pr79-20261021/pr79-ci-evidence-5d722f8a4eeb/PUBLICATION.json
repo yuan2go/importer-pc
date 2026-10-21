@@ -1,0 +1,7 @@
+{
+  "source_commit": "5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "old_versions_overwritten": false,
+  "scope": "用户授权上传刚刚任务的原执行产物；本轮不测试、不构建、不打包、不运行。原GitHub artifact 12284432859（run39465324737）按原字节保留，内含46个合成截图、日志和回执，没有程序包或安装包。原PR head为5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b，实际受验CI merge tree为5edfe080157d415679a4798918589f64d4dcfe41；标签固定在原PR head，二者不能混同。\n\n原PR79结果不能扩大为后合并PR78参数V3或最终main的Windows PASS。V3原生/目标工控机、真实SDK/RCS及现场边界保持；production原门禁拒绝不改写。新独立预发布，不覆盖旧版或更新产品安装包，当前1.6.1安装包不包含本轮新合并成果。原始证据与身份记录同时上传，不附客户资料、凭据、SDK/字体、私钥或生产数据。"
+}

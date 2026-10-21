@@ -1,0 +1,13 @@
+{
+  "pr": 79,
+  "workflow_run": 39465324737,
+  "original_artifact_id": 12284432859,
+  "pr_head_commit": "5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b",
+  "artifact_source_merge_commit": "5edfe080157d415679a4798918589f64d4dcfe41",
+  "release_tag_target": "5d722f8a4eebaa3a7d034c9c6becbfe8f63f645b",
+  "contents": "46 original CI evidence files: synthetic screenshots, logs, source/environment/build/result records; no installer or program payload",
+  "tests_in_publication_session": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "combined_v3_validation": "NOT_RUN",
+  "production": "NOT_APPROVED"
+}

@@ -1,0 +1,31 @@
+{
+  "SourceCommit": "75b47d49a8c5ee790b90c595c21525123ac09644",
+  "ReviewThread": "https://github.com/yuan2go/importer-pc/pull/81#discussion_r4333532956",
+  "MainBaseline": "20251b4c10db76a37f4d204332e3e6cf68340429",
+  "Status": "PASS_LOCAL_NATIVE",
+  "ExperienceAssertions": 38,
+  "DpiScale": 1.25,
+  "Before": "Product 2215487 with the new regression fixture; 33 existing assertions passed, then stale role-directory label reproduced. Original failure retained.",
+  "After": "Release build at fixed source 75b47d4, 0 warnings/errors; actual HWND/Dispatcher shared daily editor and synthetic role selections; no device calls or save submission",
+  "Checks": [
+    "Role reassignment updates old/new directory and page title",
+    "Same selected instance, model, control, raw draft, focus and selection retained",
+    "Role label navigates to replacement instance",
+    "Search context follows current role",
+    "Unbinding clears stale labels and search hits"
+  ],
+  "Ci": "The existing --parameter-v3 gate now includes the complete schema experience regression. Final PR checks have their own SourceCommit; this local receipt retains its identity.",
+  "Assemblies": [
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/bin/Release/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "4c6c03f2d68ae9b054262e0cee31c28076ed6aa8e153459076b78c8405561837"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll",
+      "Sha256": "b25731b6337459a8309c3d906a177cfe430b41a235d79f9c818ea8f225303ab3"
+    }
+  ],
+  "OriginalEvidence": "e544492 / 95ad990 and PR80 bfec0a5672d8 records unchanged",
+  "EquipmentAndSite": "NOT_RUN",
+  "NewPublishedMediumStartup": "NOT_RUN"
+}

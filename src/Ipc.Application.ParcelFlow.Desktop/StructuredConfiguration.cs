@@ -111,7 +111,7 @@ public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
     public ParameterEditorModel? ParameterEditor { get; private set; }
-    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录")); Changed(nameof(ParameterEditor)); }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()); Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";

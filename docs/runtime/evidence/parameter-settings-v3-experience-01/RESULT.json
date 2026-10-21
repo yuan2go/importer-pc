@@ -1,0 +1,57 @@
+{
+  "SourceCommit": "e5444920f48b05443286a4262e767d95c9fb449f",
+  "MainCommit": "767075abe62a77c30e70766bb5d3f1feca02686b",
+  "Pr80Head": "d245b12eb5683c3dfd93bb6a847d8ca90dd01de2",
+  "Method": "Local Windows HWND/Dispatcher; full shared daily editor; public schema and explicit synthetic runtime",
+  "DpiScale": 1.25,
+  "Experience": {
+    "Passed": 33,
+    "Failed": 0,
+    "NativePng": 13,
+    "Log": "after/WINDOWS-WPF.log"
+  },
+  "V3Regression": {
+    "Passed": 142,
+    "Failed": 0,
+    "Log": "regression/WINDOWS-WPF.log"
+  },
+  "Build": {
+    "Configuration": "Release",
+    "Warnings": 0,
+    "Errors": 0,
+    "PublishedMedium": false
+  },
+  "Assemblies": [
+    {
+      "Path": "src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll",
+      "SHA256": "885cb8c41b2b1d10ec39201bd5c6804898cbcf966213ea4f804ed4a4b6664954"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/bin/Release/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "SHA256": "8378a705479b3f9bd2f76e3ed6cb0a089295a4c28b4d283a9973913f9d8438ae"
+    },
+    {
+      "Path": "src/Ipc.Application.Sportmaster.Desktop/bin/Release/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll",
+      "SHA256": "9cd44a535749cfe6abbe232d32500dfebf577fa89dcd6fba9a751e4a9982ce25"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll",
+      "SHA256": "dedd78cf6652db841c0ba80ca1d112fb601bae87fa2482449e9115078a34c248"
+    }
+  ],
+  "EarlierEvidence": {
+    "before": "Product 8355813 plus initial audit fixture; standalone startup draft; six clean layout captures; invalid-IP check failed after 13 PASS",
+    "manual": "95ad990; literal Unicode input and native keyboard/mouse; no full IME test",
+    "development": "Layout query before flush failed; assertion retained with UpdateLayout"
+  },
+  "NotRun": [
+    "Target IPC",
+    "Touch",
+    "Physical 100% / 150% DPI",
+    "Full IME composition",
+    "Real SDK/RCS",
+    "Real save latency and disk fault experience",
+    "New installer/published-medium startup",
+    "Site acceptance"
+  ]
+}

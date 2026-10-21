@@ -23,8 +23,14 @@ public sealed partial class ParameterSettingsControl : UserControl
     readonly List<ObjectPage> pages = [];
     ICollectionView? directoryView;
     readonly Dictionary<int, string> lastPages = [];
-    sealed record ObjectPage(int Category, string Title, StackPanel Body, ScrollViewer Scroll, StackPanel Technical)
+    sealed class ObjectPage(int category, string title, StackPanel body, ScrollViewer scroll, StackPanel technical) : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public int Category { get; } = category;
+        public string Title { get => title; set { if (title == value) return; title = value; PropertyChanged?.Invoke(this, new(nameof(Title))); } }
+        public StackPanel Body { get; } = body;
+        public ScrollViewer Scroll { get; } = scroll;
+        public StackPanel Technical { get; } = technical;
         public string GroupTitle => ParameterOwnership.CategoryName(Category);
         public override string ToString() => Title;
     }
@@ -115,7 +121,9 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
-        var page = new ObjectPage(category, title, body, scroll, new StackPanel()); pages.Add(page); return page;
+        var page = new ObjectPage(category, title, body, scroll, new StackPanel());
+        heading.SetBinding(TextBlock.TextProperty, new Binding(nameof(ObjectPage.Title)) { Source = page });
+        pages.Add(page); return page;
     }
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {

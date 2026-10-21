@@ -8,7 +8,7 @@ public sealed record ParameterIssue(string Category, string Path, string Message
 // An editor over the existing complete draft, never a separately persisted configuration.
 public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string applicationId,
     CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, string stationId = "", ParcelConfigurationLocations? locations = null,
-    CapabilityRoleDraft? operatorLoginRole = null)
+    CapabilityRoleDraft? operatorLoginRole = null, CapabilityRoleDraft[]? componentRoles = null)
 {
     public ConfigurationPolicyDraft Policy { get; } = policy;
     public string ApplicationId { get; } = applicationId;
@@ -21,6 +21,15 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public CapabilityRoleDraft? OperatorLoginRole { get; } = operatorLoginRole;
     public bool HasOperatorLogin => OperatorLoginRole is { } role ? role.Selection.Capability is not null
         : Components.Any(c => c.Role == "operator-login" && c.Bound);
+    public IReadOnlyList<CapabilityRoleDraft> ComponentRoles { get; } = componentRoles ?? [];
+    // Display existing role ownership without changing the inventory or bindings.
+    public string ComponentLabel(CapabilityDraft component)
+    {
+        var roles = ComponentRoles.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
+        { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray();
+        return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
+        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => component.Role + " · " + component.InstanceId };
+    }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;
@@ -68,6 +77,12 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
                 Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
+            // Mirror the installed Hikrobot driver's existing address-format rule
+            // before review. This is local feedback, not a connection probe or a
+            // replacement for Application/driver validation at the real boundary.
+            if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" && values.TryGetValue("device.ip", out var ip) &&
+                (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
+                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整 IPv4 地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))

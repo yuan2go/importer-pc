@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "ff983e006c1b6019c1f857efe485184b97dea48613617a6db0b8d59b24fa4337",
-      "size_bytes": 4230,
-      "git_blob": "09407e4a1440364e1f028989863b0bc06cbebc7a",
+      "sha256": "65240fc424a0845dba6c61f01edbaa0538decd5046ca3de5668141b53ebffdad",
+      "size_bytes": 4358,
+      "git_blob": "d824b26b39b23bb124bbd8e84d2493ced2450253",
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
@@ -2052,13 +2052,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "55206a9a469c83cb6bc82b3312229239b05b3c5840306c0490ac038006667acb",
-      "size_bytes": 16326,
-      "git_blob": "ae57495c6b4e056563d7f50a6f9be598a4f5ba5b",
-      "version": "PARAM-UX-02-PS05",
+      "sha256": "21c35851086d25a2bde3146bb51150373e72d77ad1bfe29df5d7ccf0ee55063a",
+      "size_bytes": 16765,
+      "git_blob": "eceea92e65a81dd99471b80a9c00885585371bed",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
       "previous_git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2099,6 +2099,13 @@
         "version": "PARAM-UX-02-20261020",
         "status": "parameter_v3_design_or_current_guidance",
         "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "ae57495c6b4e056563d7f50a6f9be598a4f5ba5b",
+        "sha256": "55206a9a469c83cb6bc82b3312229239b05b3c5840306c0490ac038006667acb",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
       }
     },
     {
@@ -51838,13 +51845,13 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
-      "sha256": "d66f09a4ea0a9eb7772a691193bc05d81d00547a99a26ccd894b64afe82e6eb6",
-      "size_bytes": 13113,
-      "git_blob": "81e74548e65ed894e7478457a41ab2c7bbda6665",
-      "version": "PARAM-UX-02-PS05",
+      "sha256": "f8f7e9ac2d4491e9ba76c1291ff72904a1d3a3376e0be7b687cade45ae551941",
+      "size_bytes": 13499,
+      "git_blob": "875c8107f033c3e7f9828e613d585280e1911784",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
       "remote_inclusion": "verify_published_main",
@@ -51854,6 +51861,13 @@
         "version": "PARAM-UX-02-20261020",
         "status": "parameter_v3_design_or_current_guidance",
         "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "81e74548e65ed894e7478457a41ab2c7bbda6665",
+        "sha256": "d66f09a4ea0a9eb7772a691193bc05d81d00547a99a26ccd894b64afe82e6eb6",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
       }
     },
     {
@@ -53799,14 +53813,14 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
-      "sha256": "5042f25101e003503c71bb5a00f4073d1c5e9f5d7ccdfc25796a0efa6180a66e",
-      "size_bytes": 23731,
-      "git_blob": "9459f150b698507a8c2443f88225926de29201be",
+      "sha256": "d72664220fbcf888e67d3e7f4c9016a166a1a2fa74090bb1f6fb7992e81ffae3",
+      "size_bytes": 23793,
+      "git_blob": "e8fe106f9a731d39f1c20cb0d6a54d22e3d72b4c",
       "previous_git_blob": "3686c14582ed6b53000d17f2a2b98612bcbad2d9",
       "pre_publication_no_test_git_blob": "2c66a310a63ecf643296336dfa143f653541053d",
       "pre_parameter_settings_v3_source_identity": {
@@ -53815,6 +53829,13 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "9459f150b698507a8c2443f88225926de29201be",
+        "sha256": "5042f25101e003503c71bb5a00f4073d1c5e9f5d7ccdfc25796a0efa6180a66e",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
       }
     },
     {
@@ -53840,12 +53861,20 @@
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
       "storage_scope": "public_repository",
-      "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
-      "status": "scoped_implementation_or_publication_evidence",
-      "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only",
-      "sha256": "3ed5ade470f9a6e26b9f55438a5bdc1df97041acdc13a0baa91e3d01b239564f",
-      "size_bytes": 7852,
-      "git_blob": "fe572e4abdd0586930cf1df2217f62c2c81c1b6f"
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "sha256": "5fd5e9b18bb0fb159a1cef90dd035920899e167cdef22e432f629976d2889693",
+      "size_bytes": 9415,
+      "git_blob": "b7b20709d4f1100e93e7fd59a29fab63746dd7cb",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "fe572e4abdd0586930cf1df2217f62c2c81c1b6f",
+        "sha256": "3ed5ade470f9a6e26b9f55438a5bdc1df97041acdc13a0baa91e3d01b239564f",
+        "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
+        "status": "scoped_implementation_or_publication_evidence",
+        "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterOwnership.cs",
@@ -53859,24 +53888,31 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
-      "sha256": "503b52bde588e77a8a20bee111f4c2fab277c21495b196a0345f8a86a6b89711",
-      "size_bytes": 3205,
-      "git_blob": "764668a1e1367ff791667814dbabf6f594cc3ecf"
+      "sha256": "f88598c3b4cb7d466accc79b107d678c0e175aa34c802ef8511f9bce0869f8fa",
+      "size_bytes": 4067,
+      "git_blob": "bd334933652f0b373fe9faa9f14c5b042b049fbe",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "764668a1e1367ff791667814dbabf6f594cc3ecf",
+        "sha256": "503b52bde588e77a8a20bee111f4c2fab277c21495b196a0345f8a86a6b89711",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "845ee4bab40696ef0ca7ffee96251781863ef64d2438eb2304ae37951a6396be",
-      "size_bytes": 12236,
-      "git_blob": "cc3b2c56a8150e454fc0e7d115fcf07ee7ae7e6c",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "sha256": "29d831a66587124a3c56d9a809480ffccc3ac94bf3b5a4deb552f7b4d1f30d3d",
+      "size_bytes": 13023,
+      "git_blob": "15892bd16b0d88f7f6db42aa33faa4fe1f9d2a04",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -53884,17 +53920,24 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities"
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "cc3b2c56a8150e454fc0e7d115fcf07ee7ae7e6c",
+        "sha256": "845ee4bab40696ef0ca7ffee96251781863ef64d2438eb2304ae37951a6396be",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
-      "sha256": "cec757d4529f8d36dfe7fc15ea19a9cac9530dd4156b63c8a6a358b784f5e1b3",
-      "size_bytes": 12427,
-      "git_blob": "d3bec6454ee61ca7ecd34af74de505396e22fe7f",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "sha256": "e34529a8baa0bfa25d9d17f949a795604996b05ec08b8deccee473a9efddddef",
+      "size_bytes": 12553,
+      "git_blob": "55057b82f45b4fd8711516dfcffa677935ea412c",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "b01d4c6b46c216bd69d371f42282a8223fcec526",
         "sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2",
@@ -53902,18 +53945,32 @@
         "status": "scoped_implementation_or_publication_evidence",
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
       },
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "d3bec6454ee61ca7ecd34af74de505396e22fe7f",
+        "sha256": "cec757d4529f8d36dfe7fc15ea19a9cac9530dd4156b63c8a6a358b784f5e1b3",
+        "version": "PARAM-UX-02-source-20261020",
+        "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+        "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Runtime.cs",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
-      "sha256": "2d6c22d053de9b5ebac29a79992bc9f4f6e63cea43f8e50f5ce44f0b87fed939",
-      "size_bytes": 2968,
-      "git_blob": "895be6b78f6d3bd1e262c253c9c67cfef0f2096c"
+      "sha256": "7746a7afbf3327aa38e152c0876718ba47c9bc5c19ea3c4f9195d3b70abfdacb",
+      "size_bytes": 4705,
+      "git_blob": "f2db792c4a160036082ad1826d98972d4f7e6540",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "895be6b78f6d3bd1e262c253c9c67cfef0f2096c",
+        "sha256": "2d6c22d053de9b5ebac29a79992bc9f4f6e63cea43f8e50f5ce44f0b87fed939",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Search.cs",
@@ -53939,9 +53996,9 @@
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "f67cb739068703782b01b489ec90393dca7d40a2dc4e735b1a26f823976dcd9c",
-      "size_bytes": 18977,
-      "git_blob": "bfa9ad643a02fe89df0ff09eb43540e2838712de",
+      "sha256": "eaf67609229a2750760788629ef3cb56af32730d16dc8788aaf08291da66b06d",
+      "size_bytes": 19542,
+      "git_blob": "01e3799978fcae4a0d4ddc163e1119f280ff2a3e",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
         "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
@@ -53954,12 +54011,12 @@
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
       "storage_scope": "public_repository",
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
-      "sha256": "cc4d4ec5cc1cb9e40b6f9ab0b8e765f89ad0872b518e056d5e8367789141819b",
-      "size_bytes": 7962,
-      "git_blob": "3ca8b24e4f8d9a2177dd411baf2362448572c6e3",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "sha256": "f5a3612e9b62941dda3d4e53850bbe77e2dd5bcd9b03e13fbb009fe3b2794ddc",
+      "size_bytes": 8194,
+      "git_blob": "f05fb12fa3355ede5358464fe6dd550947e53790",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "bb5e024a1547f667a40e9f0dcfcaa3a04067315c",
         "sha256": "b6c599ce02f4ed5941278ff64a7aea3c253c332a30da636d6a1591ab9be07fcb",
@@ -53967,7 +54024,14 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix"
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "3ca8b24e4f8d9a2177dd411baf2362448572c6e3",
+        "sha256": "cc4d4ec5cc1cb9e40b6f9ab0b8e765f89ad0872b518e056d5e8367789141819b",
+        "version": "PARAM-UX-02-source-20261020",
+        "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+        "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
+      }
     },
     {
       "version": "sportmaster-visual-productization-01",
@@ -54145,15 +54209,15 @@
       "storage_scope": "public_repository"
     },
     {
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
-      "sha256": "e97e8718db6113c98d25e46aea29a1f03c44d7e1b9a120a3e07264678f89e52a",
-      "size_bytes": 36836,
-      "git_blob": "bd1a023249326c9c6dad31697eabea15fa1a68b2",
+      "sha256": "6406d153969a1e2f023c3817193dd84899d9fd328e316b4958af1f766eeb3701",
+      "size_bytes": 36866,
+      "git_blob": "9c1303265137bb0bf161c64cf94db7a955f550c4",
       "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695",
       "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe",
       "pre_parameter_settings_v3_source_identity": {
@@ -54162,6 +54226,13 @@
         "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
         "status": "scoped_implementation_or_publication_evidence",
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "bd1a023249326c9c6dad31697eabea15fa1a68b2",
+        "sha256": "e97e8718db6113c98d25e46aea29a1f03c44d7e1b9a120a3e07264678f89e52a",
+        "version": "PARAM-UX-02-source-20261020",
+        "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+        "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
       }
     },
     {
@@ -54943,14 +55014,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
-      "sha256": "cfeaff16b8bafd75e61ac79bc7c8a464523ffb62aa2c0b0eeacf95bee25b0f74",
-      "size_bytes": 22139,
-      "git_blob": "426e4ecfe72ca4d49b713a4d1462b56130c14608",
+      "sha256": "fda417733a9ef0f9dc009321a7bb18a8f0989a10e439865fddb8f585a86c505a",
+      "size_bytes": 22156,
+      "git_blob": "517151effc3fb1c2d0344453dd9c1c36db5601f1",
       "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
       "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
       "pre_parameter_settings_v3_source_identity": {
@@ -54959,6 +55030,13 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "426e4ecfe72ca4d49b713a4d1462b56130c14608",
+        "sha256": "cfeaff16b8bafd75e61ac79bc7c8a464523ffb62aa2c0b0eeacf95bee25b0f74",
+        "version": "PARAM-UX-02-source-20261020",
+        "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
+        "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change"
       }
     },
     {
@@ -59068,14 +59146,14 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "version": "PARAM-UX-02-PS05",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
-      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
       "storage_scope": "public_repository",
-      "sha256": "c02baa4abf907becbdd6daa4b8ab42b6847963f3b6b578efcedd133e4cc14fe4",
-      "size_bytes": 16986,
-      "git_blob": "4c6f000109e548ce8fa8b814f8b58c6c1f8d3e82",
+      "sha256": "4ec602da272abf7a0a5cc7980d6601f2e2917a33aeb99017d2b7db6fb9d28161",
+      "size_bytes": 17407,
+      "git_blob": "4a353e34cad13982299ee81d04efed814c4a39eb",
       "previous_git_blob": "882debfcfaf788c6fc1db895795c41bfcb952aeb",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "f78b085b9b6a4bf181b2620b334b8bf0a28a5bfa",
@@ -59083,6 +59161,13 @@
         "version": "LOGIN-SESSION-LIFETIME-FIX-01-20261020",
         "status": "scoped_implementation_or_publication_evidence",
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
+      },
+      "pre_parameter_experience_01_identity": {
+        "git_blob": "4c6f000109e548ce8fa8b814f8b58c6c1f8d3e82",
+        "sha256": "c02baa4abf907becbdd6daa4b8ab42b6847963f3b6b578efcedd133e4cc14fe4",
+        "version": "PARAM-UX-02-PS05",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
       }
     },
     {
@@ -59589,6 +59674,501 @@
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/RESULT.json",
+      "sha256": "50dedd31b508ab31cd765d3aa7b577623440e6d0f88ed9d6b0539ad00dc3af4b",
+      "size_bytes": 2103,
+      "git_blob": "770e5720d99f1bb1be3aa8dacbe0093dcecc6239",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/WINDOWS-WPF.log",
+      "sha256": "07ea06cf5102dbdb4d5b1097e4d3dcdcf683e96d30ffb0c14c5b82c5b6c39f22",
+      "size_bytes": 3226,
+      "git_blob": "10bd804641ee10078cca92f7797c3866824c10ae",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/backup.png",
+      "sha256": "7b00e96092e6f8e5366fbaca283bfd89c8ec372dbafa825d9da24e436bc8a995",
+      "size_bytes": 93319,
+      "git_blob": "7f471d3970c4a90893fff48b3a18503936d7f9c7",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/camera-1092.png",
+      "sha256": "9cc109e71cafd9fea84b155283a7a9a5a94c7021b230a48256f72fd44bb9ce31",
+      "size_bytes": 78575,
+      "git_blob": "6aefc3aaa2add0c328b9040829a2fe7a0efd9c8a",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/camera-1366.png",
+      "sha256": "ae52890c359e55f0d558f88b4395bec02912bbb7f841a23f13c3754922f879cf",
+      "size_bytes": 100335,
+      "git_blob": "14e32d857ed7a60216984bc354d89fdedcb4839c",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/camera-800-focused.png",
+      "sha256": "cc6faf500a3853613a679002f992747ff4bb6395d319121c44ce9773a57af2ec",
+      "size_bytes": 56394,
+      "git_blob": "604b0e2455ee03a0a585faba1369f13b93c020af",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/camera-800.png",
+      "sha256": "c3ca9ff0e740c72f8c2762bda02f40d614d17c3f8041f7510465bbdd3cf766c5",
+      "size_bytes": 56735,
+      "git_blob": "bf4715e93bf4455a24ef0ea0b6aab443dae2d5b5",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/field-error.png",
+      "sha256": "42e058466ea55771444f7a7643812a37f161a2ced3263544ff34e8068464ff3b",
+      "size_bytes": 110764,
+      "git_blob": "bef180b8e5da3734004d32fa0e4a1316bdacf37f",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/rcs-1092.png",
+      "sha256": "e5bc42935c2a0154fd20af9e6748dc9047fadee65b530b29ab3b0ffe617ce22b",
+      "size_bytes": 84854,
+      "git_blob": "b8b4cf64ea41c025bfb829407cc92e8f899b2ede",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/rcs-1366.png",
+      "sha256": "7c24e24018f63fe4d774d74da060b720a0de2052a313ef64a74bac070f63ae00",
+      "size_bytes": 102119,
+      "git_blob": "7e2d4d96475b30633d9a9f9987ae659d40b4cf3a",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/rcs-800-focused.png",
+      "sha256": "a096a0355334bca47eebe6010d82d74711b85849105f8df20f07746a827175e5",
+      "size_bytes": 60687,
+      "git_blob": "588a63433995ca1180cded3dfefd4fa7de602a19",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/rcs-800.png",
+      "sha256": "5c3d6b85eddc43ba6db5af447436c18aa56e01545f343ac6da77904ffcc3ebd4",
+      "size_bytes": 64631,
+      "git_blob": "43d62bddfa90d3a24a3588e08db18a6d0b1c0592",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/request-range.png",
+      "sha256": "ed3a3c7efb1e1d8bbb5ab50b2544e6c8b03f8c50589044a59d029cd79989769a",
+      "size_bytes": 88169,
+      "git_blob": "3994e91bb442ad75435ebc2964ea35c7e9b76b23",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/stale.png",
+      "sha256": "4052df2ea69e80a9e6a28e8c87f6ab8f3cf7f48cef0f9cc0f4da1eee5a62888c",
+      "size_bytes": 113752,
+      "git_blob": "38cf4a2c8c7cd49a5a6faec4ad5d0ea28125120a",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/after/system.png",
+      "sha256": "2a178a9c7d34ab2f5a5cc3e99017bf8fea2cb19a21f26fe7a464b721b716c4c2",
+      "size_bytes": 93475,
+      "git_blob": "4088924610cddfb1d28ee06b89202dfabb049980",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/WINDOWS-WPF.log",
+      "sha256": "e59c36688640b3b63aa9e6b7ff4c4fab3810af16d06e0d0b53675583f27d90cd",
+      "size_bytes": 2192,
+      "git_blob": "5e633903431e155b801c11b99f9d648942fa51a9",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/camera-1092.png",
+      "sha256": "7ba5e4a8b29b95c016da4e0cb196044523efa62080972222c127320dfdc716e8",
+      "size_bytes": 83275,
+      "git_blob": "2d3ff54e03936736990f4557eb7f2693d9a6e48a",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/camera-1366.png",
+      "sha256": "ed198bb6d19d6914ae52c6c23ef814913433816768d7a8fe23fb02d592569a04",
+      "size_bytes": 107871,
+      "git_blob": "5744c3c7adb9cb60e98d9951ac2444ea47c4397b",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/camera-800.png",
+      "sha256": "91ce3faebabf108186f2ef591a46232a4184e3857fa0d95dac9f201542e41559",
+      "size_bytes": 62594,
+      "git_blob": "9f9babc33ebef4cff8da878b873f478998a7f6e2",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/rcs-1092.png",
+      "sha256": "df30ce0be9de56b482ad249386ebe051d1ac82db37133efe724147dd6a485088",
+      "size_bytes": 92076,
+      "git_blob": "2390101e768b82adf5d9fc79c76c3e011f54a10d",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/rcs-1366.png",
+      "sha256": "03f5195d95fa3a7620257d6d129164876c4258541be633b62faa871ef975f677",
+      "size_bytes": 112023,
+      "git_blob": "68d2380a422de5bd043ba5e861a1f7b6d28a4978",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/before/rcs-800.png",
+      "sha256": "c846256e828ca09ff5c8c509a252fe1845019e314ea2c96d98d636293c2b1a3f",
+      "size_bytes": 66502,
+      "git_blob": "041b295052c5f075689af5befd3626e8d087f13c",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/desktop-build.log",
+      "sha256": "52f4831d1a50008e1c0aea9e2005e61d3efccf838971301bcc9e33a0d24245ae",
+      "size_bytes": 2070,
+      "git_blob": "df372b7388ce154e39e8e02bdf412099c702f185",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/development/experience-95ad990.log",
+      "sha256": "50071b9349d2800e1ab2eb5601799d0374f81683b57446cdb89bb8a14e0fa48d",
+      "size_bytes": 3148,
+      "git_blob": "29a36586d9f968222f77e562907c94e7d374cf34",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/development/layout-flush-failed.log",
+      "sha256": "577c6534029a8127df60e449accdae064d6a45f5468120a87fbfdd8c3928a9f4",
+      "size_bytes": 2444,
+      "git_blob": "2251bfc3bec7d9094d55122352f24b0caa7de5eb",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/experience-baseline-build.log",
+      "sha256": "1f460dd75f2192713c1fbb2b2eec6fb5901f462d4913df04049ae02e48afce57",
+      "size_bytes": 2012,
+      "git_blob": "80748459e7298f53c5a708b15eab7c25ef2feb75",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/manual/INPUT.json",
+      "sha256": "1d2e7bd1980c2d9c5d62416649f55dfcd78d6c136f406e94af207889e5524f0a",
+      "size_bytes": 811,
+      "git_blob": "b6935a676fedd9254abac585adc00c1cd29500d4",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/manual/advanced-task.png",
+      "sha256": "49ac7e438b3cd0ec80fb39b021c4440b094e6fb6d4e650f323556dfcce754dd8",
+      "size_bytes": 103533,
+      "git_blob": "27afadd36db223ced79c2d61d3a3f1158c672fbc",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/manual/chinese-input.png",
+      "sha256": "11e6ea7a62ae7abb4b040a980e73374fc419fea8302041c317f20711f646b0b6",
+      "size_bytes": 90379,
+      "git_blob": "34adee49e7c8a76d4aeca662d95ec66fbc6d2828",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/manual/draft-after-tools.png",
+      "sha256": "58c0510c9a6a1bd83fed986fea50a18baa1729f2bad600689a15b4c41a3b908b",
+      "size_bytes": 89623,
+      "git_blob": "431d16764df1bec75413f1068816c5b23750f944",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/WINDOWS-WPF.log",
+      "sha256": "35024c87bb85854c6855f37a95046c4cd35835cdd71596d13ce6ef35d23008da",
+      "size_bytes": 15472,
+      "git_blob": "99cd2a4a3a607e173bc160d15ab513c0575c5490",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/parameters-save-review.png",
+      "sha256": "a2f3fc165991880876c7c453163f0c88d4a9024b8d422460359819fdfd1cf6fd",
+      "size_bytes": 72357,
+      "git_blob": "dd6c71f183f9761d73ad38eb1bd2562bdf3aa2d8",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/parameters-save-validation.png",
+      "sha256": "bde910c736f74a0ace8b8938432828672c5a4c48aeb199b171f89c6f77a909d4",
+      "size_bytes": 89955,
+      "git_blob": "da838c2a4307d6381fe20806bbc48c1c71ba2f56",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/v3-rcs-running.png",
+      "sha256": "0ed892bc3b698244bd166f1546ebbeb086680ebb56e74798a9feb28f94a8a842",
+      "size_bytes": 78587,
+      "git_blob": "65412291327f42e0f82bcda5d5caa9fef0324cec",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/v3-sensitive-reference.png",
+      "sha256": "283d2ce39163e5093c7b5667d20b590638a7a9c710894f21309b69c5ee029c1f",
+      "size_bytes": 57949,
+      "git_blob": "8b79161bf42f66dc32d7986b5e679e87ff5a8c5b",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/regression/v3-size-800x420.png",
+      "sha256": "9fb411429a6d6f3d4a7c107c24de56f78ef59502e7a1b09e0b558e6a49160217",
+      "size_bytes": 59046,
+      "git_blob": "e55b6aae905df4388672cd3c0075b8e76fb7fe6b",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/verified-build.log",
+      "sha256": "cbf46ff08b123a36028b55d54cf04a84ec53469326caed333057575a544665ff",
+      "size_bytes": 2012,
+      "git_blob": "509e968f04344c3839baafe76a38faeef32c0b8f",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/validation/parameter-settings-v3-experience-01.md",
+      "sha256": "9653f8b31591c2d94cabd36b3525b530548c1233a4176d99fa8f35da7868bcdb",
+      "size_bytes": 14511,
+      "git_blob": "80329a7fc027b6e0501b559f4c1eacc3ebb7ea35",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterExperience.cs",
+      "sha256": "6e51549e0acfc063b90ce8ffe2f0975dd2970c51d47a94785501eed8c57b9887",
+      "size_bytes": 13585,
+      "git_blob": "27bdb299e0abad57522ea6dd36623a068ab41725",
+      "version": "PARAM-UX-02-EXPERIENCE-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Targeted native parameter UX corrections, independent design review and bounded synthetic Windows evidence; no published-medium or site acceptance claim",
+      "source": "2026-10-21 user-authorized independent commercial UX acceptance and targeted fixes",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/RESULT.json",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "adffb3240c13596b548473b641d64a220c2138cf560e87d2406ac7e83467696a",
+      "size_bytes": 1757,
+      "git_blob": "d88fdd391e5397f694e2357d55724b3ffd126a52"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/WINDOWS-WPF.log",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "1314cef74a4b56e979b2df0c2804342e370e8b7b670301b057d7e8ed3465f277",
+      "size_bytes": 3739,
+      "git_blob": "6c6486dc48e80c0726820c8da62037f414c2d937"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/before.log",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "ca268bc624dd5280f589080a1730bf173e90fca1d938fbcc2a18cae670e8e81a",
+      "size_bytes": 4197,
+      "git_blob": "cdff8f2fc9ee8212e90502770ac7fd7d9a7d871b"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/build.log",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "ac9efb647292c1a587efd92b2d314f72afb5733640b26c617ca0785eb69ccebb",
+      "size_bytes": 2032,
+      "git_blob": "79eb02c4f34b558b9768ac7cfcd8c2fb904835c4"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-experience-01/role-review/role-labels.png",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "43a5f6879bce22ff436fb02800194b4f311d64ed8415afe3df88ed351766b677",
+      "size_bytes": 103645,
+      "git_blob": "6437b2c73b91b9fb3b1285e688ffec454d5ae21c"
+    },
+    {
+      "path": "docs/runtime/validation/pr81-role-label-review-01.md",
+      "version": "PARAM-UX-02-PR81-REVIEW-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Bounded native role-label review fix and actual regression evidence; original identities retained",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 and user-authorized PR81 merge review",
+      "storage_scope": "public_repository",
+      "sha256": "9abd27172b8abdcb83998c3c641e1f263ee2f813b874611f881cc6a83ca4c79d",
+      "size_bytes": 2352,
+      "git_blob": "26b43657389c023d0cecbf7d502a54162f1ead9a"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

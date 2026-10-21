@@ -1,0 +1,27 @@
+{
+  "Baseline": "0fea1b506b84437e519c62d9aa5d740043dfbad8",
+  "Candidate": "20171abccb384d7e0d4f37bc7a1c895faa25d7a4",
+  "ArchiveStatus": "FAIL",
+  "ExportEnvironment": "Windows git archive autocrlf conversion produced identity noise; checked all canonical Git blobs separately, no checker changes",
+  "BaselineArchiveErrors": 4320,
+  "CandidateArchiveErrors": 4336,
+  "BaselineLineEndingIdentityErrors": 4022,
+  "CandidateLineEndingIdentityErrors": 4038,
+  "HistoricalStructuralErrors": 277,
+  "NewStructuralErrors": [],
+  "RemovedStructuralErrors": [],
+  "CanonicalGit": {
+    "Ref": "20171ab",
+    "Records": 5533,
+    "Mismatches": []
+  },
+  "HistoricalStructuralOccurrences": 298,
+  "baselineExportIdentity": {
+    "CRLFChecked": 4022,
+    "Unexplained": []
+  },
+  "candidateExportIdentity": {
+    "CRLFChecked": 4038,
+    "Unexplained": []
+  }
+}

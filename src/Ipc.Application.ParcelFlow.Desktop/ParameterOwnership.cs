@@ -6,7 +6,9 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public static class ParameterOwnership
 {
     public static bool IsRcs(CapabilityDraft draft) => draft.Kind == "integration" && draft.Contract == "SPORTMASTER-RCS-SORTER-v1";
-    public static int Category(CapabilityDraft draft, string key) => draft.Kind == "observation" ? 2 : !IsRcs(draft) ? 3 : key switch
+    public static bool IsDriver(CapabilityDraft draft) => draft.Kind is "observation" or "weight" or "plc" or "camera";
+    public static int ObjectCategory(CapabilityDraft draft) => IsDriver(draft) ? 2 : 3;
+    public static int Category(CapabilityDraft draft, string key) => IsDriver(draft) ? 2 : !IsRcs(draft) ? 3 : key switch
     {
         "zone-id" or "project-id" or "left-station-code" or "right-station-code" => 0,
         "quantity" or "specified-chute" or "chute-code" => 1,

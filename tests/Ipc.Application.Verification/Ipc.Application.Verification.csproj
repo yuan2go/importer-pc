@@ -29,6 +29,10 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs" Link="Client/ConfigurationSubmission.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs" Link="Client/ConfigurationReviewPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs" Link="Client/ParameterRuntimePresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs" Link="Client/StationDisplayPreferences.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
+</ItemGroup><ItemGroup>
+ <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
 </ItemGroup></Project>

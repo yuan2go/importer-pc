@@ -1,0 +1,23 @@
+test_independent_workspaces_produce_identical_dlls (test_release_build.FrozenBuildTests.test_independent_workspaces_produce_identical_dlls) ... ERROR
+
+======================================================================
+ERROR: test_independent_workspaces_produce_identical_dlls (test_release_build.FrozenBuildTests.test_independent_workspaces_produce_identical_dlls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\projects\importer-pc-parameter\scripts\test_release_build.py", line 26, in test_independent_workspaces_produce_identical_dlls
+    result = subprocess.run(
+        ['dotnet', 'build', 'Sample.csproj', '-c', 'Release', '-m:1', '-nr:false',
+         *build_properties('a' * 40, source, artifacts),
+         '--artifacts-path', str(artifacts)], cwd=source,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+  File "C:\Scoop\apps\python\current\Lib\subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\subprocess.py", line 1207, in communicate
+    stdout = self.stdout.read()
+UnicodeDecodeError: 'gbk' codec can't decode byte 0xae in position 10: illegal multibyte sequence
+
+----------------------------------------------------------------------
+Ran 1 test in 6.715s
+
+FAILED (errors=1)

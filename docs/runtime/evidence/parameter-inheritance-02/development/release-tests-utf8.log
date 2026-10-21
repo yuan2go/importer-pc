@@ -1,0 +1,6 @@
+test_independent_workspaces_produce_identical_dlls (test_release_build.FrozenBuildTests.test_independent_workspaces_produce_identical_dlls) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 7.655s
+
+OK

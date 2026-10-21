@@ -1,0 +1,92 @@
+PASS STARTUP02 equivalent numeric TCP ports with different reader names cannot acquire separate physical leases
+PASS STARTUP02 physical TCP endpoint can be acquired only after the original lease releases
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP framing preserves split UTF8, CRLF and multiple coalesced lines
+PASS STARTUP02 same-code lines retain separate entities and the application-registered epoch
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP disconnection faults the source without automatic reconnect or replay
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 observe-only TCP cannot invent an entity admission boundary
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP overflow is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP invalid-utf8 is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 invalid optional rule stays on its field and exposes no internal variable in the status
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 blank optional barcode rule advances without inventing a default filter
+PASS STARTUP02 step 1 retains the same editor and input
+PASS STARTUP02 step 1 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 1
+PASS STARTUP02 step 2 retains the same editor and input
+PASS STARTUP02 step 2 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 2
+PASS STARTUP02 step 3 retains the same editor and input
+PASS STARTUP02 step 3 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 3
+PASS STARTUP02 step 4 retains the same editor and input
+PASS STARTUP02 step 4 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 4
+PASS STARTUP02 step 5 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 5
+PASS STARTUP02 final step has one save-and-start action; internal operations have no separate setup entry
+PASS STARTUP02 configuration tools are removed from first setup rather than hidden in a menu
+PASS STARTUP02 import and useful draft persistence are available in the bottom action row
+PASS STARTUP02 small startup window preserves the primary action and scrollable content
+PASS STARTUP02 old simulation configuration can explicitly select the shipped RCS service and edit its actual address without changing station identity
+PASS STARTUP02 preview import preserves local station identity and leaves the original draft untouched
+PASS STARTUP02 same-build safe templates still use the existing whitelist
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 save from the final step returns to the actual invalid field and retains the exact input; step=0
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 full candidate regex failure also returns to its field without erasing input; step=0; active=True; state=未完成：请修正条码规则后继续。
+已有数据与配置保留。可修正输入后重试。; issues=BarcodePattern; input=[/focus=True
+PASS STARTUP02 new TCP and built-in RCS candidate passes real static factory validation without constructing ports
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 failed configuration check never calls save or requests startup
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 known save failure cannot use the initially clean draft as proof of persistence
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 unknown save result blocks a duplicate submission and startup
+PASS STARTUP02 first-run navigation and synthetic failure checks create no database or device owner
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 one reviewed save is read back then hands off to guarded startup through modal completion; receipt lost=False
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 one reviewed save is read back then hands off to guarded startup through modal completion; receipt lost=True
+PASS STARTUP02 incomplete configuration shows a direct continuation instead of generic failure actions
+PASS STARTUP02 incomplete setup has no large empty diagnostic box
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 installer version follows the requested format and actual business version
+PASS STARTUP02 installer contains no hidden advanced settings, mode, account, trust or package choices
+PASS STARTUP02 only installation and data folders require editable text
+PASS STARTUP02 shared Windows-user installation has an explicit scope option
+PASS STARTUP02 interactive confirmation has no unattended deployment-plan action
+PASS STARTUP02 ordinary confirmation uses Chinese purpose and business names; technical source stays collapsed
+PASS STARTUP02 open-after-install sits beside the finish button in the bottom row
+PASS STARTUP02 completion has no hashed release directory or technical identity dump
+Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.

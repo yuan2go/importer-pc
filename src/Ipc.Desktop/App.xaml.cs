@@ -29,7 +29,7 @@ public partial class App : global::System.Windows.Application
             Exception failure = ex;
             try { await StopRuntimeAsync(); }
             catch (Exception cleanup) { failure = new AggregateException("启动失败且受控清理报告故障", ex, cleanup); }
-            MessageBox.Show(failure.Message, "启动失败 / NotReady", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2);
+            MessageBox.Show(failure.Message, "启动失败 · 尚未就绪", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2);
         }
     }
     public async Task StopRuntimeAsync()

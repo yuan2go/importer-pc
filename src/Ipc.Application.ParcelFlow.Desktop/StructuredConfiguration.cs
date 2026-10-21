@@ -42,6 +42,11 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string StationCode { get => Get<string>(); set => Set(value); }
     public string SessionLifetimeMs { get => Get<string>(); set => Set(value); }
     public string BarcodePattern { get => Get<string>(); set => Set(value); }
+    public string BarcodeExclusionPattern { get => Get<string>(); set => Set(value); }
+    public string DiagnosticLogDays { get => Get<string>(); set => Set(value); }
+    public bool WeightRangeEnabled { get => Get<bool>(); set => Set(value); }
+    public string MinimumWeight { get => Get<string>(); set => Set(value); }
+    public string MaximumWeight { get => Get<string>(); set => Set(value); }
     public string QueueCapacity { get => Get<string>(); set => Set(value); }
     public string TimeoutMs { get => Get<string>(); set => Set(value); }
     public string MaximumOperations { get => Get<string>(); set => Set(value); }
@@ -51,9 +56,11 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
-        var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)));
-        return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "系统/SessionLifetimeMs", 100, 86400000),
-            BarcodeFilter = BarcodePattern.Length == 0 && c.BarcodeFilter is null ? null : new(BarcodePattern),
+        var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)),
+            DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650));
+        return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
+            BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
+            WeightRange = BuildWeightRange(),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention, BackupSchedule = BuildBackup() };
@@ -76,6 +83,8 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
         StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
+        BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "", DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "",
+        WeightRangeEnabled = c.WeightRange is not null, MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "", MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
         WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
@@ -105,6 +114,18 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         if (configured is { } value && decimal.Round(value, precision) != value) throw new InvalidOperationException("配置重量的小数位数超过所选精度");
         return new(WeightSource, Unit, precision, configured, Integer(MaximumAgeMs, "测量新鲜度(ms)", 100, 60000), Integer(WaitTimeoutMs, "本件等待期限(ms)", 100, 300000));
     }
+    internal ParcelWeightRange? BuildWeightRange()
+    {
+        if (!WeightRangeEnabled) return null;
+        if (WeightSource == WeightSource.Disabled) throw new InvalidOperationException("WeightRange: 启用重量范围需要当前业务的重量来源");
+        if (!decimal.TryParse(MinimumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var min) ||
+            !decimal.TryParse(MaximumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var max) || min < 0 || max <= 0 || max < min || max > 100000)
+            throw new InvalidOperationException("WeightRange: 范围须满足0≤下限≤上限≤100000，上限大于0；单位与重量策略一致");
+        var weight = BuildWeight();
+        if (decimal.Round(min, weight.Precision) != min || decimal.Round(max, weight.Precision) != max) throw new InvalidOperationException("WeightRange: 范围小数位数不得超过重量精度");
+        if (weight.ConfiguredValue is { } value && (value < min || value > max)) throw new InvalidOperationException("WeightRange: 配置重量不在允许范围内");
+        return new(min, max);
+    }
 }
 
 public partial class ParcelViewModel
@@ -128,8 +149,14 @@ public partial class ParcelViewModel
     public PackageReference[] InstalledPackageReferences { get; private set; } = [];
     public PackageReference? SelectedInstalledPackage { get; set; }
     public string OriginalRecoveryOperationId { get; set; } = "";
-    bool SupportsNewKind(string kind) => kind != "observation" && ((structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) switch
-    { "sportmaster" => kind is not ("plc" or "camera" or "upload" or "integration"), "direct-plc" => kind != "integration", _ => true });
+    bool SupportsNewKind(string kind)
+    {
+        var id = structuredBase?.ApplicationId ?? Snapshot?.ApplicationId;
+        if (kind == "login") return !CapabilityDrafts.Any(c => c.Kind == kind && c.InstanceId != structuredBase?.MaintenanceLogin?.InstanceId);
+        if (id == "sportmaster" || kind == "observation") return false;
+        if (kind is "weight" or "camera") return CapabilityDrafts.Count(c => c.Kind == kind) < (structuredBase?.Topology?.Positions.Length ?? 1) + 1;
+        return kind is "plc" or "upload" or "integration" && !(id == "direct-plc" && kind == "integration") && !CapabilityDrafts.Any(c => c.Kind == kind);
+    }
     public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
@@ -144,7 +171,7 @@ public partial class ParcelViewModel
     public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
         Busy ? "正在执行当前操作，请等待结果。暂停新入场仍可单独执行。" :
         !CanConfigure ? "保存前需暂停新入场、取得维护授权，并等待当前外呼完成。历史原件按原责任保留。" :
-        "保存条件已满足。填写变更原因并核对更改；提交时由 Application 再次检查，保存后待受控重启。";
+        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查，保存后待受控重启。";
     public string ConfigurationEditorState
     {
         get
@@ -194,7 +221,7 @@ public partial class ParcelViewModel
             var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = instance is null ? null : c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);
             var descriptor = package is null ? null : catalog.Providers.SingleOrDefault(x => x.Package == package && x.Module == instance!.ModuleId);
-            var binding = instance is null ? new CapabilityBinding("observation", "manual", "1.0.0", "reader." + (++readerIndex), reader.DeviceId, "CONTROLLED-OBSERVATION-v1", [])
+            var binding = instance is null ? new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + (++readerIndex), reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? [])
                 : new("observation", "extension:" + package!.Id + "/" + instance.ModuleId, package.Version, instance.Id, reader.DeviceId, descriptor?.Contract ?? "CONTROLLED-OBSERVATION-v1", instance.Parameters, package, instance.ModuleId, instance.Enabled);
             readers.Add(new(reader, new("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id)));
         }
@@ -251,7 +278,7 @@ public partial class ParcelViewModel
         {
             var b = readerBindings[i];
             if (b.Target != x.Original.DeviceId || !b.Enabled) throw new InvalidOperationException("读码稳定DeviceId只读且必须启用；设备迁移需独立受控部署");
-            return x.Original with { Driver = b.Package is null ? "manual" : "extension:" + b.InstanceId };
+            return x.Original with { Driver = b.Package is null ? b.Implementation : "extension:" + b.InstanceId, Parameters = b.Implementation == "tcp-line" ? b.Parameters : null };
         }).ToArray();
         var oldReaderIds = ReaderDrafts.Select(x => x.Original.Driver).Where(x => x.StartsWith("extension:", StringComparison.Ordinal)).Select(x => x[10..]).ToHashSet();
         var instances = (c.Extensions?.Instances ?? []).Where(x => !oldReaderIds.Contains(x.Id)).Concat(readerBindings.Where(x => x.Package is not null).Select(x => new ExtensionInstance(x.InstanceId, x.Package!.Id, x.Module!, x.Target, x.Enabled, x.Parameters))).ToArray();

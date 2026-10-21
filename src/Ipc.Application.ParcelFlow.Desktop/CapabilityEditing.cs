@@ -13,13 +13,13 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     public bool IsList => Field.Type == "string-list";
     public bool IsSensitive => Field.Sensitive || Field.Type == "secret-reference";
     public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
-    public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（JSON 数组）" : Field.Label;
-    public string EditorHelp => IsList ? "JSON字符串数组；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
+    public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（结构化数组）" : Field.Label;
+    public string EditorHelp => IsList ? "结构化字符串数组，例如 [\"标签1\",\"标签2\"]；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
         Field.Description ?? (Field.Type switch
         {
             "integer" => "整数" + (Field.Minimum is { } min ? "，最小 " + min : "") + (Field.Maximum is { } max ? "，最大 " + max : ""),
-            "ipv4" => "IPv4 地址",
-            "boolean" => "true：启用；false：关闭",
+            "ipv4" => "网络地址（四段数字）",
+            "boolean" => "选择启用或关闭",
             "choice" => "选择已声明的可用值",
             _ => "最多 " + Field.MaximumLength + " 个字符"
         });
@@ -56,7 +56,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
     public bool LegacyBindingEditable { get; set; } = true;
-    public string TargetBoundary => IsTargetReadOnly ? "稳定读码DeviceId只读；更换须清偿原件并受控迁移部署" : "组件拥有的协议目标；保存后待受控重启";
+    public string TargetBoundary => IsTargetReadOnly ? "稳定读码设备标识只读；更换须清偿原件并受控迁移部署" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后待受控重启" : "组件拥有的外部服务目标；保存后待受控重启";
     public string Target { get => target; set { target = value; Notify(); } }
     public string Contract { get => contract; set { contract = value; Notify(); } }
     public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "原提供者未安装或精确身份不匹配；保存被阻断：" + OriginalProviderIdentity;
@@ -101,7 +101,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
         }
         if (ParameterOwnership.StationConflict(this))
-            throw new InvalidOperationException("left-station-code / right-station-code 不一致；请在系统配置明确填写共同取格口站码，原值保留供核对");
+            throw new InvalidOperationException("左右取格口供包台编码不一致；请在系统配置明确填写共同取格口站码，原值保留供核对");
         var errors = ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);
@@ -144,7 +144,7 @@ public partial class ParcelViewModel
         if (c.SchemaVersion >= 3 || c.Topology is not null)
         {
             LoadStructuredConfiguration(c, catalog);
-            Message = "已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。";
+            Message = "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。";
             return;
         }
         StartLegacyConfiguration(c);
@@ -192,7 +192,7 @@ public partial class ParcelViewModel
         var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
         CapabilityBinding? Selected(string kind) => CapabilityDrafts.Where(x => x.Role == kind && x.Bound).Select(x => x.Build()).SingleOrDefault();
         var reader = Selected("observation") ?? throw new InvalidOperationException("读码来源必须绑定");
-        if (reader.Target != loaded.Reader.DeviceId) throw new InvalidOperationException("稳定读码DeviceId不属于普通参数修改；清偿原件后使用受控迁移部署");
+        if (reader.Target != loaded.Reader.DeviceId) throw new InvalidOperationException("稳定读码设备标识不属于普通参数修改；清偿原件后使用受控迁移部署");
         if (!reader.Enabled) throw new InvalidOperationException("读码来源必须启用");
         var camera = Selected("camera"); var upload = Selected("upload");
         if ((camera is null) != (upload is null)) throw new InvalidOperationException("采图和上传须同时绑定");

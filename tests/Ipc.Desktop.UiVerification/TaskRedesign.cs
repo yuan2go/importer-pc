@@ -29,6 +29,20 @@ static partial class Program
         window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         await SetClient(window, 1600, 900); Capture("work-waiting-1600", client);
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：模拟", "simulation does not appear as an online real RCS service");
+        foreach (var item in new (bool Ready, string Detail, string Label, bool Expired)[] { (true, "local only", "等待连接确认", false), (true, "RCS heartbeat HTTP 200 at synthetic; application acknowledgement unconfirmed", "在线", false), (false, "RCS heartbeat failed: timeout", "离线", false), (true, "RCS heartbeat HTTP 200 at old", "状态未知", true) })
+        {
+            probe.Project = s => s with
+            {
+                Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Mode = RunMode.Production, Wcs = s.Configuration.Effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" } } },
+                Health = [new(s.Configuration.Effective.Wcs!.InstanceId, item.Ready, DateTimeOffset.UtcNow.AddSeconds(-2), DateTimeOffset.UtcNow.AddSeconds(item.Expired ? -1 : 3), item.Detail)]
+            };
+            for (var n = 0; n < 100 && vm.Left.RcsServiceStatus != "RCS 服务：" + item.Label; n++) { await vm.RefreshAsync(); await Task.Delay(20); }
+            Check(vm.Left.RcsServiceStatus == "RCS 服务：" + item.Label && vm.Right.RcsServiceStatus == vm.Left.RcsServiceStatus, "both positions present factual RCS " + item.Label + " from the shared service snapshot");
+        }
+        vm.MarkReadFailure("synthetic RCS snapshot failure");
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：状态未知", "stale RCS snapshot cannot retain an online indicator");
+        probe.Project = null; await vm.RefreshAsync();
         await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
         await Until(() => vm.Right.Operation?.State == ParcelState.SlotResolved);
         Check(vm.Left.Operation?.State == ParcelState.ResolvingWcs && vm.Left.TaskId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—", "left processing suppresses the entire task while right completes");
@@ -52,11 +66,12 @@ static partial class Program
         for (var i = 0; i < 4; i++) await vm.RefreshAsync();
         Check(barcode.IsKeyboardFocused && barcode.SelectionStart == 1 && barcode.SelectionLength == 3, "polling preserves native selection and focus");
         probe.Project = s => WithTasks(s) with { Inputs = s.Inputs!.Select(i => i.PositionId == "left" ? i with { Outcome = ParcelInputOutcome.Rejected, Observation = i.Observation with { Id = "new-observation", Codes = ["noise", "unmatched"] }, Reason = "合成：无匹配条码", BarcodeSelection = new("NoMatchingCode", null, 0, null, "本次无匹配条码") } : i).ToArray() };
-        await vm.RefreshAsync();
+        await Until(() => vm.Left.Input?.Observation.Id == "new-observation");
         Check(vm.Left.TaskId == "—" && vm.Left.SkuId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—" && vm.Left.Slot == "未取得" && vm.Right.TaskId == "TASK-right" && vm.Left.OriginalResponsibility.Length > 0, "rejected observation clears every current task field and retains original responsibility separately");
         Capture("work-rejected-new-input", client);
         probe.Project = s => WithTasks(s) with { Operations = WithTasks(s).Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Wcs = o.Wcs! with { State = StageState.Unknown }, Slot = null } : o).ToArray() };
-        await vm.RefreshAsync(); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
+        await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
+        Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
         Capture("work-unknown", client);
         vm.MarkReadFailure("合成读取中断");
         Check(vm.Left.WaveNo == "已失效" && vm.Right.ResponseQuantity == "已失效" && !vm.Right.CurrentTaskAvailable, "stale snapshot invalidates all task fields together"); Capture("work-stale", client);

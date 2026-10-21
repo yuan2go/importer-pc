@@ -113,6 +113,11 @@ public partial class App : System.Windows.Application
         startup.Hide(); repair.ShowDialog();
         if (repair.ReplacementLaunched) { startup.AllowClose = true; Shutdown(); return; }
         if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(firstConfigurationReviewed: initialConfiguration); }
+        else if (initialConfiguration)
+        {
+            startup.Show(); MainWindow = startup;
+            startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
+        }
         else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
             () => StartSelected(), () => Repair(), ShowSetup); }
     }
@@ -160,10 +165,34 @@ sealed class ParcelStartupWindow : Window
         if (completedCall is not null) completed.Add(DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss zzz") + " · " + completedCall);
         diagnostic.Text = string.Join("\n", completed);
     }
-    public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); }
+    public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520; }
+    public void ConfigurationPaused(Func<Task> close, Func<Task> resume)
+    {
+        title.Text = "供包台尚未完成配置";
+        detail.Text = "完成配置后即可尝试启动。已保存的内容会保留；未连接设备。";
+        diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
+        Add("继续配置", resume); Add("退出", close);
+        void Add(string label, Func<Task> run)
+        {
+            var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 8, 12, 0) };
+            button.Click += async (_, _) =>
+            {
+                actions.IsEnabled = false;
+                try { await run(); }
+                catch (Exception error) { await FailedResume(error); }
+                finally { actions.IsEnabled = true; }
+            };
+            actions.Children.Add(button);
+        }
+        Task FailedResume(Exception error)
+        {
+            diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
+            detail.Text = "无法继续配置，请查看诊断后重试。"; diagnostic.Text = error.ToString(); return Task.CompletedTask;
+        }
+    }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
-        actions.Children.Clear();
+        actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
         title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };

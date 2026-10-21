@@ -45,7 +45,7 @@ public partial class SupplyStationWindow
         var backToObject = new Button { Content = "返回当前对象设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         backToObject.Click += (_, _) => { SetPage("maintenance"); if (diagnosticTarget is { } target) maintenance.NavigateToParameter(target.InstanceId + "/Provider"); };
         header.Children.Add(backToObject);
-        body.Children.Add(new TextBlock { Text = "客户端生命周期、心跳 HTTP 与业务回执分别核对。当前 RCS 协议未提供权威结果查询；重连不应用待生效配置，也不重发未知原请求。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 16) });
+        body.Children.Add(new TextBlock { Text = "客户端生命周期、心跳网络交付 与业务回执分别核对。当前调度协议未提供权威结果查询；重连不应用待生效配置，也不重发未知原请求。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 16) });
         var positions = new Grid(); positions.ColumnDefinitions.Add(new()); positions.ColumnDefinitions.Add(new());
         foreach (var (position, index) in new[] { (ViewModel.Left, 0), (ViewModel.Right, 1) })
         {

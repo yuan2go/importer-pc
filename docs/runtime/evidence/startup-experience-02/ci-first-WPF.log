@@ -1,0 +1,8 @@
+SYNTHETIC runtime identity/ports; native WPF page, resource, keyboard and window checks only. UAC/installation/real equipment NOT_RUN.
+PASS native first configuration finishes asynchronous loading before user input is enabled
+PASS first configuration starts with business rules and separates system, drivers, components and completion
+PASS low-frequency recovery actions do not crowd the first business task
+FAIL System.InvalidOperationException: actual published desktop first-configuration window exposes explicit save/start through the existing editor
+   at Program.<>c__DisplayClass1_0.<VerifyCommercialPages>g__Check|0(Boolean condition, String message) in C:\scd-evidence\wpf\CommercialPages.cs:line 18
+   at Program.VerifyCommercialPages(String root, String evidence, List`1 lines) in C:\scd-evidence\wpf\CommercialPages.cs:line 50
+   at Program.<>c__DisplayClass6_0.<<Main>b__0>d.MoveNext() in C:\scd-evidence\wpf\Program.cs:line 42

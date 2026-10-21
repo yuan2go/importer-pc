@@ -40,6 +40,18 @@
           "Implementation": "reference-integration",
           "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
     },
@@ -123,6 +135,18 @@
           "Implementation": "extension:reference.barcode/barcode-source",
           "Version": "1.3.5",
           "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
     },
@@ -160,9 +184,21 @@
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.3.0",
+          "Version": "1.3.1",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -231,9 +267,21 @@
           "Contract": "CONTROLLED-OBSERVATION-v1"
         },
         {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.3.0",
+          "Version": "1.3.1",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -282,6 +330,18 @@
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
           "Version": "1.0.3",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
     },
@@ -319,16 +379,28 @@
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
-          "Kind": "integration",
-          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "1.3.0",
-          "Contract": "SPORTMASTER-RCS-SORTER-v1"
-        },
-        {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
           "Version": "1.0.3",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.0.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.3.1",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
     }

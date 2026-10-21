@@ -17,13 +17,18 @@ public static class BarcodeFiltering
     public static string? Validate(BarcodeFilterPolicy? policy)
     {
         if (policy is null) return null; // explicit legacy single-code compatibility, never match-all
-        try { _ = Compile(policy.Pattern, TimeSpan.FromMilliseconds(25)); return null; }
+        try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) _ = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.Pattern: " + ex.Message; }
+        try { if (policy.ExclusionPattern is not null) _ = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
+        catch (ArgumentException ex) { return "BarcodeFilter.ExclusionPattern: " + ex.Message; }
+        return null;
     }
     public static BarcodeFilterResult Select(BarcodeFilterPolicy? policy, string[] candidates, string? issue = null)
     {
         var hash = policy is null ? null : Wire.Hash(Wire.Encode(policy));
-        BarcodeFilterResult Result(string status, string? code, int matches, string detail) => new(status, code, matches, hash, detail);
+        List<BarcodeCandidateDecision> decisions = [];
+        BarcodeFilterResult Result(string status, string? code, int matches, string detail) => new(status, code, matches, hash, detail,
+            decisions.Count == 0 ? null : decisions.ToArray());
         if (issue is not null || candidates.Length > MaximumCandidates || candidates.Any(x => x is null || x.Length > MaximumRawLength))
             return Result("IncompleteCandidates", null, 0, issue ?? "候选超出完整性配额，禁止按截断集合准入");
         if (policy is null)
@@ -33,19 +38,27 @@ public static class BarcodeFiltering
         var timer = Stopwatch.StartNew();
         try
         {
-            var regex = Compile(policy.Pattern, TimeSpan.FromMilliseconds(25));
+            var regex = string.IsNullOrWhiteSpace(policy.Pattern) ? null : Compile(policy.Pattern, TimeSpan.FromMilliseconds(25));
+            var exclude = policy.ExclusionPattern is null ? null : Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25));
             List<string> matches = [];
-            foreach (var code in candidates)
+            for (var index = 0; index < candidates.Length; index++)
             {
+                var code = candidates[index];
                 if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, matches.Count, "筛选总预算100ms已耗尽；没有准入或外呼");
-                if (regex.IsMatch(code) && ValidCode(code)) matches.Add(code);
+                var allowed = regex?.IsMatch(code) ?? true;
+                if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, matches.Count, "筛选总预算100ms已耗尽；拒绝准入");
+                if (!ValidCode(code)) decisions.Add(new(index, "InvalidCode", "条码长度须为1～256且不含控制字符"));
+                else if (!allowed) decisions.Add(new(index, "NotAllowed", "未匹配允许规则"));
+                else if (exclude?.IsMatch(code) == true) decisions.Add(new(index, "Excluded", "命中排除规则"));
+                else { matches.Add(code); decisions.Add(new(index, "Eligible", "符合允许规则且未被排除")); }
                 if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, matches.Count, "筛选总预算100ms已耗尽；拒绝准入");
             }
             // Repeated decoded entries are still multiple observations of codes, not proof of one entity/code.
             return matches.Count switch
             {
-                0 => Result("NoMatchingCode", null, 0, "没有符合整串规则的有效条码"),
-                1 => Result("Selected", matches[0], 1, "唯一有效条码；继续执行原有准入守卫"),
+                0 when decisions.Any(d => d.Outcome == "Excluded") => Result("ExcludedCodes", null, 0, "符合允许规则的有效条码均被排除；未创建请求"),
+                0 => Result("NoMatchingCode", null, 0, "没有符合整串规则的有效条码；逐项原因见候选结果"),
+                1 => Result("Selected", matches[0], 1, "唯一有效条码；继续执行原有准入守卫" + (exclude is null ? "" : $"；已排除{decisions.Count(d => d.Outcome == "Excluded")}项")),
                 _ => Result("AmbiguousCodes", null, matches.Count, "多个有效条码，存在歧义；拒绝准入")
             };
         }

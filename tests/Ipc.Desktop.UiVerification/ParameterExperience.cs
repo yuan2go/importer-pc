@@ -58,7 +58,7 @@ static partial class Program
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2);
-            foreach (var item in new[] { (2, "左相机", "camera"), (3, "RCS 连接", "rcs") })
+            foreach (var item in new[] { (2, "左相机", "camera"), (3, "调度系统连接", "rcs") })
             {
                 control.ShowPage(item.Item1, item.Item2); window.UpdateLayout();
                 Capture(item.Item3 + "-" + size.Item1);
@@ -80,7 +80,7 @@ static partial class Program
         Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })
         { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "driver canonical address rule retained: " + invalid); }
-        ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 连接"); model.ValidateFields();
+        ip.Text = "192.0.2.23"; control.ShowPage(3, "调度系统连接"); model.ValidateFields();
         control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
         Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
         if (!baseline) Check(Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "请求编号区间") && e.IsExpanded), "request range uses progressive disclosure and search expands it");
@@ -108,7 +108,8 @@ static partial class Program
             var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
             target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
             role.Selection = replacement; window.UpdateLayout();
-            Check(directory.SelectedItem?.ToString() == "login · " + original.Capability.InstanceId &&
+            Check(directory.SelectedItem?.ToString()?.StartsWith("身份认证", StringComparison.Ordinal) == true &&
+                !directory.SelectedItem.ToString()!.Contains(original.Capability.InstanceId, StringComparison.Ordinal) &&
                 directory.Items.Cast<object>().Count(p => p.ToString() == "维护认证") == 1,
                 "role reassignment relabels old and new component directory entries immediately");
             Check(ReferenceEquals(control.Model, retainedModel) && ReferenceEquals(directory.SelectedItem, selectedPage) &&
@@ -125,7 +126,7 @@ static partial class Program
         }
         if (interactive)
         {
-            await SetClient(window, 1366, 768); control.ShowPage(3, "RCS 连接");
+            await SetClient(window, 1366, 768); control.ShowPage(3, "调度系统连接");
             Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/EXPERIENCE-INTERACTIVE.txt"), evidence);
             var closed = new TaskCompletionSource(); window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
         }

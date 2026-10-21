@@ -78,18 +78,13 @@ static partial class ArchitectureQuality
             Check(first.AdvancedConfigurationReadOnly && first.BuildStructuredConfiguration().TimeoutMs == 1703,
                 "UXC03 explicit JSON-to-form transfer retains unrelated JSON fields and the original draft CAS");
             Check(first.HasUnsavedConfiguration, "P2 explicit JSON-to-form transfer stays unsaved until CAS staging");
-            first.NewCapabilityKind = "weight"; await first.AddCapabilityInstanceAsync();
-            var added = first.CapabilityDrafts.Single(x => x.InstanceId == "weight.1");
-            var position = first.PositionDrafts.Single(x => x.Id == "right");
-            position.Scale = position.Scales.Single(x => x.Capability == added);
-            Check(first.BuildStructuredConfiguration().Topology!.Positions.Single(x => x.Id == "right").ScaleInstanceId == added.InstanceId,
-                "UXC03 newly selected installed capability can bind to one position without rewriting reader topology");
-            var referencedBlocked = false;
-            try { await first.RemoveCapabilityInstanceAsync(added); } catch (InvalidOperationException) { referencedBlocked = true; }
-            Check(referencedBlocked, "UXC03 inventory removal rejects a capability still referenced by a position");
-            position.Scale = position.Scales.Single(x => x.Capability?.InstanceId == right.InstanceId);
-            await first.RemoveCapabilityInstanceAsync(added);
-            Check(!first.CapabilityDrafts.Contains(added), "UXC03 explicit unbound candidate removal does not uninstall original packages");
+            // Old optional Sportmaster fixtures remain editable for compatibility.
+            // New hardware admission belongs to its declared Application; add/bind/
+            // referenced-remove checks now run with DirectPlc in ParameterInheritance.
+            first.NewCapabilityKind = "weight"; var unsupportedBlocked = false;
+            try { await first.AddCapabilityInstanceAsync(); } catch (InvalidOperationException) { unsupportedBlocked = true; }
+            Check(unsupportedBlocked && first.BuildStructuredConfiguration().Topology!.Positions.Single(x => x.Id == "right").ScaleInstanceId == right.InstanceId,
+                "UXC03 Sportmaster rejects new unrelated hardware while preserving the original optional fixture binding");
             first.ConfigurationReason = "Synthetic explicit authority transfer"; await first.SaveStructuredConfigurationAsync();
             Check(first.Message.StartsWith("PendingRestart") && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1703,
                 "UXC03 own successful save advances only this window CAS and permits later explicit candidate staging");
@@ -139,7 +134,7 @@ static partial class ArchitectureQuality
         list.Value = legal;
         Check(list.IsList && list.EditorMaximumLength >= legal.Length && legal.Length > field.MaximumLength && list.Value == legal && ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = list.Value }).Length == 0,
             "P2 legal list longer than one item fits the editor and retains JSON escapes and empty items exactly");
-        Check(list.EditorLabel.Contains("JSON") && list.EditorHelp.Contains("16") && list.EditorHelp.Contains("256"), "P2 list syntax and per-item/count limits are explicit");
+        Check(list.EditorLabel.Contains("结构化数组") && list.EditorHelp.Contains("[\"标签1\",\"标签2\"]") && list.EditorHelp.Contains("16") && list.EditorHelp.Contains("256"), "P2 list syntax and per-item/count limits are explicit in the Chinese presentation");
         foreach (var value in new[] { "not json", Wire.Encode(Enumerable.Repeat("a", 17).ToArray()), Wire.Encode(new[] { new string('a', 257) }) })
             Check(ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = value }).Length != 0, "P2 existing schema still rejects invalid list: " + value[..Math.Min(30, value.Length)]);
         var provider = new CapabilityDescriptor("weight", "extension:synthetic.weight/provider", "1.0.0", "synthetic-v1", [], new(), new("synthetic.weight", "1.0.0", new string('A', 64)), "provider");

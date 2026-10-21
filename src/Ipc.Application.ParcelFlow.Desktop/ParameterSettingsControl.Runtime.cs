@@ -23,7 +23,7 @@ public sealed partial class ParameterSettingsControl
     void RefreshRuntime() { foreach (var update in runtimeUpdates) update(); }
     void RuntimeSummary(ObjectPage page, CapabilityDraft draft)
     {
-        if (draft.Kind != "observation" && !ParameterOwnership.IsRcs(draft)) return;
+        if (FirstConfiguration) return;
         var target = new ParameterDiagnosticTarget(draft.InstanceId, draft.Kind == "observation" ? draft.Target : null, page.Title);
         var row = new DockPanel();
         var diagnostic = new Button { Content = "连接诊断", MinHeight = 44, VerticalAlignment = VerticalAlignment.Top, Margin = new(16, 0, 0, 0) };

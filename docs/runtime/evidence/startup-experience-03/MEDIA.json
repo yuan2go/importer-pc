@@ -1,0 +1,10 @@
+{
+  "Package": "D:\\projects\\importer-pc-startup\\.artifacts\\startup-review-03\\sm-1.8.2-final.zip",
+  "Sha256": "d616fe3a3c9634d75c75897147cffde71519ea999f76986048e34180bc71976f",
+  "SourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "Application": "sportmaster",
+  "Target": "win-x64",
+  "BusinessVersion": "1.8.2",
+  "BusinessAssembly": "Ipc.Application.Sportmaster.dll",
+  "CompatibilitySha256": "D81C02B9564865ECBFAA35657803B8984C01E5808AEB8970041A04ACEAB93F54"
+}

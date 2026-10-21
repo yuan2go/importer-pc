@@ -15,8 +15,23 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
-    public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待站位配置";
-    public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅 main 位，未启用双位" : "left / right 独立投递位 · 扫码 → WCS 格口";
+    public string Station => StationDisplaySummary;
+    public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅主位，未启用双位" : "左 / 右独立投递位 · 扫码 → 上游格口";
+    public string RcsServiceStatus
+    {
+        get
+        {
+            if (!Fresh || Snapshot is not { } snapshot) return "RCS 服务：状态未知";
+            if (snapshot.Configuration.Effective.Mode == RunMode.Simulation) return "RCS 服务：模拟";
+            if (snapshot.Configuration.Effective.Wcs is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding) return "RCS 服务：未配置";
+            var health = snapshot.Health.SingleOrDefault(h => h.InstanceId == binding.InstanceId);
+            var now = DateTimeOffset.UtcNow;
+            if (health is null || health.ConfirmedAt > now || health.ValidUntil <= now || health.ValidUntil <= health.ConfirmedAt) return "RCS 服务：状态未知";
+            if (!health.Ready) return "RCS 服务：离线";
+            // Local lifecycle readiness alone is not remote service availability.
+            return health.Detail.Contains("RCS heartbeat HTTP ", StringComparison.Ordinal) ? "RCS 服务：在线" : "RCS 服务：等待连接确认";
+        }
+    }
     public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停新入场" :
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有结果待核对" :
         Snapshot?.BlockingReasons.Length > 0 ? "有作业阻断" : Status;
@@ -27,22 +42,23 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public bool SettingsHasAttention => !Fresh || Snapshot?.BlockingReasons.Any(x => x != PauseNotice) == true ||
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true;
     public string DisplayWorkNotice => !IsSettingsWorkspace || !Fresh ? WorkNotice :
-        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "软件暂停不是安全急停";
+        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "软件暂停不是安全急停";
     public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
     public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
     public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
-        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。" ? "" : OperatorFeedback;
+        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。" ? "" : OperatorFeedback;
     public string SelectedPage
     {
         get => selectedPage;
         set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
     public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数设置", "diagnostics" => "诊断与恢复", _ => "作业" };
-    public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
+    public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
         PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(StationDisplaySummary)) Changed(nameof(Station));
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
             if (e.PropertyName == nameof(Feedback)) Changed(nameof(WorkFeedback));
         };
@@ -174,6 +190,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "；下方原请求只属于该原作业，格口不属于本次观察。" : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
+    public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
@@ -219,7 +236,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
         CanContinue = !owner.Busy && fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
         BlockingReasons = !fresh ? "快照失效；等待状态读取恢复" : !viewportReady ? "视图空间保护；恢复客户区并人工确认" : binding is null ? "当前配置未启用该投递位" :
-            position is null ? "尚未取得投递位状态" : identityMissing ? "当前作业身份未匹配：" + position.CurrentOperation + "；停止本位新操作并重新读取。\n" + string.Join("\n", position.BlockingReasons) : string.Join("\n", position.BlockingReasons);
+            position is null ? "尚未取得投递位状态" : identityMissing ? "当前作业身份未匹配：" + position.CurrentOperation + "；停止本位新操作并重新读取。\n" + string.Join("\n", position.BlockingReasons.Select(ChineseInterfaceText.Notice)) : string.Join("\n", position.BlockingReasons.Select(ChineseInterfaceText.Notice));
         Presentation = !fresh ? ParcelPresentation.Stale() : binding is null ? ParcelPresentation.Neutral("未启用") :
             InputUnadmitted ? ParcelPresentation.InputPresentation(Input!) :
             position?.CurrentOperation is not null && Operation is null ? ParcelPresentation.Unknown("当前作业身份未匹配 · 等待新快照") : ParcelPresentation.Operation(Operation, true);
@@ -233,7 +250,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
             (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
             (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
-            (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
+            (nameof(RcsServiceStatus), RcsServiceStatus), (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
             (nameof(Admission), Admission), (nameof(RequestId), RequestId), (nameof(ResultReason), ResultReason),
             (nameof(ObservedAt), ObservedAt), (nameof(LatestInputSummary), LatestInputSummary), (nameof(ImageStatus), ImageStatus),
             (nameof(CanAdmit), CanAdmit), (nameof(CanReconcile), CanReconcile), (nameof(CanQueryOriginal), CanQueryOriginal), (nameof(CanContinue), CanContinue),
@@ -246,11 +263,11 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     readonly Dictionary<string, object?> published = [];
     public static string StageText(ParcelState state) => state switch
     {
-        ParcelState.SlotResolved => "WCS 格口已取得",
-        ParcelState.WcsUnknown => "WCS 结果待核对 · 请勿重复放货",
-        ParcelState.WcsRejected => "WCS 明确拒绝",
+        ParcelState.SlotResolved => "上游格口已取得",
+        ParcelState.WcsUnknown => "上游结果待核对 · 请勿重复放货",
+        ParcelState.WcsRejected => "上游明确拒绝",
         ParcelState.UnpackRequired => "需拆包 · 本位等待检查处置",
-        ParcelState.ResolvingWcs => "WCS 格口处理中",
+        ParcelState.ResolvingWcs => "上游格口处理中",
         ParcelState.Prepared => "原阶段待执行",
         ParcelState.Blocked => "作业阻断",
         ParcelState.WaitingWeight => "等待本件有效重量",

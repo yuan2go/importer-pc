@@ -24,18 +24,20 @@ public static class ParcelStartupServices
         var verified = DeploymentMedia.Inspect(media.Root, ApplicationId);
         if (verified.SourceCommit != media.SourceCommit) throw new InvalidDataException("通用首配模板介质发生变化");
         var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(media.Root, "app", "config", "business.json")));
-        var c = source with { StationId = station, Mode = mode };
-        var errors = ParcelAssembly.Definition().Validate(c); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
+        var c = (mode == RunMode.Production ? ParcelAssembly.Definition().InitialConfiguration() : source) with { StationId = station, Mode = mode };
+        var errors = ParcelAssembly.Definition().Validate(c); if (errors.Length != 0 && !IsInitialDraft(c)) throw new InvalidDataException(string.Join("; ", errors));
         DeploymentPaths.RequireOrdinaryAncestors(destination);
         if (Directory.Exists(destination) || File.Exists(destination)) throw new IOException("新站种子暂存目标须为新目录");
         Directory.CreateDirectory(destination); File.WriteAllText(Path.Combine(destination, "business.json"), Wire.Encode(c));
     }
+    static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
+        Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
-    public static string DefaultRuntimeAccount()
+    public static string DefaultRuntimeAccount(bool currentUserOnly = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
         var policy = Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json");
-        if (File.Exists(policy))
+        if (!currentUserOnly && File.Exists(policy))
         {
             MachineRuntimePolicy.RequireProtectedEvidence(policy);
             return ((NTAccount)new SecurityIdentifier(Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(policy)).RuntimeAccountSid).Translate(typeof(NTAccount))).Value;
@@ -56,7 +58,7 @@ public static class ParcelStartupServices
         if (trust is not null) _ = WindowsDeploymentSetup.ReadTrust(trust, seed.Mode);
         var data = Path.GetFullPath(dataRoot);
         using var caller = WindowsIdentity.GetCurrent();
-        if (caller.User?.Value != sid.Value && data.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        if ((caller.User?.Value != sid.Value || sid.Value == MachineRuntimePolicy.SharedUsersSid) && data.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
         {
             if (Directory.Exists(data)) throw new InvalidDataException("其他运行账户无法保证访问当前用户的原数据；保留原根，选择原运行账户或先完整恢复到共享卷。");
             throw new InvalidDataException("所选目录属于当前维护账户的用户目录，不能保证指定运行账户访问；请明确选择受支持的共享数据目录。不会自动改道。");
@@ -73,7 +75,7 @@ public static class ParcelStartupServices
     public static bool IsRuntimeAccount(DeploymentLocation location)
     {
         if (!OperatingSystem.IsWindows()) return false;
-        using var identity = WindowsIdentity.GetCurrent(); return identity.User?.Value == location.RuntimeAccountSid;
+        using var identity = WindowsIdentity.GetCurrent(); return MachineRuntimePolicy.MatchesRuntimeAccount(identity.User?.Value, location.RuntimeAccountSid, identity.Claims);
     }
     public static IStartupMaintenance Maintenance(BusinessLaunch launch) => new ElevatedMaintenance(launch);
     internal static async Task ExecuteBatchInstall(WindowsDeploymentRequest request) => _ = await ExecuteAsync(new("Install", Deployment: request));
@@ -247,7 +249,7 @@ public static class ParcelStartupServices
         _ = WindowsDeploymentSetup.ConfigurationFiles(request.ConfigurationSource);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(request.ConfigurationSource, "business.json")));
         var errors = ParcelAssembly.Definition().Validate(c);
-        if (errors.Length != 0 || c.Mode != request.Mode || c.ApplicationId != request.ApplicationId)
+        if ((errors.Length != 0 && !(WindowsDeploymentSetup.Current(request.ApplicationId) is null && IsInitialDraft(c))) || c.Mode != request.Mode || c.ApplicationId != request.ApplicationId)
             throw new InvalidDataException("Invalid Application seed or mode: " + string.Join("; ", errors));
         if (WindowsDeploymentSetup.Current(request.ApplicationId) is { } deployed)
         {

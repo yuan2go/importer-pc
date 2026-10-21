@@ -1,0 +1,9 @@
+{
+  "SourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+  "FixtureSourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+  "Status": "PASS",
+  "Passes": 31,
+  "ExitCode": 0,
+  "ActualWindowsInstallation": "NOT_RUN",
+  "Scope": "Published frozen DLLs, native WPF, synthetic ports and loopback; no site validation"
+}

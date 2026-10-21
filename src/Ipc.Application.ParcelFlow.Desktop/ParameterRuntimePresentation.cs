@@ -28,7 +28,7 @@ public partial class ParcelViewModel
             var extension = effective.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = effective.Extensions?.Packages.SingleOrDefault(x => x.Id == extension?.PackageId);
             identity = package is null ? reader.Driver : package.Id + " @ " + package.Version;
-            address = extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
+            address = reader.Parameters?.GetValueOrDefault("device.ip") is { } tcpIp ? tcpIp + ":" + reader.Parameters.GetValueOrDefault("device.port") : extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
             var health = snapshot.Devices?.SingleOrDefault(x => x.DeviceId == device);
             ready = health?.IsValid(now) == true;
             status = ready ? "已确认" : "未就绪";
@@ -36,13 +36,13 @@ public partial class ParcelViewModel
         }
         else
         {
-            var binding = ParcelBindings.All(effective).SingleOrDefault(x => x.InstanceId == target.InstanceId);
-            if (binding is null) return new("组件未绑定到运行角色", "", "", "保存和安装不表示已启用。", "warning");
+            var binding = ParcelBindings.Bound(effective).SingleOrDefault(x => x.InstanceId == target.InstanceId);
+            if (binding is null) return new("能力未绑定到运行角色", "", "", "保存和安装不表示已启用。", "warning");
             identity = binding.Implementation + " @ " + binding.Version;
             address = binding.Target;
             var health = snapshot.Health.SingleOrDefault(x => x.InstanceId == binding.InstanceId);
             ready = health is { Ready: true } && health.ConfirmedAt <= now && health.ValidUntil > now && health.ValidUntil > health.ConfirmedAt;
-            status = ready ? "组件本地就绪" : "未就绪";
+            status = ready ? "本地就绪" : "未就绪";
             evidence = "\n运行证据：" + (health?.Detail ?? "尚无运行确认");
             notice = "本地就绪不表示远端接受；心跳与业务结果请在诊断中分别核对。";
             if (!ready) notice = (health?.Detail ?? "尚无运行确认") + "\n" + notice;

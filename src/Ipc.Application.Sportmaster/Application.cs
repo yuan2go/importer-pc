@@ -8,11 +8,11 @@ public sealed class SportmasterFlow : FlowDefinition
     public override string Id => "sportmaster";
     public override ParcelConfiguration InitialConfiguration()
     {
-        DeviceBinding[] readers = [new("parcel-reader", "manual", "sportmaster.reader.left", "1"), new("parcel-reader", "manual", "sportmaster.reader.right", "1")];
+        DeviceBinding[] readers = [new("parcel-reader", "tcp-line", "sportmaster.reader.left", "1") { Parameters = new() }, new("parcel-reader", "tcp-line", "sportmaster.reader.right", "1") { Parameters = new() }];
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
-            new("integration", "reference-integration", "1.0.0", "sportmaster.integration", "reference://integration/unconfigured", "PARCEL-REFERENCE-v1", []), null,
+            new("integration", "sportmaster-rcs", "1.3.1", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", []), null,
             MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),

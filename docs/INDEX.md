@@ -1,6 +1,18 @@
+> 2026-10-21 本轮安装/首配纠偏：[STARTUP-UX-03](design/startup-experience-03.md)、[当前操作与TCP合同](runtime/startup-experience-03.md)、[验证边界](runtime/validation/startup-experience-03.md)。删除首配配置工具及安装高级项；新装共享账户、TCP IP/端口和随包RCS，替代上轮折叠方案。历史介质保持来源。
+
+> 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
+
+> 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。
+
+> 参数继承增量源码及工程交付已完成（Sportmaster 1.8.0 / 合同1.14.0）：[操作说明](runtime/parameter-inheritance-02.md)、[93项迁移裁决](design/parameter-legacy-migration-02.csv)。冻结介质和原生结果见上方交付验证；原版本和历史验收身份保持。
+
+> 2026-10-21 参数继承增量开工记录：基于 main `20251b4c`，继承 PR80 与审阅后的 PR81。当前有效裁决见[旧参数继承与所有权](design/parameter-inheritance-02.md)、[统一迁移表](design/parameter-legacy-migration-02.csv)，沿原[参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)推进。下方版本/状态均保留历史形成身份；PR80 的1.7.0介质不包含本轮新增行为。
+
 > PR81合并前补修：[角色重绑后的目录/页头/搜索即时更新与原生回归](runtime/validation/pr81-role-label-review-01.md)。PR80已合并，原介质与各版本证据保留身份。
 
 > 参数 V3 独立商业体验复核与定向完善：[原生前后证据、问题及验收边界](runtime/validation/parameter-settings-v3-experience-01.md)。本轮开发分支继承 PR80，不更改其冻结介质或历史结果。
+
+> 2026-10-21 界面文案增量：按用户本轮要求，固定提示、任务标签及选项采用中文，替代历史设计中的双语提示；实际编码和原始技术证据保留原值。[实现、运行和验证边界](runtime/chinese-interface-copy-01.md)。既有 V3 布局、业务合同和已发布介质身份不变。
 
 > 参数 V3 原生交付收口：固定 main `767075abe62a77c30e70766bb5d3f1feca02686b`，开工无开放 PR。当前操作以 [1.7.0 原生说明](runtime/parameter-settings-v3-native-01.md) 为准；[原生截图、交付身份和验证边界](runtime/validation/parameter-settings-v3-native-01.md)沿 [PS-05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)记录。V3 设计原件及旧发行证据保持身份，旧 1.6.1 不包含 V3。
 

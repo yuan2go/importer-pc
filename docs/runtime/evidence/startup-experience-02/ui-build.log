@@ -1,0 +1,20 @@
+  Ipc.Platform -> D:\projects\importer-pc-startup\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-startup\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-startup\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-startup\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-startup\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc-startup\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc-startup\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-startup\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc-startup\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc-startup\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\projects\importer-pc-startup\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc-startup\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\projects\importer-pc-startup\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> D:\projects\importer-pc-startup\tests\Ipc.Desktop.UiVerification\bin\Release\net10.0-windows\Ipc.Desktop.UiVerification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:22.64

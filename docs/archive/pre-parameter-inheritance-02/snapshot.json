@@ -1,0 +1,37 @@
+[
+  {
+    "source": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+    "path": "docs/INDEX.md",
+    "snapshot": "docs__INDEX.md.txt",
+    "sha256": "755c4ccc52d6d27bcd6f1d55c6829cc1a0b597115136a1464d6abf1f7b32760a",
+    "bytes": 16562
+  },
+  {
+    "source": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+    "path": "docs/design/parameter-refactor-01.md",
+    "snapshot": "docs__design__parameter-refactor-01.md.txt",
+    "sha256": "5360df6648419772becd6f931b35a892a2e55d4309cbbc50f3c1b84f85306852",
+    "bytes": 13365
+  },
+  {
+    "source": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+    "path": "docs/design/parameter-settings-experience-02.md",
+    "snapshot": "docs__design__parameter-settings-experience-02.md.txt",
+    "sha256": "92f3cec71c37ddb8fd9fde29cebbbf85b6b1d11da027404edf3124aafd623f57",
+    "bytes": 5522
+  },
+  {
+    "source": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+    "path": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
+    "snapshot": "docs__work-packages__WP-IPC-PARAMETER-SETTINGS-02.md.txt",
+    "sha256": "f8f7e9ac2d4491e9ba76c1291ff72904a1d3a3376e0be7b687cade45ae551941",
+    "bytes": 13499
+  },
+  {
+    "source": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+    "path": "docs/runtime/parameter-refactor-01.md",
+    "snapshot": "docs__runtime__parameter-refactor-01.md.txt",
+    "sha256": "49c72f3c3bb2f8dc38730c7d24f4c379b3d18e81ac8c8ebb2321d95ad0e1bd55",
+    "bytes": 17811
+  }
+]

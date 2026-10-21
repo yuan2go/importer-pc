@@ -1,3 +1,5 @@
+> 2026-10-21 安装与首配最新增量见[当前操作说明](startup-experience-02.md)：中文用途、可选条码筛选、文件导入、保存并启动和未完成续配。下文原版本及原验收保持身份。
+
 > Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
 
 

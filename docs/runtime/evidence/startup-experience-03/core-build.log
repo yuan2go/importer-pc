@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-startup\src\Ipc.Integrations.SportmasterRcs\Ipc.Integrations.SportmasterRcs.csproj (用时 588 毫秒)。
+  已还原 D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj (用时 732 毫秒)。
+  13 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc-startup\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-startup\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-startup\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc-startup\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc-startup\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc-startup\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> D:\projects\importer-pc-startup\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-startup\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc-startup\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc-startup\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-startup\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> D:\projects\importer-pc-startup\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-startup\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> D:\projects\importer-pc-startup\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\bin\Release\net10.0\Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:11.08

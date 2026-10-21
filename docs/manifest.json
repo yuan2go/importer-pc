@@ -43120,9 +43120,9 @@
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
-      "sha256": "69459f20df10bd37708164f21cf3bbe3e68dbf32a3e235069570ceaa8f64919d",
-      "size_bytes": 5131,
-      "git_blob": "016b7b1a896b09f26cbcfd938c51def826ead47e"
+      "sha256": "28e9bf33a95dcdcbde471bcb61916109c872a1df153def60adedcdf4df941e04",
+      "size_bytes": 5225,
+      "git_blob": "3919640ec83b046190c8ac908cd4483eca7ea493"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",

@@ -70,7 +70,17 @@ static partial class Program
         var diagnostics = (ContentControl)window.FindName("PageHost");
         Check(Descendants(diagnostics).OfType<TextBox>().All(t => t.IsReadOnly) && Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("权威结果查询")), "diagnostics remains read-only and explains the actual RCS query boundary");
         Capture("diagnostics", client);
-        Click(window, "参数配置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+        await Until(() => !vm.Busy);
+        var firstLoadRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var priorTask = vm.RunAsync(() => firstLoadRelease.Task, "合成：首开参数前尚有任务");
+        try
+        {
+            Click(window, "参数配置"); await System.Windows.Threading.Dispatcher.Yield();
+            Check(vm.SelectedPage == "maintenance" && !vm.HasLoadedConfiguration, "opening settings during another task retains a pending load instead of clearing or bypassing that task");
+        }
+        finally { firstLoadRelease.TrySetResult(); await priorTask; }
+        await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+        Check(vm.HasLoadedConfiguration, "first settings load completes after the preceding task without a second navigation click");
         var maintenance = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
         var editor = (ParameterSettingsControl)maintenance.FindName("MainParameterEditor");
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回作业")) &&
@@ -113,6 +123,9 @@ static partial class Program
             "save automatically finds the invalid field and preserves the draft without opening a review or submitting");
         Capture("parameters-save-validation", client);
         budget.Text = originalBudget; editor.NavigateTo("StationCode"); window.UpdateLayout();
+        Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
+            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
+            "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");
         Check(!vm.CanConfigure && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
             "save review remains accessible before maintenance authorization");
         var reviewSeen = false; double editorHeight = 0;
@@ -173,7 +186,7 @@ static partial class Program
         async Task Until(Func<bool> done)
         {
             for (var i = 0; i < 120; i++) { await vm.RefreshAsync(); if (done()) return; await Task.Delay(25); }
-            throw new InvalidOperationException("Bounded UI state wait expired.");
+            throw new InvalidOperationException($"Bounded UI state wait expired. Busy={vm.Busy}, loaded={vm.HasLoadedConfiguration}, page={vm.SelectedPage}; {vm.Message}");
         }
         void Capture(string name, FrameworkElement target)
         {

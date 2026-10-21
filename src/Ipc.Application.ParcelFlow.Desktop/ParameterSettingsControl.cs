@@ -142,6 +142,18 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 6, 0, 0); field.Children.Add(hint); }
         var error = Text(""); error.Foreground = Brush("#B02D35"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
+        // Refresh an already-shown local error after an actual edit and blur.
+        // Do not reflow the form while typing or treat this as authority validation.
+        var edited = false;
+        if (control is TextBox text) text.TextChanged += (_, _) => edited = true;
+        else if (control is PasswordBox password) password.PasswordChanged += (_, _) => edited = true;
+        else if (control is ComboBox choice) choice.SelectionChanged += (_, _) => edited = true;
+        control.LostKeyboardFocus += (_, _) =>
+        {
+            if (!edited) return;
+            edited = false;
+            if (Model?.Issues.Count > 0) Model.ValidateFields();
+        };
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {

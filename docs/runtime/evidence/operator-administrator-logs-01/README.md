@@ -12,4 +12,6 @@
 
 `working-c9-*`为产品增量提交前的重建/核心55项通过；`ci77-relocation-fixture-failure.json`保留旧副本正确拒绝但测试遗漏异常类型的失败，后继修复保留拒绝断言。1.10.2本机迁移、升级与真实启动及CI后继结果单独记录；先前`d-storage-verification.json`只证明当时1.10.1安装元数据，不扩张为启动验证。
 
-`ci78-*`来自run39628940233、合并源码c0ea40c337ba5aae2369e3e11fb96519e7985031；35项真实认证/目录、核心125及相关原生检查全通过。`d-storage-origin-closure.json`仅公开本机迁移启动汇总；当前已安装1.10.1与交付1.10.2分别记录，未完成的本机最终升级不记PASS。
+`ci78-*`来自run39628940233、合并源码c0ea40c337ba5aae2369e3e11fb96519e7985031；35项真实认证/目录、核心125及相关原生检查全通过。`d-storage-origin-closure.json`仅公开本机迁移启动汇总；该时点已安装1.10.1与交付1.10.2分别记录，当时未完成的升级不记PASS。
+
+2026-10-22实际授权升级完成见`d-storage-installed-1102.json`：本机已安装1.10.2/c9e482a，738文件、原身份、4快捷方式、认证服务和原模拟账起停均通过。原`d-storage-origin-closure.json`保留此前时点，不倒写。`ci79-workflow-status.json`记录后继CI79全通过及其独立合并源码。

@@ -63311,9 +63311,9 @@
     },
     {
       "path": "docs/runtime/evidence/operator-administrator-logs-01/README.md",
-      "sha256": "d8acc230d0f107e26716857bbf6f411bbdde25e3caa95bf75ba7dff3e5fb32ac",
-      "size_bytes": 2793,
-      "git_blob": "8e3de54c6b47f4a834ee37eff384dea0188632c1",
+      "sha256": "845cb41e53de3ef8edfbe791a9e18aa66ee384fb2e5c2b30ffdf595f6cc40119",
+      "size_bytes": 3126,
+      "git_blob": "a9e70367b90f40434f9536433eeb5ad02d5d6e3e",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -63575,9 +63575,9 @@
     },
     {
       "path": "docs/runtime/validation/operator-administrator-logs-01.md",
-      "sha256": "34de80d73d0fe00f493840a1f9e83145018f348764cf94ab201cd6a688152219",
-      "size_bytes": 14004,
-      "git_blob": "0a27a1cbe9149626943d25c02ceb77dc991025d3",
+      "sha256": "b4da2a4b5dea5004b2b3abf9096ba6666fe965887b284bddee1f6e8049997084",
+      "size_bytes": 14760,
+      "git_blob": "9f56c453de80fd9a7f88afe23423cc193e548ef5",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -63586,9 +63586,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md",
-      "sha256": "2a6ffb8a3319c622cff7f7fbd52389c9fb9f0cc8b8ad6cbb23fd7d3d63bda877",
-      "size_bytes": 5287,
-      "git_blob": "b91ec4c504d48833e75fbe931b4f0b2d42c20c2e",
+      "sha256": "6f80b37e8a706e0ca97546da4f99c7cb71dce82cd43cc7ee3a104d0f7599d776",
+      "size_bytes": 5688,
+      "git_blob": "a8509f70b4a2fe0da0d93f54c97f1edaec2a0908",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -64037,9 +64037,9 @@
     },
     {
       "path": "docs/runtime/d-drive-storage-20261021.md",
-      "sha256": "2aa1f28a3cc113c7f934b0fd8f624f9499598d64bb6bb2eaa3c757a862c651a4",
-      "size_bytes": 5749,
-      "git_blob": "f81145f05a30b0077cd69edf8f9e1278035faef1",
+      "sha256": "89b759a6a379e704b568ac392c13ab875f5d0ebf8f31d3864366f2a16f8e753e",
+      "size_bytes": 5791,
+      "git_blob": "e093eb09936f336c5f8a14d2c17ac92b956114ed",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -64759,6 +64759,28 @@
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
       "source": "WP-IPC-OPERATOR-ADMIN-LOGS-01; historical evidence retains original SourceCommit",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-administrator-logs-01/ci79-workflow-status.json",
+      "sha256": "cc0be08955534d77aedf005f97e93f54d5f9e6a15f43f55bc28c468d15649183",
+      "size_bytes": 680,
+      "git_blob": "dd60f3460fe268543faf133873402dae552245c3",
+      "version": "SM1.10.2-CI79",
+      "status": "actual_workflow_status_PASS",
+      "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
+      "source": "CI79 frozen merge cc78bdc1afc8cdeb1435366681ed9a8bcbc25005; head482d04c; no relabeling of CI78 receipts",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-administrator-logs-01/d-storage-installed-1102.json",
+      "sha256": "2c0a1092b5147803e0937506dbbc6d7221c256f1db738ab43c329afcb4d31eab",
+      "size_bytes": 1516,
+      "git_blob": "b060e11eba90a9ad739473a4e37f31fe0d862abf",
+      "version": "SM1.10.2",
+      "status": "actual_same_machine_installation_and_simulation_verified",
+      "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
+      "source": "2026-10-22 installed frozen SourceCommit c9e482a30d2d1643a498e7e7ba7f12563f46f3f5; no production/physical device qualification",
       "storage_scope": "public_repository"
     }
   ],
@@ -67192,8 +67214,14 @@
     "actual_windows_broker_and_relocation_assertions": 35,
     "native_assertions": 17,
     "local_frozen_startup_assertions": 93,
-    "installed_source": "674807df21087f992663469e6ead94ae9a4f9c8b",
+    "installed_source": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
     "storage": "D:/ImporterPc.Deployment; original identity/ledger preserved; actual existing simulation start/stop PASS",
-    "local_1102_upgrade": "NOT_COMPLETED_NO_INSTALL_RECEIPT"
+    "local_1102_upgrade": "PASS: actual approved same-machine installation API upgrade; 738 files, original identity, D paths/services/shortcuts and existing simulation start/stop verified",
+    "installed_version": "SM1.10.2",
+    "latest_verified_ci_run": 39630282994,
+    "latest_verified_ci_source": "cc78bdc1afc8cdeb1435366681ed9a8bcbc25005",
+    "latest_verified_ci_head": "482d04c5e886588c5b2f17b847ab2fba9f2bbd78",
+    "latest_verified_ci_status": "PASS",
+    "installed_receipt": "docs/runtime/evidence/operator-administrator-logs-01/d-storage-installed-1102.json"
   }
 }

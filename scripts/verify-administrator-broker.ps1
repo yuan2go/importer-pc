@@ -28,4 +28,4 @@ $result=$LASTEXITCODE
 $unchanged=$true
 foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]){$unchanged=$false}}
 [ordered]@{Status=if($result -eq 0 -and $unchanged){'PASS'}else{'FAIL'};SourceCommit=$release.SourceCommit;FixtureSourceCommit=$release.SourceCommit;UnchangedMedium=$unchanged;Scope='Actual SCM System service, protected credential/anchor ACL, real restricted Windows token, software authentication, lockout, expiry, ticket replay, missing-store and service-outage refusal; no equipment or production qualification';ExitCode=$result}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
-if($result -ne 0 -or -not $unchanged){throw 'Protected administrator boundary failed; original evidence retained'}
+if($result -ne 0 -or -not $unchanged){Get-Content -LiteralPath (Join-Path $Output 'RUN.log') -Tail 24;throw 'Protected administrator boundary failed; original evidence retained'}

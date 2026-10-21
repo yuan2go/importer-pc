@@ -155,6 +155,8 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
+        if (root is SupplyStationWindow or ShellWindow)
+            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", _ => name };
         if (root is SupplyStationWindow station)
         {
             if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }

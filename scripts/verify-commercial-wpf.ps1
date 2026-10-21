@@ -80,4 +80,4 @@ if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE
  }
 }
 [ordered]@{Status=if($result -eq 0){'PASS'}else{'FAIL'};SourceCommit=$release.SourceCommit;FixtureSourceCommit=$fixtureSource;FixtureMatchesMedium=($fixtureSource -eq $release.SourceCommit);MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;Scope='Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning';ExitCode=$result;Binaries=@($refs|ForEach-Object{[ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
-if($result -ne 0){throw 'Frozen native WPF verification failed; original log retained'}
+if($result -ne 0){if(Test-Path -LiteralPath (Join-Path $Output 'WINDOWS-WPF.log')){Get-Content -LiteralPath (Join-Path $Output 'WINDOWS-WPF.log') -Tail 18};throw 'Frozen native WPF verification failed; original log retained'}

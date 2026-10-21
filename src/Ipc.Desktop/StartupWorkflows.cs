@@ -238,12 +238,22 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Body.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
         Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        bool checkingAuthority = false;
+        bool checkingAuthority = false, authorityWasBlocked = false;
+        string? statusBeforeAuthorityBlock = null;
+        const string authorityBlockedMessage = "管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。";
         authorizationTimer.Tick += async (_, _) =>
         {
             if (checkingAuthority) return; checkingAuthority = true;
-            try { var identity = await AdministratorAccounts.AdministratorStatusAsync(); var allowed = identity.Authorized; administratorIdentity.Text = allowed ? "管理员\n" + identity.Account : "管理员未登录"; administratorIdentity.ToolTip = administratorIdentity.Text; Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed; if (!allowed) Message("管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。"); }
-            catch (Exception error) { Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
+            try
+            {
+                var identity = await AdministratorAccounts.AdministratorStatusAsync(); var allowed = identity.Authorized;
+                administratorIdentity.Text = allowed ? "管理员\n" + identity.Account : "管理员未登录"; administratorIdentity.ToolTip = administratorIdentity.Text;
+                Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(authorityBlockedMessage); }
+                else if (allowed && authorityWasBlocked && Status.Text == authorityBlockedMessage) Message(statusBeforeAuthorityBlock ?? "管理员已登录，原填写内容已恢复。");
+                authorityWasBlocked = !allowed;
+            }
+            catch (Exception error) { administratorIdentity.Text = "管理员未登录"; Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
             finally { checkingAuthority = false; }
         };
         Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();

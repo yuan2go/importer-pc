@@ -97,7 +97,7 @@ static partial class Program
         Descendants(loginWindow!).OfType<PasswordBox>().Single().Password = reauthenticationPassword; Click(loginWindow!, "登录");
         for (var i = 0; i < 100 && !LocalAdministrator.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
-        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64", "reauthentication restores the same unsaved complete candidate without restarting configuration");
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64" && !Status(first).Contains("管理员未登录或会话到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
         Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {

@@ -26,6 +26,7 @@ static partial class Program
             // Keep this deliberately corrupt offline draft isolated from the later
             // live-settings journey; retain its original bytes and refusal checks.
             var offlineLaunch = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            AdministratorFixture.AuthorizeRoot(offlineLaunch.DataRoot);
             var draftFile = Path.Combine(offlineLaunch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
@@ -142,15 +143,15 @@ static partial class Program
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
         await ObserveSaveReviewAsync(classic, maintenance, dialog =>
         {
-            Check(!parameterVm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
-                "classic settings reviews the validated candidate with authorization and reason in one responsive window");
+            Check(!parameterVm.Busy && parameterVm.IsAdministrator && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
+                !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
+                "classic review preserves the live software administrator grant and reason without a duplicate password prompt");
         });
         Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
             "canceling native save review preserves the edited field and never stages the candidate");
         stationInput.Text = originalStation;
 
-        Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/help window actions never reconstruct the business runtime");
+        Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/account window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");
         classic.ConfirmDiscardDrafts = _ => true; classic.Close(); alternate.ConfirmDiscardDrafts = _ => true; alternate.Close(); await Task.Delay(100);
         static void Screenshot(Window window, string path)

@@ -1708,9 +1708,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "b317332f706a969326a922df07694416be047e45473fb93b06e88dd4757edf87",
-      "size_bytes": 6931,
-      "git_blob": "1c462a36443f8c7d5a60507916dd9c33dcbd4643",
+      "sha256": "85c7e7ac151921229b80c9c3a9daa8fa78f3a36def968c257b67eaebb3114421",
+      "size_bytes": 7078,
+      "git_blob": "553a59204f693367b95c39ec3a3a4ff775ede8b7",
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
@@ -27610,6 +27610,61 @@
       "git_blob": "9b718247a67536c7f04fb663013fe3f1fad5aad7"
     },
     {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/README.md",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b913fa4250ee40a091f5caee55928a105e432cfcd44e967adc371b3363929e06",
+      "size_bytes": 796,
+      "git_blob": "1001c6462c742f462fb6ec0def4e9cd48a0606a6"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/WINDOWS-WPF.log",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "78dca17c90c48ce9e13fcb15e35b61251ae9dbd69e9bb60bdb399c14a0197624",
+      "size_bytes": 15298,
+      "git_blob": "5737d967850889b224e8317a9527682aae68571f"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/engineering-gate.json",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "42ccc255df1c7d80a2d6163ab3e2418f7feba90c012882130c09799824d4931f",
+      "size_bytes": 489,
+      "git_blob": "950b0be7b3c0acd9a78189892a68b85b7ca77847"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/installer-build.log",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b719d4d3aed3f8beb8ea53f08cf51112eeb709b5154d84213be763cac5246de8",
+      "size_bytes": 6175,
+      "git_blob": "9fb2cb760f849201a99e28bd304e6d64d39a857b"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/parameters-v3-RESULT.json",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "15e2fa4e6399bfafac2fe38dbf4f442b99915e2eaab6b64830537e143d927a49",
+      "size_bytes": 3145,
+      "git_blob": "14ea546eb7182a98a279665392293a0e09c87d97"
+    },
+    {
       "path": "docs/runtime/evidence/parameter-settings-v3-native-01/compatibility.log",
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
@@ -27663,6 +27718,50 @@
       "sha256": "29d6731a8fe1cbcd134352a075b5ec808390b4c84564a25ae514ae46fdc88b46",
       "size_bytes": 14234,
       "git_blob": "48cf30a0481945fe039bb2d979c64a3c4674881e"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/local-bf7edd4/README.md",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f303fefe3da6276747cd32f217b3970223206b5981c82f14b65df3b030a54c41",
+      "size_bytes": 657,
+      "git_blob": "07beb991f106b64f65ea3f0fbc7e52c8a1a9fd28"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/local-bf7edd4/classic-development-WPF.log",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "548932222dde13047098bd7b8023dcd3e938c75202e3e735311f1e4e4af15ddf",
+      "size_bytes": 3127,
+      "git_blob": "ab50bf72dc074ffcfb04eb117fe53eff132e7d7a"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/local-bf7edd4/directplc-build.log",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b4c21b2db97995896cc26acd0d6944d1190069ad2ec777a895a310d53a3f16f0",
+      "size_bytes": 656,
+      "git_blob": "9bbddc43c850c5d2d693c48bdfe504d940ce4940"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-settings-v3-native-01/local-bf7edd4/wcstoplc-build.log",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6cf401239bfdf6d81051d679e5d63f78436af17cef86158c76f3470c7b703099",
+      "size_bytes": 653,
+      "git_blob": "8d2b0bc21f5f247fcc528c4d2ea2164bbb108248"
     },
     {
       "path": "docs/runtime/evidence/parameter-settings-v3-native-01/manual-before-field-error-fix/README.md",
@@ -51010,14 +51109,14 @@
     },
     {
       "path": "scripts/release_build.py",
-      "version": "installer-single-window-01",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Single installation window, one guarded consent and exact native verification",
-      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
-      "sha256": "a9b56ba4a021e333257006f706bfc4d65881997969ec444a2ae2421a502a94c1",
-      "size_bytes": 3686,
-      "git_blob": "4bf8bdd50eb51406a5170d0207e16ed9880f4f44"
+      "sha256": "2442c2128c08027ff58b99de627cb4b1728399c9a71e04e9665bb42d527305d9",
+      "size_bytes": 3982,
+      "git_blob": "be9af1bae5aeb2a6d71f83613cf7719f556d6e1c"
     },
     {
       "path": "scripts/release_dependencies.py",
@@ -51194,6 +51293,17 @@
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+    },
+    {
+      "path": "scripts/test_release_build.py",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
+      "storage_scope": "public_repository",
+      "sha256": "72d776f2663cf6616a99bbe348934b0e750fde24739f4fa6c8713d1a7f748ffe",
+      "size_bytes": 1971,
+      "git_blob": "3c990f66f80a5c824b1740b4c59f4c8f6809fb5c"
     },
     {
       "path": "scripts/test_release_documents.py",

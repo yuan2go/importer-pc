@@ -1,0 +1,10 @@
+{
+  "Status": "PASS",
+  "Level": "engineering",
+  "SourceCommit": "dce379844f8e3ed8f899025b0f237267cc9e26ee",
+  "MediumInventorySha256": "E8F884106AE7FEB0C5963B37A450DC81D63008B8B1E036604C9A760CB6CECDA7",
+  "Outstanding": [],
+  "ProductionApproval": "NOT_GRANTED_BY_THIS_TOOL",
+  "TrustBoundary": "Hashes prove custody, not truth of test/qualification/approval attestations. Authorized release review remains mandatory.",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED"
+}

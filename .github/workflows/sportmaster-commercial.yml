@@ -34,7 +34,10 @@ jobs:
         with:
           global-json-file: global.json
       - name: Policy rejection tests
-        run: python -m unittest discover -s scripts -p test_commercial_delivery.py -v
+        run: |
+          python -m unittest discover -s scripts -p test_commercial_delivery.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_release_build.py -v
       - name: Freeze only the first commercial composition
         shell: pwsh
         run: |

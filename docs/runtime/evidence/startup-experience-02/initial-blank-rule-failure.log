@@ -1,0 +1,10 @@
+PASS STARTUP02 startup editor loads without a running application
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 invalid optional rule stays on its field and exposes no internal variable in the status
+PASS STARTUP02 operation completes within bounded native wait
+FAIL System.InvalidOperationException: blank optional barcode rule advances without inventing a default filter
+   at Program.<>c__DisplayClass11_0.<VerifyStartupExperience>g__Check|0(Boolean ok, String text) in D:\projects\importer-pc-startup\tests\Ipc.Desktop.UiVerification\StartupExperience.cs:line 15
+   at Program.VerifyStartupExperience(String root, String evidence, List`1 lines) in D:\projects\importer-pc-startup\tests\Ipc.Desktop.UiVerification\StartupExperience.cs:line 32
+   at Program.<>c__DisplayClass6_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-startup\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

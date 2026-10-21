@@ -1,0 +1,70 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-7cb46975c8684a17a77430bd3b2ee229
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 actual VM loads every schema3 reader, position and optional capability without clearing the form
+PASS AQ: PARAM01 omitted mandatory system default is explicitly unsaved; declared values otherwise remain clean
+PASS AQ: PARAM01 round trip adds only the declared missing system default; topology, policies and omitted driver parameters remain exact
+PASS AQ: P2 raw structured parameter edits are protected before validation
+PASS AQ: UXC03 full candidate validation is real Application validation and does not save or activate
+PASS AQ: UXC03 same Application CAS saves Pending and preserves Effective until controlled restart
+PASS AQ: P2 only a successful Pending receipt accepts the submitted form baseline
+PASS AQ: UXC03 editing one position retains the other position, all unrelated inventory, login, image, weight and retention fields
+PASS AQ: UXC03 automatic refresh cannot replace a second window's loaded configuration CAS
+PASS AQ: P2 stale CAS rejection retains the unsaved second-window draft
+PASS AQ: P2 invalid numeric text remains a protected draft without requiring a build
+PASS AQ: UXC03 local numeric validation rejects invalid units/precision without saving
+PASS AQ: P2 malformed advanced JSON is protected without decoding
+PASS AQ: UXC03 advanced JSON is the explicit sole editing authority and refresh preserves unsaved bytes
+PASS AQ: UXC03 hidden structured form cannot overwrite the active advanced JSON draft
+PASS AQ: UXC03 explicit JSON-to-form transfer retains unrelated JSON fields and the original draft CAS
+PASS AQ: P2 explicit JSON-to-form transfer stays unsaved until CAS staging
+PASS AQ: UXC03 Sportmaster rejects new unrelated hardware while preserving the original optional fixture binding
+PASS AQ: UXC03 own successful save advances only this window CAS and permits later explicit candidate staging
+PASS AQ: UXC03 controlled real runtime restart activates the saved complete candidate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: P2 legacy schema1 initial form is clean
+PASS AQ: P2 legacy numeric edits are protected
+PASS AQ: P2 reverting legacy edits restores the original baseline
+PASS AQ: P2 legacy save freezes submitted fields while newer edits stay protected
+PASS AQ: P2 legacy successful save accepts only its submitted baseline
+PASS AQ: UXC03 existing schema1 structured maintenance path remains usable
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: P2 legacy schema2 initial form is clean
+PASS AQ: P2 legacy numeric edits are protected
+PASS AQ: P2 reverting legacy edits restores the original baseline
+PASS AQ: P2 legacy save freezes submitted fields while newer edits stay protected
+PASS AQ: P2 legacy successful save accepts only its submitted baseline
+PASS AQ: UXC03 existing schema2 structured maintenance path remains usable
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: P2 structured save accepts only the captured draft and preserves newer unsaved edits
+PASS AQ: P2 reverting to the successfully submitted structured draft restores its clean baseline
+PASS AQ: P2 legal list longer than one item fits the editor and retains JSON escapes and empty items exactly
+FAIL AQ: P2 list syntax and per-item/count limits are explicit
+PASS AQ: P2 existing schema still rejects invalid list: not json
+PASS AQ: P2 existing schema still rejects invalid list: [
+  "a",
+  "a",
+  "a",
+  "
+PASS AQ: P2 existing schema still rejects invalid list: [
+  "aaaaaaaaaaaaaaaaaaaaaaaa
+PASS AQ: UXC03 same name/version with different installed manifest hash never silently substitutes a provider
+PASS AQ: UXC03 declarative installed catalog resolves exact transitive closure and excludes the replaced unused package
+PASS AQ: UXC03 shared exact dependencies appear once
+PASS AQ: UXC03 exact dependency closure rejects synthetic missing without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic identity-conflict without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic cycle without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic duplicate-exact without executing provider code
+PASS AQ: UXC03 old catalog wire remains readable and built-in-only configurations need no fabricated package metadata
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 first maintenance navigation loads one actual configuration/catalog draft
+PASS AQ: UXC03 repeated maintenance navigation preserves newer unsaved JSON, its authority and original CAS
+PASS AQ: UXC03 a held actual Application save stages A while later edited B remains untouched and explicitly unsaved
+PASS AQ: UXC03 dangling JSON-to-form binding cannot replace authority, clear the existing form, alter JSON bytes or advance CAS
+PASS AQ: UXC03 corrected JSON remains recoverable and explicitly transfers to a complete form using the saved original CAS
+PASS AQ: UXC03 correcting a rejected form transfer stages the retained B with the actual configuration CAS
+PASS AQ: UXC03 repeated navigation also preserves an unsaved structured form
+PASS AQ: UXC03 only explicit reload replaces the current draft from saved Pending/Effective
+Unhandled exception. System.Exception: UXC03 commercial configuration regressions: 1
+   at ArchitectureQuality.UxCommercialConfigurationChecks(String source, String evidence) in D:\projects\importer-pc-parameter\tests\Ipc.Application.Verification\UxCommercialConfiguration.cs:line 171
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-parameter\tests\Ipc.Application.Verification\Program.cs:line 24
+   at Program.<Main>(String[] args)

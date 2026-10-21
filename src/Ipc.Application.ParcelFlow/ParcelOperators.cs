@@ -48,25 +48,13 @@ public sealed partial class ParcelRuntime
 {
     public async Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof)
     {
-        await gate.WaitAsync().ConfigureAwait(false);
-        try
-        {
-            if (stopped || stopping.IsCancellationRequested || ports?.Maintenance is null || repository?.Paused != true) return new("Rejected", "Pause before maintenance authentication", repository?.Revision ?? 0);
-            if (!PortMaintenanceClear(ports.Maintenance)) return new("Rejected", "Maintenance authenticator is under maintenance", repository.Revision);
-            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            var identity = await ExternalPortAsync(ports.Maintenance, () => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
-            if (identity is null || identity.Subject != subject || identity.Authority != (Effective.MaintenanceLogin?.Target ?? "reference://maintenance") ||
-                !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || identity.ExpiresAt is null || identity.Simulation != (Effective.MaintenanceLogin is null || factory.SimulationIdentity(Effective.MaintenanceLogin)) || identity.Grants?.Contains("maintenance") != true || identity.ExpiresAt <= DateTimeOffset.UtcNow)
-                return new("Rejected", "Maintenance authentication rejected", repository.Revision);
-            maintenanceSession.Set(Wire.Decode<OperatorIdentity>(Wire.Encode(identity))); repository.Commit(null, "MaintenanceAuthenticated", Wire.Encode(identity));
-            return new("Authorized", identity.Simulation ? "SIMULATION maintenance grant; pause alone provides no authorization" : "Authenticated maintenance grant; pause alone provides no authorization", repository.Revision);
-        }
-        finally { gate.Release(); }
+        var accepted = await LoginAdministratorAsync(subject, proof).ConfigureAwait(false);
+        return new(accepted ? "Authorized" : "Rejected", accepted ? "软件管理员已登录；配置修改仍需暂停并排空。" : "账号或密码不正确。", 0);
     }
     public async Task<CapabilityCatalog> CapabilitiesAsync()
     {
         await gate.WaitAsync().ConfigureAwait(false);
-        try { return factory.Catalog(); } finally { gate.Release(); }
+        try { Administrator.Require(); return factory.Catalog(); } finally { gate.Release(); }
     }
     public async Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity)
     {
@@ -74,7 +62,7 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || !CanConfigure) return new("Rejected", "Pause and authenticate maintenance after active calls drain", repository?.Revision ?? 0);
-            var actor = maintenanceSession.Identity!;
+            var actor = AdministratorIdentity!;
             repository!.Commit(null, "ExtensionMaintenanceStarted", Wire.Encode(new { Action = action, Identity = identity, Actor = actor }));
             var result = await ExternalAsync(() => factory.ManageAsync(action, identity)).ConfigureAwait(false);
             repository.Commit(null, "ExtensionMaintenanceResult", Wire.Encode(new { Action = action, Identity = identity, Actor = actor, Result = result }));
@@ -90,7 +78,7 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause and authenticate maintenance before installation", repository?.Revision ?? 0);
-            var actor = maintenanceSession.Identity;
+            var actor = AdministratorIdentity;
             repository.Commit(null, "ExtensionInstallStarted", Wire.Encode(new { Actor = actor, Sha256 = sha256 }));
             var result = await ExternalAsync(() => factory.InstallAsync(file, sha256)).ConfigureAwait(false);
             repository.Commit(null, "ExtensionInstallResult", Wire.Encode(new { Actor = actor, Sha256 = sha256, Result = result }));

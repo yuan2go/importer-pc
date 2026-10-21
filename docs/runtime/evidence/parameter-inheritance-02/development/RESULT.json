@@ -1,0 +1,49 @@
+{
+  "Identity": "Development working-tree checks; not frozen-medium acceptance",
+  "SourceCommit": null,
+  "FinalProductSource": "13663334b2a80f8b9d4e35968ee915851474eae4",
+  "PassedScopes": {
+    "parameter": 72,
+    "configuration": 61,
+    "native_parameters": 34,
+    "native_login": 25,
+    "policy": 5,
+    "release_build": 1,
+    "compatibility": 17,
+    "affected_Release_builds": [
+      "DirectPlc",
+      "WcsToPlc"
+    ]
+  },
+  "FailuresRetained": {
+    "core-initial": "display hash capitalization rejected by existing identity guard; fixed lower-case hash",
+    "core-second/core-third": "startup fixture used unnormalized seed; corrected to actual Effective, assertion retained",
+    "merged-build": "Chinese presentation helper was coupled to WPF converter; separated pure labels from WPF adapter",
+    "configuration-compatibility": "obsolete English list label assertion; Chinese UI now gives exact array syntax and retains count/length assertions",
+    "native-projection": "old task fixture checked before coalesced refresh delivery; waits for exact projected identity/state without deleting assertions",
+    "release-tests": "local Python GBK subprocess decoding; rerun unchanged gate with PYTHONUTF8=1",
+    "commercial-productization": "ordinary Windows token refuses elevated restore-root preparation; not marked PASS",
+    "release-1366333": "license inventory looked in default NuGet cache while actual restore cache was D:/DevCache/nuget/packages; same-source retry uses explicit cache"
+  },
+  "Files": {
+    "commercial-productization.log": "41bc9ae4da0fa21e799126b2d296a2798d808dcfb1990e9714824dd36e23a462",
+    "compatibility-tests.log": "5d88948d21142336cb975749303b02ffac78b62e25c81658c03f155f348718b3",
+    "configuration-compatibility-final.log": "d289320ff811e2ef7d1449594229d8ea1016343cafe712e12fe0088eda4ead6d",
+    "configuration-compatibility.log": "675cfed9eb6af6c21d36b02fe98ef3fd2056323d24202daecd97fdfb4c75123e",
+    "core-initial.log": "52ad1b76d7f68ff14a7c22515d8e4a698e0ac08140f8188d2cc0ed21c2ea3ac6",
+    "core-policy-final.log": "cfdac1d16b541b962c6a98b372a5849ee6cd9f281e429bf31fa7800bd5257f3d",
+    "core-second.log": "ebd70713a55eeadc4d5b93276ce6e10fc8445b29333b03cde7062ca559ea8c18",
+    "core-third.log": "b2bd11d4ab0d6b9e73d90ca99a7d2b4bc83a215d6495c7e8a65be03a293c42dd",
+    "direct-plc-build.log": "47d171e6fe6fa4ab9f5962f4add70485fc31697159f7aa3a35a1ba7f9c0264be",
+    "merged-build.log": "cb0412e66f176b2ebbc36a06d8d15a0d95878fde7ab247b1f83e285fcaf5d9f8",
+    "native-keyboard-build.log": "9d3bbe337db79f3f9a29ec8b8882a0d4db2baec02b98d9359f1728a326c13be3",
+    "native-login.log": "0120d8dce0c7718b49ad2e5d27abd57b036162ae5acad9e53e434012f4c5fb4e",
+    "native-parameters.log": "ed5609ba02ec80b6e208419313ea27cf010f8387702cec02c518656c689b7403",
+    "native-projection-failed.log": "ad6a601f40f63b397d579295422712724657947880023dabb59f4726f21b1658",
+    "policy-tests.log": "3939f47cafce2a8a1fc8661f8824ae90a75efc03650572378a933ebf53ad8b5a",
+    "release-1366333.log": "d1f5cd3700ea9aedd37bde541e3d349bcd49b0e9ead0352be566849a2743de2f",
+    "release-tests-utf8.log": "5280e0544de777512e202212dfcf36c332311293a18e8114645631451f15b23d",
+    "release-tests.log": "de85a167bca1911439fc6fb25b8e7a4a2635101915e5378ab3f0eb682912024e",
+    "wcs-to-plc-build.log": "c3b35869cab33250d69438db6bee76bfe556d9c1eb3a561a1b6d9556be891de3"
+  }
+}

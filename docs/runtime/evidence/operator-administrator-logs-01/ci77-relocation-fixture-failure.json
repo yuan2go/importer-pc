@@ -1,0 +1,16 @@
+{
+  "Status": "FAIL",
+  "RunId": 39628241688,
+  "JobId": 119319150868,
+  "SourceCommit": "b85723490c89be4df9c9ae32774c90e59ca9e18f",
+  "PassedBeforeFailure": [
+    "arbitrary clone refused without mutation",
+    "same identity/ciphertext preserved",
+    "idempotent resume",
+    "production refused"
+  ],
+  "Failure": "Old clone was correctly refused because restore-handoff.json was absent. Fixture expected only InvalidDataException and did not accept FileNotFoundException.",
+  "FixCommit": "064030ac5e6ff02988899dc6959a3d8bdc31a043",
+  "Fix": "Retain the denial assertion and accept either explicit integrity rejection or missing handoff evidence; no product guard removed.",
+  "ArtifactId": 12358278165
+}

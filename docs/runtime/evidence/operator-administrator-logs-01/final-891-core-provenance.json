@@ -1,0 +1,9 @@
+{
+  "SourceCommit": "8917115ab59c33b30fc2426843691673e10480c5",
+  "FrozenProductSource": "674807df21087f992663469e6ead94ae9a4f9c8b",
+  "ProductSourceDiff": false,
+  "BuildConfiguration": "Debug",
+  "RebuiltBeforeExecution": true,
+  "ParameterAssertions": 81,
+  "ConfigurationConfirmationAssertions": 41
+}

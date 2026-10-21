@@ -14,18 +14,18 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public IParcelApplication Application => application;
     public string Title => title;
     public Visibility SimulationVisibility => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
-    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "Production · 软件暂停不是安全急停 · 资格不代替现场安全联锁" : "Simulation · 软件暂停不是安全急停 · 不操作真实设备";
+    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "生产模式 · 软件暂停不是安全急停 · 资格不代替现场安全联锁" : "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备";
     public string Flow => flow;
     public string PresentationId => presentationId;
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(nameof(AccountDisplay)); Changed(nameof(PauseVisibility)); Changed(nameof(ResumeVisibility)); LoadStationDisplay(); Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => CurrentAt(SelectedPositionId);
     public ParcelOperation? CurrentAt(string position) => Snapshot?.Positions?.SingleOrDefault(p => p.Id == position)?.CurrentOperation is { } id
         ? Snapshot.Operations.SingleOrDefault(x => x.Id == id && (x.PositionId ?? "main") == position) : null;
-    public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", Snapshot?.BlockingReasons ?? []);
+    public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", (Snapshot?.BlockingReasons ?? []).Select(ChineseInterfaceText.Notice));
     public string Status => !Fresh ? "快照已失效 · 旧状态仅供参考" : Snapshot?.State switch
     {
         "Ready" => "作业就绪", "PartiallyReady" => "部分投递位可作业", "Blocked" => "暂不可作业", "Paused" => "已暂停新入场", "NotReady" => "暂不可作业",
@@ -34,7 +34,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     };
     public string Health => !Fresh ? "设备旧状态已失效 · " + ReadStatus : string.Join("\n", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
-    public string OperatorSubject { get; set; } = "alice";
+    public string OperatorSubject { get; set; } = "";
     public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
     public bool CanAdmit => !Busy && Fresh && Snapshot?.Availability?.Admit == true;
@@ -84,15 +84,15 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         };
         var lines = new List<string>
         {
-            "原 RCS 回执 · " + outcome + "（作业状态以原快照为准）",
-            "任务 " + Known(result.TaskId) + " · SKU " + Known(result.SkuId) + " · 格口 " + Known(reply.Slot),
+            "原调度回执 · " + outcome + "（作业状态以原快照为准）",
+            "任务 " + Known(result.TaskId) + " · 商品编码 " + Known(result.SkuId) + " · 格口 " + Known(reply.Slot),
             "波次 " + (result.WaveNo ?? "原回执未包含") + " · 返回数量 " + (result.Quantity ?? "原回执未包含") + "（原字符串；不等于请求数量）",
             "长度 " + Measure(result.Length) + " · 宽度 " + Measure(result.Width) + " · 高度 " + Measure(result.Height) + " · 重量 " + Measure(result.Weight) + "（接口未提供单位）"
         };
         if (result.Code is not null || result.Message is not null) lines.Add("业务码 " + Known(result.Code) + " · 原因 " + Known(result.Message));
         if (result.Unpack is { } unpack)
         {
-            lines.Add("拆包条码 " + unpack.Barcode + " · SKU " + unpack.SkuId + " · 扫描数量 " + unpack.ScanQty.ToString(CultureInfo.InvariantCulture));
+            lines.Add("拆包条码 " + unpack.Barcode + " · 商品编码 " + unpack.SkuId + " · 扫描数量 " + unpack.ScanQty.ToString(CultureInfo.InvariantCulture));
             if (unpack.Chutes.Length == 0) lines.Add("上游未返回拆包格口明细");
             foreach (var chute in unpack.Chutes)
                 lines.Add("格口 " + chute.ChuteNo + " · 订单 " + chute.OrderNo + " · 剩余 " + chute.Remaining.ToString(CultureInfo.InvariantCulture) + " · 阶段 " + chute.Phase);
@@ -102,8 +102,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     long messageRevision;
     public string Message { get => message; set { message = value; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
-    public string Feedback => Busy ? OperationStatus : Message;
-    public string OperatorFeedback => Feedback.Split(" · ", 2)[0] switch
+    public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
+    public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {
         "Persisted" => "操作已提交；请核对当前应用状态。",
         "PendingRestart" => "配置已保存；等待受控重启生效。",
@@ -113,7 +113,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         _ => Feedback
     };
 
-    public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
+    public string ConfigurationState => Snapshot is null ? "未加载" : ChineseInterfaceText.Status(Snapshot.Configuration.Status) + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
     string configurationDraft = "";
     public string ConfigurationDraft { get => configurationDraft; set { configurationDraft = value; Changed(); NotifyConfigurationEditorState(); } }
     public string ParcelCode { get; set; } = "000123456789";
@@ -138,6 +138,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public async Task RefreshAsync()
     {
+        await RefreshAdministratorAsync();
         var generation = Interlocked.Increment(ref refreshGeneration);
         var (readId, next) = await ReadSnapshotWithIdAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;

@@ -1,0 +1,16 @@
+{
+  "Status": "UNCHANGED_HISTORICAL_FAILURES",
+  "MainSource": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+  "InputTree": "3e9af97071f7449e23fdb88fee16c417e562e61a",
+  "ProductSource": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "MainVerifierStatus": "FAIL",
+  "CurrentVerifierStatus": "FAIL",
+  "MainErrors": 298,
+  "CurrentErrors": 298,
+  "NewErrors": 0,
+  "RemovedErrors": 0,
+  "MainReportSha256": "9c7cb064b8b50c70b836b4eac40eaeb7d712d01cd91645f71c3aa1bdc6c5a155",
+  "CurrentReportSha256": "2f094d8601302defd62939292f81861c89738270c755745e4b8bb99f98739691",
+  "Scope": "Canonical staged Git bytes before final report/CI receipt wording; unchanged public verifier and rules. Not an archive PASS.",
+  "UniqueErrors": 277
+}

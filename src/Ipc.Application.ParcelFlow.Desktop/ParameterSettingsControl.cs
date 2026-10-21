@@ -14,6 +14,7 @@ public sealed partial class ParameterSettingsControl : UserControl
 {
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
+    public bool FirstConfiguration { get; set; }
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     readonly StackPanel errors = new();
@@ -55,7 +56,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
         ScrollViewer.SetHorizontalScrollBarVisibility(directory, ScrollBarVisibility.Disabled);
         AutomationProperties.SetName(directory, "设置目录");
-        AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，Tab进入表单。");
+        AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，制表键进入表单。");
         directory.SelectionChanged += (_, _) => { if (directory.SelectedItem is ObjectPage page) { lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; } };
         root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 192 : 224);
         Content = root;
@@ -110,15 +111,15 @@ public sealed partial class ParameterSettingsControl : UserControl
     {
         Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 16 : 14,
         Foreground = Brush(heading ? "#1C3044" : "#5A6878"),
-        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 24 : 4, 0, heading ? 12 : 8)
+        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
     };
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
+        var body = new StackPanel { Margin = new(28, 20, 28, 20), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
         var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
-        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
+        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 12); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel());
@@ -137,8 +138,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
-        var field = new StackPanel { Margin = new(0, 0, 24, 16) };
-        var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 6);
+        var field = new StackPanel { Margin = new(0, 0, 24, 12) };
+        var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 4);
         field.Children.Add(caption); field.Children.Add(control);
         if (control is TextBox or ComboBox or PasswordBox)
         {
@@ -151,7 +152,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Preserve stable automation paths used by support and native verification.
         AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
-        if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 6, 0, 0); field.Children.Add(hint); }
+        // Routine schema hints remain available to assistive technology and in
+        // technical information, without adding a repeated line to every field.
+        var routine = help is not null && (help == "选择已声明的可用值" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
+        if (routine) control.ToolTip = help;
+        else if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0); field.Children.Add(hint); }
         var error = Text(""); error.Foreground = Brush("#B02D35"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
         // Refresh an already-shown local error after an actual edit and blur.
@@ -178,7 +183,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)
     {
-        var choice = new ComboBox { ItemsSource = values, MinHeight = 38, FontSize = 14 };
+        var choice = new ComboBox { ItemsSource = values, ItemTemplate = ChineseChoiceTextConverter.CreateTemplate(), MinHeight = 38, FontSize = 14 };
         choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         Field(form, label, choice, help, path, page);
     }
@@ -212,7 +217,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
         foreach (var page in pages)
         {
-            if (page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "技术信息", Content = page.Technical, Margin = new(0, 24, 24, 0), Padding = new(0, 8, 0, 0) });
+            if (!FirstConfiguration && page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "技术信息", Content = page.Technical, Margin = new(0, 24, 24, 0), Padding = new(0, 8, 0, 0) });
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
         foreach (var draft in m.Readers.Concat(m.Components))
@@ -233,10 +238,10 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var issue in Model?.Issues ?? [])
         {
             var found = locations.TryGetValue(issue.Path, out var location);
-            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + issue.Message + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(16, 2, 16, 2), MinHeight = 44 };
+            var button = new Button { Content = new TextBlock { Text = issue.Category + " · " + ChineseInterfaceText.ParameterMessage(issue.Message) + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B02D35"), Margin = new(16, 2, 16, 2), MinHeight = 44 };
             if (found)
             {
-                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + issue.Message; location.Error.Visibility = Visibility.Visible;
+                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B02D35")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + ChineseInterfaceText.ParameterMessage(issue.Message); location.Error.Visibility = Visibility.Visible;
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
             errors.Children.Add(button);

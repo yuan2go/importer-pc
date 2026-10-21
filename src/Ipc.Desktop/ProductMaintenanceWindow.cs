@@ -15,7 +15,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     string backupFile = "";
     public ProductMaintenanceWindow() : base("菜鸟供包台 · 产品修复与卸载")
     {
-        backupDirectory = Folder("完整备份目录（卸载保留业务数据、身份、配置账、原件和扩展）", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "backups"));
+        backupDirectory = Folder("完整备份目录（卸载保留业务数据、身份、配置账、原件和扩展）", Path.Combine(WindowsStoragePaths.UserRoot, "backups"));
         Note("此入口不启动业务或设备。程序修复使用完整可信介质并排安装；系统登记与快捷方式可从唯一部署登记重建。普通卸载不会删除其他产品共享驱动或数据。");
         Action("读取安装与原责任", Read);
         Action("修复系统登记与快捷方式…", async () =>

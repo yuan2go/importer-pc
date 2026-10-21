@@ -8,12 +8,14 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+var root = args.Contains("--operator-administration") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
-if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); return; }
+if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); AdministratorBoundary.Run(args[Array.IndexOf(args, "--administrator-broker-boundary") + 1], root); return; }
+if (args.Contains("--operator-administration")) { await OperatorAdministration.Run(workspace, root); return; }
+if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { InstallerOptions.Run(root); return; }
 if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--windows-client-compatibility")) { WindowsClientCompatibilityChecks.Run(); return; }
@@ -103,7 +105,7 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
     Pass((await Command(app, "Pause")).Status == "Persisted", id + " pause committed after both stage calls drain");
-    Pass((await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", id + " maintenance authentication explicitly confirmed");
+    Pass((await AdministratorFixture.Authorize(app)).Status == "Authorized", id + " maintenance authentication explicitly confirmed");
     var prior = (await app.SnapshotAsync()).Configuration;
     var invalid = prior.Effective with { Weight = prior.Effective.Weight with { Precision = 99 } };
     Pass((await app.StageConfigurationAsync(prior.Revision, invalid, "Synthetic directed configuration verification")).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
@@ -146,7 +148,7 @@ await using (var app = await Open(lost, "lost"))
 {
     app.EmitReference("lost-parcel", "00099", "lost-event"); var s = await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.PlcUnknown); original = s.Operations.Single();
     Pass(original.Wcs?.State == StageState.Accepted && original.Plc?.Attempts == 1 && original.Slot == "REFERENCE-07", "WCS acceptance and original PLC intention survive lost PLC reply");
-    await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); s = await app.SnapshotAsync();
+    await Command(app, "Pause"); await AdministratorFixture.Authorize(app); s = await app.SnapshotAsync();
     var changed = s.Configuration.Effective with { Plc = s.Configuration.Effective.Plc! with { Target = "reference://plc/new-target" } };
     Pass((await app.StageConfigurationAsync(s.Configuration.Revision, changed, "Synthetic directed configuration verification")).Status == "PendingRestart", "changed target saved only as pending");
 }

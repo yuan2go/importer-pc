@@ -32,6 +32,12 @@ static class RuntimeIdentityVerification
             MachineRuntimePolicy.RequireRuntimeIdentity();
             Console.WriteLine("PASS identity: explicit portable development gate preserved; Windows identity/ACL NOT_RUN");
         }
+        MachineRuntimePolicy.ValidateRuntimeAccount(designated, MachineRuntimePolicy.SharedUsersSid, true, [new(ClaimTypes.GroupSid, MachineRuntimePolicy.SharedUsersSid)]);
+        Console.WriteLine("PASS identity: explicitly shared installation accepts an enabled Windows Users member");
+        Denied(designated, MachineRuntimePolicy.SharedUsersSid, [], "shared installation without membership");
+        Denied(designated, MachineRuntimePolicy.SharedUsersSid, [new(ClaimTypes.DenyOnlySid, MachineRuntimePolicy.SharedUsersSid)], "deny-only Users membership");
+        Denied(designated, MachineRuntimePolicy.SharedUsersSid, [new(ClaimTypes.GroupSid, MachineRuntimePolicy.SharedUsersSid), new(ClaimTypes.GroupSid, "S-1-5-32-544")], "elevated shared user");
+        Denied("S-1-5-18", MachineRuntimePolicy.SharedUsersSid, [new(ClaimTypes.GroupSid, MachineRuntimePolicy.SharedUsersSid)], "shared system account");
         FirstRun(designated);
     }
     static void FirstRun(string sid)

@@ -7,7 +7,7 @@ SupplyContractRegistration.Register();
 var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : "");
 string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
-var data = Get("--data-root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"));
+var data = Get("--data-root", Path.Combine(WindowsStoragePaths.UserRoot, "data"));
 var action = Get("--action", "snapshot");
 if (action == "extension-check")
 {
@@ -31,7 +31,7 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
     // Inspection is read-only; mutation authority and the protected lease policy are
     // rechecked in the elevated branch before any filesystem transaction.
     var leaseRoot = action is "extension-inspect" or "extension-list" && OperatingSystem.IsWindows()
-        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc", "leases")
+        ? Path.Combine(WindowsStoragePaths.MachineRoot, "leases")
         : MachineRuntimePolicy.InstallerLeaseRoot(Path.Combine(paths.Root, "leases"));
     var extensions = new ExtensionStore(paths.Root, trust, mode, leaseRoot);
     if (action == "extension-list") Console.WriteLine(Wire.Encode(new { Packages = extensions.Inventory(), Operations = extensions.Operations() }));

@@ -43,7 +43,7 @@ public partial class MaintenancePage : UserControl
     }
     async void SaveChanges_Click(object sender, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         if (!vm.HasUnconfirmedConfigurationSubmission)
         {
             if (vm.CanEditFormConfiguration && ConfigurationCloseGuard.CommitAndFindInvalid(this, enabledOnly: true) is { } invalid)
@@ -109,7 +109,7 @@ public partial class MaintenancePage : UserControl
     public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
     void ReviewChanges_Click(object sender, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         try { ConfigurationSaveReviewWindow.ShowChanges(Window.GetWindow(this), vm.GetConfigurationChangeItems(), vm.DraftRevisionState); }
         catch (Exception error)
         {
@@ -119,7 +119,7 @@ public partial class MaintenancePage : UserControl
     }
     async void ExportTemplate_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         StartupSiteTemplate template;
         try { template = vm.ExportSiteTemplate(); }
         catch (Exception error) { vm.Message = "模板尚不能导出：" + error.Message + "；当前输入保留。"; return; }
@@ -134,7 +134,7 @@ public partial class MaintenancePage : UserControl
     }
     async void ImportTemplate_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         var picker = new OpenFileDialog { Filter = "同版安全设置模板|*.json" };
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
         ParcelViewModel.TemplatePreview? preview = null;
@@ -160,14 +160,14 @@ public partial class MaintenancePage : UserControl
     async void InspectSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectLastSaveAsync, "核对原配置保存结果"); }
     async void Load_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         if (ConfigurationCloseGuard.HasUnsaved(vm, this) && !await ConfigurationCloseGuard.ReviewUnsavedAsync(Window.GetWindow(this), 1, vm.SaveIncompleteEditorAsync, "重新读取")) return;
         await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿");
     }
     async void SaveEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveIncompleteEditorAsync, "加密保存未完成设置"); }
     async void ContinueEditor_Click(object s, RoutedEventArgs e)
     {
-        if (DataContext is not ParcelViewModel vm || vm.Busy) return;
+        if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsAdministrator) return;
         // Saving here would replace the very draft selected for continuation.
         if (ConfigurationCloseGuard.HasUnsaved(vm, this) && !await ConfigurationCloseGuard.ReviewUnsavedAsync(Window.GetWindow(this), 1, null, "读取原草稿")) return;
         await vm.RunAsync(vm.ContinueIncompleteEditorAsync, "继续未完成设置");

@@ -1,0 +1,35 @@
+PASS BROKER: arbitrary directory clone cannot change origin or acquire machine identity
+PASS BROKER: approved same-physical-directory locator rebind keeps original identity and ciphertext backup
+PASS BROKER: interrupted relocation resumes idempotently with the same identity
+PASS BROKER: unused simulation exception never applies to production
+PASS BROKER: unchanged old copy still cannot become a second usable machine
+PASS BROKER: SCM starts the real frozen System authentication host with protected credentials
+PASS BROKER: old runtime-writable credentials do not become a protected administrator
+PASS BROKER: fixture uses a real Windows token with administrator membership disabled
+PASS BROKER: ordinary Windows caller cannot invoke offline storage relocation
+PASS BROKER: ordinary Windows caller cannot claim the first protected administrator
+PASS BROKER: approved first account still needs its actual software password
+PASS BROKER: reused pipe instances retain each complete acknowledged reply across 64 round trips
+PASS BROKER: System store contains salted password hashes, not passwords
+PASS BROKER: runtime token cannot read protected password/session state
+PASS BROKER: runtime token cannot replace protected credentials
+PASS BROKER: runtime token cannot delete protected credentials or reopen bootstrap
+PASS BROKER: software administrator authentication works under an ordinary Windows token
+PASS BROKER: ordinary-token software logout immediately revokes its grant
+PASS BROKER: another process/session login revokes the original protected session
+PASS BROKER: administrator can sign in again after session revocation
+PASS BROKER: protected helper authorization cannot be replayed
+PASS BROKER: protected helper ticket cannot change its request
+PASS BROKER: logout revokes an already-consumed helper authorization
+PASS BROKER: a missing provisioned credential file fails closed and cannot be overwritten
+PASS BROKER: original protected credentials remain usable after integrity repair
+PASS BROKER: real broker expiry cancels client authority and writes an authentication audit
+PASS BROKER: protected login failure counted 0
+PASS BROKER: protected login failure counted 1
+PASS BROKER: protected login failure counted 2
+PASS BROKER: protected login failure counted 3
+PASS BROKER: protected login failure counted 4
+PASS BROKER: failure lockout is owned by the service and survives a new client
+PASS BROKER: protected authority anchor survives service removal; no fallback to the forged local store
+PASS BROKER: missing service refuses authentication instead of silently succeeding
+PASS BROKER COMPLETE: actual SCM, System host, restricted Windows token and frozen binaries; no equipment or production qualification

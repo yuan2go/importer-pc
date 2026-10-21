@@ -1,0 +1,15 @@
+{
+  "RunId": 39583740263,
+  "Url": "https://github.com/yuan2go/importer-pc/actions/runs/39583740263",
+  "HeadSourceCommit": "981c7da5b74c4e788dbc82362e09a45267cd9ebc",
+  "MergeSourceCommit": "8f6d6d7f41d1cacc3e5fd965a64bbcc9eb29bd4e",
+  "Conclusion": "failure",
+  "Failure": "obsolete visual expectation for removed save and auxiliary-window entries",
+  "ArtifactId": 12338168164,
+  "OriginalArchive": "CI66-FAILURE.zip",
+  "OriginalArchiveSha256": "92f2885c956cf9e21763dca36ded999d4dd336d02b6281097c1d773c636a70ab",
+  "RawLogEntry": "scd-evidence/visual/WINDOWS-WPF.log",
+  "RawLogSha256": "22b458df4efa62d6b37a69403050925650034e2b6cb7cfe7b92ae58d3cbd6d53",
+  "ReadableLog": "CI66-VISUAL-FAIL.log",
+  "ReadableTransformation": "CRCRLF/CRLF to LF; original entry bytes preserved in the ZIP"
+}

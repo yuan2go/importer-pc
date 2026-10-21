@@ -101,7 +101,7 @@ static class UxCommercialInputs
             await app.StartAsync(default); app.EmitReferenceAt("left", "before-rebind", "OLD", "before-rebind");
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); original = s.Operations.Single().Id;
             var r = await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); Check(r.Status == "Persisted", "rebind pauses original owner");
-            await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); s = await Wait(app, x => x.Availability!.Configure);
+            await AdministratorFixture.Authorize(app); s = await Wait(app, x => x.Availability!.Configure);
             var reader = c.Reader with { DeviceId = changeDevice ? "sportmaster.camera.replaced" : c.Reader.DeviceId, Revision = "2" };
             var candidate = s.Configuration.Effective with { Reader = reader, Topology = new([reader, c.Topology!.Readers[1]], [c.Topology.Positions[0] with { ReaderDeviceId = reader.DeviceId }, c.Topology.Positions[1]]) };
             Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic controlled reader replacement")).Status == "PendingRestart", "exact reader replacement stages through existing CAS");

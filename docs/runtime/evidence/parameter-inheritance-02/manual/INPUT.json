@@ -1,0 +1,15 @@
+{
+  "SourceCommit": "13663334b2a80f8b9d4e35968ee915851474eae4",
+  "Scope": "Frozen published DLL native HWND, synthetic ports, Windows 125%",
+  "Actions": [
+    "Display name: mouse focus and Chinese text injection",
+    "Tab advances to target efficiency; type 0",
+    "Apply refuses 0 and retains Chinese draft; focus returns to invalid efficiency",
+    "Ctrl+A reports selection 0; replace with 2400",
+    "Apply updates visible station summary and target; runtime revision remains separate (also asserted by fixture)"
+  ],
+  "Result": "PASS",
+  "ImeComposition": "NOT_RUN",
+  "RealDevices": "NOT_RUN",
+  "AutomationNote": "UIA focused_element remained stale at search in this environment; input target verified by visible caret, selected_text and actual field value/screenshots"
+}

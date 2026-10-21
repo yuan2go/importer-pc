@@ -1,0 +1,18 @@
+{
+  "Baseline": "3b883fe6a53b58b29eeca18c3719b5bfc0ee388e",
+  "ProductSource": "1f4c4319cd4003ab5586b9a3fb2a23844d21310f",
+  "Scope": "Canonical Git blobs; manifest corrections for six overlapping-PR identity records included",
+  "BaselineErrors": 298,
+  "CurrentErrors": 298,
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "ErrorCodes": {
+    "credential_review_required": 3,
+    "excluded_binary": 6,
+    "unsupported_reference_scheme": 22,
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "BaselineReportSha256": "9c7cb064b8b50c70b836b4eac40eaeb7d712d01cd91645f71c3aa1bdc6c5a155",
+  "CurrentReportSha256": "14c24cc31ee0e02fce45ea4bd8e8f82052a7fdb6af75072fd549907e39f994eb"
+}

@@ -111,7 +111,7 @@ public sealed partial class ParcelRuntime
         var proof = ReadRestoreHandoff();
         if (expectedId != proof.Id || factory.AdmissionFailure(Effective) is not null) throw new InvalidOperationException("交接身份变化或部署资格不足");
         using var sourceOwner = new ResourceLease(proof.SourceDirectory, ["application-owner"]);
-        var confirmation = new RestoreConfirmation(proof.Id, maintenanceSession.Identity!.Subject, reason, DateTimeOffset.UtcNow);
+        var confirmation = new RestoreConfirmation(proof.Id, AdministratorIdentity!.Subject, reason, DateTimeOffset.UtcNow);
         ExtensionStore.AtomicWrite(Path.Combine(directory!, "RESTORE-CONFIRMED.json"), confirmation);
         repository!.Commit(null, "RestoreHandoffConfirmed", Wire.Encode(new { HandoffId = proof.Id, ConfirmationHash = Wire.Hash(Wire.Encode(confirmation)), Actor = confirmation.Actor, Reason = reason }), paused: true);
     }

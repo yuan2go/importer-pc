@@ -127,8 +127,9 @@ public sealed partial class ParcelRepository
 public static partial class ParcelRecovery
 {
     internal static void CreateBackup(string directory, string destination, ParcelConfiguration effective, ParcelConfiguration? pending,
-        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup)
+        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null)
     {
+        requireAuthority?.Invoke();
         destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
         RecoveryFiles.RequireOrdinaryAncestors(directory); RecoveryFiles.RequireOrdinaryAncestors(destination);
         var relative = Path.GetRelativePath(directory, destination);
@@ -147,15 +148,17 @@ public static partial class ParcelRecovery
         if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
         Directory.CreateDirectory(recovery); RecoveryFiles.RequireOrdinaryAncestors(recovery);
         registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
-        backupDatabase(destination);
+        requireAuthority?.Invoke(); backupDatabase(destination);
         foreach (var name in names)
         {
+            requireAuthority?.Invoke();
             var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
             RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name]);
         }
         var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination), RecoveryFiles.Inventory(recovery), DateTimeOffset.UtcNow,
             "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges");
         if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
+        requireAuthority?.Invoke();
         ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
     }
 }

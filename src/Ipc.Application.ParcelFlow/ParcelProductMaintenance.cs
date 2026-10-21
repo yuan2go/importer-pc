@@ -67,6 +67,7 @@ public sealed partial class ParcelStartupMaintenance
         var preview = Preview(purpose, backupDestination, state, copy);
         if (preview.Identity != expectedPlan || !preview.Allowed) throw new InvalidOperationException("维护计划已变化或原责任未清；重新检查，不能切换发布");
         if (copy is not null) await BackupCopy(state.Directory, backupDestination, state, copy);
+        Authorize();
         if (change is not null) await change(); // Same application owner spans backup and deployment commit.
         return preview;
     }
@@ -79,7 +80,7 @@ public sealed partial class ParcelStartupMaintenance
         // derived repairs or migrations; the original DB is never opened by SQLite.
         var snapshotBytes = checked(new FileInfo(copy.Database).Length + (File.Exists(copy.Database + "-wal") ? new FileInfo(copy.Database + "-wal").Length : 0));
         ParcelRecovery.CreateBackup(directory, destination, envelope.Effective, envelope.Pending, snapshotBytes,
-            file => Database.Backup(database, file), ports.RegisterBackup);
+            file => Database.Backup(database, file), ports.RegisterBackup, Authorize);
     }
     public async Task BackupAsync(string destination)
     {
@@ -89,6 +90,7 @@ public sealed partial class ParcelStartupMaintenance
     }
     public Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token)
     {
+        Authorize();
         directory = Path.GetFullPath(directory); RecoveryFiles.RequireOrdinaryAncestors(directory);
         var result = new List<StartupBackupItem>();
         foreach (var recovery in Directory.EnumerateDirectories(directory, "*.recovery").Take(257))

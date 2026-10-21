@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[switch]$OperatorAdministration,[string]$FixtureCommit)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -60,7 +60,7 @@ if ($ParameterV3) {
 $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
- $mode=if($ParameterV3){'--parameter-v3'}elseif($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
+ $mode=if($OperatorAdministration){'--operator-administration'}elseif($ParameterV3){'--parameter-v3'}elseif($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
  $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
  if($Interactive){$nativeArguments += '--interactive'}
  & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
@@ -71,13 +71,13 @@ if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
  if($AuditPerformance -and (Test-Path -LiteralPath (Join-Path $evidence 'R02-performance.json'))){Copy-Item -LiteralPath (Join-Path $evidence 'R02-performance.json') -Destination $Output}
- if($ParameterV3){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
+ if($ParameterV3 -or $OperatorAdministration){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
  elseif($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
- else { foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
+ else { foreach($screen in @('commercial-history-1100x600.png','commercial-first-configuration.png')){
   if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}
  }
 
  }
 }
 [ordered]@{Status=if($result -eq 0){'PASS'}else{'FAIL'};SourceCommit=$release.SourceCommit;FixtureSourceCommit=$fixtureSource;FixtureMatchesMedium=($fixtureSource -eq $release.SourceCommit);MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;Scope='Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning';ExitCode=$result;Binaries=@($refs|ForEach-Object{[ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
-if($result -ne 0){throw 'Frozen native WPF verification failed; original log retained'}
+if($result -ne 0){if(Test-Path -LiteralPath (Join-Path $Output 'WINDOWS-WPF.log')){Get-Content -LiteralPath (Join-Path $Output 'WINDOWS-WPF.log') -Tail 18};throw 'Frozen native WPF verification failed; original log retained'}

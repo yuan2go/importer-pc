@@ -69,6 +69,7 @@ public static partial class WindowsDeploymentSetup
         var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
         if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
         WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
+        if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") AdministratorBroker.RemoveIfUnused(location.DataRoot);
         ProjectInstalledApplication(retired); removeShortcuts(location);
         var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
         var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
@@ -136,8 +137,14 @@ public static partial class WindowsDeploymentSetup
         var operation = Path.Combine(MachineRoot, "deployments", application + ".migration-" + Wire.Id() + ".json");
         var next = current with { DataRoot = Path.GetFullPath(newDataRoot), MaintenanceOperation = operation, RestoreHandoffHash = handoffHash };
         WriteProtected(operation, new { Status = "Prepared", Previous = current, Next = next, HandoffSha256 = handoffHash }, sid);
+        if (application is "sportmaster" or "direct-plc" or "wcs-to-plc")
+        {
+            AdministratorBroker.CopyCredentialsForMigration(current.DataRoot, newDataRoot);
+            AdministratorBroker.Install(newDataRoot, Path.Combine(current.ReleaseRoot, "app"));
+        }
         WriteProtected(Path.Combine(current.ReleaseRoot, "deployment-location.json"), next, sid);
         WriteProtected(Registration(application), next, sid);
+        if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") AdministratorBroker.RemoveIfUnused(current.DataRoot);
         WriteProtected(operation, new { Status = "CompletedIsolated", Previous = current, Next = next, HandoffSha256 = handoffHash }, sid);
     }
 }

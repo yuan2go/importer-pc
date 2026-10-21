@@ -35,7 +35,7 @@ public sealed partial class ParcelRuntime
                     throw new IOException("备份份数容量上限已到；保留所有原备份，转移到新卷或审查消费者后维护");
                 backup = Path.Combine(policy.Directory, Id + "-" + now.ToString("yyyyMMddTHHmmssZ") + "-" + Wire.Id() + ".db");
                 foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
-                ParcelRecovery.CreateBackup(directory!, backup, Effective, configuration!.Current.Pending, repository.StorageBytes, repository.Backup, factory.RegisterBackup);
+                ParcelRecovery.CreateBackup(directory!, backup, Effective, configuration!.Current.Pending, repository.StorageBytes, repository.Backup, factory.RegisterBackup, () => { Administrator.Require(); });
                 outcome = "BackupCreated";
             }
             catch (Exception error) when (error is IOException or InvalidOperationException or UnauthorizedAccessException or InvalidDataException)

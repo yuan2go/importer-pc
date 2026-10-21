@@ -14,6 +14,8 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
     internal static DesktopStartupRoute StartupRoute(StartupMaintenanceDocument document) =>
         document.ExistingConfiguration ? DesktopStartupRoute.Runtime :
         document.Candidate is null ? DesktopStartupRoute.Repair : DesktopStartupRoute.FirstConfiguration;
+    internal static DesktopStartupRoute StartupRoute(StartupClassification document) =>
+        document.ExistingConfiguration ? DesktopStartupRoute.Runtime : document.Readable ? DesktopStartupRoute.FirstConfiguration : DesktopStartupRoute.Repair;
 
     public static DesktopLaunchOptions Parse(string[] args, string applicationId)
     {
@@ -33,7 +35,7 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
         return new(new(
             options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
-            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
+            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout")), ui);
     }
     public static string DefaultUi(string applicationId) => applicationId == "sportmaster" ? "supply-station" : "classic";

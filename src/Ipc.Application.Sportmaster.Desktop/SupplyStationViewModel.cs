@@ -15,34 +15,52 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
-    public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待站位配置";
-    public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅 main 位，未启用双位" : "left / right 独立投递位 · 扫码 → WCS 格口";
+    public string Station => StationDisplaySummary;
+    public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅主位，未启用双位" : "左 / 右独立投递位 · 扫码 → 上游格口";
+    public string RcsServiceStatus
+    {
+        get
+        {
+            if (!Fresh || Snapshot is not { } snapshot) return "RCS 服务：状态未知";
+            if (snapshot.Configuration.Effective.Mode == RunMode.Simulation) return "RCS 服务：模拟";
+            if (snapshot.Configuration.Effective.Wcs is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding) return "RCS 服务：未配置";
+            var health = snapshot.Health.SingleOrDefault(h => h.InstanceId == binding.InstanceId);
+            var now = DateTimeOffset.UtcNow;
+            if (health is null || health.ConfirmedAt > now || health.ValidUntil <= now || health.ValidUntil <= health.ConfirmedAt) return "RCS 服务：状态未知";
+            if (!health.Ready) return "RCS 服务：离线";
+            // Local lifecycle readiness alone is not remote service availability.
+            return health.Detail.Contains("RCS heartbeat HTTP ", StringComparison.Ordinal) ? "RCS 服务：在线" : "RCS 服务：等待连接确认";
+        }
+    }
     public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停新入场" :
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有结果待核对" :
         Snapshot?.BlockingReasons.Length > 0 ? "有作业阻断" : Status;
     // Display copy only: never infer availability or remove the original blocking facts.
     public string WorkNotice => BlockingReasons;
     const string PauseNotice = "Software admission paused; this is not an emergency stop";
-    public bool IsSettingsWorkspace => SelectedPage == "maintenance";
+    public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
+    public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
+    { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
     public bool SettingsHasAttention => !Fresh || Snapshot?.BlockingReasons.Any(x => x != PauseNotice) == true ||
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true;
     public string DisplayWorkNotice => !IsSettingsWorkspace || !Fresh ? WorkNotice :
-        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "软件暂停不是安全急停";
+        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "";
     public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
     public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
     public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
-        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。" ? "" : OperatorFeedback;
+        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。" ? "" : OperatorFeedback;
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
     public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数设置", "diagnostics" => "诊断与恢复", _ => "作业" };
-    public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
+    public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
         PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(StationDisplaySummary)) Changed(nameof(Station));
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
             if (e.PropertyName == nameof(Feedback)) Changed(nameof(WorkFeedback));
         };
@@ -50,7 +68,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
-        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground)})Changed(name);
+        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
@@ -112,6 +130,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string Heading => PositionId == "main" ? "单读码兼容位" : requestedPosition == "left" ? "左投递位" : "右投递位";
     public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
+    public string ReaderIdentity { get; private set; } = "未配置";
     public ParcelOperation? Operation { get; private set; }
     public ParcelInputSnapshot? Input { get; private set; }
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
@@ -142,6 +161,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
         (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
+    public string ScanSummary => Input is null ? "等待本位相机读码" : "读取 " + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? 24 : (Operation!.Slot!.Length, IsCompact) switch
     { (<= 6, false) => 64, (<= 6, true) => 44, (<= 16, false) => 40, (<= 16, true) => 28, (_, false) => 28, _ => 24 };
@@ -149,7 +169,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次输入及准入条件，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
         Operation?.State switch
         {
-            ParcelState.WcsUnknown => "请勿重复放货，核对原请求。",
+            ParcelState.WcsUnknown => "请勿重复放货，请联系管理员核对。",
             ParcelState.WcsRejected => "查看详情，核对拒绝原因。",
             ParcelState.UnpackRequired => "本位等待检查处置；查看原回执，不重复放货。",
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
@@ -174,7 +194,14 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "；下方原请求只属于该原作业，格口不属于本次观察。" : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
+    public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
+    public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ? "新输入未建作业；原作业请查看详情。" :
+        CurrentTaskAvailable ? "按本次格口投递；下一包信息自动更新。" :
+        Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :
+        HasUncertainOriginal ? "请勿重复放货，请联系管理员核对。" :
+        Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
+        BlockingReasons.Length > 0 ? "暂不能供包，请联系管理员检查。" : "读码后自动获取任务，无需逐包确认。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";
@@ -185,7 +212,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
     public bool CanAdmit { get; private set; }
     public bool CanReconcile { get; private set; }
-    public bool CanQueryOriginal => CanReconcile && Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
+    public bool CanQueryOriginal => owner.IsAdministrator && CanReconcile && HasUncertainOriginal;
+    public bool HasUncertainOriginal => Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
+    public bool HasContinuation => Operation is { } op && owner.Snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
     public bool CanContinue { get; private set; }
     public ParcelOperation[] Recent { get; private set; } = [];
     public string InspectionReason { get; set; } = "";
@@ -202,6 +231,10 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         var position = snapshot?.Positions?.SingleOrDefault(x => x.Id == PositionId);
         var binding = snapshot is null ? null : ParcelBindings.Positions(snapshot.Configuration.Effective).SingleOrDefault(x => x.Id == PositionId);
         ReaderId = binding?.ReaderDeviceId ?? "未配置";
+        var reader = snapshot is null ? null : ParcelBindings.Readers(snapshot.Configuration.Effective).SingleOrDefault(r => r.DeviceId == ReaderId);
+        var extension = snapshot?.Configuration.Effective.Extensions?.Instances.SingleOrDefault(x => reader?.Driver == "extension:" + x.Id);
+        var address = extension?.Parameters.GetValueOrDefault("device.ip");
+        ReaderIdentity = string.IsNullOrWhiteSpace(address) ? ReaderId : address + " · " + ReaderId;
         var recent = snapshot?.Operations.Where(x => (x.PositionId ?? "main") == PositionId)
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
         Input = snapshot?.Inputs?.SingleOrDefault(x => x.PositionId == PositionId);
@@ -219,24 +252,25 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
         CanContinue = !owner.Busy && fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
         BlockingReasons = !fresh ? "快照失效；等待状态读取恢复" : !viewportReady ? "视图空间保护；恢复客户区并人工确认" : binding is null ? "当前配置未启用该投递位" :
-            position is null ? "尚未取得投递位状态" : identityMissing ? "当前作业身份未匹配：" + position.CurrentOperation + "；停止本位新操作并重新读取。\n" + string.Join("\n", position.BlockingReasons) : string.Join("\n", position.BlockingReasons);
+            position is null ? "尚未取得投递位状态" : identityMissing ? "当前作业身份未匹配：" + position.CurrentOperation + "；停止本位新操作并重新读取。\n" + string.Join("\n", position.BlockingReasons.Select(ChineseInterfaceText.Notice)) : string.Join("\n", position.BlockingReasons.Select(ChineseInterfaceText.Notice));
         Presentation = !fresh ? ParcelPresentation.Stale() : binding is null ? ParcelPresentation.Neutral("未启用") :
             InputUnadmitted ? ParcelPresentation.InputPresentation(Input!) :
             position?.CurrentOperation is not null && Operation is null ? ParcelPresentation.Unknown("当前作业身份未匹配 · 等待新快照") : ParcelPresentation.Operation(Operation, true);
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId),
+            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
-            (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ObservationIdentity), ObservationIdentity),
+            (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ScanSummary), ScanSummary), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
             (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
-            (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
+            (nameof(RcsServiceStatus), RcsServiceStatus), (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
             (nameof(Admission), Admission), (nameof(RequestId), RequestId), (nameof(ResultReason), ResultReason),
             (nameof(ObservedAt), ObservedAt), (nameof(LatestInputSummary), LatestInputSummary), (nameof(ImageStatus), ImageStatus),
             (nameof(CanAdmit), CanAdmit), (nameof(CanReconcile), CanReconcile), (nameof(CanQueryOriginal), CanQueryOriginal), (nameof(CanContinue), CanContinue),
+            (nameof(HasUncertainOriginal), HasUncertainOriginal), (nameof(HasContinuation), HasContinuation), (nameof(NextStep), NextStep),
             (nameof(Recent), Recent), (nameof(InspectionReason), InspectionReason) })
         {
             if (published.TryGetValue(name, out var prior) && Equals(prior, value)) continue;
@@ -246,11 +280,11 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     readonly Dictionary<string, object?> published = [];
     public static string StageText(ParcelState state) => state switch
     {
-        ParcelState.SlotResolved => "WCS 格口已取得",
-        ParcelState.WcsUnknown => "WCS 结果待核对 · 请勿重复放货",
-        ParcelState.WcsRejected => "WCS 明确拒绝",
+        ParcelState.SlotResolved => "上游格口已取得",
+        ParcelState.WcsUnknown => "上游结果待核对 · 请勿重复放货",
+        ParcelState.WcsRejected => "上游明确拒绝",
         ParcelState.UnpackRequired => "需拆包 · 本位等待检查处置",
-        ParcelState.ResolvingWcs => "WCS 格口处理中",
+        ParcelState.ResolvingWcs => "上游格口处理中",
         ParcelState.Prepared => "原阶段待执行",
         ParcelState.Blocked => "作业阻断",
         ParcelState.WaitingWeight => "等待本件有效重量",

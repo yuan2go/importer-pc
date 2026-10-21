@@ -14,7 +14,17 @@ static partial class ArchitectureQuality
         await StartupRoutingChecks();
         var c = Config("sportmaster");
         async Task<BusinessReceipt> ConfirmOnce(ParcelRuntime app, string owner, string reason)
-        { var snapshot = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "ConfirmConfiguration", owner, reason)); }
+        {
+            for (var attempt = 0; attempt < 100; attempt++)
+            {
+                var snapshot = await app.SnapshotAsync();
+                if (snapshot.Availability?.Configure != true) { await Task.Delay(20); continue; }
+                var result = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "ConfirmConfiguration", owner, reason));
+                if (result.Status != "Rejected" || !(result.Reason.Contains("guard is closed") || result.Reason.Contains("resource health"))) return result;
+                await Task.Delay(20);
+            }
+            throw new Exception("Confirmation resource guards did not settle");
+        }
         string Authority(string name) => Path.Combine(DirectoryFor(name, c), "configuration.json");
         async Task<(ParcelConfiguration Effective, byte[] Bytes)> Legacy(string name)
         {
@@ -34,6 +44,7 @@ static partial class ArchitectureQuality
             Check(Convert.FromBase64String(confirmation.OriginalEnvelopeBase64!).SequenceEqual(legacy.Bytes) && confirmation.OriginalEnvelopeSha256 ==
                 Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(legacy.Bytes)), "legacy envelope original bytes including BOM and SHA256 retained in the authoritative envelope");
             var owner = s.RuntimeId.ToString("N") + ":" + s.Configuration.Revision + ":" + confirmation.EffectiveHash;
+            await app.LogoutAdministratorAsync();
             Check((await Command(app, "ConfirmConfiguration", owner, "Unauthenticated attempt")).Status == "Rejected", "legacy confirmation requires maintenance grant");
             await Maintenance(app);
             Check((await Command(app, "Resume")).Status == "Rejected", "software Resume cannot bypass unconfirmed Effective");
@@ -44,7 +55,7 @@ static partial class ArchitectureQuality
             Check((await app.CommandAsync(new(Wire.Id(), stale.Revision, "ConfirmConfiguration", owner, "Stale application projection"))).Status == "Conflict", "legacy confirmation also binds application CAS");
             Check((await Command(app, "ConfirmConfiguration", owner, "Operator inspected preserved original and current healthy resources")).Status == "Persisted", "authenticated maintenance confirms current revision and content with reason");
             s = await app.SnapshotAsync();
-            Check(s.Paused && s.Configuration.Confirmation is { Required: false, State: "Confirmed", ConfirmedBy: "maintenance" } && s.Configuration.Status == "Effective",
+            Check(s.Paused && s.Configuration.Confirmation is { Required: false, State: "Confirmed", ConfirmedBy: "fixture-admin" } && s.Configuration.Status == "Effective",
                 "confirmation records identity but keeps software pause for explicit Resume");
             Check((await Command(app, "Resume")).Status == "Persisted", "confirmed Effective can resume through ordinary guards");
         }
@@ -79,7 +90,7 @@ static partial class ArchitectureQuality
                 s.Configuration.Confirmation is { Required: true } && Convert.FromBase64String(s.Configuration.Confirmation.OriginalEnvelopeBase64!).SequenceEqual(failedLegacy.Bytes),
                 "Stage and restart retain exact legacy envelope and Pending without activating an unconfirmed base");
             await Maintenance(restarted);
-            Check((await Command(restarted, "ConfirmConfiguration", s.RuntimeId.ToString("N") + ":" + s.Configuration.Revision + ":" + s.Configuration.Confirmation!.EffectiveHash, "Inspect legacy before candidate activation")).Status == "Persisted", "maintenance can confirm legacy base while preserving candidate");
+            Check((await ConfirmOnce(restarted, s.RuntimeId.ToString("N") + ":" + s.Configuration.Revision + ":" + s.Configuration.Confirmation!.EffectiveHash, "Inspect legacy before candidate activation")).Status == "Persisted", "maintenance can confirm legacy base while preserving candidate");
         }
         await using (var activated = await Open(c, "confirmation-failed"))
         {
@@ -147,6 +158,8 @@ static partial class ArchitectureQuality
             Check(firstWindow.ConfigurationConfirmationEvidence != originalEvidence && firstWindow.ConfigurationDraft == unsavedDraft && firstWindow.CanConfirmConfiguration,
                 "explicit re-read updates confirmation identity while keeping independent edit draft");
             await firstWindow.RunAsync(firstWindow.ConfirmConfigurationAsync);
+            for (var attempt = 0; attempt < 100 && firstWindow.Message.StartsWith("Rejected") && (firstWindow.Message.Contains("guard is closed") || firstWindow.Message.Contains("resource health")); attempt++)
+            { await Task.Delay(20); await firstWindow.RefreshAsync(); await firstWindow.RunAsync(firstWindow.ConfirmConfigurationAsync); }
             var confirmed = await app.SnapshotAsync();
             Check(firstWindow.Message.StartsWith("Persisted") && confirmed.Paused && confirmed.Configuration.Confirmation?.Required == false &&
                 firstWindow.EffectiveConfigurationHeading == "最后确认 Effective" && confirmed.Configuration.Pending?.TimeoutMs == c.TimeoutMs + 109,

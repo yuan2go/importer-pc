@@ -1,3 +1,4 @@
+using Ipc.Application.Contracts;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
@@ -15,6 +16,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly bool authorizationOnly;
     readonly TextBlock outcome = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
     readonly TextBlock pauseState = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
+    readonly Button pause = new() { Name = "ReviewPause", Content = "暂停新入场", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 0, 0, 8) };
+    readonly TextBlock guidance = Note("");
     readonly StackPanel credentials = new();
     readonly Expander authentication = new() { Header = "需要时认证维护权限", Margin = new(0, 0, 0, 12) };
     readonly Button save = new() { Name = "ConfirmSaveChanges", Content = "确认保存", MinWidth = 112 };
@@ -41,9 +44,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
         footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(back);
         var footerChrome = new Border { BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 1, 0, 0), Child = footer };
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
-        var body = new StackPanel { Margin = new(28, 24, 28, 24) };
+        var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, 24, 0));
-        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，实际资格由应用服务再次检查。" : "核对本次更改后保存。已保存的设置在受控重启后应用，当前作业仍使用原运行配置。"));
+        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : "保存后待受控重启生效，当前作业继续使用运行配置。"));
         body.Children.Add(outcome); AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
         if (!authorizationOnly)
         {
@@ -56,44 +59,17 @@ public sealed class ConfigurationSaveReviewWindow : Window
             };
             body.Children.Add(changes);
             if (vm.ReviewedConfigurationChanges.Length == 0) body.Children.Add(Note("当前完整候选与读取基线没有字段差异。"));
-            body.Children.Add(Note(vm.ReviewedConfigurationChanges.Any(c => c.Path.Length > 0) ? "双击已知设置可返回对应字段。秘密只显示修改事实。" : "技术路径可在行提示中核对。秘密只显示修改事实。"));
+            body.Children.Add(Note(vm.ReviewedConfigurationChanges.Any(c => c.Path.Length > 0) ? "双击设置可返回修改；敏感内容已隐藏。" : "技术路径见行提示；敏感内容已隐藏。"));
         }
-        body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", 16, 20)); body.Children.Add(pauseState);
-        var pause = new Button { Content = "暂停新入场", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 0, 0, 8) };
+        body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", 16, 16)); body.Children.Add(pauseState);
         pause.Click += async (_, _) => { pause.IsEnabled = false; try { await vm.PauseAsync(); } finally { pause.IsEnabled = true; } }; body.Children.Add(pause);
-        var guidance = Note(""); guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
-        var credentialGrid = new Grid { Margin = new(0, 8, 0, 12) };
-        credentialGrid.ColumnDefinitions.Add(new()); credentialGrid.ColumnDefinitions.Add(new()); credentialGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        var accountGroup = new StackPanel { Margin = new(0, 0, 12, 0) }; accountGroup.Children.Add(Label("维护账号"));
-        var account = new TextBox { Name = "MaintenanceSubject" }; account.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.MaintenanceSubject)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-        AutomationProperties.SetName(account, "维护账号"); accountGroup.Children.Add(account);
-        var proofGroup = new StackPanel { Margin = new(0, 0, 12, 0) }; proofGroup.Children.Add(Label("维护口令")); proofGroup.Children.Add(proof); AutomationProperties.SetName(proof, "维护口令");
-        var authorize = new Button { Content = "认证维护权限", VerticalAlignment = VerticalAlignment.Bottom }; authorize.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartFreshOperation)));
-        var authorizationFeedback = Note(""); authorizationFeedback.Visibility = Visibility.Collapsed;
-        authorize.Click += async (_, _) =>
+        guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
+        if (vm.Application is IWorkstationAdministration administrator)
         {
-            var value = proof.Password; proof.Clear();
-            await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync(value), "认证维护权限");
-            authorizationFeedback.Text = vm.Message; authorizationFeedback.Visibility = Visibility.Visible;
-        };
-        Grid.SetColumn(proofGroup, 1); Grid.SetColumn(authorize, 2); credentialGrid.Children.Add(accountGroup); credentialGrid.Children.Add(proofGroup); credentialGrid.Children.Add(authorize);
-        bool? narrowCredentials = null;
-        credentialGrid.SizeChanged += (_, _) =>
-        {
-            var narrow = credentialGrid.ActualWidth < 600;
-            if (narrowCredentials == narrow) return;
-            narrowCredentials = narrow; credentialGrid.RowDefinitions.Clear();
-            for (var i = 0; i < (narrow ? 3 : 1); i++) credentialGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            credentialGrid.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
-            credentialGrid.ColumnDefinitions[2].Width = narrow ? new(0) : GridLength.Auto;
-            Grid.SetColumn(proofGroup, narrow ? 0 : 1); Grid.SetColumn(authorize, narrow ? 0 : 2);
-            Grid.SetRow(proofGroup, narrow ? 1 : 0); Grid.SetRow(authorize, narrow ? 2 : 0);
-            accountGroup.Margin = proofGroup.Margin = narrow ? new(0, 0, 0, 12) : new(0, 0, 12, 0);
-            authorize.HorizontalAlignment = narrow ? HorizontalAlignment.Left : HorizontalAlignment.Stretch;
-        };
-        credentials.Children.Add(Note("先暂停新入场并等待当前外呼完成。应用仍未允许维护操作时，可在此认证；已有有效授权会继续使用。"));
-        credentials.Children.Add(credentialGrid); credentials.Children.Add(authorizationFeedback);
-        authentication.Content = credentials; authentication.IsExpanded = authorizationOnly; body.Children.Add(authentication);
+            var login = new Button { Content = "登录软件管理员…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            login.Click += async (_, _) => { new AdministratorWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshAdministratorAsync(); };
+            authentication.Header = "软件管理员账号"; authentication.Content = login; authentication.IsExpanded = !vm.IsAdministrator; body.Children.Add(authentication);
+        }
         body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", 16, 12));
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
@@ -127,13 +103,16 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void ModelChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (!vm.IsAdministrator && !vm.Busy) { Close(); return; }
         if (e.PropertyName is nameof(vm.Busy) or nameof(vm.Fresh) or nameof(vm.CanConfigure) or nameof(vm.ConfigurationReviewIsCurrent) or nameof(vm.HasUnconfirmedConfigurationSubmission) or nameof(vm.ConfigurationSubmissionOutcome) or nameof(vm.Snapshot) or nameof(vm.Feedback)) UpdateState();
     }
     void UpdateState()
     {
         pauseState.Text = !vm.Fresh ? "状态已失效；请等待有效快照，暂停命令仍可独立执行。" : vm.Snapshot?.Paused == true ? "已暂停新入场。软件暂停不是安全急停。" : "当前尚未暂停。保存前请暂停新入场。软件暂停不是安全急停。";
+        pause.Visibility = vm.Fresh && vm.Snapshot?.Paused == true ? Visibility.Collapsed : Visibility.Visible;
         var qualified = vm.Fresh && vm.Snapshot?.Availability?.Configure == true;
         authentication.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
+        guidance.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
         inspect.Visibility = !authorizationOnly && vm.HasUnconfirmedConfigurationSubmission ? Visibility.Visible : Visibility.Collapsed; inspect.IsEnabled = !vm.Busy;
         save.Visibility = authorizationOnly || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
         save.IsEnabled = vm.CanSubmitReviewedConfiguration;
@@ -145,20 +124,21 @@ public sealed class ConfigurationSaveReviewWindow : Window
             "NotSaved" => "本次未保存，已确认原配置修订未改变。检查回执中的原因后再保存。",
             "Conflict" => "配置已由其他操作更新。本窗输入保留，请返回设置比较并明确重新读取。",
             "Rejected" => "本次检查或提交未被接受。请核对完整回执，输入保留。",
-            _ => !authorizationOnly && !vm.ConfigurationReviewIsCurrent ? "输入已改变，当前审阅已过期。请返回设置重新检查。" : authorizationOnly ? "" : "设置检查通过；请核对更改与保存条件。"
+            _ => !authorizationOnly && !vm.ConfigurationReviewIsCurrent ? "输入已改变，当前审阅已过期。请返回设置重新检查。" : ""
         };
         outcome.Text = vm.Busy ? vm.OperationStatus : localFailure ?? (outcomeText + (vm.ConfigurationSubmissionOutcome is "Unknown" or "NotSaved" or "Conflict" or "Rejected" ? "\n" + vm.ConfigurationSubmissionDetail : ""));
+        outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         outcome.Foreground = Brush(vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "#915300" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "#19745A" : "#5A6878");
     }
     static SolidColorBrush Brush(string value) => (SolidColorBrush)new BrushConverter().ConvertFromString(value)!;
-    static TextBlock Heading(string value, double size, double top) => new() { Text = value, FontSize = size, FontWeight = FontWeights.SemiBold, Foreground = Brush("#1C3044"), Margin = new(0, top, 0, 12), TextWrapping = TextWrapping.Wrap };
-    static TextBlock Note(string value) => new() { Text = value, FontSize = 14, Foreground = Brush("#5A6878"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) };
+    static TextBlock Heading(string value, double size, double top) => new() { Text = value, FontSize = size, FontWeight = FontWeights.SemiBold, Foreground = Brush("#1C3044"), Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap };
+    static TextBlock Note(string value) => new() { Text = value, FontSize = 14, Foreground = Brush("#5A6878"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
     static TextBlock Label(string value) => new() { Text = value, Margin = new(0, 0, 0, 6), Foreground = Brush("#25384B") };
     internal static DataGrid ChangeTable(ConfigurationChangeItem[] changes)
     {
         var table = new DataGrid { ItemsSource = changes, IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, CanUserDeleteRows = false, CanUserResizeRows = false,
             HeadersVisibility = DataGridHeadersVisibility.Column, GridLinesVisibility = DataGridGridLinesVisibility.Horizontal, HorizontalGridLinesBrush = Brush("#E5E9EF"),
-            Background = Brushes.White, BorderBrush = Brush("#E1E5EB"), BorderThickness = new(1), RowHeaderWidth = 0, RowHeight = double.NaN, MinRowHeight = 44, MinHeight = 96, FontSize = 14, SelectionMode = DataGridSelectionMode.Single };
+            Background = Brushes.White, BorderBrush = Brush("#E1E5EB"), BorderThickness = new(1), RowHeaderWidth = 0, RowHeight = double.NaN, MinRowHeight = 44, MinHeight = 80, FontSize = 14, SelectionMode = DataGridSelectionMode.Single };
         var textStyle = new Style(typeof(TextBlock)); textStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap)); textStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(8)));
         table.Columns.Add(new DataGridTextColumn { Header = "设置", Binding = new Binding(nameof(ConfigurationChangeItem.Label)), Width = new(2, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "所在页面", Binding = new Binding(nameof(ConfigurationChangeItem.Location)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });

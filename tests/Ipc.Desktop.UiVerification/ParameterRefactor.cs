@@ -19,20 +19,21 @@ static partial class Program
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
             var startupType = desktop.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
             var missingLaunch = new BusinessLaunch(Path.Combine(evidence, "missing-config"), Path.Combine(evidence, "missing-data"), null, null);
+            AdministratorFixture.AuthorizeRoot(missingLaunch.DataRoot);
             var first = (Window)Activator.CreateInstance(startupType, [missingLaunch, null, true])!; first.Show();
             var busy = startupType.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
             var setupTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks"); setupTabs.SelectedIndex = 1; first.UpdateLayout();
-            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
-            Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
+            Check(first.Title.Contains("首次配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
+            Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
             first.Close();
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationId = "native-inherit-" + Wire.Id() };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
         var vm = new ParcelViewModel(runtime, "Sportmaster", "合成原生验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var page = new MaintenancePage { DataContext = vm };
         var window = new Window { Title = "PARAM-01 原生交互验证 · 合成数据", Content = page, Width = 1600, Height = 900, WindowStartupLocation = WindowStartupLocation.CenterScreen };
@@ -43,7 +44,7 @@ static partial class Program
             (Category: "系统", Path: "StationCode"),
             (Category: "业务模块", Path: "BarcodePattern"),
             (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider"),
-            (Category: "组件", Path: vm.CapabilityDrafts[0].InstanceId + "/Provider")
+            (Category: "组件", Path: vm.CapabilityDrafts[0].InstanceId + "/Target")
         };
         foreach (var target in categoryTargets)
         {
@@ -66,8 +67,44 @@ static partial class Program
         for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")) && runtime.HasActiveWork, "native sample test evaluates the third candidate without stopping runtime or saving configuration");
         Capture("parameters-business");
+        var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodeExclusionPattern");
+        exclusion.Text = "OK003";
+        Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("结果已过期")), "editing exclusion invalidates the existing local preview without discarding candidate input");
+        test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("第3项：命中排除规则")); i++) await Task.Delay(20);
+        Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：无") && x.Text.Contains("第3项：命中排除规则")), "native preview exposes exclusion reason and never selects an excluded code");
+        exclusion.Focus(); exclusion.Select(1, 3); await vm.RefreshAsync(); window.UpdateLayout();
+        Check(exclusion.IsKeyboardFocused && exclusion.SelectionLength == 3 && exclusion.Text == "OK003", "new exclusion input retains native focus, selection and draft across snapshots");
+        Capture("parameters-exclusion");
+        Check(control.NavigateTo("DiagnosticLogDays"), "diagnostic retention has its own system field distinct from resident history");
+        var days = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DiagnosticLogDays"); days.Text = "0";
+        vm.ParameterEditor!.ValidateFields(); Check(control.FocusFirstIssue() && days.IsKeyboardFocused && days.Text == "0", "log retention error focuses the exact field and preserves invalid input");
+        days.Text = "14"; vm.ParameterEditor.ValidateFields(); Capture("parameters-retention");
+        Check(control.NavigateTo("DisplayNameDraft"), "local display preferences are reachable in the single directory"); window.UpdateLayout();
+        var displayName = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DisplayNameDraft");
+        var efficiency = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "TargetEfficiencyDraft");
+        displayName.Text = "合成供包台";
+        displayName.Focus();
+        Check(displayName.MoveFocus(new System.Windows.Input.TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next)) && efficiency.IsKeyboardFocused,
+            "native forward keyboard traversal reaches target efficiency after display name");
+        efficiency.Text = "2400";
+        Check(vm.HasUnsavedDisplayPreferences, "native display input participates in the close guard before explicit apply");
+        var configRevision = vm.Snapshot!.Configuration.Revision;
+        Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "应用本机显示")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(!vm.HasUnsavedDisplayPreferences, "explicit local apply clears only the display draft state");
+        Check(vm.StationDisplaySummary.Contains("合成供包台") && vm.StationDisplaySummary.Contains("2400 件/小时") && vm.Snapshot.Configuration.Revision == configRevision, "native display action updates its consumer independently of runtime save");
+        Capture("parameters-display");
+        Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");
+        var login = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x) == "OperatorLogin");
+        var role = vm.ConfigurationRoles.Single(x => x.Role == "登录");
+        var maintenanceBefore = Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin);
+        login.SelectedItem = role.Choices.First(x => x.Capability is not null); window.UpdateLayout();
+        Check(vm.ParameterEditor.HasOperatorLogin && control.NavigateTo("SessionLifetimeMs") && Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin) == maintenanceBefore, "selecting operator login reveals its session policy and preserves independent maintenance binding");
+        login.SelectedItem = role.Choices.First(x => x.Capability is null); window.UpdateLayout();
+        Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
+        Capture("parameters-login");
         vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
-        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("QueueCapacity"));
+        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("输入队列容量") && !text.Text.Contains("QueueCapacity"));
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();
@@ -104,7 +141,7 @@ static partial class Program
         void Capture(string name)
         {
             window.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(window); var bitmap = new RenderTargetBitmap((int)Math.Ceiling(window.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32); bitmap.Render(window);
-            var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, name + ".png")); png.Save(file);
+            var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, "inherit-" + name + ".png")); png.Save(file);
             lines.Add($"CAPTURE {name} {window.ActualWidth}x{window.ActualHeight} DIP scale={dpi.DpiScaleX},{dpi.DpiScaleY}");
         }
     }

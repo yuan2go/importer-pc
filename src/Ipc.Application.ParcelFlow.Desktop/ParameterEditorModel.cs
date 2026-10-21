@@ -28,14 +28,28 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         var roles = ComponentRoles.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
         { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray();
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
-        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => component.Role + " · " + component.InstanceId };
+        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(component.Kind) + (Components.Count(x => x.Kind == component.Kind) > 1 ? "（" + (Array.IndexOf(Components, component) + 1) + "）" : "") };
+    }
+    public string ComponentName(CapabilityDraft component)
+    {
+        var name = ParameterOwnership.IsRcs(component) ? "RCS 服务" : component.Provider?.Implementation switch
+        {
+            "reference-integration" => "RCS 服务", "reference-login" => "本机模拟认证", "reference-weight" => "模拟称重",
+            _ => ChineseInterfaceText.CapabilityKind(component.Kind)
+        };
+        var peers = Components.Where(c => c.Kind == component.Kind).ToArray();
+        return peers.Length > 1 ? name + "（" + (Array.IndexOf(peers, component) + 1) + "）" : name;
     }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;
+    static string WeightRangeField(string message) => message.Contains("WeightRange.MinimumWeight", StringComparison.Ordinal) ? "MinimumWeight" : "MaximumWeight";
     public void Report(string message)
     {
-        if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
+        if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
+        else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
+        else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
+        else if (message.Contains("WeightRange", StringComparison.Ordinal)) Issues.Add(new("业务模块", WeightRangeField(message), message));
         else if (message.Contains("StationCode", StringComparison.Ordinal) || message.Contains("station code", StringComparison.OrdinalIgnoreCase)) Issues.Add(new("系统", "StationCode", message));
         else
         {
@@ -50,12 +64,15 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
-        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" ? "业务模块" : "系统", name, ex.Message); } }
+        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "SessionLifetimeMs" ? "业务模块" : "系统", name, ex.Message); } }
         Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000);
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
         Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
+        if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
+        if (Policy.WeightRangeEnabled)
+            try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
+            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
             Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
         if (Policy.BackupEnabled)
@@ -71,8 +88,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             catch (Exception ex) when (ex is ArgumentException or NotSupportedException or System.IO.PathTooLongException)
             { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
         }
-        foreach (var (draft, fieldCategory) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))
+        foreach (var draft in Readers.Concat(Components.Where(x => x.Bound || !x.LegacyBindingEditable && x.Enabled)))
         {
+            var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
@@ -82,7 +100,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // replacement for Application/driver validation at the real boundary.
             if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" && values.TryGetValue("device.ip", out var ip) &&
                 (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
-                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整 IPv4 地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
+                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整网络地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
@@ -91,7 +109,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             {
                 if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
                     endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
-                    Issue("组件", draft.InstanceId + "/Target", "RCS目标须为 HTTP(S) /rcs/sorter/api，不能含凭据、查询串或片段。");
+                    Issue("组件", draft.InstanceId + "/Target", "调度服务地址须使用网页传输协议，接口路径为 /rcs/sorter/api，不能含凭据、查询串或片段。");
                 if (long.TryParse(values.GetValueOrDefault("request-id-base"), out var start) && long.TryParse(values.GetValueOrDefault("request-id-count"), out var count) &&
                     (start < 0 || count < 1 || start > long.MaxValue - count))
                     Issue("组件", draft.InstanceId + "/request-id-count", "请求编号起点与数量合计超出协议整数范围。");
@@ -100,7 +118,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (Components.Any(c => c.Bound && ParameterOwnership.IsRcs(c)))
             foreach (var duplicate in Readers.Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
                 .Where(x => !string.IsNullOrWhiteSpace(x.Code)).GroupBy(x => x.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
-                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳 bcrCode 必须独立，不能重复。");
+                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
         if (category is not null)
             foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
         ValidationChanged?.Invoke(this, EventArgs.Empty); return Issues.Count == 0;

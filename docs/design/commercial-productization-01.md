@@ -1,3 +1,5 @@
+> 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](../runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+
 # 商业化产品设计 · COMMERCIAL-PRODUCTIZATION-01
 
 > 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。

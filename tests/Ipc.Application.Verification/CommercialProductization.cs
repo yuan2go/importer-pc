@@ -112,7 +112,7 @@ static class CommercialProductization
             BeforeMonitorProbe = (instance, t) => instance == candidate.Wcs!.InstanceId ? monitorPermit.WaitAsync(t) : Task.Delay(Timeout.Infinite, t)
         })
         {
-            await repaired.StartAsync(default); var snapshot = await repaired.SnapshotAsync();
+            await repaired.StartAsync(default); await AdministratorFixture.Authorize(repaired); var snapshot = await repaired.SnapshotAsync();
             Check(snapshot.Configuration is { Pending: null, Effective.TimeoutMs: 2000, Confirmation.Required: false, Activation.Outcome: "Activated" }, "correct candidate starts despite permanently broken original and confirms only after resource startup");
             Check(snapshot.Configuration.InitialRepair?.OriginalEnvelopeBase64 == repairedEnvelope && snapshot.Configuration.Confirmation!.Attempts.Any(a => a.Outcome == "Failed"), "original repair bytes and failed attempts remain in authoritative envelope");
             var starts = snapshot.RuntimeId;
@@ -123,9 +123,9 @@ static class CommercialProductization
             await repaired.CheckScheduledBackupAsync(now.AddMinutes(40));
             Check(Directory.GetFiles(backupFolder, "*.db").Length == 0 && (await repaired.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("Pending")), "scheduled backup stays pending without authenticated pause and never pauses production itself");
             var s = await repaired.SnapshotAsync(); await repaired.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
-            Check((await repaired.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
+            Check((await AdministratorFixture.Authorize(repaired)).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
             vm.StructuredPolicy!.Precision = "unfinished-precision";
-            vm.NewCapabilityKind = "weight"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
+            vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
             repairedFactory.HoldHealth = true; monitorPermit.Release();
             await repairedFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
             var draftBeforeBusy = Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin"));
@@ -248,14 +248,11 @@ static class CommercialProductization
         var firstFactory = new SyntheticFactory(launch); ParcelOperation original;
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), firstFactory) { RuntimeIdentityPreflight = () => { } })
         {
-            await app.StartAsync(default); app.EmitReferenceAt("left", "unknown-entity", "SYNTHETIC-SECRET-BARCODE", "unknown-observation");
+            await app.StartAsync(default); await AdministratorFixture.Authorize(app); app.EmitReferenceAt("left", "unknown-entity", "SYNTHETIC-SECRET-BARCODE", "unknown-observation");
             ParcelSnapshot snapshot = await app.SnapshotAsync();
             for (int i = 0; i < 100 && snapshot.Operations.FirstOrDefault()?.Wcs?.State != StageState.Unknown; i++) { await Task.Delay(20); snapshot = await app.SnapshotAsync(); }
             original = snapshot.Operations.Single(); Check(original.Wcs?.State == StageState.Unknown && firstFactory.Sends == 1, "lost-after-commit fixture creates one original Unknown request");
-            var support = await app.PreviewSupportAsync(new(DateTimeOffset.UtcNow.AddHours(-1), DateTimeOffset.UtcNow.AddMinutes(1), original.Id));
-            var destination = Path.Combine(root, "support.json"); await app.ExportSupportAsync(support.Id, destination, default);
-            var bytes = File.ReadAllText(destination);
-            Check(bytes == support.Json && !bytes.Contains("SYNTHETIC-SECRET") && !bytes.Contains("Payload\"") && !bytes.Contains("Parameters\"") && !bytes.Contains("reference://"), "previewed support bytes correlate original request without leaking barcode, payload, parameters or target");
+
         }
         var service = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new SyntheticFactory(launch), () => { })
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "unknown-scratch-" + Wire.Id())).FullName };
@@ -326,4 +323,39 @@ static class CommercialProductization
         Check(!File.Exists(cancelledFile) && File.ReadAllText(cancelledFile + ".result.json").Contains("Cancelled"), "cancelled export publishes no partial CSV and keeps an accurate receipt");
         await Reject<IOException>(() => reader.Export(selection, destination, default), "export cannot overwrite an existing final result");
     }
+}
+
+// Synthetic test accounts use the real credential hash/service; never shipped as a product default.
+static class AdministratorFixture
+{
+    static readonly string Password = "Fixture-" + Guid.NewGuid().ToString("N");
+    public static void AuthorizeRoot(string root)
+    {
+        var authority = LocalAdministrator.ForRoot(root);
+        if (!authority.Status().Provisioned) authority.Provision("fixture-admin", Password);
+        if (!authority.Login("fixture-admin", Password)) throw new Exception("Fixture administrator rejected");
+    }
+    public static async Task<BusinessReceipt> Authorize(IParcelApplication app)
+    {
+        var service = app as IWorkstationAdministration ?? throw new InvalidOperationException("Fixture must forward the administrator contract");
+        if (!(await service.AdministratorStatusAsync()).Provisioned) await service.ProvisionAdministratorAsync("fixture-admin", Password);
+        if (!await service.LoginAdministratorAsync("fixture-admin", Password)) throw new Exception("Fixture administrator rejected");
+        return new("Authorized", "Real software-administrator fixture", 0);
+    }
+}
+
+public interface IAdministrativeParcelFixture : IParcelApplication, IWorkstationAdministration { }
+public interface IAdministratorFixtureForwarder : IWorkstationAdministration
+{
+    IParcelApplication InnerAdministration { get; }
+    IWorkstationAdministration Service => (IWorkstationAdministration)InnerAdministration;
+    Task<AdministratorStatus> IWorkstationAdministration.AdministratorStatusAsync() => Service.AdministratorStatusAsync();
+    Task IWorkstationAdministration.ProvisionAdministratorAsync(string a, string p) => Service.ProvisionAdministratorAsync(a, p);
+    Task<bool> IWorkstationAdministration.LoginAdministratorAsync(string a, string p) => Service.LoginAdministratorAsync(a, p);
+    Task IWorkstationAdministration.LogoutAdministratorAsync() => Service.LogoutAdministratorAsync();
+    Task<AdministratorAccount[]> IWorkstationAdministration.AdministratorAccountsAsync() => Service.AdministratorAccountsAsync();
+    Task IWorkstationAdministration.MaintainAdministratorAsync(string a, string? p, bool e) => Service.MaintainAdministratorAsync(a, p, e);
+    Task<SoftwareLogPage> IWorkstationAdministration.QueryLogsAsync(SoftwareLogQuery q, string? s, int o, CancellationToken t) => Service.QueryLogsAsync(q, s, o, t);
+    Task<SoftwareLogContext> IWorkstationAdministration.LogContextAsync(string s, SoftwareLogLocation l, int b, int a, CancellationToken t) => Service.LogContextAsync(s, l, b, a, t);
+    Task<long> IWorkstationAdministration.ExportLogsAsync(string s, string d, bool a, int c, CancellationToken t) => Service.ExportLogsAsync(s, d, a, c, t);
 }

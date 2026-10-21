@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "0de2e63a4505da8a2b25b8252d388c6a4465515e",
+  "FixtureSourceCommit": "0de2e63a4505da8a2b25b8252d388c6a4465515e",
+  "UnchangedMedium": true,
+  "Scope": "Actual SCM System service, protected credential/anchor ACL, real restricted Windows token, software authentication, lockout, expiry, ticket replay, missing-store and service-outage refusal; no equipment or production qualification",
+  "ExitCode": 0
+}

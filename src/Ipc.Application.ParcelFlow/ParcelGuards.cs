@@ -50,13 +50,13 @@ public sealed partial class ParcelRuntime
         try { return await action().ConfigureAwait(false); }
         finally { await gate.WaitAsync().ConfigureAwait(false); if (--externalWaits == 0) externalDrained!.TrySetResult(); }
     }
-    bool WeightReady(ParcelOperation op) => op.WeightPolicy.Source switch
+    bool WeightReady(ParcelOperation op) => (op.Weight is null || WeightRules.WithinRange(op.Weight.Value, op.FrozenConfiguration.WeightRange)) && (op.WeightPolicy.Source switch
     {
         WeightSource.Disabled => true,
         WeightSource.Configured => op.Weight is { Source: WeightSource.Configured },
         _ => op.Weight is { Source: WeightSource.Measured, MeasurementId: not null, MeasuredAt: { } at } &&
             at >= op.ObservedAt && at <= DateTimeOffset.UtcNow && (op.FrozenConfiguration.WeightValidity == WeightValidity.AtAssociation || DateTimeOffset.UtcNow - at <= TimeSpan.FromMilliseconds(op.WeightPolicy.MaximumAgeMs))
-    };
+    });
     bool AdmissionCapabilitiesReady(string? position = null)
     {
         var bindings = position is null ? ParcelBindings.Bound(Effective) : new[] { Effective.Wcs, Effective.Plc, Effective.Login,

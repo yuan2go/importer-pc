@@ -10,6 +10,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/AdministratorPresentation.cs" Link="Client/AdministratorPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs" Link="Client/ParcelPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs" Link="Client/DesktopServiceCalls.cs"/>
@@ -29,6 +30,10 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs" Link="Client/ConfigurationSubmission.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs" Link="Client/ConfigurationReviewPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs" Link="Client/ParameterRuntimePresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs" Link="Client/StationDisplayPreferences.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
+</ItemGroup><ItemGroup>
+ <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
 </ItemGroup></Project>

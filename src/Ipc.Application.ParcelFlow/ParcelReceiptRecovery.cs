@@ -70,7 +70,7 @@ public sealed partial class ParcelRuntime
         if (stage is null || stage.Request.Id != pending.Request || stage.State == StageState.Conflict || activeStages.Contains(op.Id + ":" + kind))
             return new("Rejected", "Original stage unavailable, conflicting or in use", repository.Revision);
         var auditReason = Wire.Encode(new { OriginalOccurrence = pending.Id, OriginalSource = repository.ReceiptById(pending.Id)!.Source,
-            Actor = maintenanceSession.Identity, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
+            Actor = AdministratorIdentity, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
         await ExecuteStageAsync(op, kind, true, pending.Id, auditReason, command).ConfigureAwait(false);
         ReleaseCompletedImages();
         return new(repository.HasReceiptOutcomeBasis(pending.Id) ? "OutcomeKnownRawMissing" : "Unresolved",

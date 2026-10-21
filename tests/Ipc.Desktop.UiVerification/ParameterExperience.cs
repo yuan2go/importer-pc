@@ -23,8 +23,8 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
-        var app = DispatchProxy.Create<IParcelApplication, ProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        var app = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
         var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
@@ -54,11 +54,15 @@ static partial class Program
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
         Check(model.ComponentLabel(vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability!) == "维护认证", "daily component directory displays its existing business role");
+        window.UpdateLayout();
+        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
+            ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
+            "settings hides the duplicate job footer while retaining visible mode and software-pause boundary");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2);
-            foreach (var item in new[] { (2, "左相机", "camera"), (3, "RCS 连接", "rcs") })
+            foreach (var item in new[] { (2, "左相机", "camera"), (3, "调度系统连接", "rcs") })
             {
                 control.ShowPage(item.Item1, item.Item2); window.UpdateLayout();
                 Capture(item.Item3 + "-" + size.Item1);
@@ -66,6 +70,17 @@ static partial class Program
                 Check(bounds.Bottom <= client.ActualHeight + 1 && bounds.Right <= client.ActualWidth + 1 && save.ActualHeight >= 44, "save remains visible with full schema at " + size);
                 var first = Boxes().First(b => AutomationProperties.GetName(b) == (item.Item3 == "camera" ? "reader.0/device.ip" : "rcs.one/Target"));
                 Check(first.ActualWidth >= 240 && first.ActualHeight >= 36, "readable address dimensions at " + size + ": " + first.RenderSize);
+                if (size.Item1 == 1366 && item.Item3 == "rcs")
+                {
+                    var source = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/source");
+                    Check(!Descendants(control).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "最多 64 个字符") &&
+                        AutomationProperties.GetHelpText(source).Contains("64") && Equals(source.ToolTip, "最多 64 个字符"),
+                        "routine character limits leave the form body but remain accessible as field help");
+                    var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
+                    var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
+                    Check(heartbeatBounds.Top >= 0 && heartbeatBounds.Bottom <= control.ActualHeight + 1,
+                        "normal RCS connection and heartbeat inputs fit above the fixed save bar at 1366x768");
+                }
                 control.NavigateTo(AutomationProperties.GetName(first)); window.UpdateLayout();
                 var fieldBounds = first.TransformToAncestor(control).TransformBounds(new Rect(first.RenderSize));
                 Check(fieldBounds.Top >= -1 && fieldBounds.Bottom <= control.ActualHeight + 1, "field navigation scrolls the complete input above the fixed footer at " + size);
@@ -80,7 +95,7 @@ static partial class Program
         Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })
         { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "driver canonical address rule retained: " + invalid); }
-        ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 连接"); model.ValidateFields();
+        ip.Text = "192.0.2.23"; control.ShowPage(3, "调度系统连接"); model.ValidateFields();
         control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
         Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
         if (!baseline) Check(Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "请求编号区间") && e.IsExpanded), "request range uses progressive disclosure and search expands it");
@@ -108,7 +123,8 @@ static partial class Program
             var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
             target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
             role.Selection = replacement; window.UpdateLayout();
-            Check(directory.SelectedItem?.ToString() == "login · " + original.Capability.InstanceId &&
+            Check(directory.SelectedItem?.ToString()?.StartsWith("身份认证", StringComparison.Ordinal) == true &&
+                !directory.SelectedItem.ToString()!.Contains(original.Capability.InstanceId, StringComparison.Ordinal) &&
                 directory.Items.Cast<object>().Count(p => p.ToString() == "维护认证") == 1,
                 "role reassignment relabels old and new component directory entries immediately");
             Check(ReferenceEquals(control.Model, retainedModel) && ReferenceEquals(directory.SelectedItem, selectedPage) &&
@@ -125,7 +141,7 @@ static partial class Program
         }
         if (interactive)
         {
-            await SetClient(window, 1366, 768); control.ShowPage(3, "RCS 连接");
+            await SetClient(window, 1366, 768); control.ShowPage(3, "调度系统连接");
             Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/EXPERIENCE-INTERACTIVE.txt"), evidence);
             var closed = new TaskCompletionSource(); window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
         }

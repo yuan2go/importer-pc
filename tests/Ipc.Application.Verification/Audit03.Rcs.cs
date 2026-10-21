@@ -72,7 +72,7 @@ static partial class SportmasterRcs
                     Check(ordered[0].PositionId == other && ordered[1].PositionId == delayedPosition && ordered.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == 2, "A03 numeric order follows durable T1 preparation, not earlier admission order");
                     firstRequest = Wire.Encode(ordered[0].Wcs!.Request); secondRequest = Wire.Encode(ordered[1].Wcs!.Request); lastId = ordered[1].Wcs!.Request.IntegrationRequest!.RequestId;
                     ExtensionStore.AtomicWrite(Path.Combine(root, "rcs-t1-" + delayedPosition + ".json"), result);
-                    await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); await Wait(app, s => s.Availability!.Configure);
+                    await Command(app, "Pause"); await AdministratorFixture.Authorize(app); await Wait(app, s => s.Availability!.Configure);
                     await Wait(app, x => x.Operations.All(o => o.ImageReleased));
                     Check((await Command(app, "ArchiveHistory", value: "Synthetic T1 owner archival")).Status == "Persisted", "A03 explicit archival command receipt confirmed before restart assertions");
                     Check((await app.BackupAsync(backup)).Status == "BackupCreated", "A03 actual backup retains owner ledger, ranges and archived originals");
@@ -96,7 +96,7 @@ static partial class SportmasterRcs
                 await Command(app, "Resume"); app.EmitReferenceAt("left", "restore-old-range", "SYNTH-0001", "restore-old-event");
                 var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "restore-old-range" && o.State == ParcelState.Blocked));
                 Check(peer.Requests.Count == posts && s.Operations.Single(o => o.AdmissionId == "restore-old-range").Wcs is null, "A03 restored backup retires entire source range including IDs used after backup");
-                await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+                await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
                 Check((await Command(app, "AbandonUnsubmitted", s.Operations.Single(o => o.AdmissionId == "restore-old-range").Id, "Synthetic entity inspected; source root stopped")).Status == "Persisted", "A03 exhausted unsent entity can be inspected and disposed");
                 await Wait(app, x => x.Availability!.Configure); s = await app.SnapshotAsync();
                 var nextBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "820000000" } };

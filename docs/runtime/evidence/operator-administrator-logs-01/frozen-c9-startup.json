@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "FixtureSourceCommit": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "Assertions": 93,
+  "UnchangedFrozenMedium": true,
+  "Scope": "Native WPF first configuration and real software reauthentication; synthetic configuration/endpoints, no devices"
+}

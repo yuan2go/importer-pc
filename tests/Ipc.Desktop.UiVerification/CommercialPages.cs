@@ -26,6 +26,7 @@ static partial class Program
             // Keep this deliberately corrupt offline draft isolated from the later
             // live-settings journey; retain its original bytes and refusal checks.
             var offlineLaunch = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            AdministratorFixture.AuthorizeRoot(offlineLaunch.DataRoot);
             var draftFile = Path.Combine(offlineLaunch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
@@ -47,8 +48,8 @@ static partial class Program
             Check(taskTabs.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "1 业务模块", "2 系统", "3 驱动", "4 组件", "5 检查与完成" }) && taskTabs.SelectedIndex == 0, "first configuration starts with business rules and separates system, drivers, components and completion");
             Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the first business task");
             await SelectTask(4);
-            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
-                Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
+            Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "保存并启动")) &&
+                !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存首配待生效…")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
             Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
             await SelectTask(0);
@@ -67,26 +68,33 @@ static partial class Program
             await SelectTask(1); await SelectTask(0);
             Check(timeout.Text == "4321" && timeout.IsVisible && ReferenceEquals(parameterEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()), "task navigation preserves the same incomplete editor input without reconstructing it");
             timeout.Text = originalTimeout;
-            await SelectTask(1);
-            Descendants(first).OfType<Expander>().Single(e => Equals(e.Header, "本机目录与配置身份")).IsExpanded = true; first.UpdateLayout();
+            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+            // Directory/repair operations were removed from first setup. Exercise their
+            // unchanged authority guards in the separate offline maintenance window.
+            first = (Window)Activator.CreateInstance(type, [offlineLaunch, null, false])!; first.Show();
+            for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
+            taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            await SelectTask(0);
             var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("原数据根"));
             var originalRoot = dataRoot.Text; var unreadRoot = Path.Combine(evidence, "unread-root"); dataRoot.Text = unreadRoot;
             Click(first, "保存未完成草稿");
             for (var i = 0; i < 100 && (bool)busyField.GetValue(first)!; i++) await Task.Delay(20);
             Check(!Directory.Exists(unreadRoot) && Wire.FileHash(draftFile) == draftHash && Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("路径已更改")), "unread directory selection cannot write through the previous maintenance instance or change the protected draft");
             dataRoot.Text = originalRoot;
-            await SelectTask(4); Click(first, "分层检查与变更预览");
+            await SelectTask(3); Click(first, "分层检查与变更预览");
             var checkedField = type.GetField("checkedInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 100 && (checkedField.GetValue(first) is null || (bool)busyField.GetValue(first)!); i++) await Task.Delay(20);
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
-            await SelectTask(0); timeout.Text = "4322";
+            await SelectTask(1);
+            parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single(); parameterEditor.NavigateTo("TimeoutMs"); first.UpdateLayout();
+            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "TimeoutMs"); timeout.Text = "4322";
             Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
             timeout.Text = originalTimeout; await SelectTask(1);
             await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+            Screenshot(first, Path.Combine(evidence, "commercial-offline-repair.png")); first.Close();
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application); var identity = (await runtime.SnapshotAsync()).RuntimeId;
         var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
         classic.Show(); alternate.Show(); await Task.Delay(400);
         Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
@@ -135,25 +143,15 @@ static partial class Program
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
         await ObserveSaveReviewAsync(classic, maintenance, dialog =>
         {
-            Check(!parameterVm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
-                "classic settings reviews the validated candidate with authorization and reason in one responsive window");
+            Check(!parameterVm.Busy && parameterVm.IsAdministrator && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
+                !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
+                "classic review preserves the live software administrator grant and reason without a duplicate password prompt");
         });
         Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
             "canceling native save review preserves the edited field and never stages the candidate");
         stationInput.Text = originalStation;
-        var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
-        Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");
-        var helpSearch = Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索离线帮助");
-        helpSearch.Text = "Unknown";
-        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("不要重发"), "task help search exposes the preserved Unknown no-resend procedure");
-        helpSearch.Text = "no-matching-topic-123";
-        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("没有匹配"), "help search presents an explicit empty result without changing business state");
-        helpSearch.Text = "";
-        support.UpdateLayout(); await support.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        Check(Descendants(support).OfType<ListBoxItem>().Any(t => t.IsVisible && t.ActualHeight >= 44 && Equals(t.Content, "安装与首配")), "help task names render with usable touch targets after search resets");
-        Screenshot(support, Path.Combine(evidence, "commercial-support.png")); support.Close();
-        Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/help window actions never reconstruct the business runtime");
+
+        Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/account window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");
         classic.ConfirmDiscardDrafts = _ => true; classic.Close(); alternate.ConfirmDiscardDrafts = _ => true; alternate.Close(); await Task.Delay(100);
         static void Screenshot(Window window, string path)

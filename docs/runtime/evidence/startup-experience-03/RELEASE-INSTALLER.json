@@ -1,0 +1,19 @@
+{
+  "Installer": "D:\\projects\\importer-pc-startup\\.artifacts\\startup-review-03\\installer-1.8.2-release\\CainiaoSupplyStation_SM_Setup_v1.8.2_win-x64.exe",
+  "Sha256": "fc4e109fb4ed3fbec653839681b2949a5d1d8bcb8dd96d1269df82e0f8f16083",
+  "SourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+  "Payload": {
+    "ApplicationId": "sportmaster",
+    "SourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+    "SourceBranch": "codex/startup-experience",
+    "BusinessModuleShortName": "SM",
+    "BusinessVersion": "1.8.2",
+    "Sha256": "e61688b39b08425dd3b6debf286798d3da54d2ae18fa625cfe7a8696fe461430",
+    "ZipBytes": 106513163,
+    "UnpackedBytes": 242607148,
+    "FileCount": 737
+  },
+  "DeliveryFiles": 1,
+  "Authenticode": "NOT_SIGNED",
+  "ActualWindowsInstallation": "NOT_RUN"
+}

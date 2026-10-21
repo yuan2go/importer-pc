@@ -5,18 +5,22 @@ using System.Security.Principal;
 namespace Ipc.Platform;
 
 // Installed by a Windows maintainer, outside both presentation preferences and per-user
-// data. The first reference deployment supports exactly one designated runtime account.
+// data. A deployment uses one explicit account or the approved Windows Users group.
 public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccountSid, string LeaseRoot)
 {
+    public const string SharedUsersSid = "S-1-5-32-545";
+    public static bool MatchesRuntimeAccount(string? currentSid, string designatedSid, IEnumerable<Claim> claims) =>
+        !string.IsNullOrWhiteSpace(currentSid) && (currentSid == designatedSid || designatedSid == SharedUsersSid &&
+        currentSid is not ("S-1-5-18" or "S-1-5-19" or "S-1-5-20") && claims.Any(c => c.Value == SharedUsersSid && c.Type is ClaimTypes.GroupSid or ClaimTypes.PrimaryGroupSid));
     public static (string Root, string TrustFile) ExtensionPaths(RunMode mode, string? requestedRoot = null, string? requestedTrust = null)
     {
         if (!OperatingSystem.IsWindows())
         {
-            var root = requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "extensions", mode.ToString());
+            var root = requestedRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "extensions", mode.ToString());
             return (Path.GetFullPath(root), requestedTrust ?? Path.Combine(root, "trust.json"));
         }
         if (requestedRoot is not null || requestedTrust is not null) throw new InvalidDataException("Windows extensions require protected machine paths; user overrides forbidden");
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var directory = Path.Combine(machine, "extensions", mode.ToString());
         var trust = Path.Combine(machine, "extension-trust." + mode + ".json");
         foreach (var path in new[] { machine, Path.Combine(machine, "extensions"), directory })
@@ -39,7 +43,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows()) return portableRoot;
         RequireExtensionInstallerAuthority();
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var file = Path.Combine(machine, "runtime-policy.json");
         RejectLinks(machine); RejectLinks(file); RequireProtectedAcl(new DirectoryInfo(machine), null); RequireProtectedAcl(new FileInfo(file), null);
         var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(file));
@@ -66,7 +70,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     public static string ResolveLeaseRoot(string? requestedRoot)
     {
         if (!OperatingSystem.IsWindows())
-            return requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "leases");
+            return requestedRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "leases");
         return ResolveWindowsLeaseRoot(requestedRoot, requireOrdinaryAccount: false);
     }
     // Read-only startup gate: no directory, lock, configuration or database is created.
@@ -77,7 +81,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     }
     internal static void ValidateRuntimeAccount(string? currentSid, string? designatedSid, bool requireOrdinaryAccount, IEnumerable<Claim> claims)
     {
-        if (string.IsNullOrWhiteSpace(currentSid) || string.IsNullOrWhiteSpace(designatedSid) || currentSid != designatedSid)
+        if (string.IsNullOrWhiteSpace(designatedSid) || !MatchesRuntimeAccount(currentSid, designatedSid, claims))
             throw new UnauthorizedAccessException("This Windows account is not the designated station runtime account");
         // Deny-only Administrators membership cannot grant administrative access.
         // Allow the original UAC-filtered user; reject enabled membership/elevation.
@@ -89,7 +93,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static string ResolveWindowsLeaseRoot(string? requestedRoot, bool requireOrdinaryAccount)
     {
-        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var machine = WindowsStoragePaths.MachineRoot;
         var policyFile = Path.Combine(machine, "runtime-policy.json");
         if (!Directory.Exists(machine) || !File.Exists(policyFile))
             throw new InvalidDataException("Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account");
@@ -104,7 +108,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
             throw new InvalidDataException("Machine ownership policy/lease root invalid; per-user overrides are not permitted on Windows");
         using var identity = WindowsIdentity.GetCurrent();
         ValidateRuntimeAccount(identity.User?.Value, policy.RuntimeAccountSid, requireOrdinaryAccount,
-            requireOrdinaryAccount ? identity.UserClaims : []);
+            identity.Claims);
         if (!Directory.Exists(fixedRoot)) throw new InvalidDataException("Machine lease directory must be provisioned by a maintainer");
         RejectLinks(fixedRoot); RequireProtectedAcl(new DirectoryInfo(fixedRoot), policy.RuntimeAccountSid);
         return fixedRoot;
@@ -113,7 +117,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows()) return;
         RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
-        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };
+        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) }.Concat(WindowsStoragePaths.ProtectedAnchor is { } anchor ? [anchor] : Array.Empty<string>()).ToArray();
         var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
         boundary ??= TrustedProgramRoots.RequireBoundary(new FileInfo(path).DirectoryName!);
         for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)

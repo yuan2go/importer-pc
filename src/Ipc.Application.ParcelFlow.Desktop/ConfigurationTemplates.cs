@@ -7,11 +7,13 @@ public partial class ParcelViewModel
     StartupConfigurationDraft TemplateDraft() => new(BuildStructuredConfiguration(), installedCatalog ?? throw new InvalidOperationException("先读取精确安装目录"));
     public StartupSiteTemplate ExportSiteTemplate()
     {
+        if (!IsAdministrator) throw new UnauthorizedAccessException("请先登录软件管理员。原草稿保留。");
         var draft = TemplateDraft();
         return StartupSiteTemplates.Export(structuredBase!.ApplicationId, draft.Capture());
     }
     public TemplatePreview PreviewSiteTemplate(StartupSiteTemplate template)
     {
+        if (!IsAdministrator) throw new UnauthorizedAccessException("请先登录软件管理员。原草稿保留。");
         var draft = TemplateDraft();
         var values = StartupSiteTemplates.Import(structuredBase!.ApplicationId, template);
         var restored = draft.WithTemplate(values);
@@ -20,6 +22,7 @@ public partial class ParcelViewModel
     }
     public void ApplySiteTemplate(TemplatePreview preview)
     {
+        if (!IsAdministrator) throw new UnauthorizedAccessException("请先登录软件管理员。原草稿保留。");
         if (ConfigurationEditSignature() != preview.EditorSignature) throw new InvalidOperationException("预览后输入已改变；请重新比较，当前输入保留");
         var replacements = preview.Draft.Readers.Concat(preview.Draft.Capabilities).ToDictionary(d => d.InstanceId);
         foreach (var draft in ReaderDrafts.Select(r => r.Capability).Concat(CapabilityDrafts))

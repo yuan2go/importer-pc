@@ -30,10 +30,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     bool started, stopped, disposed;
     string? failure;
     readonly OperatorSession session = new();
-    readonly OperatorSession maintenanceSession = new();
     OperatorIdentity? currentOperator => session.Identity;
     bool SessionValid => Effective.Login is null || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs);
-    bool MaintenanceAuthorized => maintenanceSession.Valid(DateTimeOffset.UtcNow, 900000) && maintenanceSession.Identity?.Grants?.Contains("maintenance") == true;
+    bool MaintenanceAuthorized => Administrator.Status().Authorized;
+    OperatorIdentity? AdministratorIdentity => Administrator.Identity;
     readonly Dictionary<string, CapabilityHealth> capabilityHealth = [];
     readonly HashSet<string> activeStages = [];
     readonly HashSet<string> attachedRunning = [];
@@ -98,6 +98,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
+        logReader = new(Path.Combine(directory, "diagnostics"), Administrator, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
         repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
@@ -166,6 +167,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (configuration.Current.Confirmation?.Required == true)
                 repository.Commit(null, "ConfigurationConfirmationRequired", "Resources started; original legacy envelope retained; authenticate maintenance and confirm current configuration revision/hash before admission", paused: true);
             CompleteConfigurationAudit("Activated");
+            // Only a successful controlled activation applies the new policy.
+            // Reconnect and Pending edits cannot change retention.
+            journal.ConfigureRetention(Effective.Retention?.DiagnosticLogDays);
             Volatile.Write(ref accepting, 1);
             maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
@@ -334,7 +338,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? "", DateTimeOffset.UtcNow);
-        if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
+        if (reason is not null)
+        {
+            // Only annotate a still waiting parcel. Late/invalid samples never
+            // replace terminal state, existing weight or its original deadline.
+            if (WeightPending(op) && op.State != ParcelState.WeightTimedOut && DateTimeOffset.UtcNow <= op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs))
+                Save(op with { Reason = reason }, "MeasurementRejected", reason, measurement: m);
+            else repository!.Commit(null, "MeasurementRejected", reason, measurement: m);
+            return;
+        }
         if (!WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
         op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.State : ParcelState.Prepared, Reason = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.Reason : null };
@@ -343,11 +355,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         operations[op.Id] = op;
         await AdvanceAsync(op).ConfigureAwait(false);
     }
-    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null)
+    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null)
     {
-        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input); operations[op.Id] = op;
+        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement); operations[op.Id] = op;
         if (input is not null) latestInputs[input.PositionId] = input;
-        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
+        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
     }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
         op.Capture?.State is StageState.Unknown or StageState.Conflict ||

@@ -98,6 +98,7 @@ public sealed partial class ParcelStartupMaintenance
             // Re-encrypt via the same confidential writer rather than widening an old ACL.
             ProtectedDraftPayload.Write(Path.Combine(history, Wire.Id() + ".bin"), ProtectedDraftPayload.Read(file), state.Seed.Mode == RunMode.Simulation, sid);
         }
+        Authorize();
         ProtectedDraftPayload.Write(file, Wire.Encode(draft), state.Seed.Mode == RunMode.Simulation, sid);
         return (await ReadDraftAsync())!;
     }

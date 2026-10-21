@@ -37,7 +37,7 @@ public sealed class StartupConfigurationDraft
         Readers = ParcelBindings.Readers(c).Select((reader, index) =>
         {
             var binding = readers.SingleOrDefault(b => "extension:" + b.InstanceId == reader.Driver) ??
-                new CapabilityBinding("observation", "manual", "1.0.0", "reader." + index, reader.DeviceId, "CONTROLLED-OBSERVATION-v1", []);
+                new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + index, reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? []);
             return new CapabilityDraft("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id);
         }).ToArray();
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
@@ -52,18 +52,15 @@ public sealed class StartupConfigurationDraft
         var c = original;
         var readerBindings = Readers.Select(d => d.Build()).ToArray();
         var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
-            Driver = readerBindings[i].Package is null ? "manual" : "extension:" + readerBindings[i].InstanceId }).ToArray();
+            Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
+            Parameters = readerBindings[i].Implementation == "tcp-line" ? readerBindings[i].Parameters : null }).ToArray();
         var instances = readerBindings.Where(b => b.Package is not null).Select(b => new ExtensionInstance(b.InstanceId, b.Package!.Id, b.Module!, b.Target, b.Enabled, b.Parameters)).ToArray();
         var roots = replacements.Values.Concat(readerBindings).Select(b => b.Package).OfType<PackageReference>().Distinct().ToArray();
         var packages = roots.Length == 0 ? [] : ParcelViewModel.ResolvePackageClosure(roots, catalog.Packages ?? []);
         var extensions = c.Extensions is null && packages.Length == 0 ? null : new DeploymentExtensions(packages, instances, c.Extensions?.Services, c.Extensions?.Ports);
-        if (!decimal.TryParse(MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            throw new InvalidOperationException("磁盘保留空间须为1～1048576 MiB");
-        var retention = new ParcelRetentionPolicy(ConfigurationPolicyDraft.Integer(ResidentHistory, "常驻历史作业", 1, 10000), checked((long)(reserve * 1048576)));
         return Policy.ApplyParameters(c) with
         {
             Reader = devices[0], Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
-            Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention, BackupSchedule = Policy.BuildBackup(),
             Weight = Policy.BuildWeight(), WeightValidity = c.SchemaVersion >= 2 ? Policy.Validity : null,
             QueueCapacity = ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
             TimeoutMs = ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),

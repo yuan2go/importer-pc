@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "RunId": 39630282994,
+  "HeadCommit": "482d04c5e886588c5b2f17b847ab2fba9f2bbd78",
+  "FrozenMergeSource": "cc78bdc1afc8cdeb1435366681ed9a8bcbc25005",
+  "JobId": 119326389159,
+  "CompletedSteps": [
+    "policy",
+    "freeze",
+    "real System administrator boundary",
+    "native core and journeys",
+    "visual",
+    "same-source installer",
+    "artifact preservation"
+  ],
+  "EvidenceArtifactId": 12359466921,
+  "InstallableArtifactId": 12359261479,
+  "OriginalArtifactExpiresAt": "2026-11-20T16:04:23Z",
+  "Scope": "Workflow status read from GitHub after completion. Detailed previously archived CI78 receipts retain their original source and counts."
+}

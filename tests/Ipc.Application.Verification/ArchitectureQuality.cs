@@ -18,7 +18,7 @@ static partial class ArchitectureQuality
         var path = Path.Combine(root, name); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new ParcelCapabilityFactory(launch);
         var app = new ParcelRuntime(launch, c.ApplicationId == "sportmaster" ? new SportmasterFlow() : new DirectPlcFlow(), wrap?.Invoke(factory) ?? factory);
-        try { beforeStart?.Invoke(app); await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
+        try { beforeStart?.Invoke(app); await app.StartAsync(default); await AdministratorFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
     }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
     {
@@ -31,7 +31,7 @@ static partial class ArchitectureQuality
         throw new Exception("AQ command repeatedly conflicted: " + kind);
     }
     static async Task Maintenance(ParcelRuntime app)
-    { await Command(app, "Pause"); Check((await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", "explicit maintenance grant obtained"); }
+    { await Command(app, "Pause"); Check((await AdministratorFixture.Authorize(app)).Status == "Authorized", "explicit maintenance grant obtained"); }
     public static async Task Run(string source, string evidence)
     {
         workspace = source; root = evidence;

@@ -23,12 +23,26 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, true);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
-        var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         await SetClient(window, 1600, 900); Capture("work-waiting-1600", client);
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：模拟", "simulation does not appear as an online real RCS service");
+        foreach (var item in new (bool Ready, string Detail, string Label, bool Expired)[] { (true, "local only", "等待连接确认", false), (true, "RCS heartbeat HTTP 200 at synthetic; application acknowledgement unconfirmed", "在线", false), (false, "RCS heartbeat failed: timeout", "离线", false), (true, "RCS heartbeat HTTP 200 at old", "状态未知", true) })
+        {
+            probe.Project = s => s with
+            {
+                Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Mode = RunMode.Production, Wcs = s.Configuration.Effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" } } },
+                Health = [new(s.Configuration.Effective.Wcs!.InstanceId, item.Ready, DateTimeOffset.UtcNow.AddSeconds(-2), DateTimeOffset.UtcNow.AddSeconds(item.Expired ? -1 : 3), item.Detail)]
+            };
+            for (var n = 0; n < 100 && vm.Left.RcsServiceStatus != "RCS 服务：" + item.Label; n++) { await vm.RefreshAsync(); await Task.Delay(20); }
+            Check(vm.Left.RcsServiceStatus == "RCS 服务：" + item.Label && vm.Right.RcsServiceStatus == vm.Left.RcsServiceStatus, "both positions present factual RCS " + item.Label + " from the shared service snapshot");
+        }
+        vm.MarkReadFailure("synthetic RCS snapshot failure");
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：状态未知", "stale RCS snapshot cannot retain an online indicator");
+        probe.Project = null; await vm.RefreshAsync();
         await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
         await Until(() => vm.Right.Operation?.State == ParcelState.SlotResolved);
         Check(vm.Left.Operation?.State == ParcelState.ResolvingWcs && vm.Left.TaskId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—", "left processing suppresses the entire task while right completes");
@@ -48,18 +62,37 @@ static partial class Program
         Check(vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002", "all task fields correlate to each position's original accepted request");
         Capture("work-assigned-1600", client);
         var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left));
+        Check(leftControl.FindName("ReaderIdentity") is null && vm.Left.ReaderIdentity == vm.Left.ReaderId &&
+            ((TextBlock)leftControl.FindName("ScanSummary")).Text.Contains(vm.Left.ScanTime) &&
+            leftControl.FindName("ReconcileOriginal") is null && !((Button)leftControl.FindName("ContinueOriginal")).IsVisible &&
+            ((Button)leftControl.FindName("PositionDiagnostics")).IsVisible,
+            "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
+        var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
+        Click(leftControl, "本位诊断"); window.UpdateLayout();
+        Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text.StartsWith(vm.Left.Heading + "\n")),
+            "position diagnosis opens read-only context for the clicked reader");
+        Click(window, "工作台"); window.UpdateLayout();
+        Check(beforeDiagnostics == (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries) &&
+            ReferenceEquals(leftControl, Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left))),
+            "diagnosis round trip retains both original operations and native controls without sending or querying a business request");
         var barcode = (TextBox)leftControl.FindName("CurrentBarcode"); window.Activate(); Check(barcode.Focus(), "work barcode accepts native focus"); barcode.Select(1, 3);
         for (var i = 0; i < 4; i++) await vm.RefreshAsync();
         Check(barcode.IsKeyboardFocused && barcode.SelectionStart == 1 && barcode.SelectionLength == 3, "polling preserves native selection and focus");
         probe.Project = s => WithTasks(s) with { Inputs = s.Inputs!.Select(i => i.PositionId == "left" ? i with { Outcome = ParcelInputOutcome.Rejected, Observation = i.Observation with { Id = "new-observation", Codes = ["noise", "unmatched"] }, Reason = "合成：无匹配条码", BarcodeSelection = new("NoMatchingCode", null, 0, null, "本次无匹配条码") } : i).ToArray() };
-        await vm.RefreshAsync();
+        await Until(() => vm.Left.Input?.Observation.Id == "new-observation");
         Check(vm.Left.TaskId == "—" && vm.Left.SkuId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—" && vm.Left.Slot == "未取得" && vm.Right.TaskId == "TASK-right" && vm.Left.OriginalResponsibility.Length > 0, "rejected observation clears every current task field and retains original responsibility separately");
         Capture("work-rejected-new-input", client);
         probe.Project = s => WithTasks(s) with { Operations = WithTasks(s).Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Wcs = o.Wcs! with { State = StageState.Unknown }, Slot = null } : o).ToArray() };
-        await vm.RefreshAsync(); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
+        await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
+        Check(leftControl.FindName("ReconcileOriginal") is null && vm.Left.HasUncertainOriginal &&
+            !((Button)leftControl.FindName("ContinueOriginal")).IsVisible && !vm.Right.HasUncertainOriginal,
+            "unknown original retains responsibility without a permanent query action and leaves the other position independent");
         Capture("work-unknown", client);
         vm.MarkReadFailure("合成读取中断");
         Check(vm.Left.WaveNo == "已失效" && vm.Right.ResponseQuantity == "已失效" && !vm.Right.CurrentTaskAvailable, "stale snapshot invalidates all task fields together"); Capture("work-stale", client);
+        Check(leftControl.FindName("ReconcileOriginal") is null && !vm.Left.CanQueryOriginal &&
+            ((Button)leftControl.FindName("PositionDiagnostics")).IsEnabled,
+            "stale original retains its context with reconciliation disabled and read-only diagnosis available");
         probe.Project = WithTasks; await vm.RefreshAsync();
         await VerifyClientGeometry(window, vm, probe, evidence, "supply-station-v2", Check);
         probe.Project = WithTasks; await vm.RefreshAsync(); await SetClient(window, 1366, 768); Capture("work-assigned-1366", client);
@@ -112,6 +145,11 @@ static partial class Program
         search.Text = "没有这种字段"; window.UpdateLayout();
         Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有匹配项")), "empty search explains how to return without changing the draft");
         search.Clear();
+        window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout(); Capture("work-position-diagnostics", client);
+        Click(window, "返回当前对象设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
+        var directory = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "设置目录");
+        Check(directory.SelectedItem?.ToString() == "左相机" && ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED",
+            "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate");
         var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
         editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
         var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "QueueCapacity");
@@ -126,16 +164,18 @@ static partial class Program
         Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
             (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
             "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");
-        Check(!vm.CanConfigure && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
-            "save review remains accessible before maintenance authorization");
+        Check(vm.IsAdministrator && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
+            "save review is accessible under the authenticated software administrator");
         var reviewSeen = false; double editorHeight = 0;
         await ObserveSaveReviewAsync(window, maintenance, dialog =>
         {
             reviewSeen = !vm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
+                vm.IsAdministrator && !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
             var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
             Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
                 "native review displays the current station change from the validated complete candidate");
+            Check(vm.Fresh && vm.Snapshot?.Paused == true && !Descendants(dialog).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
+                "confirmed pause is shown as a review condition without a redundant pause action");
             editorHeight = editor.ActualHeight;
             Capture("parameters-save-review", (FrameworkElement)dialog.Content);
         });
@@ -150,10 +190,12 @@ static partial class Program
             "adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it");
         await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
         window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
+        Check(((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
+            "returning to work restores the existing footer without a second settings mode line");
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; AdministratorFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busyField = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);

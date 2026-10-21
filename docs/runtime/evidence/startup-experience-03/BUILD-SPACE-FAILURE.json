@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "e55a63cdcde5cb14c18a74d42f970ea2f6cd45ee",
+  "Status": "FAIL",
+  "Reason": "C: temporary build volume exhausted; compilation interrupted; partial output not delivered",
+  "OriginalLogSha256": "8a9e2bdc6d201fd988c36963a806d745f57fde9868a5ce67753977b545b9a475",
+  "OriginalLogBytes": 187960,
+  "Retry": "New output and TEMP/TMP under D:; no source change",
+  "Cleanup": "Owned generated C: build-intermediates cleanup rejected by automatic policy; retained",
+  "RepositoryLogEncoding": "UTF-8 normalized LF; original byte hash identifies retained local CRLF log"
+}

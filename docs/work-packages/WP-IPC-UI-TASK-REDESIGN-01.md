@@ -1,3 +1,5 @@
+> 2026-10-21 用户指定先完善作业主界面信息和操作，本轮按 UIR-01/UIR-05 续修；[实现、运行方式与原生证据](../runtime/workstation-information-01.md)。原 UIR-00～06 及旧发行结果不改写为本轮验收。
+
 > 参数页面当前修订：[PARAM-UX-02](../design/parameter-settings-experience-02.md) 与 [V3交付](../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
 
 > 当前实施：[V2 实施与验证记录](../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。

@@ -51,7 +51,7 @@ static class ApplicationArchitecture
             Check(payload.PositionId == "right" && payload.ReaderBinding == right.ReaderBinding && payload.Acquisition == right.Acquisition, "T1 freezes original position/device/acquisition in delivered semantics");
             app.EmitReferenceAt("right", "right-one", "000123", "right-source"); await Task.Delay(80);
             Check((await app.SnapshotAsync()).Operations.Length == 2, "duplicate original does not create another request");
-            await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
             s = await app.SnapshotAsync(); var rightEpoch = s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch;
             Check((await app.ReconnectDeviceAsync(topology.Readers[0].DeviceId)).Status == "Reconnected", "single-side reconnect while other original remains owned");
             s = await app.SnapshotAsync(); Check(s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch == rightEpoch, "other reader epoch unchanged by single-side reconnect");
@@ -104,7 +104,7 @@ static class ApplicationArchitecture
         var legacy = sport with { SchemaVersion = 2, Topology = null };
         await using (var app = await Open(legacy, "configuration-upgrade"))
         {
-            await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); var s = await app.SnapshotAsync();
+            await Command(app, "Pause"); await AdministratorFixture.Authorize(app); var s = await app.SnapshotAsync();
             Check((await app.StageConfigurationAsync(s.Configuration.Revision, sport, "Synthetic directed configuration verification")).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
                 "schema2 config is never guessed into two positions; full explicit schema3 candidate staged");
         }
@@ -131,7 +131,7 @@ static class ApplicationArchitecture
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("image-only", "001", "acquisition-only");
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted); var op = s.Operations.Single();
             Check(op.Upload is null && !op.ImageReleased && op.Image!.Acquisition == op.Acquisition && op.Plc is null, "same physical reader reuses controlled original capture; capture-only waits for this weight without uploader");
-            await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
             Check((await app.ReconnectDeviceAsync(captureOnly.Scale!.InstanceId)).Status == "Reconnected", "scale re-registers its own measurement epoch without changing parcel acquisition");
             Check(!scales!.Probe!.EmitOld(new(Wire.Id(), op.AdmissionId, captureOnly.Scale.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow)), "late old-generation scale callback cannot supply current weight");
             await Wait(app, x => x.Availability!.Resume);

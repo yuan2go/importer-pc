@@ -20,7 +20,7 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var startup = Stopwatch.StartNew();
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new VisualFactory(launch, false)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
         var startReturnedMs = startup.Elapsed.TotalMilliseconds;
         ParcelSnapshot snapshot = await runtime.SnapshotAsync();
         for (var i = 0; snapshot.Availability?.Admit != true && i < 1500; i++)

@@ -1,4 +1,8 @@
+> 2026-10-21 安装与首配最新增量见[当前操作说明](startup-experience-02.md)：中文用途、可选条码筛选、文件导入、保存并启动和未完成续配。下文原版本及原验收保持身份。
+
 # 参数设置 V3：原生运行与交付说明
+
+> 2026-10-21：本轮1.8.0增量的日常操作以[旧参数继承操作说明](parameter-inheritance-02.md)为补充，作业登录会话归业务、硬件能力归驱动，并新增排除、诊断日志和本机显示。下文1.7.0介质与验证保留原SourceCommit，不扩张到新版本。
 
 适用：Sportmaster 1.7.0，WP-IPC-PARAMETER-SETTINGS-02 / PARAM-UX-02 / PS-05。继承 PR78 的 V3 和 PR79 的启动回退；旧 1.6.1 介质不包含 V3。当前页面以 [PARAM-UX-02](../design/parameter-settings-experience-02.md) 和 [V3交接](../ui/parameter-settings-v3-20261020/HANDOFF.md) 为设计基线。原参数重构记录继续作为合同与历史证据，日常操作入口以本文为准。
 

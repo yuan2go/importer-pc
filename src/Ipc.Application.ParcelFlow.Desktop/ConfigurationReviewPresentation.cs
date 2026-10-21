@@ -93,8 +93,8 @@ public partial class ParcelViewModel
             var category = "高级设置"; var owner = "完整候选"; var label = path; var fieldPath = ""; var showValues = false;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
-                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 连接" : draft.Role + " · " + draft.InstanceId;
-                category = ParameterOwnership.CategoryName(parameter is null ? draft.Kind == "observation" ? 2 : 3 : ParameterOwnership.Category(draft, parameter));
+                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "调度系统连接" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
+                category = ParameterOwnership.CategoryName(parameter is null ? ParameterOwnership.ObjectCategory(draft) : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
                 { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = instance + "/Target"; showValues = true; }
@@ -109,12 +109,24 @@ public partial class ParcelViewModel
                 {
                     "StationCode" => ("系统", "供包台标识", "工位编码（心跳）", "StationCode"),
                     "QueueCapacity" => ("业务模块", "处理参数", "输入队列容量", "QueueCapacity"),
-                    "TimeoutMs" => ("业务模块", "处理参数", "调用时限（ms）", "TimeoutMs"),
+                    "TimeoutMs" => ("业务模块", "处理参数", "调用时限（毫秒）", "TimeoutMs"),
                     "MaximumOperations" => ("业务模块", "处理参数", "未清偿作业容量", "MaximumOperations"),
-                    "SessionLifetimeMs" => ("系统", "数据与记录", "操作员会话时长（ms）", "SessionLifetimeMs"),
+                    "SessionLifetimeMs" => ("业务模块", "作业登录", "操作员会话时长（毫秒）", "SessionLifetimeMs"),
+                    "Login" => ("业务模块", "作业登录", "操作员登录绑定", "OperatorLogin"),
+                    "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "诊断日志保留天数", "DiagnosticLogDays"),
                     "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻历史条数", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),
+                    "BarcodeFilter.ExclusionPattern" => ("业务模块", "条码筛选", "条码排除规则", "BarcodeExclusionPattern"),
+                    "WeightRange.Minimum" => ("业务模块", "业务策略", "包裹重量下限", "MinimumWeight"),
+                    "WeightRange.Maximum" => ("业务模块", "业务策略", "包裹重量上限", "MaximumWeight"),
+                    "Weight.Source" => ("业务模块", "业务策略", "重量来源", "WeightSource"),
+                    "Weight.Unit" => ("业务模块", "业务策略", "重量单位", "Unit"),
+                    "Weight.Precision" => ("业务模块", "业务策略", "重量精度", "Precision"),
+                    "Weight.ConfiguredValue" => ("业务模块", "业务策略", "配置重量", "ConfiguredWeight"),
+                    "Weight.MaximumAgeMs" => ("业务模块", "业务策略", "测量新鲜度（ms）", "MaximumAgeMs"),
+                    "Weight.WaitTimeoutMs" => ("业务模块", "业务策略", "本件等待期限（ms）", "WaitTimeoutMs"),
+                    "WeightValidity" => ("业务模块", "业务策略", "重量有效性时机", "Validity"),
                     "BackupSchedule.Directory" => ("系统", "自动备份", "备份目录", "BackupDirectory"),
                     "BackupSchedule.IntervalMinutes" => ("系统", "自动备份", "备份间隔（分钟）", "BackupIntervalMinutes"),
                     "BackupSchedule.MaximumSets" => ("系统", "自动备份", "备份份数上限", "BackupMaximumSets"),
@@ -152,6 +164,8 @@ public partial class ParcelViewModel
             }
             else Add(left, right, path, instance, parameter);
         }
+        if (original.Login?.InstanceId != candidate.Login?.InstanceId)
+            changes.Add(new("业务模块", "作业登录", "操作员登录服务", original.Login?.InstanceId ?? "不绑定", candidate.Login?.InstanceId ?? "不绑定", CanEditStructuredConfiguration ? "OperatorLogin" : "", "Login"));
         Compare(before.RootElement, after.RootElement, "");
         return changes.DistinctBy(x => (x.Path.Length == 0 ? x.TechnicalPath : x.Path, x.Before, x.After)).ToArray();
     }

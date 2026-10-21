@@ -13,13 +13,6 @@ public interface IParcelHistoryApplication
     Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection);
     Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token);
 }
-public sealed record ProductSupportRequest(DateTimeOffset From, DateTimeOffset ToExclusive, string? OperationId = null);
-public sealed record ProductSupportPreview(string Id, string Sha256, DateTimeOffset At, string[] Included, string[] Excluded, string Json);
-public interface IParcelSupportApplication
-{
-    Task<ProductSupportPreview> PreviewSupportAsync(ProductSupportRequest request);
-    Task ExportSupportAsync(string previewId, string destination, CancellationToken token);
-}
 public interface IParcelConfigurationDraftApplication
 {
     Task<string> ConfigurationEditorHashAsync(long expectedRevision);

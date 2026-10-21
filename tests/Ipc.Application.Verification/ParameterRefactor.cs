@@ -18,12 +18,17 @@ static class ParameterRefactor
     {
         SportmasterRcs.ParameterStaticChecks(workspace);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var oldReaders = ParcelBindings.Readers(c); var fixtureReaders = oldReaders.Select((r, i) => r with { DeviceId = "parameter." + Wire.Id() + "." + i }).ToArray();
+        c = c with { Reader = fixtureReaders[0], Topology = c.Topology! with { Readers = fixtureReaders, Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = fixtureReaders[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
         Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "missing legacy policy is omitted and round-trips without manufacturing a production rule");
         Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "legacy policy retains strict single-code compatibility");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["bad", "noise", "OK003"]).SelectedCode == "OK003", "third candidate is evaluated and original order is retained");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["preOK003", "OK003tail"]).Outcome == "NoMatchingCode", "matching is whole-string rather than substring");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["OK003", "OK004"]).Outcome == "AmbiguousCodes", "multiple valid candidates are ambiguous");
         Check(BarcodeFiltering.Select(new("a|ab"), ["ab"]).SelectedCode == "ab", "whole-string alternation is evaluated correctly");
+        Check(BarcodeFiltering.Validate(new("")) is null && BarcodeFiltering.Select(new(""), ["OK001"]).SelectedCode == "OK001", "empty rule is optional and keeps the single valid code without generating a regex");
+        Check(BarcodeFiltering.Select(new(""), ["OK001", "OK002"]).Outcome == "AmbiguousCodes" && BarcodeFiltering.Select(new(""), ["OK001", "OK001"]).Outcome == "AmbiguousCodes", "unfiltered and repeated candidates still require uniqueness");
+        Check(BarcodeFiltering.Select(new("", "BAD.*"), ["BAD001", "OK001"]).SelectedCode == "OK001", "optional allow rule supports an exclusion-only policy");
         Check(BarcodeFiltering.Select(new("["), ["X"]).Outcome == "InvalidPattern", "invalid syntax produces a bounded rejection");
         Check(BarcodeFiltering.Select(new("(a+)+$"), [new string('a', 500) + "!"]).Outcome == "FilterTimeout", "catastrophic backtracking times out and does not select a code");
         Check(BarcodeFiltering.Select(new("OK.*"), ["OK003"], "truncated").Outcome == "IncompleteCandidates" && BarcodeFiltering.Select(new("OK.*"), Enumerable.Repeat("noise", 300).Append("OK003").ToArray()).Outcome == "IncompleteCandidates", "incomplete and oversized candidate sets can never imply uniqueness");
@@ -33,8 +38,11 @@ static class ParameterRefactor
         var maintenance = new ParcelStartupMaintenance(missingLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch), () => { });
         var missing = await maintenance.ReadAsync();
         Check(missing.Candidate is { Mode: RunMode.Production, QueueCapacity: 64, TimeoutMs: 1500, MaximumOperations: 10000, StationCode: "station-01" } && missing.ConfigurationStatus == "MissingConfiguration" && !File.Exists(Path.Combine(missingPath, "business.json")), "missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime");
-        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, missing.Candidate! with { BarcodeFilter = new("OK[0-9]+") }, "Synthetic initial defaults and explicit synthetic business rule");
-        Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "explicit first save persists parameters without starting SDK, creating a business database, or inventing qualification");
+        var bootstrapReaders = missing.Candidate!.Topology!.Readers.Select((r, i) => r with { Parameters = new() { ["device.ip"] = "192.0.2." + (11 + i), ["device.port"] = "9000", ["bcr-code"] = "HB" + i } }).ToArray();
+        var bootstrap = missing.Candidate with { Reader = bootstrapReaders[0], Topology = missing.Candidate.Topology with { Readers = bootstrapReaders }, BarcodeFilter = new("OK[0-9]+"),
+            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["source"] = "SYNTHETIC", ["locale"] = "en-US", ["zone-id"] = "1", ["project-id"] = "1", ["quantity"] = "1", ["specified-chute"] = "false", ["request-id-base"] = "1000000", ["request-id-count"] = "100", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } } };
+        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
+        Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && (!Directory.Exists(missingLaunch.DataRoot) || !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any()) && (!Directory.Exists(missingLaunch.DataRoot) || Directory.EnumerateFiles(missingLaunch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(missingLaunch.DataRoot, "security/diagnostics/rotation.lease")))), "explicit first save persists parameters without starting SDK, creating a business database/device lease, or inventing qualification; administrator custody and diagnostic rotation are separate");
         var invalidPath = Path.Combine(root, "invalid-config"); Directory.CreateDirectory(invalidPath); ExtensionStore.AtomicWrite(Path.Combine(invalidPath, "business.json"), c with { BarcodeFilter = new("[") });
         var invalidLaunch = new BusinessLaunch(invalidPath, Path.Combine(root, "invalid-data"), null, null);
         var invalidMaintenance = new ParcelStartupMaintenance(invalidLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(invalidLaunch), () => { });
@@ -45,7 +53,7 @@ static class ParameterRefactor
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new UxCommercialInputs.InputFactory(new ParcelCapabilityFactory(launch));
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await app.StartAsync(default);
+        await app.StartAsync(default); await AdministratorFixture.Authorize(app);
         var reader = c.Topology!.Readers[0].DeviceId;
         factory.Emit(reader, "Read", "third-entity", ["noise", "other", "OK003"], "third-source");
         var first = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "third-entity" && o.State == ParcelState.SlotResolved));
@@ -60,7 +68,7 @@ static class ParameterRefactor
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
-        var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+        var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await AdministratorFixture.Authorize(app);
         // Isolate configuration semantics from periodic health probes taking the
         // shared external-call guard between availability and Stage. The real
         // guard remains enforced; all in-flight probes must drain first.
@@ -90,7 +98,7 @@ static class ParameterRefactor
         var staleNoChange = await app.StageConfigurationAsync(saved.Revision - 1, saved.Effective, "Synthetic stale no-change");
         Check(staleNoChange.Status == "Rejected" && (await app.SnapshotAsync()).Configuration.Pending!.StationCode == "SYSTEM-EDIT",
             "stale CAS cannot disguise itself as unchanged or discard Pending");
-        var proxy = DispatchProxy.Create<IParcelApplication, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
+        var proxy = DispatchProxy.Create<IAdministrativeParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
         var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();
         Check(pendingVm.Message.Contains("禁止重复提交") && pendingVm.HasUnsavedConfiguration, "unavailable authority inspection retains raw input and an explicit uncertain-save state");
@@ -110,7 +118,7 @@ static class ParameterRefactor
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
             "backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save");
         stale.StructuredPolicy.BackupEnabled = false;
-        var heldProxy = DispatchProxy.Create<IParcelApplication, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
+        var heldProxy = DispatchProxy.Create<IAdministrativeParcelFixture, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
         var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
         heldVm.StructuredPolicy!.TimeoutMs = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         heldVm.StructuredPolicy.TimeoutMs = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;

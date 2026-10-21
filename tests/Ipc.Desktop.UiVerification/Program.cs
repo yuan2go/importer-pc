@@ -19,7 +19,7 @@ static partial class Program
     public static int Main(string[] args)
     {
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = args.Contains("--task-redesign")
+        var evidence = (args.Contains("--task-redesign") || args.Contains("--operator-administration"))
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
             : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
@@ -30,9 +30,11 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
+                if (args.Contains("--operator-administration")) await VerifyOperatorAdministration(root, evidence, lines);
+                else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
+                else if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
+                else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterRefactor(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
                 else if (args.Contains("--login-session")) await VerifyLoginSession(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
@@ -65,8 +67,8 @@ static partial class Program
         else runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
         await using (runtime)
         {
-            await runtime.StartAsync(CancellationToken.None);
-            var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>();
+            await runtime.StartAsync(CancellationToken.None); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+            var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>();
             var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
             var stops = 0; var stopCalls = 0; var failNextStop = false;
             var classic = Presentation.Create(application, null, null, "classic");
@@ -75,6 +77,7 @@ static partial class Program
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
             Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
+            ((ParcelViewModel)classic.DataContext).OperatorSubject = "alice";
             await ((ParcelViewModel)classic.DataContext).RunAsync(() => ((ParcelViewModel)classic.DataContext).LoginAsync("SIMULATION_ONLY"), "原生参考登录");
             Check(((ParcelViewModel)classic.DataContext).Snapshot!.CurrentOperator?.Subject == "alice", "native fixture enables actual optional operator authentication");
             await alternate.ViewModel.RefreshAsync();
@@ -152,10 +155,13 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
+        if (root is SupplyStationWindow or ShellWindow)
+            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", _ => name };
         if (root is SupplyStationWindow station)
         {
-            name = name switch { "设备与维护" => "参数配置", "工作台" => "作业", _ => name };
-            if (name == "参数配置" && station.ViewModel.SelectedPage == "maintenance") return;
+            if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }
+            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", _ => name };
+            if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
             if (name == "作业" && station.ViewModel.SelectedPage == "maintenance") name = "返回作业";
         }
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
@@ -179,7 +185,7 @@ static partial class Program
             Exception? failure = null;
             try
             {
-                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "需要时认证维护权限"));
+                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "软件管理员账号"));
                 if (authorization.IsVisible) authorization.IsExpanded = true;
                 dialog.UpdateLayout();
                 inspect(dialog);

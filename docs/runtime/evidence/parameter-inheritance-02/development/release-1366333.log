@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc-parameter\scripts\release-windows.py", line 313, in <module>
+    main()
+    ~~~~^^
+  File "D:\projects\importer-pc-parameter\scripts\release-windows.py", line 290, in main
+    subprocess.run(command, cwd=build_root, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:\\Scoop\\apps\\python\\current\\python.exe', 'D:\\projects\\importer-pc-parameter\\scripts\\package-application.py', '--application', 'sportmaster', '--target', 'portable', '--output', 'D:\\deliveries\\parameter-inheritance-1366333\\sportmaster-portable-13663334b2a8', '--dotnet', 'D:/tools/dotnet/dotnet.exe']' returned non-zero exit status 1.

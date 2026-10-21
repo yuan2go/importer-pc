@@ -1,0 +1,44 @@
+PASS PARAM01-NATIVE 系统 is reachable through its actual parameter field
+PASS PARAM01-NATIVE 系统 navigation reveals the existing field in the shared editor
+PASS PARAM01-NATIVE 业务模块 is reachable through its actual parameter field
+PASS PARAM01-NATIVE 业务模块 navigation reveals the existing field in the shared editor
+PASS PARAM01-NATIVE 驱动 is reachable through its actual parameter field
+PASS PARAM01-NATIVE 驱动 navigation reveals the existing field in the shared editor
+PASS PARAM01-NATIVE 组件 is reachable through its actual parameter field
+PASS PARAM01-NATIVE 组件 navigation reveals the existing field in the shared editor
+PASS PARAM01-NATIVE system parameter receives native keyboard focus
+PASS PARAM01-NATIVE repeated real snapshots preserve input, focus and selection
+CAPTURE parameters-system 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE business barcode policy is directly reachable without depending on a tab layout
+PASS PARAM01-NATIVE native sample test evaluates the third candidate without stopping runtime or saving configuration
+CAPTURE parameters-business 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE editing exclusion invalidates the existing local preview without discarding candidate input
+PASS PARAM01-NATIVE native preview exposes exclusion reason and never selects an excluded code
+PASS PARAM01-NATIVE new exclusion input retains native focus, selection and draft across snapshots
+CAPTURE parameters-exclusion 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE diagnostic retention has its own system field distinct from resident history
+PASS PARAM01-NATIVE log retention error focuses the exact field and preserves invalid input
+CAPTURE parameters-retention 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE local display preferences are reachable in the single directory
+PASS PARAM01-NATIVE native forward keyboard traversal reaches target efficiency after display name
+PASS PARAM01-NATIVE native display input participates in the close guard before explicit apply
+PASS PARAM01-NATIVE explicit local apply clears only the display draft state
+PASS PARAM01-NATIVE native display action updates its consumer independently of runtime save
+CAPTURE parameters-display 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE optional operator login belongs to business and has a native binding selector
+PASS PARAM01-NATIVE selecting operator login reveals its session policy and preserves independent maintenance binding
+PASS PARAM01-NATIVE unbinding operator login hides only the inapplicable session policy
+CAPTURE parameters-login 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE error summary selects business budget object and focuses the invalid field while preserving barcode inputs
+CAPTURE parameters-error 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE parameter fields remain scrollable at (1366, 768)
+PASS PARAM01-NATIVE parameter fields remain scrollable at (900, 640)
+PASS PARAM01-NATIVE parameter fields remain scrollable at (800, 420)
+CAPTURE parameters-compact 800x420 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE left driver address is reachable by its stable field path
+PASS PARAM01-NATIVE fixed two readers use one package and display only the selected object's parameters
+PASS PARAM01-NATIVE right instance is directly addressable by stable field path
+PASS PARAM01-NATIVE object selection preserves distinct native editors and initial addresses
+PASS PARAM01-NATIVE editing right driver never changes left driver parameters
+CAPTURE parameters-drivers 1366.4x768 DIP scale=1.25,1.25
+SYNTHETIC native WPF/Dispatcher and geometry; real SDK, RCS, target IPC resolution/DPI/touch/site NOT_RUN.

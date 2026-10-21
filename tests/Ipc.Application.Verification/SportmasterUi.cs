@@ -456,8 +456,9 @@ static class SportmasterUi
         public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication
+    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication, IAdministratorFixtureForwarder
     {
+        public IParcelApplication InnerAdministration => inner;
         Func<Task<ParcelSnapshot>>? read;
         TaskCompletionSource readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Func<Task<ParcelSnapshot>>? Read { get => read; set { read = value; readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously); } }

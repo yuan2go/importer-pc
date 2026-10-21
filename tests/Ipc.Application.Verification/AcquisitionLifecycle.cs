@@ -129,7 +129,7 @@ static class AcquisitionLifecycle
             Check(app.EmitReferenceAt("right", "independent", "0001", "right-original"), "right accepts while left capture and queue are blocked");
             await Wait(app, s => s.Operations.Any(o => o.PositionId == "right" && o.ImageReleased));
             Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 3, "right completes and releases independently of overloaded left");
-            await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
             var before = await app.SnapshotAsync();
             var reconnect = app.ReconnectDeviceAsync(left.DeviceId);
             await Task.Delay(100);

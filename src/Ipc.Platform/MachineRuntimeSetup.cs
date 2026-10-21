@@ -26,12 +26,12 @@ public static class MachineRuntimeSetup
     {
         using var identity = WindowsIdentity.GetCurrent();
         var sid = identity.User?.Value;
-        MachineRuntimePolicy.ValidateRuntimeAccount(sid, sid, true, identity.UserClaims);
+        MachineRuntimePolicy.ValidateRuntimeAccount(sid, sid, true, identity.Claims);
         return sid!;
     }
 
     [SupportedOSPlatform("windows")]
-    static string MachineRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+    static string MachineRoot => WindowsStoragePaths.MachineRoot;
 
     [SupportedOSPlatform("windows")]
     static bool PolicyExists()
@@ -69,7 +69,7 @@ public static class MachineRuntimeSetup
     internal static void InstallWindows(string machine, string runtimeSid)
     {
         var account = new SecurityIdentifier(runtimeSid);
-        if (!account.IsAccountSid()) throw new UnauthorizedAccessException("Runtime setup requires a Windows user account SID");
+        if (!account.IsAccountSid() && runtimeSid != MachineRuntimePolicy.SharedUsersSid) throw new UnauthorizedAccessException("Runtime setup requires a Windows user account SID");
         _ = account.Translate(typeof(NTAccount));
         var parent = new DirectoryInfo(machine).Parent ?? throw new InvalidDataException("Machine setup parent missing");
         for (var current = parent; current is not null; current = current.Parent)

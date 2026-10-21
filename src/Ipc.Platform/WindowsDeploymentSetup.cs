@@ -14,7 +14,7 @@ public sealed record WindowsDeploymentRequest(string MediaRoot, string Applicati
 
 public static partial class WindowsDeploymentSetup
 {
-    public static string MachineRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+    public static string MachineRoot => WindowsStoragePaths.MachineRoot;
     public static string Registration(string application) => Path.Combine(MachineRoot, "deployments", application + ".json");
     public static DeploymentLocation? Current(string application)
     {
@@ -92,7 +92,7 @@ public static partial class WindowsDeploymentSetup
             sourceFiles.Any(path => !request.ConfigurationHashes.TryGetValue(Path.GetFileName(path), out var hash) || Wire.FileHash(path) != hash))
             throw new InvalidDataException("Selected seed configuration changed after review; read and review it again");
         var sid = new SecurityIdentifier(request.RuntimeAccountSid);
-        if (!sid.IsAccountSid()) throw new InvalidDataException("Choose an existing Windows account");
+        if (!sid.IsAccountSid() && request.RuntimeAccountSid != MachineRuntimePolicy.SharedUsersSid) throw new InvalidDataException("Choose an existing Windows account");
         _ = sid.Translate(typeof(NTAccount));
         var data = Path.GetFullPath(request.DataRoot); DeploymentPaths.RequireOrdinaryAncestors(data);
         PreviewDataAccess(data, request.RuntimeAccountSid);
@@ -137,7 +137,7 @@ public static partial class WindowsDeploymentSetup
                 Directory.Move(temporary, config);
             }
             else { MachineRuntimePolicy.RequireProtectedEvidence(Path.Combine(config, "business.json")); validateConfiguration(request with { ConfigurationSource = config }); }
-            if (data.StartsWith(MachineRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) ProtectedDirectory(Path.Combine(MachineRoot, "data"), sid);
+
             if (!Directory.Exists(data)) new DirectoryInfo(data).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.Modify));
             if (request.TrustFile is not null) ProvisionTrust(request, sid);
             installPackages(request);
@@ -145,6 +145,7 @@ public static partial class WindowsDeploymentSetup
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
+            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") AdministratorBroker.Install(data, Path.Combine(releaseRoot, "app"));
             WriteProtected(operation, new { Status = "ReadyToCommit", Location = location, Previous = before, BusinessStarted = false }, sid);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
             // Stable desktop entry is a repairable projection of the committed deployment.

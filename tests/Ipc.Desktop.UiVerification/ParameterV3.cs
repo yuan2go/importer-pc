@@ -52,6 +52,8 @@ static partial class Program
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
         await Until(() => vm.Fresh);
+        var probesRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        runtime.BeforeMonitorProbe = (_, token) => probesRelease.Task.WaitAsync(token);
         await vm.PauseAsync(); await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync("SIMULATION_ONLY"));
         await Until(() => vm.CanConfigure);
         vm.ConfigurationReason = "Synthetic V3 native save"; await vm.SaveStructuredConfigurationAsync();
@@ -60,6 +62,7 @@ static partial class Program
             "native save confirms Pending while Effective stays unchanged");
         Check(!((Button)page.FindName("SaveChanges")).IsEnabled && vm.ParameterRuntimeSummary(target).Contains("待重启"), "confirmed Pending disables repeat save and labels the running configuration separately");
         Capture("v3-saved-pending");
+        runtime.BeforeMonitorProbe = null; probesRelease.TrySetResult();
 
         var rcsFields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
         var rcsBinding = config.Wcs! with { Implementation = "sportmaster-rcs-task", Version = "1.3.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Target = "http://192.0.2.10/rcs/sorter/api" };

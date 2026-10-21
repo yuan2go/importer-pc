@@ -56101,9 +56101,9 @@
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "ecc428e1a91ae1fb75c658b38abcc7eed584a3c74b8fc8417341d95b30b718ca",
-      "size_bytes": 18831,
-      "git_blob": "5ce85749f4ef463653d5888deeda1c079ba10f93",
+      "sha256": "8deaab7511acee366bf043fdbcfc0d68bb403b203d3891e680b895a892db5c96",
+      "size_bytes": 19206,
+      "git_blob": "fa8d051405c4d480710950ac481079957143bac0",
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities"
     },
     {
@@ -56466,9 +56466,9 @@
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
-      "sha256": "969ab37302f03a82621dc6790ac0252d5f359ea2b5ad6a17e19c35a0aa3ac091",
-      "size_bytes": 14509,
-      "git_blob": "b7044fc65473dabc39ff1670b126fcff68f41c42"
+      "sha256": "a2e32b075e5a879e7521072073480a2b8a94731a24edb25e0e94a68a5f7e85a3",
+      "size_bytes": 14776,
+      "git_blob": "df3bb301351ff1375b7cb22435fe2cf4d5172f59"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",

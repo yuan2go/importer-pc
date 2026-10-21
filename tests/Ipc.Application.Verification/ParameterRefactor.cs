@@ -61,6 +61,10 @@ static class ParameterRefactor
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
         var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+        // Isolate configuration semantics from periodic health probes taking the
+        // shared external-call guard between availability and Stage. The real
+        // guard remains enforced; all in-flight probes must drain first.
+        app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token);
         await Wait(app, s => s.Availability!.Configure);
         var unchangedBefore = (await app.SnapshotAsync()).Configuration;
         var noChange = await app.StageConfigurationAsync(unchangedBefore.Revision, unchangedBefore.Effective, "Synthetic no-change guard");
@@ -82,7 +86,7 @@ static class ParameterRefactor
         app.Boundary = null;
         var pendingRepeat = await app.StageConfigurationAsync(saved.Revision, saved.Pending!, "Synthetic existing Pending");
         Check(pendingRepeat.Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Revision == saved.Revision,
-            "identical Pending remains idempotent after the no-change guard");
+            "identical Pending remains idempotent after the no-change guard: " + pendingRepeat.Status + " / " + pendingRepeat.Reason);
         var staleNoChange = await app.StageConfigurationAsync(saved.Revision - 1, saved.Effective, "Synthetic stale no-change");
         Check(staleNoChange.Status == "Rejected" && (await app.SnapshotAsync()).Configuration.Pending!.StationCode == "SYSTEM-EDIT",
             "stale CAS cannot disguise itself as unchanged or discard Pending");

@@ -23,7 +23,7 @@ static partial class Program
         var launch = new BusinessLaunch(config, Path.Combine(evidence, "data"), null, null);
         var factory = new CommercialProductization.SyntheticFactory(launch);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
         var vm = new ParcelViewModel(runtime, "会话时长修复", "合成端口；真实设备待验");
         await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var originalCandidate = vm.BuildStructuredConfiguration();
@@ -83,7 +83,7 @@ static partial class Program
             Check(refused.Status != "PendingRestart" && (await runtime.SnapshotAsync()).Configuration.Revision == revision,
                 "Application rejects a session change without pause and maintenance authorization");
             var before = await runtime.SnapshotAsync(); await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause"));
-            await runtime.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); await vm.RefreshAsync();
+            await AdministratorFixture.Authorize(runtime); await vm.RefreshAsync();
             vm.ConfigurationReason = "Synthetic focused session lifetime correction";
             await vm.SaveStructuredConfigurationAsync();
             var saved = (await runtime.SnapshotAsync()).Configuration;

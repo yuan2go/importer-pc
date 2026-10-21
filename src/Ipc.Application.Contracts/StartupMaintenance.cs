@@ -4,6 +4,7 @@ namespace Ipc.Application.Contracts;
 
 public sealed record StartupMaintenanceDocument(ParcelConfiguration? Candidate, CapabilityCatalog Catalog,
     string ConfigurationHash, long Revision, bool ExistingConfiguration, string? RuntimeDirectory, string[] Diagnostics, string ConfigurationStatus = "Unknown");
+public sealed record StartupClassification(bool ExistingConfiguration, bool Readable, string[] Diagnostics);
 public sealed record StartupRecoveryPreview(string BackupSha256, string Destination, string Summary, string DataRoot);
 public sealed record StartupEditorState(Dictionary<string, string> Values);
 public sealed record StartupSavedDraft(string BaseConfigurationHash, string DraftHash, DateTimeOffset At, StartupEditorState Editor, bool BaseChanged, string? SourceIdentity = null);
@@ -18,6 +19,7 @@ public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, st
 // Independent of IBusinessRuntime: no device/session is required to inspect or repair startup.
 public interface IStartupMaintenance
 {
+    Task<StartupClassification> ClassifyAsync() => throw new NotSupportedException("Startup routing metadata unavailable");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<StartupMaintenanceDocument> ReadAsync();
     Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate);
@@ -26,7 +28,6 @@ public interface IStartupMaintenance
     Task<StartupMaintenanceDocument> RepairInitialAsync(string expectedHash, ParcelConfiguration candidate, string reason);
     Task<StartupSavedDraft?> ReadDraftAsync();
     Task<StartupSavedDraft> SaveDraftAsync(string expectedConfigurationHash, string? expectedDraftHash, StartupEditorState editor);
-    Task ExportAsync(string destination);
     Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination);
     Task RestoreAsync(string backup, string destination, string expectedBackupHash);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);

@@ -19,6 +19,7 @@ static partial class Program
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         var busy = type.BaseType!.GetField("Busy", flags)!;
         var launch = new BusinessLaunch(Path.Combine(evidence, "missing-config"), Path.Combine(evidence, "missing-data"), null, null);
+        AdministratorFixture.AuthorizeRoot(launch.DataRoot);
         var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
         type.GetProperty("ConfirmDiscardInputs", flags)!.SetValue(first, (Func<bool>)(() => true)); first.Show();
         await Ready(first);
@@ -96,7 +97,7 @@ static partial class Program
         fake.Uncertain = true; Click(first, "保存并启动"); await Idle(first); var attempts = fake.Saves;
         Click(first, "保存并启动"); await Idle(first);
         Check(fake.Saves == attempts && !Retry(first), "unknown save result blocks a duplicate submission and startup");
-        Check(!Directory.Exists(launch.DataRoot), "first-run navigation and synthetic failure checks create no database or device owner");
+        Check(!Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.EnumerateFiles(launch.DataRoot, "*lease*", SearchOption.AllDirectories).Any(), "first-run navigation and synthetic failure checks create no database or device owner; only administrator custody exists");
         first.Close();
 
         // Exercise the real modal completion path with a fake application contract,

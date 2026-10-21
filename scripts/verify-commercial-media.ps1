@@ -25,12 +25,16 @@ New-Item -ItemType Directory -Path $Output | Out-Null
 $fixture = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/CommercialProductization.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'CommercialProductization.cs'), [string[]]$fixture)
+$administration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/OperatorAdministration.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is unavailable' }
+[IO.File]::WriteAllLines((Join-Path $Output 'OperatorAdministration.cs'), [string[]]$administration)
 $entry = @'
 using Ipc.Platform;
 using Ipc.Assembly;
 var media = Path.GetFullPath(args[0]); var root = Path.GetFullPath(args[1]); var evidence = Path.GetFullPath(args[2]);
 var inventory = DeploymentMedia.Inspect(media, "sportmaster");
 Directory.CreateDirectory(evidence);
+await OperatorAdministration.Run(root, Path.Combine(evidence, "operator-admin"));
 await CommercialProductization.Run(root, evidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();

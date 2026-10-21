@@ -1,3 +1,4 @@
+using Ipc.Application.Contracts;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
@@ -63,38 +64,12 @@ public sealed class ConfigurationSaveReviewWindow : Window
         body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", 16, 16)); body.Children.Add(pauseState);
         pause.Click += async (_, _) => { pause.IsEnabled = false; try { await vm.PauseAsync(); } finally { pause.IsEnabled = true; } }; body.Children.Add(pause);
         guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
-        var credentialGrid = new Grid { Margin = new(0, 8, 0, 12) };
-        credentialGrid.ColumnDefinitions.Add(new()); credentialGrid.ColumnDefinitions.Add(new()); credentialGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        var accountGroup = new StackPanel { Margin = new(0, 0, 12, 0) }; accountGroup.Children.Add(Label("维护账号"));
-        var account = new TextBox { Name = "MaintenanceSubject" }; account.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.MaintenanceSubject)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-        AutomationProperties.SetName(account, "维护账号"); accountGroup.Children.Add(account);
-        var proofGroup = new StackPanel { Margin = new(0, 0, 12, 0) }; proofGroup.Children.Add(Label("维护口令")); proofGroup.Children.Add(proof); AutomationProperties.SetName(proof, "维护口令");
-        var authorize = new Button { Content = "认证维护权限", VerticalAlignment = VerticalAlignment.Bottom }; authorize.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartFreshOperation)));
-        var authorizationFeedback = Note(""); authorizationFeedback.Visibility = Visibility.Collapsed;
-        authorize.Click += async (_, _) =>
+        if (vm.Application is IWorkstationAdministration administrator)
         {
-            var value = proof.Password; proof.Clear();
-            await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync(value), "认证维护权限");
-            authorizationFeedback.Text = vm.Message; authorizationFeedback.Visibility = Visibility.Visible;
-        };
-        Grid.SetColumn(proofGroup, 1); Grid.SetColumn(authorize, 2); credentialGrid.Children.Add(accountGroup); credentialGrid.Children.Add(proofGroup); credentialGrid.Children.Add(authorize);
-        bool? narrowCredentials = null;
-        credentialGrid.SizeChanged += (_, _) =>
-        {
-            var narrow = credentialGrid.ActualWidth < 600;
-            if (narrowCredentials == narrow) return;
-            narrowCredentials = narrow; credentialGrid.RowDefinitions.Clear();
-            for (var i = 0; i < (narrow ? 3 : 1); i++) credentialGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            credentialGrid.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
-            credentialGrid.ColumnDefinitions[2].Width = narrow ? new(0) : GridLength.Auto;
-            Grid.SetColumn(proofGroup, narrow ? 0 : 1); Grid.SetColumn(authorize, narrow ? 0 : 2);
-            Grid.SetRow(proofGroup, narrow ? 1 : 0); Grid.SetRow(authorize, narrow ? 2 : 0);
-            accountGroup.Margin = proofGroup.Margin = narrow ? new(0, 0, 0, 12) : new(0, 0, 12, 0);
-            authorize.HorizontalAlignment = narrow ? HorizontalAlignment.Left : HorizontalAlignment.Stretch;
-        };
-        credentials.Children.Add(Note("有效授权会继续使用；需要时在此认证。"));
-        credentials.Children.Add(credentialGrid); credentials.Children.Add(authorizationFeedback);
-        authentication.Content = credentials; authentication.IsExpanded = authorizationOnly; body.Children.Add(authentication);
+            var login = new Button { Content = "登录软件管理员…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            login.Click += async (_, _) => { new AdministratorWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshAdministratorAsync(); };
+            authentication.Header = "软件管理员账号"; authentication.Content = login; authentication.IsExpanded = !vm.IsAdministrator; body.Children.Add(authentication);
+        }
         body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", 16, 12));
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
@@ -128,6 +103,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void ModelChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (!vm.IsAdministrator && !vm.Busy) { Close(); return; }
         if (e.PropertyName is nameof(vm.Busy) or nameof(vm.Fresh) or nameof(vm.CanConfigure) or nameof(vm.ConfigurationReviewIsCurrent) or nameof(vm.HasUnconfirmedConfigurationSubmission) or nameof(vm.ConfigurationSubmissionOutcome) or nameof(vm.Snapshot) or nameof(vm.Feedback)) UpdateState();
     }
     void UpdateState()

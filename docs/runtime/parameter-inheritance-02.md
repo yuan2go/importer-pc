@@ -1,3 +1,5 @@
+> 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+
 # 参数继承增量：运行与操作
 
 本轮沿 PARAM-01 / PARAM-UX-02 实施，Sportmaster 版本 1.8.0；共享合同 1.14.0，DirectPlc/WcsToPlc 1.5.0。具体源码、原生截图和安装介质身份由本轮验证记录给出；本文不是现场验收。原 1.7.0 / PR80 介质和 PR81/82 验证各守原 SourceCommit。

@@ -110,7 +110,7 @@ static partial class ArchitectureQuality
         string ackId;
         await using (var app = await Open(c, "overload-durable"))
         {
-            await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await AdministratorFixture.Authorize(app);
             var before = await app.SnapshotAsync(); var originalMarker = File.ReadAllText(marker);
             using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
             {
@@ -152,7 +152,7 @@ static partial class ArchitectureQuality
             using var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("config-audit", c), "sportmaster.db")); db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_configuration_audit";
             var audit = Wire.Decode<ConfigurationChangeAudit>((string)q.ExecuteScalar()!);
             Check(audit.Actor?.Subject == "maintenance" && audit.Status == "Activated" && audit.BeforeRevision == beforeConfigurationRevision && audit.AfterRevision == beforeConfigurationRevision+3 && s.Configuration.Revision == beforeConfigurationRevision+3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes");
-            await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await AdministratorFixture.Authorize(app);
             Check((await app.StageConfigurationAsync(0, s.Configuration.Effective, "Stale synthetic editor")).Status == "Rejected", "configuration CAS still rejects a stale full editor after activation");
         }
     }

@@ -80,9 +80,6 @@ static class StartupDeployment
         await Reject<InvalidDataException>(() => service.RestoreAsync(backup, Path.Combine(root, "changed-set"), plan.BackupSha256), "restore pins complete backup manifest as well as DB");
         Check(constructed == 0, "offline operations never construct reader/SDK ports");
         File.WriteAllBytes(file, saved);
-        var summary = Path.Combine(root, "offline-support.json"); await service.ExportAsync(summary);
-        Check(!File.ReadAllText(summary).Contains("Parameters", StringComparison.Ordinal), "support summary omits configuration parameters and payloads");
-        await Reject<IOException>(() => service.ExportAsync(summary), "support export does not overwrite previous summary");
         var missingPackage = new PackageReference("missing", "1.0.0", new string('A', 64));
         var binding = seed.Wcs! with { Implementation = "extension:missing/missing", Version = "1.0.0", Package = missingPackage, Module = "missing" };
         var missing = seed with { Wcs = binding, CapabilityInstances = seed.CapabilityInstances?.Select(b => b.InstanceId == binding.InstanceId ? binding : b).ToArray(), Extensions = new([missingPackage], []) };

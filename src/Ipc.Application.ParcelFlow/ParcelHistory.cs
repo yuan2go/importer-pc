@@ -191,7 +191,7 @@ public sealed partial class ParcelRuntime
         foreach (var id in candidates) { admissionPositions.TryRemove(operations[id].AdmissionId, out _); operations.Remove(id); }
     }
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)
-    { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.History(beforeSequence, limit); } finally { gate.Release(); } }
+    { await gate.WaitAsync().ConfigureAwait(false); try { return OperatorHistory(repository!.History(beforeSequence, limit)); } finally { gate.Release(); } }
     public async Task<ParcelOperation?> OperationAsync(string id)
-    { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.ReadOperation(id); } finally { gate.Release(); } }
+    { await gate.WaitAsync().ConfigureAwait(false); try { var op = repository!.ReadOperation(id); return op is null || Administrator.Status().Authorized ? op : OperatorOperation(op); } finally { gate.Release(); } }
 }

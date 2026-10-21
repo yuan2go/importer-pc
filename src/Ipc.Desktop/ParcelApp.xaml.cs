@@ -61,7 +61,7 @@ public partial class App : System.Windows.Application
             if (!firstConfigurationReviewed)
             {
                 var maintenance = ParcelStartupServices.Maintenance(launch);
-                var initialDocument = await Task.Run(maintenance.ReadAsync);
+                var initialDocument = await Task.Run(maintenance.ClassifyAsync);
                 var route = DesktopLaunchOptions.StartupRoute(initialDocument);
                 if (route != DesktopStartupRoute.Runtime)
                 {

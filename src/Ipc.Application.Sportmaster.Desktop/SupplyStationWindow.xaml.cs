@@ -69,17 +69,17 @@ public partial class SupplyStationWindow : Window
     }
     async Task RefreshAsync()
     {
-        try { await ViewModel.RefreshDisplayAsync(); }
+        try { await ViewModel.RefreshDisplayAsync(); EnforceAdministratorView(); }
         catch (Exception) { /* RefreshDisplayAsync retains the failure and invalidates this window's projection. */ }
     }
     void SetPage(string page)
     {
+        if (page is "maintenance" or "diagnostics" or "logs" && !ViewModel.IsAdministrator) { ViewModel.Message = "请先登录软件管理员。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), _ => work };
+        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
-    void Support_Click(object sender, RoutedEventArgs e) => new ProductSupportWindow(ViewModel.Application, ViewModel.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)
     { SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }

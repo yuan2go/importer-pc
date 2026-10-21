@@ -14,6 +14,8 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
     internal static DesktopStartupRoute StartupRoute(StartupMaintenanceDocument document) =>
         document.ExistingConfiguration ? DesktopStartupRoute.Runtime :
         document.Candidate is null ? DesktopStartupRoute.Repair : DesktopStartupRoute.FirstConfiguration;
+    internal static DesktopStartupRoute StartupRoute(StartupClassification document) =>
+        document.ExistingConfiguration ? DesktopStartupRoute.Runtime : document.Readable ? DesktopStartupRoute.FirstConfiguration : DesktopStartupRoute.Repair;
 
     public static DesktopLaunchOptions Parse(string[] args, string applicationId)
     {

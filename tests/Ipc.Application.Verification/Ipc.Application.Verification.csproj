@@ -10,6 +10,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/AdministratorPresentation.cs" Link="Client/AdministratorPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs" Link="Client/ParcelPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs" Link="Client/DesktopServiceCalls.cs"/>

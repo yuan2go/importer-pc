@@ -11,11 +11,15 @@ namespace Ipc.Assembly;
 
 public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? Launch = null, string? ExpectedHash = null,
     ParcelConfiguration? Candidate = null, string? Reason = null, string? Backup = null, string? Destination = null,
-    WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null);
+    WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null, AdministratorDelegation? AdministratorGrant = null);
 
 // Composition entry points for installation and offline maintenance; never creates IBusinessRuntime.
 public static class ParcelStartupServices
 {
+    static readonly AsyncLocal<Action?> delegatedAuthority = new();
+    static readonly AsyncLocal<string?> delegatedPrincipal = new();
+    static bool RequiresAdministrator(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore";
+    static string AdministratorRequestHash(StartupMaintenanceRequest r) => Wire.Hash(Wire.Encode(r with { AdministratorGrant = null }));
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool GetNamedPipeClientProcessId(Microsoft.Win32.SafeHandles.SafePipeHandle pipe, out uint processId);
     public static void CreateSiteSeed(DeploymentMedia media, string destination, string station, RunMode mode)
@@ -92,7 +96,7 @@ public static class ParcelStartupServices
         return Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("ResumeRemoval", ExpectedHash: expectedRegistrationHash, Deployment: request)) ?? throw new IOException("缺少清理回执"));
     }
     static ParcelStartupMaintenance Core(BusinessLaunch launch, bool installer = false) => new(launch, ParcelAssembly.Definition(), () => new ParcelCapabilityFactory(launch,
-        BusinessCompatibility.Read(ParcelAssembly.Definition().GetType().Assembly), ParcelAssembly.Definition().GetType().Assembly, installer));
+        BusinessCompatibility.Read(ParcelAssembly.Definition().GetType().Assembly), ParcelAssembly.Definition().GetType().Assembly, installer), installer ? () => { MachineRuntimePolicy.RequireExtensionInstallerAuthority(); delegatedAuthority.Value?.Invoke(); } : () => { LocalAdministrator.ForRoot(launch.DataRoot).Require(); }, () => delegatedPrincipal.Value ?? LocalAdministrator.ForRoot(launch.DataRoot).Identity?.Subject);
     public static async Task<DeploymentLocation> InstallAsync(WindowsDeploymentRequest request)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Windows setup requires Windows");
@@ -129,8 +133,18 @@ public static class ParcelStartupServices
         var request = Wire.Decode<StartupMaintenanceRequest>(ProtectedDraftPayload.Read(args[1]));
         if (request.Pipe is not { Length: 64 } || request.Pipe.Any(c => !char.IsAsciiHexDigit(c))) throw new InvalidDataException("Invalid maintenance receipt channel");
         string? failure = null, result = null;
-        try { if (!MediaCommand(request.Action)) RequireProtectedHelper(AppContext.BaseDirectory); result = ExecuteAsync(request).GetAwaiter().GetResult(); }
+        try {
+            if (RequiresAdministrator(request.Action))
+            {
+                var authority = LocalAdministrator.ForRoot(request.Launch?.DataRoot ?? throw new InvalidDataException("Missing administrator root"));
+                var grant = request.AdministratorGrant ?? throw new UnauthorizedAccessException("软件管理员授权缺失，Windows资格不能代替软件登录。");
+                var requestHash = AdministratorRequestHash(request); authority.ValidateDelegation(grant, requestHash, true);
+                delegatedPrincipal.Value = grant.Account;
+                delegatedAuthority.Value = () => authority.ValidateDelegation(grant, requestHash, false);
+            }
+            if (!MediaCommand(request.Action)) RequireProtectedHelper(AppContext.BaseDirectory); result = ExecuteAsync(request).GetAwaiter().GetResult(); }
         catch (Exception ex) { failure = ex.Message; Environment.ExitCode = 2; }
+        finally { delegatedAuthority.Value = null; delegatedPrincipal.Value = null; }
         using var pipe = new NamedPipeClientStream(".", request.Pipe, PipeDirection.Out);
         pipe.Connect(10000);
         using var writer = new StreamWriter(pipe); writer.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Status = failure is null ? "Completed" : "Failed", Error = failure is null ? null : failure[..Math.Min(failure.Length, 4000)], Result = result }));
@@ -330,7 +344,9 @@ public static class ParcelStartupServices
         var pipeName = Wire.Id() + Wire.Id();
         using var server = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
         var path = Path.Combine(Path.GetTempPath(), "ipc-maintenance-" + Wire.Id() + ".bin");
-        ProtectedDraftPayload.Write(path, Wire.Encode(request with { Pipe = pipeName }), false);
+        request = request with { Pipe = pipeName };
+        if (RequiresAdministrator(request.Action)) request = request with { AdministratorGrant = LocalAdministrator.ForRoot(request.Launch!.DataRoot).Delegate(AdministratorRequestHash(request)) };
+        ProtectedDraftPayload.Write(path, Wire.Encode(request), false);
         try
         {
             using var pinned = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -377,34 +393,42 @@ public static class ParcelStartupServices
     sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance
     {
         readonly ParcelStartupMaintenance core = Core(launch);
+        void RequireAdministrator() => LocalAdministrator.ForRoot(launch.DataRoot).Require();
+        public Task<StartupClassification> ClassifyAsync() => core.ClassifyAsync();
         public Task<StartupMaintenanceDocument> ReadAsync() => core.ReadAsync();
         public async Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash)
         {
+            RequireAdministrator();
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("登记接管仅适用于原机Windows安装；portable恢复继续隔离");
             await ElevateAsync(new("AdoptRestore", launch, expectedBackupHash, Backup: backup, Destination: restoredDataRoot, ChangePlanIdentity: expectedRegistrationHash));
         }
         public Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token) => core.ListBackupsAsync(directory, token);
         public async Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination)
         {
+            RequireAdministrator();
             if (!OperatingSystem.IsWindows()) return await core.PlanChangeAsync(purpose, backupDestination);
             return Wire.Decode<StartupChangePreview>(await ElevateAsync(new("PlanChange", launch, Reason: purpose, Destination: backupDestination)) ?? throw new IOException("Missing maintenance plan"));
         }
         public async Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination)
         {
+            RequireAdministrator();
             if (!OperatingSystem.IsWindows()) return await core.PrepareChangeAsync(expectedPlan, purpose, backupDestination);
             return Wire.Decode<StartupChangePreview>(await ElevateAsync(new("PrepareChange", launch, expectedPlan, Reason: purpose, Destination: backupDestination)) ?? throw new IOException("Missing backup receipt"));
         }
         public async Task BackupAsync(string destination)
-        { if (OperatingSystem.IsWindows()) await ElevateAsync(new("Backup", launch, Destination: destination)); else await core.BackupAsync(destination); }
+        { RequireAdministrator();
+            if (OperatingSystem.IsWindows()) await ElevateAsync(new("Backup", launch, Destination: destination)); else await core.BackupAsync(destination); }
         public Task<StartupSavedDraft?> ReadDraftAsync() => core.ReadDraftAsync();
         public async Task<StartupSavedDraft> SaveDraftAsync(string expectedConfigurationHash, string? expectedDraftHash, StartupEditorState editor)
         {
+            RequireAdministrator();
             if (OperatingSystem.IsWindows()) await ElevateAsync(new("SaveDraft", launch, expectedConfigurationHash, Editor: editor, DraftHash: expectedDraftHash));
             else return await core.SaveDraftAsync(expectedConfigurationHash, expectedDraftHash, editor);
             return await core.ReadDraftAsync() ?? throw new IOException("Draft receipt unavailable");
         }
         public async Task<StartupMaintenanceDocument> RepairInitialAsync(string expectedHash, ParcelConfiguration candidate, string reason)
         {
+            RequireAdministrator();
             if (OperatingSystem.IsWindows()) await ElevateAsync(new("RepairInitial", launch, expectedHash, candidate, reason));
             else return await core.RepairInitialAsync(expectedHash, candidate, reason);
             return await core.ReadAsync();
@@ -412,10 +436,10 @@ public static class ParcelStartupServices
         public Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate) => core.ValidateAsync(candidate);
         public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => core.TestBarcodeFilterAsync(policy, candidates);
         public Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate) => core.CheckAsync(candidate);
-        public Task ExportAsync(string destination) => core.ExportAsync(destination);
         public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination) => core.PlanRestoreAsync(backup, destination);
         public async Task<StartupMaintenanceDocument> StageAsync(string expectedHash, ParcelConfiguration candidate, string reason)
         {
+            RequireAdministrator();
             if (OperatingSystem.IsWindows()) await ElevateAsync(new("Stage", launch, expectedHash, candidate, reason));
             else return await core.StageAsync(expectedHash, candidate, reason);
             var document = await core.ReadAsync();
@@ -426,6 +450,7 @@ public static class ParcelStartupServices
         }
         public async Task RestoreAsync(string backup, string destination, string expectedBackupHash)
         {
+            RequireAdministrator();
             if (OperatingSystem.IsWindows()) await ElevateAsync(new("Restore", launch, expectedBackupHash, Backup: backup, Destination: destination));
             else await core.RestoreAsync(backup, destination, expectedBackupHash);
         }

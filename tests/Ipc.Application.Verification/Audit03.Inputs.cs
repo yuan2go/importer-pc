@@ -71,7 +71,7 @@ static partial class Audit03
                 {
                     var fact = s.IdentityConflicts.Single();
                     Check((await Command(app, "AcknowledgeIdentityConflict", fact.Id, "Synthetic entity inspected")).Status == "Rejected", "identity acknowledgement requires maintenance authority");
-                    await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+                    await Command(app, "Pause"); await AdministratorFixture.Authorize(app);
                     await Wait(app, x => x.Availability!.Configure);
                     Check((await Command(app, "AcknowledgeIdentityConflict", fact.Id, "Synthetic physical entity isolated and original code checked")).Status == "Persisted", "authorized identity acknowledgement recorded");
                     s = await app.SnapshotAsync();

@@ -30,10 +30,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     bool started, stopped, disposed;
     string? failure;
     readonly OperatorSession session = new();
-    readonly OperatorSession maintenanceSession = new();
     OperatorIdentity? currentOperator => session.Identity;
     bool SessionValid => Effective.Login is null || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs);
-    bool MaintenanceAuthorized => maintenanceSession.Valid(DateTimeOffset.UtcNow, 900000) && maintenanceSession.Identity?.Grants?.Contains("maintenance") == true;
+    bool MaintenanceAuthorized => Administrator.Status().Authorized;
+    OperatorIdentity? AdministratorIdentity => Administrator.Identity;
     readonly Dictionary<string, CapabilityHealth> capabilityHealth = [];
     readonly HashSet<string> activeStages = [];
     readonly HashSet<string> attachedRunning = [];
@@ -98,6 +98,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
+        logReader = new(Path.Combine(directory, "diagnostics"), Administrator, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
         repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
@@ -358,7 +359,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input); operations[op.Id] = op;
         if (input is not null) latestInputs[input.PositionId] = input;
-        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
+        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
     }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
         op.Capture?.State is StageState.Unknown or StageState.Conflict ||

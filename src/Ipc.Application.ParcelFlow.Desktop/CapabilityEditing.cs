@@ -129,11 +129,12 @@ public partial class ParcelViewModel
     public int DraftPending { get; set; }
     public string PackagePath { get; set; } = "";
     public string PackageSha256 { get; set; } = "";
-    public string MaintenanceSubject { get; set; } = "maintenance";
+    public string MaintenanceSubject { get; set; } = "";
     public string InspectionReason { get; set; } = "";
     public async Task LoadCapabilitiesAsync()
     {
-        if (Snapshot is null) await RefreshAsync();
+        await RequireAdministratorAsync();
+        await RefreshAsync();
         var loaded = Snapshot!;
         var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
         var catalog = await ServiceAsync(() => application.CapabilitiesAsync());

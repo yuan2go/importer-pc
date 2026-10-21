@@ -212,8 +212,9 @@ static partial class ArchitectureQuality
         await vm.LoadCapabilitiesAsync();
         Check(held.CatalogReads == 2 && vm.StructuredPolicy!.WaitTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
     }
-    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication
+    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IAdministratorFixtureForwarder
     {
+        public IParcelApplication InnerAdministration => inner;
         public bool HoldNextStage;
         public int CatalogReads;
         public TaskCompletionSource StageEntered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);

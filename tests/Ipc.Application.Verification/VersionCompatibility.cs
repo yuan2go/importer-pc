@@ -87,7 +87,7 @@ static class VersionCompatibility
             await runtime.StartAsync(CancellationToken.None);
             var before = await runtime.SnapshotAsync();
             await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause"));
-            await runtime.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            await AdministratorFixture.Authorize(runtime);
             before = await runtime.SnapshotAsync();
             var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }), "Verify incompatible provider version rejection");
             Pass(rejected.Status == "Rejected" && rejected.Reason.Contains("not declared compatible", StringComparison.Ordinal) && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance reaches compatibility rejection without replacing Effective/Pending");

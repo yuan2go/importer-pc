@@ -19,12 +19,13 @@ static partial class Program
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
             var startupType = desktop.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
             var missingLaunch = new BusinessLaunch(Path.Combine(evidence, "missing-config"), Path.Combine(evidence, "missing-data"), null, null);
+            AdministratorFixture.AuthorizeRoot(missingLaunch.DataRoot);
             var first = (Window)Activator.CreateInstance(startupType, [missingLaunch, null, true])!; first.Show();
             var busy = startupType.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
             var setupTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks"); setupTabs.SelectedIndex = 1; first.UpdateLayout();
             Check(first.Title.Contains("首次配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
-            Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
+            Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
             first.Close();
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
@@ -32,7 +33,7 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
         var vm = new ParcelViewModel(runtime, "Sportmaster", "合成原生验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var page = new MaintenancePage { DataContext = vm };
         var window = new Window { Title = "PARAM-01 原生交互验证 · 合成数据", Content = page, Width = 1600, Height = 900, WindowStartupLocation = WindowStartupLocation.CenterScreen };

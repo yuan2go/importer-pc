@@ -1,3 +1,5 @@
+> 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](docs/runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+
 # Codex / Agent 工作约束
 
 1. 从最新main读取 `docs/INDEX.md`、本任务工作包、`docs/design/framework.md` 与 `framework-decisions.md`，再读相关代码、D/RV及公开范围。先核验工作区和并行PR，不覆盖他人修改。

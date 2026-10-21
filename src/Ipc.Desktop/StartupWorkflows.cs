@@ -132,6 +132,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
         pathFields = Body.Children.Cast<UIElement>().ToArray();
+        Action("软件管理员登录…", () => { new AdministratorWindow(LocalAdministrator.ForRoot(SelectedLaunch.DataRoot)) { Owner = this }.ShowDialog(); return Task.CompletedTask; });
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", CheckCandidate);
         Action("保存未完成草稿", async () =>
@@ -166,12 +167,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             document = await Task.Run(() => maintenance.RepairInitialAsync(document!.ConfigurationHash, candidate, reason)); Render();
             Message("修复意图已保存并读回；重试正常启动会再次检查原责任及资格，资源全部成功后才确认Effective。");
         });
-        Action("导出支持摘要…", async () =>
-        {
-            if (MessageBox.Show(this, "将导出本版Application/源码/公共契约、配置hash/修订/状态及诊断计数。排除完整参数、诊断原文、条码、业务报文、数据库和原件；不自动上传。", "预览离线支持范围", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
-            var picker = new SaveFileDialog { FileName = "startup-support.json", Filter = "支持摘要|*.json", OverwritePrompt = true };
-            if (picker.ShowDialog(this) == true) { if (File.Exists(picker.FileName)) throw new IOException("请选择新文件，保留既有摘要"); await Task.Run(() => maintenance.ExportAsync(picker.FileName)); Message("已导出摘要；不含配置参数、业务报文或数据库。"); }
-        });
         Action("创建完整备份…", async () =>
         {
             var picker = new SaveFileDialog { FileName = "complete-backup-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db", Filter = "完整恢复集数据库|*.db" };
@@ -188,7 +183,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
         });
-        Action("离线帮助", () => { new Window { Owner = this, Title = "菜鸟供包台 · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
@@ -236,7 +230,17 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Body.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
         Body.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
         Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
-        Loaded += async (_, _) => await Run(async () => { try { await Read(); } finally { if (tasks is null) Render(); } });
+        var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+        bool checkingAuthority = false;
+        authorizationTimer.Tick += async (_, _) =>
+        {
+            if (checkingAuthority) return; checkingAuthority = true;
+            try { var allowed = (await Task.Run(() => LocalAdministrator.ForRoot(SelectedLaunch.DataRoot).Status())).Authorized; Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed; if (!allowed) Message("管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。"); }
+            catch (Exception error) { Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
+            finally { checkingAuthority = false; }
+        };
+        Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
+        Loaded += async (_, _) => await Run(async () => { try { var admin = LocalAdministrator.ForRoot(SelectedLaunch.DataRoot); if (!admin.Status().Authorized) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
     }
     async Task ValidateBarcodeRule()
     {
@@ -326,11 +330,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     void OpenTools()
     {
         var menu = new ContextMenu();
-        foreach (var label in new[] { "导入配置文件…", "保存未完成草稿", "继续已保存草稿", "离线帮助" })
+        foreach (var label in new[] { "导入配置文件…", "保存未完成草稿", "继续已保存草稿" })
             Add(menu.Items, label);
         menu.Items.Add(new Separator());
         var advanced = new MenuItem { Header = "备份、诊断与修复" };
-        foreach (var label in new[] { "读取所选配置", "分层检查与变更预览", "保存首配待生效…", "按当前首配启动", "导出新站模板…", "导出支持摘要…", "创建完整备份…", "受控修复未确认配置…", "接管已恢复的原机目录…", "安装 / 修复程序…" })
+        foreach (var label in new[] { "读取所选配置", "分层检查与变更预览", "保存首配待生效…", "按当前首配启动", "导出新站模板…", "创建完整备份…", "受控修复未确认配置…", "接管已恢复的原机目录…", "安装 / 修复程序…" })
             Add(advanced.Items, label);
         var diagnostic = new MenuItem { Header = "查看完整诊断…" };
         diagnostic.Click += (_, _) => new Window { Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
@@ -348,12 +352,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
     new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
     {
-        if (label is not ("读取所选配置" or "离线帮助" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) RequireMaintenance();
+        if (label is not ("软件管理员登录…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) RequireMaintenance();
         await action();
     });
     void RequireMaintenance()
     {
         RequireDirectories();
+        LocalAdministrator.ForRoot(SelectedLaunch.DataRoot).Require();
         if (maintenance is null) throw new InvalidOperationException("先读取所选目录；失败读取不能沿用另一目录的维护实例。");
     }
     bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();

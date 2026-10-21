@@ -20,7 +20,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; LoadStationDisplay(); Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(nameof(AccountDisplay)); Changed(nameof(PauseVisibility)); Changed(nameof(ResumeVisibility)); LoadStationDisplay(); Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => CurrentAt(SelectedPositionId);
     public ParcelOperation? CurrentAt(string position) => Snapshot?.Positions?.SingleOrDefault(p => p.Id == position)?.CurrentOperation is { } id
@@ -34,7 +34,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     };
     public string Health => !Fresh ? "设备旧状态已失效 · " + ReadStatus : string.Join("\n", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
-    public string OperatorSubject { get; set; } = "alice";
+    public string OperatorSubject { get; set; } = "";
     public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
     public bool CanAdmit => !Busy && Fresh && Snapshot?.Availability?.Admit == true;
@@ -138,6 +138,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public async Task RefreshAsync()
     {
+        await RefreshAdministratorAsync();
         var generation = Interlocked.Increment(ref refreshGeneration);
         var (readId, next) = await ReadSnapshotWithIdAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;

@@ -50,7 +50,7 @@ public partial class ShellWindow : Window
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
     }
     async Task RefreshAsync()
-    { try { await vm.RefreshAsync(); } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }
+    { try { await vm.RefreshAsync(); if (!vm.IsAdministrator && (ReferenceEquals(PageHost.Content, maintenance) || PageHost.Content is SoftwareLogControl)) { (PageHost.Content as SoftwareLogControl)?.Revoke(); PageHost.Content = work; } } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }
     void UpdateViewport()
     {
         if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
@@ -61,10 +61,11 @@ public partial class ShellWindow : Window
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
-    void Support_Click(object s, RoutedEventArgs e) => new ProductSupportWindow(vm.Application, vm.Selected?.Id) { Owner = this }.Show();
+    void Administrator_Click(object s, RoutedEventArgs e) { if (vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); }
+    void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsAdministrator && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) PageHost.Content = new SoftwareLogControl(admin); }
     async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object s, RoutedEventArgs e)
-    { PageHost.Content = maintenance; pendingMaintenanceLoad = !vm.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    { if (!vm.IsAdministrator) { vm.Message = "请先登录软件管理员。"; return; } PageHost.Content = maintenance; pendingMaintenanceLoad = !vm.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
     async Task LoadRequestedMaintenanceAsync()
     {
         if (!pendingMaintenanceLoad) return;

@@ -32,7 +32,7 @@ static class UxCommercialPresentation
         var baseline = await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "presentation-b" && x.State == ParcelState.SlotResolved));
         var b = baseline.Operations.Single(x => x.AdmissionId == "presentation-b");
         var original = Wire.Encode(a.Wcs!.Request);
-        var proxy = DispatchProxy.Create<IParcelApplication, UxPresentationProbe>(); var probe = (UxPresentationProbe)(object)proxy;
+        var proxy = DispatchProxy.Create<IAdministrativeParcelFixture, UxPresentationProbe>(); var probe = (UxPresentationProbe)(object)proxy;
         var presented = baseline; probe.Read = () => Task.FromResult(presented);
         var ui = new SupplyStationViewModel(proxy); var classic = new ParcelViewModel(proxy, "test", "test");
         await ui.RefreshAsync(); await classic.RefreshAsync(); classic.SelectedPositionId = "left";

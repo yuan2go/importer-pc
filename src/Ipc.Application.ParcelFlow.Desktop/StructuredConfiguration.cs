@@ -136,9 +136,9 @@ public partial class ParcelViewModel
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
-    public Task EnsureMaintenanceLoadedAsync() => HasLoadedConfiguration ? Task.CompletedTask : LoadCapabilitiesAsync();
+    public async Task EnsureMaintenanceLoadedAsync() { await RequireAdministratorAsync(); if (!HasLoadedConfiguration) await LoadCapabilitiesAsync(); }
     public bool CanEditLegacyConfiguration => configurationAuthority == "旧版表单";
-    public bool CanEditFormConfiguration => configurationAuthority is "结构化表单" or "旧版表单";
+    public bool CanEditFormConfiguration => IsAdministrator && configurationAuthority is ("结构化表单" or "旧版表单");
     public bool CanEditStructuredConfiguration => configurationAuthority == "结构化表单";
     public bool HasStructuredConfiguration => structuredBase is not null;
     public bool AdvancedConfigurationReadOnly => configurationAuthority != "高级JSON";

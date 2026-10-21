@@ -84,12 +84,12 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
+    public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; }
     public class HistoryPage { public object? DataContext { get; set; } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
-    public class ProductSupportWindow(Ipc.Application.Contracts.IParcelApplication application, string? operation) : System.Windows.Window
-    { public Ipc.Application.Contracts.IParcelApplication Application { get; } = application; public string? Operation { get; } = operation; }
     public class MaintenancePage
     {
+        public bool IsEnabled { get; set; }
         public object? DataContext { get; set; }
         public event EventHandler? DisplayPreferencesRequested { add { } remove { } }
         public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested { add { } remove { } }
@@ -104,6 +104,8 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.ContentControl PageHost = new();
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
+        Ipc.Application.ParcelFlow.Desktop.SoftwareLogControl? logs;
+        void EnforceAdministratorView() { }
         System.Windows.FrameworkElement CreateDiagnostics() => new();
         void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }
     }

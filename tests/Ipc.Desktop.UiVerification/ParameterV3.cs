@@ -21,8 +21,8 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "v3-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
-        var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");

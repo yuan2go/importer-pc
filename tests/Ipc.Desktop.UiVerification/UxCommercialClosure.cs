@@ -29,7 +29,7 @@ static partial class Program
             check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") &&
                 scope.IsEnabled && ((ParameterSettingsControl)page.FindName("MainParameterEditor")).IsEnabled && !save.IsEnabled,
                 "native feedback is immediate; navigation and draft editing stay available while guarded save is disabled");
-            check(Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场")).IsEnabled,
+            check(Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包"))).IsEnabled,
                 "native Pause remains enabled outside the busy maintenance scope");
             await vm.PauseAsync();
             check(vm.Busy && vm.Snapshot!.Paused, "real Application Pause completes independently while native maintenance is held");
@@ -141,7 +141,7 @@ static partial class Program
             await using var runtime = syntheticIdentity
                 ? new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } }
                 : (Ipc.Application.ParcelFlow.ParcelRuntime)SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
-            await runtime.StartAsync(CancellationToken.None);
+            await runtime.StartAsync(CancellationToken.None); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
             var stops = 0; var decisions = 0;
             var window = Presentation.Create((IParcelApplication)runtime.Application, "sportmaster-maintenance", null, ui,
                 async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
@@ -220,7 +220,7 @@ static partial class Program
             for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20);
             check(vm.Snapshot!.CurrentOperator?.Subject == "alice" && proof.Password.Length == 0,
                 "native classic login reaches the real Application and clears the entered proof");
-            var pause = Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场"));
+            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包")));
             check(pause.IsEnabled && Inside(pause, client), "expanding classic diagnostics retains independent fixed Pause");
         }
         finally { diagnostics.ClearValue(Expander.IsExpandedProperty); window.UpdateLayout(); }
@@ -335,7 +335,7 @@ static partial class Program
                 var bounds = button.TransformToAncestor(client).TransformBounds(new Rect(button.RenderSize));
                 check(button.ActualHeight >= 44 && bounds.Bottom <= client.ActualHeight && bounds.Top >= 0, $"{ui} {target} fixed operation remains visible");
             }
-            var pause = Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场"));
+            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包")));
             check(pause.IsEnabled && pause.ActualHeight >= 44, "independent Pause remains enabled and reachable");
             var dpi = VisualTreeHelper.GetDpi(window);
             File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"{ui} target={target} client={client.ActualWidth}x{client.ActualHeight} dpi={dpi.DpiScaleX}/{dpi.DpiScaleY} os={Environment.OSVersion} account={Environment.UserName}\n");

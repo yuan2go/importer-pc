@@ -124,7 +124,7 @@ public sealed partial class ParcelRuntime : IParcelHistoryApplication
     public async Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter)
     { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.SelectHistory(filter); } finally { gate.Release(); } }
     public async Task<ParcelHistoryPage> QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence = long.MaxValue, int limit = 50)
-        => await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit)).ConfigureAwait(false);
+        => OperatorHistory(await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit)).ConfigureAwait(false));
     public async Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection)
         => await ReadHistoryAsync(reader => reader.Metrics(selection)).ConfigureAwait(false);
     async Task<T> ReadHistoryAsync<T>(Func<ParcelHistoryReader, T> read)

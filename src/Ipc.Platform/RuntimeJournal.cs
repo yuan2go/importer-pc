@@ -24,25 +24,7 @@ public sealed class RuntimeJournal : IAsyncDisposable
             try
             {
                 var path = Path.Combine(directory, "runtime.jsonl");
-                void Maintain()
-                {
-                    var days = Volatile.Read(ref retention).Days;
-                    // These four diagnostic files are disposable metadata. Never
-                    // enumerate arbitrary files or delete business/custody evidence.
-                    for (var i = 0; i <= 3; i++) DeploymentPaths.RequireOrdinaryAncestors(i == 0 ? path : path + "." + i);
-                    var now = DateTime.UtcNow;
-                    if (File.Exists(path) && (new FileInfo(path).Length > 5_000_000 || days is not null && File.GetLastWriteTimeUtc(path).Date < now.Date))
-                    {
-                        for (int i = 2; i >= 1; i--) { var old = path + "." + i; if (File.Exists(old)) File.Move(old, path + "." + (i + 1), overwrite: true); }
-                        File.Move(path, path + ".1", overwrite: true);
-                    }
-                    if (days is { } keep)
-                        for (var i = 1; i <= 3; i++)
-                        {
-                            var file = path + "." + i;
-                            if (File.Exists(file) && File.GetLastWriteTimeUtc(file) <= now.AddDays(-keep)) File.Delete(file);
-                        }
-                }
+                void Maintain() => MaintainFiles(directory, Volatile.Read(ref retention).Days);
                 Maintain();
                 using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
                 var available = queue.Reader.WaitToReadAsync().AsTask();
@@ -58,13 +40,39 @@ public sealed class RuntimeJournal : IAsyncDisposable
                         if (entry is RetentionChange) { Maintain(); continue; }
                         Maintain();
                         var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
-                        await File.AppendAllTextAsync(path, line + Environment.NewLine);
+                        await File.AppendAllTextAsync(path, DiagnosticText.Protect(line) + Environment.NewLine);
                     }
                     available = queue.Reader.WaitToReadAsync().AsTask();
                 }
             }
             catch (Exception ex) { failure("Diagnostic journal failure: " + ex.GetType().Name); }
         });
+    }
+    public static void AppendMetadata(string directory, object metadata)
+    {
+        DeploymentPaths.RequireOrdinaryAncestors(directory); Directory.CreateDirectory(directory); MaintainFiles(directory, null);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(DiagnosticText.Protect(System.Text.Json.JsonSerializer.Serialize(metadata)) + "\n");
+        using var stream = new FileStream(Path.Combine(directory, "runtime.jsonl"), FileMode.Append, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete);
+        stream.Write(bytes); stream.Flush(true);
+    }
+    static void MaintainFiles(string directory, int? days)
+    {
+        var path = Path.Combine(directory, "runtime.jsonl");
+                    // These four diagnostic files are disposable metadata. Never
+                    // enumerate arbitrary files or delete business/custody evidence.
+                    for (var i = 0; i <= 3; i++) DeploymentPaths.RequireOrdinaryAncestors(i == 0 ? path : path + "." + i);
+                    var now = DateTime.UtcNow;
+                    if (File.Exists(path) && (new FileInfo(path).Length > 5_000_000 || days is not null && File.GetLastWriteTimeUtc(path).Date < now.Date))
+                    {
+                        for (int i = 2; i >= 1; i--) { var old = path + "." + i; if (File.Exists(old)) File.Move(old, path + "." + (i + 1), overwrite: true); }
+                        File.Move(path, path + ".1", overwrite: true);
+                    }
+                    if (days is { } keep)
+                        for (var i = 1; i <= 3; i++)
+                        {
+                            var file = path + "." + i;
+                            if (File.Exists(file) && File.GetLastWriteTimeUtc(file) <= now.AddDays(-keep)) File.Delete(file);
+                        }
     }
     static void ValidateDays(int? days) { if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "诊断日志保留天数须为1～3650"); }
     public void ConfigureRetention(int? days)

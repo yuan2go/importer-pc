@@ -14,12 +14,12 @@ static partial class ArchitectureQuality
         ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var offline = new ParcelStartupMaintenance(launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => new ParcelCapabilityFactory(launch));
-        var first = await offline.ReadAsync();
+        var first = await offline.ClassifyAsync();
         Check(DesktopLaunchOptions.StartupRoute(first) == DesktopStartupRoute.FirstConfiguration && !Directory.Exists(launch.DataRoot),
             "a readable seed without an existing authority opens first configuration without creating runtime data");
         var missingLaunch = launch with { ConfigurationDirectory = Path.Combine(root, "startup-no-seed"), DataRoot = Path.Combine(root, "startup-no-data") };
-        var missing = await new ParcelStartupMaintenance(missingLaunch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch)).ReadAsync();
-        Check(DesktopLaunchOptions.StartupRoute(missing) == DesktopStartupRoute.FirstConfiguration && missing.Candidate?.StationCode == "station-01" && !Directory.Exists(missingLaunch.DataRoot),
+        var missing = await new ParcelStartupMaintenance(missingLaunch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch)).ClassifyAsync();
+        Check(DesktopLaunchOptions.StartupRoute(missing) == DesktopStartupRoute.FirstConfiguration && missing.Readable && !Directory.Exists(missingLaunch.DataRoot),
             "missing parameters still open the existing first-configuration route with system defaults and no runtime resources");
         ParcelOperation original;
         var rejectedTimeout = c.TimeoutMs + 51;

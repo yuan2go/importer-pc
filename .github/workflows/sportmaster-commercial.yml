@@ -79,6 +79,8 @@ jobs:
             if (-not $?) { throw 'Frozen visual verification did not return successfully' }
             ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/parameters-v3 -ParameterV3
             if (-not $?) { throw 'Frozen parameter V3 verification did not return successfully' }
+            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/operator-administration -OperatorAdministration
+            if (-not $?) { throw 'Frozen administrator/log verification did not return successfully' }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)
@@ -137,6 +139,7 @@ jobs:
             C:/scd-evidence/parameters-v3/RUN.log
             C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
             C:/scd-evidence/parameters-v3/*.png
+            C:/scd-evidence/operator-administration/*
             C:/scd-evidence/removal/RESULT.json
             C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json

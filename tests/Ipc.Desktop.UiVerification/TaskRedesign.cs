@@ -23,8 +23,8 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, true);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
-        var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
@@ -62,9 +62,9 @@ static partial class Program
         Check(vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002", "all task fields correlate to each position's original accepted request");
         Capture("work-assigned-1600", client);
         var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left));
-        Check(((TextBlock)leftControl.FindName("ReaderIdentity")).Text == vm.Left.ReaderId &&
+        Check(leftControl.FindName("ReaderIdentity") is null && vm.Left.ReaderIdentity == vm.Left.ReaderId &&
             ((TextBlock)leftControl.FindName("ScanSummary")).Text.Contains(vm.Left.ScanTime) &&
-            !((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && !((Button)leftControl.FindName("ContinueOriginal")).IsVisible &&
+            leftControl.FindName("ReconcileOriginal") is null && !((Button)leftControl.FindName("ContinueOriginal")).IsVisible &&
             ((Button)leftControl.FindName("PositionDiagnostics")).IsVisible,
             "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
         var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
@@ -84,13 +84,13 @@ static partial class Program
         Capture("work-rejected-new-input", client);
         probe.Project = s => WithTasks(s) with { Operations = WithTasks(s).Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Wcs = o.Wcs! with { State = StageState.Unknown }, Slot = null } : o).ToArray() };
         await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
-        Check(((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && ((Button)leftControl.FindName("ReconcileOriginal")).IsEnabled &&
+        Check(leftControl.FindName("ReconcileOriginal") is null && vm.Left.HasUncertainOriginal &&
             !((Button)leftControl.FindName("ContinueOriginal")).IsVisible && !vm.Right.HasUncertainOriginal,
-            "unknown original reveals only its guarded reconciliation action and leaves the other position independent");
+            "unknown original retains responsibility without a permanent query action and leaves the other position independent");
         Capture("work-unknown", client);
         vm.MarkReadFailure("合成读取中断");
         Check(vm.Left.WaveNo == "已失效" && vm.Right.ResponseQuantity == "已失效" && !vm.Right.CurrentTaskAvailable, "stale snapshot invalidates all task fields together"); Capture("work-stale", client);
-        Check(((Button)leftControl.FindName("ReconcileOriginal")).IsVisible && !((Button)leftControl.FindName("ReconcileOriginal")).IsEnabled &&
+        Check(leftControl.FindName("ReconcileOriginal") is null && !vm.Left.CanQueryOriginal &&
             ((Button)leftControl.FindName("PositionDiagnostics")).IsEnabled,
             "stale original retains its context with reconciliation disabled and read-only diagnosis available");
         probe.Project = WithTasks; await vm.RefreshAsync();
@@ -164,13 +164,13 @@ static partial class Program
         Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
             (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
             "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");
-        Check(!vm.CanConfigure && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
-            "save review remains accessible before maintenance authorization");
+        Check(vm.IsAdministrator && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
+            "save review is accessible under the authenticated software administrator");
         var reviewSeen = false; double editorHeight = 0;
         await ObserveSaveReviewAsync(window, maintenance, dialog =>
         {
             reviewSeen = !vm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
+                vm.IsAdministrator && !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
             var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
             Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
                 "native review displays the current station change from the validated complete candidate");
@@ -195,7 +195,7 @@ static partial class Program
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; AdministratorFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busyField = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
             for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);

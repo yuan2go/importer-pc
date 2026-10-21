@@ -18,7 +18,7 @@ public sealed partial class ParameterSettingsControl
             var missing = Page(2, "缺少读码实例", "当前候选没有读码实例。请核对原拓扑和已安装驱动。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
-        foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound && c.Role != "maintenance-auth") && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
+        foreach (var component in m.Components.Where(c => (c.Role != "maintenance-auth" && (!FirstConfiguration || c.Bound)) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), FirstConfiguration ? m.ComponentName(component) : ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用一个 调度系统连接。保存后通过受控重启应用。" :

@@ -1,9 +1,7 @@
-# 参数设置 V3：当前设计与实现入口
+# 当前原生 UI 状态
 
-当前参数页面采用 [V3设计包](parameter-settings-v3-20261020/README.md)、[PARAM-UX-02](../design/parameter-settings-experience-02.md) 和 [PS-00～05](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)。一个四类对象目录、专注设置工作区与统一保存审阅，替代V2参数叠层导航和“维护与迁移”总入口。实际状态见 [V3实施记录](../runtime/parameter-settings-experience-02.md) 与 [QA](parameter-settings-v3-20261020/QA.md)。
+当前工作包为 [OPS-ADMIN-LOGS-01](../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)：普通导航仅作业、作业记录；管理员增加参数设置、日志查询。账号与角色固定右上显示，免登录作业和管理员授权独立。诊断与恢复按对象进入；帮助与支持的入口、专页与摘要服务完整删除。
 
-本轮交付27张高清PNG、可编辑离线原型及字段/状态/任务交接；它们为合成演示，不是WPF实机截图。2026-10-21已核对main `42a047c3`包含PR78/79；54个设计文件完整、53项登记文件和25项源码指纹全部一致。原`837370e`/`bf61337`保留为设计形成时基线。当前继续[PS-05及实际差距修复](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)，Windows最终源验证另记，1.6.1安装包没有因此自动更新。
+参数继续复用 PARAM-UX-02/V3 四类目录、同一完整候选及统一保存；作业保留固定左右相机、扫码与同件任务字段；首配继续五步独立流程。新权限和操作简化替代原 V2/V3 的冲突导航，不改变协议或实体资格。
 
-[V2作业/首配目标](sportmaster-task-redesign-v2-20261020/README.md)、[原实施](../runtime/ui-task-redesign-01.md)及其WPF、键鼠和发行证据保留各自SourceCommit。相机/扫描/RCS任务三组、waveNo/taskId/skuId/响应quantity、独立首配、原请求与唯一配置账不因参数美学调整而重写。
-
-V1的48张PNG和V2的67张参考PNG保持原字节；[v1.1](ss-ui-vis-001-v1.1/README.md)为历史方案。它们不叠加为本次页面或文件数量。原型、交叉编译、Windows、精确SDK/RCS和现场分别计证，未执行部分不得扩张为PASS。
+[当前实现和操作](../runtime/operator-administrator-logs-01.md)、[本轮原生截图及验证](../runtime/validation/operator-administrator-logs-01.md)是本次交付入口。V2的67图、V3的27图及以往WPF/发行继续保留原版本；旧PASS不扩张到本轮。清理前入口见[原字节](../archive/pre-operator-admin-logs/docs__ui__STATUS.md.txt)。

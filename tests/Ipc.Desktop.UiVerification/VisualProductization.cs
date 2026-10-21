@@ -24,8 +24,8 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, !baseline);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
-        var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>();
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
+        var application = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = (SupplyStationWindow)Presentation.Create(application, null, "standard");
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -51,7 +51,7 @@ static partial class Program
         {
             var desktopAssembly = System.Reflection.Assembly.LoadFrom(desktopPath);
             var type = desktopAssembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; AdministratorFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busy = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
             for (var i = 0; i < 100 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(30);
@@ -202,20 +202,7 @@ static partial class Program
             var child = new SupplyStationWindow(application, null, "standard", owner: window); child.Show(); await Task.Delay(350);
             Check(ReferenceEquals(child.ViewModel.Application, vm.Application) && child.ViewModel.Snapshot?.RuntimeId == vm.Snapshot?.RuntimeId, "programmatically attached native view retains the same Application and device lifetime");
             child.Close(); await Task.Delay(100);
-            var support = new ProductSupportWindow(runtime, vm.Left.Operation?.Id) { Owner = window }; support.Show(); await Task.Delay(120);
-            Capture("support-help", support); ((TabControl)support.Content).SelectedIndex = 1; support.UpdateLayout(); Capture("support-preview", support);
-            var supportFrom = Descendants(support).OfType<DateTimeInput>().First();
-            var supportDate = Descendants(supportFrom).OfType<DatePicker>().Single();
-            supportDate.Text = "not-a-date"; await Task.Delay(80);
-            supportDate.IsDropDownOpen = true; await Task.Delay(80); supportDate.IsDropDownOpen = false; await Task.Delay(80);
-            Click(support, "预览本次支持内容"); await Task.Delay(120);
-            Check(supportFrom.Timestamp.StartsWith("无效日期：") && Descendants(support).OfType<TextBlock>().Any(t => t.Text.StartsWith("预览未完成：")) &&
-                !Descendants(support).OfType<Button>().Single(b => Equals(b.Content, "保存预览的支持摘要…")).IsEnabled,
-                "support preview refuses a rejected date after calendar dismissal and keeps export disabled");
-            Capture("support-invalid-date", support);
-            Click(supportFrom, "清除");
-            Check(supportFrom.Timestamp.Length == 0, "explicit native clear removes the invalid support boundary");
-            support.Close();
+
         }
         var original = (await runtime.SnapshotAsync()).Operations;
         foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "本次识别失败 · 未取得包裹号"),

@@ -178,7 +178,7 @@ static class CapabilityClosure
             await Task.Delay(240); Pass(!app.EmitReference("expired-session", "008", Wire.Id()), "expired session refuses admission without inventing an authenticated default");
             await Command(app, "Pause"); var before = (await app.SnapshotAsync()).Configuration;
             Pass((await app.StageConfigurationAsync(before.Revision, before.Effective, "Synthetic directed configuration verification")).Status == "Rejected", "software pause alone grants no maintenance authority");
-            Pass((await app.AuthorizeMaintenanceAsync("maintenance", "wrong")).Status == "Rejected" && (await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");
+            Pass((await app.AuthorizeMaintenanceAsync("maintenance", "wrong")).Status == "Rejected" && (await AdministratorFixture.Authorize(app)).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");
             Pass((await app.StageConfigurationAsync(before.Revision, before.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification")).Status == "PendingRestart", "authenticated configuration forms pending revision and leaves original effective and parcel frozen");
             Pass((await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Authenticated" && (await app.SnapshotAsync()).Operations.Single().Operator!.SessionId == op.Operator!.SessionId, "expired session replacement preserves admitted operator snapshot");
         }

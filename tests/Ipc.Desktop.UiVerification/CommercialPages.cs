@@ -93,7 +93,7 @@ static partial class Program
             Screenshot(first, Path.Combine(evidence, "commercial-offline-repair.png")); first.Close();
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
+        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application); var identity = (await runtime.SnapshotAsync()).RuntimeId;
         var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
         classic.Show(); alternate.Show(); await Task.Delay(400);
         Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
@@ -149,17 +149,7 @@ static partial class Program
         Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
             "canceling native save review preserves the edited field and never stages the candidate");
         stationInput.Text = originalStation;
-        var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
-        Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");
-        var helpSearch = Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索离线帮助");
-        helpSearch.Text = "Unknown";
-        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("不要重发"), "task help search exposes the preserved Unknown no-resend procedure");
-        helpSearch.Text = "no-matching-topic-123";
-        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("没有匹配"), "help search presents an explicit empty result without changing business state");
-        helpSearch.Text = "";
-        support.UpdateLayout(); await support.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        Check(Descendants(support).OfType<ListBoxItem>().Any(t => t.IsVisible && t.ActualHeight >= 44 && Equals(t.Content, "安装与首配")), "help task names render with usable touch targets after search resets");
-        Screenshot(support, Path.Combine(evidence, "commercial-support.png")); support.Close();
+
         Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/help window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");
         classic.ConfirmDiscardDrafts = _ => true; classic.Close(); alternate.ConfirmDiscardDrafts = _ => true; alternate.Close(); await Task.Delay(100);

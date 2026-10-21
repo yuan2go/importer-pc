@@ -20,6 +20,10 @@ static partial class Program
         lines.Add("SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.");
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        // This scenario holds the first left call until the UI has observed the
+        // right result. Keep that deliberate hold separate from the shipped
+        // 1500ms request deadline and variable native rendering time on CI.
+        if (!baseline) config = config with { TimeoutMs = 30000 };
         File.WriteAllText(Path.Combine(configRoot, "business.json"), Wire.Encode(config));
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, !baseline);
@@ -77,8 +81,10 @@ static partial class Program
         await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
         if (!baseline)
         {
-            for (var i = 0; i < 100 && vm.Right.Operation?.State != ParcelState.SlotResolved; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
-            Check(vm.Right.Operation?.State == ParcelState.SlotResolved && vm.Left.Operation?.State == ParcelState.ResolvingWcs, "delayed left request does not block right result or change its owner");
+            var rightDeadline = DateTimeOffset.UtcNow.AddSeconds(10);
+            while (vm.Right.Operation?.State != ParcelState.SlotResolved && DateTimeOffset.UtcNow < rightDeadline) { await vm.RefreshAsync(); await Task.Delay(20); }
+            Check(vm.Right.Operation?.State == ParcelState.SlotResolved && vm.Left.Operation?.State == ParcelState.ResolvingWcs,
+                "delayed left request does not block right result or change its owner" + $"; left={vm.Left.Operation?.State}, right={vm.Right.Operation?.State}, paused={vm.Snapshot?.Paused}, resolves={factory.Resolves}");
             Capture("left-processing-right-valid-1366"); factory.ReleaseLeft.TrySetResult();
         }
         for (var i = 0; i < 100; i++) { await vm.RefreshAsync(); if (vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.State == ParcelState.SlotResolved) break; await Task.Delay(40); }

@@ -59146,9 +59146,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "38478589aa5d0ab3b2f3f5c43b0d742ee0c4b508e2dcb5976457545be5662f86",
-      "size_bytes": 29564,
-      "git_blob": "2ba4d97cf5ef32e39356b1ccbc050152e03818c6",
+      "sha256": "2a9390e7bdbffb331c8ecc71d74ffc604c3baedd85728555c28b48240fdcd1df",
+      "size_bytes": 30101,
+      "git_blob": "47bd889f288149311452df8fee2e200e48d10ac7",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",

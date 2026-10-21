@@ -109,7 +109,8 @@
     "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境",
     "document_verification_only": "仅本次文档来源、引用、哈希、范围和提交核验，不表示运行或现场验收",
     "parameter_v3_design_or_current_guidance": "Current parameter design, navigation, source identity or stated verification boundary; does not imply native Windows or production PASS",
-    "parameter_v3_source_crossbuild_pass_windows_not_run": "This frozen source cross-compiles with Sportmaster UiVerification; WPF tests and actual Windows/DPI are NOT_RUN"
+    "parameter_v3_source_crossbuild_pass_windows_not_run": "This frozen source cross-compiles with Sportmaster UiVerification; WPF tests and actual Windows/DPI are NOT_RUN",
+    "current_guidance_static_review_not_runtime_validation": "Current guidance based on exact-main artifact identity checks and static source review; no new WPF, SDK, installer or production validation"
   },
   "files": [
     {
@@ -1741,13 +1742,13 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "b525905e359136185e0436a15140b2934889847ad5acdf132a0fe2285e0245ad",
-      "size_bytes": 6073,
-      "git_blob": "e995b2a772b53b99ddf93c3cfda029c8deb4774b",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "c90731a214401e34a739bf9871840b8818c9e5ded2de7855220bee06dfbd7051",
+      "size_bytes": 6295,
+      "git_blob": "8670dfe9d77ebb4a2df13ac4019e5f978c7829bc",
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "previous_git_blob": "612824b9ad357d4b1530eb28f0bff417a416dfa4",
       "collected": true,
@@ -1774,6 +1775,13 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "e995b2a772b53b99ddf93c3cfda029c8deb4774b",
+        "sha256": "b525905e359136185e0436a15140b2934889847ad5acdf132a0fe2285e0245ad",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
       }
     },
     {
@@ -1812,13 +1820,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "bb459c5f32f134359f721535a5b5230268aa9d5fc0e3b4b3d4cd9902b1249076",
-      "size_bytes": 5270,
-      "git_blob": "d752159255b502607f34b353a4a9a32d92b27ca3",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "061e588fa638fd9cc333041cb3fae83c87ce9558664edf497a61b04dfc6989f9",
+      "size_bytes": 5416,
+      "git_blob": "56631ed0cdd4fa815145ad12d402e55504873ab1",
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "previous_git_blob": "d5d1118683b400abdfb72c288c4eddc4cd935459",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
@@ -1846,7 +1854,14 @@
         "source": "User-authorized bound-login session field fix and same-source Windows installer; synthetic validation only"
       },
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "d752159255b502607f34b353a4a9a32d92b27ca3",
+        "sha256": "bb459c5f32f134359f721535a5b5230268aa9d5fc0e3b4b3d4cd9902b1249076",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      }
     },
     {
       "path": "config/compatibility/direct-plc.json",
@@ -2037,13 +2052,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "addd07ff1231001e4d08206d75369ac034d9c7aa8c53b3567c5c77e9ad725ade",
-      "size_bytes": 15244,
-      "git_blob": "468d2282704c36f8764eceebe77b05742ea86f5c",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "14738d84a5b7c332d0a711646971b22d25121262cf634e04d5bd73cff6ec4c5b",
+      "size_bytes": 15463,
+      "git_blob": "0df39effa9ba9c532fa2a18b10015ebd39878b73",
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "previous_git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2077,7 +2092,14 @@
       },
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
       "remote_inclusion": "verify_published_main",
-      "pre_publication_pr78_pr79_git_blob": "b93c698bdb7052253dca977a1993bd370d9c54cd"
+      "pre_publication_pr78_pr79_git_blob": "b93c698bdb7052253dca977a1993bd370d9c54cd",
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "468d2282704c36f8764eceebe77b05742ea86f5c",
+        "sha256": "addd07ff1231001e4d08206d75369ac034d9c7aa8c53b3567c5c77e9ad725ade",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      }
     },
     {
       "path": "docs/archive/parallel-reconciliation-20261020-inflight-ui/README.md",
@@ -42936,16 +42958,23 @@
     },
     {
       "path": "docs/runtime/parameter-settings-experience-02.md",
-      "sha256": "123926ba436392b1e846d0ece84052205ea6fc20c0944ea02d9f2d95aee7686a",
-      "size_bytes": 4673,
-      "git_blob": "17bb2d67d849a9de7f35fd6c869b41a18cf2d532",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "43619fb3613a0e426c787a5eeffdc559ffb431d08a5ee9800662c4cce300283c",
+      "size_bytes": 5267,
+      "git_blob": "9220b9f231c5b68d641cf70506e66a5955d44e78",
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "17bb2d67d849a9de7f35fd6c869b41a18cf2d532",
+        "sha256": "123926ba436392b1e846d0ece84052205ea6fc20c0944ea02d9f2d95aee7686a",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      }
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",
@@ -44060,13 +44089,13 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "b2127abb0aa96645fec4c44aa451f578dd11c66b",
-      "sha256": "1b9d1fe218879407b2628d8302ea439ffd41122bc4c1d68c360f70c6870d1af1",
-      "size_bytes": 1447,
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "git_blob": "858667a3e2a218c4b50f4b8ede8606a25224fc67",
+      "sha256": "dfc90ca2228209f8daa65d3966832a5d2b82d640039979a70af6db9ebc1ac2e5",
+      "size_bytes": 1602,
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -44093,6 +44122,13 @@
         "version": "UIR-00-06-V2-20261020",
         "status": "synthetic_validation_or_implementation",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
+      },
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "b2127abb0aa96645fec4c44aa451f578dd11c66b",
+        "sha256": "1b9d1fe218879407b2628d8302ea439ffd41122bc4c1d68c360f70c6870d1af1",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
       }
     },
     {
@@ -49048,16 +49084,23 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
-      "sha256": "28c5090b38b382bc11ad020017e4efd37ac9724316a489c2657845cc92241b24",
-      "size_bytes": 2814,
-      "git_blob": "54c8f8d62a53ffbcc340551252938d26b90567e3",
-      "version": "PARAM-UX-02-20261020",
-      "status": "parameter_v3_design_or_current_guidance",
-      "purpose": "Parameter V3 task/object settings, single save review, specific maintenance tasks, editable prototype and separated evidence",
-      "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only",
+      "sha256": "0178b61569d1867d08f5609bacf9968ff6a27201420b262fa775c17b0429dc94",
+      "size_bytes": 11705,
+      "git_blob": "a07b8614eb534ee815681f40039ebc470a3be86c",
+      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+      "status": "current_guidance_static_review_not_runtime_validation",
+      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
       "storage_scope": "public_repository",
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_published_main"
+      "remote_inclusion": "verify_published_main",
+      "pre_parameter_main_handoff_20261021_identity": {
+        "git_blob": "54c8f8d62a53ffbcc340551252938d26b90567e3",
+        "sha256": "28c5090b38b382bc11ad020017e4efd37ac9724316a489c2657845cc92241b24",
+        "version": "PARAM-UX-02-20261020",
+        "status": "parameter_v3_design_or_current_guidance",
+        "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      }
     },
     {
       "path": "docs/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md",

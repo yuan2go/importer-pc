@@ -23,7 +23,7 @@
 
 **参数体验当前修订：** 用户针对实际参数页提出新的美学与操作纠偏，现采用 [PARAM-UX-02](design/parameter-settings-experience-02.md) 和 [参数设置V3](ui/parameter-settings-v3-20261020/README.md)。此修订替代V2参数版式、底部步骤按钮和“维护与迁移”总入口。PR74实现与发行记录继续保留真实来源，不因新设计而倒写。
 
-当前参数工作包为 [PS-00～05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)，读取并整合main `bf61337`。本轮已实施的源码与Windows待验边界见[参数V3实施记录](runtime/parameter-settings-experience-02.md)。PR74和PR76已完成内容复用，历史V2工作包不再要求重复改写已经实现的功能。
+当前参数工作包继续使用 [PS-00～05及最新Codex执行提示](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)。2026-10-21核对main `42a047c3`：PR78/79已合并，54个设计文件完整、53项登记文件和25项源码指纹全部一致；下一步是原生交付收口及实际缺口修复。原`bf61337`是V3形成时整合基线，原验证身份不改变。源码与Windows待验边界见[参数V3实施记录](runtime/parameter-settings-experience-02.md)，PR74/76及PR79已完成内容复用。
 
 ## 1. 当前阅读顺序
 
@@ -31,7 +31,7 @@
 | --- | --- |
 | 1 | [AGENTS](../AGENTS.md)：工作范围、分支、现有机制与证据规则。 |
 | 2 | [V3设计入口](ui/parameter-settings-v3-20261020/README.md)、[参数决定](design/parameter-settings-experience-02.md)、[交接](ui/parameter-settings-v3-20261020/HANDOFF.md)：当前参数布局、字段去向和保存流程。 |
-| 3 | [参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)、[简洁Codex提示](ui/parameter-settings-v3-20261020/CODEX-NEXT.md)、[V3实际验证](ui/parameter-settings-v3-20261020/QA.md)：当前实施和收口。 |
+| 3 | [参数工作包、最新源码核查与Codex执行提示](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)、[V3原验证](ui/parameter-settings-v3-20261020/QA.md)：当前收口；设计包内CODEX-NEXT保留形成时字节，执行以更新后的工作包为准。 |
 | 4 | [V2设计](ui/sportmaster-task-redesign-v2-20261020/README.md)、[原V2裁决](design/sportmaster-task-redesign-01.md)、[UIR-00～06](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)：三组作业、首配、原合同和历史任务，参数入口以V3为准。 |
 | 5 | [V2实施](runtime/ui-task-redesign-01.md)、[原验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源WPF图](ui/sportmaster-v2-wpf-20261020/README.md)、[PR76会话修复](runtime/login-session-lifetime-fix-01.md)：保持各自源码及环境身份。 |
 

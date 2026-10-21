@@ -8,9 +8,9 @@ C#/.NET 10 Windows 工位客户端与独立 Application 工程。Platform 提供
 
 ## 当前任务：参数设置 V3
 
-从 [新版参数界面、可点击原型与27张高清图](docs/ui/parameter-settings-v3-20261020/README.md)直接查看本轮成果；[设计决定](docs/design/parameter-settings-experience-02.md)、[开发交接](docs/ui/parameter-settings-v3-20261020/HANDOFF.md)、[实际验证](docs/ui/parameter-settings-v3-20261020/QA.md)和[下一步Codex提示](docs/ui/parameter-settings-v3-20261020/CODEX-NEXT.md)统一在此。
+从 [新版参数界面、可点击原型与27张高清图](docs/ui/parameter-settings-v3-20261020/README.md)直接查看本轮成果；[设计决定](docs/design/parameter-settings-experience-02.md)、[开发交接](docs/ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](docs/ui/parameter-settings-v3-20261020/QA.md)和[最新源码核查与Codex执行提示](docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)统一在此。
 
-参数采用同窗专注工作区、一个四类对象目录、自动校验与统一保存审阅。“维护与迁移”由模板、备份、安装、原账核对等具体任务入口替代。四类仍编辑同一完整候选；已保存与运行中分别显示。读取基准为main `837370e`，已整合最新 `bf61337` 的PR76/77会话修复与发布记录。本包实现与原生待验见[实施记录](docs/runtime/parameter-settings-experience-02.md)。上面的1.6.1安装包保留原源身份，并不包含本轮V3。
+参数采用同窗专注工作区、一个四类对象目录、自动校验与统一保存审阅。“维护与迁移”由模板、备份、安装、原账核对等具体任务入口替代。四类仍编辑同一完整候选；已保存与运行中分别显示。2026-10-21已核实main `42a047c3`包含PR78/79；V3的54个设计文件完整、53项登记哈希及25项源码指纹全部一致。下一步沿现有工作包修复实际差距并完成Windows原生交付，见[实施记录](docs/runtime/parameter-settings-experience-02.md)。原`837370e`/`bf61337`保留为设计形成时基线；上面的1.6.1安装包保留原源身份，并不包含V3。
 
 [V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)继续作为三组作业信息、首次启动和原业务合同的基线；其中参数版式和旧保存步骤已由V3替代。原资料、原哈希和历史验收保持，不重复导出或累计作新页面数。完整导航见 [文档索引](docs/INDEX.md)，工程约束见 [AGENTS](AGENTS.md)。
 

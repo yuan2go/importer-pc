@@ -19,7 +19,7 @@ Sportmaster 作业、首次启动和既有任务合同的实物基线为 `docs/u
 
 旧 `docs/ui/sportmaster-task-redesign-20261020/`（V1）、`docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列页面主定义。编码前先清理相关过期当前指引及冲突字段归属，修正索引和替代关系；原件、编号、原哈希与历史证据保留，已正确内容不重复改写。四类页面仍编辑同一完整候选，复用唯一配置账、Application 守卫及原请求责任，采用工业级完整任务闭环，不选择最小演示实现。必要测试覆盖实际改动风险；Windows 实机、原型模拟与真实设备验收分别记录。
 
-当前参数修订读取并整合main `bf61337`：PR69～73、PR74 V2及PR76操作员会话时长修复已合入，PR75/77保留各自发布记录。本包完成PARAM-UX-02，不重复实现V2，也不将历史验证扩张为V3验收。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
+2026-10-21核对main `42a047c3`：PR78参数V3及PR79启动回退已合并，当前续做以 [现有工作包的最新核查和Codex提示](docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md) 为准，不再将开发分支待合并当作现状。`bf61337`保留为V3形成时整合基线；PR69～77及历史发布各守原身份。本包收口PARAM-UX-02，不重复实现V2/V3主体，也不将历史验证扩张为V3验收。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、会话修复、启动回退、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
 
 ## 项目级 UI/UX skill
 

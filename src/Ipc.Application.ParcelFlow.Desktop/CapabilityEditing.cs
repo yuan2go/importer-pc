@@ -56,7 +56,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
     public bool LegacyBindingEditable { get; set; } = true;
-    public string TargetBoundary => IsTargetReadOnly ? "稳定读码DeviceId只读；更换须清偿原件并受控迁移部署" : "组件拥有的协议目标；保存后待受控重启";
+    public string TargetBoundary => IsTargetReadOnly ? "稳定读码DeviceId只读；更换须清偿原件并受控迁移部署" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后待受控重启" : "组件拥有的外部服务目标；保存后待受控重启";
     public string Target { get => target; set { target = value; Notify(); } }
     public string Contract { get => contract; set { contract = value; Notify(); } }
     public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "原提供者未安装或精确身份不匹配；保存被阻断：" + OriginalProviderIdentity;

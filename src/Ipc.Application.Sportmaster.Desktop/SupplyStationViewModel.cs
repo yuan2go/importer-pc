@@ -15,7 +15,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
-    public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待站位配置";
+    public string Station => StationDisplaySummary;
     public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅 main 位，未启用双位" : "left / right 独立投递位 · 扫码 → WCS 格口";
     public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停新入场" :
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有结果待核对" :
@@ -43,6 +43,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         Left = new(this, "left"); Right = new(this, "right");
         PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(StationDisplaySummary)) Changed(nameof(Station));
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
             if (e.PropertyName == nameof(Feedback)) Changed(nameof(WorkFeedback));
         };

@@ -18,10 +18,11 @@ public sealed partial class ParameterSettingsControl
             var missing = Page(2, "缺少读码实例", "当前候选没有读码实例。请核对原拓扑和已安装驱动。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
-        foreach (var component in m.Components)
+        foreach (var component in m.Components.Where(c => m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload")))
         {
-            var page = Page(3, ParameterOwnership.IsRcs(component) ? "RCS 连接" : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) ? "左右相机共用一个 RCS 连接。保存后通过受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
+            var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 连接" : m.ComponentLabel(component),
+                ParameterOwnership.IsRcs(component) ? "左右相机共用一个 RCS 连接。保存后通过受控重启应用。" :
+                ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
             Capability(page, component);
             if (!ParameterOwnership.IsRcs(component)) continue;
             var references = new StackPanel();
@@ -43,7 +44,7 @@ public sealed partial class ParameterSettingsControl
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
         RuntimeSummary(page, draft);
-        if (draft.Role is "operator-login" or "default-scale")
+        if (draft.Role == "default-scale")
         {
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
@@ -58,7 +59,7 @@ public sealed partial class ParameterSettingsControl
         var details = new Expander { Header = "安装版本与实例身份", Content = identity, Margin = new(0, 20, 24, 0), IsExpanded = draft.Provider is null };
         if (draft.Provider is null) { var issue = Text("缺少精确依赖。恢复原安装包，或受控选择兼容版本后继续。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); page.Body.Children.Add(details); return; }
         var isRcs = ParameterOwnership.IsRcs(draft);
-        if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : null), isRcs ? "服务地址 *" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
+        if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
         var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();

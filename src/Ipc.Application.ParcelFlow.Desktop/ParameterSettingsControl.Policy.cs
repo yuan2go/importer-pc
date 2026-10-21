@@ -37,7 +37,7 @@ public sealed partial class ParameterSettingsControl
         var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
         Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
         Input(form, "磁盘保留空间（MiB）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时阻断新准入。");
-        SessionLifetime(form, data, m);
+        Input(form, "诊断日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "选填1～3650天；留空沿用容量轮转。仅清理诊断日志，最多约20 MB；常驻历史、业务审计和图片证据独立保留。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
@@ -60,6 +60,18 @@ public sealed partial class ParameterSettingsControl
         }
         Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
         var display = Page(0, "显示偏好", "本机显示偏好按当前 Windows 用户保存，立即作用于当前窗口。");
+        if (RuntimeContext is { } runtime)
+        {
+            form = Form(display);
+            var name = Input(form, "站点显示名称", runtime, "DisplayNameDraft", "DisplayNameDraft", display, "选填，最多64字；工作台同时保留本地工作站标识。");
+            var target = Input(form, "目标效率（件/小时）", runtime, "TargetEfficiencyDraft", "TargetEfficiencyDraft", display, "选填1～100000；仅显示目标，不改变输送速度、节拍或实际产量。");
+            var apply = new Button { Content = "应用本机显示", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44 };
+            apply.Click += (_, _) => { if (!runtime.ApplyStationDisplay()) { if (runtime.DisplayPreferenceStatus.Contains("目标效率", StringComparison.Ordinal)) target.Focus(); else name.Focus(); } };
+            display.Body.Children.Add(apply);
+            var feedback = Text(""); feedback.SetBinding(TextBlock.TextProperty, new Binding("DisplayPreferenceStatus") { Source = runtime });
+            AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); display.Body.Children.Add(feedback);
+        }
+        display.Body.Children.Add(Text("当前界面：简体中文 · 浅色。仅提供已实现的显示选项。"));
         display.Body.Children.Add(Text("窗口布局", true));
         display.Body.Children.Add(Text("标准布局保留更宽的留白；紧凑布局适用于较小屏幕。窗口不足时会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
@@ -94,10 +106,25 @@ public sealed partial class ParameterSettingsControl
     }
     void BuildBusiness(ParameterEditorModel m)
     {
+        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。维护授权独立，关闭作业登录不会解除维护保护。");
+        if (m.OperatorLoginRole is { } role)
+        {
+            var selection = new ComboBox { ItemsSource = role.Choices, DisplayMemberPath = "Label", MinHeight = 38 };
+            selection.SetBinding(ComboBox.SelectedItemProperty, new Binding("Selection") { Source = role, Mode = BindingMode.TwoWay });
+            Field(Form(login), "操作员登录服务", selection, "不绑定时无需作业登录；连接参数在组件中维护。", "OperatorLogin", login);
+        }
+        else if (m.Components.SingleOrDefault(c => c.Role == "operator-login") is { } optionalLogin)
+        {
+            var enable = new CheckBox { Content = "要求操作员登录", MinHeight = 38 };
+            enable.SetBinding(CheckBox.IsCheckedProperty, new Binding("Bound") { Source = optionalLogin, Mode = BindingMode.TwoWay });
+            Field(Form(login), "作业登录要求", enable, "启用后需在组件中选择已安装的登录服务并设置连接。", "OperatorLogin", login);
+        }
+        SessionLifetime(Form(login), login, m);
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "从同一次观察的候选中选出唯一有效条码。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "条码筛选规则", m.Policy, "BarcodePattern", "BarcodePattern", page, "使用正则表达式匹配完整条码。清空已有规则不会生成默认规则。", true);
+            Input(form, "条码排除规则", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "选填；通过允许规则后，整串命中此正则的候选将被拒绝。留空不排除。", true);
             Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。旧null规则保持严格单码兼容；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
             var rules = Page(1, "取格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
@@ -110,6 +137,12 @@ public sealed partial class ParameterSettingsControl
             Choice(form, "重量单位", m.Policy, "Unit", Enum.GetValues<WeightUnit>(), "Unit", page);
             foreach (var f in new[] { ("重量精度（0～6）", "Precision"), ("配置重量", "ConfiguredWeight"), ("测量新鲜度（ms）", "MaximumAgeMs"), ("本件等待期限（ms）", "WaitTimeoutMs") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             Choice(form, "重量有效性时机", m.Policy, "Validity", Enum.GetValues<WeightValidity>(), "Validity", page);
+            var range = new CheckBox { Content = "限制包裹重量范围", MinHeight = 38 };
+            range.SetBinding(CheckBox.IsCheckedProperty, new Binding("WeightRangeEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
+            Field(form, "重量范围", range, "范围单位与重量策略一致。越界、不稳定或超时均不生成默认有效重量。", "WeightRangeEnabled", page);
+            var bounds = Form(page); bounds.SetBinding(IsEnabledProperty, new Binding("WeightRangeEnabled") { Source = m.Policy });
+            Input(bounds, "包裹重量下限", m.Policy, "MinimumWeight", "MinimumWeight", page, "包含边界；至少为0，精度与重量策略一致。");
+            Input(bounds, "包裹重量上限", m.Policy, "MaximumWeight", "MaximumWeight", page, "包含边界；不小于下限且大于0，最大100000。");
             if (m.Components.Any(x => x.Kind == "camera"))
             {
                 Choice(form, "图像上传时机", m.Policy, "UploadStrategy", Enum.GetValues<UploadStrategy>(), "UploadStrategy", page);
@@ -130,16 +163,17 @@ public sealed partial class ParameterSettingsControl
         bool tested = false;
         void Invalidate() { if (tested) result.Text = "输入已改变，原测试结果已过期；请重新测试。"; }
         sample.TextChanged += (_, _) => Invalidate();
-        PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == "BarcodePattern") Invalidate(); };
+        PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName is "BarcodePattern" or "BarcodeExclusionPattern") Invalidate(); };
         m.Policy.PropertyChanged += handler; unsubscribe.Add(() => m.Policy.PropertyChanged -= handler);
         test.Click += async (_, _) =>
         {
-            var pattern = m.Policy.BarcodePattern; var raw = sample.Text; test.IsEnabled = false; result.Text = "正在执行有界本地测试…"; tested = true;
+            var pattern = m.Policy.BarcodePattern; var exclusion = m.Policy.BarcodeExclusionPattern; var raw = sample.Text; test.IsEnabled = false; result.Text = "正在执行有界本地测试…"; tested = true;
             try
             {
-                var reply = await Task.Run(() => m.Preview(new(pattern), raw.Replace("\r", "").Split('\n')));
-                result.Text = m.Policy.BarcodePattern != pattern || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
-                    reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches + " · " + reply.Outcome;
+                var reply = await Task.Run(() => m.Preview(new(pattern, exclusion.Length == 0 ? null : exclusion), raw.Replace("\r", "").Split('\n')));
+                result.Text = m.Policy.BarcodePattern != pattern || m.Policy.BarcodeExclusionPattern != exclusion || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
+                    reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches +
+                    string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + c.Reason));
             }
             catch (Exception ex) { result.Text = "测试未完成：" + ex.Message + "；输入保留。"; }
             finally { test.IsEnabled = true; }

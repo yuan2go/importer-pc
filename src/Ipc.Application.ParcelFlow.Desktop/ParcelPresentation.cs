@@ -42,7 +42,7 @@ public static class ParcelPresentation
     {
         ParcelInputOutcome.Rejected => input.BarcodeSelection?.Outcome switch
         {
-            "NoMatchingCode" => "条码筛选拒绝 · 没有匹配码", "AmbiguousCodes" => "条码筛选拒绝 · 多码歧义",
+            "NoMatchingCode" => "条码筛选拒绝 · 没有匹配码", "ExcludedCodes" => "条码筛选拒绝 · 命中排除规则", "AmbiguousCodes" => "条码筛选拒绝 · 多码歧义",
             "IncompleteCandidates" => "候选不完整 · 拒绝准入", "FilterTimeout" => "条码筛选超时 · 拒绝准入", "InvalidPattern" => "筛选规则无效 · 拒绝准入",
             _ => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "本次识别失败 · 未取得包裹号" : input.Observation.Codes.Length > 1 ? "本次识别失败 · 多个候选码" : "本次识别未通过校验"
         },

@@ -166,6 +166,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (configuration.Current.Confirmation?.Required == true)
                 repository.Commit(null, "ConfigurationConfirmationRequired", "Resources started; original legacy envelope retained; authenticate maintenance and confirm current configuration revision/hash before admission", paused: true);
             CompleteConfigurationAudit("Activated");
+            // Only a successful controlled activation applies the new policy.
+            // Reconnect and Pending edits cannot change retention.
+            journal.ConfigureRetention(Effective.Retention?.DiagnosticLogDays);
             Volatile.Write(ref accepting, 1);
             maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
@@ -334,7 +337,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? "", DateTimeOffset.UtcNow);
-        if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
+        if (reason is not null)
+        {
+            // Only annotate a still waiting parcel. Late/invalid samples never
+            // replace terminal state, existing weight or its original deadline.
+            if (WeightPending(op) && op.State != ParcelState.WeightTimedOut && DateTimeOffset.UtcNow <= op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs))
+                Save(op with { Reason = reason }, "MeasurementRejected", reason);
+            else repository!.Commit(null, "MeasurementRejected", reason);
+            return;
+        }
         if (!WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
         op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.State : ParcelState.Prepared, Reason = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.Reason : null };

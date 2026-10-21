@@ -38,6 +38,7 @@ public interface IParcelCapabilityFactory : IAsyncDisposable
 }
 public static class WeightRules
 {
+    public static bool WithinRange(decimal value, ParcelWeightRange? range) => range is null || value >= range.Minimum && value <= range.Maximum;
     public static ParcelWeight? Configured(WeightPolicy policy) => policy.Source == WeightSource.Configured
         ? new(policy.ConfiguredValue!.Value, policy.Unit, policy.Precision, WeightSource.Configured, null, "CONFIGURED: not a device measurement") : null;
     public static string? Invalid(WeightMeasurement m, ParcelOperation operation, string expectedDevice, DateTimeOffset now)
@@ -46,6 +47,7 @@ public static class WeightRules
         if (p.Source != WeightSource.Measured || m.AdmissionId != operation.AdmissionId || m.DeviceId != expectedDevice) return "Measurement identity does not match the same parcel/device";
         if (!Guid.TryParseExact(m.Id, "N", out _) || m.Quality != MeasurementQuality.Valid || !m.Stable) return "Measurement quality/stability/identity is invalid";
         if (m.Value is <= 0 or > 100000 || m.Unit != p.Unit || m.Precision != p.Precision || decimal.Round(m.Value, p.Precision) != m.Value) return "Measurement value/unit/precision is invalid";
+        if (!WithinRange(m.Value, operation.FrozenConfiguration.WeightRange)) return "重量超出本件冻结的业务范围；继续等待有效测量，原等待期限不延长";
         if (m.MeasuredAt < operation.ObservedAt || m.MeasuredAt > now || now - m.MeasuredAt > TimeSpan.FromMilliseconds(p.MaximumAgeMs)) return "Measurement is stale or outside the parcel observation interval";
         return null;
     }

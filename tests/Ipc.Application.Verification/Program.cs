@@ -13,7 +13,7 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
-if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); return; }
+if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { InstallerOptions.Run(root); return; }
 if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--windows-client-compatibility")) { WindowsClientCompatibilityChecks.Run(); return; }

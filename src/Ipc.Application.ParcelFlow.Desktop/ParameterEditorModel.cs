@@ -27,14 +27,17 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         var roles = componentRoles?.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
         { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray() ?? [];
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
-        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => component.Role + " · " + component.InstanceId };
+        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => (component.Kind switch { "weight" => "称重", "plc" => "PLC", "camera" => "采图", "login" => "登录", "upload" => "图片上传", _ => component.Role }) + " · " + component.InstanceId };
     }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;
     public void Report(string message)
     {
-        if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
+        if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
+        else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
+        else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
+        else if (message.Contains("WeightRange", StringComparison.Ordinal)) Issues.Add(new("业务模块", "MaximumWeight", message));
         else if (message.Contains("StationCode", StringComparison.Ordinal) || message.Contains("station code", StringComparison.OrdinalIgnoreCase)) Issues.Add(new("系统", "StationCode", message));
         else
         {
@@ -49,10 +52,13 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
-        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" ? "业务模块" : "系统", name, ex.Message); } }
+        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "SessionLifetimeMs" ? "业务模块" : "系统", name, ex.Message); } }
         Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000);
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
         Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
+        if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
+        if (Policy.WeightRangeEnabled)
+            try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", "MaximumWeight", ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
@@ -70,8 +76,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             catch (Exception ex) when (ex is ArgumentException or NotSupportedException or System.IO.PathTooLongException)
             { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
         }
-        foreach (var (draft, fieldCategory) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))
+        foreach (var draft in Readers.Concat(Components.Where(x => x.Bound || !x.LegacyBindingEditable && x.Enabled)))
         {
+            var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))

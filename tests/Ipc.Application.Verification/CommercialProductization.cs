@@ -125,7 +125,7 @@ static class CommercialProductization
             var s = await repaired.SnapshotAsync(); await repaired.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
             Check((await repaired.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
             vm.StructuredPolicy!.Precision = "unfinished-precision";
-            vm.NewCapabilityKind = "weight"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
+            vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
             repairedFactory.HoldHealth = true; monitorPermit.Release();
             await repairedFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
             var draftBeforeBusy = Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin"));

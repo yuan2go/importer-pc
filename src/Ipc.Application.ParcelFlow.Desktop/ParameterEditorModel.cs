@@ -43,12 +43,13 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;
+    static string WeightRangeField(string message) => message.Contains("WeightRange.MinimumWeight", StringComparison.Ordinal) ? "MinimumWeight" : "MaximumWeight";
     public void Report(string message)
     {
         if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
         else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
-        else if (message.Contains("WeightRange", StringComparison.Ordinal)) Issues.Add(new("业务模块", "MaximumWeight", message));
+        else if (message.Contains("WeightRange", StringComparison.Ordinal)) Issues.Add(new("业务模块", WeightRangeField(message), message));
         else if (message.Contains("StationCode", StringComparison.Ordinal) || message.Contains("station code", StringComparison.OrdinalIgnoreCase)) Issues.Add(new("系统", "StationCode", message));
         else
         {
@@ -69,9 +70,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
         if (Policy.WeightRangeEnabled)
-            try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", "MaximumWeight", ex.Message); }
+            try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 兆字节");
+            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
             Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
         if (Policy.BackupEnabled)

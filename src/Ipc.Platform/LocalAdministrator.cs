@@ -28,8 +28,9 @@ public sealed class LocalAdministrator
     const int Iterations = 600_000;
     sealed record Credential(string Name, string Salt, string Hash, bool Enabled);
     sealed record Audit(DateTimeOffset At, string Action, string? Actor, string? Target);
+    sealed record Delegation(string Id, string TokenHash, string RequestHash, string Account, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false);
     sealed record Store(Credential[] Accounts, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
-        string? SessionHash = null, string? SessionAccount = null, DateTimeOffset? SessionExpires = null, string[]? UsedDelegations = null);
+        string? SessionHash = null, string? SessionAccount = null, DateTimeOffset? SessionExpires = null, string[]? UsedDelegations = null, Delegation[]? Delegations = null);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(token)));
     public LocalAdministrator(string root)
     { directory = Path.Combine(Path.GetFullPath(root), "security"); path = Path.Combine(directory, "administrators.json"); }
@@ -65,7 +66,8 @@ public sealed class LocalAdministrator
         lock (sync)
         {
             using var held = LockStore(); var s = Read();
-            if (account is not null && (Now >= expires || s.SessionHash != ProofHash(sessionSecret) || !s.Accounts.Any(a => a.Enabled && a.Name == account && a.Hash == credentialHash))) Revoke();
+            if (account is not null && !ValidSession(s))
+            { try { Save(s, Now >= expires ? "AdministratorSessionExpired" : "AdministratorSessionRevoked", account); } finally { Revoke(); } }
             return new(s.Accounts.Length > 0, account, account is null ? null : expires);
         }
     }
@@ -73,7 +75,8 @@ public sealed class LocalAdministrator
     {
         get { var s = Status(); return s.Authorized ? new(s.Account!, s.Account!, "software-administrator", sessionId, expires.AddMinutes(-15), false, expires, ["maintenance"]) : null; }
     }
-    void Revoke() { account = null; revoked.Cancel(); }
+    bool ValidSession(Store s) => account is not null && Now < expires && s.SessionHash == ProofHash(sessionSecret) && s.Accounts.Any(a => a.Enabled && a.Name == account && a.Hash == credentialHash);
+    void Revoke() { account = null; sessionSecret = ""; credentialHash = null; revoked.Cancel(); }
     public CancellationToken Require()
     {
         if (!Status().Authorized) throw new UnauthorizedAccessException("请先登录软件管理员；原作业继续，未保存输入保留。");
@@ -116,21 +119,21 @@ public sealed class LocalAdministrator
             if (!verified || !s.Accounts.Any(c => c.Enabled && c.Name == found!.Name && c.Hash == found.Hash))
             { var count = s.Failures + 1; Save(s with { Failures = count >= 5 ? 0 : count, LockedUntil = count >= 5 ? now.AddMinutes(5) : default }, "AdministratorLoginFailed", null); return false; }
             var secret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-            Save(s with { Failures = 0, LockedUntil = default, SessionHash = ProofHash(secret), SessionAccount = found!.Name, SessionExpires = now.AddMinutes(15), UsedDelegations = [] }, "AdministratorLoggedIn", found!.Name);
+            Save(s with { Failures = 0, LockedUntil = default, SessionHash = ProofHash(secret), SessionAccount = found!.Name, SessionExpires = now.AddMinutes(15), UsedDelegations = [], Delegations = [] }, "AdministratorLoggedIn", found!.Name);
             Revoke(); revoked = new(); account = found!.Name; credentialHash = found.Hash; sessionId = Guid.NewGuid().ToString("N"); sessionSecret = secret; expires = now.AddMinutes(15); revoked.CancelAfter(TimeSpan.FromMinutes(15)); return true;
         }
     }
     public void Logout()
     { lock (sync) { try { using var held = LockStore(); var s = Read(); Save(s with { SessionHash = null, SessionAccount = null, SessionExpires = null }, "AdministratorLoggedOut", account); } finally { Revoke(); } } }
     public AdministratorAccount[] Accounts()
-    { Require(); lock (sync) { using var held = LockStore(); return Read().Accounts.Select(a => new AdministratorAccount(a.Name, a.Enabled)).ToArray(); } }
+    { Require(); lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理员会话已失效。"); } return s.Accounts.Select(a => new AdministratorAccount(a.Name, a.Enabled)).ToArray(); } }
     public void Maintain(string name, string? password, bool enabled)
     {
         Require(); var replacement = password is null ? null : Create(name, password);
         lock (sync)
         {
             using var held = LockStore(); var s = Read();
-            if (Now >= expires || account is null || !s.Accounts.Any(a => a.Enabled && a.Name == account && a.Hash == credentialHash)) throw new UnauthorizedAccessException("管理员会话已过期。");
+            if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理员会话已失效。"); }
             var existing = s.Accounts.SingleOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (existing is null && replacement is null) throw new InvalidDataException("新增账号需要密码。");
             var next = s.Accounts.Where(a => a != existing).Append((replacement ?? existing!) with { Enabled = enabled }).ToArray();
@@ -142,23 +145,34 @@ public sealed class LocalAdministrator
     }
     public AdministratorDelegation Delegate(string requestHash)
     {
-        lock (sync) { Require(); return new(sessionSecret, account!, requestHash, expires < Now.AddMinutes(2) ? expires : Now.AddMinutes(2), Guid.NewGuid().ToString("N")); }
+        Require();
+        lock (sync)
+        {
+            using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理员会话已失效。"); }
+            if (s.Delegations?.Length >= 1024) throw new UnauthorizedAccessException("本次会话的维护授权次数已到上限，请重新登录。");
+            var grant = new AdministratorDelegation(Convert.ToHexString(RandomNumberGenerator.GetBytes(32)), account!, requestHash, expires < Now.AddMinutes(2) ? expires : Now.AddMinutes(2), Guid.NewGuid().ToString("N"));
+            var record = new Delegation(grant.Id, ProofHash(grant.Token), requestHash, account!, grant.ExpiresAt, s.SessionHash!);
+            Save(s with { Delegations = (s.Delegations ?? []).Append(record).ToArray() }, "AdministratorDelegationIssued", account);
+            return grant;
+        }
     }
     public void ValidateDelegation(AdministratorDelegation grant, string requestHash, bool consume)
     {
         lock (sync)
         {
             using var held = LockStore(); var s = Read();
+            var record = s.Delegations?.SingleOrDefault(d => d.Id == grant.Id);
             if (grant.RequestHash != requestHash || grant.ExpiresAt <= Now || s.SessionExpires is not { } sessionExpiry || sessionExpiry <= Now || s.SessionHash is null ||
+                record is null || record.RequestHash != requestHash || record.ExpiresAt != grant.ExpiresAt || record.Account != grant.Account || record.SessionHash != s.SessionHash ||
                 grant.Token.Length != 64 || s.SessionAccount != grant.Account || !s.Accounts.Any(a => a.Name == grant.Account && a.Enabled) ||
-                !CryptographicOperations.FixedTimeEquals(System.Text.Encoding.ASCII.GetBytes(s.SessionHash), System.Text.Encoding.ASCII.GetBytes(ProofHash(grant.Token))))
+                !CryptographicOperations.FixedTimeEquals(System.Text.Encoding.ASCII.GetBytes(record.TokenHash), System.Text.Encoding.ASCII.GetBytes(ProofHash(grant.Token))))
                 throw new UnauthorizedAccessException("软件管理员授权已失效或与本次维护请求不匹配。");
             if (consume)
             {
-                if (s.UsedDelegations?.Length >= 1024) throw new UnauthorizedAccessException("本次会话的维护授权次数已到上限，请重新登录。");
-                if (s.UsedDelegations?.Contains(grant.Id) == true) throw new UnauthorizedAccessException("维护授权已使用，不能重放。");
-                Save(s with { UsedDelegations = (s.UsedDelegations ?? []).Append(grant.Id).ToArray() }, "AdministratorDelegationConsumed", grant.Account);
+                if (record.Consumed) throw new UnauthorizedAccessException("维护授权已使用，不能重放。");
+                Save(s with { Delegations = s.Delegations!.Select(d => d.Id == grant.Id ? d with { Consumed = true } : d).ToArray() }, "AdministratorDelegationConsumed", grant.Account);
             }
+            else if (!record.Consumed) throw new UnauthorizedAccessException("维护授权尚未核销。");
         }
     }
 }

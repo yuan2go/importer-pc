@@ -118,11 +118,13 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         if (!WeightRangeEnabled) return null;
         if (WeightSource == WeightSource.Disabled) throw new InvalidOperationException("WeightRange: 启用重量范围需要当前业务的重量来源");
-        if (!decimal.TryParse(MinimumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var min) ||
-            !decimal.TryParse(MaximumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var max) || min < 0 || max <= 0 || max < min || max > 100000)
-            throw new InvalidOperationException("WeightRange: 范围须满足0≤下限≤上限≤100000，上限大于0；单位与重量策略一致");
+        if (!decimal.TryParse(MinimumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var min) || min < 0 || min > 100000)
+            throw new InvalidOperationException("WeightRange.MinimumWeight: 下限须为0～100000的数字；单位与重量策略一致");
+        if (!decimal.TryParse(MaximumWeight, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var max) || max <= 0 || max < min || max > 100000)
+            throw new InvalidOperationException("WeightRange.MaximumWeight: 上限须大于0、不小于下限且不超过100000；单位与重量策略一致");
         var weight = BuildWeight();
-        if (decimal.Round(min, weight.Precision) != min || decimal.Round(max, weight.Precision) != max) throw new InvalidOperationException("WeightRange: 范围小数位数不得超过重量精度");
+        if (decimal.Round(min, weight.Precision) != min) throw new InvalidOperationException("WeightRange.MinimumWeight: 下限小数位数不得超过重量精度");
+        if (decimal.Round(max, weight.Precision) != max) throw new InvalidOperationException("WeightRange.MaximumWeight: 上限小数位数不得超过重量精度");
         if (weight.ConfiguredValue is { } value && (value < min || value > max)) throw new InvalidOperationException("WeightRange: 配置重量不在允许范围内");
         return new(min, max);
     }

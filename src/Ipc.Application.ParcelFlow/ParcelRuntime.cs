@@ -343,8 +343,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Only annotate a still waiting parcel. Late/invalid samples never
             // replace terminal state, existing weight or its original deadline.
             if (WeightPending(op) && op.State != ParcelState.WeightTimedOut && DateTimeOffset.UtcNow <= op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs))
-                Save(op with { Reason = reason }, "MeasurementRejected", reason);
-            else repository!.Commit(null, "MeasurementRejected", reason);
+                Save(op with { Reason = reason }, "MeasurementRejected", reason, measurement: m);
+            else repository!.Commit(null, "MeasurementRejected", reason, measurement: m);
             return;
         }
         if (!WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
@@ -355,9 +355,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         operations[op.Id] = op;
         await AdvanceAsync(op).ConfigureAwait(false);
     }
-    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null)
+    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null)
     {
-        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input); operations[op.Id] = op;
+        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement); operations[op.Id] = op;
         if (input is not null) latestInputs[input.PositionId] = input;
         journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
     }

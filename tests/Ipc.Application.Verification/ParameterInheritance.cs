@@ -82,6 +82,13 @@ static class ParameterInheritance
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default); await AdministratorFixture.Authorize(app);
         var vm = new ParcelViewModel(app, "称重业务", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+        foreach (var invalid in new[] { "", "bad", "-1", "1.0001" })
+        {
+            vm.StructuredPolicy!.MinimumWeight = invalid; vm.ParameterEditor!.ValidateFields();
+            Check(vm.ParameterEditor.Issues.Any(i => i.Path == "MinimumWeight") && !vm.ParameterEditor.Issues.Any(i => i.Path == "MaximumWeight") && vm.StructuredPolicy.MinimumWeight == invalid, "invalid lower weight bound targets the original lower field without erasing input: " + invalid);
+        }
+        vm.StructuredPolicy!.MinimumWeight = "1"; vm.StructuredPolicy.MaximumWeight = "bad"; vm.ParameterEditor!.ValidateFields();
+        Check(vm.ParameterEditor.Issues.Any(i => i.Path == "MaximumWeight"), "invalid upper weight bound still targets the upper field"); vm.StructuredPolicy.MaximumWeight = "2";
         vm.NewCapabilityKind = "weight"; await vm.AddCapabilityInstanceAsync(); var added = vm.CapabilityDrafts.Last();
         var position = vm.PositionDrafts.Single(); position.Scale = position.Scales.Single(x => x.Capability == added);
         Check(vm.BuildStructuredConfiguration().Topology!.Positions.Single().ScaleInstanceId == added.InstanceId, "an applicable Application can bind a second instance of the same driver without changing the reader");
@@ -106,5 +113,19 @@ static class ParameterInheritance
         app.EmitReferenceWeight(new(Wire.Id(), "weight-next", c.Scale.Target, 1m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
         var next = await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "weight-next" && x.State == ParcelState.PlcAccepted));
         Check(next.Operations.Single(x => x.AdmissionId == "weight-next").Weight is { Value: 1m, Source: WeightSource.Measured } && next.Operations.Single(x => x.AdmissionId == "weight-range").Weight is null, "next same-code entity accepts its own in-range measurement and never reuses the rejected parcel measurement");
+        await app.StopAsync(default);
+        await app.DisposeAsync();
+        var replayConfig = Path.Combine(root, "replay-weight-config"); Directory.CreateDirectory(replayConfig); ExtensionStore.AtomicWrite(Path.Combine(replayConfig, "business.json"), c);
+        var replayLaunch = new BusinessLaunch(replayConfig, Path.Combine(root, "replay-weight-data"), null, null);
+        await using var first = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await first.StartAsync(default); await AdministratorFixture.Authorize(first);
+        first.EmitReference("range-replay", "001", Wire.Id()); await Wait(first, s => s.Operations.Any(x => x.AdmissionId == "range-replay"));
+        var immutable = new WeightMeasurement(Wire.Id(), "range-replay", c.Scale.Target, 0.5m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
+        first.EmitReferenceWeight(immutable); await Wait(first, s => s.Operations.Single(x => x.AdmissionId == "range-replay").Reason?.Contains("业务范围") == true);
+        await first.StopAsync(default);
+        await first.DisposeAsync();
+        await using var restarted = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await restarted.StartAsync(default);
+        restarted.EmitReferenceWeight(immutable with { Value = 1.5m });
+        var conflict = await Wait(restarted, s => s.IdentityConflicts?.Length > 0);
+        Check(conflict.Operations.Single(x => x.AdmissionId == "range-replay").Weight is null && conflict.Operations.Single(x => x.AdmissionId == "range-replay").Plc is null, "rejected first measurement survives restart and changed same-ID sample creates an identity conflict before any request");
     }
 }

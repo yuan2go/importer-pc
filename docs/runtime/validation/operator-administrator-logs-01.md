@@ -1,6 +1,6 @@
 # OPS-ADMIN-LOGS-01 · 交付验证
 
-2026-10-21，开发分支 `codex/operator-admin-logs`。开工及发布前复核 main 为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft），无后继相关PR。整合85 `d52ade7` 与84 `587fbe8`，保留原PR和历史SourceCommit。产品为Sportmaster 1.9.0 / Contracts 1.15.0 / 配置schema3 / DB8。
+2026-10-21，开发分支 `codex/operator-admin-logs`。开工及发布前复核 main 为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft），无后继相关PR。整合85 `d52ade7` 与84 `587fbe8`，保留原PR和历史SourceCommit。最终产品为Sportmaster 1.9.1 / Contracts 1.15.0 / 配置schema3 / DB8；下述1.9.0为中间候选。
 
 功能取舍见[工作包](../../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)，实际操作和安全边界见[当前指南](../operator-administrator-logs-01.md)。删除支持摘要的契约与实现，保留独立诊断、备份恢复和原业务审计。本轮不改写历史D/RV。
 
@@ -35,7 +35,11 @@
 
 ## 发布身份与验证边界
 
-产品源码固定为 `1f4c4319cd4003ab5586b9a3fb2a23844d21310f`。同源portable和win-x64均构建/库存验证通过，随后安装器重建共享DLL并与嵌入介质逐字节核对通过。后继提交只补文档、清单和证据，不将介质重标为新SourceCommit。
+最终1.9.1补修PR83的既有P1/P2：越界测量原样本与拒绝事实同事务保存，重启后同ID改值进入原身份冲突守卫；重量下限无效/负数/精度错误定位下限并保留输入。PR82的MiB标签已有，校验文案一并统一。参数专项由75增至81项PASS。首配测试的“数据根不得存在”过期断言修正为禁止业务DB/设备租约，保留管理员元数据责任；新增重启夹具完整Dispose后再取得原资源租约，不放宽运行资源守卫。
+
+管理员专项由44增至48项PASS：增加复制ticket后篡改请求hash、期限、单次编号均拒绝，真实会话到期日志断言。账号维护在密码计算后的提交点复核完整会话hash；helper授权在服务器端账绑定独立随机凭据，不依赖载荷自述。最终源码身份、1.9.1回执及冻结检查在发布完成后补记；以下1.9.0证据仅保留其中间候选身份。
+
+首轮1.9.0候选源码为 `1f4c4319cd4003ab5586b9a3fb2a23844d21310f`，由1.9.1替代。其同源portable和win-x64均构建/库存验证通过，随后安装器重建共享DLL并与嵌入介质逐字节核对通过。保留原身份，不将介质重标为新SourceCommit。
 
 | 同源交付 | SHA-256 |
 |---|---|

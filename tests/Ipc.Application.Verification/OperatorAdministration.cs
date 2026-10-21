@@ -24,6 +24,9 @@ static class OperatorAdministration
         // A separate store verifies the remaining session cases without bypassing lockout.
         data = Path.Combine(root, "runtime-admin-data"); admin = LocalAdministrator.ForRoot(data); admin.Provision("administrator", password); Check(admin.Login("administrator", password), "real password hash authentication succeeds");
         var delegated = admin.Delegate(new string('A', 64)); var helper = new LocalAdministrator(data);
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(delegated with { RequestHash = new string('B', 64) }, new string('B', 64), true)), "a copied helper ticket cannot change its server-bound request hash");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(delegated with { ExpiresAt = delegated.ExpiresAt.AddMinutes(5) }, new string('A', 64), true)), "a helper ticket cannot extend its server-bound expiry");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(delegated with { Id = Wire.Id() }, new string('A', 64), true)), "a helper ticket cannot mint another one-use authorization");
         helper.ValidateDelegation(delegated, new string('A', 64), true);
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(delegated, new string('A', 64), true)), "elevated helper delegation is single-use rather than Windows-only authorization");
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(delegated, new string('B', 64), false)), "helper authorization is bound to the exact original maintenance request");
@@ -35,6 +38,7 @@ static class OperatorAdministration
         var expiry = new LocalAdministrator(Path.Combine(root, "expiry")); expiry.Provision("expiry-admin", password); expiry.Login("expiry-admin", password);
         var expiryGrant = expiry.Require(); expiry.Clock = () => DateTimeOffset.UtcNow.AddMinutes(16);
         Check(!expiry.Status().Authorized && expiryGrant.IsCancellationRequested, "session expiry revokes authorization and pending task tokens");
+        Check(File.ReadAllText(Path.Combine(root, "expiry/security/diagnostics/runtime.jsonl")).Contains("AdministratorSessionExpired"), "session expiry is recorded in the actual authentication journal");
         var configRoot = Path.Combine(root, "admin-config"); Directory.CreateDirectory(configRoot);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Login = null, StationId = "ops-" + Wire.Id() };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), seed);

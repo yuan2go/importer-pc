@@ -1,0 +1,19 @@
+{
+  "Installer": "D:\\projects\\importer-pc\\.artifacts\\ops-installer-1.9.0\\CainiaoSupplyStation_SM_Setup_v1.9.0_win-x64.exe",
+  "Sha256": "2cfa62f816eb268b94cbe6a896ae099d52a9bf648260c01a8bb5b03e4d196dd7",
+  "SourceCommit": "1f4c4319cd4003ab5586b9a3fb2a23844d21310f",
+  "Payload": {
+    "ApplicationId": "sportmaster",
+    "SourceCommit": "1f4c4319cd4003ab5586b9a3fb2a23844d21310f",
+    "SourceBranch": "codex/operator-admin-logs",
+    "BusinessModuleShortName": "SM",
+    "BusinessVersion": "1.9.0",
+    "Sha256": "78e593ddef247ee27c015acc447d9494c2ffed3880a1c4a6c5d7a4f1c39d788c",
+    "ZipBytes": 106576174,
+    "UnpackedBytes": 242737361,
+    "FileCount": 738
+  },
+  "DeliveryFiles": 1,
+  "Authenticode": "NOT_SIGNED",
+  "ActualWindowsInstallation": "NOT_RUN"
+}

@@ -35,7 +35,21 @@
 
 ## 发布身份与验证边界
 
-产品源码冻结后再生成同源portable、win-x64介质及1.9.0安装器；最终SourceCommit、哈希、启动冒烟与冻结DLL检查随交付回执补记，不能以以上工作树检查冒充发布验证。
+产品源码固定为 `1f4c4319cd4003ab5586b9a3fb2a23844d21310f`。同源portable和win-x64均构建/库存验证通过，随后安装器重建共享DLL并与嵌入介质逐字节核对通过。后继提交只补文档、清单和证据，不将介质重标为新SourceCommit。
+
+| 同源交付 | SHA-256 |
+|---|---|
+| `CainiaoSupplyStation_SM_Setup_v1.9.0_win-x64.exe`，177944734字节 | `2cfa62f816eb268b94cbe6a896ae099d52a9bf648260c01a8bb5b03e4d196dd7` |
+| win-x64 ZIP，738项文件库存 | `78e593ddef247ee27c015acc447d9494c2ffed3880a1c4a6c5d7a4f1c39d788c` |
+| portable ZIP | `e61f984b7c225a01e0e1b175f2ff5ea451551d1c700dc50d192bfeccea7e06e2` |
+
+[发布回执](../evidence/operator-administrator-logs-01/RELEASE.json)、[安装器回执](../evidence/operator-administrator-logs-01/INSTALLER.json)、[冻结原生检查](../evidence/operator-administrator-logs-01/frozen-native-administrator.json)。同一提交的固定夹具针对实际发布DLL执行：管理员/日志原生16项及首次配置90项通过；核心管理员/日志44项通过后，完整商业恢复仍在Windows安装目录资格处失败，故[完整核心结果](../evidence/operator-administrator-logs-01/frozen-core-blocked.json)明确为FAIL/BLOCKED。738项介质文件未被夹具修改。以上关键截图现取自该冻结介质；早先工作树结果独立保留。
+
+实际自包含发布EXE以 `--environment-report` 启动、取得报告并正常退出0，见[启动冒烟](../evidence/operator-administrator-logs-01/published-exe-start.json)。这覆盖EXE引导和环境报告，不冒充完整安装/设备业务启动。首轮发布因本机NuGet缓存配置与依赖许可收集器默认路径不一致失败；设置真实 `NUGET_PACKAGES=D:/DevCache/nuget/packages` 后重新完整发布通过，没有放宽许可检查。
+
+公开归档针对main和本轮规范Git字节分别运行：同为298项历史问题，新增0。修正整合PR遗留的6项清单内容身份；未改归档校验器、忽略规则或历史问题，见[比较回执](../evidence/operator-administrator-logs-01/archive-comparison.json)。
+
+复现使用 .NET SDK10.0.402：`dotnet run --project tests/Ipc.Application.Verification -- <仓库路径> --operator-administration`；Windows原生用 `dotnet run --project tests/Ipc.Desktop.UiVerification -- <仓库路径> --operator-administration`。发布按 `scripts/release-windows.py --profile sportmaster` 与 `scripts/package-installer.py`，实际介质参数及同源提交见回执；冻结验证用 `scripts/verify-commercial-wpf.ps1 -OperatorAdministration`，完整核心用 `scripts/verify-commercial-media.ps1`。本机TEMP/TMP改用D盘以保留规定的存储余量。
 
 完整商业恢复在本机普通账号下被Windows部署目录权限拒绝，原失败保留；不放宽权限检查或将它记为PASS。首次错误运行的C盘空间保留守卫及无工作区参数启动错误也保留，未污染交付输入。
 

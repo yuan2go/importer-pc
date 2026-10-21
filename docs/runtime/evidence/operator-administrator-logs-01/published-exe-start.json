@@ -1,0 +1,7 @@
+{
+  "SourceCommit": "1f4c4319cd4003ab5586b9a3fb2a23844d21310f",
+  "ExecutableSha256": "021E0F0E6B08D401337CE043CA7796368FF40767DE67DCBA3D83DB1F656467F7",
+  "Action": "--environment-report",
+  "ExitCode": 0,
+  "Scope": "Published self-contained EXE bootstrap, environment report and normal exit; no installation/equipment"
+}

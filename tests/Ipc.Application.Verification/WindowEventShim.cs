@@ -83,7 +83,12 @@ namespace Ipc.Application.ParcelFlow.Desktop
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class ProductSupportWindow(Ipc.Application.Contracts.IParcelApplication application, string? operation) : System.Windows.Window
     { public Ipc.Application.Contracts.IParcelApplication Application { get; } = application; public string? Operation { get; } = operation; }
-    public class MaintenancePage { public object? DataContext { get; set; } }
+    public class MaintenancePage
+    {
+        public object? DataContext { get; set; }
+        public event EventHandler? DisplayPreferencesRequested { add { } remove { } }
+        public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested { add { } remove { } }
+    }
 }
 namespace Ipc.Application.Sportmaster.Desktop
 {
@@ -95,5 +100,6 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
         System.Windows.FrameworkElement CreateDiagnostics() => new();
+        void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }
     }
 }

@@ -40,7 +40,7 @@ public partial class ParcelViewModel
         catch (Exception ex) { result = new("Unknown", "核对暂不可用：" + ex.Message, submitted.Revision, ""); }
         configurationSubmissionOutcome = result.Status; configurationSubmissionDetail = result.Reason;
         if (result.Status != "Unknown") unconfirmedSubmission = null;
-        if (result.Status == "PendingRestart")
+        if (result.Status is "PendingRestart" or "Unchanged")
         {
             savedEditorSignature = submissionEditorSignature; savedCandidate = submissionEditorDocument; configurationReviewBaseline = submitted.Candidate; reviewedConfigurationSignature = null;
             Changed(nameof(HasUnsavedConfiguration));

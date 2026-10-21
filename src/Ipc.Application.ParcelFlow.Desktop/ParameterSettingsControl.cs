@@ -105,11 +105,12 @@ public sealed partial class ParameterSettingsControl : UserControl
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Stretch };
+        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
         var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
         if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
+        scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel()); pages.Add(page); return page;
     }
     ParameterFormPanel Form(ObjectPage page, string? title = null)
@@ -127,7 +128,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var field = new StackPanel { Margin = new(0, 0, 24, 16) };
         var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 6);
         field.Children.Add(caption); field.Children.Add(control);
-        if (control is TextBox or ComboBox)
+        if (control is TextBox or ComboBox or PasswordBox)
         {
             // The field's layout slot supplies the width; the editor's cap keeps
             // short values compact. Empty text and one digit use the same box.
@@ -181,6 +182,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var selected = directory.SelectedItem as ObjectPage;
         var offsets = pages.ToDictionary(p => (p.Category, p.Title), p => p.Scroll.VerticalOffset);
         foreach (var action in unsubscribe) action(); unsubscribe.Clear();
+        runtimeUpdates.Clear();
         directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置与已安装模块…"); errorSummary.Visibility = Visibility.Collapsed; return; }
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);

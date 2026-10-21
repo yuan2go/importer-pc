@@ -10,17 +10,25 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class MaintenancePage : UserControl
 {
     CapabilityDraft? selectedReader, selectedInstance;
+    bool lastCanEditForm;
     public event EventHandler? DisplayPreferencesRequested;
+    public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public MaintenancePage()
     {
         InitializeComponent();
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
         MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(9);
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
+        MainParameterEditor.DiagnosticsRequested += (_, target) =>
+        {
+            if (DiagnosticsRequested is not null) DiagnosticsRequested.Invoke(this, target);
+            else { ShowTechnicalTool(2); if (DataContext is ParcelViewModel vm) vm.Message = target.Label + "\n" + vm.ParameterRuntimeSummary(target); }
+        };
         DataContextChanged += (_, e) =>
         {
             if (e.OldValue is ParcelViewModel previous) previous.PropertyChanged -= EditorStateChanged;
             if (e.NewValue is ParcelViewModel current) current.PropertyChanged += EditorStateChanged;
+            lastCanEditForm = e.NewValue is ParcelViewModel { CanEditFormConfiguration: true };
             SelectReader(null); SelectInstance(null);
             Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
         };
@@ -28,7 +36,10 @@ public partial class MaintenancePage : UserControl
     }
     void EditorStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ParcelViewModel.CanEditFormConfiguration) && MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor();
+        if (e.PropertyName != nameof(ParcelViewModel.CanEditFormConfiguration) || DataContext is not ParcelViewModel vm) return;
+        var sourceChanged = lastCanEditForm != vm.CanEditFormConfiguration;
+        lastCanEditForm = vm.CanEditFormConfiguration;
+        if (sourceChanged || MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor();
     }
     async void SaveChanges_Click(object sender, RoutedEventArgs e)
     {

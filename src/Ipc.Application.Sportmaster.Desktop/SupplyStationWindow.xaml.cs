@@ -31,6 +31,7 @@ public partial class SupplyStationWindow : Window
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
+        maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;

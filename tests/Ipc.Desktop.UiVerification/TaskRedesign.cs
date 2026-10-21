@@ -41,7 +41,10 @@ static partial class Program
                 Wcs = o.Wcs! with { Replies = o.Wcs!.Replies.Select(r => r with { Destination = new(WcsDestinationOutcome.Assigned, null, null, null, "TASK-" + o.PositionId, "SKU-" + o.PositionId, null, null, null, null, null, "0007-" + o.PositionId, "0002") }).ToArray() }
             }).ToArray()
         };
-        probe.Project = WithTasks; await vm.RefreshAsync();
+        probe.Project = WithTasks;
+        // RefreshAsync deliberately coalesces an already-running poll. Wait for
+        // this projection to reach the UI, not merely for a duplicate read call.
+        await Until(() => vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002");
         Check(vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002", "all task fields correlate to each position's original accepted request");
         Capture("work-assigned-1600", client);
         var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left));
@@ -183,7 +186,7 @@ static partial class Program
             {
                 var bounds = new Rect(0, 0, target.ActualWidth, target.ActualHeight);
                 dc.DrawRectangle(Window.GetWindow(target)?.Background ?? Brushes.White, null, bounds);
-                dc.DrawRectangle(new VisualBrush(target) { Stretch = Stretch.Fill }, null, bounds);
+                dc.DrawRectangle(new VisualBrush(target) { Stretch = Stretch.Fill, ViewboxUnits = BrushMappingMode.Absolute, Viewbox = bounds }, null, bounds);
             }
             bitmap.Render(visual);
             var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var output = File.Create(Path.Combine(evidence, name + ".png")); png.Save(output);

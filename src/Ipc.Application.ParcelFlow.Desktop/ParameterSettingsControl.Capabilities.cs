@@ -12,8 +12,6 @@ public sealed partial class ParameterSettingsControl
         {
             var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "编辑当前相机的连接和编码。实例数量及左右绑定由当前业务固定。");
             Capability(page, reader);
-            foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
-                foreach (var p in rcs.Parameters.Where(p => p.Field.Key == reader.Role + "-bcr-code")) Parameter(Form(page, "取格口映射"), page, rcs, p);
         }
         if (m.Readers.Length == 0)
         {
@@ -45,6 +43,7 @@ public sealed partial class ParameterSettingsControl
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
+        RuntimeSummary(page, draft);
         if (draft.Role is "operator-login" or "default-scale")
         {
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
@@ -61,14 +60,25 @@ public sealed partial class ParameterSettingsControl
         if (draft.Provider is null) { var issue = Text("缺少精确依赖。恢复原安装包，或受控选择兼容版本后继续。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); page.Body.Children.Add(details); return; }
         if (draft.Kind != "observation") Input(Form(page), ParameterOwnership.IsRcs(draft) ? "服务地址 *" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
-        var form = Form(page);
+        var form = Form(page, draft.Kind == "observation" ? "连接" : null);
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
-            if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding") advanced.Add(p);
-            else Parameter(form, page, draft, p);
+            if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding" or "entity.mode") advanced.Add(p);
+            else if (draft.Kind != "observation" || p.Field.Key != "bcr-code") Parameter(form, page, draft, p);
         }
-        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
+        if (draft.Kind == "observation")
+        {
+            var codes = draft.Parameters.Where(p => p.Field.Key == "bcr-code").ToArray();
+            var mappings = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == draft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).ToArray();
+            if (codes.Length + mappings.Length > 0)
+            {
+                var codeForm = Form(page, "相机编码");
+                foreach (var mapping in mappings) Parameter(codeForm, page, mapping.Component, mapping.Parameter);
+                foreach (var code in codes) Parameter(codeForm, page, draft, code);
+            }
+        }
+        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, "识别与缓冲"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
         if (draft.Parameters.Count == 0) page.Body.Children.Add(Text("此版本没有可配置参数。"));
         page.Body.Children.Add(details);
     }
@@ -95,7 +105,17 @@ public sealed partial class ParameterSettingsControl
         var required = p.Field.Required || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
         var label = ParameterLabel(p) + (string.IsNullOrEmpty(p.Field.Unit) ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = ParameterHint(p);
-        if (p.Field.Type == "boolean" || p.Field.Key == "specified-chute")
+        if (p.IsSensitive)
+        {
+            // PasswordBox keeps the existing reference masked. Never replace it
+            // with a display sentinel, clear it on navigation, or expose it to UIA.
+            var box = new PasswordBox { Password = p.Value, MaxLength = p.EditorMaximumLength, MinHeight = 38, MaxWidth = 400, FontSize = 14, VerticalContentAlignment = VerticalAlignment.Center };
+            box.PasswordChanged += (_, _) => { if (p.Value != box.Password) p.Value = box.Password; };
+            PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(p.Value) && box.Password != p.Value) box.Password = p.Value; };
+            p.PropertyChanged += changed; unsubscribe.Add(() => p.PropertyChanged -= changed);
+            Field(form, label, box, "敏感引用已隐藏；修改后统一审阅保存。" + (p.Field.ReadOnly ? "此字段只读。" : ""), path, page);
+        }
+        else if (p.Field.Type == "boolean" || p.Field.Key == "specified-chute")
         {
             var choice = new ComboBox { ItemsSource = new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });

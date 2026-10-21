@@ -140,6 +140,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
             "PendingRestart" => "更改已保存，等待受控重启。保存成功不表示新设置正在运行。",
+            "Unchanged" => "设置与当前运行配置一致，没有创建待重启修订。",
             "Unknown" => "暂时无法确认保存结果。请核对上次保存，禁止重复提交。",
             "NotSaved" => "本次未保存，已确认原配置修订未改变。检查回执中的原因后再保存。",
             "Conflict" => "配置已由其他操作更新。本窗输入保留，请返回设置比较并明确重新读取。",

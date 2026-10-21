@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[string]$FixtureCommit)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -48,10 +48,19 @@ $workspace=Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $workspace 'config/sportmaster') | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $workspace '.artifacts') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $workspace 'config/sportmaster/business.json')
+if ($ParameterV3) {
+ foreach ($schema in @('src/Ipc.Drivers.Hikrobot/parameters.json','src/Ipc.Integrations.SportmasterRcs/parameters.json')) {
+  $target=Join-Path $workspace $schema
+  New-Item -ItemType Directory -Path (Split-Path $target) -Force | Out-Null
+  $content=& git -C $repo show ($fixtureSource+':'+$schema)
+  if($LASTEXITCODE -ne 0){throw 'Missing frozen parameter schema'}
+  [IO.File]::WriteAllLines($target,[string[]]$content)
+ }
+}
 $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
- $mode=if($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
+ $mode=if($ParameterV3){'--parameter-v3'}elseif($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
  $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
  if($Interactive){$nativeArguments += '--interactive'}
  & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
@@ -62,7 +71,8 @@ if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
  if($AuditPerformance -and (Test-Path -LiteralPath (Join-Path $evidence 'R02-performance.json'))){Copy-Item -LiteralPath (Join-Path $evidence 'R02-performance.json') -Destination $Output}
- if($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
+ if($ParameterV3){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
+ elseif($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
  else { foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
   if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}
  }

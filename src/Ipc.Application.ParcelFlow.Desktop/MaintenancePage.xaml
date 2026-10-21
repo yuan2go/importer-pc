@@ -32,12 +32,12 @@
    <Button x:Name="BackToSettings" DockPanel.Dock="Left" Content="返回设置" Click="BackToSettings_Click" Style="{StaticResource ParameterQuietAction}" Margin="12,0,8,0" Visibility="Collapsed"/>
    <TextBlock x:Name="ToolTitle" Text="更改保留在当前草稿中" FontSize="13" Foreground="#5A6878" VerticalAlignment="Center" Margin="24,0,8,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
   </DockPanel>
-  <local:ParameterSettingsControl x:Name="MainParameterEditor" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
+  <local:ParameterSettingsControl x:Name="MainParameterEditor" RuntimeContext="{Binding}" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
   <Border Grid.Row="2" Background="White" BorderBrush="#E1E5EB" BorderThickness="0,1,0,0" Padding="20,10">
    <DockPanel LastChildFill="True">
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
      <Button x:Name="ViewChanges" Content="查看更改" Click="ReviewChanges_Click" Style="{StaticResource ParameterQuietAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
-     <Button x:Name="SaveChanges" Content="保存更改…" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanStartOperation}" MinWidth="120"/>
+     <Button x:Name="SaveChanges" Content="{Binding ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{Binding ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
     </StackPanel>
     <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
      <TextBlock Text="{Binding ConfigurationDraftStatusText}" Foreground="#25384B" TextTrimming="CharacterEllipsis"/>

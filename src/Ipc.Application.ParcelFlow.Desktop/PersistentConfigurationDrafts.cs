@@ -18,6 +18,9 @@ public partial class ParcelViewModel
         if (application is not IParcelConfigurationDraftApplication access || editorConfigurationHash is null || structuredBase is null || StructuredPolicy is null)
             throw new InvalidOperationException("先读取完整拓扑；旧版配置可使用高级JSON候选或独立首配草稿");
         Dictionary<string, string> values = new() { ["editor"] = "live-v1", ["base"] = Wire.Encode(structuredBase), ["authority"] = configurationAuthority, ["json"] = ConfigurationDraft, ["reason"] = ConfigurationReason };
+        // Optional keys keep older encrypted drafts readable; retaining input never applies a preference.
+        values["display.identity"] = displayIdentity ?? "";
+        values["display.name"] = DisplayNameDraft; values["display.target"] = TargetEfficiencyDraft;
         values["capabilities"] = Wire.Encode(CapabilityDrafts.Select(d => d.CaptureRaw()).ToArray());
         values["readers"] = Wire.Encode(ReaderDrafts.Select(d => d.Capability.CaptureRaw()).ToArray());
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite)) values["policy." + p.Name] = p.GetValue(StructuredPolicy)?.ToString() ?? "";
@@ -35,6 +38,8 @@ public partial class ParcelViewModel
         if (saved.BaseChanged || saved.BaseConfigurationHash != editorConfigurationHash) throw new InvalidOperationException("草稿原基线/来源已变化；保留当前输入和加密草稿，先核对原版本，不覆盖新账");
         var v = saved.Editor.Values;
         if (v.GetValueOrDefault("editor") != "live-v1") throw new InvalidOperationException("这是独立首配草稿；从启动修复入口继续，当前设置输入保留");
+        if (v.TryGetValue("display.identity", out var identity) && identity != displayIdentity)
+            throw new InvalidOperationException("显示草稿站点身份已变化；原草稿和当前输入保留，不移用到另一站点");
         // Reconstruct and validate in a temporary model before replacing this editor.
         var temporary = new ParcelViewModel(application, Title, Flow, PresentationId) { installedCatalog = installedCatalog };
         temporary.LoadStructuredConfiguration(Wire.Decode<ParcelConfiguration>(v["base"]), installedCatalog);
@@ -60,6 +65,8 @@ public partial class ParcelViewModel
         foreach (var c in CapabilityDrafts.Concat(ReaderDrafts.Select(r => r.Capability))) c.PropertyChanged += (_, _) => EditorChanged();
         foreach (var r in ConfigurationRoles) r.PropertyChanged += (_, _) => EditorChanged(); foreach (var p in PositionDrafts) p.PropertyChanged += (_, _) => EditorChanged();
         configurationAuthority = v["authority"]; ConfigurationDraft = v["json"]; ConfigurationReason = v["reason"];
+        if (v.TryGetValue("display.name", out var name)) DisplayNameDraft = name;
+        if (v.TryGetValue("display.target", out var target)) TargetEfficiencyDraft = target;
         RebuildParameterEditor(); NotifyConfigurationEditorState(); Message = "已继续加密草稿；当前编辑来源和无效输入保留。校验后才能保存Pending。";
     }
 }

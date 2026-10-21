@@ -32,4 +32,5 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs" Link="Client/StationDisplayPreferences.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
 </ItemGroup></Project>

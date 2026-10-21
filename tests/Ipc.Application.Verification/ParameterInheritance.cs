@@ -55,6 +55,9 @@ static class ParameterInheritance
             await app.CommandAsync(new(Wire.Id(), accepted.Revision, "Pause")); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token); await Wait(app, s => s.Availability!.Configure);
             await vm.RefreshAsync(); vm.StructuredPolicy!.BarcodeExclusionPattern = "OK00[1-3]"; vm.StructuredPolicy.DiagnosticLogDays = "3"; vm.ConfigurationReason = "Synthetic inheritance revision";
+            await vm.SaveIncompleteEditorAsync(); vm.DisplayNameDraft = "changed"; vm.TargetEfficiencyDraft = "1";
+            await vm.ContinueIncompleteEditorAsync();
+            Check(vm.DisplayNameDraft == "未应用草稿" && vm.TargetEfficiencyDraft == "0" && vm.HasUnsavedDisplayPreferences && vm.StationDisplaySummary.Contains("1800"), "encrypted editor draft preserves invalid display input without applying it or creating another configuration account");
             var changes = vm.GetConfigurationChangeItems();
             Check(changes.Any(x => x.Path == "BarcodeExclusionPattern" && x.Category == "业务模块") && changes.Any(x => x.Path == "DiagnosticLogDays" && x.Category == "系统"), "review uses the same business/system field paths as navigation and errors");
             await vm.SaveStructuredConfigurationAsync(); var saved = await app.SnapshotAsync();
@@ -93,5 +96,11 @@ static class ParameterInheritance
         WeightMeasurement Sample(decimal value, bool stable = true) => new(Wire.Id(), op.AdmissionId, c.Scale.Target, value, WeightUnit.Kg, 3, MeasurementQuality.Valid, stable, DateTimeOffset.UtcNow);
         Check(WeightRules.Invalid(Sample(1), op, c.Scale.Target, DateTimeOffset.UtcNow) is null && WeightRules.Invalid(Sample(2), op, c.Scale.Target, DateTimeOffset.UtcNow) is null && WeightRules.Invalid(Sample(1.5m, false), op, c.Scale.Target, DateTimeOffset.UtcNow) is not null, "inclusive range boundaries preserve stability and measurement identity checks");
         Check(new DirectPlcFlow().Validate(c with { Weight = new(WeightSource.Configured, WeightUnit.Kg, 3, 3), Scale = null }).Any(x => x.Contains("WeightRange")), "configured weight outside the business range is rejected before runtime");
+        async Task<BusinessReceipt> Command(string kind, string? id = null) => await app.CommandAsync(new(Wire.Id(), (await app.SnapshotAsync()).Revision, kind, id, "SIMULATION: inspected and removed original entity"));
+        await Command("Pause"); Check((await Command("AbandonUnsubmitted", op.Id)).Status == "Persisted" && (await Command("Resume")).Status == "Persisted", "timeout recovery requires explicit inspected disposition through Application guards");
+        app.EmitReference("weight-next", "001", Wire.Id()); await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "weight-next"));
+        app.EmitReferenceWeight(new(Wire.Id(), "weight-next", c.Scale.Target, 1m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
+        var next = await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "weight-next" && x.State == ParcelState.PlcAccepted));
+        Check(next.Operations.Single(x => x.AdmissionId == "weight-next").Weight is { Value: 1m, Source: WeightSource.Measured } && next.Operations.Single(x => x.AdmissionId == "weight-range").Weight is null, "next same-code entity accepts its own in-range measurement and never reuses the rejected parcel measurement");
     }
 }

@@ -32,7 +32,7 @@ static partial class Program
             {
                 if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
+                else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterRefactor(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
                 else if (args.Contains("--login-session")) await VerifyLoginSession(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));

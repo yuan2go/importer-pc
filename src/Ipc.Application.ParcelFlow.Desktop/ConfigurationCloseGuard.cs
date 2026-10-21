@@ -7,7 +7,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public static class ConfigurationCloseGuard
 {
     public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page)
-        => CommitAndFindInvalid(page) is not null || vm.HasUnsavedConfiguration;
+        => CommitAndFindInvalid(page) is not null || vm.HasUnsavedConfiguration || vm.HasUnsavedDisplayPreferences;
     public static FrameworkElement? CommitAndFindInvalid(DependencyObject root, bool enabledOnly = false)
     {
         FrameworkElement? first = null;

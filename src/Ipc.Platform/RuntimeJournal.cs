@@ -9,7 +9,8 @@ public sealed class RuntimeJournal : IAsyncDisposable
     readonly Task worker;
     readonly Action<string> failure;
     sealed record RetentionChange(int? Days);
-    public RuntimeJournal(string directory, Action<string> failure, int? retentionDays = null)
+    public RuntimeJournal(string directory, Action<string> failure) : this(directory, failure, null) { }
+    public RuntimeJournal(string directory, Action<string> failure, int? retentionDays)
     {
         ValidateDays(retentionDays);
         this.failure = failure;

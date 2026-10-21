@@ -1,4 +1,4 @@
-﻿old_field,old_read_location,old_evidence,meaning,owner,application,new_consumer,current_support,units_and_validation,effect,decision
+old_field,old_read_location,old_evidence,meaning,owner,application,new_consumer,current_support,units_and_validation,effect,decision
 code,多分支 Importer_CS.exe.config / 主控,用户盘点；旧读取源码未取得,旧供包台编号；与新内部/取格口/心跳身份的对应待核实,系统,对应业务,ParcelConfiguration.StationId / StationCode；RcsTaskOptions.Position,新身份链已支持；不自动转值,旧编码范围未核验；新协议编码1～256非控制字符,核对后完整候选、受控重启,缺证待核实：不得覆盖内部身份
 level,苏州/四段/观澜 exe.config；主控分支,用户盘点；旧读取源码未取得,层号与业务有效层；固定拓扑还是路由规则需看分支,Application,有层/段语义的业务,当前独立 Application 拓扑定义,Sportmaster无层号消费者,旧单位/范围待核验,对应业务合同明确后实现,特定业务适用；不加入Sportmaster
 effectiveLevel,苏州/四段/观澜 exe.config；主控分支,用户盘点；旧读取源码未取得,层号与业务有效层；固定拓扑还是路由规则需看分支,Application,有层/段语义的业务,当前独立 Application 拓扑定义,Sportmaster无层号消费者,旧单位/范围待核验,对应业务合同明确后实现,特定业务适用；不加入Sportmaster
@@ -85,8 +85,10 @@ mark.barcode,江阴双相机分支配置,用户盘点；旧读取源码未取得
 mark.boxWeight,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
 mark.boxWeight.mistake,江阴双相机分支配置,用户盘点；旧读取源码未取得,标定对象/参考码/参考重量/允许偏差,驱动标定维护；Application授权,有标定需求业务,当前无旧标定流程合同,不作为普通参数假装生效,重量/误差单位及结束条件待证据,明确维护动作、授权和记录,特定业务适用
 weightZeroCheck,feat-spain配置,用户盘点；旧读取源码未取得,零点/空秤检查与业务阻断,Drivers质量；Application处置,称重业务,WeightRules现有非正/不稳/过期拒绝,质量事实复用；旧零点算法缺证,不将零值转默认测量,按真实采集及业务守卫,特定业务适用
-skipWeight,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.None仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
-skipToteCheck,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.None仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
+skipWeight,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.Disabled仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
+skipToteCheck,漳州原分支；feat-refactor-new,用户盘点；旧读取源码未取得,跳过称重或载具校验，不能绕过必需环节,Application,对应独立业务,WeightSource.Disabled仅适用模块；无通用跳过,Sportmaster无载具/重量环节，不添加开关,必要能力缺失拒绝,由业务定义决定可选性,废弃通用跳过；保留已定义业务选择
 forceChutes,旧FormSystemConfig.cs用户引用30～50行,用户盘点；旧读取源码未取得,旧临时内存强制格口列表，重启不保留,Application维护,真实允许临时格口处置业务,RCS specified-chute是向上游请求，不覆盖上游,当前不提供本地强制格口,权限/原因/作用域需合同,临时动作与持久配置区分,特定业务适用；不可迁为相同功能
 AllowStartWithoutDevices,AGV设置调试组/重构线,用户盘点；旧读取源码未取得,界面启动与调试发包开关，不代表生产准入,启动诊断/应用守卫,当前产品,既有缺配可编辑；Production缺能力拒绝,已有启动隔离复用；不新增绕过,无设备可开设置，不伪造业务成功,不产生生产放行,废弃通用放行开关
 openSendWcsPkg,AGV设置调试组/重构线,用户盘点；旧读取源码未取得,界面启动与调试发包开关，不代表生产准入,启动诊断/应用守卫,当前产品,既有缺配可编辑；Production缺能力拒绝,已有启动隔离复用；不新增绕过,无设备可开设置，不伪造业务成功,不产生生产放行,废弃通用放行开关
+rcsEventListenPrefix,Sportmaster旧分支配置（用户盘点；具体读取文件待核实）,用户盘点；旧读取源码未取得,外部事件监听端点或来源约束；消息合同、身份校验与旧用途尚未核实,Integrations,具备相应入站事件合同的独立业务,当前RCS仅已确认的取格口与心跳协议；不构造入站回调,当前未支持该旧入站事件能力,前缀、来源匹配和鉴权规则需真实合同；不接受任意来源默认,协议完成并独立验证后受控部署,缺证待核实；只阻断对应入站能力
+rcsEventAllowedSources,Sportmaster旧分支配置（用户盘点；具体读取文件待核实）,用户盘点；旧读取源码未取得,外部事件监听端点或来源约束；消息合同、身份校验与旧用途尚未核实,Integrations,具备相应入站事件合同的独立业务,当前RCS仅已确认的取格口与心跳协议；不构造入站回调,当前未支持该旧入站事件能力,前缀、来源匹配和鉴权规则需真实合同；不接受任意来源默认,协议完成并独立验证后受控部署,缺证待核实；只阻断对应入站能力

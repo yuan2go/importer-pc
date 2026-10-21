@@ -1,7 +1,3 @@
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
@@ -19,7 +15,7 @@ public static class ChineseInterfaceText
         "NotSaved" => "未保存", "Selected" => "已选中唯一条码", "NoMatchingCode" => "没有匹配条码",
         "AmbiguousCodes" => "多个条码匹配", "IncompleteCandidates" => "候选不完整", "FilterTimeout" => "筛选超时",
         "InvalidPattern" => "筛选规则无效", "NoCode" => "未识别条码", "MultipleCodes" => "存在多个条码",
-        "InvalidCode" => "条码无效", "LegacySingleCode" => "旧版严格单码兼容",
+        "ExcludedCodes" => "命中排除规则", "InvalidCode" => "条码无效", "LegacySingleCode" => "旧版严格单码兼容",
         _ => value
     };
     public static string Notice(string value)
@@ -62,14 +58,3 @@ public static class ChineseInterfaceText
     };
 }
 
-public sealed class ChineseChoiceTextConverter : IValueConverter
-{
-    public static DataTemplate CreateTemplate()
-    {
-        var caption = new FrameworkElementFactory(typeof(TextBlock));
-        caption.SetBinding(TextBlock.TextProperty, new Binding { Converter = new ChineseChoiceTextConverter() });
-        return new DataTemplate { VisualTree = caption };
-    }
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => ChineseInterfaceText.Choice(value);
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
-}

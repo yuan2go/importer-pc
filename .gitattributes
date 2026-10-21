@@ -74,3 +74,7 @@ docs/runtime/evidence/parameter-settings-simplification-01/** -text whitespace=c
 
 # Workstation native receipts retain their actual captured bytes.
 docs/runtime/evidence/workstation-information-01/** -text whitespace=cr-at-eol
+
+# Management-mode archives and native/CI receipts preserve captured bytes.
+docs/archive/pre-management-mode-01/** -text whitespace=cr-at-eol
+docs/runtime/evidence/management-mode-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

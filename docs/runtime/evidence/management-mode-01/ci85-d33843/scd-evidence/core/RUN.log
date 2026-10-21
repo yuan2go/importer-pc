@@ -1,0 +1,140 @@
+PASS OPS: unused simulation relocation preserves every original row while allowing additional maintenance audit
+PASS OPS: relocation refuses changed original audit instead of silently accepting a fresh ledger
+PASS OPS: even one original operation prevents the unused-simulation relocation exception
+PASS OPS: no default management password opens the mode
+PASS OPS: direct service calls reject before management-password setup
+PASS OPS: initial management-password setup cannot overwrite an existing password
+PASS OPS: credential file contains salted hashes rather than passwords
+PASS OPS: configured-mode marker prevents a missing credential file from reopening setup
+PASS OPS: missing configured mode credentials cannot be silently replaced
+PASS OPS: invalid credential grants no session 0
+PASS OPS: invalid credential grants no session 1
+PASS OPS: invalid credential grants no session 2
+PASS OPS: invalid credential grants no session 3
+PASS OPS: invalid credential grants no session 4
+PASS OPS: persisted login lockout survives a new authenticator
+PASS OPS: real password hash authentication succeeds
+PASS OPS: a copied helper ticket cannot change its server-bound request hash
+PASS OPS: a helper ticket cannot extend its server-bound expiry
+PASS OPS: a helper ticket cannot mint another one-use authorization
+PASS OPS: helper proof cannot borrow or forge a different management-mode session
+PASS OPS: elevated helper delegation is single-use rather than Windows-only authorization
+PASS OPS: helper authorization is bound to the exact original maintenance request
+PASS OPS: changing the one mode password immediately revokes pending tasks and the original mode
+PASS OPS: password replacement invalidates already-issued helper delegation
+PASS OPS: old password stops working and the replacement re-enters management mode without a username
+PASS OPS: one management password is changed only from an active mode
+PASS OPS: normal management mode API has one password and no account enumeration or maintenance
+PASS OPS: old configured account ledger opens no mode and explicitly requires conversion
+PASS OPS: first mode setup cannot overwrite old software credentials
+PASS OPS: failed legacy conversion preserves original credential bytes
+PASS OPS: verified old credentials convert once into a new independent station mode password
+PASS OPS: conversion retains old bytes and stores a single credential rather than a hidden account
+PASS OPS: legacy conversion cannot replace an already-configured mode password
+PASS OPS: missing new mode credentials fail closed instead of falling back to retained old accounts
+PASS OPS: session expiry revokes authorization and pending task tokens
+PASS OPS: session expiry is recorded in the actual authentication journal
+PASS OPS: actual package-less RCS requirements reject unsupported authoritative query
+PASS OPS: unprotected local mode state cannot satisfy production authentication capability
+PASS OPS: entering management mode never creates or changes a parcel operator
+PASS OPS: management mode entry and parameter catalog reads do not pause feeding
+PASS OPS: management-authorized configuration save still requires pause and drain
+PASS OPS: optional operator login disabled still protects parameter reads
+PASS OPS: operator snapshot cannot expose the editable provider configuration
+PASS OPS: direct candidate validation rejects inactive management mode
+PASS OPS: direct save cannot reuse a revoked mode grant
+PASS OPS: grep query is bounded to 200 records per page
+PASS OPS: query results redact sensitive values before exposure
+PASS OPS: context uses original adjacent records across rotations, not previous/next matches
+PASS OPS: full original exception stacks survive query and context
+PASS OPS: export traverses every match beyond the current page
+PASS OPS: exports include original source/query range and exclude credentials
+PASS OPS: time-range export includes nonmatching records
+PASS OPS: overlapping original contexts export once without duplicates
+PASS OPS: export cannot write into managed business/log sources
+PASS OPS: existing export files remain protected
+PASS OPS: cancelled exports do not publish partial success
+PASS OPS: failed and cancelled exports clean partial files
+PASS OPS: invalid regex is reported without a shell invocation
+PASS OPS: catastrophic regex terminates under a per-record timeout
+PASS OPS: revoked sessions cannot read previously opened context
+PASS OPS: revoked sessions cannot export an old selection
+PASS OPS: both feeding positions advance correctly while querying logs without the business gate: 
+PASS OPS: streaming complete export and another admitted parcel both finish without sharing the business lock
+PASS OPS: management mode preserves the existing unified save and complete-candidate guard for an unchanged revision
+PASS OPS: parameter audit records a separate management-mode grant without inventing an operator account
+PASS OPS: operator authentication remains its own real provider session
+PASS OPS: exiting and re-entering management mode cannot rewrite the operator or an in-flight frozen parcel identity
+PASS OPS: lost reply retains one original unknown request
+PASS OPS: unsupported authoritative query and repeated input never resend or replace the frozen original request
+PASS new-site authoritative discovery offers first configuration without starting a runtime or creating a database
+PASS unavailable saved provider rejects the entire replacement draft
+PASS failed offline resume preserves every current unsaved field
+PASS first configuration uses the existing revision/repair authority and records machine custody before the first business database
+PASS a copied origin file without a fenced handoff cannot certify another source directory
+PASS explicit new-site configuration starts the approved candidate without first starting the reference seed
+PASS previous startup facts refuse a replacement empty database even without receipt or image custody
+PASS missing previously-started database preserves original ledger and retained database bytes without creating a new ledger
+PASS database without its original configuration ledger cannot start from a replacement seed
+PASS missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim
+PASS original custody without a database cannot be replaced by a new empty business ledger
+PASS missing-database rejection preserves raw custody and creates no replacement authority
+Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.
+PASS original unconfirmed configuration fails resource construction
+PASS settled DB7 migrates to DB8 before failed initial resources and retains the repair route
+PASS failed startup is durable and does not confirm Effective
+PASS incomplete draft resumes without becoming Pending or changing Effective
+PASS actual Windows DPAPI output excludes plaintext secret marker
+PASS concurrent stale draft cannot overwrite newer input
+PASS ordinary Pending still cannot bypass unconfirmed original
+PASS failed repair candidate retains the original Effective
+PASS candidate failure does not confirm or erase pending repair evidence
+PASS interrupted repair remains explicit-restage-only with original Effective
+PASS stale initial repair cannot overwrite a newer intent
+PASS repair intent keeps old Effective and confirmation until candidate resources succeed
+PASS correct candidate starts despite permanently broken original and confirms only after resource startup
+PASS original repair bytes and failed attempts remain in authoritative envelope
+PASS history/settings use the same runtime and cannot reconstruct readers
+PASS scheduled backup stays pending without authenticated pause and never pauses production itself
+PASS synthetic maintenance authentication grants the existing backup permission
+PASS actual in-flight health reservation blocks maintenance even after authentication
+PASS live in-flight maintenance guard rejects draft persistence without bypassing authorization
+PASS in-flight refusal preserves both encrypted draft bytes and current invalid editor input
+PASS maintenance becomes available only after the actual external reservation drains
+PASS running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration
+PASS scheduled path actually creates the original complete recovery set engine output
+PASS backup count budget leaves the prior complete set and reports failure without deletion
+PASS backup list verifies the actual scheduled complete set
+PASS scheduled complete backup actually restores to an isolated new root and retains the original root
+PASS complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input
+PASS upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes
+PASS new-site template excludes stable devices, endpoints, secrets, numeric ranges and original backup path
+PASS isolated recovery cannot be cleared through initial repair
+PASS refused repair preserves original envelope bytes
+PASS stable filtered cursor preserves separate same-code entities and excludes later admissions
+PASS history metrics cannot count slot resolution as physical completion
+PASS CSV uses safe explicit text plus exact UTF-8 base64 and the same frozen filter
+PASS export observes cancellation
+PASS cancelled export publishes no partial CSV and keeps an accurate receipt
+PASS export cannot overwrite an existing final result
+PASS lost-after-commit fixture creates one original Unknown request
+PASS initial repair refuses existing Unknown responsibility
+PASS upgrade/uninstall preflight cannot bypass original Unknown responsibility
+PASS same-source repair can back up Unknown originals without changing the configuration or clearing responsibility
+PASS DB7 Unknown remains on its original reader before the DB8 migration
+PASS refused DB7 upgrade preserves original request database and format
+PASS restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown
+PASS full restore preserves the exact machine-bound source ciphertext
+PASS historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised
+PASS matching full backup fences the original Unknown owner before handoff commit and keeps the target isolated
+PASS same-machine source provenance follows the bounded original fenced lineage without issuing a replacement claim
+PASS retired original Unknown root cannot start a second business owner
+PASS DB7 reader refuses the new DB8 semantic floor before writable open
+PASS refused prior reader preserves original database bytes
+PASS DB7 restore source cannot retire before old readers are fenced by DB8
+PASS refused legacy handoff keeps the original reader and does not commit a false source fence
+PASS legacy root without original machine custody cannot be silently certified by copying a policy
+PASS legacy backup/repair never mints a new machine claim or a false source fence
+PASS repair preserves the full later envelope including ordinary stage and failed retry history
+PASS COMM CORE COMPLETE
+PASS frozen native batch preflight and duplicate receipt refusal; no installation/device startup

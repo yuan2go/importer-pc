@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "184ea4cbdf69dafd4355dd4afdb009c776aa19fa",
+  "OS": "Microsoft Windows NT 10.0.26100.0",
+  "ProcessArchitecture": "X64",
+  "Elevated": true,
+  "Sdk": "10.0.402",
+  "WindowsLifecycle": "NOT_RUN: no disposable admin/reboot/two-account environment provisioned",
+  "Equipment": "BLOCKED: no real SDK/contract/equipment qualification",
+  "Scope": "Non-destructive native frozen DLL verification; synthetic runtime identity and ports"
+}

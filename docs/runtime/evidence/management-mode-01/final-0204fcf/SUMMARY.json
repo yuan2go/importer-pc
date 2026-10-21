@@ -1,0 +1,19 @@
+{
+  "SourceCommit": "0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84",
+  "NativeModeChecks": 26,
+  "NativeStartupChecks": 93,
+  "FocusedModeCoreChecks": 69,
+  "CombinedLocalCoreStatus": "FAIL_AT_ELEVATED_RESTORE_GUARD",
+  "LocalWindowsInstallation": "NOT_UPGRADED_UAC_CANCELLED",
+  "RegisteredLocalVersion": "1.10.2",
+  "RegisteredLocalSource": "c9e482a30d2d1643a498e7e7ba7f12563f46f3f5",
+  "Windows11Scale": "125%",
+  "PhysicalEquipment": "NOT_RUN",
+  "Authenticode": "NOT_SIGNED",
+  "ArchiveBaselineFindings": 298,
+  "ArchiveCurrentFindings": 298,
+  "ArchiveAdded": 0,
+  "ArchiveRemoved": 0,
+  "ModeAndStartupFixtureMatchMedium": true,
+  "VisualControlledPhaseFixture": "5266fe4c6bab0a091140aecd8a71804b5bf4be9f"
+}

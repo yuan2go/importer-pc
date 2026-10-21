@@ -1,0 +1,28 @@
+{
+  "Status": "PASS",
+  "Run": "https://github.com/yuan2go/importer-pc/actions/runs/39644141559",
+  "RunNumber": 86,
+  "SourceCommit": "184ea4cbdf69dafd4355dd4afdb009c776aa19fa",
+  "HeadCommit": "5266fe4c6bab0a091140aecd8a71804b5bf4be9f",
+  "LocalProductSource": "0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84",
+  "RecordedPackageInputHashesEqual": true,
+  "RecordedPackageInputs": 148,
+  "DifferencesFromLocalProduct": [
+    "docs/manifest.json",
+    "docs/manifest.sha256",
+    "tests/Ipc.Desktop.UiVerification/VisualProductization.cs"
+  ],
+  "Counts": {
+    "Broker": 54,
+    "Core": 139,
+    "Visual": 108,
+    "Parameters": 227,
+    "ManagementMode": 26
+  },
+  "AcceptanceReferencedBytesVerified": true,
+  "InstallerPackaging": "PASS",
+  "Authenticode": "NOT_SIGNED",
+  "ActualLocalWindowsInstallation": "NOT_UPGRADED_UAC_CANCELLED",
+  "EquipmentAndSite": "NOT_RUN",
+  "SelectedScreenshotsOnly": true
+}

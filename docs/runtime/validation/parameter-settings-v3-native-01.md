@@ -22,10 +22,14 @@
 | 冻结库存与构建 | Windows/portable 两目标库存、ZIP、源码与共享 DLL 一致；安装器重建 DLL 与内嵌 Windows 介质逐字节一致。 |
 | 核心、恢复和原生页面 | core、wpf、removal、visual 均 PASS；首配返回原对象、经典布局忙碌后首次读取、审阅取消留稿都有原断言。 |
 | V3 专项 | 142 项 PASS；同源发布 DLL 与同源夹具，FixtureMatchesMedium=true。涵盖无差异、Pending/Effective、敏感字段、输入/选区/草稿、错误定位、失效摘要和对象诊断。 |
-| 尺寸/DPI | CI 实际 DpiScale=1，客户区 1366×768、1092×614、800×420 DIP；原生控件与内容渲染检查通过，不等于独立物理显示器或目标 IPC 通过。 |
+| 尺寸/DPI | CI 实际 DpiScale=1；本机同源夹具实际 DpiScale=1.25，142项断言、41张 WPF 截图通过。客户区 1366×768、1092×614、800×420 DIP；本机125%最大化工作区域1536×816 DIP完成键鼠走查。渲染尺寸不等于独立目标 IPC 通过。 |
+| 本机输入与任务 | 中文草稿、Ctrl+F/Enter搜索定位、Ctrl+A选区、无效原文、Tab离焦清错、目录留稿、按对象诊断往返、恢复原值后的保存禁用 PASS；中文文本插入不冒充完整IME组合测试。 |
+| 发布启动 | 同源1.7.0安装器完整性准备/选项/改路径/取消；发布Desktop缺配置与已有合成配置的离线维护、恢复入口和正常退出 PASS。未执行完整安装、升级、重启或双账号验证。 |
 | 真实接口/现场 | 全部设备、身份及配置均为显式合成夹具；真实 SDK/RCS、实体、权限、目标触控与现场连续运行 BLOCKED/NOT_RUN。Production 门禁按预期拒绝，不授予生产资格。 |
 
 原生截图：[相机字段](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/parameters-right-driver.png)、[运行摘要](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/v3-rcs-running.png)、[敏感输入](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/v3-sensitive-reference.png)、[错误定位](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/parameters-save-validation.png)、[保存审阅](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/parameters-save-review.png)、[800×420](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/scd-evidence/parameters-v3/v3-size-800x420.png)。运行摘要中的 manual 能力确实没有可配参数；完整相机字段图来自公开 schema 的离线合成配置，不冒充真实 SDK。
+
+本机最终证据：[原生夹具与DLL同源回执](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-native/RESULT.json)、[键鼠步骤](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-manual/INPUT.json)、[实际无效输入](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-manual/invalid-raw-input.png)、[离焦清错](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-manual/corrected-on-tab.png)、[启动回执](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-startup/RESULT.json)。安装器和缺/有配置启动均为实际发布EXE；业务交互使用该介质原DLL的合成运行环境。
 
 ## 交付及运行
 
@@ -43,5 +47,6 @@
 - 根目录 [ce9dcd3 DELIVERY](../evidence/parameter-settings-v3-native-01/DELIVERY.json) 及 native/manual/startup 是中间证据：142项原生断言、Windows125%、中文输入/Ctrl+F/Enter/Ctrl+A/Tab、错误修正/留稿/对象诊断，以及 EXE 解包/完整性/选项/取消和隔离离线启动。均保留原 SourceCommit，不扩张到本次冻结源码；中文文本输入不等于完整 IME 组合测试。操作反馈保留上次任务结果，本地错误清除以当前字段和错误摘要为准。
 - [local-bf7edd4](../evidence/parameter-settings-v3-native-01/local-bf7edd4/README.md) 保留两个共享桌面消费者0警告/0错误构建与开发期确定性回归；它不替代最终冻结验证。定向保存/恢复39项、版本兼容17项及发布指南2项的原记录保留各自执行范围。
 - [CI第一次](../evidence/parameter-settings-v3-native-01/ci-first-failed/RESULT.json)发现首配返回目录错位；[第二次](../evidence/parameter-settings-v3-native-01/ci-second-failed/RESULT.json)发现经典布局忙碌漏读；[第三次](../evidence/parameter-settings-v3-native-01/ci-third-packaging-failed/README.md)在全部原生门禁通过后发现打包路径问题。原失败与 f4ce7b6/9c801a1 历史证据保留，无删断言、吞异常或放宽成功条件。
-- D盘已释放空间并完成最终EXE/ZIP下载与逐文件核对；C盘仍接近耗尽，用户明确要求先完成不依赖C盘空间的工作。最新介质的本机安装启动和125%键鼠复测为NOT_RUN；旧冒烟不冒充最新通过。自动审批拒绝删除本任务临时目录，仅返回 blocked by policy，未绕过；已完成不依赖本地完整构建的 CI 交付。
+- 磁盘空间不足期间先完成不依赖C盘的CI、下载和核验；随后实测C盘恢复约1.5GiB后才完成本轮最终介质启动及125%原生检查。自动审批先前拒绝删除本任务临时目录，仅返回 blocked by policy；未绕过，原证据保留。
+- 本轮安装器在任务附加 `DOTNET_BUNDLE_EXTRACT_BASE_DIR` 且TEMP/TMP使用正斜杠路径时，两次在窗口出现前以 `0xC00000FD` 退出；[原事件](../evidence/parameter-settings-v3-native-01/final-bfec0a5672d8/local-startup/custom-extraction-failed-events.json)保留。恢复正常.NET提取位置及Windows TEMP路径后，同一哈希EXE通过选项/取消冒烟。两个环境因素同时改变，未证明精确根因，不宣称自定义提取环境已支持；正式启动使用普通Windows环境。
 - 归档检查按 Git 对象字节与固定 main 比较，仍为相同298项历史问题，新增0，不改校验器或豁免。原 REQ/BR/CAPI/D/RV、原哈希、旧1.6.1及历史验收身份保留。

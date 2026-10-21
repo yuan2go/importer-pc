@@ -93,7 +93,7 @@ public partial class ParcelViewModel
             var category = "高级设置"; var owner = "完整候选"; var label = path; var fieldPath = ""; var showValues = false;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
-                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 连接" : draft.Role + " · " + draft.InstanceId;
+                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "调度系统连接" : draft.Role + " · " + draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? draft.Kind == "observation" ? 2 : 3 : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
                 { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
@@ -109,9 +109,9 @@ public partial class ParcelViewModel
                 {
                     "StationCode" => ("系统", "供包台标识", "工位编码（心跳）", "StationCode"),
                     "QueueCapacity" => ("业务模块", "处理参数", "输入队列容量", "QueueCapacity"),
-                    "TimeoutMs" => ("业务模块", "处理参数", "调用时限（ms）", "TimeoutMs"),
+                    "TimeoutMs" => ("业务模块", "处理参数", "调用时限（毫秒）", "TimeoutMs"),
                     "MaximumOperations" => ("业务模块", "处理参数", "未清偿作业容量", "MaximumOperations"),
-                    "SessionLifetimeMs" => ("系统", "数据与记录", "操作员会话时长（ms）", "SessionLifetimeMs"),
+                    "SessionLifetimeMs" => ("系统", "数据与记录", "操作员会话时长（毫秒）", "SessionLifetimeMs"),
                     "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻历史条数", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),

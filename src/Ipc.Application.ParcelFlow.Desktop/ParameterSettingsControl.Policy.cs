@@ -33,10 +33,10 @@ public sealed partial class ParameterSettingsControl
         form = Form(station, hasRcs ? "心跳身份" : null);
         Input(form, "工位编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
-        Technical(station, "心跳工位编码", "StationCode", "不自动替换取格口 stationCode；长度1～256，不含控制字符。");
+        Technical(station, "心跳工位编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
         var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
         Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
-        Input(form, "磁盘保留空间（MiB）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时阻断新准入。");
+        Input(form, "磁盘保留空间（兆字节）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 兆字节；空间不足时阻断新准入。");
         SessionLifetime(form, data, m);
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
@@ -59,7 +59,7 @@ public sealed partial class ParameterSettingsControl
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
         Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
-        var display = Page(0, "显示偏好", "本机显示偏好按当前 Windows 用户保存，立即作用于当前窗口。");
+        var display = Page(0, "显示偏好", "本机显示偏好按当前系统用户保存，立即作用于当前窗口。");
         display.Body.Children.Add(Text("窗口布局", true));
         display.Body.Children.Add(Text("标准布局保留更宽的留白；紧凑布局适用于较小屏幕。窗口不足时会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
@@ -74,7 +74,7 @@ public sealed partial class ParameterSettingsControl
     {
         const string path = "SessionLifetimeMs";
         var input = Input(form, "操作员会话有效时长", m.Policy, path, path, page,
-            "100～86400000 ms；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。");
+            "100～86400000 毫秒；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。");
         var field = (FrameworkElement)input.Parent;
         bool Applicable() => m.HasOperatorLogin || m.Issues.Any(i => i.Path == path);
         locations[path] = locations[path] with { Applicable = Applicable };
@@ -98,7 +98,7 @@ public sealed partial class ParameterSettingsControl
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "条码筛选规则", m.Policy, "BarcodePattern", "BarcodePattern", page, "使用正则表达式匹配完整条码。清空已有规则不会生成默认规则。", true);
-            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。旧null规则保持严格单码兼容；不默认选首码，不去重制造唯一候选。");
+            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25毫秒、总计100毫秒。旧版未设置的规则保持严格单码兼容；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
             var rules = Page(1, "取格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
@@ -108,7 +108,7 @@ public sealed partial class ParameterSettingsControl
         {
             Choice(form, "重量来源", m.Policy, "WeightSource", Enum.GetValues<WeightSource>(), "WeightSource", page);
             Choice(form, "重量单位", m.Policy, "Unit", Enum.GetValues<WeightUnit>(), "Unit", page);
-            foreach (var f in new[] { ("重量精度（0～6）", "Precision"), ("配置重量", "ConfiguredWeight"), ("测量新鲜度（ms）", "MaximumAgeMs"), ("本件等待期限（ms）", "WaitTimeoutMs") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
+            foreach (var f in new[] { ("重量精度（0～6）", "Precision"), ("配置重量", "ConfiguredWeight"), ("测量新鲜度（毫秒）", "MaximumAgeMs"), ("本件等待期限（毫秒）", "WaitTimeoutMs") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             Choice(form, "重量有效性时机", m.Policy, "Validity", Enum.GetValues<WeightValidity>(), "Validity", page);
             if (m.Components.Any(x => x.Kind == "camera"))
             {
@@ -118,7 +118,7 @@ public sealed partial class ParameterSettingsControl
         }
         var budget = Page(1, "处理参数", "设置业务队列、外呼时限和未清偿作业容量。"); form = Form(budget);
         Input(form, "输入队列容量", m.Policy, "QueueCapacity", "QueueCapacity", budget, "1～4096；队列满时拒收新输入。");
-        Input(form, "调用时限（ms）", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
+        Input(form, "调用时限（毫秒）", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
         Input(form, "未清偿作业容量", m.Policy, "MaximumOperations", "MaximumOperations", budget, "1～100000");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)
@@ -139,7 +139,7 @@ public sealed partial class ParameterSettingsControl
             {
                 var reply = await Task.Run(() => m.Preview(new(pattern), raw.Replace("\r", "").Split('\n')));
                 result.Text = m.Policy.BarcodePattern != pattern || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
-                    reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches + " · " + reply.Outcome;
+                    reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches + " · " + ChineseInterfaceText.Status(reply.Outcome);
             }
             catch (Exception ex) { result.Text = "测试未完成：" + ex.Message + "；输入保留。"; }
             finally { test.IsEnabled = true; }

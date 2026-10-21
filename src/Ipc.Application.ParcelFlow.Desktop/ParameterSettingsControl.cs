@@ -49,7 +49,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
         ScrollViewer.SetHorizontalScrollBarVisibility(directory, ScrollBarVisibility.Disabled);
         AutomationProperties.SetName(directory, "设置目录");
-        AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，Tab进入表单。");
+        AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，制表键进入表单。");
         directory.SelectionChanged += (_, _) => { if (directory.SelectedItem is ObjectPage page) { lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; } };
         root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 192 : 224);
         Content = root;
@@ -170,7 +170,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)
     {
-        var choice = new ComboBox { ItemsSource = values, MinHeight = 38, FontSize = 14 };
+        var choice = new ComboBox { ItemsSource = values, ItemTemplate = ChineseChoiceTextConverter.CreateTemplate(), MinHeight = 38, FontSize = 14 };
         choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         Field(form, label, choice, help, path, page);
     }

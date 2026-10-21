@@ -47,7 +47,7 @@
   <Border x:Name="ViewportWarning" Grid.RowSpan="4" Grid.ColumnSpan="2" Background="{StaticResource StationBackground}" BorderBrush="{StaticResource Danger}" BorderThickness="2" Padding="24" Visibility="{Binding ViewportWarningVisibility}">
    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
     <TextBlock Text="{Binding ViewportStatus}" FontSize="24" FontWeight="Bold"/>
-    <TextBlock Text="有效客户区至少需要 800 × 420 DIP。当前窗口的新操作已禁用，已请求软件暂停；暂停结果以下方应用快照为准。" FontSize="16" Margin="0,16"/>
+    <TextBlock Text="有效客户区至少需要 800 × 420 逻辑像素。当前窗口的新操作已禁用，已请求软件暂停；暂停结果以下方应用快照为准。" FontSize="16" Margin="0,16"/>
     <TextBlock Text="{Binding Status}"/><TextBlock Text="{Binding Message}"/><TextBlock Text="{Binding ReadStatus}" Margin="0,12"/>
     <TextBlock Text="在途作业与原请求保持。空间恢复不会自动恢复入场；应用暂停且快照有效后，先确认视图，再核对现场并显式恢复。软件暂停不是安全急停。"/>
     <WrapPanel Margin="0,16"><Button Content="最大化窗口" Click="Maximize_Click" Style="{StaticResource StationButton}"/><Button Content="重试软件暂停" Click="ViewportPause_Click" Style="{StaticResource StationButton}"/><Button Content="确认视图，保持暂停" Click="ViewportAcknowledge_Click" IsEnabled="{Binding CanAcknowledgeViewport}" Style="{StaticResource StationButton}"/></WrapPanel>

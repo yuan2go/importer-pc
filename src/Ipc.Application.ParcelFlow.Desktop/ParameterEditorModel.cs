@@ -54,7 +54,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
         Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
+            Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 兆字节");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
             Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
         if (Policy.BackupEnabled)
@@ -81,7 +81,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // replacement for Application/driver validation at the real boundary.
             if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" && values.TryGetValue("device.ip", out var ip) &&
                 (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
-                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整 IPv4 地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
+                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整网络地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
@@ -90,7 +90,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             {
                 if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
                     endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
-                    Issue("组件", draft.InstanceId + "/Target", "RCS目标须为 HTTP(S) /rcs/sorter/api，不能含凭据、查询串或片段。");
+                    Issue("组件", draft.InstanceId + "/Target", "调度服务地址须使用网页传输协议，接口路径为 /rcs/sorter/api，不能含凭据、查询串或片段。");
                 if (long.TryParse(values.GetValueOrDefault("request-id-base"), out var start) && long.TryParse(values.GetValueOrDefault("request-id-count"), out var count) &&
                     (start < 0 || count < 1 || start > long.MaxValue - count))
                     Issue("组件", draft.InstanceId + "/request-id-count", "请求编号起点与数量合计超出协议整数范围。");
@@ -99,7 +99,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (Components.Any(c => c.Bound && ParameterOwnership.IsRcs(c)))
             foreach (var duplicate in Readers.Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
                 .Where(x => !string.IsNullOrWhiteSpace(x.Code)).GroupBy(x => x.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
-                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳 bcrCode 必须独立，不能重复。");
+                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
         if (category is not null)
             foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
         ValidationChanged?.Invoke(this, EventArgs.Empty); return Issues.Count == 0;

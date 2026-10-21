@@ -26,6 +26,11 @@ static partial class Program
         var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
+        await vm.PauseAsync();
+        for (var i = 0; i < 150 && vm.Snapshot?.Paused != true; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
+        Check(vm.EnvironmentStatus.StartsWith("模拟模式") && vm.BlockingReasons.Contains("软件已暂停新入场") &&
+            vm.Snapshot!.BlockingReasons.Contains("Software admission paused; this is not an emergency stop"),
+            "Chinese pause/mode presentation preserves original application facts");
         await SetClient(window, 1366, 768); Click(window, "参数配置");
         for (var i = 0; i < 150 && (vm.Busy || !vm.HasLoadedConfiguration); i++) await Task.Delay(20);
         var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
@@ -82,6 +87,19 @@ static partial class Program
         Check(requested?.InstanceId == rcsBinding.InstanceId && requested.DeviceId is null, "shared RCS diagnostics preserves its exact instance identity");
         Capture("v3-rcs-running");
         probe.Project = null; await Until(() => vm.Snapshot?.Configuration.Effective.Wcs?.Implementation == config.Wcs!.Implementation); window.Content = client;
+
+        var choiceFields = new[] { new ParameterField("entity.mode", "synthetic", "实体关联方式", "choice", Choices: ["observe-only", "trigger"]) };
+        var choiceBinding = config.Wcs! with { Parameters = new() { ["entity.mode"] = "observe-only" } };
+        var choiceDescriptor = new CapabilityDescriptor(choiceBinding.Kind, choiceBinding.Implementation, choiceBinding.Version, choiceBinding.Contract, choiceFields, new());
+        var choiceDraft = new CapabilityDraft(choiceBinding.Kind, [choiceDescriptor], choiceBinding, true, "synthetic");
+        var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
+        window.Content = choiceEditor; choiceEditor.NavigateTo(choiceBinding.InstanceId + "/entity.mode"); window.UpdateLayout();
+        var association = Descendants(choiceEditor).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/entity.mode"));
+        Check(Equals(association.SelectedItem, "observe-only") && Descendants(association).OfType<TextBlock>().Any(x => x.Text == "仅观察"),
+            "native choice displays Chinese while selection retains its protocol value");
+        association.SelectedItem = "trigger"; window.UpdateLayout();
+        Check(choiceDraft.Build().Parameters["entity.mode"] == "trigger" && Descendants(association).OfType<TextBlock>().Any(x => x.Text == "触发关联"),
+            "Chinese choice change persists original protocol value without changing binding identity");
 
         // Synthetic descriptor tests both declarations, including secret-reference
         // without Sensitive=true. No real credential or provider is installed.

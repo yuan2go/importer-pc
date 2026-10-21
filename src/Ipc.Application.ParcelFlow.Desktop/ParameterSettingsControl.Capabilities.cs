@@ -20,8 +20,8 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var component in m.Components.Where(c => m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload")))
         {
-            var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 连接" : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) ? "左右相机共用一个 RCS 连接。保存后通过受控重启应用。" :
+            var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
+                ParameterOwnership.IsRcs(component) ? "左右相机共用一个 调度系统连接。保存后通过受控重启应用。" :
                 ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
@@ -50,7 +50,7 @@ public sealed partial class ParameterSettingsControl
                 var item = new StackPanel(); item.Children.Add(Text(ParameterLabel(p))); item.Children.Add(value); row.Children.Add(item); references.Children.Add(row);
             }
             page.Body.Children.Add(new Expander { Header = "其他页面的相关设置", Content = references, Margin = new(0, 20, 24, 0) });
-            Technical(page, "连接与业务结果", component.Contract, "心跳 HTTP 交付不表示上游应用确认。当前协议无权威结果查询；未知原请求不自动重发。重连继续使用当前运行配置，不应用待重启修订。");
+            Technical(page, "连接与业务结果", component.Contract, "心跳网络交付不表示上游应用确认。当前协议无权威结果查询；未知原请求不自动重发。重连继续使用当前运行配置，不应用待重启修订。");
         }
     }
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
@@ -99,7 +99,7 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "区域 ID", "project-id" => "项目 ID", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
+        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机网络地址", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
         "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
         "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言", _ => p.EditorLabel
     };
@@ -107,8 +107,8 @@ public sealed partial class ParameterSettingsControl
     {
         "zone-id" or "project-id" => "填写上游分配的正整数标识。", "quantity" => "1～2147483647；与上游响应数量分别保留。",
         "bcr-code" => "心跳上报使用，左右相机不得重复。", "left-bcr-code" or "right-bcr-code" => "本位取格口请求使用；与心跳编码分别配置。",
-        "device.ip" => "按 IP 连接当前相机，不修改设备 IP。", "device.serial" => "填写时同时核对 IP 和序列号。",
-        "entity.mode" => "observe-only 仅观察；trigger 仍需真实部署资格。", "queue.capacity" => "1～1024；溢出后需检查并显式重连。",
+        "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "填写时同时核对网络地址和序列号。",
+        "entity.mode" => "仅观察模式不准入实体；触发关联仍需真实部署资格。", "queue.capacity" => "1～1024；溢出后需检查并显式重连。",
         "heartbeat-interval-seconds" => "1～3600 秒；重启后应用。", "specified-chute" => "启用时必须填写下方格口编码。", "chute-code" => "仅指定格口开启时使用。",
         "request-id-base" => "大于或等于 0；保留原持久编号责任。", "request-id-count" => "大于或等于 1；与起点合计不能溢出。",
         _ => p.EditorHelp.Length > 100 ? "完整规则见下方技术信息。" : p.EditorHelp

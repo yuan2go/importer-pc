@@ -18,6 +18,8 @@
 
 # WP-IPC-PARAMETER-SETTINGS-02
 
+> 2026-10-21 中文文案增量：用户要求页面提示全部中文。沿本包复用现有参数/首配共模，将固定提示、选项与任务标签中文化；实际编码、协议值和原始技术证据保持。此要求替代历史双语提示，不改布局、归属或合同；[实现与本轮验证](../runtime/chinese-interface-copy-01.md)独立于下述原交付身份。
+
 > 2026-10-21 独立商业体验复核：基于 main `767075a` 和 PR80，已继承其最新证据提交 `d245b12`。本轮体验差距、针对性补修、前后原生截图及目标工控机待验项见[商业体验复核](../runtime/validation/parameter-settings-v3-experience-01.md)。工程门禁与商业体验结论分别记录；旧介质不因本轮源码修正自动更新。
 
 > PS-05 本轮执行基线为 main `767075abe62a77c30e70766bb5d3f1feca02686b`，复用 PR78/79；原生缺口已实现，新构建业务版本为 1.7.0。当前操作见[原生运行说明](../runtime/parameter-settings-v3-native-01.md)，逐项结果、最终 SourceCommit、截图/介质身份与未验边界见[本轮原生验证](../runtime/validation/parameter-settings-v3-native-01.md)。以下原开工检查、原始授权和历史结论保留；不再用其待实施措辞否定后续实际交付，也不反向扩张旧证据。

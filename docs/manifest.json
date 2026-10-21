@@ -60169,6 +60169,72 @@
       "sha256": "9abd27172b8abdcb83998c3c641e1f263ee2f813b874611f881cc6a83ca4c79d",
       "size_bytes": 2352,
       "git_blob": "26b43657389c023d0cecbf7d502a54162f1ead9a"
+    },
+    {
+      "path": "docs/runtime/chinese-interface-copy-01.md",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "779723a92b3c4fa3467c18344d1a9ef3a1cc65a793eedc9c38b5e5c8a65324a2",
+      "size_bytes": 3520,
+      "git_blob": "df2776cc2712183a7cbaf2dd8df5b8e6bc717b68"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/WINDOWS-WPF.log",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "74ed28e7e3183214754bf79a36cf3ad0e7f8339264be076bc7f42a8d886a67f0",
+      "size_bytes": 15163,
+      "git_blob": "4f44e111820c7c9c5e4585fc26925cc2b15894a8"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/parameters-system.png",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "7019c04292893fadf8e815cf2140e21edf000e9defaa76880c1846eaded645d3",
+      "size_bytes": 78624,
+      "git_blob": "a7651727504a8f58ef8a17113156ce386592c329"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/v3-saved-pending.png",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "1e9450f385cda2f55aff037fbb0c5a04383bba8e8af9896bd668d65aa251b1f0",
+      "size_bytes": 77439,
+      "git_blob": "e61c54de2082e7a43663390d0fb863cf99ea9c49"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/work-assigned-1366.png",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "364cb3b8af01c37b586800b7599b28e21f5eae23b1f9ec806579cf49fd10d84c",
+      "size_bytes": 113640,
+      "git_blob": "225c77e4608370ac223d31d9dbccd91113ba41cb"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy with original protocol values and evidence preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; base main 20251b4",
+      "storage_scope": "public_repository",
+      "sha256": "78e6df33f4f6cb2c81084d7368c4be02d3efbf79fd6cf53344afd11bf88b9d16",
+      "size_bytes": 5268,
+      "git_blob": "2c4de60ce3f7836e53ccb62132b2458a6205db86"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -62559,5 +62625,14 @@
     "LatestLocalStartup": "PASS: same-source installer options/edit/cancel and published Desktop isolated offline maintenance missing/existing configuration, recovery and exit; normal extraction environment only",
     "LatestLocal125PercentKeyboard": "PASS: 142 same-source native assertions, 41 WPF captures, Chinese draft, Ctrl+F/Enter/Ctrl+A/Tab, raw invalid input/correction, exact-object diagnostics and clean-state save guard",
     "CustomExtractionEnvironment": "FAIL_RETAINED: two 0xC00000FD launches before window; normal extraction passed; exact environment root cause not proven"
+  },
+  "chinese_interface_copy_20261021": {
+    "BaseCommit": "20251b4c10db76a37f4d204332e3e6cf68340429",
+    "Report": "docs/runtime/chinese-interface-copy-01.md",
+    "Evidence": "docs/runtime/evidence/chinese-interface-copy-01",
+    "Native": "PASS: local Windows 125%, 139 PASS lines, 32 captures; synthetic runtime/ports",
+    "Build": "PASS: Sportmaster Desktop and native verification Release, zero warnings/errors",
+    "PublishedInstaller": "NOT_REBUILT",
+    "RealSdkRcsSite": "NOT_RUN"
   }
 }

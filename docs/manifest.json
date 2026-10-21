@@ -60235,6 +60235,39 @@
       "sha256": "78e6df33f4f6cb2c81084d7368c4be02d3efbf79fd6cf53344afd11bf88b9d16",
       "size_bytes": 5268,
       "git_blob": "2c4de60ce3f7836e53ccb62132b2458a6205db86"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/integrated/WINDOWS-WPF.log",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy and synthetic integration evidence; original protocol values preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; integrated main 3b883fe",
+      "storage_scope": "public_repository",
+      "sha256": "b7f0c9a96c6bb082e4f2432347c6d6cc6ba9262535bf93c72eea7c01d88bb5c0",
+      "size_bytes": 18902,
+      "git_blob": "af4731630297d73f96c43f1328b4ef6644ffd71d"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/integrated/role-labels.png",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy and synthetic integration evidence; original protocol values preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; integrated main 3b883fe",
+      "storage_scope": "public_repository",
+      "sha256": "855dafd71afce83481e88506ddf6c8d7babb2b07d50fb69ca26b4a3c2b03922d",
+      "size_bytes": 104929,
+      "git_blob": "7833b4bc5582461d4a9728ade89e1b1f9e9e918c"
+    },
+    {
+      "path": "docs/runtime/evidence/chinese-interface-copy-01/integrated/work-assigned-1366.png",
+      "version": "UI-ZH-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Chinese native interface copy and synthetic integration evidence; original protocol values preserved",
+      "source": "2026-10-21 user request for Chinese page prompts; integrated main 3b883fe",
+      "storage_scope": "public_repository",
+      "sha256": "364cb3b8af01c37b586800b7599b28e21f5eae23b1f9ec806579cf49fd10d84c",
+      "size_bytes": 113640,
+      "git_blob": "225c77e4608370ac223d31d9dbccd91113ba41cb"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -101,7 +101,8 @@ public sealed partial class ParameterSettingsControl
     {
         "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机网络地址", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
         "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
-        "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言", _ => p.EditorLabel
+        "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言",
+        "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => p.EditorLabel
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
     {

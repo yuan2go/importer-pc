@@ -28,7 +28,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         var roles = ComponentRoles.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
         { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray();
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
-        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => (component.Kind switch { "weight" => "称重", "plc" => "PLC", "camera" => "采图", "login" => "登录", "upload" => "图片上传", _ => component.Role }) + " · " + component.InstanceId };
+        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(component.Kind) + " · " + component.InstanceId };
     }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;

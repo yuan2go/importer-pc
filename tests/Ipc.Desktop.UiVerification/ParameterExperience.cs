@@ -108,7 +108,7 @@ static partial class Program
             var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
             target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
             role.Selection = replacement; window.UpdateLayout();
-            Check(directory.SelectedItem?.ToString() == "登录 · " + original.Capability.InstanceId &&
+            Check(directory.SelectedItem?.ToString() == "身份认证 · " + original.Capability.InstanceId &&
                 directory.Items.Cast<object>().Count(p => p.ToString() == "维护认证") == 1,
                 "role reassignment relabels old and new component directory entries immediately");
             Check(ReferenceEquals(control.Model, retainedModel) && ReferenceEquals(directory.SelectedItem, selectedPage) &&

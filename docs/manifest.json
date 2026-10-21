@@ -63982,9 +63982,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/AdministratorBoundary.cs",
-      "sha256": "086c91b9792875bbb3223f0ebd41277a45f5ba6f1dd61f79ab1727a571bca294",
-      "size_bytes": 12753,
-      "git_blob": "0d23c2ef6f743b9d7ac362d019fb479913873d15",
+      "sha256": "af495926b9cb66ab7aa1e8ded85a45359a5ad2a5948640858775f99913103992",
+      "size_bytes": 12810,
+      "git_blob": "99409167913df7e23a44a337efc9c7f0fc923ca7",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",

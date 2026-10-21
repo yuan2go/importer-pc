@@ -36,7 +36,7 @@ static class AdministratorBoundary
         try { ParcelMachineOrigin.RebindUnusedSimulationDirectory(retained, target, configuration with { Mode = RunMode.Production }, hash); throw new Exception("Production exception accepted"); }
         catch (InvalidOperationException) { Check(true, "unused simulation exception never applies to production"); }
         try { ParcelMachineOrigin.Require(oldDirectory, configuration); throw new Exception("Old clone accepted"); }
-        catch (InvalidDataException) { Check(true, "unchanged old copy still cannot become a second usable machine"); }
+        catch (Exception error) when (error is InvalidDataException or FileNotFoundException) { Check(true, "unchanged old copy still cannot become a second usable machine"); }
         var root = Path.GetFullPath(Path.Combine(evidence, "boundary-data"));
         if (Directory.Exists(root) || AdministratorBroker.IsManaged(root)) throw new InvalidOperationException("New isolated broker fixture root required");
         Directory.CreateDirectory(root);

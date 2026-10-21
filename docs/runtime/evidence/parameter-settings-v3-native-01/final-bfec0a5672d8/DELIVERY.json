@@ -27,10 +27,14 @@
   "MediumInventorySha256": "14C57DC6C310F993554B48173B194E3055710F7140377900E15D78FE143F570C",
   "NativeFixtureMatchesMedium": true,
   "Native": "PASS: core/wpf/removal/visual/parameters-v3 on Windows CI, DPI=1",
-  "LatestLocalStartup": "NOT_RUN: C system volume nearly full; user requested completing independent work first",
-  "LatestLocal125PercentKeyboard": "NOT_RUN: same system-volume limitation; ce9dcd3 observations remain historical",
+  "LatestLocalStartup": "PASS: same-source installer options/edit/cancel and published Desktop isolated offline maintenance missing/existing configuration, recovery and exit; normal extraction environment only",
+  "LatestLocal125PercentKeyboard": "PASS: 142 same-source native assertions, 41 WPF captures, Chinese draft, Ctrl+F/Enter/Ctrl+A/Tab, raw invalid input/correction, exact-object diagnostics and clean-state save guard",
   "ActualWindowsInstallation": "NOT_RUN",
   "RealSdkRcsField": "BLOCKED",
   "Production": "NOT_APPROVED",
-  "Authenticode": "NOT_SIGNED"
+  "Authenticode": "NOT_SIGNED",
+  "LocalNativeEvidence": "local-native/RESULT.json",
+  "LocalKeyboardEvidence": "local-manual/INPUT.json",
+  "LocalStartupEvidence": "local-startup/RESULT.json",
+  "CustomExtractionEnvironment": "FAIL_RETAINED: two 0xC00000FD launches before window; normal extraction passed; exact environment root cause not proven"
 }

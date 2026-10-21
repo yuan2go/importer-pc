@@ -1,0 +1,27 @@
+{
+  "SourceCommit": "bfec0a5672d846a865db62af9ef6a573a953f914",
+  "Result": "PASS_BOUNDED_NORMAL_ENVIRONMENT",
+  "Installer": "PASS: same downloaded 1.7.0 EXE reaches options after payload integrity preparation; isolated program/data paths editable; Cancel closes process; no install committed",
+  "Environment": {
+    "TEMP": "D:\\projects\\importer-pc\\.artifacts\\parameter-v3-build-temp",
+    "TMP": "same as TEMP",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "unset; normal .NET extraction location"
+  },
+  "FailedCustomEnvironment": {
+    "Result": "FAIL_RETAINED",
+    "Attempts": 2,
+    "ExitCode": "0xC00000FD",
+    "FaultModule": "ntdll.dll",
+    "Conditions": "Task-specific DOTNET_BUNDLE_EXTRACT_BASE_DIR plus forward-slash TEMP/TMP; failure before any native window",
+    "Evidence": "custom-extraction-failed-events.json",
+    "Interpretation": "Same EXE subsequently opened with normal extraction and Windows-native TEMP paths. Two environment variables changed; exact root cause not proven. Custom environment support not claimed."
+  },
+  "DesktopMissingConfiguration": "PASS: explicit isolated empty config/data, --maintenance, MissingConfiguration, devices not started",
+  "DesktopExistingConfiguration": "PASS: isolated copy of public config/sportmaster/business.json, --maintenance, Simulation reference-17 Seed, devices not started",
+  "RecoveryAndExit": "PASS: closing maintenance returns startup/recovery; Stop and Exit closes both processes (21328, 34976)",
+  "ExtensionInventory": "Unavailable; exact maintenance requirement displayed; no silent fallback success",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "UpgradeRebootTwoAccounts": "NOT_RUN",
+  "InstalledFirstLaunch": "NOT_RUN; separate same-source frozen fixture covers first-configuration five-step window",
+  "RealEquipment": "NOT_RUN"
+}

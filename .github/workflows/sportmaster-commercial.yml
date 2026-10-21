@@ -70,6 +70,8 @@ jobs:
             $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
             ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/visual -VisualProductization
             if (-not $?) { throw 'Frozen visual verification did not return successfully' }
+            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/parameters-v3 -ParameterV3
+            if (-not $?) { throw 'Frozen parameter V3 verification did not return successfully' }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)
@@ -95,6 +97,10 @@ jobs:
             C:/scd-evidence/visual/RUN.log
             C:/scd-evidence/visual/WINDOWS-WPF.log
             C:/scd-evidence/visual/*.png
+            C:/scd-evidence/parameters-v3/RESULT.json
+            C:/scd-evidence/parameters-v3/RUN.log
+            C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
+            C:/scd-evidence/parameters-v3/*.png
             C:/scd-evidence/removal/RESULT.json
             C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json

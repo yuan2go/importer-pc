@@ -1708,13 +1708,13 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "b1e1de08c38fe07e6128d03af6a4889fd1fed89dc42943c9fbd573bf7e3995b0",
-      "size_bytes": 4472,
-      "git_blob": "5058ab26939629a1cb4a798d17c4b7f99ead0848",
-      "version": "parallel-reconciliation-20261020",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "sha256": "2b9443c32950e4c26ec89d5ab7f8c629caad480d19c2f434f9db3ff48def26d6",
+      "size_bytes": 4893,
+      "git_blob": "78bc7273170aa300e05427d6d3343816b1046cd0",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
       "previous_git_blob_before_visual_main_closure_01": "afa35ec61e535f14e45b6ad7691796c5d98b3148"
     },
@@ -56466,9 +56466,9 @@
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
-      "sha256": "90d5cfc184dce2eb069e0b56b6ad2866f6ff368324b89960f27bc687859f107d",
-      "size_bytes": 13760,
-      "git_blob": "b18d17ba160cd7d742fd1962eda65573bc0cab4a"
+      "sha256": "969ab37302f03a82621dc6790ac0252d5f359ea2b5ad6a17e19c35a0aa3ac091",
+      "size_bytes": 14509,
+      "git_blob": "b7044fc65473dabc39ff1670b126fcff68f41c42"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",

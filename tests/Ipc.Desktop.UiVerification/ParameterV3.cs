@@ -51,10 +51,12 @@ static partial class Program
         Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
-        await vm.RefreshAsync();
+        await Until(() => vm.Fresh);
         await vm.PauseAsync(); await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync("SIMULATION_ONLY"));
-        vm.ConfigurationReason = "Synthetic V3 native save"; await vm.SaveStructuredConfigurationAsync(); await vm.RefreshAsync();
-        Check(vm.Snapshot!.Configuration.Pending!.StationCode == "SYNTHETIC-EDIT" && vm.Snapshot.Configuration.Effective.StationCode == "SYNTHETIC-STATION" && !vm.HasUnsavedConfiguration,
+        await Until(() => vm.CanConfigure);
+        vm.ConfigurationReason = "Synthetic V3 native save"; await vm.SaveStructuredConfigurationAsync();
+        await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT");
+        Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT" && vm.Snapshot.Configuration.Effective.StationCode == "SYNTHETIC-STATION" && !vm.HasUnsavedConfiguration,
             "native save confirms Pending while Effective stays unchanged");
         Check(!((Button)page.FindName("SaveChanges")).IsEnabled && vm.ParameterRuntimeSummary(target).Contains("待重启"), "confirmed Pending disables repeat save and labels the running configuration separately");
         Capture("v3-saved-pending");
@@ -68,14 +70,15 @@ static partial class Program
         rcsControl.DiagnosticsRequested += (_, selected) => requested = selected;
         rcsControl.Model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [rcsDraft], runtime.TestBarcodeFilterAsync);
         probe.Project = s => s with { Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Wcs = rcsBinding } }, Health = [new(rcsBinding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")] };
-        await vm.RefreshAsync(); window.Content = rcsControl; rcsControl.NavigateTo(rcsBinding.InstanceId + "/Target"); window.UpdateLayout();
+        await Until(() => vm.Snapshot?.Configuration.Effective.Wcs?.Implementation == rcsBinding.Implementation);
+        window.Content = rcsControl; rcsControl.NavigateTo(rcsBinding.InstanceId + "/Target"); window.UpdateLayout();
         rcsDraft.Target = "http://192.0.2.11/rcs/sorter/api";
         var rcsSummary = vm.ParameterRuntimeSummary(new(rcsBinding.InstanceId, null, "RCS 连接"));
         Check(rcsSummary.Contains("192.0.2.10") && !rcsSummary.Contains("192.0.2.11") && rcsSummary.Contains("upstream acceptance unconfirmed") && rcsSummary.Contains("不表示远端接受"), "RCS summary preserves local health evidence and Effective address without claiming remote acceptance");
         Descendants(rcsControl).OfType<Button>().Single(b => Equals(b.Content, "连接诊断")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Check(requested?.InstanceId == rcsBinding.InstanceId && requested.DeviceId is null, "shared RCS diagnostics preserves its exact instance identity");
         Capture("v3-rcs-running");
-        probe.Project = null; await vm.RefreshAsync(); window.Content = client;
+        probe.Project = null; await Until(() => vm.Snapshot?.Configuration.Effective.Wcs?.Implementation == config.Wcs!.Implementation); window.Content = client;
 
         // Synthetic descriptor tests both declarations, including secret-reference
         // without Sensitive=true. No real credential or provider is installed.
@@ -119,6 +122,13 @@ static partial class Program
         }
         else window.Close();
         lines.Add("Native HWND/Dispatcher synthetic runtime; real SDK/RCS, target IPC, physical 100% DPI and touch NOT_RUN.");
+        async Task Until(Func<bool> observed)
+        {
+            // A duplicate RefreshAsync may return while the window's poll is in
+            // flight. Assert observable state rather than assuming it applied.
+            for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); if (observed()) return; await Task.Delay(20); }
+            throw new InvalidOperationException("PS05 state wait expired: " + vm.ReadStatus + " / " + vm.Message);
+        }
         void Capture(string name)
         {
             window.UpdateLayout(); var target = (FrameworkElement)window.Content; var dpi = VisualTreeHelper.GetDpi(target);

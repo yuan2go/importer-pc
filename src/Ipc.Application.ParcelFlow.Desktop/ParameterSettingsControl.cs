@@ -62,9 +62,13 @@ public sealed partial class ParameterSettingsControl : UserControl
     public void ShowCategory(int? index)
     {
         if (index is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(index));
+        // Filtering a WPF collection can automatically select its first item.
+        // Resolve the remembered destination before Refresh changes selection.
+        var selected = directory.SelectedItem as ObjectPage;
+        var destination = selected is not null && (index is null || selected.Category == index) ? selected :
+            pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
         categoryScope = index; directoryView?.Refresh();
-        if (directory.SelectedItem is not ObjectPage selected || index is not null && selected.Category != index)
-            directory.SelectedItem = pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
+        directory.SelectedItem = destination;
         RefreshSearch();
     }
     public bool ShowPage(int category, string title)

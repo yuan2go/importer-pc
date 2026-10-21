@@ -43868,9 +43868,9 @@
       "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
-      "sha256": "28e9bf33a95dcdcbde471bcb61916109c872a1df153def60adedcdf4df941e04",
-      "size_bytes": 5225,
-      "git_blob": "3919640ec83b046190c8ac908cd4483eca7ea493"
+      "sha256": "10426928dd3cf93856a4e6c50f56e8574216177d505c585c14c962bf701c8ae3",
+      "size_bytes": 5401,
+      "git_blob": "cdc27b31b9442b081193ecceb0699ace36404f9f"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",
@@ -52102,9 +52102,9 @@
       "version": "PARAM-UX-02-PS05",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
-      "sha256": "f16b97a0e281ac3edd3e0b44cfdcd99d295a85c09e2f054b54aaecf839ee9b0c",
-      "size_bytes": 18741,
-      "git_blob": "c47404bc1a3300e82af1b63e588f112dc273e76f",
+      "sha256": "f67cb739068703782b01b489ec90393dca7d40a2dc4e735b1a26f823976dcd9c",
+      "size_bytes": 18977,
+      "git_blob": "bfa9ad643a02fe89df0ff09eb43540e2838712de",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
         "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
@@ -57152,13 +57152,13 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
-      "sha256": "b349536fdcefbe9a90035ccdcfa8623bbe4c541cecd19257d528605a5b8419ec",
-      "size_bytes": 14780,
-      "git_blob": "e180856509e8159a0c12bae2e7c205e777588c37",
-      "version": "PARAM-UX-02-source-20261020",
-      "status": "parameter_v3_source_crossbuild_pass_windows_not_run",
-      "purpose": "Native WPF parameter workspace, real save review, task tools and necessary affected verification; preserves PR76 session fix",
-      "source": "User-authorized parameter V3 optimization; bf61337 integrated; no backend contract or database format change",
+      "sha256": "d6cc3d8c26358ff868fa0c1f68a70897a6c3851793ba72ebe58a1c0d17c67be1",
+      "size_bytes": 15519,
+      "git_blob": "e6134f8c32b2d602252ccf157cc1804b25fdc32c",
+      "version": "PARAM-UX-02-PS05",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "V3 native implementation, operation guidance or bounded synthetic Windows evidence; historical records retain original identities",
+      "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "f123c3c37c1054bd004935fb78de70b6515d2b78",
       "pre_parameter_settings_v3_source_identity": {

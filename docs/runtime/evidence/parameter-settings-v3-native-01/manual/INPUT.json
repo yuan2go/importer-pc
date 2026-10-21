@@ -1,0 +1,18 @@
+{
+  "SourceCommit": "ce9dcd32ebc5b9339d76a8c7482594cc2c16b308",
+  "Window": "Frozen DLL synthetic WPF fixture, native HWND",
+  "Scale": 1.25,
+  "Actions": [
+    "StationCode: Ctrl+A, type synthetic Chinese draft",
+    "Ctrl+F: search 队列; Enter focuses QueueCapacity; Ctrl+A returns selected text 64",
+    "type bad; Save produces locatable error and preserves raw bad",
+    "Ctrl+A selected bad; type 64; Tab clears local field errors without submitting",
+    "directory return preserves Chinese draft",
+    "left camera diagnostics opens exact running object and returns cached object",
+    "Alt+F4 closes fixture"
+  ],
+  "Result": "PASS",
+  "DeviceAccess": "NONE",
+  "ImeComposition": "NOT_RUN",
+  "Feedback": "OperationFeedback retains the preceding save-attempt message; current local field errors are cleared after correction"
+}

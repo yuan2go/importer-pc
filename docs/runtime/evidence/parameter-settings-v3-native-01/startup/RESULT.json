@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "ce9dcd32ebc5b9339d76a8c7482594cc2c16b308",
+  "Installer": "PASS: preparation, embedded payload integrity, 1.7.0 options, path editing, cancel",
+  "DesktopMissingConfiguration": "PASS: --maintenance, explicit empty config/data, MissingConfiguration, offline devices not started",
+  "DesktopExistingConfiguration": "PASS: --maintenance, copied public Simulation reference configuration, Seed, offline devices not started",
+  "ExtensionInventory": "Unavailable; exact maintenance requirement displayed; no fallback to production success",
+  "MachineProvisioning": "NOT_RUN",
+  "InstalledFirstLaunch": "NOT_RUN; separate frozen native fixture covers first-configuration five-step window",
+  "RealEquipment": "NOT_RUN"
+}

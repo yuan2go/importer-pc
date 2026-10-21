@@ -1,12 +1,14 @@
 # WP-IPC-PARAMETER-SETTINGS-02
 
-## 当前结论与读取顺序
+> PS-05 本轮执行基线为 main `767075abe62a77c30e70766bb5d3f1feca02686b`，复用 PR78/79；原生缺口已实现，新构建业务版本为 1.7.0。当前操作见[原生运行说明](../runtime/parameter-settings-v3-native-01.md)，逐项结果、最终 SourceCommit、截图/介质身份与未验边界见[本轮原生验证](../runtime/validation/parameter-settings-v3-native-01.md)。以下原开工检查、原始授权和历史结论保留；不再用其待实施措辞否定后续实际交付，也不反向扩张旧证据。
+
+## 开工结论与读取顺序（历史快照）
 
 2026-10-21（北京时间）重新读取远端 main，固定基线为 `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`；本地 HEAD 与远端一致，开工工作区干净、开放 PR 为 0。PR78 参数 V3 与 PR79 启动恢复已合并，见[发布记录](../runtime/publication-pr78-pr79-20261021.md)。**完整设计与主要原生源码已在 main，下一步为现有 PS-05 的原生交付收口及实际缺口修复。** 不再把四类参数、统一保存或“维护与迁移”入口拆分当成从零开发事项。
 
 完成用户对实际参数页面的美学与可用性纠偏。先读 AGENTS、[文档索引](../INDEX.md)、[框架](../design/framework.md)与[F 决策](../design/framework-decisions.md)，再读 [PARAM-UX-02](../design/parameter-settings-experience-02.md)、[V3交付](../ui/parameter-settings-v3-20261020/README.md)、[交接](../ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](../ui/parameter-settings-v3-20261020/QA.md)及实际代码。编码前先清理本任务冲突的当前指引；PR74三组作业、首配、字段合同、PR76会话修复与PR79启动回退继续复用。
 
-V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字节和分支语境；其中“开发分支进入 main PR”已由上述合并事实更新。当前执行提示以本工作包末尾为准。原 `bf61337`、原源码指纹、历史 PASS / NOT_RUN 及旧安装包身份不改写为本次验证。
+V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字节和分支语境；其中“开发分支进入 main PR”已由上述合并事实更新。当前实现与验证以本文开头链接的本轮原生验证为准；末尾执行提示保留原始授权。原 `bf61337`、原源码指纹、历史 PASS / NOT_RUN 及旧安装包身份不改写为本次验证。
 
 ## 设计产物已完整入库的核对结果
 
@@ -26,7 +28,7 @@ V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字
 
 资料检查另执行了现有`tools/verify_archive.py --root . --scope public`：本次修改树和独立检出的原始基线均为FAIL，各有完全相同的298项既有问题，新增问题为0，本次变更文件无报错。既有项为原型敏感标记3项、字体扩展6项、历史引用22项、元数据标记2项、历史PPTX媒体类型265项；这些是归档检查分类，不能直接解释为298个运行缺陷或已发生凭据泄露。本次没有修改校验器、登记新豁免或删除历史资产来改成PASS。文档差异格式及本次文件/manifest身份另行核验。
 
-## 工作包
+## 工作包（开工状态快照）
 
 | 包 | 既定内容 | 当前状态与后续 |
 |---|---|---|
@@ -39,7 +41,7 @@ V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字
 
 六项商业质量为完成条件：重点清楚、组织一致、密度合适、细节完整、操作连贯、真实显示可靠。以完整工业任务闭环实现，不选择最小演示实现，不另造通用配置/部署平台。
 
-## 本次源码核查确定的剩余工作
+## 开工源码核查确定的剩余工作（原证据保留，处置见本轮原生验证）
 
 以下为固定基线的静态调用链判断，不冒充Windows复现或已修复结论。执行时先在最新代码确认是否仍存在。
 
@@ -58,7 +60,7 @@ V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字
 
 沿现有原生验证入口覆盖受影响构建、保存/恢复与输入风险；目标尺寸优先1366×768和现场工控机实际分辨率，核对Windows100%/125%及现场实际缩放，800×420仅作既有最小兼容范围。验证焦点、选区、中文输入、滚动、错误和底部动作可达；不把浏览器逻辑视口当Windows实测。必要发行检查覆盖最终介质安装、首启/已有配置入口及启动冒烟。只执行实际改动所需测试及仓库必需门禁，不堆测试数量。
 
-## Codex执行提示
+## Codex执行提示（本轮原始授权保留）
 
 ```text
 任务：完成 yuan2go/importer-pc 参数设置 V3 的原生交付收口，沿用 WP-IPC-PARAMETER-SETTINGS-02（PS-05及实际缺口），直接完成实现与交付。

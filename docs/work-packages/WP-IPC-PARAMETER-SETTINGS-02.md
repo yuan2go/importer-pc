@@ -1,5 +1,7 @@
 # WP-IPC-PARAMETER-SETTINGS-02
 
+> 2026-10-21 独立商业体验复核：基于 main `767075a` 和 PR80，已继承其最新证据提交 `d245b12`。本轮体验差距、针对性补修、前后原生截图及目标工控机待验项见[商业体验复核](../runtime/validation/parameter-settings-v3-experience-01.md)。工程门禁与商业体验结论分别记录；旧介质不因本轮源码修正自动更新。
+
 > PS-05 本轮执行基线为 main `767075abe62a77c30e70766bb5d3f1feca02686b`，复用 PR78/79；原生缺口已实现，新构建业务版本为 1.7.0。当前操作见[原生运行说明](../runtime/parameter-settings-v3-native-01.md)，逐项结果、最终 SourceCommit、截图/介质身份与未验边界见[本轮原生验证](../runtime/validation/parameter-settings-v3-native-01.md)。以下原开工检查、原始授权和历史结论保留；不再用其待实施措辞否定后续实际交付，也不反向扩张旧证据。
 
 当前 PS-05 工程交付已取得同源 `bfec0a5672d846a865db62af9ef6a573a953f914` 的 CI 核心/恢复/页面/视觉/V3 PASS、原生截图和1.7.0安装器；本机已核对EXE及ZIP哈希、735文件库存和源码身份，见[PR80](https://github.com/yuan2go/importer-pc/pull/80)。空间恢复后，最终同源介质在本机125%通过142项原生断言、键鼠/草稿/错误/对象诊断，以及安装器选项/取消和发布Desktop隔离离线启动；ce9dcd3仍仅为中间证据。完整安装生命周期、目标IPC/触控、真实SDK/RCS及现场资格继续待验；自定义提取环境启动失败的原事件与边界已保留。下表保留开工时状态。

@@ -1,3 +1,5 @@
+> 参数 V3 独立商业体验复核与定向完善：[原生前后证据、问题及验收边界](runtime/validation/parameter-settings-v3-experience-01.md)。本轮开发分支继承 PR80，不更改其冻结介质或历史结果。
+
 > 参数 V3 原生交付收口：固定 main `767075abe62a77c30e70766bb5d3f1feca02686b`，开工无开放 PR。当前操作以 [1.7.0 原生说明](runtime/parameter-settings-v3-native-01.md) 为准；[原生截图、交付身份和验证边界](runtime/validation/parameter-settings-v3-native-01.md)沿 [PS-05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)记录。V3 设计原件及旧发行证据保持身份，旧 1.6.1 不包含 V3。
 
 > PR80 工程交付：同源 `bfec0a5672d846a865db62af9ef6a573a953f914` 的 Windows CI、V3 原生截图与 1.7.0 安装器已通过并下载核验。磁盘空间恢复后，最终同源介质的本机125%原生/键鼠检查、安装器选项/取消及隔离离线启动已通过；完整安装生命周期、SDK/RCS及现场另行验收。ce9dcd3 是保留的中间证据，不作为最终身份。

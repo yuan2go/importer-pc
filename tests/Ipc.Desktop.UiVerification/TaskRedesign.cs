@@ -29,6 +29,20 @@ static partial class Program
         window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         await SetClient(window, 1600, 900); Capture("work-waiting-1600", client);
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：模拟", "simulation does not appear as an online real RCS service");
+        foreach (var item in new (bool Ready, string Detail, string Label, bool Expired)[] { (true, "local only", "等待连接确认", false), (true, "RCS heartbeat HTTP 200 at synthetic; application acknowledgement unconfirmed", "在线", false), (false, "RCS heartbeat failed: timeout", "离线", false), (true, "RCS heartbeat HTTP 200 at old", "状态未知", true) })
+        {
+            probe.Project = s => s with
+            {
+                Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Mode = RunMode.Production, Wcs = s.Configuration.Effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" } } },
+                Health = [new(s.Configuration.Effective.Wcs!.InstanceId, item.Ready, DateTimeOffset.UtcNow.AddSeconds(-2), DateTimeOffset.UtcNow.AddSeconds(item.Expired ? -1 : 3), item.Detail)]
+            };
+            for (var n = 0; n < 100 && vm.Left.RcsServiceStatus != "RCS 服务：" + item.Label; n++) { await vm.RefreshAsync(); await Task.Delay(20); }
+            Check(vm.Left.RcsServiceStatus == "RCS 服务：" + item.Label && vm.Right.RcsServiceStatus == vm.Left.RcsServiceStatus, "both positions present factual RCS " + item.Label + " from the shared service snapshot");
+        }
+        vm.MarkReadFailure("synthetic RCS snapshot failure");
+        Check(vm.Left.RcsServiceStatus == "RCS 服务：状态未知", "stale RCS snapshot cannot retain an online indicator");
+        probe.Project = null; await vm.RefreshAsync();
         await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
         await Until(() => vm.Right.Operation?.State == ParcelState.SlotResolved);
         Check(vm.Left.Operation?.State == ParcelState.ResolvingWcs && vm.Left.TaskId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—", "left processing suppresses the entire task while right completes");

@@ -1,0 +1,34 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-9716d0e2c6cc4168aa6365af5058b9a1
+PASS VC01: sportmaster compiled business version and embedded declaration
+PASS VC01: sportmaster default and all optional provider versions declared
+PASS VC01: RCS and original optional capabilities match the same business declaration
+PASS VC01: old immutable RCS version is not silently relabelled for new host
+PASS VC01: unknown provider version rejected before constructing any resource
+PASS VC01: wrong provider protocol rejected
+PASS VC01: unapproved implementation rejected
+PASS VC01: rejection did not open readers or create external ports
+PASS VC01: mixing members from distinct compatibility sets rejected
+PASS VC01: whole selected set matches a single declaration
+PASS VC01: schema2 binds actual compiled version, binary and declaration bytes
+PASS VC01: protected maintenance accepts actual schema2 business release
+PASS VC01: wrong declared business version rejected
+PASS VC01: protected maintenance rejects wrong business version
+PASS VC01: new compiled business cannot downgrade to release schema1
+PASS VC01: protected maintenance rejects schema1 downgrade
+PASS VC01: cross-business binary rejected
+PASS VC01: changing external declaration and manifest together cannot widen compiled policy
+PASS VC01: protected maintenance rejects altered embedded declaration identity
+Unhandled exception. System.IO.IOException: The process cannot access the file 'C:\ProgramData\ImporterPc\leases\EFA3CE7DEA7C1023FC63E0C3A3C9BB94792C5A8BE295CD81D57F625B2B889E34.lease' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at Ipc.Platform.ResourceLease..ctor(String root, IEnumerable`1 resources) in D:\projects\importer-pc-startup\src\Ipc.Platform\Lifecycle.cs:line 102
+   at Ipc.Assembly.ParcelCapabilityFactory.Create(ParcelConfiguration c) in D:\projects\importer-pc-startup\src\Ipc.Assembly\ParcelCapabilityFactory.cs:line 377
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in D:\projects\importer-pc-startup\src\Ipc.Application.ParcelFlow\ParcelRuntime.cs:line 138
+   at VersionCompatibility.Run(String workspace, String root) in D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\VersionCompatibility.cs:line 82
+   at VersionCompatibility.Run(String workspace, String root) in D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\VersionCompatibility.cs:line 88
+   at VersionCompatibility.Run(String workspace, String root)
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\Program.cs:line 43
+   at Program.<Main>(String[] args)

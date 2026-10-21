@@ -30,6 +30,16 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
         { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(component.Kind) + (Components.Count(x => x.Kind == component.Kind) > 1 ? "（" + (Array.IndexOf(Components, component) + 1) + "）" : "") };
     }
+    public string ComponentName(CapabilityDraft component)
+    {
+        var name = ParameterOwnership.IsRcs(component) ? "RCS 服务" : component.Provider?.Implementation switch
+        {
+            "reference-integration" => "RCS 服务", "reference-login" => "本机模拟认证", "reference-weight" => "模拟称重",
+            _ => ChineseInterfaceText.CapabilityKind(component.Kind)
+        };
+        var peers = Components.Where(c => c.Kind == component.Kind).ToArray();
+        return peers.Length > 1 ? name + "（" + (Array.IndexOf(peers, component) + 1) + "）" : name;
+    }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;

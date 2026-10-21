@@ -37,7 +37,7 @@ public sealed class StartupConfigurationDraft
         Readers = ParcelBindings.Readers(c).Select((reader, index) =>
         {
             var binding = readers.SingleOrDefault(b => "extension:" + b.InstanceId == reader.Driver) ??
-                new CapabilityBinding("observation", "manual", "1.0.0", "reader." + index, reader.DeviceId, "CONTROLLED-OBSERVATION-v1", []);
+                new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + index, reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? []);
             return new CapabilityDraft("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id);
         }).ToArray();
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
@@ -52,7 +52,8 @@ public sealed class StartupConfigurationDraft
         var c = original;
         var readerBindings = Readers.Select(d => d.Build()).ToArray();
         var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
-            Driver = readerBindings[i].Package is null ? "manual" : "extension:" + readerBindings[i].InstanceId }).ToArray();
+            Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
+            Parameters = readerBindings[i].Implementation == "tcp-line" ? readerBindings[i].Parameters : null }).ToArray();
         var instances = readerBindings.Where(b => b.Package is not null).Select(b => new ExtensionInstance(b.InstanceId, b.Package!.Id, b.Module!, b.Target, b.Enabled, b.Parameters)).ToArray();
         var roots = replacements.Values.Concat(readerBindings).Select(b => b.Package).OfType<PackageReference>().Distinct().ToArray();
         var packages = roots.Length == 0 ? [] : ParcelViewModel.ResolvePackageClosure(roots, catalog.Packages ?? []);

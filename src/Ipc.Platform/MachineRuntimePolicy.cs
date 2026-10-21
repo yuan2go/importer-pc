@@ -5,9 +5,13 @@ using System.Security.Principal;
 namespace Ipc.Platform;
 
 // Installed by a Windows maintainer, outside both presentation preferences and per-user
-// data. The first reference deployment supports exactly one designated runtime account.
+// data. A deployment uses one explicit account or the approved Windows Users group.
 public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccountSid, string LeaseRoot)
 {
+    public const string SharedUsersSid = "S-1-5-32-545";
+    public static bool MatchesRuntimeAccount(string? currentSid, string designatedSid, IEnumerable<Claim> claims) =>
+        !string.IsNullOrWhiteSpace(currentSid) && (currentSid == designatedSid || designatedSid == SharedUsersSid &&
+        currentSid is not ("S-1-5-18" or "S-1-5-19" or "S-1-5-20") && claims.Any(c => c.Value == SharedUsersSid && c.Type is ClaimTypes.GroupSid or ClaimTypes.PrimaryGroupSid));
     public static (string Root, string TrustFile) ExtensionPaths(RunMode mode, string? requestedRoot = null, string? requestedTrust = null)
     {
         if (!OperatingSystem.IsWindows())
@@ -77,7 +81,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     }
     internal static void ValidateRuntimeAccount(string? currentSid, string? designatedSid, bool requireOrdinaryAccount, IEnumerable<Claim> claims)
     {
-        if (string.IsNullOrWhiteSpace(currentSid) || string.IsNullOrWhiteSpace(designatedSid) || currentSid != designatedSid)
+        if (string.IsNullOrWhiteSpace(designatedSid) || !MatchesRuntimeAccount(currentSid, designatedSid, claims))
             throw new UnauthorizedAccessException("This Windows account is not the designated station runtime account");
         // Deny-only Administrators membership cannot grant administrative access.
         // Allow the original UAC-filtered user; reject enabled membership/elevation.
@@ -104,7 +108,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
             throw new InvalidDataException("Machine ownership policy/lease root invalid; per-user overrides are not permitted on Windows");
         using var identity = WindowsIdentity.GetCurrent();
         ValidateRuntimeAccount(identity.User?.Value, policy.RuntimeAccountSid, requireOrdinaryAccount,
-            requireOrdinaryAccount ? identity.UserClaims : []);
+            identity.Claims);
         if (!Directory.Exists(fixedRoot)) throw new InvalidDataException("Machine lease directory must be provisioned by a maintainer");
         RejectLinks(fixedRoot); RequireProtectedAcl(new DirectoryInfo(fixedRoot), policy.RuntimeAccountSid);
         return fixedRoot;

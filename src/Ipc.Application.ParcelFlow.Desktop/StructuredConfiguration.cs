@@ -221,7 +221,7 @@ public partial class ParcelViewModel
             var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = instance is null ? null : c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);
             var descriptor = package is null ? null : catalog.Providers.SingleOrDefault(x => x.Package == package && x.Module == instance!.ModuleId);
-            var binding = instance is null ? new CapabilityBinding("observation", "manual", "1.0.0", "reader." + (++readerIndex), reader.DeviceId, "CONTROLLED-OBSERVATION-v1", [])
+            var binding = instance is null ? new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + (++readerIndex), reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? [])
                 : new("observation", "extension:" + package!.Id + "/" + instance.ModuleId, package.Version, instance.Id, reader.DeviceId, descriptor?.Contract ?? "CONTROLLED-OBSERVATION-v1", instance.Parameters, package, instance.ModuleId, instance.Enabled);
             readers.Add(new(reader, new("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id)));
         }
@@ -278,7 +278,7 @@ public partial class ParcelViewModel
         {
             var b = readerBindings[i];
             if (b.Target != x.Original.DeviceId || !b.Enabled) throw new InvalidOperationException("读码稳定DeviceId只读且必须启用；设备迁移需独立受控部署");
-            return x.Original with { Driver = b.Package is null ? "manual" : "extension:" + b.InstanceId };
+            return x.Original with { Driver = b.Package is null ? b.Implementation : "extension:" + b.InstanceId, Parameters = b.Implementation == "tcp-line" ? b.Parameters : null };
         }).ToArray();
         var oldReaderIds = ReaderDrafts.Select(x => x.Original.Driver).Where(x => x.StartsWith("extension:", StringComparison.Ordinal)).Select(x => x[10..]).ToHashSet();
         var instances = (c.Extensions?.Instances ?? []).Where(x => !oldReaderIds.Contains(x.Id)).Concat(readerBindings.Where(x => x.Package is not null).Select(x => new ExtensionInstance(x.InstanceId, x.Package!.Id, x.Module!, x.Target, x.Enabled, x.Parameters))).ToArray();

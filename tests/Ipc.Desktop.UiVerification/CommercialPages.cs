@@ -67,23 +67,30 @@ static partial class Program
             await SelectTask(1); await SelectTask(0);
             Check(timeout.Text == "4321" && timeout.IsVisible && ReferenceEquals(parameterEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()), "task navigation preserves the same incomplete editor input without reconstructing it");
             timeout.Text = originalTimeout;
-            await SelectTask(1);
-            Descendants(first).OfType<Expander>().Single(e => Equals(e.Header, "本机目录与配置身份")).IsExpanded = true; first.UpdateLayout();
+            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+            // Directory/repair operations were removed from first setup. Exercise their
+            // unchanged authority guards in the separate offline maintenance window.
+            first = (Window)Activator.CreateInstance(type, [offlineLaunch, null, false])!; first.Show();
+            for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
+            taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            await SelectTask(0);
             var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("原数据根"));
             var originalRoot = dataRoot.Text; var unreadRoot = Path.Combine(evidence, "unread-root"); dataRoot.Text = unreadRoot;
             Click(first, "保存未完成草稿");
             for (var i = 0; i < 100 && (bool)busyField.GetValue(first)!; i++) await Task.Delay(20);
             Check(!Directory.Exists(unreadRoot) && Wire.FileHash(draftFile) == draftHash && Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("路径已更改")), "unread directory selection cannot write through the previous maintenance instance or change the protected draft");
             dataRoot.Text = originalRoot;
-            await SelectTask(4); Click(first, "分层检查与变更预览");
+            await SelectTask(3); Click(first, "分层检查与变更预览");
             var checkedField = type.GetField("checkedInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 100 && (checkedField.GetValue(first) is null || (bool)busyField.GetValue(first)!); i++) await Task.Delay(20);
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
-            await SelectTask(0); timeout.Text = "4322";
+            await SelectTask(1);
+            parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single(); parameterEditor.NavigateTo("TimeoutMs"); first.UpdateLayout();
+            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "TimeoutMs"); timeout.Text = "4322";
             Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
             timeout.Text = originalTimeout; await SelectTask(1);
             await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+            Screenshot(first, Path.Combine(evidence, "commercial-offline-repair.png")); first.Close();
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;

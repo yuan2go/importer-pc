@@ -73,7 +73,6 @@ public partial class ShellWindow : Window
         pendingMaintenanceLoad = false;
         await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "读取维护配置");
     }
-    void Window_Click(object s, RoutedEventArgs e) { if (!root.closing) new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard", owner: root).Show(); }
     void Layout_Click(object s, RoutedEventArgs e)
     {
         compact = !compact; ApplyLayout();

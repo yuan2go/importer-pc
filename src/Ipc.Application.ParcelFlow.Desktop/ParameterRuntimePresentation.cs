@@ -28,7 +28,7 @@ public partial class ParcelViewModel
             var extension = effective.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = effective.Extensions?.Packages.SingleOrDefault(x => x.Id == extension?.PackageId);
             identity = package is null ? reader.Driver : package.Id + " @ " + package.Version;
-            address = extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
+            address = reader.Parameters?.GetValueOrDefault("device.ip") is { } tcpIp ? tcpIp + ":" + reader.Parameters.GetValueOrDefault("device.port") : extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
             var health = snapshot.Devices?.SingleOrDefault(x => x.DeviceId == device);
             ready = health?.IsValid(now) == true;
             status = ready ? "已确认" : "未就绪";

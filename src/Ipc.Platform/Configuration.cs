@@ -24,7 +24,12 @@ public enum RunMode { Simulation, Production }
 public sealed record ModuleSpec(string Id, string Kind, string Version, int ContractMajor, string[] Dependencies, string File, string Sha256);
 public sealed record ProductManifest(int SchemaVersion, string ProductId, RunMode Mode, string Runtime, string Architecture,
     string BusinessModule, string[] Views, ModuleSpec[] Modules);
-public sealed record DeviceBinding(string Role, string Driver, string DeviceId, string Revision, string? ReplayFile = null);
+public sealed record DeviceBinding(string Role, string Driver, string DeviceId, string Revision, string? ReplayFile = null)
+{
+    // Optional additive data: historical schema1 constructor and JSON bytes stay unchanged.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, string>? Parameters { get; init; }
+}
 public sealed record IntegrationBinding(string Id, string Revision, string Contract, string Endpoint);
 // Published Supply schema1 ABI. New Applications use ConfigurationRevisions<T> with their own fields.
 public sealed record StationConfig(int SchemaVersion, string StationId, string Version, RunMode Mode, DeviceBinding[] Devices,

@@ -92,7 +92,7 @@ public static partial class WindowsDeploymentSetup
             sourceFiles.Any(path => !request.ConfigurationHashes.TryGetValue(Path.GetFileName(path), out var hash) || Wire.FileHash(path) != hash))
             throw new InvalidDataException("Selected seed configuration changed after review; read and review it again");
         var sid = new SecurityIdentifier(request.RuntimeAccountSid);
-        if (!sid.IsAccountSid()) throw new InvalidDataException("Choose an existing Windows account");
+        if (!sid.IsAccountSid() && request.RuntimeAccountSid != MachineRuntimePolicy.SharedUsersSid) throw new InvalidDataException("Choose an existing Windows account");
         _ = sid.Translate(typeof(NTAccount));
         var data = Path.GetFullPath(request.DataRoot); DeploymentPaths.RequireOrdinaryAncestors(data);
         PreviewDataAccess(data, request.RuntimeAccountSid);
@@ -137,7 +137,7 @@ public static partial class WindowsDeploymentSetup
                 Directory.Move(temporary, config);
             }
             else { MachineRuntimePolicy.RequireProtectedEvidence(Path.Combine(config, "business.json")); validateConfiguration(request with { ConfigurationSource = config }); }
-            if (data.StartsWith(MachineRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) ProtectedDirectory(Path.Combine(MachineRoot, "data"), sid);
+
             if (!Directory.Exists(data)) new DirectoryInfo(data).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.Modify));
             if (request.TrustFile is not null) ProvisionTrust(request, sid);
             installPackages(request);

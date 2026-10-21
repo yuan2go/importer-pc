@@ -13,7 +13,7 @@ public static class StartupConfigurationFiles
         static string Target(string value) => value.StartsWith("reference:", StringComparison.Ordinal) ? "本地模拟" : string.IsNullOrWhiteSpace(value) ? "未填写" : value;
         var rows = new List<string> { ChineseInterfaceText.BusinessName(identity.ApplicationId) + " · " + ChineseInterfaceText.Choice(identity.Mode) };
         foreach (var reader in draft.Readers)
-            rows.Add((reader.Role == "left" ? "左相机" : reader.Role == "right" ? "右相机" : "读码设备") + "：" + (reader.Parameters.FirstOrDefault(x => x.Field.Key == "device.ip") is { Value.Length: > 0 } ip ? ip.Value : identity.Mode == RunMode.Simulation ? "本地模拟" : "尚未配置设备连接"));
+            rows.Add((reader.Role == "left" ? "左相机" : reader.Role == "right" ? "右相机" : "读码设备") + "：" + (reader.Parameters.FirstOrDefault(x => x.Field.Key == "device.ip") is { Value.Length: > 0 } ip ? ip.Value + (reader.Parameters.FirstOrDefault(x => x.Field.Key == "device.port") is { Value.Length: > 0 } port ? ":" + port.Value : "") : identity.Mode == RunMode.Simulation ? "本地模拟" : "尚未配置设备连接"));
         foreach (var component in draft.Capabilities.Where(x => x.Bound && x.Kind == "integration"))
             rows.Add("调度服务：" + Target(component.Target));
         rows.Add("条码筛选：" + (string.IsNullOrWhiteSpace(draft.Policy.BarcodePattern) ? "不筛选（仍须唯一有效码）" : "使用已填写规则"));
@@ -32,7 +32,8 @@ public static class StartupConfigurationFiles
         if (imported.ApplicationId != current.ApplicationId || imported.SchemaVersion != current.SchemaVersion || imported.Mode != current.Mode)
             throw new InvalidDataException("配置的业务、格式版本或模拟/生产用途不匹配；当前输入保留。");
         // Compare the declared physical roles before mapping editable values by instance.
-        if (Wire.Encode(imported.Topology) != Wire.Encode(current.Topology) || Wire.Encode(imported.Reader) != Wire.Encode(current.Reader))
+        static string TopologyIdentity(ParcelConfiguration c) => Wire.Encode(c.Topology is null ? null : c.Topology with { Readers = c.Topology.Readers.Select(r => r with { Parameters = null }).ToArray() });
+        if (TopologyIdentity(imported) != TopologyIdentity(current) || Wire.Encode(imported.Reader with { Parameters = null }) != Wire.Encode(current.Reader with { Parameters = null }))
             throw new InvalidDataException("读码实例与左右绑定不匹配；不能用导入文件更换本供包台身份或拓扑。");
         var source = new StartupConfigurationDraft(imported, catalog);
         var before = draft.Readers.Concat(draft.Capabilities).ToArray();

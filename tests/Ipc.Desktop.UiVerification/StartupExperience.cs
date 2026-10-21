@@ -13,6 +13,7 @@ static partial class Program
     static async Task VerifyStartupExperience(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS STARTUP02 " + text); }
+        await VerifyTcpLineReader(Check);
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set IPC_FROZEN_DESKTOP to this build."));
         var type = assembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
@@ -25,6 +26,7 @@ static partial class Program
         var editor = Descendants(first).OfType<ParameterSettingsControl>().Single();
         Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<TextBlock>().Where(x => x.IsVisible).All(x => !x.Text.Contains("首次工位配置")), "compact first-configuration heading uses the supply-station name");
         Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置文件…"), "configuration file import is visible on step one");
+        FillInitial(editor.Model!);
         editor.Model!.Policy.BarcodePattern = "[";
         Click(first, "下一步"); await Idle(first);
         Check(tabs.SelectedIndex == 0 && !Status(first).Contains("BarcodeFilter"), "invalid optional rule stays on its field and exposes no internal variable in the status");
@@ -38,11 +40,9 @@ static partial class Program
             Check(Descendants(first).OfType<Button>().Where(x => x.IsVisible && Footer(first).Contains(x.Content as string ?? "")).All(x => x.TransformToAncestor(first).TransformBounds(new Rect(x.RenderSize)).Bottom <= first.ActualHeight), "footer stays inside the native window on step " + (i + 1));
             Capture("startup-step-" + (i + 1), first);
         }
-        Check(Footer(first).Contains("保存并启动") && !Footer(first).Contains("分层检查与变更预览"), "final step has one save-and-start action; internal operations remain in tools");
-        Click(first, "配置工具…"); await Idle(first);
-        var toolsButton = Descendants(first).OfType<Button>().Single(x => (x.Content as string) == "配置工具…");
-        Check(toolsButton.ContextMenu?.IsOpen == true && toolsButton.ContextMenu.Items.OfType<MenuItem>().Any(x => (x.Header as string) == "保存未完成草稿"), "draft and import tools remain reachable from the compact footer");
-        toolsButton.ContextMenu!.IsOpen = false;
+        Check(Footer(first).Contains("保存并启动") && !Footer(first).Contains("分层检查与变更预览"), "final step has one save-and-start action; internal operations have no separate setup entry");
+        Check(!Descendants(first).OfType<Button>().Any(x => (x.Content as string) == "配置工具…"), "configuration tools are removed from first setup rather than hidden in a menu");
+        Check(Footer(first).Contains("导入配置文件…") && Footer(first).Contains("保存草稿并退出"), "import and useful draft persistence are available in the bottom action row");
         first.Width = 800; first.Height = 600; first.UpdateLayout();
         Check(Footer(first).Count == 4 && Descendants(first).OfType<ScrollViewer>().Any(x => x.IsVisible && x.ViewportHeight > 0), "small startup window preserves the primary action and scrollable content");
         Capture("startup-small", first); first.Width = 960; first.Height = 760; first.UpdateLayout();
@@ -73,6 +73,11 @@ static partial class Program
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
         Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + tabs.SelectedIndex + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
         editor.Model.Policy.BarcodePattern = ""; tabs.SelectedIndex = 4;
+        await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
+        {
+            staticFactory.ValidateStructure(draft.Build());
+            Check(true, "new TCP and built-in RCS candidate passes real static factory validation without constructing ports");
+        }
         var fake = new StartupMaintenanceProbe(local with { Candidate = draft.Build() });
         type.GetField("maintenance", flags)!.SetValue(first, fake);
         fake.CheckStatus = "FAIL"; Click(first, "保存并启动"); await Idle(first);
@@ -98,6 +103,7 @@ static partial class Program
             {
                 await Ready(success);
                 var candidate = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(success)!;
+                FillInitial(Descendants(success).OfType<ParameterSettingsControl>().Single().Model!);
                 var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
                 succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
                 type.GetField("maintenance", flags)!.SetValue(success, succeeded);
@@ -121,24 +127,38 @@ static partial class Program
         // No media exists under this verification process. Preparation only reads;
         // all following renders use a synthetic reviewed request and never click Install.
         installer.Show(); await Idle(installer);
-        installerType.GetField("enteredConfiguration", flags)!.SetValue(installer, launch.ConfigurationDirectory);
+        installerType.GetProperty("CurrentInstallation", flags)!.SetValue(installer, (Func<string, DeploymentLocation?>)(_ => null));
         installerType.GetField("newStation", flags)!.SetValue(installer, "synthetic-supply-station");
         installerType.GetField("step", flags)!.SetValue(installer, 1);
         installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();
         Check(Descendants(installer).OfType<TextBlock>().Any(x => x.Text == "版本: SM V" + businessVersion + " Windows 64位"), "installer version follows the requested format and actual business version");
-        var advancedOptions = Descendants(installer).OfType<Expander>().Single(x => (x.Header as string) == "其他安装选项（通常无需更改）");
-        Check(!advancedOptions.IsExpanded && !Descendants(installer).OfType<ComboBox>().Any(x => x.IsVisible), "ordinary installation has no required environment, account or mode choices");
+        Check(!Descendants(installer).OfType<Expander>().Any() && !Descendants(installer).OfType<ComboBox>().Any(), "installer contains no hidden advanced settings, mode, account, trust or package choices");
+        Check(Descendants(installer).OfType<TextBox>().Count(x => !x.IsReadOnly) == 2, "only installation and data folders require editable text");
+        Check(Descendants(installer).OfType<RadioButton>().Any(x => (x.Content as string)?.Contains("所有 Windows 用户") == true && x.IsChecked == true && x.IsEnabled), "shared Windows-user installation has an explicit scope option");
         Capture("installer-options", installer);
-        advancedOptions.IsExpanded = true; installer.UpdateLayout();
-        Check(Descendants(advancedOptions).OfType<Expander>().Count() >= 5, "conditional installation settings are grouped by purpose with the environment report read-only");
-        Capture("installer-advanced", installer);
         installerType.GetField("reviewed", flags)!.SetValue(installer, new WindowsDeploymentRequest("synthetic-media", "sportmaster", new string('a', 40), "S-1-5-21-synthetic", launch.DataRoot, launch.ConfigurationDirectory, RunMode.Simulation, null, null, [], ProgramRoot: "C:\\Program Files\\CainiaoSupplyStation", Shortcuts: new(true, true)));
         installerType.GetField("step", flags)!.SetValue(installer, 2); installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();
         Check(!Descendants(installer).OfType<Button>().Any(x => (x.Content as string)?.Contains("无人值守") == true), "interactive confirmation has no unattended deployment-plan action");
         Check(Descendants(installer).OfType<TextBlock>().Where(x => x.IsVisible).All(x => !x.Text.Contains("Simulation") && !x.Text.StartsWith("sportmaster") && !x.Text.Contains("种子")), "ordinary confirmation uses Chinese purpose and business names; technical source stays collapsed");
-        Capture("installer-confirmation", installer); installer.Close();
+        Capture("installer-confirmation", installer);
+        installerType.GetField("installed", flags)!.SetValue(installer, new DeploymentLocation("sportmaster", new string('a', 40), "C:/Program Files/CainiaoSupplyStation/releases/synthetic", "C:/synthetic/config", "C:/synthetic/data", MachineRuntimePolicy.SharedUsersSid));
+        installerType.GetField("step", flags)!.SetValue(installer, 3); installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();
+        var open = Descendants(installer).OfType<CheckBox>().Single(x => (x.Content as string) == "完成后打开供包台");
+        var finish = Descendants(installer).OfType<Button>().Single(x => (x.Content as string) == "完成");
+        Check(Math.Abs(open.TransformToAncestor(installer).Transform(new Point()).Y - finish.TransformToAncestor(installer).Transform(new Point()).Y) < 20, "open-after-install sits beside the finish button in the bottom row");
+        Check(Descendants(installer).OfType<TextBlock>().All(x => !x.Text.Contains("releases/") && !x.Text.Contains("releases\\")), "completion has no hashed release directory or technical identity dump");
+        Capture("installer-complete", installer); installer.Close();
         lines.Add("Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.");
 
+        static void FillInitial(ParameterEditorModel model)
+        {
+            foreach (var (r, i) in model.Readers.Select((r, i) => (r, i)))
+                foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", "bcr-code" => "HB" + i, _ => p.Value };
+            foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))
+                foreach (var p in c.Parameters) p.Value = p.Field.Key switch
+                { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "SYNTHETIC", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };
+            foreach (var c in model.Components.Where(ParameterOwnership.IsRcs)) c.Target = "http://127.0.0.1:1/rcs/sorter/api";
+        }
         bool Retry(Window w) => (bool)type.GetProperty("RetryRequested")!.GetValue(w)!;
         string Status(Window w) => ((TextBlock)type.BaseType!.GetField("Status", flags)!.GetValue(w)!).Text;
         List<string> Footer(Window w) => ((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(w)!).Children.OfType<Button>().Where(x => x.IsVisible).Select(x => (string)x.Content).ToList();
@@ -146,7 +166,7 @@ static partial class Program
         async Task Ready(Window w)
         {
             for (var i = 0; i < 200 && ((bool)busy.GetValue(w)! || !Descendants(w).OfType<TabControl>().Any(x => x.Name == "StartupTasks")); i++) await Task.Delay(20);
-            Check(!(bool)busy.GetValue(w)! && Descendants(w).OfType<TabControl>().Any(x => x.Name == "StartupTasks"), "startup editor loads without a running application");
+            Check(!(bool)busy.GetValue(w)! && Descendants(w).OfType<TabControl>().Any(x => x.Name == "StartupTasks"), "startup editor loads without a running application; " + Status(w));
         }
         void Capture(string name, Window w)
         {

@@ -17,6 +17,10 @@
  <Target Name="CheckBusinessSelection" BeforeTargets="PrepareForBuild" Condition="'$(BusinessModule)' != 'Supply' And '$(BusinessModule)' != 'Inspection' And '$(BusinessModule)' != 'Sportmaster' And '$(BusinessModule)' != 'DirectPlc' And '$(BusinessModule)' != 'WcsToPlc'"><Error Text="Choose Supply, Inspection, Sportmaster, DirectPlc or WcsToPlc"/></Target>
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'"><Compile Include="DeploymentBatch.cs"/><Compile Include="DeploymentComponentReview.cs"/></ItemGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'WcsToPlc'">
+  <Compile Include="../Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs" Link="BuiltInRcs/SportmasterRcsTaskService.cs"/>
+  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
+  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>
+  <EmbeddedResource Include="../Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
   <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="StaticValidation/RcsConfigurationValidation.cs"/>
   <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="StaticValidation/RcsTaskOptions.cs"/>
  </ItemGroup>

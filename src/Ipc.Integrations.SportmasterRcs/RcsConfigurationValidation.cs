@@ -19,7 +19,7 @@ internal static class RcsConfigurationValidation
             // Manual input is explicitly synthetic and has no hardware driver parameters.
             if (reader.Driver == "manual" && configuration.Mode == RunMode.Simulation) return reader.DeviceId;
             var instance = configuration.Extensions?.Instances.SingleOrDefault(x => "extension:" + x.Id == reader.Driver && x.DeviceId == reader.DeviceId && x.Enabled);
-            var code = instance?.Parameters.GetValueOrDefault("bcr-code");
+            var code = reader.Driver == "tcp-line" ? reader.Parameters?.GetValueOrDefault("bcr-code") : instance?.Parameters.GetValueOrDefault("bcr-code");
             return ValidCode(code) ? code! : throw new InvalidDataException("RCS heartbeat requires bcr-code in the selected reader driver's configuration: " + reader.DeviceId);
         }
         var mapping = readers.Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();

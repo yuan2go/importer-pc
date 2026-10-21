@@ -1,0 +1,17 @@
+{
+  "BusinessVersion": "1.8.2",
+  "RcsVersion": "1.3.1",
+  "Counts": {
+    "startup-experience.log": 87,
+    "parameter-v3.log": 225,
+    "comm-native-pages.log": 31,
+    "parameter-refactor-final.log": 75,
+    "version-compatibility-final.log": 57,
+    "rcs-heartbeat-final.log": 27
+  },
+  "WindowsDpiScale": 1.25,
+  "Scope": "Native HWND/Dispatcher and synthetic loopback, no real camera/service or OS installation lifecycle",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "TwoWindowsAccounts": "NOT_RUN",
+  "PhysicalSDKAndSite": "NOT_RUN"
+}

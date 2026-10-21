@@ -1,3 +1,5 @@
+> 本轮继续纠偏以[STARTUP-UX-03](../design/startup-experience-03.md)为准：删除安装/首配无用入口，替代下文把它们折叠到高级选项或配置工具的当前指引；原实现与证据保留身份。
+
 # 安装与首次配置：当前操作与验证边界
 
 本轮基于main `3b883fe`，继承PR83 `0fea1b5`（含PR82），独立分支 `codex/startup-experience`。PR84原工作副本未修改。产品增量为SM **1.8.1**；不是对旧1.7.0安装器重新标版。对应[本轮设计决定](../design/startup-experience-02.md)。

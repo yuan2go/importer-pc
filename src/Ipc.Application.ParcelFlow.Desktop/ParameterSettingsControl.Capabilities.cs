@@ -18,9 +18,9 @@ public sealed partial class ParameterSettingsControl
             var missing = Page(2, "缺少读码实例", "当前候选没有读码实例。请核对原拓扑和已安装驱动。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
-        foreach (var component in m.Components.Where(c => m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload")))
+        foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound && c.Role != "maintenance-auth") && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
-            var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
+            var page = Page(ParameterOwnership.ObjectCategory(component), FirstConfiguration ? m.ComponentName(component) : ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用一个 调度系统连接。保存后通过受控重启应用。" :
                 ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
             if (!ParameterOwnership.IsRcs(component))
@@ -30,7 +30,7 @@ public sealed partial class ParameterSettingsControl
                     {
                         if (e.PropertyName != nameof(CapabilityRoleDraft.Selection)) return;
                         var previous = page.Title;
-                        page.Title = m.ComponentLabel(component);
+                        page.Title = FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component);
                         if (lastPages.GetValueOrDefault(page.Category) == previous) lastPages[page.Category] = page.Title;
                         RefreshSearch();
                     };
@@ -62,15 +62,25 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var choices = draft.Providers.Select(p => new ProviderChoice(p.Implementation + " @ " + p.Version + " · " + p.Module, p)).ToArray();
-        var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
-        var identity = new StackPanel(); var providerForm = new ParameterFormPanel(); identity.Children.Add(providerForm);
-        Field(providerForm, "已安装类型与版本", providers, "按实际安装描述建立该类型的参数。更换前请核对精确版本。", draft.InstanceId + "/Provider", page);
-        locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
-        identity.Children.Add(new TextBox { IsReadOnly = true, Text = "实例：" + draft.InstanceId + "\n设备或目标：" + draft.Target + "\n" + draft.ProviderIdentity + "\n合同：" + draft.Contract, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent });
-        providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
-        var details = new Expander { Header = "安装版本与实例身份", Content = identity, Margin = new(0, 20, 24, 0), IsExpanded = draft.Provider is null };
-        if (draft.Provider is null) { var issue = Text("缺少精确依赖。恢复原安装包，或受控选择兼容版本后继续。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); page.Body.Children.Add(details); return; }
+        var choices = draft.Providers.Where(p => !FirstConfiguration || p.Implementation != "manual" || p == draft.Provider).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation == "manual" ? "本地模拟（旧配置）" : p.Implementation.Contains("hikrobot", StringComparison.OrdinalIgnoreCase) ? "海康相机（SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        if (draft.Kind == "observation" && choices.Length > 1 || draft.Provider is null)
+        {
+            var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
+            providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
+            Field(Form(page), draft.Kind == "observation" ? "相机连接方式" : "选择已安装组件", providers, null, draft.InstanceId + "/Provider", page);
+            locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
+        }
+        if (draft.Provider is null)
+        {
+            var issue = Text("缺少对应驱动或组件，请安装匹配的程序包。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); return;
+        }
+        if (FirstConfiguration && (draft.Kind == "observation" && draft.Provider.Implementation == "manual" || draft.Kind == "integration" && draft.Provider.Implementation == "reference-integration"))
+        {
+            var missing = Text(draft.Kind == "observation"
+                ? "请选择 TCP/IP 连接方式，填写实际相机 IP 和端口。原模拟用途和历史数据仍保留。"
+                : "尚未安装现场 RCS 组件。请使用包含对应组件的安装包，当前不会连接模拟服务。");
+            missing.Foreground = Brush("#915300"); page.Body.Children.Add(missing); return;
+        }
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
@@ -80,7 +90,7 @@ public sealed partial class ParameterSettingsControl
         {
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") advanced.Add(p);
-            else if (draft.Kind == "observation" && !p.Field.Required && p.Field.Key is "queue.capacity" or "code.encoding" or "entity.mode") advanced.Add(p);
+            else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "code.encoding" || p.Field.Key == "entity.mode" && draft.Provider.Implementation != "tcp-line")) advanced.Add(p);
             else if (draft.Kind != "observation" || p.Field.Key != "bcr-code") Parameter(form, page, draft, p);
         }
         if (draft.Kind == "observation")
@@ -95,12 +105,17 @@ public sealed partial class ParameterSettingsControl
             }
         }
         if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
-        if (draft.Parameters.Count == 0) page.Body.Children.Add(Text("此版本没有可配置参数。"));
-        page.Body.Children.Add(details);
+
+        if (draft.Kind == "observation" && draft.Provider.Implementation == "manual")
+        {
+            var missing = Text("请选择 TCP/IP 连接方式，填写实际相机 IP 和端口。原模拟用途和历史数据仍保留。");
+            missing.Foreground = Brush("#915300"); page.Body.Children.Insert(0, missing);
+        }
+        // Type/version/instance/contract are support metadata, not connection inputs.
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机网络地址", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
+        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机 IP 地址", "device.port" or "port" => "相机端口", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
         "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
         "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言",
         "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
@@ -121,9 +136,10 @@ public sealed partial class ParameterSettingsControl
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
         var path = draft.InstanceId + "/" + p.Field.Key;
-        var required = p.Field.Required || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
-        var label = ParameterLabel(p) + (string.IsNullOrEmpty(p.Field.Unit) ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
-        var help = ParameterHint(p);
+        var required = p.Field.Required || p.Field.Key == "bcr-code" && Model!.Components.Any(ParameterOwnership.IsRcs) || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
+        var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var help = draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
+            ? "仅观察时只读取条码，不创建作业。现场确认每条完整报文对应一个包裹后，再选择每行一个包裹。" : ParameterHint(p);
         if (p.IsSensitive)
         {
             // PasswordBox keeps the existing reference masked. Never replace it

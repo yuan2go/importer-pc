@@ -18,6 +18,8 @@ static class ParameterRefactor
     {
         SportmasterRcs.ParameterStaticChecks(workspace);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var oldReaders = ParcelBindings.Readers(c); var fixtureReaders = oldReaders.Select((r, i) => r with { DeviceId = "parameter." + Wire.Id() + "." + i }).ToArray();
+        c = c with { Reader = fixtureReaders[0], Topology = c.Topology! with { Readers = fixtureReaders, Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = fixtureReaders[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
         Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "missing legacy policy is omitted and round-trips without manufacturing a production rule");
         Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "legacy policy retains strict single-code compatibility");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["bad", "noise", "OK003"]).SelectedCode == "OK003", "third candidate is evaluated and original order is retained");
@@ -36,7 +38,10 @@ static class ParameterRefactor
         var maintenance = new ParcelStartupMaintenance(missingLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch), () => { });
         var missing = await maintenance.ReadAsync();
         Check(missing.Candidate is { Mode: RunMode.Production, QueueCapacity: 64, TimeoutMs: 1500, MaximumOperations: 10000, StationCode: "station-01" } && missing.ConfigurationStatus == "MissingConfiguration" && !File.Exists(Path.Combine(missingPath, "business.json")), "missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime");
-        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, missing.Candidate! with { BarcodeFilter = new("OK[0-9]+") }, "Synthetic initial defaults and explicit synthetic business rule");
+        var bootstrapReaders = missing.Candidate!.Topology!.Readers.Select((r, i) => r with { Parameters = new() { ["device.ip"] = "192.0.2." + (11 + i), ["device.port"] = "9000", ["bcr-code"] = "HB" + i } }).ToArray();
+        var bootstrap = missing.Candidate with { Reader = bootstrapReaders[0], Topology = missing.Candidate.Topology with { Readers = bootstrapReaders }, BarcodeFilter = new("OK[0-9]+"),
+            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["source"] = "SYNTHETIC", ["locale"] = "en-US", ["zone-id"] = "1", ["project-id"] = "1", ["quantity"] = "1", ["specified-chute"] = "false", ["request-id-base"] = "1000000", ["request-id-count"] = "100", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } } };
+        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
         Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "explicit first save persists parameters without starting SDK, creating a business database, or inventing qualification");
         var invalidPath = Path.Combine(root, "invalid-config"); Directory.CreateDirectory(invalidPath); ExtensionStore.AtomicWrite(Path.Combine(invalidPath, "business.json"), c with { BarcodeFilter = new("[") });
         var invalidLaunch = new BusinessLaunch(invalidPath, Path.Combine(root, "invalid-data"), null, null);

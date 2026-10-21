@@ -91,10 +91,6 @@ public partial class SupplyStationWindow : Window
         pendingMaintenanceLoad = false; // A failure stays visible; never start an automatic retry loop.
         await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取参数配置");
     }
-    void Window_Click(object sender, RoutedEventArgs e)
-    {
-        if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();
-    }
     void Layout_Click(object sender, RoutedEventArgs e)
     {
         compact = !compact; ApplyLayout();

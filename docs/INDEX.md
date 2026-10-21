@@ -1,3 +1,5 @@
+> 2026-10-21 本轮安装/首配纠偏：[STARTUP-UX-03](design/startup-experience-03.md)、[当前操作与TCP合同](runtime/startup-experience-03.md)、[验证边界](runtime/validation/startup-experience-03.md)。删除首配配置工具及安装高级项；新装共享账户、TCP IP/端口和随包RCS，替代上轮折叠方案。历史介质保持来源。
+
 > 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
 
 > 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。

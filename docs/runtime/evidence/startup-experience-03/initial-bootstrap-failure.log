@@ -1,0 +1,24 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-f9810cb44f564fcdaa8fcbefa256fafa
+PASS PARAM01: save-time static preflight rejects StationCode without constructing a component
+PASS PARAM01: save-time static preflight rejects distinct without constructing a component
+PASS PARAM01: save-time static preflight rejects bcr-code without constructing a component
+PASS PARAM01: save-time static preflight rejects /rcs/sorter/api without constructing a component
+PASS PARAM01: missing legacy policy is omitted and round-trips without manufacturing a production rule
+PASS PARAM01: legacy policy retains strict single-code compatibility
+PASS PARAM01: third candidate is evaluated and original order is retained
+PASS PARAM01: matching is whole-string rather than substring
+PASS PARAM01: multiple valid candidates are ambiguous
+PASS PARAM01: whole-string alternation is evaluated correctly
+PASS PARAM01: empty rule is optional and keeps the single valid code without generating a regex
+PASS PARAM01: unfiltered and repeated candidates still require uniqueness
+PASS PARAM01: optional allow rule supports an exclusion-only policy
+PASS PARAM01: invalid syntax produces a bounded rejection
+PASS PARAM01: catastrophic backtracking times out and does not select a code
+PASS PARAM01: incomplete and oversized candidate sets can never imply uniqueness
+PASS PARAM01: business configuration validation rejects malformed rules before save
+PASS PARAM01: missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime
+Unhandled exception. System.IO.InvalidDataException: Incomplete or unknown capability inventory identity
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.StageCore(String expectedHash, ParcelConfiguration candidate, String reason, Boolean initialRepair) in D:\projects\importer-pc-startup\src\Ipc.Application.ParcelFlow\ParcelStartupMaintenance.cs:line 96
+   at ParameterRefactor.Run(String workspace, String root) in D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\ParameterRefactor.cs:line 39
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-startup\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

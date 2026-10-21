@@ -34,6 +34,8 @@ static class ParameterInheritance
         await using (var journal = new RuntimeJournal(journalPath, failures.Add)) { journal.ConfigureRetention(2); journal.Write(new { Synthetic = true }); }
         Check(failures.Count == 0 && !File.Exists(Path.Combine(journalPath, "runtime.jsonl.1")) && File.ReadAllText(Path.Combine(journalPath, "runtime.jsonl.2")) == "recent" && File.Exists(Path.Combine(journalPath, "parcel.db")) && File.Exists(Path.Combine(journalPath, "evidence.jpg")), "log retention deletes only expired diagnostic rotations, preserving recent diagnostics and authoritative/evidence files");
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { StationId = "inherit-" + Wire.Id(), BarcodeFilter = rule, Retention = new(200, 67108864, 2) };
+        var oldReaders = ParcelBindings.Readers(seed); var isolated = oldReaders.Select((r, i) => r with { DeviceId = "inherit." + Wire.Id() + "." + i }).ToArray();
+        seed = seed with { Reader = isolated[0], Topology = seed.Topology! with { Readers = isolated, Positions = seed.Topology.Positions.Select(p => p with { ReaderDeviceId = isolated[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
         var path = Path.Combine(root, "inherit-sportmaster"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), seed);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         string frozen;
@@ -74,6 +76,8 @@ static class ParameterInheritance
     {
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/direct-plc/business.json"))) with
         { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, WaitTimeoutMs: 1200), WeightRange = new(1, 2), Scale = new("weight", "reference-weight", "1.0.0", "scale.one", "reference://weight/inherit", "PARCEL-REFERENCE-v1", []) };
+        var isolatedReader = c.Reader with { DeviceId = "inherit.weight." + Wire.Id() };
+        c = c with { Reader = isolatedReader, Topology = c.Topology! with { Readers = [isolatedReader], Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = isolatedReader.DeviceId }).ToArray() } };
         var path = Path.Combine(root, "inherit-weight"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default);

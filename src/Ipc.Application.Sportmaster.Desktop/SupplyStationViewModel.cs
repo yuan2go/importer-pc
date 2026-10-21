@@ -17,6 +17,21 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
     public string Station => StationDisplaySummary;
     public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅主位，未启用双位" : "左 / 右独立投递位 · 扫码 → 上游格口";
+    public string RcsServiceStatus
+    {
+        get
+        {
+            if (!Fresh || Snapshot is not { } snapshot) return "RCS 服务：状态未知";
+            if (snapshot.Configuration.Effective.Mode == RunMode.Simulation) return "RCS 服务：模拟";
+            if (snapshot.Configuration.Effective.Wcs is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding) return "RCS 服务：未配置";
+            var health = snapshot.Health.SingleOrDefault(h => h.InstanceId == binding.InstanceId);
+            var now = DateTimeOffset.UtcNow;
+            if (health is null || health.ConfirmedAt > now || health.ValidUntil <= now || health.ValidUntil <= health.ConfirmedAt) return "RCS 服务：状态未知";
+            if (!health.Ready) return "RCS 服务：离线";
+            // Local lifecycle readiness alone is not remote service availability.
+            return health.Detail.Contains("RCS heartbeat HTTP ", StringComparison.Ordinal) ? "RCS 服务：在线" : "RCS 服务：等待连接确认";
+        }
+    }
     public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停新入场" :
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有结果待核对" :
         Snapshot?.BlockingReasons.Length > 0 ? "有作业阻断" : Status;
@@ -175,6 +190,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "；下方原请求只属于该原作业，格口不属于本次观察。" : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
+    public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
@@ -234,7 +250,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
             (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
             (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
-            (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
+            (nameof(RcsServiceStatus), RcsServiceStatus), (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
             (nameof(Admission), Admission), (nameof(RequestId), RequestId), (nameof(ResultReason), ResultReason),
             (nameof(ObservedAt), ObservedAt), (nameof(LatestInputSummary), LatestInputSummary), (nameof(ImageStatus), ImageStatus),
             (nameof(CanAdmit), CanAdmit), (nameof(CanReconcile), CanReconcile), (nameof(CanQueryOriginal), CanQueryOriginal), (nameof(CanContinue), CanContinue),

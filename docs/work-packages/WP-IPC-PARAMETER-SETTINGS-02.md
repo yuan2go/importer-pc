@@ -1,3 +1,5 @@
+> 2026-10-21 后续纠偏：[STARTUP-UX-03](../design/startup-experience-03.md)替代上一轮折叠式安装/首配操作；[实施及边界](../runtime/startup-experience-03.md)。用户确认所有Windows用户共享供包台、TCP客户端按换行收码。新证据不倒写PS-00～05、D/RV或旧SourceCommit。
+
 > 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](../design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
 
 > 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](../runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。

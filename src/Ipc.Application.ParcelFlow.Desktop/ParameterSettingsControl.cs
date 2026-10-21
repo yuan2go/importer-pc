@@ -14,6 +14,7 @@ public sealed partial class ParameterSettingsControl : UserControl
 {
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
+    public bool FirstConfiguration { get; set; }
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     readonly StackPanel errors = new();
@@ -212,7 +213,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
         foreach (var page in pages)
         {
-            if (page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "技术信息", Content = page.Technical, Margin = new(0, 24, 24, 0), Padding = new(0, 8, 0, 0) });
+            if (!FirstConfiguration && page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "技术信息", Content = page.Technical, Margin = new(0, 24, 24, 0), Padding = new(0, 8, 0, 0) });
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
         foreach (var draft in m.Readers.Concat(m.Components))

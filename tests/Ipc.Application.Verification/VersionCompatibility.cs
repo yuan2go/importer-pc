@@ -77,6 +77,11 @@ static class VersionCompatibility
             Write(release with { CompatibilitySha256 = changedHash, Files = new(release.Files) { ["application-compatibility.json"] = changedHash } });
             Reject(Check, "changing external declaration and manifest together cannot widen compiled policy");
             Reject(() => maintenanceFactory.ReadPublishedRelease(directory), "protected maintenance rejects altered embedded declaration identity");
+            // Isolate synthetic devices from a user's already-running installed station;
+            // the machine-level lock and actual factory remain fully enabled.
+            var originalReaders = ParcelBindings.Readers(config);
+            var isolatedReaders = originalReaders.Select((r, i) => r with { DeviceId = "vc." + Wire.Id() + "." + i }).ToArray();
+            config = config with { Reader = isolatedReaders[0], Topology = config.Topology is null ? null : config.Topology with { Readers = isolatedReaders, Positions = config.Topology.Positions.Select(p => p with { ReaderDeviceId = isolatedReaders[Array.FindIndex(originalReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
             ExtensionStore.AtomicWrite(Path.Combine(configDirectory, "business.json"), config);
             await using var runtime = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch, policy));
             await runtime.StartAsync(CancellationToken.None);

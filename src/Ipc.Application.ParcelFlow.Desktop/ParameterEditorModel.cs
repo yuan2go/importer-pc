@@ -21,11 +21,12 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public CapabilityRoleDraft? OperatorLoginRole { get; } = operatorLoginRole;
     public bool HasOperatorLogin => OperatorLoginRole is { } role ? role.Selection.Capability is not null
         : Components.Any(c => c.Role == "operator-login" && c.Bound);
+    public IReadOnlyList<CapabilityRoleDraft> ComponentRoles { get; } = componentRoles ?? [];
     // Display existing role ownership without changing the inventory or bindings.
     public string ComponentLabel(CapabilityDraft component)
     {
-        var roles = componentRoles?.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
-        { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray() ?? [];
+        var roles = ComponentRoles.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
+        { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray();
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
         { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => component.Role + " · " + component.InstanceId };
     }

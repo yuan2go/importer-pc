@@ -94,6 +94,35 @@ static partial class Program
         control.ShowPage(2, "左相机"); window.UpdateLayout();
         vm.MarkReadFailure("SYNTHETIC 状态读取中断，请检查连接"); window.UpdateLayout(); Capture("stale");
         Check(vm.ParameterRuntimeSummary(new("reader.0", devices[0].DeviceId, "左相机")).Contains("运行状态未知"), "stale evidence is never rendered as confirmed");
+        if (!baseline)
+        {
+            vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync();
+            var role = vm.ConfigurationRoles.Single(r => r.Role == "维护认证");
+            var original = role.Selection;
+            var replacement = role.Choices.Single(c => c.Capability?.InstanceId == "login.1");
+            replacement.Capability!.Provider = original.Capability!.Provider;
+            control.ShowPage(3, "维护认证"); window.UpdateLayout();
+            var directory = Descendants(control).OfType<ListBox>().Single(b => b.Name == "ParameterDirectory");
+            var selectedPage = directory.SelectedItem;
+            var retainedModel = control.Model;
+            var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
+            target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
+            role.Selection = replacement; window.UpdateLayout();
+            Check(directory.SelectedItem?.ToString() == "login · " + original.Capability.InstanceId &&
+                directory.Items.Cast<object>().Count(p => p.ToString() == "维护认证") == 1,
+                "role reassignment relabels old and new component directory entries immediately");
+            Check(ReferenceEquals(control.Model, retainedModel) && ReferenceEquals(directory.SelectedItem, selectedPage) &&
+                target.IsKeyboardFocused && target.SelectionLength == 5 && target.Text == "reference://synthetic-maintenance-draft",
+                "role relabeling preserves selected object, editor, focus, selection and unsaved draft");
+            Check(control.ShowPage(3, "维护认证") && control.NavigateTo("login.1/Target"), "updated role label navigates to the newly bound instance");
+            var searchBox = Descendants(control).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "ParameterSearch");
+            searchBox.Text = "维护认证"; window.UpdateLayout();
+            Check(Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 维护认证"), "role name is searchable on the newly bound instance");
+            role.Selection = role.Choices.Single(c => c.Capability is null); window.UpdateLayout();
+            Check(!directory.Items.Cast<object>().Any(p => p.ToString() == "维护认证") &&
+                !Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 维护认证"), "unbinding clears stale role names and search results");
+            role.Selection = original; searchBox.Clear(); control.ShowPage(3, "维护认证"); window.UpdateLayout(); Capture("role-labels");
+        }
         if (interactive)
         {
             await SetClient(window, 1366, 768); control.ShowPage(3, "RCS 连接");

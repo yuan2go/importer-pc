@@ -59,7 +59,7 @@ jobs:
           $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
           if ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }
           $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
-          ./scripts/verify-administrator-broker.ps1 -Media $media -Output C:/scd-evidence/administrator-broker
+          ./scripts/verify-administrator-broker.ps1 -Media $media -Output C:/scd-administrator-broker
           if (-not $?) { throw 'Actual Windows administrator boundary verification failed' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
@@ -150,8 +150,8 @@ jobs:
             C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
             C:/scd-evidence/parameters-v3/*.png
             C:/scd-evidence/operator-administration/*
-            C:/scd-evidence/administrator-broker/RESULT.json
-            C:/scd-evidence/administrator-broker/RUN.log
+            C:/scd-administrator-broker/RESULT.json
+            C:/scd-administrator-broker/RUN.log
             C:/scd-evidence/removal/RESULT.json
             C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json

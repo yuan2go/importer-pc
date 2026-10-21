@@ -1708,9 +1708,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "06ca0d326438e15cd559f03bf91c2e8a86eaafeba47c9cdc3ada2861d9838ece",
-      "size_bytes": 8228,
-      "git_blob": "22e52c4dbf1caaf0fe92fa3be0556a0e6aeedb94",
+      "sha256": "ea6fa2025ae9179d5c911b8494e6f9da9bb186b0249158177828e1e0398eb76f",
+      "size_bytes": 8201,
+      "git_blob": "89357385d5775a7a3b3b548e9b5bc84b2e5280a8",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",

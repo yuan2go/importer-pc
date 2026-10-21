@@ -138,7 +138,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var administratorIdentity = new TextBlock { Text = "普通模式", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
         SessionActions.Children.Add(administratorIdentity);
         var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
-        administratorLogin.Click += async (_, _) => { if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) await ManagementMode.ExitManagementModeAsync(); else new ManagementModeWindow(ManagementMode) { Owner = this }.ShowDialog(); if (draft is null && !Busy) await Run(Read); };
+        administratorLogin.Click += async (_, _) =>
+        {
+            administratorLogin.IsEnabled = false;
+            try
+            {
+                if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) await ManagementMode.ExitManagementModeAsync();
+                else new ManagementModeWindow(ManagementMode) { Owner = this }.ShowDialog();
+                if (draft is null && !Busy) await Run(Read);
+            }
+            catch (Exception error) { Message("管理模式操作未完成：" + error.Message + " 原输入保留。"); }
+            finally { administratorLogin.IsEnabled = true; }
+        };
         SessionActions.Children.Add(administratorLogin);
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", CheckCandidate);

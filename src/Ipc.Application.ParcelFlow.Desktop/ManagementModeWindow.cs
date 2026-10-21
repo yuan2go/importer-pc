@@ -50,7 +50,7 @@ public sealed class ManagementModeWindow : Window
         {
             current = await status();
             state.Text = !current.Available ? "管理模式服务不可用，请使用同版安装器修复。作业和原输入保留。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n操作员账号和在途作业保持。" : current.NeedsLegacyConversion ? "此部署有旧版凭据，先完成一次性转换。" : current.Configured ? "输入管理密码以修改参数或查询日志。15分钟后自动退出，不改变操作员账号。" : "首次使用：设置管理密码，防止误改参数。";
-            var preferredHeight = current.NeedsLegacyConversion ? 580 : current.Configured && !current.Authorized ? 360 : 440; if (Height != preferredHeight) Height = preferredHeight;
+            var preferredHeight = current.NeedsLegacyConversion ? 680 : current.Authorized ? 580 : current.Configured ? 420 : 520; if (Height != preferredHeight) Height = preferredHeight;
             passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available; legacy.IsEnabled = current.Available;
             confirmation.Visibility = !current.Configured ? Visibility.Visible : Visibility.Collapsed; rules.Visibility = confirmation.Visibility;
             legacy.Visibility = current.NeedsLegacyConversion ? Visibility.Visible : Visibility.Collapsed;

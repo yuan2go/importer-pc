@@ -25,7 +25,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
         finally { gate.Release(); }
     }
     public Task ExitManagementModeAsync()
-    { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); return Task.CompletedTask; }
+        => Task.Run(() => { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); });
     public Task ChangeManagementPasswordAsync(string password) => Task.Run(() => { Management.ChangePassword(password); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); });
     public Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword) => Task.Run(() => Management.ConvertLegacyCredentials(oldAccount, oldPassword, newPassword));
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)

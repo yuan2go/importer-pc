@@ -170,7 +170,15 @@ public sealed partial class LocalManagementMode
         }
     }
     public void Exit()
-    { if (Remote) { try { Rpc<bool>(new("Exit")); } finally { lock (sync) Revoke(); } return; } lock (sync) { try { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeExited"); } finally { Revoke(); } } }
+    {
+        if (Remote)
+        {
+            ManagementModeRpcRequest request;
+            lock (sync) { request = new("Exit", Token: sessionSecret); Revoke(); }
+            ManagementModeBroker.Call<bool>(dataRoot, request); return;
+        }
+        lock (sync) { try { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeExited"); } finally { Revoke(); } }
+    }
     public void ChangePassword(string password)
     {
         if (Remote) { Rpc<bool>(new("ChangePassword", Password: password)); lock (sync) Revoke(); return; }

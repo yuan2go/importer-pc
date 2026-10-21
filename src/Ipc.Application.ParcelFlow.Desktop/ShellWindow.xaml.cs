@@ -16,7 +16,7 @@ public partial class ShellWindow : Window
     readonly ShellWindow root;
     readonly HashSet<ShellWindow> windows;
     Task pendingRefresh = Task.CompletedTask, pendingViewportPause = Task.CompletedTask;
-    bool compact, closing, closeReady, closed;
+    bool compact, closing, closeReady, closed, pendingMaintenanceLoad;
     long closeGeneration;
     public Func<Task>? StopOwnerAsync { get; set; }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
@@ -24,6 +24,11 @@ public partial class ShellWindow : Window
         InitializeComponent(); ProductBrand.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
         maintenance.DataContext = vm; history.DataContext = vm; work.DataContext = vm;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
+        vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ParcelViewModel.Busy) && !vm.Busy && pendingMaintenanceLoad)
+                Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
+        };
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
@@ -40,7 +45,7 @@ public partial class ShellWindow : Window
             if (closing || closed) return;
             UpdateViewport(); timer.Start();
             if (initialPage == "history") await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取作业记录");
-            if (initialPage == "maintenance") await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "读取维护配置");
+            if (initialPage == "maintenance") { pendingMaintenanceLoad = true; await LoadRequestedMaintenanceAsync(); }
         };
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
     }
@@ -58,7 +63,16 @@ public partial class ShellWindow : Window
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
     void Support_Click(object s, RoutedEventArgs e) => new ProductSupportWindow(vm.Application, vm.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
-    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "设备与维护"); }
+    async void Maintenance_Click(object s, RoutedEventArgs e)
+    { PageHost.Content = maintenance; pendingMaintenanceLoad = !vm.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    async Task LoadRequestedMaintenanceAsync()
+    {
+        if (!pendingMaintenanceLoad) return;
+        if (closing || closed || !ReferenceEquals(PageHost.Content, maintenance)) { pendingMaintenanceLoad = false; return; }
+        if (vm.Busy) return;
+        pendingMaintenanceLoad = false;
+        await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "读取维护配置");
+    }
     void Window_Click(object s, RoutedEventArgs e) { if (!root.closing) new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard", owner: root).Show(); }
     void Layout_Click(object s, RoutedEventArgs e)
     {

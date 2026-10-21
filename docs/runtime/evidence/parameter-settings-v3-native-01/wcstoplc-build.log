@@ -1,0 +1,10 @@
+  Ipc.Platform -> D:\projects\importer-pc\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.WcsToPlc.Desktop -> D:\projects\importer-pc\src\Ipc.Application.WcsToPlc.Desktop\bin\Release\net10.0-windows\Ipc.Application.WcsToPlc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:07.16

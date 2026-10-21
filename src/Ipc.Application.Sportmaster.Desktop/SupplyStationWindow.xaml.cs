@@ -19,7 +19,7 @@ public partial class SupplyStationWindow : Window
     readonly HashSet<SupplyStationWindow> windows;
     Task pendingRefresh = Task.CompletedTask;
     Task pendingViewportPause = Task.CompletedTask;
-    bool compact, closing, closeReady, closed;
+    bool compact, closing, closeReady, closed, pendingMaintenanceLoad;
     long closeGeneration;
     public SupplyStationViewModel ViewModel { get; }
 
@@ -31,6 +31,12 @@ public partial class SupplyStationWindow : Window
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
+        maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
+        ViewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ViewModel.Busy) && !ViewModel.Busy && pendingMaintenanceLoad)
+                Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
+        };
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
@@ -55,7 +61,7 @@ public partial class SupplyStationWindow : Window
             if (closing || closed) return;
             UpdateViewport();
             timer.Start();
-            if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取维护配置");
+            if (initialPage == "maintenance") { pendingMaintenanceLoad = true; await LoadRequestedMaintenanceAsync(); }
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "读取作业记录");
         };
         Closing += ClosingWindow;
@@ -68,13 +74,23 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
+        if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     void Support_Click(object sender, RoutedEventArgs e) => new ProductSupportWindow(ViewModel.Application, ViewModel.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
-    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "参数配置"); }
+    async void Maintenance_Click(object sender, RoutedEventArgs e)
+    { SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    async Task LoadRequestedMaintenanceAsync()
+    {
+        if (!pendingMaintenanceLoad) return;
+        if (closing || closed || ViewModel.SelectedPage != "maintenance") { pendingMaintenanceLoad = false; return; }
+        if (ViewModel.Busy) return;
+        pendingMaintenanceLoad = false; // A failure stays visible; never start an automatic retry loop.
+        await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取参数配置");
+    }
     void Window_Click(object sender, RoutedEventArgs e)
     {
         if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();

@@ -1,5 +1,7 @@
 # PARAM-UX-02 · 参数设置 V3 实施与运行
 
+> PS-05 本轮原生实现与新版 1.7.0 的日常操作见[原生交付说明](parameter-settings-v3-native-01.md)。下列为 PR78 形成时结果；不倒写其 Windows NOT_RUN 或旧安装包身份。
+
 > 2026-10-21当前状态：已实际核对main `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`，PR78参数V3及PR79启动回退均已合并。V3原设计54个文件完整、53个登记文件哈希及25个源码文件指纹全部匹配。当前剩余工作与精简执行提示见[原工作包的收口更新](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)。以下形成时基线、原交叉构建和Windows未验记录保留，不扩张为本次或最终main验收。
 
 用户要求重新设计实际参数页并完成优化。本轮先查看1708×960原截图、读取main `837370e`的代码/文档、研究Rider/PowerToys/Visual Studio设置，再建立V3当前指导后改代码。完成阶段三方整合main `bf61337`的PR76/77，保留操作员会话时长修复与1.6.1原发布身份。

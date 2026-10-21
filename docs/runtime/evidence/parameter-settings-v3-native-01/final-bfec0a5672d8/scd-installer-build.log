@@ -1,0 +1,36 @@
+Installer build workspace: C:\Users\RUNNER~1\AppData\Local\Temp\ipc-installer-build-xdgiycw9
+  Determining projects to restore...
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (in 514 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (in 514 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (in 514 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (in 514 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (in 22 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (in 25 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (in 30 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (in 30 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (in 28 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (in 31 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (in 44 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (in 26 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (in 24 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (in 26 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (in 48 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\source-snapshot\src\Ipc.Installer\Ipc.Installer.csproj (in 1.58 sec).
+  Ipc.Platform -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Installer -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\intermediates\bin\Ipc.Installer\release_win-x64\Ipc.Installer.dll
+  Ipc.Installer -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-xdgiycw9\publish\
+{"Installer": "C:\\scd-installer\\CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe", "Sha256": "0e12b65661a8fa34b528fea2d9ed93c865ba55355e71a81e5e89d395d84490e8", "SourceCommit": "bfec0a5672d846a865db62af9ef6a573a953f914", "Payload": {"ApplicationId": "sportmaster", "SourceCommit": "bfec0a5672d846a865db62af9ef6a573a953f914", "SourceBranch": "codex/ci-sportmaster-39546557135", "BusinessModuleShortName": "SM", "BusinessVersion": "1.7.0", "Sha256": "e3871d4dbd023ac5035555c34cb5561a5ab8acad6472733a8991f358e05f2a51", "ZipBytes": 106491636, "UnpackedBytes": 242420794, "FileCount": 735}, "DeliveryFiles": 1, "Authenticode": "NOT_SIGNED", "ActualWindowsInstallation": "NOT_RUN"}

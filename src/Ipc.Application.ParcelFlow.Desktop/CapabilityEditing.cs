@@ -11,6 +11,7 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     string current = value;
     public ParameterField Field { get; } = field;
     public bool IsList => Field.Type == "string-list";
+    public bool IsSensitive => Field.Sensitive || Field.Type == "secret-reference";
     public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
     public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（JSON 数组）" : Field.Label;
     public string EditorHelp => IsList ? "JSON字符串数组；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :

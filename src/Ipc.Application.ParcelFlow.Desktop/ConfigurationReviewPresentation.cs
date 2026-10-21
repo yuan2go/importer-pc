@@ -21,7 +21,9 @@ public partial class ParcelViewModel
     public string ConfigurationSubmissionOutcome => configurationSubmissionOutcome;
     public string ConfigurationSubmissionDetail => configurationSubmissionDetail;
     public bool ConfigurationReviewIsCurrent => reviewedConfigurationSignature is not null && reviewedConfigurationSignature == CurrentReviewSignature();
-    public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && !HasUnconfirmedConfigurationSubmission;
+    public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration);
+    public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "核对保存结果…" : "保存更改…";
+    public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission;
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果待核对" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请核对上次保存结果后继续" :
@@ -56,6 +58,11 @@ public partial class ParcelViewModel
         if (validation.Status != "Validated")
         { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过：" + validation.Reason; return false; }
         reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate);
+        if (reviewedConfigurationChanges.Length == 0)
+        {
+            validationState = "没有配置差异";
+            NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "没有需要保存的配置更改；不会创建待重启修订。"; return false;
+        }
         reviewedConfigurationSignature = signature; configurationSubmissionOutcome = "";
         NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "设置检查通过；请核对更改、保存条件和变更原因。"; return true;
     }
@@ -89,7 +96,7 @@ public partial class ParcelViewModel
                 owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 连接" : draft.Role + " · " + draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? draft.Kind == "observation" ? 2 : 3 : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
-                { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.Field.Sensitive; }
+                { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = instance + "/Target"; showValues = true; }
                 else { label = path; fieldPath = ""; }
                 if (category == "系统") owner = "供包台标识";

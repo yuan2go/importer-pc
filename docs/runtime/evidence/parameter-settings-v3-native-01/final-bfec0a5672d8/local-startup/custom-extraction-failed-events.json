@@ -1,0 +1,12 @@
+[
+  {
+    "TimeCreated": "2026-10-21T13:16:17.1913017+08:00",
+    "Id": 1000,
+    "Message": "错误应用程序名称: CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe，版本: 1.7.0.0，时间戳: 0x6ac2c664\r\n错误模块名称: ntdll.dll，版本: 10.0.22621.6060，时间戳: 0xac55daa3\r\n异常代码: 0xc00000fd\r\n错误偏移量: 0x000000000003d6d5\r\n错误进程 ID: 0x0x53F4\r\n错误应用程序启动时间: 0x0x1DD611B4C05F24A\r\n错误应用程序路径: D:\\projects\\importer-pc\\.artifacts\\parameter-v3-final-ci\\CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe\r\n错误模块路径: C:\\WINDOWS\\SYSTEM32\\ntdll.dll\r\n报告 ID: 94fe5468-7a1a-4ba0-bbbd-e23e647ded42\r\n错误程序包全名: \r\n错误程序包相对应用程序 ID: "
+  },
+  {
+    "TimeCreated": "2026-10-21T13:15:41.8203584+08:00",
+    "Id": 1000,
+    "Message": "错误应用程序名称: CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe，版本: 1.7.0.0，时间戳: 0x6ac2c664\r\n错误模块名称: ntdll.dll，版本: 10.0.22621.6060，时间戳: 0xac55daa3\r\n异常代码: 0xc00000fd\r\n错误偏移量: 0x000000000003d5b2\r\n错误进程 ID: 0x0x6550\r\n错误应用程序启动时间: 0x0x1DD611B36DE394E\r\n错误应用程序路径: D:\\projects\\importer-pc\\.artifacts\\parameter-v3-final-ci\\CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe\r\n错误模块路径: C:\\WINDOWS\\SYSTEM32\\ntdll.dll\r\n报告 ID: 04a676b4-7746-47aa-a401-f40675ec0f51\r\n错误程序包全名: \r\n错误程序包相对应用程序 ID: "
+  }
+]

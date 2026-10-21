@@ -62,9 +62,13 @@ public sealed partial class ParameterSettingsControl : UserControl
     public void ShowCategory(int? index)
     {
         if (index is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(index));
+        // Filtering a WPF collection can automatically select its first item.
+        // Resolve the remembered destination before Refresh changes selection.
+        var selected = directory.SelectedItem as ObjectPage;
+        var destination = selected is not null && (index is null || selected.Category == index) ? selected :
+            pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
         categoryScope = index; directoryView?.Refresh();
-        if (directory.SelectedItem is not ObjectPage selected || index is not null && selected.Category != index)
-            directory.SelectedItem = pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
+        directory.SelectedItem = destination;
         RefreshSearch();
     }
     public bool ShowPage(int category, string title)
@@ -105,11 +109,12 @@ public sealed partial class ParameterSettingsControl : UserControl
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Stretch };
+        var body = new StackPanel { Margin = new(28, 24, 28, 24), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
         var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
         if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 20); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left };
+        scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel()); pages.Add(page); return page;
     }
     ParameterFormPanel Form(ObjectPage page, string? title = null)
@@ -127,7 +132,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var field = new StackPanel { Margin = new(0, 0, 24, 16) };
         var caption = Text(label); caption.Foreground = Brush("#25384B"); caption.Margin = new(0, 0, 0, 6);
         field.Children.Add(caption); field.Children.Add(control);
-        if (control is TextBox or ComboBox)
+        if (control is TextBox or ComboBox or PasswordBox)
         {
             // The field's layout slot supplies the width; the editor's cap keeps
             // short values compact. Empty text and one digit use the same box.
@@ -141,6 +146,18 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 6, 0, 0); field.Children.Add(hint); }
         var error = Text(""); error.Foreground = Brush("#B02D35"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "");
+        // Refresh an already-shown local error after an actual edit and blur.
+        // Do not reflow the form while typing or treat this as authority validation.
+        var edited = false;
+        if (control is TextBox text) text.TextChanged += (_, _) => edited = true;
+        else if (control is PasswordBox password) password.PasswordChanged += (_, _) => edited = true;
+        else if (control is ComboBox choice) choice.SelectionChanged += (_, _) => edited = true;
+        control.LostKeyboardFocus += (_, _) =>
+        {
+            if (!edited) return;
+            edited = false;
+            if (Model?.Issues.Count > 0) Model.ValidateFields();
+        };
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {
@@ -181,6 +198,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var selected = directory.SelectedItem as ObjectPage;
         var offsets = pages.ToDictionary(p => (p.Category, p.Title), p => p.Scroll.VerticalOffset);
         foreach (var action in unsubscribe) action(); unsubscribe.Clear();
+        runtimeUpdates.Clear();
         directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置与已安装模块…"); errorSummary.Visibility = Visibility.Collapsed; return; }
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);

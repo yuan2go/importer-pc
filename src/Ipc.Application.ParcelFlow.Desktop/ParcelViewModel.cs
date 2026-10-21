@@ -269,6 +269,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             {
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationSaveGuidance)));
             PropertyChanged?.Invoke(this, new(nameof(CanSubmitReviewedConfiguration)));
+            PropertyChanged?.Invoke(this, new(nameof(CanReviewConfiguration)));
+            PropertyChanged?.Invoke(this, new(nameof(ConfigurationSaveActionText)));
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationReviewIsCurrent)));
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationDraftStatusText)));
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationSavedStatusText)));

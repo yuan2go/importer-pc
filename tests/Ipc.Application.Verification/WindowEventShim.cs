@@ -60,7 +60,12 @@ namespace System.Windows.Controls
 }
 namespace System.Windows.Threading
 {
-    public static class Dispatcher { public static Task Yield() => System.Windows.Window.YieldClosingEvent(); }
+    public static class Dispatcher
+    {
+        public static Task Yield() => System.Windows.Window.YieldClosingEvent();
+        // Scheduling boundary only. Native dispatcher order is verified by the WPF fixture.
+        public static Task BeginInvoke(Action action) => Task.Run(action);
+    }
     public class DispatcherTimer
     {
         public TimeSpan Interval { get; set; }
@@ -83,7 +88,12 @@ namespace Ipc.Application.ParcelFlow.Desktop
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class ProductSupportWindow(Ipc.Application.Contracts.IParcelApplication application, string? operation) : System.Windows.Window
     { public Ipc.Application.Contracts.IParcelApplication Application { get; } = application; public string? Operation { get; } = operation; }
-    public class MaintenancePage { public object? DataContext { get; set; } }
+    public class MaintenancePage
+    {
+        public object? DataContext { get; set; }
+        public event EventHandler? DisplayPreferencesRequested { add { } remove { } }
+        public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested { add { } remove { } }
+    }
 }
 namespace Ipc.Application.Sportmaster.Desktop
 {
@@ -95,5 +105,6 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
         System.Windows.FrameworkElement CreateDiagnostics() => new();
+        void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }
     }
 }

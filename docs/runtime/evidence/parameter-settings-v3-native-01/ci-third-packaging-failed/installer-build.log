@@ -1,0 +1,43 @@
+Installer build workspace: C:\Users\RUNNER~1\AppData\Local\Temp\ipc-installer-build-c7s05gnv
+  Determining projects to restore...
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (in 389 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (in 389 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (in 389 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (in 21 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (in 22 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (in 14 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (in 17 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (in 22 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (in 14 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (in 12 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (in 12 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (in 21 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (in 22 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (in 22 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (in 66 ms).
+  Restored C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\source-snapshot\src\Ipc.Installer\Ipc.Installer.csproj (in 1.71 sec).
+  Ipc.Platform -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Installer -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\intermediates\bin\Ipc.Installer\release_win-x64\Ipc.Installer.dll
+  Ipc.Installer -> C:\Users\runneradmin\AppData\Local\Temp\ipc-installer-build-c7s05gnv\publish\
+Traceback (most recent call last):
+  File "D:\a\importer-pc\importer-pc\scripts\package-installer.py", line 141, in <module>
+    main()
+  File "D:\a\importer-pc\importer-pc\scripts\package-installer.py", line 126, in main
+    verify_shared_binaries(args.media, artifacts / 'bin/Ipc.Installer/release_win-x64')
+  File "D:\a\importer-pc\importer-pc\scripts\package-installer.py", line 25, in verify_shared_binaries
+    raise ValueError('Installer UI and embedded desktop bytes differ: ' + name)
+ValueError: Installer UI and embedded desktop bytes differ: desktop/Ipc.Application.Contracts.dll

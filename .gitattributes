@@ -58,3 +58,6 @@ docs/runtime/evidence/publication-pr74-20261020/** -text whitespace=cr-at-eol
 
 docs/runtime/evidence/login-session-lifetime-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/login-session-publication-20261020/** -text whitespace=cr-at-eol
+
+# PARAM-UX-02 PS-05 native screenshots and receipts retain captured bytes.
+docs/runtime/evidence/parameter-settings-v3-native-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

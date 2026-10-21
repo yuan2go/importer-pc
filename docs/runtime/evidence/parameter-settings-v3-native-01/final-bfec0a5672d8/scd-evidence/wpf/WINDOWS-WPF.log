@@ -1,0 +1,33 @@
+SYNTHETIC runtime identity/ports; native WPF page, resource, keyboard and window checks only. UAC/installation/real equipment NOT_RUN.
+PASS native first configuration finishes asynchronous loading before user input is enabled
+PASS first configuration starts with business rules and separates system, drivers, components and completion
+PASS low-frequency recovery actions do not crowd the first business task
+PASS actual published desktop first-configuration window exposes explicit save/start through the existing editor
+PASS first-configuration native read creates neither database nor authoritative configuration
+PASS startup policy field resolves through the same parameter editor
+PASS actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis
+PASS native policy editor is enabled and accepts keyboard focus before editing
+PASS canceling close protects the incomplete native editor and keeps its exact input
+PASS task navigation preserves the same incomplete editor input without reconstructing it
+PASS unread directory selection cannot write through the previous maintenance instance or change the protected draft
+PASS actual candidate check completes and records the exact current editor input
+PASS editing policy invalidates a completed candidate check
+PASS both native layouts load the repository-owned shared product icon
+PASS native shared pages keep one Application instance
+PASS native history exact-barcode filter takes keyboard focus and has an automation name
+PASS native history input preserves long leading-zero text in the view model
+PASS compact history collapses filters while keeping the fixed-query/export actions and detail area available
+PASS native history exposes bounded CSV export with cancel entry
+PASS history task completes before the deterministic busy-navigation case
+PASS classic first settings navigation waits for the existing task without replacing it
+PASS native parameter loading completes before automatic candidate review: 已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。
+PASS native settings tools keep both persistent draft actions reachable outside the save review
+PASS classic parameter directory resolves StationCode in the loaded candidate
+PASS classic settings reviews the validated candidate with authorization and reason in one responsive window
+PASS canceling native save review preserves the edited field and never stages the candidate
+PASS offline help and preview/about load as native owned tabs
+PASS task help search exposes the preserved Unknown no-resend procedure
+PASS help search presents an explicit empty result without changing business state
+PASS help task names render with usable touch targets after search resets
+PASS history/settings/help window actions never reconstruct the business runtime
+NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area 0,0,1024,720; original full matrix assertion remains unchanged.

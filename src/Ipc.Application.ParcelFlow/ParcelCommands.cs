@@ -138,6 +138,12 @@ public sealed partial class ParcelRuntime
             audit = audit with { CandidateHash = Wire.Hash(Wire.Encode(candidate)), Candidate = candidate };
             repository.Commit(null, "ConfigurationCandidateNormalized", Wire.Encode(audit), configurationAudit: audit);
             factory.ValidateStructure(candidate);
+            if (configuration.Current.Revision == expectedRevision && configuration.Current.Pending is null && Wire.Encode(Effective) == Wire.Encode(candidate))
+            {
+                audit = audit with { AfterRevision = expectedRevision, Status = "Unchanged", Result = "Candidate equals Effective; no configuration revision created" };
+                repository.Commit(null, "ConfigurationUnchanged", Wire.Encode(audit), configurationAudit: audit);
+                return new("Unchanged", "No configuration changes; Effective and revision retained", repository.Revision);
+            }
             if (configuration.Current.Revision == expectedRevision && configuration.Current.Pending is { } pending && Wire.Encode(pending) == Wire.Encode(candidate))
             {
                 audit = audit with { AfterRevision = expectedRevision, Status = "PendingRestart", Result = "Existing identical Pending retained; no second configuration revision" };

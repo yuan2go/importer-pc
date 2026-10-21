@@ -1,0 +1,17 @@
+{
+  "Baseline": "767075abe62a77c30e70766bb5d3f1feca02686b",
+  "SourceCommit": "ce9dcd32ebc5b9339d76a8c7482594cc2c16b308",
+  "OS": "Microsoft Windows NT 10.0.22631.0",
+  "Sdk": "10.0.402",
+  "Architecture": "X64",
+  "Scale": "WPF DpiScaleX/Y 1.25; physical desktop work area 1536x816 DIP",
+  "NativeScope": "Synthetic HWND/Dispatcher; fixed published DLLs; no equipment",
+  "Physical100Percent": "NOT_RUN",
+  "RealSdkRcsField": "NOT_RUN",
+  "Touch": "NOT_RUN",
+  "FullInstallUpgradeRebootTwoAccount": "NOT_RUN",
+  "ManualChineseInput": "Unicode text input through native keyboard automation; full IME composition NOT_RUN",
+  "InstallSmoke": "Final unsigned EXE unpack/integrity/options/cancel; installation NOT_RUN",
+  "TemporaryRoot": "D:/projects/importer-pc/.artifacts/parameter-v3-build-temp",
+  "SystemDiskLimitation": "C: free space fell below 10 MiB; full machine installation NOT_RUN"
+}

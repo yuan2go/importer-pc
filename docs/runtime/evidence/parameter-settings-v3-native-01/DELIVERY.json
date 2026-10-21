@@ -1,0 +1,28 @@
+{
+  "SourceCommit": "ce9dcd32ebc5b9339d76a8c7482594cc2c16b308",
+  "BusinessVersion": "1.7.0",
+  "Baseline": "767075abe62a77c30e70766bb5d3f1feca02686b",
+  "Products": [
+    {
+      "File": "CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe",
+      "LocalPath": ".artifacts/parameter-v3-delivery-installer/CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe",
+      "Bytes": 177713397,
+      "Sha256": "6706ab52f7fbbed0ead9a60b67064a8ddf86cd66098f7c57def2315d58a3d0d7"
+    },
+    {
+      "File": "sportmaster-win-x64-ce9dcd32ebc5.zip",
+      "LocalPath": ".artifacts/parameter-v3-delivery/sportmaster-win-x64-ce9dcd32ebc5.zip",
+      "Bytes": 106427922,
+      "Sha256": "c06881f975c9371941c028080b903b1e407567c1da20f5d6353c44cd313fecd6"
+    }
+  ],
+  "Authenticode": "NOT_SIGNED",
+  "NativeFixtureMatchesMedium": true,
+  "NativeResult": "native/RESULT.json",
+  "InstallPreparation": "PASS",
+  "ActualInstallation": "NOT_RUN",
+  "ExistingAndMissingConfigurationMaintenance": "PASS_OFFLINE_ONLY",
+  "RealSdkRcsField": "NOT_RUN",
+  "Production": "NOT_APPROVED",
+  "TestBoundaryShim": "WindowEventShim.BeginInvoke added after frozen build; only non-WPF test compilation boundary, no shipped source change"
+}

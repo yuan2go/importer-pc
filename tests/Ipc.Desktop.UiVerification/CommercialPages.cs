@@ -23,11 +23,14 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
-            var draftFile = Path.Combine(launch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
+            // Keep this deliberately corrupt offline draft isolated from the later
+            // live-settings journey; retain its original bytes and refusal checks.
+            var offlineLaunch = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            var draftFile = Path.Combine(offlineLaunch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
             var type = desktop.GetType("Ipc.Desktop.StartupRepairWindow", throwOnError: true)!;
-            var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
+            var first = (Window)Activator.CreateInstance(type, [offlineLaunch, null, true])!;
             first.Show();
             for (var i = 0; i < 100 && !Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")); i++) await Task.Delay(20);
             var busyField = type.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
@@ -35,14 +38,20 @@ static partial class Program
             Check(!(bool)busyField.GetValue(first)!, "native first configuration finishes asynchronous loading before user input is enabled");
             first.UpdateLayout();
             var taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            async Task SelectTask(int index)
+            {
+                taskTabs.SelectedIndex = index;
+                await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                first.UpdateLayout();
+            }
             Check(taskTabs.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "1 业务模块", "2 系统", "3 驱动", "4 组件", "5 检查与完成" }) && taskTabs.SelectedIndex == 0, "first configuration starts with business rules and separates system, drivers, components and completion");
             Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the first business task");
-            taskTabs.SelectedIndex = 4; first.UpdateLayout();
+            await SelectTask(4);
             Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
                 Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
-            Check(!Directory.GetFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(launch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
+            Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
-            taskTabs.SelectedIndex = 0; first.UpdateLayout();
+            await SelectTask(0);
             var parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single();
             Check(parameterEditor.NavigateTo("TimeoutMs"), "startup policy field resolves through the same parameter editor");
             first.UpdateLayout();
@@ -55,10 +64,10 @@ static partial class Program
             type.GetProperty("ConfirmDiscardInputs", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(first, new Func<bool>(() => { discardPrompts++; return false; }));
             first.Close();
             Check(first.IsVisible && discardPrompts == 1 && timeout.Text == "4321", "canceling close protects the incomplete native editor and keeps its exact input");
-            taskTabs.SelectedIndex = 1; first.UpdateLayout(); taskTabs.SelectedIndex = 0; first.UpdateLayout();
-            Check(timeout.Text == "4321" && timeout.IsVisible, "task navigation preserves the same incomplete editor input without reconstructing it");
+            await SelectTask(1); await SelectTask(0);
+            Check(timeout.Text == "4321" && timeout.IsVisible && ReferenceEquals(parameterEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()), "task navigation preserves the same incomplete editor input without reconstructing it");
             timeout.Text = originalTimeout;
-            taskTabs.SelectedIndex = 1; first.UpdateLayout();
+            await SelectTask(1);
             Descendants(first).OfType<Expander>().Single(e => Equals(e.Header, "本机目录与配置身份")).IsExpanded = true; first.UpdateLayout();
             var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("原数据根"));
             var originalRoot = dataRoot.Text; var unreadRoot = Path.Combine(evidence, "unread-root"); dataRoot.Text = unreadRoot;
@@ -66,13 +75,13 @@ static partial class Program
             for (var i = 0; i < 100 && (bool)busyField.GetValue(first)!; i++) await Task.Delay(20);
             Check(!Directory.Exists(unreadRoot) && Wire.FileHash(draftFile) == draftHash && Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("路径已更改")), "unread directory selection cannot write through the previous maintenance instance or change the protected draft");
             dataRoot.Text = originalRoot;
-            taskTabs.SelectedIndex = 4; first.UpdateLayout(); Click(first, "分层检查与变更预览");
+            await SelectTask(4); Click(first, "分层检查与变更预览");
             var checkedField = type.GetField("checkedInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 100 && (checkedField.GetValue(first) is null || (bool)busyField.GetValue(first)!); i++) await Task.Delay(20);
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
-            taskTabs.SelectedIndex = 0; timeout.Text = "4322";
+            await SelectTask(0); timeout.Text = "4322";
             Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
-            timeout.Text = originalTimeout; taskTabs.SelectedIndex = 1; first.UpdateLayout();
+            timeout.Text = originalTimeout; await SelectTask(1);
             await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
         }
@@ -93,10 +102,19 @@ static partial class Program
         Check(((HistoryPage)page.Content).ActualHeight > 200, "compact history collapses filters while keeping the fixed-query/export actions and detail area available");
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
         Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
-        Click(classic, "设备与维护"); await Task.Delay(250);
-        for (var i = 0; i < 100 && ((ParcelViewModel)classic.DataContext).Busy; i++) await Task.Delay(50);
         var parameterVm = (ParcelViewModel)classic.DataContext;
-        Check(!parameterVm.Busy, "native parameter loading completes before automatic candidate review");
+        for (var i = 0; i < 100 && parameterVm.Busy; i++) await Task.Delay(50);
+        Check(!parameterVm.Busy, "history task completes before the deterministic busy-navigation case");
+        var releasePrevious = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var previousTask = parameterVm.RunAsync(() => releasePrevious.Task, "合成：经典布局首开参数前仍有任务");
+        try
+        {
+            Click(classic, "设备与维护");
+            Check(parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "classic first settings navigation waits for the existing task without replacing it");
+        }
+        finally { releasePrevious.TrySetResult(); await previousTask; }
+        for (var i = 0; i < 100 && (parameterVm.Busy || !parameterVm.HasLoadedConfiguration); i++) await Task.Delay(50);
+        Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native parameter loading completes before automatic candidate review: " + parameterVm.Message);
         var maintenance = (MaintenancePage)page.Content;
         var tools = Descendants(maintenance).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>())
             .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "加密保存未完成设置")));
@@ -109,7 +127,9 @@ static partial class Program
                 "native settings tools keep both persistent draft actions reachable outside the save review");
         }
         finally { tools.IsSubmenuOpen = false; }
-        maintenance.NavigateToParameter("StationCode"); classic.UpdateLayout();
+        Check(maintenance.NavigateToParameter("StationCode"), "classic parameter directory resolves StationCode in the loaded candidate");
+        await classic.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        classic.UpdateLayout();
         var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "StationCode");
         var originalStation = stationInput.Text; stationInput.Text = "NATIVE-REVIEW";
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;

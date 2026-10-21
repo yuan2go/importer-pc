@@ -1,0 +1,40 @@
+{
+  "Baseline": "767075abe62a77c30e70766bb5d3f1feca02686b",
+  "BusinessVersion": "1.7.0",
+  "SourceCommit": "bfec0a5672d846a865db62af9ef6a573a953f914",
+  "ImplementationCommit": "c730a73a0f70f88d9815f3ad431ef90fab9553ce",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/80",
+  "WorkflowRun": "https://github.com/yuan2go/importer-pc/actions/runs/39546557135",
+  "WorkflowResult": "PASS",
+  "Download": "https://github.com/yuan2go/importer-pc/actions/runs/39546557135/artifacts/12321609497",
+  "ArtifactRetentionDays": 30,
+  "Products": [
+    {
+      "File": "CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe",
+      "LocalPath": ".artifacts/parameter-v3-final-ci/CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe",
+      "Bytes": 177777488,
+      "Sha256": "0e12b65661a8fa34b528fea2d9ed93c865ba55355e71a81e5e89d395d84490e8"
+    },
+    {
+      "File": "sportmaster-win-x64-bfec0a5672d8.zip",
+      "LocalPath": ".artifacts/parameter-v3-final-ci/sportmaster-win-x64-bfec0a5672d8.zip",
+      "Bytes": 106491636,
+      "Sha256": "e3871d4dbd023ac5035555c34cb5561a5ab8acad6472733a8991f358e05f2a51"
+    }
+  ],
+  "DownloadedBytesMatchCI": true,
+  "WindowsZipInventory": "PASS: all 735 files and frozen identities verified by inspect_medium",
+  "MediumInventorySha256": "14C57DC6C310F993554B48173B194E3055710F7140377900E15D78FE143F570C",
+  "NativeFixtureMatchesMedium": true,
+  "Native": "PASS: core/wpf/removal/visual/parameters-v3 on Windows CI, DPI=1",
+  "LatestLocalStartup": "PASS: same-source installer options/edit/cancel and published Desktop isolated offline maintenance missing/existing configuration, recovery and exit; normal extraction environment only",
+  "LatestLocal125PercentKeyboard": "PASS: 142 same-source native assertions, 41 WPF captures, Chinese draft, Ctrl+F/Enter/Ctrl+A/Tab, raw invalid input/correction, exact-object diagnostics and clean-state save guard",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "RealSdkRcsField": "BLOCKED",
+  "Production": "NOT_APPROVED",
+  "Authenticode": "NOT_SIGNED",
+  "LocalNativeEvidence": "local-native/RESULT.json",
+  "LocalKeyboardEvidence": "local-manual/INPUT.json",
+  "LocalStartupEvidence": "local-startup/RESULT.json",
+  "CustomExtractionEnvironment": "FAIL_RETAINED: two 0xC00000FD launches before window; normal extraction passed; exact environment root cause not proven"
+}

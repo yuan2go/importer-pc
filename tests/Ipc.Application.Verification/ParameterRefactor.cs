@@ -61,7 +61,18 @@ static class ParameterRefactor
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
         var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+        // Isolate configuration semantics from periodic health probes taking the
+        // shared external-call guard between availability and Stage. The real
+        // guard remains enforced; all in-flight probes must drain first.
+        app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token);
         await Wait(app, s => s.Availability!.Configure);
+        var unchangedBefore = (await app.SnapshotAsync()).Configuration;
+        var noChange = await app.StageConfigurationAsync(unchangedBefore.Revision, unchangedBefore.Effective, "Synthetic no-change guard");
+        var unchangedAfter = (await app.SnapshotAsync()).Configuration;
+        Check(noChange.Status == "Unchanged" && unchangedAfter.Pending is null && unchangedAfter.Revision == unchangedBefore.Revision,
+            "unchanged Effective never creates a pending restart revision");
+        Check((await app.InspectConfigurationSubmissionAsync((await app.SnapshotAsync()).RuntimeId, unchangedBefore.Revision, unchangedBefore.Effective)).Status == "Unchanged",
+            "authority inspection identifies the same unchanged candidate without claiming pending or resubmitting");
         var vm = new ParcelViewModel(app, "参数", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var startup = new StartupConfigurationDraft((await app.SnapshotAsync()).Configuration.Effective, await app.CapabilitiesAsync());
         Check(Wire.Encode(vm.BuildStructuredConfiguration()) == Wire.Encode(startup.Build()), "first configuration and daily editor preserve an identical complete candidate");
@@ -73,6 +84,12 @@ static class ParameterRefactor
         Check(vm.Message.StartsWith("PendingRestart") && saved.Revision == revision + 1 && saved.Pending!.StationCode == "SYSTEM-EDIT" && saved.Effective.BarcodeFilter!.Pattern == "OK[0-9]+", "post-write Rejected is reconciled from authority; saving does not apply the new rule");
         Check(!vm.HasUnsavedConfiguration && Wire.Encode((await app.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "confirmed save accepts only its draft baseline and preserves the original request bytes");
         app.Boundary = null;
+        var pendingRepeat = await app.StageConfigurationAsync(saved.Revision, saved.Pending!, "Synthetic existing Pending");
+        Check(pendingRepeat.Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Revision == saved.Revision,
+            "identical Pending remains idempotent after the no-change guard: " + pendingRepeat.Status + " / " + pendingRepeat.Reason);
+        var staleNoChange = await app.StageConfigurationAsync(saved.Revision - 1, saved.Effective, "Synthetic stale no-change");
+        Check(staleNoChange.Status == "Rejected" && (await app.SnapshotAsync()).Configuration.Pending!.StationCode == "SYSTEM-EDIT",
+            "stale CAS cannot disguise itself as unchanged or discard Pending");
         var proxy = DispatchProxy.Create<IParcelApplication, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
         var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();

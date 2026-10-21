@@ -1,0 +1,11 @@
+{
+  "Baseline": "767075abe62a77c30e70766bb5d3f1feca02686b",
+  "Method": "Canonical Git index blobs over independently checked baseline; no source assets altered; full error multiplicity retained",
+  "BaselineErrors": 298,
+  "FinalErrors": 298,
+  "AddedErrors": [],
+  "RemovedErrors": [],
+  "ChangedPaths": 276,
+  "Status": "NO_REGRESSION",
+  "Scope": "Final local native/startup evidence checkpoint before adding this audit receipt; original archive receipt retained"
+}

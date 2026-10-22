@@ -4,6 +4,8 @@
 >
 > 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
 
+> 当前安装与首配入口 UI 实施：[INSTALLER-FIRST-RUN-UI-02](work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[UI规范与预览](ui/installer-first-run-ui-02/README.md)。本包替代冲突的旧安装布局与授权提示；下述介质及验证保留各自来源，不代表新 UI 已验收。
+
 # 文档索引 · 作业、管理模式与日志
 
 当前纠偏实施为[MANAGEMENT-MODE-01](work-packages/WP-IPC-MANAGEMENT-MODE-01.md)：管理能力是防误改的管理模式，不是管理员账号。操作员身份独立，普通模式只使用作业/记录，管理模式开放参数和日志。正常读码自动取格口，帮助支持保持删除。旧1.10.2发行链接及证据为历史已交付版本，不代表模式增量已发布。

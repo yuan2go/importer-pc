@@ -78,3 +78,8 @@ docs/runtime/evidence/workstation-information-01/** -text whitespace=cr-at-eol
 # Management-mode archives and native/CI receipts preserve captured bytes.
 docs/archive/pre-management-mode-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/management-mode-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Installer UI input copies, archived guidance and native receipts keep exact captured bytes.
+docs/archive/pre-installer-first-run-ui-02/** -text whitespace=cr-at-eol
+docs/ui/installer-first-run-ui-02/** -text whitespace=cr-at-eol
+docs/runtime/evidence/installer-first-run-ui-02/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

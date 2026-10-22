@@ -1,0 +1,60 @@
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 audience change retains custom input instead of replacing the selected data root
+PASS INSTALLER-UI02 confirmation reads the exact reviewed paths and independent shortcuts
+CAPTURE installer-confirm-long: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 back navigation retains exact input and independent choices
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1366x768-100-equivalent
+CAPTURE installer-options-1366x768-100-equivalent: 960x700 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-125-equivalent
+CAPTURE installer-options-1024x768-125-equivalent: 800x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-150-equivalent
+CAPTURE installer-options-1024x768-150-equivalent: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 install action calls the real service binding with a progress observer; synthetic transaction boundary injected
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; WaitingForAuthorization
+PASS INSTALLER-UI02 stage changes only with observed service reports; WaitingForAuthorization
+CAPTURE installer-stage-WaitingForAuthorization: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CopyingFiles
+PASS INSTALLER-UI02 stage changes only with observed service reports; CopyingFiles
+PASS INSTALLER-UI02 UAC prompt disappears after helper begins work
+CAPTURE installer-stage-CopyingFiles: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CommittingInstallation
+PASS INSTALLER-UI02 stage changes only with observed service reports; CommittingInstallation
+CAPTURE installer-stage-CommittingInstallation: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 window close cannot abandon the in-progress transaction
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 known failure exposes explicit re-review without claiming rollback
+CAPTURE installer-failure: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 failure recovery retains inputs and requires new review
+PASS INSTALLER-UI02 unknown outcome never exposes an immediate repeat-install action
+CAPTURE installer-unknown: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 completion separates installation from first configuration and keeps open choice
+CAPTURE installer-complete-first: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 recognized existing configuration is not forced to repeat first configuration
+CAPTURE installer-complete-existing: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 initial password setup is distinct from expiry and existing-password verification
+CAPTURE password-first-setup: 480x480 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 mismatch stays near fields and clears password input without calling configure
+PASS INSTALLER-UI02 configure does not count as authorization when actual entry is rejected
+PASS INSTALLER-UI02 configured password requires one proof and no confirmation
+CAPTURE password-rejected: 480x370.4 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 explicit reveal conceals and clears plain display buffers without discarding masked input
+PASS INSTALLER-UI02 closing authorization clears all password buffers
+PASS INSTALLER-UI02 first configuration opens a clear gate instead of an automatic modal on an empty background
+CAPTURE first-run-unconfigured: 840x500 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 gate opens actual management service dialog
+PASS INSTALLER-UI02 cancel returns to actionable gate with no protected submit buttons
+PASS INSTALLER-UI02 existing policy accepts five distinct characters in a single character category
+PASS INSTALLER-UI02 exiting mode blocks configuration immediately at the entry surface
+FAIL System.InvalidOperationException: editor loads authorized original candidate: 退出管理模式
+管理模式
+14:17 自动退出
+首次配置
+填写当前供包台，或从下方导入配置文件。
+保存草稿并退出
+导入配置文件…
+下一步
+   at Program.<>c__DisplayClass3_0.<VerifyInstallerFirstRunUi>g__Check|0(Boolean ok, String text) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 19
+   at Program.VerifyInstallerFirstRunUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 108
+   at Program.<>c__DisplayClass10_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

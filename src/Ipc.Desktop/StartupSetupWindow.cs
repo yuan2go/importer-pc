@@ -42,7 +42,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = 13, Margin = new(0, 10, 0, 0) };
     bool selectedStartMenu = true, selectedDesktop = true;
     int step;
-    double optionsHeight = 680;
+    double optionsHeight = 560;
     readonly Button next, back, records, cancel;
     public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
     {

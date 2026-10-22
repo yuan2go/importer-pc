@@ -18,7 +18,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
 public static class ParcelStartupServices
 {
     public static IManagementMode ManagementMode(BusinessLaunch launch) => new ParcelManagementMode(launch.DataRoot,
-        async password => { _ = await ExecuteAsync(new("ConfigureManagementPassword", Launch: launch, ManagementPassword: password)); });
+        async password => { _ = await ElevateAsync(new("ConfigureManagementPassword", Launch: launch, ManagementPassword: password)); });
     static readonly AsyncLocal<Action?> delegatedAuthority = new();
     static readonly AsyncLocal<string?> delegatedPrincipal = new();
     static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore";

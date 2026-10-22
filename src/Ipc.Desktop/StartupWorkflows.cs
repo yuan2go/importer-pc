@@ -41,7 +41,7 @@ public abstract class StartupWorkflowWindow : Window
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         if (installation)
         {
-            Width = 880; Height = 680; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
+            Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(24, 28, 24, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
@@ -290,7 +290,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 if (initialConfiguration && gateLayout == allowed)
                 {
                     if (allowed) { Width = editorWidth; Height = editorHeight; }
-                    else { editorWidth = Width; editorHeight = Height; Width = Math.Min(840, MaxWidth); Height = Math.Min(400, MaxHeight); }
+                    else { editorWidth = Width; editorHeight = Height; Width = Math.Min(720, MaxWidth); Height = Math.Min(440, MaxHeight); }
                     gateLayout = !allowed;
                 }
                 administratorIdentity.Text = allowed ? "管理模式\n" + identity.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出" : "普通模式"; administratorIdentity.ToolTip = administratorIdentity.Text;

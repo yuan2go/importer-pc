@@ -71,6 +71,8 @@ static partial class Program
         type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>>)((r, p) => { installCalls++; submitted = r; reporter = p; return pending.Task; }));
         window.Show(); await Idle(window);
         Set("step", 1); Render();
+        Check(window.Width == 880 && window.Height == 560, "installation options use a compact default aspect with fixed reachable actions");
+        Capture("installer-options-default", window);
         Check(!Descendants(window).OfType<RadioButton>().Any() && !Text(window).Contains("使用范围") && Box("数据目录").Text == Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"), "new installation hides scope while retaining the shared default data root");
         var original = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(evidence, "existing", "releases", "original"), launch.ConfigurationDirectory, launch.DataRoot, "S-1-5-21-1-2-3-1001");
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
@@ -165,13 +167,18 @@ static partial class Program
 
         var service = new UiManagementProbe(); var dialog = new ManagementModeWindow(service); dialog.Show(); await Task.Delay(150); dialog.UpdateLayout();
         Check(dialog.Title == "设置管理密码" && Descendants(dialog).OfType<PasswordBox>().Count(p => p.IsVisible) == 2 && !Text(dialog).Contains("到期"), "initial password setup is distinct from expiry and existing-password verification");
+        Check(Descendants(dialog).OfType<ScrollViewer>().First().ScrollableHeight == 0, "first-password fields and reveal control fit without initial scrolling at the default size");
         Capture("password-first-setup", dialog);
         var proof = Descendants(dialog).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword"); var confirmation = Descendants(dialog).OfType<PasswordBox>().Single(p => p.Name == "ManagementPasswordConfirmation");
         proof.Focus(); proof.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)); Check(confirmation.IsKeyboardFocused, "native keyboard traversal reaches confirmation directly in first setup");
         proof.Password = "synthetic-only-password"; confirmation.Password = "mismatch"; Click(dialog, "设置并继续"); await Task.Delay(150);
         Check(service.Configures == 0 && Text(dialog).Contains("不一致") && proof.Password.Length == 0, "mismatch stays near fields and clears password input without calling configure");
+        service.ConfigureError = new UnauthorizedAccessException("已取消 Windows 维护授权；已有配置和数据保留，可重新操作。");
+        proof.Password = confirmation.Password = "11111"; Click(dialog, "设置并继续"); await Task.Delay(150);
+        Check(dialog.IsVisible && !service.Configured && Text(dialog).Contains("已取消 Windows") && proof.Password.Length == 0 && confirmation.Password.Length == 0, "Windows bootstrap cancellation leaves an actionable setup with no grant or retained passwords");
+        Capture("password-bootstrap-cancelled", dialog); service.ConfigureError = null;
         proof.Password = confirmation.Password = "synthetic-only-password"; service.EnterAllowed = false; Click(dialog, "设置并继续"); await Task.Delay(150);
-        Check(service.Configures == 1 && dialog.IsVisible && Text(dialog).Contains("不正确"), "configure does not count as authorization when actual entry is rejected");
+        Check(service.Configures == 2 && dialog.IsVisible && Text(dialog).Contains("不正确"), "configure does not count as authorization when actual entry is rejected");
         await Task.Delay(1100); dialog.UpdateLayout();
         Check(dialog.Title == "验证管理密码" && Descendants(dialog).OfType<PasswordBox>().Count(p => p.IsVisible) == 1, "configured password requires one proof and no confirmation");
         proof.Password = "synthetic-only-password"; Click(dialog, "进入管理模式"); await Task.Delay(150); Capture("password-rejected", dialog);
@@ -185,6 +192,7 @@ static partial class Program
         var first = (Window)Activator.CreateInstance(repairType, [launch, null, true])!;
         repairType.GetProperty("ConfirmDiscardInputs", flags)!.SetValue(first, (Func<bool>)(() => true)); first.Show(); await Task.Delay(300); first.UpdateLayout();
         Check(!System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any() && Text(first).Contains("配置前，请先设置管理密码") && !Text(first).Contains("已到期"), "first configuration opens a clear gate instead of an automatic modal on an empty background");
+        Check(first.Width == 720 && first.Height == 440, "first-configuration authorization gate uses the compact near-golden default without resizing the parameter editor");
         Capture("first-run-unconfigured", first);
         _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "设置管理密码")));
         ManagementModeWindow? modal = null; for (var i = 0; i < 100 && modal is null; i++) { await Task.Delay(20); modal = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }
@@ -241,7 +249,8 @@ static partial class Program
     {
         public int Configures; public bool Configured, EnterAllowed; public bool Available = true;
         public Task<ManagementModeStatus> ManagementModeStatusAsync() => Task.FromResult(new ManagementModeStatus(Configured, false, null, Available: Available));
-        public Task ConfigureManagementPasswordAsync(string _) { Configures++; Configured = true; return Task.CompletedTask; }
+        public Exception? ConfigureError { get; set; }
+        public Task ConfigureManagementPasswordAsync(string _) { Configures++; if (ConfigureError is not null) return Task.FromException(ConfigureError); Configured = true; return Task.CompletedTask; }
         public Task<bool> EnterManagementModeAsync(string _) => Task.FromResult(EnterAllowed);
         public Task ExitManagementModeAsync() => Task.CompletedTask;
         public Task ChangeManagementPasswordAsync(string _) => Task.CompletedTask;

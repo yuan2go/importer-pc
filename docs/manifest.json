@@ -62520,14 +62520,15 @@
     },
     {
       "path": "docs/runtime/startup-experience-03.md",
-      "version": "STARTUP-UX-03",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Simplified installation/first configuration, shared Windows users and explicit TCP camera contract",
-      "source": "2026-10-21 user clarification; independent source and validation boundaries",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "cb8cc2c511f33c1cba10d4cc5a85811cf7eda27a51ae8eaa8d2fd8cfced2fad6",
-      "size_bytes": 4866,
-      "git_blob": "6afce5d77a27f7f4ea8b58aeb5c2e8871dc6b995"
+      "sha256": "2ee6c0b9bb24a580a8c03d884a433d88a8d03d619f58e71cd7067bb540ebf3b2",
+      "size_bytes": 4966,
+      "git_blob": "166b92729ca1aae1e5934545d657b135c369493b",
+      "previous_git_blob": "6afce5d77a27f7f4ea8b58aeb5c2e8871dc6b995"
     },
     {
       "path": "docs/runtime/validation/startup-experience-03.md",
@@ -66791,14 +66792,15 @@
     },
     {
       "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/README.md",
-      "sha256": "76a1c5b57760932e994e855875f15b131c3af232659ffa0c7f2c92af7ed5de8d",
-      "size_bytes": 3817,
-      "git_blob": "46dd9823811fac66c7eea04bb41d9faceade909d",
+      "sha256": "95e22f5ef7a80f75d0f34e2b99496dc233bbe5b56c5f7de2c3f38d2733490182",
+      "size_bytes": 3883,
+      "git_blob": "b10f9f5af86e96c53275d5ac0c97e1a746c23c29",
       "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
       "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "46dd9823811fac66c7eea04bb41d9faceade909d"
     },
     {
       "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/RESULT.json",

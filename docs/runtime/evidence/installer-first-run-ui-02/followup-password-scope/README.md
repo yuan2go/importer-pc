@@ -12,7 +12,7 @@
 | `scripts/package-application.py` | 随包启动说明移除范围选择操作，按真实机器存储根说明新数据目录，避免旧用户目录指引。 |
 | `tests/Ipc.Application.Verification/OperatorAdministration.cs` | 真服务的五位重复数字设密、改密、长度/控制字符拒绝、失败状态不变、旧授权撤销及无明文凭据检查。 |
 | `tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs`、`OperatorAdministration.cs`、`StartupExperience.cs` | 真实WPF输入与服务授权、范围隐藏/升级身份保留、往返、长路径、错误/到期守卫及首配回归。 |
-| 当前工作包、UI README、管理模式运行说明、实施记录及INDEX | 以用户纠偏替代旧密码复杂度和范围展示；原UI-SPEC/Preview及旧证据不倒写。 |
+| 当前工作包、UI README、管理模式与首配运行说明、实施记录及INDEX | 以用户纠偏替代旧密码复杂度和范围展示；随包首配说明也同步隐藏范围的操作指引。原UI-SPEC/Preview及旧证据不倒写。 |
 
 ## 验证与截图
 

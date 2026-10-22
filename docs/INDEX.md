@@ -1,4 +1,4 @@
-> 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终本地包0204fcf已实际升级到本机D盘，738个安装文件、原身份及原仿真账起停核对通过；[本次安装记录](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 与真实现场边界单独记录。
+> 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验；其后按用户要求已卸载并清空旧运行状态，保留海康及D盘存储位置，等待重新测试安装。[当前清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 各守时间范围。
 >
 > 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
 
@@ -19,7 +19,7 @@
 | 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[海康Reader](runtime/hikrobot-reader-01.md) |
 | 外部批准与历史评审 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
 
-本轮管理模式以最新main `0bf86a0a588b75b95aa1963e8fe88dad976ca803` 开工，PR82～87均已合并。[PR88](https://github.com/yuan2go/importer-pc/pull/88) 提交管理模式纠偏；SM1.11.0最终本地介质固定源码 `0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84`，截图、哈希、验证与本机尚未升级的边界见[独立证据](runtime/evidence/management-mode-01/README.md)。旧OPS包的 `3b883fe` 开工状态及分支整合身份只适用于前版形成阶段。
+本轮管理模式以最新main `0bf86a0a588b75b95aa1963e8fe88dad976ca803` 开工，PR82～87均已合并。[PR88](https://github.com/yuan2go/importer-pc/pull/88) 提交管理模式纠偏；SM1.11.0最终本地介质固定源码 `0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84`，截图、哈希、验证及本机安装后再清空的时点见[独立证据](runtime/evidence/management-mode-01/README.md)。旧OPS包的 `3b883fe` 开工状态及分支整合身份只适用于前版形成阶段。
 
 [V3设计原件](ui/parameter-settings-v3-20261020/README.md)、[V2设计原件](ui/sportmaster-task-redesign-v2-20261020/README.md)、[V1](ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)与[v1.1](ui/ss-ui-vis-001-v1.1/README.md)保留原字节、数量和历史适用范围。旧支持页、旧导航和原型模拟不是本轮保留要求或生产能力。完整历史入口及发布链接见[本轮清理前索引](archive/pre-operator-admin-logs/docs__INDEX.md.txt)，旧介质始终保留原SourceCommit。
 

@@ -2,7 +2,7 @@
 
 # 当前原生 UI 状态
 
-当前SM1.11.0采用单密码进入/退出管理模式，操作员账号与在途身份独立；没有正常管理员用户名、账号列表或账号维护。普通导航为作业/作业记录，模式开放参数/日志。最终本地源码 `0204fcf` 的实际WPF页面通过26项、首配通过93项（125% DPI），[截图与独立回执](../runtime/evidence/management-mode-01/README.md) 不与1.10.2或早期候选混用。本机已实际升级到D盘SM1.11.0/0204fcf，安装文件、v2授权服务与原仿真账起停已核对；[本次安装记录](../runtime/evidence/management-mode-01/installed-d-20261022/README.md) 单独保留范围，无真实管理密码或设备启动。
+当前SM1.11.0采用单密码进入/退出管理模式，操作员账号与在途身份独立；没有正常管理员用户名、账号列表或账号维护。普通导航为作业/作业记录，模式开放参数/日志。最终本地源码 `0204fcf` 的实际WPF页面通过26项、首配通过93项（125% DPI），[截图与独立回执](../runtime/evidence/management-mode-01/README.md) 不与1.10.2或早期候选混用。本机此前安装及原仿真账起停见[原安装记录](../runtime/evidence/management-mode-01/installed-d-20261022/README.md)；随后已按用户要求卸载并清空旧运行状态，保留海康，等待用户重新全流程测试，见[当前清理状态](../runtime/evidence/management-mode-01/clean-reset-20261022/README.md)。
 
 历史实现工作包为 [OPS-ADMIN-LOGS-01](../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)：普通导航仅作业、作业记录；管理员增加参数设置、日志查询。账号与角色固定右上显示，免登录作业和管理员授权独立。诊断与恢复按对象进入；帮助与支持的入口、专页与摘要服务完整删除。
 

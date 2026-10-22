@@ -1,3 +1,5 @@
+> 后续本机状态：按用户要求，已正式卸载并清空旧供包台运行状态，保留海康，提供同字节安装包供重新全流程测试。当前见[独立清理回执](../evidence/management-mode-01/clean-reset-20261022/README.md)；下文实际安装和验证证据保留各自时点。
+
 # MANAGEMENT-MODE-01 · 实现与验证
 
 最终本地产品、介质、安装器与原生测试固定于 `0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84`，SM1.11.0 / Application.Contracts1.16.0 / 凭据schema2 / 管道v2，DB8与业务配置schema3保持。[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[独立证据与关键截图](../evidence/management-mode-01/README.md) 为当前交付入口。旧1.10.2、749候选及下述工作树形成记录各守原来源。

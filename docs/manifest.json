@@ -2052,9 +2052,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5327be89c84dc29426fdcd660df8bc4543d0ac6735e9e588260c203e9ce55bf8",
-      "size_bytes": 4330,
-      "git_blob": "4284c0fabd15b9bddd8bdeb70886d287369bef97",
+      "sha256": "5bf24ef82948234029d53730bacde2f056fcf11c0235301e59ebd3069a504680",
+      "size_bytes": 4454,
+      "git_blob": "4c18c9bf521d424ef15adea649c7f191ca0ed696",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -46850,9 +46850,9 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "7f8c5e8f0a1c03521ab3c5a964c7e0d777a138b9",
-      "sha256": "b55dae3dbe525a51a8dd2d293ba3b63a592916b405ece02536aa61ad8c9b4473",
-      "size_bytes": 1986,
+      "git_blob": "8c30e4636517bd54e2d0c03cbc28f79f1661072c",
+      "sha256": "617a22092af2594124ec33cd162d1e566b56ca7dec3f545533ead3185377e3eb",
+      "size_bytes": 2063,
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -63938,9 +63938,9 @@
     },
     {
       "path": "docs/runtime/d-drive-storage-20261021.md",
-      "sha256": "49cc244f589e0b28932b204f28e9edc7a991d15f256969ece47f41724ab060ce",
-      "size_bytes": 6073,
-      "git_blob": "4d3df5a7a2fee9d200578dab7909cbafcf847c7a",
+      "sha256": "8db0f9067588b40c640d4e844015e66dcb114ce8e19d8a4c43df9ffbf4bc9a6c",
+      "size_bytes": 6458,
+      "git_blob": "329d40ac906ba3acdddd0a677ba0e3ab250e3f61",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -64821,9 +64821,9 @@
     },
     {
       "path": "docs/runtime/management-mode-01.md",
-      "sha256": "0c109628adad75e511a4c3453e8609ff0de3f3c53f87636b9eaf3babf4a90fa5",
-      "size_bytes": 3334,
-      "git_blob": "0635861d49646f0b2d811d59ae2a63a76d0b32eb",
+      "sha256": "d0ad6da328b476eac2ff7c5bb33aa001806ff7516d74e647435c68620dedc1ec",
+      "size_bytes": 3390,
+      "git_blob": "d9486337cf87b18d75b78571945ef78c9a363db2",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -64832,9 +64832,9 @@
     },
     {
       "path": "docs/runtime/validation/management-mode-01.md",
-      "sha256": "0214f21ff60a5888a2c90bb74042cf4e32f1513e454c84abe941fdb19095dc2d",
-      "size_bytes": 7759,
-      "git_blob": "203cad723d062366c9065be77bc89e7a30c6ee84",
+      "sha256": "93b04554c4ad117eb296dd37bfb3c69e0c66c97f4f7afb9132eabc5e703861dc",
+      "size_bytes": 8068,
+      "git_blob": "bcf6f5bbb478fb489e13b54f91ef810f91263c9e",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -64843,9 +64843,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-MANAGEMENT-MODE-01.md",
-      "sha256": "2da619b1a1ba776c91b9cf9e2b77c5c3ba0ba3a0e087f06dcb0a62ae21e81b84",
-      "size_bytes": 3526,
-      "git_blob": "e231c85e4326f3d02c689132263aacec458e5b72",
+      "sha256": "9faeffa56e3fc3a4e2c6af3d5ea6ffd5dfcadebcb00f566a94064a989993530a",
+      "size_bytes": 3659,
+      "git_blob": "1dd58ea29305e204c4f78655820e347d2c0c12ec",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -65217,9 +65217,9 @@
     },
     {
       "path": "docs/runtime/evidence/management-mode-01/README.md",
-      "sha256": "d800a87f8aaa5c5421175fd0f2f528eec93bf99c87a1e66d81bcf83db4a39c67",
-      "size_bytes": 4231,
-      "git_blob": "7f9ad7ed40feccffd0c53c40671b00d40605e160",
+      "sha256": "9ca1c701956d3d81764d7609dffa40167b8747708a9ff65b6fea9bbb8212afd6",
+      "size_bytes": 4464,
+      "git_blob": "bb3484b0fe53e112ff3314884eb8498032debcdb",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -66016,6 +66016,28 @@
       "status": "verified_actual_local_installation_and_reference_only_smoke",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "Actual D deployment 2026-10-22; source 0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84; 738 files, original roots/identity, System v2, original Simulation start/stop; no production or physical devices",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-mode-01/clean-reset-20261022/README.md",
+      "sha256": "09e761dc59179c7938eecc9fcbc831419b4e6af5837aa46d6e36c394f7fafc25",
+      "size_bytes": 2120,
+      "git_blob": "d20f7720a4f78fa4d490b4e544a8fa096de2abd5",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_user_authorized_full_runtime_reset",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Actual local clean uninstall 2026-10-22 after 0204fcf installation; old data/credentials/backups removed, Hikrobot preserved, D storage preference only; installer not started",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-mode-01/clean-reset-20261022/SUMMARY.json",
+      "sha256": "f3ae7a98904ebddeccd0b0df02e5a71fcc44331467ce7c752e89427ec670a7a8",
+      "size_bytes": 1366,
+      "git_blob": "adc8fdf923228f9d39d762053c43066cd26fac64",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_user_authorized_full_runtime_reset",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Actual local clean uninstall 2026-10-22 after 0204fcf installation; old data/credentials/backups removed, Hikrobot preserved, D storage preference only; installer not started",
       "storage_scope": "public_repository"
     }
   ],
@@ -68471,7 +68493,7 @@
     "local_frozen_source": "0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84",
     "local_frozen_tree": "a0a5411f9834aec3a16cc41a7cd3be5e0049e560",
     "installer_sha256": "61e7125dd07098660003cd5285c501dfa9090b26bd10652b2085d2af5ea87e63",
-    "local_installation": "VERIFIED_INSTALLED_ON_D_20261022",
+    "local_installation": "CLEAN_UNINSTALLED_FOR_FRESH_TEST_20261022",
     "evidence": "docs/runtime/evidence/management-mode-01/README.md",
     "ci86": {
       "run_id": 39644141559,
@@ -68486,6 +68508,7 @@
       "installer_packaging": "PASS",
       "field": "NOT_RUN"
     },
-    "local_installation_evidence": "docs/runtime/evidence/management-mode-01/installed-d-20261022/SUMMARY.json"
+    "local_installation_evidence": "docs/runtime/evidence/management-mode-01/clean-reset-20261022/SUMMARY.json",
+    "historical_local_installation_evidence": "docs/runtime/evidence/management-mode-01/installed-d-20261022/SUMMARY.json"
   }
 }

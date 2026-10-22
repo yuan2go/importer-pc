@@ -2052,15 +2052,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "22668f804076f9d003c73606e6e1102ccea3683168ed67cdf314e599f5f9e41f",
-      "size_bytes": 5646,
-      "git_blob": "15932a03ecab71d5a4606d5f1b4632dad0220df9",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "sha256": "9ad3aa9fb9a78140413035c85988b6998b99a8e4ce7b03f877860fc1ed104b93",
+      "size_bytes": 5886,
+      "git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "cd523cde6e503ffbf9d8be5a82d926e75f87c6e4",
+      "previous_git_blob": "15932a03ecab71d5a4606d5f1b4632dad0220df9",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc",
       "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
@@ -56161,15 +56161,15 @@
     },
     {
       "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "15af4f26dc83fd66832a361d20948942d506f6dec7c076a4b1389691dc3add3d",
+      "sha256": "21b01f9b690e8d655c84a384ca2c64c1d0abe5d1f935703d25f7e6e2a3dfdb5f",
       "size_bytes": 47901,
-      "git_blob": "c07c5a48336e8f7f8d0830bc7901ebb25dc07f31",
-      "previous_git_blob": "41c673d83a100cd3d21919ec51e719f636e93b09",
+      "git_blob": "d7ed4e2c319b84d2043c76db676d3c0949ad0ec3",
+      "previous_git_blob": "c07c5a48336e8f7f8d0830bc7901ebb25dc07f31",
       "pre_publication_no_test_git_blob": "57a650b6b3ff5a862e64c1ea9c0c7118db2bdfe8"
     },
     {
@@ -56538,15 +56538,15 @@
     },
     {
       "path": "src/Ipc.Desktop/StartupWorkflows.cs",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "0c2354f8ae69c4acead0e09a75425c5b166fe377b4bd33ce13c15d079036a2cf",
+      "sha256": "b1f298d9994a838e38949de0a71761365951a062bd71b49858cc934d92d737b8",
       "size_bytes": 52877,
-      "git_blob": "6fa7d2663fec25aeee744e7255f4386f18ddd54f",
-      "previous_git_blob": "39681855be8cca6a88f0a1709f5f36344503ccd6",
+      "git_blob": "82ff6838efa422596af19b1bf356fb506bf86ee4",
+      "previous_git_blob": "6fa7d2663fec25aeee744e7255f4386f18ddd54f",
       "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01",
       "pre_publication_no_test_git_blob": "65470c322ace93ebb62e2d522a25823d4a481bc6"
     },
@@ -62521,15 +62521,15 @@
     },
     {
       "path": "docs/runtime/startup-experience-03.md",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "350e7ef63988a21810ff8fd61404e96a159108a02b27f6c0aa15ca85a9957e23",
-      "size_bytes": 5610,
-      "git_blob": "aff71f5ba293b1213b88d41f8c47a581c4f8a4f8",
-      "previous_git_blob": "166b92729ca1aae1e5934545d657b135c369493b"
+      "sha256": "90df1dc8fdc6be2159d9a34a2abe15e496a858394165293c0e8c17a6bb41ff8e",
+      "size_bytes": 6098,
+      "git_blob": "ac31ba8a5794c3c71ba8a5adc12fe283807b771b",
+      "previous_git_blob": "aff71f5ba293b1213b88d41f8c47a581c4f8a4f8"
     },
     {
       "path": "docs/runtime/validation/startup-experience-03.md",
@@ -64826,15 +64826,15 @@
     },
     {
       "path": "docs/runtime/management-mode-01.md",
-      "sha256": "fe92c26b13356e32eff3302ee849c4fd473de81a0183d0e7ae5d6a0a101cc538",
-      "size_bytes": 3514,
-      "git_blob": "b430dd040064bd3552b8b504ee2ad9d24ff4e4e2",
-      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "sha256": "19c3feed5322c0ac1a11cfb1f4d9135d309f923852890f403fdfe6c205cc67cb",
+      "size_bytes": 3909,
+      "git_blob": "2c1d808791e4d88a16ebe9e62c52448bdb1da91c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d9486337cf87b18d75b78571945ef78c9a363db2"
+      "previous_git_blob": "b430dd040064bd3552b8b504ee2ad9d24ff4e4e2"
     },
     {
       "path": "docs/runtime/validation/management-mode-01.md",
@@ -64871,15 +64871,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs",
-      "sha256": "4196986d0735ad0e2b7e315561fb10c79a926bb7961ac9ca55659cb73381e9eb",
-      "size_bytes": 12967,
-      "git_blob": "a9a980b1bb6dc99c5560f643aa3bd4091b180f2c",
-      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "sha256": "94e5d51ba70ace940196d1ad5d926428e77f2311798542fbe4d1c201c03b6418",
+      "size_bytes": 13267,
+      "git_blob": "bef5562e8d9d91936a749ee85df24c0d1cb84335",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ee9407499b4d1fb6cdf15bf846fe56b941e3adc0"
+      "previous_git_blob": "a9a980b1bb6dc99c5560f643aa3bd4091b180f2c"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelManagementMode.cs",
@@ -66624,15 +66624,15 @@
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/README.md",
-      "sha256": "2851d3254b14651f3f7944f05a863c4148d783869b6fdeb8dceaf958fc5c5f82",
-      "size_bytes": 1415,
-      "git_blob": "88c4a1e56e2010da81d863cf43c8e918599ff926",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "sha256": "eb99f12e0bf3d2c5a2a537b8adeaa448c3628309c86a59df67dea92e112db243",
+      "size_bytes": 1714,
+      "git_blob": "718299b1d8e6b5b1c5432b97bef2c3a5fbd13e46",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "979c7ae1a4cb224212ba1ff78ad4e33376fe2296"
+      "previous_git_blob": "88c4a1e56e2010da81d863cf43c8e918599ff926"
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/UI-SPEC.md",
@@ -66647,15 +66647,15 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md",
-      "sha256": "f317feaa2c3d3836fc9f287d38598202484a4f1a21b868747b69c4ba0f98d347",
-      "size_bytes": 2823,
-      "git_blob": "209b3e6f4e727b65b1d2c305f7af28d9fbc8f1fb",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "sha256": "1d80a168ff8916fcdbcd1b0aa2ff7a8b6e5e8c55bdc0edbf579af65e03f1c128",
+      "size_bytes": 3501,
+      "git_blob": "af4323742128089cbb71cdf6b85bca2147a23cdc",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "c62150f1e35a23d7838f5d055cb59f3c98464760"
+      "previous_git_blob": "209b3e6f4e727b65b1d2c305f7af28d9fbc8f1fb"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.cs",
@@ -66681,15 +66681,15 @@
     },
     {
       "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
-      "sha256": "4d739ff7688eb46f07c1eedca81fc954896b42258f848e59d2b0cf28c29d6fd5",
+      "sha256": "631cf87caa8158c078e2f4a2d7031be151b78c2da0ef111e120f0c3c33cd08bf",
       "size_bytes": 24570,
-      "git_blob": "bda77abab0685914960b9d4e133c2a16d5bb0886",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "git_blob": "acb9635eb8b01296cb0e60649f02d2de2f9a171a",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "bbfef3ec2a0016dee33c4876b49e8818269e5491"
+      "previous_git_blob": "bda77abab0685914960b9d4e133c2a16d5bb0886"
     },
     {
       "path": "src/Ipc.Platform/WindowsInstallationStage.cs",
@@ -66704,15 +66704,15 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
-      "sha256": "64e12c81cc499b2a724fa9371284ef4e5b40bdbbd5be636872129e3c7680769e",
-      "size_bytes": 32347,
-      "git_blob": "dbb02092e9dbae709abcb11b422fda212161f7e9",
-      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
+      "sha256": "f13e7a4b7e5b5e7342725acc7afd8c6721dae386045f6cbcf193c9c3aec9c5a0",
+      "size_bytes": 33651,
+      "git_blob": "965df20c9b74312b7fc17428d335dd2a53cd072a",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "9cff681eb93c139ce971aa15270565d79485ad50"
+      "previous_git_blob": "dbb02092e9dbae709abcb11b422fda212161f7e9"
     },
     {
       "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/CORE-BUILD.log",
@@ -67253,6 +67253,182 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
       "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/BOOTSTRAP-ROUTE.log",
+      "sha256": "1359505473b10c63bfc746eb7878b0645862694132df899bada6ab45fbcd2190",
+      "size_bytes": 333,
+      "git_blob": "4e3e91f29d307049f2e7b235976590cce2d024d2",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/CORE-BUILD.log",
+      "sha256": "2a5a3de9a048e7cc6e4e71d8da26bc713e2d2c3660c7e498107e160c6fa4cea3",
+      "size_bytes": 84,
+      "git_blob": "0330aceac965201408996151f798f7ff65c0bb1c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/DESKTOP-BUILD.log",
+      "sha256": "b753ed155388fd2f9017c728e6ef7aa5d9787f57c46bb4d153d6bfd9629dcb60",
+      "size_bytes": 84,
+      "git_blob": "13ff3781381b112111a270feba9efba65beec72a",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/MANAGEMENT-CORE.log",
+      "sha256": "616774c42baacfa704c623c6827b78584dd581010f0e9fa160a4a77150295c0c",
+      "size_bytes": 6251,
+      "git_blob": "515b8928936cb9ed648355be0cd47b1518a3699b",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/NATIVE-BUILD.log",
+      "sha256": "2919c2ca2f2bbe9ef8b856e1e3eeb74b2365232aa498e270e06625acb32f08b9",
+      "size_bytes": 84,
+      "git_blob": "5e85b34a3d3756e05699b044960222bc8aa6db60",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/NATIVE.log",
+      "sha256": "5506411f5c3c61d86370c6ba7e49785cd362ff6fefb1a82ee33fd5679412c7c3",
+      "size_bytes": 11100,
+      "git_blob": "636a8b672a71fbf915ef2fc47f2a06d55173a6e1",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/README.md",
+      "sha256": "ba3d43ff22f2369c21029d520d1ba6784906f9c0aba72bb8f174a25e0ea428dc",
+      "size_bytes": 2200,
+      "git_blob": "1b467718d47be18cc399bc0d576572efe7e9bf51",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/RESULT.json",
+      "sha256": "24a8db62f7eeeebf96d10b093d09ac91d3290dbca29432de239158a8c8e27336",
+      "size_bytes": 2633,
+      "git_blob": "fdacdd02ba736daffb96a8c45a5485795370459a",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/first-run-expired.png",
+      "sha256": "a5a91488dd2637d09f709c75018dbeb1070091cb389244b4fd4f92e17d8feaa7",
+      "size_bytes": 29034,
+      "git_blob": "7d3b31590125ff13cac23d96b3eafed145976d01",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/first-run-unconfigured.png",
+      "sha256": "1e8651fab189719ced0ecf165f31857a6ba20d04a837e32ec68442d81ffb1577",
+      "size_bytes": 26566,
+      "git_blob": "3844cf102e6a7d89f11d035bf56717add9db83b3",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/installer-confirm-long.png",
+      "sha256": "aca668ab05b53a5c5e3790c3fe018e260f86d126e1db541e82695539dbd7a2b2",
+      "size_bytes": 96780,
+      "git_blob": "15293127858f64b70e722b7ca0ef08831adda2bb",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/installer-options-1024x768-150-equivalent.png",
+      "sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+      "size_bytes": 47952,
+      "git_blob": "963294ad1d79c38ad80f0db710e225fc2703c4cf",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/installer-options-default.png",
+      "sha256": "63c192a6b5cbd4e91f2b828ddc711c033bea5d4b03fa562495227f64b102692d",
+      "size_bytes": 51650,
+      "git_blob": "5b76790e5ab4f68bbd37e52bbcc2988b98517fb9",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/password-bootstrap-cancelled.png",
+      "sha256": "d2d75ca31d78f5343ffe90950fa7040e282e8acd8414a98aa454ef1b8c907eff",
+      "size_bytes": 24960,
+      "git_blob": "210f62df80bed10629c45eca7f4d7b6ea0c22f3f",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/password-first-setup.png",
+      "sha256": "86d925cc401cf5adaf1deccbf63198e2d359788de5823f2866b9f9a319565a35",
+      "size_bytes": 19557,
+      "git_blob": "8372352154a7885cc115158c74b9e47ea9dcb216",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/installer-first-run-ui-02-bootstrap-layout.md",
+      "sha256": "df384662f4ea9809a550e78b0f1dae3062c72a7564412017d4c4498bc70f6e65",
+      "size_bytes": 4047,
+      "git_blob": "ba53ef7034c05edcca9238a11dc09313d669a176",
+      "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "First protected management password approval routing and compact native startup window sizing",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository"
     }
   ],
@@ -69754,6 +69930,12 @@
       "evidence": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/RESULT.json",
       "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED",
       "actual_UAC_install_and_live_unknown_close": "NOT_RUN"
+    },
+    "bootstrap_layout": {
+      "code_commit": "c6c5cd5285631e1e4ba5ac3990cfff641ff75d49",
+      "evidence": "docs/runtime/evidence/installer-first-run-ui-02/bootstrap-layout-20261022/RESULT.json",
+      "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED",
+      "actual_new_package_UAC_approval_install": "NOT_RUN"
     }
   }
 }

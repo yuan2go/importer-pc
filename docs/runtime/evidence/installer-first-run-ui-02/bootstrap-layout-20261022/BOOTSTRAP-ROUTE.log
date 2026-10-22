@@ -1,0 +1,2 @@
+PASS: actual ordinary client received the live System broker bootstrap requirement and reached protected elevation preflight; mismatched old helper was rejected before UAC/write.
+PASS: actual installed service remains unconfigured/unauthorized; registration unchanged. No installer, UAC helper, device or business runtime started.

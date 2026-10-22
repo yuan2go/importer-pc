@@ -1,3 +1,5 @@
+> 2026-10-23参数/首次配置现已授权推送与PR合并；范围、原证据与不测试边界见[本轮发布记录](runtime/publication-parameter-ui-20261023.md)。原稿和4个未跟踪附件继续保留本地。
+
 ﻿> 2026-10-23 当前参数与首配细化：[实施及源码映射](runtime/parameter-ui-refine-01.md)、[原生验收/截图及边界](runtime/validation/parameter-ui-refine-01.md)。本地同源测试包不推送、不发布、不自动安装；下列历史安装包和清理结论保持原时点。
 
 > 当前重测安装包为SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。修复保存D盘位置但目录不存在时启动报错；已验证到确认页并取消，尚未正式安装。下述SM1.11.0交付与清理保持历史时点。

@@ -3,7 +3,7 @@
   "work_package": "WP-IPC-INSTALLER-FIRST-RUN-UI-02",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/installer-first-run-ui-02",
+  "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -2052,9 +2052,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "681fed2ce5ae5ca872724423947e50030154981c73a17fa71e26bc16d500a327",
-      "size_bytes": 6464,
-      "git_blob": "c907e2efd84a99911ff202ec79c0af3b610eda35",
+      "sha256": "f3ec244a902ed8545e04f827038edc1144224d067069fe5af1481f568f7c7b5e",
+      "size_bytes": 6686,
+      "git_blob": "2e95edae0604273860c2eab9f8a1b8abb79a2fb6",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
@@ -68557,9 +68557,9 @@
     },
     {
       "path": "docs/runtime/parameter-ui-refine-01.md",
-      "sha256": "e8beb751150be275f3f9a81aa6563db7809686453f3d938420c98322c783e7b9",
-      "size_bytes": 5740,
-      "git_blob": "a9ae66b3513e5cda8ff822c64318696ab89107fc",
+      "sha256": "3acbc4c857d85dc4039a7a2896e5a85461909aeaa5d1bd04ee011131e562fafb",
+      "size_bytes": 6064,
+      "git_blob": "08fffb379b33e5d8136e5263f2031c9fda00a300",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
@@ -68580,9 +68580,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md",
-      "sha256": "20627fbdfe88f0bff3c8c73d51acd5ba226b36560fedd7c588eb9a88afe4eae6",
-      "size_bytes": 2869,
-      "git_blob": "97a9dcacab80ce4ce747303c9ab1c5f63bfa0e14",
+      "sha256": "ef00c1c5a475902ff98844d3df2aa0b2efd6dfffd6218cb347e03062e05ee694",
+      "size_bytes": 3204,
+      "git_blob": "0e101a4043063c33c8b805355d8e6d49a5864f51",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
@@ -68666,6 +68666,16 @@
       "purpose": "Final native parameter UI and complete save error diagnostics",
       "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/publication-parameter-ui-20261023.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-PARAMETER-UI-NO-TEST-20261023",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized code/report push and PR merge; no tests or builds",
+      "sha256": "99f7066b0b3754afde4c0dcb019c32517e05477dc23945ac56af352bf0136e65",
+      "size_bytes": 2598,
+      "git_blob": "a5f280cc7813bb1468518fa851f31fd47e8c5c27"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -69903,7 +69913,7 @@
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/maintenance-publication-20261019/final-publication-receipt.json"
   },
-  "last_updated": "2026-10-22",
+  "last_updated": "2026-10-23",
   "runtime_identity_preflight_02": {
     "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
     "report": "docs/runtime/runtime-identity-preflight-02.md",

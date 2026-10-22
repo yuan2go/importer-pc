@@ -2052,15 +2052,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "4ab19fb180069b3be8f7c8ddc0751e8af1e3c18e92771efeef6a57c6ec7938e1",
-      "size_bytes": 5122,
-      "git_blob": "515274016896242f32e619ed99fdeb5ca29f667b",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "218c1c9cf9993cf4c9a0bb77bbb94a7948c913af95da225f03726541d9f32415",
+      "size_bytes": 5338,
+      "git_blob": "cd523cde6e503ffbf9d8be5a82d926e75f87c6e4",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "40b675763e182885f2db5c1e908580e369530928",
+      "previous_git_blob": "515274016896242f32e619ed99fdeb5ca29f667b",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc",
       "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
@@ -52654,15 +52654,15 @@
     },
     {
       "path": "scripts/package-application.py",
-      "version": "installer-release-info-01",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Versioned business-module installer, protected build provenance and exact release verification",
-      "source": "WP-IPC-INSTALLER-RELEASE-INFO-01 explicit user authorization",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "260e267dc30f81bfa74d4800e4bb3b92c0043eda0968be2a08371723a45a6e5e",
-      "size_bytes": 10285,
-      "git_blob": "2f977bb4f4e39de546bc2d1ac801fc2fa1ede05d",
-      "previous_git_blob": "f4803c85ce23160680bdab813bc83ba3b3c88d81",
+      "sha256": "43695ca3c99e1bbffd486cf7daa1f572799119a2b6d8a178fea5e6f8c1091dcb",
+      "size_bytes": 10348,
+      "git_blob": "0e921e271c7d31ea7f0f746531b980bca74941e2",
+      "previous_git_blob": "2f977bb4f4e39de546bc2d1ac801fc2fa1ede05d",
       "pre_publication_merge_git_blob": "fdd2a35cbbcab3633cf87864e3790bda54235e1b"
     },
     {
@@ -62013,14 +62013,15 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
-      "version": "MANAGEMENT-MODE-01",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "8d400332ac9326b2a207a5c9c2b2865c0dcc35f659a5be6b20fd798fff4a3225",
-      "size_bytes": 26172,
-      "git_blob": "21139f26c23efd7da908f70291f1c616f4209b59"
+      "sha256": "bb96c8ac0a7ef71d9ca11e85449132ed6c6fd56653b89a684973907f80cae720",
+      "size_bytes": 26166,
+      "git_blob": "aa51284d32f4ab9676e2c5e27cc8c96f78f7c781",
+      "previous_git_blob": "21139f26c23efd7da908f70291f1c616f4209b59"
     },
     {
       "path": "docs/runtime/evidence/startup-experience-02/COMM-WPF-FIX.log",
@@ -63652,26 +63653,27 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/OperatorAdministration.cs",
-      "sha256": "52483c3dd5408aebe900730f7db7373c4c6d592e170e93e6c26c34ca024449dd",
-      "size_bytes": 24238,
-      "git_blob": "01d88f2ad5ec568cf74a3e165e5f8b754538c004",
-      "version": "MANAGEMENT-MODE-01",
+      "sha256": "85061bfbcf30938a146202b74e1001faa3d60bbc16589c62e9a6c4dd8933b5a3",
+      "size_bytes": 25825,
+      "git_blob": "6dc959a8d7968a08b4345b14a4acd991ec493d2c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "01d88f2ad5ec568cf74a3e165e5f8b754538c004"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
-      "sha256": "c8c88738387a103415582a7fbc3a9a954f6f7bb141b9e34dc6a4c064e61b105c",
-      "size_bytes": 13610,
-      "git_blob": "3ebd129ef471adc79af41b7c6d21ed06e4af33f8",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "3cd4ddf8716829fde89840451b3c81b7ec5780c7b30da20747a8bcc5fd590764",
+      "size_bytes": 13759,
+      "git_blob": "515eef83f850cbbe87f62d7c3dedde2ba64a5e65",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3f60b314bc4a6cd3668c55bbe21dfcfb618a4aac"
+      "previous_git_blob": "3ebd129ef471adc79af41b7c6d21ed06e4af33f8"
     },
     {
       "path": "docs/runtime/evidence/operator-administrator-logs-01/INSTALLER.json",
@@ -64822,14 +64824,15 @@
     },
     {
       "path": "docs/runtime/management-mode-01.md",
-      "sha256": "d0ad6da328b476eac2ff7c5bb33aa001806ff7516d74e647435c68620dedc1ec",
-      "size_bytes": 3390,
-      "git_blob": "d9486337cf87b18d75b78571945ef78c9a363db2",
-      "version": "MANAGEMENT-MODE-01",
+      "sha256": "fe92c26b13356e32eff3302ee849c4fd473de81a0183d0e7ae5d6a0a101cc538",
+      "size_bytes": 3514,
+      "git_blob": "b430dd040064bd3552b8b504ee2ad9d24ff4e4e2",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "d9486337cf87b18d75b78571945ef78c9a363db2"
     },
     {
       "path": "docs/runtime/validation/management-mode-01.md",
@@ -64866,15 +64869,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs",
-      "sha256": "be91f8a1babf53c5299189be2a40220194a64901a2ab0bd3aaafc011f4a1414f",
-      "size_bytes": 12980,
-      "git_blob": "ee9407499b4d1fb6cdf15bf846fe56b941e3adc0",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "4196986d0735ad0e2b7e315561fb10c79a926bb7961ac9ca55659cb73381e9eb",
+      "size_bytes": 12967,
+      "git_blob": "a9a980b1bb6dc99c5560f643aa3bd4091b180f2c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "6995f0f1535ace98be7ab3c92947361ccdcce3ab"
+      "previous_git_blob": "ee9407499b4d1fb6cdf15bf846fe56b941e3adc0"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelManagementMode.cs",
@@ -64889,14 +64892,15 @@
     },
     {
       "path": "src/Ipc.Platform/LocalManagementMode.cs",
-      "sha256": "8c3916e20ed45cf68899117a8cd6230c9bc0de88f9594aa8f2aa26c589635adc",
-      "size_bytes": 18501,
-      "git_blob": "955e17d21c7ce8a9a3c77044a671a73b7e858236",
-      "version": "MANAGEMENT-MODE-01",
+      "sha256": "4e6b0d537a0df8f2c69d674ef56925032a5fe0a14f25958f502039db7ee0b515",
+      "size_bytes": 18478,
+      "git_blob": "372079c665a1e128e6fbb8d86bf64683ba687148",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "955e17d21c7ce8a9a3c77044a671a73b7e858236"
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
@@ -66595,15 +66599,15 @@
     },
     {
       "path": "docs/runtime/installer-first-run-ui-02.md",
-      "sha256": "af11e306bc0fd1e2c2523cec6f82907194757d2fe7f3951e920ce1b80fc31b6d",
-      "size_bytes": 7748,
-      "git_blob": "afcfd56b6d6e4944f3cb9a185894bc5e378c4d9a",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "de9b059d25e7d37c2b0ec04fe3e6c44b544de71c86cc0a7e9ab1be35e0ac5ff8",
+      "size_bytes": 8215,
+      "git_blob": "0f7bf7b0d8e3d1681867c63f946f33787d05f61c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "314e99e1542961bc50586afe5dc6b1c31676e68c"
+      "previous_git_blob": "afcfd56b6d6e4944f3cb9a185894bc5e378c4d9a"
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/Preview.html",
@@ -66618,14 +66622,15 @@
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/README.md",
-      "sha256": "576a006a20ee639a7b5c8caa10c241c6a0853faeb3e438daf5adc57cf979b023",
-      "size_bytes": 707,
-      "git_blob": "b8d083c777d14db59e0f937afbd0ca7fe6bc0358",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "59206dccafddb1da86f1fd63069d878b5c470ba69500cb252a6729aa9e166425",
+      "size_bytes": 1090,
+      "git_blob": "979c7ae1a4cb224212ba1ff78ad4e33376fe2296",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "b8d083c777d14db59e0f937afbd0ca7fe6bc0358"
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/UI-SPEC.md",
@@ -66640,14 +66645,15 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md",
-      "sha256": "0f4dcaecbf343c392f0a3fc344ff6e0bcf948e94ce5e267fea63132e6e73cac8",
-      "size_bytes": 1602,
-      "git_blob": "33510aab8545b4f9694ec3d1af51030eca8a4e8a",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "72a3e3dd59d981167ef34c173adcbc3ab2f34524d1c24094c07dd66953ee5786",
+      "size_bytes": 2063,
+      "git_blob": "c62150f1e35a23d7838f5d055cb59f3c98464760",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "33510aab8545b4f9694ec3d1af51030eca8a4e8a"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.cs",
@@ -66673,14 +66679,15 @@
     },
     {
       "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
-      "sha256": "97b5d3e64275a33b90ddde440a410d66047180a69282196768faf77f88df2c48",
-      "size_bytes": 21563,
-      "git_blob": "3c941bd2edd570dae920be908a42e7a9428ea491",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "63895fc1d81810578a4afd95d4f6205f2873788b6d1dd1859f358fdcc554448a",
+      "size_bytes": 19725,
+      "git_blob": "bbfef3ec2a0016dee33c4876b49e8818269e5491",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
-      "storage_scope": "public_repository"
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "3c941bd2edd570dae920be908a42e7a9428ea491"
     },
     {
       "path": "src/Ipc.Platform/WindowsInstallationStage.cs",
@@ -66695,13 +66702,179 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
-      "sha256": "c28e1bb395e50c0758282c0ecf424a23101c9569371b11e0e17de6a97d302d31",
-      "size_bytes": 24194,
-      "git_blob": "524ced149c55910b0adf8a50026a37632908cca2",
-      "version": "INSTALLER-FIRST-RUN-UI-02",
+      "sha256": "240ffe250e1ed4bf1a28ce2a135206d34033e80b8b0d84d81df40210d49bcf81",
+      "size_bytes": 25203,
+      "git_blob": "9cff681eb93c139ce971aa15270565d79485ad50",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native installer and first-run authorization UI, exact design input copies, scoped synthetic verification and preserved earlier receipts",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 6220fd6; Windows 125% native content and explicit unverified installation/device boundaries",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "524ced149c55910b0adf8a50026a37632908cca2"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/CORE-BUILD.log",
+      "sha256": "083478218fc63908bae5b6cdf09471194eeaf67d84d4f9f879cca1108048e002",
+      "size_bytes": 84,
+      "git_blob": "f54402448deaa88116135066e53ab479c9b82e96",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/DESKTOP-BUILD.log",
+      "sha256": "092a39927f583f6e079960c2bf3a0602efe1e00947ff4e867676d1dbd861c9ab",
+      "size_bytes": 84,
+      "git_blob": "0785693461a0355a234aa75a1f2618ad3736b16d",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/EARLIER-CORE-COMMAND-ERROR.log",
+      "sha256": "c7ef7401e1983c598fdc06da1bd8c2debbc6782375a883adeb91532c80d65c10",
+      "size_bytes": 4593,
+      "git_blob": "be3cb64492e4d94668f8f861a59a340a89f32dad",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/MANAGEMENT-CORE.log",
+      "sha256": "d51d8411ae5ae2fb3815fb18e8c5c53d844b149fef1c84156275ac331a78906f",
+      "size_bytes": 6251,
+      "git_blob": "468fead5de67faadf2414eaf4c2964d6f2f51981",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/MANAGEMENT-NATIVE.log",
+      "sha256": "10458fb7b63265ba9d9692081d1167c538c52d01bc8be7388244b061888a6294",
+      "size_bytes": 3177,
+      "git_blob": "b1b0a6681ccfa2ddd7f922cbbf9231cad5fe96e3",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/NATIVE-BUILD.log",
+      "sha256": "134ca7c278f7dcc262b244ca95255f3c068df1af2ef7f177a9b04101b0858e52",
+      "size_bytes": 84,
+      "git_blob": "32d0e501be7b287a4ff79445d74be15d2f94f1da",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/NATIVE.log",
+      "sha256": "0ecdb0e23e9ca4cad2dae1b54c6ac454cee94f9964bfe46ce173040ecd953ee9",
+      "size_bytes": 7778,
+      "git_blob": "b5f7dc9c4c436b7e2a4885c135001daaea466cc5",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/README.md",
+      "sha256": "76a1c5b57760932e994e855875f15b131c3af232659ffa0c7f2c92af7ed5de8d",
+      "size_bytes": 3817,
+      "git_blob": "46dd9823811fac66c7eea04bb41d9faceade909d",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/RESULT.json",
+      "sha256": "8f44c315dcc6833751e3d85b26bff8b26dafc09a68e83a90cbcd021680230be2",
+      "size_bytes": 6957,
+      "git_blob": "d89866c040b7d2cab71337cd17ac4a8c1661f18c",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/STARTUP-REGRESSION.log",
+      "sha256": "d3f7aefaa0674744c11467d8c5902dceb588141d86da83618aefc8e4d648853e",
+      "size_bytes": 8093,
+      "git_blob": "09b4faa52e7313f1184928e3925ed9bb2c4d4113",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-confirm-long.png",
+      "sha256": "0cc35c2a17a6f901820a8867551f5d0afd44eb855bc1cc77175d83e7e1acc4ce",
+      "size_bytes": 107759,
+      "git_blob": "6cf1f93104d592796f6b7099a0fef4b72b0aba68",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1024x768-125-equivalent.png",
+      "sha256": "6ac2c343b986e9d7f63ab8c11aee19bd354975b9230c6dafc6c1bdf8d9e2f833",
+      "size_bytes": 58349,
+      "git_blob": "697749771eda89d46557607a7aa70584cfc8d563",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1024x768-150-equivalent.png",
+      "sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+      "size_bytes": 47952,
+      "git_blob": "963294ad1d79c38ad80f0db710e225fc2703c4cf",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1366x768-100-equivalent.png",
+      "sha256": "109d2a492b9a128d5a4ed8706428a26584ffcf8e4d65a040ef7d330921732eac",
+      "size_bytes": 70828,
+      "git_blob": "cf1de596134dcaaaf23205c41bd98568a5b6e3d7",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/password-first-setup.png",
+      "sha256": "a8e4309580b69ba2bffdeada5f4e806c03c47d5bb84ab3a518a1de28d8bfcc77",
+      "size_bytes": 19463,
+      "git_blob": "7a3b74824e71153117a44fe219356ac631d80c87",
+      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
       "storage_scope": "public_repository"
     }
   ],
@@ -69189,6 +69362,13 @@
     "main_at_start": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
     "code_commit": "6220fd6a6d3e5d49f9179eb3197b6c0b34518bbc",
     "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED",
-    "validation": "Scoped Windows 125% native and synthetic; actual UAC/installation/system DPI 100%/150%/devices/site NOT_RUN"
+    "validation": "Scoped Windows 125% native and synthetic; actual UAC/installation/system DPI 100%/150%/devices/site NOT_RUN",
+    "followup": {
+      "code_commit": "043157fb2238d3408582565e30a64350ca13a050",
+      "password": "5-256 characters, numeric and repeated allowed; existing hash/auth controls retained",
+      "scope": "Hidden in options and confirmation; new shared default and upgrade registered identity retained",
+      "evidence": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/RESULT.json",
+      "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED"
+    }
   }
 }

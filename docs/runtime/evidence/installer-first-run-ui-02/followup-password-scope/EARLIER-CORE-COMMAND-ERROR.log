@@ -1,0 +1,53 @@
+EvidenceRoot=D:\projects\importer-pc\--management-mode\.artifacts\operator-admin-74e80c513b9d43bdb22bf2036d8173ac
+PASS OPS: unused simulation relocation preserves every original row while allowing additional maintenance audit
+PASS OPS: relocation refuses changed original audit instead of silently accepting a fresh ledger
+PASS OPS: even one original operation prevents the unused-simulation relocation exception
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: rejected new passwords leave the original unconfigured state
+PASS OPS: five repeated numeric characters can configure and enter the real management authority
+PASS OPS: changing to fewer than five characters is rejected by the same service policy
+PASS OPS: rejected password replacement preserves the current grant and credential
+PASS OPS: five-digit replacement revokes old authorization and authenticates only the new password
+PASS OPS: numeric passwords are not persisted in plaintext
+PASS OPS: no default management password opens the mode
+PASS OPS: direct service calls reject before management-password setup
+PASS OPS: initial management-password setup cannot overwrite an existing password
+PASS OPS: credential file contains salted hashes rather than passwords
+PASS OPS: configured-mode marker prevents a missing credential file from reopening setup
+PASS OPS: missing configured mode credentials cannot be silently replaced
+PASS OPS: invalid credential grants no session 0
+PASS OPS: invalid credential grants no session 1
+PASS OPS: invalid credential grants no session 2
+PASS OPS: invalid credential grants no session 3
+PASS OPS: invalid credential grants no session 4
+PASS OPS: persisted login lockout survives a new authenticator
+PASS OPS: real password hash authentication succeeds
+PASS OPS: a copied helper ticket cannot change its server-bound request hash
+PASS OPS: a helper ticket cannot extend its server-bound expiry
+PASS OPS: a helper ticket cannot mint another one-use authorization
+PASS OPS: helper proof cannot borrow or forge a different management-mode session
+PASS OPS: elevated helper delegation is single-use rather than Windows-only authorization
+PASS OPS: helper authorization is bound to the exact original maintenance request
+PASS OPS: changing the one mode password immediately revokes pending tasks and the original mode
+PASS OPS: password replacement invalidates already-issued helper delegation
+PASS OPS: old password stops working and the replacement re-enters management mode without a username
+PASS OPS: one management password is changed only from an active mode
+PASS OPS: normal management mode API has one password and no account enumeration or maintenance
+PASS OPS: old configured account ledger opens no mode and explicitly requires conversion
+PASS OPS: first mode setup cannot overwrite old software credentials
+PASS OPS: failed legacy conversion preserves original credential bytes
+PASS OPS: verified old credentials convert once into a new independent station mode password
+PASS OPS: conversion retains old bytes and stores a single credential rather than a hidden account
+PASS OPS: legacy conversion cannot replace an already-configured mode password
+PASS OPS: missing new mode credentials fail closed instead of falling back to retained old accounts
+PASS OPS: session expiry revokes authorization and pending task tokens
+PASS OPS: session expiry is recorded in the actual authentication journal
+Unhandled exception. System.IO.DirectoryNotFoundException: Could not find a part of the path 'D:\projects\importer-pc\--management-mode\config\sportmaster\business.json'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.File.ReadAllText(String path)
+   at OperatorAdministration.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\OperatorAdministration.cs:line 89
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\tests\Ipc.Application.Verification\Program.cs:line 17
+   at Program.<Main>(String[] args)

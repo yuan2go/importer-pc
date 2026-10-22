@@ -1,5 +1,7 @@
 # 安装器与首次配置入口 UI 02
 
+后续纠偏已实施：管理密码最低 5 个字符（允许纯数字及重复字符），原长密码继续可用；安装选项和确认页隐藏“使用范围”，新装保持共用默认值、升级保留原 SID 与数据目录。下面记录原交付形成时的实现和验证身份；本次增量及截图见 [纠偏证据](evidence/installer-first-run-ui-02/followup-password-scope/README.md)，其优先于下文原密码策略和范围展示描述。
+
 日期：2026-10-22；工作包：[INSTALLER-FIRST-RUN-UI-02](../work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)。执行时最新 main 为 `0bf86a0a588b75b95aa1963e8fe88dad976ca803`，本地继承 PR88 的 `793d092851052c63663f19b5de8d2b7703392d8d`，开发分支 `codex/installer-first-run-ui-02`。仅本地实施、构建与合成验证；不推送、发布、正式安装或连接生产设备。两份原未跟踪设计文件保持原字节；本包归档副本与它们一致。
 
 本地代码已提交为 `6220fd6a6d3e5d49f9179eb3197b6c0b34518bbc`，未推送或创建 PR。

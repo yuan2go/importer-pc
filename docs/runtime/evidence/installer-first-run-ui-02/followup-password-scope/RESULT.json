@@ -1,0 +1,156 @@
+{
+  "work_package": "WP-IPC-INSTALLER-FIRST-RUN-UI-02",
+  "date": "2026-10-22",
+  "followup": "User-authorized minimum five characters including repeated digits; hide scope in installation options and confirmation",
+  "source_tree_commit": "043157fb2238d3408582565e30a64350ca13a050",
+  "main_at_execution": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "build_identity": "Local development builds created before code commit; corresponding code files match. Separate frozen single EXE has its own PACKAGE-INFO.",
+  "status": "PASS_SCOPED_NATIVE_AND_SYNTHETIC",
+  "checks": {
+    "targeted_native": 61,
+    "management_native": 27,
+    "startup_regression": 93,
+    "management_core": 78
+  },
+  "native_host": "Windows HWND/Dispatcher content render; actual scale 1.25; logical workspace matrix only",
+  "real_OS_DPI_100_150": "NOT_RUN",
+  "actual_UAC_install_upgrade_machine_recovery": "NOT_RUN",
+  "devices_SDK_RCS_site": "NOT_RUN",
+  "pushed": false,
+  "published": false,
+  "installer_executed": false,
+  "source_files": [
+    {
+      "path": "scripts/package-application.py",
+      "sha256": "43695ca3c99e1bbffd486cf7daa1f572799119a2b6d8a178fea5e6f8c1091dcb",
+      "size_bytes": 10348,
+      "git_blob": "0e921e271c7d31ea7f0f746531b980bca74941e2"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs",
+      "sha256": "4196986d0735ad0e2b7e315561fb10c79a926bb7961ac9ca55659cb73381e9eb",
+      "size_bytes": 12967,
+      "git_blob": "a9a980b1bb6dc99c5560f643aa3bd4091b180f2c"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "sha256": "63895fc1d81810578a4afd95d4f6205f2873788b6d1dd1859f358fdcc554448a",
+      "size_bytes": 19725,
+      "git_blob": "bbfef3ec2a0016dee33c4876b49e8818269e5491"
+    },
+    {
+      "path": "src/Ipc.Platform/LocalManagementMode.cs",
+      "sha256": "4e6b0d537a0df8f2c69d674ef56925032a5fe0a14f25958f502039db7ee0b515",
+      "size_bytes": 18478,
+      "git_blob": "372079c665a1e128e6fbb8d86bf64683ba687148"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/OperatorAdministration.cs",
+      "sha256": "85061bfbcf30938a146202b74e1001faa3d60bbc16589c62e9a6c4dd8933b5a3",
+      "size_bytes": 25825,
+      "git_blob": "6dc959a8d7968a08b4345b14a4acd991ec493d2c"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
+      "sha256": "240ffe250e1ed4bf1a28ce2a135206d34033e80b8b0d84d81df40210d49bcf81",
+      "size_bytes": 25203,
+      "git_blob": "9cff681eb93c139ce971aa15270565d79485ad50"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
+      "sha256": "3cd4ddf8716829fde89840451b3c81b7ec5780c7b30da20747a8bcc5fd590764",
+      "size_bytes": 13759,
+      "git_blob": "515eef83f850cbbe87f62d7c3dedde2ba64a5e65"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
+      "sha256": "bb96c8ac0a7ef71d9ca11e85449132ed6c6fd56653b89a684973907f80cae720",
+      "size_bytes": 26166,
+      "git_blob": "aa51284d32f4ab9676e2c5e27cc8c96f78f7c781"
+    }
+  ],
+  "binaries": [
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll",
+      "sha256": "d5d0955973b2ff6b90ba5aa9515c228a75f36b2ee50be5f56d3467b787463251",
+      "size_bytes": 1396736
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "sha256": "0c42b5611eca299172ae249cc77eed421f3ada527229335d96ec64cb9dd6281a",
+      "size_bytes": 470016
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "sha256": "e50514631d80e685a60349792ee4be95be7c6a52e77fac467ebbd7b938d441f0",
+      "size_bytes": 1714688
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/CORE-BUILD.log",
+      "sha256": "083478218fc63908bae5b6cdf09471194eeaf67d84d4f9f879cca1108048e002",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/DESKTOP-BUILD.log",
+      "sha256": "092a39927f583f6e079960c2bf3a0602efe1e00947ff4e867676d1dbd861c9ab",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/EARLIER-CORE-COMMAND-ERROR.log",
+      "sha256": "c7ef7401e1983c598fdc06da1bd8c2debbc6782375a883adeb91532c80d65c10",
+      "size_bytes": 4593
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-confirm-long.png",
+      "sha256": "0cc35c2a17a6f901820a8867551f5d0afd44eb855bc1cc77175d83e7e1acc4ce",
+      "size_bytes": 107759
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1024x768-125-equivalent.png",
+      "sha256": "6ac2c343b986e9d7f63ab8c11aee19bd354975b9230c6dafc6c1bdf8d9e2f833",
+      "size_bytes": 58349
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1024x768-150-equivalent.png",
+      "sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+      "size_bytes": 47952
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/installer-options-1366x768-100-equivalent.png",
+      "sha256": "109d2a492b9a128d5a4ed8706428a26584ffcf8e4d65a040ef7d330921732eac",
+      "size_bytes": 70828
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/MANAGEMENT-CORE.log",
+      "sha256": "d51d8411ae5ae2fb3815fb18e8c5c53d844b149fef1c84156275ac331a78906f",
+      "size_bytes": 6251
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/MANAGEMENT-NATIVE.log",
+      "sha256": "10458fb7b63265ba9d9692081d1167c538c52d01bc8be7388244b061888a6294",
+      "size_bytes": 3177
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/NATIVE-BUILD.log",
+      "sha256": "134ca7c278f7dcc262b244ca95255f3c068df1af2ef7f177a9b04101b0858e52",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/NATIVE.log",
+      "sha256": "0ecdb0e23e9ca4cad2dae1b54c6ac454cee94f9964bfe46ce173040ecd953ee9",
+      "size_bytes": 7778
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/password-first-setup.png",
+      "sha256": "a8e4309580b69ba2bffdeada5f4e806c03c47d5bb84ab3a518a1de28d8bfcc77",
+      "size_bytes": 19463
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/followup-password-scope/STARTUP-REGRESSION.log",
+      "sha256": "d3f7aefaa0674744c11467d8c5902dceb588141d86da83618aefc8e4d648853e",
+      "size_bytes": 8093
+    }
+  ]
+}

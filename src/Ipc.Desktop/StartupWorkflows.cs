@@ -391,6 +391,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         catch (Exception error)
         {
+            diagnosticDetails += "\n保存回执：" + Ipc.Platform.DiagnosticText.Protect(error.ToString());
             var actual = await Task.Run(maintenance.ReadAsync);
             if (actual.Candidate is not null && (actual.ConfigurationStatus == "PendingRestart" || initialConfiguration && actual.ConfigurationStatus == "Seed") && Ipc.Platform.Wire.Hash(Ipc.Platform.Wire.Encode(actual.Candidate)) == checkedCandidateHash)
             { ConfirmSaved(actual); Message("已从权威配置账确认本次候选已保存待生效；原回执：" + error.Message + "。未重复提交，当前输入保留。"); }
@@ -496,7 +497,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     protected override void OperationFailed(Exception error)
     {
         if (!initialConfiguration) { base.OperationFailed(error); return; }
-        diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(error.ToString());
+        diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
         saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果待核对" : savingCandidate ? "保存未完成" : "检查未通过";
         savingCandidate = false;
         refreshReview?.Invoke();

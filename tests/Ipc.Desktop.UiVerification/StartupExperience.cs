@@ -110,6 +110,7 @@ static partial class Program
         Check(fake.Saves == 0 && !Retry(first), "failed configuration check never calls save or requests startup");
         fake.CheckStatus = "PASS"; fake.SaveFailure = true; Click(first, "保存配置"); await Idle(first);
         Check(fake.Saves == 1 && !Retry(first) && Descendants(first).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "保存未完成"), "known save failure is explicit and cannot use the initially clean draft as proof of persistence");
+        Check(((string)type.GetField("diagnosticDetails", flags)!.GetValue(first)!).Contains("合成写入前失败"), "folded diagnostics retain the original save failure before the authority read-back");
         fake.Uncertain = true; Click(first, "保存配置"); await Idle(first); var attempts = fake.Saves;
         Click(first, "保存配置"); await Idle(first);
         Check(fake.Saves == attempts && !Retry(first), "unknown save result blocks a duplicate submission and startup");

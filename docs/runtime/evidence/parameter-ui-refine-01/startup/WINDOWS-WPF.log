@@ -39,7 +39,7 @@ PASS REFINE01 syntactically valid unspecified address has a distinct business-ad
 PASS REFINE01 unknown specified-chute remains different from explicit false
 PASS REFINE01 field errors expose Chinese rather than schema diagnostics
 PASS REFINE01 specified chute reveals its real conditional field
-PASS REFINE01 disabling specified chute retains process input without validating an inapplicable field
+PASS REFINE01 disabling specified chute retains process input without validating or navigating to an inapplicable field
 PASS REFINE01 common station input reflects changes to the existing paired fields
 PASS REFINE01 cross-page review has actionable exact-field errors
 PASS REFINE01 review action focuses the right camera, never the left instance

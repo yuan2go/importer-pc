@@ -4,7 +4,7 @@
   "BaselineMain": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
   "LocalBase": "24b0f5c2526bde4d19035589b204cb8899069e1d",
   "Origins": {
-    "startup-experience": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-af1ee3dbc4c04b3182323c94191c8754",
+    "startup-experience": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-805f159c2159419d8f0ae35c7e4aab80",
     "installer-first-run-ui": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a2329615d064453c8b744f72a9ffd11a",
     "management-mode": "D:\\projects\\importer-pc\\.artifacts\\wpf-v2-5d158895e85f4327b9bef4a4c5ca9b4e",
     "parameter-experience": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-fdd38230b2974633b6335dcd8f34b554",
@@ -16,6 +16,8 @@
   "RealUacInstallation": "NOT_RUN",
   "ProductionDevices": "NOT_RUN",
   "PushRelease": "NOT_DONE",
-  "CodeCommit": "a73b53990a564aeb4a253dc94a44b3e3fce66a89",
-  "CodeAndTestsTreeFrozen": true
+  "CodeCommit": "db0e5d8be1064bfa346514a094a61535a56f3c96",
+  "CodeAndTestsTreeFrozen": true,
+  "InitialImplementationCommit": "a73b53990a564aeb4a253dc94a44b3e3fce66a89",
+  "ConditionalFieldNavigation": "PASS_REAL_BOUND_CONDITION"
 }

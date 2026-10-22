@@ -53896,10 +53896,10 @@
       "storage_scope": "public_repository",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "sha256": "d41d2e842a4341d94ab473745391039153490f2728e656ea4f48fbba919b9246",
-      "size_bytes": 16218,
-      "git_blob": "e1c83b28d27bd2ab4fbf2787abcb3e5f6dfcdaf6",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "sha256": "b66dc16472ab1cda3721a95d342d6aec7b79c0a57bf981215480d143a23f8224",
+      "size_bytes": 16362,
+      "git_blob": "41e09ca087ba4b46e8b685d137e471b90632dbeb",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -53907,7 +53907,7 @@
         "status": "implementation_source",
         "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only"
       },
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
       "pre_parameter_experience_01_identity": {
         "git_blob": "cc3b2c56a8150e454fc0e7d115fcf07ee7ae7e6c",
         "sha256": "845ee4bab40696ef0ca7ffee96251781863ef64d2438eb2304ae37951a6396be",
@@ -53915,7 +53915,7 @@
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
       },
-      "previous_git_blob": "32c01eca452f7b7da0fcbd1d3736b3da757288bf"
+      "previous_git_blob": "e1c83b28d27bd2ab4fbf2787abcb3e5f6dfcdaf6"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
@@ -67537,25 +67537,27 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/FILES.json",
-      "sha256": "03ba9b3ae36dde1b59dbba93aa49e8bb3b55d0f52caaaddeadf4db7ee216c95f",
-      "size_bytes": 14817,
-      "git_blob": "e76f5766382729312842d7ff04f45e18d89f7769",
+      "sha256": "e7cb79866a59a8843ce0a730e7f591242f42cd1a368d70e686f3ec809c982da0",
+      "size_bytes": 15140,
+      "git_blob": "8e2486e5c79709c2d1e22e3e741ff0ff6d475b0b",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e76f5766382729312842d7ff04f45e18d89f7769"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/MODIFIED-FILES.txt",
-      "sha256": "dc5daa34053aae28d96a899b2b52cbf27e4f48492daa32f2cf7e87c1b3bd91f8",
-      "size_bytes": 9708,
-      "git_blob": "9509c349a89aa377833d1f693fed7aa4c45e22e0",
+      "sha256": "e9202649aaeccb22212e8ac3093b802992c6d946bc8675c99846943ab06a9435",
+      "size_bytes": 9869,
+      "git_blob": "29c42d19b6cde0e0f40735bbe51fac70b9789bbe",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "9509c349a89aa377833d1f693fed7aa4c45e22e0"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/README.md",
@@ -67570,14 +67572,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/RESULT.json",
-      "sha256": "b110639ea6f0917020ac8e530259c3b461d6a3110547d4cf73f63973d0f5020d",
-      "size_bytes": 1121,
-      "git_blob": "6663d90aaf21ee442976a993872fea3739be1f3d",
+      "sha256": "147c557167449dae1c3326e7c0e5c9a476050f1acc11125016071682c020e52c",
+      "size_bytes": 1261,
+      "git_blob": "2da40d9086b45d423f02cbb03afa0fa3c039258e",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "6663d90aaf21ee442976a993872fea3739be1f3d"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/authorization/WINDOWS-WPF.log",
@@ -68219,14 +68222,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/WINDOWS-WPF.log",
-      "sha256": "93b5fb4f511358393c3ae7b3e8c9025cab70e64d4d50045315d715fb5cfa5d57",
-      "size_bytes": 10407,
-      "git_blob": "fefee10cb678cfc7be657cd363a27466dd528e9a",
+      "sha256": "2162cd8f430cae93c36c995e7da1b92adab891833c508b2ae92151a27fb8955f",
+      "size_bytes": 10424,
+      "git_blob": "354f66c43a183ef1034d6107d47d4624328febad",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "fefee10cb678cfc7be657cd363a27466dd528e9a"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/configuration-paused.png",
@@ -68252,14 +68256,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/installer-confirmation.png",
-      "sha256": "42d8dd6ebc3872534d210f49bb3b34d2768279e8446a47bcf2bb08d756c20de7",
-      "size_bytes": 60091,
-      "git_blob": "03b342dc1e354a00de694436c767e86342f05b0f",
+      "sha256": "b85ca9bcaa758969a43af2240d02a55294ddd875470e1285d274c749abf96b69",
+      "size_bytes": 60119,
+      "git_blob": "caaaa045571cd9623e063eaa26116ca56460df36",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "03b342dc1e354a00de694436c767e86342f05b0f"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/installer-options.png",
@@ -68307,25 +68312,27 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-data.png",
-      "sha256": "c567fa3b74462c841a86e27d7a04d35d34fa8d34c29fbcf9a1e112621e4f242a",
-      "size_bytes": 68932,
-      "git_blob": "3aeec3c3fa34dbd840a546acf2074d9f8a17c02b",
+      "sha256": "b0de425dca77491b7093ebd8154b6a62092b05012aa0e4076667e7cab6f3ec66",
+      "size_bytes": 68861,
+      "git_blob": "a94d420c5bb89eeb5cb484040df572747a716ecb",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "3aeec3c3fa34dbd840a546acf2074d9f8a17c02b"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-management-menu.png",
-      "sha256": "d371fad69460d74fc075e00ee3254c54b41baf71d176f94ebd085458c25b445f",
-      "size_bytes": 5893,
-      "git_blob": "b12a9e88632b011b9d79932c4d81253a3ded1351",
+      "sha256": "ca2a2b03fc4204d22447b6418e5cbc935c2b5a4d9c311d6badcf5106e082ae17",
+      "size_bytes": 5930,
+      "git_blob": "248303cddf848c70410f140a295409e818ff47c9",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "b12a9e88632b011b9d79932c4d81253a3ded1351"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-processing.png",
@@ -68406,14 +68413,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/startup-step-2.png",
-      "sha256": "29d9bc2f5ee1b3eb024050cd37abc6794b569ee6f06a1a42663ef9af2acace58",
-      "size_bytes": 68527,
-      "git_blob": "80e9794565f3c9215eaf7a79152f20c703a411cd",
+      "sha256": "ee1c6dbf01d67a864d7a5069491a732b0fe82dfd227eeac7ae9535fb3c9f8aeb",
+      "size_bytes": 68473,
+      "git_blob": "90382b78269eaf97fb412f0b83f4847c9b81729a",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "80e9794565f3c9215eaf7a79152f20c703a411cd"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/startup-step-3.png",
@@ -68560,14 +68568,15 @@
     },
     {
       "path": "docs/runtime/validation/parameter-ui-refine-01.md",
-      "sha256": "1b6108aff8b9727990206201489cd3039fb68b7db112ac4f7cae96cac6e086b6",
-      "size_bytes": 5683,
-      "git_blob": "5c76e6853b6ab62b9f0124ab97cd5e06afc1ac66",
+      "sha256": "3a17e48e9546cef3f76ca3f81ca5a9f80289a7ea237c73c3f7da11275d1f91ce",
+      "size_bytes": 5732,
+      "git_blob": "b3e3d6225b6a2459ec91ccbb139fa723073d6025",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
-      "storage_scope": "public_repository"
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "5c76e6853b6ab62b9f0124ab97cd5e06afc1ac66"
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md",
@@ -68604,13 +68613,36 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterUiRefinement.cs",
-      "sha256": "61c1a1163e77224ee64caec5470a9f73d30517a2e18c8b00a1b740cac8bc15bd",
-      "size_bytes": 10221,
-      "git_blob": "22d7041239ff1085cef96c40e7108cef72d258f5",
+      "sha256": "86dd3e59e9236907a7bd19c704e2d78bb2b60ec1a0601fd08ffc22c37ddc0472",
+      "size_bytes": 10292,
+      "git_blob": "da0d87a522e6d51920890f074f895cb77f43f6a3",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "22d7041239ff1085cef96c40e7108cef72d258f5"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-ui-refine-01/logs/CONDITIONAL-DESKTOP-BUILD.log",
+      "sha256": "cddb8f76a83df0fef19ebd519e34a712f0d75d2fddb361ffac2096528f43cd72",
+      "size_bytes": 84,
+      "git_blob": "bd16fdeed877651a2e57e199e75a90fb831cdea1",
+      "version": "PARAMETER-UI-REFINE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-ui-refine-01/logs/CONDITIONAL-NATIVE-BUILD.log",
+      "sha256": "1293d1315b3b1767cf22cb67292a3679691d38ce7d90d81af762e8fb2493fd19",
+      "size_bytes": 84,
+      "git_blob": "d536e215c16edf47644d695d7a509f07e01c5afd",
+      "version": "PARAMETER-UI-REFINE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
       "storage_scope": "public_repository"
     }
   ],
@@ -71121,7 +71153,7 @@
     }
   },
   "parameter_ui_refine_01": {
-    "code_commit": "a73b53990a564aeb4a253dc94a44b3e3fce66a89",
+    "code_commit": "db0e5d8be1064bfa346514a094a61535a56f3c96",
     "baseline_main": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
     "evidence": "docs/runtime/evidence/parameter-ui-refine-01/RESULT.json",
     "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED",

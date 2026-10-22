@@ -1,3 +1,5 @@
+﻿> 2026-10-23 内部页面与逐页校验续做见[本轮工作包](work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md)。替代上轮按整类继续及普通错误中的变量名呈现，查询快照与业务/权限责任保持。
+
 > 2026-10-23参数/首次配置现已授权推送与PR合并；范围、原证据与不测试边界见[本轮发布记录](runtime/publication-parameter-ui-20261023.md)。原稿和4个未跟踪附件继续保留本地。
 
 ﻿> 2026-10-23 当前参数与首配细化：[实施及源码映射](runtime/parameter-ui-refine-01.md)、[原生验收/截图及边界](runtime/validation/parameter-ui-refine-01.md)。本地同源测试包不推送、不发布、不自动安装；下列历史安装包和清理结论保持原时点。

@@ -45,14 +45,16 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public event EventHandler? ValidationChanged;
     bool validationRequested;
     int? validationScope;
+    IReadOnlySet<string>? validationPaths;
     public void RevalidateAfterEdit()
     {
-        if (validationRequested) ValidateFields(validationScope);
+        if (validationRequested) ValidateFields(validationScope, validationPaths);
     }
     static string WeightRangeField(string message) => message.Contains("WeightRange.MinimumWeight", StringComparison.Ordinal) ? "MinimumWeight" : "MaximumWeight";
-    public void Report(string message)
+    public void Report(string message, bool preserveScope = false)
     {
-        validationRequested = true; validationScope = null;
+        validationRequested = true;
+        if (!preserveScope) { validationScope = null; validationPaths = null; }
         if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
         else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
@@ -73,9 +75,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Deduplicate();
         ValidationChanged?.Invoke(this, EventArgs.Empty);
     }
-    public bool ValidateFields(int? category = null)
+    public bool ValidateFields(int? category = null, IReadOnlySet<string>? paths = null)
     {
-        validationRequested = true; validationScope = category;
+        validationRequested = true; validationScope = category; validationPaths = paths;
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
@@ -140,8 +142,25 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
         if (category is not null)
             foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
+        if (paths is not null)
+            foreach (var issue in Issues.Where(i => !paths.Contains(i.Path)).ToArray()) Issues.Remove(issue);
         Deduplicate();
         ValidationChanged?.Invoke(this, EventArgs.Empty); return Issues.Count == 0;
+    }
+    public async Task<bool> ValidatePageAsync(IReadOnlySet<string> paths)
+    {
+        var valid = ValidateFields(paths: paths);
+        if (!paths.Contains("BarcodePattern") && !paths.Contains("BarcodeExclusionPattern")) return valid;
+        var pattern = Policy.BarcodePattern; var exclusion = Policy.BarcodeExclusionPattern;
+        if (string.IsNullOrWhiteSpace(pattern) && string.IsNullOrWhiteSpace(exclusion)) return valid;
+        var result = await Task.Run(() => Preview(new(pattern, exclusion.Length == 0 ? null : exclusion), ["__format_check__"]));
+        if (pattern != Policy.BarcodePattern || exclusion != Policy.BarcodeExclusionPattern) return false;
+        if (result.Outcome is "InvalidPattern" or "FilterTimeout") { Report(result.Detail, preserveScope: true); return false; }
+        return valid;
+    }
+    public void ReportField(string category, string path, string message)
+    {
+        Issues.Add(new(category, path, message)); Deduplicate(); ValidationChanged?.Invoke(this, EventArgs.Empty);
     }
     void Deduplicate()
     {

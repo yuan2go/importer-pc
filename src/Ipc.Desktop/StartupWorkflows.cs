@@ -254,20 +254,14 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(true); }
         });
         Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", StartReviewed);
-        Action("上一步", () => { if (initialConfiguration) parameterControl?.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Max(0, selectedTask - 1)]); else if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
+        Action("上一步", () => { if (initialConfiguration) parameterControl?.MovePrevious(); else if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
         var next = Action("下一步", async () =>
         {
-            if (initialConfiguration && selectedTask < 4)
-            {
-                if (parameterEditor is null) throw new InvalidOperationException("先读取可编辑候选；保留原目录和诊断。");
-                if (!parameterEditor.ValidateFields(new[] { 1, 0, 2, 3 }[selectedTask])) { LocateFirstIssue(); throw new InvalidOperationException("请修正本步骤标出的参数；其他步骤输入保留。"); }
-                if (selectedTask == 0) await ValidateBarcodeRule();
-            }
             if (initialConfiguration)
             {
+                if (parameterControl is null || !await parameterControl.MoveNextAsync()) { LocateFirstIssue(); throw new InvalidOperationException("请修正当前页标出的参数后再继续；其他输入保留。"); }
                 saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存待启动检查" : "未保存";
-                parameterControl?.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Min(4, selectedTask + 1)]);
-                if (selectedTask == 4) await CheckCandidate();
+                if (parameterControl.IsReviewPage) await CheckCandidate();
             }
             else if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1);
         });
@@ -678,9 +672,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             {
                 var label = (string)button.Content;
                 var next = label == "下一步" || label.StartsWith("继续：", StringComparison.Ordinal) || label == "检查配置";
-                if (next) button.Content = selectedTask switch { 0 => "继续：系统", 1 => "继续：驱动", 2 => "继续：组件", _ => "检查配置" };
+                if (next) button.Content = parameterControl?.NextPageTitle is { } title ? title == "检查与完成" ? "检查配置" : "继续：" + title : "下一步";
                 var confirmed = lastSaveConfirmed && !startupSaveUncertain && savedInput == Input();
-                button.Visibility = next && selectedTask < 4 && !startupSaveUncertain || label == "上一步" && selectedTask > 0 || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
+                button.Visibility = next && parameterControl?.NextPageTitle is not null && !startupSaveUncertain || label == "上一步" && parameterControl?.HasPreviousPage == true || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
                 if (label is "保存配置" or "完成" or "重新读取配置…") StartupAppearance.Primary(button);
             }
             return;

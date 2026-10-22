@@ -30,7 +30,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--installer-first-run-ui")) await VerifyInstallerFirstRunUi(root, evidence, lines);
+                if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
+                else if (args.Contains("--installer-first-run-ui")) await VerifyInstallerFirstRunUi(root, evidence, lines);
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
                 else if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) await VerifyOperatorAdministration(root, evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);

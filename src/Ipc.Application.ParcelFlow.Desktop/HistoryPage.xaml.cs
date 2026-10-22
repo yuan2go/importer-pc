@@ -1,9 +1,24 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class HistoryPage : UserControl
 {
-    public HistoryPage() => InitializeComponent();
+    public HistoryPage()
+    {
+        InitializeComponent();
+        SizeChanged += (_, _) =>
+        {
+            var shortPage = ActualHeight < 500;
+            HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
+            HistoryHeading.FontSize = shortPage ? 18 : 22;
+            HistoryFilterScroll.MaxHeight = shortPage ? 60 : Math.Min(240, ActualHeight * .35);
+        };
+    }
+    void ClearFilters_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm) return;
+        vm.ClearHistoryFilters();
+    }
     void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = day.AddDays(1).ToString("O"); } }
     void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeOffset.Now; vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
     void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }

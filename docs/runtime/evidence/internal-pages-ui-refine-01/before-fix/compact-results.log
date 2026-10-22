@@ -1,0 +1,14 @@
+CAPTURE workstation-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL query uses the real application history selection
+CAPTURE history-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+CAPTURE history-selected-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL full barcode query preserves leading zeros and distinct entities
+PASS INTERNAL clear filters updates fields without changing the previous fixed result range
+CAPTURE history-empty: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL empty query has no invented records
+CAPTURE history-800: 800x420 DIP, Windows DPI 1.25/1.25
+FAIL System.InvalidOperationException: compact history result stays inside the native client
+   at Program.<VerifyInternalPages>g__Check|8_0(Boolean ok, String reason, <>c__DisplayClass8_0&) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 86
+   at Program.VerifyInternalPages(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 110
+   at Program.VerifyInternalPages(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 126
+   at Program.<>c__DisplayClass16_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

@@ -1,0 +1,17 @@
+[
+  {
+    "Original": "docs/INDEX.md",
+    "Sha256": "ee95a9d9895b6a9bf7ca57b9fd60198b462aabc7fc4009de9a5aa7cc4ae4d48a",
+    "Snapshot": "docs__INDEX.md.txt"
+  },
+  {
+    "Original": "docs/design/parameter-settings-experience-02.md",
+    "Sha256": "e353b9f70b371d9aac5df1aa8c3f1e0fa47badf43ac3da82b2f227245da7a2d6",
+    "Snapshot": "docs__design__parameter-settings-experience-02.md.txt"
+  },
+  {
+    "Original": "docs/runtime/parameter-ui-refine-01.md",
+    "Sha256": "1ac8a7be02d46d828735eb9cdeb86150609ac727d5b7fded80e73b94bebdd7b2",
+    "Snapshot": "docs__runtime__parameter-ui-refine-01.md.txt"
+  }
+]

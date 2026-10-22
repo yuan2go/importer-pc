@@ -29,6 +29,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     DeploymentLocation? installed;
     public DeploymentLocation? Installed => installed;
     public bool Launched { get; private set; }
+    // An independent elevated helper may still need the prepared media after a lost receipt.
+    public bool CanCleanPreparation => !installing && !outcomeUnknown;
     TextBox data = null!, program = null!;
     CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
     bool installing, failed, outcomeUnknown;
@@ -36,18 +38,22 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string configurationMessage = "", failureMessage = "";
     string newStation = "", selectedProgram = "";
     string? enteredData;
+    string? installationRecordDirectory;
+    readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = 13, Margin = new(0, 10, 0, 0) };
     bool selectedStartMenu = true, selectedDesktop = true;
     int step;
     double optionsHeight = 680;
-    readonly Button next, back, cancel;
+    readonly Button next, back, records, cancel;
     public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
     {
         this.prepareMedia = prepareMedia;
         if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
+        records = Action("打开安装记录目录", OpenRecordDirectory);
         cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
         next.IsDefault = true; cancel.IsCancel = true;
+        AutomationProperties.SetLiveSetting(recordFeedback, AutomationLiveSetting.Polite);
         cancel.Click += (_, _) =>
         {
             if (preparing is null) return;
@@ -100,17 +106,35 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         Body.Children.Clear(); Form = Body; Body.Margin = new(0);
         if (runAfter is not null) Actions.Children.Remove(runAfter);
         InstallationStep(step == 3 ? 2 : step >= 2 ? 1 : 0);
-        InstallationHeading.Text = failed ? "安装未完成" : installing ? "正在安装" : step switch { 0 => "准备安装", 1 => "安装选项", 2 => "确认安装", _ => "安装完成" };
-        back.Visibility = step == 2 && !installing && !failed ? Visibility.Visible : Visibility.Collapsed;
+        InstallationHeading.Text = outcomeUnknown ? "安装结果待确认" : failed ? "安装未完成" : installing ? "正在安装" : step switch { 0 => "准备安装", 1 => "安装选项", 2 => "确认安装", _ => "安装完成" };
+        back.Visibility = step == 2 && !installing && !failed && !outcomeUnknown ? Visibility.Visible : Visibility.Collapsed;
         cancel.Visibility = installing || step == 3 ? Visibility.Collapsed : Visibility.Visible;
-        cancel.Content = failed ? "关闭" : "取消";
-        next.Visibility = installing || failed && outcomeUnknown ? Visibility.Collapsed : Visibility.Visible;
+        cancel.Content = failed || outcomeUnknown ? "关闭" : "取消";
+        next.Visibility = installing || outcomeUnknown ? Visibility.Collapsed : Visibility.Visible;
+        records.Visibility = outcomeUnknown || failed && Directory.Exists(installationRecordDirectory) ? Visibility.Visible : Visibility.Collapsed;
+        records.SetResourceReference(StyleProperty, outcomeUnknown ? "StartupPrimary" : typeof(Button));
+        records.IsDefault = outcomeUnknown; next.IsDefault = !outcomeUnknown;
+        recordFeedback.Text = "";
+        recordFeedback.ToolTip = null;
+        if (outcomeUnknown)
+        {
+            Height = Math.Min(520, MaxHeight);
+            Message("未能确认本次安装的最终结果。");
+            Note("请先查看本次安装记录，再决定后续操作。");
+            var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(121, 85, 27)) };
+            AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
+            Body.Children.Add(new Border { Background = new SolidColorBrush(Color.FromRgb(255, 248, 231)), CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution });
+            Details(historical: true);
+            Body.Children.Add(new TextBlock { Text = "关闭不会取消可能仍在执行的安装；准备文件将保留。", TextWrapping = TextWrapping.Wrap, FontSize = 13, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
+            Body.Children.Add(recordFeedback);
+            return;
+        }
         if (failed)
         {
             Height = Math.Min(optionsHeight, MaxHeight);
-            Message(failureMessage); Status.Foreground = Brushes.Firebrick;
-            Note(outcomeUnknown ? "安装结果尚未确认。授权进程可能仍在执行；请先核对安装记录，不要重复安装。" : "请查看失败详情和安装记录。安装登记可能已提交，系统入口可能仍需修复；返回后将重新核对原部署。未自动回滚。");
-            Details(); next.Content = "返回安装选项"; AddRecordDirectory(); return;
+            Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.Foreground = Brushes.Firebrick;
+            Note("请查看失败详情和安装记录。安装登记可能已提交，系统入口可能仍需修复；返回后将重新核对原部署。未自动回滚。");
+            Details(); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
         }
         if (installing)
         {
@@ -161,17 +185,40 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Actions.Children.Insert(0, runAfter); if (!canRun) Note("请使用原供包台的 Windows 账户打开程序。"); next.Content = "完成";
         }
     }
-    void Details()
+    void Details(bool historical = false)
     {
-        var text = new TextBox { Text = string.Join("\n", installationDetails), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        Body.Children.Add(new Expander { Header = "查看本次安装详情", Content = text, IsExpanded = true, Margin = new(0, 12, 0, 0) });
+        var content = new StackPanel();
+        var original = installationDetails.Count == 0 ? "未收到阶段消息。" : string.Join("\n", installationDetails);
+        if (historical)
+        {
+            content.Children.Add(new TextBlock { Text = "历史消息", FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new(0, 0, 0, 6) });
+            content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = 13, TextWrapping = TextWrapping.Wrap });
+            content.Children.Add(new TextBlock { Text = "历史消息仅供核对，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = 13, Margin = new(0, 8, 0, 12) });
+            content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new(0, 0, 0, 6) });
+            content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = 13, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+            content.Children.Add(new Expander { Header = "原始消息文本", FontSize = 13, Margin = new(0, 12, 0, 0), Content = new TextBox { Text = original + "\n" + failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = 13, MinHeight = 0, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+            Body.Children.Add(new Expander { Header = "安装详情", Content = new Border { Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)), CornerRadius = new(4), Padding = new(12), Margin = new(0, 8, 0, 0), Child = content }, IsExpanded = false });
+            return;
+        }
+        content.Children.Add(new TextBox { Text = original, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        content.Children.Add(new TextBlock { Text = failureMessage, TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 0) });
+        Body.Children.Add(new Expander { Header = "查看本次安装详情", Content = content, IsExpanded = true, Margin = new(0, 12, 0, 0) });
     }
-    void AddRecordDirectory()
+    Task OpenRecordDirectory()
     {
-        var directory = Path.Combine(WindowsDeploymentSetup.MachineRoot, "deployments");
-        if (!Directory.Exists(directory)) return;
-        var open = new Button { Content = "打开安装记录目录", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
-        open.Click += (_, _) => { try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(directory) { UseShellExecute = true }); } catch (Exception error) { Message("无法打开安装记录目录：" + error.Message); } }; Body.Children.Add(open);
+        try
+        {
+            var directory = installationRecordDirectory ?? throw new IOException("本次安装尚未提供记录目录。");
+            if (!Directory.Exists(directory)) throw new DirectoryNotFoundException("记录目录尚未生成或当前无法访问：" + directory);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(directory) { UseShellExecute = true });
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            recordFeedback.ToolTip = error.Message;
+            recordFeedback.Text = (error is DirectoryNotFoundException ? "安装记录目录尚未生成或当前无法访问。" : "无法打开安装记录目录：" + ChineseInterfaceText.ParameterMessage(error.Message))
+                + (outcomeUnknown ? " 最终结果仍待确认，请勿重复安装。" : " 请核对本次失败详情。");
+        }
+        return Task.CompletedTask;
     }
     void Stage(WindowsInstallationStage value)
     {
@@ -197,8 +244,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     {
         if (step == 2 || installing)
         {
-            installing = false; failed = true; outcomeUnknown = error is InstallationOutcomeUnknownException;
-            failureMessage = ChineseInterfaceText.ParameterMessage(error.Message); installationDetails.Add(failureMessage); Render();
+            installing = false; outcomeUnknown = error is InstallationOutcomeUnknownException; failed = !outcomeUnknown;
+            failureMessage = error.Message; Render();
         }
         else
         {
@@ -206,8 +253,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Message("未完成：" + ChineseInterfaceText.ParameterMessage(error.Message)); Status.Foreground = Brushes.Firebrick;
         }
     }
+    protected override void OperationCompleted()
+    {
+        if (outcomeUnknown && IsVisible) records.Focus();
+    }
     async Task Next()
     {
+        if (outcomeUnknown) return; // Never replay a transaction whose terminal receipt is untrusted.
         if (failed) { failed = false; step = 1; reviewed = null; Render(); return; }
         if (step == 0)
         {
@@ -241,6 +293,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         else if (step == 2)
         {
             optionsHeight = Height;
+            installationRecordDirectory = Path.GetDirectoryName(WindowsDeploymentSetup.Registration(reviewed!.ApplicationId));
             installing = true; installationDetails.Clear(); installationStage.Text = "正在准备安装请求"; Render();
             installed = await Task.Run(() => Install(reviewed!, new Progress<WindowsInstallationStage>(StageOnDispatcher)));
             installing = false;

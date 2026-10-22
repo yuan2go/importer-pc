@@ -149,9 +149,7 @@ public static class ParcelStartupServices
         using var writer = new StreamWriter(pipe) { AutoFlush = true };
         void Report(WindowsInstallationStage stage)
         {
-            // Losing an observational channel must not interrupt a durable transaction.
-            try { writer.WriteLine(Wire.Encode(new { Status = "Progress", Stage = stage.ToString() })); }
-            catch (IOException) { }
+            WriteInstallationProgress(writer, stage);
         }
         string? failure = null, result = null;
         try {
@@ -371,6 +369,7 @@ public static class ParcelStartupServices
         request = request with { Pipe = pipeName };
         if (RequiresManagementMode(request.Action)) request = request with { ManagementGrant = LocalManagementMode.ForRoot(request.Launch!.DataRoot).Delegate(ManagementRequestHash(request)) };
         ProtectedDraftPayload.Write(path, Wire.Encode(request), false);
+        var retainRequest = false;
         try
         {
             using var pinned = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -404,8 +403,16 @@ public static class ParcelStartupServices
             catch (Exception error) when (error is IOException or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException or OperationCanceledException or UnauthorizedAccessException)
             { throw new InstallationOutcomeUnknownException("未取得可信维护终态。安装可能已提交，请核对安装记录后再继续。", error); }
         }
+        catch (InstallationOutcomeUnknownException) { retainRequest = true; throw; }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new UnauthorizedAccessException("已取消 Windows 维护授权；已有配置和数据保留，可重新操作。", ex); }
-        finally { File.Delete(path); }
+        finally { if (!retainRequest) File.Delete(path); }
+    }
+    internal static void WriteInstallationProgress(TextWriter writer, WindowsInstallationStage stage)
+    {
+        // One JSON value per line. Wire.Encode indents documents across lines.
+        // Losing this observational channel must not interrupt a durable transaction.
+        try { writer.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Status = "Progress", Stage = stage.ToString() })); }
+        catch (IOException) { }
     }
     internal static async Task<string?> ReadMaintenanceResponse(TextReader input, Action<WindowsInstallationStage> progress, CancellationToken token)
     {
@@ -433,9 +440,13 @@ public static class ParcelStartupServices
             if (response is null || response.Length > 65536) throw new IOException("维护终态回执缺失");
             using var document = System.Text.Json.JsonDocument.Parse(response);
             var terminal = document.RootElement.GetProperty("Status").GetString();
-            if (terminal is not ("Completed" or "Failed") || terminal == "Completed" && exitCode != 0) throw new IOException("维护终态与进程结果不一致");
+            if (terminal is not ("Completed" or "Failed") || terminal == "Completed" && exitCode != 0 || terminal == "Failed" && exitCode != 2) throw new IOException("维护终态与进程结果不一致");
             if (terminal == "Failed") failure = document.RootElement.GetProperty("Error").GetString() ?? "维护未完成";
-            result = document.RootElement.TryGetProperty("Result", out var value) && value.ValueKind == System.Text.Json.JsonValueKind.String ? value.GetString() : null;
+            if (document.RootElement.TryGetProperty("Result", out var value))
+            {
+                if (value.ValueKind is not (System.Text.Json.JsonValueKind.String or System.Text.Json.JsonValueKind.Null)) throw new IOException("维护终态结果格式无效");
+                result = value.ValueKind == System.Text.Json.JsonValueKind.String ? value.GetString() : null;
+            }
         }
         catch (Exception error) when (error is IOException or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException)
         { throw new InstallationOutcomeUnknownException("未取得可信维护终态，请先核对安装记录。", error); }

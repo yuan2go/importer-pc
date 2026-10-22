@@ -1,5 +1,7 @@
 # 参数与经典窗口细化：实现和集成
 
+本轮实现与验证代码提交：`26f239f7e23b1476c7734c35f5f4454c408f4d7c`；后续清单提交不改变源码/测试。
+
 执行时 main `dd1dfefc9e829f557a1efdf6f7ad7532fec4ef81`，PR88已合并，无开放PR。本地独立分支 `codex/parameter-shell-polish-02` 的增量父为 `9900cbe9e9dd573d46c6b8b2dbb1d52dc46b7bc1`，保留本会话上一轮未推送的内部页面和逐页校验。原 AccountDisplay 已是独立单行，本轮没有重建账号/模式模型，也未修改 ManagementModePresentation 或权限服务。
 
 ## 实际修改与源码映射
@@ -20,3 +22,5 @@
 本次交付本地独立 commit 和 D盘补丁，不推送/创建PR/发布/安装。完整提交序列以9900cbe9为父；`source-only.patch`仅含本轮src/tests，可供只有最新main的集成方先检查，不能把先前本地成果重复计作本次改动。目标若缺少上轮内部页与逐页校验，应分别审阅其原提交f1d723f和清单提交9900cbe9，不重建或覆盖。
 
 实际前后图、日志、完整修改清单与来源见[证据](evidence/parameter-shell-polish-02/README.md)，验证及未执行项见[记录](validation/parameter-shell-polish-02.md)。原当前指引[归档](../archive/pre-parameter-shell-polish-02/README.md)，历史D/RV、版本、发布和截图保持各自身份。
+
+本轮src/tests补丁已对最新main独立临时索引执行 `git apply --cached --check` 通过，见[原回执](evidence/parameter-shell-polish-02/MAIN-APPLY-CHECK.log)。这是应用检查，不是main合并树运行验收；没有改动真实工作索引或旧分支。

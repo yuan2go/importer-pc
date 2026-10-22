@@ -11,7 +11,9 @@ docs/runtime/evidence/parameter-shell-polish-02/FILES.json
 docs/runtime/evidence/parameter-shell-polish-02/MAIN-APPLY-CHECK.log
 docs/runtime/evidence/parameter-shell-polish-02/MODIFIED-FILES.txt
 docs/runtime/evidence/parameter-shell-polish-02/README.md
+docs/runtime/evidence/parameter-shell-polish-02/RELEASE-BUILD.log
 docs/runtime/evidence/parameter-shell-polish-02/RESULT.json
+docs/runtime/evidence/parameter-shell-polish-02/STARTUP-SMOKE.log
 docs/runtime/evidence/parameter-shell-polish-02/after/WINDOWS-WPF.log
 docs/runtime/evidence/parameter-shell-polish-02/after/data-1366.png
 docs/runtime/evidence/parameter-shell-polish-02/after/expired-800.png

@@ -34,5 +34,10 @@
   "physical_keyboard": "NOT_RUN",
   "other_os_dpi": "NOT_RUN",
   "real_uac_install": "NOT_RUN",
-  "production_devices": "NOT_CONNECTED"
+  "production_devices": "NOT_CONNECTED",
+  "code_commit": "26f239f7e23b1476c7734c35f5f4454c408f4d7c",
+  "release_build": "PASS_NO_WARNINGS_OR_ERRORS",
+  "read_only_startup": "PASS_EXIT_0",
+  "source_patch_main_apply": "PASS_INDEX_ONLY_NOT_MAIN_COMBINED_RUNTIME",
+  "source_patch_sha256": "dfe801a10e0cdbae32524ec8fadbeb701e442375b77d67758bfe62b45ea39b80"
 }

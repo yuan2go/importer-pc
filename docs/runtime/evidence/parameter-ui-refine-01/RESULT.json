@@ -1,0 +1,19 @@
+{
+  "Task": "WP-IPC-PARAMETER-UI-REFINE-01",
+  "Date": "2026-10-23",
+  "BaselineMain": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "LocalBase": "24b0f5c2526bde4d19035589b204cb8899069e1d",
+  "Origins": {
+    "startup-experience": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-af1ee3dbc4c04b3182323c94191c8754",
+    "installer-first-run-ui": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a2329615d064453c8b744f72a9ffd11a",
+    "management-mode": "D:\\projects\\importer-pc\\.artifacts\\wpf-v2-5d158895e85f4327b9bef4a4c5ca9b4e",
+    "parameter-experience": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-fdd38230b2974633b6335dcd8f34b554",
+    "parameter-v3-only": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-b9aac2df9f624a69a1098a034b6507cb"
+  },
+  "ActualWindowsDpi": 1.25,
+  "Native": "PASS_SYNTHETIC",
+  "ApplicationConfiguration": "PASS_RERUN_INITIAL_FAILURE_RETAINED",
+  "RealUacInstallation": "NOT_RUN",
+  "ProductionDevices": "NOT_RUN",
+  "PushRelease": "NOT_DONE"
+}

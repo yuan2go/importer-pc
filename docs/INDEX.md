@@ -1,3 +1,5 @@
+﻿> 2026-10-23 当前参数与首配细化：[实施及源码映射](runtime/parameter-ui-refine-01.md)、[原生验收/截图及边界](runtime/validation/parameter-ui-refine-01.md)。本地同源测试包不推送、不发布、不自动安装；下列历史安装包和清理结论保持原时点。
+
 > 当前重测安装包为SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。修复保存D盘位置但目录不存在时启动报错；已验证到确认页并取消，尚未正式安装。下述SM1.11.0交付与清理保持历史时点。
 >
 > 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验；其后按用户要求已卸载并清空旧运行状态，保留海康及D盘存储位置，等待重新测试安装。[当前清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 各守时间范围。
@@ -7,6 +9,8 @@
 > 当前安装与首配入口 UI 实施：[INSTALLER-FIRST-RUN-UI-02](work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[UI规范与预览](ui/installer-first-run-ui-02/README.md)。后续已按用户要求降低密码最低长度至5个字符（允许纯数字）并隐藏安装使用范围，见[增量原生证据](runtime/evidence/installer-first-run-ui-02/followup-password-scope/README.md)。本包替代冲突的旧安装布局与授权提示；下述介质及验证保留各自来源，不代表新 UI 已验收。
 
 # 文档索引 · 作业、管理模式与日志
+
+当前参数呈现增量：[PARAMETER-UI-REFINE-01](work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)，替代冲突的首配重复导航、表单/错误和管理入口布局；四类归属、真实字段与保存/授权守卫继承V3。安装与设密修复继续保留。
 
 安装/首配后续实机问题：[窗口比例与首次设密批准修复](runtime/installer-first-run-ui-02-bootstrap-layout.md)。替代此前窗口默认尺寸及首次设密批准调用；原证据不扩张为实际UAC引导验收。
 

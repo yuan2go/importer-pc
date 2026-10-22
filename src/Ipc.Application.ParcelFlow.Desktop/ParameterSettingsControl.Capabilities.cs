@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,8 +20,8 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var component in m.Components.Where(c => (c.Role != "maintenance-auth" && (!FirstConfiguration || c.Bound)) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
-            var page = Page(ParameterOwnership.ObjectCategory(component), FirstConfiguration ? m.ComponentName(component) : ParameterOwnership.IsRcs(component) ? "调度系统连接" : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) ? "左右相机共用一个 调度系统连接。保存后通过受控重启应用。" :
+            var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
+                ParameterOwnership.IsRcs(component) ? "左右相机共用此连接，保存后待受控应用。" :
                 ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
@@ -84,12 +84,17 @@ public sealed partial class ParameterSettingsControl
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
+        if (isRcs)
+        {
+            var numbers = Form(page, "请求编号区间");
+            foreach (var p in draft.Parameters.Where(p => p.Field.Key is "request-id-base" or "request-id-count")) Parameter(numbers, page, draft, p);
+        }
         var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
-            else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") advanced.Add(p);
+            else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "code.encoding" || p.Field.Key == "entity.mode" && draft.Provider.Implementation != "tcp-line")) advanced.Add(p);
             else if (draft.Kind != "observation" || p.Field.Key != "bcr-code") Parameter(form, page, draft, p);
         }
@@ -115,9 +120,9 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "相机 IP 地址", "device.port" or "port" => "相机端口", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
-        "left-bcr-code" or "right-bcr-code" => "相机编码（取格口）", "bcr-code" => "相机编码（心跳）", "heartbeat-interval-seconds" => "心跳间隔",
-        "request-id-base" => "请求编号起点（不含）", "request-id-count" => "请求编号容量", "source" => "协议来源", "locale" => "协议语言",
+        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
+        "left-bcr-code" or "right-bcr-code" => "取格口相机编码", "bcr-code" => "心跳相机编码", "heartbeat-interval-seconds" => "心跳间隔",
+        "request-id-base" => "编号起点（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
         "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
@@ -127,19 +132,19 @@ public sealed partial class ParameterSettingsControl
         "zone-id" or "project-id" => "填写上游分配的正整数标识。", "quantity" => "1～2147483647；与上游响应数量分别保留。",
         "bcr-code" => "心跳上报使用，左右相机不得重复。", "left-bcr-code" or "right-bcr-code" => "本位取格口请求使用；与心跳编码分别配置。",
         "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "填写时同时核对网络地址和序列号。",
-        "entity.mode" => "仅观察模式不准入实体；触发关联仍需真实部署资格。", "queue.capacity" => "1～1024；溢出后需检查并显式重连。",
-        "heartbeat-interval-seconds" => "1～3600 秒；重启后应用。", "specified-chute" => "启用时必须填写下方格口编码。", "chute-code" => "仅指定格口开启时使用。",
+        "entity.mode" => "仅观察不创建作业；触发关联仍需真实部署资格。", "queue.capacity" => "1～1024；溢出后需检查并显式重连。",
+        "heartbeat-interval-seconds" => "1～3600 秒；重启后应用。", "specified-chute" => "指定时须填写格口编码。", "chute-code" => "仅指定格口时使用。",
         "request-id-base" => "大于或等于 0；保留原持久编号责任。", "request-id-count" => "大于或等于 1；与起点合计不能溢出。",
-        _ => p.EditorHelp.Length > 100 ? "完整规则见下方技术信息。" : p.EditorHelp
+        _ => p.EditorHelp.Length > 100 ? "完整规则见下方参数说明。" : p.EditorHelp
     };
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
         var path = draft.InstanceId + "/" + p.Field.Key;
         var required = p.Field.Required || p.Field.Key == "bcr-code" && Model!.Components.Any(ParameterOwnership.IsRcs) || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
-        var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
-            ? "仅观察时只读取条码，不创建作业。现场确认每条完整报文对应一个包裹后，再选择每行一个包裹。" : ParameterHint(p);
+            ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : ParameterHint(p);
         if (p.IsSensitive)
         {
             // PasswordBox keeps the existing reference masked. Never replace it
@@ -152,7 +157,8 @@ public sealed partial class ParameterSettingsControl
         }
         else if (p.Field.Type == "boolean" || p.Field.Key == "specified-chute")
         {
-            var choice = new ComboBox { ItemsSource = new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
+            var specified = p.Field.Key == "specified-chute";
+            var choice = new ComboBox { ItemsSource = specified ? new[] { new BooleanChoice("", "请选择"), new BooleanChoice("false", "不指定"), new BooleanChoice("true", "指定") } : new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Field(form, label, choice, help, path, page);
         }
@@ -167,8 +173,11 @@ public sealed partial class ParameterSettingsControl
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code")
         {
             var field = locations[path].Control;
-            PropertyChangedEventHandler handler = (_, _) => field.IsEnabled = !p.Field.ReadOnly && ParameterOwnership.Applicable(draft, p.Field.Key);
+            var row = locations[path].Row!;
+            void Update() { var selected = draft.Parameters.FirstOrDefault(x => x.Field.Key == "specified-chute")?.Value == "true"; row.Visibility = selected ? Visibility.Visible : Visibility.Collapsed; field.IsEnabled = !p.Field.ReadOnly && selected; }
+            PropertyChangedEventHandler handler = (_, _) => Update();
             draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
+            Update();
         }
     }
 }

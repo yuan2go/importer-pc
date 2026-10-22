@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
 
@@ -29,6 +29,7 @@ static partial class ArchitectureQuality
             Check(first.Message.Contains("Validated") && (await app.SnapshotAsync()).Configuration.Pending is null,
                 "UXC03 full candidate validation is real Application validation and does not save or activate");
             await first.SaveStructuredConfigurationAsync(); await first.RefreshAsync();
+            Console.WriteLine("UXC03 submission diagnostic: " + first.Message + "; issues=" + string.Join("|", first.ParameterEditor?.Issues.Select(i => i.Path + "=" + i.Message) ?? []));
             var saved = (await app.SnapshotAsync()).Configuration;
             Check(saved.Pending is not null && first.Message.StartsWith("PendingRestart") && Wire.Encode(saved.Effective) == Wire.Encode(effective),
                 "UXC03 same Application CAS saves Pending and preserves Effective until controlled restart");

@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -48,7 +48,7 @@ public partial class ParcelViewModel
         {
             validationState = "有设置需要修正";
             if (configurationAuthority == "结构化表单") ParameterEditor?.Report(error.Message);
-            NotifyConfigurationEditorState(); Message = "设置检查未通过：" + error.Message; return false;
+            NotifyConfigurationEditorState(); Message = "设置检查未通过，请修正标出的参数；输入已保留。"; return false;
         }
         var signature = CurrentReviewSignature();
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
@@ -56,7 +56,7 @@ public partial class ParcelViewModel
         { validationState = "检查期间输入已改变"; NotifyConfigurationEditorState(); Message = "输入已改变，本次检查已过期。请重新保存以检查当前更改。"; return false; }
         validationState = validation.Status + " · " + validation.Reason;
         if (validation.Status != "Validated")
-        { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过：" + validation.Reason; return false; }
+        { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
         reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate);
         if (reviewedConfigurationChanges.Length == 0)
         {
@@ -93,14 +93,14 @@ public partial class ParcelViewModel
             var category = "高级设置"; var owner = "完整候选"; var label = path; var fieldPath = ""; var showValues = false;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
-                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "调度系统连接" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
+                owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 服务" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? ParameterOwnership.ObjectCategory(draft) : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
                 { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = instance + "/Target"; showValues = true; }
                 else { label = path; fieldPath = ""; }
                 if (category == "系统") owner = "供包台标识";
-                else if (category == "业务模块") owner = "取格口请求";
+                else if (category == "业务模块") owner = "格口请求";
                 else if (parameter is "left-bcr-code" or "right-bcr-code") owner = parameter.StartsWith("left", StringComparison.Ordinal) ? "左相机" : "右相机";
             }
             else

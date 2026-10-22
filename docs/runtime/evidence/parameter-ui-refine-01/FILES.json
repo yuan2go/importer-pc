@@ -1,0 +1,457 @@
+[
+  {
+    "Path": "authorization/after-configuration-start-gate.png",
+    "Sha256": "d2d6a1bdfedc46cef7b61ff26e3d86bb18d4d34055c22fa4cdefd8d8bca63138",
+    "Bytes": 15612
+  },
+  {
+    "Path": "authorization/after-install-start-gate.png",
+    "Sha256": "2813933d463e5963d2bf4844c533979ad4628f45056e10c76d9be07e9c39937e",
+    "Bytes": 14962
+  },
+  {
+    "Path": "authorization/first-run-expired.png",
+    "Sha256": "6db77c32a47ba0e85043fd2750bb6a22879dd0f3006004348597bc20d3dc62aa",
+    "Bytes": 29677
+  },
+  {
+    "Path": "authorization/first-run-unconfigured.png",
+    "Sha256": "bc07268dab23b8409e0f1e5374be850577ee5eeff29b2c2cb253569475d02fed",
+    "Bytes": 27449
+  },
+  {
+    "Path": "authorization/installer-complete-existing.png",
+    "Sha256": "371fad46db9dc8c1ab2eefc31a6f2eef8e0e4fc62e0e4d1fb6f1187eed0885de",
+    "Bytes": 34907
+  },
+  {
+    "Path": "authorization/installer-complete-first.png",
+    "Sha256": "20f7f40b890c446cd3a9e82dca826cbb21d98ef4d3f9f975496b6cf5f7a363e4",
+    "Bytes": 38107
+  },
+  {
+    "Path": "authorization/installer-confirm-long.png",
+    "Sha256": "aca668ab05b53a5c5e3790c3fe018e260f86d126e1db541e82695539dbd7a2b2",
+    "Bytes": 96780
+  },
+  {
+    "Path": "authorization/installer-failure.png",
+    "Sha256": "56312e9098bbb851f75dd93707dffd9820e43069c19edb38846b194c4a8a7de7",
+    "Bytes": 59645
+  },
+  {
+    "Path": "authorization/installer-options-1024x768-125-equivalent.png",
+    "Sha256": "6ac2c343b986e9d7f63ab8c11aee19bd354975b9230c6dafc6c1bdf8d9e2f833",
+    "Bytes": 58349
+  },
+  {
+    "Path": "authorization/installer-options-1024x768-150-equivalent.png",
+    "Sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+    "Bytes": 47952
+  },
+  {
+    "Path": "authorization/installer-options-1366x768-100-equivalent.png",
+    "Sha256": "109d2a492b9a128d5a4ed8706428a26584ffcf8e4d65a040ef7d330921732eac",
+    "Bytes": 70828
+  },
+  {
+    "Path": "authorization/installer-options-default.png",
+    "Sha256": "63c192a6b5cbd4e91f2b828ddc711c033bea5d4b03fa562495227f64b102692d",
+    "Bytes": 51650
+  },
+  {
+    "Path": "authorization/installer-stage-CommittingInstallation.png",
+    "Sha256": "6a753f5e4b75f718114fce8be65e839aa9556807c9f2a46ebf133eefe6f49f04",
+    "Bytes": 33064
+  },
+  {
+    "Path": "authorization/installer-stage-CopyingFiles.png",
+    "Sha256": "849b86ae5033dd0968688a5faa15eb1e367883094c435faba535457076ad7802",
+    "Bytes": 33692
+  },
+  {
+    "Path": "authorization/installer-stage-WaitingForAuthorization.png",
+    "Sha256": "61e5cf1eef4e0448623ce8f044b78301f623cfa25c8a4130329ac46c356f4b89",
+    "Bytes": 35803
+  },
+  {
+    "Path": "authorization/installer-unknown-125-equivalent.png",
+    "Sha256": "fe3f33f248f44dd9b110517ba075ecba7bb3c050bdadeb5c350424d01711d646",
+    "Bytes": 46109
+  },
+  {
+    "Path": "authorization/installer-unknown-150-equivalent.png",
+    "Sha256": "b863fc703ecab159e8a914215a4bd7f09a0ccadd39b3ff3a61855575e4eb0371",
+    "Bytes": 44449
+  },
+  {
+    "Path": "authorization/installer-unknown-expanded.png",
+    "Sha256": "6e852e7d11f5bf4dda193870dc6887ee61fd23d9dfbc564aff73a24a425ecc88",
+    "Bytes": 52664
+  },
+  {
+    "Path": "authorization/installer-unknown-original-text.png",
+    "Sha256": "fcb16ab196384bd19a91bfc0b290ccef57753c6512c24cec0336466ec7405fd7",
+    "Bytes": 55257
+  },
+  {
+    "Path": "authorization/installer-unknown-records-unavailable.png",
+    "Sha256": "b77c552c0c559eca548843da22ecde88717661f06eb89befc6baac31a2e38fc9",
+    "Bytes": 48986
+  },
+  {
+    "Path": "authorization/installer-unknown.png",
+    "Sha256": "20d44d9f3b3b9eb342ef1526c5230df6383bc3d72257bfbcc55383cbef40fb6f",
+    "Bytes": 46511
+  },
+  {
+    "Path": "authorization/password-bootstrap-cancelled.png",
+    "Sha256": "d2d75ca31d78f5343ffe90950fa7040e282e8acd8414a98aa454ef1b8c907eff",
+    "Bytes": 24960
+  },
+  {
+    "Path": "authorization/password-first-setup.png",
+    "Sha256": "86d925cc401cf5adaf1deccbf63198e2d359788de5823f2866b9f9a319565a35",
+    "Bytes": 19557
+  },
+  {
+    "Path": "authorization/password-rejected.png",
+    "Sha256": "57c4dc200a3a74d896a55f9f78269400bf077c4101a0d5cfb3e7557891a36f70",
+    "Bytes": 19448
+  },
+  {
+    "Path": "authorization/password-service-unavailable.png",
+    "Sha256": "e67d0dd022a4f8f98a04b0d982d38f364645dc9445b5f9861c780f5c73ae28ef",
+    "Bytes": 20990
+  },
+  {
+    "Path": "authorization/WINDOWS-WPF.log",
+    "Sha256": "c40b8bba48f72d301147c3a7949f15f71f00f686415a52a8bf9332f0a502a62c",
+    "Bytes": 11363
+  },
+  {
+    "Path": "daily/backup.png",
+    "Sha256": "f2cff38af1505778294e3aa73b21c5bda619fc906a673ac239adf8068e71f7f3",
+    "Bytes": 93659
+  },
+  {
+    "Path": "daily/camera-1092.png",
+    "Sha256": "0345541b09b9e87db6c45442a460991e8377c49281fb875f44bae0dba7b2d29e",
+    "Bytes": 71220
+  },
+  {
+    "Path": "daily/camera-1366.png",
+    "Sha256": "9da4d98e1ce0a50485fc1b28043b0a6475dbbb299f36db2e0f3300ba516e3e60",
+    "Bytes": 88940
+  },
+  {
+    "Path": "daily/camera-800-focused.png",
+    "Sha256": "82d42762fa38e1476fe2f980d5a3383ea8d913ee7a24ced261cef9e4060628c0",
+    "Bytes": 49972
+  },
+  {
+    "Path": "daily/camera-800.png",
+    "Sha256": "26a85a1a043ac93ec4980c33f23ee4f11df559278ac8f9593c4c916dedcf0420",
+    "Bytes": 49930
+  },
+  {
+    "Path": "daily/field-error.png",
+    "Sha256": "e3d4d97bd27e5aac0bea6975af05e2e3e02633debaff006f47a9acf17894580a",
+    "Bytes": 92978
+  },
+  {
+    "Path": "daily/rcs-1092.png",
+    "Sha256": "e2d60ecad4f118ee6b63c9f387d0cab82ca0353aa9810957d96c6130619504d3",
+    "Bytes": 79516
+  },
+  {
+    "Path": "daily/rcs-1366.png",
+    "Sha256": "e003da05dfc6083d9b63193909bc6d20da8a3bb870ded59dc5baebf35d4f15d1",
+    "Bytes": 102381
+  },
+  {
+    "Path": "daily/rcs-800-focused.png",
+    "Sha256": "54cf46960df6ac9644d376c0d9586c656b782f477d06d38e822cc4ccf70cb5fc",
+    "Bytes": 58425
+  },
+  {
+    "Path": "daily/rcs-800.png",
+    "Sha256": "260aa23d838cfd9498cb1247eb2ca25f2596d3ff491052d51c59dae17c83fefc",
+    "Bytes": 58383
+  },
+  {
+    "Path": "daily/request-range.png",
+    "Sha256": "3b3b2599ec1a4a21d9564b4c88c9dd8530964d3682c7ce7209b7cc61d3dcf92e",
+    "Bytes": 98737
+  },
+  {
+    "Path": "daily/role-labels.png",
+    "Sha256": "4f2fbbaf716aaa76fa76d540b015271bd3fd9ae5c9a1e83426c3340c846097cd",
+    "Bytes": 112475
+  },
+  {
+    "Path": "daily/stale.png",
+    "Sha256": "c309b30ed714a7d30bfcd3cf4adda94aeb3e276dbff3474ee10590e0146eece6",
+    "Bytes": 106337
+  },
+  {
+    "Path": "daily/system.png",
+    "Sha256": "6c54cd9c068dca31a74763dda542a7af800ebc0a7306f6e70a391d02fa2fb129",
+    "Bytes": 90313
+  },
+  {
+    "Path": "daily/WINDOWS-WPF.log",
+    "Sha256": "9798a35fea3c1511d458de6ba6e564e21ce41234d4c75a6e38b81dd0bd48212b",
+    "Bytes": 4055
+  },
+  {
+    "Path": "logs/CONFIGURATION-2.log",
+    "Sha256": "e9b9a2dc52a76236c55f1ada1f774f624ae7e0c1568fa0234092ff125a3fe9ef",
+    "Bytes": 5655
+  },
+  {
+    "Path": "logs/CONFIGURATION.log",
+    "Sha256": "56e9e093a55914c5765c76fa94c6a264a78dfe38f72adce99d9e44f0c525ff46",
+    "Bytes": 1510
+  },
+  {
+    "Path": "logs/FINAL-DESKTOP-BUILD-6.log",
+    "Sha256": "64e9c459c75dde49e052dd3bb4ddb545a60b1cfb3320d8c812c19006ea04ec95",
+    "Bytes": 84
+  },
+  {
+    "Path": "logs/FINAL-NATIVE-BUILD-5.log",
+    "Sha256": "848581c28789d04001c259fc585062b11e1bcb5af867a2a0d8fcccf7c1a70f71",
+    "Bytes": 84
+  },
+  {
+    "Path": "logs/MANAGEMENT-CORE.log",
+    "Sha256": "6b87e0dc5c07b65b5fa5cc7f51a2b440db2fa5b9ac44f605c74f3d87e94b51e0",
+    "Bytes": 6251
+  },
+  {
+    "Path": "logs/startup-known-failure-status-before-fix.log",
+    "Sha256": "618578ac9a208540ccbe6ff1431960d53eb403357daf5fb8a14ba8b20c0988f3",
+    "Bytes": 8542
+  },
+  {
+    "Path": "management/management-log-context.png",
+    "Sha256": "2c2c1e233a45c47bf581ed8d6a3cc51a6698f60614a879cc83a2451c6391dd62",
+    "Bytes": 166768
+  },
+  {
+    "Path": "management/management-logs-1366.png",
+    "Sha256": "fcc0cac32477f24e06b3813f06e0cf3d6db412af2447d723736b85cba9c3c00d",
+    "Bytes": 106037
+  },
+  {
+    "Path": "management/management-logs-800.png",
+    "Sha256": "2a7721ff45b5747ddd7acf8c3d0c3690d4c083f06b1fba5d6b28de7a8c0a045c",
+    "Bytes": 62296
+  },
+  {
+    "Path": "management/management-mode-entry.png",
+    "Sha256": "7c37e4c95db7694be39f97726ca1fc32bf25a24f239c9a53bb533dcb7460e6fe",
+    "Bytes": 17297
+  },
+  {
+    "Path": "management/management-mode-first-setup.png",
+    "Sha256": "86d925cc401cf5adaf1deccbf63198e2d359788de5823f2866b9f9a319565a35",
+    "Bytes": 19557
+  },
+  {
+    "Path": "management/management-mode-password-change.png",
+    "Sha256": "95e42ddee1b13418aff5de4d50e627e05104b036fda9ea22b1a34611efd662f8",
+    "Bytes": 15525
+  },
+  {
+    "Path": "management/management-parameters-1366.png",
+    "Sha256": "719031e05f08115715d4cdc48b200a22c954a1d260e1cd7eed0ac22d275a3443",
+    "Bytes": 75480
+  },
+  {
+    "Path": "management/management-work-1366.png",
+    "Sha256": "44a7de16f91c84f63b833fd5da555ce65defa3447a9637c2f39d42633c550e01",
+    "Bytes": 94863
+  },
+  {
+    "Path": "management/ordinary-work-1366.png",
+    "Sha256": "e47d4e716771bc86a63761d096c81d8d31f70c2bae4d54629fb3456f9dbf7eb0",
+    "Bytes": 79973
+  },
+  {
+    "Path": "management/ordinary-work-800.png",
+    "Sha256": "f0f60d189c96288d6912ba785fbe6ea10fbaced23311adddcc9967e5f94daab4",
+    "Bytes": 54120
+  },
+  {
+    "Path": "management/WINDOWS-WPF.log",
+    "Sha256": "b8d5c7ecf7192194253a5bd1e82fa17880a611cd17c537a810a08aaea134fc8c",
+    "Bytes": 3204
+  },
+  {
+    "Path": "MODIFIED-FILES.txt",
+    "Sha256": "dc5daa34053aae28d96a899b2b52cbf27e4f48492daa32f2cf7e87c1b3bd91f8",
+    "Bytes": 9708
+  },
+  {
+    "Path": "README.md",
+    "Sha256": "cdd2342aa9875808514d4774e7776f25ca9daab878378ee01122561e966d8f57",
+    "Bytes": 1147
+  },
+  {
+    "Path": "RESULT.json",
+    "Sha256": "1e4eff0ab0cab1804719252124b29b501cbc18b9c687222fa62058965c9598a8",
+    "Bytes": 1025
+  },
+  {
+    "Path": "startup/configuration-paused.png",
+    "Sha256": "0c3fb0654fd2b99cbcdbc75f729e5658db76290e303b6e75983e6d82936c24e2",
+    "Bytes": 16086
+  },
+  {
+    "Path": "startup/installer-complete.png",
+    "Sha256": "0fd111dcda4346064a181de34d996188764c2f68aa1295a85801460d5e21359d",
+    "Bytes": 33997
+  },
+  {
+    "Path": "startup/installer-confirmation.png",
+    "Sha256": "42d8dd6ebc3872534d210f49bb3b34d2768279e8446a47bcf2bb08d756c20de7",
+    "Bytes": 60091
+  },
+  {
+    "Path": "startup/installer-options.png",
+    "Sha256": "bf72a2035acb331603c762718ebe781d9116ac5f46feebbc2de431cfb9a2b218",
+    "Bytes": 50949
+  },
+  {
+    "Path": "startup/refine-barcode.png",
+    "Sha256": "7c4872ab49d563528fe422f3f8b9f527bc7d23fe0e9dae31c1e8802a2122fb05",
+    "Bytes": 55980
+  },
+  {
+    "Path": "startup/refine-check-errors.png",
+    "Sha256": "bee04103653c389ffa183b6128870a1fae05f17e2cbe89de8bfa301ddd1ddef5",
+    "Bytes": 81770
+  },
+  {
+    "Path": "startup/refine-chute-errors.png",
+    "Sha256": "a7cf3bd3bbf0ae6b3ca91971799f4d5813f51ca8880af316d460bac02d205550",
+    "Bytes": 56923
+  },
+  {
+    "Path": "startup/refine-data.png",
+    "Sha256": "c567fa3b74462c841a86e27d7a04d35d34fa8d34c29fbcf9a1e112621e4f242a",
+    "Bytes": 68932
+  },
+  {
+    "Path": "startup/refine-management-menu.png",
+    "Sha256": "d371fad69460d74fc075e00ee3254c54b41baf71d176f94ebd085458c25b445f",
+    "Bytes": 5893
+  },
+  {
+    "Path": "startup/refine-processing.png",
+    "Sha256": "680560d2953e60e87e3fd5efa4320ceab80cb61bd3ddadcf6c70464c4a4b6fab",
+    "Bytes": 53331
+  },
+  {
+    "Path": "startup/refine-rcs.png",
+    "Sha256": "2fe7c20fb85d512cca4390297ac8dd1740793392e21877d2bffcc123f985efeb",
+    "Bytes": 62372
+  },
+  {
+    "Path": "startup/refine-right-camera-error.png",
+    "Sha256": "81c42424bb35f8bb06a7532ecebc87209eadcac46c63bcb0b451c338edefea17",
+    "Bytes": 62194
+  },
+  {
+    "Path": "startup/refine-station.png",
+    "Sha256": "f359a6783e3395fd2d70acdefa9d4531f143971cae2298aa13910d1ff20e1d41",
+    "Bytes": 58648
+  },
+  {
+    "Path": "startup/startup-session-restored.png",
+    "Sha256": "2405d29824a8176e6c40a3d33f36c82ff5bd2a38afaf80162bdc6bc4ee69c1e9",
+    "Bytes": 82537
+  },
+  {
+    "Path": "startup/startup-small.png",
+    "Sha256": "0334798178b6d4c3b4f7794a781ee313b79c2fbd9caa057d633c350ef42dea49",
+    "Bytes": 62403
+  },
+  {
+    "Path": "startup/startup-step-1.png",
+    "Sha256": "156e6687df5ef7816d28f46a7c3ab796f1b0eb11b7b131394eb8f5029d78669f",
+    "Bytes": 53004
+  },
+  {
+    "Path": "startup/startup-step-2.png",
+    "Sha256": "29d9bc2f5ee1b3eb024050cd37abc6794b569ee6f06a1a42663ef9af2acace58",
+    "Bytes": 68527
+  },
+  {
+    "Path": "startup/startup-step-3.png",
+    "Sha256": "a8d16eb1691f245077af597880a84e673c33a2cf27481341ab93081bdbff9813",
+    "Bytes": 58056
+  },
+  {
+    "Path": "startup/startup-step-4.png",
+    "Sha256": "2fe7c20fb85d512cca4390297ac8dd1740793392e21877d2bffcc123f985efeb",
+    "Bytes": 62372
+  },
+  {
+    "Path": "startup/startup-step-5.png",
+    "Sha256": "47e2f4f97582b78ccbe1214883ea04939e0f800cfeb1dbb9cb8f2d4378502982",
+    "Bytes": 71099
+  },
+  {
+    "Path": "startup/WINDOWS-WPF.log",
+    "Sha256": "93b5fb4f511358393c3ae7b3e8c9025cab70e64d4d50045315d715fb5cfa5d57",
+    "Bytes": 10407
+  },
+  {
+    "Path": "v3/v3-left-running.png",
+    "Sha256": "a32907abc4bf2a313a38a15af118442cd4be050bbad86e86cd34f6d996515c1f",
+    "Bytes": 84570
+  },
+  {
+    "Path": "v3/v3-object-diagnostics.png",
+    "Sha256": "8585378e61ef23169b8af70d464b32bfbed5c9f901c2d38a63f0ddb8d30dfbeb",
+    "Bytes": 93723
+  },
+  {
+    "Path": "v3/v3-rcs-running.png",
+    "Sha256": "bc75cdd944ee55b8895d50270dac93a2ca7d473be46bc7aaaeba3f0901849637",
+    "Bytes": 78052
+  },
+  {
+    "Path": "v3/v3-saved-pending.png",
+    "Sha256": "a97815ac6e7d0ce40c655bfa173871bd34c330a87a2956dad240cff7515c18a5",
+    "Bytes": 86323
+  },
+  {
+    "Path": "v3/v3-sensitive-reference.png",
+    "Sha256": "75394c94f2ccfcb46409e1c881e21be33a0fa5568fbd2ed163b6547213a96c36",
+    "Bytes": 62204
+  },
+  {
+    "Path": "v3/v3-size-1092x614.png",
+    "Sha256": "0aec0094236f1a433dea9fc4265a63aae4502465ede1b0518dcd632817059b7a",
+    "Bytes": 75013
+  },
+  {
+    "Path": "v3/v3-size-1366x768.png",
+    "Sha256": "bbccceb9c5cbee3ab92f65b20b9dd704ebe4c2cb1fd52b65d7612e0d2d0188ab",
+    "Bytes": 84515
+  },
+  {
+    "Path": "v3/v3-size-800x420.png",
+    "Sha256": "eec83e2297d615d99089ce2df484d1808b3c18816c0179189fc36c3179cb17db",
+    "Bytes": 58617
+  },
+  {
+    "Path": "v3/WINDOWS-WPF.log",
+    "Sha256": "ab2446beccaf22905a688c09963aefe8b2472d1fcbcb35295eed7a6b7418bec1",
+    "Bytes": 2731
+  }
+]

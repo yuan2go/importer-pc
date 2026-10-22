@@ -124,7 +124,12 @@ public partial class App : System.Windows.Application
         else if (initialConfiguration)
         {
             startup.Show(); MainWindow = startup;
-            startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
+            if (repair.ConfigurationSaved)
+            {
+                selected = selected with { Business = repair.SelectedLaunch };
+                startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected(firstConfigurationReviewed: true));
+            }
+            else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
         }
         else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
             () => StartSelected(), () => Repair(), ShowSetup); }
@@ -205,6 +210,12 @@ sealed class ParcelStartupWindow : Window
         title.Text = "供包台已打开";
         detail.Text = "已识别现有配置。点击启动后才检查并连接设备与服务；安装完成不代表设备已可运行。";
         ((Button)actions.Children[0]).Content = "启动供包台";
+    }
+    public void AfterConfiguration(Func<Task> close, Func<Task> start)
+    {
+        AfterInstallation(close, start);
+        title.Text = "配置已保存 · 尚未启动";
+        detail.Text = "点击启动后才检查并连接设备与服务。保存配置不代表设备已可运行。";
     }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {

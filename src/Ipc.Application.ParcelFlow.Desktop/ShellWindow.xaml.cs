@@ -61,7 +61,7 @@ public partial class ShellWindow : Window
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
-    async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); } catch(Exception error) { vm.Message=error.Message; } }
+    async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { await vm.RefreshManagementModeAsync(); if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); } catch(Exception error) { vm.Message=error.Message; } }
     void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsManagementMode && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) PageHost.Content = new SoftwareLogControl(admin); }
     async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object s, RoutedEventArgs e)

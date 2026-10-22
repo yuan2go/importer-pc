@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -197,11 +197,11 @@ static partial class Program
         _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "设置管理密码")));
         ManagementModeWindow? modal = null; for (var i = 0; i < 100 && modal is null; i++) { await Task.Delay(20); modal = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }
         Check(modal is not null, "gate opens actual management service dialog"); modal!.Close(); await Task.Delay(200);
-        Check(Text(first).Contains("配置前，请先设置管理密码") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "cancel returns to actionable gate with no protected submit buttons");
+        Check(Text(first).Contains("配置前，请先设置管理密码") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存配置") || Equals(b.Content, "完成"))), "cancel returns to actionable gate with no protected submit buttons");
         var authority = LocalManagementMode.ForRoot(launch.DataRoot); var password = "11111";
         authority.ConfigurePassword(password); Check(authority.Enter(password), "five repeated digits configure and authorize the actual local service");
-        await Task.Delay(650); Click(first, "退出管理模式"); await Task.Delay(650);
-        Check(!authority.Status().Authorized && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "exiting mode blocks configuration immediately at the entry surface");
+        await Task.Delay(650); await ClickManagementMenu(first, "退出管理模式"); await Task.Delay(650);
+        Check(!authority.Status().Authorized && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存配置") || Equals(b.Content, "完成"))), "exiting mode blocks configuration immediately at the entry surface");
         authority.Enter(password); await Task.Delay(650);
         // Load editor using the existing read action after the synthetic mode grant.
         var read = repairType.GetMethod("Read", flags, [typeof(bool)])!; await (Task)read.Invoke(first, [true])!;
@@ -210,7 +210,7 @@ static partial class Program
         var editor = Descendants(first).OfType<ParameterSettingsControl>().Single(); var sameModel = editor.Model; editor.Model!.Policy.QueueCapacity = "77";
         var clock = typeof(LocalManagementMode).GetProperty("Clock", flags)!; clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow.AddHours(1)));
         await Task.Delay(700); first.UpdateLayout();
-        Check(Text(first).Contains("管理权限已到期，请重新验证后继续") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "actual expired grant removes save/apply and presents reauthorization");
+        Check(Text(first).Contains("管理权限已到期，请重新验证后继续") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存配置") || Equals(b.Content, "完成"))), "actual expired grant removes save/apply and presents reauthorization");
         var flow = new SportmasterFlow(); var offline = new ParcelStartupMaintenance(launch, flow, () => throw new InvalidOperationException("No devices in UI fixture"));
         foreach (var (label, submit) in new (string, Func<Task>)[] { ("draft persistence", async () => { await offline.SaveDraftAsync("not-a-hash", null, new(new())); }), ("stage configuration", async () => { await offline.StageAsync("not-a-hash", flow.InitialConfiguration(), "synthetic"); }), ("initial configuration repair", async () => { await offline.RepairInitialAsync("not-a-hash", flow.InitialConfiguration(), "synthetic"); }) })
         { bool denied = false; try { await submit(); } catch (UnauthorizedAccessException) { denied = true; } Check(denied, "service rejects direct " + label + " after revocation before touching any configuration"); }
@@ -221,7 +221,12 @@ static partial class Program
         var readyType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!; var ready = (Window)Activator.CreateInstance(readyType)!;
         var started = false; readyType.GetMethod("AfterInstallation")!.Invoke(ready, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => { started = true; return Task.CompletedTask; })]); ready.Show();
         Check(!started && Descendants(ready).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "启动供包台")), "post-install entry waits for an explicit startup action without creating runtime or device ports");
-        Capture("after-install-start-gate", ready); readyType.GetProperty("AllowClose")!.SetValue(ready, true); ready.Close();
+        Capture("after-install-start-gate", ready);
+        readyType.GetMethod("AfterConfiguration")!.Invoke(ready, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => { started = true; return Task.CompletedTask; })]); ready.UpdateLayout();
+        Check(!started && Text(ready).Contains("配置已保存 · 尚未启动"), "completing configuration also waits for a separate explicit startup action");
+        Capture("after-configuration-start-gate", ready);
+        Click(ready, "启动供包台"); await Task.Delay(50); Check(started, "explicit post-configuration start calls the supplied real startup contract");
+        readyType.GetProperty("AllowClose")!.SetValue(ready, true); ready.Close();
         lines.Add("Native WPF HWND/Dispatcher and real local authorization; synthetic installation contract only. Actual Windows display DPI=" + VisualTreeHelper.GetDpi(dialog).DpiScaleX + "; logical workspace matrix is not an OS DPI change. UAC/full installation transaction, target IPC/keyboard hardware and devices NOT_RUN.");
 
         void Set(string name, object? value) => type.GetField(name, flags)!.SetValue(window, value);

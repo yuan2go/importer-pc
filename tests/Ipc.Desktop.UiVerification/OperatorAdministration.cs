@@ -1,4 +1,4 @@
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,9 +54,9 @@ static partial class Program
         }
         var vm = window.ViewModel; await Task.Delay(300); await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea"); await SetClient(window, 1366, 768);
-        Check(!vm.IsManagementMode && vm.AccountDisplay.Contains("免登录作业") && vm.AccountDisplay.Contains("普通模式"), "right-corner identity distinguishes unauthenticated administration and login-free operation");
+        Check(!vm.IsManagementMode && vm.AccountDisplay.Contains("免登录作业") && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized == false, "right-corner identity distinguishes unauthenticated administration and login-free operation");
         Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.Content is string s && (s == "参数设置" || s == "日志查询" || s.Contains("支持"))), "ordinary navigation has no administrator or support actions");
-        var identity = (TextBlock)window.FindName("AccountIdentity"); Check(identity.IsVisible && identity.ActualHeight > 20, "account and role are persistently visible");
+        var identity = (TextBlock)window.FindName("AccountIdentity"); Check(identity.IsVisible && identity.ActualHeight >= identity.FontSize && !string.IsNullOrWhiteSpace(identity.Text), "operator identity remains readable beside the separate management menu");
         runtime.EmitReferenceAt("left", "native-left", "00123456", "native-left-event"); runtime.EmitReferenceAt("right", "native-right", "00987654", "native-right-event"); factory.ReleaseLeft.TrySetResult();
         for (int i = 0; i < 100 && (vm.Left.Slot == "未取得" || vm.Right.Slot == "未取得"); i++) { await Task.Delay(30); await vm.RefreshAsync(); }
         Check(vm.Left.Barcode == "00123456" && vm.Right.Barcode == "00987654" && vm.Left.Slot != "未取得" && vm.Right.Slot != "未取得", "automatic normal feeding keeps both barcode/destination associations independent");
@@ -65,7 +65,7 @@ static partial class Program
         Check(identity.IsVisible && identity.TranslatePoint(new Point(0, 0), client).X + identity.ActualWidth <= client.ActualWidth + 1, "identity stays within the minimum native client area");
         await SetClient(window, 1366, 768);
         var password = "Synthetic-" + Guid.NewGuid().ToString("N"); await runtime.ConfigureManagementPasswordAsync(password); await runtime.EnterManagementModeAsync(password); await vm.RefreshAsync();
-        Check(vm.IsManagementMode && vm.AccountDisplay.Contains("管理模式") && !vm.AccountDisplay.Contains("native-admin") && vm.Snapshot!.CurrentOperator is null && !vm.Snapshot.Paused, "software administrator appears without changing frozen operator or pausing supply");
+        Check(vm.IsManagementMode && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized && !vm.AccountDisplay.Contains("native-admin") && vm.Snapshot!.CurrentOperator is null && !vm.Snapshot.Paused, "software administrator appears without changing frozen operator or pausing supply");
         Capture("management-work-1366", client);
         Click(window, "参数设置");
         for (var i = 0; i < 100 && !vm.HasLoadedConfiguration; i++) await Task.Delay(30);
@@ -74,7 +74,7 @@ static partial class Program
         var candidate = vm.StructuredPolicy!; candidate.TimeoutMs = "28000";
         var field = Descendants(window).OfType<TextBox>().FirstOrDefault(t => t.IsEnabled && !t.IsReadOnly);
         field?.Focus(); window.UpdateLayout(); Capture("management-parameters-1366", client);
-        Click(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
+        await ClickManagementMenu(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
         Check(!vm.CanEditFormConfiguration && vm.SelectedPage == "workstation" && ReferenceEquals(candidate, vm.StructuredPolicy) && candidate.TimeoutMs == "28000" && vm.HasUnsavedConfiguration, "logout closes restricted workspace and protects the same unsaved draft");
         await runtime.EnterManagementModeAsync(password); await vm.RefreshAsync(); Click(window, "参数设置"); await Task.Delay(150);
         Check(ReferenceEquals(candidate, vm.StructuredPolicy) && candidate.TimeoutMs == "28000", "re-authentication resumes the original candidate without reconstructing connections");
@@ -90,12 +90,12 @@ static partial class Program
         Check(grid.IsVisible && grid.ActualHeight >= 32 && grid.TranslatePoint(new Point(0, 0), client).Y + grid.ActualHeight <= client.ActualHeight + 1, "compact log results remain inside the native viewport");
         Check(Descendants(window).OfType<Button>().Where(b => b.Content is string s && s is "查询" or "上一页" or "下一页").All(b => b.IsVisible && b.TranslatePoint(new Point(0, 0), client).Y + b.ActualHeight < grid.TranslatePoint(new Point(0, 0), client).Y + 1), "default compact query and paging actions are visible above results");
         Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "取消当前任务") && b.IsVisible), "cancel remains reachable in the compact log workspace");
-        Click(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
+        await ClickManagementMenu(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
         Check(vm.SelectedPage == "workstation" && !vm.IsManagementMode, "revocation removes an already-open log page");
         await SetClient(window, 1366, 768);
         var modeDialog = new ManagementModeWindow(runtime) { Owner = window }; modeDialog.Show(); await Task.Delay(150);
         Check(!Descendants(modeDialog).OfType<TextBox>().Any(t => t.IsVisible) && Descendants(modeDialog).OfType<PasswordBox>().Count(t => t.IsVisible) == 1, "normal mode entry asks only for a management password, without username or account tools");
-        Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "进入管理模式") && b.IsVisible), "normal and compact work headers expose an explicit mode entry action");
+        Check(Descendants(window).OfType<ManagementModeMenu>().Any(b => b.IsVisible && !b.Status.Authorized), "normal and compact work headers expose an explicit mode entry action");
         Capture("management-mode-entry", modeDialog); modeDialog.Close();
         Check(!Descendants(window).OfType<MenuItem>().Any(m => m.Header is string text && text.Contains("支持")), "compact and expanded navigation contain no help/support entry");
         var setupMode = new ParcelManagementMode(Path.Combine(evidence, "mode-first-setup"));

@@ -1,0 +1,38 @@
+PASS OPS-NATIVE raw context preserves Windows path escapes while decoding actual multiline exception values separately
+Native WPF HWND/Dispatcher, synthetic ports and data. No real device or RCS calls.
+PASS OPS-NATIVE right-corner identity distinguishes unauthenticated administration and login-free operation
+PASS OPS-NATIVE ordinary navigation has no administrator or support actions
+PASS OPS-NATIVE operator identity remains readable beside the separate management menu
+PASS OPS-NATIVE automatic normal feeding keeps both barcode/destination associations independent
+CAPTURE ordinary-work-1366: 1365.6x768 DIP; Windows scale 1.25/1.25
+CAPTURE ordinary-work-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE identity stays within the minimum native client area
+PASS OPS-NATIVE software administrator appears without changing frozen operator or pausing supply
+CAPTURE management-work-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE administrator opens the existing four-category parameter candidate while supply is running
+CAPTURE management-parameters-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE logout closes restricted workspace and protects the same unsaved draft
+PASS OPS-NATIVE re-authentication resumes the original candidate without reconstructing connections
+PASS OPS-NATIVE administrator log navigation opens the real software-log query control
+PASS OPS-NATIVE log query completes within its native UI time budget
+CAPTURE management-logs-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE native log query displays actual runtime/authentication journal entries
+PASS OPS-NATIVE original context read completes within its native UI time budget
+PASS OPS-NATIVE native context retains the selected original log record
+CAPTURE management-log-context: 1366.4x768 DIP; Windows scale 1.25/1.25
+CAPTURE management-logs-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE compact log results remain inside the native viewport
+PASS OPS-NATIVE default compact query and paging actions are visible above results
+PASS OPS-NATIVE cancel remains reachable in the compact log workspace
+PASS OPS-NATIVE revocation removes an already-open log page
+PASS OPS-NATIVE normal mode entry asks only for a management password, without username or account tools
+PASS OPS-NATIVE normal and compact work headers expose an explicit mode entry action
+CAPTURE management-mode-entry: 520x380 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE compact and expanded navigation contain no help/support entry
+PASS OPS-NATIVE first mode setup has password confirmation and no account creation
+CAPTURE management-mode-first-setup: 520x480 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE first setup states the five-character numeric-compatible password policy
+PASS OPS-NATIVE mismatched confirmation cannot create a management password or enter the mode
+PASS OPS-NATIVE password-only first setup enters management mode and returns to the original work window
+CAPTURE management-mode-password-change: 520x340 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE native password change exits mode, revokes old proof and accepts the one replacement password

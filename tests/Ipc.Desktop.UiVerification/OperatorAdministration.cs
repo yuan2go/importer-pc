@@ -105,11 +105,11 @@ static partial class Program
         var firstPassword = "Mode-" + Guid.NewGuid().ToString("N");
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = firstPassword;
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPasswordConfirmation").Password = firstPassword + "-different";
-        Click(setup, "设置并进入管理模式"); await Task.Delay(200);
+        Click(setup, "设置并继续"); await Task.Delay(200);
         Check(!(await setupMode.ManagementModeStatusAsync()).Configured && setup.IsVisible, "mismatched confirmation cannot create a management password or enter the mode");
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = firstPassword;
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPasswordConfirmation").Password = firstPassword;
-        Click(setup, "设置并进入管理模式");
+        Click(setup, "设置并继续");
         for(int i=0;i<100 && !(await setupMode.ManagementModeStatusAsync()).Authorized;i++) await Task.Delay(30);
         await Task.Delay(100); Check((await setupMode.ManagementModeStatusAsync()).Authorized && !setup.IsVisible, "password-only first setup enters management mode and returns to the original work window");
         var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await Task.Delay(150);

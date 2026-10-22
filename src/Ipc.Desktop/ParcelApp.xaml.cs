@@ -36,7 +36,7 @@ public partial class App : System.Windows.Application
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" ? e.Args[0] : null;
+            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? e.Args[0] : null;
             if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
             selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
@@ -46,6 +46,14 @@ public partial class App : System.Windows.Application
                 startup.AllowClose = true; Shutdown(); return;
             }
             if (mode == "--maintenance") { await Repair(); return; }
+            if (mode == "--after-install")
+            {
+                var classification = await Task.Run(() => ParcelStartupServices.Maintenance(selected.Business).ClassifyAsync());
+                var route = DesktopLaunchOptions.StartupRoute(classification);
+                if (route != DesktopStartupRoute.Runtime) { await Repair(initialConfiguration: route == DesktopStartupRoute.FirstConfiguration); return; }
+                startup.AfterInstallation(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected());
+                startup.Show(); return;
+            }
             startup.Show(); await Dispatcher.Yield(DispatcherPriority.Background);
             await StartSelected();
         }
@@ -151,6 +159,7 @@ sealed class ParcelStartupWindow : Window
     {
         Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
         Title = "启动与恢复 · 菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
+        Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         var grid = new Grid { Margin = new Thickness(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -189,6 +198,13 @@ sealed class ParcelStartupWindow : Window
             diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
             detail.Text = "无法继续配置，请查看诊断后重试。"; diagnostic.Text = error.ToString(); return Task.CompletedTask;
         }
+    }
+    public void AfterInstallation(Func<Task> close, Func<Task> start)
+    {
+        ConfigurationPaused(close, start);
+        title.Text = "供包台已打开";
+        detail.Text = "已识别现有配置。点击启动后才检查并连接设备与服务；安装完成不代表设备已可运行。";
+        ((Button)actions.Children[0]).Content = "启动供包台";
     }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {

@@ -15,10 +15,21 @@ public abstract class StartupWorkflowWindow : Window
     protected readonly StackPanel Body = new();
     protected readonly WrapPanel Actions = new();
     protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
+    protected readonly StackPanel AuthorizationGate = new() { Visibility = Visibility.Collapsed, Margin = new(8, 16, 8, 16), MaxWidth = 570, HorizontalAlignment = HorizontalAlignment.Left };
+    protected readonly TextBlock WorkflowHeading = new() { FontSize = 18, FontWeight = FontWeights.SemiBold };
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = 24, FontWeight = FontWeights.Bold };
     protected readonly TextBlock VersionLabel = new() { FontSize = 14, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
+    readonly TextBlock[] installationSteps = new TextBlock[3];
+    protected void InstallationStep(int step)
+    {
+        for (var i = 0; i < installationSteps.Length; i++)
+        {
+            installationSteps[i].Foreground = i == step ? new SolidColorBrush(Color.FromRgb(8, 102, 232)) : new SolidColorBrush(Color.FromRgb(98, 107, 120));
+            installationSteps[i].FontWeight = i == step ? FontWeights.SemiBold : FontWeights.Normal;
+        }
+    }
     protected bool Busy;
     protected bool CloseAfterCancellation;
     protected StartupWorkflowWindow(string title, bool installation = false)
@@ -30,30 +41,33 @@ public abstract class StartupWorkflowWindow : Window
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         if (installation)
         {
-            Width = 840; Height = 700; MinWidth = 760; MinHeight = 560; Background = Brushes.White;
+            Width = 880; Height = 680; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
-            var rail = new StackPanel { Margin = new(24, 40, 24, 24) };
-            rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 80, Height = 80, HorizontalAlignment = HorizontalAlignment.Left });
-            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 20, FontWeight = FontWeights.Bold, Margin = new(0, 20, 0, 16) });
-            rail.Children.Add(new TextBlock { Text = "1  安装选项\n\n2  确认安装\n\n3  安装完成", TextWrapping = TextWrapping.Wrap });
-            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(237, 244, 255)), Child = rail }; layout.Children.Add(sidebar);
+            var rail = new StackPanel { Margin = new(24, 28, 24, 24) };
+            rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
+            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new(0, 16, 0, 16) });
+            foreach (var (label, index) in new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) })
+            { installationSteps[index] = new TextBlock { Text = label, Margin = new(0, 12, 0, 12), TextWrapping = TextWrapping.Wrap }; rail.Children.Add(installationSteps[index]); }
+            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(245, 248, 252)), Child = rail }; layout.Children.Add(sidebar);
             var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
             content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
             var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(Status);
             var options = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(options, 1);
             Actions.HorizontalAlignment = HorizontalAlignment.Right; Grid.SetRow(Actions, 2);
             content.Children.Add(header); content.Children.Add(options); content.Children.Add(Actions); layout.Children.Add(content); Content = layout;
+            SizeChanged += (_, _) => { layout.ColumnDefinitions[0].Width = new(ActualWidth < 760 ? 136 : 176); content.Margin = new(ActualWidth < 760 ? 20 : 28, 24, ActualWidth < 760 ? 20 : 28, 20); };
             Closing += (_, e) => { if (Busy) e.Cancel = true; }; return;
         }
         var grid = new Grid { Margin = new(20, 12, 20, 16) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title.Split(" · ")[0], FontSize = 18, FontWeight = FontWeights.SemiBold });
+        var heading = new StackPanel(); WorkflowHeading.Text = title.Split(" · ")[0]; heading.Children.Add(WorkflowHeading);
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
         // Full diagnostics remain selectable through the named tools menu.
         Status.ToolTip = diagnostic;
-        var scroll = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
+        var bodyHost = new Grid(); bodyHost.Children.Add(Body); bodyHost.Children.Add(AuthorizationGate);
+        var scroll = new ScrollViewer { Content = bodyHost, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
         var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions); sessionHeader.Children.Add(heading);
         grid.Children.Add(sessionHeader); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
@@ -68,10 +82,11 @@ public abstract class StartupWorkflowWindow : Window
         if (Busy) return; Busy = true; Actions.IsEnabled = false; Body.IsEnabled = false;
         try { await action(); }
         catch (OperationCanceledException) when (CloseAfterCancellation) { Busy = false; Close(); }
-        catch (Exception ex) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(ex.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
+        catch (Exception ex) { OperationFailed(ex); }
         finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; OperationCompleted(); }
     }
     protected virtual void OperationCompleted() { }
+    protected virtual void OperationFailed(Exception error) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
     protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
@@ -111,6 +126,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string? checkedCandidateHash;
     int selectedTask;
     bool showMaintenanceActions;
+    bool authorityAllowed;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
     StartupMaintenanceDocument? document;
@@ -129,6 +145,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
+        if (initialConfiguration) { Background = Brushes.White; WorkflowHeading.FontSize = 24; MinHeight = 360; Body.Visibility = Visibility.Collapsed; Actions.Visibility = Visibility.Collapsed; StartupAppearance.FitToWorkArea(this); }
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次配置供包台";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
@@ -138,14 +155,28 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var administratorIdentity = new TextBlock { Text = "普通模式", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
         SessionActions.Children.Add(administratorIdentity);
         var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
+        var gateTitle = new TextBlock { FontSize = 21, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
+        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = 14, Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 119)) };
+        var gateActions = new WrapPanel();
+        AuthorizationGate.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
+        var gateExit = new Button { Content = "退出配置", MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
+        gateExit.Click += (_, _) => { if (!Busy && MayDiscard()) Close(); };
+        AuthorizationGate.Children.Add(gateTitle); AuthorizationGate.Children.Add(gateDescription); AuthorizationGate.Children.Add(gateActions); gateActions.Children.Add(gateExit);
+        bool seenAuthorization = false, manuallyExited = false;
+        bool gateLayout = false;
+        double editorWidth = Width, editorHeight = Height;
+        bool checkingAuthority = false, authorityWasBlocked = false;
+        string? statusBeforeAuthorityBlock = null;
         administratorLogin.Click += async (_, _) =>
         {
             administratorLogin.IsEnabled = false;
             try
             {
-                if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) await ManagementMode.ExitManagementModeAsync();
+                if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) { await ManagementMode.ExitManagementModeAsync(); manuallyExited = true; }
                 else new ManagementModeWindow(ManagementMode) { Owner = this }.ShowDialog();
-                if (draft is null && !Busy) await Run(Read);
+                var grant = await ManagementMode.ManagementModeStatusAsync();
+                await RefreshAuthorization();
+                if (grant.Authorized && draft is null && !Busy) await Run(Read);
             }
             catch (Exception error) { Message("管理模式操作未完成：" + error.Message + " 原输入保留。"); }
             finally { administratorLogin.IsEnabled = true; }
@@ -249,26 +280,42 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Body.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
         Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        bool checkingAuthority = false, authorityWasBlocked = false;
-        string? statusBeforeAuthorityBlock = null;
-        const string authorityBlockedMessage = "管理模式未开启或已到期；输入已保护，请使用重新进入管理模式后继续。";
-        authorizationTimer.Tick += async (_, _) =>
+        async Task RefreshAuthorization()
         {
             if (checkingAuthority) return; checkingAuthority = true;
             try
             {
                 var identity = await ManagementMode.ManagementModeStatusAsync(); var allowed = identity.Authorized;
-                administratorIdentity.Text = allowed ? "管理模式\n" + identity.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出" : "普通模式"; administratorIdentity.ToolTip = administratorIdentity.Text; administratorLogin.Content = allowed ? "退出管理模式" : "进入管理模式…";
+                authorityAllowed = allowed; if (allowed) { seenAuthorization = true; manuallyExited = false; }
+                if (initialConfiguration && gateLayout == allowed)
+                {
+                    if (allowed) { Width = editorWidth; Height = editorHeight; }
+                    else { editorWidth = Width; editorHeight = Height; Width = Math.Min(840, MaxWidth); Height = Math.Min(400, MaxHeight); }
+                    gateLayout = !allowed;
+                }
+                administratorIdentity.Text = allowed ? "管理模式\n" + identity.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出" : "普通模式"; administratorIdentity.ToolTip = administratorIdentity.Text;
+                administratorLogin.Content = allowed ? "退出管理模式" : !identity.Configured && !identity.NeedsLegacyConversion ? "设置管理密码" : "进入管理模式…";
+                administratorLogin.IsEnabled = identity.Available && !Busy;
+                gateTitle.Text = !identity.Available ? "管理授权服务不可用" : !identity.Configured && !identity.NeedsLegacyConversion ? "配置前，请先设置管理密码" : manuallyExited ? "管理模式已退出" : seenAuthorization ? "管理权限已到期，请重新验证后继续" : "配置前，请进入管理模式";
+                gateDescription.Text = !identity.Available ? "请使用同版安装器检查管理服务。原输入仅在当前进程中保留，尚未保存或应用。" : seenAuthorization ? "当前未保存输入仅保留在此进程中。重新验证管理密码后可继续，失权期间不能保存或应用。" : "管理密码用于保护参数设置，与操作员账号、Windows 授权分别验证。检查和编辑不会启动设备。";
                 Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
-                if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(authorityBlockedMessage); }
-                else if (allowed && authorityWasBlocked && Status.Text == authorityBlockedMessage) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，原填写内容已恢复。");
+                AuthorizationGate.Visibility = allowed ? Visibility.Collapsed : Visibility.Visible;
+                Actions.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                var parent = (Panel)LogicalTreeHelper.GetParent(administratorLogin);
+                var target = allowed ? SessionActions : gateActions;
+                if (!ReferenceEquals(parent, target)) { parent.Children.Remove(administratorLogin); target.Children.Insert(0, administratorLogin); }
+                if (allowed) { administratorLogin.ClearValue(StyleProperty); administratorLogin.ClearValue(Button.BackgroundProperty); administratorLogin.ClearValue(Button.ForegroundProperty); }
+                else StartupAppearance.Primary(administratorLogin);
+                if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(""); }
+                else if (allowed && authorityWasBlocked) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，原填写内容已恢复。");
                 authorityWasBlocked = !allowed;
             }
-            catch (Exception error) { administratorIdentity.Text = "普通模式"; Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
+            catch (Exception error) { authorityAllowed = false; administratorIdentity.Text = "普通模式"; Body.Visibility = Visibility.Collapsed; Actions.Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "原输入仅在当前进程中保留。" + error.Message; }
             finally { checkingAuthority = false; }
-        };
+        }
+        authorizationTimer.Tick += async (_, _) => await RefreshAuthorization();
         Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
-        Loaded += async (_, _) => await Run(async () => { try { var admin = ManagementMode; if (!(await admin.ManagementModeStatusAsync()).Authorized) new ManagementModeWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
+        Loaded += async (_, _) => { await RefreshAuthorization(); if (authorityAllowed) await Run(Read); };
     }
     async Task ValidateBarcodeRule()
     {
@@ -590,180 +637,5 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2, 4 };
         for (var i = 0; i < Actions.Children.Count; i++)
             Actions.Children[i].Visibility = i < groups.Length && (groups[i] == -1 || groups[i] == selectedTask || groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;
-    }
-}
-
-public sealed record InstallationPreparationProgress(string Stage, string File, double Percent);
-
-public sealed class StartupSetupWindow : StartupWorkflowWindow
-{
-    internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
-    readonly BusinessLaunch launch;
-    readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
-    CancellationTokenSource? preparing;
-    readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 24, 0, 12) };
-    readonly TextBlock preparationFile = new() { TextTrimming = TextTrimming.CharacterEllipsis, FontSize = 13 };
-    DeploymentMedia? media;
-    WindowsDeploymentRequest? reviewed;
-    DeploymentComponentReview[] components = [];
-    DeploymentLocation? installed;
-    public DeploymentLocation? Installed => installed;
-    public bool Launched { get; private set; }
-    TextBox data = null!, program = null!;
-    CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
-    RadioButton allUsers = null!, onlyMe = null!;
-    bool sharedInstallation = true;
-    string newStation = "", selectedProgram = "";
-    string? enteredData;
-    bool selectedStartMenu = true, selectedDesktop = true;
-    int step;
-    readonly Button next, back, cancel;
-    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
-    {
-        this.launch = launch; this.prepareMedia = prepareMedia;
-        if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ParcelStartupServices.ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
-        back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
-        next = Action("检查安装媒介", Next);
-        cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
-        next.IsDefault = true; cancel.IsCancel = true;
-        Render();
-        Loaded += async (_, _) => await Run(Next);
-        Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); } };
-    }
-    TextBox InstallationFolder(string label, string value)
-    {
-        Note(label);
-        var row = new Grid { Margin = new(0, 0, 0, 8) }; row.ColumnDefinitions.Add(new()); row.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        var box = new TextBox { Text = value, MinHeight = 44 }; System.Windows.Automation.AutomationProperties.SetName(box, label);
-        var browse = new Button { Content = "浏览…", MinHeight = 44, MinWidth = 80, Margin = new(8, 0, 0, 0) };
-        System.Windows.Automation.AutomationProperties.SetName(browse, "浏览" + label);
-        browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
-        Grid.SetColumn(browse, 1); row.Children.Add(box); row.Children.Add(browse); Form.Children.Add(row); return box;
-    }
-    string ApplicationId => ParcelStartupServices.ApplicationId;
-    void CaptureInputs()
-    {
-        if (step != 1) return;
-        enteredData = data.Text; selectedProgram = program.Text; sharedInstallation = allUsers.IsChecked == true;
-        selectedStartMenu = startMenu.IsChecked == true; selectedDesktop = desktopIcon.IsChecked == true;
-    }
-    void Render()
-    {
-        Body.Children.Clear(); Form = Body;
-        if (runAfter is not null) Actions.Children.Remove(runAfter);
-        Body.Margin = new(0);
-        InstallationHeading.Text = step == 3 ? "安装成功" : "安装菜鸟供包台";
-        back.Visibility = step == 2 ? Visibility.Visible : Visibility.Collapsed;
-        cancel.Visibility = step == 3 ? Visibility.Collapsed : Visibility.Visible;
-        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和快捷方式，然后点击下一步。", 2 => "确认以下选项，点击安装后由 Windows 请求授权。", _ => "菜鸟供包台已安装。" });
-        if (step == 0)
-        {
-            preparationProgress.IsIndeterminate = prepareMedia is null;
-            Body.Children.Add(preparationProgress); Body.Children.Add(preparationFile);
-            Note("正在核对版本与完整性，完成后自动显示安装选项。"); next.Content = "重试检查";
-        }
-        else if (step == 1)
-        {
-            var current = CurrentInstallation(ApplicationId);
-            if (current is not null) sharedInstallation = current.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid;
-            allUsers = new RadioButton { Content = "所有 Windows 用户（共用一个供包台）", GroupName = "InstallAudience", IsChecked = sharedInstallation, IsEnabled = current is null, MinHeight = 44 };
-            onlyMe = new RadioButton { Content = "仅当前 Windows 用户", GroupName = "InstallAudience", IsChecked = !sharedInstallation, IsEnabled = current is null, MinHeight = 44 };
-            Body.Children.Add(allUsers); Body.Children.Add(onlyMe);
-            if (current is not null) Note("本次升级保留原有使用范围和数据。");
-            allUsers.Checked += (_, _) => { if (current is null) { sharedInstallation = true; data.Text = Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"); } };
-            onlyMe.Checked += (_, _) => { if (current is null) { sharedInstallation = false; data.Text = launch.DataRoot; } };
-            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
-            Note("升级保留旧版本和原始数据。");
-            startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu, MinHeight = 44 }; Body.Children.Add(startMenu);
-            desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (sharedInstallation ? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data") : launch.DataRoot));
-            next.Content = "下一步";
-        }
-        else if (step == 2)
-        {
-            var r = reviewed!;
-            Note("使用范围：" + (r.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid ? "所有 Windows 用户，共用一个供包台" : "当前供包台账户") + "\n安装目录：" + r.ProgramRoot + "\n数据目录：" + r.DataRoot + "\n开始菜单快捷方式：" + (r.Shortcuts!.StartMenu ? "创建" : "不创建") + "\n桌面快捷方式：" + (r.Shortcuts.Desktop ? "创建" : "不创建") + "\n使用用途：" + ChineseInterfaceText.Choice(r.Mode));
-            Note("点击安装后只需一次 Windows 授权。安装时检查原责任并完成备份；有阻断则保留原部署，不执行升级。");
-            if (r.BackupDestination is not null) Note("升级前完整备份：" + r.BackupDestination);
-            next.Content = "安装";
-        }
-        else
-        {
-            Body.Margin = new(0, 56, 0, 24);
-            Body.Children.Add(new TextBlock { Text = "下一步：配置供包台", FontSize = 22, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) });
-            Note("首次打开后，填写相机 IP、端口和 RCS 服务设置，再按检查结果启动。");
-            if (reviewed?.BackupDestination is not null) Note("原有数据已保留。");
-            var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
-            runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun, IsEnabled = canRun, MinHeight = 44, VerticalAlignment = VerticalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, Margin = new(0, 12, 24, 0) };
-            Actions.Children.Insert(0, runAfter);
-            if (!canRun) Note("请使用原供包台的 Windows 账户打开程序。");
-            next.Content = "完成";
-        }
-    }
-    async Task Next()
-    {
-        if (step == 0)
-        {
-            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("安装向导需要 Windows");
-            var environment = WindowsClientCompatibility.Capture();
-            if (!environment.Assessment.CanStart) throw new PlatformNotSupportedException(environment.Assessment.Reason);
-            var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, ".."));
-            if (prepareMedia is not null)
-            {
-                using var cancellation = new CancellationTokenSource(); preparing = cancellation;
-                var progress = new Progress<InstallationPreparationProgress>(value =>
-                { Message(value.Stage); preparationProgress.Value = value.Percent; preparationFile.Text = value.File; });
-                try { root = await prepareMedia(progress, cancellation.Token); }
-                finally { preparing = null; }
-            }
-            media = await Task.Run(() => DeploymentMedia.Inspect(root, ApplicationId));
-            VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
-            VersionLabel.Visibility = Visibility.Visible;
-            newStation = SystemParameterDefaults.InitialStationId;
-            step = 1; Render();
-        }
-        else if (step == 1)
-        {
-            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-            CaptureInputs();
-            var current = CurrentInstallation(ApplicationId);
-            var selectedAccount = current?.RuntimeAccountSid ?? (sharedInstallation ? MachineRuntimePolicy.SharedUsersSid : ParcelStartupServices.DefaultRuntimeAccount(currentUserOnly: true));
-            var dataRoot = data.Text;
-            var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
-            if (current is null)
-            {
-                var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id());
-                await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory;
-            }
-            // Initial drivers belong to the verified medium, never a user's arbitrary file selection.
-            var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
-            reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, dataRoot, configPath, null, selected, false, selectedProgram));
-            reviewed = reviewed with { Shortcuts = new(selectedStartMenu, selectedDesktop) };
-            components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
-            foreach (var component in components)
-                if (component.Prerequisites.Length > 0) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
-            var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
-            if (current is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db")))
-                reviewed = reviewed with { BackupDestination = Path.Combine(reviewed.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
-            step = 2; Render();
-        }
-        else if (step == 2)
-        {
-            Message("正在安装菜鸟供包台，请在 Windows 授权窗口确认并等待安装完成。");
-            Body.Children.Clear(); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Margin = new(0, 24, 0, 24) });
-            Note("正在复制和校验程序、保存安装登记并创建所选快捷方式…");
-            try { installed = await Task.Run(() => ParcelStartupServices.InstallWithPreflightAsync(reviewed!)); step = 3; Render(); }
-            catch { Render(); throw; }
-        }
-        else
-        {
-            if (runAfter.IsChecked == true)
-            {
-                if (!ParcelStartupServices.IsRuntimeAccount(installed!)) throw new InvalidOperationException("请登录指定运行账户后运行程序");
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Path.Combine(installed!.ReleaseRoot, "desktop", "Ipc.Desktop.exe")) { UseShellExecute = true, WorkingDirectory = installed.ReleaseRoot });
-                Launched = true;
-            }
-            Busy = false; Close();
-        }
     }
 }

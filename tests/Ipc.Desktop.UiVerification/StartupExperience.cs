@@ -159,7 +159,7 @@ static partial class Program
         Check(Descendants(installer).OfType<TextBlock>().Any(x => x.Text == "版本: SM V" + businessVersion + " Windows 64位"), "installer version follows the requested format and actual business version");
         Check(!Descendants(installer).OfType<Expander>().Any() && !Descendants(installer).OfType<ComboBox>().Any(), "installer contains no hidden advanced settings, mode, account, trust or package choices");
         Check(Descendants(installer).OfType<TextBox>().Count(x => !x.IsReadOnly) == 2, "only installation and data folders require editable text");
-        Check(Descendants(installer).OfType<RadioButton>().Any(x => (x.Content as string)?.Contains("所有 Windows 用户") == true && x.IsChecked == true && x.IsEnabled), "shared Windows-user installation has an explicit scope option");
+        Check(!Descendants(installer).OfType<RadioButton>().Any() && !Descendants(installer).OfType<Label>().Any(x => Equals(x.Content, "使用范围")), "installation scope is resolved internally without a customer-facing choice");
         Capture("installer-options", installer);
         installerType.GetField("reviewed", flags)!.SetValue(installer, new WindowsDeploymentRequest("synthetic-media", "sportmaster", new string('a', 40), "S-1-5-21-synthetic", launch.DataRoot, launch.ConfigurationDirectory, RunMode.Simulation, null, null, [], ProgramRoot: "C:\\Program Files\\CainiaoSupplyStation", Shortcuts: new(true, true)));
         installerType.GetField("step", flags)!.SetValue(installer, 2); installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();

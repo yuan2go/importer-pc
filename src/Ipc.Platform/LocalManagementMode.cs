@@ -133,7 +133,7 @@ public sealed partial class LocalManagementMode
     }
     static Credential Create(string password)
     {
-        if (password.Length is < 12 or > 256 || password.Any(char.IsControl) || password.Distinct().Count() < 5) throw new InvalidDataException("管理密码须为12～256个字符，并至少使用5种不同字符。");
+        if (password.Length is < 5 or > 256 || password.Any(char.IsControl)) throw new InvalidDataException("管理密码须为5～256个字符，可使用纯数字，请勿包含控制字符。");
         var salt = RandomNumberGenerator.GetBytes(32);
         return new(Convert.ToBase64String(salt), Convert.ToBase64String(Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithmName.SHA256, 32)));
     }

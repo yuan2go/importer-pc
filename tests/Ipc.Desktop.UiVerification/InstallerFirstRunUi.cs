@@ -58,20 +58,24 @@ static partial class Program
         var progress = new List<WindowsInstallationStage>();
         IProgress<WindowsInstallationStage>? reporter = null;
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => null));
-        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>>)((_, p) => { reporter = p; return pending.Task; }));
+        WindowsDeploymentRequest? submitted = null;
+        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>>)((r, p) => { submitted = r; reporter = p; return pending.Task; }));
         window.Show(); await Idle(window);
         Set("step", 1); Render();
+        Check(!Descendants(window).OfType<RadioButton>().Any() && !Text(window).Contains("使用范围") && Box("数据目录").Text == Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"), "new installation hides scope while retaining the shared default data root");
+        var original = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(evidence, "existing", "releases", "original"), launch.ConfigurationDirectory, launch.DataRoot, "S-1-5-21-1-2-3-1001");
+        type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
+        Check(Box("数据目录").Text == original.DataRoot && !Text(window).Contains("使用范围"), "existing per-user deployment retains its original data root with scope hidden");
         var longProgram = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的程序目录-for-path-review", 8));
         var longData = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的数据目录-for-path-review", 8));
         Box("程序目录").Text = longProgram; Box("数据目录").Text = longData;
         Box("程序目录").Focus(); Box("程序目录").MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         Check(Keyboard.FocusedElement is Button focused && AutomationProperties.GetName(focused) == "浏览程序目录", "native tab traversal follows label/path/browse reading order");
         var shortcuts = Descendants(window).OfType<CheckBox>().ToArray(); shortcuts[0].IsChecked = false; shortcuts[1].IsChecked = true;
-        Descendants(window).OfType<RadioButton>().Single(b => (string)b.Content == "仅当前 Windows 用户").IsChecked = true;
-        Check(Box("数据目录").Text == longData, "audience change retains custom input instead of replacing the selected data root");
         type.GetMethod("CaptureInputs", flags)!.Invoke(window, null);
         var request = new WindowsDeploymentRequest(evidence, "sportmaster", new string('a', 40), "S-1-5-21-1-2-3-1001", longData, launch.ConfigurationDirectory, RunMode.Production, null, null, new(), false, new(), longProgram, null, Shortcuts: new(false, true));
         Set("reviewed", request); Set("step", 2); Render();
+        Check(!Text(window).Contains("使用范围") && !Text(window).Contains("所有 Windows 用户") && !Text(window).Contains("仅当前 Windows 用户"), "confirmation omits scope details for the retained per-user deployment");
         Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData && Box("开始菜单").Text == "不创建快捷方式" && Box("桌面").Text == "创建快捷方式", "confirmation reads the exact reviewed paths and independent shortcuts");
         Capture("installer-confirm-long", window);
         Click(window, "上一步"); await Idle(window);
@@ -88,6 +92,7 @@ static partial class Program
         Set("step", 2); Render(); Click(window, "安装");
         for (var i = 0; i < 100 && reporter is null; i++) await Task.Delay(20);
         Check(reporter is not null, "install action calls the real service binding with a progress observer; synthetic transaction boundary injected");
+        Check(submitted == request && submitted.RuntimeAccountSid == original.RuntimeAccountSid, "hidden scope does not rewrite the reviewed upgrade identity at installation submission");
         foreach (var stage in new[] { WindowsInstallationStage.WaitingForAuthorization, WindowsInstallationStage.CopyingFiles, WindowsInstallationStage.CommittingInstallation })
         {
             reporter!.Report(stage); progress.Add(stage); await Task.Delay(100); window.UpdateLayout();
@@ -136,8 +141,8 @@ static partial class Program
         ManagementModeWindow? modal = null; for (var i = 0; i < 100 && modal is null; i++) { await Task.Delay(20); modal = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }
         Check(modal is not null, "gate opens actual management service dialog"); modal!.Close(); await Task.Delay(200);
         Check(Text(first).Contains("配置前，请先设置管理密码") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "cancel returns to actionable gate with no protected submit buttons");
-        var authority = LocalManagementMode.ForRoot(launch.DataRoot); var password = "abcdeabcdeabcde";
-        authority.ConfigurePassword(password); Check(authority.Enter(password), "existing policy accepts five distinct characters in a single character category");
+        var authority = LocalManagementMode.ForRoot(launch.DataRoot); var password = "11111";
+        authority.ConfigurePassword(password); Check(authority.Enter(password), "five repeated digits configure and authorize the actual local service");
         await Task.Delay(650); Click(first, "退出管理模式"); await Task.Delay(650);
         Check(!authority.Status().Authorized && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "exiting mode blocks configuration immediately at the entry surface");
         authority.Enter(password); await Task.Delay(650);

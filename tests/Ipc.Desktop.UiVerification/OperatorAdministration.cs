@@ -102,7 +102,8 @@ static partial class Program
         var setup = new ManagementModeWindow(setupMode) { Owner = window }; setup.Show(); await Task.Delay(150);
         Check(Descendants(setup).OfType<PasswordBox>().Count(p => p.IsVisible) == 2 && !Descendants(setup).OfType<TextBox>().Any(p => p.IsVisible), "first mode setup has password confirmation and no account creation");
         Capture("management-mode-first-setup", setup);
-        var firstPassword = "Mode-" + Guid.NewGuid().ToString("N");
+        Check(Descendants(setup).OfType<TextBlock>().Any(p => p.Text == "5–256 个字符，可使用纯数字。"), "first setup states the five-character numeric-compatible password policy");
+        var firstPassword = "11111";
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = firstPassword;
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPasswordConfirmation").Password = firstPassword + "-different";
         Click(setup, "设置并继续"); await Task.Delay(200);
@@ -114,7 +115,7 @@ static partial class Program
         await Task.Delay(100); Check((await setupMode.ManagementModeStatusAsync()).Authorized && !setup.IsVisible, "password-only first setup enters management mode and returns to the original work window");
         var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await Task.Delay(150);
         Descendants(editPassword).OfType<Expander>().Single().IsExpanded = true; editPassword.UpdateLayout(); Capture("management-mode-password-change", editPassword);
-        var replacement = firstPassword + "-new";
+        var replacement = "22222";
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPassword").Password = replacement;
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPasswordConfirmation").Password = replacement;
         Click(editPassword,"修改密码并退出管理模式"); for(int i=0;i<100 && editPassword.IsVisible;i++) await Task.Delay(30);

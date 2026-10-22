@@ -31,6 +31,17 @@ static class OperatorAdministration
         await Reject<InvalidOperationException>(() => Task.Run(() => ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase)), "even one original operation prevents the unused-simulation relocation exception");
         var data = Path.Combine(root, "admin-log-data"); var admin = LocalManagementMode.ForRoot(data);
         var password = "Synthetic-" + Guid.NewGuid().ToString("N");
+        var simpleRoot = Path.Combine(root, "five-character-mode"); var simple = new LocalManagementMode(simpleRoot);
+        foreach (var invalid in new[] { "1234", new string('1', 257), "1234\n" })
+            await Reject<InvalidDataException>(() => Task.Run(() => simple.ConfigurePassword(invalid)), "new setup rejects out-of-range or control-character passwords without creating a credential");
+        Check(!simple.Status().Configured, "rejected new passwords leave the original unconfigured state");
+        simple.ConfigurePassword("11111"); Check(simple.Enter("11111"), "five repeated numeric characters can configure and enter the real management authority");
+        var simpleGrant = simple.Require();
+        await Reject<InvalidDataException>(() => Task.Run(() => simple.ChangePassword("1234")), "changing to fewer than five characters is rejected by the same service policy");
+        Check(simple.Status().Authorized && !simpleGrant.IsCancellationRequested, "rejected password replacement preserves the current grant and credential");
+        simple.ChangePassword("22222");
+        Check(simpleGrant.IsCancellationRequested && !simple.Status().Authorized && !simple.Enter("11111") && simple.Enter("22222"), "five-digit replacement revokes old authorization and authenticates only the new password");
+        Check(!File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"11111\"") && !File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"22222\""), "numeric passwords are not persisted in plaintext");
         Check(!admin.Status().Configured && !admin.Status().Authorized, "no default management password opens the mode");
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => admin.Require()), "direct service calls reject before management-password setup");
         admin.ConfigurePassword(password);

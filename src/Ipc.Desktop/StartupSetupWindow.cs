@@ -17,7 +17,6 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
-    readonly BusinessLaunch launch;
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
@@ -32,8 +31,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     public bool Launched { get; private set; }
     TextBox data = null!, program = null!;
     CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
-    RadioButton allUsers = null!, onlyMe = null!;
-    bool sharedInstallation = true, installing, failed, outcomeUnknown;
+    bool installing, failed, outcomeUnknown;
     bool? needsFirstConfiguration;
     string configurationMessage = "", failureMessage = "";
     string newStation = "", selectedProgram = "";
@@ -44,7 +42,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly Button next, back, cancel;
     public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
     {
-        this.launch = launch; this.prepareMedia = prepareMedia;
+        this.prepareMedia = prepareMedia;
         if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
@@ -94,7 +92,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     void CaptureInputs()
     {
         if (step != 1 || data is null) return;
-        enteredData = data.Text; selectedProgram = program.Text; sharedInstallation = allUsers.IsChecked == true;
+        enteredData = data.Text; selectedProgram = program.Text;
         selectedStartMenu = startMenu.IsChecked == true; selectedDesktop = desktopIcon.IsChecked == true;
     }
     void Render()
@@ -132,34 +130,21 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             var current = CurrentInstallation(ApplicationId);
-            if (current is not null) sharedInstallation = current.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid;
             Section("安装位置");
             program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (sharedInstallation ? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data") : launch.DataRoot));
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"));
             Section("安装设置");
-            allUsers = new RadioButton { Content = "所有 Windows 用户（共用一个供包台）", GroupName = "InstallAudience", IsChecked = sharedInstallation, IsEnabled = current is null };
-            onlyMe = new RadioButton { Content = "仅当前 Windows 用户", GroupName = "InstallAudience", IsChecked = !sharedInstallation, IsEnabled = current is null };
-            var audience = new StackPanel(); audience.Children.Add(allUsers); audience.Children.Add(onlyMe); Row("使用范围", audience);
-            // Retain a custom path; only a still-default path follows the existing audience rule.
-            void Audience(bool shared)
-            {
-                var previousDefault = sharedInstallation ? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data") : launch.DataRoot;
-                if (string.Equals(data.Text, previousDefault, StringComparison.OrdinalIgnoreCase)) data.Text = shared ? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data") : launch.DataRoot;
-                sharedInstallation = shared;
-            }
-            allUsers.Checked += (_, _) => { if (current is null) Audience(true); };
-            onlyMe.Checked += (_, _) => { if (current is null) Audience(false); };
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon); Row("快捷方式", shortcuts);
-            if (current is not null) Note("本次升级保留原使用范围与数据目录；安装前仍须检查原责任并完成完整备份。");
+            if (current is not null) Note("本次升级保留原数据目录；安装前仍须检查原责任并完成完整备份。");
             next.Content = "下一步";
         }
         else if (step == 2)
         {
             var r = reviewed!;
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
-            Section("安装设置"); Summary("使用范围", r.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid ? "所有 Windows 用户，共用一个供包台" : "仅当前 Windows 用户");
+            Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
             if (r.BackupDestination is not null) { Section("升级检查"); Note("安装前检查原责任并完成备份。有阻断时停止升级；失败结果以实际安装记录为准。"); Summary("备份位置", r.BackupDestination); }
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
@@ -243,7 +228,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         else if (step == 1)
         {
             CaptureInputs(); var current = CurrentInstallation(ApplicationId);
-            var selectedAccount = current?.RuntimeAccountSid ?? (sharedInstallation ? MachineRuntimePolicy.SharedUsersSid : ParcelStartupServices.DefaultRuntimeAccount(currentUserOnly: true));
+            var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
             if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();

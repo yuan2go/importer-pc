@@ -174,7 +174,9 @@ public sealed partial class ParameterSettingsControl
         {
             var field = locations[path].Control;
             var row = locations[path].Row!;
-            void Update() { var selected = draft.Parameters.FirstOrDefault(x => x.Field.Key == "specified-chute")?.Value == "true"; row.Visibility = selected ? Visibility.Visible : Visibility.Collapsed; field.IsEnabled = !p.Field.ReadOnly && selected; }
+            bool Applicable() => draft.Parameters.FirstOrDefault(x => x.Field.Key == "specified-chute")?.Value == "true";
+            locations[path] = locations[path] with { Applicable = Applicable };
+            void Update() { var selected = Applicable(); row.Visibility = selected ? Visibility.Visible : Visibility.Collapsed; field.IsEnabled = !p.Field.ReadOnly && selected; RefreshSearch(); }
             PropertyChangedEventHandler handler = (_, _) => Update();
             draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
             Update();

@@ -55,7 +55,7 @@ static partial class Program
         quantity.Value = oldQuantity; specified.Value = "true"; chute.Value = "SYNTHETIC-CHUTE"; await Flush();
         Check(Box(rcs.InstanceId + "/chute-code").IsVisible, "specified chute reveals its real conditional field");
         specified.Value = "false"; await Flush();
-        Check(!Box(rcs.InstanceId + "/chute-code").IsVisible && chute.Value == "SYNTHETIC-CHUTE" && model.Issues.All(i => i.Path != rcs.InstanceId + "/chute-code"), "disabling specified chute retains process input without validating an inapplicable field");
+        Check(!Box(rcs.InstanceId + "/chute-code").IsVisible && !editor.NavigateTo(rcs.InstanceId + "/chute-code") && chute.Value == "SYNTHETIC-CHUTE" && model.Issues.All(i => i.Path != rcs.InstanceId + "/chute-code"), "disabling specified chute retains process input without validating or navigating to an inapplicable field");
         specified.Value = oldSpecified; chute.Value = oldChute;
         var zone = Value(rcs, "zone-id"); var savedZone = zone.Value;
         editor.NavigateTo(rcs.InstanceId + "/left-station-code"); await Flush();

@@ -1,5 +1,7 @@
 # 内部页面及逐页校验验证
 
+实现与原生验证源码提交：`f1d723fae64c2a2cfbdea8074e1da2b2d82f7a60`；后续清单提交不改变源代码、测试或打包脚本。
+
 2026-10-23，本机 Windows 原生 WPF HWND/Dispatcher，实际系统 DPI 125%。[实施映射](../internal-pages-ui-refine-01.md) · [证据与哈希](../evidence/internal-pages-ui-refine-01/README.md)。截图为运行代码与合成配置/端口，非设计 HTML/PNG，也没有生产设备。
 
 | 风险 | 执行与结果 |

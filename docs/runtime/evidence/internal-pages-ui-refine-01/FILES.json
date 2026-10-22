@@ -1,0 +1,151 @@
+{
+  "code_commit": "f1d723fae64c2a2cfbdea8074e1da2b2d82f7a60",
+  "scope": "Exact evidence bytes; excludes this self-hash file",
+  "files": [
+    {
+      "path": "baseline/management-logs-1366.png",
+      "sha256": "cd44607e8f80b073ff1a966d70eaceb9efe5e757715fe30da5927b5cc4f0b186",
+      "size_bytes": 107073
+    },
+    {
+      "path": "baseline/ordinary-work-1366.png",
+      "sha256": "cbb9782010110d60ece69767029b6e73519c860b9131a550ac3e6dc8a1687f79",
+      "size_bytes": 79811
+    },
+    {
+      "path": "before-fix/compact-results.log",
+      "sha256": "33da111441d9e86fccd2e9c237c470aad7f29363a6ed2a8e6c3a27992717d35d",
+      "size_bytes": 1353
+    },
+    {
+      "path": "before-fix/deferred-focus.log",
+      "sha256": "74c059cbf15f748fa0032b2a0f94ed667b589f0ac53e295efeaa6181a27e3019",
+      "size_bytes": 6010
+    },
+    {
+      "path": "internal-pages/daily-parameter-error-800.png",
+      "sha256": "7bc347d49827b11d8c01bc89d47259615eded4807352dc960352d177382136e2",
+      "size_bytes": 55131
+    },
+    {
+      "path": "internal-pages/diagnostics-1366.png",
+      "sha256": "54e3298732f556be0acd7905601b049b117ca9092f19d9222d993641da9acb75",
+      "size_bytes": 85980
+    },
+    {
+      "path": "internal-pages/diagnostics-800.png",
+      "sha256": "568a49143e92f12dbc0f5f6593ff85850b1b63397390d6763074c336e7c90f93",
+      "size_bytes": 53044
+    },
+    {
+      "path": "internal-pages/history-800.png",
+      "sha256": "ff8ac690783ab3f3ada85c6073a626e911168c5624171dd2d345845c3368f210",
+      "size_bytes": 55030
+    },
+    {
+      "path": "internal-pages/history-empty.png",
+      "sha256": "f3957ab1db2dea76e2d9e68766b21a7315444940e8e1cd0e668f0added4a9c57",
+      "size_bytes": 99399
+    },
+    {
+      "path": "internal-pages/history-filters-800.png",
+      "sha256": "1864877b83d0fcd6a1e3321009b94d253082a8b0fafe0cf2871462d5c844158a",
+      "size_bytes": 55006
+    },
+    {
+      "path": "internal-pages/history-selected-1366.png",
+      "sha256": "40d80c24bcd0e4ea3677b2befaf3ed08e02b265f12eba5bfbb3e134d843b4bd4",
+      "size_bytes": 112285
+    },
+    {
+      "path": "internal-pages/logs-empty.png",
+      "sha256": "13ee7c096c8a8b9530a6446732da29f8d53ad33281f3ff1db0a24d005c043883",
+      "size_bytes": 30975
+    },
+    {
+      "path": "internal-pages/logs-failed.png",
+      "sha256": "c3e8e769d91257752a26f53131dcdc718ea85f032c2138232f6430f9ca421580",
+      "size_bytes": 35995
+    },
+    {
+      "path": "internal-pages/logs-pending.png",
+      "sha256": "810a37febc41e717402c1e08fe523ffa85753856a12bdaa8cddc224908bb43a7",
+      "size_bytes": 30007
+    },
+    {
+      "path": "internal-pages/WINDOWS-WPF.log",
+      "sha256": "a45095fa7186c206a6071c5c06ebf16fb06fa803d33f86842f6e32e28df13502",
+      "size_bytes": 2775
+    },
+    {
+      "path": "management-mode/management-log-context.png",
+      "sha256": "fca632bb93327bf7e9a251075802f0973663fdd2c6ff79bb7e4b952f49110302",
+      "size_bytes": 115403
+    },
+    {
+      "path": "management-mode/management-logs-1366.png",
+      "sha256": "2cf3733470d387ceaa3cea5afaaac3f661e62a902af09a47f4a86ca0ef3f5cd2",
+      "size_bytes": 75039
+    },
+    {
+      "path": "management-mode/management-logs-800.png",
+      "sha256": "dd8b85a24d7ad6f8a0d679808a29c3264924e5280e64040c6e85ab8d42a59513",
+      "size_bytes": 46360
+    },
+    {
+      "path": "management-mode/ordinary-work-1366.png",
+      "sha256": "681c3f9f982aabd72d67cb7ab2b2e1d5373e9e30d66c3c20ea7796e7514181d4",
+      "size_bytes": 72856
+    },
+    {
+      "path": "management-mode/ordinary-work-800.png",
+      "sha256": "188d7c44ff8cd92b9833245323c4fd1fbf41b917ef86d49f1455a1c8dd7103b0",
+      "size_bytes": 48613
+    },
+    {
+      "path": "management-mode/WINDOWS-WPF.log",
+      "sha256": "050e04d0b4d5b4a5f57336e0e822482b97d94e1349e9cbc6d8ae25d2a0df27a5",
+      "size_bytes": 3238
+    },
+    {
+      "path": "MODIFIED-FILES.txt",
+      "sha256": "1075581476549950192fb883f5681df93e558b41853d2dea7fb5d5eeb7b7cf3a",
+      "size_bytes": 4518
+    },
+    {
+      "path": "parameter-experience/WINDOWS-WPF.log",
+      "sha256": "9798a35fea3c1511d458de6ba6e564e21ce41234d4c75a6e38b81dd0bd48212b",
+      "size_bytes": 4055
+    },
+    {
+      "path": "README.md",
+      "sha256": "90d4d5af6afa9b4626a5097a32c006066fa82089c810ab49ab4dc991ae0975cb",
+      "size_bytes": 1751
+    },
+    {
+      "path": "RESULT.json",
+      "sha256": "6c29dc72c58236c2976eaee52f46d2aadab0bd5932135c7514752643ba982bb2",
+      "size_bytes": 1126
+    },
+    {
+      "path": "startup-experience/leaf-barcode-error.png",
+      "sha256": "30dd73f1e04435fdba4980c48a7ce1521b9fcafc827a6be4daba92fb570ab8d6",
+      "size_bytes": 61527
+    },
+    {
+      "path": "startup-experience/refine-chute-errors.png",
+      "sha256": "5d2b9ed4dcada85b0b27dd602775cc0511c9061891e2a2298a035c8c2b083e76",
+      "size_bytes": 57848
+    },
+    {
+      "path": "startup-experience/refine-right-camera-error.png",
+      "sha256": "b532a5db57069ed84cbf79113a00557902211e31b93ed22b6f773556639c2c4a",
+      "size_bytes": 63266
+    },
+    {
+      "path": "startup-experience/WINDOWS-WPF.log",
+      "sha256": "3495d272911e99f17d243b30d371a293800a47091498c0234077911c3e080578",
+      "size_bytes": 11643
+    }
+  ]
+}

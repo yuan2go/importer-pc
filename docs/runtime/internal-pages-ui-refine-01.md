@@ -1,5 +1,7 @@
 # 内部页面风格与参数逐页校验
 
+实现与原生验证源码提交：`f1d723fae64c2a2cfbdea8074e1da2b2d82f7a60`；后续清单提交不改变源代码、测试或打包脚本。
+
 2026-10-23，执行基线 main `dd1dfefc9e829f557a1efdf6f7ad7532fec4ef81`，开发分支 `codex/internal-pages-ui-refine-01`。[工作包](../work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md) · [原生验证](validation/internal-pages-ui-refine-01.md) · [截图与文件清单](evidence/internal-pages-ui-refine-01/README.md)。用户提供的 HTML/ZIP 保持未跟踪，不纳入交付或公开证据。没有推送、发布、自动安装或连接生产设备。
 
 ## 实际变化和源码映射

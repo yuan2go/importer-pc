@@ -1,4 +1,4 @@
-> 本轮当前实施：[OPS-ADMIN-LOGS-01](../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)。本轮替代旧导航、帮助支持及管理员权限组织；历史设计与验证保持原版本，四类参数和原请求合同继续有效。
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 > 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
 > 作业主界面当前增量：[信息与操作完善](../runtime/workstation-information-01.md)。仅调整运行信息和按状态出现的操作；原 V2 作业合同、PARAM-UX-02 参数及各历史证据继续保留。

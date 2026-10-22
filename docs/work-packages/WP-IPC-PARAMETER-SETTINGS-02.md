@@ -1,3 +1,5 @@
+﻿> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
+
 > 2026-10-21 后续纠偏：[STARTUP-UX-03](../design/startup-experience-03.md)替代上一轮折叠式安装/首配操作；[实施及边界](../runtime/startup-experience-03.md)。用户确认所有Windows用户共享供包台、TCP客户端按换行收码。新证据不倒写PS-00～05、D/RV或旧SourceCommit。
 
 > 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](../design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。

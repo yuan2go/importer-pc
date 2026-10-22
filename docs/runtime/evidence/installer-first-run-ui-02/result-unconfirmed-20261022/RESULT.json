@@ -1,0 +1,222 @@
+{
+  "work_package": "WP-IPC-INSTALLER-FIRST-RUN-UI-02",
+  "date": "2026-10-22",
+  "increment": "Page 9: unconfirmed result, actual progress framing, retained preparation and encrypted request on unknown outcome",
+  "source_tree_commit": "f655783c6d695a47e2c1675716666864322e94c1",
+  "main_at_execution": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "local_base": "a9253cded4cb2bae4b4890b33e73ef4497933a90",
+  "status": "PASS_SCOPED_NATIVE_AND_SYNTHETIC",
+  "checks": {
+    "targeted_native": 82,
+    "startup_regression": 93,
+    "installer_change_guards": 8
+  },
+  "build_identity": "UI/services development builds correspond to committed code. Installer host close policy reviewed in source and subsequently compiled by the frozen installer build; not a live installation acceptance.",
+  "native_host": "Windows HWND/Dispatcher content capture; actual scale 1.25; logical workspace matrix only",
+  "logical_sizes_DIP": [
+    [
+      960,
+      700
+    ],
+    [
+      800,
+      560
+    ],
+    [
+      665,
+      460
+    ]
+  ],
+  "actual_OS_DPI_100_150_and_target_display_modes": "NOT_RUN",
+  "actual_UAC_install_upgrade_close_during_helper_reboot": "NOT_RUN",
+  "System_service_and_devices_SDK_RCS_site": "NOT_RUN",
+  "source_files": [
+    {
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "sha256": "15af4f26dc83fd66832a361d20948942d506f6dec7c076a4b1389691dc3add3d",
+      "size_bytes": 47901,
+      "git_blob": "c07c5a48336e8f7f8d0830bc7901ebb25dc07f31"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "sha256": "4d739ff7688eb46f07c1eedca81fc954896b42258f848e59d2b0cf28c29d6fd5",
+      "size_bytes": 24570,
+      "git_blob": "bda77abab0685914960b9d4e133c2a16d5bb0886"
+    },
+    {
+      "path": "src/Ipc.Installer/App.xaml.cs",
+      "sha256": "731c67162a519f23b4b7f742720f1cd29f1113e329f01119b0094340aef92baf",
+      "size_bytes": 1281,
+      "git_blob": "068b69eb147b1c50c6d425031dbd1e625ba13497"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
+      "sha256": "64e12c81cc499b2a724fa9371284ef4e5b40bdbbd5be636872129e3c7680769e",
+      "size_bytes": 32347,
+      "git_blob": "dbb02092e9dbae709abcb11b422fda212161f7e9"
+    }
+  ],
+  "native_binaries": [
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll",
+      "sha256": "0ef9968dd9db8335615f345fb53bc519becf1d544794a4cd1cd7161247e6beb1",
+      "size_bytes": 1399296
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Assembly.dll",
+      "sha256": "e4375279386977c7bf176ecca18c94c4de09e0a26b08b9fd6af711e1927a37ea",
+      "size_bytes": 241664
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "sha256": "f92145daa0ba12f3bb3f6388bb1e2fdccb2e4f7acf46eeb32730e76db502d4fa",
+      "size_bytes": 470016
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/after-install-start-gate.png",
+      "sha256": "2813933d463e5963d2bf4844c533979ad4628f45056e10c76d9be07e9c39937e",
+      "size_bytes": 14962
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/CHANGE-GUARDS.log",
+      "sha256": "1dd5c2cae574c289ea352f768673c43c7412a37c9c8039b1f4d878741631a618",
+      "size_bytes": 806
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/CORE-BUILD.log",
+      "sha256": "c4ed90439d8e4e07739b6804dc84f0e8effd74602454bbc8bdcdb42d6df3def7",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/DESKTOP-BUILD.log",
+      "sha256": "8c0dde094b2345351212614a4fcc3231b42ab4132db69c22d93b7282efebf6ea",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/first-run-expired.png",
+      "sha256": "6d92b4eb9f70cb27abce7706815521a8eeb21b45059f2404678d12beead3aadc",
+      "size_bytes": 29824
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/first-run-unconfigured.png",
+      "sha256": "cae4afde28ab920e479e213e22cb09bf7df517a1b423ded88ec88e3ac6a85e36",
+      "size_bytes": 27332
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-complete-existing.png",
+      "sha256": "371fad46db9dc8c1ab2eefc31a6f2eef8e0e4fc62e0e4d1fb6f1187eed0885de",
+      "size_bytes": 34907
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-complete-first.png",
+      "sha256": "20f7f40b890c446cd3a9e82dca826cbb21d98ef4d3f9f975496b6cf5f7a363e4",
+      "size_bytes": 38107
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-confirm-long.png",
+      "sha256": "0cc35c2a17a6f901820a8867551f5d0afd44eb855bc1cc77175d83e7e1acc4ce",
+      "size_bytes": 107759
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-failure.png",
+      "sha256": "56312e9098bbb851f75dd93707dffd9820e43069c19edb38846b194c4a8a7de7",
+      "size_bytes": 59645
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-options-1024x768-125-equivalent.png",
+      "sha256": "6ac2c343b986e9d7f63ab8c11aee19bd354975b9230c6dafc6c1bdf8d9e2f833",
+      "size_bytes": 58349
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-options-1024x768-150-equivalent.png",
+      "sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+      "size_bytes": 47952
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-options-1366x768-100-equivalent.png",
+      "sha256": "109d2a492b9a128d5a4ed8706428a26584ffcf8e4d65a040ef7d330921732eac",
+      "size_bytes": 70828
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-stage-CommittingInstallation.png",
+      "sha256": "74fba7eacbd05f20fc8368691ad85bd47db719b4073169eaef77aa3ba55dfc1b",
+      "size_bytes": 33054
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-stage-CopyingFiles.png",
+      "sha256": "b6e66639ce11038042a7fed5253386608dc0e64ad5a40b5ead5b75374da449d8",
+      "size_bytes": 33690
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-stage-WaitingForAuthorization.png",
+      "sha256": "61e5cf1eef4e0448623ce8f044b78301f623cfa25c8a4130329ac46c356f4b89",
+      "size_bytes": 35803
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown-125-equivalent.png",
+      "sha256": "fe3f33f248f44dd9b110517ba075ecba7bb3c050bdadeb5c350424d01711d646",
+      "size_bytes": 46109
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown-150-equivalent.png",
+      "sha256": "b863fc703ecab159e8a914215a4bd7f09a0ccadd39b3ff3a61855575e4eb0371",
+      "size_bytes": 44449
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown-expanded.png",
+      "sha256": "6e852e7d11f5bf4dda193870dc6887ee61fd23d9dfbc564aff73a24a425ecc88",
+      "size_bytes": 52664
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown-original-text.png",
+      "sha256": "fcb16ab196384bd19a91bfc0b290ccef57753c6512c24cec0336466ec7405fd7",
+      "size_bytes": 55257
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown-records-unavailable.png",
+      "sha256": "b77c552c0c559eca548843da22ecde88717661f06eb89befc6baac31a2e38fc9",
+      "size_bytes": 48986
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/installer-unknown.png",
+      "sha256": "20d44d9f3b3b9eb342ef1526c5230df6383bc3d72257bfbcc55383cbef40fb6f",
+      "size_bytes": 46511
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/NATIVE-BUILD.log",
+      "sha256": "430b6686191b16646ecd58233affe688f67cc51060fdf37ab3ab15300cf07654",
+      "size_bytes": 84
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/NATIVE.log",
+      "sha256": "fcbd2c0d3c91cf9ec2cce04a8245122af4ee62e89b16deeb590f05bdf72b8e53",
+      "size_bytes": 10493
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/password-first-setup.png",
+      "sha256": "a8e4309580b69ba2bffdeada5f4e806c03c47d5bb84ab3a518a1de28d8bfcc77",
+      "size_bytes": 19463
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/password-rejected.png",
+      "sha256": "b3bedaaebb23cac89bf06cabade11e14da78d80c8722e499d9097a6b13ea7501",
+      "size_bytes": 19288
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/password-service-unavailable.png",
+      "sha256": "e19b735ac460df7143cb6b0ffddc3bd60b86be98de9b5067821a4a3ae6653f5e",
+      "size_bytes": 20883
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/result-unconfirmed-20261022/STARTUP-REGRESSION.log",
+      "sha256": "d3f7aefaa0674744c11467d8c5902dceb588141d86da83618aefc8e4d648853e",
+      "size_bytes": 8093
+    }
+  ],
+  "user_screenshot": "Private local input only; not committed or used as final native evidence",
+  "installer_started": false,
+  "pushed": false,
+  "published": false
+}

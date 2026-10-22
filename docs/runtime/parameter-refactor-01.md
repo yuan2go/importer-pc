@@ -1,3 +1,5 @@
+﻿> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
+
 > 历史实施记录：下文操作和字段表保留 PR73 时语境。当前增量入口为[参数继承裁决](../design/parameter-inheritance-02.md)与[现有工作包](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)；原现场与发行身份不扩张。
 
 > 2026-10-21 当前执行入口：PARAM-UX-02 / WP-IPC-PARAMETER-SETTINGS-02，参数采用 V3，复用已合并 PR78/79。下文“当前、待实施、不测试”均保留原阶段语境；不再定义当前布局或禁止本轮原生验证。

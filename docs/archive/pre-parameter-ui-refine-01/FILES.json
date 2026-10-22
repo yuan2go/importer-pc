@@ -1,0 +1,32 @@
+[
+  {
+    "Original": "docs/INDEX.md",
+    "OriginalSha256": "9397f5863db709779b0a2ff1f39effd49084e8d3fb5d8aef73b74bf90ec72a1a",
+    "Snapshot": "docs__INDEX.md.txt"
+  },
+  {
+    "Original": "docs/design/parameter-settings-experience-02.md",
+    "OriginalSha256": "911a7631f06c730f84beab29b35824066ab2d9247e5dda898b03b6470897914e",
+    "Snapshot": "docs__design__parameter-settings-experience-02.md.txt"
+  },
+  {
+    "Original": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
+    "OriginalSha256": "2175406972e66cfb4bbc45e37a04816c18a413aa5888b10754c2e597d17632d0",
+    "Snapshot": "docs__work-packages__WP-IPC-PARAMETER-SETTINGS-02.md.txt"
+  },
+  {
+    "Original": "docs/runtime/parameter-refactor-01.md",
+    "OriginalSha256": "3701214c3ee4a72b4aebc166bf07fa06df6e53fdb3385b767c04a4fed55b64e7",
+    "Snapshot": "docs__runtime__parameter-refactor-01.md.txt"
+  },
+  {
+    "Original": "docs/runtime/parameter-settings-v3-native-01.md",
+    "OriginalSha256": "b8fcf3da365a3913d923554c5b9b942146f11622b8a702fe89540785b1912dfd",
+    "Snapshot": "docs__runtime__parameter-settings-v3-native-01.md.txt"
+  },
+  {
+    "Original": "docs/runtime/startup-experience-03.md",
+    "OriginalSha256": "4b6195d8959902c577b1df246a51190353e7ad9c88e69297fb8b4d9aad8fc3e0",
+    "Snapshot": "docs__runtime__startup-experience-03.md.txt"
+  }
+]

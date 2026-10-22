@@ -1,0 +1,49 @@
+> 2026-10-21 安装与首配最新增量见[当前操作说明](startup-experience-02.md)：中文用途、可选条码筛选、文件导入、保存并启动和未完成续配。下文原版本及原验收保持身份。
+
+# 参数设置 V3：原生运行与交付说明
+
+> 2026-10-21：本轮1.8.0增量的日常操作以[旧参数继承操作说明](parameter-inheritance-02.md)为补充，作业登录会话归业务、硬件能力归驱动，并新增排除、诊断日志和本机显示。下文1.7.0介质与验证保留原SourceCommit，不扩张到新版本。
+
+适用：Sportmaster 1.7.0，WP-IPC-PARAMETER-SETTINGS-02 / PARAM-UX-02 / PS-05。继承 PR78 的 V3 和 PR79 的启动回退；旧 1.6.1 介质不包含 V3。当前页面以 [PARAM-UX-02](../design/parameter-settings-experience-02.md) 和 [V3交接](../ui/parameter-settings-v3-20261020/HANDOFF.md) 为设计基线。原参数重构记录继续作为合同与历史证据，日常操作入口以本文为准。
+
+## 日常编辑与保存
+
+在作业窗口进入“参数配置”。同一目录按系统、业务模块、驱动、组件组织全部候选；左右相机是业务固定的独立实例，RCS 是一个共享组件。相机的取格口编码与心跳编码分开显示，条码正则属于业务模块。首次启动才进入独立首配，共用相同参数模型与字段校验。
+
+用目录或 Ctrl+F 查找设置；结果跳到实际字段并展开所属高级组。无效数值保留原始输入，错误摘要可定位到字段。页面切换及运行快照刷新保留草稿、焦点和选区；返回作业、关闭或任务切换时按既有留稿流程处理。
+
+首次配置在五个步骤间切换时保留各类别最后选中的参数对象，返回原步骤继续同一份输入；目录筛选不会把当前对象重置为首项。
+
+底部统一“保存更改…”先检查完整候选并展示差异。未修改时禁用；空差异不能提交，Application 也不会创建无意义 Pending 或增加配置 Revision。查看差异无需提前登录，但实际保存仍要求暂停、有效维护授权和变更原因，原 Application 守卫保持生效。
+
+保存使用读取时的 Revision、RuntimeId 和冻结候选。成功仅表示保存为 Pending；运行中的 Effective 不变，需原受控重启流程确认。保存结果不确定时按钮改为“核对保存结果…”，只检查原次提交，不能重新发送未知候选。冲突保留当前输入供核对，不覆盖别人的修订。
+
+Sensitive 字段及 secret-reference 使用原生 PasswordBox；页面、首配共模和差异审阅均不明文展示它们。编辑保留真实引用，不能把遮罩字符写入配置；没有新增凭据库、显露按钮或凭据导出能力。高级完整 JSON 属于既有受控技术任务，使用其原权限和输出规则。
+
+## 当前运行对象与具体任务
+
+相机和 RCS 页上方显示当前 Effective 对象地址、提供者版本、配置指纹及快照运行证据，另行提示 Pending。编辑地址不是运行地址；快照过期时明确显示状态未知。
+
+“连接诊断”进入同一对象的既有诊断；“返回当前对象设置”返回缓存表单。相机证据取原设备确认；RCS Health 仅证明本地生命周期/配置就绪，保留其 Detail，不能解释为远端业务接受。心跳 HTTP、业务回执、物理完成仍各自核对。没有 Probe 合同就不发送试单；受控重连仍使用 Effective，不应用 Pending，也不重发未知原请求。
+
+模板、备份、加密草稿、离线安装、旧设置、原机恢复和原配置账保持原具体任务入口；它们不另建配置账。显示偏好仍为独立本机偏好，不进入运行配置修订。
+
+## 安装与启动
+
+交付为新构建的 `CainiaoSupplyStation_SM_Setup_v1.7.0_win-x64.exe`，SourceCommit 和 SHA-256 见随交付证据；不能用重命名旧 EXE 替代。参考组合使用合成/Simulation 能力，不提供真实 SDK、客户数据、授权凭据或生产默认地址。未签名状态、安装范围和生产前置条件沿 [安装要求](installer-release-info-01.md) 及 [Windows兼容说明](windows-client-compatibility-01.md)。
+
+从安装器选择授权范围、目标位置并核对发布身份。已有配置走原账和启动证据核对；没有配置时走首配。不要把 Simulation 的成功、离线原型或本机 HWND 验证解释为目标 IPC、SDK/RCS 或现场验收。Production 缺必需能力必须拒绝业务。
+
+未登记安装的解压介质默认先进入安装准备；完成原部署登记后，无配置的正常启动才按 StartupRoute 进入五步首配。离线维护冒烟入口为 `desktop/Ipc.Desktop.exe --maintenance --config <隔离配置目录> --data-root <隔离数据目录>`，用于读取和核对设置，不建立部署信任或启动业务设备。正式安装请按安装器建立的入口与运行方式使用，不能借此跳过信任及授权。
+
+## 开发复核
+
+使用仓库 global.json 固定 SDK。定向命令：
+
+```powershell
+dotnet build tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj -c Release -p:BusinessModule=Sportmaster -m:1 -nr:false
+dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll <仓库绝对路径> --parameter-v3
+./scripts/verify-commercial-wpf.ps1 -Media <冻结Windows介质目录> -Output <新证据目录> -ParameterV3
+```
+
+冻结验证直接引用介质中的发布 DLL，测试夹具从相同 SourceCommit 读取；结果记录 DLL 哈希、夹具身份与介质清单哈希。`-Interactive` 保持最后的合成窗口用于真实键鼠走查。截图是原生 WPF 客户区渲染；窗口 DIP 尺寸和 Windows 缩放分别记录。100%/125%物理显示器、触摸、SDK/RCS、目标 IPC、完整安装升级/重启/双账号与现场验收必须分别取得证据，不能互相代替。

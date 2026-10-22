@@ -4,7 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
-    'docs/runtime/operator-administrator-logs-01.md': 'ADMINISTRATOR-LOGS.md',
+    'docs/runtime/management-mode-01.md': 'MANAGEMENT-MODE.md',
     'docs/runtime/parameter-inheritance-02.md': 'PARAMETER-INHERITANCE.md',
     'docs/runtime/commercial-productization-01-operations.md': 'PRODUCT-OPERATIONS.md',
     'docs/runtime/startup-deployment-02.md': 'STARTUP-DEPLOYMENT.md',
@@ -23,7 +23,7 @@ GUIDES = {
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
-SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/startup-experience-03.md': 'FIRST-CONFIGURATION.md', 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
+SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/parameter-ui-refine-01.md': 'PARAMETER-UI-REFINE.md', 'docs/runtime/startup-experience-03.md': 'FIRST-CONFIGURATION.md', 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/parameter-settings-v3-native-01.md': 'PARAMETERS.md',
     'docs/runtime/parameter-refactor-01.md': 'PARAMETERS-HISTORY.md',

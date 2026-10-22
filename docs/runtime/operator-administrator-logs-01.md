@@ -1,3 +1,5 @@
+> 本文主体为SM1.10.2形成时的账号实现，现行管理语义由[管理模式](management-mode-01.md)替代；不再以用户名/账号列表解释管理权限。原字节和证据保持[历史归档](../archive/pre-management-mode-01/README.md)。
+
 # 现场作业、软件管理员与日志 · OPS-ADMIN-LOGS-01
 
 本轮为 Sportmaster 1.10.2 / Application.Contracts 1.15.0。基于 main 3b883fe，整合PR85 d52ade7与PR84 587fbe8；它们开工时未合并。旧1.8.2及本轮中间候选1.9.0/1.9.1保留原SourceCommit，本说明不将旧介质升级为本轮。

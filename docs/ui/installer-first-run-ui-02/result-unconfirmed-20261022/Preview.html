@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>菜鸟供包台 · 安装与首次配置 UI 设计</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas:#eef2f6; --surface:#ffffff; --sidebar:#f5f8fc;
+      --text:#20252d; --muted:#626b78; --border:#dce2e9; --rule:#e7ebef;
+      --blue:#0866e8; --blue-hover:#075acb; --blue-soft:#eaf2ff;
+      --error:#b42318; --error-bg:#fff5f4;
+      --font:"Segoe UI","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:24px; background:var(--canvas); color:var(--text); font:14px/1.65 var(--font); }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { cursor:default; }
+    button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+    [hidden] { display:none !important; }
+    .review-header { max-width:1000px; margin:0 auto 16px; }
+    .review-header h1 { margin:0; font-size:18px; font-weight:600; }
+    .review-note { margin:3px 0 11px; color:var(--muted); font-size:13px; }
+    .review-tools { display:flex; flex-wrap:wrap; gap:10px 20px; align-items:center; }
+    .review-tools label { display:flex; gap:8px; align-items:center; }
+    .review-tools select { min-height:36px; padding:5px 28px 5px 9px; background:white; border:1px solid var(--border); border-radius:4px; color:var(--text); max-width:100%; }
+    #review-feedback { max-width:1000px; margin:12px auto 0; color:#4e5969; font-size:13px; }
+    #review-feedback:empty { display:none; }
+    .app-window { position:relative; width:100%; max-width:1000px; margin:0 auto; border:1px solid #ccd4df; border-radius:8px; overflow:hidden; background:var(--surface); box-shadow:0 10px 32px #20314914; }
+    .titlebar { height:34px; display:flex; align-items:center; justify-content:space-between; padding:0 0 0 12px; background:#f4f6f9; font-size:12px; color:#3b4655; }
+    .titlebar-label { display:flex; align-items:center; gap:7px; }
+    .app-mark-mini { width:17px; height:17px; display:grid; place-items:center; background:var(--blue); color:white; font-size:8px; }
+    .window-controls { height:100%; display:flex; align-items:center; }
+    .window-controls .system-glyph { width:44px; text-align:center; color:#697483; user-select:none; }
+    .window-controls button { width:44px; height:34px; background:none; border:0; color:#465162; padding:0; font-size:17px; }
+    .window-controls button:hover { background:#ffe7e5; color:#a4160c; }
+    .window-body { display:grid; grid-template-columns:176px minmax(0,1fr); min-height:646px; }
+    .sidebar { padding:28px 18px 22px; background:var(--sidebar); border-right:1px solid var(--rule); }
+    .brand-mark { width:36px; height:36px; display:grid; place-items:center; background:var(--blue); color:white; font-size:13px; font-weight:600; }
+    .brand-name { margin:10px 0 32px; font-size:16px; font-weight:600; }
+    .steps { padding:0; margin:0; list-style:none; }
+    .steps li { display:flex; align-items:center; gap:10px; padding:10px 8px; margin:7px -5px; border-radius:4px; color:#687384; }
+    .steps li.active { color:#075acb; background:var(--blue-soft); font-weight:600; }
+    .step-number { display:grid; place-items:center; width:21px; height:21px; border:1px solid #cbd4df; border-radius:50%; font-size:12px; flex:0 0 21px; }
+    .steps li.active .step-number { color:white; background:var(--blue); border-color:var(--blue); }
+    .steps li.done .step-number { color:#3c649a; background:#e8eef6; border-color:#e8eef6; }
+    .page { min-width:0; padding:28px 32px 24px; display:flex; flex-direction:column; }
+    .page h1 { margin:0; font-size:24px; line-height:1.4; font-weight:600; }
+    .version { margin:7px 0 0; color:var(--muted); font-size:13px; }
+    .lead { margin:17px 0 0; color:#4d5867; }
+    .section { margin-top:27px; }
+    .section h2 { margin:0 0 13px; padding-bottom:9px; border-bottom:1px solid var(--rule); font-size:15px; font-weight:600; }
+    .directory-row { display:grid; grid-template-columns:76px minmax(0,1fr) 72px; gap:12px; align-items:center; margin-top:12px; }
+    .field-label { color:var(--muted); }
+    .text-input { width:100%; min-width:0; height:40px; padding:8px 10px; border:1px solid #cdd5df; border-radius:4px; background:white; color:var(--text); }
+    .path-input { font-size:13px; }
+    .button { min-height:38px; padding:7px 17px; border:1px solid #cdd5df; border-radius:4px; background:white; color:var(--text); white-space:nowrap; }
+    .button:hover { background:#f3f6fa; }
+    .button.primary { background:var(--blue); border-color:var(--blue); color:white; font-weight:600; }
+    .button.primary:hover { background:var(--blue-hover); }
+    .browse-button { padding:7px 10px; }
+    .setting-row { display:grid; grid-template-columns:76px minmax(0,1fr); gap:12px; align-items:start; padding:5px 0; }
+    .setting-label { padding-top:6px; color:var(--muted); }
+    .choice-list { display:flex; flex-wrap:wrap; gap:4px 24px; }
+    .choice-list.vertical { flex-direction:column; gap:2px; }
+    .choice { display:flex; align-items:center; gap:8px; min-height:34px; margin:0; cursor:pointer; }
+    .choice input { margin:0; width:15px; height:15px; accent-color:var(--blue); flex:0 0 15px; }
+    .minor { color:var(--muted); font-size:13px; }
+    .shortcut-row { margin-top:10px; }
+    .summary { margin:0; }
+    .summary-row { display:grid; grid-template-columns:76px minmax(0,1fr); gap:12px; padding:6px 0; }
+    .summary dt { margin:0; color:var(--muted); }
+    .summary dd { min-width:0; margin:0; overflow-wrap:anywhere; }
+    .notice { margin:24px 0 0; padding:12px 15px; background:#f3f6fa; border-radius:4px; color:#4e5969; font-size:13px; }
+    .footer { margin-top:auto; padding-top:26px; }
+    .actions { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:10px; padding-top:18px; border-top:1px solid var(--rule); }
+    .actions .button { min-width:88px; }
+    .actions.spread { justify-content:space-between; }
+    .actions .right-actions { display:flex; flex-wrap:wrap; gap:10px; }
+    .progress-region { margin-top:43px; max-width:100%; }
+    .progress-label { margin:0 0 14px; font-size:16px; font-weight:500; }
+    .progress-track { width:100%; height:6px; background:#e8edf4; border-radius:3px; overflow:hidden; }
+    .progress-unknown { width:26%; height:100%; background:var(--blue); border-radius:3px; transform:translateX(75%); animation:travel 1.9s ease-in-out infinite alternate; }
+    @keyframes travel { from { transform:translateX(-80%); } to { transform:translateX(360%); } }
+    .progress-note { margin:15px 0 0; font-size:13px; color:var(--muted); }
+    .result-summary { margin-top:27px; }
+    .result-summary p { margin:0; }
+    .result-summary .result-guidance { margin-top:8px; color:var(--muted); }
+    .result-caution { margin:22px 0 0; padding:12px 15px; border-radius:4px; background:#fff8e7; color:#79551b; }
+    .result-details { margin-top:26px; }
+    .result-details summary { cursor:pointer; width:fit-content; color:#3d4858; padding:5px 0; }
+    .result-details-body { margin-top:11px; padding:13px 15px; background:#f6f8fb; border-radius:4px; }
+    .result-details-body .summary-row { grid-template-columns:76px minmax(0,1fr); font-size:13px; }
+    .result-details-note { margin:9px 0 0; color:var(--muted); font-size:13px; }
+    .success-text { margin:19px 0 0; }
+    .first-use { margin-top:36px; }
+    .first-use p { margin:0; max-width:570px; }
+    .first-run { min-height:646px; position:relative; background:white; }
+    .first-run-header { padding:28px 32px; display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px; border-bottom:1px solid var(--rule); }
+    .first-run-header h1 { margin:0; font-size:24px; font-weight:600; line-height:1.4; }
+    .first-run-header p { margin:7px 0 0; color:var(--muted); }
+    .mode-label { color:var(--muted); padding-top:5px; font-size:13px; }
+    .access-gate { width:100%; max-width:570px; margin:68px auto 0; padding:0 24px 40px; }
+    .access-gate h2 { margin:0; font-size:21px; font-weight:600; }
+    .access-gate p { margin:12px 0 0; color:#566171; }
+    .gate-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+    .dialog-shade { position:absolute; inset:34px 0 0; background:#19263924; display:flex; align-items:flex-start; justify-content:center; padding:76px 24px 32px; }
+    .dialog-panel { position:relative; width:480px; max-width:100%; padding:25px 28px 22px; border:1px solid #cdd5df; border-radius:8px; background:white; box-shadow:0 12px 35px #17243a26; }
+    .dialog-close { position:absolute; top:16px; right:15px; width:32px; height:32px; padding:0; border:0; background:white; color:var(--muted); font-size:22px; }
+    .dialog-close:hover { background:#f3f6fa; }
+    .dialog-panel h2 { margin:0; font-size:22px; line-height:1.4; font-weight:600; }
+    .dialog-intro { margin:8px 0 20px; color:var(--muted); font-size:13px; }
+    .password-field { margin-top:15px; }
+    .password-field label { display:block; margin-bottom:6px; }
+    .password-rule { margin:9px 0 0; color:var(--muted); font-size:13px; }
+    .password-toggle { margin-top:10px; font-size:13px; color:#566171; }
+    .field-error { color:var(--error); margin:5px 0 0; font-size:13px; }
+    .dialog-actions { margin-top:21px; display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; padding-top:17px; border-top:1px solid var(--rule); }
+    .expired-note { margin:0 0 18px; padding:10px 12px; background:#f5f7fa; border-radius:4px; color:#4e5969; font-size:13px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (prefers-reduced-motion:reduce) { .progress-unknown { animation:none; transform:translateX(140%); } }
+    @media (max-width:760px) {
+      body { padding:12px; }
+      .window-body { grid-template-columns:140px minmax(0,1fr); }
+      .sidebar { padding:25px 12px; }
+      .brand-name { font-size:15px; }
+      .steps li { gap:7px; font-size:13px; }
+      .page { padding:25px 22px 22px; }
+      .directory-row { grid-template-columns:minmax(0,1fr) 72px; gap:6px 10px; }
+      .directory-row > label { grid-column:1 / -1; }
+      .setting-row { grid-template-columns:66px minmax(0,1fr); gap:10px; }
+      .choice-list .minor { display:block; }
+      .choice { align-items:flex-start; padding:5px 0; }
+      .choice input { margin-top:5px; }
+    }
+    @media (max-width:560px) {
+      body { padding:8px; }
+      .review-tools label { flex-wrap:wrap; width:100%; }
+      .review-tools select { min-width:0; flex:1; }
+      .window-body { display:block; min-height:0; }
+      .sidebar { padding:12px 16px; border-right:0; border-bottom:1px solid var(--rule); }
+      .brand-mark,.brand-name { display:none; }
+      .steps { display:flex; gap:8px; justify-content:space-between; }
+      .steps li { flex:1; justify-content:center; margin:0; padding:6px 2px; font-size:11px; gap:4px; }
+      .step-number { width:18px; height:18px; flex-basis:18px; }
+      .page { min-height:580px; padding:23px 18px; }
+      .setting-row { display:block; }
+      .setting-label { margin-bottom:4px; }
+      .summary-row { grid-template-columns:66px minmax(0,1fr); gap:10px; }
+      .path-summary { display:block; }
+      .path-summary dd { margin-top:4px; }
+      .first-run-header { padding:24px 20px; }
+      .first-run-header h1,.page h1 { font-size:22px; }
+      .first-run { min-height:640px; }
+      .access-gate { margin-top:45px; }
+      .dialog-shade { padding:45px 12px 25px; }
+      .dialog-panel { padding:22px 20px; }
+      .window-controls .system-glyph { display:none; }
+      .actions.spread { gap:16px; }
+    }
+    @media (pointer:coarse) { .button,.text-input { min-height:44px; } .text-input { font-size:16px; } .choice { min-height:44px; } }
+    @media print { body { background:white; padding:0; } .review-header,#review-feedback { display:none; } .app-window { box-shadow:none; } .progress-unknown { animation:none; } }
+  </style>
+</head>
+<body>
+  <header class="review-header">
+    <h1>菜鸟供包台 · 安装与首次配置</h1>
+    <p class="review-note">设计交接预览 · 下方为产品界面；此工具栏不属于产品。所有操作只作演示，不安装软件、不执行鉴权。</p>
+    <div class="review-tools">
+      <label for="view-select">查看页面
+        <select id="view-select">
+          <option value="options">01 · 安装选项</option>
+          <option value="confirm">02 · 确认安装</option>
+          <option value="installing">03 · 正在安装</option>
+          <option value="complete">04 · 安装完成</option>
+          <option value="admin-setup">05 · 首次设置管理密码</option>
+          <option value="config-locked">06 · 待授权入口</option>
+          <option value="admin-unlock">07 · 验证已有密码</option>
+          <option value="admin-expired">08 · 管理会话过期</option>
+          <option value="install-result-unconfirmed">09 · 安装结果待确认</option>
+        </select>
+      </label>
+      <label id="phase-control" for="phase-select" hidden>阶段示例
+        <select id="phase-select">
+          <option value="copy">复制程序文件</option>
+          <option value="authorization">等待 Windows 授权</option>
+          <option value="verify">校验程序文件</option>
+          <option value="register">登记安装信息</option>
+          <option value="shortcuts">创建快捷方式</option>
+        </select>
+      </label>
+    </div>
+  </header>
+  <main id="preview-root"></main>
+  <p id="review-feedback" role="status" aria-live="polite"></p>
+  <script>
+    (() => {
+      'use strict';
+      const root = document.getElementById('preview-root');
+      const chooser = document.getElementById('view-select');
+      const feedback = document.getElementById('review-feedback');
+      const phaseChooser = document.getElementById('phase-select');
+      const phaseControl = document.getElementById('phase-control');
+      const views = [...chooser.options].map(option => option.value);
+      let current = views.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'options';
+      let lockedOrigin = 'admin-setup';
+      const data = {
+        program:'D:\\ImporterPc.Deployment\\Programs\\CainiaoSupplyStation',
+        directory:'D:\\ImporterPc.Deployment\\Machine\\data',
+        scope:'all', menu:true, desktop:true, openAfter:true
+      };
+      const version = '<p class="version">菜鸟供包台 · SM V1.11.1 · Windows 64 位</p>';
+      function esc(value) { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+      function notice(message) { feedback.textContent = message; }
+      function chrome(content, configuration) {
+        return '<section class="app-window" aria-label="'+(configuration?'首次配置':'安装菜鸟供包台')+'设计预览"><div class="titlebar"><div class="titlebar-label"><span class="app-mark-mini" aria-hidden="true">菜鸟</span><span>'+(configuration?'首次配置':'安装')+' · 菜鸟供包台</span></div><div class="window-controls"><span class="system-glyph" aria-hidden="true">─</span><span class="system-glyph" aria-hidden="true">□</span><button type="button" data-action="close-window" aria-label="关闭窗口">×</button></div></div>'+content+'</section>';
+      }
+      function sidebar(step) {
+        const labels = ['安装选项','确认并安装','安装完成'];
+        return '<aside class="sidebar"><div class="brand-mark" aria-hidden="true">菜鸟</div><div class="brand-name">菜鸟供包台</div><ol class="steps" aria-label="安装步骤">'+labels.map((label, i) => '<li class="'+(i===step?'active':i<step?'done':'')+'"'+(i===step?' aria-current="step"':'')+'><span class="step-number">'+(i<step?'✓':i+1)+'</span><span>'+label+'</span></li>').join('')+'</ol></aside>';
+      }
+      function installPage(title, content, footer, step) {
+        return chrome('<div class="window-body">'+sidebar(step)+'<section class="page"><header><h1>'+title+'</h1>'+version+'</header>'+content+(footer?'<footer class="footer">'+footer+'</footer>':'')+'</section></div>', false);
+      }
+      function optionsPage() {
+        return installPage('安装选项', '<form id="install-options"><section class="section"><h2>安装位置</h2><div class="directory-row"><label class="field-label" for="program-path">程序目录</label><input class="text-input path-input" id="program-path" name="program" value="'+esc(data.program)+'" spellcheck="false" autocomplete="off" required><button class="button browse-button" type="button" data-directory="program-path">浏览…</button></div><div class="directory-row"><label class="field-label" for="data-path">数据目录</label><input class="text-input path-input" id="data-path" name="directory" value="'+esc(data.directory)+'" spellcheck="false" autocomplete="off" required><button class="button browse-button" type="button" data-directory="data-path">浏览…</button></div></section><section class="section"><h2>安装设置</h2><div class="setting-row" role="group" aria-labelledby="scope-label"><div class="setting-label" id="scope-label">使用范围</div><div class="choice-list vertical"><label class="choice"><input type="radio" name="scope" value="all" '+(data.scope==='all'?'checked':'')+'><span>本机所有 Windows 用户 <span class="minor">（共用一个供包台）</span></span></label><label class="choice"><input type="radio" name="scope" value="current" '+(data.scope==='current'?'checked':'')+'><span>仅当前 Windows 用户</span></label></div></div><div class="setting-row shortcut-row" role="group" aria-labelledby="shortcut-label"><div class="setting-label" id="shortcut-label">快捷方式</div><div class="choice-list"><label class="choice"><input type="checkbox" name="menu" '+(data.menu?'checked':'')+'><span>开始菜单</span></label><label class="choice"><input type="checkbox" name="desktop" '+(data.desktop?'checked':'')+'><span>桌面</span></label></div></div></section></form>', '<div class="actions"><button class="button primary" type="submit" form="install-options">下一步</button><button class="button" type="button" data-action="cancel">取消</button></div>', 0);
+      }
+      function confirmPage() {
+        const shortcuts = [data.menu?'开始菜单':'',data.desktop?'桌面':''].filter(Boolean).join('、') || '不创建';
+        return installPage('确认安装','<section class="section"><h2>安装位置</h2><dl class="summary"><div class="summary-row path-summary"><dt>程序目录</dt><dd>'+esc(data.program)+'</dd></div><div class="summary-row path-summary"><dt>数据目录</dt><dd>'+esc(data.directory)+'</dd></div></dl></section><section class="section"><h2>安装设置</h2><dl class="summary"><div class="summary-row"><dt>使用范围</dt><dd>'+(data.scope==='all'?'本机所有 Windows 用户，共用一个供包台':'仅当前 Windows 用户')+'</dd></div><div class="summary-row"><dt>安装用途</dt><dd>生产模式</dd></div><div class="summary-row"><dt>快捷方式</dt><dd>'+shortcuts+'</dd></div></dl></section><p class="notice">安装时如出现 Windows 管理员授权提示，请按提示确认。</p>', '<div class="actions"><button class="button" data-action="back-options">上一步</button><button class="button primary" data-action="begin-demo">安装</button><button class="button" data-action="cancel">取消</button></div>', 1);
+      }
+      function installingPage() {
+        const states = {
+          copy:['正在复制程序文件','安装期间请保持此窗口打开。'],
+          authorization:['等待 Windows 管理员授权','如已出现 Windows 授权窗口，请按提示确认后继续。'],
+          verify:['正在校验程序文件','安装期间请保持此窗口打开。'],
+          register:['正在登记安装信息','安装期间请保持此窗口打开。'],
+          shortcuts:['正在创建快捷方式','安装期间请保持此窗口打开。']
+        };
+        const [label, note] = states[phaseChooser.value] || states.copy;
+        return installPage('正在安装', '<p class="lead">请稍候，安装完成后将显示结果。</p><section class="progress-region" aria-label="安装进度"><p class="progress-label" role="status">'+label+'</p><div class="progress-track" role="progressbar" aria-label="安装进行中，进度暂不可计量"><div class="progress-unknown"></div></div><p class="progress-note">'+note+'</p></section>', '', 1);
+      }
+      function completePage() {
+        return installPage('安装完成', '<p class="success-text">菜鸟供包台已安装。</p><section class="section first-use"><h2>首次使用</h2><p>首次打开后，请完成相机和 RCS 设置，再按检查结果启动。</p></section>', '<div class="actions spread"><label class="choice"><input type="checkbox" id="open-after" '+(data.openAfter?'checked':'')+'><span>完成后打开供包台</span></label><button class="button primary" data-action="finish-demo">完成</button></div>', 2);
+      }
+      function unconfirmedPage() {
+        return installPage('安装结果待确认', '<section class="result-summary" aria-label="结果说明"><p>未能确认本次安装的最终结果。</p><p class="result-guidance">请先查看本次安装记录，再决定后续操作。</p></section><p class="result-caution">确认前，请勿重复安装。</p><details class="result-details"><summary>安装详情</summary><div class="result-details-body"><dl class="summary"><div class="summary-row"><dt>历史消息</dt><dd>等待 Windows 授权。</dd></div><div class="summary-row"><dt>诊断结果</dt><dd>未取得可信维护终态。</dd></div></dl><p class="result-details-note">历史消息仅供核对，不代表当前仍在等待授权。</p></div></details>', '<div class="actions"><button class="button primary" type="button" data-action="open-install-records">打开安装记录目录</button><button class="button" type="button" data-action="close-unconfirmed">关闭</button></div>', 1);
+      }
+      function gateText(mode) {
+        if (mode==='admin-expired') return {intro:'管理权限已到期，请重新验证后继续。',title:'重新验证管理密码',body:'当前配置操作已锁定，重新验证后才能继续修改和保存。',action:'重新验证'};
+        if (mode==='admin-unlock') return {intro:'配置前，请先验证管理密码。',title:'进入管理模式',body:'验证管理密码后，即可继续设备与服务配置。',action:'进入管理模式'};
+        return {intro:'配置前，请先设置管理密码。',title:'先设置管理密码',body:'管理密码用于保护参数设置。设置完成后，继续配置相机与 RCS 服务。',action:'设置管理密码'};
+      }
+      function firstRunPage(mode, dialogVisible) {
+        const text = gateText(mode);
+        const gate = '<div class="first-run"'+(dialogVisible?' inert':'')+'><header class="first-run-header"><div><h1>首次配置</h1><p>'+text.intro+'</p></div><span class="mode-label">'+(mode==='admin-expired'?'管理权限已到期':'普通模式')+'</span></header><section class="access-gate"><h2>'+text.title+'</h2><p>'+text.body+'</p><div class="gate-actions"><button class="button primary" data-action="open-admin">'+text.action+'</button><button class="button" data-action="exit-config">退出配置</button></div></section></div>';
+        let dialog = '';
+        if (dialogVisible) {
+          const setup = mode==='admin-setup';
+          const title = setup?'设置管理密码':mode==='admin-expired'?'重新验证管理密码':'验证管理密码';
+          dialog = '<div class="dialog-shade"><section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="admin-dialog-title" aria-describedby="admin-dialog-intro"><button class="dialog-close" type="button" data-action="dismiss-admin" aria-label="关闭管理密码对话框">×</button><h2 id="admin-dialog-title">'+title+'</h2><p class="dialog-intro" id="admin-dialog-intro">'+(setup?'用于保护参数设置，请妥善保管。':mode==='admin-expired'?'管理权限已到期，请重新验证后继续。':'输入管理密码后，继续设备与服务配置。')+'</p>'+'<form id="admin-form" novalidate><div class="password-field"><label for="management-password">管理密码</label><input class="text-input" type="password" id="management-password" name="password" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="password-error'+(setup?' password-rule':'')+'"><p class="field-error" id="password-error" role="alert" hidden></p></div>'+(setup?'<div class="password-field"><label for="confirm-password">确认密码</label><input class="text-input" type="password" id="confirm-password" name="confirmation" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="confirmation-error"><p class="field-error" id="confirmation-error" role="alert" hidden></p></div><p class="password-rule" id="password-rule">12～256 个字符，至少包含 5 个不同字符。</p>':'')+'<label class="choice password-toggle"><input type="checkbox" id="show-password"><span>显示密码</span></label><div class="dialog-actions"><button class="button" type="button" data-action="dismiss-admin">取消</button><button class="button primary" type="submit">'+(setup?'设置并继续':'验证并继续')+'</button></div></form></section></div>';
+        }
+        return chrome(gate+dialog, true);
+      }
+      function captureOptions() {
+        const form = root.querySelector('#install-options');
+        if (!form) return;
+        data.program = form.elements.program.value;
+        data.directory = form.elements.directory.value;
+        data.scope = form.elements.scope.value;
+        data.menu = form.elements.menu.checked;
+        data.desktop = form.elements.desktop.checked;
+      }
+      function clearPasswords() {
+        root.querySelectorAll('#management-password,#confirm-password').forEach(input => { input.value=''; });
+      }
+      function show(view, focus) {
+        captureOptions();
+        clearPasswords();
+        current = views.includes(view) ? view : 'options';
+        if (current.startsWith('admin-')) lockedOrigin=current;
+        chooser.value=current;
+        phaseControl.hidden=current!=='installing';
+        feedback.textContent='';
+        if (current==='options') root.innerHTML=optionsPage();
+        else if (current==='confirm') root.innerHTML=confirmPage();
+        else if (current==='installing') root.innerHTML=installingPage();
+        else if (current==='complete') root.innerHTML=completePage();
+        else if (current==='install-result-unconfirmed') root.innerHTML=unconfirmedPage();
+        else root.innerHTML=firstRunPage(current==='config-locked'?lockedOrigin:current,current!=='config-locked');
+        try { history.replaceState(null,'','#'+current); } catch (_) {}
+        if (focus) {
+          const target=root.querySelector('#management-password') || root.querySelector('h1');
+          if (target) { if (target.tagName==='H1') target.setAttribute('tabindex','-1'); target.focus(); }
+        }
+      }
+      root.addEventListener('click', event => {
+        const browse = event.target.closest('[data-directory]');
+        if (browse) { const input=root.querySelector('#'+browse.dataset.directory); input.focus(); input.select(); notice('预览中可直接编辑目录。实际安装器的“浏览”应继续使用现有文件夹选择对话框。'); return; }
+        const button=event.target.closest('[data-action]');
+        if (!button) return;
+        const action=button.dataset.action;
+        if (action==='back-options') show('options',true);
+        else if (action==='begin-demo') { show('installing',true); notice('已进入安装中示意。此预览不会计时跳到成功；可用上方页面选择器查看安装完成状态。'); }
+        else if (action==='finish-demo') { const open=root.querySelector('#open-after'); data.openAfter=open.checked; if (data.openAfter) show('admin-setup',true); else notice('预览结束。实际程序应关闭安装器，不打开供包台。'); }
+        else if (action==='dismiss-admin') { show('config-locked',true); const launch=root.querySelector('[data-action="open-admin"]'); if (launch) launch.focus(); }
+        else if (action==='open-admin') show(lockedOrigin,true);
+        else if (action==='close-window' && current.startsWith('admin-')) show('config-locked',true);
+        else if (action==='open-install-records') notice('这是目录入口示意。实际程序应打开本次安装事务对应的记录目录，不能打开无关目录或伪造安装记录。');
+        else if (action==='close-unconfirmed' || (action==='close-window' && current==='install-result-unconfirmed')) notice('当前为结果待确认页面示意。“关闭”不等于“取消安装”；实际行为须核对窗口与后台安装进程的生命周期。');
+        else if (action==='close-window' && current==='installing') notice('此为安装过程示意。实际窗口关闭和取消行为必须遵守安装事务的安全中断能力。');
+        else notice('当前为设计预览，没有执行安装、关闭真实程序或连接设备。');
+      });
+      root.addEventListener('change', event => {
+        if (event.target.id==='show-password') root.querySelectorAll('#management-password,#confirm-password').forEach(input=>{input.type=event.target.checked?'text':'password';});
+      });
+      root.addEventListener('submit', event => {
+        event.preventDefault();
+        if (event.target.id==='install-options') { show('confirm',true); return; }
+        if (event.target.id!=='admin-form') return;
+        const form=event.target;
+        const value=form.elements.password.value;
+        const passwordError=root.querySelector('#password-error');
+        const confirmationError=root.querySelector('#confirmation-error');
+        passwordError.hidden=true;
+        form.elements.password.removeAttribute('aria-invalid');
+        if (confirmationError) { confirmationError.hidden=true; form.elements.confirmation.removeAttribute('aria-invalid'); }
+        let message='';
+        if (!value) message='请输入管理密码。';
+        else if (current==='admin-setup' && ([...value].length<12 || [...value].length>256)) message='管理密码应为 12～256 个字符。';
+        else if (current==='admin-setup' && new Set([...value]).size<5) message='请至少使用 5 个不同的字符。';
+        if (message) { passwordError.textContent=message; passwordError.hidden=false; form.elements.password.setAttribute('aria-invalid','true'); form.elements.password.focus(); return; }
+        if (current==='admin-setup' && value!==form.elements.confirmation.value) { confirmationError.textContent='两次输入的密码不一致，请重新输入。'; confirmationError.hidden=false; form.elements.confirmation.setAttribute('aria-invalid','true'); form.elements.confirmation.focus(); return; }
+        clearPasswords();
+        notice(current==='admin-setup'?'示例输入检查通过。实际程序应调用既有设密与鉴权服务，成功后直接进入原有首次配置页面。本预览不创建密码、不保存输入。':'已演示提交动作。本预览不验证真实管理密码；实际程序必须由鉴权服务返回成功后才能恢复配置操作。');
+      });
+      root.addEventListener('keydown', event => {
+        const dialog=root.querySelector('[role="dialog"]');
+        if (!dialog) return;
+        if (event.key==='Escape') { event.preventDefault(); show('config-locked',true); return; }
+        if (event.key==='Tab') {
+          const items=[...dialog.querySelectorAll('input,button')].filter(node=>!node.disabled);
+          const first=items[0],last=items[items.length-1];
+          if (event.shiftKey && document.activeElement===first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement===last) { event.preventDefault(); first.focus(); }
+        }
+      });
+      chooser.addEventListener('change',()=>show(chooser.value,true));
+      phaseChooser.addEventListener('change',()=>show('installing',false));
+      window.addEventListener('hashchange',()=>{if(views.includes(location.hash.slice(1)))show(location.hash.slice(1),false);});
+      show(current,false);
+    })();
+  </script>
+</body>
+</html>

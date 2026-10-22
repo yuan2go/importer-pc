@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -19,33 +19,34 @@ static partial class Program
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         var busy = type.BaseType!.GetField("Busy", flags)!;
         var launch = new BusinessLaunch(Path.Combine(evidence, "missing-config"), Path.Combine(evidence, "missing-data"), null, null);
-        AdministratorFixture.AuthorizeRoot(launch.DataRoot);
+        ManagementModeFixture.AuthorizeRoot(launch.DataRoot);
         var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
         type.GetProperty("ConfirmDiscardInputs", flags)!.SetValue(first, (Func<bool>)(() => true)); first.Show();
         await Ready(first);
-        var tabs = Descendants(first).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
+        Check(!Descendants(first).OfType<TabControl>().Any(x => x.Name == "StartupTasks"), "first configuration has one shared directory without an outer tab bar");
         var editor = Descendants(first).OfType<ParameterSettingsControl>().Single();
         Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<TextBlock>().Where(x => x.IsVisible).All(x => !x.Text.Contains("首次工位配置")), "compact first-configuration heading uses the supply-station name");
-        Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置文件…"), "configuration file import is visible on step one");
+        Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置"), "configuration file import is visible on step one");
         FillInitial(editor.Model!);
+        await VerifyParameterUiRefinement(first, editor, evidence, lines);
         editor.Model!.Policy.BarcodePattern = "[";
-        Click(first, "下一步"); await Idle(first);
-        Check(tabs.SelectedIndex == 0 && !Status(first).Contains("BarcodeFilter"), "invalid optional rule stays on its field and exposes no internal variable in the status");
-        editor.Model.Policy.BarcodePattern = ""; Click(first, "下一步"); await Idle(first);
-        Check(tabs.SelectedIndex == 1, "blank optional barcode rule advances without inventing a default filter");
+        Click(first, "继续：系统"); await Idle(first);
+        Check(editor.SelectedCategory == 1 && !Status(first).Contains("BarcodeFilter"), "invalid optional rule stays on its field and exposes no internal variable in the status");
+        editor.Model.Policy.BarcodePattern = ""; Click(first, "继续：系统"); await Idle(first);
+        Check(editor.SelectedCategory == 0 && !Descendants(first).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "检查未通过"), "corrected optional barcode rule advances and clears obsolete failure status without inventing a filter");
         for (var i = 0; i < 5; i++)
         {
-            tabs.SelectedIndex = i; first.UpdateLayout();
+            editor.SelectCategory(new[] { 1, 0, 2, 3, 4 }[i]); first.UpdateLayout();
             if (i < 4) Check(ReferenceEquals(editor, Descendants(first).OfType<ParameterSettingsControl>().Single()), "step " + (i + 1) + " retains the same editor and input");
             Check(Footer(first).Count <= 4, "step " + (i + 1) + " has at most four visible footer actions");
             Check(Descendants(first).OfType<Button>().Where(x => x.IsVisible && Footer(first).Contains(x.Content as string ?? "")).All(x => x.TransformToAncestor(first).TransformBounds(new Rect(x.RenderSize)).Bottom <= first.ActualHeight), "footer stays inside the native window on step " + (i + 1));
             Capture("startup-step-" + (i + 1), first);
         }
-        Check(Footer(first).Contains("保存并启动") && !Footer(first).Contains("分层检查与变更预览"), "final step has one save-and-start action; internal operations have no separate setup entry");
+        Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("分层检查与变更预览"), "final step offers real save without automatic startup; internal operations have no separate setup entry");
         Check(!Descendants(first).OfType<Button>().Any(x => (x.Content as string) == "配置工具…"), "configuration tools are removed from first setup rather than hidden in a menu");
-        Check(Footer(first).Contains("导入配置文件…") && Footer(first).Contains("保存草稿并退出"), "import and useful draft persistence are available in the bottom action row");
+        Check(!Footer(first).Contains("导入配置") && Footer(first).Contains("保存草稿并退出") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content,"导入配置")), "import is in the fixed header and encrypted draft persistence remains in the footer");
         first.Width = 800; first.Height = 600; first.UpdateLayout();
-        Check(Footer(first).Count == 4 && Descendants(first).OfType<ScrollViewer>().Any(x => x.IsVisible && x.ViewportHeight > 0), "small startup window preserves the primary action and scrollable content");
+        Check(Footer(first).Count <= 4 && Descendants(first).OfType<ScrollViewer>().Any(x => x.IsVisible && x.ViewportHeight > 0), "small startup window preserves the primary action and scrollable content");
         Capture("startup-small", first); first.Width = 960; first.Height = 760; first.UpdateLayout();
         var local = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(first)!;
         var draft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(first)!;
@@ -73,31 +74,30 @@ static partial class Program
             Check(rejected && original.Build().StationId == reference.StationId, "incompatible import is rejected without altering local input");
         }
         first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        editor.Model.Policy.QueueCapacity = "bad"; Click(first, "保存并启动"); await Idle(first);
+        editor.Model.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + tabs.SelectedIndex);
-        editor.Model.Policy.QueueCapacity = "64"; editor.Model.Policy.BarcodePattern = "["; tabs.SelectedIndex = 4;
-        first.Activate(); Click(first, "保存并启动"); await Idle(first);
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
+        editor.Model.Policy.QueueCapacity = "64"; editor.Model.Policy.BarcodePattern = "["; editor.ShowReview();
+        first.Activate(); Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(tabs.SelectedIndex == 0 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + tabs.SelectedIndex + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
-        editor.Model.Policy.BarcodePattern = ""; tabs.SelectedIndex = 4;
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + editor.SelectedCategory + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
+        editor.Model.Policy.BarcodePattern = ""; editor.ShowReview();
         var preservedPolicy = editor.Model.Policy; var reauthenticationPassword = "Reauthentication-" + Guid.NewGuid().ToString("N");
-        LocalAdministrator.ForRoot(launch.DataRoot).Maintain("relogin-admin", reauthenticationPassword, true);
+        LocalManagementMode.ForRoot(launch.DataRoot).ChangePassword(reauthenticationPassword);
         await Task.Delay(1250); first.UpdateLayout();
-        var sessionLogin = Descendants(first).OfType<Button>().Single(b => Equals(b.Content, "软件管理员登录…"));
-        var protectedBody = (Panel)type.BaseType!.GetField("Body", flags)!.GetValue(first)!;
+        var sessionLogin = Descendants(first).OfType<Button>().Single(b => Equals(b.Content, "进入管理模式…"));
+        var protectedBody = (FrameworkElement)type.BaseType!.GetField("WorkflowBody", flags)!.GetValue(first)!;
         Check(protectedBody.Visibility == Visibility.Collapsed && sessionLogin.IsVisible && !((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(first)!).Children.Contains(sessionLogin), "revoked first-configuration session preserves an accessible login outside hidden fields and the four-action footer");
-        _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "软件管理员登录…")));
-        AdministratorWindow? loginWindow = null;
-        for (var i = 0; i < 100 && loginWindow is null; i++) { await Task.Delay(20); loginWindow = System.Windows.Application.Current.Windows.OfType<AdministratorWindow>().FirstOrDefault(); }
+        _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "进入管理模式…")));
+        ManagementModeWindow? loginWindow = null;
+        for (var i = 0; i < 100 && loginWindow is null; i++) { await Task.Delay(20); loginWindow = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }
         Check(loginWindow is not null, "fixed first-configuration login action opens the real software account window after revocation");
-        Descendants(loginWindow!).OfType<TextBox>().Single(t => t.Name == "AdministratorAccount").Text = "relogin-admin";
-        Descendants(loginWindow!).OfType<PasswordBox>().Single().Password = reauthenticationPassword; Click(loginWindow!, "登录");
-        for (var i = 0; i < 100 && !LocalAdministrator.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
+        Descendants(loginWindow!).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = reauthenticationPassword; Click(loginWindow!, "进入管理模式");
+        for (var i = 0; i < 100 && !LocalManagementMode.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
-        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64" && !Status(first).Contains("管理员未登录或会话到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
         Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {
@@ -106,12 +106,13 @@ static partial class Program
         }
         var fake = new StartupMaintenanceProbe(local with { Candidate = draft.Build() });
         type.GetField("maintenance", flags)!.SetValue(first, fake);
-        fake.CheckStatus = "FAIL"; Click(first, "保存并启动"); await Idle(first);
+        fake.CheckStatus = "FAIL"; Click(first, "保存配置"); await Idle(first);
         Check(fake.Saves == 0 && !Retry(first), "failed configuration check never calls save or requests startup");
-        fake.CheckStatus = "PASS"; fake.SaveFailure = true; Click(first, "保存并启动"); await Idle(first);
-        Check(fake.Saves == 1 && !Retry(first), "known save failure cannot use the initially clean draft as proof of persistence");
-        fake.Uncertain = true; Click(first, "保存并启动"); await Idle(first); var attempts = fake.Saves;
-        Click(first, "保存并启动"); await Idle(first);
+        fake.CheckStatus = "PASS"; fake.SaveFailure = true; Click(first, "保存配置"); await Idle(first);
+        Check(fake.Saves == 1 && !Retry(first) && Descendants(first).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "保存未完成"), "known save failure is explicit and cannot use the initially clean draft as proof of persistence");
+        Check(((string)type.GetField("diagnosticDetails", flags)!.GetValue(first)!).Contains("合成写入前失败"), "folded diagnostics retain the original save failure before the authority read-back");
+        fake.Uncertain = true; Click(first, "保存配置"); await Idle(first); var attempts = fake.Saves;
+        Click(first, "保存配置"); await Idle(first);
         Check(fake.Saves == attempts && !Retry(first), "unknown save result blocks a duplicate submission and startup");
         Check(!Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && Directory.EnumerateFiles(launch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(launch.DataRoot, "security/diagnostics/rotation.lease"))), "first-run navigation creates no database or device owner; administrator custody and its diagnostic rotation lock are separate");
         first.Close();
@@ -133,12 +134,15 @@ static partial class Program
                 var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
                 succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
                 type.GetField("maintenance", flags)!.SetValue(success, succeeded);
-                Descendants(success).OfType<TabControl>().Single(x => x.Name == "StartupTasks").SelectedIndex = 4;
-                Click(success, "保存并启动");
+                Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
+                Click(success, "保存配置"); await Idle(success);
+                Check(success.IsVisible && !Retry(success) && succeeded.Saves == 1, "confirmed persistence keeps configuration open without starting runtime");
+                Click(success, "完成");
             }
             catch (Exception error) { modalFailure = error; success.Close(); }
         };
-        Check(success.ShowDialog() == true && modalFailure is null && succeeded?.Saves == 1 && Retry(success), "one reviewed save is read back then hands off to guarded startup through modal completion; receipt lost=" + receiptLost);
+        var modalResult = success.ShowDialog();
+        Check(modalResult == true && modalFailure is null && succeeded?.Saves == 1 && !Retry(success) && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!, "one reviewed save is read back then completes configuration without starting runtime; receipt lost=" + receiptLost + "; result=" + modalResult + "; failure=" + modalFailure + "; saved=" + type.GetProperty("ConfigurationSaved")!.GetValue(success));
         }
         var pendingType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!;
         var pending = (Window)Activator.CreateInstance(pendingType)!;
@@ -160,7 +164,7 @@ static partial class Program
         Check(Descendants(installer).OfType<TextBlock>().Any(x => x.Text == "版本: SM V" + businessVersion + " Windows 64位"), "installer version follows the requested format and actual business version");
         Check(!Descendants(installer).OfType<Expander>().Any() && !Descendants(installer).OfType<ComboBox>().Any(), "installer contains no hidden advanced settings, mode, account, trust or package choices");
         Check(Descendants(installer).OfType<TextBox>().Count(x => !x.IsReadOnly) == 2, "only installation and data folders require editable text");
-        Check(Descendants(installer).OfType<RadioButton>().Any(x => (x.Content as string)?.Contains("所有 Windows 用户") == true && x.IsChecked == true && x.IsEnabled), "shared Windows-user installation has an explicit scope option");
+        Check(!Descendants(installer).OfType<RadioButton>().Any() && !Descendants(installer).OfType<Label>().Any(x => Equals(x.Content, "使用范围")), "installation scope is resolved internally without a customer-facing choice");
         Capture("installer-options", installer);
         installerType.GetField("reviewed", flags)!.SetValue(installer, new WindowsDeploymentRequest("synthetic-media", "sportmaster", new string('a', 40), "S-1-5-21-synthetic", launch.DataRoot, launch.ConfigurationDirectory, RunMode.Simulation, null, null, [], ProgramRoot: "C:\\Program Files\\CainiaoSupplyStation", Shortcuts: new(true, true)));
         installerType.GetField("step", flags)!.SetValue(installer, 2); installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();
@@ -187,12 +191,12 @@ static partial class Program
         }
         bool Retry(Window w) => (bool)type.GetProperty("RetryRequested")!.GetValue(w)!;
         string Status(Window w) => ((TextBlock)type.BaseType!.GetField("Status", flags)!.GetValue(w)!).Text;
-        List<string> Footer(Window w) => ((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(w)!).Children.OfType<Button>().Where(x => x.IsVisible).Select(x => (string)x.Content).ToList();
+        List<string> Footer(Window w) => Descendants((DependencyObject)type.BaseType!.GetField("FooterHost", flags)!.GetValue(w)!).OfType<Button>().Where(x => x.IsVisible).Select(x => (string)x.Content).ToList();
         async Task Idle(Window w) { for (var i = 0; i < 200 && (bool)busy.GetValue(w)!; i++) await Task.Delay(20); Check(!(bool)busy.GetValue(w)!, "operation completes within bounded native wait"); }
         async Task Ready(Window w)
         {
-            for (var i = 0; i < 200 && ((bool)busy.GetValue(w)! || !Descendants(w).OfType<TabControl>().Any(x => x.Name == "StartupTasks")); i++) await Task.Delay(20);
-            Check(!(bool)busy.GetValue(w)! && Descendants(w).OfType<TabControl>().Any(x => x.Name == "StartupTasks"), "startup editor loads without a running application; " + Status(w));
+            for (var i = 0; i < 200 && ((bool)busy.GetValue(w)! || !Descendants(w).OfType<ParameterSettingsControl>().Any()); i++) await Task.Delay(20);
+            Check(!(bool)busy.GetValue(w)! && Descendants(w).OfType<ParameterSettingsControl>().Any(), "startup editor loads without a running application; " + Status(w));
         }
         void Capture(string name, Window w)
         {

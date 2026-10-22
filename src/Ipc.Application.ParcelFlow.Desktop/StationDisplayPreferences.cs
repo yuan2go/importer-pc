@@ -34,7 +34,7 @@ public partial class ParcelViewModel
     }
     public bool ApplyStationDisplay()
     {
-        if (!IsAdministrator) { DisplayPreferenceStatus = "请先登录软件管理员；输入保留。"; return false; }
+        if (!IsManagementMode) { DisplayPreferenceStatus = "请先进入管理模式；输入保留。"; return false; }
         if (Snapshot?.Configuration.Effective is not { } c) { DisplayPreferenceStatus = "尚无站点身份，输入保留"; return false; }
         try
         {

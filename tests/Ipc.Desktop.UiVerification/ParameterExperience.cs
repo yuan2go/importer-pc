@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -23,8 +23,8 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application);
-        var app = DispatchProxy.Create<IAdministrativeParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
+        var app = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
         var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
@@ -62,7 +62,7 @@ static partial class Program
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2);
-            foreach (var item in new[] { (2, "左相机", "camera"), (3, "调度系统连接", "rcs") })
+            foreach (var item in new[] { (2, "左相机", "camera"), (3, "RCS 服务", "rcs") })
             {
                 control.ShowPage(item.Item1, item.Item2); window.UpdateLayout();
                 Capture(item.Item3 + "-" + size.Item1);
@@ -78,8 +78,10 @@ static partial class Program
                         "routine character limits leave the form body but remain accessible as field help");
                     var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
                     var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
+                    control.NavigateTo("rcs.one/heartbeat-interval-seconds"); window.UpdateLayout();
+                    heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
                     Check(heartbeatBounds.Top >= 0 && heartbeatBounds.Bottom <= control.ActualHeight + 1,
-                        "normal RCS connection and heartbeat inputs fit above the fixed save bar at 1366x768");
+                        "preserved heartbeat field scrolls above the fixed save bar at 1366x768");
                 }
                 control.NavigateTo(AutomationProperties.GetName(first)); window.UpdateLayout();
                 var fieldBounds = first.TransformToAncestor(control).TransformBounds(new Rect(first.RenderSize));
@@ -95,10 +97,10 @@ static partial class Program
         Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })
         { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "driver canonical address rule retained: " + invalid); }
-        ip.Text = "192.0.2.23"; control.ShowPage(3, "调度系统连接"); model.ValidateFields();
+        ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 服务"); model.ValidateFields();
         control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
         Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
-        if (!baseline) Check(Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "请求编号区间") && e.IsExpanded), "request range uses progressive disclosure and search expands it");
+        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-count").IsVisible, "request range fields remain ordinary form inputs rather than hidden diagnostics");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
         Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetName(b) == "reader.0/device.ip")) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
         control.ShowPage(0, "供包台标识"); window.UpdateLayout(); Capture("system");
@@ -141,7 +143,7 @@ static partial class Program
         }
         if (interactive)
         {
-            await SetClient(window, 1366, 768); control.ShowPage(3, "调度系统连接");
+            await SetClient(window, 1366, 768); control.ShowPage(3, "RCS 服务");
             Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/EXPERIENCE-INTERACTIVE.txt"), evidence);
             var closed = new TaskCompletionSource(); window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
         }

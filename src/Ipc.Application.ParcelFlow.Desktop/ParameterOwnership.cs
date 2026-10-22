@@ -24,16 +24,29 @@ public static class ParameterOwnership
 
 // No second persisted draft: an intentional edit writes both original parameter
 // drafts. A conflicting old pair starts blank, never chooses one side implicitly.
-public sealed class CommonStationParameter(CapabilityParameter left, CapabilityParameter right) : INotifyPropertyChanged
+public sealed class CommonStationParameter : INotifyPropertyChanged, IDisposable
 {
+    readonly CapabilityParameter left, right;
+    bool editing;
+    public CommonStationParameter(CapabilityParameter left, CapabilityParameter right)
+    {
+        this.left = left; this.right = right;
+        OriginalValues = "读取时左站码：" + left.Value + "；右站码：" + right.Value;
+        left.PropertyChanged += UnderlyingChanged; right.PropertyChanged += UnderlyingChanged;
+    }
     public event PropertyChangedEventHandler? PropertyChanged;
-    public string OriginalValues { get; } = "读取时左站码：" + left.Value + "；右站码：" + right.Value;
+    public string OriginalValues { get; }
+    void UnderlyingChanged(object? sender, PropertyChangedEventArgs e)
+    { if (!editing && e.PropertyName == nameof(CapabilityParameter.Value)) PropertyChanged?.Invoke(this, new(nameof(Value))); }
+    public void Dispose() { left.PropertyChanged -= UnderlyingChanged; right.PropertyChanged -= UnderlyingChanged; }
     public string Value
     {
         get => left.Value == right.Value ? left.Value : "";
         set
         {
-            left.Value = value; right.Value = value;
+            editing = true;
+            try { left.Value = value; right.Value = value; }
+            finally { editing = false; }
             PropertyChanged?.Invoke(this, new(nameof(Value)));
         }
     }

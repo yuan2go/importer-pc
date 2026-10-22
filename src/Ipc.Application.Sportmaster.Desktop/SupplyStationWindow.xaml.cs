@@ -69,12 +69,12 @@ public partial class SupplyStationWindow : Window
     }
     async Task RefreshAsync()
     {
-        try { await ViewModel.RefreshDisplayAsync(); EnforceAdministratorView(); }
+        try { await ViewModel.RefreshDisplayAsync(); EnforceManagementModeView(); }
         catch (Exception) { /* RefreshDisplayAsync retains the failure and invalidates this window's projection. */ }
     }
     void SetPage(string page)
     {
-        if (page is "maintenance" or "diagnostics" or "logs" && !ViewModel.IsAdministrator) { ViewModel.Message = "请先登录软件管理员。"; page = "workstation"; }
+        if (page is "maintenance" or "diagnostics" or "logs" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => work };

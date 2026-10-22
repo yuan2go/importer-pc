@@ -1,0 +1,9 @@
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: 找不到资产文件“D:\projects\importer-pc\src\Ipc.Installer\obj\project.assets.json”。运行 NuGet 包还原以生成此文件。 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+
+生成失败。
+
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: 找不到资产文件“D:\projects\importer-pc\src\Ipc.Installer\obj\project.assets.json”。运行 NuGet 包还原以生成此文件。 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:01.28

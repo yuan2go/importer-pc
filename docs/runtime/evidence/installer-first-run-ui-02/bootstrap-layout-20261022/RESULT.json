@@ -1,0 +1,77 @@
+{
+  "Status": "PASS",
+  "CodeCommit": "c6c5cd5285631e1e4ba5ac3990cfff641ff75d49",
+  "Main": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "ActualDisplayScale": 1.25,
+  "Evidence": "Native WPF HWND/Dispatcher, synthetic transaction and cancellation, real local authority; read-only live System broker route preflight",
+  "ActualNewPackageUacOrInstall": "NOT_RUN",
+  "CurrentInstallationModified": false,
+  "DeviceConnection": false,
+  "Files": [
+    {
+      "File": "BOOTSTRAP-ROUTE.log",
+      "Sha256": "1359505473b10c63bfc746eb7878b0645862694132df899bada6ab45fbcd2190",
+      "SizeBytes": 333
+    },
+    {
+      "File": "CORE-BUILD.log",
+      "Sha256": "2a5a3de9a048e7cc6e4e71d8da26bc713e2d2c3660c7e498107e160c6fa4cea3",
+      "SizeBytes": 84
+    },
+    {
+      "File": "DESKTOP-BUILD.log",
+      "Sha256": "b753ed155388fd2f9017c728e6ef7aa5d9787f57c46bb4d153d6bfd9629dcb60",
+      "SizeBytes": 84
+    },
+    {
+      "File": "first-run-expired.png",
+      "Sha256": "a5a91488dd2637d09f709c75018dbeb1070091cb389244b4fd4f92e17d8feaa7",
+      "SizeBytes": 29034
+    },
+    {
+      "File": "first-run-unconfigured.png",
+      "Sha256": "1e8651fab189719ced0ecf165f31857a6ba20d04a837e32ec68442d81ffb1577",
+      "SizeBytes": 26566
+    },
+    {
+      "File": "installer-confirm-long.png",
+      "Sha256": "aca668ab05b53a5c5e3790c3fe018e260f86d126e1db541e82695539dbd7a2b2",
+      "SizeBytes": 96780
+    },
+    {
+      "File": "installer-options-1024x768-150-equivalent.png",
+      "Sha256": "d3a01d5eb9c793824be4f79cb699aa2bddbe39daa76baed9f70a06c4b3f3d48d",
+      "SizeBytes": 47952
+    },
+    {
+      "File": "installer-options-default.png",
+      "Sha256": "63c192a6b5cbd4e91f2b828ddc711c033bea5d4b03fa562495227f64b102692d",
+      "SizeBytes": 51650
+    },
+    {
+      "File": "MANAGEMENT-CORE.log",
+      "Sha256": "616774c42baacfa704c623c6827b78584dd581010f0e9fa160a4a77150295c0c",
+      "SizeBytes": 6251
+    },
+    {
+      "File": "NATIVE-BUILD.log",
+      "Sha256": "2919c2ca2f2bbe9ef8b856e1e3eeb74b2365232aa498e270e06625acb32f08b9",
+      "SizeBytes": 84
+    },
+    {
+      "File": "NATIVE.log",
+      "Sha256": "5506411f5c3c61d86370c6ba7e49785cd362ff6fefb1a82ee33fd5679412c7c3",
+      "SizeBytes": 11100
+    },
+    {
+      "File": "password-bootstrap-cancelled.png",
+      "Sha256": "d2d75ca31d78f5343ffe90950fa7040e282e8acd8414a98aa454ef1b8c907eff",
+      "SizeBytes": 24960
+    },
+    {
+      "File": "password-first-setup.png",
+      "Sha256": "86d925cc401cf5adaf1deccbf63198e2d359788de5823f2866b9f9a319565a35",
+      "SizeBytes": 19557
+    }
+  ]
+}

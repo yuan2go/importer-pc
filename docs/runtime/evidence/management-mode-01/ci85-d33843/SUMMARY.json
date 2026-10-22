@@ -1,0 +1,12 @@
+{
+  "Run": "https://github.com/yuan2go/importer-pc/actions/runs/39642643013",
+  "RunNumber": 85,
+  "Overall": "FAIL_VISUAL_DELAY_PHASE",
+  "SourceCommit": "d33843c7a46109321a4e1f71b3e175f0b83ca6d4",
+  "HeadCommit": "0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84",
+  "SameProductTree": "a0a5411f9834aec3a16cc41a7cd3be5e0049e560",
+  "WindowsBrokerChecks": 54,
+  "CoreChecks": 139,
+  "ModeCoreSubset": 69,
+  "InstallerPackaging": "SKIPPED_AFTER_FAILURE"
+}

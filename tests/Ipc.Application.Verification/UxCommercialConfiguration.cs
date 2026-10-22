@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
 
@@ -29,6 +29,7 @@ static partial class ArchitectureQuality
             Check(first.Message.Contains("Validated") && (await app.SnapshotAsync()).Configuration.Pending is null,
                 "UXC03 full candidate validation is real Application validation and does not save or activate");
             await first.SaveStructuredConfigurationAsync(); await first.RefreshAsync();
+            Console.WriteLine("UXC03 submission diagnostic: " + first.Message + "; issues=" + string.Join("|", first.ParameterEditor?.Issues.Select(i => i.Path + "=" + i.Message) ?? []));
             var saved = (await app.SnapshotAsync()).Configuration;
             Check(saved.Pending is not null && first.Message.StartsWith("PendingRestart") && Wire.Encode(saved.Effective) == Wire.Encode(effective),
                 "UXC03 same Application CAS saves Pending and preserves Effective until controlled restart");
@@ -212,7 +213,7 @@ static partial class ArchitectureQuality
         await vm.LoadCapabilitiesAsync();
         Check(held.CatalogReads == 2 && vm.StructuredPolicy!.WaitTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
     }
-    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IAdministratorFixtureForwarder
+    sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
     {
         public IParcelApplication InnerAdministration => inner;
         public bool HoldNextStage;
@@ -228,7 +229,7 @@ static partial class ArchitectureQuality
         public Task<BusinessProjection> QueryAsync() => inner.QueryAsync();
         public Task<BusinessReceipt> LoginAsync(string subject, string proof) => inner.LoginAsync(subject, proof);
         public Task<BusinessReceipt> LogoutAsync() => inner.LogoutAsync();
-        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof) => inner.AuthorizeMaintenanceAsync(subject, proof);
+        public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string proof) => inner.AuthorizeMaintenanceAsync(proof);
         public Task<CapabilityCatalog> CapabilitiesAsync() { CatalogReads++; return inner.CapabilitiesAsync(); }
         public Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity) => inner.ManageCapabilityAsync(action, identity);
         public Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate) => inner.ValidateConfigurationAsync(candidate);

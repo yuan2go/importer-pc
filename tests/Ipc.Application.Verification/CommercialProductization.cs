@@ -112,7 +112,7 @@ static class CommercialProductization
             BeforeMonitorProbe = (instance, t) => instance == candidate.Wcs!.InstanceId ? monitorPermit.WaitAsync(t) : Task.Delay(Timeout.Infinite, t)
         })
         {
-            await repaired.StartAsync(default); await AdministratorFixture.Authorize(repaired); var snapshot = await repaired.SnapshotAsync();
+            await repaired.StartAsync(default); await ManagementModeFixture.Authorize(repaired); var snapshot = await repaired.SnapshotAsync();
             Check(snapshot.Configuration is { Pending: null, Effective.TimeoutMs: 2000, Confirmation.Required: false, Activation.Outcome: "Activated" }, "correct candidate starts despite permanently broken original and confirms only after resource startup");
             Check(snapshot.Configuration.InitialRepair?.OriginalEnvelopeBase64 == repairedEnvelope && snapshot.Configuration.Confirmation!.Attempts.Any(a => a.Outcome == "Failed"), "original repair bytes and failed attempts remain in authoritative envelope");
             var starts = snapshot.RuntimeId;
@@ -123,7 +123,7 @@ static class CommercialProductization
             await repaired.CheckScheduledBackupAsync(now.AddMinutes(40));
             Check(Directory.GetFiles(backupFolder, "*.db").Length == 0 && (await repaired.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("Pending")), "scheduled backup stays pending without authenticated pause and never pauses production itself");
             var s = await repaired.SnapshotAsync(); await repaired.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
-            Check((await AdministratorFixture.Authorize(repaired)).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
+            Check((await ManagementModeFixture.Authorize(repaired)).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
             vm.StructuredPolicy!.Precision = "unfinished-precision";
             vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
             repairedFactory.HoldHealth = true; monitorPermit.Release();
@@ -248,7 +248,7 @@ static class CommercialProductization
         var firstFactory = new SyntheticFactory(launch); ParcelOperation original;
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), firstFactory) { RuntimeIdentityPreflight = () => { } })
         {
-            await app.StartAsync(default); await AdministratorFixture.Authorize(app); app.EmitReferenceAt("left", "unknown-entity", "SYNTHETIC-SECRET-BARCODE", "unknown-observation");
+            await app.StartAsync(default); await ManagementModeFixture.Authorize(app); app.EmitReferenceAt("left", "unknown-entity", "SYNTHETIC-SECRET-BARCODE", "unknown-observation");
             ParcelSnapshot snapshot = await app.SnapshotAsync();
             for (int i = 0; i < 100 && snapshot.Operations.FirstOrDefault()?.Wcs?.State != StageState.Unknown; i++) { await Task.Delay(20); snapshot = await app.SnapshotAsync(); }
             original = snapshot.Operations.Single(); Check(original.Wcs?.State == StageState.Unknown && firstFactory.Sends == 1, "lost-after-commit fixture creates one original Unknown request");
@@ -325,36 +325,36 @@ static class CommercialProductization
     }
 }
 
-// Synthetic test accounts use the real credential hash/service; never shipped as a product default.
-static class AdministratorFixture
+// Synthetic test passwords use the real credential hash/service; never shipped as a product default.
+static class ManagementModeFixture
 {
     static readonly string Password = "Fixture-" + Guid.NewGuid().ToString("N");
     public static void AuthorizeRoot(string root)
     {
-        var authority = LocalAdministrator.ForRoot(root);
-        if (!authority.Status().Provisioned) authority.Provision("fixture-admin", Password);
-        if (!authority.Login("fixture-admin", Password)) throw new Exception("Fixture administrator rejected");
+        var authority = LocalManagementMode.ForRoot(root);
+        if (!authority.Status().Configured) authority.ConfigurePassword(Password);
+        if (!authority.Enter(Password)) throw new Exception("Fixture administrator rejected");
     }
     public static async Task<BusinessReceipt> Authorize(IParcelApplication app)
     {
         var service = app as IWorkstationAdministration ?? throw new InvalidOperationException("Fixture must forward the administrator contract");
-        if (!(await service.AdministratorStatusAsync()).Provisioned) await service.ProvisionAdministratorAsync("fixture-admin", Password);
-        if (!await service.LoginAdministratorAsync("fixture-admin", Password)) throw new Exception("Fixture administrator rejected");
-        return new("Authorized", "Real software-administrator fixture", 0);
+        if (!(await service.ManagementModeStatusAsync()).Configured) await service.ConfigureManagementPasswordAsync(Password);
+        if (!await service.EnterManagementModeAsync(Password)) throw new Exception("Fixture administrator rejected");
+        return new("Authorized", "Real management-mode fixture", 0);
     }
 }
 
-public interface IAdministrativeParcelFixture : IParcelApplication, IWorkstationAdministration { }
-public interface IAdministratorFixtureForwarder : IWorkstationAdministration
+public interface IManagementParcelFixture : IParcelApplication, IWorkstationAdministration { }
+public interface IManagementModeFixtureForwarder : IWorkstationAdministration
 {
     IParcelApplication InnerAdministration { get; }
     IWorkstationAdministration Service => (IWorkstationAdministration)InnerAdministration;
-    Task<AdministratorStatus> IWorkstationAdministration.AdministratorStatusAsync() => Service.AdministratorStatusAsync();
-    Task IWorkstationAdministration.ProvisionAdministratorAsync(string a, string p) => Service.ProvisionAdministratorAsync(a, p);
-    Task<bool> IWorkstationAdministration.LoginAdministratorAsync(string a, string p) => Service.LoginAdministratorAsync(a, p);
-    Task IWorkstationAdministration.LogoutAdministratorAsync() => Service.LogoutAdministratorAsync();
-    Task<AdministratorAccount[]> IWorkstationAdministration.AdministratorAccountsAsync() => Service.AdministratorAccountsAsync();
-    Task IWorkstationAdministration.MaintainAdministratorAsync(string a, string? p, bool e) => Service.MaintainAdministratorAsync(a, p, e);
+    Task<ManagementModeStatus> IWorkstationAdministration.ManagementModeStatusAsync() => Service.ManagementModeStatusAsync();
+    Task IWorkstationAdministration.ConfigureManagementPasswordAsync(string p) => Service.ConfigureManagementPasswordAsync(p);
+    Task<bool> IWorkstationAdministration.EnterManagementModeAsync(string p) => Service.EnterManagementModeAsync(p);
+    Task IWorkstationAdministration.ExitManagementModeAsync() => Service.ExitManagementModeAsync();
+    Task IWorkstationAdministration.ChangeManagementPasswordAsync(string p) => Service.ChangeManagementPasswordAsync(p);
+    Task<bool> IWorkstationAdministration.ConvertLegacyManagementCredentialsAsync(string a, string p, string n) => Service.ConvertLegacyManagementCredentialsAsync(a, p, n);
     Task<SoftwareLogPage> IWorkstationAdministration.QueryLogsAsync(SoftwareLogQuery q, string? s, int o, CancellationToken t) => Service.QueryLogsAsync(q, s, o, t);
     Task<SoftwareLogContext> IWorkstationAdministration.LogContextAsync(string s, SoftwareLogLocation l, int b, int a, CancellationToken t) => Service.LogContextAsync(s, l, b, a, t);
     Task<long> IWorkstationAdministration.ExportLogsAsync(string s, string d, bool a, int c, CancellationToken t) => Service.ExportLogsAsync(s, d, a, c, t);

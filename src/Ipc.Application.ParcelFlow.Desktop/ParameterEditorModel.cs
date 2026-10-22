@@ -4,7 +4,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed record ParameterIssue(string Category, string Path, string Message);
+public sealed record ParameterIssue(string Category, string Path, string Message, string? Rule = null);
 // An editor over the existing complete draft, never a separately persisted configuration.
 public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string applicationId,
     CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, string stationId = "", ParcelConfigurationLocations? locations = null,
@@ -43,9 +43,16 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;
+    bool validationRequested;
+    int? validationScope;
+    public void RevalidateAfterEdit()
+    {
+        if (validationRequested) ValidateFields(validationScope);
+    }
     static string WeightRangeField(string message) => message.Contains("WeightRange.MinimumWeight", StringComparison.Ordinal) ? "MinimumWeight" : "MaximumWeight";
     public void Report(string message)
     {
+        validationRequested = true; validationScope = null;
         if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
         else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
@@ -54,13 +61,21 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         else
         {
             var matching = Readers.Concat(Components).SelectMany(d => d.Parameters.Select(p => (Draft: d, Field: p.Field))).Where(x => message.Contains(x.Field.Key, StringComparison.Ordinal)).ToArray();
-            if (matching.Length == 0) Issues.Add(new("完整候选", "", message));
+            var specific = matching.Where(x => message.StartsWith(x.Draft.Role + " · ", StringComparison.Ordinal) ||
+                message.StartsWith(x.Draft.InstanceId + ":", StringComparison.Ordinal) || message.StartsWith(x.Draft.InstanceId + "/", StringComparison.Ordinal)).ToArray();
+            if (specific.Length > 0) matching = specific;
+            // An unqualified shared field name cannot identify the left or right
+            // instance. Keep it in full-candidate diagnostics rather than falsely
+            // attaching the same failure to every camera.
+            if (matching.Length != 1) Issues.Add(new("完整候选", "", message));
             else foreach (var item in matching) Issues.Add(new(ParameterOwnership.CategoryName(ParameterOwnership.Category(item.Draft, item.Field.Key)), item.Draft.InstanceId + "/" + item.Field.Key, message));
         }
+        Deduplicate();
         ValidationChanged?.Invoke(this, EventArgs.Empty);
     }
     public bool ValidateFields(int? category = null)
     {
+        validationRequested = true; validationScope = category;
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
@@ -98,9 +113,13 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // Mirror the installed Hikrobot driver's existing address-format rule
             // before review. This is local feedback, not a connection probe or a
             // replacement for Application/driver validation at the real boundary.
-            if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" && values.TryGetValue("device.ip", out var ip) &&
-                (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
-                Issue("驱动", draft.InstanceId + "/device.ip", "请填写完整网络地址：四段 0～255 的数字，以点分隔；不能使用全零或广播地址。");
+            if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
+            {
+                if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip)
+                    Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "请填写完整的 IPv4 地址，使用四段 0～255 的数字。", "ipv4-format"));
+                else if (ip is "0.0.0.0" or "255.255.255.255")
+                    Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "此地址不能用于相机连接，请填写具体相机地址。", "ipv4-address"));
+            }
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
@@ -121,6 +140,17 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
         if (category is not null)
             foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
+        Deduplicate();
         ValidationChanged?.Invoke(this, EventArgs.Empty); return Issues.Count == 0;
+    }
+    void Deduplicate()
+    {
+        var identities = new HashSet<(string Category, string Path, string Rule)>();
+        foreach (var issue in Issues.ToArray())
+        {
+            var rule = issue.Rule ?? (issue.Message.EndsWith(": required", StringComparison.Ordinal) ? "required" :
+                issue.Message.Contains(": invalid value", StringComparison.Ordinal) ? "schema-value" : issue.Message);
+            if (!identities.Add((issue.Category, issue.Path, rule))) Issues.Remove(issue);
+        }
     }
 }

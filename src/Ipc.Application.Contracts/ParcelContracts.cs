@@ -79,7 +79,7 @@ public interface IParcelApplication : IBusinessApplication
     Task<ParcelOperation?> OperationAsync(string id);
     Task<BusinessReceipt> LoginAsync(string subject, string proof);
     Task<BusinessReceipt> LogoutAsync();
-    Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof);
+    Task<BusinessReceipt> AuthorizeMaintenanceAsync(string proof);
     Task<CapabilityCatalog> CapabilitiesAsync();
     Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity);
     Task<BusinessReceipt> InstallCapabilityAsync(string file, string sha256);

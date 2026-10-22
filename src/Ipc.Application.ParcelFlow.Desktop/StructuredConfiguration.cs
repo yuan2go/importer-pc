@@ -138,9 +138,9 @@ public partial class ParcelViewModel
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
-    public async Task EnsureMaintenanceLoadedAsync() { await RequireAdministratorAsync(); if (!HasLoadedConfiguration) await LoadCapabilitiesAsync(); }
+    public async Task EnsureMaintenanceLoadedAsync() { await RequireManagementModeAsync(); if (!HasLoadedConfiguration) await LoadCapabilitiesAsync(); }
     public bool CanEditLegacyConfiguration => configurationAuthority == "旧版表单";
-    public bool CanEditFormConfiguration => IsAdministrator && configurationAuthority is ("结构化表单" or "旧版表单");
+    public bool CanEditFormConfiguration => IsManagementMode && configurationAuthority is ("结构化表单" or "旧版表单");
     public bool CanEditStructuredConfiguration => configurationAuthority == "结构化表单";
     public bool HasStructuredConfiguration => structuredBase is not null;
     public bool AdvancedConfigurationReadOnly => configurationAuthority != "高级JSON";
@@ -172,7 +172,7 @@ public partial class ParcelViewModel
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  运行配置待核对" : "");
     public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
         Busy ? "正在执行当前操作，请等待结果。暂停新入场仍可单独执行。" :
-        !CanConfigure ? "保存前需暂停新入场、取得维护授权，并等待当前外呼完成。历史原件按原责任保留。" :
+        !CanConfigure ? "保存前需暂停新入场、进入管理模式，并等待当前外呼完成。历史原件按原责任保留。" :
         "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查，保存后待受控重启。";
     public string ConfigurationEditorState
     {

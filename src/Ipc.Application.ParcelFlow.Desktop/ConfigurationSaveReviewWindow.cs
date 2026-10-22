@@ -32,7 +32,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         vm = model; this.authorizationOnly = authorizationOnly; Owner = owner; DataContext = vm;
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = owner?.FontFamily ?? SystemFonts.MessageFontFamily; FontSize = 14; FontWeight = FontWeights.Normal; Background = Brushes.White;
-        Title = authorizationOnly ? "维护授权" : "保存更改"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        Title = authorizationOnly ? "管理模式与操作条件" : "保存更改"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         Width = Math.Min(880, Math.Max(540, (owner?.ActualWidth ?? 944) - 64)); Height = Math.Min(740, Math.Max(340, (owner?.ActualHeight ?? 804) - 64));
         MaxWidth = Math.Max(540, SystemParameters.WorkArea.Width - 24); MaxHeight = Math.Max(340, SystemParameters.WorkArea.Height - 24); MinWidth = 520; MinHeight = 320;
         var root = new DockPanel { LastChildFill = true };
@@ -66,9 +66,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
         guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
         if (vm.Application is IWorkstationAdministration administrator)
         {
-            var login = new Button { Content = "登录软件管理员…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            login.Click += async (_, _) => { new AdministratorWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshAdministratorAsync(); };
-            authentication.Header = "软件管理员账号"; authentication.Content = login; authentication.IsExpanded = !vm.IsAdministrator; body.Children.Add(authentication);
+            var login = new Button { Content = "进入管理模式…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            login.Click += async (_, _) => { new ManagementModeWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); };
+            authentication.Header = "管理模式"; authentication.Content = login; authentication.IsExpanded = !vm.IsManagementMode; body.Children.Add(authentication);
         }
         body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", 16, 12));
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
@@ -103,7 +103,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void ModelChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (!vm.IsAdministrator && !vm.Busy) { Close(); return; }
+        if (!vm.IsManagementMode && !vm.Busy) { Close(); return; }
         if (e.PropertyName is nameof(vm.Busy) or nameof(vm.Fresh) or nameof(vm.CanConfigure) or nameof(vm.ConfigurationReviewIsCurrent) or nameof(vm.HasUnconfirmedConfigurationSubmission) or nameof(vm.ConfigurationSubmissionOutcome) or nameof(vm.Snapshot) or nameof(vm.Feedback)) UpdateState();
     }
     void UpdateState()

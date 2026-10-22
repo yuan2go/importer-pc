@@ -1,0 +1,21 @@
+PASS CLEAN-INSTALL actual saved D location has no old deployment directory
+PASS CLEAN-INSTALL native installation step 1: 菜鸟供包台 | 1  安装选项
+
+2  确认安装
+
+3  安装完成 | 安装菜鸟供包台 | 版本: SM V1.11.1 Windows 64位 | 选择安装位置和快捷方式，然后点击下一步。 | 安装目录 | 升级保留旧版本和原始数据。 | 数据目录 | 下一步 | 取消
+PASS CLEAN-INSTALL actual WPF installation options render with no storage root
+PASS CLEAN-INSTALL program and data defaults both remain on D
+PASS CLEAN-INSTALL native installation step 2: 菜鸟供包台 | 1  安装选项
+
+2  确认安装
+
+3  安装完成 | 安装菜鸟供包台 | 版本: SM V1.11.1 Windows 64位 | 确认以下选项，点击安装后由 Windows 请求授权。 | 使用范围：所有 Windows 用户，共用一个供包台
+安装目录：D:\ImporterPc.Deployment\Programs\CainiaoSupplyStation
+数据目录：D:\ImporterPc.Deployment\Machine\data
+开始菜单快捷方式：创建
+桌面快捷方式：创建
+使用用途：生产模式 | 点击安装后只需一次 Windows 授权。安装时检查原责任并完成备份；有阻断则保留原部署，不执行升级。 | 上一步 | 安装 | 取消
+PASS CLEAN-INSTALL real Application review reaches install confirmation without precreating directories
+PASS CLEAN-INSTALL review creates no machine policy, registration, management credentials or deployment root
+PASS CLEAN-INSTALL cancel before Windows installation leaves the computer clean

@@ -1,0 +1,6 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "d33843c7a46109321a4e1f71b3e175f0b83ca6d4",
+  "MediumInventorySha256": "4DEBC8BE375B296073EEF1CD19D620AF6B97EE55C42B58D9A83B512563C99B43",
+  "Scope": "Actual unified release verification: both ZIPs, inventories, source, composition and shared DLLs"
+}

@@ -18,7 +18,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            Administrator.Require();
+            Management.Require();
             if (stopped || configuration is null) return new("NotReady", "Application unavailable", repository?.Revision ?? 0);
             var errors = definition.Validate(candidate); if (errors.Length != 0) return new("Rejected", string.Join("; ", errors), repository!.Revision);
             RequireSameIdentity(Effective, candidate);

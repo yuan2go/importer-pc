@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -19,13 +19,13 @@ public sealed partial class ParameterSettingsControl
             var left = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "right-station-code");
             if (left is not null && right is not null)
             {
-                var pair = new CommonStationParameter(left, right);
+                var pair = new CommonStationParameter(left, right); unsubscribe.Add(pair.Dispose);
                 if (ParameterOwnership.StationConflict(rcs))
                 {
                     var conflict = Text("需要核对旧设置：左右取格口站码不同。" + pair.OriginalValues + "。请填写本站共同使用的编码。");
                     conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
                 }
-                Input(Form(station), "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的取格口请求共同使用此编码。");
+                Input(Form(station), "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的格口请求共同使用此编码。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
                 Technical(station, "供包台编码", rcs.InstanceId + "/left-station-code / right-station-code", pair.OriginalValues + "。明确填写共同值才统一两个候选；原请求保持原值。");
             }
@@ -35,21 +35,22 @@ public sealed partial class ParameterSettingsControl
         Technical(station, "本地工作站标识", "StationId", m.StationId);
         Technical(station, "心跳供包台编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
         var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
-        Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
-        Input(form, "磁盘保留空间（MiB，二进制兆字节）", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时阻断新准入。");
-        Input(form, "诊断日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "选填1～3650天；留空沿用容量轮转。仅清理诊断日志，最多约20 MB；常驻历史、业务审计和图片证据独立保留。");
+        Input(form, "界面常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
+        Input(form, "磁盘预留空间", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时停止新准入。");
+        Input(form, "诊断日志保留", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "留空按容量轮转。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
+        Technical(data, "日志保留", "DiagnosticLogDays", "留空按容量轮转。仅控制诊断日志；业务审计与图片证据按各自规则保留。非空为1～3650天。" );
         Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
-        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、维护授权有效且无在途外呼时执行。");
+        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、管理模式有效且无在途外呼时执行。");
         var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };
         enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
         Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "填写绝对路径。");
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
-        Input(form, "备份间隔（分钟）", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080 分钟");
+        Input(form, "备份间隔", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080 分钟");
         Input(form, "备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000 份；到达上限后不自动删除原备份。");
         if (BackupRequested is not null)
         {
@@ -86,8 +87,8 @@ public sealed partial class ParameterSettingsControl
     {
         const string path = "SessionLifetimeMs";
         var input = Input(form, "操作员会话有效时长", m.Policy, path, path, page,
-            "100～86400000 毫秒；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。");
-        var field = (FrameworkElement)input.Parent;
+            "100～86400000 毫秒；仅用于操作员登录。");
+        var field = locations[path].Row!;
         bool Applicable() => m.HasOperatorLogin || m.Issues.Any(i => i.Path == path);
         locations[path] = locations[path] with { Applicable = Applicable };
         void Refresh() { field.Visibility = Applicable() ? Visibility.Visible : Visibility.Collapsed; RefreshSearch(); }
@@ -106,7 +107,7 @@ public sealed partial class ParameterSettingsControl
     }
     void BuildBusiness(ParameterEditorModel m)
     {
-        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。维护授权独立，关闭作业登录不会解除维护保护。");
+        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。管理模式独立，关闭作业登录不会解除维护保护。");
         if (m.OperatorLoginRole is { } role)
         {
             var selection = new ComboBox { ItemsSource = role.Choices, DisplayMemberPath = "Label", MinHeight = 38 };
@@ -123,11 +124,11 @@ public sealed partial class ParameterSettingsControl
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "从同一次观察的候选中选出唯一有效条码。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
-            Input(form, "条码筛选规则（选填）", m.Policy, "BarcodePattern", "BarcodePattern", page, "选填；留空不筛选。填写后使用正则表达式匹配完整条码；多个候选仍须选出唯一条码。", true);
-            Input(form, "条码排除规则（选填）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "选填；整串命中此正则的候选将被拒绝。留空不排除。", true);
+            Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "完整匹配；留空不筛选。同一次观察仍须得到唯一有效候选。", true);
+            Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "完整匹配后排除；留空不排除。", true);
             Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；仍须唯一有效码；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
-            var rules = Page(1, "取格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
+            var rules = Page(1, "格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }
@@ -149,16 +150,19 @@ public sealed partial class ParameterSettingsControl
                 foreach (var f in new[] { ("单件图像最大字节", "ImageBytes"), ("图像缓存总字节", "TotalBytes"), ("图像待处理件数", "MaximumPending") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             }
         }
-        var budget = Page(1, "处理参数", "设置业务队列、外呼时限和未清偿作业容量。"); form = Form(budget);
+        var budget = Page(1, "处理参数", "设置业务队列、外呼时限和未清偿作业上限。"); form = Form(budget);
         Input(form, "输入队列容量", m.Policy, "QueueCapacity", "QueueCapacity", budget, "1～4096；队列满时拒收新输入。");
-        Input(form, "调用时限（毫秒）", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
-        Input(form, "未清偿作业容量", m.Policy, "MaximumOperations", "MaximumOperations", budget, "1～100000");
+        Input(form, "调用超时", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
+        Input(form, "未清偿作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "1～100000");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)
     {
-        page.Body.Children.Add(Text("本地候选样例", true)); page.Body.Children.Add(Text("每行一个，视为同一次观察；测试不会触发业务请求或保存。"));
-        var sample = new TextBox { AcceptsReturn = true, MinHeight = 96, MaxHeight = 180, MaxLength = 65536, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        AutomationProperties.SetName(sample, "条码筛选样例"); page.Body.Children.Add(sample);
+        var body = new StackPanel();
+        page.Body.Children.Add(new Expander { Header = "测试条码", Content = body, Margin = new(0, 12, 0, 0) });
+        body.Children.Add(Text("每行一条，视为同一次观察；测试不保存或发出业务请求。"));
+        var sample = new TextBox { AcceptsReturn = true, MinHeight = 96, MaxLength = 65536, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled };
+        AutomationProperties.SetName(sample, "条码筛选样例"); body.Children.Add(sample);
+        var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent };
         var result = Text("尚未测试"); var test = new Button { Content = "测试候选筛选", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 4) };
         bool tested = false;
         void Invalidate() { if (tested) result.Text = "输入已改变，原测试结果已过期；请重新测试。"; }
@@ -172,12 +176,12 @@ public sealed partial class ParameterSettingsControl
             {
                 var reply = await Task.Run(() => m.Preview(new(pattern, exclusion.Length == 0 ? null : exclusion), raw.Replace("\r", "").Split('\n')));
                 result.Text = m.Policy.BarcodePattern != pattern || m.Policy.BarcodeExclusionPattern != exclusion || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
-                    reply.Detail + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches +
-                    string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + c.Reason));
+                    ChineseInterfaceText.Status(reply.Outcome) + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches;
+                diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(reply.Detail + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + c.Reason)));
             }
             catch (Exception ex) { result.Text = "测试未完成：" + ex.Message + "；输入保留。"; }
             finally { test.IsEnabled = true; }
         };
-        page.Body.Children.Add(test); page.Body.Children.Add(result);
+        body.Children.Add(test); body.Children.Add(result); body.Children.Add(new Expander { Header = "测试诊断详情", Content = diagnostic });
     }
 }

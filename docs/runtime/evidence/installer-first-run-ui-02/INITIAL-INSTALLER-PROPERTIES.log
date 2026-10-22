@@ -1,0 +1,11 @@
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets(1330,5): error NETSDK1150: 引用的项目“../Ipc.Desktop/Ipc.Desktop.csproj”是非自包含的可执行文件。非自包含可执行文件不能由自包含可执行文件引用。如需获取更多信息，请访问 https://aka.ms/netsdk1150 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets(1330,5): error NETSDK1150: 引用的项目“..\Ipc.Assembly\Ipc.Assembly.csproj”是非自包含的可执行文件。非自包含可执行文件不能由自包含可执行文件引用。如需获取更多信息，请访问 https://aka.ms/netsdk1150 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+
+生成失败。
+
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets(1330,5): error NETSDK1150: 引用的项目“../Ipc.Desktop/Ipc.Desktop.csproj”是非自包含的可执行文件。非自包含可执行文件不能由自包含可执行文件引用。如需获取更多信息，请访问 https://aka.ms/netsdk1150 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+D:\tools\dotnet\sdk\10.0.402\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets(1330,5): error NETSDK1150: 引用的项目“..\Ipc.Assembly\Ipc.Assembly.csproj”是非自包含的可执行文件。非自包含可执行文件不能由自包含可执行文件引用。如需获取更多信息，请访问 https://aka.ms/netsdk1150 [D:\projects\importer-pc\src\Ipc.Installer\Ipc.Installer.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:03.65

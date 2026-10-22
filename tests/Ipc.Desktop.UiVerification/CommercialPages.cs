@@ -26,7 +26,7 @@ static partial class Program
             // Keep this deliberately corrupt offline draft isolated from the later
             // live-settings journey; retain its original bytes and refusal checks.
             var offlineLaunch = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
-            AdministratorFixture.AuthorizeRoot(offlineLaunch.DataRoot);
+            ManagementModeFixture.AuthorizeRoot(offlineLaunch.DataRoot);
             var draftFile = Path.Combine(offlineLaunch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
             var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
@@ -94,7 +94,7 @@ static partial class Program
             Screenshot(first, Path.Combine(evidence, "commercial-offline-repair.png")); first.Close();
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await AdministratorFixture.Authorize((IParcelApplication)runtime.Application); var identity = (await runtime.SnapshotAsync()).RuntimeId;
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application); var identity = (await runtime.SnapshotAsync()).RuntimeId;
         var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
         classic.Show(); alternate.Show(); await Task.Delay(400);
         Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
@@ -143,7 +143,7 @@ static partial class Program
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
         await ObserveSaveReviewAsync(classic, maintenance, dialog =>
         {
-            Check(!parameterVm.Busy && parameterVm.IsAdministrator && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
+            Check(!parameterVm.Busy && parameterVm.IsManagementMode && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
                 !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
                 "classic review preserves the live software administrator grant and reason without a duplicate password prompt");
         });

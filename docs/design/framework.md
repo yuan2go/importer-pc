@@ -1,3 +1,5 @@
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+
 
 > **当前商业化增量入口：**[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[产品设计](commercial-productization-01.md)与[实现逻辑](../implementation/commercial-productization-01.md)。原设计于2026-10-19静态核对 main b8f449ec；本包当前实现、冻结介质与逐项验证以上述实施结果为准，原设计状态按形成时语境保留。
 > 安装交付范围（2026-10-20）见[普通安装与范围检查](../runtime/installation-delivery-scope-01.md)：复用既有原生向导，普通安装包及必要说明，不再要求无人值守/批量协议或安装器重新选型。

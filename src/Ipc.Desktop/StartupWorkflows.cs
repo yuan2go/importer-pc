@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,12 +13,26 @@ namespace Ipc.Desktop;
 public abstract class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
+    protected readonly ContentControl WorkflowBody = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     protected readonly WrapPanel Actions = new();
+    protected readonly DockPanel FooterHost = new();
     protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
+    protected readonly StackPanel AuthorizationGate = new() { Visibility = Visibility.Collapsed, Margin = new(8, 16, 8, 16), MaxWidth = 570, HorizontalAlignment = HorizontalAlignment.Left };
+    protected readonly TextBlock WorkflowHeading = new() { FontSize = 18, FontWeight = FontWeights.SemiBold };
+    protected readonly TextBlock WorkflowBusinessName = new() { FontSize = 13, Foreground = Brushes.SlateGray, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed };
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = 24, FontWeight = FontWeights.Bold };
     protected readonly TextBlock VersionLabel = new() { FontSize = 14, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
+    readonly TextBlock[] installationSteps = new TextBlock[3];
+    protected void InstallationStep(int step)
+    {
+        for (var i = 0; i < installationSteps.Length; i++)
+        {
+            installationSteps[i].Foreground = i == step ? new SolidColorBrush(Color.FromRgb(8, 102, 232)) : new SolidColorBrush(Color.FromRgb(98, 107, 120));
+            installationSteps[i].FontWeight = i == step ? FontWeights.SemiBold : FontWeights.Normal;
+        }
+    }
     protected bool Busy;
     protected bool CloseAfterCancellation;
     protected StartupWorkflowWindow(string title, bool installation = false)
@@ -30,32 +44,37 @@ public abstract class StartupWorkflowWindow : Window
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         if (installation)
         {
-            Width = 840; Height = 700; MinWidth = 760; MinHeight = 560; Background = Brushes.White;
+            Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
-            var rail = new StackPanel { Margin = new(24, 40, 24, 24) };
-            rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 80, Height = 80, HorizontalAlignment = HorizontalAlignment.Left });
-            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 20, FontWeight = FontWeights.Bold, Margin = new(0, 20, 0, 16) });
-            rail.Children.Add(new TextBlock { Text = "1  安装选项\n\n2  确认安装\n\n3  安装完成", TextWrapping = TextWrapping.Wrap });
-            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(237, 244, 255)), Child = rail }; layout.Children.Add(sidebar);
+            var rail = new StackPanel { Margin = new(24, 28, 24, 24) };
+            rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
+            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new(0, 16, 0, 16) });
+            foreach (var (label, index) in new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) })
+            { installationSteps[index] = new TextBlock { Text = label, Margin = new(0, 12, 0, 12), TextWrapping = TextWrapping.Wrap }; rail.Children.Add(installationSteps[index]); }
+            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(245, 248, 252)), Child = rail }; layout.Children.Add(sidebar);
             var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
             content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
             var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(Status);
             var options = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(options, 1);
             Actions.HorizontalAlignment = HorizontalAlignment.Right; Grid.SetRow(Actions, 2);
             content.Children.Add(header); content.Children.Add(options); content.Children.Add(Actions); layout.Children.Add(content); Content = layout;
+            SizeChanged += (_, _) => { layout.ColumnDefinitions[0].Width = new(ActualWidth < 760 ? 136 : 176); content.Margin = new(ActualWidth < 760 ? 20 : 28, 24, ActualWidth < 760 ? 20 : 28, 20); };
             Closing += (_, e) => { if (Busy) e.Cancel = true; }; return;
         }
         var grid = new Grid { Margin = new(20, 12, 20, 16) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title.Split(" · ")[0], FontSize = 18, FontWeight = FontWeights.SemiBold });
+        var heading = new StackPanel(); WorkflowHeading.Text = title.Split(" · ")[0]; heading.Children.Add(WorkflowHeading);
+        heading.Children.Add(WorkflowBusinessName);
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
         // Full diagnostics remain selectable through the named tools menu.
         Status.ToolTip = diagnostic;
-        var scroll = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
+        WorkflowBody.Content = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        var bodyHost = new Grid(); bodyHost.Children.Add(WorkflowBody); bodyHost.Children.Add(AuthorizationGate); Grid.SetRow(bodyHost, 1);
+        FooterHost.Children.Add(Actions); Grid.SetRow(FooterHost, 2);
         var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions); sessionHeader.Children.Add(heading);
-        grid.Children.Add(sessionHeader); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
+        grid.Children.Add(sessionHeader); grid.Children.Add(bodyHost); grid.Children.Add(FooterHost); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
     }
     protected Button Action(string label, Func<Task> action)
@@ -65,13 +84,14 @@ public abstract class StartupWorkflowWindow : Window
     }
     protected async Task Run(Func<Task> action)
     {
-        if (Busy) return; Busy = true; Actions.IsEnabled = false; Body.IsEnabled = false;
+        if (Busy) return; Busy = true; FooterHost.IsEnabled = false; SessionActions.IsEnabled = false; Actions.IsEnabled = false; Body.IsEnabled = false; WorkflowBody.IsEnabled = false;
         try { await action(); }
         catch (OperationCanceledException) when (CloseAfterCancellation) { Busy = false; Close(); }
-        catch (Exception ex) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(ex.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
-        finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; OperationCompleted(); }
+        catch (Exception ex) { OperationFailed(ex); }
+        finally { Busy = false; FooterHost.IsEnabled = true; SessionActions.IsEnabled = true; Actions.IsEnabled = true; Body.IsEnabled = true; WorkflowBody.IsEnabled = true; OperationCompleted(); }
     }
     protected virtual void OperationCompleted() { }
+    protected virtual void OperationFailed(Exception error) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
     protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
@@ -108,9 +128,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     ParameterSettingsControl? parameterControl;
     bool startupSaveUncertain;
     bool lastSaveConfirmed;
+    bool savingCandidate;
     string? checkedCandidateHash;
     int selectedTask;
     bool showMaintenanceActions;
+    bool authorityAllowed;
+    readonly ManagementModeMenu managementMenu = new() { UnauthorizedLabel = "未授权" };
+    readonly TextBlock saveState = new() { Text = "未保存", FontSize = 13, Foreground = Brushes.SlateGray, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
+    Button? headerImport;
+    Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
     StartupMaintenanceDocument? document;
@@ -122,24 +148,54 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     readonly TextBox config, data;
     string reason = "", backup = "", restoreRoot = "", backupCatalogRoot = "";
     public BusinessLaunch SelectedLaunch { get; private set; }
-    IAdministratorAccounts AdministratorAccounts => ParcelStartupServices.AdministratorAccounts(SelectedLaunch);
+    IManagementMode ManagementMode => ParcelStartupServices.ManagementMode(SelectedLaunch);
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
+    public bool ConfigurationSaved { get; private set; }
     public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次配置 · 菜鸟供包台" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
+        if (initialConfiguration) { StartupAppearance.Apply(this); Width = 960; Height = 656; WorkflowHeading.FontSize = 22; WorkflowBusinessName.Text = ChineseInterfaceText.BusinessName(ParcelStartupServices.ApplicationId); WorkflowBusinessName.Visibility = Visibility.Visible; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次配置供包台";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
         pathFields = Body.Children.Cast<UIElement>().ToArray();
-        var administratorIdentity = new TextBlock { Text = "管理员未登录", MaxWidth = 180, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 12, 0) };
-        SessionActions.Children.Add(administratorIdentity);
-        var administratorLogin = new Button { Content = "软件管理员登录…", MinHeight = 44 };
-        administratorLogin.Click += async (_, _) => { new AdministratorWindow(AdministratorAccounts) { Owner = this }.ShowDialog(); if (draft is null && !Busy) await Run(Read); };
-        SessionActions.Children.Add(administratorLogin);
+        SessionActions.Children.Add(managementMenu);
+        var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
+        var gateTitle = new TextBlock { FontSize = 21, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
+        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = 14, Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 119)) };
+        var gateActions = new WrapPanel();
+        AuthorizationGate.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
+        var gateExit = new Button { Content = "退出配置", MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
+        gateExit.Click += (_, _) => { if (!Busy && MayDiscard()) Close(); };
+        AuthorizationGate.Children.Add(gateTitle); AuthorizationGate.Children.Add(gateDescription); AuthorizationGate.Children.Add(gateActions); gateActions.Children.Add(gateExit);
+        bool seenAuthorization = false, manuallyExited = false;
+        bool gateLayout = false;
+        double editorWidth = Width, editorHeight = Height;
+        bool checkingAuthority = false, authorityWasBlocked = false;
+        string? statusBeforeAuthorityBlock = null;
+        async Task ManagementAction()
+        {
+            if (!administratorLogin.IsEnabled || Busy) return;
+            administratorLogin.IsEnabled = false;
+            managementMenu.IsEnabled = false;
+            try
+            {
+                if ((await ManagementMode.ManagementModeStatusAsync()).Authorized) { await ManagementMode.ExitManagementModeAsync(); manuallyExited = true; }
+                else new ManagementModeWindow(ManagementMode) { Owner = this }.ShowDialog();
+                var grant = await ManagementMode.ManagementModeStatusAsync();
+                await RefreshAuthorization();
+                if (grant.Authorized && draft is null && !Busy) await Run(Read);
+            }
+            catch (Exception error) { Message("管理模式操作未完成：" + error.Message + " 原输入保留。"); }
+            finally { administratorLogin.IsEnabled = true; managementMenu.IsEnabled = true; }
+        }
+        administratorLogin.Click += async (_, _) => await ManagementAction();
+        managementMenu.ModeActionRequested += async (_, _) => await ManagementAction();
+        gateActions.Children.Insert(0, administratorLogin);
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", CheckCandidate);
         Action("保存未完成草稿", async () =>
@@ -165,7 +221,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (picker.ShowDialog(this) == true) { using var file = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); file.Write(Wire.Encode(StartupSiteTemplates.Export(document.Candidate.ApplicationId, draft.Capture()))); Message("已导出同版安全模板：只含非生效策略和提供者选择，不含原站/设备/目标/秘密/编号范围或业务数据。"); }
             return Task.CompletedTask;
         });
-        Action("导入配置文件…", ImportConfiguration);
+        headerImport = Action("导入配置文件…", ImportConfiguration);
         Action(initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", SaveCandidate);
         Action("受控修复未确认配置…", async () =>
         {
@@ -198,66 +254,96 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(true); }
         });
         Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", StartReviewed);
-        Action("上一步", () => { if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
+        Action("上一步", () => { if (initialConfiguration) parameterControl?.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Max(0, selectedTask - 1)]); else if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
         var next = Action("下一步", async () =>
         {
-            if (tasks is null) return;
             if (initialConfiguration && selectedTask < 4)
             {
                 if (parameterEditor is null) throw new InvalidOperationException("先读取可编辑候选；保留原目录和诊断。");
                 if (!parameterEditor.ValidateFields(new[] { 1, 0, 2, 3 }[selectedTask])) { LocateFirstIssue(); throw new InvalidOperationException("请修正本步骤标出的参数；其他步骤输入保留。"); }
                 if (selectedTask == 0) await ValidateBarcodeRule();
             }
-            tasks.SelectedIndex = Math.Min(initialConfiguration ? 4 : 3, tasks.SelectedIndex + 1);
-            Message(tasks.SelectedIndex == 4 ? "核对设置后保存并启动。" : "继续填写当前步骤；内容会保留。");
+            if (initialConfiguration)
+            {
+                saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存待启动检查" : "未保存";
+                parameterControl?.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Min(4, selectedTask + 1)]);
+                if (selectedTask == 4) await CheckCandidate();
+            }
+            else if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1);
         });
         next.Background = new SolidColorBrush(Color.FromRgb(32, 95, 206)); next.Foreground = Brushes.White;
         Action("维护操作", () => { showMaintenanceActions = !showMaintenanceActions; UpdateActions(); return Task.CompletedTask; });
-        Action("保存并启动", async () =>
+        Action(initialConfiguration ? "保存配置" : "保存并启动", async () =>
         {
             await CheckCandidate();
+            savingCandidate = true;
             await SaveCandidate();
             if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
                 throw new InvalidOperationException("尚未确认保存成功；请按提示核对，当前输入保留。");
-            await CheckCandidate();
-            await StartReviewed();
+            savingCandidate = false;
+            if (initialConfiguration) { saveState.Text = "已保存待启动检查"; refreshReview?.Invoke(); UpdateActions(); }
+            else { await CheckCandidate(); await StartReviewed(); }
         });
+        if (initialConfiguration) Action("完成", () =>
+        {
+            if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate)) throw new InvalidOperationException("请先核对并保存当前配置。");
+            ConfigurationSaved = true; CompleteDialog(); return Task.CompletedTask;
+        });
+        if (initialConfiguration) Action("重新读取配置…", Read);
         Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
         Action("配置工具…", () => { OpenTools(); return Task.CompletedTask; });
         if (initialConfiguration)
         {
             foreach (var button in Actions.Children.OfType<Button>().ToArray())
-                if ((string)button.Content is not ("上一步" or "下一步" or "保存并启动" or "导入配置文件…" or "保存未完成草稿")) Actions.Children.Remove(button);
+                if ((string)button.Content is not ("上一步" or "下一步" or "保存配置" or "完成" or "重新读取配置…" or "导入配置文件…" or "保存未完成草稿")) Actions.Children.Remove(button);
             var saveDraft = Actions.Children.OfType<Button>().Single(b => (string)b.Content == "保存未完成草稿");
             saveDraft.Content = "保存草稿并退出";
+            Actions.Children.Remove(saveDraft);
+            var draftActions = new StackPanel { Orientation = Orientation.Horizontal }; draftActions.Children.Add(saveDraft); draftActions.Children.Add(saveState);
+            DockPanel.SetDock(draftActions, Dock.Left); FooterHost.Children.Insert(0, draftActions); Actions.HorizontalAlignment = HorizontalAlignment.Right;
+            Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
         }
-        Body.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
-        Body.AddHandler(ComboBox.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox) Changed(); }));
-        Body.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler((_, _) => Changed()));
-        Body.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
-        Body.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
+        var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
+        editEvents.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
+        editEvents.AddHandler(ComboBox.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox) Changed(); }));
+        editEvents.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler((_, _) => Changed()));
+        editEvents.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
+        editEvents.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
         Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        bool checkingAuthority = false, authorityWasBlocked = false;
-        string? statusBeforeAuthorityBlock = null;
-        const string authorityBlockedMessage = "管理员未登录或会话到期；输入已保护，请使用软件管理员登录后继续。";
-        authorizationTimer.Tick += async (_, _) =>
+        async Task RefreshAuthorization()
         {
             if (checkingAuthority) return; checkingAuthority = true;
             try
             {
-                var identity = await AdministratorAccounts.AdministratorStatusAsync(); var allowed = identity.Authorized;
-                administratorIdentity.Text = allowed ? "管理员\n" + identity.Account : "管理员未登录"; administratorIdentity.ToolTip = administratorIdentity.Text;
-                Body.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
-                if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(authorityBlockedMessage); }
-                else if (allowed && authorityWasBlocked && Status.Text == authorityBlockedMessage) Message(statusBeforeAuthorityBlock ?? "管理员已登录，原填写内容已恢复。");
+                var identity = await ManagementMode.ManagementModeStatusAsync(); var allowed = identity.Authorized;
+                authorityAllowed = allowed; if (allowed) { seenAuthorization = true; manuallyExited = false; }
+                if (initialConfiguration && gateLayout == allowed)
+                {
+                    if (allowed) { Width = editorWidth; Height = editorHeight; }
+                    else { editorWidth = Width; editorHeight = Height; Width = Math.Min(720, MaxWidth); Height = Math.Min(440, MaxHeight); }
+                    gateLayout = !allowed;
+                }
+                managementMenu.Status = identity;
+                administratorLogin.Content = allowed ? "退出管理模式" : !identity.Configured && !identity.NeedsLegacyConversion ? "设置管理密码" : "进入管理模式…";
+                administratorLogin.IsEnabled = identity.Available && !Busy;
+                gateTitle.Text = !identity.Available ? "管理授权服务不可用" : !identity.Configured && !identity.NeedsLegacyConversion ? "配置前，请先设置管理密码" : manuallyExited ? "管理模式已退出" : seenAuthorization ? "管理权限已到期，请重新验证后继续" : "配置前，请进入管理模式";
+                gateDescription.Text = !identity.Available ? "请使用同版安装器检查管理服务。原输入仅在当前进程中保留，尚未保存或应用。" : seenAuthorization ? "当前未保存输入仅保留在此进程中。重新验证管理密码后可继续，失权期间不能保存或应用。" : "管理密码用于保护参数设置，与操作员账号、Windows 授权分别验证。检查和编辑不会启动设备。";
+                WorkflowBody.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                AuthorizationGate.Visibility = allowed ? Visibility.Collapsed : Visibility.Visible;
+                FooterHost.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                if (initialConfiguration && headerImport is not null) headerImport.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                StartupAppearance.Primary(administratorLogin);
+                if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(""); }
+                else if (allowed && authorityWasBlocked) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，原填写内容已恢复。");
                 authorityWasBlocked = !allowed;
             }
-            catch (Exception error) { administratorIdentity.Text = "管理员未登录"; Body.Visibility = Visibility.Collapsed; Message("授权状态无法读取：" + error.Message); }
+            catch (Exception error) { authorityAllowed = false; managementMenu.Status = new(false, false, null, Available: false); WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; if (initialConfiguration && headerImport is not null) headerImport.Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "原输入仅在当前进程中保留。" + error.Message; }
             finally { checkingAuthority = false; }
-        };
+        }
+        authorizationTimer.Tick += async (_, _) => await RefreshAuthorization();
         Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
-        Loaded += async (_, _) => await Run(async () => { try { var admin = AdministratorAccounts; if (!(await admin.AdministratorStatusAsync()).Authorized) new AdministratorWindow(admin) { Owner = this }.ShowDialog(); await Read(); } finally { if (tasks is null) Render(); } });
+        Loaded += async (_, _) => { await RefreshAuthorization(); if (authorityAllowed) await Run(Read); };
     }
     async Task ValidateBarcodeRule()
     {
@@ -273,6 +359,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     async Task CheckCandidate()
     {
+        if (startupSaveUncertain) throw new InvalidOperationException("上次保存结果待核对，请先重新读取权威配置；当前输入保留，未重复提交。");
         var candidate = RequireDraft();
         await ValidateBarcodeRule();
         var report = await Task.Run(() => maintenance.CheckAsync(candidate));
@@ -285,6 +372,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => c.Layer + "：" + c.Reason)));
         }
         checkedInput = Input(); checkedCandidateHash = report.CandidateHash;
+        if (initialConfiguration) saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存待启动检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "部署条件待核对" : "检查通过 · 未保存";
         Message(report.Checks.Any(c => c.Status == "BLOCKED") ? "参数格式检查完成；部署条件尚未齐备。可保存设置，启动仍需处理部署条件。" : "配置检查已完成；保存和启动仍会核验实际条件。");
         diagnosticDetails = string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason));
     }
@@ -303,6 +391,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         catch (Exception error)
         {
+            diagnosticDetails += "\n保存回执：" + Ipc.Platform.DiagnosticText.Protect(error.ToString());
             var actual = await Task.Run(maintenance.ReadAsync);
             if (actual.Candidate is not null && (actual.ConfigurationStatus == "PendingRestart" || initialConfiguration && actual.ConfigurationStatus == "Seed") && Ipc.Platform.Wire.Hash(Ipc.Platform.Wire.Encode(actual.Candidate)) == checkedCandidateHash)
             { ConfirmSaved(actual); Message("已从权威配置账确认本次候选已保存待生效；原回执：" + error.Message + "。未重复提交，当前输入保留。"); }
@@ -341,7 +430,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => comparison.DialogResult = true; panel.Children.Add(apply);
         panel.Children.Add(new TextBox { Text = "仅导入设置，不保存、不启动。保留本供包台身份与模拟/生产用途。\n\n" + StartupConfigurationFiles.Describe(draft, replacement), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         comparison.Content = panel;
-        if (comparison.ShowDialog() == true) { await RequireMaintenance(); draft = replacement; Render(false); Message("配置已导入填写区。检查后再保存并启动。"); }
+        if (comparison.ShowDialog() == true) { await RequireMaintenance(); draft = replacement; Render(false); Message("配置已导入填写区。检查后再保存配置。"); }
     }
     void OpenTools()
     {
@@ -368,21 +457,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
     new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
     {
-        if (label is not ("软件管理员登录…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
+        if (label is not ("进入管理模式…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
         await action();
     });
     async Task RequireMaintenance()
     {
         RequireDirectories();
-        if (!(await AdministratorAccounts.AdministratorStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先登录软件管理员；原输入保留。");
+        if (!(await ManagementMode.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先进入管理模式；原输入保留。");
         if (maintenance is null) throw new InvalidOperationException("先读取所选目录；失败读取不能沿用另一目录的维护实例。");
     }
     bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();
     void Changed()
     {
         if (rendering || Busy) return;
+        if (savedInput == Input()) return;
         checkedInput = null;
-        Message("尚未保存；填写完成后点击下一步。");
+        saveState.Text = startupSaveUncertain ? "保存结果待核对" : "未保存";
+        refreshReview?.Invoke(); UpdateActions();
+        if (!initialConfiguration) Message("尚未保存；填写完成后检查当前候选。");
     }
     void RequireChecked()
     {
@@ -398,15 +490,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? focusAfterOperation;
     protected override void OperationCompleted()
     {
+        refreshReview?.Invoke(); UpdateActions();
         var focus = focusAfterOperation; focusAfterOperation = null;
         if (focus is not null) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, focus);
+    }
+    protected override void OperationFailed(Exception error)
+    {
+        if (!initialConfiguration) { base.OperationFailed(error); return; }
+        diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
+        saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果待核对" : savingCandidate ? "保存未完成" : "检查未通过";
+        savingCandidate = false;
+        refreshReview?.Invoke();
     }
     void LocateFirstIssue()
     {
         var issue = parameterEditor?.Issues.FirstOrDefault();
         if (issue is null) return;
         var step = issue.Category switch { "业务模块" => 0, "系统" => 1, "驱动" => 2, "组件" => 3, _ => -1 };
-        if (initialConfiguration && step >= 0 && tasks is not null) tasks.SelectedIndex = step;
+        if (initialConfiguration && step >= 0) parameterControl?.SelectCategory(new[] { 1, 0, 2, 3 }[step]);
         var control = parameterControl; var path = issue.Path; var expectedInput = Input();
         if (step >= 0) focusAfterOperation = () =>
         {
@@ -473,7 +574,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次引导与日常设置共用四类参数、精确描述和完整候选校验。固定位置、实例数量与身份不作为普通参数。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
-            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, Model = parameterEditor, MinHeight = 300, Height = initialConfiguration ? 470 : 430 };
+            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);
@@ -511,45 +612,47 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }); Body.Children.Add(restore);
         }
         var fields = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
-        tasks = new TabControl { Name = "StartupTasks", Margin = new(0, 8, 0, 8) };
+        tasks = initialConfiguration ? null : new TabControl { Name = "StartupTasks", Margin = new(0, 8, 0, 8) };
         void Section(string title, string guidance, IEnumerable<UIElement> items)
         {
             var panel = new StackPanel { Margin = new(16) };
             panel.Children.Add(new TextBlock { Text = guidance, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), FontSize = 16 });
             foreach (var item in items) panel.Children.Add(item);
-            tasks.Items.Add(new TabItem { Header = title, Content = panel, MinHeight = 44 });
+            tasks!.Items.Add(new TabItem { Header = title, Content = panel, MinHeight = 44 });
         }
         if (initialConfiguration)
         {
-            var hosts = new StackPanel[4];
-            foreach (var (title, index) in new[] { ("1 业务模块", 0), ("2 系统", 1), ("3 驱动", 2), ("4 组件", 3) })
+            if (sharedEditor is null)
             {
-                var host = new StackPanel { Margin = new(12) }; hosts[index] = host;
-                if (index == 0) host.Children.Add(new TextBlock { Text = "当前业务：" + ChineseInterfaceText.BusinessName(document?.Candidate?.ApplicationId ?? ""), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 12) });
-                tasks.Items.Add(new TabItem { Header = title, Content = host, MinHeight = 44 });
+                WorkflowBody.Content = new TextBlock { Text = "无法读取配置，请查看诊断后使用启动修复。原文件保留。", TextWrapping = TextWrapping.Wrap };
             }
-            Section("5 检查与完成", "核对以下设置，点击保存并启动。启动失败会保留已保存内容，并说明需要处理的项目。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
-            var review = (StackPanel)((TabItem)tasks.Items[4]).Content;
-            var changes = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 100, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            review.Children.Add(changes);
-            void MoveEditor()
+            else
             {
-                if (sharedEditor is null) return;
-                foreach (var host in hosts) host.Children.Remove(sharedEditor);
-                if (tasks.SelectedIndex is >= 0 and < 4)
+                var review = new StackPanel();
+                var state = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
+                var summary = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0) };
+                var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent };
+                review.Children.Add(state); review.Children.Add(summary);
+                review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
+                refreshReview = () =>
                 {
-                    sharedEditor.ShowCategory(new[] { 1, 0, 2, 3 }[tasks.SelectedIndex]);
-                    if (tasks.SelectedIndex == 3 && parameterEditor?.Components.FirstOrDefault(x => x.Kind == "integration") is { } connection)
-                        sharedEditor.NavigateTo(connection.InstanceId + "/Target");
-                    hosts[tasks.SelectedIndex].Children.Add(sharedEditor);
-                }
-                else if (draft is not null)
-                    try { changes.Text = StartupConfigurationFiles.Summary(draft, document!.Candidate!) + "\n\n本次更改\n" + StartupConfigurationFiles.Describe(new StartupConfigurationDraft(document!.Candidate!, document.Catalog), draft); }
-                    catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or System.Text.Json.JsonException) { changes.Text = "候选尚不能完成比较：" + ex.Message + "。输入保留，请返回对应步骤修正。"; }
+                    state.Text = startupSaveUncertain ? "上次保存结果待核对，暂不重复提交。" : lastSaveConfirmed && savedInput == Input() ? "配置已保存，尚未连接设备。完成后可明确选择启动供包台。" : "核对当前输入并保存配置；此操作不会启动设备作业。";
+                    diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
+                    try { summary.Text = StartupConfigurationFiles.Summary(draft!, document!.Candidate!) + "\n\n本次更改\n" + StartupConfigurationFiles.Describe(new StartupConfigurationDraft(document.Candidate!, document.Catalog), draft!); }
+                    catch (Exception error) when (error is InvalidOperationException or ArgumentException or System.Text.Json.JsonException)
+                    { summary.Text = "尚有参数需要修改，请按检查问题定位。当前输入保留。"; diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
+                };
+                sharedEditor.SetReviewContent(review);
+                WorkflowBody.Content = sharedEditor;
+                sharedEditor.SelectedPageChanged += (_, _) =>
+                {
+                    selectedTask = sharedEditor.SelectedCategory switch { 1 => 0, 0 => 1, 2 => 2, 3 => 3, _ => 4 };
+                    if (selectedTask == 4) refreshReview?.Invoke(); UpdateActions();
+                };
+                sharedEditor.MaintenanceRequested += (_, _) => sharedEditor.ShowReview();
+                sharedEditor.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Clamp(selectedTask, 0, 4)]);
+                refreshReview();
             }
-            tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) MoveEditor(); };
-            if (sharedEditor is not null) sharedEditor.MaintenanceRequested += (_, _) => tasks.SelectedIndex = 4;
-            tasks.SelectedIndex = Math.Clamp(selectedTask, 0, 4); MoveEditor();
         }
         else
         {
@@ -558,10 +661,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Section("3 参数说明", "系统、业务模块、驱动、组件的参数统一在设备与参数页编辑；保存与启动分开。", fields.Skip(policyStart).Take(deviceStart - policyStart));
         Section("4 检查与启动", "检查当前输入，再保存待生效修订并重试启动。未确认配置失败可在恢复维护中受控修复；原失败与原请求保留。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
         Section("恢复与维护", "完整备份、隔离恢复、原机接管和程序维护是独立任务；不会因切换本页执行。原机迁移仍需原根退役和外部责任核对。", fields.Skip(recoveryStart));
-        tasks.SelectedIndex = selectedTask;
+        tasks!.SelectedIndex = selectedTask;
         }
-        tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { selectedTask = tasks.SelectedIndex; UpdateActions(); } };
-        Body.Children.Add(tasks); UpdateActions(); rendering = false;
+        if (!initialConfiguration && tasks is not null) {
+            tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { selectedTask = tasks.SelectedIndex; UpdateActions(); } };
+            Body.Children.Add(tasks);
+        }
+        UpdateActions(); rendering = false;
         if (replaceDraft) savedInput = Input();
     }
     void UpdateActions()
@@ -571,188 +677,16 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             foreach (var button in Actions.Children.OfType<Button>())
             {
                 var label = (string)button.Content;
-                button.Visibility = label is "导入配置文件…" or "保存草稿并退出" || label == "上一步" && selectedTask > 0 || label == "下一步" && selectedTask < 4 || label == "保存并启动" && selectedTask == 4 ? Visibility.Visible : Visibility.Collapsed;
-                if (label == "保存并启动") { button.Background = new SolidColorBrush(Color.FromRgb(32, 95, 206)); button.Foreground = Brushes.White; }
+                var next = label == "下一步" || label.StartsWith("继续：", StringComparison.Ordinal) || label == "检查配置";
+                if (next) button.Content = selectedTask switch { 0 => "继续：系统", 1 => "继续：驱动", 2 => "继续：组件", _ => "检查配置" };
+                var confirmed = lastSaveConfirmed && !startupSaveUncertain && savedInput == Input();
+                button.Visibility = next && selectedTask < 4 && !startupSaveUncertain || label == "上一步" && selectedTask > 0 || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
+                if (label is "保存配置" or "完成" or "重新读取配置…") StartupAppearance.Primary(button);
             }
             return;
         }
         var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2, 4 };
         for (var i = 0; i < Actions.Children.Count; i++)
             Actions.Children[i].Visibility = i < groups.Length && (groups[i] == -1 || groups[i] == selectedTask || groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;
-    }
-}
-
-public sealed record InstallationPreparationProgress(string Stage, string File, double Percent);
-
-public sealed class StartupSetupWindow : StartupWorkflowWindow
-{
-    internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
-    readonly BusinessLaunch launch;
-    readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
-    CancellationTokenSource? preparing;
-    readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 24, 0, 12) };
-    readonly TextBlock preparationFile = new() { TextTrimming = TextTrimming.CharacterEllipsis, FontSize = 13 };
-    DeploymentMedia? media;
-    WindowsDeploymentRequest? reviewed;
-    DeploymentComponentReview[] components = [];
-    DeploymentLocation? installed;
-    public DeploymentLocation? Installed => installed;
-    public bool Launched { get; private set; }
-    TextBox data = null!, program = null!;
-    CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
-    RadioButton allUsers = null!, onlyMe = null!;
-    bool sharedInstallation = true;
-    string newStation = "", selectedProgram = "";
-    string? enteredData;
-    bool selectedStartMenu = true, selectedDesktop = true;
-    int step;
-    readonly Button next, back, cancel;
-    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
-    {
-        this.launch = launch; this.prepareMedia = prepareMedia;
-        if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ParcelStartupServices.ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
-        back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
-        next = Action("检查安装媒介", Next);
-        cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
-        next.IsDefault = true; cancel.IsCancel = true;
-        Render();
-        Loaded += async (_, _) => await Run(Next);
-        Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); } };
-    }
-    TextBox InstallationFolder(string label, string value)
-    {
-        Note(label);
-        var row = new Grid { Margin = new(0, 0, 0, 8) }; row.ColumnDefinitions.Add(new()); row.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-        var box = new TextBox { Text = value, MinHeight = 44 }; System.Windows.Automation.AutomationProperties.SetName(box, label);
-        var browse = new Button { Content = "浏览…", MinHeight = 44, MinWidth = 80, Margin = new(8, 0, 0, 0) };
-        System.Windows.Automation.AutomationProperties.SetName(browse, "浏览" + label);
-        browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
-        Grid.SetColumn(browse, 1); row.Children.Add(box); row.Children.Add(browse); Form.Children.Add(row); return box;
-    }
-    string ApplicationId => ParcelStartupServices.ApplicationId;
-    void CaptureInputs()
-    {
-        if (step != 1) return;
-        enteredData = data.Text; selectedProgram = program.Text; sharedInstallation = allUsers.IsChecked == true;
-        selectedStartMenu = startMenu.IsChecked == true; selectedDesktop = desktopIcon.IsChecked == true;
-    }
-    void Render()
-    {
-        Body.Children.Clear(); Form = Body;
-        if (runAfter is not null) Actions.Children.Remove(runAfter);
-        Body.Margin = new(0);
-        InstallationHeading.Text = step == 3 ? "安装成功" : "安装菜鸟供包台";
-        back.Visibility = step == 2 ? Visibility.Visible : Visibility.Collapsed;
-        cancel.Visibility = step == 3 ? Visibility.Collapsed : Visibility.Visible;
-        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和快捷方式，然后点击下一步。", 2 => "确认以下选项，点击安装后由 Windows 请求授权。", _ => "菜鸟供包台已安装。" });
-        if (step == 0)
-        {
-            preparationProgress.IsIndeterminate = prepareMedia is null;
-            Body.Children.Add(preparationProgress); Body.Children.Add(preparationFile);
-            Note("正在核对版本与完整性，完成后自动显示安装选项。"); next.Content = "重试检查";
-        }
-        else if (step == 1)
-        {
-            var current = CurrentInstallation(ApplicationId);
-            if (current is not null) sharedInstallation = current.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid;
-            allUsers = new RadioButton { Content = "所有 Windows 用户（共用一个供包台）", GroupName = "InstallAudience", IsChecked = sharedInstallation, IsEnabled = current is null, MinHeight = 44 };
-            onlyMe = new RadioButton { Content = "仅当前 Windows 用户", GroupName = "InstallAudience", IsChecked = !sharedInstallation, IsEnabled = current is null, MinHeight = 44 };
-            Body.Children.Add(allUsers); Body.Children.Add(onlyMe);
-            if (current is not null) Note("本次升级保留原有使用范围和数据。");
-            allUsers.Checked += (_, _) => { if (current is null) { sharedInstallation = true; data.Text = Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"); } };
-            onlyMe.Checked += (_, _) => { if (current is null) { sharedInstallation = false; data.Text = launch.DataRoot; } };
-            program = InstallationFolder("安装目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
-            Note("升级保留旧版本和原始数据。");
-            startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu, MinHeight = 44 }; Body.Children.Add(startMenu);
-            desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (sharedInstallation ? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data") : launch.DataRoot));
-            next.Content = "下一步";
-        }
-        else if (step == 2)
-        {
-            var r = reviewed!;
-            Note("使用范围：" + (r.RuntimeAccountSid == MachineRuntimePolicy.SharedUsersSid ? "所有 Windows 用户，共用一个供包台" : "当前供包台账户") + "\n安装目录：" + r.ProgramRoot + "\n数据目录：" + r.DataRoot + "\n开始菜单快捷方式：" + (r.Shortcuts!.StartMenu ? "创建" : "不创建") + "\n桌面快捷方式：" + (r.Shortcuts.Desktop ? "创建" : "不创建") + "\n使用用途：" + ChineseInterfaceText.Choice(r.Mode));
-            Note("点击安装后只需一次 Windows 授权。安装时检查原责任并完成备份；有阻断则保留原部署，不执行升级。");
-            if (r.BackupDestination is not null) Note("升级前完整备份：" + r.BackupDestination);
-            next.Content = "安装";
-        }
-        else
-        {
-            Body.Margin = new(0, 56, 0, 24);
-            Body.Children.Add(new TextBlock { Text = "下一步：配置供包台", FontSize = 22, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) });
-            Note("首次打开后，填写相机 IP、端口和 RCS 服务设置，再按检查结果启动。");
-            if (reviewed?.BackupDestination is not null) Note("原有数据已保留。");
-            var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
-            runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun, IsEnabled = canRun, MinHeight = 44, VerticalAlignment = VerticalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, Margin = new(0, 12, 24, 0) };
-            Actions.Children.Insert(0, runAfter);
-            if (!canRun) Note("请使用原供包台的 Windows 账户打开程序。");
-            next.Content = "完成";
-        }
-    }
-    async Task Next()
-    {
-        if (step == 0)
-        {
-            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("安装向导需要 Windows");
-            var environment = WindowsClientCompatibility.Capture();
-            if (!environment.Assessment.CanStart) throw new PlatformNotSupportedException(environment.Assessment.Reason);
-            var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, ".."));
-            if (prepareMedia is not null)
-            {
-                using var cancellation = new CancellationTokenSource(); preparing = cancellation;
-                var progress = new Progress<InstallationPreparationProgress>(value =>
-                { Message(value.Stage); preparationProgress.Value = value.Percent; preparationFile.Text = value.File; });
-                try { root = await prepareMedia(progress, cancellation.Token); }
-                finally { preparing = null; }
-            }
-            media = await Task.Run(() => DeploymentMedia.Inspect(root, ApplicationId));
-            VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
-            VersionLabel.Visibility = Visibility.Visible;
-            newStation = SystemParameterDefaults.InitialStationId;
-            step = 1; Render();
-        }
-        else if (step == 1)
-        {
-            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-            CaptureInputs();
-            var current = CurrentInstallation(ApplicationId);
-            var selectedAccount = current?.RuntimeAccountSid ?? (sharedInstallation ? MachineRuntimePolicy.SharedUsersSid : ParcelStartupServices.DefaultRuntimeAccount(currentUserOnly: true));
-            var dataRoot = data.Text;
-            var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
-            if (current is null)
-            {
-                var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id());
-                await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory;
-            }
-            // Initial drivers belong to the verified medium, never a user's arbitrary file selection.
-            var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
-            reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, dataRoot, configPath, null, selected, false, selectedProgram));
-            reviewed = reviewed with { Shortcuts = new(selectedStartMenu, selectedDesktop) };
-            components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
-            foreach (var component in components)
-                if (component.Prerequisites.Length > 0) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
-            var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
-            if (current is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db")))
-                reviewed = reviewed with { BackupDestination = Path.Combine(reviewed.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
-            step = 2; Render();
-        }
-        else if (step == 2)
-        {
-            Message("正在安装菜鸟供包台，请在 Windows 授权窗口确认并等待安装完成。");
-            Body.Children.Clear(); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Margin = new(0, 24, 0, 24) });
-            Note("正在复制和校验程序、保存安装登记并创建所选快捷方式…");
-            try { installed = await Task.Run(() => ParcelStartupServices.InstallWithPreflightAsync(reviewed!)); step = 3; Render(); }
-            catch { Render(); throw; }
-        }
-        else
-        {
-            if (runAfter.IsChecked == true)
-            {
-                if (!ParcelStartupServices.IsRuntimeAccount(installed!)) throw new InvalidOperationException("请登录指定运行账户后运行程序");
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Path.Combine(installed!.ReleaseRoot, "desktop", "Ipc.Desktop.exe")) { UseShellExecute = true, WorkingDirectory = installed.ReleaseRoot });
-                Launched = true;
-            }
-            Busy = false; Close();
-        }
     }
 }

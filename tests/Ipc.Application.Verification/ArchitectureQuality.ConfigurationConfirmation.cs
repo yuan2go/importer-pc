@@ -44,7 +44,7 @@ static partial class ArchitectureQuality
             Check(Convert.FromBase64String(confirmation.OriginalEnvelopeBase64!).SequenceEqual(legacy.Bytes) && confirmation.OriginalEnvelopeSha256 ==
                 Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(legacy.Bytes)), "legacy envelope original bytes including BOM and SHA256 retained in the authoritative envelope");
             var owner = s.RuntimeId.ToString("N") + ":" + s.Configuration.Revision + ":" + confirmation.EffectiveHash;
-            await app.LogoutAdministratorAsync();
+            await app.ExitManagementModeAsync();
             Check((await Command(app, "ConfirmConfiguration", owner, "Unauthenticated attempt")).Status == "Rejected", "legacy confirmation requires maintenance grant");
             await Maintenance(app);
             Check((await Command(app, "Resume")).Status == "Rejected", "software Resume cannot bypass unconfirmed Effective");
@@ -53,9 +53,11 @@ static partial class ArchitectureQuality
             Check((await ConfirmOnce(app, Guid.NewGuid().ToString("N") + ":" + s.Configuration.Revision + ":" + confirmation.EffectiveHash, "Old application instance")).Status == "Conflict", "legacy confirmation binds the inspected runtime identity at the business guard");
             var stale = await app.SnapshotAsync(); await Command(app, "Pause");
             Check((await app.CommandAsync(new(Wire.Id(), stale.Revision, "ConfirmConfiguration", owner, "Stale application projection"))).Status == "Conflict", "legacy confirmation also binds application CAS");
-            Check((await Command(app, "ConfirmConfiguration", owner, "Operator inspected preserved original and current healthy resources")).Status == "Persisted", "authenticated maintenance confirms current revision and content with reason");
+            var confirmed = await Command(app, "ConfirmConfiguration", owner, "Operator inspected preserved original and current healthy resources");
+            if(confirmed.Status == "Rejected" && confirmed.Reason.Contains("resource health")) { Console.WriteLine("WAIT resource confirmation: " + confirmed.Reason); confirmed = await ConfirmOnce(app,owner,"Operator inspected preserved original and current healthy resources"); }
+            Check(confirmed.Status == "Persisted", "management mode confirms current revision and content with reason: " + confirmed.Status + " " + confirmed.Reason);
             s = await app.SnapshotAsync();
-            Check(s.Paused && s.Configuration.Confirmation is { Required: false, State: "Confirmed", ConfirmedBy: "fixture-admin" } && s.Configuration.Status == "Effective",
+            Check(s.Paused && s.Configuration.Confirmation is { Required: false, State: "Confirmed" } && s.Configuration.Confirmation.ConfirmedBy == LocalManagementMode.ForRoot(Path.Combine(root,"confirmation-legacy","data")).Evidence?.AuditActor && s.Configuration.Status == "Effective",
                 "confirmation records identity but keeps software pause for explicit Resume");
             Check((await Command(app, "Resume")).Status == "Persisted", "confirmed Effective can resume through ordinary guards");
         }

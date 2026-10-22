@@ -138,7 +138,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public async Task RefreshAsync()
     {
-        await RefreshAdministratorAsync();
+        await RefreshManagementModeAsync();
         var generation = Interlocked.Increment(ref refreshGeneration);
         var (readId, next) = await ReadSnapshotWithIdAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;

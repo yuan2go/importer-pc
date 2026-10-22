@@ -114,7 +114,7 @@ static class OptionalCapabilities
                 var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == (lostKind == "plc" ? ParcelState.PlcUnknown : ParcelState.ImageUnknown)); original = s.Operations.Single();
                 Pass(lostKind == "plc" || original.Wcs is null && original.Plc is null, run + " uncertain image stage blocks all downstream effects");
                 Pass((await app.LogoutAsync()).Status == "Rejected", run + " uncertainty cannot be cleared by logout");
-                await Command(app, "Pause"); await AdministratorFixture.Authorize(app); s = await app.SnapshotAsync();
+                await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); s = await app.SnapshotAsync();
                 Pass((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { Login = null }, "Synthetic directed configuration verification")).Status == "PendingRestart", run + " feature change is pending only");
             }
             await using (var app = await Open(c, run))
@@ -154,7 +154,7 @@ static class OptionalCapabilities
         {
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("backup-parcel", "001", Wire.Id());
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var original = s.Operations.Single();
-            await Command(app, "Pause"); await AdministratorFixture.Authorize(app); var backup = Path.Combine(root, "images.backup.db");
+            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); var backup = Path.Combine(root, "images.backup.db");
             Pass((await app.BackupAsync(backup)).Status == "BackupCreated", "image backup includes actual image custody");
             var data = Path.Combine(root, "restored-images"); var destination = Path.Combine(data, "Simulation", backupConfig.StationId, backupConfig.ApplicationId);
             ParcelRecovery.Restore(backup, destination);

@@ -89,7 +89,7 @@ static class ReliabilityClosure
                 Check(vm.Snapshot!.Paused && vm.Busy && !slow.IsCompleted, "software Pause and read refresh complete while actual ViewModel query remains busy");
             }
             finally { f.Release.TrySetResult(); await slow; }
-            await AdministratorFixture.Authorize(vm.Application); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+            await ManagementModeFixture.Authorize(vm.Application); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
             var reader = vm.CapabilityDrafts.Single(x => x.Kind == "observation");
             Check(reader.IsTargetReadOnly, "stable reader target is explicitly read-only in the actual draft");
             reader.Target = "changed-device";

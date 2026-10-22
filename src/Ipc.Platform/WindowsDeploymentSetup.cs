@@ -81,7 +81,7 @@ public static partial class WindowsDeploymentSetup
     }
     [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
-        Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts)
+        Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
@@ -120,7 +120,9 @@ public static partial class WindowsDeploymentSetup
         try
         {
             WriteProtected(operation, new { Status = "Prepared", request.SourceCommit, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data }, sid);
+            progress?.Invoke(WindowsInstallationStage.CopyingFiles);
             media.CopyTo(releaseRoot, root => ProtectedDirectory(root, sid), file => new FileInfo(file).SetAccessControl(MachineRuntimeSetup.FileAcl(sid, FileSystemRights.ReadAndExecute)));
+            progress?.Invoke(WindowsInstallationStage.PreparingConfiguration);
             ProtectedDirectory(Path.Combine(MachineRoot, "configuration"), sid);
             var config = request.RepairSeed ? Path.Combine(MachineRoot, "configuration", request.ApplicationId + "-" + Wire.Id()) :
                 before?.ConfigurationDirectory ?? Path.Combine(MachineRoot, "configuration", request.ApplicationId);
@@ -140,19 +142,24 @@ public static partial class WindowsDeploymentSetup
 
             if (!Directory.Exists(data)) new DirectoryInfo(data).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.Modify));
             if (request.TrustFile is not null) ProvisionTrust(request, sid);
+            progress?.Invoke(WindowsInstallationStage.InstallingComponents);
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
-            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") AdministratorBroker.Install(data, Path.Combine(releaseRoot, "app"));
+            progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
+            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"));
             WriteProtected(operation, new { Status = "ReadyToCommit", Location = location, Previous = before, BusinessStarted = false }, sid);
+            progress?.Invoke(WindowsInstallationStage.CommittingInstallation);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
             // Stable desktop entry is a repairable projection of the committed deployment.
             // No failed pre-commit installation can switch the user's existing entry.
+            progress?.Invoke(WindowsInstallationStage.CreatingShortcuts);
             createShortcuts(location);
             // ARP is a repairable projection. A crash here is recovered from this
             // registration, never by choosing a registry value as a second authority.
+            progress?.Invoke(WindowsInstallationStage.RegisteringApplication);
             ProjectInstalledApplication(location);
             WriteProtected(operation, new { Status = "Completed", Location = location, BusinessStarted = false }, sid);
             return location;

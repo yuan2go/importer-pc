@@ -1,0 +1,7 @@
+PASS INSTALLER-UI02 native asynchronous operation settles
+FAIL System.Reflection.AmbiguousMatchException: Ambiguous match found for 'Ipc.Desktop.StartupSetupWindow Void Render()'.
+   at System.RuntimeType.GetMethodImplCommon(String name, Int32 genericParameterCount, BindingFlags bindingAttr, Binder binder, CallingConventions callConv, Type[] types, ParameterModifier[] modifiers)
+   at System.Type.GetMethod(String name, BindingFlags bindingAttr)
+   at Program.<>c__DisplayClass3_0.<VerifyInstallerFirstRunUi>g__Render|28() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 124
+   at Program.VerifyInstallerFirstRunUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 30
+   at Program.<>c__DisplayClass10_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

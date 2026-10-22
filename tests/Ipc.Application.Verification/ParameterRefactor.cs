@@ -53,7 +53,7 @@ static class ParameterRefactor
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new UxCommercialInputs.InputFactory(new ParcelCapabilityFactory(launch));
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await app.StartAsync(default); await AdministratorFixture.Authorize(app);
+        await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var reader = c.Topology!.Readers[0].DeviceId;
         factory.Emit(reader, "Read", "third-entity", ["noise", "other", "OK003"], "third-source");
         var first = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "third-entity" && o.State == ParcelState.SlotResolved));
@@ -68,7 +68,7 @@ static class ParameterRefactor
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
-        var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await AdministratorFixture.Authorize(app);
+        var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
         // Isolate configuration semantics from periodic health probes taking the
         // shared external-call guard between availability and Stage. The real
         // guard remains enforced; all in-flight probes must drain first.
@@ -98,7 +98,7 @@ static class ParameterRefactor
         var staleNoChange = await app.StageConfigurationAsync(saved.Revision - 1, saved.Effective, "Synthetic stale no-change");
         Check(staleNoChange.Status == "Rejected" && (await app.SnapshotAsync()).Configuration.Pending!.StationCode == "SYSTEM-EDIT",
             "stale CAS cannot disguise itself as unchanged or discard Pending");
-        var proxy = DispatchProxy.Create<IAdministrativeParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
+        var proxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
         var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();
         Check(pendingVm.Message.Contains("禁止重复提交") && pendingVm.HasUnsavedConfiguration, "unavailable authority inspection retains raw input and an explicit uncertain-save state");
@@ -118,7 +118,7 @@ static class ParameterRefactor
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
             "backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save");
         stale.StructuredPolicy.BackupEnabled = false;
-        var heldProxy = DispatchProxy.Create<IAdministrativeParcelFixture, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
+        var heldProxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
         var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
         heldVm.StructuredPolicy!.TimeoutMs = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         heldVm.StructuredPolicy.TimeoutMs = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;

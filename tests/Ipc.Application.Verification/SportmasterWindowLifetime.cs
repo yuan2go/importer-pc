@@ -21,7 +21,7 @@ static class SportmasterWindowLifetime
     static void Show(SupplyStationWindow window) { window.Show(); Timer(window).Start(); }
     public static async Task Run()
     {
-        var app = DispatchProxy.Create<IAdministrativeParcelFixture, NoWindowBusinessCalls>();
+        var app = DispatchProxy.Create<IManagementParcelFixture, NoWindowBusinessCalls>();
         {
             var stops = 0; var root = new SupplyStationWindow(app, null, null, () => { stops++; return Task.CompletedTask; });
             var child = new SupplyStationWindow(app, null, null, owner: root); Show(root); Show(child);

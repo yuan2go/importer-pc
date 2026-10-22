@@ -24,6 +24,11 @@ public static class TrustedProgramRoots
     {
         root = Normalize(root, dataRoot);
         var parent = Directory.GetParent(root) ?? throw new InvalidDataException("程序根缺少父目录");
+        if (!parent.Exists && WindowsStoragePaths.IsManagedProgramPath(root))
+        {
+            WindowsStoragePaths.RequireExistingProtectedAncestors(root);
+            return; // The elevated installation creates the managed parent hierarchy.
+        }
         if (!parent.Exists) throw new InvalidDataException("先由维护管理员创建受保护父目录，再选择其中的程序根");
         RequireAncestors(Directory.Exists(root) ? root : parent.FullName);
     }

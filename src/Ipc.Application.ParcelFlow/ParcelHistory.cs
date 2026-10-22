@@ -193,5 +193,5 @@ public sealed partial class ParcelRuntime
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)
     { await gate.WaitAsync().ConfigureAwait(false); try { return OperatorHistory(repository!.History(beforeSequence, limit)); } finally { gate.Release(); } }
     public async Task<ParcelOperation?> OperationAsync(string id)
-    { await gate.WaitAsync().ConfigureAwait(false); try { var op = repository!.ReadOperation(id); return op is null || Administrator.Status().Authorized ? op : OperatorOperation(op); } finally { gate.Release(); } }
+    { await gate.WaitAsync().ConfigureAwait(false); try { var op = repository!.ReadOperation(id); return op is null || Management.Status().Authorized ? op : OperatorOperation(op); } finally { gate.Release(); } }
 }

@@ -17,7 +17,12 @@ public partial class App : System.Windows.Application
             var window = new StartupSetupWindow(launch, preparation.PrepareAsync, preparation.BusinessVersion);
             window.Closed += (_, _) =>
             {
-                try { preparation.Cleanup(); Shutdown(0); }
+                try
+                {
+                    var clean = window.CanCleanPreparation;
+                    if (clean) preparation.Cleanup();
+                    Shutdown(clean ? 0 : 3); // Unknown outcome is not an installation success exit.
+                }
                 catch (Exception error) { MessageBox.Show(error.Message, "安装准备文件清理未完成", MessageBoxButton.OK, MessageBoxImage.Warning); Shutdown(2); }
             };
             MainWindow = window; window.Show();

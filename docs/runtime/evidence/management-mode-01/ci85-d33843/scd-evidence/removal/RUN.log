@@ -1,0 +1,9 @@
+PASS entire removal inventory is validated before the first deletion
+PASS unlisted files survive and are reported by nonrecursive removal
+PASS reentry completes empty inventoried directories
+PASS already deleted release root is a completed reentry
+PASS absent roots cannot bypass unsafe inventory rejection
+PASS root replaced by a file is retained and rejected
+PASS real Windows sharing violation records restart intent through a synthetic queue callback
+PASS post-unlock reentry completes the original inventory
+NOT_RUN protected uninstall entry, ARP/UAC and actual reboot deletion; this fixture only calls the internal inventory kernel.

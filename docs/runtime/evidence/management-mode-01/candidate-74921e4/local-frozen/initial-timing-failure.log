@@ -1,0 +1,22 @@
+PASS OPS-NATIVE raw context preserves Windows path escapes while decoding actual multiline exception values separately
+Native WPF HWND/Dispatcher, synthetic ports and data. No real device or RCS calls.
+PASS OPS-NATIVE right-corner identity distinguishes unauthenticated administration and login-free operation
+PASS OPS-NATIVE ordinary navigation has no administrator or support actions
+PASS OPS-NATIVE account and role are persistently visible
+PASS OPS-NATIVE automatic normal feeding keeps both barcode/destination associations independent
+CAPTURE ordinary-work-1366: 1365.6x768 DIP; Windows scale 1.25/1.25
+CAPTURE ordinary-work-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE identity stays within the minimum native client area
+PASS OPS-NATIVE software administrator appears without changing frozen operator or pausing supply
+CAPTURE management-work-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE administrator opens the existing four-category parameter candidate while supply is running
+CAPTURE management-parameters-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE logout closes restricted workspace and protects the same unsaved draft
+PASS OPS-NATIVE re-authentication resumes the original candidate without reconstructing connections
+PASS OPS-NATIVE administrator log navigation opens the real software-log query control
+CAPTURE management-logs-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+FAIL System.InvalidOperationException: native log query displays actual runtime/authentication journal entries
+   at Program.<VerifyOperatorAdministration>g__Check|3_1(Boolean ok, String text, <>c__DisplayClass3_0&) in D:\projects\importer-pc\.artifacts\management-frozen-native-1110\OperatorAdministration.cs:line 34
+   at Program.VerifyOperatorAdministration(String root, String evidence, List`1 lines) in D:\projects\importer-pc\.artifacts\management-frozen-native-1110\OperatorAdministration.cs:line 77
+   at Program.VerifyOperatorAdministration(String root, String evidence, List`1 lines) in D:\projects\importer-pc\.artifacts\management-frozen-native-1110\OperatorAdministration.cs:line 114
+   at Program.<>c__DisplayClass7_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\.artifacts\management-frozen-native-1110\Program.cs:line 33

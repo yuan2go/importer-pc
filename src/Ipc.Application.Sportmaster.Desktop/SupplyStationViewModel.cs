@@ -169,7 +169,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次输入及准入条件，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
         Operation?.State switch
         {
-            ParcelState.WcsUnknown => "请勿重复放货，请联系管理员核对。",
+            ParcelState.WcsUnknown => "请勿重复放货，请联系维护人员核对。",
             ParcelState.WcsRejected => "查看详情，核对拒绝原因。",
             ParcelState.UnpackRequired => "本位等待检查处置；查看原回执，不重复放货。",
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
@@ -199,9 +199,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ? "新输入未建作业；原作业请查看详情。" :
         CurrentTaskAvailable ? "按本次格口投递；下一包信息自动更新。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :
-        HasUncertainOriginal ? "请勿重复放货，请联系管理员核对。" :
+        HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
-        BlockingReasons.Length > 0 ? "暂不能供包，请联系管理员检查。" : "读码后自动获取任务，无需逐包确认。";
+        BlockingReasons.Length > 0 ? "暂不能供包，请联系维护人员检查。" : "读码后自动获取任务，无需逐包确认。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";
@@ -212,7 +212,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
     public bool CanAdmit { get; private set; }
     public bool CanReconcile { get; private set; }
-    public bool CanQueryOriginal => owner.IsAdministrator && CanReconcile && HasUncertainOriginal;
+    public bool CanQueryOriginal => owner.IsManagementMode && CanReconcile && HasUncertainOriginal;
     public bool HasUncertainOriginal => Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
     public bool HasContinuation => Operation is { } op && owner.Snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
     public bool CanContinue { get; private set; }

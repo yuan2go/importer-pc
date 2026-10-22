@@ -33,6 +33,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - name: Clean installation protected-directory regression
+        run: dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated
       - name: Policy rejection tests
         run: |
           python -m unittest discover -s scripts -p test_commercial_delivery.py -v

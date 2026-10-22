@@ -36,7 +36,7 @@ public partial class App : System.Windows.Application
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" ? e.Args[0] : null;
+            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? e.Args[0] : null;
             if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
             selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
@@ -46,6 +46,14 @@ public partial class App : System.Windows.Application
                 startup.AllowClose = true; Shutdown(); return;
             }
             if (mode == "--maintenance") { await Repair(); return; }
+            if (mode == "--after-install")
+            {
+                var classification = await Task.Run(() => ParcelStartupServices.Maintenance(selected.Business).ClassifyAsync());
+                var route = DesktopLaunchOptions.StartupRoute(classification);
+                if (route != DesktopStartupRoute.Runtime) { await Repair(initialConfiguration: route == DesktopStartupRoute.FirstConfiguration); return; }
+                startup.AfterInstallation(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected());
+                startup.Show(); return;
+            }
             startup.Show(); await Dispatcher.Yield(DispatcherPriority.Background);
             await StartSelected();
         }
@@ -116,7 +124,12 @@ public partial class App : System.Windows.Application
         else if (initialConfiguration)
         {
             startup.Show(); MainWindow = startup;
-            startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
+            if (repair.ConfigurationSaved)
+            {
+                selected = selected with { Business = repair.SelectedLaunch };
+                startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected(firstConfigurationReviewed: true));
+            }
+            else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
         }
         else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
             () => StartSelected(), () => Repair(), ShowSetup); }
@@ -151,6 +164,7 @@ sealed class ParcelStartupWindow : Window
     {
         Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
         Title = "启动与恢复 · 菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
+        Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         var grid = new Grid { Margin = new Thickness(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -189,6 +203,19 @@ sealed class ParcelStartupWindow : Window
             diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
             detail.Text = "无法继续配置，请查看诊断后重试。"; diagnostic.Text = error.ToString(); return Task.CompletedTask;
         }
+    }
+    public void AfterInstallation(Func<Task> close, Func<Task> start)
+    {
+        ConfigurationPaused(close, start);
+        title.Text = "供包台已打开";
+        detail.Text = "已识别现有配置。点击启动后才检查并连接设备与服务；安装完成不代表设备已可运行。";
+        ((Button)actions.Children[0]).Content = "启动供包台";
+    }
+    public void AfterConfiguration(Func<Task> close, Func<Task> start)
+    {
+        AfterInstallation(close, start);
+        title.Text = "配置已保存 · 尚未启动";
+        detail.Text = "点击启动后才检查并连接设备与服务。保存配置不代表设备已可运行。";
     }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {

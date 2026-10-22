@@ -46,6 +46,7 @@ public static class MachineRuntimeSetup
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Machine setup requires Windows");
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        WindowsStoragePaths.PrepareForInstallation(runtimeSid);
         InstallWindows(MachineRoot, runtimeSid);
     }
     public static string CreateMaintenanceWorkspace()

@@ -32,8 +32,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly OperatorSession session = new();
     OperatorIdentity? currentOperator => session.Identity;
     bool SessionValid => Effective.Login is null || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs);
-    bool MaintenanceAuthorized => Administrator.Status().Authorized;
-    OperatorIdentity? AdministratorIdentity => Administrator.Identity;
+    bool MaintenanceAuthorized => Management.Status().Authorized;
+    ManagementModeEvidence? ManagementEvidence => Management.Evidence;
     readonly Dictionary<string, CapabilityHealth> capabilityHealth = [];
     readonly HashSet<string> activeStages = [];
     readonly HashSet<string> attachedRunning = [];
@@ -98,7 +98,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
-        logReader = new(Path.Combine(directory, "diagnostics"), Administrator, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
+        logReader = new(Path.Combine(directory, "diagnostics"), Management, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
         repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();

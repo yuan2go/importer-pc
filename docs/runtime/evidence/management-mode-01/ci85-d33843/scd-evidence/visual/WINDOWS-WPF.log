@@ -1,0 +1,16 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS native read-only diagnostics open and bind both positions and shared facts without writing read-only properties
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available
+PASS frozen desktop first configuration exposes five steps and the combined guarded save/start without a tool menu
+PASS offline first configuration never starts the Application or creates a business database
+PASS first-configuration business budget locates the actual shared timeout field
+PASS first-configuration native form becomes enabled and accepts keyboard focus after the read completes
+PASS first-configuration step navigation retains the same native unsaved form controls
+PASS integrated first-configuration guard refuses to discard an unsaved native draft
+SIZE window=1044x768 client=1028x729 DPI=1
+FAIL System.InvalidOperationException: delayed left request does not block right result or change its owner
+   at Program.<>c__DisplayClass26_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in C:\scd-evidence\visual\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in C:\scd-evidence\visual\VisualProductization.cs:line 81
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in C:\scd-evidence\visual\VisualProductization.cs:line 264
+   at Program.<>c__DisplayClass7_0.<<Main>b__0>d.MoveNext() in C:\scd-evidence\visual\Program.cs:line 42

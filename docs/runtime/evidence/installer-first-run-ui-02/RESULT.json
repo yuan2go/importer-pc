@@ -1,0 +1,258 @@
+{
+  "work_package": "WP-IPC-INSTALLER-FIRST-RUN-UI-02",
+  "date": "2026-10-22",
+  "status": "PASS_SCOPED_NATIVE_AND_SYNTHETIC",
+  "main_at_start": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
+  "inherited_pr88": "793d092851052c63663f19b5de8d2b7703392d8d",
+  "source_tree_commit": "6220fd6a6d3e5d49f9179eb3197b6c0b34518bbc",
+  "build_identity": "Local development build created before commit; code files match the committed tree. Not a release medium or same-commit embedded installer.",
+  "native_host": "Windows; actual desktop scale 1.25; HWND/Dispatcher content capture",
+  "checks": {
+    "targeted_native": 58,
+    "existing_startup": 93,
+    "management_native": 26,
+    "upgrade_change_guards": 8,
+    "management_core": 69
+  },
+  "logical_window_sizes_DIP": [
+    [
+      960,
+      700
+    ],
+    [
+      800,
+      560
+    ],
+    [
+      665,
+      460
+    ]
+  ],
+  "real_OS_DPI_100_150": "NOT_RUN",
+  "actual_UAC_install_upgrade_recovery": "NOT_RUN",
+  "standalone_installer_payload_or_publish": "NOT_RUN",
+  "devices_SDK_RCS_site": "NOT_RUN",
+  "pushed": false,
+  "pull_request_created": false,
+  "source_files": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs",
+      "sha256": "df968713a67064e37fd7f595cc702a03f79e486a53cbc523bbff5591ce03c4f2",
+      "size_bytes": 13094,
+      "git_blob": "ee9407499b4d1fb6cdf15bf846fe56b941e3adc0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.cs",
+      "sha256": "85705933d15ffce83e603d1a9f0b1a00679dc6d43688215ce5b9b2050e9db361",
+      "size_bytes": 1425,
+      "git_blob": "f37f390139f539cabbdfd3ea2c48b43d75975c56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.xaml",
+      "sha256": "a814cdcb2b6d14708b2c9cfd30eb79930d99e1ba446e97c2d8d51732fc0d4030",
+      "size_bytes": 3369,
+      "git_blob": "c530f7dcc446358affe4379e0e4298c8389ec2f2"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "sha256": "f345957f8a03b0a84df03751e2207e7885ad3074fd816c36be8f1318be9d2d97",
+      "size_bytes": 47745,
+      "git_blob": "41c673d83a100cd3d21919ec51e719f636e93b09"
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "sha256": "914d572e880db874cad10d73f66ae2276ccc497993b4695a3f5faf8c6b63ba6f",
+      "size_bytes": 2868,
+      "git_blob": "5f1baf5621bf4dff123c687128a7d540c94d0a9c"
+    },
+    {
+      "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
+      "sha256": "74ef6a8ccf54bb9f72991d9f4690af4fedef7f654e29a22d806dfee7dc77c223",
+      "size_bytes": 14564,
+      "git_blob": "4ad3fd792a8df7639b01c2dc1444c1b507f5dae9"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "sha256": "97b5d3e64275a33b90ddde440a410d66047180a69282196768faf77f88df2c48",
+      "size_bytes": 21563,
+      "git_blob": "3c941bd2edd570dae920be908a42e7a9428ea491"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupWorkflows.cs",
+      "sha256": "45e81734dbe7418f92be9e85943d6845e67c5050101e129362a5a448c4321a58",
+      "size_bytes": 53518,
+      "git_blob": "6fa7d2663fec25aeee744e7255f4386f18ddd54f"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
+      "sha256": "aa58201e5a230331c727ec3ff6a348e157ba226382c8c18df550d31c78e639e4",
+      "size_bytes": 18055,
+      "git_blob": "5f86a89097b0d82a3e296a893729811ca5ec2996"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsInstallationStage.cs",
+      "sha256": "cfdc5148ef5b04a3a9920f86f1a453902d0b1fa6f737fa072ae22086c4ba6ad5",
+      "size_bytes": 526,
+      "git_blob": "392ab1de84b0b27897406a9da8dfe7fa91f1f143"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
+      "sha256": "c28e1bb395e50c0758282c0ecf424a23101c9569371b11e0e17de6a97d302d31",
+      "size_bytes": 24194,
+      "git_blob": "524ced149c55910b0adf8a50026a37632908cca2"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
+      "sha256": "d139ac065719f3a07ba8cfeaa70181f355049cab4378b6ad5082628bdcbee1e8",
+      "size_bytes": 13735,
+      "git_blob": "3ebd129ef471adc79af41b7c6d21ed06e4af33f8"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "c958ebc951d05a668513fe1db24a27b968f1f0f213ffa322e061acc47c7482bc",
+      "size_bytes": 18820,
+      "git_blob": "7956612a2fb2d188bd8b75a6f624b0c12549984b"
+    }
+  ],
+  "binaries": [
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll",
+      "sha256": "ab88b6d70e3008986ad6c2649628c261226f4be5e800468e86cde99978cd18b7",
+      "size_bytes": 1397760
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Assembly.dll",
+      "sha256": "d8857d3f28fa30f29ce3666e23d2ccbb7630efdc212e37f810e51b542f1bc4c1",
+      "size_bytes": 241152
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "sha256": "e29f1fa0b3d6de2dd7411ac13d4ea69149c11ca2f1407ae743352e3273fe61ff",
+      "size_bytes": 470016
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "sha256": "490c831f50509b1b5f0c2f74e9e5cab8735e3bd9e931bf55f13dea3987804ce8",
+      "size_bytes": 1715712
+    },
+    {
+      "path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.dll",
+      "sha256": "5634058ed8985ec1c9a706e803b2e3e9486d532192dd3196e0ee28ec2d0cd1d8",
+      "size_bytes": 521216
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll",
+      "sha256": "a95c47635d7a543153798038b58a77dfa4e90a6f8c85fff84c493cbfb200f30b",
+      "size_bytes": 626688
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "sha256": "e29f1fa0b3d6de2dd7411ac13d4ea69149c11ca2f1407ae743352e3273fe61ff",
+      "size_bytes": 470016
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "sha256": "490c831f50509b1b5f0c2f74e9e5cab8735e3bd9e931bf55f13dea3987804ce8",
+      "size_bytes": 1715712
+    }
+  ],
+  "design_inputs": [
+    {
+      "path": "docs/ui/installer-first-run-ui-02/UI-SPEC.md",
+      "sha256": "e3fb7b88885323094a8269266901b3f6429fa09540e70425f5be923907d026fe",
+      "size_bytes": 8588
+    },
+    {
+      "path": "docs/ui/installer-first-run-ui-02/Preview.html",
+      "sha256": "d7f2425df2deb13a0e772fda5b2d7867b58b5b99553f3becc6e03523c4c3d484",
+      "size_bytes": 30345
+    }
+  ],
+  "native_captures": [
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/after-install-start-gate.png",
+      "sha256": "2813933d463e5963d2bf4844c533979ad4628f45056e10c76d9be07e9c39937e",
+      "size_bytes": 14962
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/first-run-expired.png",
+      "sha256": "6d92b4eb9f70cb27abce7706815521a8eeb21b45059f2404678d12beead3aadc",
+      "size_bytes": 29824
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/first-run-unconfigured.png",
+      "sha256": "cae4afde28ab920e479e213e22cb09bf7df517a1b423ded88ec88e3ac6a85e36",
+      "size_bytes": 27332
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-complete-existing.png",
+      "sha256": "371fad46db9dc8c1ab2eefc31a6f2eef8e0e4fc62e0e4d1fb6f1187eed0885de",
+      "size_bytes": 34907
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-complete-first.png",
+      "sha256": "20f7f40b890c446cd3a9e82dca826cbb21d98ef4d3f9f975496b6cf5f7a363e4",
+      "size_bytes": 38107
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-confirm-long.png",
+      "sha256": "aba68e136ff63a7000826b6ef1a907f940459ccaa6798864f299a6fc25e42d39",
+      "size_bytes": 106395
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-failure.png",
+      "sha256": "962bcc26dc4d25c16e93f432886f4c7e6d04b2398a326abd29fdec50e33c6d72",
+      "size_bytes": 59969
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-options-1024x768-125-equivalent.png",
+      "sha256": "0402befee5fe9c50a30213d6c95aab84a4382aa7dd4954c5347277eecfb5e9d7",
+      "size_bytes": 59249
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-options-1024x768-150-equivalent.png",
+      "sha256": "b9e25dd3163e94b5a6f148bcedc435a21a3df9032f3c0446b8386482b646b27d",
+      "size_bytes": 47946
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-options-1366x768-100-equivalent.png",
+      "sha256": "685a3ca32200d6ebce76c263d53aeb9415fdb1b92c83dc62d76dab85639db2f3",
+      "size_bytes": 72116
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-stage-CommittingInstallation.png",
+      "sha256": "09e28adaffc84ec0a932d3bc3668be6f40f279a4cdf7b1be89927bb4f59d2e6e",
+      "size_bytes": 33063
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-stage-CopyingFiles.png",
+      "sha256": "24b017c8b8408718c200c5abbee1b1c5888052d1dd65b6147493f7977de4f928",
+      "size_bytes": 33689
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-stage-WaitingForAuthorization.png",
+      "sha256": "61e5cf1eef4e0448623ce8f044b78301f623cfa25c8a4130329ac46c356f4b89",
+      "size_bytes": 35803
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/installer-unknown.png",
+      "sha256": "c0db8508acdb726cc79b393909264d3bc2646cb5b72b90177d5c92fb40baf0d2",
+      "size_bytes": 52542
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/password-first-setup.png",
+      "sha256": "976f47039e9f207084c28ed60abb677f0bb01cc42b4edda75122578d8f1064db",
+      "size_bytes": 19582
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/password-rejected.png",
+      "sha256": "b3bedaaebb23cac89bf06cabade11e14da78d80c8722e499d9097a6b13ea7501",
+      "size_bytes": 19288
+    },
+    {
+      "path": "docs/runtime/evidence/installer-first-run-ui-02/password-service-unavailable.png",
+      "sha256": "4f13b6dba2a23d14d217c2045a0b4cd27864ec0f47ac52ecbc251efe11b8991c",
+      "size_bytes": 20971
+    }
+  ]
+}

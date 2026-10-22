@@ -15,5 +15,7 @@
   "ApplicationConfiguration": "PASS_RERUN_INITIAL_FAILURE_RETAINED",
   "RealUacInstallation": "NOT_RUN",
   "ProductionDevices": "NOT_RUN",
-  "PushRelease": "NOT_DONE"
+  "PushRelease": "NOT_DONE",
+  "CodeCommit": "a73b53990a564aeb4a253dc94a44b3e3fce66a89",
+  "CodeAndTestsTreeFrozen": true
 }

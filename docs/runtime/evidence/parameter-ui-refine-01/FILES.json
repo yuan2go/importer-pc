@@ -301,8 +301,8 @@
   },
   {
     "Path": "RESULT.json",
-    "Sha256": "1e4eff0ab0cab1804719252124b29b501cbc18b9c687222fa62058965c9598a8",
-    "Bytes": 1025
+    "Sha256": "b110639ea6f0917020ac8e530259c3b461d6a3110547d4cf73f63973d0f5020d",
+    "Bytes": 1121
   },
   {
     "Path": "startup/configuration-paused.png",

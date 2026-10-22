@@ -1,6 +1,6 @@
-# PARAMETER-UI-REFINE-01 验收记录
+﻿# PARAMETER-UI-REFINE-01 验收记录
 
-2026-10-23，Windows 本机；源码、设计原件、原生合成与设备验收分别记录。执行基线与字段/源码映射见[实施说明](../parameter-ui-refine-01.md)。本轮使用项目 Impeccable Operate/WPF 与 UI UX Pro Max WPF 适配，保留系统字体及原生技术。
+2026-10-23，源码实现提交 `a73b53990a564aeb4a253dc94a44b3e3fce66a89`（后续清单提交只更改记录），Windows 本机；源码、设计原件、原生合成与设备验收分别记录。执行基线与字段/源码映射见[实施说明](../parameter-ui-refine-01.md)。本轮使用项目 Impeccable Operate/WPF 与 UI UX Pro Max WPF 适配，保留系统字体及原生技术。
 
 ## 已验证
 

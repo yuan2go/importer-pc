@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "At": "2026-10-22T03:10:00.895Z",
+  "Version": "1.11.1",
+  "ActualStandaloneExeLaunched": true,
+  "ActualPayloadPreparationCompleted": true,
+  "OptionsWithDDefaultsObserved": true,
+  "ConfirmationWithDDefaultsObserved": true,
+  "InstallClicked": false,
+  "SourceCommit": "14d3e38ce461d38e900af9d8c584970ee2ff4e25"
+}

@@ -1,0 +1,31 @@
+{
+  "Status": "PASS",
+  "Scope": "Local Windows regression and actual standalone opening/review only; no actual product installation or devices",
+  "SourceCommit": "14d3e38ce461d38e900af9d8c584970ee2ff4e25",
+  "BusinessVersion": "1.11.1",
+  "InstallerSha256": "f62c9b65a9cec82e183d09103451f8f3cb25e961956701a15bf819318b545063",
+  "MediumSha256": "04d9392d99a3f3265ca283ad26ec04de3f2a659595ff6b42687fe3ac14a07d3c",
+  "MediumFiles": 738,
+  "ReadonlyChecks": 5,
+  "ElevatedIsolatedAclChecks": 8,
+  "FrozenNativeChecks": 8,
+  "FrozenFixtureMatchesMedium": true,
+  "ActualStandalonePreparationAndConfirmation": true,
+  "ActualInstallation": "NOT_RUN",
+  "DeploymentRootStillAbsent": true,
+  "ServicesAndInstalledRegistrationAbsent": true,
+  "ManagementPasswordSet": false,
+  "HikrobotTouched": false,
+  "CI": {
+    "Run": 39714858200,
+    "Status": "IN_PROGRESS_AT_RECORDING",
+    "NewAclRegression": "PASS",
+    "ProtectedSystemBoundary": "PASS",
+    "RemainingJourneysAndPackaging": "PENDING"
+  },
+  "NotVerified": [
+    "User fresh installation and first configuration",
+    "Real SDK/RCS and equipment",
+    "Field acceptance, reboot and cross-user lifecycle"
+  ]
+}

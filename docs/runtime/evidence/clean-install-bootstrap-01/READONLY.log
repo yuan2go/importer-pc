@@ -1,0 +1,5 @@
+PASS CLEAN-STORAGE fixture is a saved location with no deployment directory
+PASS CLEAN-STORAGE missing deployment is read as not installed
+PASS CLEAN-STORAGE location reading and managed installation preview create no directory or policy
+PASS CLEAN-STORAGE ordinary process cannot provision protected directories
+PASS CLEAN-STORAGE rejected provisioning leaves the machine clean

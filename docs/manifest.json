@@ -2052,9 +2052,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5bf24ef82948234029d53730bacde2f056fcf11c0235301e59ebd3069a504680",
-      "size_bytes": 4454,
-      "git_blob": "4c18c9bf521d424ef15adea649c7f191ca0ed696",
+      "sha256": "3e630d54711bc1cf5e0a6ea4f022029d4ef8cad305d44df448049078b526433d",
+      "size_bytes": 4811,
+      "git_blob": "40b675763e182885f2db5c1e908580e369530928",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -46850,9 +46850,9 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "8c30e4636517bd54e2d0c03cbc28f79f1661072c",
-      "sha256": "617a22092af2594124ec33cd162d1e566b56ca7dec3f545533ead3185377e3eb",
-      "size_bytes": 2063,
+      "git_blob": "78ff3cafce9a75aa74ca95ff7e174516dab16fb7",
+      "sha256": "04715a4dea909cba91c2081ed72447d0528aff6b9a3452b6b6011b57a50229d3",
+      "size_bytes": 2337,
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -63938,9 +63938,9 @@
     },
     {
       "path": "docs/runtime/d-drive-storage-20261021.md",
-      "sha256": "8db0f9067588b40c640d4e844015e66dcb114ce8e19d8a4c43df9ffbf4bc9a6c",
-      "size_bytes": 6458,
-      "git_blob": "329d40ac906ba3acdddd0a677ba0e3ab250e3f61",
+      "sha256": "cf5c2b017ca1a49b408331c38e1103d1540b3d5503e9873c97da281e41459246",
+      "size_bytes": 6719,
+      "git_blob": "c076ee742f75d1a29eda1b6829e8b004995a289a",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -66042,9 +66042,9 @@
     },
     {
       "path": "docs/runtime/clean-install-bootstrap-01.md",
-      "sha256": "748ebe3b32dd1583cab7591f2caee0a712a8315dc1dc846b5e043f4796bf5f23",
-      "size_bytes": 2181,
-      "git_blob": "0780676275dcbe718b88dd313adceee5087d6a38",
+      "sha256": "9a73916348dfd5f51ef5cb986d42245136e5ba9f27236421302ccc4b449c487e",
+      "size_bytes": 2664,
+      "git_blob": "dea439b5337c81bf624d39405f7121821874fd12",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -66071,6 +66071,138 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/ELEVATED.json",
+      "sha256": "e4d831537c16417721257e877b955c2d8c8d3254c50227b25175e5b0b765cce1",
+      "size_bytes": 110,
+      "git_blob": "0299c0fa7cfcac931c2db27094e97319c9042dfd",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/ELEVATED.log",
+      "sha256": "9d31d4302fc0866684f4067f756e6663fea8b36e17cec22aecde2225f2eecaf2",
+      "size_bytes": 1218,
+      "git_blob": "b9906d42d9de61f2bd4f8b32ea407b5b4c951156",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/INSTALLER.json",
+      "sha256": "e68dfff827534297071bb4f1e0f70adebe01b069f0d36e1d95d9b7200d4a7cf5",
+      "size_bytes": 775,
+      "git_blob": "71e2595f308231039c134254a2d59fc4ddaca96f",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/README.md",
+      "sha256": "94c64801d99a1537c0ca3b814382ab1cd70d2b0b07b5ba3829594f490cd6fa3c",
+      "size_bytes": 2149,
+      "git_blob": "5446729f2336c1c7d2e840a651fd19cac2cfc8c7",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/READONLY.log",
+      "sha256": "fd9845349378b69f5ba3a26bc90437321013d6c5553b2583a53ab682e4fc1a78",
+      "size_bytes": 379,
+      "git_blob": "7a7b3361daf632425e13c257f58b516748f8e290",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/RESULT.json",
+      "sha256": "6449cd70026668c8c0c0bb1a5b985db10a448ff1ca699e0e78b92dd5315623b9",
+      "size_bytes": 3058,
+      "git_blob": "b6a0410e28ed40f4ccd94ba82a414dec1607b0e7",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/STANDALONE-CONFIRMATION.txt",
+      "sha256": "39b0816055b536835df31ea366e912176dfbc790e497a9f82601cd8966d89153",
+      "size_bytes": 1250,
+      "git_blob": "788c8f7e1998ebb22d27453ed349ddac28bdb01f",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/STANDALONE.json",
+      "sha256": "972497be69600c54a497d2d5fc7cdfeb8827a75294c30e140db5ad415acdaff4",
+      "size_bytes": 339,
+      "git_blob": "c4533129cc62984b17a1d478bd01a0f542bf3390",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/SUMMARY.json",
+      "sha256": "1286457236fca5faec0662de4bff796fca0c2eb77f597ddeb689858a8e19d9ef",
+      "size_bytes": 1165,
+      "git_blob": "975ad5cac1db3658f84da5ba1df6bb94739df346",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/WINDOWS-WPF.log",
+      "sha256": "3d972c2a9f3c56a9e3296f2f2f0842b2bf7a0a29622a38dadc2065adb6db6ee2",
+      "size_bytes": 1523,
+      "git_blob": "4b8c52522b7303af75edfe3d1d78c2e915b5fe21",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/clean-install-confirmation.png",
+      "sha256": "837443192493c0ef54ae31111189deb42fa52c8f41d504bc3918fccbf4d757ff",
+      "size_bytes": 79237,
+      "git_blob": "204ef9b0ff7b4baf6724a523351d8be0f4c3361d",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/clean-install-bootstrap-01/clean-install-options.png",
+      "sha256": "a49735a3d2873e9c97a5acab6f143ac31f37e65be3668f02dfabd7880049976c",
+      "size_bytes": 77069,
+      "git_blob": "6c88462e31e3bf2924def4ec6817f5ca0efabe97",
+      "version": "MANAGEMENT-MODE-01",
+      "status": "verified_scoped_clean_bootstrap_and_standalone_review",
+      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+      "source": "Local frozen source 14d3e38ce461d38e900af9d8c584970ee2ff4e25; SM1.11.1; readonly5, isolated elevated ACL8, frozen WPF8 and actual single-EXE preparation/review; actual installation NOT_RUN",
       "storage_scope": "public_repository"
     }
   ],
@@ -68543,5 +68675,15 @@
     },
     "local_installation_evidence": "docs/runtime/evidence/management-mode-01/clean-reset-20261022/SUMMARY.json",
     "historical_local_installation_evidence": "docs/runtime/evidence/management-mode-01/installed-d-20261022/SUMMARY.json"
+  },
+  "install_bootstrap_01": {
+    "source": "14d3e38ce461d38e900af9d8c584970ee2ff4e25",
+    "business_version": "1.11.1",
+    "installer_sha256": "f62c9b65a9cec82e183d09103451f8f3cb25e961956701a15bf819318b545063",
+    "evidence": "docs/runtime/evidence/clean-install-bootstrap-01/README.md",
+    "actual_installation": "NOT_RUN",
+    "standalone_open_and_review": "PASS",
+    "deployment_root": "ABSENT_AFTER_CANCELLATION",
+    "ci88": "IN_PROGRESS_AT_RECORDING; new ACL and System boundary PASS"
   }
 }

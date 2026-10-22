@@ -1,3 +1,5 @@
+> 当前重测安装包为SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。修复保存D盘位置但目录不存在时启动报错；已验证到确认页并取消，尚未正式安装。下述SM1.11.0交付与清理保持历史时点。
+>
 > 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验；其后按用户要求已卸载并清空旧运行状态，保留海康及D盘存储位置，等待重新测试安装。[当前清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 各守时间范围。
 >
 > 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。

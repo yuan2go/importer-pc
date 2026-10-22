@@ -1,3 +1,5 @@
+> SM1.11.1安装增量：[独立EXE及真实原生安装选项/确认验证](../runtime/evidence/clean-install-bootstrap-01/README.md)。实际清理后的D根不存在，选项/确认通过且取消未安装；业务页面及其历史证据不扩张为新现场验收。
+>
 > 当前用户纠偏：[MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。管理能力改为密码进入的模式，取消正常管理员用户名/账号维护；操作员账号独立。新原生证据单独验证，旧截图保持1.10.2身份。
 
 # 当前原生 UI 状态

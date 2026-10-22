@@ -9,3 +9,5 @@
 实现位于`WindowsStoragePaths`、`MachineRuntimeSetup`和`TrustedProgramRoots`。SM补丁版本为1.11.1，Application契约、数据库和配置格式不变。当前工作树实际Windows检查：未创建部署根的只读检查5项通过；授权隔离目录创建/不改已有ACL/同名文件/不安全ACL/链接拒绝8项通过，隔离目录已清理，真实部署根仍不存在。受影响核心、Desktop及原生验证工程构建通过，0警告/0错误；原运行身份守卫测试通过。原生向导和最终单EXE验证在同源包形成后单独记录。
 
 首轮新增验证工具遗漏InvalidDataException的预期拒绝类型，隔离测试在同名文件拒绝处结束，原记录保留；修正测试捕获后完整8项通过。实现没有放宽拒绝断言或以错误视为成功。
+
+最终本地包已冻结为SM1.11.1/14d3e38，同源WPF选项与确认8项、实际独立EXE内嵌校验/打开/确认及取消退出通过，实际D根仍未创建。安装包SHA256为`f62c9b65a9cec82e183d09103451f8f3cb25e961956701a15bf819318b545063`。完整[本次证据与截图](evidence/clean-install-bootstrap-01/README.md)单独记录；CI88记录时仅新增ACL回归及System边界已通过，整轮仍运行。正式安装和首配留给用户，不宣称现场通过。

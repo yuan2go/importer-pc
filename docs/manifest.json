@@ -56552,13 +56552,13 @@
       "path": "src/Ipc.Desktop/StartupWorkflows.cs",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "02f5248201c463e6ca6c306f20e7696d45372be811858f561a468d97fcd332d2",
-      "size_bytes": 57443,
-      "git_blob": "8cb0f8c09996835bfe2136e25d4e944397aaf26d",
-      "previous_git_blob": "82ff6838efa422596af19b1bf356fb506bf86ee4",
+      "sha256": "05acfe062841aeab446399f80d43fc758e9b29dc8d80d9c6d27e021a5f52c4a1",
+      "size_bytes": 57590,
+      "git_blob": "f200949de98a1d2e97b09c2b1872ffacfa4809e6",
+      "previous_git_blob": "8cb0f8c09996835bfe2136e25d4e944397aaf26d",
       "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01",
       "pre_publication_no_test_git_blob": "65470c322ace93ebb62e2d522a25823d4a481bc6"
     },
@@ -62030,13 +62030,13 @@
       "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; code a73b53990a564aeb4a253dc94a44b3e3fce66a89; actual Windows125% synthetic WPF and real local authority; initial intermittent configuration failure retained; UAC/install/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "6d4a35277b4916624a4f32d45a5bfcfc2995f08d5bd7304b23ff22648573a232",
-      "size_bytes": 27132,
-      "git_blob": "dcc38bdffa244f0f5f6bcfd084e0df2437c52956",
-      "previous_git_blob": "aa51284d32f4ab9676e2c5e27cc8c96f78f7c781"
+      "sha256": "d2ff35e90b914572ea07ba62b448c2ac383477af15713ac33fe75bc3d552a57a",
+      "size_bytes": 27338,
+      "git_blob": "d6839e51fa8cb4192c98d827bd2a0cb049faa1cc",
+      "previous_git_blob": "dcc38bdffa244f0f5f6bcfd084e0df2437c52956"
     },
     {
       "path": "docs/runtime/evidence/startup-experience-02/COMM-WPF-FIX.log",
@@ -67537,27 +67537,27 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/FILES.json",
-      "sha256": "e7cb79866a59a8843ce0a730e7f591242f42cd1a368d70e686f3ec809c982da0",
-      "size_bytes": 15140,
-      "git_blob": "8e2486e5c79709c2d1e22e3e741ff0ff6d475b0b",
+      "sha256": "dfac5f288ec0e6db4d6672e22a0ee45164ebb6995d4e1a2680af7b9eb83cd564",
+      "size_bytes": 15470,
+      "git_blob": "165a00bc4185bcbfd4098c4e4f49f92f0215e47e",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "e76f5766382729312842d7ff04f45e18d89f7769"
+      "previous_git_blob": "8e2486e5c79709c2d1e22e3e741ff0ff6d475b0b"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/MODIFIED-FILES.txt",
-      "sha256": "e9202649aaeccb22212e8ac3093b802992c6d946bc8675c99846943ab06a9435",
-      "size_bytes": 9869,
-      "git_blob": "29c42d19b6cde0e0f40735bbe51fac70b9789bbe",
+      "sha256": "04b4f234659b2e6aaea9f7d687fe614e5351d3d567f225de457cc123195b51ad",
+      "size_bytes": 10036,
+      "git_blob": "790bbe4dcc102ace48f337c8b6cba5010f524d88",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "9509c349a89aa377833d1f693fed7aa4c45e22e0"
+      "previous_git_blob": "29c42d19b6cde0e0f40735bbe51fac70b9789bbe"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/README.md",
@@ -67572,15 +67572,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/RESULT.json",
-      "sha256": "147c557167449dae1c3326e7c0e5c9a476050f1acc11125016071682c020e52c",
-      "size_bytes": 1261,
-      "git_blob": "2da40d9086b45d423f02cbb03afa0fa3c039258e",
+      "sha256": "29a398441ee94076f486375943f10c36f8f93dd96b90ae22b52356c3131ba345",
+      "size_bytes": 1405,
+      "git_blob": "d9def3246aa05b846b0a8dc5255baa026c219452",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "6663d90aaf21ee442976a993872fea3739be1f3d"
+      "previous_git_blob": "2da40d9086b45d423f02cbb03afa0fa3c039258e"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/authorization/WINDOWS-WPF.log",
@@ -68222,15 +68222,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/WINDOWS-WPF.log",
-      "sha256": "2162cd8f430cae93c36c995e7da1b92adab891833c508b2ae92151a27fb8955f",
-      "size_bytes": 10424,
-      "git_blob": "354f66c43a183ef1034d6107d47d4624328febad",
+      "sha256": "6466bb16e6c3cff83e83e4f07a22b17f10bc082fed0677d662d2e3fa1ba84222",
+      "size_bytes": 10523,
+      "git_blob": "6493087b09c3a55630be6c3282ad79299fa43cb5",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "fefee10cb678cfc7be657cd363a27466dd528e9a"
+      "previous_git_blob": "354f66c43a183ef1034d6107d47d4624328febad"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/configuration-paused.png",
@@ -68256,15 +68256,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/installer-confirmation.png",
-      "sha256": "b85ca9bcaa758969a43af2240d02a55294ddd875470e1285d274c749abf96b69",
-      "size_bytes": 60119,
-      "git_blob": "caaaa045571cd9623e063eaa26116ca56460df36",
+      "sha256": "f55ae4faf223e097616ea511305d7b3d8a8fa71bdfe4ee4b72f129115114f99f",
+      "size_bytes": 60018,
+      "git_blob": "5e686c25f72ecc10e205d4f4d146ae1dc2b4294c",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "03b342dc1e354a00de694436c767e86342f05b0f"
+      "previous_git_blob": "caaaa045571cd9623e063eaa26116ca56460df36"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/installer-options.png",
@@ -68312,27 +68312,27 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-data.png",
-      "sha256": "b0de425dca77491b7093ebd8154b6a62092b05012aa0e4076667e7cab6f3ec66",
-      "size_bytes": 68861,
-      "git_blob": "a94d420c5bb89eeb5cb484040df572747a716ecb",
+      "sha256": "fcc7ffb37ba91f67e376e8b2177564e6b1eff8c8d4ff6b75615a96f5c562e62b",
+      "size_bytes": 68622,
+      "git_blob": "521b7a63e6dd46a2e810e040117c427a6a84daf0",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3aeec3c3fa34dbd840a546acf2074d9f8a17c02b"
+      "previous_git_blob": "a94d420c5bb89eeb5cb484040df572747a716ecb"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-management-menu.png",
-      "sha256": "ca2a2b03fc4204d22447b6418e5cbc935c2b5a4d9c311d6badcf5106e082ae17",
-      "size_bytes": 5930,
-      "git_blob": "248303cddf848c70410f140a295409e818ff47c9",
+      "sha256": "ef2e1335fb3fbe0754747106b421ece885adf47569b45340b70550376693962b",
+      "size_bytes": 5976,
+      "git_blob": "00b1778c20568a0860cb411cb4be22cea1016a6c",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "b12a9e88632b011b9d79932c4d81253a3ded1351"
+      "previous_git_blob": "248303cddf848c70410f140a295409e818ff47c9"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/refine-processing.png",
@@ -68413,15 +68413,15 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/startup-step-2.png",
-      "sha256": "ee1c6dbf01d67a864d7a5069491a732b0fe82dfd227eeac7ae9535fb3c9f8aeb",
-      "size_bytes": 68473,
-      "git_blob": "90382b78269eaf97fb412f0b83f4847c9b81729a",
+      "sha256": "4ea02370f07b7fc5718c1da28e2a93b8beedfeecb7746dd04002cd3175d69aaf",
+      "size_bytes": 68237,
+      "git_blob": "b0e5673bc4ea5f45fd2ad67e88d3da20a7f4900f",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "80e9794565f3c9215eaf7a79152f20c703a411cd"
+      "previous_git_blob": "90382b78269eaf97fb412f0b83f4847c9b81729a"
     },
     {
       "path": "docs/runtime/evidence/parameter-ui-refine-01/startup/startup-step-3.png",
@@ -68568,15 +68568,15 @@
     },
     {
       "path": "docs/runtime/validation/parameter-ui-refine-01.md",
-      "sha256": "3a17e48e9546cef3f76ca3f81ca5a9f80289a7ea237c73c3f7da11275d1f91ce",
-      "size_bytes": 5732,
-      "git_blob": "b3e3d6225b6a2459ec91ccbb139fa723073d6025",
+      "sha256": "266d1d27d4e469a96bbdec9f4d00f3ec7ce4493a24c71d0e62d5e2437815af70",
+      "size_bytes": 5789,
+      "git_blob": "036246efac3357568b0797746d5e68d05eaf2883",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
-      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository",
-      "previous_git_blob": "5c76e6853b6ab62b9f0124ab97cd5e06afc1ac66"
+      "previous_git_blob": "b3e3d6225b6a2459ec91ccbb139fa723073d6025"
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md",
@@ -68643,6 +68643,28 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native parameter refinement and conditional-field navigation; final actual WPF evidence",
       "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation db0e5d8be1064bfa346514a094a61535a56f3c96; actual125% synthetic native; real installation/SDK/production NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-RECOVERY-DESKTOP-BUILD.log",
+      "sha256": "78139df7cefbeef7c30497dbaf0d160359558eb7b4729252fcad6520b2f965b0",
+      "size_bytes": 84,
+      "git_blob": "71b4d5e5ed6742856d578c115358342e62b103a6",
+      "version": "PARAMETER-UI-REFINE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-RECOVERY-NATIVE-BUILD.log",
+      "sha256": "35c96269a7a2afa1469918146b41d2c3469478f040634405c5244606e0611f85",
+      "size_bytes": 84,
+      "git_blob": "acc3c6cdf5f89564542b11044f9c5a9018c95d26",
+      "version": "PARAMETER-UI-REFINE-01",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Final native parameter UI and complete save error diagnostics",
+      "source": "WP-IPC-PARAMETER-UI-REFINE-01; final implementation 9d256e7bca20011269d53bba0c111977e543d601; actual125% synthetic native; UAC/install/SDK/production NOT_RUN",
       "storage_scope": "public_repository"
     }
   ],
@@ -71153,7 +71175,7 @@
     }
   },
   "parameter_ui_refine_01": {
-    "code_commit": "db0e5d8be1064bfa346514a094a61535a56f3c96",
+    "code_commit": "9d256e7bca20011269d53bba0c111977e543d601",
     "baseline_main": "0bf86a0a588b75b95aa1963e8fe88dad976ca803",
     "evidence": "docs/runtime/evidence/parameter-ui-refine-01/RESULT.json",
     "delivery": "LOCAL_ONLY_NOT_PUSHED_NOT_RELEASED",

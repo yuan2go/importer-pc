@@ -62,6 +62,8 @@ docs/runtime/evidence/parameter-ui-refine-01/logs/CONFIGURATION-2.log
 docs/runtime/evidence/parameter-ui-refine-01/logs/CONFIGURATION.log
 docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-DESKTOP-BUILD-6.log
 docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-NATIVE-BUILD-5.log
+docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-RECOVERY-DESKTOP-BUILD.log
+docs/runtime/evidence/parameter-ui-refine-01/logs/FINAL-RECOVERY-NATIVE-BUILD.log
 docs/runtime/evidence/parameter-ui-refine-01/logs/MANAGEMENT-CORE.log
 docs/runtime/evidence/parameter-ui-refine-01/logs/startup-known-failure-status-before-fix.log
 docs/runtime/evidence/parameter-ui-refine-01/management/WINDOWS-WPF.log

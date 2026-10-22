@@ -235,6 +235,16 @@
     "Bytes": 84
   },
   {
+    "Path": "logs/FINAL-RECOVERY-DESKTOP-BUILD.log",
+    "Sha256": "78139df7cefbeef7c30497dbaf0d160359558eb7b4729252fcad6520b2f965b0",
+    "Bytes": 84
+  },
+  {
+    "Path": "logs/FINAL-RECOVERY-NATIVE-BUILD.log",
+    "Sha256": "35c96269a7a2afa1469918146b41d2c3469478f040634405c5244606e0611f85",
+    "Bytes": 84
+  },
+  {
     "Path": "logs/MANAGEMENT-CORE.log",
     "Sha256": "6b87e0dc5c07b65b5fa5cc7f51a2b440db2fa5b9ac44f605c74f3d87e94b51e0",
     "Bytes": 6251
@@ -301,8 +311,8 @@
   },
   {
     "Path": "MODIFIED-FILES.txt",
-    "Sha256": "e9202649aaeccb22212e8ac3093b802992c6d946bc8675c99846943ab06a9435",
-    "Bytes": 9869
+    "Sha256": "04b4f234659b2e6aaea9f7d687fe614e5351d3d567f225de457cc123195b51ad",
+    "Bytes": 10036
   },
   {
     "Path": "README.md",
@@ -311,8 +321,8 @@
   },
   {
     "Path": "RESULT.json",
-    "Sha256": "147c557167449dae1c3326e7c0e5c9a476050f1acc11125016071682c020e52c",
-    "Bytes": 1261
+    "Sha256": "29a398441ee94076f486375943f10c36f8f93dd96b90ae22b52356c3131ba345",
+    "Bytes": 1405
   },
   {
     "Path": "startup/configuration-paused.png",
@@ -326,8 +336,8 @@
   },
   {
     "Path": "startup/installer-confirmation.png",
-    "Sha256": "b85ca9bcaa758969a43af2240d02a55294ddd875470e1285d274c749abf96b69",
-    "Bytes": 60119
+    "Sha256": "f55ae4faf223e097616ea511305d7b3d8a8fa71bdfe4ee4b72f129115114f99f",
+    "Bytes": 60018
   },
   {
     "Path": "startup/installer-options.png",
@@ -351,13 +361,13 @@
   },
   {
     "Path": "startup/refine-data.png",
-    "Sha256": "b0de425dca77491b7093ebd8154b6a62092b05012aa0e4076667e7cab6f3ec66",
-    "Bytes": 68861
+    "Sha256": "fcc7ffb37ba91f67e376e8b2177564e6b1eff8c8d4ff6b75615a96f5c562e62b",
+    "Bytes": 68622
   },
   {
     "Path": "startup/refine-management-menu.png",
-    "Sha256": "ca2a2b03fc4204d22447b6418e5cbc935c2b5a4d9c311d6badcf5106e082ae17",
-    "Bytes": 5930
+    "Sha256": "ef2e1335fb3fbe0754747106b421ece885adf47569b45340b70550376693962b",
+    "Bytes": 5976
   },
   {
     "Path": "startup/refine-processing.png",
@@ -396,8 +406,8 @@
   },
   {
     "Path": "startup/startup-step-2.png",
-    "Sha256": "ee1c6dbf01d67a864d7a5069491a732b0fe82dfd227eeac7ae9535fb3c9f8aeb",
-    "Bytes": 68473
+    "Sha256": "4ea02370f07b7fc5718c1da28e2a93b8beedfeecb7746dd04002cd3175d69aaf",
+    "Bytes": 68237
   },
   {
     "Path": "startup/startup-step-3.png",
@@ -416,8 +426,8 @@
   },
   {
     "Path": "startup/WINDOWS-WPF.log",
-    "Sha256": "2162cd8f430cae93c36c995e7da1b92adab891833c508b2ae92151a27fb8955f",
-    "Bytes": 10424
+    "Sha256": "6466bb16e6c3cff83e83e4f07a22b17f10bc082fed0677d662d2e3fa1ba84222",
+    "Bytes": 10523
   },
   {
     "Path": "v3/v3-left-running.png",

@@ -45,8 +45,50 @@ public static class WindowsStoragePaths
         if (key.GetValue("Root", null, RegistryValueOptions.DoNotExpandEnvironmentNames) is not string value || !Path.IsPathFullyQualified(value) || value.StartsWith(@"\\", StringComparison.Ordinal)) throw new InvalidDataException("受保护存储路径登记无效。");
         var root = Path.GetFullPath(value).TrimEnd(Path.DirectorySeparatorChar);
         if (root == Path.GetPathRoot(root)?.TrimEnd(Path.DirectorySeparatorChar) || new DriveInfo(Path.GetPathRoot(root)!).DriveType != DriveType.Fixed) throw new InvalidDataException("存储目录须位于本机固定卷内。");
-        TrustedProgramRoots.RequireAncestors(root);
+        RequireExistingProtectedAncestors(root);
         return root;
+    }
+    // Reading a saved location must not create a deployment or require its future
+    // directories to exist. All existing ancestors still have to be trustworthy.
+    [SupportedOSPlatform("windows")]
+    internal static void RequireExistingProtectedAncestors(string path)
+    {
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        var existing = Path.GetFullPath(path);
+        while (!Directory.Exists(existing))
+        {
+            if (File.Exists(existing)) throw new InvalidDataException("安装目录被同名文件占用：" + existing);
+            existing = Path.GetDirectoryName(existing) ?? throw new InvalidDataException("安装位置没有可核验的本地父目录。");
+        }
+        TrustedProgramRoots.RequireAncestors(existing);
+    }
+    [SupportedOSPlatform("windows")]
+    internal static bool IsManagedProgramPath(string path) => ProtectedAnchor is { } root &&
+        TrustedProgramRoots.Contains(Path.Combine(root, "Programs"), path);
+    [SupportedOSPlatform("windows")]
+    internal static void PrepareForInstallation(string runtimeSid)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (ProtectedAnchor is not { } root) return;
+        PrepareProtectedDirectory(root, new SecurityIdentifier(runtimeSid));
+        PrepareProtectedDirectory(Path.Combine(root, "Programs"), new SecurityIdentifier(runtimeSid));
+    }
+    [SupportedOSPlatform("windows")]
+    internal static void PrepareProtectedDirectory(string path, SecurityIdentifier account)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        RequireExistingProtectedAncestors(path);
+        // Create each missing level with an explicit ACL, never with inherited
+        // writable permissions. Existing material is validated, never repaired.
+        var missing = new Stack<string>();
+        for (var current = Path.GetFullPath(path); !Directory.Exists(current); current = Path.GetDirectoryName(current)!) missing.Push(current);
+        while (missing.TryPop(out var directory))
+        {
+            RequireExistingProtectedAncestors(directory);
+            new DirectoryInfo(directory).Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.ReadAndExecute));
+            TrustedProgramRoots.RequireAncestors(directory);
+        }
+        TrustedProgramRoots.RequireAncestors(path);
     }
     public static string MachineRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Machine") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
     public static string AdministratorRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Administrators") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc.Administrators");

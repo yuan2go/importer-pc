@@ -30,7 +30,8 @@ static partial class Program
         {
             try
             {
-                if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) await VerifyOperatorAdministration(root, evidence, lines);
+                if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
+                else if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) await VerifyOperatorAdministration(root, evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
                 else if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));

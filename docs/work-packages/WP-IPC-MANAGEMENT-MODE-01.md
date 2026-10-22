@@ -1,5 +1,7 @@
 # MANAGEMENT-MODE-01 · 管理能力改为模式
 
+后续修复范围：[INSTALL-BOOTSTRAP-01](../runtime/clean-install-bootstrap-01.md) 处理完全清理后保留D盘位置、目录尚不存在时的安装器启动与受保护目录创建。此前清理成功不等于这一状态下新安装流程已验证。
+
 2026-10-22用户纠偏：管理员不是另一个账号，而是防止操作员误改功能参数的管理模式。本轮以最新main `0bf86a0a588b75b95aa1963e8fe88dad976ca803`为基线；PR82～87已合并，核对无其他open PR，工作树清洁后建立`codex/management-mode`。SM1.10.2/c9e482a的发行和Windows/模拟/现场证据保持原身份。
 
 | 裁决 | 范围 |

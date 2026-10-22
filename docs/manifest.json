@@ -62521,15 +62521,15 @@
     },
     {
       "path": "docs/runtime/startup-experience-03.md",
-      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+      "version": "INSTALLER-FIRST-RUN-UI-02-page9",
       "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
+      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "2ee6c0b9bb24a580a8c03d884a433d88a8d03d619f58e71cd7067bb540ebf3b2",
-      "size_bytes": 4966,
-      "git_blob": "166b92729ca1aae1e5934545d657b135c369493b",
-      "previous_git_blob": "6afce5d77a27f7f4ea8b58aeb5c2e8871dc6b995"
+      "sha256": "350e7ef63988a21810ff8fd61404e96a159108a02b27f6c0aa15ca85a9957e23",
+      "size_bytes": 5610,
+      "git_blob": "aff71f5ba293b1213b88d41f8c47a581c4f8a4f8",
+      "previous_git_blob": "166b92729ca1aae1e5934545d657b135c369493b"
     },
     {
       "path": "docs/runtime/validation/startup-experience-03.md",
@@ -67212,14 +67212,15 @@
     },
     {
       "path": "docs/runtime/installer-first-run-ui-02-result-unconfirmed.md",
-      "sha256": "c7ab6f517c56fccce54fc24af42594d4227dc0c015752db3b2957da6d7d1198d",
-      "size_bytes": 7335,
-      "git_blob": "a960169ce803cc057f6c1d6aa8d20b11eb3c55af",
+      "sha256": "2fdd3cd1304a63c9be3fa41c904f2c1bbb709a607328e448c38245cb5b8f3515",
+      "size_bytes": 7414,
+      "git_blob": "c299b867dd807200778a21131f7ec97e00c8eb00",
       "version": "INSTALLER-FIRST-RUN-UI-02-page9",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Unconfirmed installation result, actual progress framing, lifecycle protection and scoped native verification",
       "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code f655783c6d695a47e2c1675716666864322e94c1; Windows125% HWND and synthetic transaction; actual UAC/install/close/reboot/devices NOT_RUN",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "a960169ce803cc057f6c1d6aa8d20b11eb3c55af"
     },
     {
       "path": "docs/ui/installer-first-run-ui-02/result-unconfirmed-20261022/Preview.html",

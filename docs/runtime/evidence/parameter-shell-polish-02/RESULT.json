@@ -1,0 +1,38 @@
+{
+  "main": "dd1dfefc9e829f557a1efdf6f7ad7532fec4ef81",
+  "increment_parent": "9900cbe9e9dd573d46c6b8b2dbb1d52dc46b7bc1",
+  "pr88": "MERGED_2026-10-22",
+  "sources": {
+    "before": {
+      "path": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-2eadec6e967444f0922d9737bb333382",
+      "result": "PASS",
+      "evidence": "Native WPF HWND/Dispatcher, synthetic ports and data"
+    },
+    "after": {
+      "path": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-7df30db218ba4004b5d875fd0df628a5",
+      "result": "PASS",
+      "evidence": "Native WPF HWND/Dispatcher, synthetic ports and data"
+    },
+    "login-session": {
+      "path": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-b15d96d3cf164a37abc8ed1c3acf87a2",
+      "result": "PASS",
+      "evidence": "Native WPF HWND/Dispatcher, synthetic ports and data"
+    },
+    "parameter-experience": {
+      "path": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-87550a2421b34290970787a16eb0a456",
+      "result": "PASS",
+      "evidence": "Native WPF HWND/Dispatcher, synthetic ports and data"
+    },
+    "startup-experience": {
+      "path": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-61c2640793d84707b7b4b2d2054e043d",
+      "result": "PASS",
+      "evidence": "Native WPF HWND/Dispatcher, synthetic ports and data"
+    }
+  },
+  "actual_dpi": 1.25,
+  "expiry_test": "real local authority; test clock advanced in owned synthetic root; not a 15-minute wall-clock wait",
+  "physical_keyboard": "NOT_RUN",
+  "other_os_dpi": "NOT_RUN",
+  "real_uac_install": "NOT_RUN",
+  "production_devices": "NOT_CONNECTED"
+}

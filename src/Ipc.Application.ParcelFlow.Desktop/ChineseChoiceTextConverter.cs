@@ -15,3 +15,10 @@ public sealed class ChineseChoiceTextConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => ChineseInterfaceText.Choice(value);
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }
+
+// Ordinary parameter feedback is a display projection. The original remains in diagnostics.
+public sealed class ParameterMessageTextConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => ChineseInterfaceText.ParameterMessage(value as string ?? "");
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
+}

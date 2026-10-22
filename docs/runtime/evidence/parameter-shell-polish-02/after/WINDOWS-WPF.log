@@ -1,0 +1,40 @@
+CAPTURE ordinary-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH normal mode is separate from the configured but unauthenticated operator
+PASS SHELL-POLISH unauthenticated operator keeps a visible login editor on the work page
+PASS SHELL-POLISH header shows the actual paused state and its available resume action
+CAPTURE paused-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH existing resume command preserves operator identity and creates no synthetic job
+CAPTURE data-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH operator service choices show their factual Chinese capability name rather than raw instance keys
+CAPTURE operator-session-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH session field retains native focus, selection and keyboard traversal
+CAPTURE parameters-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH complete operator identity is retained separately from the management menu at 1366
+PASS SHELL-POLISH identity and navigation occupy separate rows at 1366
+PASS SHELL-POLISH long operator and management entry do not overlap or leave the viewport at 1366
+PASS SHELL-POLISH actual fixed save action stays in the viewport at 1366
+CAPTURE parameters-1092: 1092x613.6 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH complete operator identity is retained separately from the management menu at 1092
+PASS SHELL-POLISH identity and navigation occupy separate rows at 1092
+PASS SHELL-POLISH long operator and management entry do not overlap or leave the viewport at 1092
+PASS SHELL-POLISH actual fixed save action stays in the viewport at 1092
+CAPTURE parameters-800: 800x420 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH complete operator identity is retained separately from the management menu at 800
+PASS SHELL-POLISH identity and navigation occupy separate rows at 800
+PASS SHELL-POLISH long operator and management entry do not overlap or leave the viewport at 800
+PASS SHELL-POLISH actual fixed save action stays in the viewport at 800
+PASS SHELL-POLISH parameter banner projects Chinese feedback while original technical text remains in diagnostics
+PASS SHELL-POLISH layout, page navigation and copy changes leave the complete configuration candidate byte-identical
+PASS SHELL-POLISH storage and retention retain separate accurate units
+PASS SHELL-POLISH compact hints keep the full numeric range available in keyboard-expandable details
+PASS SHELL-POLISH expanded technical details permit keyboard traversal
+PASS SHELL-POLISH keyboard-accessible native management menu shows the actual expiry without inventing an account
+CAPTURE management-menu: 265.6x147.2 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH exit closes protected page and keeps the process draft without changing operator identity
+PASS SHELL-POLISH direct save remains denied after revocation
+CAPTURE revoked-800: 800x420 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH reauthorization restores the same process-only draft
+PASS SHELL-POLISH real local-session expiry closes the restricted workspace without replacing operator identity
+PASS SHELL-POLISH expired session rejects direct save and retains the same unsaved input
+CAPTURE expired-800: 800x420 DIP, actual Windows DPI 1.25/1.25
+Native HWND/Dispatcher at actual DPI 125%; synthetic ports/data only. Other OS DPI, physical keyboard, UAC/install, SDK/RCS/site NOT_RUN.

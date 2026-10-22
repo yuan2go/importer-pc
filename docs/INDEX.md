@@ -1,4 +1,4 @@
-> 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终本地包0204fcf已生成；本机仍为1.10.2，升级和真实现场边界单独记录。
+> 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终本地包0204fcf已实际升级到本机D盘，738个安装文件、原身份及原仿真账起停核对通过；[本次安装记录](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 与真实现场边界单独记录。
 >
 > 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
 

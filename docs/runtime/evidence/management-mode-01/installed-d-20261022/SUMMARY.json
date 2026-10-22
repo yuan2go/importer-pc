@@ -1,0 +1,53 @@
+{
+  "Status": "PASS",
+  "Scope": "Actual local installed deployment and manual-reader/reference-only Simulation smoke; not field or production acceptance",
+  "InstallationCompletedAt": "2026-10-22T02:27:21.0701153+00:00",
+  "PostchecksCompletedAt": "2026-10-22T02:29:21.5741291Z",
+  "BusinessVersion": "1.11.0",
+  "SourceCommit": "0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84",
+  "InstallerSha256": "61e7125dd07098660003cd5285c501dfa9090b26bd10652b2085d2af5ea87e63",
+  "ActualInstallation": {
+    "LifecycleState": "Installed",
+    "VersionRegistrationMatches": true,
+    "InstalledFilesVerified": 738,
+    "AllInstalledBytesMatchFrozenMedia": true,
+    "StorageRoot": "D:/ImporterPc.Deployment",
+    "ProgramConfigurationDataRootsOnD": true,
+    "OriginalDataConfigurationAndWindowsRuntimeAccountPreserved": true,
+    "OriginalMachineIdentityPreserved": true,
+    "ShortcutTargetsVerified": 4,
+    "LegacyUserAliasesResolvePhysicallyToD": true,
+    "UnpackagedWindowsInspection": true
+  },
+  "ManagementAuthority": {
+    "SystemServiceRunning": true,
+    "FinalSourceHostOnD": true,
+    "Protocol": 2,
+    "Managed": true,
+    "Available": true,
+    "Configured": false,
+    "Active": false,
+    "NeedsLegacyConversion": false,
+    "PasswordSetAutomatically": false
+  },
+  "SimulationSmoke": {
+    "ExitCode": 0,
+    "Mode": "Simulation",
+    "SameExistingLedger": true,
+    "ManualReadersOnly": true,
+    "ReferenceIntegrationOnly": true,
+    "BarcodeInjected": false,
+    "ProductionOrPhysicalDevicesStarted": false,
+    "StartedAndStopped": true
+  },
+  "Backup": "Real guarded InstallWithPreflightAsync completed using a protected D recovery destination; backup contents were not independently reread by the ordinary runtime user",
+  "HistoricalEvidence": "Candidate cancellation and pre-upgrade NOT_UPGRADED snapshots remain unchanged; this later installation receipt is the current local state",
+  "NotVerified": [
+    "Real SDK/RCS and physical devices",
+    "Target industrial PC/touchscreen",
+    "Full manual installer wizard interaction",
+    "Reboot and cross-Windows-user installation lifecycle",
+    "Authenticode signing and field acceptance"
+  ],
+  "PublicationScope": "Aggregate verification only. No actual SID, machine identity/hash, credentials, operator records or private installation logs included."
+}

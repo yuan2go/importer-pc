@@ -69,6 +69,9 @@ static partial class Program
             "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
         var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
         Click(leftControl, "本位诊断"); window.UpdateLayout();
+        var objectContext = Descendants((ContentControl)window.FindName("PageHost")).OfType<Expander>().Single(e => Equals(e.Header, "当前对象运行详情"));
+        Check(objectContext.IsVisible && !objectContext.IsExpanded, "position diagnosis keeps the clicked object's full context available on demand");
+        objectContext.IsExpanded = true; window.UpdateLayout();
         Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text.StartsWith(vm.Left.Heading + "\n")),
             "position diagnosis opens read-only context for the clicked reader");
         Click(window, "工作台"); window.UpdateLayout();

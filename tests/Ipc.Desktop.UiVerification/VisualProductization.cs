@@ -54,8 +54,11 @@ static partial class Program
         if (!baseline)
         {
             await vm.PauseAsync();
+            // Concurrent native polling may supersede Pause's own snapshot read.
+            // Wait for the authoritative paused projection, without resending the command.
+            await RefreshUntil(() => vm.Snapshot?.Paused == true && !vm.Busy);
             Check(vm.OperatorFeedback.Contains("操作已提交") && vm.Message.StartsWith("Persisted · ") && vm.Snapshot!.Paused,
-                "operator feedback is Chinese while original command receipt and authoritative pause fact remain available");
+                $"operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused={vm.Snapshot?.Paused}, busy={vm.Busy}, receipt={vm.Message}, feedback={vm.OperatorFeedback}");
             await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场");
         }
         if (!baseline && Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)

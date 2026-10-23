@@ -221,7 +221,7 @@ static partial class SportmasterRcs
             var factory = new ParcelCapabilityFactory(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
             Check(factory.Catalog().Providers.Single(x => x.Package == installed.Package && x.Module == module.Id).Requirements.Query == false, "installed exact signed module is discoverable with Query=false");
             var app = SportmasterApplication.Create(launch, factory);
-            try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }
+            try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
         }
         peer.Mode = "by-position";
         await using (var app = await Open("rcs-signed-dual"))
@@ -262,7 +262,7 @@ static partial class SportmasterRcs
             var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
             var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
             var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
-            try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }
+            try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
         }
         peer.Mode = "by-position";
         await using (var app = await Open("rcs-dual"))

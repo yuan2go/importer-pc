@@ -48,7 +48,8 @@ public partial class SupplyStationWindow
         var header = new StackPanel { Margin = new(20, 16, 20, 0) };
         header.Children.Add(new TextBlock { Text = "诊断与恢复", FontSize = 22, FontWeight = FontWeights.SemiBold });
         selectedDiagnostic = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 8) };
-        header.Children.Add(new Expander { Header = "当前对象运行详情", Content = selectedDiagnostic });
+        header.Children.Add(new Expander { Header = "当前对象运行详情", Content = new ScrollViewer
+        { Content = selectedDiagnostic, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
         ViewModel.PropertyChanged += (_, e) => { if (diagnosticTarget is { } target && e.PropertyName == nameof(ViewModel.Fresh)) selectedDiagnostic.Text = target.Label + "\n" + ViewModel.ParameterRuntimeSummary(target); };
         var backToObject = new Button { Content = "返回当前对象设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         backToObject.Click += async (_, _) =>

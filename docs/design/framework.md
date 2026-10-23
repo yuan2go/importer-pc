@@ -1,3 +1,5 @@
+> 双相机TCP当前生命周期与故障分类见[DUAL-CAMERA-COMMUNICATION-FIX-01](../runtime/dual-camera-communication-fix-01.md)：启动有界接收与业务准入分开，明确连接失败按位隔离；原资源/SDK启动失败、配置、实体和原请求守卫保持。历史版本/协议/验收不倒写。
+
 > 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 

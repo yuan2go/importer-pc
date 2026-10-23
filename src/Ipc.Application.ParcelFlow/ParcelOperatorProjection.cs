@@ -38,6 +38,11 @@ public sealed partial class ParcelRuntime
             Confirmation = s.Configuration.Confirmation is null ? null : s.Configuration.Confirmation with { OriginalEnvelopeBase64 = null }
         },
         Operations = s.Operations.Select(OperatorOperation).ToArray(),
+        // TCP evidence contains actual endpoints for management diagnostics only.
+        Devices = s.Devices?.Select(d => d.Source.StartsWith("TCP:client-LF:", StringComparison.Ordinal)
+            ? d with { Source = "TCP:client-LF:" + d.DeviceId } : d).ToArray(),
+        Health = s.Health.Select(h => h.Detail.StartsWith("TCP:client-LF:", StringComparison.Ordinal)
+            ? h with { Detail = "TCP transport established; business admission is separate" } : h).ToArray(),
         Inputs = s.Inputs?.Select(input => input with
         { ReaderBinding = input.ReaderBinding is null ? null : OperatorReader(input.ReaderBinding) }).ToArray()
     };

@@ -1,0 +1,109 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-acb4dbe67c2e43608007fe05f24adf01
+PASS RCS20: lifecycle readiness sends no fabricated remote health request
+PASS RCS20: assigned sends exact pre-frozen JSON bytes once
+PASS RCS20: assigned preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: assigned preserves original HTTP status and exact response bytes/hash
+PASS RCS20: assigned retains original local correlation without physical completion
+PASS RCS20: older assigned reply preserves task/SKU and leaves added response fields absent
+PASS RCS20: old destination bytes and identity hash are unchanged when new fields are absent
+PASS RCS20: task-fields sends exact pre-frozen JSON bytes once
+PASS RCS20: task-fields preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: task-fields preserves original HTTP status and exact response bytes/hash
+PASS RCS20: task-fields retains original local correlation without physical completion
+PASS RCS20: optional response wave/quantity preserve strings including leading zeros independently of request quantity
+PASS RCS20: new task fields survive persisted StageReply round trip
+PASS RCS20: numeric-response-quantity sends exact pre-frozen JSON bytes once
+PASS RCS20: numeric-response-quantity preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: numeric-response-quantity preserves original HTTP status and exact response bytes/hash
+PASS RCS20: numeric-response-quantity retains original local correlation without physical completion
+PASS RCS20: numeric-response-quantity remains unknown and cannot manufacture acceptance
+PASS RCS20: numeric-wave sends exact pre-frozen JSON bytes once
+PASS RCS20: numeric-wave preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: numeric-wave preserves original HTTP status and exact response bytes/hash
+PASS RCS20: numeric-wave retains original local correlation without physical completion
+PASS RCS20: numeric-wave remains unknown and cannot manufacture acceptance
+PASS RCS20: unpack sends exact pre-frozen JSON bytes once
+PASS RCS20: unpack preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: unpack preserves original HTTP status and exact response bytes/hash
+PASS RCS20: unpack retains original local correlation without physical completion
+PASS RCS20: NEED_UNPACK preserves all typed split-package details
+PASS RCS20: reject sends exact pre-frozen JSON bytes once
+PASS RCS20: reject preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: reject preserves original HTTP status and exact response bytes/hash
+PASS RCS20: reject retains original local correlation without physical completion
+PASS RCS20: other explicit errors remain business rejections with original codes/messages
+PASS RCS20: malformed sends exact pre-frozen JSON bytes once
+PASS RCS20: malformed preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: malformed preserves original HTTP status and exact response bytes/hash
+PASS RCS20: malformed retains original local correlation without physical completion
+PASS RCS20: malformed remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-id sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-id preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-id preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-id retains original local correlation without physical completion
+PASS RCS20: wrong-id remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-index sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-index preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-index preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-index retains original local correlation without physical completion
+PASS RCS20: wrong-index remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-command sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-command preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-command preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-command retains original local correlation without physical completion
+PASS RCS20: wrong-command remains unknown and cannot manufacture acceptance
+PASS RCS20: http-error sends exact pre-frozen JSON bytes once
+PASS RCS20: http-error preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: http-error preserves original HTTP status and exact response bytes/hash
+PASS RCS20: http-error retains original local correlation without physical completion
+PASS RCS20: http-error remains unknown and cannot manufacture acceptance
+PASS RCS20: redirect sends exact pre-frozen JSON bytes once
+PASS RCS20: redirect preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: redirect preserves original HTTP status and exact response bytes/hash
+PASS RCS20: redirect retains original local correlation without physical completion
+PASS RCS20: redirect remains unknown and cannot manufacture acceptance
+PASS RCS20: duplicate sends exact pre-frozen JSON bytes once
+PASS RCS20: duplicate preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: duplicate preserves original HTTP status and exact response bytes/hash
+PASS RCS20: duplicate retains original local correlation without physical completion
+PASS RCS20: duplicate remains unknown and cannot manufacture acceptance
+PASS RCS20: missing-chute sends exact pre-frozen JSON bytes once
+PASS RCS20: missing-chute preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: missing-chute preserves original HTTP status and exact response bytes/hash
+PASS RCS20: missing-chute retains original local correlation without physical completion
+PASS RCS20: missing-chute remains unknown and cannot manufacture acceptance
+PASS RCS20: blank-chute sends exact pre-frozen JSON bytes once
+PASS RCS20: blank-chute preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: blank-chute preserves original HTTP status and exact response bytes/hash
+PASS RCS20: blank-chute retains original local correlation without physical completion
+PASS RCS20: blank-chute remains unknown and cannot manufacture acceptance
+PASS RCS20: measured sends exact pre-frozen JSON bytes once
+PASS RCS20: measured preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: measured preserves original HTTP status and exact response bytes/hash
+PASS RCS20: measured retains original local correlation without physical completion
+PASS RCS20: non-null args and positive measurements preserve exact values without inferred units/conversion
+PASS RCS20: oversized response retains bounded prefix with Complete=false and unknown outcome
+PASS RCS20: numeric range uses the actual signed binding contract, not a built-in implementation alias
+PASS RCS20: tampered wire body fails before HTTP even when attacker recomputes its body hash
+PASS RCS20: request-ID range rejects invalid durable sequence 0 without an external call
+PASS RCS20: request-ID range rejects invalid durable sequence 100001 without an external call
+PASS RCS20: unknown position cannot guess a configured reader mapping
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: invalid endpoint/contract/mapping/chute/range configuration rejects before an external call
+PASS RCS20: explicit configured chute preserves its documented boolean and code
+PASS RCS20: durable entity sequence allocates distinct numeric request IDs and right mapping
+PASS RCS20: unsupported original query sends no request and never resubmits
+PASS RCS20 presentation: unpack has an explicit Chinese operator state without implying counting or submission
+Unhandled exception. System.Exception: FAIL RCS20 presentation: unpack fields and zero remaining are visible alongside the complete original snapshot
+   at SportmasterRcsPresentation.Check(Boolean value, String message) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcsPresentation.cs:line 10
+   at SportmasterRcsPresentation.Verify(ParcelRuntime app, ParcelOperation assigned, ParcelOperation unpack) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcsPresentation.cs:line 19
+   at SportmasterRcs.RuntimeChecks(String workspace, String root, Peer peer) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 273
+   at SportmasterRcs.RuntimeChecks(String workspace, String root, Peer peer) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 284
+   at SportmasterRcs.Run(String workspace, String root) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 108
+   at SportmasterRcs.Run(String workspace, String root) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 111
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-dual-camera\tests\Ipc.Application.Verification\Program.cs:line 46
+   at Program.<Main>(String[] args)

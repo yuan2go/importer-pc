@@ -227,7 +227,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var selected = ParcelBindings.All(c).Where(b => b.Enabled && b.InstanceId != c.MaintenanceLogin?.InstanceId).Select(b => new ProviderVersion(b.Kind, b.Implementation, b.Version, b.Contract)).ToList();
         foreach (var reader in ParcelBindings.Readers(c))
         {
-            if (reader.Driver == "tcp-line") { selected.Add(new("observation", "tcp-line", "1.0.0", "TCP-LINE-OBSERVATION-v1")); continue; }
+            if (reader.Driver == "tcp-line") { selected.Add(new("observation", "tcp-line", "1.0.1", "TCP-LINE-OBSERVATION-v1")); continue; }
             if (reader.Driver == "manual") { selected.Add(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1")); continue; }
             var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id) ?? throw new InvalidDataException("Missing selected reader instance");
             var package = c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);

@@ -54,7 +54,11 @@ static partial class ArchitectureQuality
             var stale = await app.SnapshotAsync(); await Command(app, "Pause");
             Check((await app.CommandAsync(new(Wire.Id(), stale.Revision, "ConfirmConfiguration", owner, "Stale application projection"))).Status == "Conflict", "legacy confirmation also binds application CAS");
             var confirmed = await Command(app, "ConfirmConfiguration", owner, "Operator inspected preserved original and current healthy resources");
-            if(confirmed.Status == "Rejected" && confirmed.Reason.Contains("resource health")) { Console.WriteLine("WAIT resource confirmation: " + confirmed.Reason); confirmed = await ConfirmOnce(app,owner,"Operator inspected preserved original and current healthy resources"); }
+            // A monitor can reserve an external health call after the snapshot.
+            // Retry only explicit pre-I/O guard rejection, never a Pending or
+            // uncertain command result. Keep the inspected owner/hash unchanged.
+            if (confirmed.Status == "Rejected" && (confirmed.Reason.Contains("resource health") || confirmed.Reason.Contains("guard is closed")))
+            { Console.WriteLine("WAIT resource confirmation: " + confirmed.Reason); confirmed = await ConfirmOnce(app, owner, "Operator inspected preserved original and current healthy resources"); }
             Check(confirmed.Status == "Persisted", "management mode confirms current revision and content with reason: " + confirmed.Status + " " + confirmed.Reason);
             s = await app.SnapshotAsync();
             Check(s.Paused && s.Configuration.Confirmation is { Required: false, State: "Confirmed" } && s.Configuration.Confirmation.ConfirmedBy == LocalManagementMode.ForRoot(Path.Combine(root,"confirmation-legacy","data")).Evidence?.AuditActor && s.Configuration.Status == "Effective",

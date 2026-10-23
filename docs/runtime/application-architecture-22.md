@@ -1,3 +1,5 @@
+> 双相机TCP当前生命周期与故障分类见[DUAL-CAMERA-COMMUNICATION-FIX-01](dual-camera-communication-fix-01.md)：启动有界接收与业务准入分开，明确连接失败按位隔离；原资源/SDK启动失败、配置、实体和原请求守卫保持。历史版本/协议/验收不倒写。
+
 > 2026-10-23 当前源码基线：Application.Contracts ABI 1.16.0、Parcel DB8；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
 
 > 2026-10-20阶段裁决（历史）：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。

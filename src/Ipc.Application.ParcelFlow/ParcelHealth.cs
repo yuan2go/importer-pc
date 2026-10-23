@@ -1,8 +1,13 @@
 using Ipc.Application.Contracts;
+using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
+    void ReaderHealthChanged(DeviceHealthConfirmation h) => Diagnostic("相机通信", "相机连接状态变化",
+        h.Health == DeviceHealth.Faulted ? "警告" : "信息",
+        Wire.Encode(new { Device = h.DeviceId, Position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == h.DeviceId)?.Id,
+            h.Epoch, h.Health, h.ConfirmedAt, h.ValidUntil, Evidence = h.Source }));
     async Task MonitorAsync(ICapabilityPort port)
     {
         try

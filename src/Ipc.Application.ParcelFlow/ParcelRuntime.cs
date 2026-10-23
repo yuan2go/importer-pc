@@ -26,6 +26,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     ParcelPorts? ports;
     string? directory, overloadMarker;
     int accepting, overload, pendingObservations;
+    // 0 = fenced, 2 = bounded startup reception, 1 = running. Reception never
+    // grants admission; all consumers wait for the same startup outcome.
+    readonly TaskCompletionSource<bool> ingressStartup = new(TaskCreationOptions.RunContinuationsAsynchronously);
     sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator, DateTimeOffset ReceivedAt);
     bool started, stopped, disposed;
     string? failure;
@@ -153,11 +156,22 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            Volatile.Write(ref accepting, 2);
             worker = Task.WhenAll(positions.Keys.Select(position => Task.Run(() => ProcessIngressAsync(position), CancellationToken.None)));
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
-            foreach (var reader in readers.Values) await reader.StartAsync(Enqueue, token).ConfigureAwait(false);
+            foreach (var reader in readers.Values)
+            {
+                try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
+                catch (ObservationConnectionException ex)
+                {
+                    // A configured camera transport is a position dependency. It
+                    // cannot invalidate an independent reader or create admission.
+                    Diagnostic("相机通信", "相机启动连接失败", "警告", Wire.Encode(new { Device = reader.Source.DeviceId, Epoch = reader.Epoch, Error = ex.GetType().Name }));
+                }
+            }
             foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
             if (startupConfiguration is not null)
             {
                 configuration.ConfirmActivation(configuration.Current.Activation!.Id);
@@ -170,11 +184,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Only a successful controlled activation applies the new policy.
             // Reconnect and Pending edits cannot change retention.
             journal.ConfigureRetention(Effective.Retention?.DiagnosticLogDays);
-            Volatile.Write(ref accepting, 1);
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
+            ingressStartup.TrySetResult(true);
             maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
         catch (Exception ex)
         {
+            Interlocked.Exchange(ref accepting, 0);
+            ingressStartup.TrySetResult(false);
             if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
             else configuration.CompleteEffectiveStartup(ex);
             startupConfiguration = null;
@@ -230,12 +248,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         try
         {
+            var startupCompleted = await ingressStartup.Task.ConfigureAwait(false);
             await foreach (var item in positionQueues[position].Reader.ReadAllAsync().ConfigureAwait(false))
             {
                 await gate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
+                    if (!startupCompleted)
+                        repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, Reason = "StartupIncomplete; inspect original input; no automatic replay", Input = item }));
+                    else if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
                     else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
                 finally

@@ -44,7 +44,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
@@ -139,7 +139,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
@@ -186,7 +186,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
@@ -269,7 +269,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
@@ -334,7 +334,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
@@ -387,7 +387,7 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.0",
+          "Version": "1.0.1",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {

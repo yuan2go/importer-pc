@@ -1,0 +1,264 @@
+{
+  "Check": "Canonical Git blob identities, independent of Windows checkout/archive CRLF conversion",
+  "BaselineMain": "165c2ffe353c59e69729ede4c92fcfd827344c9f",
+  "CandidateTree": "7255a095489753a7dd31cd38b702bf6385129037",
+  "Baseline": {
+    "ManifestRows": 6207,
+    "Errors": [
+      {
+        "code": "content_identity",
+        "path": ".github/workflows/sportmaster-commercial.yml"
+      },
+      {
+        "code": "content_identity",
+        "path": "README.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "config/compositions.json"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/INDEX.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/design/application-architecture-22.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/extensions/developer-guide.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/application-architecture-22.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/getting-started.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/startup-deployment-02.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/version-compatibility-01.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/release_documents.py"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/smoke-application.py"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/test_application_compatibility.py"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/verify-commercial-wpf.ps1"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptRecovery.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Assembly/ParcelCli.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/Program.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/ResourceRisks.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/UxCommercialInputs.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterV3.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorProjection.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/OperatorAdministration.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs"
+      }
+    ]
+  },
+  "Candidate": {
+    "ManifestRows": 6239,
+    "Errors": [
+      {
+        "code": "content_identity",
+        "path": ".github/workflows/sportmaster-commercial.yml"
+      },
+      {
+        "code": "content_identity",
+        "path": "README.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/design/application-architecture-22.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/extensions/developer-guide.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/getting-started.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/startup-deployment-02.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/version-compatibility-01.md"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/smoke-application.py"
+      },
+      {
+        "code": "content_identity",
+        "path": "scripts/verify-commercial-wpf.ps1"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptRecovery.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "src/Ipc.Assembly/ParcelCli.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/ResourceRisks.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/UxCommercialInputs.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterV3.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Application.Verification/OperatorAdministration.cs"
+      },
+      {
+        "code": "content_identity",
+        "path": "tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs"
+      }
+    ]
+  },
+  "NewErrors": []
+}

@@ -61,6 +61,8 @@ static partial class Program
         Capture("parameters-system");
         Check(control.NavigateTo("BarcodePattern"), "business barcode policy is directly reachable without depending on a tab layout"); window.UpdateLayout();
         var pattern = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodePattern"); pattern.Text = "OK[0-9]+";
+        var preview = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "测试条码"));
+        preview.IsExpanded = true; window.UpdateLayout();
         var sample = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "条码筛选样例"); sample.Text = "noise\nother\nOK003";
         var test = Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "测试候选筛选"));
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -70,9 +72,13 @@ static partial class Program
         var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodeExclusionPattern");
         exclusion.Text = "OK003";
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("结果已过期")), "editing exclusion invalidates the existing local preview without discarding candidate input");
+        var previewDetails = Descendants(preview).OfType<Expander>().Single(e => Equals(e.Header, "测试诊断详情"));
+        previewDetails.IsExpanded = true; window.UpdateLayout();
+        var previewDiagnostic = Descendants(previewDetails).OfType<TextBox>().Single();
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("第3项：命中排除规则")); i++) await Task.Delay(20);
-        Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：无") && x.Text.Contains("第3项：命中排除规则")), "native preview exposes exclusion reason and never selects an excluded code");
+        for (var i = 0; i < 100 && !previewDiagnostic.Text.Contains("第3项：命中排除规则"); i++) await Task.Delay(20);
+        Check(Descendants(preview).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：无")) &&
+            previewDiagnostic.IsReadOnly && previewDiagnostic.Text.Contains("第3项：命中排除规则"), "native preview exposes exclusion reason and never selects an excluded code");
         exclusion.Focus(); exclusion.Select(1, 3); await vm.RefreshAsync(); window.UpdateLayout();
         Check(exclusion.IsKeyboardFocused && exclusion.SelectionLength == 3 && exclusion.Text == "OK003", "new exclusion input retains native focus, selection and draft across snapshots");
         Capture("parameters-exclusion");

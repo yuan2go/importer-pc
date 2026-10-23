@@ -108,11 +108,12 @@ static partial class Program
         classicVm.Message = "Persisted · SYNTHETIC full original receipt with request owner";
         Check(((TextBlock)classic.FindName("OperationFeedback")).Text.Contains("操作已提交") && classicVm.Message.Contains("SYNTHETIC full original"),
             "classic and default share the friendly receipt projection while preserving the complete technical receipt");
-        probe.Project = s => s with { State = "PartiallyReady" }; await classicVm.RefreshAsync();
+        probe.Project = s => s with { State = "PartiallyReady" };
+        await RefreshClassicUntil(() => classicVm.Snapshot?.State == "PartiallyReady");
         Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
         probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
             Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = s.Configuration.Effective.MaintenanceLogin } } };
-        await classicVm.RefreshAsync(); classic.UpdateLayout();
+        await RefreshClassicUntil(() => classicVm.Snapshot?.BlockingReasons.Contains("SYNTHETIC maintenance in progress") == true); classic.UpdateLayout();
         var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
         var login = (WrapPanel)classic.FindName("OperationalLogin");
         Check(blockers.IsVisible && blockers.Text.Contains("authentication required") && blockers.Text.Contains("maintenance in progress") &&
@@ -302,6 +303,16 @@ static partial class Program
             target ??= window; target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
             var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32); bitmap.Render(target);
             var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, (baseline ? "before-" : "after-") + name + ".png")); png.Save(file);
+        }
+        async Task RefreshClassicUntil(Func<bool> applied)
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                await classicVm.RefreshAsync();
+                if (applied()) return;
+                await Task.Delay(30);
+            }
+            throw new InvalidOperationException("Classic projected scenario did not reach the native view; state=" + classicVm.Snapshot?.State + "; " + classicVm.Message);
         }
         async Task RefreshUntil(Func<bool> applied)
         {

@@ -109,8 +109,12 @@ static partial class Program
         login.SelectedItem = role.Choices.First(x => x.Capability is null); window.UpdateLayout();
         Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
         Capture("parameters-login");
-        vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
+        vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields();
+        Check(vm.ParameterEditor.Issues.Any(i => i.Path == "QueueCapacity"), "complete validation retains the real invalid queue field");
+        control.ShowReview();
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("输入队列容量") && !text.Text.Contains("QueueCapacity"));
+        Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();

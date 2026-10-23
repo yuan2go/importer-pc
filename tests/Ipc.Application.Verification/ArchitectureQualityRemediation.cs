@@ -50,10 +50,25 @@ static class ArchitectureQualityRemediation
     public static async Task Run(string workspace, string root)
     {
         await QueueExpiry(workspace, Path.Combine(root, "queue"));
+        await ExpiredWeight(workspace, Path.Combine(root, "expired-weight"));
         await TcpConsumersAndProjection(workspace, Path.Combine(root, "tcp"));
         foreach (var boundary in new[] { "AfterAbandonedDurable", "AfterImageReleaseDurable", "AfterContinuationAdmitted", "AfterCommandAdmitted", "AfterConfigurationConfirmed", "AfterArchiveCommit" })
             await CommandCrash(workspace, Path.Combine(root, boundary), boundary);
         Console.WriteLine("PASS AQA01 COMPLETE");
+    }
+    static async Task ExpiredWeight(string workspace, string path)
+    {
+        var c = Config(workspace, "direct-plc") with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 500), Scale = Binding("weight"), WeightValidity = WeightValidity.UntilDispatch };
+        await using var app = await Open(c, path);
+        app.EmitReference("expired-weight", "123", "weight-source");
+        await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight);
+        Check((await Command(app, "Pause")).Status == "Persisted", "pause before associating original weight");
+        app.EmitReferenceWeight(new(Wire.Id(), "expired-weight", c.Scale!.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
+        var s = await Wait(app, x => x.Operations.Single().Weight is not null); var original = s.Operations.Single().Weight;
+        await Task.Delay(c.Weight.MaximumAgeMs + 80);
+        s = await app.SnapshotAsync();
+        Check(s.Operations.Single().Weight == original && s.Operations.Single().Plc is null && !s.Availability!.Resume && (await Command(app, "Resume")).Status == "Rejected",
+            "UntilDispatch expired same-parcel weight remains original evidence and prevents PLC/Resume; recovery fixture policy does not bypass this guard");
     }
     static async Task QueueExpiry(string workspace, string path)
     {

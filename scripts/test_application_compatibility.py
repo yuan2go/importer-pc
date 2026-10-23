@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], {'sportmaster': '1.8.2', 'direct-plc': '1.5.0', 'wcs-to-plc': '1.5.0'}[application])
+            self.assertEqual(version['BusinessVersion'], {'sportmaster': '1.11.2', 'direct-plc': '1.5.1', 'wcs-to-plc': '1.5.1'}[application])
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.

@@ -67,6 +67,10 @@ def run(evidence):
             return dict(Kind=kind, Implementation='reference-'+kind, Version='1.0.0', InstanceId=kind+'.smoke', Target='reference://'+kind+'/smoke', Contract='PARCEL-REFERENCE-v1', Parameters={})
         c['Login'] = binding('login'); c['Login']['Parameters'] = {'subjects':'alice,bob'}
         c['Weight'] = dict(Source='Measured', Unit='Kg', Precision=3, ConfiguredValue=None, MaximumAgeMs=3000)
+        # This journey verifies recovery of an already-associated original weight.
+        # Select that supported reference policy explicitly; UntilDispatch expiry is
+        # separately verified to keep blocking sends after its configured deadline.
+        c['WeightValidity'] = 'AtAssociation'
         c['Scale'] = binding('weight')
         c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304, Strategy='Attached' if a.attached_upload else 'BeforeMain')
         c['Images']['Uploader']['Parameters'] = {'reply-mode':'lose-after-commit'}

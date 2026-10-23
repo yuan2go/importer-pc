@@ -166,7 +166,10 @@ static partial class Program
             budget.IsKeyboardFocused && station.Text == "SYNTHETIC-UNSAVED",
             "save automatically finds the invalid field and preserves the draft without opening a review or submitting");
         Capture("parameters-save-validation", client);
-        budget.Text = originalBudget; editor.NavigateTo("StationCode"); window.UpdateLayout();
+        budget.Text = originalBudget; editor.NavigateTo("StationCode");
+        // Field edits revalidate on DataBind; UpdateLayout alone does not run
+        // that dispatcher callback. Observe the settled native binding result.
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
             (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
             "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");

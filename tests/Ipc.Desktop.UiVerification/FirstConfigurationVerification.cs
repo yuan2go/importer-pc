@@ -18,11 +18,12 @@ static partial class Program
         check(!(bool)busy.GetValue(window)! && editors.Length == 1 && editors[0].Model is not null && editors[0].IsVisible && editors[0].IsEnabled,
             "first configuration finishes asynchronous loading with one visible, enabled shared editor");
         var editor = editors.Single();
-        check(editor.FirstConfiguration && editor.SelectedCategory == 1 && editor.CurrentPageTitle == "条码筛选",
-            "first configuration starts at the business barcode page");
+        var directory = Descendants(editor).OfType<ListBox>().Single(l => AutomationProperties.GetName(l) == "设置目录");
+        check(window.Title.StartsWith("首次配置", StringComparison.Ordinal) && editor.FirstConfiguration && editor.SelectedCategory == 1 &&
+            directory.Items.Count > 0 && editor.CurrentPageTitle == directory.Items[0].ToString(),
+            "first configuration starts at the first business page; actual=" + editor.CurrentPageTitle);
         check(!Descendants(window).OfType<TabControl>().Any(t => t.Name == "StartupTasks"),
             "first configuration uses the shared directory without duplicate outer task tabs");
-        var directory = Descendants(editor).OfType<ListBox>().Single(l => AutomationProperties.GetName(l) == "设置目录");
         check(directory.IsVisible && directory.Items.Groups is { } groups && groups.Cast<CollectionViewGroup>().Select(g => g.Name?.ToString())
             .SequenceEqual(new[] { "业务模块", "系统", "驱动", "组件", "检查" }) && directory.Items.Cast<object>().Count(p => p.ToString() == "检查与完成") == 1,
             "one directory exposes business, system, drivers, components and the completion review in order");

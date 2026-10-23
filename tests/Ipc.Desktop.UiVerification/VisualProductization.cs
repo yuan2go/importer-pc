@@ -39,6 +39,13 @@ static partial class Program
         var vm = window.ViewModel;
         Click(window, "站位与设备诊断"); await Task.Delay(100);
         var diagnosticPage = (FrameworkElement)((ContentControl)window.FindName("PageHost")).Content;
+        // Identity evidence is now disclosed on demand. Expand the real groups
+        // before checking all original one-way fields; collapsed templates are lazy.
+        var evidenceGroups = Descendants(diagnosticPage).OfType<Expander>()
+            .Where(e => Equals(e.Header, "原作业与身份详情") || Equals(e.Header, "共享服务诊断详情")).ToArray();
+        Check(evidenceGroups.Length == 3 && evidenceGroups.All(e => !e.IsExpanded), "native diagnostics initially folds both position identities and shared evidence");
+        foreach (var group in evidenceGroups) group.IsExpanded = true;
+        window.UpdateLayout();
         var diagnosticFields = Descendants(diagnosticPage).OfType<TextBox>().ToArray();
         Check(vm.SelectedPage == "diagnostics" && diagnosticFields.Length == 24 && diagnosticFields.All(x => x.IsReadOnly &&
             x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Mode == System.Windows.Data.BindingMode.OneWay) &&
@@ -146,9 +153,14 @@ static partial class Program
             var filterOwner = vm.Selected?.Id;
             await SetClient(window, 800, 420); window.UpdateLayout();
             var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
-            Check(filterRows.Visibility == Visibility.Collapsed && !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
-                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
-                "expanded filters use a bounded editing pane with full fixed query actions at minimum client size instead of clipping record/recovery controls");
+            var filterScroll = (ScrollViewer)history.FindName("HistoryFilterScroll");
+            var firstResult = Descendants(filterRows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+            Check(filterRows.IsVisible && filterRows.ActualHeight >= 72 && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
+                firstResult.ActualHeight >= 32 && firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight <= filterRows.ActualHeight &&
+                filterScroll.ScrollableHeight > 0 && !((Expander)history.FindName("HistoryDetailExpander")).IsExpanded &&
+                !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
+                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
+                "expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size");
             Capture("history-filters-minimum"); await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
@@ -190,10 +202,13 @@ static partial class Program
             var historyScroll = (ScrollViewer)history.FindName("HistoryDetailsScroll");
             vm.InspectionReason = string.Concat(Enumerable.Repeat("SYNTHETIC 原实体检查说明 ", 40));
             await SetClient(window, 800, 420); window.UpdateLayout();
+            var historyDetail = (Expander)history.FindName("HistoryDetailExpander");
+            Check(!historyDetail.IsExpanded, "compact history initially folds task details rather than hiding query results");
+            historyDetail.IsExpanded = true; window.UpdateLayout();
             var before = actions.TranslatePoint(new Point(), history);
             inspection.IsExpanded = true; historyScroll.ScrollToBottom(); window.UpdateLayout();
             var after = actions.TranslatePoint(new Point(), history);
-            Check(before == after && after.Y >= 0 && after.Y + actions.ActualHeight <= history.ActualHeight &&
+            Check(actions.IsVisible && before == after && after.Y >= 0 && after.Y + actions.ActualHeight <= history.ActualHeight &&
                 Descendants(actions).OfType<Button>().All(b => b.ActualHeight >= 44),
                 "history recovery actions remain fixed and fully visible at minimum client size while long inspection details scroll");
             Capture("history-expanded-minimum");

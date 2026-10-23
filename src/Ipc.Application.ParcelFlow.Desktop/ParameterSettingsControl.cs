@@ -62,7 +62,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         ScrollViewer.SetHorizontalScrollBarVisibility(directory, ScrollBarVisibility.Disabled);
         AutomationProperties.SetName(directory, "设置目录");
         AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，制表键进入表单。");
-        directory.SelectionChanged += (_, _) => { if (directory.SelectedItem is ObjectPage page) { lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; SelectedPageChanged?.Invoke(this, EventArgs.Empty); } };
+        directory.SelectionChanged += DirectorySelectionChanged;
+        Unloaded += (_, _) => navigationGeneration++;
         root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 192 : 224);
         Content = root;
         PreviewKeyDown += (_, e) =>
@@ -76,7 +77,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public void SelectCategory(int category)
     {
         search.Clear(); categoryScope = null; directoryView?.Refresh();
-        directory.SelectedItem = pages.FirstOrDefault(p => p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Category == category);
+        SelectPageCore(pages.FirstOrDefault(p => p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Category == category));
         if (directory.SelectedItem is { } item) directory.ScrollIntoView(item);
     }
     public void SetReviewContent(FrameworkElement content)
@@ -105,7 +106,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var destination = selected is not null && (index is null || selected.Category == index) ? selected :
             pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
         categoryScope = index; directoryView?.Refresh();
-        directory.SelectedItem = destination;
+        SelectPageCore(destination);
         RefreshSearch();
     }
     public bool ShowPage(int category, string title)
@@ -114,7 +115,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (page is null) return false;
         search.Clear();
         if (categoryScope is not null && categoryScope != category) ShowCategory(category);
-        directory.SelectedItem = page; directory.ScrollIntoView(page); return true;
+        SelectPageCore(page); return true;
     }
     public bool FocusFirstIssue()
     {
@@ -176,7 +177,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.Margin = new(0, 8, 12, 0);
         var value = new StackPanel(); Grid.SetColumn(value, 1); field.Children.Add(caption); field.Children.Add(value);
         var line = new DockPanel { LastChildFill = true };
-        var unit = path.Split('/').Last() switch { "TimeoutMs" => "毫秒", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
+        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
         if (unit.Length > 0) { line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; line.HorizontalAlignment = HorizontalAlignment.Left; line.SetBinding(WidthProperty, new Binding(nameof(ActualWidth)) { Source = value }); var suffix = Text(unit); suffix.Width = 54; suffix.Margin = new(10, 8, 0, 0); DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
         line.SizeChanged += (_, _) => { if (unit.Length > 0) line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; };
         var inputHost = new Grid(); inputHost.Children.Add(control); line.Children.Add(inputHost); value.Children.Add(line);
@@ -209,6 +210,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Do not reflow the form while typing or treat this as authority validation.
         void Edited()
         {
+            editRevision++;
             var model = Model;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.DataBind, new Action(() => { if (ReferenceEquals(Model, model)) model?.RevalidateAfterEdit(); }));
         }
@@ -253,6 +255,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     void Render()
     {
         var selected = directory.SelectedItem as ObjectPage;
+        navigationGeneration++; currentPage = null;
         var offsets = pages.ToDictionary(p => (p.Category, p.Title), p => p.Scroll.VerticalOffset);
         foreach (var action in unsubscribe) action(); unsubscribe.Clear();
         runtimeUpdates.Clear();
@@ -278,7 +281,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
         directoryView.Filter = value => value is ObjectPage p && (categoryScope is null || p.Category == categoryScope);
         directory.ItemsSource = directoryView;
-        directory.SelectedItem = pages.FirstOrDefault(p => p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? pages.FirstOrDefault(p => categoryScope is null || p.Category == categoryScope);
+        SelectPageCore(pages.FirstOrDefault(p => p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? (FirstConfiguration ? OrderedPages() : pages.ToArray()).FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
         ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)
@@ -324,7 +327,15 @@ public sealed partial class ParameterSettingsControl : UserControl
             var parameter = Model?.Readers.Concat(Model.Components).SelectMany(d => d.Parameters.Select(p => (Path: d.InstanceId + "/" + p.Field.Key, Parameter: p))).FirstOrDefault(x => x.Path == issue.Path).Parameter;
             return parameter?.Field.Type == "integer" ? "请填写 " + parameter.Field.Minimum + "～" + parameter.Field.Maximum + " 范围内的整数。" : "请检查" + label + "的格式、长度或可选值。";
         }
-        var text = ChineseInterfaceText.ParameterMessage(issue.Message);
+        var original = issue.Message;
+        if (location is not null)
+        {
+            var key = issue.Path.Split('/').Last();
+            if (key.Length > 0) original = original.Replace(key, label, StringComparison.Ordinal);
+            foreach (var draft in (Model?.Readers ?? []).Concat(Model?.Components ?? []))
+                if (original.StartsWith(draft.Role + " · ", StringComparison.Ordinal)) original = original[(draft.Role.Length + 3)..];
+        }
+        var text = ChineseInterfaceText.ParameterMessage(original);
         return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? text : "配置检查未通过，请展开诊断详情核对原因。";
     }
 }

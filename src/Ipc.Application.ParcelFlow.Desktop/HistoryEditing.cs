@@ -14,6 +14,13 @@ public partial class ParcelViewModel
     string historyTo = "";
     public string HistoryToExclusive { get => historyTo; set { if (historyTo == value) return; historyTo = value; Changed(); } }
     public string HistoryRequest { get; set; } = "";
+    public void ClearHistoryFilters()
+    {
+        HistoryBarcode = HistoryPosition = HistoryState = HistoryRequest = "";
+        HistoryFrom = HistoryToExclusive = "";
+        foreach (var name in new[] { nameof(HistoryBarcode), nameof(HistoryPosition), nameof(HistoryState), nameof(HistoryRequest) }) Changed(name);
+        Message = "筛选已清除。请重新查询，当前记录仍属于上次查询范围。";
+    }
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
     public string HistoryMetricsSummary { get; private set; } = "指标口径：实体作业 / WCS请求 / WCS接受 / 待核对 / 实体完成 / 发送尝试，均不合并同码实体。";
     ParcelHistorySelection? historySelection;

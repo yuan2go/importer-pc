@@ -1,0 +1,1 @@
+PASS Release Ipc.Desktop.exe --environment-report; ExitCode 0; no runtime or installer start

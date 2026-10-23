@@ -29,11 +29,7 @@ static partial class Program
         Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置"), "configuration file import is visible on step one");
         FillInitial(editor.Model!);
         await VerifyParameterUiRefinement(first, editor, evidence, lines);
-        editor.Model!.Policy.BarcodePattern = "[";
-        Click(first, "继续：系统"); await Idle(first);
-        Check(editor.SelectedCategory == 1 && !Status(first).Contains("BarcodeFilter"), "invalid optional rule stays on its field and exposes no internal variable in the status");
-        editor.Model.Policy.BarcodePattern = ""; Click(first, "继续：系统"); await Idle(first);
-        Check(editor.SelectedCategory == 0 && !Descendants(first).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "检查未通过"), "corrected optional barcode rule advances and clears obsolete failure status without inventing a filter");
+        await VerifyLeafNavigation(first, editor, evidence, lines);
         for (var i = 0; i < 5; i++)
         {
             editor.SelectCategory(new[] { 1, 0, 2, 3, 4 }[i]); first.UpdateLayout();
@@ -74,17 +70,17 @@ static partial class Program
             Check(rejected && original.Build().StationId == reference.StationId, "incompatible import is rejected without altering local input");
         }
         first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        editor.Model.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
+        editor.Model!.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
         Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
-        editor.Model.Policy.QueueCapacity = "64"; editor.Model.Policy.BarcodePattern = "["; editor.ShowReview();
+        editor.Model!.Policy.QueueCapacity = "64"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
         first.Activate(); Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
         Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + editor.SelectedCategory + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
-        editor.Model.Policy.BarcodePattern = ""; editor.ShowReview();
-        var preservedPolicy = editor.Model.Policy; var reauthenticationPassword = "Reauthentication-" + Guid.NewGuid().ToString("N");
+        editor.Model!.Policy.BarcodePattern = ""; editor.ShowReview();
+        var preservedPolicy = editor.Model!.Policy; var reauthenticationPassword = "Reauthentication-" + Guid.NewGuid().ToString("N");
         LocalManagementMode.ForRoot(launch.DataRoot).ChangePassword(reauthenticationPassword);
         await Task.Delay(1250); first.UpdateLayout();
         var sessionLogin = Descendants(first).OfType<Button>().Single(b => Equals(b.Content, "进入管理模式…"));
@@ -97,7 +93,7 @@ static partial class Program
         Descendants(loginWindow!).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = reauthenticationPassword; Click(loginWindow!, "进入管理模式");
         for (var i = 0; i < 100 && !LocalManagementMode.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
-        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model.Policy) && editor.Model.Policy.QueueCapacity == "64" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model!.Policy) && editor.Model!.Policy.QueueCapacity == "64" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
         Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {

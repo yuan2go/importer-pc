@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -14,18 +14,33 @@ public static class ChineseInterfaceText
         "queue" or "QueueCapacity" => "输入队列容量", "timeout" or "TimeoutMs" => "调用超时", "operations" or "MaximumOperations" => "作业容量",
         "resident" or "ResidentHistory" => "常驻记录条数", "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
         "StationCode" => "心跳供包台编码", "DiagnosticLogDays" => "诊断日志保留天数", "SessionLifetimeMs" => "登录会话时长",
+        "WeightRange.MinimumWeight" or "MinimumWeight" => "包裹重量下限", "WeightRange.MaximumWeight" or "MaximumWeight" => "包裹重量上限",
+        "DisplayNameDraft" => "站点显示名称", "TargetEfficiencyDraft" => "目标效率",
+        "MaximumAgeMs" => "测量新鲜度", "WaitTimeoutMs" => "测量等待期限", "Precision" => "重量精度",
+        "ImageBytes" => "单件图像容量", "TotalBytes" => "图像缓存容量", "MaximumPending" => "图像待处理数量",
         "WeightSource" => "重量来源", "ConfiguredWeight" => "配置重量", "Unit" => "重量单位", "Validity" => "重量有效期",
         "BackupEnabled" => "自动备份", "BackupDirectory" => "备份目录", "BackupIntervalMinutes" => "备份间隔", "BackupMaximumSets" => "备份保留份数",
         "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "entity.mode" => "实体关联方式", "queue.capacity" => "驱动队列容量",
+        "quantity" => "请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
+        "zone-id" => "区域编号", "project-id" => "项目编号", "request-id-base" => "请求编号起点", "request-id-count" => "请求编号数量",
+        "left-station-code" or "right-station-code" => "取格口供包台编码", "left-bcr-code" or "right-bcr-code" => "取格口相机编码", "bcr-code" => "心跳相机编码",
         "source" => "协议来源", "locale" => "协议语言", "endpoint" => "服务地址", "subjects" => "允许登录的账号", "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
     };
     public static string ParameterMessage(string text)
     {
+        if (string.IsNullOrWhiteSpace(text)) return "";
+        text = Notice(text);
+        if (text.Contains(": required", StringComparison.Ordinal) || text.Contains(": invalid value", StringComparison.Ordinal))
+            return "有参数尚未设置或格式不正确，请修正标出的字段。";
         if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
-        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "reply-mode", "decision" })
+        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "bcr-code", "source", "locale", "reply-mode", "decision" })
             text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
-        return Notice(text);
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
+        // Raw property paths and exception types belong to diagnostic details.
+        if (System.Text.RegularExpressions.Regex.IsMatch(text, @"\b[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]+)+\b|\b[a-z]+(?:\.[a-zA-Z_][a-zA-Z0-9_-]*)+\b"))
+            return "参数检查未通过，请查看诊断详情并修正输入。";
+        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? Notice(text) : "参数检查未通过，请查看诊断详情并修正输入。";
     }
     public static string Status(string value) => value switch
     {

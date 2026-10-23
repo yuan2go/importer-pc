@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,15 +25,15 @@ public sealed partial class ParameterSettingsControl
         var clear = new Button { Content = "清除搜索", MinHeight = 36, Visibility = Visibility.Collapsed, HorizontalAlignment = HorizontalAlignment.Left, Style = (Style)Resources["ParameterQuietAction"], Margin = new(0, 4, 0, 0) };
         clear.Click += (_, _) => { search.Clear(); search.Focus(); };
         search.TextChanged += (_, _) => { hint.Visibility = search.Text.Length == 0 ? Visibility.Visible : Visibility.Collapsed; clear.Visibility = search.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible; RefreshSearch(); };
-        search.KeyDown += (_, e) =>
+        search.KeyDown += async (_, e) =>
         {
-            if (e.Key == Key.Enter && searchResults.Items.OfType<SearchHit>().FirstOrDefault() is { } first) { NavigateTo(first.Path); e.Handled = true; }
+            if (e.Key == Key.Enter && searchResults.Items.OfType<SearchHit>().FirstOrDefault() is { } first) { e.Handled = true; await NavigateSearchAsync(first.Path); }
             else if (e.Key == Key.Down && searchResults.Items.Count > 0) { searchResults.SelectedIndex = 0; ((ListBoxItem?)searchResults.ItemContainerGenerator.ContainerFromIndex(0))?.Focus(); e.Handled = true; }
         };
-        searchResults.PreviewKeyDown += (_, e) => { if (e.Key == Key.Enter && searchResults.SelectedItem is SearchHit hit) { NavigateTo(hit.Path); e.Handled = true; } };
-        searchResults.PreviewMouseLeftButtonUp += (_, e) =>
+        searchResults.PreviewKeyDown += async (_, e) => { if (e.Key == Key.Enter && searchResults.SelectedItem is SearchHit hit) { e.Handled = true; await NavigateSearchAsync(hit.Path); } };
+        searchResults.PreviewMouseLeftButtonUp += async (_, e) =>
         {
-            if (ItemsControl.ContainerFromElement(searchResults, e.OriginalSource as DependencyObject) is ListBoxItem { Content: SearchHit hit }) { NavigateTo(hit.Path); e.Handled = true; }
+            if (ItemsControl.ContainerFromElement(searchResults, e.OriginalSource as DependencyObject) is ListBoxItem { Content: SearchHit hit }) { e.Handled = true; await NavigateSearchAsync(hit.Path); }
         };
         bar.Children.Add(input); bar.Children.Add(clear); bar.Children.Add(searchCount); return bar;
     }

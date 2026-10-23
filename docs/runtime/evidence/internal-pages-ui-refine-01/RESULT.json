@@ -1,0 +1,31 @@
+{
+  "startup-experience": {
+    "result": "PASS",
+    "source_directory": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1acda4f1d4b14ff7907d5ef849f116e0",
+    "actual_dpi": 1.25,
+    "synthetic_only": true
+  },
+  "internal-pages": {
+    "result": "PASS",
+    "source_directory": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-d0dea70bd38447049d155ddaa73e2404",
+    "actual_dpi": 1.25,
+    "synthetic_only": true
+  },
+  "management-mode": {
+    "result": "PASS",
+    "source_directory": "D:\\projects\\importer-pc\\.artifacts\\wpf-v2-33473a36786343c3812c7b7836257d00",
+    "actual_dpi": 1.25,
+    "synthetic_only": true
+  },
+  "parameter-experience": {
+    "result": "PASS",
+    "source_directory": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a7a5526afbe6415ba2b46f5f10ffc544",
+    "actual_dpi": 1.25,
+    "synthetic_only": true
+  },
+  "baseline_main": "dd1dfefc9e829f557a1efdf6f7ad7532fec4ef81",
+  "code_commit": "f1d723fae64c2a2cfbdea8074e1da2b2d82f7a60",
+  "production_devices": "NOT_RUN",
+  "install_upgrade_uninstall_uac": "NOT_RUN",
+  "os_dpi_changes": "NOT_RUN"
+}

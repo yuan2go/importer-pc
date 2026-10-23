@@ -1,4 +1,4 @@
-<UserControl x:Class="Ipc.Application.ParcelFlow.Desktop.MaintenancePage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Ipc.Application.ParcelFlow.Desktop" FontSize="14" FontWeight="Normal" Background="White">
+﻿<UserControl x:Class="Ipc.Application.ParcelFlow.Desktop.MaintenancePage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Ipc.Application.ParcelFlow.Desktop" FontSize="14" FontWeight="Normal" Background="White">
  <UserControl.Resources><ResourceDictionary><ResourceDictionary.MergedDictionaries><ResourceDictionary Source="/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml"/></ResourceDictionary.MergedDictionaries></ResourceDictionary></UserControl.Resources>
  <Grid x:Name="MaintenanceScope"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <DockPanel Background="#F5F6F8" LastChildFill="True" Visibility="{Binding Visibility, ElementName=BackToSettings}">
@@ -38,6 +38,8 @@
     </MenuItem>
    </Menu>
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+     <Button x:Name="PreviousParameterPage" Content="上一页" Click="PreviousParameterPage_Click" Style="{StaticResource ParameterQuietAction}" Margin="0,0,4,0" Visibility="Collapsed"/>
+     <Button x:Name="NextParameterPage" Content="下一页" Click="NextParameterPage_Click" Style="{StaticResource ParameterQuietAction}" Margin="0,0,8,0" Visibility="Collapsed"/>
      <Button x:Name="ViewChanges" Content="查看更改" Click="ReviewChanges_Click" Style="{StaticResource ParameterQuietAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
      <Button x:Name="SaveChanges" Content="{Binding ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{Binding ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
     </StackPanel>

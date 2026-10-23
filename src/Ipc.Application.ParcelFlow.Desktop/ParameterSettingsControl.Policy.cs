@@ -34,24 +34,24 @@ public sealed partial class ParameterSettingsControl
         Input(form, "供包台编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
         Technical(station, "心跳供包台编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
-        var data = Page(0, "数据与记录", "设置当前窗口常驻的记录数量，以及关键写入需要保留的磁盘空间。"); form = Form(data);
-        Input(form, "界面常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
-        Input(form, "磁盘预留空间", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB；空间不足时停止新准入。");
-        Input(form, "诊断日志保留", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "留空按容量轮转。");
+        var data = Page(0, "数据与记录", ""); form = Form(data);
+        Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000");
+        Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "空间不足时停止新入场。");
+        Input(form, "日志保留", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "仅诊断日志；留空按容量轮转。");
         data.Body.Children.Add(Text("存储位置", true));
-        Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "此宿主未提供目录；可从独立维护核对原部署。");
+        Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
         Technical(data, "日志保留", "DiagnosticLogDays", "留空按容量轮转。仅控制诊断日志；业务审计与图片证据按各自规则保留。非空为1～3650天。" );
-        Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
-        var backup = Page(0, "自动备份", "完整备份包含数据库和同名恢复目录。计划只在暂停、管理模式有效且无在途外呼时执行。");
+        Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "当前窗口常驻记录1～10000条，磁盘预留空间1～1048576 MiB（二进制兆字节）。运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
+        var backup = Page(0, "自动备份", "仅在暂停、管理模式有效且无在途外呼时执行。");
         var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };
         enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
         Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "填写绝对路径。");
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
-        Input(form, "备份间隔", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080 分钟");
-        Input(form, "备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000 份；到达上限后不自动删除原备份。");
+        Input(form, "备份间隔", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080");
+        Input(form, "保留份数", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "1～1000；不自动删除旧备份。");
         if (BackupRequested is not null)
         {
             backup.Body.Children.Add(Text("手动备份", true));
@@ -59,35 +59,38 @@ public sealed partial class ParameterSettingsControl
             var open = new Button { Content = "立即完整备份…", HorizontalAlignment = HorizontalAlignment.Left };
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
-        Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
-        var display = Page(0, "显示偏好", "本机显示偏好按当前系统用户保存，立即作用于当前窗口。");
+        Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "完整备份包含数据库和同名恢复目录，两者须一起保留。关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
+        var display = Page(0, "显示偏好", "仅影响本机显示。");
         if (RuntimeContext is { } runtime)
         {
             form = Form(display);
-            var name = Input(form, "站点显示名称", runtime, "DisplayNameDraft", "DisplayNameDraft", display, "选填，最多64字；工作台同时保留本地工作站标识。");
-            var target = Input(form, "目标效率（件/小时）", runtime, "TargetEfficiencyDraft", "TargetEfficiencyDraft", display, "选填1～100000；仅显示目标，不改变输送速度、节拍或实际产量。");
+            var name = Input(form, "站点显示名称", runtime, "DisplayNameDraft", "DisplayNameDraft", display, "选填，最多64字。");
+            var target = Input(form, "目标效率", runtime, "TargetEfficiencyDraft", "TargetEfficiencyDraft", display, "选填，1～100000。");
             var apply = new Button { Content = "应用本机显示", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44 };
             apply.Click += (_, _) => { if (!runtime.ApplyStationDisplay()) { if (runtime.DisplayPreferenceStatus.Contains("目标效率", StringComparison.Ordinal)) target.Focus(); else name.Focus(); } };
             display.Body.Children.Add(apply);
             var feedback = Text(""); feedback.SetBinding(TextBlock.TextProperty, new Binding("DisplayPreferenceStatus") { Source = runtime });
             AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); display.Body.Children.Add(feedback);
         }
-        display.Body.Children.Add(Text("当前界面：简体中文 · 浅色。仅提供已实现的显示选项。"));
+        display.Body.Children.Add(Text("简体中文 · 浅色"));
         display.Body.Children.Add(Text("窗口布局", true));
-        display.Body.Children.Add(Text("标准布局保留更宽的留白；紧凑布局适用于较小屏幕。窗口不足时会自动使用紧凑布局。"));
+        display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
         {
             var change = new Button { Content = "切换标准 / 紧凑布局", HorizontalAlignment = HorizontalAlignment.Left };
             change.Click += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty); display.Body.Children.Add(change);
         }
         else display.Body.Children.Add(Text("完成首次配置后，可在作业窗口调整本机布局。"));
-        display.Body.Children.Add(Text("显示偏好不进入业务配置修订；不会启动设备或恢复新入场。"));
+        Technical(display, "本机显示", "PresentationPreferences", "按当前 Windows 用户保存，不进入业务配置修订；工作台保留本地标识。目标效率不改变输送速度、节拍或实际产量；不会启动设备或恢复新入场。");
     }
     void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)
     {
         const string path = "SessionLifetimeMs";
-        var input = Input(form, "操作员会话有效时长", m.Policy, path, path, page,
-            "100～86400000 毫秒；仅用于操作员登录。");
+        var input = Input(form, "会话时长", m.Policy, path, path, page,
+            "仅用于操作员登录。");
+        input.ToolTip = "100～86400000 毫秒";
+        AutomationProperties.SetHelpText(input, "操作员登录会话时长，100～86400000 毫秒；与管理模式和 Windows 授权分开。");
+        Technical(page, "操作员会话", path, "100～86400000 毫秒；仅用于作业登录，不是管理模式有效期。");
         var field = locations[path].Row!;
         bool Applicable() => m.HasOperatorLogin || m.Issues.Any(i => i.Path == path);
         locations[path] = locations[path] with { Applicable = Applicable };
@@ -105,12 +108,22 @@ public sealed partial class ParameterSettingsControl
         m.ValidationChanged += validated; unsubscribe.Add(() => m.ValidationChanged -= validated);
         Refresh();
     }
+    // Translate the visible choice only; role binding and the original instance identity remain intact.
+    sealed class OperatorLoginChoiceText(ParameterEditorModel model) : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            => value is CapabilityChoice { Capability: { } capability } ? model.ComponentName(capability) : "不要求操作员登录";
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => Binding.DoNothing;
+    }
     void BuildBusiness(ParameterEditorModel m)
     {
-        var login = Page(1, "作业登录", "按当前业务选择是否要求操作员登录。管理模式独立，关闭作业登录不会解除维护保护。");
+        var login = Page(1, "作业登录", "操作员登录与管理模式分别授权。");
         if (m.OperatorLoginRole is { } role)
         {
-            var selection = new ComboBox { ItemsSource = role.Choices, DisplayMemberPath = "Label", MinHeight = 38 };
+            var caption = new FrameworkElementFactory(typeof(TextBlock));
+            caption.SetBinding(TextBlock.TextProperty, new Binding { Converter = new OperatorLoginChoiceText(m) });
+            caption.SetBinding(ToolTipProperty, new Binding("Label"));
+            var selection = new ComboBox { ItemsSource = role.Choices, ItemTemplate = new DataTemplate { VisualTree = caption }, MinHeight = 38 };
             selection.SetBinding(ComboBox.SelectedItemProperty, new Binding("Selection") { Source = role, Mode = BindingMode.TwoWay });
             Field(Form(login), "操作员登录服务", selection, "不绑定时无需作业登录；连接参数在组件中维护。", "OperatorLogin", login);
         }

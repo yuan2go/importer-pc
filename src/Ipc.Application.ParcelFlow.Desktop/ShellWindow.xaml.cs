@@ -6,6 +6,15 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public partial class ShellWindow : Window
 {
+    static readonly DependencyPropertyKey SelectedWorkspacePropertyKey = DependencyProperty.RegisterReadOnly(nameof(SelectedWorkspace), typeof(string), typeof(ShellWindow), new PropertyMetadata("work"));
+    public static readonly DependencyProperty SelectedWorkspaceProperty = SelectedWorkspacePropertyKey.DependencyProperty;
+    public string SelectedWorkspace => (string)GetValue(SelectedWorkspaceProperty);
+    void SelectWorkspace(UserControl content, string workspace) { PageHost.Content = content; SetValue(SelectedWorkspacePropertyKey, workspace); }
+    void CloseRestrictedWorkspace()
+    {
+        if (vm.IsManagementMode || !ReferenceEquals(PageHost.Content, maintenance) && PageHost.Content is not SoftwareLogControl) return;
+        (PageHost.Content as SoftwareLogControl)?.Revoke(); SelectWorkspace(work, "work");
+    }
     readonly ParcelViewModel vm;
     readonly Func<ParcelViewModel> newViewModel;
     readonly Func<UserControl> workstation;
@@ -26,13 +35,14 @@ public partial class ShellWindow : Window
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         vm.PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(ParcelViewModel.IsManagementMode)) CloseRestrictedWorkspace();
             if (e.PropertyName == nameof(ParcelViewModel.Busy) && !vm.Busy && pendingMaintenanceLoad)
                 Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
         };
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
-        PageHost.Content = initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work;
+        SelectWorkspace(initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work, initialPage);
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read(vm.PresentationId, "classic") ?? false : layout == "compact"; }
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { vm.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
         ApplyLayout();
@@ -50,7 +60,7 @@ public partial class ShellWindow : Window
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
     }
     async Task RefreshAsync()
-    { try { await vm.RefreshAsync(); if (!vm.IsManagementMode && (ReferenceEquals(PageHost.Content, maintenance) || PageHost.Content is SoftwareLogControl)) { (PageHost.Content as SoftwareLogControl)?.Revoke(); PageHost.Content = work; } } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }
+    { try { await vm.RefreshAsync(); CloseRestrictedWorkspace(); } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }
     void UpdateViewport()
     {
         if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
@@ -60,12 +70,12 @@ public partial class ShellWindow : Window
     void Maximize_Click(object s, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
-    void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
+    void Workstation_Click(object s, RoutedEventArgs e) => SelectWorkspace(work, "work");
     async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { await vm.RefreshManagementModeAsync(); if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); } catch(Exception error) { vm.Message=error.Message; } }
-    void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsManagementMode && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) PageHost.Content = new SoftwareLogControl(admin); }
-    async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
+    void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsManagementMode && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) SelectWorkspace(new SoftwareLogControl(admin), "logs"); }
+    async void History_Click(object s, RoutedEventArgs e) { SelectWorkspace(history, "history"); await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object s, RoutedEventArgs e)
-    { if (!vm.IsManagementMode) { vm.Message = "请先进入管理模式。"; return; } PageHost.Content = maintenance; pendingMaintenanceLoad = !vm.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    { if (!vm.IsManagementMode) { vm.Message = "请先进入管理模式。"; return; } SelectWorkspace(maintenance, "maintenance"); pendingMaintenanceLoad = !vm.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
     async Task LoadRequestedMaintenanceAsync()
     {
         if (!pendingMaintenanceLoad) return;

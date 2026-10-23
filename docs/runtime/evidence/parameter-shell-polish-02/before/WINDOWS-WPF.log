@@ -1,0 +1,10 @@
+CAPTURE ordinary-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH normal mode is separate from the configured but unauthenticated operator
+CAPTURE data-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+CAPTURE operator-session-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH session field retains native focus, selection and keyboard traversal
+CAPTURE parameters-1366: 1366.4x768 DIP, actual Windows DPI 1.25/1.25
+CAPTURE parameters-1092: 1092x613.6 DIP, actual Windows DPI 1.25/1.25
+CAPTURE parameters-800: 800x720 DIP, actual Windows DPI 1.25/1.25
+PASS SHELL-POLISH layout, page navigation and copy changes leave the complete configuration candidate byte-identical
+Native HWND/Dispatcher at actual DPI 125%; synthetic ports/data only. Other OS DPI, physical keyboard, UAC/install, SDK/RCS/site NOT_RUN.

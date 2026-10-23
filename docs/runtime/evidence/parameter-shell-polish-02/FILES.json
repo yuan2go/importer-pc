@@ -1,0 +1,140 @@
+{
+  "code_commit": "26f239f7e23b1476c7734c35f5f4454c408f4d7c",
+  "files": [
+    {
+      "path": "after/data-1366.png",
+      "sha256": "759dacef85699f76a311d360278ba3d8d7453c8ecc7c4e8bd27277730c2a352b",
+      "size_bytes": 90899
+    },
+    {
+      "path": "after/expired-800.png",
+      "sha256": "29a9b96fdd16b9e3c48d593e6aca297f2ed058552ad8fdd66ccb5e1038746abb",
+      "size_bytes": 52257
+    },
+    {
+      "path": "after/management-menu.png",
+      "sha256": "0234e8188ea0d941a85fb35e39c4fd04455cde6dce9527fb29aa5b2c52e70178",
+      "size_bytes": 6045
+    },
+    {
+      "path": "after/operator-session-1366.png",
+      "sha256": "41ef22d0d9fa45cc12c80f8f2b3774d551eddd19dd3fb63970b80510e579ed45",
+      "size_bytes": 91805
+    },
+    {
+      "path": "after/ordinary-1366.png",
+      "sha256": "115e2615be5cbfadf8f466e53c7a2cfd1ca2cb017dadb6792b8c269e38a008e4",
+      "size_bytes": 85901
+    },
+    {
+      "path": "after/parameters-1092.png",
+      "sha256": "14e0a66c01e3a49a746cd60fd7dd70d8775f81b8207352a7782d8fba85e12171",
+      "size_bytes": 69792
+    },
+    {
+      "path": "after/parameters-1366.png",
+      "sha256": "759dacef85699f76a311d360278ba3d8d7453c8ecc7c4e8bd27277730c2a352b",
+      "size_bytes": 90899
+    },
+    {
+      "path": "after/parameters-800.png",
+      "sha256": "c11e1c41afc99a19b4b21789c28a27b694c8e8c4e0f05bbe6060eb7d981f052e",
+      "size_bytes": 51509
+    },
+    {
+      "path": "after/paused-1366.png",
+      "sha256": "a65f7aec902955bead1d86ac2e65fc033b0935fd96ed227a55a83341592e75bd",
+      "size_bytes": 94798
+    },
+    {
+      "path": "after/revoked-800.png",
+      "sha256": "29a9b96fdd16b9e3c48d593e6aca297f2ed058552ad8fdd66ccb5e1038746abb",
+      "size_bytes": 52257
+    },
+    {
+      "path": "after/WINDOWS-WPF.log",
+      "sha256": "99c1721318e84adb9544eafabc7f5f60c3db24568aa1ece04b5a6e445c932d93",
+      "size_bytes": 3479
+    },
+    {
+      "path": "before/data-1366.png",
+      "sha256": "34e5fdc75168f2b805d1b759ff99316a2e387d4e99eabc2720f2c089f8c102e1",
+      "size_bytes": 113163
+    },
+    {
+      "path": "before/operator-session-1366.png",
+      "sha256": "540b1ad6e90a5f256c8c7c872cd51114aa57610abccb17272d4d96807fb52be4",
+      "size_bytes": 116829
+    },
+    {
+      "path": "before/ordinary-1366.png",
+      "sha256": "cb78ead10d52c22a8f270b9a0209ee462273490ac2449cab7453f6ecd1095fb4",
+      "size_bytes": 95984
+    },
+    {
+      "path": "before/parameters-1092.png",
+      "sha256": "6b9b565e10381923ea5775b69d1cf164692a56a8239be8d538f5d9c8c99d702f",
+      "size_bytes": 91301
+    },
+    {
+      "path": "before/parameters-1366.png",
+      "sha256": "be78cdec5327db5006d72696cc0abff4a6948aa90d19d0489778631dada5af96",
+      "size_bytes": 113316
+    },
+    {
+      "path": "before/parameters-800.png",
+      "sha256": "6f8408fde108557a14963c550063893af64206c010ad1104b1f320f732e2537b",
+      "size_bytes": 16641
+    },
+    {
+      "path": "before/WINDOWS-WPF.log",
+      "sha256": "817c66f691dbd322e6673de52907f4cf3a0f9881b55b9da4ecf298208e88f3d7",
+      "size_bytes": 857
+    },
+    {
+      "path": "login-session/WINDOWS-WPF.log",
+      "sha256": "0120d8dce0c7718b49ad2e5d27abd57b036162ae5acad9e53e434012f4c5fb4e",
+      "size_bytes": 2467
+    },
+    {
+      "path": "MAIN-APPLY-CHECK.log",
+      "sha256": "d82ecd5ac1df3c690f7aba811286fcf458a20c66d3237e5cda085da560622f61",
+      "size_bytes": 12
+    },
+    {
+      "path": "MODIFIED-FILES.txt",
+      "sha256": "46f4dfd7447418f6906a6df8cb6b1bff023b7df80d38b8212e13e7b8d7bb8e49",
+      "size_bytes": 3010
+    },
+    {
+      "path": "parameter-experience/WINDOWS-WPF.log",
+      "sha256": "9798a35fea3c1511d458de6ba6e564e21ce41234d4c75a6e38b81dd0bd48212b",
+      "size_bytes": 4055
+    },
+    {
+      "path": "README.md",
+      "sha256": "f9b3360ddfbccc250d3e99425cd74fd9fe94a8ba4b07b05faaf9cd64fd0faa81",
+      "size_bytes": 2047
+    },
+    {
+      "path": "RELEASE-BUILD.log",
+      "sha256": "ddbb9e78d566f63b7379bf084b22122632e1568cde41b5a9bea40cb462f6bc5c",
+      "size_bytes": 84
+    },
+    {
+      "path": "RESULT.json",
+      "sha256": "4785872123c40e733834b7c61fd9c60fea64bc615b8f75b81750324486fe6de2",
+      "size_bytes": 1956
+    },
+    {
+      "path": "startup-experience/WINDOWS-WPF.log",
+      "sha256": "3495d272911e99f17d243b30d371a293800a47091498c0234077911c3e080578",
+      "size_bytes": 11643
+    },
+    {
+      "path": "STARTUP-SMOKE.log",
+      "sha256": "3474361a5408b4f901c572fdbd6742df672d8541d9168f7f67ecdf8c7f7de4a4",
+      "size_bytes": 94
+    }
+  ]
+}

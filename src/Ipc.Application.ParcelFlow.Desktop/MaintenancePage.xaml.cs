@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
@@ -22,6 +22,8 @@ public partial class MaintenancePage : UserControl
     public MaintenancePage()
     {
         InitializeComponent();
+        MainParameterEditor.SelectedPageChanged += (_, _) => UpdateParameterNavigation();
+        MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
         MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(9);
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
@@ -38,8 +40,18 @@ public partial class MaintenancePage : UserControl
             SelectReader(null); SelectInstance(null);
             Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
         };
-        Loaded += (_, _) => { SyncSelections(); if (MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor(); };
+        Loaded += (_, _) => { SyncSelections(); if (MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor(); UpdateParameterNavigation(); };
     }
+    void UpdateParameterNavigation()
+    {
+        var visible = MainParameterEditor.IsVisible;
+        PreviousParameterPage.Visibility = visible && MainParameterEditor.HasPreviousPage ? Visibility.Visible : Visibility.Collapsed;
+        NextParameterPage.Visibility = visible && MainParameterEditor.NextPageTitle is not null ? Visibility.Visible : Visibility.Collapsed;
+        PreviousParameterPage.IsEnabled = NextParameterPage.IsEnabled = !MainParameterEditor.IsNavigating;
+        NextParameterPage.ToolTip = MainParameterEditor.NextPageTitle is { } title ? "校验当前页后前往“" + title + "”" : null;
+    }
+    void PreviousParameterPage_Click(object sender, RoutedEventArgs e) => MainParameterEditor.MovePrevious();
+    async void NextParameterPage_Click(object sender, RoutedEventArgs e) => await MainParameterEditor.MoveNextAsync();
     void EditorStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(ParcelViewModel.CanEditFormConfiguration) || DataContext is not ParcelViewModel vm) return;
@@ -101,7 +113,7 @@ public partial class MaintenancePage : UserControl
         if (DataContext is ParcelViewModel { CanEditLegacyConfiguration: true }) { ShowTechnicalTool(5); return; }
         if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
         TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
-        BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "更改保留在当前草稿中";
+        BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "更改保留在当前草稿中"; UpdateParameterNavigation();
     }
     public void ShowTechnicalMaintenance() => ShowTechnicalTool(0);
     public void ShowTechnicalTool(int index)
@@ -110,7 +122,7 @@ public partial class MaintenancePage : UserControl
         if (index == 5 && DataContext is ParcelViewModel { LegacyPolicyVisibility: Visibility.Collapsed }) return;
         TechnicalTabs.SelectedIndex = index; TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
         BackToSettings.Visibility = index == 5 && DataContext is ParcelViewModel { CanEditLegacyConfiguration: true } || index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;
-        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中 / 原配置账核对", "已安装模块描述", "能力实例库存", "旧版兼容参数", "原机恢复后核对", "安装与卸载组件", "原作业与接收责任", "创建完整备份", "设置模板" }[index];
+        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中 / 原配置账核对", "已安装模块描述", "能力实例库存", "旧版兼容参数", "原机恢复后核对", "安装与卸载组件", "原作业与接收责任", "创建完整备份", "设置模板" }[index]; UpdateParameterNavigation();
     }
     public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
     void ReviewChanges_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,75 @@
+PASS STARTUP02 equivalent numeric TCP ports with different reader names cannot acquire separate physical leases
+PASS STARTUP02 physical TCP endpoint can be acquired only after the original lease releases
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP framing preserves split UTF8, CRLF and multiple coalesced lines
+PASS STARTUP02 same-code lines retain separate entities and the application-registered epoch
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP disconnection faults the source without automatic reconnect or replay
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 observe-only TCP cannot invent an entity admission boundary
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP overflow is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP invalid-utf8 is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 first configuration has one shared directory without an outer tab bar
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+PASS REFINE01 identical missing-IP errors retain both camera instances
+PASS REFINE01 same instance/field/rule deduplicates without merging cameras
+PASS REFINE01 editing a real bound input clears only its obsolete required error
+PASS REFINE01 IP syntax has its own rule
+PASS REFINE01 syntactically valid unspecified address has a distinct business-address rule
+PASS REFINE01 unknown specified-chute remains different from explicit false
+PASS REFINE01 field errors expose Chinese rather than schema diagnostics
+PASS REFINE01 specified chute reveals its real conditional field
+PASS REFINE01 disabling specified chute retains process input without validating or navigating to an inapplicable field
+PASS REFINE01 common station input reflects changes to the existing paired fields
+PASS REFINE01 cross-page review has actionable exact-field errors
+PASS REFINE01 review action focuses the right camera, never the left instance
+PASS REFINE01 shared directory exposes 条码筛选
+PASS REFINE01 one body scroll on 条码筛选
+PASS REFINE01 shared directory exposes 处理参数
+PASS REFINE01 one body scroll on 处理参数
+PASS REFINE01 shared directory exposes 供包台标识
+PASS REFINE01 one body scroll on 供包台标识
+PASS REFINE01 shared directory exposes 数据与记录
+PASS REFINE01 one body scroll on 数据与记录
+PASS REFINE01 shared directory exposes RCS 服务
+PASS REFINE01 one body scroll on RCS 服务
+PASS REFINE01 Tab traverses from a parameter without trapping focus
+PASS REFINE01 binary storage unit remains explicitly MiB
+PASS REFINE01 long configuration paths stay complete, wrapping and keyboard-selectable in the shared native form
+PASS REFINE01 native management menu shows the real expiry time in an explicit format
+REFINE01 native DPI=1.25; synthetic configuration; no SDK, production RCS or installation.
+PASS LEAF invalid actual regex blocks this leaf page
+PASS LEAF ordinary error text contains no backing property or raw required rule
+CAPTURE leaf-barcode-error: 960x656 DIP, Windows DPI 1.25/1.25
+PASS LEAF corrected optional rule advances only one leaf, not the entire category
+PASS LEAF native page validation finishes within its budget
+PASS LEAF forward directory jump cannot skip a missing value on the current leaf
+PASS LEAF conditional specified chute remains required on its own page
+PASS LEAF explicitly disabling the condition permits the next leaf without deleting retained values
+PASS LEAF numeric error blocks processing page
+PASS LEAF numeric error uses a Chinese name
+FAIL System.InvalidOperationException: backward navigation retains invalid process-only input
+   at Program.<>c__DisplayClass7_0.<VerifyLeafNavigation>g__Check|0(Boolean ok, String reason) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 36
+   at Program.VerifyLeafNavigation(Window window, ParameterSettingsControl editor, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 63
+   at Program.VerifyStartupExperience(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\StartupExperience.cs:line 32
+   at Program.<>c__DisplayClass17_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 37

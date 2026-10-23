@@ -99,12 +99,26 @@ jobs:
             $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
             if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }
             $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/visual -VisualProductization
-            if (-not $?) { throw 'Frozen visual verification did not return successfully' }
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/parameters-v3 -ParameterV3
-            if (-not $?) { throw 'Frozen parameter V3 verification did not return successfully' }
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/operator-administration -OperatorAdministration
-            if (-not $?) { throw 'Frozen administrator/log verification did not return successfully' }
+            # These read-only native processes use separate synthetic workspaces.
+            # Retain all independent failures in one run; any failure still blocks packaging.
+            $failures = @()
+            foreach ($case in @(
+              @{ Directory = 'visual'; VisualProductization = $true },
+              @{ Directory = 'parameters-v3'; ParameterV3 = $true },
+              @{ Directory = 'operator-administration'; ManagementMode = $true }
+            )) {
+              $directory = $case.Directory
+              $arguments = $case.Clone()
+              $arguments.Remove('Directory')
+              try {
+                ./scripts/verify-commercial-wpf.ps1 -Media $media -Output "C:/scd-evidence/$directory" @arguments
+                if (-not $?) { throw "Frozen $directory verification did not return successfully" }
+              } catch {
+                $failures += "$directory`: $($_.Exception.Message)"
+                [Console]::Error.WriteLine($_)
+              }
+            }
+            if ($failures.Count -ne 0) { throw ($failures -join '; ') }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)

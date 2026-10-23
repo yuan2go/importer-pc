@@ -155,13 +155,19 @@ static partial class Program
             var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
             var filterScroll = (ScrollViewer)history.FindName("HistoryFilterScroll");
             var firstResult = Descendants(filterRows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+            var queryButtons = Descendants(queryActions).OfType<Button>().Where(b => !Equals(b.Content, "取消导出")).ToArray();
+            Check(queryButtons.Select(b => b.Content).SequenceEqual(new[] { "查询", "清除筛选", "下一页", "导出表格…" }) &&
+                Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).IsVisible == vm.HistoryExportRunning,
+                "fixed history query actions remain complete; cancellation is visible only while an export is running");
+            Capture("history-filters-minimum");
             Check(filterRows.IsVisible && filterRows.ActualHeight >= 72 && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
                 firstResult.ActualHeight >= 32 && firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight <= filterRows.ActualHeight &&
                 filterScroll.ScrollableHeight > 0 && !((Expander)history.FindName("HistoryDetailExpander")).IsExpanded &&
                 !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
-                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
-                "expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size");
-            Capture("history-filters-minimum"); await Fit(1100, 650);
+                queryButtons.All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
+                $"expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows={filterRows.ActualHeight}/{filterRows.IsVisible}, row={firstResult.ActualHeight}, rowBottom={firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight}, scroll={filterScroll.ScrollableHeight}, detail={((Expander)history.FindName("HistoryDetailExpander")).IsExpanded}; buttons=" +
+                string.Join("|", queryButtons.Select(b => b.Content + ":" + b.ActualHeight + "/" + b.IsVisible + "/" + b.TranslatePoint(new Point(), history).Y)));
+            await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
             var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");

@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[Alias("OperatorAdministration")][switch]$ManagementMode,[switch]$CleanInstallBootstrap,[string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[Alias("OperatorAdministration")][switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterShellPolish,[string]$FixtureCommit)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -62,7 +62,7 @@ $previousCleanMedia=$env:IPC_CLEAN_INSTALL_MEDIA
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
  if($CleanInstallBootstrap){$env:IPC_CLEAN_INSTALL_MEDIA=$Media}
- $mode=if($CleanInstallBootstrap){'--clean-install-bootstrap'}elseif($ManagementMode){'--management-mode'}elseif($ParameterV3){'--parameter-v3'}elseif($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
+ $mode=if($CleanInstallBootstrap){'--clean-install-bootstrap'}elseif($StartupExperience){'--startup-experience'}elseif($ParameterShellPolish){'--parameter-shell-polish'}elseif($ManagementMode){'--management-mode'}elseif($ParameterV3){'--parameter-v3'}elseif($AuditPerformance){'--audit-performance'}elseif($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
  $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
  if($Interactive){$nativeArguments += '--interactive'}
  & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
@@ -73,7 +73,7 @@ if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
  if($AuditPerformance -and (Test-Path -LiteralPath (Join-Path $evidence 'R02-performance.json'))){Copy-Item -LiteralPath (Join-Path $evidence 'R02-performance.json') -Destination $Output}
- if($ParameterV3 -or $ManagementMode -or $CleanInstallBootstrap){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
+ if($ParameterV3 -or $ManagementMode -or $CleanInstallBootstrap -or $StartupExperience -or $ParameterShellPolish){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
  elseif($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
  else { foreach($screen in @('commercial-history-1100x600.png','commercial-first-configuration.png')){
   if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}

@@ -198,20 +198,18 @@ static partial class Program
             var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; ManagementModeFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busyField = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
-            for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
-            var tasks = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
-            Check(tasks.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "1 业务模块", "2 系统", "3 驱动", "4 组件", "5 检查与完成" }), "first configuration has exactly five task steps with no daily navigation");
-            ParameterSettingsControl? firstEditor = null;
+            var firstEditor = await FirstConfigurationReady(first, busyField, Check);
+            var firstModel = firstEditor.Model;
             for (var i = 0; i < 5; i++)
             {
-                tasks.SelectedIndex = i; first.UpdateLayout();
-                if (i < 4)
-                {
-                    var current = Descendants(first).OfType<ParameterSettingsControl>().Single();
-                    firstEditor ??= current; Check(ReferenceEquals(current, firstEditor), "startup step " + (i + 1) + " reuses one editor and complete draft");
-                }
+                var category = new[] { 1, 0, 2, 3, 4 }[i];
+                firstEditor.SelectCategory(category); first.UpdateLayout();
+                Check(firstEditor.SelectedCategory == category && ReferenceEquals(firstModel, firstEditor.Model) &&
+                    ReferenceEquals(firstEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()),
+                    "startup section " + (i + 1) + " reuses one editor and complete draft");
                 Capture("startup-step-" + (i + 1), (FrameworkElement)first.Content);
             }
+            CheckFirstConfigurationReview(first, firstEditor, Check);
             Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening/navigating startup does not create an Application database or start devices");
             first.Close();
         }

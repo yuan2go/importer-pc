@@ -1,0 +1,19 @@
+{
+  "Name": "compatibility",
+  "Program": "python",
+  "Arguments": [
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts",
+    "-p",
+    "test_application_compatibility.py",
+    "-v"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:09:28.9618246+00:00",
+  "FinishedAt": "2026-10-23T12:09:30.5030257+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\compatibility.log"
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "boundaries-01",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--architecture-quality-remediation"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:07:41.5062731+00:00",
+  "FinishedAt": "2026-10-23T12:08:10.3531653+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\boundaries-01.log"
+}

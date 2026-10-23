@@ -1,0 +1,16 @@
+{
+  "Name": "smoke-sportmaster-default",
+  "Program": "python",
+  "Arguments": [
+    "scripts/smoke-application.py",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/smoke-sportmaster-default.json"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:52:52.5551112+00:00",
+  "FinishedAt": "2026-10-23T10:53:01.2171734+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-sportmaster-default.log"
+}

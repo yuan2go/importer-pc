@@ -1,0 +1,16 @@
+{
+  "Name": "build-reference-fixture",
+  "Program": "dotnet",
+  "Arguments": [
+    "build",
+    "src/Ipc.Fixture/Ipc.Fixture.csproj",
+    "-c",
+    "Release",
+    "-p:RestoreLockedMode=true"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:51:06.3468625+00:00",
+  "FinishedAt": "2026-10-23T10:51:20.2886382+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-reference-fixture.log"
+}

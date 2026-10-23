@@ -1,10 +1,12 @@
+> 2026-10-23 当前源码基线：Application.Contracts ABI 1.16.0、Parcel DB8；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](../runtime/management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
+
 > 海康原生SDK边界增量：[接入说明](../runtime/hikrobot-reader-01.md)。仅签名vendor-sdk声明、win-x64及独立精确本地文件资格允许受控P/Invoke；未声明导入仍拒绝，SDK不进入扩展包。本文原无条件原生限制仅由此增量替代，历史验证不倒写。
 
 > 2026-10-20操作裁决：[审查整改](../runtime/sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
 
 > Windows首次部署现由[原生安装向导](../runtime/startup-deployment-02.md)自动完成受保护程序目录及可选独立信任/离线包安装，不再要求手工复制和改ACL。基本配置独立于可选库存；实际扩展绑定、精确包/合同和Production资格仍严格校验。下文底层命令保留为明确维护/开发入口，原生Windows验收仍NOT_RUN。
 
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 历史UX阶段增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支UX修复改变公共契约字节，参考能力2.2.5、reader1.3.5、RCS1.1.5须用冻结宿主重新构建/签名；实际身份与运行资格另记。修改前说明固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)，旧包和原请求不重签或覆盖。
 
@@ -16,7 +18,7 @@
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。
 
-当前Application.Contracts ABI1.10.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
+历史商业化阶段Application.Contracts ABI1.10.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
 
 ## 一个独立工程的声明
 

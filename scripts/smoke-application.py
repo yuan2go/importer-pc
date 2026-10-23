@@ -67,6 +67,10 @@ def run(evidence):
             return dict(Kind=kind, Implementation='reference-'+kind, Version='1.0.0', InstanceId=kind+'.smoke', Target='reference://'+kind+'/smoke', Contract='PARCEL-REFERENCE-v1', Parameters={})
         c['Login'] = binding('login'); c['Login']['Parameters'] = {'subjects':'alice,bob'}
         c['Weight'] = dict(Source='Measured', Unit='Kg', Precision=3, ConfiguredValue=None, MaximumAgeMs=3000)
+        # This journey verifies recovery of an already-associated original weight.
+        # Select that supported reference policy explicitly; UntilDispatch expiry is
+        # separately verified to keep blocking sends after its configured deadline.
+        c['WeightValidity'] = 'AtAssociation'
         c['Scale'] = binding('weight')
         c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304, Strategy='Attached' if a.attached_upload else 'BeforeMain')
         c['Images']['Uploader']['Parameters'] = {'reply-mode':'lose-after-commit'}
@@ -81,6 +85,9 @@ def run(evidence):
                 if bound: bound['Parameters']['endpoint'] = peer_url+'parcel-reference/'
         (config / 'business.json').write_text(json.dumps(c))
     outputs = []
+    # Per-run synthetic password, only sent over stdin to the real management API.
+    # Never include it in CombinationInput, evidence events, argv or a product seed.
+    management_password = uuid.uuid4().hex
 
     def start():
         process = subprocess.Popen([a.dotnet, str(root / 'app/Ipc.Assembly.dll'), '--config', str(config), '--data-root', str(data)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -106,7 +113,20 @@ def run(evidence):
 
     def send(process, messages, value):
         process.stdin.write((value if isinstance(value, str) else json.dumps(value)) + '\n'); process.stdin.flush()
-        return messages.get(timeout=10)
+        try:
+            return messages.get(timeout=10)
+        except queue.Empty:
+            if process.poll() is not None:
+                raise RuntimeError('Application terminated with exit '+str(process.returncode)+': '+process.stderr.read())
+            raise TimeoutError('Application did not return a command/snapshot response within 10 seconds')
+
+    def authorize(process, messages, configure=False):
+        def management(kind):
+            return send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=0, Kind=kind, Value=management_password))
+        if configure and management('ConfigureManagementPassword')['Status'] != 'PasswordConfigured':
+            raise ValueError('Real isolated-root management password setup failed')
+        if management('EnterManagementMode')['Status'] != 'Authorized':
+            raise ValueError('Real management authorization failed')
 
     def stop(process):
         process.stdin.write('quit\n'); process.stdin.flush(); process.wait(timeout=15)
@@ -116,6 +136,7 @@ def run(evidence):
     if peer_evidence: evidence.event(peer_evidence)
     process, messages = start()
     try:
+        authorize(process, messages, configure=True)
         initial_snapshot = send(process, messages, 'snapshot')
         evidence.effective(initial_snapshot['Configuration']['Effective'])
         if a.optional_features:
@@ -151,6 +172,7 @@ def run(evidence):
             if {op.get('PositionId') for op in snapshot['Operations']} != {'left', 'right'} or any(op['Plc'] for op in snapshot['Operations']): raise ValueError('Packaged dual-position flow incomplete')
         stop(process)
         process, messages = start()
+        authorize(process, messages)
         restarted = send(process, messages, 'snapshot')
         recovered = next(op for op in restarted['Operations'] if op['Id'] == operation['Id'])
         if recovered['Id'] != operation['Id'] or recovered['Wcs'] != operation['Wcs'] or recovered['Plc'] != operation['Plc']: raise ValueError('Restart changed frozen original phases')

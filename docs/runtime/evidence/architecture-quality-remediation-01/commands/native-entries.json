@@ -1,0 +1,12 @@
+{
+  "Name": "native-entries",
+  "Program": "python",
+  "Arguments": [
+    "D:/audits/importer-pc/AQA01-remediation-20261023/verify-native.py"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T11:01:29.4931703+00:00",
+  "FinishedAt": "2026-10-23T11:01:32.9897318+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\native-entries.log"
+}

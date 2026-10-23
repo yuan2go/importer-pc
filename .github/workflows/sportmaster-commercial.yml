@@ -8,6 +8,31 @@ concurrency:
   group: sportmaster-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 jobs:
+  aqa01-boundaries:
+    # Portable runtime/SQLite/loopback evidence complements the Windows medium
+    # below; it is not vendor-protocol or field acceptance.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build AQA01 verification with locked dependencies
+        run: dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
+      - name: Exercise ingress and command durability boundaries
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --architecture-quality-remediation 2>&1 | tee aqa01-boundaries.log
+      - name: Retain the actual boundary result including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aqa01-boundaries-${{ github.sha }}
+          path: aqa01-boundaries.log
+          if-no-files-found: warn
+          retention-days: 30
   frozen-sportmaster:
     runs-on: windows-2025
     timeout-minutes: 45

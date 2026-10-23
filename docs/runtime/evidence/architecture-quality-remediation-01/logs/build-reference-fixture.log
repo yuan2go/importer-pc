@@ -1,0 +1,18 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-aqa01\src\Ipc.Adapters\Ipc.Adapters.csproj (用时 800 毫秒)。
+  已还原 D:\projects\importer-pc-aqa01\src\Ipc.Fixture\Ipc.Fixture.csproj (用时 800 毫秒)。
+  6 个项目(共 8 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc-aqa01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-aqa01\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-aqa01\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-aqa01\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Integrations -> D:\projects\importer-pc-aqa01\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Drivers -> D:\projects\importer-pc-aqa01\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Adapters -> D:\projects\importer-pc-aqa01\src\Ipc.Adapters\bin\Release\net10.0\Ipc.Adapters.dll
+  Ipc.Fixture -> D:\projects\importer-pc-aqa01\src\Ipc.Fixture\bin\Release\net10.0\Ipc.Fixture.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:12.94

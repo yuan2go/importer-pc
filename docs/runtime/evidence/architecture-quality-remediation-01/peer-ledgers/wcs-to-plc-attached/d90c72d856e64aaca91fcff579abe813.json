@@ -1,0 +1,58 @@
+{
+  "Request": {
+    "Id": "d90c72d856e64aaca91fcff579abe813",
+    "ApplicationId": "wcs-to-plc",
+    "OperationId": "2cd672a6ec6941829ca61c30c8b875aa",
+    "AdmissionId": "unpacked-parcel",
+    "Stage": "image-upload",
+    "Binding": {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "upload.smoke",
+      "Target": "reference://upload/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "reply-mode": "lose-after-commit",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "ImplementationHash": "6AB3A8C351B47A00D57B0F9ED7650B4DD04580F151C77DCCC0508EF0828DA4D0",
+    "ConfigurationHash": "0FC33153C664F4854659310FC2CC7FC9372E6B228237477A04937BA920B264C6",
+    "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022000000917\u0022,\r\n  \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Operator\u0022: {\r\n    \u0022Subject\u0022: \u0022alice\u0022,\r\n    \u0022DisplayName\u0022: \u0022alice\u0022,\r\n    \u0022Authority\u0022: \u0022reference://login/smoke\u0022,\r\n    \u0022SessionId\u0022: \u002285c4ad7747db4eb5b23829b532760b9b\u0022,\r\n    \u0022AuthenticatedAt\u0022: \u00222026-10-23T10:58:16.4799831\u002B00:00\u0022,\r\n    \u0022Simulation\u0022: true,\r\n    \u0022ExpiresAt\u0022: \u00222026-10-23T18:58:16.4799836\u002B00:00\u0022,\r\n    \u0022Grants\u0022: []\r\n  },\r\n  \u0022Image\u0022: {\r\n    \u0022CaptureRequestId\u0022: \u0022cba5ffebde12494086a77032d48dc085\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022RelativeFile\u0022: \u0022images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/cba5ffebde12494086a77032d48dc085.png\u0022,\r\n    \u0022MediaType\u0022: \u0022image/png\u0022,\r\n    \u0022Length\u0022: 67,\r\n    \u0022Sha256\u0022: \u0022D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807\u0022,\r\n    \u0022UploadedUri\u0022: null,\r\n    \u0022Acquisition\u0022: {\r\n      \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n      \u0022Epoch\u0022: \u00226fd03cc5e8e746a299d382391edd1355\u0022,\r\n      \u0022SourceEventId\u0022: \u002228cfc126f7d64b98b682f284ed8de425\u0022,\r\n      \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n      \u0022ObservedAt\u0022: \u00222026-10-23T10:58:16.4882363\u002B00:00\u0022\r\n    }\r\n  },\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n    \u0022Epoch\u0022: \u00226fd03cc5e8e746a299d382391edd1355\u0022,\r\n    \u0022SourceEventId\u0022: \u002228cfc126f7d64b98b682f284ed8de425\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-23T10:58:16.4882363\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022main\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+    "PayloadHash": "8446582AB75A300FBE725C898A99D0554B7B8F0E27FA474722E3F7CD5FE03344",
+    "PreparedAt": "2026-10-23T10:58:16.6608461+00:00"
+  },
+  "Reply": {
+    "Id": "006a3072bd9f4716915cd6c490be9bbb",
+    "RequestId": "d90c72d856e64aaca91fcff579abe813",
+    "PayloadHash": "8446582AB75A300FBE725C898A99D0554B7B8F0E27FA474722E3F7CD5FE03344",
+    "TransportSucceeded": true,
+    "ProtocolAcknowledged": true,
+    "BusinessAccepted": true,
+    "PhysicalCompleted": null,
+    "Slot": null,
+    "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+    "At": "2026-10-23T10:58:16.8879841+00:00",
+    "Image": {
+      "CaptureRequestId": "cba5ffebde12494086a77032d48dc085",
+      "AdmissionId": "unpacked-parcel",
+      "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/cba5ffebde12494086a77032d48dc085.png",
+      "MediaType": "image/png",
+      "Length": 67,
+      "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+      "UploadedUri": "reference://images/d90c72d856e64aaca91fcff579abe813",
+      "Acquisition": {
+        "DeviceId": "wcs-to-plc.camera",
+        "Epoch": "6fd03cc5e8e746a299d382391edd1355",
+        "SourceEventId": "28cfc126f7d64b98b682f284ed8de425",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-23T10:58:16.4882363+00:00"
+      }
+    }
+  },
+  "Executions": 1
+}

@@ -1,0 +1,3 @@
+# PR92独立复核前的设计入口原件
+
+`application-architecture-22.md.txt`保存152596943480166c2399d1f4569841363b0d7c68的Windows检出原字节，SHA256见manifest.json。仅澄清当前入口中的历史版本与迁移范围；原架构裁决、D/RV及历史验收不改写。Git中的原blob仍可按SourceCommit和SourcePath读取；检出哈希与Git blob哈希不混用。

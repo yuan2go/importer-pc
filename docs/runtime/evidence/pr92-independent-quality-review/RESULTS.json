@@ -1,0 +1,436 @@
+{
+  "ReviewedPrHead": "152596943480166c2399d1f4569841363b0d7c68",
+  "Main": "0c5d7d25e572e80f23522c9ff7b562db920628a3",
+  "ReviewCodeCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+  "Commands": [
+    {
+      "Name": "application-architecture",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--application-architecture"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:14:33.4885197+00:00",
+      "FinishedAt": "2026-10-23T12:14:47.0451267+00:00",
+      "BaseCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\application-architecture.log"
+    },
+    {
+      "Name": "boundaries-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:07:41.5062731+00:00",
+      "FinishedAt": "2026-10-23T12:08:10.3531653+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\boundaries-01.log"
+    },
+    {
+      "Name": "boundaries-final",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:11:14.9063047+00:00",
+      "FinishedAt": "2026-10-23T12:11:43.7818152+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\boundaries-final.log"
+    },
+    {
+      "Name": "build-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:06:32.8444599+00:00",
+      "FinishedAt": "2026-10-23T12:07:18.0779493+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\build-01.log"
+    },
+    {
+      "Name": "build-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:07:23.1987918+00:00",
+      "FinishedAt": "2026-10-23T12:07:36.4339972+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\build-02.log"
+    },
+    {
+      "Name": "build-boundaries-final",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:11:04.1813375+00:00",
+      "FinishedAt": "2026-10-23T12:11:14.7584697+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\build-boundaries-final.log"
+    },
+    {
+      "Name": "build-final",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:10:14.8202983+00:00",
+      "FinishedAt": "2026-10-23T12:10:29.3560072+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\build-final.log"
+    },
+    {
+      "Name": "combination-direct-plc-before-main",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-direct-plc-before-main.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:12:09.6445381+00:00",
+      "FinishedAt": "2026-10-23T12:12:10.9668464+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\combination-direct-plc-before-main.log"
+    },
+    {
+      "Name": "combination-sportmaster-default",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-sportmaster-default.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:12:09.6503200+00:00",
+      "FinishedAt": "2026-10-23T12:12:10.9840811+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\combination-sportmaster-default.log"
+    },
+    {
+      "Name": "combination-wcs-to-plc-attached",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-wcs-to-plc-attached.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/wcs-to-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:12:09.6745441+00:00",
+      "FinishedAt": "2026-10-23T12:12:10.9639513+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\combination-wcs-to-plc-attached.log"
+    },
+    {
+      "Name": "compatibility",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_application_compatibility.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:09:28.9618246+00:00",
+      "FinishedAt": "2026-10-23T12:09:30.5030257+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\compatibility.log"
+    },
+    {
+      "Name": "evidence-integrity-final",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-pr92-independent/verify-evidence.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:16:07.1822056+00:00",
+      "FinishedAt": "2026-10-23T12:16:08.6921569+00:00",
+      "BaseCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\evidence-integrity-final.log"
+    },
+    {
+      "Name": "evidence-integrity",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-pr92-independent/verify-evidence.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:08:35.9348988+00:00",
+      "FinishedAt": "2026-10-23T12:08:37.5443542+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\evidence-integrity.log"
+    },
+    {
+      "Name": "media-integrity",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-pr92-independent/verify-media-readonly.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:11:58.7147083+00:00",
+      "FinishedAt": "2026-10-23T12:12:01.0066676+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\media-integrity.log"
+    },
+    {
+      "Name": "receipt-custody",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--receipt-custody"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:08:35.8122945+00:00",
+      "FinishedAt": "2026-10-23T12:08:40.3677803+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\receipt-custody.log"
+    },
+    {
+      "Name": "release-documents-final",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_release_documents.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:11:14.9745019+00:00",
+      "FinishedAt": "2026-10-23T12:11:16.8006206+00:00",
+      "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\release-documents-final.log"
+    },
+    {
+      "Name": "release-documents-report",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_release_documents.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:17:01.3584057+00:00",
+      "FinishedAt": "2026-10-23T12:17:02.3841584+00:00",
+      "BaseCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\release-documents-report.log"
+    },
+    {
+      "Name": "release-documents",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_release_documents.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:09:26.8988937+00:00",
+      "FinishedAt": "2026-10-23T12:09:27.8155309+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\release-documents.log"
+    },
+    {
+      "Name": "resource-risks",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--resource-risks"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:14:47.1362112+00:00",
+      "FinishedAt": "2026-10-23T12:14:50.2994299+00:00",
+      "BaseCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+      "TestFiles": [
+        {
+          "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+          "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+        },
+        {
+          "Path": "ArchitectureQualityRemediation.cs",
+          "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+        }
+      ],
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\resource-risks.log"
+    },
+    {
+      "Name": "ux-inputs",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--ux-commercial-inputs"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T12:08:51.5321347+00:00",
+      "FinishedAt": "2026-10-23T12:08:55.5007867+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\ux-inputs.log"
+    }
+  ]
+}

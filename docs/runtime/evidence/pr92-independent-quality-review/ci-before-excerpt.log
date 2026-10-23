@@ -1,0 +1,19 @@
+﻿2026-10-23T11:15:36.5160039Z Current runner version: '2.338.0'
+2026-10-23T11:15:36.5193249Z ##[group]Operating System
+2026-10-23T11:15:36.5193849Z Microsoft Windows Server 2025
+2026-10-23T11:15:36.5194435Z 10.0.26100
+2026-10-23T11:15:43.2926521Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules --filter=blob:none origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +305e2738930256f37e483c9a4134c1b90ad8e987:refs/remotes/pull/92/merge
+2026-10-23T11:15:44.9849571Z  * [new ref]         305e2738930256f37e483c9a4134c1b90ad8e987 -> pull/92/merge
+2026-10-23T11:15:53.7720534Z HEAD is now at 305e273 Merge 152596943480166c2399d1f4569841363b0d7c68 into 0c5d7d25e572e80f23522c9ff7b562db920628a3
+2026-10-23T11:15:53.8948048Z 305e2738930256f37e483c9a4134c1b90ad8e987
+2026-10-23T11:16:47.9276732Z [36;1mif ($release.SourceCommit -ne '305e2738930256f37e483c9a4134c1b90ad8e987') { throw 'Frozen PR release differs from the checked merge commit' }[0m
+2026-10-23T11:17:31.8786958Z VERIFIED sportmaster-portable-305e27389302
+2026-10-23T11:18:49.3187095Z VERIFIED sportmaster-win-x64-305e27389302
+2026-10-23T11:22:01.9643780Z [36;1mif ($receipt.SourceCommit -ne '305e2738930256f37e483c9a4134c1b90ad8e987' -or $receipt.Payload.SourceCommit -ne '305e2738930256f37e483c9a4134c1b90ad8e987') { throw 'Installer source differs from checked medium' }[0m
+2026-10-23T11:22:48.4358301Z {"Installer": "C:\\scd-installer\\CainiaoSupplyStation_SM_Setup_v1.11.2_win-x64.exe", "Sha256": "5ca861e36c44e337a73f4f14b5a1368f9f5e6ede8cf5fa76657b9283ee5882f5", "SourceCommit": "305e2738930256f37e483c9a4134c1b90ad8e987", "Payload": {"ApplicationId": "sportmaster", "SourceCommit": "305e2738930256f37e483c9a4134c1b90ad8e987", "SourceBranch": "codex/ci-sportmaster-39944822728", "BusinessModuleShortName": "SM", "BusinessVersion": "1.11.2", "Sha256": "d69ef293bc9abf925842a4a4558791cba5190c5d8f6888cca0a4ce4ae3dcbed3", "ZipBytes": 106755890, "UnpackedBytes": 243009470, "FileCount": 740}, "DeliveryFiles": 1, "Authenticode": "NOT_SIGNED", "ActualWindowsInstallation": "NOT_RUN"}
+2026-10-23T11:22:48.4921257Z   name: sportmaster-installable-305e2738930256f37e483c9a4134c1b90ad8e987
+2026-10-23T11:22:54.0865721Z Artifact sportmaster-installable-305e2738930256f37e483c9a4134c1b90ad8e987.zip successfully finalized. Artifact ID 12498655207
+2026-10-23T11:22:54.0867188Z Artifact sportmaster-installable-305e2738930256f37e483c9a4134c1b90ad8e987 has been successfully uploaded! Final size is 284982831 bytes. Artifact ID is 12498655207
+2026-10-23T11:22:54.1214182Z   name: sportmaster-evidence-305e2738930256f37e483c9a4134c1b90ad8e987
+2026-10-23T11:22:57.5036770Z Artifact sportmaster-evidence-305e2738930256f37e483c9a4134c1b90ad8e987.zip successfully finalized. Artifact ID 12497633491
+2026-10-23T11:22:57.5039002Z Artifact sportmaster-evidence-305e2738930256f37e483c9a4134c1b90ad8e987 has been successfully uploaded! Final size is 12918093 bytes. Artifact ID is 12497633491

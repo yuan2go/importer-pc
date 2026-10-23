@@ -1,0 +1,18 @@
+{
+  "Name": "package-wcs-to-plc-portable",
+  "Program": "python",
+  "Arguments": [
+    "scripts/package-application.py",
+    "--application",
+    "wcs-to-plc",
+    "--target",
+    "portable",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/packages/wcs-to-plc-portable"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:51:59.2612813+00:00",
+  "FinishedAt": "2026-10-23T10:53:21.4701824+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-wcs-to-plc-portable.log"
+}

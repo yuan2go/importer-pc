@@ -115,9 +115,10 @@ public sealed partial class ParcelRepository
         var rows = index.Take(limit).Select(x => new ParcelHistoryItem(x.Sequence, x.Archived, ReadOperation(x.Id) ?? throw new InvalidDataException("History original missing"))).ToArray();
         return new(rows, index.Count > limit ? rows[^1].Sequence : null);
     }
-    public void Archive(string[] ids, string reason)
+    public void Archive(string[] ids, string reason, BusinessCommand? command = null)
     {
-        if (ids.Length == 0) return;
+        if (ids.Length == 0)
+        { if (command is not null) Commit(null, "HistoryArchiveChecked", reason, command: command); return; }
         using var tx = db.BeginTransaction();
         foreach (var id in ids)
         {
@@ -131,7 +132,8 @@ public sealed partial class ParcelRepository
         using var audit = db.CreateCommand(); audit.Transaction = tx;
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'HistoryArchived','runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
         audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Terminal originals retained in same-database immutable archive; no expiry deletion" })); audit.ExecuteNonQuery();
-        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; CleanupArchivedRawFiles();
+        if (command is not null) WriteCommand(tx, command, new("Persisted", "Application command committed", Revision + 1));
+        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
     }
     void ArchiveRaw(string operation, Microsoft.Data.Sqlite.SqliteTransaction tx)
     {
@@ -182,12 +184,12 @@ public sealed partial class ParcelRuntime
     bool CapacityAvailable => storageCapacityFailure is null && operations.Values.Count(x => !ArchiveEligible(x)) < Effective.MaximumOperations;
     ParcelCapacity Capacity() => new(operations.Values.Count(x => !ArchiveEligible(x)), operations.Count, repository!.ArchivedCount,
         Effective.MaximumOperations, CapacityAvailable, "Terminal originals transactionally archived; all historical identities/receipts/audit retained; no automatic disk deletion", freeStorageBytes, Retention.MinimumFreeBytes);
-    void ArchiveSettled(bool requested = false, string? reason = null)
+    void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
         if (!requested && operations.Count < Math.Min(Retention.ResidentHistory, Effective.MaximumOperations)) return;
         var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
-        if (candidates.Length == 0) return;
-        repository!.Archive(candidates, reason ?? "Resident working-set high-water policy");
+        if (candidates.Length == 0 && command is null) return;
+        repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);
         foreach (var id in candidates) { admissionPositions.TryRemove(operations[id].AdmissionId, out _); operations.Remove(id); }
     }
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)

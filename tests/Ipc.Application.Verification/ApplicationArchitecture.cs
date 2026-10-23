@@ -25,10 +25,22 @@ static class ApplicationArchitecture
             var path = Path.Combine(root, run); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
             var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new ParcelCapabilityFactory(launch);
             var app = new ParcelRuntime(launch, Flow(c.ApplicationId), wrap?.Invoke(factory) ?? factory);
-            try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }
+            try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
         }
         async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
+        async Task<BusinessReceipt> Stage(ParcelRuntime app, long revision, ParcelConfiguration candidate)
+        {
+            var deadline = DateTimeOffset.UtcNow.AddSeconds(5);
+            do
+            {
+                await Wait(app, s => s.Availability?.Configure == true);
+                var result = await app.StageConfigurationAsync(revision, candidate, "Synthetic directed configuration verification");
+                if (result.Status != "Rejected" || result.Reason != "Pause and authenticate maintenance before configuration") return result;
+                await Task.Delay(20); // Only the explicit pre-I/O guard rejection is retryable.
+            } while (DateTimeOffset.UtcNow < deadline);
+            throw new TimeoutException("Configuration drain guard did not settle");
+        }
         CapabilityBinding B(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".22", "reference://" + kind + "/22", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         var sport = Config("sportmaster"); var topology = sport.Topology!;
         foreach (var bad in new[] {
@@ -41,6 +53,8 @@ static class ApplicationArchitecture
         BlockingFactory? blocked = null;
         await using (var app = await Open(sport, "dual", inner => blocked = new(inner)))
         {
+            try
+            {
             app.EmitReferenceAt("left", "left-one", "000123", "left-source"); await blocked!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
             Check(app.EmitReferenceAt("right", "right-one", "000123", "right-source"), "right input enters while left WCS is slow");
             var s = await Wait(app, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
@@ -66,10 +80,10 @@ static class ApplicationArchitecture
             Check((await app.SnapshotAsync()).Positions!.All(p => !p.Admit), "shared WCS health failure blocks both positions without rewriting originals");
             blocked.Unavailable = false; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && h.Ready));
             await Command(app, "Pause"); s = await app.SnapshotAsync();
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null }, "Synthetic directed configuration verification")).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
+            Check((await Stage(app, s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null })).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
             var candidate = s.Configuration.Effective with { TimeoutMs = 1700 };
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "PendingRestart", "complete topology staged using original configuration CAS");
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "Rejected", "stale configuration CAS rejected");
+            Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "PendingRestart", "complete topology staged using original configuration CAS");
+            Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "Rejected", "stale configuration CAS rejected");
             s = await app.SnapshotAsync(); Check(s.Configuration.Pending!.Topology!.Readers.Length == 2 && s.Configuration.Effective.TimeoutMs != 1700, "Pending/Effective preserve both bindings and separate activation");
             var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
             await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
@@ -91,6 +105,8 @@ static class ApplicationArchitecture
             }
             Check(backupReceipt?.Status == "BackupCreated", "multi-device original set backed up through actual application: " + Wire.Encode(backupReceipt));
             ParcelRecovery.Restore(backup, Path.Combine(root, "dual-restored/data/Simulation", sport.StationId, sport.ApplicationId));
+            }
+            finally { blocked!.Release.TrySetResult(); }
         }
         await using (var app = await Open(sport, "dual"))
         {
@@ -105,7 +121,7 @@ static class ApplicationArchitecture
         await using (var app = await Open(legacy, "configuration-upgrade"))
         {
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); var s = await app.SnapshotAsync();
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, sport, "Synthetic directed configuration verification")).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
+            Check((await Stage(app, s.Configuration.Revision, sport)).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
                 "schema2 config is never guessed into two positions; full explicit schema3 candidate staged");
         }
         await using (var app = await Open(legacy, "configuration-upgrade"))
@@ -169,7 +185,9 @@ static class ApplicationArchitecture
             Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "left Unknown original does not block independently reconciled right position");
         }
         BlockingFactory? overloaded = null;
-        var overloadApp = await Open(sport with { QueueCapacity = 1 }, "dual-overload", f => overloaded = new(f));
+        var overloadApp = await Open(sport with { QueueCapacity = 1 }, "dual-overload", f => overloaded = new(f, retainOnStop: true));
+        try
+        {
         overloadApp.EmitReferenceAt("left", "left-one", "001", "left"); await overloaded!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
         Check(overloadApp.EmitReferenceAt("left", "queued", "002", "queued") && !overloadApp.EmitReferenceAt("left", "overflow", "003", "overflow"), "position queue bounds and visibly rejects overload");
         Check(overloadApp.EmitReferenceAt("right", "right", "001", "right"), "left overload does not consume right queue"); await Wait(overloadApp, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
@@ -178,7 +196,8 @@ static class ApplicationArchitecture
             try { await overloadApp.StopAsync(budget.Token); throw new Exception("premature Stop"); }
             catch (OperationCanceledException) { Check(overloadApp.HasUnreleasedResources, "Stop timeout retains database/device/package ownership until both workers drain"); }
         }
-        overloaded.Release.TrySetResult(); await overloadApp.StopAsync(CancellationToken.None); await overloadApp.DisposeAsync();
+        }
+        finally { overloaded!.Release.TrySetResult(); await overloadApp.StopAsync(CancellationToken.None); await overloadApp.DisposeAsync(); }
         Check(!overloadApp.HasUnreleasedResources, "Stop retry drains all positions before final resource release");
         await using (var app = await Open(sport, "dual-overload"))
         {
@@ -250,7 +269,7 @@ static class ApplicationArchitecture
         }
         await Task.CompletedTask;
     }
-    sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false) : IParcelCapabilityFactory
+    sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false, bool retainOnStop = false) : IParcelCapabilityFactory
     {
         public CapabilityCatalog Catalog() => inner.Catalog();
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -262,18 +281,28 @@ static class ApplicationArchitecture
         public ParcelPorts Create(ParcelConfiguration c)
         {
             var p = inner.Create(c); Readers = p.Readers!.ToDictionary(x => x.Key, x => new ReaderProbe(x.Value, failSecondStart && x.Key != c.Reader.DeviceId));
-            return p with { Reader = Readers[c.Reader.DeviceId], Readers = Readers.ToDictionary(x => x.Key, x => (IControlledObservationSource)x.Value), Wcs = new LeftSlow(p.Wcs!, Entered, Release, () => Unavailable) };
+            return p with { Reader = Readers[c.Reader.DeviceId], Readers = Readers.ToDictionary(x => x.Key, x => (IControlledObservationSource)x.Value), Wcs = new LeftSlow(p.Wcs!, Entered, Release, () => Unavailable, retainOnStop) };
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class LeftSlow(IWcsPort inner, TaskCompletionSource entered, TaskCompletionSource release, Func<bool> unavailable) : IWcsPort
+    sealed class LeftSlow(IWcsPort inner, TaskCompletionSource entered, TaskCompletionSource release, Func<bool> unavailable, bool retainOnStop) : IWcsPort
     {
         public string InstanceId => inner.InstanceId;
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => unavailable() ? Task.FromResult(new CapabilityHealth(InstanceId, false, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, "TEST shared unavailable")) : inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public async Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t)
-        { if (r.AdmissionId == "left-one") { entered.TrySetResult(); await release.Task; } return await inner.ResolveSlotAsync(r, t); }
+        {
+            if (r.AdmissionId == "left-one")
+            {
+                entered.TrySetResult();
+                // Only the ownership-timeout case models an uncooperative external
+                // call; bounded fixture lifetime and finally release prevent hangs.
+                if (retainOnStop) await release.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                else await release.Task.WaitAsync(t);
+            }
+            return await inner.ResolveSlotAsync(r, t);
+        }
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();

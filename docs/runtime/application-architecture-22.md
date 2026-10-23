@@ -1,8 +1,10 @@
-> 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
+> 2026-10-23 当前源码基线：Application.Contracts ABI 1.16.0、Parcel DB8；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
+
+> 2026-10-20阶段裁决（历史）：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
 
 > 以下为前阶段形成时记录；当前操作以前述2026-10-20裁决为准。原增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
-> 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
+> 历史商业化阶段版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
 > 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。
@@ -41,7 +43,7 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 ## 实际应用接口及控制台
 
-每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实及可省略Inputs）。Inputs每位最多一项，包含PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId和RecordedAt；原事实使用既有parcel_audit的InputObserved事件持久化，按持久seq恢复，不新增SQL或第二账。来源注册/epoch/sequence及时效先验证，陈旧输入只审计不覆盖当前观察。观察失败不制造Operation；旧主链已终结时不再把旧成功当本次结果，未决责任继续受守卫。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
+每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实及可省略Inputs）。Inputs每位最多一项，包含PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId和RecordedAt；原事实使用既有parcel_audit的InputObserved事件持久化，按持久seq恢复，不新增SQL或第二账。来源注册/epoch/sequence先隔离；旧会话、旧序号只审计不覆盖当前观察。同一有效会话的新输入因排队过期须持久化本次拒绝，不能沿用上一件已终结格口；不创建外部请求。观察失败不制造Operation；旧主链已终结时不再把旧成功当本次结果，未决责任继续受守卫。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
 
 每条JSON使用唯一Id；应用命令ExpectedRevision取提交时应用Revision，配置草稿与旧账确认必须保留加载时配置Revision及运行实例，不能由自动刷新改写其检查身份。合成左侧输入示例：
 
@@ -57,7 +59,7 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 版本升级与原件
 
-当前Application.Contracts ABI1.10.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
+历史商业化阶段Application.Contracts ABI1.10.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
 Parcel当前数据库8，SQL1～7及checksum保留；SQL8为首配修复、恢复交接和配置绑定备份策略的读者屏障；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障；SQL5将历史OutcomeReconciled恢复为Awaiting资料责任，SQL7保存数字请求永久唯一Owner、配置范围及恢复退役边界。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB8，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。

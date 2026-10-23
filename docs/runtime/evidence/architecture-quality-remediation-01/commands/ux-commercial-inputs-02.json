@@ -1,0 +1,14 @@
+{
+  "Name": "ux-commercial-inputs-02",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--ux-commercial-inputs"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:45:16.2233104+00:00",
+  "FinishedAt": "2026-10-23T10:45:21.2913761+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\ux-commercial-inputs-02.log"
+}

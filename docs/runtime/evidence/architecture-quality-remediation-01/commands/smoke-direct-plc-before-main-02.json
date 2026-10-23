@@ -1,0 +1,19 @@
+{
+  "Name": "smoke-direct-plc-before-main-02",
+  "Program": "python",
+  "Arguments": [
+    "scripts/smoke-application.py",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable",
+    "--optional-features",
+    "--peer-fixture",
+    "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/smoke-direct-plc-before-main-02.json"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:57:01.2089768+00:00",
+  "FinishedAt": "2026-10-23T10:57:11.5045135+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-direct-plc-before-main-02.log"
+}

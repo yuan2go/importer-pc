@@ -104,7 +104,16 @@ static class UxCommercialInputs
             await ManagementModeFixture.Authorize(app); s = await Wait(app, x => x.Availability!.Configure);
             var reader = c.Reader with { DeviceId = changeDevice ? "sportmaster.camera.replaced" : c.Reader.DeviceId, Revision = "2" };
             var candidate = s.Configuration.Effective with { Reader = reader, Topology = new([reader, c.Topology!.Readers[1]], [c.Topology.Positions[0] with { ReaderDeviceId = reader.DeviceId }, c.Topology.Positions[1]]) };
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic controlled reader replacement")).Status == "PendingRestart", "exact reader replacement stages through existing CAS");
+            BusinessReceipt staged = new("NotRun", "Drain not checked", 0);
+            for (var attempt = 0; attempt < 100; attempt++)
+            {
+                await Wait(app, x => x.Availability!.Configure);
+                staged = await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic controlled reader replacement");
+                Console.WriteLine("UXC rebind receipt: " + Wire.Encode(staged));
+                if (staged.Status != "Rejected" || staged.Reason != "Pause and authenticate maintenance before configuration") break;
+                await Task.Delay(20); // Original CAS/candidate retained; only explicit pre-I/O rejection retries.
+            }
+            Check(staged.Status == "PendingRestart", "exact reader replacement stages through existing CAS: " + Wire.Encode(staged));
         }
         await using var next = new ParcelRuntime(launch, new SportmasterFlow(), new InputFactory(new ParcelCapabilityFactory(launch))); await next.StartAsync(default);
         var recovered = await next.SnapshotAsync();

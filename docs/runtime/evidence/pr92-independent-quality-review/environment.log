@@ -1,0 +1,51 @@
+2026-10-23T12:13:19.1799499+00:00
+Microsoft Windows NT 10.0.22631.0
+7.6.5
+git version 2.56.0.windows.2
+Python 3.14.3
+.NET SDK:
+ Version:           10.0.402
+ Commit:            a8dd0577c5
+ Workload version:  10.0.400-manifests.da132f47
+ MSBuild version:   18.9.15+a8dd0577c
+
+运行时环境:
+ OS Name:     Windows
+ OS Version:  10.0.22631
+ OS Platform: Windows
+ RID:         win-x64
+ Base Path:   D:\tools\dotnet\sdk\10.0.402\
+
+已安装 .NET 工作负载:
+没有要显示的已安装工作负载。
+已配置为在安装新清单时使用 workload sets。
+未安装任何 workload sets。运行 “dotnet workload restore” 以安装工作负载集。
+
+Host:
+  Version:      10.0.13
+  Architecture: x64
+  Commit:       4099f83977
+
+.NET SDKs installed:
+  10.0.402 [D:\tools\dotnet\sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 10.0.13 [D:\tools\dotnet\shared\Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 10.0.13 [D:\tools\dotnet\shared\Microsoft.NETCore.App]
+  Microsoft.WindowsDesktop.App 10.0.13 [D:\tools\dotnet\shared\Microsoft.WindowsDesktop.App]
+
+Other architectures found:
+  None
+
+Environment variables:
+  DOTNET_CLI_HOME                          [D:\DevCache\importer-pc\dotnet-home]
+  DOTNET_ROOT                              [D:\tools\dotnet]
+
+global.json file:
+  D:\projects\importer-pc-aqa01\global.json
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download

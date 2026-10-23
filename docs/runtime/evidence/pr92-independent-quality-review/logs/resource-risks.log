@@ -1,0 +1,18 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-a8624eaccb9343df8cc2ab7071fce477
+PASS AC17 resource: first observation enters the asynchronous worker
+PASS AC17 resource: bounded ingress rejects overflow without blocking callback on WCS
+PASS AC17 resource: stop timeout retains downstream database/port/lease ownership
+PASS AC17 resource: second runtime cannot acquire retained application/device leases
+PASS AC17 resource: released only after callback, worker and port termination
+PASS AC17 resource: restart preserves overload marker and original cancelled-stage uncertainty
+PASS AC17 resource: valid candidate is saved separately before construction: {
+  "Status": "PendingRestart",
+  "Reason": "Saved; Effective unchanged until controlled restart and application barriers",
+  "Revision": 5
+}
+PASS AC17 resource: candidate construction failure remains explicit
+PASS AC17 resource: next controlled startup uses original Effective and retains failed candidate without automatic reactivation
+PASS AC17 resource: injected T3 failure terminates worker visibly
+PASS AC17 resource: terminal failure remains reported after safe release
+PASS AC17 resource: original durable WCS raw replay atomically restores accepted slot and never-attempted PLC intent without external replay
+PASS AC17 resource: mutable UI projection cannot mutate authoritative configuration or frozen requests

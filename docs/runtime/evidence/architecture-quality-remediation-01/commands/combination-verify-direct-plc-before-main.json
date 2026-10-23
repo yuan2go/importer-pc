@@ -1,0 +1,16 @@
+{
+  "Name": "combination-verify-direct-plc-before-main",
+  "Program": "python",
+  "Arguments": [
+    "scripts/application_compatibility.py",
+    "--record",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/combination-direct-plc-before-main.json",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T11:01:51.7107161+00:00",
+  "FinishedAt": "2026-10-23T11:01:53.2159567+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\combination-verify-direct-plc-before-main.log"
+}

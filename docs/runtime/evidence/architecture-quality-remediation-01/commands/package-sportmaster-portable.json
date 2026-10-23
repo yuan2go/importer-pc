@@ -1,0 +1,18 @@
+{
+  "Name": "package-sportmaster-portable",
+  "Program": "python",
+  "Arguments": [
+    "scripts/package-application.py",
+    "--application",
+    "sportmaster",
+    "--target",
+    "portable",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/packages/sportmaster-portable"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:48:23.3868583+00:00",
+  "FinishedAt": "2026-10-23T10:49:45.6056243+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-sportmaster-portable.log"
+}

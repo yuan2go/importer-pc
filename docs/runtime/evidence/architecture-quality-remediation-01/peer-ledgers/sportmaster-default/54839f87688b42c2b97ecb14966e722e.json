@@ -1,0 +1,42 @@
+{
+  "Request": {
+    "Id": "54839f87688b42c2b97ecb14966e722e",
+    "ApplicationId": "sportmaster",
+    "OperationId": "7203b7ce35614a22ab6e89e27d9d5601",
+    "AdmissionId": "unpacked-parcel",
+    "Stage": "wcs-slot",
+    "Binding": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.integration",
+      "Target": "reference://integration/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-unpacked-gk8o74yv\\Simulation\\reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "ImplementationHash": "D294C00889761D41C36BEEBAB8B4BE72241A46CA5BDB2FED2A5DDE9DDBEE9B49",
+    "ConfigurationHash": "7FD17E38B0B484D99CAA620E21D1EC75E6EE8C3D5DEC329E4070B5E8E5087898",
+    "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022000000917\u0022,\r\n  \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Epoch\u0022: \u0022f7c5351d16ec42c2b1b1ae15a0a8322e\u0022,\r\n    \u0022SourceEventId\u0022: \u002286cfb32b436e4e1aac4883c6ecbf9392\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-23T11:00:26.4023276\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022left\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+    "PayloadHash": "923AAEEF75975EE05CA0B613A85ED1E742CFF68BADB5B7A7F7C6132EE599C015",
+    "PreparedAt": "2026-10-23T11:00:26.4713629+00:00"
+  },
+  "Reply": {
+    "Id": "bbd373fe173544c29054f0143c0ef40b",
+    "RequestId": "54839f87688b42c2b97ecb14966e722e",
+    "PayloadHash": "923AAEEF75975EE05CA0B613A85ED1E742CFF68BADB5B7A7F7C6132EE599C015",
+    "TransportSucceeded": true,
+    "ProtocolAcknowledged": true,
+    "BusinessAccepted": true,
+    "PhysicalCompleted": null,
+    "Slot": "REFERENCE-07",
+    "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+    "At": "2026-10-23T11:00:26.5416138+00:00"
+  },
+  "Executions": 1
+}

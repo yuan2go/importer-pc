@@ -1,0 +1,16 @@
+{
+  "Name": "combination-verify-sportmaster-default",
+  "Program": "python",
+  "Arguments": [
+    "scripts/application_compatibility.py",
+    "--record",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/combination-sportmaster-default.json",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T11:01:51.6815788+00:00",
+  "FinishedAt": "2026-10-23T11:01:53.2396587+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\combination-verify-sportmaster-default.log"
+}

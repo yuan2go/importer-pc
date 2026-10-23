@@ -33,6 +33,7 @@ public sealed partial class ParcelRuntime
                 (Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
             auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x=>x.Operation+": original receipt custody "+x.Id+"; stage="+x.Stage+"; raw="+(x.Reply is null?"missing":"durable pending T3")+"; outcome="+(repository.HasReceiptOutcomeBasis(x.Id)?"known by separate Query":"unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
+            auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
@@ -71,9 +72,11 @@ public sealed partial class ParcelRuntime
                     if (owner.Length != 3 || !Guid.TryParseExact(owner[0], "N", out var inspectedRuntime) || !long.TryParse(owner[1], out var configurationRevision))
                         return new("Rejected", "Owner must be runtimeIdN:configurationRevision:effectiveSha256", repository.Revision);
                     if (inspectedRuntime != runtimeId) return new("Conflict", "Runtime identity changed; inspect this instance before confirming Effective", repository.Revision);
+                    repository.AdmitCommand(command);
                     try { configuration!.ConfirmEffective(configurationRevision, owner[2], ManagementEvidence!.AuditActor, command.Value); }
-                    catch (InvalidOperationException ex) { return new("Conflict", ex.Message, repository.Revision); }
-                    catch (InvalidDataException ex) { return new("Rejected", ex.Message, repository.Revision); }
+                    catch (InvalidOperationException ex) { return repository.CompleteCommand(command, new("Conflict", ex.Message, repository.Revision)); }
+                    catch (InvalidDataException ex) { return repository.CompleteCommand(command, new("Rejected", ex.Message, repository.Revision)); }
+                    Boundary?.Invoke("AfterConfigurationConfirmed");
                     repository.Commit(null, "ConfigurationEffectiveConfirmed", Wire.Encode(new { ConfigurationRevision = configuration!.Current.Revision,
                         RuntimeId = runtimeId, EffectiveHash = owner[2], Maintenance = ManagementEvidence!.AuditActor, Reason = command.Value }), command: command);
                     break;
@@ -87,32 +90,40 @@ public sealed partial class ParcelRuntime
                 case "AcknowledgeIdentityConflict" when CanConfigure && command.Owner is not null && identityConflicts.ContainsKey(command.Owner) && !string.IsNullOrWhiteSpace(command.Value):
                     repository.Commit(null, "IdentityConflictAcknowledged", "Maintenance=" + ManagementEvidence!.AuditActor + "; original=" + command.Owner + "; " + command.Value, command: command, clearConflict: command.Owner);
                     identityConflicts.Remove(command.Owner); break;
+                case "CloseInterruptedCommand" when CanConfigure && command.Owner != command.Id && repository.IsPendingCommand(command.Owner) &&
+                    !string.IsNullOrWhiteSpace(command.Value) && command.Value.Length <= 1024:
+                    repository.Commit(null, "InterruptedCommandInspected", Wire.Encode(new { OriginalCommand = command.Owner, InspectionCommand = command.Id,
+                        Actor = ManagementEvidence, Reason = command.Value, Policy = "Inspection only; no business fact, request or recovery guard is cleared" }), command: command, interruptedCommand: command.Owner);
+                    break;
                 case "ArchiveHistory" when CanConfigure && !string.IsNullOrWhiteSpace(command.Value):
-                    ArchiveSettled(true, "Maintenance=" + ManagementEvidence?.AuditActor + "; " + command.Value); break;
+                    ArchiveSettled(true, "Maintenance=" + ManagementEvidence?.AuditActor + "; " + command.Value, command); break;
                 case "ContinuePrepared" when command.Owner is not null && operations.TryGetValue(command.Owner, out var op) &&
                     CanContinue(op):
+                    var continuationEvent = op.RecoveryRequired ? "RecoveryConfirmed" : "ContinuationAdmitted";
                     if (op.RecoveryRequired)
                     {
                         if (string.IsNullOrWhiteSpace(command.Value)) return new("Rejected", "Explicit original-entity inspection reason is required after restart", repository.Revision);
-                        op = op with { RecoveryRequired = false }; Save(op, "RecoveryConfirmed", command.Value);
+                        op = op with { RecoveryRequired = false };
                     }
+                    Save(op, continuationEvent, command.Value ?? "Continue original never-attempted intention", command: command);
+                    Boundary?.Invoke("AfterContinuationAdmitted");
                     await AdvanceAsync(op).ConfigureAwait(false); break;
                 case "ContinueUpload" when command.Owner is not null && operations.TryGetValue(command.Owner, out var imageOp) && CanContinueUpload(imageOp):
-                    ScheduleAttached(imageOp); break;
+                    repository.Commit(null, "UploadContinuationAdmitted", Wire.Encode(new { Operation = imageOp.Id }), command: command);
+                    Boundary?.Invoke("AfterContinuationAdmitted"); ScheduleAttached(imageOp); break;
                 case "AbandonUnsubmitted" when command.Owner is not null && operations.TryGetValue(command.Owner, out var abandoned) && CanAbandon(abandoned) &&
                     !string.IsNullOrWhiteSpace(command.Value):
                     Save(abandoned with { State = ParcelState.Abandoned, RecoveryRequired = false,
                         Wcs = CancelUnsent(abandoned.Wcs), Plc = CancelUnsent(abandoned.Plc),
                         Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
                         Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,
-                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted"); ReleaseCompletedImages(); break;
+                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted", command: command);
+                    Boundary?.Invoke("AfterAbandonedDurable"); ReleaseCompletedImages(); break;
                 case "InspectRestore": return new("RestoreHandoff", Wire.Encode(ReadRestoreHandoff()), repository.Revision);
-                case "ConfirmRestore": ConfirmRestore(command.Owner, command.Value); break;
+                case "ConfirmRestore": ConfirmRestore(command); break;
                 default: return new("Rejected", "Unsupported command or an application guard is closed", repository.Revision);
             }
-            var receipt = new BusinessReceipt("Persisted", "Application command committed", repository.Revision);
-            if (repository.PriorCommand(command) is null) repository.SaveCommand(command, receipt);
-            return receipt;
+            return repository.PriorCommand(command) ?? throw new InvalidDataException("Accepted command lacks a durable receipt");
         }
         finally { gate.Release(); }
     }

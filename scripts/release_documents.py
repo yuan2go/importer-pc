@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
+    'docs/runtime/architecture-quality-remediation-01.md': 'ARCHITECTURE-QUALITY-REMEDIATION-01.md',
     'docs/runtime/management-mode-01.md': 'MANAGEMENT-MODE.md',
     'docs/runtime/parameter-inheritance-02.md': 'PARAMETER-INHERITANCE.md',
     'docs/runtime/commercial-productization-01-operations.md': 'PRODUCT-OPERATIONS.md',

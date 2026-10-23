@@ -71,9 +71,10 @@ public sealed partial class ParcelRuntime
             return new("Rejected", "Original stage unavailable, conflicting or in use", repository.Revision);
         var auditReason = Wire.Encode(new { OriginalOccurrence = pending.Id, OriginalSource = repository.ReceiptById(pending.Id)!.Source,
             Actor = ManagementEvidence, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
-        await ExecuteStageAsync(op, kind, true, pending.Id, auditReason, command).ConfigureAwait(false);
+        repository.AdmitCommand(command);
+        await ExecuteStageAsync(op, kind, true, pending.Id, auditReason).ConfigureAwait(false);
         ReleaseCompletedImages();
-        return new(repository.HasReceiptOutcomeBasis(pending.Id) ? "OutcomeKnownRawMissing" : "Unresolved",
-            "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.", repository.Revision);
+        return repository.CompleteCommand(command, new(repository.HasReceiptOutcomeBasis(pending.Id) ? "OutcomeKnownRawMissing" : "Unresolved",
+            "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.", repository.Revision));
     }
 }

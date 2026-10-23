@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
- <PropertyGroup><Version>1.5.0</Version></PropertyGroup>
+ <PropertyGroup><Version>1.5.1</Version></PropertyGroup>
  <ItemGroup><ProjectReference Include="../Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj"/>
  <EmbeddedResource Include="../../config/compatibility/wcs-to-plc.json" LogicalName="Ipc.BusinessCompatibility.json"/></ItemGroup>
 </Project>

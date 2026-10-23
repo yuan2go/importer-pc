@@ -146,6 +146,21 @@ static class ParcelCli
     {
         if (line == "snapshot") return Wire.Encode(await app.SnapshotAsync().ConfigureAwait(false));
         var c = Wire.Decode<BusinessCommand>(line);
+        // Credentials arrive on stdin, never command-line arguments or diagnostics.
+        // Use the same management service/approval policy as desktop clients.
+        if (c.Kind is "ConfigureManagementPassword" or "EnterManagementMode" or "ExitManagementMode")
+        {
+            var management = (IWorkstationAdministration)app;
+            string status;
+            if (c.Kind == "ConfigureManagementPassword") await management.ConfigureManagementPasswordAsync(c.Value!).ConfigureAwait(false);
+            else if (c.Kind == "ExitManagementMode") await management.ExitManagementModeAsync().ConfigureAwait(false);
+            else
+            {
+                status = await management.EnterManagementModeAsync(c.Value!).ConfigureAwait(false) ? "Authorized" : "Rejected";
+                return Wire.Encode(new BusinessReceipt(status, "Management credential checked", (await app.SnapshotAsync().ConfigureAwait(false)).Revision));
+            }
+            return Wire.Encode(new BusinessReceipt(c.Kind == "ConfigureManagementPassword" ? "PasswordConfigured" : "ManagementExited", "Management service completed", (await app.SnapshotAsync().ConfigureAwait(false)).Revision));
+        }
         if (c.Kind == "History") return Wire.Encode(await app.HistoryAsync(c.Owner is null ? long.MaxValue : long.Parse(c.Owner, System.Globalization.CultureInfo.InvariantCulture), c.Value is null ? 50 : int.Parse(c.Value, System.Globalization.CultureInfo.InvariantCulture)).ConfigureAwait(false));
         if (c.Kind == "Operation") return Wire.Encode(await app.OperationAsync(c.Owner!).ConfigureAwait(false));
         var result = c.Kind switch

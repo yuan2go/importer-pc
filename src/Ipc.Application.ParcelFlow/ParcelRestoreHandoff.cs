@@ -105,15 +105,17 @@ public sealed partial class ParcelRuntime
         }
         return proof;
     }
-    void ConfirmRestore(string? expectedId, string? reason)
+    void ConfirmRestore(BusinessCommand command)
     {
+        var expectedId = command.Owner; var reason = command.Value;
         if (!CanConfigure || string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) throw new InvalidOperationException("先暂停并认证维护，填写原请求/设备/外部事实核对说明");
         var proof = ReadRestoreHandoff();
         if (expectedId != proof.Id || factory.AdmissionFailure(Effective) is not null) throw new InvalidOperationException("交接身份变化或部署资格不足");
         using var sourceOwner = new ResourceLease(proof.SourceDirectory, ["application-owner"]);
+        repository!.AdmitCommand(command);
         var confirmation = new RestoreConfirmation(proof.Id, ManagementEvidence!.AuditActor, reason, DateTimeOffset.UtcNow);
         ExtensionStore.AtomicWrite(Path.Combine(directory!, "RESTORE-CONFIRMED.json"), confirmation);
-        repository!.Commit(null, "RestoreHandoffConfirmed", Wire.Encode(new { HandoffId = proof.Id, ConfirmationHash = Wire.Hash(Wire.Encode(confirmation)), Actor = confirmation.Actor, Reason = reason }), paused: true);
+        repository!.Commit(null, "RestoreHandoffConfirmed", Wire.Encode(new { HandoffId = proof.Id, ConfirmationHash = Wire.Hash(Wire.Encode(confirmation)), Actor = confirmation.Actor, Reason = reason }), paused: true, command: command);
     }
 }
 public sealed partial class ParcelRepository

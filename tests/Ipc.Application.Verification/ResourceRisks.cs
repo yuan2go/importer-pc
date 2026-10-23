@@ -15,6 +15,8 @@ static class ResourceRisks
         var factory = new DelayedFactory(new(launch));
         var app = new ParcelRuntime(launch, new WcsToPlcFlow(), factory);
         await app.StartAsync(CancellationToken.None);
+        try
+        {
         Pass(app.EmitReference("first", "001", "source-one"), "first observation enters the asynchronous worker");
         await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3));
         Pass(app.EmitReference("second", "002", "source-two") && !app.EmitReference("third", "003", "source-three"), "bounded ingress rejects overflow without blocking callback on WCS");
@@ -27,11 +29,15 @@ static class ResourceRisks
         try { await contender.StartAsync(CancellationToken.None); throw new Exception("second owner unexpectedly started"); }
         catch (IOException) { Pass(true, "second runtime cannot acquire retained application/device leases"); }
         finally { await contender.DisposeAsync(); }
-        factory.Release.TrySetResult(); await app.StopAsync(CancellationToken.None); await app.DisposeAsync();
+        }
+        finally { factory.Release.TrySetResult(); await app.StopAsync(CancellationToken.None); await app.DisposeAsync(); }
         Pass(!app.HasUnreleasedResources && !app.HasActiveWork, "released only after callback, worker and port termination");
-        await using var restarted = new ParcelRuntime(launch, new WcsToPlcFlow(), new ParcelCapabilityFactory(launch));
-        await restarted.StartAsync(CancellationToken.None); var s = await restarted.SnapshotAsync();
+        ParcelSnapshot s;
+        await using (var restarted = new ParcelRuntime(launch, new WcsToPlcFlow(), new ParcelCapabilityFactory(launch)))
+        {
+        await restarted.StartAsync(CancellationToken.None); s = await restarted.SnapshotAsync();
         Pass(s.BlockingReasons.Any(x => x.Contains("Overload")) && s.Operations.First().Wcs?.State == StageState.Unknown, "restart preserves overload marker and original cancelled-stage uncertainty");
+        }
 
         // Candidate construction failure cannot become the persisted Effective authority.
         var activationLaunch = launch with { DataRoot = Path.Combine(root, "activation-data") };
@@ -40,7 +46,15 @@ static class ResourceRisks
             await first.StartAsync(CancellationToken.None); var initial = await first.SnapshotAsync();
             await first.CommandAsync(new(Wire.Id(), initial.Revision, "Pause")); await ManagementModeFixture.Authorize(first); initial = await first.SnapshotAsync();
             var candidate = initial.Configuration.Effective with { Wcs = initial.Configuration.Effective.Wcs! with { Parameters = new(initial.Configuration.Effective.Wcs.Parameters) { ["decision"] = "reject" } } };
-            Pass((await first.StageConfigurationAsync(initial.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "PendingRestart", "valid candidate is saved separately before construction");
+            BusinessReceipt staged = new("NotRun", "Drain not yet checked", 0);
+            for (var attempt = 0; attempt < 100; attempt++)
+            {
+                if ((await first.SnapshotAsync()).Availability?.Configure != true) { await Task.Delay(20); continue; }
+                staged = await first.StageConfigurationAsync(initial.Configuration.Revision, candidate, "Synthetic directed configuration verification");
+                if (staged.Status != "Rejected" || staged.Reason != "Pause and authenticate maintenance before configuration") break;
+                await Task.Delay(20);
+            }
+            Pass(staged.Status == "PendingRestart", "valid candidate is saved separately before construction: " + Wire.Encode(staged));
         }
         var failed = new ParcelRuntime(activationLaunch, new WcsToPlcFlow(), new FailingFactory(new(activationLaunch)));
         try { await failed.StartAsync(CancellationToken.None); throw new Exception("candidate constructor unexpectedly succeeded"); }
@@ -49,6 +63,7 @@ static class ResourceRisks
         await using (var previous = new ParcelRuntime(activationLaunch, new WcsToPlcFlow(), new ParcelCapabilityFactory(activationLaunch)))
         {
             await previous.StartAsync(CancellationToken.None); var current = await previous.SnapshotAsync();
+            await ManagementModeFixture.Authorize(previous); current = await previous.SnapshotAsync();
             Pass(current.Configuration.Status == "ActivationFailed" && !current.Configuration.Effective.Wcs!.Parameters.ContainsKey("decision") && current.Configuration.Pending!.Wcs!.Parameters["decision"] == "reject",
                 "next controlled startup uses original Effective and retains failed candidate without automatic reactivation");
         }
@@ -63,6 +78,7 @@ static class ResourceRisks
         try { await raw.DisposeAsync(); } catch (InvalidOperationException) { Pass(!raw.HasUnreleasedResources, "terminal failure remains reported after safe release"); }
         await using var recovered = new ParcelRuntime(rawLaunch, new WcsToPlcFlow(), new ParcelCapabilityFactory(rawLaunch));
         await recovered.StartAsync(CancellationToken.None); s = await recovered.SnapshotAsync();
+        await ManagementModeFixture.Authorize(recovered); s = await recovered.SnapshotAsync();
         var op = s.Operations.Single();
         Pass(op.Wcs?.State == StageState.Accepted && op.Plc is { State: StageState.Prepared, Attempts: 0 }, "original durable WCS raw replay atomically restores accepted slot and never-attempted PLC intent without external replay");
         var snapshot = await recovered.SnapshotAsync(); snapshot.Configuration.Effective.Plc!.Parameters["decision"] = "reject";
@@ -91,7 +107,7 @@ static class ResourceRisks
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public async Task<StageReply> ResolveSlotAsync(FrozenRequest request, CancellationToken token)
-        { entered.TrySetResult(); await release.Task; return await inner.ResolveSlotAsync(request, token); }
+        { entered.TrySetResult(); await release.Task.WaitAsync(TimeSpan.FromSeconds(10)); return await inner.ResolveSlotAsync(request, token); }
         public Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken t) => inner.QueryAsync(original, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();

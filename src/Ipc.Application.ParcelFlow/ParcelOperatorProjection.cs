@@ -37,6 +37,8 @@ public sealed partial class ParcelRuntime
             Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null,
             Confirmation = s.Configuration.Confirmation is null ? null : s.Configuration.Confirmation with { OriginalEnvelopeBase64 = null }
         },
-        Operations = s.Operations.Select(OperatorOperation).ToArray()
+        Operations = s.Operations.Select(OperatorOperation).ToArray(),
+        Inputs = s.Inputs?.Select(input => input with
+        { ReaderBinding = input.ReaderBinding is null ? null : OperatorReader(input.ReaderBinding) }).ToArray()
     };
 }

@@ -26,7 +26,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     ParcelPorts? ports;
     string? directory, overloadMarker;
     int accepting, overload, pendingObservations;
-    sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator);
+    sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator, DateTimeOffset ReceivedAt);
     bool started, stopped, disposed;
     string? failure;
     readonly OperatorSession session = new();
@@ -216,7 +216,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             var overflow = raw.Length > BarcodeFiltering.MaximumCandidates || raw.Any(x => x is null || x.Length > BarcodeFiltering.MaximumRawLength);
             observation = observation with { Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
                 CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
-            item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
+            item = new ParcelObservation(observation, identity, DateTimeOffset.UtcNow); Interlocked.Increment(ref pendingObservations);
         }
         if (positionQueues[positionId].Writer.TryWrite(item)) return true;
         if (observation is not null) Interlocked.Decrement(ref pendingObservations);
@@ -235,7 +235,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 await gate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator).ConfigureAwait(false);
+                    if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
                     else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
                 finally
@@ -255,13 +255,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception ex)
         { failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); throw; }
     }
-    async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator)
+    async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
     {
         if (!readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
-            o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
-            reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true || !reader.AcceptSequence(o))
-        { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/freshness/reader confirmation; " + Wire.Encode(o)); return; }
+            o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
+        { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         var priors = repository!.FindIdentities(o.AdmissionId, observationId);
         // Re-observing an existing entity uses its original policy, never a newly applied rule.
@@ -282,6 +281,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
             return;
         }
+        // This is a new event from the current registration, not an old callback.
+        // Queue age/health must close this input's display as well as admission.
+        // Existing identities above retain their original responsibility and policy.
+        if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
+        { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
+        if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
@@ -355,9 +361,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         operations[op.Id] = op;
         await AdvanceAsync(op).ConfigureAwait(false);
     }
-    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null)
+    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null, BusinessCommand? command = null)
     {
-        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement); operations[op.Id] = op;
+        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command); operations[op.Id] = op;
         if (input is not null) latestInputs[input.PositionId] = input;
         journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
     }

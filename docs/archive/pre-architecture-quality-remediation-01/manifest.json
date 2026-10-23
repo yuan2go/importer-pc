@@ -1,0 +1,48 @@
+{
+  "SourceCommit": "0c5d7d25e572e80f23522c9ff7b562db920628a3",
+  "Files": [
+    {
+      "Path": "README.md",
+      "Archive": "README.md.txt",
+      "Sha256": "a387f53c64d3b04a7e1561489917ec2303b5ea2296bffb209fc5aaece026a5ea",
+      "GitBlobSha256": "061e588fa638fd9cc333041cb3fae83c87ce9558664edf497a61b04dfc6989f9"
+    },
+    {
+      "Path": "docs/INDEX.md",
+      "Archive": "docs__INDEX.md.txt",
+      "Sha256": "672604026e4f2e2faeb6ee1273d342bb8a3c6b478626e4672cfdc1884aa86ee1",
+      "GitBlobSha256": "c8ded555553aebe910a7e45d3c892bf12b94be814c2123382eab74e5346541cd"
+    },
+    {
+      "Path": "docs/runtime/getting-started.md",
+      "Archive": "docs__runtime__getting-started.md.txt",
+      "Sha256": "1502a23494895b653183521df735c3d09119571b0a3c60919fde51a665d3e490",
+      "GitBlobSha256": "fdf6e0bba5fccd7d910f6c0dd22c84a933725b30696dfe5a37911c884a1e29ea"
+    },
+    {
+      "Path": "docs/runtime/startup-deployment-02.md",
+      "Archive": "docs__runtime__startup-deployment-02.md.txt",
+      "Sha256": "baa00682730f2b49aa22b057f67fd1a4ea321495d5d1d0706fb3cecf590f99a2",
+      "GitBlobSha256": "3b5850a39d9a1aa526677f6612e81c8e7cf657f4394dd5cdcd8dba64db7dc10c"
+    },
+    {
+      "Path": "docs/runtime/application-architecture-22.md",
+      "Archive": "docs__runtime__application-architecture-22.md.txt",
+      "Sha256": "10092d30179bc7a2bec74657c2b17bc802bee4c3becc4850e756e279f5fda61d",
+      "GitBlobSha256": "d39e889050bb56628d6464142bd14589d238bba56a6410ac80892932979969ac"
+    },
+    {
+      "Path": "docs/runtime/version-compatibility-01.md",
+      "Archive": "docs__runtime__version-compatibility-01.md.txt",
+      "Sha256": "3d1a79036d683636f5dca71035c7b8be907cbb0addab79fbc4609edd79bfb4c9",
+      "GitBlobSha256": "6ce8eb58998cc6cc3852834bd001f7db9196e4e04823e64588aa973fd8b3e302"
+    },
+    {
+      "Path": "docs/extensions/developer-guide.md",
+      "Archive": "docs__extensions__developer-guide.md.txt",
+      "Sha256": "90555f3e4bdce189c873ef6d5d4576523f9f3d57d174e93742e230c35afb361c",
+      "GitBlobSha256": "786301e9303c6bcc41751ab7712f1d5ab286724029dc19f73c7a9025a16a3f27"
+    }
+  ],
+  "OriginalBytes": "Windows checkout bytes captured before edits; GitBlobSha256 separately identifies the baseline Git blob before checkout EOL conversion."
+}

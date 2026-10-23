@@ -141,9 +141,17 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null)
     {
         using var tx = db.BeginTransaction();
+        if (interruptedCommand is not null)
+        {
+            using var close = db.CreateCommand(); close.Transaction = tx;
+            close.CommandText = "UPDATE parcel_commands SET receipt=$receipt WHERE id=$id AND json_extract(receipt,'$.Status')='Pending' AND EXISTS(SELECT 1 FROM parcel_audit WHERE event='CommandAdmitted' AND json_extract(detail,'$.Id')=$id)";
+            close.Parameters.AddWithValue("$id", interruptedCommand);
+            close.Parameters.AddWithValue("$receipt", Wire.Encode(new BusinessReceipt("Interrupted", "Inspected under command " + command!.Id + "; original business/configuration/receipt facts retained; no automatic execution", Revision + 1)));
+            if (close.ExecuteNonQuery() != 1) throw new InvalidOperationException("Original pending command changed or admission evidence is missing");
+        }
         if (measurement is not null)
         {
             using var sample = db.CreateCommand(); sample.Transaction = tx;
@@ -244,10 +252,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (command is not null)
         {
-            using var commandReceipt = db.CreateCommand(); commandReceipt.Transaction = tx;
-            commandReceipt.CommandText = "INSERT INTO parcel_commands VALUES($id,$hash,$receipt)";
-            commandReceipt.Parameters.AddWithValue("$id", command.Id); commandReceipt.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(command)));
-            commandReceipt.Parameters.AddWithValue("$receipt", Wire.Encode(new BusinessReceipt("Persisted", "Application command committed", Revision + 1))); commandReceipt.ExecuteNonQuery();
+            WriteCommand(tx, command, commandResult ?? new("Persisted", "Application command committed", Revision + 1));
         }
         tx.Commit();
         if(operation?.Wcs?.Request.IntegrationRequest is {} allocated)lastIntegrationRequestId=Math.Max(lastIntegrationRequestId,allocated.RequestId);
@@ -347,10 +352,38 @@ public sealed partial class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader();
         return !r.Read() ? null : r.GetString(0) != Wire.Hash(Wire.Encode(c)) ? new("Rejected", "Command ID reused with changed content", Revision) : Wire.Decode<BusinessReceipt>(r.GetString(1));
     }
-    public void SaveCommand(BusinessCommand c, BusinessReceipt result)
+    void WriteCommand(Microsoft.Data.Sqlite.SqliteTransaction tx, BusinessCommand c, BusinessReceipt result)
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "INSERT INTO parcel_commands VALUES($id,$hash,$receipt)";
-        cmd.Parameters.AddWithValue("$id", c.Id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(c))); cmd.Parameters.AddWithValue("$receipt", Wire.Encode(result)); cmd.ExecuteNonQuery();
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx;
+        // Only an admitted, unfinished command can acquire its final receipt. Existing
+        // completed receipts (including historical ones) are immutable.
+        cmd.CommandText = "INSERT INTO parcel_commands VALUES($id,$hash,$receipt) ON CONFLICT(id) DO UPDATE SET receipt=excluded.receipt WHERE hash=excluded.hash AND json_extract(receipt,'$.Status')='Pending'";
+        cmd.Parameters.AddWithValue("$id", c.Id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(c))); cmd.Parameters.AddWithValue("$receipt", Wire.Encode(result));
+        if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Command identity already completed or content changed");
+    }
+    internal void AdmitCommand(BusinessCommand c)
+    {
+        Commit(null, "CommandAdmitted", Wire.Encode(new { c.Id, c.Kind, c.Owner, Policy = "Interrupted commands are inspected, never automatically replayed" }), command: c,
+            commandResult: new("Pending", "Command identity persisted; inspect business/configuration/receipt facts before a new command; this ID never re-executes", Revision + 1));
+        Boundary?.Invoke("AfterCommandAdmitted");
+    }
+    internal BusinessReceipt CompleteCommand(BusinessCommand c, BusinessReceipt result)
+    {
+        result = result with { Revision = Revision + 1 };
+        Commit(null, "CommandCompleted", Wire.Encode(new { c.Id, Result = result.Status }), command: c, commandResult: result);
+        return result;
+    }
+    internal string[] PendingCommands()
+    {
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id FROM parcel_commands WHERE json_extract(receipt,'$.Status')='Pending' ORDER BY rowid DESC LIMIT 32";
+        using var r = c.ExecuteReader(); List<string> ids = []; while (r.Read()) ids.Add(r.GetString(0)); return ids.ToArray();
+    }
+    internal bool IsPendingCommand(string? id)
+    {
+        if (id is null) return false;
+        using var c = db.CreateCommand(); c.CommandText = "SELECT 1 FROM parcel_commands WHERE id=$id AND json_extract(receipt,'$.Status')='Pending'";
+        c.Parameters.AddWithValue("$id", id); return c.ExecuteScalar() is not null;
     }
     public long StorageBytes
     {

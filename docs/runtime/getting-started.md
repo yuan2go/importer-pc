@@ -1,4 +1,4 @@
-> 2026-10-21 安装与首配最新增量见[当前操作说明](startup-experience-02.md)：中文用途、可选条码筛选、文件导入、保存并启动和未完成续配。下文原版本及原验收保持身份。
+> 2026-10-21 安装与首配最新增量见[当前操作说明](startup-experience-02.md)：中文用途、可选条码筛选、文件导入及未完成续配；保存配置与开始作业分开，保存不代表生效或启动。下文原版本及原验收保持身份。
 
 > Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
 
@@ -8,7 +8,7 @@
 
 # 首次运行：选择已安装产品
 
-Sportmaster、DirectPlc、WcsToPlc使用`Ipc.Assembly`及`ParcelConfiguration`；Supply使用`Ipc.Product`及`StationConfig`，入口和命令分别读取。软件暂停不是安全急停。Windows实际NOT_RUN，真实SDK/合同/现场BLOCKED。
+Sportmaster、DirectPlc、WcsToPlc使用`Ipc.Assembly`及`ParcelConfiguration`；Supply使用`Ipc.Product`及`StationConfig`，入口和命令分别读取。软件暂停不是安全急停。下述早期Windows未验记录保持原范围；后续本机证据按索引逐版读取，不能代替真实SDK/合同/现场验收。
 
 Windows安装、普通账户、启动/快捷方式、升级中断/回退修复、保留数据卸载及备份/诊断的当前完整路径见[Windows交付指南](windows-application-delivery.md)。
 
@@ -30,9 +30,9 @@ dotnet /new/unpacked/app/Ipc.Assembly.dll --config /new/unpacked/app/config --da
 
 等待本位SlotResolved；Sportmaster不发PLC。最新输入的Admitted/Rejected/Blocked/Duplicate与作业主链分别读取；无码、多码或非法码不会创建新Operation，旧终结结果不能解释本次失败观察。旧未决请求及责任仍保留，不因新观察清除。PLC业务必须分别查看PlcAccepted和权威PhysicalCompleted。右位用right及新身份；其他业务用main。结束输入`quit`，等待完整Stop/Dispose。登录/重量/图片可选旅程、完整配置与设备接入见[Application指南](application-architecture-22.md)，故障恢复、容量、维护及扩展操作见[维护指南](architecture-quality-closure-01.md)和[扩展开发](../extensions/developer-guide.md)。
 
-Parcel使用数据库7，SQL1–6原样继承，SQL7追加数字请求唯一归属/范围退役；RCS原报文/拆包语义继承SQL6；DB3/4/5历史根升级和资料责任按维护指南执行，不使用新seed覆盖旧账。旧配置文件未记录资源成功时，启动保留原JSON/hash并标记ConfirmationRequired；资源实际成功后仍暂停，先在维护页读取待确认原账、核对证据并确认，再显式Resume。CLI的ConfirmConfiguration使用读取时的`RuntimeId`、`Configuration.Revision`、`Confirmation.EffectiveHash`组成Owner=`runtimeIdN:configurationRevision:effectiveSha256`（runtimeIdN为无连字符32位GUID），Value为维护检查说明，ExpectedRevision为提交时应用Revision；任一身份/修订变化须重新检查，不自动改用最新内容确认。
+Parcel使用数据库8，SQL1–7及checksum原样继承；SQL7追加数字请求唯一归属/范围退役，SQL8是首配修复、恢复交接和备份策略的读取者屏障；RCS原报文/拆包语义继承SQL6；DB3/4/5历史根升级和资料责任按维护指南执行，不使用新seed覆盖旧账。旧配置文件未记录资源成功时，启动保留原JSON/hash并标记ConfirmationRequired；资源实际成功后仍暂停，先在维护页读取待确认原账、核对证据并确认，再显式Resume。CLI的ConfirmConfiguration使用读取时的`RuntimeId`、`Configuration.Revision`、`Confirmation.EffectiveHash`组成Owner=`runtimeIdN:configurationRevision:effectiveSha256`（runtimeIdN为无连字符32位GUID），Value为维护检查说明，ExpectedRevision为提交时应用Revision；任一身份/修订变化须重新检查，不自动改用最新内容确认。
 
-配置维护先Pause，再AuthorizeMaintenance（Owner=maintenance、Value=SIMULATION_ONLY仅限参考认证）。schema3结构化草稿保留全部reader、投递位、每位能力绑定及未编辑策略；提供者从已安装精确身份选择，先做字段校验再做完整候选校验。加载时固定配置Revision，自动刷新不能推进草稿修订；高级JSON默认只读；通过“表单生成高级JSON并切换”或“将当前高级JSON加载到表单”显式切换同一草稿，不隐式互相覆盖。ValidateConfiguration只校验；StageConfiguration用加载时配置Revision、Owner为维护原因、Value为完整JSON，保存Pending。原件清偿后受控退出/重启，全部资源成功才确认Effective；中断保留旧Effective和候选，ActivationFailed须比较原尝试后显式重新保存。冲突保留草稿，重新加载比较，不自动覆盖。
+配置维护先进入管理模式（首次按真实设密/批准流程设置，无默认管理密码），再Pause并等待排空。AuthorizeMaintenance的历史SIMULATION_ONLY示例不再作为当前管理授权。schema3结构化草稿保留全部reader、投递位、每位能力绑定及未编辑策略；提供者从已安装精确身份选择，先做字段校验再做完整候选校验。加载时固定配置Revision，自动刷新不能推进草稿修订；高级JSON默认只读；通过“表单生成高级JSON并切换”或“将当前高级JSON加载到表单”显式切换同一草稿，不隐式互相覆盖。ValidateConfiguration只校验；StageConfiguration用加载时配置Revision、Owner为维护原因、Value为完整JSON，保存Pending。原件清偿后受控退出/重启，全部资源成功才确认Effective；中断保留旧Effective和候选，ActivationFailed须比较原尝试后显式重新保存。冲突保留草稿，重新加载比较，不自动覆盖。
 
 ## Supply兼容产品
 

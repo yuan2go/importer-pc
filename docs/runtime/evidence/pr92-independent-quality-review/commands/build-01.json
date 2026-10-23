@@ -1,0 +1,16 @@
+{
+  "Name": "build-01",
+  "Program": "dotnet",
+  "Arguments": [
+    "build",
+    "tests/Ipc.Application.Verification",
+    "-c",
+    "Release",
+    "-p:RestoreLockedMode=true"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:06:32.8444599+00:00",
+  "FinishedAt": "2026-10-23T12:07:18.0779493+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\build-01.log"
+}

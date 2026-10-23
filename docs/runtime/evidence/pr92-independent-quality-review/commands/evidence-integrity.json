@@ -1,0 +1,12 @@
+{
+  "Name": "evidence-integrity",
+  "Program": "python",
+  "Arguments": [
+    "D:/audits/importer-pc/AQA01-pr92-independent/verify-evidence.py"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:08:35.9348988+00:00",
+  "FinishedAt": "2026-10-23T12:08:37.5443542+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\evidence-integrity.log"
+}

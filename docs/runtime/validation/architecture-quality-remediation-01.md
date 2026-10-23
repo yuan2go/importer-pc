@@ -1,5 +1,7 @@
 # AQA01 验证记录
 
+PR92后续独立复核另见[新报告](../../reviews/pr92-independent-quality-review.md)及[独立证据](../evidence/pr92-independent-quality-review/README.md)：重新执行F01/F02边界及相关旧套件，补足CI，修正F06设计入口遗漏。以下是原整改形成时记录，原命令、失败、SourceCommit和未验范围不改标。
+
 本轮基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`。执行结果、冻结产物身份和证据索引已补录；本页不继承原报告的PASS，也不将实现完成当成运行通过。
 
 原只读审查：`D:\audits\importer-pc\AQA01-20261023-1622`，保持原字节和结论。整改逐次日志/命令/退出码：`D:\audits\importer-pc\AQA01-remediation-20261023`。材料仅本机合成与loopback，口令不输出；原失败日志不删除。

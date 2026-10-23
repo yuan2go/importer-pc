@@ -1,0 +1,106 @@
+2026-10-23T12:12:37.7927293Z Ubuntu
+2026-10-23T12:12:37.7930444Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-23T12:12:45.1196678Z ##[group]Checking out the ref
+2026-10-23T12:12:45.8909039Z HEAD is now at d58d878 Merge fb8a2c405059ce6f523b34340e215e2810307e8a into 0c5d7d25e572e80f23522c9ff7b562db920628a3
+2026-10-23T12:13:12.2428962Z EvidenceRoot=/tmp/ipc17-verification-219e930931174df88948455adde1407b
+2026-10-23T12:13:12.4895327Z PASS AQA01: first fresh left input enqueued
+2026-10-23T12:13:12.5460202Z PASS AQA01: two fresh observations accepted during first external wait
+2026-10-23T12:13:13.8734930Z PASS AQA01: queue-expired current input is durable rejection without an operation/request or borrowed prior slot
+2026-10-23T12:13:13.8900297Z PASS AQA01: actual shared UI projection suppresses left delivery instruction while right stays independent
+2026-10-23T12:13:13.9145596Z PASS AQA01: old sequence cannot overwrite current rejected input
+2026-10-23T12:13:13.9384078Z PASS AQA01: source already stale at ingress remains audit-only and cannot poison sequence
+2026-10-23T12:13:13.9679383Z PASS AQA01: direct runtime restart restores queue-expired rejection and does not resurrect previous terminal slot
+2026-10-23T12:13:14.2084521Z PASS AQA01: old registration fenced after real reconnect
+2026-10-23T12:13:14.2125106Z PASS AQA01: resume only after controlled reconnect
+2026-10-23T12:13:14.2415124Z PASS AQA01: duplicate old entity creates no request and cannot display a new-epoch slot
+2026-10-23T12:13:14.3182435Z PASS AQA01: restart restores persisted failed input without resurrecting terminal slot; prior operations remain history
+2026-10-23T12:13:14.3617528Z PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+2026-10-23T12:13:14.3633112Z PASS AQA01: untrusted high sequence cannot overwrite current input: future-source
+2026-10-23T12:13:14.3643640Z PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+2026-10-23T12:13:14.3867999Z PASS AQA01: untrusted high sequence cannot overwrite current input: stale-source
+2026-10-23T12:13:14.3884921Z PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+2026-10-23T12:13:14.3899291Z PASS AQA01: untrusted high sequence cannot overwrite current input: 
+2026-10-23T12:13:14.3899691Z PASS AQA01: wrong epoch/device fenced before ingress
+2026-10-23T12:13:14.3900102Z PASS AQA01: next ordinary reader sequence enters after rejected high sequences
+2026-10-23T12:13:14.4127296Z PASS AQA01: future/stale/missing-event high sequences do not poison the next genuine entity
+2026-10-23T12:13:14.6738697Z PASS AQA01: failed real ArchiveHistory rolls back command receipt, business archive and revision together
+2026-10-23T12:13:14.6789849Z PASS AQA01: same command can commit once after proven transaction rollback, then replays its exact receipt
+2026-10-23T12:13:15.3723494Z PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+2026-10-23T12:13:15.3775837Z PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+2026-10-23T12:13:15.8861089Z PASS AQA01: actual receipt process crash at ReceiptQueryAfterAdmission: 
+2026-10-23T12:13:16.0430395Z PASS AQA01: parent real management re-entry
+2026-10-23T12:13:16.0431390Z PASS AQA01: query crash retains identity; same ID never re-queries and changed content is rejected: ReceiptQueryAfterAdmission
+2026-10-23T12:13:16.0459773Z PASS AQA01: query recovery preserves original missing occurrence/request and creates no submit or replay Query: ReceiptQueryAfterAdmission
+2026-10-23T12:13:16.6509908Z PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+2026-10-23T12:13:16.6535082Z PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+2026-10-23T12:13:17.0752125Z PASS AQA01: actual receipt process crash at ReceiptQueryAfterRawDurable: 
+2026-10-23T12:13:17.1951172Z PASS AQA01: parent real management re-entry
+2026-10-23T12:13:17.1955230Z PASS AQA01: query crash retains identity; same ID never re-queries and changed content is rejected: ReceiptQueryAfterRawDurable
+2026-10-23T12:13:17.1968055Z PASS AQA01: query recovery preserves original missing occurrence/request and creates no submit or replay Query: ReceiptQueryAfterRawDurable
+2026-10-23T12:13:17.1974756Z PASS AQA01: restart applies durable Query locally; interrupted original-occurrence inspection is not silently completed
+2026-10-23T12:13:17.8234647Z PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+2026-10-23T12:13:17.8253390Z PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+2026-10-23T12:13:17.9399945Z PASS AQA01: in-flight real management re-entry
+2026-10-23T12:13:17.9467718Z PASS AQA01: concurrent identical command returns Pending; changed content never starts another Query
+2026-10-23T12:13:17.9474696Z PASS AQA01: in-flight external call cannot be inspected as interrupted
+2026-10-23T12:13:17.9549036Z PASS AQA01: final receipt replaces only Pending and exact replay stays stable: authoritative Query
+2026-10-23T12:13:17.9567927Z PASS AQA01: cancellation or Query never clears original raw custody or resubmits business request
+2026-10-23T12:13:18.4676945Z PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+2026-10-23T12:13:18.4697874Z PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+2026-10-23T12:13:18.6046843Z PASS AQA01: in-flight real management re-entry
+2026-10-23T12:13:18.6070570Z PASS AQA01: concurrent identical command returns Pending; changed content never starts another Query
+2026-10-23T12:13:18.6078625Z PASS AQA01: in-flight external call cannot be inspected as interrupted
+2026-10-23T12:13:18.6109567Z PASS AQA01: final receipt replaces only Pending and exact replay stays stable: authorization revoked
+2026-10-23T12:13:18.6123149Z PASS AQA01: cancellation or Query never clears original raw custody or resubmits business request
+2026-10-23T12:13:18.6573019Z PASS AQA01: pause before associating original weight
+2026-10-23T12:13:19.2640467Z PASS AQA01: UntilDispatch expired same-parcel weight remains original evidence and prevents PLC/Resume; recovery fixture policy does not bypass this guard
+2026-10-23T12:13:19.3185649Z PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: before authorization
+2026-10-23T12:13:19.5532155Z PASS AQA01: real management password authorizes synthetic TCP root
+2026-10-23T12:13:19.5533221Z PASS AQA01: authorized projection retains original descriptor and raw T1 payload
+2026-10-23T12:13:19.5554089Z PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: explicit exit
+2026-10-23T12:13:19.6598448Z PASS AQA01: re-entry retains original management credential
+2026-10-23T12:13:19.6634425Z PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: real session expiry
+2026-10-23T12:13:19.7663918Z PASS AQA01: re-entry after expiry
+2026-10-23T12:13:19.8733487Z PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: password change revokes session
+2026-10-23T12:13:19.9755911Z PASS AQA01: new password re-entry
+2026-10-23T12:13:19.9767547Z PASS AQA01: projection never mutates durable original inputs or requests
+2026-10-23T12:13:20.0036340Z PASS AQA01: real CAS saves TCP Pending while original operation remains frozen
+2026-10-23T12:13:20.0204935Z PASS AQA01: live Effective/Pending/Frozen and complete backup recognize built-in TCP without extension references
+2026-10-23T12:13:20.0258879Z PASS AQA01: unknown future reader in a valid-custody backup still fails closed
+2026-10-23T12:13:20.6665785Z PASS AQA01: actual process crash at AfterAbandonedDurable: 
+2026-10-23T12:13:20.6699523Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:20.6910591Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterAbandonedDurable
+2026-10-23T12:13:20.6911182Z PASS AQA01: same ID changed content rejected before revision or guard: AfterAbandonedDurable
+2026-10-23T12:13:20.6911803Z PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+2026-10-23T12:13:21.4177659Z PASS AQA01: actual process crash at AfterImageReleaseDurable: 
+2026-10-23T12:13:21.4198440Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:21.4350261Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterImageReleaseDurable
+2026-10-23T12:13:21.4351131Z PASS AQA01: same ID changed content rejected before revision or guard: AfterImageReleaseDurable
+2026-10-23T12:13:21.4351919Z PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+2026-10-23T12:13:21.9709655Z PASS AQA01: actual process crash at AfterContinuationAdmitted: 
+2026-10-23T12:13:21.9730425Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:21.9902131Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterContinuationAdmitted
+2026-10-23T12:13:21.9902521Z PASS AQA01: same ID changed content rejected before revision or guard: AfterContinuationAdmitted
+2026-10-23T12:13:21.9909076Z PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+2026-10-23T12:13:22.4940364Z PASS AQA01: actual process crash at AfterCommandAdmitted: 
+2026-10-23T12:13:22.4955490Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:22.5041513Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterCommandAdmitted
+2026-10-23T12:13:22.5042281Z PASS AQA01: same ID changed content rejected before revision or guard: AfterCommandAdmitted
+2026-10-23T12:13:22.5046699Z PASS AQA01: interrupted identity visible alongside actual file confirmation state; replay does not re-confirm
+2026-10-23T12:13:22.5050174Z PASS AQA01: ordinary mode cannot close an interrupted command
+2026-10-23T12:13:22.6089830Z PASS AQA01: real parent management re-entry after child crash
+2026-10-23T12:13:22.6116909Z PASS AQA01: explicit guarded inspection closes only command responsibility, retaining configuration and original guards
+2026-10-23T12:13:23.1218894Z PASS AQA01: actual process crash at AfterConfigurationConfirmed: 
+2026-10-23T12:13:23.1234509Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:23.1351015Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterConfigurationConfirmed
+2026-10-23T12:13:23.1352004Z PASS AQA01: same ID changed content rejected before revision or guard: AfterConfigurationConfirmed
+2026-10-23T12:13:23.1352743Z PASS AQA01: interrupted identity visible alongside actual file confirmation state; replay does not re-confirm
+2026-10-23T12:13:23.1353343Z PASS AQA01: ordinary mode cannot close an interrupted command
+2026-10-23T12:13:23.2413744Z PASS AQA01: real parent management re-entry after child crash
+2026-10-23T12:13:23.2432978Z PASS AQA01: explicit guarded inspection closes only command responsibility, retaining configuration and original guards
+2026-10-23T12:13:23.7725736Z PASS AQA01: actual process crash at AfterArchiveCommit: 
+2026-10-23T12:13:23.7745934Z PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+2026-10-23T12:13:23.7825948Z PASS AQA01: same-content replay returns exact stored receipt after restart: AfterArchiveCommit
+2026-10-23T12:13:23.7826344Z PASS AQA01: same ID changed content rejected before revision or guard: AfterArchiveCommit
+2026-10-23T12:13:23.7832003Z PASS AQA01: archive and command identity share one committed transaction
+2026-10-23T12:13:23.7839952Z PASS AQA01 COMPLETE

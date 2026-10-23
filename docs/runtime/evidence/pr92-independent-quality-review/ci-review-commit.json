@@ -1,0 +1,235 @@
+{
+  "CapturedAt": "2026-10-23 12:20:52 UTC",
+  "RunId": 39951602203,
+  "RunUrl": "https://github.com/yuan2go/importer-pc/actions/runs/39951602203",
+  "PullRequest": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/92",
+    "number": 92,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": false,
+    "body": "修复 AQA01-F01：同一有效 reader 会话的新输入进入队列时新鲜、处理时过期，现持久保存本次拒绝并停止显示上一件终结格口；旧会话、旧序号及进入时已陈旧的输入仍隔离。复核基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`，完成六项整改。\n\n- F02：本地业务事实与命令回执同事务；跨文件/Query先保存命令身份。中断保留 Pending、同 ID 不重执行，并支持受守卫的检查收口；原请求/原图/回执责任保持。\n- F03：离线消费者识别内置 tcp-line，覆盖 Effective/Pending/Frozen 与完整备份；未知引用继续拒绝。\n- F04：普通 Inputs.ReaderBinding 与配置/作业/历史采用同一参数遮蔽。\n- F05：真实管理模式 API、有界夹具取消及 finally 释放、Windows设备租约作用域、明确调用前拒绝的重试；修正实际 CLI 可选恢复和当前版本断言。\n- F06：相关当前入口及随包指引整理，旧检出原件与 Git blob 哈希分别保留，未改写旧介质或 D/RV。\n\n已通过 Release 构建、AQA01 定向、原架构/资源/配置确认/原回执/输入回归、17项兼容及2项文档测试；三个 portable 与 Sportmaster win-x64 同源构建/解包核对。真实解包进程完成双位取格口、BeforeMain/Attached 上传丢回执与重启核对，三份组合记录独立重验；7份参考端原执行账均 Executions=1。自包含 EXE 启动/退出和桌面环境报告通过。\n\n实现及四份产物固定源 `7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62`；后续测试驱动提交 `fe8d9dd` 和证据提交 `1525969` 未改变 src/config。业务 SM1.11.2、PLC1.5.1；ABI1.16、DB8及SQL1–8保持。\n\n可选恢复夹具明确使用已有 AtAssociation 策略；独立验证 UntilDispatch 过期重量仍阻止 PLC/Resume。原失败及证据采集索引同名覆盖的纠偏均公开记载，最终记录来自真实重跑。\n\n[实现说明](https://github.com/yuan2go/importer-pc/blob/152596943480166c2399d1f4569841363b0d7c68/docs/runtime/architecture-quality-remediation-01.md) · [完整验证/退出码/冻结SHA](https://github.com/yuan2go/importer-pc/blob/152596943480166c2399d1f4569841363b0d7c68/docs/runtime/validation/architecture-quality-remediation-01.md) · [原证据索引](https://github.com/yuan2go/importer-pc/blob/152596943480166c2399d1f4569841363b0d7c68/docs/runtime/evidence/architecture-quality-remediation-01/RESULTS.json)\n\n按用户要求只创建 main PR，不合并、不发布安装包、不操作生产设备。原生窗口/安装/UAC/保护Store变更未执行；真实SDK、真实协议和现场仍待相应条件验收。原工作区及四个未跟踪附件保持原样。",
+    "title": "fix: 整改 AQA01 六项问题，优先修复过期输入沿用旧格口",
+    "base": "main",
+    "base_sha": "0c5d7d25e572e80f23522c9ff7b562db920628a3",
+    "head": "codex/architecture-quality-remediation-01",
+    "head_sha": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+    "head_repo_id": 1421087986,
+    "head_repo_full_name": "yuan2go/importer-pc",
+    "merge_commit_sha": "d58d878849d599f3563dd0b1363bd917c5ea0087",
+    "user": {
+      "login": "yuan2go",
+      "name": "yuan2go",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/96060646?v=4",
+      "id": 96060646
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-23T11:15:29Z",
+    "updated_at": "2026-10-23T12:12:31Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 4,
+    "changed_files": 167,
+    "additions": 7142,
+    "deletions": 85,
+    "display_url": "https://github.com/yuan2go/importer-pc/pull/92",
+    "display_title": "fix: 整改 AQA01 六项问题，优先修复过期输入沿用旧格口"
+  },
+  "Jobs": {
+    "jobs": [
+      {
+        "id": 120407126226,
+        "name": "frozen-sportmaster",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39951602203,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run git config --global core.longpaths true",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Clean installation protected-directory regression",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Policy rejection tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Freeze only the first commercial composition",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Protected local administrator boundary on Windows",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Native first-configuration and parameter-shell regression",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Native frozen journeys and separate production rejection",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Native visual interactions on the same frozen medium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Package the verified medium as one native installer",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Retain installable same-source delivery",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Keep actual receipts including failures",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31
+          }
+        ]
+      },
+      {
+        "id": 120407126522,
+        "name": "aqa01-boundaries",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39951602203,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Build AQA01 verification with locked dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Exercise ingress and command durability boundaries",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Retain the actual boundary result including failures",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          }
+        ]
+      }
+    ]
+  }
+}

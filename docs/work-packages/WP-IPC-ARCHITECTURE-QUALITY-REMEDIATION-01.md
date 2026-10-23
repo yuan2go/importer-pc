@@ -15,4 +15,6 @@
 
 ## 本轮收口
 
+PR92后续独立复核：[六项结论、边界与CI身份](../reviews/pr92-independent-quality-review.md)。F01/F02未复现新的确定业务缺陷；补充高序号信任边界、ArchiveHistory真实事务回滚、Query并发/撤权及进程崩溃验证，定向扩充至100项断言并纳入CI。F06设计入口的历史版本/SQL范围遗漏已澄清并保留原件。旧源码、介质、失败及D/RV保持身份，不合并PR。
+
 六项均已按范围整改；F01包含实际投影及直接重启验证，F02包含六个持久化边界子进程崩溃与中断检查。完整实现见[当前说明](../runtime/architecture-quality-remediation-01.md)，命令、退出码、冻结SHA、原失败及NOT_RUN/BLOCKED见[验证记录](../runtime/validation/architecture-quality-remediation-01.md)。实现冻结7024f1e，测试驱动fe8d9dd；三种portable及Sportmaster win-x64同源，未发布安装包。本包以main PR供复核，不合并；原D/RV与历史资格保持。

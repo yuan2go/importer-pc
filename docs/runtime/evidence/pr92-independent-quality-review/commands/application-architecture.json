@@ -1,0 +1,25 @@
+{
+  "Name": "application-architecture",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--application-architecture"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:14:33.4885197+00:00",
+  "FinishedAt": "2026-10-23T12:14:47.0451267+00:00",
+  "BaseCommit": "fb8a2c405059ce6f523b34340e215e2810307e8a",
+  "TestFiles": [
+    {
+      "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+      "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+    },
+    {
+      "Path": "ArchitectureQualityRemediation.cs",
+      "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+    }
+  ],
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\application-architecture.log"
+}

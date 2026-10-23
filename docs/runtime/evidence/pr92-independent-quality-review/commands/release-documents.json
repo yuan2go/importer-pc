@@ -1,0 +1,19 @@
+{
+  "Name": "release-documents",
+  "Program": "python",
+  "Arguments": [
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts",
+    "-p",
+    "test_release_documents.py",
+    "-v"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:09:26.8988937+00:00",
+  "FinishedAt": "2026-10-23T12:09:27.8155309+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\release-documents.log"
+}

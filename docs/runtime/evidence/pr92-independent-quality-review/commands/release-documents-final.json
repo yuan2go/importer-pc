@@ -1,0 +1,30 @@
+{
+  "Name": "release-documents-final",
+  "Program": "python",
+  "Arguments": [
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts",
+    "-p",
+    "test_release_documents.py",
+    "-v"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T12:11:14.9745019+00:00",
+  "FinishedAt": "2026-10-23T12:11:16.8006206+00:00",
+  "BaseCommit": "152596943480166c2399d1f4569841363b0d7c68",
+  "TestFiles": [
+    {
+      "Path": "ArchitectureQualityRemediation.Boundaries.cs",
+      "Sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182"
+    },
+    {
+      "Path": "ArchitectureQualityRemediation.cs",
+      "Sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+    }
+  ],
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-pr92-independent\\logs\\release-documents-final.log"
+}

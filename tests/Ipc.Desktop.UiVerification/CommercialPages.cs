@@ -33,27 +33,25 @@ static partial class Program
             var type = desktop.GetType("Ipc.Desktop.StartupRepairWindow", throwOnError: true)!;
             var first = (Window)Activator.CreateInstance(type, [offlineLaunch, null, true])!;
             first.Show();
-            for (var i = 0; i < 100 && !Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")); i++) await Task.Delay(20);
             var busyField = type.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
-            for (var i = 0; i < 100 && (bool)busyField.GetValue(first)!; i++) await Task.Delay(20);
-            Check(!(bool)busyField.GetValue(first)!, "native first configuration finishes asynchronous loading before user input is enabled");
-            first.UpdateLayout();
-            var taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
-            async Task SelectTask(int index)
+            var parameterEditor = await FirstConfigurationReady(first, busyField, Check);
+            var firstModel = parameterEditor.Model;
+            async Task SelectSection(int category)
             {
-                taskTabs.SelectedIndex = index;
+                // Read-only section inspection; user forward guards are exercised by --startup-experience.
+                parameterEditor.SelectCategory(category);
                 await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 first.UpdateLayout();
+                Check(parameterEditor.SelectedCategory == category && ReferenceEquals(firstModel, parameterEditor.Model) &&
+                    ReferenceEquals(parameterEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()),
+                    "first-configuration section " + category + " retains the complete candidate and editor");
             }
-            Check(taskTabs.Items.Cast<TabItem>().Select(t => t.Header).SequenceEqual(new[] { "1 业务模块", "2 系统", "3 驱动", "4 组件", "5 检查与完成" }) && taskTabs.SelectedIndex == 0, "first configuration starts with business rules and separates system, drivers, components and completion");
             Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the first business task");
-            await SelectTask(4);
-            Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "保存并启动")) &&
-                !Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存首配待生效…")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
+            CheckFirstConfigurationReview(first, parameterEditor, Check);
+            foreach (var category in new[] { 1, 0, 2, 3, 4 }) await SelectSection(category);
             Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
-            await SelectTask(0);
-            var parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single();
+            await SelectSection(1);
             Check(parameterEditor.NavigateTo("TimeoutMs"), "startup policy field resolves through the same parameter editor");
             first.UpdateLayout();
             Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == config.TimeoutMs.ToString()) && Wire.FileHash(draftFile) == draftHash,
@@ -65,7 +63,7 @@ static partial class Program
             type.GetProperty("ConfirmDiscardInputs", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(first, new Func<bool>(() => { discardPrompts++; return false; }));
             first.Close();
             Check(first.IsVisible && discardPrompts == 1 && timeout.Text == "4321", "canceling close protects the incomplete native editor and keeps its exact input");
-            await SelectTask(1); await SelectTask(0);
+            await SelectSection(0); await SelectSection(1);
             Check(timeout.Text == "4321" && timeout.IsVisible && ReferenceEquals(parameterEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()), "task navigation preserves the same incomplete editor input without reconstructing it");
             timeout.Text = originalTimeout;
             Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
@@ -73,7 +71,14 @@ static partial class Program
             // unchanged authority guards in the separate offline maintenance window.
             first = (Window)Activator.CreateInstance(type, [offlineLaunch, null, false])!; first.Show();
             for (var i = 0; i < 150 && ((bool)busyField.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
-            taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            Check(!(bool)busyField.GetValue(first)!, "offline maintenance finishes loading before task navigation");
+            var taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            async Task SelectTask(int index)
+            {
+                taskTabs.SelectedIndex = index;
+                await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                first.UpdateLayout();
+            }
             await SelectTask(0);
             var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("原数据根"));
             var originalRoot = dataRoot.Text; var unreadRoot = Path.Combine(evidence, "unread-root"); dataRoot.Text = unreadRoot;

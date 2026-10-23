@@ -39,6 +39,13 @@ static partial class Program
         var vm = window.ViewModel;
         Click(window, "站位与设备诊断"); await Task.Delay(100);
         var diagnosticPage = (FrameworkElement)((ContentControl)window.FindName("PageHost")).Content;
+        // Identity evidence is now disclosed on demand. Expand the real groups
+        // before checking all original one-way fields; collapsed templates are lazy.
+        var evidenceGroups = Descendants(diagnosticPage).OfType<Expander>()
+            .Where(e => Equals(e.Header, "原作业与身份详情") || Equals(e.Header, "共享服务诊断详情")).ToArray();
+        Check(evidenceGroups.Length == 3 && evidenceGroups.All(e => !e.IsExpanded), "native diagnostics initially folds both position identities and shared evidence");
+        foreach (var group in evidenceGroups) group.IsExpanded = true;
+        window.UpdateLayout();
         var diagnosticFields = Descendants(diagnosticPage).OfType<TextBox>().ToArray();
         Check(vm.SelectedPage == "diagnostics" && diagnosticFields.Length == 24 && diagnosticFields.All(x => x.IsReadOnly &&
             x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Mode == System.Windows.Data.BindingMode.OneWay) &&
@@ -47,8 +54,11 @@ static partial class Program
         if (!baseline)
         {
             await vm.PauseAsync();
+            // Concurrent native polling may supersede Pause's own snapshot read.
+            // Wait for the authoritative paused projection, without resending the command.
+            await RefreshUntil(() => vm.Snapshot?.Paused == true && !vm.Busy);
             Check(vm.OperatorFeedback.Contains("操作已提交") && vm.Message.StartsWith("Persisted · ") && vm.Snapshot!.Paused,
-                "operator feedback is Chinese while original command receipt and authoritative pause fact remain available");
+                $"operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused={vm.Snapshot?.Paused}, busy={vm.Busy}, receipt={vm.Message}, feedback={vm.OperatorFeedback}");
             await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场");
         }
         if (!baseline && Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
@@ -58,18 +68,17 @@ static partial class Program
             var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; ManagementModeFixture.AuthorizeRoot(offline.DataRoot);
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
             var busy = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
-            for (var i = 0; i < 100 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(30);
-            first.UpdateLayout();
-            var startupTasks = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
-            Check(!(bool)busy.GetValue(first)! && startupTasks.Items.Count == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存并启动")) && !Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "配置工具…")), "frozen desktop first configuration exposes five steps and the combined guarded save/start without a tool menu");
+            var startupEditor = await FirstConfigurationReady(first, busy, Check);
+            CheckFirstConfigurationReview(first, startupEditor, Check);
+            Check(!Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "配置工具…")), "first configuration has no configuration tool menu");
             Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "offline first configuration never starts the Application or creates a business database");
             Capture("first-configuration", first);
-            var policy = startupTasks.Items.Cast<TabItem>().Single(t => Equals(t.Header, "1 业务模块")); policy.IsSelected = true; first.UpdateLayout();
+            startupEditor.SelectCategory(1); first.UpdateLayout();
             Check(Descendants(first).OfType<ParameterSettingsControl>().Single().NavigateTo("TimeoutMs"), "first-configuration business budget locates the actual shared timeout field");
             first.UpdateLayout();
             var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "TimeoutMs"); timeout.Text = "1601";
             Check(timeout.IsEnabled && timeout.Focus(), "first-configuration native form becomes enabled and accepts keyboard focus after the read completes");
-            var review = startupTasks.Items.Cast<TabItem>().Single(t => Equals(t.Header, "5 检查与完成")); review.IsSelected = true; first.UpdateLayout(); policy.IsSelected = true; first.UpdateLayout();
+            startupEditor.ShowReview(); first.UpdateLayout(); startupEditor.SelectCategory(1); first.UpdateLayout();
             Check(timeout.Text == "1601" && Descendants(first).OfType<TextBox>().Contains(timeout), "first-configuration step navigation retains the same native unsaved form controls");
             Capture("first-configuration-policy", first);
             type.GetProperty("ConfirmDiscardInputs", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(first, new Func<bool>(() => false)); first.Close();
@@ -99,11 +108,12 @@ static partial class Program
         classicVm.Message = "Persisted · SYNTHETIC full original receipt with request owner";
         Check(((TextBlock)classic.FindName("OperationFeedback")).Text.Contains("操作已提交") && classicVm.Message.Contains("SYNTHETIC full original"),
             "classic and default share the friendly receipt projection while preserving the complete technical receipt");
-        probe.Project = s => s with { State = "PartiallyReady" }; await classicVm.RefreshAsync();
+        probe.Project = s => s with { State = "PartiallyReady" };
+        await RefreshClassicUntil(() => classicVm.Snapshot?.State == "PartiallyReady");
         Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
         probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
             Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = s.Configuration.Effective.MaintenanceLogin } } };
-        await classicVm.RefreshAsync(); classic.UpdateLayout();
+        await RefreshClassicUntil(() => classicVm.Snapshot?.BlockingReasons.Contains("SYNTHETIC maintenance in progress") == true); classic.UpdateLayout();
         var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
         var login = (WrapPanel)classic.FindName("OperationalLogin");
         Check(blockers.IsVisible && blockers.Text.Contains("authentication required") && blockers.Text.Contains("maintenance in progress") &&
@@ -147,10 +157,25 @@ static partial class Program
             var filterOwner = vm.Selected?.Id;
             await SetClient(window, 800, 420); window.UpdateLayout();
             var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
-            Check(filterRows.Visibility == Visibility.Collapsed && !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
-                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
-                "expanded filters use a bounded editing pane with full fixed query actions at minimum client size instead of clipping record/recovery controls");
-            Capture("history-filters-minimum"); await Fit(1100, 650);
+            var filterScroll = (ScrollViewer)history.FindName("HistoryFilterScroll");
+            var firstResult = Descendants(filterRows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+            var columnHeaders = Descendants(filterRows).OfType<System.Windows.Controls.Primitives.DataGridColumnHeadersPresenter>().Single();
+            var headerBounds = columnHeaders.TransformToAncestor(filterRows).TransformBounds(new Rect(columnHeaders.RenderSize));
+            var rowBounds = firstResult.TransformToAncestor(filterRows).TransformBounds(new Rect(firstResult.RenderSize));
+            var queryButtons = Descendants(queryActions).OfType<Button>().Where(b => !Equals(b.Content, "取消导出")).ToArray();
+            Check(queryButtons.Select(b => b.Content).SequenceEqual(new[] { "查询", "清除筛选", "下一页", "导出表格…" }) &&
+                Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).IsVisible == vm.HistoryExportRunning,
+                "fixed history query actions remain complete; cancellation is visible only while an export is running");
+            Capture("history-filters-minimum");
+            Check(filterRows.IsVisible && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
+                columnHeaders.IsVisible && columnHeaders.ActualHeight >= 32 && headerBounds.Top >= 0 && headerBounds.Bottom <= filterRows.ActualHeight &&
+                firstResult.IsVisible && firstResult.ActualHeight >= 32 && rowBounds.Top >= headerBounds.Bottom && rowBounds.Bottom <= filterRows.ActualHeight &&
+                filterScroll.ScrollableHeight > 0 && !((Expander)history.FindName("HistoryDetailExpander")).IsExpanded &&
+                !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
+                queryButtons.All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
+                $"expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows={filterRows.ActualHeight}/{filterRows.IsVisible}, row={firstResult.ActualHeight}, rowBottom={firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight}, scroll={filterScroll.ScrollableHeight}, detail={((Expander)history.FindName("HistoryDetailExpander")).IsExpanded}; buttons=" +
+                string.Join("|", queryButtons.Select(b => b.Content + ":" + b.ActualHeight + "/" + b.IsVisible + "/" + b.TranslatePoint(new Point(), history).Y)));
+            await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
             var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");
@@ -191,10 +216,13 @@ static partial class Program
             var historyScroll = (ScrollViewer)history.FindName("HistoryDetailsScroll");
             vm.InspectionReason = string.Concat(Enumerable.Repeat("SYNTHETIC 原实体检查说明 ", 40));
             await SetClient(window, 800, 420); window.UpdateLayout();
+            var historyDetail = (Expander)history.FindName("HistoryDetailExpander");
+            Check(!historyDetail.IsExpanded, "compact history initially folds task details rather than hiding query results");
+            historyDetail.IsExpanded = true; window.UpdateLayout();
             var before = actions.TranslatePoint(new Point(), history);
             inspection.IsExpanded = true; historyScroll.ScrollToBottom(); window.UpdateLayout();
             var after = actions.TranslatePoint(new Point(), history);
-            Check(before == after && after.Y >= 0 && after.Y + actions.ActualHeight <= history.ActualHeight &&
+            Check(actions.IsVisible && before == after && after.Y >= 0 && after.Y + actions.ActualHeight <= history.ActualHeight &&
                 Descendants(actions).OfType<Button>().All(b => b.ActualHeight >= 44),
                 "history recovery actions remain fixed and fully visible at minimum client size while long inspection details scroll");
             Capture("history-expanded-minimum");
@@ -275,6 +303,16 @@ static partial class Program
             target ??= window; target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
             var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32); bitmap.Render(target);
             var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, (baseline ? "before-" : "after-") + name + ".png")); png.Save(file);
+        }
+        async Task RefreshClassicUntil(Func<bool> applied)
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                await classicVm.RefreshAsync();
+                if (applied()) return;
+                await Task.Delay(30);
+            }
+            throw new InvalidOperationException("Classic projected scenario did not reach the native view; state=" + classicVm.Snapshot?.State + "; " + classicVm.Message);
         }
         async Task RefreshUntil(Func<bool> applied)
         {

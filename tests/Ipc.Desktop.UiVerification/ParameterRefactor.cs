@@ -22,8 +22,8 @@ static partial class Program
             ManagementModeFixture.AuthorizeRoot(missingLaunch.DataRoot);
             var first = (Window)Activator.CreateInstance(startupType, [missingLaunch, null, true])!; first.Show();
             var busy = startupType.BaseType!.GetField("Busy", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
-            for (var i = 0; i < 150 && ((bool)busy.GetValue(first)! || !Descendants(first).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); i++) await Task.Delay(20);
-            var setupTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks"); setupTabs.SelectedIndex = 1; first.UpdateLayout();
+            var startupEditor = await FirstConfigurationReady(first, busy, Check);
+            startupEditor.SelectCategory(0); first.UpdateLayout();
             Check(first.Title.Contains("首次配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
             Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
             first.Close();
@@ -61,6 +61,8 @@ static partial class Program
         Capture("parameters-system");
         Check(control.NavigateTo("BarcodePattern"), "business barcode policy is directly reachable without depending on a tab layout"); window.UpdateLayout();
         var pattern = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodePattern"); pattern.Text = "OK[0-9]+";
+        var preview = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "测试条码"));
+        preview.IsExpanded = true; window.UpdateLayout();
         var sample = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "条码筛选样例"); sample.Text = "noise\nother\nOK003";
         var test = Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "测试候选筛选"));
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -70,9 +72,13 @@ static partial class Program
         var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodeExclusionPattern");
         exclusion.Text = "OK003";
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("结果已过期")), "editing exclusion invalidates the existing local preview without discarding candidate input");
+        var previewDetails = Descendants(preview).OfType<Expander>().Single(e => Equals(e.Header, "测试诊断详情"));
+        previewDetails.IsExpanded = true; window.UpdateLayout();
+        var previewDiagnostic = Descendants(previewDetails).OfType<TextBox>().Single();
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("第3项：命中排除规则")); i++) await Task.Delay(20);
-        Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：无") && x.Text.Contains("第3项：命中排除规则")), "native preview exposes exclusion reason and never selects an excluded code");
+        for (var i = 0; i < 100 && !previewDiagnostic.Text.Contains("第3项：命中排除规则"); i++) await Task.Delay(20);
+        Check(Descendants(preview).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：无")) &&
+            previewDiagnostic.IsReadOnly && previewDiagnostic.Text.Contains("第3项：命中排除规则"), "native preview exposes exclusion reason and never selects an excluded code");
         exclusion.Focus(); exclusion.Select(1, 3); await vm.RefreshAsync(); window.UpdateLayout();
         Check(exclusion.IsKeyboardFocused && exclusion.SelectionLength == 3 && exclusion.Text == "OK003", "new exclusion input retains native focus, selection and draft across snapshots");
         Capture("parameters-exclusion");
@@ -103,8 +109,12 @@ static partial class Program
         login.SelectedItem = role.Choices.First(x => x.Capability is null); window.UpdateLayout();
         Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
         Capture("parameters-login");
-        vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
+        vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields();
+        Check(vm.ParameterEditor.Issues.Any(i => i.Path == "QueueCapacity"), "complete validation retains the real invalid queue field");
+        control.ShowReview();
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("输入队列容量") && !text.Text.Contains("QueueCapacity"));
+        Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();

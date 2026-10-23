@@ -122,6 +122,6 @@ static partial class Program
             finally { clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow)); }
         }
         window.Close(); for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
-        lines.Add("Native HWND/Dispatcher at actual DPI 125%; synthetic ports/data only. Other OS DPI, physical keyboard, UAC/install, SDK/RCS/site NOT_RUN.");
+        lines.Add("Native HWND/Dispatcher; actual DPI recorded per capture; synthetic ports/data only. Other OS DPI, physical keyboard, UAC/install, SDK/RCS/site NOT_RUN.");
     }
 }

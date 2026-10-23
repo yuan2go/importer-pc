@@ -41,6 +41,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_release_build.py -v
       - name: Freeze only the first commercial composition
+        id: freeze_sportmaster
         shell: pwsh
         run: |
           # PR checkout is GitHub's exact merge commit, not an ancestor of main.
@@ -63,6 +64,18 @@ jobs:
           $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
           ./scripts/verify-administrator-broker.ps1 -Media $media -Output C:/scd-administrator-broker
           if (-not $?) { throw 'Actual Windows administrator boundary verification failed' }
+      - name: Native first-configuration and parameter-shell regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
+          if ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }
+          $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-startup-experience -StartupExperience
+          if (-not $?) { throw 'Frozen first-configuration regression failed' }
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-shell -ParameterShellPolish
+          if (-not $?) { throw 'Frozen parameter-shell regression failed' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
         run: |
@@ -79,6 +92,7 @@ jobs:
             exit 1
           }
       - name: Native visual interactions on the same frozen medium
+        if: ${{ !cancelled() && steps.freeze_sportmaster.outcome == 'success' }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -87,12 +101,26 @@ jobs:
             $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
             if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }
             $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/visual -VisualProductization
-            if (-not $?) { throw 'Frozen visual verification did not return successfully' }
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/parameters-v3 -ParameterV3
-            if (-not $?) { throw 'Frozen parameter V3 verification did not return successfully' }
-            ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-evidence/operator-administration -OperatorAdministration
-            if (-not $?) { throw 'Frozen administrator/log verification did not return successfully' }
+            # These read-only native processes use separate synthetic workspaces.
+            # Retain all independent failures in one run; any failure still blocks packaging.
+            $failures = @()
+            foreach ($case in @(
+              @{ Directory = 'visual'; VisualProductization = $true },
+              @{ Directory = 'parameters-v3'; ParameterV3 = $true },
+              @{ Directory = 'operator-administration'; ManagementMode = $true }
+            )) {
+              $directory = $case.Directory
+              $arguments = $case.Clone()
+              $arguments.Remove('Directory')
+              try {
+                ./scripts/verify-commercial-wpf.ps1 -Media $media -Output "C:/scd-evidence/$directory" @arguments
+                if (-not $?) { throw "Frozen $directory verification did not return successfully" }
+              } catch {
+                $failures += "$directory`: $($_.Exception.Message)"
+                [Console]::Error.WriteLine($_)
+              }
+            }
+            if ($failures.Count -ne 0) { throw ($failures -join '; ') }
             exit 0
           } catch {
             [Console]::Error.WriteLine($_)
@@ -133,6 +161,14 @@ jobs:
         with:
           name: sportmaster-evidence-${{ github.sha }}
           path: |
+            C:/scd-startup-experience/RESULT.json
+            C:/scd-startup-experience/RUN.log
+            C:/scd-startup-experience/WINDOWS-WPF.log
+            C:/scd-startup-experience/*.png
+            C:/scd-parameter-shell/RESULT.json
+            C:/scd-parameter-shell/RUN.log
+            C:/scd-parameter-shell/WINDOWS-WPF.log
+            C:/scd-parameter-shell/*.png
             C:/scd-evidence/acceptance.json
             C:/scd-evidence/environment.json
             C:/scd-evidence/media.json

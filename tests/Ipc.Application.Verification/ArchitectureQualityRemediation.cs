@@ -12,7 +12,7 @@ using Ipc.Platform;
 
 // Real runtime, SQLite, management service and loopback TCP. Faults are confined to
 // synthetic adapters or existing internal durability boundaries, never a DB substitute.
-static class ArchitectureQualityRemediation
+static partial class ArchitectureQualityRemediation
 {
     static void Check(bool condition, string message)
     { if (!condition) throw new Exception("FAIL AQA01: " + message); Console.WriteLine("PASS AQA01: " + message); }
@@ -50,6 +50,9 @@ static class ArchitectureQualityRemediation
     public static async Task Run(string workspace, string root)
     {
         await QueueExpiry(workspace, Path.Combine(root, "queue"));
+        await UntrustedSequenceBoundaries(workspace, Path.Combine(root, "sequence-boundaries"));
+        await ArchiveRollback(workspace, Path.Combine(root, "archive-rollback"));
+        await ReceiptCommandBoundaries(workspace, Path.Combine(root, "receipt-commands"));
         await ExpiredWeight(workspace, Path.Combine(root, "expired-weight"));
         await TcpConsumersAndProjection(workspace, Path.Combine(root, "tcp"));
         foreach (var boundary in new[] { "AfterAbandonedDurable", "AfterImageReleaseDurable", "AfterContinuationAdmitted", "AfterCommandAdmitted", "AfterConfigurationConfirmed", "AfterArchiveCommit" })
@@ -190,6 +193,7 @@ static class ArchitectureQualityRemediation
     }
     public static async Task CrashChild(string workspace, string path, string boundary)
     {
+        if (boundary.StartsWith("ReceiptQuery", StringComparison.Ordinal)) { await ReceiptQueryChild(workspace, path, boundary); return; }
         var c = Config(workspace, boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed" or "AfterArchiveCommit" ? "sportmaster" : "direct-plc");
         if (c.ApplicationId == "direct-plc") c = c with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = Binding("weight"), Images = new(Binding("camera"), null) };
         if (boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed")

@@ -1,0 +1,28 @@
+Retained build workspace on failure: D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.76 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 25 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 31 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 28 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 43 毫秒)。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Application.WcsToPlc\release\Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-i5hwi4wv\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\audits\importer-pc\AQA01-remediation-20261023\packages\wcs-to-plc-portable\app\
+{"Package": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\packages\\wcs-to-plc-portable.zip", "Sha256": "037bda91a7f642eec4276a52952873aa25773cfda4ce452b22cb218dd12f9f49", "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62", "Application": "wcs-to-plc", "Target": "portable", "BusinessVersion": "1.5.1", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "695E5E3584031EE43E2B59EB5786E25A44E6B078F6BB27F8541CD09A3B51C986"}

@@ -1,0 +1,58 @@
+{
+  "Request": {
+    "Id": "ad3067df0cd8421391f3c0faf8235b46",
+    "ApplicationId": "direct-plc",
+    "OperationId": "4db4052c90e24c268573457f88e5be42",
+    "AdmissionId": "unpacked-parcel",
+    "Stage": "image-upload",
+    "Binding": {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "upload.smoke",
+      "Target": "reference://upload/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "reply-mode": "lose-after-commit",
+        "endpoint": "http://127.0.0.1:52708/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "ImplementationHash": "6AB3A8C351B47A00D57B0F9ED7650B4DD04580F151C77DCCC0508EF0828DA4D0",
+    "ConfigurationHash": "6A5DBBC62EAB0DB7320F0952AFCA1266AADC62A4A12C269E3A5540DC1AB92ADD",
+    "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022000000917\u0022,\r\n  \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Operator\u0022: {\r\n    \u0022Subject\u0022: \u0022alice\u0022,\r\n    \u0022DisplayName\u0022: \u0022alice\u0022,\r\n    \u0022Authority\u0022: \u0022reference://login/smoke\u0022,\r\n    \u0022SessionId\u0022: \u0022ec693b81edc442de9868bed3799afcf6\u0022,\r\n    \u0022AuthenticatedAt\u0022: \u00222026-10-23T11:00:40.2677219\u002B00:00\u0022,\r\n    \u0022Simulation\u0022: true,\r\n    \u0022ExpiresAt\u0022: \u00222026-10-23T19:00:40.2677223\u002B00:00\u0022,\r\n    \u0022Grants\u0022: []\r\n  },\r\n  \u0022Image\u0022: {\r\n    \u0022CaptureRequestId\u0022: \u00223d04869558c44d02ac92a39277b5745e\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022RelativeFile\u0022: \u0022images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/3d04869558c44d02ac92a39277b5745e.png\u0022,\r\n    \u0022MediaType\u0022: \u0022image/png\u0022,\r\n    \u0022Length\u0022: 67,\r\n    \u0022Sha256\u0022: \u0022D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807\u0022,\r\n    \u0022UploadedUri\u0022: null,\r\n    \u0022Acquisition\u0022: {\r\n      \u0022DeviceId\u0022: \u0022direct-plc.camera\u0022,\r\n      \u0022Epoch\u0022: \u0022d6392598529e4c7997d3b2090837b2cd\u0022,\r\n      \u0022SourceEventId\u0022: \u0022a4acf383ed3e4645a1344c3994d496d9\u0022,\r\n      \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n      \u0022ObservedAt\u0022: \u00222026-10-23T11:00:40.2771945\u002B00:00\u0022\r\n    }\r\n  },\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022direct-plc.camera\u0022,\r\n    \u0022Epoch\u0022: \u0022d6392598529e4c7997d3b2090837b2cd\u0022,\r\n    \u0022SourceEventId\u0022: \u0022a4acf383ed3e4645a1344c3994d496d9\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-23T11:00:40.2771945\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022main\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022direct-plc.camera\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+    "PayloadHash": "1D30A6C7D30752950B6E8D1FBD931D36A1B5FBEA0484D95BAC1F155A0A46104B",
+    "PreparedAt": "2026-10-23T11:00:40.4379219+00:00"
+  },
+  "Reply": {
+    "Id": "34ef58664fbd4e93bf3b735f1a13fc2b",
+    "RequestId": "ad3067df0cd8421391f3c0faf8235b46",
+    "PayloadHash": "1D30A6C7D30752950B6E8D1FBD931D36A1B5FBEA0484D95BAC1F155A0A46104B",
+    "TransportSucceeded": true,
+    "ProtocolAcknowledged": true,
+    "BusinessAccepted": true,
+    "PhysicalCompleted": null,
+    "Slot": null,
+    "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+    "At": "2026-10-23T11:00:40.9350513+00:00",
+    "Image": {
+      "CaptureRequestId": "3d04869558c44d02ac92a39277b5745e",
+      "AdmissionId": "unpacked-parcel",
+      "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/3d04869558c44d02ac92a39277b5745e.png",
+      "MediaType": "image/png",
+      "Length": 67,
+      "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+      "UploadedUri": "reference://images/ad3067df0cd8421391f3c0faf8235b46",
+      "Acquisition": {
+        "DeviceId": "direct-plc.camera",
+        "Epoch": "d6392598529e4c7997d3b2090837b2cd",
+        "SourceEventId": "a4acf383ed3e4645a1344c3994d496d9",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-23T11:00:40.2771945+00:00"
+      }
+    }
+  },
+  "Executions": 1
+}

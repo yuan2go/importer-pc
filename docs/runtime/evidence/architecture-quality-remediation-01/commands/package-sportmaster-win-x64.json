@@ -1,0 +1,18 @@
+{
+  "Name": "package-sportmaster-win-x64",
+  "Program": "python",
+  "Arguments": [
+    "scripts/package-application.py",
+    "--application",
+    "sportmaster",
+    "--target",
+    "win-x64",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/packages/sportmaster-win-x64"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:53:40.2915602+00:00",
+  "FinishedAt": "2026-10-23T10:55:49.2326546+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-sportmaster-win-x64.log"
+}

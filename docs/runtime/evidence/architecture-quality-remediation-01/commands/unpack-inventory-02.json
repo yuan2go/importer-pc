@@ -1,0 +1,12 @@
+{
+  "Name": "unpack-inventory-02",
+  "Program": "python",
+  "Arguments": [
+    "D:/audits/importer-pc/AQA01-remediation-20261023/verify-media.py"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:54:20.2335457+00:00",
+  "FinishedAt": "2026-10-23T10:54:22.3852780+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\unpack-inventory-02.log"
+}

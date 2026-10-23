@@ -1,0 +1,33 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-aca30bf879f44e83a69948a76c267268
+PASS UXC INPUT: two positions enqueue independently
+PASS UXC INPUT: trusted NoRead enqueues
+PASS UXC INPUT: latest failed input cannot present prior terminal slot as current
+PASS UXC INPUT: failed input creates no operation or delivery and preserves original result
+PASS UXC INPUT: both actual desktop viewmodels consume failed input without the original slot
+PASS UXC INPUT: typed failed source evidence is available without inventing an entity
+PASS UXC INPUT: MultipleCodes persists raw candidates and never changes independent right result
+PASS UXC INPUT: InvalidCode persists raw candidates and never changes independent right result
+PASS UXC INPUT: NoCode persists raw candidates and never changes independent right result
+PASS UXC INPUT: old epoch callback is fenced before ingress
+PASS UXC INPUT: replayed sequence cannot replace failed current input
+PASS UXC INPUT: stale source timestamp is audit-only
+PASS UXC INPUT: rejected stale input cannot poison the accepted source sequence
+PASS UXC INPUT: restart rebuilds latest input from original audit without resurrecting prior slot
+PASS UXC INPUT: original operation remains queryable history after failed input and restart
+PASS UXC INPUT: same code distinct entity is accepted after trusted new input
+PASS UXC INPUT: late duplicate of older admission neither regresses current result nor creates delivery
+PASS UXC INPUT: failed observation preserves original Unknown request/hash/attempt and admission block
+PASS UXC INPUT: blocked next entity records input without resending Unknown
+PASS UXC INPUT: rebind pauses original owner
+PASS UXC INPUT: exact reader replacement stages through existing CAS
+PASS UXC INPUT: new DeviceId cannot borrow the prior reader result; original stays in history
+PASS UXC INPUT: rebind pauses original owner
+Unhandled exception. System.Exception: FAIL UXC INPUT: exact reader replacement stages through existing CAS
+   at UxCommercialInputs.Check(Boolean condition, String message) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\UxCommercialInputs.cs:line 12
+   at UxCommercialInputs.ReaderRebinding(String workspace, String root, Boolean changeDevice) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\UxCommercialInputs.cs:line 107
+   at UxCommercialInputs.ReaderRebinding(String workspace, String root, Boolean changeDevice) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\UxCommercialInputs.cs:line 107
+   at UxCommercialInputs.Run(String workspace, String root) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\UxCommercialInputs.cs:line 79
+   at UxCommercialInputs.Run(String workspace, String root)
+   at UxCommercialInputs.Run(String workspace, String root) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\UxCommercialInputs.cs:line 81
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-aqa01\tests\Ipc.Application.Verification\Program.cs:line 29
+   at Program.<Main>(String[] args)

@@ -38,7 +38,7 @@
 
 `ApplicationArchitecture`使用真实管理模式接口，普通取消夹具遵守token；仅所有权超时场景模拟有界的不配合外部调用，所有出口finally释放。`ResourceRisks`在新场景前释放重启实例，保留Stop超时/机级设备租约断言。配置调用只重试明确的调用前守卫拒绝；不吞异常、不重试未知发送。
 
-真实CLI在stdin提供`ConfigureManagementPassword`、`EnterManagementMode`、`ExitManagementMode`，转发同一`IWorkstationAdministration`及既有批准政策，无默认密码、无命令行口令。`smoke-application.py`仅在全新隔离根随机设密，重启重新授权后核原报文/Query；口令不进入证据、argv或产品配置，受保护现场仍须原批准服务。
+真实CLI在stdin提供`ConfigureManagementPassword`、`EnterManagementMode`、`ExitManagementMode`，转发同一`IWorkstationAdministration`及既有批准政策，无默认密码、无命令行口令。`smoke-application.py`仅在全新隔离根随机设密，重启重新授权后核原报文/Query；口令不进入证据、argv或产品配置，受保护现场仍须原批准服务。可选恢复夹具明确选择既有AtAssociation策略；新增UntilDispatch过期重量阻止发送验证，生产守卫不改变。
 
 README、索引、入门、部署、Application、ABI与扩展指南的相关过期当前表述已整理，原字节/hash保存在[归档](../archive/pre-architecture-quality-remediation-01/README.md)。保存与开始作业分开、DB8、Contracts1.16、当前Production首配及D盘登记优先分别说明。历史安装包和原Windows/现场状态不倒写。
 

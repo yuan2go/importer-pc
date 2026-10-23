@@ -1,0 +1,16 @@
+{
+  "Name": "build-verification-02",
+  "Program": "dotnet",
+  "Arguments": [
+    "build",
+    "tests/Ipc.Application.Verification",
+    "-c",
+    "Release",
+    "-p:RestoreLockedMode=true"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:29:29.0825934+00:00",
+  "FinishedAt": "2026-10-23T10:29:42.6035633+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-02.log"
+}

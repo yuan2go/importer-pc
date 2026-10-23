@@ -1,0 +1,14 @@
+{
+  "Name": "configuration-confirmation-01",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--configuration-confirmation"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:39:34.8305088+00:00",
+  "FinishedAt": "2026-10-23T10:39:48.3140697+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\configuration-confirmation-01.log"
+}

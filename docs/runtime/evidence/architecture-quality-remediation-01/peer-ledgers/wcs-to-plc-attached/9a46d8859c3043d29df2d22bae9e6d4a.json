@@ -1,0 +1,42 @@
+{
+  "Request": {
+    "Id": "9a46d8859c3043d29df2d22bae9e6d4a",
+    "ApplicationId": "wcs-to-plc",
+    "OperationId": "2cd672a6ec6941829ca61c30c8b875aa",
+    "AdmissionId": "unpacked-parcel",
+    "Stage": "wcs-slot",
+    "Binding": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "ImplementationHash": "D294C00889761D41C36BEEBAB8B4BE72241A46CA5BDB2FED2A5DDE9DDBEE9B49",
+    "ConfigurationHash": "0FC33153C664F4854659310FC2CC7FC9372E6B228237477A04937BA920B264C6",
+    "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022000000917\u0022,\r\n  \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n  \u0022Weight\u0022: {\r\n    \u0022Value\u0022: 2.345,\r\n    \u0022Unit\u0022: \u0022Kg\u0022,\r\n    \u0022Precision\u0022: 3,\r\n    \u0022Source\u0022: \u0022Measured\u0022,\r\n    \u0022MeasurementId\u0022: \u00223ed7bbf79397479193f42cdfe0aff0de\u0022,\r\n    \u0022Evidence\u0022: \u0022reference://weight/smoke:Valid\u0022,\r\n    \u0022MeasuredAt\u0022: \u00222026-10-23T10:58:16.935901\u002B00:00\u0022\r\n  },\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Operator\u0022: {\r\n    \u0022Subject\u0022: \u0022alice\u0022,\r\n    \u0022DisplayName\u0022: \u0022alice\u0022,\r\n    \u0022Authority\u0022: \u0022reference://login/smoke\u0022,\r\n    \u0022SessionId\u0022: \u002285c4ad7747db4eb5b23829b532760b9b\u0022,\r\n    \u0022AuthenticatedAt\u0022: \u00222026-10-23T10:58:16.4799831\u002B00:00\u0022,\r\n    \u0022Simulation\u0022: true,\r\n    \u0022ExpiresAt\u0022: \u00222026-10-23T18:58:16.4799836\u002B00:00\u0022,\r\n    \u0022Grants\u0022: []\r\n  },\r\n  \u0022Image\u0022: {\r\n    \u0022CaptureRequestId\u0022: \u0022cba5ffebde12494086a77032d48dc085\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022RelativeFile\u0022: \u0022images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/cba5ffebde12494086a77032d48dc085.png\u0022,\r\n    \u0022MediaType\u0022: \u0022image/png\u0022,\r\n    \u0022Length\u0022: 67,\r\n    \u0022Sha256\u0022: \u0022D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807\u0022,\r\n    \u0022UploadedUri\u0022: null,\r\n    \u0022Acquisition\u0022: {\r\n      \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n      \u0022Epoch\u0022: \u00226fd03cc5e8e746a299d382391edd1355\u0022,\r\n      \u0022SourceEventId\u0022: \u002228cfc126f7d64b98b682f284ed8de425\u0022,\r\n      \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n      \u0022ObservedAt\u0022: \u00222026-10-23T10:58:16.4882363\u002B00:00\u0022\r\n    }\r\n  },\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n    \u0022Epoch\u0022: \u00226fd03cc5e8e746a299d382391edd1355\u0022,\r\n    \u0022SourceEventId\u0022: \u002228cfc126f7d64b98b682f284ed8de425\u0022,\r\n    \u0022AdmissionId\u0022: \u0022unpacked-parcel\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-23T10:58:16.4882363\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022main\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022wcs-to-plc.camera\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+    "PayloadHash": "B47E23C7503641DA226B491E5A36A24E8A16F663B52A1FBA7D07B0D3D8950A1A",
+    "PreparedAt": "2026-10-23T10:58:17.0528681+00:00"
+  },
+  "Reply": {
+    "Id": "0f6d1dac779e49f6ae738edf19a01d38",
+    "RequestId": "9a46d8859c3043d29df2d22bae9e6d4a",
+    "PayloadHash": "B47E23C7503641DA226B491E5A36A24E8A16F663B52A1FBA7D07B0D3D8950A1A",
+    "TransportSucceeded": true,
+    "ProtocolAcknowledged": true,
+    "BusinessAccepted": true,
+    "PhysicalCompleted": null,
+    "Slot": "REFERENCE-07",
+    "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+    "At": "2026-10-23T10:58:17.1048385+00:00"
+  },
+  "Executions": 1
+}

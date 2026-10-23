@@ -1,0 +1,29 @@
+{
+  "At": "2026-10-23T11:01:32.940653+00:00",
+  "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+  "Checks": [
+    {
+      "Name": "native-console",
+      "Command": [
+        "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\sportmaster-win-x64\\app\\Ipc.Assembly.exe",
+        "--config",
+        "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\sportmaster-win-x64\\app\\config",
+        "--data-root",
+        "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\native-entries\\runtime-data"
+      ],
+      "Stdin": "snapshot\nquit\n",
+      "ExitCode": 0,
+      "WindowsNativeUi": "Not a UI test"
+    },
+    {
+      "Name": "desktop-environment",
+      "Command": [
+        "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\sportmaster-win-x64\\desktop\\Ipc.Desktop.exe",
+        "--environment-report"
+      ],
+      "Stdin": null,
+      "ExitCode": 0,
+      "WindowsNativeUi": "NOT_RUN: environment report exits before window creation"
+    }
+  ]
+}

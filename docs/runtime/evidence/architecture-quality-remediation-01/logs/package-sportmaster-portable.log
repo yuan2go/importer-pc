@@ -1,0 +1,28 @@
+Retained build workspace on failure: D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.66 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 38 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 35 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 36 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 37 毫秒)。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-85fcw57_\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\audits\importer-pc\AQA01-remediation-20261023\packages\sportmaster-portable\app\
+{"Package": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\packages\\sportmaster-portable.zip", "Sha256": "81d32feea6c95f84314404e6fa687e894df0ce40736dac789586f510f03ca7e3", "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.11.2", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D81C02B9564865ECBFAA35657803B8984C01E5808AEB8970041A04ACEAB93F54"}

@@ -1,0 +1,14 @@
+{
+  "Name": "resource-risks-01",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--resource-risks"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:39:21.5340700+00:00",
+  "FinishedAt": "2026-10-23T10:39:25.8369669+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\resource-risks-01.log"
+}

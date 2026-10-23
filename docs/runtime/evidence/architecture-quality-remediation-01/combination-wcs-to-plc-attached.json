@@ -1,0 +1,406 @@
+{
+  "SchemaVersion": 3,
+  "OptionalFeatures": true,
+  "AttachedUpload": true,
+  "ExternalPeerProcess": true,
+  "RunId": "7c43ca2f006d43e2ba50fe8ec7a4ec87",
+  "Status": "PASS",
+  "StartedAt": "2026-10-23T10:58:12.488823+00:00",
+  "Command": [
+    "scripts/smoke-application.py",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/wcs-to-plc-portable",
+    "--optional-features",
+    "--attached-upload",
+    "--peer-fixture",
+    "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/combination-wcs-to-plc-attached.json"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "wcs-to-plc",
+  "BusinessVersion": "1.5.1",
+  "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+  "Target": "portable",
+  "CandidateFilesSha256": "39FCFD3E6438094BA19769E1E23DDC464A66D34D02E508509A4FA281B097029C",
+  "ReleaseSha256": "D27423CE5131C891B373B8B94CF69BE4D20E87DD998D679BA1AB6C305BC4552B",
+  "AssemblyManifestSha256": "8E3FA76F4A61017FC7C88EB67A211CAC3E48D2F98841F11CA32181761B253217",
+  "CompatibilitySha256": "695E5E3584031EE43E2B59EB5786E25A44E6B078F6BB27F8541CD09A3B51C986",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      }
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+        }
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "Attached"
+    },
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "AtAssociation",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "wcs-to-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "wcs-to-plc.camera"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "InputConfigurationSha256": "1FA1FA0ABD964CE70C66B18E3C10248FD7570D2DCDCAC503FFA3C63BD80AFEE8",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "OptionalChecks": [
+    "authenticated admission",
+    "same-entity measured weight",
+    "actual PNG upload bytes",
+    "attached upload independent from main",
+    "process restart original query",
+    "independent upload reconciliation keeps original operator",
+    "one execution per independent receiver"
+  ],
+  "EffectiveConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {},
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:54223/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "Attached",
+      "TotalBytes": 33554432,
+      "MaximumPending": 32
+    },
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "AtAssociation",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "wcs-to-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "wcs-to-plc.camera",
+          "CameraInstanceId": null,
+          "ScaleInstanceId": null
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "EffectiveConfigurationSha256": "2265940F9E4AF14739CF2204AFFEA1786FEC9618D08F6F38569715F7518EC496",
+  "Providers": [
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke"
+    },
+    {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc"
+    },
+    {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance"
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "camera.smoke",
+      "Target": "reference://camera/smoke"
+    },
+    {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "upload.smoke",
+      "Target": "reference://upload/smoke"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1"
+    }
+  ],
+  "CompatibilitySet": "builtin-reference",
+  "State": "PhysicalCompleted",
+  "OperationId": "2cd672a6ec6941829ca61c30c8b875aa",
+  "FinishedAt": "2026-10-23T10:58:20.666303+00:00",
+  "EventsSha256": "701838B297EBEE398D8D303A2412CFC5EB786B06387ABF289AD5C541A9F411E0",
+  "EventsFile": "combination-wcs-to-plc-attached.json.events.jsonl"
+}

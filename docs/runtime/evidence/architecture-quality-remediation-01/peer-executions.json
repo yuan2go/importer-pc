@@ -1,0 +1,65 @@
+[
+  {
+    "Combination": "sportmaster-default",
+    "Operation": "97b27fcdff31457fa1fb1fd7366e54dd",
+    "Stage": "Wcs",
+    "Request": "e51c49feed8c46d68d5bc02de7a6a5d1",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/sportmaster-default/e51c49feed8c46d68d5bc02de7a6a5d1.json",
+    "ImageSha256": null
+  },
+  {
+    "Combination": "sportmaster-default",
+    "Operation": "7203b7ce35614a22ab6e89e27d9d5601",
+    "Stage": "Wcs",
+    "Request": "54839f87688b42c2b97ecb14966e722e",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/sportmaster-default/54839f87688b42c2b97ecb14966e722e.json",
+    "ImageSha256": null
+  },
+  {
+    "Combination": "direct-plc-before-main",
+    "Operation": "4db4052c90e24c268573457f88e5be42",
+    "Stage": "Plc",
+    "Request": "b1cd0259443e448fb2434bb062d0f7f5",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/direct-plc-before-main/b1cd0259443e448fb2434bb062d0f7f5.json",
+    "ImageSha256": null
+  },
+  {
+    "Combination": "direct-plc-before-main",
+    "Operation": "4db4052c90e24c268573457f88e5be42",
+    "Stage": "Upload",
+    "Request": "ad3067df0cd8421391f3c0faf8235b46",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/direct-plc-before-main/ad3067df0cd8421391f3c0faf8235b46.json",
+    "ImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+  },
+  {
+    "Combination": "wcs-to-plc-attached",
+    "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+    "Stage": "Wcs",
+    "Request": "9a46d8859c3043d29df2d22bae9e6d4a",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/wcs-to-plc-attached/9a46d8859c3043d29df2d22bae9e6d4a.json",
+    "ImageSha256": null
+  },
+  {
+    "Combination": "wcs-to-plc-attached",
+    "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+    "Stage": "Plc",
+    "Request": "b9ce9fd74111455dad9ace034502a202",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/wcs-to-plc-attached/b9ce9fd74111455dad9ace034502a202.json",
+    "ImageSha256": null
+  },
+  {
+    "Combination": "wcs-to-plc-attached",
+    "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+    "Stage": "Upload",
+    "Request": "d90c72d856e64aaca91fcff579abe813",
+    "Executions": 1,
+    "Ledger": "peer-ledgers/wcs-to-plc-attached/d90c72d856e64aaca91fcff579abe813.json",
+    "ImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+  }
+]

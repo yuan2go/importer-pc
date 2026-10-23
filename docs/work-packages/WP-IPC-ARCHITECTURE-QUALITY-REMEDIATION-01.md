@@ -12,3 +12,7 @@
 |AQA01-F06 P3|当前指引混用历史版本/保存/缺省|编码前归档并修正相关当前入口，构建随包说明核对；历史SourceCommit、介质和验收不倒写|
 
 复用三独立Application及ParcelFlow、唯一配置账、现有命令表、真实SQLite和真实管理接口。无新万能总线或第二框架。首次整理已归档README/INDEX/入门/部署/Application/ABI/扩展指南原件及哈希；四类职责、原请求/图像/回执责任及D/RV不变。运行材料仅合成数据和loopback，必要构建/测试/发布启动证据单独记录。Windows本机合成、真实SDK/协议及现场验收分开；不安装/修改机级策略或生产数据。DirectPlc完整UI延期不纳入本包。
+
+## 本轮收口
+
+六项均已按范围整改；F01包含实际投影及直接重启验证，F02包含六个持久化边界子进程崩溃与中断检查。完整实现见[当前说明](../runtime/architecture-quality-remediation-01.md)，命令、退出码、冻结SHA、原失败及NOT_RUN/BLOCKED见[验证记录](../runtime/validation/architecture-quality-remediation-01.md)。实现冻结7024f1e，测试驱动fe8d9dd；三种portable及Sportmaster win-x64同源，未发布安装包。本包以main PR供复核，不合并；原D/RV与历史资格保持。

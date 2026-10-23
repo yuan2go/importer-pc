@@ -1,0 +1,14 @@
+{
+  "Name": "application-architecture-03",
+  "Program": "dotnet",
+  "Arguments": [
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--application-architecture"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:37:10.7961474+00:00",
+  "FinishedAt": "2026-10-23T10:37:29.7925504+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-architecture-03.log"
+}

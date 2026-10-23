@@ -1,0 +1,20 @@
+{
+  "Name": "smoke-wcs-to-plc-attached",
+  "Program": "python",
+  "Arguments": [
+    "scripts/smoke-application.py",
+    "--package",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/wcs-to-plc-portable",
+    "--optional-features",
+    "--attached-upload",
+    "--peer-fixture",
+    "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+    "--output",
+    "D:/audits/importer-pc/AQA01-remediation-20261023/combination-wcs-to-plc-attached.json"
+  ],
+  "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+  "StartedAt": "2026-10-23T10:58:11.5868998+00:00",
+  "FinishedAt": "2026-10-23T10:58:20.7634236+00:00",
+  "ExitCode": 0,
+  "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-wcs-to-plc-attached.log"
+}

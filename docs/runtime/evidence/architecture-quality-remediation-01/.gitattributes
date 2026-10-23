@@ -1,0 +1,2 @@
+# Preserve captured bytes, including Windows line endings and terminal spacing.
+* -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

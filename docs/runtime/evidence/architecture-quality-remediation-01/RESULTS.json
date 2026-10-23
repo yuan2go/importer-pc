@@ -1,0 +1,965 @@
+{
+  "Task": "WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01",
+  "BaselineMain": "0c5d7d25e572e80f23522c9ff7b562db920628a3",
+  "RuntimeSourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+  "VerificationDriverCommit": "fe8d9dd5a11c40f15777e4b658a624512f8a7af5",
+  "RuntimeAndConfigurationUnchangedSinceFreeze": true,
+  "VerificationDriverFiles": {
+    "scripts/smoke-application.py": "231e3fa6675be365b821a6046ec878c2ad1c65d0411ccb052f9e72e55cb82689",
+    "scripts/test_application_compatibility.py": "618bab7cfae446c14bc26aa1b195df0804b8382754e4f1db9e04c3ef02de2f51",
+    "tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs": "b28596b9ae7161405e4f10bbd57c37544946fb1410e954511ea7e9a019f36f72"
+  },
+  "Findings": [
+    {
+      "Id": "AQA01-F01",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+        "src/Ipc.Application.ParcelFlow/ParcelInputs.cs"
+      ],
+      "Symbols": [
+        "EnqueueCore",
+        "ObserveAsync",
+        "DisplayedOperation"
+      ],
+      "Checks": "fresh ingress vs queue age, current rejection persisted, actual UI projection, direct restart and old callbacks; no operation for expired input",
+      "Limitations": "Real device callbacks not exercised"
+    },
+    {
+      "Id": "AQA01-F02",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+        "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+        "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
+        "src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs",
+        "src/Ipc.Application.ParcelFlow/ParcelReceiptRecovery.cs"
+      ],
+      "Symbols": [
+        "CommandAsync",
+        "Commit",
+        "WriteCommand",
+        "AdmitCommand",
+        "CompleteCommand",
+        "CloseInterruptedCommand"
+      ],
+      "Checks": "six actual child-process crash boundaries, exact same-ID receipt, changed-content refusal, guarded interruption inspection, original raw custody suite",
+      "Limitations": "Historical command identities never recorded cannot be reconstructed"
+    },
+    {
+      "Id": "AQA01-F03",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs"
+      ],
+      "Symbols": [
+        "ValidateConsumerConfiguration",
+        "InspectRequiredPackages"
+      ],
+      "Checks": "real TCP listeners/runtime, Effective/Pending/Frozen, complete backup read; unknown future reader rejected",
+      "Limitations": "Protected Store uninstall chain inspected statically; no machine Store mutation"
+    },
+    {
+      "Id": "AQA01-F04",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "src/Ipc.Application.ParcelFlow/ParcelOperatorProjection.cs"
+      ],
+      "Symbols": [
+        "OperatorSnapshot",
+        "OperatorReader"
+      ],
+      "Checks": "snapshot/operation/history before auth and after exit/expiry/password change; authorized originals unchanged",
+      "Limitations": "Parameter disclosure fixed; no broader credential-write bypass claimed"
+    },
+    {
+      "Id": "AQA01-F05",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
+        "tests/Ipc.Application.Verification/ResourceRisks.cs",
+        "tests/Ipc.Application.Verification/UxCommercialInputs.cs",
+        "scripts/smoke-application.py",
+        "src/Ipc.Assembly/ParcelCli.cs",
+        "scripts/test_application_compatibility.py"
+      ],
+      "Symbols": [
+        "Run",
+        "LeftSlow",
+        "ReaderRebinding",
+        "ParcelCli.Command"
+      ],
+      "Checks": "real management service, bounded fixture cancellation/finally, ownership scopes, explicit pre-I/O retry, three actual package journeys and independent record verification",
+      "Limitations": "Optional recovery explicitly uses AtAssociation; UntilDispatch expiry is separately verified to block PLC/Resume"
+    },
+    {
+      "Id": "AQA01-F06",
+      "Status": "REMEDIATED",
+      "EvidenceBoundary": "Synthetic runtime/build/package; no real equipment or installation acceptance",
+      "Files": [
+        "README.md",
+        "docs/INDEX.md",
+        "docs/runtime/getting-started.md",
+        "docs/runtime/startup-deployment-02.md",
+        "docs/runtime/application-architecture-22.md",
+        "docs/runtime/version-compatibility-01.md",
+        "docs/extensions/developer-guide.md"
+      ],
+      "Symbols": [
+        "current entry / shipped guides"
+      ],
+      "Checks": "original checkout bytes and baseline Git blob SHA preserved, DB8/ABI1.16/save-start/D-drive scopes checked in four real packages",
+      "Limitations": "Historical media and D/RV remain at original source/verification scope"
+    }
+  ],
+  "Commands": [
+    {
+      "Name": "application-architecture-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--application-architecture"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:32:30.5108370+00:00",
+      "FinishedAt": "2026-10-23T10:32:38.9304926+00:00",
+      "ExitCode": -532462766,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-architecture-01.log"
+    },
+    {
+      "Name": "application-architecture-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--application-architecture"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:34:31.3417869+00:00",
+      "FinishedAt": "2026-10-23T10:34:45.1086840+00:00",
+      "ExitCode": -532462766,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-architecture-02.log"
+    },
+    {
+      "Name": "application-architecture-03",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--application-architecture"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:37:10.7961474+00:00",
+      "FinishedAt": "2026-10-23T10:37:29.7925504+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-architecture-03.log"
+    },
+    {
+      "Name": "application-compatibility-01",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_application_compatibility.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:51:23.1630575+00:00",
+      "FinishedAt": "2026-10-23T10:51:25.5969501+00:00",
+      "ExitCode": 1,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-compatibility-01.log"
+    },
+    {
+      "Name": "application-compatibility-02",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_application_compatibility.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:59:23.5197967+00:00",
+      "FinishedAt": "2026-10-23T10:59:26.0738867+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\application-compatibility-02.log"
+    },
+    {
+      "Name": "build-reference-fixture",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "src/Ipc.Fixture/Ipc.Fixture.csproj",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:51:06.3468625+00:00",
+      "FinishedAt": "2026-10-23T10:51:20.2886382+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-reference-fixture.log"
+    },
+    {
+      "Name": "build-verification-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:28:48.3471922+00:00",
+      "FinishedAt": "2026-10-23T10:29:03.6059613+00:00",
+      "ExitCode": 1,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-01.log"
+    },
+    {
+      "Name": "build-verification-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:29:29.0825934+00:00",
+      "FinishedAt": "2026-10-23T10:29:42.6035633+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-02.log"
+    },
+    {
+      "Name": "build-verification-03",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:31:03.4394582+00:00",
+      "FinishedAt": "2026-10-23T10:31:20.5455131+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-03.log"
+    },
+    {
+      "Name": "build-verification-04",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:33:41.1608556+00:00",
+      "FinishedAt": "2026-10-23T10:33:56.6454021+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-04.log"
+    },
+    {
+      "Name": "build-verification-05",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:35:49.9180962+00:00",
+      "FinishedAt": "2026-10-23T10:36:03.8267611+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-05.log"
+    },
+    {
+      "Name": "build-verification-06",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:38:44.4299913+00:00",
+      "FinishedAt": "2026-10-23T10:38:59.8744412+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-06.log"
+    },
+    {
+      "Name": "build-verification-07",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:40:17.5023219+00:00",
+      "FinishedAt": "2026-10-23T10:40:33.0102355+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-07.log"
+    },
+    {
+      "Name": "build-verification-08",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:42:10.2213401+00:00",
+      "FinishedAt": "2026-10-23T10:42:23.4036169+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-08.log"
+    },
+    {
+      "Name": "build-verification-09",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:44:32.9279039+00:00",
+      "FinishedAt": "2026-10-23T10:44:46.7681354+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-09.log"
+    },
+    {
+      "Name": "build-verification-10",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:55:56.3134511+00:00",
+      "FinishedAt": "2026-10-23T10:56:11.2386553+00:00",
+      "ExitCode": 1,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-10.log"
+    },
+    {
+      "Name": "build-verification-11",
+      "Program": "dotnet",
+      "Arguments": [
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:56:25.1229681+00:00",
+      "FinishedAt": "2026-10-23T10:56:39.6401549+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\build-verification-11.log"
+    },
+    {
+      "Name": "combination-verify-direct-plc-before-main",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-direct-plc-before-main.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:01:51.7107161+00:00",
+      "FinishedAt": "2026-10-23T11:01:53.2159567+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\combination-verify-direct-plc-before-main.log"
+    },
+    {
+      "Name": "combination-verify-sportmaster-default",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-sportmaster-default.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:01:51.6815788+00:00",
+      "FinishedAt": "2026-10-23T11:01:53.2396587+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\combination-verify-sportmaster-default.log"
+    },
+    {
+      "Name": "combination-verify-wcs-to-plc-attached",
+      "Program": "python",
+      "Arguments": [
+        "scripts/application_compatibility.py",
+        "--record",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-wcs-to-plc-attached.json",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/wcs-to-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:01:51.7394891+00:00",
+      "FinishedAt": "2026-10-23T11:01:53.2372935+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\combination-verify-wcs-to-plc-attached.log"
+    },
+    {
+      "Name": "configuration-confirmation-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--configuration-confirmation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:39:34.8305088+00:00",
+      "FinishedAt": "2026-10-23T10:39:48.3140697+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\configuration-confirmation-01.log"
+    },
+    {
+      "Name": "native-entries",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-remediation-20261023/verify-native.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:01:29.4931703+00:00",
+      "FinishedAt": "2026-10-23T11:01:32.9897318+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\native-entries.log"
+    },
+    {
+      "Name": "package-direct-plc-portable",
+      "Program": "python",
+      "Arguments": [
+        "scripts/package-application.py",
+        "--application",
+        "direct-plc",
+        "--target",
+        "portable",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/packages/direct-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:49:47.3831100+00:00",
+      "FinishedAt": "2026-10-23T10:51:07.9192629+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-direct-plc-portable.log"
+    },
+    {
+      "Name": "package-sportmaster-portable",
+      "Program": "python",
+      "Arguments": [
+        "scripts/package-application.py",
+        "--application",
+        "sportmaster",
+        "--target",
+        "portable",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/packages/sportmaster-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:48:23.3868583+00:00",
+      "FinishedAt": "2026-10-23T10:49:45.6056243+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-sportmaster-portable.log"
+    },
+    {
+      "Name": "package-sportmaster-win-x64",
+      "Program": "python",
+      "Arguments": [
+        "scripts/package-application.py",
+        "--application",
+        "sportmaster",
+        "--target",
+        "win-x64",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/packages/sportmaster-win-x64"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:53:40.2915602+00:00",
+      "FinishedAt": "2026-10-23T10:55:49.2326546+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-sportmaster-win-x64.log"
+    },
+    {
+      "Name": "package-wcs-to-plc-portable",
+      "Program": "python",
+      "Arguments": [
+        "scripts/package-application.py",
+        "--application",
+        "wcs-to-plc",
+        "--target",
+        "portable",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/packages/wcs-to-plc-portable"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:51:59.2612813+00:00",
+      "FinishedAt": "2026-10-23T10:53:21.4701824+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\package-wcs-to-plc-portable.log"
+    },
+    {
+      "Name": "receipt-custody-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--receipt-custody"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:43:59.6044590+00:00",
+      "FinishedAt": "2026-10-23T10:44:05.6709204+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\receipt-custody-01.log"
+    },
+    {
+      "Name": "release-documents-01",
+      "Program": "python",
+      "Arguments": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_release_documents.py",
+        "-v"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:45:05.7033093+00:00",
+      "FinishedAt": "2026-10-23T10:45:08.7291160+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\release-documents-01.log"
+    },
+    {
+      "Name": "remediation-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:30:01.0572341+00:00",
+      "FinishedAt": "2026-10-23T10:30:13.2648779+00:00",
+      "ExitCode": -532462766,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\remediation-01.log"
+    },
+    {
+      "Name": "remediation-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:31:52.5883468+00:00",
+      "FinishedAt": "2026-10-23T10:32:13.7259749+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\remediation-02.log"
+    },
+    {
+      "Name": "remediation-03",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:42:48.3478335+00:00",
+      "FinishedAt": "2026-10-23T10:43:11.8655583+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\remediation-03.log"
+    },
+    {
+      "Name": "remediation-04",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:45:29.2692237+00:00",
+      "FinishedAt": "2026-10-23T10:45:51.3213554+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\remediation-04.log"
+    },
+    {
+      "Name": "remediation-05",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:59:00.8644854+00:00",
+      "FinishedAt": "2026-10-23T10:59:24.6183619+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\remediation-05.log"
+    },
+    {
+      "Name": "resource-risks-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--resource-risks"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:39:21.5340700+00:00",
+      "FinishedAt": "2026-10-23T10:39:25.8369669+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\resource-risks-01.log"
+    },
+    {
+      "Name": "resource-risks-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--resource-risks"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:46:12.2429645+00:00",
+      "FinishedAt": "2026-10-23T10:46:16.1315465+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\resource-risks-02.log"
+    },
+    {
+      "Name": "smoke-direct-plc-before-main-02",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable",
+        "--optional-features",
+        "--peer-fixture",
+        "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/smoke-direct-plc-before-main-02.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:57:01.2089768+00:00",
+      "FinishedAt": "2026-10-23T10:57:11.5045135+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-direct-plc-before-main-02.log"
+    },
+    {
+      "Name": "smoke-direct-plc-before-main-v3",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable",
+        "--optional-features",
+        "--peer-fixture",
+        "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-direct-plc-before-main.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:00:35.2343594+00:00",
+      "FinishedAt": "2026-10-23T11:00:45.0032442+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-direct-plc-before-main-v3.log"
+    },
+    {
+      "Name": "smoke-direct-plc-before-main",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/direct-plc-portable",
+        "--optional-features",
+        "--peer-fixture",
+        "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/smoke-direct-plc-before-main.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:54:00.2430947+00:00",
+      "FinishedAt": "2026-10-23T10:54:12.5700975+00:00",
+      "ExitCode": 1,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-direct-plc-before-main.log"
+    },
+    {
+      "Name": "smoke-sportmaster-default-v2",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-sportmaster-default.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T11:00:23.0530265+00:00",
+      "FinishedAt": "2026-10-23T11:00:29.2126953+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-sportmaster-default-v2.log"
+    },
+    {
+      "Name": "smoke-sportmaster-default",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/sportmaster-portable",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/smoke-sportmaster-default.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:52:52.5551112+00:00",
+      "FinishedAt": "2026-10-23T10:53:01.2171734+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-sportmaster-default.log"
+    },
+    {
+      "Name": "smoke-wcs-to-plc-attached",
+      "Program": "python",
+      "Arguments": [
+        "scripts/smoke-application.py",
+        "--package",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/unpacked/wcs-to-plc-portable",
+        "--optional-features",
+        "--attached-upload",
+        "--peer-fixture",
+        "D:/projects/importer-pc-aqa01/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+        "--output",
+        "D:/audits/importer-pc/AQA01-remediation-20261023/combination-wcs-to-plc-attached.json"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:58:11.5868998+00:00",
+      "FinishedAt": "2026-10-23T10:58:20.7634236+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\smoke-wcs-to-plc-attached.log"
+    },
+    {
+      "Name": "unpack-inventory-01",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-remediation-20261023/verify-media.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:52:37.2380389+00:00",
+      "FinishedAt": "2026-10-23T10:52:39.6413034+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\unpack-inventory-01.log"
+    },
+    {
+      "Name": "unpack-inventory-02",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-remediation-20261023/verify-media.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:54:20.2335457+00:00",
+      "FinishedAt": "2026-10-23T10:54:22.3852780+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\unpack-inventory-02.log"
+    },
+    {
+      "Name": "unpack-inventory-03",
+      "Program": "python",
+      "Arguments": [
+        "D:/audits/importer-pc/AQA01-remediation-20261023/verify-media.py"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:56:35.7163944+00:00",
+      "FinishedAt": "2026-10-23T10:56:43.6483138+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\unpack-inventory-03.log"
+    },
+    {
+      "Name": "ux-commercial-inputs-01",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--ux-commercial-inputs"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:43:29.0592852+00:00",
+      "FinishedAt": "2026-10-23T10:43:34.7608711+00:00",
+      "ExitCode": -532462766,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\ux-commercial-inputs-01.log"
+    },
+    {
+      "Name": "ux-commercial-inputs-02",
+      "Program": "dotnet",
+      "Arguments": [
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--ux-commercial-inputs"
+      ],
+      "WorkingDirectory": "D:\\projects\\importer-pc-aqa01",
+      "StartedAt": "2026-10-23T10:45:16.2233104+00:00",
+      "FinishedAt": "2026-10-23T10:45:21.2913761+00:00",
+      "ExitCode": 0,
+      "Log": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\logs\\ux-commercial-inputs-02.log"
+    }
+  ],
+  "Packages": [
+    {
+      "Package": "direct-plc-portable.zip",
+      "Sha256": "bbeaae56f428acc9837537cfea5aa2e1ca4a40e22e6efebec2f1ca6ca3825aa1",
+      "Bytes": 18586979,
+      "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+      "Target": "portable",
+      "CheckedFiles": 96,
+      "Business": "DirectPlc",
+      "Version": "1.5.1",
+      "GuideChecks": "DB8/current ABI/quality guide present",
+      "Path": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\direct-plc-portable"
+    },
+    {
+      "Package": "sportmaster-portable.zip",
+      "Sha256": "81d32feea6c95f84314404e6fa687e894df0ce40736dac789586f510f03ca7e3",
+      "Bytes": 18696981,
+      "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+      "Target": "portable",
+      "CheckedFiles": 113,
+      "Business": "Sportmaster",
+      "Version": "1.11.2",
+      "GuideChecks": "DB8/current ABI/quality guide present",
+      "Path": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\sportmaster-portable"
+    },
+    {
+      "Package": "sportmaster-win-x64.zip",
+      "Sha256": "5fca3af3f84fd192c6c738466543cc9bdc8f6b445eb7d4be2d699d47f917ca8f",
+      "Bytes": 106695488,
+      "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+      "Target": "win-x64",
+      "CheckedFiles": 739,
+      "Business": "Sportmaster",
+      "Version": "1.11.2",
+      "GuideChecks": "DB8/current ABI/quality guide present",
+      "Path": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\sportmaster-win-x64"
+    },
+    {
+      "Package": "wcs-to-plc-portable.zip",
+      "Sha256": "037bda91a7f642eec4276a52952873aa25773cfda4ce452b22cb218dd12f9f49",
+      "Bytes": 18627412,
+      "SourceCommit": "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62",
+      "Target": "portable",
+      "CheckedFiles": 97,
+      "Business": "WcsToPlc",
+      "Version": "1.5.1",
+      "GuideChecks": "DB8/current ABI/quality guide present",
+      "Path": "D:\\audits\\importer-pc\\AQA01-remediation-20261023\\unpacked\\wcs-to-plc-portable"
+    }
+  ],
+  "PeerExecutions": [
+    {
+      "Combination": "sportmaster-default",
+      "Operation": "97b27fcdff31457fa1fb1fd7366e54dd",
+      "Stage": "Wcs",
+      "Request": "e51c49feed8c46d68d5bc02de7a6a5d1",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/sportmaster-default/e51c49feed8c46d68d5bc02de7a6a5d1.json",
+      "ImageSha256": null
+    },
+    {
+      "Combination": "sportmaster-default",
+      "Operation": "7203b7ce35614a22ab6e89e27d9d5601",
+      "Stage": "Wcs",
+      "Request": "54839f87688b42c2b97ecb14966e722e",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/sportmaster-default/54839f87688b42c2b97ecb14966e722e.json",
+      "ImageSha256": null
+    },
+    {
+      "Combination": "direct-plc-before-main",
+      "Operation": "4db4052c90e24c268573457f88e5be42",
+      "Stage": "Plc",
+      "Request": "b1cd0259443e448fb2434bb062d0f7f5",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/direct-plc-before-main/b1cd0259443e448fb2434bb062d0f7f5.json",
+      "ImageSha256": null
+    },
+    {
+      "Combination": "direct-plc-before-main",
+      "Operation": "4db4052c90e24c268573457f88e5be42",
+      "Stage": "Upload",
+      "Request": "ad3067df0cd8421391f3c0faf8235b46",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/direct-plc-before-main/ad3067df0cd8421391f3c0faf8235b46.json",
+      "ImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+    },
+    {
+      "Combination": "wcs-to-plc-attached",
+      "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+      "Stage": "Wcs",
+      "Request": "9a46d8859c3043d29df2d22bae9e6d4a",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/wcs-to-plc-attached/9a46d8859c3043d29df2d22bae9e6d4a.json",
+      "ImageSha256": null
+    },
+    {
+      "Combination": "wcs-to-plc-attached",
+      "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+      "Stage": "Plc",
+      "Request": "b9ce9fd74111455dad9ace034502a202",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/wcs-to-plc-attached/b9ce9fd74111455dad9ace034502a202.json",
+      "ImageSha256": null
+    },
+    {
+      "Combination": "wcs-to-plc-attached",
+      "Operation": "2cd672a6ec6941829ca61c30c8b875aa",
+      "Stage": "Upload",
+      "Request": "d90c72d856e64aaca91fcff579abe813",
+      "Executions": 1,
+      "Ledger": "peer-ledgers/wcs-to-plc-attached/d90c72d856e64aaca91fcff579abe813.json",
+      "ImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+    }
+  ],
+  "RecorderCorrection": "Initial same-name command metadata overwrote smoke result indexes; original event streams retained in prior-events. Fresh combination-* records and their original events are authoritative; each passed application_compatibility verification. No old record reconstructed or relabelled.",
+  "WindowsNativeUi": "NOT_RUN",
+  "ProtectedStoreMutation": "NOT_RUN",
+  "RealEquipment": "NOT_OPERATED",
+  "RealProtocols": "BLOCKED",
+  "Installation": "NOT_RUN"
+}

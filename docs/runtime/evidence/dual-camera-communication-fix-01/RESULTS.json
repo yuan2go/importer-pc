@@ -118,7 +118,7 @@
     "ProductionBusinessRequests": "NONE",
     "D_RV": "UNCHANGED"
   },
-  "PackageSmoke": "PENDING_LOCAL_FROZEN_CANDIDATE",
+  "PackageSmoke": "PASS_LOCAL_FROZEN_CANDIDATE",
   "Files": [
     {
       "Path": "application-architecture.log",
@@ -176,6 +176,11 @@
       "Bytes": 2021
     },
     {
+      "Path": "manifest-blob-check.json",
+      "Sha256": "261445d4b665fbfe35c177ba6c5e1fae33c03991de4495105495f089695e1653",
+      "Bytes": 7890
+    },
+    {
       "Path": "native-diagnostics.log",
       "Sha256": "5e3a7cfcf1f01b90b290d37475e71ed91bccb5164e7a687d44388ed2d1e6658f",
       "Bytes": 451
@@ -184,6 +189,26 @@
       "Path": "native-diagnostics.png",
       "Sha256": "0e213ca9b42ae15d6d5fcb57c24fa6ac9411f7780e6ee68c45104a10295ae208",
       "Bytes": 87883
+    },
+    {
+      "Path": "package-receipt.json",
+      "Sha256": "c89441af3dbe941aaa1214d75dc16f61e84b8321f5d837f9387cd792d63117a4",
+      "Bytes": 864
+    },
+    {
+      "Path": "package-smoke.json",
+      "Sha256": "3436d25146b26647af19b80532d71efeb790dfd89911847408efd1ae209a0100",
+      "Bytes": 7848
+    },
+    {
+      "Path": "package-smoke.log",
+      "Sha256": "11689d8887eac7c329b289e15afa16c3ebdaa23a9fcf0b18533ee2cd0ead9dd4",
+      "Bytes": 561
+    },
+    {
+      "Path": "package.log",
+      "Sha256": "deb33f175877dc2b119c117b657aaffec255ed2faa1f635544147f007b50660f",
+      "Bytes": 4452
     },
     {
       "Path": "parameter-core.log",
@@ -225,5 +250,7 @@
       "Sha256": "ca32b0ec5aa4337a6696ba7f43d2f135c37334ad4d21f67306c32dac0ced24c2",
       "Bytes": 3984
     }
-  ]
+  ],
+  "RuntimeSourceCommit": "04fa9a258704b46acf7477fe8aee3d9d358c07e5",
+  "PackageReceipt": "package-receipt.json"
 }

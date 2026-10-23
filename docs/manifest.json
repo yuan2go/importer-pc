@@ -69570,9 +69570,9 @@
     },
     {
       "path": "docs/runtime/evidence/dual-camera-communication-fix-01/RESULTS.json",
-      "sha256": "d3c51398f8d60c8b7a25a54f123ff979fb20c7d1e81968207805ea90d21b3542",
-      "size_bytes": 7415,
-      "git_blob": "7baf09180c13d8e647b0d0531dcf59f06b7eb8d4",
+      "sha256": "c87bda87abee40af844e722f110217bd46e99056117a00b5d841be062255b13a",
+      "size_bytes": 8315,
+      "git_blob": "01907f36264c8d0745edc03d89348dea25340881",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -69801,9 +69801,9 @@
     },
     {
       "path": "docs/runtime/validation/dual-camera-communication-fix-01.md",
-      "sha256": "921a711d08fa0082ede16a54f035467c565263397a4da61cb843f13c2994d1ae",
-      "size_bytes": 4574,
-      "git_blob": "3e06046dd556e9f2623c9708c26865bba5584291",
+      "sha256": "c88258b4028316cacd214318fa74a0001fad1d17e24b9b59c8400ed5563140a1",
+      "size_bytes": 5127,
+      "git_blob": "ff7889af86dba3e5edc42ef1de0278e126480456",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -69886,6 +69886,50 @@
       "sha256": "261445d4b665fbfe35c177ba6c5e1fae33c03991de4495105495f089695e1653",
       "size_bytes": 7890,
       "git_blob": "8e79ab52c9499c2dc9face30a79e700dbad8e741"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/package-receipt.json",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "c89441af3dbe941aaa1214d75dc16f61e84b8321f5d837f9387cd792d63117a4",
+      "size_bytes": 864,
+      "git_blob": "968106618b4b097f79869204ee2efd7e3151b077"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/package-smoke.json",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "3436d25146b26647af19b80532d71efeb790dfd89911847408efd1ae209a0100",
+      "size_bytes": 7848,
+      "git_blob": "61eee8cfefce6c21e863c17c79434eaf670a21ec"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/package-smoke.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "11689d8887eac7c329b289e15afa16c3ebdaa23a9fcf0b18533ee2cd0ead9dd4",
+      "size_bytes": 561,
+      "git_blob": "6748ffdb524fb88a00b3f201df9bbf7b023c213c"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/package.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "deb33f175877dc2b119c117b657aaffec255ed2faa1f635544147f007b50660f",
+      "size_bytes": 4452,
+      "git_blob": "66480dc7039e7989597a91b967b4efb33095a63c"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

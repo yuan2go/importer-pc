@@ -33,4 +33,4 @@ powershell.exe -NoProfile -File scripts/test-diagnose-camera-network.ps1
 
 清单按Git原始blob核验：基线37项既有内容身份差异，本候选25项，无新增。先前Windows archive导出的CRLF转换不作为原字节身份依据；历史未触及资产不改写。
 
-冻结本地候选的打包/解包启动冒烟在提交后补充独立回执；不创建Release、不安装生产介质、不发布网络或设备配置。真实左右相机、SDK/RCS、实体语义、目标工控机、拔网/静默断网识别时限、真实安装/UAC及现场均NOT_RUN/待确认；原D/RV不变。
+冻结实现提交`04fa9a258704b46acf7477fe8aee3d9d358c07e5`已由原package-application.py打包Sportmaster1.11.3 portable。真实进程启动/两路合成输入/原请求重启保留/停止冒烟PASS；独立ZIP解包后逐文件SHA核对115项通过，含诊断脚本及当前说明。实际运行宿主为Windows；旧smoke回执的Windows=NOT_RUN字段保持原样，表示不充当原生UI/安装验收。原生单一诊断视图另有本包证据。[冻结候选回执](../evidence/dual-camera-communication-fix-01/package-receipt.json)。后续证据提交不修改src/config/scripts/tests或将包改标为后续HEAD。；不创建Release、不安装生产介质、不发布网络或设备配置。真实左右相机、SDK/RCS、实体语义、目标工控机、拔网/静默断网识别时限、真实安装/UAC及现场均NOT_RUN/待确认；原D/RV不变。

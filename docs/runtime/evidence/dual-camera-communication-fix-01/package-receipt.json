@@ -1,0 +1,17 @@
+{
+  "SourceCommit": "04fa9a258704b46acf7477fe8aee3d9d358c07e5",
+  "BusinessVersion": "1.11.3",
+  "Target": "portable",
+  "PackageSha256": "dd326e35a299a5c8e0dc7a45c15a1a570961178d8ff8a06f6217e07d22660e8d",
+  "UnpackedFilesVerified": 115,
+  "DiagnosticScriptIncluded": true,
+  "CurrentGuideIncluded": true,
+  "RuntimeSmoke": "PASS; published directory; independently extracted ZIP matches all candidate file hashes",
+  "RuntimeScope": "Two manual/synthetic readers and reference WCS; no production devices or external RCS",
+  "ActualExecutionHost": "Windows x64",
+  "OriginalHarnessWindowsField": "NOT_RUN",
+  "HarnessWindowsMeaning": "Historical fixture field retained; not a native UI/installation acceptance result",
+  "Release": "NOT_CREATED",
+  "Installation": "NOT_RUN",
+  "PackageLocation": "Local D-drive development cache, not uploaded"
+}

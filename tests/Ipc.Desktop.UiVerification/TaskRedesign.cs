@@ -104,6 +104,9 @@ static partial class Program
         Capture("history", client);
         Click(window, "诊断与恢复"); window.UpdateLayout();
         var diagnostics = (ContentControl)window.FindName("PageHost");
+        var sharedEvidence = Descendants(diagnostics).OfType<Expander>().Single(e => Equals(e.Header, "共享服务诊断详情"));
+        Check(!sharedEvidence.IsExpanded, "shared protocol evidence is disclosed on demand");
+        sharedEvidence.IsExpanded = true; window.UpdateLayout();
         Check(Descendants(diagnostics).OfType<TextBox>().All(t => t.IsReadOnly) && Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("权威结果查询")), "diagnostics remains read-only and explains the actual RCS query boundary");
         Capture("diagnostics", client);
         await Until(() => !vm.Busy);

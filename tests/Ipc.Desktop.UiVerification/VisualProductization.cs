@@ -158,13 +158,17 @@ static partial class Program
             var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
             var filterScroll = (ScrollViewer)history.FindName("HistoryFilterScroll");
             var firstResult = Descendants(filterRows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+            var columnHeaders = Descendants(filterRows).OfType<System.Windows.Controls.Primitives.DataGridColumnHeadersPresenter>().Single();
+            var headerBounds = columnHeaders.TransformToAncestor(filterRows).TransformBounds(new Rect(columnHeaders.RenderSize));
+            var rowBounds = firstResult.TransformToAncestor(filterRows).TransformBounds(new Rect(firstResult.RenderSize));
             var queryButtons = Descendants(queryActions).OfType<Button>().Where(b => !Equals(b.Content, "取消导出")).ToArray();
             Check(queryButtons.Select(b => b.Content).SequenceEqual(new[] { "查询", "清除筛选", "下一页", "导出表格…" }) &&
                 Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).IsVisible == vm.HistoryExportRunning,
                 "fixed history query actions remain complete; cancellation is visible only while an export is running");
             Capture("history-filters-minimum");
-            Check(filterRows.IsVisible && filterRows.ActualHeight >= 72 && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
-                firstResult.ActualHeight >= 32 && firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight <= filterRows.ActualHeight &&
+            Check(filterRows.IsVisible && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
+                columnHeaders.IsVisible && columnHeaders.ActualHeight >= 32 && headerBounds.Top >= 0 && headerBounds.Bottom <= filterRows.ActualHeight &&
+                firstResult.IsVisible && firstResult.ActualHeight >= 32 && rowBounds.Top >= headerBounds.Bottom && rowBounds.Bottom <= filterRows.ActualHeight &&
                 filterScroll.ScrollableHeight > 0 && !((Expander)history.FindName("HistoryDetailExpander")).IsExpanded &&
                 !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
                 queryButtons.All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),

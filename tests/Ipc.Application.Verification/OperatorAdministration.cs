@@ -156,10 +156,22 @@ static class OperatorAdministration
         app.EmitReferenceAt("left", "ops-left-next", "LEFT-NEXT", "ops-left-next-event");
         for (int i = 0; i < 150; i++) { state = await app.SnapshotAsync(); if (state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(20); }
         Check(await streaming == 15000 && state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved), "streaming complete export and another admitted parcel both finish without sharing the business lock");
-        var beforeAudit = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), beforeAudit.Revision, "Pause"));
+        // Observing SlotResolved does not prove the external continuation has
+        // drained. Pause can also refuse a stale revision; never ignore its receipt.
+        BusinessReceipt? pauseReceipt = null;
+        for (var i = 0; i < 10; i++)
+        {
+            var beforeAudit = await app.SnapshotAsync();
+            pauseReceipt = await app.CommandAsync(new(Wire.Id(), beforeAudit.Revision, "Pause"));
+            if (pauseReceipt.Status != "Conflict") break;
+            await Task.Delay(20);
+        }
+        Check(pauseReceipt?.Status == "Persisted", "audit setup confirms the actual pause receipt: " + pauseReceipt);
         var pausedAudit = await app.SnapshotAsync();
+        for (var i = 0; i < 150 && pausedAudit.Availability?.Configure != true; i++) { await Task.Delay(20); pausedAudit = await app.SnapshotAsync(); }
+        Check(pausedAudit.Paused && pausedAudit.Availability?.Configure == true, "audit setup waits for paused, authorized and drained configuration availability: " + string.Join("; ", pausedAudit.BlockingReasons));
         var unchanged = await app.StageConfigurationAsync(pausedAudit.Configuration.Revision, pausedAudit.Configuration.Effective, "Synthetic mode evidence audit");
-        Check(unchanged.Status == "Unchanged", "management mode preserves the existing unified save and complete-candidate guard for an unchanged revision");
+        Check(unchanged.Status == "Unchanged", "management mode preserves the existing unified save and complete-candidate guard for an unchanged revision; receipt=" + unchanged);
         using(var auditDb = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", seed.StationId, "sportmaster/sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {
             auditDb.Open(); using var command = auditDb.CreateCommand(); command.CommandText="SELECT body FROM parcel_configuration_audit ORDER BY rowid DESC LIMIT 1";

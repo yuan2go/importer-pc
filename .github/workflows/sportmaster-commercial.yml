@@ -41,6 +41,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_release_build.py -v
       - name: Freeze only the first commercial composition
+        id: freeze_sportmaster
         shell: pwsh
         run: |
           # PR checkout is GitHub's exact merge commit, not an ancestor of main.
@@ -91,6 +92,7 @@ jobs:
             exit 1
           }
       - name: Native visual interactions on the same frozen medium
+        if: ${{ !cancelled() && steps.freeze_sportmaster.outcome == 'success' }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'

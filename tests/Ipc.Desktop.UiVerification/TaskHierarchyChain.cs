@@ -49,10 +49,22 @@ static partial class Program
         vm.OperatorSubject = "alice"; await vm.LoginAsync("SIMULATION_ONLY");
         var client = (Grid)window.FindName("ClientArea");
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
+        // Publish only synthetic task facts. Do not export account configuration,
+        // session identities, the runtime database or unrelated machine data.
+        async Task<object> EvidenceSnapshot()
+        {
+            var s = await runtime.SnapshotAsync();
+            return new { s.RuntimeId, s.Revision, s.State, s.Paused, s.BlockingReasons, s.Positions, s.Inputs,
+                Operations = s.Operations.Select(o => new { o.Id, o.AdmissionId, o.ObservationId, o.ObservedAt, o.ParcelCode, o.PositionId,
+                    o.Acquisition, o.ReaderBinding, o.State, o.Slot, o.Reason, Wcs = o.Wcs is not { } w ? null : new {
+                        w.State, w.Attempts, w.Failure, w.Replies, Request = new { w.Request.Id, w.Request.ApplicationId, w.Request.OperationId,
+                            w.Request.AdmissionId, w.Request.Stage, w.Request.Binding, w.Request.ImplementationHash, w.Request.ConfigurationHash,
+                            w.Request.PayloadHash, w.Request.PreparedAt, w.Request.IntegrationRequest } } }).ToArray() };
+        }
         async Task Until(Func<bool> ready)
         {
             for (var i = 0; i < 200; i++) { await vm.RefreshAsync(); await Flush(); if (ready()) return; await Task.Delay(25); }
-            ExtensionStore.AtomicWrite(Path.Combine(evidence, "chain-timeout.json"), new { Snapshot = await runtime.SnapshotAsync(), Exchanges = peer.Exchanges.ToArray() });
+            ExtensionStore.AtomicWrite(Path.Combine(evidence, "chain-timeout.json"), new { Snapshot = await EvidenceSnapshot(), Exchanges = peer.Exchanges.ToArray() });
             throw new TimeoutException("Real Application did not reach the expected task fact");
         }
         async Task Observe(string side, string entity, string code)
@@ -65,7 +77,7 @@ static partial class Program
             await Flush();
             ExtensionStore.AtomicWrite(Path.Combine(evidence, "chain-" + name + ".json"), new
             {
-                Scenario = name, Synthetic = true, Snapshot = await runtime.SnapshotAsync(), Exchanges = peer.Exchanges.ToArray(), Commands = transport.Receipts.ToArray(),
+                Scenario = name, Synthetic = true, Snapshot = await EvidenceSnapshot(), Exchanges = peer.Exchanges.ToArray(), Commands = transport.Receipts.ToArray(),
                 Display = new { Left = new { vm.Left.Barcode, vm.Left.Slot, vm.Left.Status, vm.Left.AttentionReason, vm.Left.NextStep, vm.Left.WaveNo, vm.Left.TaskId, vm.Left.SkuId, vm.Left.ResponseQuantity, vm.Left.CanAdmit, vm.Left.CanContinue },
                     Right = new { vm.Right.Barcode, vm.Right.Slot, vm.Right.Status, vm.Right.CanAdmit }, vm.GlobalOperationFeedback }
             });
@@ -123,6 +135,7 @@ static partial class Program
         await Observe("left", "entity-l5", "000127"); await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
         await NativeResult("unknown-800", "结果待核对", "000127", false);
         var unknown = vm.Left.Operation!; posts = peer.Exchanges.Count;
+        Check(vm.Left.AttentionReason.Contains("不足以确认业务接受"), "unknown explains insufficient acceptance evidence in the primary result");
         Check(unknown.Wcs!.State == StageState.Unknown && !vm.Left.CanAdmit && !vm.Left.CanContinue && vm.Right.CanAdmit, "response missing required taskId leaves unknown custody on left, not a usable partial result or global pause");
         // Reconciliation uses the existing Application guard. Query=false must not POST.
         await runtime.ReconcileAsync(unknown.Id); await vm.RefreshAsync();
@@ -130,11 +143,13 @@ static partial class Program
         await Observe("left", "entity-l6-blocked", "000128");
         await NativeResult("blocked-after-unknown-800", "本次输入未准入", "000128", false);
         Check(vm.Left.OperationId == unknown.Id && vm.Left.Input!.OperationId is null && peer.Exchanges.Count == posts, "valid new barcode blocked by unknown retains original request owner");
+        Check(vm.Left.AttentionReason.Contains("当前：原作业结果待核对"), "blocked new input separates its admission outcome from current unresolved custody");
 
         // Invalid receipt identity is injected at the capability boundary, not in a snapshot.
         // This explicitly synthetic port case is NOT a claim about an RCS query capability.
         await Observe("right", "entity-r-conflict", "000129"); await Until(() => vm.Right.Operation?.Wcs?.State == StageState.Conflict);
         Check(vm.Right.Operation!.State == ParcelState.Blocked && vm.Right.Status == "回执冲突 · 待核对" && !vm.Right.CurrentTaskAvailable && !vm.Right.CanAdmit && !vm.Right.CanContinue, "real Application rejects invalid original-stage identity as Conflict, with no destination or repeat permission");
+        Check(vm.Right.AttentionReason.Contains("身份不符或存在矛盾"), "conflict explains incompatible receipt evidence, distinct from missing acceptance");
         await Record("conflict-right-800");
 
         // A normal, fresh operation snapshot cannot prove that a global command succeeded.
@@ -153,7 +168,7 @@ static partial class Program
         // Keep unresolved old receipt out of a new global intent; real Resume is rejected
         // because both positions now carry unsettled custody.
         await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复供包"); await Flush();
-        Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("恢复供包") && !vm.GlobalOperationFeedback.Contains("SYNTH_PAUSE_NOT_SENT"), "latest resume intent owns its real Application rejection and pause remains in force");
+        Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("恢复供包") && vm.GlobalOperationFeedback.Contains("当前执行条件未满足") && !vm.GlobalOperationFeedback.Contains("SYNTH_PAUSE_NOT_SENT"), "latest resume intent owns its real Application rejection and pause remains in force");
         await Record("resume-guard-logs-800");
 
         transport.FailSnapshots = true;

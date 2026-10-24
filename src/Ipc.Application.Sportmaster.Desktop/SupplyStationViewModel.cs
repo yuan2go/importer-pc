@@ -148,7 +148,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
     public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? "回执未包含" : Operation.Slot : "未取得";
-    public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ChineseInterfaceText.Notice(Input!.Reason) :
+    public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ParcelPresentation.InputReason(Input!) +
+        (Input!.Outcome == ParcelInputOutcome.Blocked && BlockingReasons.Length > 0 ? " 当前：" +
+            (HasUncertainOriginal ? "原作业结果待核对。" : BlockingReasons) : "") :
         Operation is { } op && !CurrentTaskAvailable ? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
     public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);
     WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
@@ -201,7 +203,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string DeviceStatus { get; private set; } = "设备状态未取得";
     public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
-    public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ? "新输入未建作业；原作业请查看详情。" :
+    public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ?
+        Operation is null ? "检查本次输入及准入条件；历史结果见作业记录。" : "本次未建作业；请查看原作业详情并核对。" :
         SlotAvailable ? "按本次格口投递；下一包信息自动更新。" :
         CurrentTaskAvailable ? "回执未包含格口；查看详情并核对原回执。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :

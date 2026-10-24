@@ -16,5 +16,11 @@
     "archive": "docs__runtime__operator-administrator-logs-01.md.txt",
     "sha256": "517e5a13973f1a350d4605cf90a302f88199e8d96980dbef34e0ff38c0bd3a49",
     "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5"
+  },
+  {
+    "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
+    "archive": "runtime-stability-before.md",
+    "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
+    "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5"
   }
 ]

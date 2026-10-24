@@ -19,6 +19,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> admissionPositions = new();
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> overloadedPositions = new();
     Task? worker;
+    Task? ingressDrain;
     ResourceLease? lease;
     RuntimeJournal? journal;
     ParcelRepository? repository;
@@ -31,6 +32,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly TaskCompletionSource<bool> ingressStartup = new(TaskCreationOptions.RunContinuationsAsynchronously);
     sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator, DateTimeOffset ReceivedAt);
     bool started, stopped, disposed;
+    readonly object startupOwnership = new();
+    readonly TaskCompletionSource startupEnded = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    bool stopRequested;
     string? failure;
     readonly OperatorSession session = new();
     OperatorIdentity? currentOperator => session.Identity;
@@ -59,11 +63,28 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public string[] OwnershipDiagnostics => disposed ? [] : [Id + ": owns reader/ports/worker/database/leases until Stop and Dispose complete"];
     ParcelConfiguration? startupConfiguration;
     ParcelConfiguration Effective => startupConfiguration ?? configuration!.Current.Effective;
-    public async Task StartAsync(CancellationToken token)
+    public Task StartAsync(CancellationToken token)
     {
-        if (started || disposed) throw new InvalidOperationException("Application startup is single-use");
+        lock (startupOwnership)
+        {
+            if (started || disposed || stopRequested) throw new InvalidOperationException("Application startup is single-use and cannot follow Stop");
+            started = true;
+        }
+        return StartOwnedAsync(token);
+    }
+    async Task StartOwnedAsync(CancellationToken token)
+    {
+        try
+        {
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token);
+            linked.Token.ThrowIfCancellationRequested();
+            await StartCoreAsync(linked.Token).ConfigureAwait(false);
+        }
+        finally { startupEnded.TrySetResult(); }
+    }
+    async Task StartCoreAsync(CancellationToken token)
+    {
         RuntimeIdentityPreflight();
-        started = true;
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")));
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));
         seed = factory.Normalize(seed);
@@ -158,7 +179,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
-            Volatile.Write(ref accepting, 2);
+            lock (startupOwnership)
+            {
+                token.ThrowIfCancellationRequested();
+                if (stopRequested) throw new OperationCanceledException(stopping.Token);
+                Volatile.Write(ref accepting, 2);
+            }
             InitializeIngress();
             StartOverloadWriter();
             foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
@@ -259,6 +285,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
             try
             {
+                Boundary?.Invoke("BeforeIngressDurable");
                 WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"));
                 Boundary?.Invoke("AfterIngressDurable");
                 Interlocked.Increment(ref lane.Received);

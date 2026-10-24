@@ -214,16 +214,35 @@ public sealed partial class ParcelRuntime
         }
         finally { gate.Release(); }
     }
-    public async Task StopAsync(CancellationToken token)
+    readonly object stopOwnership = new();
+    Task? stopOperation;
+    public Task StopAsync(CancellationToken token)
     {
-        await shutdown.WaitAsync(token).ConfigureAwait(false);
-        try { await StopCoreAsync(token).ConfigureAwait(false); }
-        finally { shutdown.Release(); }
+        token.ThrowIfCancellationRequested();
+        lock (startupOwnership) { stopRequested = true; Interlocked.Exchange(ref accepting, 0); }
+        lock (stopOwnership)
+        {
+            // Even the synchronous prefix of an adapter Stop may block. One real
+            // owner survives cancellation of any caller's wait; retries join it.
+            if (stopOperation is null || stopOperation.IsFaulted || stopOperation.IsCanceled)
+                stopOperation = Task.Run(async () =>
+                {
+                    await shutdown.WaitAsync().ConfigureAwait(false);
+                    try { await StopCoreAsync(CancellationToken.None).ConfigureAwait(false); }
+                    finally { shutdown.Release(); }
+                });
+            return stopOperation.WaitAsync(token);
+        }
     }
     async Task StopCoreAsync(CancellationToken token)
     {
         if (stopped) return;
+        Task startup;
+        lock (startupOwnership) { stopRequested = true; startup = started ? startupEnded.Task : Task.CompletedTask; }
         Interlocked.Exchange(ref accepting, 0); stopping.Cancel();
+        // Cancellation ends this caller's wait only. Startup may still be inside
+        // an uncancellable adapter call or writing its terminal audit.
+        await startup.WaitAsync(token).ConfigureAwait(false);
         ingressStartup.TrySetResult(false);
         // A timeout leaves every downstream resource owned; a subsequent Stop waits again.
         if (ports is not null)
@@ -242,8 +261,14 @@ public sealed partial class ParcelRuntime
                 throw new AggregateException("Source stop failures; all downstream ownership retained", sourceFailures);
             }
         }
-        // Sources have actually stopped, hence all durable handoffs have returned.
-        foreach (var queue in positionQueues.Values) queue.Writer.TryComplete();
+        // Also fence direct/reference handoffs and adapters whose Stop returned
+        // before a synchronous receiver finished. Never close behind a producer.
+        ingressDrain ??= Task.Run(() =>
+        {
+            foreach (var pair in ingressLanes)
+                lock (pair.Value.Sync) positionQueues[pair.Key].Writer.TryComplete();
+        });
+        await ingressDrain.WaitAsync(token).ConfigureAwait(false);
         overloadWrites.Writer.TryComplete();
         if (overloadWorker is not null) await overloadWorker.WaitAsync(token).ConfigureAwait(false);
         await DrainReadOperations(token).ConfigureAwait(false);
@@ -284,7 +309,7 @@ public sealed partial class ParcelRuntime
     async Task DisposeCoreAsync()
     {
         if (disposed) return;
-        Exception? stopFailure = null;
+        Exception? stopFailure = stopped ? terminalWorkerFailure : null;
         try { await StopCoreAsync(CancellationToken.None).ConfigureAwait(false); }
         catch (Exception ex) when (stopped) { stopFailure = ex; }
         if (ports is not null)

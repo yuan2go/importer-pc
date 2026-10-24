@@ -23,7 +23,9 @@ public sealed class SoftwareLogControl : UserControl
     readonly Expander detailPanel, diagnostics;
     readonly TextBox diagnosticText = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
     readonly TextBlock empty = new() { Text = "填写条件后查询日志", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = System.Windows.Media.Brushes.SlateGray };
-    CancellationTokenSource? pending;
+    readonly LogSummaryConverter summary = new();
+    CancellationTokenSource? pending, formatting;
+    long detailVersion, viewVersion;
     string? selection;
     SoftwareLogQuery? query;
     int offset;
@@ -37,7 +39,7 @@ public sealed class SoftwareLogControl : UserControl
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
         var title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
-        var hint = new TextBlock { Text = "默认最近24小时，每页200条；选择记录查看完整原文。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
+        var hint = new TextBlock { Text = "默认最近24小时，每页200条；选择记录查看原文；超出呈现预算可完整导出。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
         var actions = new WrapPanel { Margin = new(0, 6, 0, 4) }; DockPanel.SetDock(actions, Dock.Bottom); header.Children.Add(actions);
         Button Action(string label, Func<Task> action)
         {
@@ -96,7 +98,7 @@ public sealed class SoftwareLogControl : UserControl
         results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 238, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 130, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 82, ElementStyle = cellStyle });
-        results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = new LogSummaryConverter() }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = (Style)FindResource("QueryCodeText") });
+        results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = summary }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = (Style)FindResource("QueryCodeText") });
         var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(empty); root.Children.Add(panel);
         results.SizeChanged += (_, _) => UpdateEmpty();
         SizeChanged += (_, _) =>
@@ -119,12 +121,9 @@ public sealed class SoftwareLogControl : UserControl
         detailPanel.Expanded += (_, _) => { if (compact) advancedFilters.IsExpanded = false; UpdateDetailLayout(); };
         detailPanel.Collapsed += (_, _) => UpdateDetailLayout();
         advancedFilters.Expanded += (_, _) => { if (compact) detailPanel.IsExpanded = false; };
-        results.SelectionChanged += (_, _) =>
+        results.SelectionChanged += async (_, _) =>
         {
-            if (results.SelectedItem is SoftwareLogEntry entry)
-            {
-                detail.Text = OriginalRecord(entry); detailPanel.Visibility = Visibility.Visible;
-            }
+            if (results.SelectedItem is SoftwareLogEntry entry) await ShowOriginal(entry);
             else ClearDetail();
             UpdateActions();
         };
@@ -152,13 +151,14 @@ public sealed class SoftwareLogControl : UserControl
     void UpdateEmpty() => empty.Visibility = results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
     {
-        pending?.Cancel(); selection = null; more = false; offset = 0; results.ItemsSource = null; ClearDetail();
+        viewVersion++; pending?.Cancel(); summary.Values = new Dictionary<string, string>(); selection = null; more = false; offset = 0; results.ItemsSource = null; ClearDetail();
         status.Text = "筛选已改变，请重新查询。"; empty.Text = "填写条件后查询日志"; UpdateActions();
     }
     void ClearDetail()
     {
         // Visibility alone does not raise Collapsed; restore compact filters as
         // well as clearing the previous record when its selection is revoked.
+        detailVersion++; formatting?.Cancel();
         detailPanel.IsExpanded = false;
         detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
     }
@@ -183,13 +183,16 @@ public sealed class SoftwareLogControl : UserControl
     async Task Run(Func<Task> action)
     {
         if (busy) return;
-        pending?.Dispose(); pending = new(); busy = true; diagnosticText.Clear(); diagnostics.Visibility = Visibility.Collapsed; diagnostics.IsExpanded = false;
+        var version = viewVersion;
+        var owner = new CancellationTokenSource(); pending = owner; busy = true; diagnosticText.Clear(); diagnostics.Visibility = Visibility.Collapsed; diagnostics.IsExpanded = false;
         status.Text = "正在处理…"; empty.Text = "正在查询…"; UpdateActions();
         try
         {
             if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请重新进入管理模式。");
             pending.Token.ThrowIfCancellationRequested(); await action();
         }
+        catch (OperationCanceledException) when (version != viewVersion) { }
+        catch (Exception) when (version != viewVersion) { /* A revoked page cannot publish an old failure. */ }
         catch (OperationCanceledException) { status.Text = "任务已取消或超时；请核对结果后再操作。"; }
         catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { status.Text = "正则执行超时，请缩短表达式或改用普通关键词。"; }
         catch (Exception error)
@@ -199,65 +202,71 @@ public sealed class SoftwareLogControl : UserControl
                 : "操作未完成，请核对筛选条件或查看诊断详情。";
             diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible;
         }
-        finally { busy = false; empty.Text = selection is null ? "尚未取得查询结果" : "当前范围内没有匹配日志"; UpdateActions(); }
+        finally { if (ReferenceEquals(pending, owner)) pending = null; owner.Dispose(); busy = false; empty.Text = selection is null ? "尚未取得查询结果" : "当前范围内没有匹配日志"; UpdateActions(); }
     }
     async Task Load(int requestedOffset)
     {
         var page = await service.QueryLogsAsync(query ?? throw new InvalidOperationException("请先查询。"), selection, requestedOffset, pending!.Token);
-        pending.Token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
-        results.SelectedItem = null; results.ItemsSource = page.Entries; ClearDetail();
+        var token = pending.Token;
+        var summaries = await Task.Run(() =>
+        {
+            var values = new Dictionary<string, string>();
+            foreach (var entry in page.Entries) { token.ThrowIfCancellationRequested(); values.TryAdd(entry.Text, SoftwareLogText.Summary(entry.Text)); }
+            return values;
+        }, token);
+        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
+        summary.Values = summaries; results.SelectedItem = null; results.ItemsSource = page.Entries; ClearDetail();
         status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 可继续下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices);
+    }
+    async Task ShowOriginal(SoftwareLogEntry entry)
+    {
+        var version = ++detailVersion; formatting?.Cancel();
+        var owner = new CancellationTokenSource(); formatting = owner; var token = owner.Token;
+        detail.Text = "正在整理原文…"; detailPanel.Visibility = Visibility.Visible;
+        try
+        {
+            var text = await Task.Run(() => SoftwareLogText.Format([entry], token), token);
+            var authorized = (await service.ManagementModeStatusAsync()).Authorized;
+            token.ThrowIfCancellationRequested();
+            if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
+            if (!authorized) { Revoke(); return; }
+            detail.Text = text;
+            if (SoftwareLogText.Notice(text) is { Length: > 0 } notice) status.Text += notice;
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception error)
+        {
+            if (version == detailVersion) detail.Text = "原文整理未完成，请重新选择记录或导出。\n" + Ipc.Platform.DiagnosticText.Protect(error.Message);
+        }
+        finally { if (ReferenceEquals(formatting, owner)) formatting = null; owner.Dispose(); }
     }
     async Task LoadContext()
     {
         if (selection is null || results.SelectedItem is not SoftwareLogEntry entry) throw new InvalidOperationException("请先选择一条命中日志。");
-        var size = ContextSize(); var result = await service.LogContextAsync(selection, entry.Location, size, size, pending!.Token); pending.Token.ThrowIfCancellationRequested();
-        detail.Text = string.Join("\n\n", result.Entries.Select(OriginalRecord)); detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices);
+        formatting?.Cancel(); var version = ++detailVersion; var token = pending!.Token;
+        var size = ContextSize(); var result = await service.LogContextAsync(selection, entry.Location, size, size, token);
+        var text = await Task.Run(() => SoftwareLogText.Format(result.Entries, token), token);
+        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        token.ThrowIfCancellationRequested();
+        if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
+        detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices) + SoftwareLogText.Notice(text);
     }
-    static string OriginalRecord(SoftwareLogEntry entry)
-    {
-        // Keep raw JSON intact, including literal backslashes in Windows paths.
-        // Decode actual multiline string values separately for readable full stacks.
-        var text = "原始时间：" + entry.At?.ToString("O") + "\n[" + entry.Location.File + ":" + entry.Location.Line + "]\n" + entry.Text;
-        try
-        {
-            using var json = System.Text.Json.JsonDocument.Parse(entry.Text); var multiline = new List<string>();
-            void Visit(System.Text.Json.JsonElement value, string path)
-            {
-                if (value.ValueKind == System.Text.Json.JsonValueKind.Object) foreach (var field in value.EnumerateObject()) Visit(field.Value, path + "/" + field.Name);
-                else if (value.ValueKind == System.Text.Json.JsonValueKind.Array) { int index = 0; foreach (var item in value.EnumerateArray()) Visit(item, path + "/" + index++); }
-                else if (value.ValueKind == System.Text.Json.JsonValueKind.String && value.GetString() is { } content && content.Contains('\n')) multiline.Add(path + ":\n" + content);
-            }
-            Visit(json.RootElement, ""); if (multiline.Count > 0) text += "\n\n原记录中的多行内容：\n" + string.Join("\n\n", multiline);
-        }
-        catch (System.Text.Json.JsonException) { }
-        return text;
-    }
+    static string OriginalRecord(SoftwareLogEntry entry) => SoftwareLogText.Original(entry, CancellationToken.None);
     async Task Export(bool range)
     {
         if (selection is null) throw new InvalidOperationException("请先查询以固定本次日志范围。");
         var picker = new SaveFileDialog { FileName = "software-logs-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jsonl", Filter = "软件日志|*.jsonl" };
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
-        var count = await service.ExportLogsAsync(selection, picker.FileName, range, ContextSize(), pending!.Token); status.Text = "已导出" + count + "条原始记录（含所选上下文）。";
+        var count = await service.ExportLogsAsync(selection, picker.FileName, range, ContextSize(), pending!.Token); pending.Token.ThrowIfCancellationRequested(); status.Text = "已导出" + count + "条原始记录（含所选上下文）。";
     }
 }
 
 // The table is a readable projection; original JSON and multiline values remain in detail/export.
 sealed class LogSummaryConverter : IValueConverter
 {
+    public IReadOnlyDictionary<string, string> Values { get; set; } = new Dictionary<string, string>();
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        var text = value as string ?? "";
-        try
-        {
-            using var json = System.Text.Json.JsonDocument.Parse(text);
-            if (json.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object)
-                foreach (var name in new[] { "message", "Message", "detail", "Detail", "event", "Event" })
-                    if (json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == System.Text.Json.JsonValueKind.String) return OneLine(item.GetString() ?? text);
-        }
-        catch (System.Text.Json.JsonException) { }
-        return OneLine(text);
-    }
-    static string OneLine(string text) => text.Replace("\r\n", " · ").Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
+        => value is string text && Values.TryGetValue(text, out var summary) ? summary : "原文摘要尚未取得";
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
 }

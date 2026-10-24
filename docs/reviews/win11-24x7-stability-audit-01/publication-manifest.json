@@ -1,0 +1,115 @@
+{
+  "task": "WP-IPC-WIN11-24X7-STABILITY-AUDIT-01",
+  "operation": "Publish unchanged original audit artifacts and next-phase handoff; no business remediation",
+  "prepared_at_china": "2026-10-24T14:29:26.997012+08:00",
+  "audit_source_commit": "c91559f6f981a9f2c9f89bd5afc271089f0e9d8e",
+  "publication_parent_sha": "c91559f6f981a9f2c9f89bd5afc271089f0e9d8e",
+  "audit_source_tree": "670e37021dd526dd1045efebc14e8a1ab4e82569",
+  "parallel_pr": {
+    "number": 97,
+    "state_at_review": "open",
+    "head": "37b27a9e7f8ef7f90bc9aa6ddf383c542daf5fc5",
+    "not_merged_by_this_task": true
+  },
+  "public_scope_review": "No credentials/private signed access links/real production data/standalone vendor SDK or font binaries identified. Existing public GitHub commit metadata and synthetic observations retained. PDF contains document font subsets only.",
+  "publication_validation": [
+    "Original PDF/ZIP byte identity",
+    "ZIP CRC and every member SHA256",
+    "Extracted copies match original members",
+    "Pinned source reference paths and relative documentation links",
+    "Only new review artifacts and documentation entry points changed"
+  ],
+  "product_tests_in_this_publication_turn": "NOT_RUN; documentation publication only; original audit results retained unchanged",
+  "files": [
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/Codex-next-phase.md",
+      "bytes": 6587,
+      "sha256": "3b6a48dff83d6095e2ae99129409706e030d5cb7d044a14d4a3dd8d859567837",
+      "original_artifact": false
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/README.md",
+      "bytes": 6483,
+      "sha256": "f813d57fad454af95b029a5c86902a7a7caee1da17e512ffc6e6167e17d2f081",
+      "original_artifact": false
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/START-HERE.zh-CN.txt",
+      "bytes": 8311,
+      "sha256": "f36af0e9ecf0ac329855b3c3d7495ce99fc8116146bcafa0ad0c75c2b0d92e50",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/WP-IPC-WIN11-24X7-STABILITY-AUDIT-01-evidence.zip",
+      "bytes": 698771,
+      "sha256": "a2ee7262d5788625c86c3cee34de06a5aeda1ad3fc931e043c5cc9e9cd187a0a",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/WP-IPC-WIN11-24X7-STABILITY-AUDIT-01.zh-CN.pdf",
+      "bytes": 285329,
+      "sha256": "c865e4082f7e4c8d295296e611aba1c5805e2fb63df5a5f2700a170dd2799190",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/audit-report.zh-CN.txt",
+      "bytes": 56709,
+      "sha256": "0f982e95cbb66b6002817a73de101463f53f1fcba546d0b39869b8a5be65e53b",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/audit-summary.json",
+      "bytes": 9960,
+      "sha256": "5b5801eef51136744ba8ac7afd853dec929f15151bc52632e54f20f62872f788",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/report-source-references.json",
+      "bytes": 14250,
+      "sha256": "e0f4dbb7b6ed93377c4dceb0c76dd09d06c19b64d074f219dc72f227d90cf21a",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1",
+      "bytes": 19845,
+      "sha256": "0abb01e2b95e4c698a1b45f2eb12fccf8decd3b86fb8a382ac7c7b7575779833",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/verification/LOOPBACK-README.md",
+      "bytes": 6547,
+      "sha256": "7775176dbc2b9e5ff070dd1db06bfa2bc785034ae3bbd989fda5f54e6b97b08a",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/verification/README-collector.md",
+      "bytes": 7254,
+      "sha256": "d217db002fc730dfb374523d618bd756790c9244285fd0ccc4432a58f5054c17",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/verification/fixture_smoke.py",
+      "bytes": 3331,
+      "sha256": "4805c6e2c8ac1e6c051d9778b765748a852200c76fd7182eb15fbdf949095d11",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/reviews/win11-24x7-stability-audit-01/verification/loopback_load.py",
+      "bytes": 17434,
+      "sha256": "9c5bc64cb6d3a0a7368665a77f58964fa41217e6183f6165b17ef4bd1ac23cf7",
+      "original_artifact": true
+    },
+    {
+      "path": "docs/INDEX.md",
+      "bytes": 8764,
+      "sha256": "69dde1b78d92127b0884035bb3df0a7bb6b1bb5172718e95a086b711fea66885",
+      "original_artifact": false
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "bytes": 10618,
+      "sha256": "fcbb7ec89ae60db52ef8425f59ee3a67e86c9f03a1c73bece2b5b1804b2ad072",
+      "original_artifact": false
+    }
+  ]
+}

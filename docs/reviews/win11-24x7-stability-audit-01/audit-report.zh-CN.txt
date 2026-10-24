@@ -1,0 +1,853 @@
+WP-IPC-WIN11-24X7-STABILITY-AUDIT-01
+
+Windows 11 工业客户端
+24×7 稳定性独立审查
+
+importer-pc · Sportmaster 双相机 / RCS 优先
+
+审查日期：2026-10-24（UTC）；本轮只读审查。源码基线为执行时 GitHub main，隔离克隆检出后冻结。业务源码、生产配置、既有测试、设计和历史证据均未修改；没有提交、推送、发布或连接生产设备。
+
+核心裁决：当前版本不能作为“已通过 Windows 11 下 24×7 连续作业验收”的工业客户端放行。已复现输入责任收口与诊断故障恢复缺口；SDK 路径另有取消、启动隔离及帧责任缺口。与此同时，目标 Windows 11、真实设备、现场节拍及完整 24 小时正常负载证据均缺失。
+
+本报告区分：已复现、静态证实、条件风险、证据不足。P0/P1 是本次审查的交付优先级，不是声称现场已经发生事故。所有秒级验证、人工预置规模、CI 原生测试和既有性能样本均保留各自身份，不能相加或换算为长稳时长。
+
+身份 | 固定值
+
+main SHA | c91559f6f981a9f2c9f89bd5afc271089f0e9d8e
+
+main tree | 670e37021dd526dd1045efebc14e8a1ab4e82569
+
+源码版本 | Sportmaster 1.11.3；DirectPlc/WcsToPlc 1.5.2；TCP 1.0.1；RCS 1.3.1；Hikrobot 扩展 1.0.3 / SDK 边界 2.0.0.4
+
+本轮实跑环境 | Ubuntu 24.04.3 / Linux x64；.NET SDK 10.0.402、runtime 10.0.13；非 Windows、无真实 SDK/设备
+
+交付物 | 本 PDF + 证据/脚本 ZIP；原始 UTC、命令、退出码、日志及 SHA256 在证据包内
+
+
+
+
+
+01 结论与五个核心问题
+
+
+
+评估维度 | 结论 | 依据与适用边界
+
+进程稳定 | 存在阻断 / 证据不足 | 本轮短测试未出现产品非预期进程崩溃；但 SDK 已开始的原生调用不受 token 终止、最终 Dispose 无完整期限。托管测试不能证明 native/OS 不会崩溃。
+
+界面响应 | 存在阻断 / 证据不足 | 日志授权同步前缀可阻塞 UI；快照与业务共享 gate；缺当前 Windows 11 双位负载的 P95/P99 与最长无响应数据。
+
+业务连续性 | 存在阻断 | worker 失败后已内存入队输入无逐笔持久去向；诊断队列满后，当前运行实例的双位准入无法经现有管理命令恢复。
+
+资源有界 | 局部已有证据满足；整体证据不足 | 队列、候选、日志查询等已有边界；历史原账、数值 ID、备份与磁盘仍需寿命预算。没有证明托管或 native 持续泄漏。
+
+故障恢复 | 存在阻断 | TCP 单侧隔离、原始回执恢复及 Unknown 不盲重发有效；SDK 启动隔离、输入残队、日志恢复及 RCS Unknown 权威处置仍不闭环。
+
+Windows 部署 | 存在阻断 / 证据不足 | 当前 CI production gate 自身 FAIL；安装/修复/卸载/迁移 NOT_RUN，设备和签名资格 BLOCKED。现场 OS/硬件/权限/驱动组合尚未给定。
+
+
+
+1. 会不会崩溃、假死、死锁或后台停止无人发现？
+
+
+
+不能承诺不会。本轮没有复现产品进程崩溃，也未证实一个必然的托管循环锁死；已经复现按位 worker 异常结束但聚合 HasActiveWork 仍为 true。Snapshot 的 Blocked/失败原因会显示，故不能说所有故障完全隐形；然而它不足以作为每个后台任务存活或业务推进证明。SDK 健康枚举与停止路径可在不可取消 native 调用上等待，UI 同步授权与关闭路径也有无响应风险。应用无响应、进程崩溃和 Windows 整机故障必须分别取证，源码不能保证硬件和操作系统永不死机。
+
+
+
+2. 会不会随时间、业务量和操作次数越来越慢？
+
+
+
+存在随历史量和常驻工作集增大的成本，尚无当前目标机稳定平台证据。每窗 500ms 的快照会进入全局 gate、计算容量和未决并复制 JSON；部分历史统计与命令过滤扫描 JSON。独立 SQL 微实验显示规模效应，但不是 Windows 性能实测。终态自动归档可控制驻留集合，故不能断言所有集合无限增长；归档仍留在同一 DB，磁盘与启动恢复扫描继续增长。
+
+
+
+3. UI、采集、业务和持久化会不会相互阻塞？
+
+
+
+会，且应区分路径。常规网络等待期间释放业务 gate，左右位各有队列/worker；UI 主快照通过 Task.Run 进入后台，不是每笔同步网络跑 UI。但是同步日志授权直接卡 Dispatcher，慢快照/SQLite 持 gate 会拖两位；队列溢出的同步落盘在共同 overloadSync 内，维护线程又可持 gate 等该锁，形成慢盘向双位与快照传播的链。
+
+
+
+4. 故障后能否隔离、诊断并恢复？
+
+
+
+部分能。TCP EOF/非法帧、旧 Epoch、单侧连接失败、停止未排空保留所有权和 RCS 原始响应重建已有有效保护。SDK 不能直接继承 TCP 的隔离结论；RCS 超时保留 Unknown 是正确的责任保护，但当前 real RCS Query=false，缺可执行的权威核对处置。诊断洪峰排空后仍无法 Resume，是另一个已复现恢复缺口。
+
+
+
+5. 现有证据支持什么条件、负载和时长？
+
+
+
+仅支持冻结源码在 Linux Release 下的定向托管/loopback/替身验证，以及同 tree CI 的有限 Windows Server 2025 原生工程门禁。旧 Windows 11 性能样本属于另一 SourceCommit、300 笔串行合成输入和约 24 秒空闲采样。当前 main 的目标 Windows 11、真实 TCP 双相机、真实 SDK、真实 RCS、正常 24h/72h 均 NOT_RUN。不能给出获证的现场最大吞吐量、最长连续时间或硬件容量。
+
+
+
+02 基线、发布产物与有效依据
+
+
+
+
+
+源码、测试构建、发布包分别识别
+
+
+
+源码：main c91559f6f981a9f2c9f89bd5afc271089f0e9d8e，提交时间 2026-10-24 04:24:37Z（12:24:37 UTC+8）。隔离工作区干净；本轮新增材料全部在仓库外。锁文件 Release 构建成功，0 warning / 0 error。最终回读状态见 evidence/final-baseline.json。
+
+当前 CI：run 40060123734，PR head 758905d2e79fe31302f7d920e31fc08cc643e0fd，实际测试 merge 4396162517520776480a532bc469dd32ab2355ab。该 merge 与 main 的 tree 都是 670e37021dd526dd1045efebc14e8a1ab4e82569，源码树等同，可复用其工程验证；产物的 SourceCommit 仍必须写 4396162，不能改写为 c91559f。Windows runner 是 Server 2025 Datacenter、10.0.26100，不是 Windows 11。验证环境 Elevated=true、synthetic ports。
+
+对象 | 实际身份 / 哈希 | 资格边界
+
+最新公开 SM installer | v1.10.2；SourceCommit c9e482a30d2d1643a498e7e7ba7f12563f46f3f5；asset SHA256 8fd0afe6a053dfe1b0db7da63a7a6812a94070f8369442daf63fe141dcc3ab88 | 读取 GitHub 元数据；未下载 EXE 独立重算。旧于本次 main，不能带入新修复。
+
+本次同 tree CI installer | SM 1.11.3；SourceCommit 4396162517520776480a532bc469dd32ab2355ab；receipt SHA256 77b241267f0567d36fc8c76ab67bceed37ac0ad0ffb9b481ad87c8f380bc76e4 | 证据 ZIP 已下载并复核；EXE 本体未独立下载重算。安装 NOT_RUN；Authenticode NOT_SIGNED。
+
+CI payload ZIP | e5c510f8d6a65ae18ea35b6e93a27222ef2d8f02ed6a9e97d32ac4f2d987c645；106,783,503B；解包 243,071,636B / 742 files | 来自 INSTALLER.json，属于构建回执。
+
+本轮核验的 CI evidence ZIP | artifact 12546709552；12,570,360B；SHA256 ce927fa129101b93fdd2060edc421d74dc5bc23ed9f834d7adaaf2892cc8be8a | 独立下载重算一致；证明证据文件保管身份，不等于实机资格。
+
+现场安装介质 | SourceCommit、EXE/ZIP/扩展哈希、完整安装状态：未提供 | 不能假定现场就是公开 v1.10.2 或 CI v1.11.3。
+
+CI engineering-gate=PASS；production-gate=FAIL。后者明确列出 windows-install/repair/uninstall/migration 为 NOT_RUN；field、signoff、distribution-signature 为 BLOCKED。不能用工作流绿色完成覆盖这个分级裁决。其他三业务公开 Windows 包的 “not-tested” 身份也不能支撑实际 PLC/称重/SDK 组合。
+
+
+
+当前文档的替代关系与冲突
+
+
+
+按 AGENTS.md、docs/INDEX.md、docs/design/framework.md、framework-decisions.md 的当前契约继续追踪实现；架构整改 AQA01、双相机通信整改和其后 PR94/95/96 的修复作为当前入口。旧独立审查、旧版本证据和 archive 材料保留原版本，不能把旧“已关闭”标签泛化为当前长期资格。管理模式的授权契约取代早期“默认管理员运行”的理解；四类配置及 Pending/Effective 边界仍需保持。 [S39] [S40]
+
+存在一个具体仍有效入口冲突：新的 Windows compatibility 指南和 GUI 兼容代码允许较早 build 的功能路径；windows-application-delivery 第29行及 application.ps1 第15–16行仍要求 build 26100+，脚本会实际拒绝更低 build。后续修复前应明确支持矩阵、入口一致性和替代说明；本轮只记录，不删历史。支持期、软件可启动和厂商设备资格是三件事。 [S36] [S37] [S38]
+
+
+
+真实配置必须分开
+
+
+
+组合 | 识别结果 | 本轮能给的结论
+
+Sportmaster 即将现场组合 | Production 初始配置为左右 TCP + RCS，关键端点留待配置；不自动降为 Simulation。TCP 1.0.1 / RCS 1.3.1。 | 优先审查对象；只运行 loopback 协议/状态测试，真实线路与节拍 NOT_RUN。
+
+仓库 business.json 示例 | 显式 Simulation / manual + reference。 | 可以支持公共运行时故障探针；不能证明 TCP、SDK、RCS 实机。
+
+Hikrobot 原生路径 | 可选扩展1.0.3；win-x64；MvCodeReaderCtrl 2.0.0.4，配套依赖及 ABI/回调结构受 sdk-boundary 约束。 | 逐源码+FakeApi验证；真实DLL、相机型号固件、NIC及长时回调 NOT_RUN。
+
+DirectPlc / WcsToPlc | 源码1.5.2，共用 ParcelRuntime/存储/界面基础设施；真实扩展取决于实际装配。 | 共享缺陷适用；不得用 reference PLC、scale、image 或 Sportmaster 回放背书实际交付。
+
+待确认参数：Windows 11 Edition/build/补丁与支持期；CPU、RAM、系统/数据卷、SSD健康和余量；.NET Desktop Runtime或自包含运行时；网卡驱动/节能/隔离网络；相机型号固件和通讯方式；SDK/扩展完整哈希；RCS合同、心跳与编号区间；额定/峰值节拍、峰值持续期、业务决策截止、历史保留期、维护/备份窗口。缺失不阻碍已经完成的代码与短时故障结论。 [S43]
+
+
+
+03 端到端线程、锁与资源责任
+
+
+
+环节 | 线程 / 所有者 / 边界 | 故障影响
+
+设备输入与 Session | TCP 异步读取；SDK 原生回调只做有界复制/入驱动队列，托管消费再回调；ObservationSession 使用 Epoch 拒绝旧回调并拥有启动/停止。 | TCP 协议错误按位 Faulted；SDK 委托/handle 所有权必须保持到确认无在途 native 使用。
+
+应用入队 | Enqueue 在 overloadSync 内裁剪候选；每位有界 Channel，默认64；TryWrite 成功仅在内存。溢出同步写 durable marker。 | 正常一位溢出有按位屏障；慢 marker 的共锁可影响另一位，已入队未落账在 worker 退出时有缺口。
+
+按位处理 | 每位单 worker 保同位顺序；进入同一 SemaphoreSlim gate 执行业务/SQLite/状态计算。 | 同位拥塞排队；锁内慢存储影响双位及快照。worker异常设置共享 failure，关闭准入。
+
+RCS 外呼 | T1冻结请求/原配置/ID；T2持久化 attempt 后外呼；ExternalAsync 释放 gate，返回再夺回。HTTP token/回复大小有界；不跨网络持 SQLite tx。 | 普通本位网络等待不必堵另一位。超时/错关联结果为 Unknown；公共心跳故障使两位依赖不就绪。
+
+回执与持久化 | raw原件先durable，再T3将原响应、阶段和下游意图提交；SQLite WAL/FULL/busy_timeout5000/poolingfalse。 | raw成功而T3失败可本地恢复，无需再发原请求；磁盘/DB共享失败正当影响所有责任。
+
+快照与历史 | Snapshot夺同一gate，计算容量/未决/完整克隆；历史用独立只读连接和稳定UpperSequence，后台执行。 | 快照仍竞争业务gate；大历史SQL/长读事务影响CPU/I/O/WAL检查点，Task.Run不消除成本。
+
+WPF投影 | 每窗500ms轮询；pendingRefresh防本窗重叠；主服务Task.Run；返回UI按代次投影、身份校验和3s Fresh约束。 | 多个窗成本相加；授权同步前缀仍卡Dispatcher；UI自身挂起时Fresh通知也停。
+
+停止/恢复 | 停止来源、关闭队列、等待worker/auxiliary、Dispose端口与日志；超时保留 lease/DB/port，禁止新owner双活。 | 保留所有权保护正确；底层SDK或文件调用不返回时，最终Dispose仍可无期限等待。
+
+主要依据：输入/启动/worker、停止和 T2/T3路径。没有根据把某个 WaitAsync 超时、取消等候、Task.Run token 或返回错误当作 native 函数已经结束；资源所有权必须以真正结束为准。 [S01] [S02] [S13] [S15] [S18] [S30]
+
+
+
+04 风险—现有证据—缺失证据矩阵
+
+
+
+先复用已有保护与精确版本证据，只对能改变结论的缺口追加隔离探针。下表是本轮选择验证的依据。
+
+风险 | 现有 / 本轮证据 | 仍需完成
+
+入口责任收口 | 已有ResourceRisks覆盖溢出/停止；新增2输入T3故障探针复现残队无逐笔去向。 | 修复后受控失败/停止/重启的完整守恒；外部输入接收责任定义。
+
+诊断满载恢复 | bounded journal已有；新增5000条合成突发复现排空后双位仍阻断。 | 有界故障分级、可执行恢复和真实日志速率边界。
+
+TCP协议与单侧隔离 | 当前定向测试通过拆粘包、限长、旧Epoch、首帧与单侧连接故障。 | Win11真实双TCP、静默黑洞/线缆/NIC、额定峰值与24h。
+
+SDK取消/帧责任 | 链接原Hikrobot源码的FakeApi复现取消不终止已开始调用、帧计数差额。 | 真实2.0.0.4双机故障、stop阻塞/异常、委托缓冲寿命和长期资源曲线。
+
+RCS请求关联与未知 | 现有sportmaster-rcs/heartbeat套件通过；Query=false已确认。 | 真实合同下Unknown权威核对、编号续配、共享故障恢复。
+
+UI/查询与大历史 | 旧300笔串行/短空闲；当前SQL预置5k/50k/100k规模实验。 | 当前Release+IPC并发UI/历史/日志负载、SQL取消、WAL峰值。
+
+容量/周期维护 | 默认边界与归档、备份代码已追踪。 | 真实单位件增长、留存/备份预算、跨日多周期、恢复时间上限。
+
+Windows部署与观测 | 同tree CI工程PASS、生产FAIL；新外部采集器仅解析通过。 | 普通权限安装生命周期、真实Windows11、独立业务/Dispatcher指标及dump策略。
+
+
+
+05 主要风险：按业务影响排序
+
+
+
+
+
+R01 · P0：worker 失败后，已入内存队列的后续输入没有持久去向
+
+
+
+已复现；公共 ParcelRuntime 缺陷。P0 表示交付阻断，不声称现场已丢失业务 Admitted 订单。
+
+触发条件：一位已有外呼/持久化中的第一输入，第二输入被来源回调接收且 Enqueue 返回 true；第一笔在 raw durable 后、T3前发生异常，worker退出。
+
+传播路径：ParcelRuntime 237–245 只有 RAM 入队；247–277 捕获后写 failure 并退出，无逐项残队收口；ParcelCommands 220–267 在 worker 终态异常后仍可释放资源。 [S01] [S02] [S15]
+
+证据与边界：probe-run-02：两次 SourceEmit=true；队列从1保持1；第二笔 audit=0、operation=0，停止释放后重启仍0。第一笔 raw 正确恢复为 SlotResolved/Wcs Accepted且未重发。Dispose报告终结错误并完成释放，非无错关闭；探针直接调用runtime.Dispose，未验证WPF首次关窗。使用12个与冻结Release验证构建SHA256一致的Ipc程序集（含Verification测试程序集），实际ParcelRuntime/Platform/Storage保持原字节；manual/reference端口、故障边界及运行身份预检采用隔离替身，不覆盖生产启动身份门禁。生产T3事务/原件I/O异常可达同一worker退出路径已静态确认；真实磁盘故障NOT_RUN。
+
+业务后果：后续输入已经离开来源接收边界，却既无接纳、拒绝也无未决记录，不能逐笔对账。故障后的整位/共享阻断可见，但“有错误提示”不能补回这笔责任。
+
+修复方向：先更新输入责任契约；在现有队列/原账架构内建立可证明的接收、持久接纳/拒绝或未决转移，以及worker失败/停止/进程异常退出的恢复闭环。若持久化本身失效，需保留来源责任和可核对输入范围；不能吞异常、清队列或把true解释为已完成。
+
+
+
+R02 · P1：诊断队列一次满载，当前运行实例无法经管理命令恢复双位准入
+
+
+
+已复现；触发频率在现场未测，不把极端合成突发说成日常必然。
+
+触发条件：容量256的诊断队列在写盘来不及时 TryWrite 失败。
+
+传播路径：RuntimeJournal 上报队列满 → ParcelRuntime103 设置共享failure并 accepting=0 → SharedReady/CanAdmit关闭。队列排空不清failure；Resume仍被守卫拒绝。 [S03] [S04] [S05] [S06]
+
+证据与边界：本轮向真实RuntimeJournal注入5000条小元数据（约1.35ms的合成突发）：最终queue=0，accepting=0，左右CanAdmit=false；Pause持久化成功，Resume=Rejected。此测试没有伪造生产业务事件，也没有验证实际日志最大速率。
+
+业务后果：非业务诊断背压升级为整个业务持续停产。恢复要求受控结束并新建运行实例、保留原业务责任；不能绝对说必须重启进程，同进程宿主重建也需单独验证，不能以定时重启代替设计。
+
+修复方向：区分业务审计和可限额诊断；定义有界聚合、丢诊断计数和故障恢复条件。业务原账失败仍必须阻断；诊断失败应有明确状态、监督和经授权可执行恢复，不允许无声吞掉原业务事实。
+
+
+
+R03 · P1：原生 SDK 调用开始后不可由现有 token 终止
+
+
+
+取消缺口已通过 FakeApi 复现；真实 SDK 永久卡死/原生崩溃为待验证条件风险。
+
+触发条件：枚举、健康探测、Stop/Close/Destroy任一native调用不及时返回，或用户在其开始后取消/关闭。
+
+传播路径：HikrobotReader70–87 Task.Run的token仅影响调度，函数体不检查取消；Stop172–200仅在进入lifecycle时用token，随后等待health并同步native Stop/Close/Destroy；NativeMethods90–108全局枚举锁会串行两台reader。 [S10] [S11] [S12] [S43]
+
+证据与边界：FakeApi受控阻塞：取消已开始Enum后300ms仍未结束，解除阻塞后Start成功/Ready；health Enum堵塞时Stop的100ms token过期、400ms后仍等待。探针结束后释放阻塞并正常清理。没有加载厂商DLL，没有据此声称厂商函数必卡死。
+
+业务后果：停止与受控重启无可证明时限；一台native枚举可使两台健康更新迟滞。若原生异常破坏进程，in-process结构无法仅靠catch保证其余业务。
+
+修复方向：明确native调用所有者、在途回调、句柄释放和未停妥状态；以厂商支持和实测确定边界。若真实API无法给可接受的阻塞/崩溃边界，再评估最小驱动隔离进程，不预设服务化；禁止WaitAsync超时后提前销毁仍使用的句柄。
+
+
+
+R04 · P1：SDK 缺失一台相机时，全局启动隔离与 TCP 不一致
+
+
+
+静态证实可达；真实两机启动矩阵 NOT_RUN。
+
+触发条件：Hikrobot指定IP/序列号没有枚举到；同进程另一台本可正常运行。
+
+传播路径：HikrobotReader72–73抛IOException；ParcelRuntime165–171只把ObservationConnectionException作为位置依赖隔离；其他异常进入192–200整体启动失败路径。 [S10] [S13]
+
+证据与边界：TCP单侧连接拒绝的定向测试已通过，不能用于此IOException分支。SDK已有清理/异常回抛，但异常分类不符合公共隔离入口。
+
+业务后果：一侧启动缺失可阻止另一侧可用作业位启动。SDK运行期正常Faulted处理和启动期不能混为一谈。
+
+修复方向：在确定native资源已安全收口后，统一可隔离的运输/设备缺失类型；ABI错误、部分句柄未清理等仍应保持整体隔离，不得把所有Exception降级为可继续。仅补缺机、清理失败、单侧启动后恢复的关键测试。
+
+
+
+R05 · P1：SDK 帧满载后的拒绝计数及可见诊断不完整
+
+
+
+FakeApi已复现；不是当前TCP路径的结论。
+
+触发条件：驱动容量1、消费端暂阻塞，连续三次回调造成满队列，并触发Fault。
+
+传播路径：HikrobotReader119满队列Fault而不计FramesRejected；128在Fault后跳过已排队帧仅更新内部计数；LastFailure私有，ConfirmationSource仅固定SDK标识，宿主健康公开原因不足。 [S11]
+
+证据与边界：合成三帧：FramesReceived=3、deliver=1、FramesRejected=1，存在一帧统计差额；对宿主可见Faulted，但无该错误原因/逐帧责任。不能据此宣称真实设备已经漏单。
+
+业务后果：峰值或下游慢时难以核对来源帧究竟接收、拒绝还是残留；现场只见SDK Fault难以诊断，更不能安全重复触发实体。
+
+修复方向：建立有界的设备Epoch/源序列/拒绝范围与错误分类，确保接收=交付+拒绝+在途；与应用输入责任协议衔接。native回调继续保持短小，不在回调内写DB，也不通过丢帧伪装顺畅。
+
+
+
+R06 · P1：溢出 marker 的同步慢盘可横跨双位和业务 gate
+
+
+
+静态证实锁内I/O路径；磁盘挂起导致的延迟量 NOT_RUN，未证实循环死锁。
+
+触发条件：一位队列满，同时数据卷慢、Flush或文件移动迟滞。
+
+传播路径：Enqueue持共同overloadSync调用AtomicWrite；后者WriteThrough/Flush(true)/Move。Maintain每100ms持业务gate进入RecoverOverloadAcknowledgement，再等待overloadSync。 [S01] [S07] [S08] [S09]
+
+证据与边界：队列有界与durable overload标记本身是保护；漏洞是外部I/O在跨位共享锁内。没有通过移除marker来取得通过，也未做真实磁盘注入。
+
+业务后果：一侧过载拖住另一侧采集回调，进一步拖住持gate的业务/状态快照；UI可因等待快照显得停滞。
+
+修复方向：分离即时内存屏障与具有单一所有者的有界持久化责任，设计marker失败状态/恢复流程；不得在共享回调锁或gate内等待慢文件系统，不得丢掉已判定的过载责任。
+
+
+
+R07 · P1：RCS Unknown 安全阻断已有，恢复合同尚未闭环
+
+
+
+静态证实合同缺口；这是业务恢复阻断，不是程序死锁。
+
+触发条件：任务POST已可能生效，但超时、错关联、异常/非法响应或连接中断，结果不能确定。
+
+传播路径：Service将不确定结果保留Unknown；real RCS能力Query=false，QueryAsync不发原请求；Unknown不可按“未提交”弃置，本位后续准入关闭。共享心跳恢复不解决原Unknown。 [S14] [S15] [S16] [S06]
+
+证据与边界：本轮sportmaster-rcs验证确认原requestId/body/target保存、不会自动重发；这是正确保护。未提供真实RCS可查询/签认处置协议与实际恢复演练。
+
+业务后果：若现场期望断网恢复后继续生产，现有流程不能仅凭TCP/心跳变绿恢复未决责任。一笔Unknown可长期阻塞本位；共享RCS健康失败会阻两位。
+
+修复方向：先与RCS及业务责任方确定基于原requestId的权威结果查询、经验证的结果导入或人工对账处置契约，再在现架构实现可审计恢复。不能自动改ID重投、重POST、清库或丢Unknown。
+
+
+
+R08 · P1容量门槛：快照/历史/恢复成本随数据量增长
+
+
+
+静态证实 + 当前SQL形状的预置规模微实验；当前Win11应用性能尚未测。
+
+触发条件：常驻接近200、历史/完成命令长期累积，双窗刷新并发记录查询、筛选、统计或导出。
+
+传播路径：Snapshot在gate内反复容量计算、PendingCommands JSON过滤、完整JSON克隆；历史Page/Metrics按JSON字段扫描/汇总；读事务贯穿页面/统计调用，ReadHistoryAsync无取消参数/统一并发上限。启动又逐历史复核数值ID和恢复标志。 [S18] [S19] [S20] [S21] [S22] [S31] [S32] [S33]
+
+证据与边界：SQL微实验人工预置5k/50k/100k，Metrics中位63.35/752.23/1463.85ms；无匹配条码Page8.88/91.04/178.92ms；100k完成命令扫描39.08ms。Python SQLite3.53.1/Linux，非.NET/Win11。归档count在100k约0.98ms不是当前主要热点；PendingReceipts有state索引，不能说它每次全表扫。
+
+业务后果：历史操作和快照更占CPU/I/O/gate，长WAL读视图阻碍检查点；启动恢复时间也会随全历史增长。未证明持续内存泄漏或必然磁盘无限膨胀，应测真实留存规模。
+
+修复方向：先定目标历史量/延迟预算，复用现账增加适配索引/可信增量投影，精简运行快照，详情按需；查询执行取消、并发和导出期限应覆盖底层工作。迁移与完整核验不可被无证据跳过。
+
+
+
+R09 · P2（预算不满足时P1）：WPF 日志操作有同步授权 I/O 前缀
+
+
+
+静态证实UI可达；实际目标机延迟 NOT_RUN。
+
+触发条件：普通权限用户已进入管理模式，点击日志查询、上下文或导出；管理服务/文件系统响应慢。
+
+传播路径：SoftwareLogPage await之前先同步进入ParcelAdministration；其先取Logs并Management.Require，再Task.Run。LocalManagementMode可读凭据文件或RemoteStatus；Protocol同步GetAwaiter().GetResult，Status总token500ms/连接100ms，部分同步SCM/路径检查不由token硬中断。 [S23] [S24] [S25] [S26]
+
+证据与边界：主快照的DesktopServiceCalls已有后台边界，不能说所有界面服务都阻塞UI。这里只指出明确的同步前缀；另有低频显示偏好同步文件I/O。
+
+业务后果：左右位共享的Dispatcher一起延迟，输入/显示可暂时无响应，后台业务通常仍在运行；因此“屏幕不动”与业务线程死锁要分开。
+
+修复方向：把完整权威授权和日志调用迁入同一受控后台边界，保留操作前/扫描中/发布前授权核验和取消；日志活动任务纳入所有者排空，不缓存成永久授权。
+
+
+
+R10 · P1交付门槛：原账、数值 ID 和备份缺统一寿命预算
+
+
+
+静态证实；不是MaximumOperations累计耗尽缺陷。
+
+触发条件：每日24h运行导致永久历史和已分配请求ID增加；业务持续不进入维护窗口。
+
+传播路径：终态归档仍在同DB保存原JSON/原件/身份/审计；RCS使用固定数值区间，恢复会退役旧范围未用尾部；备份仅Paused+管理授权+externalWaits=0时执行，达到MaximumSets保留旧集并报错。 [S17] [S19] [S28] [S29] [S44]
+
+证据与边界：已有64MiB默认磁盘reserve，按至少间隔1秒的节流策略检查，实际受共享gate及维护任务影响；检测到余量不足关闭准入，但不能证明适配目标WAL、备份或故障爆发。备份一直Pending不等于实际已备份。
+
+业务后果：可解释的容量阻断仍会中断业务；没有预警提前量、续配/扩容/维护窗口和恢复时间预算，就不能无限期24×7承诺。
+
+修复方向：测每件数据库/原件/日志增长、WAL峰值、备份集大小和冷恢复时间；显示编号剩余及预计耗尽；定义经批准维护窗口和完整恢复集迁卷/续配，不自动删除责任记录或复用ID。
+
+
+
+R11 · P1交付门槛：健康信息不能独立证明 UI、设备和业务存活
+
+
+
+HasActiveWork误导边界已复现；其他为静态边界/缺证。
+
+触发条件：一个worker已异常退出而另一个仍等Channel；UI Dispatcher挂起；或TCP静默黑洞且暂时无数据。
+
+传播路径：Task.WhenAll未完成仍HasActiveWork=true；Fresh的失效通知依赖同Dispatcher；TCP每秒刷新LocalTransportOnly，不含相机应用心跳或远端业务确认。 [S01] [S13] [S27] [S45]
+
+证据与边界：Blocked/失败可见、TCP源标签诚实，不能报告完全未检测。代码及部署证据未见独立UI/业务进展/worker终态监督和有界dump闭环。本轮新增外部采集器仅可给粗窗口/进程指标。
+
+业务后果：进程存在、心跳2xx、本地socketReady、屏幕旧数据都可与业务无进展并存；空闲无输入也不能反推相机坏。
+
+修复方向：分别公开每位worker终态/最后进展/队列年龄、最新字节/有效观察、业务结果账、UI调度与容量；用独立有界观察者保留事件/线程/dump，不自动重发或重启。静默故障探测只能使用设备合同支持的机制。
+
+
+
+R12 · P1/P2：关闭预算、日志任务与底层 I/O 所有权未完整收敛
+
+
+
+静态证实；磁盘/native挂起下的真实关窗行为 NOT_RUN。
+
+触发条件：窗口关闭时有慢日志导出、日志append、SDK停止或其他不可取消I/O。
+
+传播路径：窗口先禁用并给UI drain约5s；ParcelApp StopAsync的5s token后仍DisposeAsync；RuntimeJournal.Dispose等待无token的AppendAllTextAsync worker，日志Task.Run不在同一应用auxiliary排空组。 [S02] [S05] [S22] [S34]
+
+证据与边界：已有取消订阅/停止timer/防重复Close和超时保留lease等保护；不能误判所有未释放资源都是泄漏，也不能据短时关闭成功断言慢I/O下有上界。
+
+业务后果：界面可能停在禁用状态，维护人员无法分辨仍在安全排空还是卡死；过早释放则存在双活风险。
+
+修复方向：完整活动任务所有者、可解释的未停妥状态和独立诊断；底层未停不释放租约/句柄。新增只针对慢日志、取消清理、停止竞争的验证；超时仅停止等待时必须如实呈现。
+
+
+
+06 必要验证结果及证据边界
+
+
+
+本轮以下命令均在隔离源码和独立数据根执行。Release托管构建使用global.json/锁文件；测试不触碰生产设备。每项时间独立计证，不合并成连续运行。完整argv/cwd/UTC/exit/log SHA在同名JSON。
+
+项目 | UTC起止 / 实际时长 / 退出码 | 结果与不覆盖项
+
+Release build | 05:37:25.434–05:37:41.813；16.379s；0 | dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false；0警告/错误。
+
+--resource-risks | 05:38:19.528–05:38:21.348；1.820s；0 | 容量/停止保有/原件恢复等定向保护通过；非长期资源趋势。
+
+--dual-camera-communication | 05:39:05.104–05:39:08.526；3.422s；0 | Linux loopback：拆粘包、UTF8/限长、EOF、首帧、旧Epoch、单侧故障隔离等通过；非真实双相机。
+
+--rcs-heartbeat | 05:39:28.331–05:39:43.307；14.976s；0 | 周期、重复启动、停止排空、HTTP/应用确认区分、超时/重定向等；非真实RCS。
+
+--sportmaster-rcs | 05:40:02.833–05:40:10.088；7.256s；0 | 报文冻结/关联/未知不重发/编号范围与迁移/原件恢复；非现场恢复签认。
+
+运行时故障探针 run02 | 05:40:44.502–05:40:45.323；0.821s；0 | 成功复现R01/R02和聚合worker存活边界；不是“产品稳定PASS”。
+
+SDK FakeApi探针 | 含构建05:38:10.552–05:38:15.711，5.159s；应用约1.78s；0 | 原源码链接+替身API，复现R03/R05；真实SDK NOT_RUN。
+
+SQL规模微实验 | 05:38:32.507–05:38:50.117；约17.61s；完成 | 当前8份迁移+人工JSON，5k/50k/100k；不是运行相应天数。
+
+负载夹具自测 | 约3.09s；0 | 只验新脚本协议/记录，不含实际应用、WPF或SDK。
+
+外部采集器语法 | PowerShell7.6.8 Linux Parser；0语法错误 | Windows API、WinPS5.1兼容及真实采样均NOT_RUN。
+
+保留失败：首次TCP loopback测试在受限沙箱因socket权限errno13退出，属于验证环境失败；在获准的本机loopback环境重跑通过。运行时探针首次构建也遇只读根目录的DOTNET_CLI_HOME问题，随后用独立缓存构建通过。run01采样HasActiveWork时机在Dispose之后，已保留原证据并用run02修正采样时机；不使用run01该字段下结论。没有隐藏产品失败、人工终止或把失败段拼接成正常长稳。
+
+
+
+确认有效的保护
+
+
+
+• 正常同位单worker顺序、左右位独立队列；网络外呼释放gate；共享RCS/存储故障影响双位符合真实依赖。
+
+• TCP最多4096字节行、严格UTF8/控制字符规则；异常帧/半包/EOF有明确故障，不静默重连；启动屏障、旧Epoch拒绝、按位连接/恢复有当前定向验证。
+
+• RCS原请求冻结、requestId/index/command相关性校验、256KiB回复边界、禁重定向、Unknown不盲重发、raw持久后本地恢复有效。
+
+• 停止未排空保留数据库/端口/租约所有权，其他owner不能抢占；Pending失败不破坏先前Effective。
+
+• MaximumOperations只计不可归档责任，终态按驻留高水位归档。日志轮转/查询有边界：约4×5MB轮转；最多4个10分钟selection；每文件16MiB、每行256KiB、页200、正则单次25ms、查询20s、导出5min。文件对象和授权规则有保护。
+
+• 页面共用业务实例/端口，非每次切页重新连接；窗口刷新有本窗防重叠保护，关闭会停止定时器并移出窗口集合；配置核对窗口显式解除PropertyChanged订阅；历史结果有读取代次和稳定UpperSequence，不能误称所有刷新每次全表重建UI。反复窗口操作后的真实句柄/订阅趋势仍未测。 [S46] [S47]
+
+
+
+旧性能证据可复用的范围
+
+
+
+SourceCommit/FixtureSourceCommit为934fd4af6a5b5587021892c0f9df169510115db8，与当前main不同。300笔夹具逐笔等前一结果，P95 662.49ms、P99 980.59ms、最大1419.97ms，只是旧合成单笔时延。199驻留时快照JSON约1.47MB，旧快照P50 138.30ms；总件300时已归档、驻留101，成本下降，不能误读为历史一增长就单调变慢。 [S41] [S42]
+
+旧1/2窗空闲采样约24.04/24.29秒，累计分配约441/946MB，但Private Bytes分别由150.55降至134.86MB、166.34降至149.81MB。它证明存在分配/多窗成本，不证明保留泄漏；不能用强制GC补出“平台”。旧数据和当前SQL实验都不支持任何24小时声明。
+
+
+
+07 运行边界与容量预算
+
+
+
+
+
+请求 ID：有限而不可复用，需有提前量的续配
+
+
+
+request-id-base/count均为必填，非默认；范围(base, base+count]。永久owner、高水位和备份恢复退役尾部保证不重复。仓库一百万count仅合成示例，现场范围未提供。假设每个新任务耗1个ID，从完整一百万开始且无其他分配/恢复退役： [S17] [S44]
+
+双位合计速率（假设） | 每日新任务 | 一百万ID可覆盖时间（算术外推）
+
+1/s | 86,400 | 约11.57天
+
+2/s | 172,800 | 约5.79天
+
+10/s | 864,000 | 约1.16天
+
+剩余=max(0, range.Last−max(range.First−1,durableFloor))。耗尽会在外呼前PreparationBlocked，保留实体而非崩溃。现流程需要暂停/检查未提交实体、依原规则处置、取得服务端新分配的高于永久高水位且不重叠区间，经CAS配置受控激活。没有这些前提不能随意调大或重用旧范围；应显示剩余量、消耗率、预计耗尽和续配责任人。
+
+
+
+队列、吞吐与等待时间
+
+
+
+默认每位queue64、ResidentHistory200、MaximumOperations10000、TimeoutMs1500。MaximumOperations不是累计历史总件数。稳定持续输入至少要求每位长期到达率lambda小于可持续服务率mu，峰值积压需在业务时限内消退。64个槽位不等于可接受64件任意等待；近似等待q/mu只是容量估算，必须同时测最老年龄、服务时间分布和恢复后积压。现场lambda、峰值长度和决策截止未知，本报告不报“支持X件/秒”。
+
+
+
+磁盘、历史与备份
+
+
+
+可外推天数 = 可用于增长的字节 /（实测每件增量 × 双位总件/秒 × 86400 + 日固定增量）。可增长空间必须先扣系统最低余量、WAL最坏增长、完整备份/恢复集、故障诊断和迁卷操作空间；默认64MiB仅技术守卫，不能替代预算。归档保留责任原账，不能当空间回收。人工padding的SQL数据库体积不能作为真实每件增量。 [S19] [S28] [S29]
+
+需要在目标Release/组合下以多时间窗拟合数据库、raw、日志、备份的单位件增长，并按承诺留存量预置规模验证查询和冷恢复。若备份要求连续作业期间无人值守完成，应先更改当前“Paused+管理授权”政策/实现；若允许维护窗口，应明确窗口频率、截止告警和错过后的处理。保留未决与历史身份，不能删除来恢复表面正常。
+
+
+
+内存、线程与句柄
+
+
+
+已看到很多计数边界，未实测长期保留泄漏。Hikrobot默认128帧，每帧最多300×4096字节码；按独立最大ASCII字符串转UTF16估算，仅驱动字符载荷可约300MiB/相机，属于极端理论预算，非常态工作集或总进程上界，不含对象/native/临时分配且可能有共享。应用还会裁剪候选长度/数量；应补按字节的预算和峰值观测，不能只看“队列128”。 [S11] [S43]
+
+预热后按固定输入量和时间窗口观察托管堆、Private Bytes、分配率、GC暂停、线程、handles、GDI/USER及故障恢复后回落。首尾工作集、总分配量或一次强制GC均不能判定/排除泄漏。UI/辅助窗口反复开关、订阅/CTS释放和native回调寿命必须在Windows实际组合验证。
+
+
+
+08 剩余最少且充分的验证与判据
+
+
+
+
+
+Gate A：先修复并固定可验证的 Release
+
+
+
+先更新冲突的当前设计/部署指引，明确输入接收责任、日志故障级别、SDK生命周期、RCSUnknown权威处置和容量维护政策。修复R01/R02及实际交付路径的P1阻断；对当前SQL/界面热点先设预算并定向验证，需要时再整改。冻结主程序、扩展、SDK、配置、SourceCommit与哈希，取得真实Windows11/硬件/普通账户条件。不要先跑24h后用其覆盖已知责任缺陷。
+
+
+
+Gate B：正常长稳与规模分别计证
+
+
+
+在目标Windows11和实际Release安装组合，以独立双位节拍发输入，不等待前笔结果。额定负载连续完整24小时作为本项目首道门槛；按native风险、跨日/备份周期建议72小时或更长。预热不计入24小时；进程重启、主动终止、自动恢复或人工干预另立实验段，不能拼接成无中断通过。TCP与SDK分开，合成RCS与真实RCS分开。
+
+另外预置现场1天/7天/承诺最大留存量的历史，明确“预置规模”不是实际运行时长。正常窗口交错执行记录筛选/查询、日志grep/上下文/导出、左右切换、1/2窗口、反复开关辅助窗口、最小化恢复，并覆盖空闲、可信突发和持续积压。所有动作有独立时戳、结果和资源影响，不只看终态截图。
+
+
+
+Gate C：独立故障恢复实验
+
+
+
+故障组 | 应证明的行为 | 最低证据
+
+单/双相机 | TCP EOF/黑洞/远端重启/慢接收；SDK缺机、回调满载、停止等待与重复重连；单侧不无端拖另一侧。 | 设备/驱动Epoch与源输入范围、恢复前后队列/句柄、右侧有效结果；真实SDK另验。
+
+RCS | 慢响应、中断、迟到、错响应；Unknown保持原责任并有权威处置，不改ID重发。 | RCS接收账、冻结请求/响应hash、应用T2/raw/T3、处置证据。
+
+存储/日志 | 队列满、慢盘、写失败/余量不足、并发日志查询导出；故障可分级、可恢复，原账保留。 | 失败点、DB/WAL/目录/I/O、逐输入守恒、恢复操作与结果。
+
+生命周期 | 受控stop/start、单独异常退出后的恢复、计划备份/跨日、会话到期；停止未妥不让新owner双活。 | 异常与干预分段、完整恢复集、无自动重发、任务/资源终态。
+
+Windows会话/显示 | 锁屏解锁、RDP连接/断开、分辨率/跨屏、最小化；viewport保护触发Pause时要可解释。 | 实际HWND/UI操作、业务准入与结果、Display/Session事件时戳。
+
+故障注入仅在隔离环境，不能连接生产设备或擅自发送真实RCS业务。已有启动/停止/恢复规则不因测试随意改变；“手工重连/重启”需记录，不算自动恢复通过。
+
+
+
+指标与建议阈值（未获现场需求前为暂定）
+
+
+
+指标 | 判据 / 建议 | 不能混淆
+
+业务正确性 | 正常段每笔输入有唯一接纳/拒绝/未决去向，完成严格对应自身观察/请求/响应；无非预期丢失、重复外呼、串位、旧格口或假成功。 | socket写出、HTTP2xx、心跳或UI有数据均不等于业务完成。
+
+UI调度 / 操作 | 暂建议：调度与简单交互P95≤100ms、P99≤250ms，正常负载无>1s无法解释的无响应；现场触屏/流程可收紧。 | 这是待批准工程预算，不是实测或行业认证；500ms刷新周期/WM_NULL探针不是精确调度值。
+
+输入到自身结果 | 以现场业务决策截止和RCS合同设P95/P99/最长上限；量测排队+业务+持久化全链，超时/拒绝另计。 | 不能只量HTTP成功请求或串行等待输入。
+
+吞吐与积压 | 独立计划/发送/接收/接纳/完成账；每位深度与最老年龄；额定长期不漂移、峰值后按预算消退。 | 提高队列/timeout不能替代吞吐能力与正确性。
+
+资源趋势 | 预热后分窗回归与单位件成本，检查空闲/故障后回落；连续增长需解释并预算，不能只首尾对比。 | 分配率高不等于泄漏；强制GC不可作为验收补救。
+
+磁盘/WAL/备份 | 最坏WAL、增量、余量/告警提前量、IO延迟、备份完成和恢复时限符合现场留存与维护预算。 | 预置数据不等于运行天数；备份计划Pending不等于已备份。
+
+观测完整性 | UI/worker/业务/设备/存储分别监督；采样缺口和转储扰动独立报告；失败计数不能从分位数剔除隐藏。 | 外部WM_NULL仍不等于业务进展；窗口5s挂起阈值是工具触发，不是本产品允许卡5秒。
+
+若没有明确目标硬件和业务截止，本次无法给CPU/RAM/历史的获准预算；先量测额定与峰值头部余量。诊断开销也需短基线比较，观察者不可形成新的无限队列或扫描风暴。
+
+
+
+09 可直接运行的剩余验证材料
+
+
+
+
+
+脚本身份与使用顺序
+
+
+
+agent-wpf/Collect-Win11Stability.ps1：外部只读附着已运行PID，采集OS/CPU/RAM/.NET/模块/EXE哈希、每秒进程/粗UI指标及低频有界目录/WAL/余量。最大168h；进程身份变化终止当前段，不自动重启/附着新PID。PowerShell7.6.8语法解析0错误；Windows原生执行NOT_RUN。先在隔离Win11做1分钟自身预检与采集开销检查。
+
+.\Collect-Win11Stability.ps1 -TargetProcessId 1234 -DataRoot D:\isolated\sportmaster-data -OutputDirectory D:\audits\sm-tcp-001 -DurationHours 24.05 -ExpectedSourceCommit <实际介质SourceCommit> -Combination "SM / tcp-line x2 / 指定RCS与扩展哈希"
+
+ExpectedSourceCommit/Combination是操作者声明；脚本另取实际EXE与application-release.json哈希供核对。WM_NULL成功样本P95/P99、失败数和最长观察失败跨度分别报告；无窗口/锁屏/最小化需结合真实状态解释。它不测精确Dispatcher、业务队列、托管堆/GC或实际I/O延迟，summary固定EVIDENCE_ONLY_NOT_A_PASS。
+
+agent-drivers/loopback_load.py：Python3.10+标准库，只监听127.0.0.1；左右独立节拍，固定对应格口L07/R09、完整请求/回应相关记录；有连接/正文/缓冲/证据大小上限。脚本不修改业务配置，不绕过资格；按README用同版受支持的隔离Simulation装配TCP/RCS实现，不连接生产。
+
+python .\loopback_load.py --output D:\IpcAudit\load-normal-001 --duration 86520 --warmup 120 --left-hz 1 --right-hz 1
+
+示例双位各1/s只是暂定演示值；需换现场额定/峰值。duration包含warmup，因此86520−120=86400秒计划负载。必须在预热结束前两位与业务守卫都Ready；否则另开实验，不补算未就绪时间。脚本到点会关连接，排空/关闭另记；必须核对末笔/在途责任，不能把关闭当自然完成。summary.soak_pass固定NOT_DETERMINED。
+
+所有输出用全新目录；保留发生器计划输入、socket写出、RCS接收/响应、应用接纳/拒绝/完成/未决账，按position、barcode、Epoch/源事件、AdmissionId、requestId与hash关联。需要精确Dispatcher/队列年龄与业务时延时，复用现测试入口或后续加入受控只读有界探针；当前采集器不伪造这些指标。
+
+
+
+补充原生诊断方法
+
+
+
+dotnet-counters collect --process-id 1234 --refresh-interval 1 --counters System.Runtime --format csv --output D:\audits\sm-runtime-counters
+
+procdump64.exe -ma -h -n 3 1234 D:\audits\sm-dumps
+
+记录诊断工具版本/hash，与目标应用同账户附着；GC/分配/暂停指标以实际.NET工具版本为准，不强制GC。ProcDump -h以窗口至少5秒不响应触发，-e可在另一个独立崩溃实验记录未处理异常；不用-k。全转储会扰动进程/磁盘且可能含业务数据，应放受保护证据目录、限制数量，记录其干预。
+
+系统侧另外导出Application/System事件日志和必要的WPR/PerfMon问题窗口；只读保存powercfg /getactivescheme、powercfg /query与NIC驱动/节能配置。需制度化休眠、断电恢复、Windows更新和维护重启安排；不以永久关闭更新、安全防护或定时重启当默认解决方案。WER LocalDumps默认未启用，若采用应按现有授权/ACL和容量策略部署；本轮未改注册表。
+
+
+
+本轮明确 NOT_RUN / NOT_MEASURED
+
+
+
+目标Windows11原生WPF连续负载、真实普通权限安装/修复/卸载/迁移、真实相机TCP线路、真实Hikrobot DLL/双相机、真实RCS超时后权威核对、真实磁盘慢/满/失败、系统会话显示矩阵、独立正常24h/72h、当前main精确Dispatcher/GC/GDI趋势、现场单位件容量、全量历史恢复时限、真实设备峰值/尾部排空，均未执行或未量测。计划、脚本能运行或CI PASS不能替代这些记录。
+
+
+
+10 后续 Codex 修复工作包
+
+
+
+所有工作包均先更新相关过期“当前”设计/入口文档和验收契约，保留历史证据原SHA/哈希/运行环境。优先复用ParcelRuntime、ObservationSession、配置CAS、原账/回执与现有工具边界；只增加改动风险和关键恢复测试。下列建议尚未实施。
+
+包 / 优先级 | 修改边界与验收目标 | 必要验证 / 回退
+
+WP0 设计与版本门禁 · 先行 | 统一Windows入口/支持矩阵；定义输入接收责任、日志故障分级、RCSUnknown处置、SDK未停妥与容量维护；建立release/配置/扩展/设备身份表。 | 文档对照真实路径，保留旧证据。回退保持旧契约可辨识，不改写历史PASS/SourceCommit。
+
+WP1 输入责任与worker终态 · P0 | Enqueue/ProcessIngress/Stop/恢复原账；每笔来源成功接收必须能确定持久接纳/拒绝/未决去向；逐位worker终态/进展可见。 | 两输入T3失败、队列满、取消/stop、异常退出后对账；不重发Unknown、不串位。schema变化需迁移/备份/旧读者拒绝；回退不撤销已发生业务事实。
+
+WP2 日志/存储故障分级 · P1 | RuntimeJournal满载恢复、诊断与审计边界；marker即时屏障/落盘所有权；完整日志活动任务和停止状态。 | 突发排空后的合法恢复；慢/失败marker不堵另一位；最终Dispose未妥可诊断且lease保留。回退可关闭新诊断功能，不能绕过业务持久化。
+
+WP3 实际驱动生命周期 · P1 | TCP保持现有合同；若交付SDK，统一可隔离连接错误、取消边界/资源保有、帧守恒和公开错误；必要时基于证据评估native最小隔离。 | 真实SDK缺单机/重连/回调满载/Stop等待/异常，验证delegate/buffer/handle顺序与无双活。回退须同匹配扩展/SDK、完整停妥，不热替换未释放句柄。
+
+WP4 RCS恢复与数值范围 · P1 | 先取得权威查询/处置合同；按原requestId保存/接入结果，支持经批准恢复；范围剩余与续配预警，恢复退役规则保持。 | 迟到/丢回复/错误关联/重启Unknown处置、区间耗尽/续配/旧备份；禁止改ID重投。回退保留原请求和所有结果证据，旧版本不可误读新处置。
+
+WP5 快照/查询/UI预算 · P1/P2 | 最小运行投影、适配索引/可信计数、历史取消和并发预算；全授权前缀后台化；页面/导出任务所有权与句柄。 | 目标最大历史+独立双位负载，同时历史/日志/UI操作；测gate/队列年龄、P99与WAL。回退使用版本化迁移和兼容读取，不能清历史。
+
+WP6 运维与交付证据 · P1 | 独立有界观测、dump/事件、磁盘/备份/恢复时限、Windows11普通权限/电源会话政策；冻结签名/介质身份。 | 安装生命周期与实际组合；24h正常/72h风险延伸；故障独立段；完整数据守恒和资源平台。回退为受控停机/保留完整恢复集，不用定时重启兜底。
+
+最少充分的放行顺序：WP0明确契约 → 关闭已复现R01/R02与实际交付组合阻断 → 用目标数据量验证/整改UI与存储预算 → 固定可安装可追溯的Release及现场条件 → 同组合完整24h正常负载与分开的故障恢复 → 签认容量、维护和独立诊断证据。若仅交付双TCP，则SDK问题可以作为明确排除的组合单列；任何SDK产品承诺都必须完成其专属门槛。
+
+
+
+11 原始证据、引用与复核说明
+
+
+
+证据ZIP含机器可读审查摘要、测试命令/UTC/退出码/log SHA、运行时和FakeApi探针源码及结果、SQL微实验源码/结果、CI原始Windows日志和选定门禁/安装回执、外部Windows采集器与独立loopback负载夹具。SHA256SUMS.json列出包内每项文件哈希。可复现的大型人工DB、bin/obj、下载SDK和临时工具不作为稳定性证据打包；运行时原始测试记录和失败记录保留。
+
+以下所有源码引用固定到main c91559f6f981a9f2c9f89bd5afc271089f0e9d8e。外链可定位行号；历史证据本身的SourceCommit仍以其内部字段为准。
+
+S01 · 来源入队与按位 worker
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:220-277 [S01]
+
+S02 · 停止与释放所有权
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs:220-267 [S02]
+
+S03 · 诊断失败关闭准入
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:100-104 [S03]
+
+S04 · 有界诊断队列与写盘
+src/Ipc.Platform/RuntimeJournal.cs:8-43 [S04]
+
+S05 · 日志入队失败与 Dispose
+src/Ipc.Platform/RuntimeJournal.cs:96-104 [S05]
+
+S06 · 共享、本位及 Unknown 守卫
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs:7-28 [S06]
+
+S07 · 同步 WriteThrough 与 Flush
+src/Ipc.Platform/ExtensionStore.cs:31-37 [S07]
+
+S08 · 过载标记恢复锁
+src/Ipc.Application.ParcelFlow/ParcelOverload.cs:9-18 [S08]
+
+S09 · 维护循环与共享 gate
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs:46-85 [S09]
+
+S10 · SDK 启动、取消与异常分类
+src/Ipc.Drivers.Hikrobot/HikrobotReader.cs:70-95 [S10]
+
+S11 · SDK 回调、队列、健康及停止
+src/Ipc.Drivers.Hikrobot/HikrobotReader.cs:99-200 [S11]
+
+S12 · 跨 reader 的原生枚举锁
+src/Ipc.Drivers.Hikrobot/NativeMethods.cs:90-108 [S12]
+
+S13 · 双位启动和连接失败隔离
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:150-200 [S13]
+
+S14 · 数值 ID、未知响应及 Query 合同
+src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs:63-138 [S14]
+
+S15 · T2、原始响应与 T3
+src/Ipc.Application.ParcelFlow/ParcelStages.cs:20-94 [S15]
+
+S16 · RCS 能力声明
+src/Ipc.Assembly/ParcelCapabilityFactory.cs:250-263 [S16]
+
+S17 · 永久高水位与恢复退役范围
+src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs:8-49 [S17]
+
+S18 · gate 内快照与完整克隆
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs:7-44 [S18]
+
+S19 · 同库归档、容量与可归档判定
+src/Ipc.Application.ParcelFlow/ParcelHistory.cs:118-193 [S19]
+
+S20 · 未决命令 JSON 查询
+src/Ipc.Application.ParcelFlow/ParcelRepository.cs:376-380 [S20]
+
+S21 · 历史查询、统计与读事务
+src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs:23-69 [S21]
+
+S22 · 导出、异步读取与取消边界
+src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs:78-156 [S22]
+
+S23 · 日志授权同步前缀
+src/Ipc.Application.ParcelFlow/ParcelAdministration.cs:9-36 [S23]
+
+S24 · 管理授权检查
+src/Ipc.Platform/LocalManagementMode.cs:114-132 [S24]
+
+S25 · 同步管理服务 RPC
+src/Ipc.Platform/ManagementModeBroker.Protocol.cs:28-79 [S25]
+
+S26 · 日志页面调用路径
+src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs:135-192 [S26]
+
+S27 · 陈旧快照与 Dispatcher 时效
+src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs:13-52 [S27]
+
+S28 · 计划备份条件与集数上限
+src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs:24-45 [S28]
+
+S29 · 磁盘余量准入守卫
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs:1-30 [S29]
+
+S30 · SQLite 连接与持久化设置
+src/Ipc.Platform.Storage/Database.cs:9-27 [S30]
+
+S31 · 每次启动修复与身份检查
+src/Ipc.Application.ParcelFlow/ParcelRepository.cs:90-100 [S31]
+
+S32 · 启动终态恢复扫描
+src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs:76-121 [S32]
+
+S33 · 启动历史数值 ID 核对
+src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs:71-77 [S33]
+
+S34 · 停止 token 与最终 Dispose
+src/Ipc.Desktop/ParcelApp.xaml.cs:144-149 [S34]
+
+S35 · 视口变化与暂停
+src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs:79-90 [S35]
+
+S36 · 当前 Windows 功能兼容政策
+docs/runtime/windows-client-compatibility-01.md:3-25 [S36]
+
+S37 · 仍冲突的旧当前门禁说明
+docs/runtime/windows-application-delivery.md:29 [S37]
+
+S38 · 仍要求 build 26100 的高级脚本
+scripts/application.ps1:15-16 [S38]
+
+S39 · 当前架构整改依据
+docs/runtime/architecture-quality-remediation-01.md [S39]
+
+S40 · 当前双相机通信依据
+docs/runtime/dual-camera-communication-fix-01.md [S40]
+
+S41 · 旧性能证据身份
+docs/runtime/evidence/sportmaster-audit-remediation-01/performance-result.json [S41]
+
+S42 · 串行等待式性能夹具
+tests/Ipc.Desktop.UiVerification/AuditPerformance.cs:35-55 [S42]
+
+S43 · SDK ABI 与语义边界
+src/Ipc.Drivers.Hikrobot/sdk-boundary.json [S43]
+
+S44 · 示例数值请求范围
+config/sportmaster/rcs.parameters.json:8-9 [S44]
+
+S45 · TCP读取与LocalTransportOnly健康
+src/Ipc.Drivers/TcpLineObservationSource.cs:101-172 [S45]
+
+S46 · 窗口刷新、共享实例和停止
+src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs:26-154 [S46]
+
+S47 · 配置核对窗口解除订阅
+src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs:85-86 [S47]
+
+
+
+外部一手工具/实现文档（2026-10-24查阅）
+
+
+
+Microsoft.Data.Sqlite async limitations https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/async SQLite不提供真正异步I/O，异步ADO接口不能自动消除同步查询成本；本报告的UI判断仍以实际调用路径为准。
+
+SQLite WAL https://www.sqlite.org/wal.html 长读事务会影响检查点推进，WAL增长需测；不能把启用WAL等同没有锁/磁盘竞争。
+
+dotnet-counters https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters 附着既有PID采集System.Runtime；可用指标和工具版本需记录。
+
+ProcDump https://learn.microsoft.com/en-us/sysinternals/downloads/procdump 挂起与异常触发、转储数量和完整转储选项；不代替业务进展监测。
+
+WER LocalDumps https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps 本地崩溃转储需专门配置与ACL/保留预算；本轮未配置或执行。
+
+当前main https://github.com/yuan2go/importer-pc/commit/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e 分别保留源码、工作流及公开介质身份。
+
+同tree CI运行40060123734 https://github.com/yuan2go/importer-pc/actions/runs/40060123734 分别保留源码、工作流及公开介质身份。
+
+公开旧安装包Release https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.10.2-c9e482a30d2d 分别保留源码、工作流及公开介质身份。
+
+
+
+最终裁决
+
+
+
+当前不能确认、也不应宣称 importer-pc 已可按 Windows 11 下24×7工业客户端交付：这里既有已经发现并复现的代码责任/恢复阻断，也有现场运行条件未确认和实际长稳/实机证据缺失。最少工作是先关闭这些阻断、明确真实组合与恢复合同/容量政策，再用同一可追溯Release在目标Windows11完成完整24小时正常作业及分开的关键故障恢复，补齐独立业务/UI/资源证据和安装生命周期门禁。应用软件审查的通过，也不能保证Windows及硬件永远不故障。

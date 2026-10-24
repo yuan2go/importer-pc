@@ -1,0 +1,29 @@
+Source: https://github.com/yuan2go/importer-pc/actions/runs/39997147826/job/120563521301
+Read-only job-log excerpt; original timestamps retained; terminal color escapes removed.
+2026-10-23T17:41:48.5587913Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules --filter=blob:none origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +bad2734cc49c07fd6077cbcdc590e4817fcff9ec:refs/remotes/pull/93/merge
+2026-10-23T17:41:49.6906788Z  * [new ref]         bad2734cc49c07fd6077cbcdc590e4817fcff9ec -> pull/93/merge
+2026-10-23T17:41:56.8699496Z bad2734cc49c07fd6077cbcdc590e4817fcff9ec
+2026-10-23T17:42:47.1708158Z if ($release.SourceCommit -ne 'bad2734cc49c07fd6077cbcdc590e4817fcff9ec') { throw 'Frozen PR release differs from the checked merge commit' }
+2026-10-23T17:43:28.8353651Z VERIFIED sportmaster-portable-bad2734cc49c
+2026-10-23T17:44:44.8252222Z VERIFIED sportmaster-win-x64-bad2734cc49c
+2026-10-23T17:45:32.2202028Z PASS STARTUP02 TCP bounded event wait completes
+2026-10-23T17:45:32.2204460Z PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+2026-10-23T17:45:32.2206590Z PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+2026-10-23T17:45:32.2207892Z PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+2026-10-23T17:45:32.2209588Z PASS STARTUP02 TCP bounded event wait completes
+2026-10-23T17:45:32.2211450Z PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+2026-10-23T17:45:32.2212707Z PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+2026-10-23T17:45:32.2215025Z PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+2026-10-23T17:45:32.2216014Z PASS STARTUP02 first configuration has one shared directory without an outer tab bar
+2026-10-23T17:45:32.2217490Z PASS STARTUP02 compact first-configuration heading uses the supply-station name
+2026-10-23T17:45:32.2219156Z PASS STARTUP02 configuration file import is visible on step one
+2026-10-23T17:45:32.2220825Z FAIL System.InvalidOperationException: Sequence contains no matching element
+2026-10-23T17:45:32.2226258Z    at Program.<VerifyParameterUiRefinement>g__Value|19_3(CapabilityDraft draft, String key) in C:\scd-startup-experience\ParameterUiRefinement.cs:line 23
+2026-10-23T17:45:32.2227724Z    at Program.VerifyParameterUiRefinement(Window window, ParameterSettingsControl editor, String evidence, List`1 lines) in C:\scd-startup-experience\ParameterUiRefinement.cs:line 33
+2026-10-23T17:45:32.2229266Z    at Program.VerifyStartupExperience(String root, String evidence, List`1 lines) in C:\scd-startup-experience\StartupExperience.cs:line 31
+2026-10-23T17:45:32.2233695Z    at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in C:\scd-startup-experience\Program.cs:line 38
+2026-10-23T17:45:32.3590153Z   85 |  … ) -Tail 18};throw 'Frozen native WPF verification failed; original lo …
+2026-10-23T17:45:32.3593777Z      | Frozen native WPF verification failed; original log retained
+2026-10-23T17:46:41.9705974Z   name: sportmaster-evidence-bad2734cc49c07fd6077cbcdc590e4817fcff9ec
+2026-10-23T17:46:43.8919567Z Artifact sportmaster-evidence-bad2734cc49c07fd6077cbcdc590e4817fcff9ec.zip successfully finalized. Artifact ID 12520931323
+2026-10-23T17:46:43.8922084Z Artifact sportmaster-evidence-bad2734cc49c07fd6077cbcdc590e4817fcff9ec has been successfully uploaded! Final size is 11327574 bytes. Artifact ID is 12520931323

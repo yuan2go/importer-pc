@@ -69938,9 +69938,9 @@
       "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "66334a3ad47c3d2fd0e5b453ded748db2bc0af1ea7aaf3f1b63f6a1231d4ec6a",
-      "size_bytes": 4489,
-      "git_blob": "63c198501125aebdcc8d15a4b92e031008ed8a3a"
+      "sha256": "9782ae10704d224a26bdc1eec476914ce25616d250b6681267a40f9fdb5cc3b7",
+      "size_bytes": 5914,
+      "git_blob": "4e474e1da86e23a0bb9c6bb3faa4cfed68513e23"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ReaderCatalogBindings.cs",
@@ -69952,6 +69952,94 @@
       "sha256": "58a1709ac26044ed16f04907f09c456b74cf37a850c2c2acaaf65af29788e032",
       "size_bytes": 5596,
       "git_blob": "55c8764d65df912b0cce0979f0c3a2d4f5ac6d9a"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/MEDIUM-SHA256SUMS",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "f97994c062e6a4deb12d8547a399ff668cb850dd8edecc2b055ca719b266c5fe",
+      "size_bytes": 76715,
+      "git_blob": "9f7ff71f1941524782db02fabf2dd6fac10eee50"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/RECEIPT.json",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "216942aa335983fe889332251b4a24879100f880a1aaa5b769ced20a3fb43ba6",
+      "size_bytes": 849,
+      "git_blob": "eca965a33bbd277ef894118639bd22f7e01df92a"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/baseline-WINDOWS-WPF.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "36c97082387f78c4628092e56b343df094b9514b9a9e94dcdfaa5a0eef448724",
+      "size_bytes": 3651,
+      "git_blob": "b9985f1eeadcd8fb1bd8e45895b545a3b789a4ee"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/ci93-failure-excerpt.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "5d0f11981ad876532b772e9c61fd4c64fc1c8b3bba6314f8b03b47450e002d0d",
+      "size_bytes": 3628,
+      "git_blob": "c8a6d0032d3a0ea5209bc26c79e9ffed224a43fe"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/shell-RESULT.json",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "e4088b5fb8d4e62f67b512ceb01296b43bbf6a9be3b3e5c7e6c777cc7f1b2529",
+      "size_bytes": 3145,
+      "git_blob": "a68a677bc58d49a8f4b7e356a99e15c985e56c77"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/shell-WINDOWS-WPF.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "46749537c109250d571d0ebd1ec04094a0a053dca6b2bc343da576e1ebd25b3b",
+      "size_bytes": 3493,
+      "git_blob": "fce69f65eaf788ded138776417396cdaaf6789f0"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/startup-RESULT.json",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "e4088b5fb8d4e62f67b512ceb01296b43bbf6a9be3b3e5c7e6c777cc7f1b2529",
+      "size_bytes": 3145,
+      "git_blob": "a68a677bc58d49a8f4b7e356a99e15c985e56c77"
+    },
+    {
+      "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/startup-WINDOWS-WPF.log",
+      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
+      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "storage_scope": "public_repository",
+      "sha256": "5023641f7fe049ecabe2fe0285708d3c3903efaf890779b7b93478f08201ed80",
+      "size_bytes": 14353,
+      "git_blob": "3d65ce1d98fcfcbe24983ae8315f058572bfabe3"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

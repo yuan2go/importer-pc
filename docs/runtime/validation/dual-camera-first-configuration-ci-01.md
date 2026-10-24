@@ -27,7 +27,11 @@ Windows原生HWND/Dispatcher，合成数据与loopback：
 * `--startup-experience`：172项PASS，包含新目录回归、原TCP分帧/拒收/关闭、原首配字段校验、导航、授权失效、保存回读及回执丢失不重复保存。
 * `--parameter-shell-polish`：PASS，原参数输入/管理模式/失权保存拒绝断言未放宽。
 
-上述结果来自工作树重建。提交后同源冻结介质和夹具的独立回执另行附在本记录，不能用开发路径PASS代替CI。
+上述结果来自工作树重建。另已对修复提交 `57bfc2319ed8c234c2778309dfc0c9feee7b6b73` 生成不可变Windows候选，并以原 `verify-commercial-wpf.ps1` 执行CI对应两个入口：首配172项、参数壳29项均PASS。两份RESULT确认SourceCommit=FixtureSourceCommit、FixtureMatchesMedium=true、ExitCode=0，介质清单在验证前后逐项哈希保持不变。ZIP SHA256为 `34e64f8b448e32076f28fd3e41e28a74252e51521982bcf808bc21620ef7c1dd`；仅存D盘Git外，不上传发布介质。
+
+[冻结回执](../evidence/dual-camera-communication-fix-01/first-configuration-ci/RECEIPT.json)、[首配结果](../evidence/dual-camera-communication-fix-01/first-configuration-ci/startup-RESULT.json)/[完整日志](../evidence/dual-camera-communication-fix-01/first-configuration-ci/startup-WINDOWS-WPF.log)、[参数壳结果](../evidence/dual-camera-communication-fix-01/first-configuration-ci/shell-RESULT.json)/[日志](../evidence/dual-camera-communication-fix-01/first-configuration-ci/shell-WINDOWS-WPF.log)。原失败的[CI日志摘录](../evidence/dual-camera-communication-fix-01/first-configuration-ci/ci93-failure-excerpt.log)和[本机修复前复现](../evidence/dual-camera-communication-fix-01/first-configuration-ci/baseline-WINDOWS-WPF.log)保留失败，不改成PASS。
+
+另从Git取回原CI合成提交并核对双亲为165c2ffe/b6e9350；其src/tests/config/scripts与续修基线c2300cd完全相同。上述本机同源冻结PASS不能代替后续PR的托管CI结果；后续仅证据/文档提交不把此介质改标为新HEAD。
 
 ## 运行和边界
 

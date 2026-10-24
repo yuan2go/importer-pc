@@ -1,0 +1,40 @@
+PASS STARTUP02 equivalent numeric TCP ports with different reader names cannot acquire separate physical leases
+PASS STARTUP02 physical TCP endpoint can be acquired only after the original lease releases
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP framing preserves split UTF8, CRLF and multiple coalesced lines
+PASS STARTUP02 same-code lines retain separate entities and the application-registered epoch
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP disconnection faults the source without automatic reconnect or replay
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 observe-only TCP cannot invent an entity admission boundary
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP overflow is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP invalid-utf8 is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 first configuration has one shared directory without an outer tab bar
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+FAIL System.InvalidOperationException: Sequence contains no matching element
+   at System.Linq.ThrowHelper.ThrowNoMatchException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)
+   at Program.<VerifyParameterUiRefinement>g__Value|19_3(CapabilityDraft draft, String key) in D:\projects\importer-pc-dual-camera\tests\Ipc.Desktop.UiVerification\ParameterUiRefinement.cs:line 23
+   at Program.VerifyParameterUiRefinement(Window window, ParameterSettingsControl editor, String evidence, List`1 lines) in D:\projects\importer-pc-dual-camera\tests\Ipc.Desktop.UiVerification\ParameterUiRefinement.cs:line 33
+   at Program.VerifyStartupExperience(String root, String evidence, List`1 lines) in D:\projects\importer-pc-dual-camera\tests\Ipc.Desktop.UiVerification\StartupExperience.cs:line 31
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-dual-camera\tests\Ipc.Desktop.UiVerification\Program.cs:line 38

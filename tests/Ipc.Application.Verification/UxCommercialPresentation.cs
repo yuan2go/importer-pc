@@ -25,6 +25,7 @@ static class UxCommercialPresentation
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
         await app.StartAsync(CancellationToken.None);
+        await ManagementModeFixture.Authorize(app);
         Check(app.EmitReferenceAt("left", "presentation-a", "00000123", "event-a"), "reference observation A enters left position");
         var first = await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "presentation-a" && x.State == ParcelState.SlotResolved));
         var a = first.Operations.Single(x => x.AdmissionId == "presentation-a");
@@ -33,6 +34,7 @@ static class UxCommercialPresentation
         var b = baseline.Operations.Single(x => x.AdmissionId == "presentation-b");
         var original = Wire.Encode(a.Wcs!.Request);
         var proxy = DispatchProxy.Create<IManagementParcelFixture, UxPresentationProbe>(); var probe = (UxPresentationProbe)(object)proxy;
+        probe.ManagementStatus = ((IWorkstationAdministration)app).ManagementModeStatusAsync;
         var presented = baseline; probe.Read = () => Task.FromResult(presented);
         var ui = new SupplyStationViewModel(proxy); var classic = new ParcelViewModel(proxy, "test", "test");
         await ui.RefreshAsync(); await classic.RefreshAsync(); classic.SelectedPositionId = "left";
@@ -231,6 +233,7 @@ static class UxCommercialPresentation
 
 public class UxPresentationProbe : DispatchProxy
 {
+    public Func<Task<ManagementModeStatus>> ManagementStatus = null!;
     public Func<Task<ParcelSnapshot>> Read = null!;
     public Func<long, Task<ParcelHistoryPage>> History = _ => Task.FromResult(new ParcelHistoryPage([], null));
     public Func<BusinessCommand, Task<BusinessReceipt>> Command = _ => throw new InvalidOperationException("Unexpected command");
@@ -238,6 +241,7 @@ public class UxPresentationProbe : DispatchProxy
     protected override object? Invoke(MethodInfo? method, object?[]? args) => method!.Name switch
     {
         "SnapshotAsync" => Read(),
+        "ManagementModeStatusAsync" => ManagementStatus(),
         "HistoryAsync" => History((long)args![0]!),
         "OperationAsync" => ReadOperation((string)args![0]!),
         "ReconcileAsync" => Reconcile((string)args![0]!),

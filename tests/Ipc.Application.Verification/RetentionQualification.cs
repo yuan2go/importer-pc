@@ -30,7 +30,7 @@ static class RetentionQualification
     const string ReplySql="SELECT request,id,hash FROM parcel_reply_identities ORDER BY request,id";
     static void RequireReference(ParcelConfiguration c,bool frozen=false)
     {
-        if(c.Mode!=RunMode.Simulation||c.ApplicationId!="sportmaster"||c.Extensions is not null||c.Images is not null||c.Scale is not null||c.Plc is not null||
+        if(c.Mode!=RunMode.Simulation||c.ApplicationId!="sportmaster"||c.StationId!="retention-qualification"||c.Extensions is not null||c.Images is not null||c.Scale is not null||c.Plc is not null||
             ParcelBindings.Readers(c).Length!=2||ParcelBindings.Readers(c).Any(r=>r.Driver!="manual")||
             c.Wcs?.Implementation!="reference-integration"||ParcelBindings.All(c).Any(b=>b.Package is not null||!b.Implementation.StartsWith("reference-",StringComparison.Ordinal)||
                 !Uri.TryCreate(b.Target,UriKind.Absolute,out var uri)||uri.Scheme!="reference"||!frozen&&b.Parameters.ContainsKey("peer-root")))

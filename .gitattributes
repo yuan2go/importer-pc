@@ -118,3 +118,4 @@ docs/runtime/evidence/retention-performance-review-01/recheck-02/** -text whites
 
 # Full-custody qualification keeps failed and corrected run receipts byte-for-byte.
 docs/runtime/evidence/retention-maintenance-qualification-01/original/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

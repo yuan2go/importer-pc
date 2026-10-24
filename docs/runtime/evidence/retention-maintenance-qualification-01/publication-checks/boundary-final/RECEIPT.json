@@ -1,0 +1,15 @@
+{
+  "Status": "PASS_FIXTURE_ENTRY_BOUNDARIES_ONLY",
+  "AtUtc": "2026-10-24T18:10:26.8230039+00:00",
+  "ParentHead": "6bed97023e9726afe65187759d9dd3ecfe81e063",
+  "FixtureSourceSha256": "07608F8CEBA93E7366A91E3B9B600AC9596A4A9F6A96D519EFAB9849056DBC33",
+  "HelperSourceSha256": "5F77BFA85379EA248C70FF3B956510397CB77C155AFA33DCF5F39C265BA1C834",
+  "FixtureDllSha256": "AC51AEEB9CC17EAF71FBD37B6CFCE644D0D6D63C2365EFC13D808ACCF4960AD2",
+  "WrongStationExitCode": -532462766,
+  "WrongStationDatabaseCreated": false,
+  "ValidCompleteFixtureCount": 1000,
+  "LiteralOrdinaryParentAccepted": true,
+  "ActualPublishedLoopJunctionRefused": true,
+  "ElevatedOrProtectedCliExecuted": false,
+  "Scope": "Ordinary-token fixture entry checks only. No new maintenance/RTO/recovery or target/24h/72h/field qualification. All originals retained."
+}

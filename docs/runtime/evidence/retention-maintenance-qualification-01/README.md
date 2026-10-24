@@ -70,6 +70,10 @@ python scripts/check-retention-reconciliation.py `
 
 归档后的普通token发布检查另存[publication-checks/RECEIPT.json](publication-checks/RECEIPT.json)：当前对账脚本在原1千/1万闭合快照执行73项检查，并验证四种拒绝场景。原`corrected-final`中的67项回执不重写；新增结果只说明发布脚本和小样本对账，不是重新执行维护/恢复或改变原大样本FAIL。
 
+随后独立复核收紧测试入口：`RequireReference`固定`retention-qualification`站点，提权脚本在任何创建/ACL/复制前检查`Qualification`已有父目录。普通token使用实际夹具和实际脚本AST中的目录检查循环，验证错误站点拒绝且未建DB、规范1000条夹具生成、带方括号的普通路径接受、junction父目录拒绝。构建0警告0错误；[boundary-final回执及执行源码](publication-checks/boundary-final/RECEIPT.json)单列未提交时的源码/DLL hash，不冒用原完整运行身份。此测试未执行新的受保护CLI。最初只读探测发现`Split-Path -LiteralPath`不能与`-Parent`组合，改用其默认父目录参数集后才运行上述边界测试；没有以放宽链接守卫换PASS。
+
+前一HEAD `6bed970`的[CI元数据](publication-checks/CI-6bed970.json)保留其实际合成源码`8e28accc`和安装器hash；该检查早于测试入口补强，不是补强后最终HEAD的CI。后续最终CI/审查/合并身份在PR103单独核对。
+
 ## 资格边界
 
 本机Windows11 Home/23H2、4核/8线程、约16GB；不是目标4核8GB。标准UAC、受保护隔离Simulation目录和实际CLI证明对应本机权限/备份/清理/恢复路径，不等于已登记Production安装、真实SDK/RCS、目标工控机、真实24h/72h、工业现场验收或历史D/RV关闭。CI、安装器构建和实际安装也必须各自保留来源及结果。

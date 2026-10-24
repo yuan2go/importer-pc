@@ -24,6 +24,11 @@ for($parent=Get-Item -LiteralPath $anchor;$null -ne $parent;$parent=$parent.Pare
 $runId='retention-'+[Guid]::NewGuid().ToString('N')
 $protectedRoot=Join-Path $anchor ('Qualification/'+$runId)
 if(Test-Path -LiteralPath $protectedRoot){throw 'A new isolated protected qualification root is required'}
+# Also inspect Qualification itself if an earlier administrator created it.
+# Check before any elevated directory creation, ACL change or binary copy.
+for($taskParent=Split-Path -LiteralPath $protectedRoot;$taskParent;$taskParent=Split-Path -LiteralPath $taskParent){
+ if((Test-Path -LiteralPath $taskParent) -and ((Get-Item -LiteralPath $taskParent).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Linked qualification ancestor refused'}
+}
 New-Item -ItemType Directory -Path $protectedRoot -Force | Out-Null
 $acl=[Security.AccessControl.DirectorySecurity]::new();$acl.SetAccessRuleProtection($true,$false)
 $admin=[Security.Principal.SecurityIdentifier]::new('S-1-5-32-544');$system=[Security.Principal.SecurityIdentifier]::new('S-1-5-18');$users=[Security.Principal.SecurityIdentifier]::new('S-1-5-32-545')

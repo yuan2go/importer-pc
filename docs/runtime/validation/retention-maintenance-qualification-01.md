@@ -109,4 +109,4 @@ CLI观测工作集和WAL采样峰值见对应原始回执。小于1秒的子进�
 
 实际复现脚本、提权步骤与只读对账入口见[证据及复现说明](../evidence/retention-maintenance-qualification-01/README.md)。[FILES.json](../evidence/retention-maintenance-qualification-01/FILES.json)固定210份原始文本的字节数/SHA256，[CAPTURE.json](../evidence/retention-maintenance-qualification-01/CAPTURE.json)记录本机来源。原始数据库和二进制留在D盘，不提交Git；旧失败、修正轮FAIL及候选探针各保留原身份。
 
-PR103中途HEAD `69fe77c`的[CI40110028611](https://github.com/yuan2go/importer-pc/actions/runs/40110028611)两项成功只属于草案身份，不是最终HEAD验证，更不覆盖本轮大样本失败。最终提交/CI/合并身份另行核对；CI通过、Windows安装器构建成功、真实安装、24h/72h和工业现场验收分别登记。
+PR103中途HEAD `69fe77c`的[CI40110028611](https://github.com/yuan2go/importer-pc/actions/runs/40110028611)两项成功只属于草案身份。随后`6bed970`的[CI40117715120](https://github.com/yuan2go/importer-pc/actions/runs/40117715120)两项成功，实际合成源码`8e28accc7dbe6df78bfe85b3b28441b773cbd537`；安装器构建SHA256为`ecac8e7cec0b7813f2ceac88cd23b426d82564b1f776fd450bc9bed1b5005a75`，回执明确实际Windows安装NOT_RUN。其后独立复核又固定测试站点和提权前父目录链接检查，另有普通token正/反向边界回执；这些不是重新执行完整维护/恢复。最终HEAD CI、审查及合并身份在PR103另核，不借前一HEAD结果。CI通过、安装器构建、真实安装、24h/72h和工业现场验收分别登记，均不能覆盖本轮大样本失败。

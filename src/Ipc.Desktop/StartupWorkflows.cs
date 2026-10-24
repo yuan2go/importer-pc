@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,19 +18,19 @@ public abstract class StartupWorkflowWindow : Window
     protected readonly DockPanel FooterHost = new();
     protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
     protected readonly StackPanel AuthorizationGate = new() { Visibility = Visibility.Collapsed, Margin = new(8, 16, 8, 16), MaxWidth = 570, HorizontalAlignment = HorizontalAlignment.Left };
-    protected readonly TextBlock WorkflowHeading = new() { FontSize = 18, FontWeight = FontWeights.SemiBold };
-    protected readonly TextBlock WorkflowBusinessName = new() { FontSize = 13, Foreground = Brushes.SlateGray, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed };
+    protected readonly TextBlock WorkflowHeading = new() { FontSize = UiTypography.Position, FontWeight = UiTypography.Emphasis };
+    protected readonly TextBlock WorkflowBusinessName = new() { FontSize = UiTypography.Label, Foreground = Brushes.SlateGray, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed };
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
-    protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = 24, FontWeight = FontWeights.Bold };
-    protected readonly TextBlock VersionLabel = new() { FontSize = 14, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
+    protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis };
+    protected readonly TextBlock VersionLabel = new() { FontSize = UiTypography.Body, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
     readonly TextBlock[] installationSteps = new TextBlock[3];
     protected void InstallationStep(int step)
     {
         for (var i = 0; i < installationSteps.Length; i++)
         {
             installationSteps[i].Foreground = i == step ? new SolidColorBrush(Color.FromRgb(8, 102, 232)) : new SolidColorBrush(Color.FromRgb(98, 107, 120));
-            installationSteps[i].FontWeight = i == step ? FontWeights.SemiBold : FontWeights.Normal;
+            installationSteps[i].FontWeight = i == step ? UiTypography.Emphasis : FontWeights.Normal;
         }
     }
     protected bool Busy;
@@ -40,7 +40,7 @@ public abstract class StartupWorkflowWindow : Window
         Form = Body;
         ProductBrand.Apply(this);
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        Title = title; FontSize = 16; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        Title = title; FontSize = UiTypography.Body; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         if (installation)
         {
@@ -48,7 +48,7 @@ public abstract class StartupWorkflowWindow : Window
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(24, 28, 24, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
-            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new(0, 16, 0, 16) });
+            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });
             foreach (var (label, index) in new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) })
             { installationSteps[index] = new TextBlock { Text = label, Margin = new(0, 12, 0, 12), TextWrapping = TextWrapping.Wrap }; rail.Children.Add(installationSteps[index]); }
             var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(245, 248, 252)), Child = rail }; layout.Children.Add(sidebar);
@@ -134,7 +134,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool showMaintenanceActions;
     bool authorityAllowed;
     readonly ManagementModeMenu managementMenu = new() { UnauthorizedLabel = "未授权" };
-    readonly TextBlock saveState = new() { Text = "未保存", FontSize = 13, Foreground = Brushes.SlateGray, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
+    readonly TextBlock saveState = new() { Text = "未保存", FontSize = UiTypography.Label, Foreground = Brushes.SlateGray, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
     Button? headerImport;
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
@@ -156,7 +156,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
-        if (initialConfiguration) { StartupAppearance.Apply(this); Width = 960; Height = 656; WorkflowHeading.FontSize = 22; WorkflowBusinessName.Text = ChineseInterfaceText.BusinessName(ParcelStartupServices.ApplicationId); WorkflowBusinessName.Visibility = Visibility.Visible; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
+        if (initialConfiguration) { StartupAppearance.Apply(this); Width = 960; Height = 656; WorkflowHeading.FontSize = UiTypography.PageTitle; WorkflowBusinessName.Text = ChineseInterfaceText.BusinessName(ParcelStartupServices.ApplicationId); WorkflowBusinessName.Visibility = Visibility.Visible; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次配置供包台";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
@@ -165,8 +165,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         pathFields = Body.Children.Cast<UIElement>().ToArray();
         SessionActions.Children.Add(managementMenu);
         var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
-        var gateTitle = new TextBlock { FontSize = 21, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
-        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = 14, Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 119)) };
+        var gateTitle = new TextBlock { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, TextWrapping = TextWrapping.Wrap };
+        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = UiTypography.Body, Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 119)) };
         var gateActions = new WrapPanel();
         AuthorizationGate.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
         var gateExit = new Button { Content = "退出配置", MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
@@ -418,7 +418,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (path is null) return;
         if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("配置文件超出4兆字节限制。");
         var replacement = StartupConfigurationFiles.Import(File.ReadAllText(path), document.Candidate, draft, document.Catalog);
-        var comparison = new Window { Owner = this, Title = "导入配置预览", Width = 720, Height = 560, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, WindowStartupLocation = WindowStartupLocation.CenterOwner };
         var panel = new DockPanel { Margin = new(20) };
         var apply = new Button { Content = "应用到当前填写内容", MinHeight = 44, Margin = new(0, 12, 0, 0) };
         DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => comparison.DialogResult = true; panel.Children.Add(apply);
@@ -436,7 +436,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         foreach (var label in new[] { "读取所选配置", "分层检查与变更预览", "保存首配待生效…", "按当前首配启动", "导出新站模板…", "创建完整备份…", "受控修复未确认配置…", "接管已恢复的原机目录…", "安装 / 修复程序…" })
             Add(advanced.Items, label);
         var diagnostic = new MenuItem { Header = "查看完整诊断…" };
-        diagnostic.Click += (_, _) => new Window { Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
+        diagnostic.Click += (_, _) => new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
         advanced.Items.Add(diagnostic); menu.Items.Add(advanced);
         var tools = Actions.Children.OfType<Button>().Single(x => (string)x.Content == "配置工具…");
         menu.PlacementTarget = tools; tools.ContextMenu = menu; menu.IsOpen = true;
@@ -610,7 +610,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         void Section(string title, string guidance, IEnumerable<UIElement> items)
         {
             var panel = new StackPanel { Margin = new(16) };
-            panel.Children.Add(new TextBlock { Text = guidance, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), FontSize = 16 });
+            panel.Children.Add(new TextBlock { Text = guidance, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), FontSize = UiTypography.Body });
             foreach (var item in items) panel.Children.Add(item);
             tasks!.Items.Add(new TabItem { Header = title, Content = panel, MinHeight = 44 });
         }

@@ -36,7 +36,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         public ScrollViewer Scroll { get; } = scroll;
         public StackPanel Technical { get; } = technical;
         public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
-        public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = 13 };
+        public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string GroupTitle => Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category);
         public int Order => Category == 4 ? 4 : Category == 1 ? 0 : Category == 0 ? 1 : Category;
         public override string ToString() => Title;
@@ -49,7 +49,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public ParameterSettingsControl()
     {
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontSize = 14; FontWeight = FontWeights.Normal; Foreground = Brush("#25384B");
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Foreground = Brush("#25384B");
         var root = new Grid { Background = Brushes.White };
         root.ColumnDefinitions.Add(new() { Width = new(224) }); root.ColumnDefinitions.Add(new());
         var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
@@ -140,16 +140,16 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     static TextBlock Text(string value, bool heading = false) => new()
     {
-        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? 16 : 14,
+        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? UiTypography.Group : UiTypography.Label,
         Foreground = Brush(heading ? "#1C3044" : "#5A6878"),
-        FontWeight = heading ? FontWeights.SemiBold : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
+        FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
     };
     static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     ObjectPage Page(int category, string title, string guidance)
     {
         var body = new StackPanel { Margin = new(28, 20, 28, 20), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
-        var heading = Text(title, true); heading.FontSize = 20; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
+        var heading = Text(title, true); heading.FontSize = UiTypography.PageTitle; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
         if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 12); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left, Focusable = false };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
@@ -199,7 +199,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (routine) control.ToolTip = help;
         else if (!string.IsNullOrEmpty(help))
         {
-            var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0);
+            var hint = Text(help); hint.FontSize = UiTypography.Label; hint.Margin = new(0, 4, 0, 0);
             // Identity/connection explanations are on demand. Entity admission and
             // required constraints remain inline; errors always stay next to the field.
             if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "bcr-code" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
@@ -232,8 +232,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {
-        var box = new TextBox { MinHeight = 38, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, FontSize = 14, VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center };
+        var box = new TextBox { MinHeight = 40, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, FontSize = UiTypography.Body, VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         box.MaxWidth = multiline || property is "Target" or "BarcodePattern" or "BackupDirectory" ? 760 :
             property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
@@ -241,7 +241,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)
     {
-        var choice = new ComboBox { ItemsSource = values, ItemTemplate = ChineseChoiceTextConverter.CreateTemplate(), MinHeight = 38, FontSize = 14 };
+        var choice = new ComboBox { ItemsSource = values, ItemTemplate = ChineseChoiceTextConverter.CreateTemplate(), MinHeight = 40, FontSize = UiTypography.Body };
         choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         Field(form, label, choice, help, path, page);
     }
@@ -255,7 +255,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     void Technical(ObjectPage page, string label, string path, string? detail = null)
     {
         var text = new TextBox { IsReadOnly = true, Text = label + " · " + path + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
-            TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Margin = new(0, 0, 0, 10), Padding = new(0), MinHeight = 28, FontSize = 13 };
+            TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Margin = new(0, 0, 0, 10), Padding = new(0), MinHeight = 28, FontSize = UiTypography.Label };
         page.Technical.Children.Add(text);
         if (!locations.ContainsKey(path))
         {

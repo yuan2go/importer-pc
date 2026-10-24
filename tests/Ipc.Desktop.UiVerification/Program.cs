@@ -30,8 +30,13 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--task-hierarchy-parameters")) await VerifyHierarchyParameters(root, evidence, lines, args.Contains("--baseline"));
-                else if (args.Contains("--task-hierarchy")) await VerifyTaskHierarchy(root, evidence, lines, args.Contains("--baseline"));
+                if (args.Contains("--typography")) await VerifyTypography(evidence, lines);
+                else if (args.Contains("--task-hierarchy-parameters")) await VerifyHierarchyParameters(root, evidence, lines, args.Contains("--baseline"));
+                else if (args.Contains("--task-hierarchy"))
+                {
+                    if (!args.Contains("--baseline")) await VerifyTypography(evidence, lines);
+                    await VerifyTaskHierarchy(root, evidence, lines, args.Contains("--baseline"));
+                }
                 else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
                 else if (args.Contains("--installer-first-run-ui")) await VerifyInstallerFirstRunUi(root, evidence, lines);

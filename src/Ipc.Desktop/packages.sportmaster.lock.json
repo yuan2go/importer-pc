@@ -257,8 +257,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.13",
           "Microsoft.Extensions.Logging": "10.0.13",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.13",
-          "Microsoft.Extensions.Options": "10.0.13",
-          "System.Diagnostics.EventLog": "10.0.13"
+          "Microsoft.Extensions.Options": "10.0.13"
         }
       },
       "Microsoft.Extensions.Logging.EventSource": {
@@ -326,11 +325,6 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
-      "System.Diagnostics.EventLog": {
-        "type": "Transitive",
-        "resolved": "10.0.13",
-        "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
-      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -340,14 +334,15 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )",
+          "Ipc.Application.Contracts": "[1.16.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )"
+          "Ipc.Application.Contracts": "[1.16.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.application.sportmaster": {
@@ -365,7 +360,7 @@
       "ipc.assembly": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Sportmaster": "[1.0.0, )",
+          "Ipc.Application.Sportmaster": "[1.11.3, )",
           "Ipc.Components": "[1.0.0, )",
           "Ipc.Drivers": "[1.0.0, )",
           "Ipc.Integrations": "[1.0.0, )",
@@ -406,10 +401,13 @@
           "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
         }
       },
+      "ipc.presentation.wpf": {
+        "type": "Project"
+      },
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )"
+          "Ipc.Application.Contracts": "[1.16.0, )"
         }
       },
       "Ipc.Supply": {

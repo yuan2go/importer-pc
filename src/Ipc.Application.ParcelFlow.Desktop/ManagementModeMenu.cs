@@ -21,7 +21,7 @@ public sealed class ManagementModeMenu : Button
     readonly ContextMenu menu = new();
     public ManagementModeMenu()
     {
-        FontSize = 14; FontWeight = FontWeights.Normal; MinHeight = 36; Padding = new(10, 6, 10, 6);
+        FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; MinHeight = 36; Padding = new(10, 6, 10, 6);
         Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)); Foreground = new SolidColorBrush(Color.FromRgb(71, 85, 105)); BorderBrush = Brushes.Transparent;
         var content = new StackPanel { Orientation = Orientation.Horizontal };
         content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M3,7 V4 A4,4 0 0 1 11,4 V7 M1,7 H13 V17 H1 Z M7,10 V14"), Width = 14, Height = 17, Stroke = Foreground, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(0, 0, 7, 0) });

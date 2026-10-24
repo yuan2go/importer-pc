@@ -22,10 +22,10 @@ public sealed class ManagementModeWindow : Window
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
         var layout = new Grid { Margin = new(24, 20, 24, 20) }; layout.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); layout.RowDefinitions.Add(new() { Height = GridLength.Auto }); layout.RowDefinitions.Add(new() { Height = GridLength.Auto }); Content = layout;
         var body = new StackPanel(); layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-        var heading = new TextBlock { Text = "管理模式", FontSize = 24, FontWeight = FontWeights.SemiBold }; body.Children.Add(heading);
+        var heading = new TextBlock { Text = "管理模式", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis }; body.Children.Add(heading);
         var state = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) }; body.Children.Add(state);
         var legacy = new StackPanel { Visibility = Visibility.Collapsed }; body.Children.Add(legacy);
-        legacy.Children.Add(new TextBlock { Text = "旧版凭据转换（仅升级一次）", FontWeight = FontWeights.SemiBold });
+        legacy.Children.Add(new TextBlock { Text = "旧版凭据转换（仅升级一次）", FontWeight = UiTypography.Emphasis });
         legacy.Children.Add(new TextBlock { Text = "验证原凭据后设置统一管理密码，原账号账保留为历史。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 4, 0, 12) });
         var oldName = new TextBox { Name = "LegacyManagementAccount", MaxLength = 64, MinHeight = 44 }; legacy.Children.Add(new Label { Content = "旧版账号", Target = oldName, Padding = new(0) }); legacy.Children.Add(oldName);
         var oldProof = new PasswordBox { Name = "LegacyManagementPassword", MaxLength = 256, MinHeight = 44 }; legacy.Children.Add(new Label { Content = "旧版密码", Target = oldProof, Padding = new(0), Margin = new(0, 8, 0, 0) }); legacy.Children.Add(oldProof);
@@ -34,7 +34,7 @@ public sealed class ManagementModeWindow : Window
         var proofLabel = new Label { Content = "管理密码", Target = proof, Padding = new(0), Margin = new(0, 8, 0, 0) }; passwordFields.Children.Add(proofLabel); passwordFields.Children.Add(proof);
         var confirm = new PasswordBox { Name = "ManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 };
         var confirmation = new StackPanel(); confirmation.Children.Add(new Label { Content = "确认密码", Target = confirm, Padding = new(0), Margin = new(0, 12, 0, 4) }); confirmation.Children.Add(confirm); passwordFields.Children.Add(confirmation);
-        var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), FontSize = 13, Margin = new(0, 8, 0, 12) }; passwordFields.Children.Add(rules);
+        var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) }; passwordFields.Children.Add(rules);
         var changeBody = new StackPanel(); var changeTools = new Expander { Header = "修改管理密码", Content = changeBody, Visibility = Visibility.Collapsed, Margin = new(0, 12, 0, 0) }; body.Children.Add(changeTools);
         var next = new PasswordBox { Name = "NewManagementPassword", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "新管理密码", Target = next, Padding = new(0) }); changeBody.Children.Add(next);
         var nextConfirm = new PasswordBox { Name = "NewManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "再次输入新密码", Target = nextConfirm, Padding = new(0), Margin = new(0, 8, 0, 0) }); changeBody.Children.Add(nextConfirm);

@@ -76,6 +76,15 @@ static partial class Program
                         Check(Inside(host, client) && host.ActualHeight >= (size.Item1 == 800 ? 200 : size.Item2 * .60), key + " preserves usable task content");
                         if (page != "工作台" && window is ShellWindow)
                             Check(!((PasswordBox)window.FindName("LoginProof")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "核对原请求")).IsVisible, key + " does not expose unrelated login or current-position recovery");
+                        if (page == "工作台" && window is ShellWindow)
+                        {
+                            var barcode = Descendants(host).OfType<TextBox>().First(b => Equals(b.Tag, "CurrentBarcode") && b.IsVisible);
+                            DependencyObject ancestor = barcode;
+                            do { ancestor = System.Windows.Media.VisualTreeHelper.GetParent(ancestor); } while (ancestor is not ScrollViewer);
+                            var viewport = (ScrollViewer)ancestor;
+                            Check(barcode.TranslatePoint(new Point(), viewport).Y + Math.Min(barcode.ActualHeight, 30) <= viewport.ViewportHeight,
+                                key + " keeps one full current barcode line visible without scrolling");
+                        }
                         if (page == "参数设置") Check(Inside(Descendants(host).OfType<Button>().Single(b => Equals(b.Content, "保存更改…")), client), key + " keeps the actual save action visible");
                     }
                 }

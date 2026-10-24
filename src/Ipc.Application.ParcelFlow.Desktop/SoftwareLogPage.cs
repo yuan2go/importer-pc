@@ -14,14 +14,14 @@ public sealed class SoftwareLogControl : UserControl
     readonly CheckBox regex = new() { Content = "使用正则表达式（有执行时限）", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
-    readonly TextBox detail = new() { IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
+    readonly TextBox detail = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
     readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap };
     readonly StackPanel filters = new();
-    readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Padding = new(0), MinHeight = 0, Background = System.Windows.Media.Brushes.Transparent, FontSize = 12, MaxHeight = 36, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Padding = new(0), MinHeight = 0, Background = System.Windows.Media.Brushes.Transparent, FontSize = UiTypography.Label, MaxHeight = 44, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Expander advancedFilters;
     readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel;
     readonly Expander detailPanel, diagnostics;
-    readonly TextBox diagnosticText = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
+    readonly TextBox diagnosticText = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
     readonly TextBlock empty = new() { Text = "填写条件后查询日志", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = System.Windows.Media.Brushes.SlateGray };
     CancellationTokenSource? pending;
     string? selection;
@@ -32,7 +32,7 @@ public sealed class SoftwareLogControl : UserControl
     {
         this.service = service;
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
-        Background = System.Windows.Media.Brushes.White; FontSize = 14; FontWeight = FontWeights.Normal;
+        Background = System.Windows.Media.Brushes.White; FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal;
         var root = new DockPanel { Margin = new(20, 16, 20, 12) }; Content = root;
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
@@ -53,9 +53,22 @@ public sealed class SoftwareLogControl : UserControl
         var search = new WrapPanel(); filters.Children.Add(search);
         FrameworkElement Field(string label, FrameworkElement element, double width)
         {
-            var group = new StackPanel { Margin = new(0, 0, 12, 8), Width = width };
-            group.Children.Add(new TextBlock { Text = label, Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 4) });
-            System.Windows.Automation.AutomationProperties.SetName(element, "日志" + label); group.Children.Add(element); return group;
+            var group = new Grid { Margin = new(0, 0, 12, 8), Width = width };
+            group.ColumnDefinitions.Add(new()); group.ColumnDefinitions.Add(new());
+            group.RowDefinitions.Add(new() { Height = GridLength.Auto }); group.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            var caption = new TextBlock { Text = label, Style = (Style)FindResource("QueryHint") };
+            group.Children.Add(caption); group.Children.Add(element);
+            void ArrangeField()
+            {
+                var shortPage = ActualHeight < 500;
+                group.ColumnDefinitions[0].Width = shortPage ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
+                group.ColumnDefinitions[1].Width = shortPage ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+                Grid.SetRow(element, shortPage ? 0 : 1); Grid.SetColumn(element, shortPage ? 1 : 0);
+                caption.Margin = shortPage ? new(0, 0, 8, 0) : new(0, 0, 0, 4);
+                caption.VerticalAlignment = VerticalAlignment.Center;
+            }
+            SizeChanged += (_, _) => ArrangeField(); ArrangeField();
+            System.Windows.Automation.AutomationProperties.SetName(element, "日志" + label); return group;
         }
         search.Children.Add(Field("关键词", keyword, 260)); search.Children.Add(Field("级别", level, 120));
         keyword.ToolTip = "普通关键词；高级筛选可启用正则表达式";
@@ -80,10 +93,10 @@ public sealed class SoftwareLogControl : UserControl
         detailPanel.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
         results.Style = (Style)FindResource("QueryResultsGrid");
         var cellStyle = (Style)FindResource("QueryCellText");
-        results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 220, ElementStyle = cellStyle });
-        results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 100, ElementStyle = cellStyle });
-        results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 70, ElementStyle = cellStyle });
-        results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = new LogSummaryConverter() }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 238, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 130, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 82, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = new LogSummaryConverter() }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = (Style)FindResource("QueryCodeText") });
         var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(empty); root.Children.Add(panel);
         results.SizeChanged += (_, _) => UpdateEmpty();
         SizeChanged += (_, _) =>
@@ -91,11 +104,21 @@ public sealed class SoftwareLogControl : UserControl
             var shortPage = ActualHeight < 500;
             if (shortPage && !compact) detailPanel.IsExpanded = false;
             compact = shortPage; root.Margin = compact ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
-            results.RowHeight = compact ? 32 : 44; results.ColumnHeaderHeight = compact ? 32 : 36;
-            title.FontSize = 16;
-            headerScroll.MaxHeight = compact ? 74 : Math.Min(260, ActualHeight * .42);
-            detail.MaxHeight = compact ? 60 : ActualHeight * .30; status.MaxHeight = compact ? 20 : 48;
+            results.RowHeight = 40; results.ColumnHeaderHeight = 36;
+            title.FontSize = UiTypography.Group;
+            UpdateDetailLayout();
+            headerScroll.MaxHeight = compact ? 52 : Math.Min(260, ActualHeight * .42);
+            footer.Margin = compact ? new(0) : new(0, 6, 0, 0);
+            detailPanel.Margin = compact ? new(0, 4, 0, 0) : new(0, 8, 0, 0);
+            detail.MaxHeight = compact ? 60 : ActualHeight * .30; status.MaxHeight = compact ? 24 : 48;
         };
+        // At the minimum viewport, the selected original is the reading task.
+        // Keep actions/range and a full result row; collapse only the keyword strip,
+        // preserving its controls and draft. Closing context restores it immediately.
+        void UpdateDetailLayout() => headerScroll.Visibility = compact && detailPanel.IsExpanded ? Visibility.Collapsed : Visibility.Visible;
+        detailPanel.Expanded += (_, _) => { if (compact) advancedFilters.IsExpanded = false; UpdateDetailLayout(); };
+        detailPanel.Collapsed += (_, _) => UpdateDetailLayout();
+        advancedFilters.Expanded += (_, _) => { if (compact) detailPanel.IsExpanded = false; };
         results.SelectionChanged += (_, _) =>
         {
             detail.Text = results.SelectedItem is SoftwareLogEntry entry ? OriginalRecord(entry) : "";
@@ -219,10 +242,11 @@ sealed class LogSummaryConverter : IValueConverter
             using var json = System.Text.Json.JsonDocument.Parse(text);
             if (json.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object)
                 foreach (var name in new[] { "message", "Message", "detail", "Detail", "event", "Event" })
-                    if (json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == System.Text.Json.JsonValueKind.String) return item.GetString() ?? text;
+                    if (json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == System.Text.Json.JsonValueKind.String) return OneLine(item.GetString() ?? text);
         }
         catch (System.Text.Json.JsonException) { }
-        return text;
+        return OneLine(text);
     }
+    static string OneLine(string text) => text.Replace("\r\n", " · ").Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
 }

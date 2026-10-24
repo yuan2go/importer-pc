@@ -10,7 +10,7 @@ public partial class HistoryPage : UserControl
         {
             var shortPage = ActualHeight < 500;
             HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
-            HistoryHeading.FontSize = 16;
+            HistoryHeading.FontSize = UiTypography.Body;
             HistoryFilterScroll.MaxHeight = shortPage ? 60 : Math.Min(240, ActualHeight * .35);
         };
     }

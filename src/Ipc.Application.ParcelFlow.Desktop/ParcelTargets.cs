@@ -2,7 +2,15 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed record PositionPresentation(string Id, string DeviceId, string Availability, string Code, string Admission, string State, string Slot, string Reason, string MainResult, string Background, string StatusForeground, string StatusBackground, string StatusBorder, string StatusIcon, string InputSummary, string OriginalState);
+public sealed record PositionPresentation(string Id, string DeviceId, string Availability, string Code, string Admission, string State, string Slot, string Reason, string MainResult, string Background, string StatusForeground, string StatusBackground, string StatusBorder, string StatusIcon, string InputSummary, string OriginalState)
+{
+    public bool CurrentSlotAvailable { get; init; }
+    public bool HasCurrentInput { get; init; }
+    public bool NeedsAttention { get; init; }
+    public bool ShowStatus => !CurrentSlotAvailable || NeedsAttention;
+    public double SlotFontSize => CurrentSlotAvailable ? UiTypography.SlotSize(Slot, false) : UiTypography.Placeholder;
+    public double CompactSlotFontSize => CurrentSlotAvailable ? UiTypography.SlotSize(Slot, true) : UiTypography.Placeholder;
+}
 public partial class ParcelViewModel
 {
     string selectedPositionId = "main";
@@ -11,12 +19,18 @@ public partial class ParcelViewModel
     public PositionPresentation[] PositionRows => Snapshot?.Positions?.Select(p =>
     {
         var op = CurrentAt(p.Id); var input = InputAt(p.Id); var failed = ParcelPresentation.IsUnadmitted(input);
+        var currentResult = Fresh && !failed && op?.Wcs?.State == StageState.Accepted &&
+            (input is null || input.OperationId == op.Id && (op.Acquisition is null ||
+                input.Observation.DeviceId == op.Acquisition.DeviceId && input.Observation.Epoch == op.Acquisition.Epoch &&
+                input.Observation.SourceEventId == op.Acquisition.SourceEventId && input.Observation.AdmissionId == op.Acquisition.AdmissionId));
         var style = !Fresh ? ParcelPresentation.Stale() : failed ? ParcelPresentation.InputPresentation(input!) : ParcelPresentation.Operation(op, true);
         var reason = failed ? input!.Reason + (op is null ? "" : "\n当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, Fresh).Text + "；原观察 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "；不属于本次观察") : op?.Reason ?? "";
         return new PositionPresentation(p.Id, p.ReaderDeviceId, !Fresh ? "快照失效" : p.Admit ? "允许新入场" : string.Join(" · ", p.BlockingReasons.Select(ChineseInterfaceText.Notice)), failed ? ParcelPresentation.InputCode(input!) : op?.ParcelCode ?? "—", failed ? input!.Observation.AdmissionId : op?.AdmissionId ?? "—", style.Text,
             failed ? "本次未取得" : !Fresh ? "旧格口已失效 · " + (op?.Slot ?? "未取得") : op?.Wcs is { State: not StageState.Accepted } ? "未取得" : op?.Slot ?? "未取得", reason,
             failed ? "本次观察未创建新作业" : p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台责任已清偿" : "后台责任待清偿 · " + op?.Upload?.State + " · " + op?.Upload?.Failure,
-            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原件仍保留 · " + ParcelPresentation.Operation(op, Fresh).Text  : "");
+            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原件仍保留 · " + ParcelPresentation.Operation(op, Fresh).Text  : "")
+        { CurrentSlotAvailable = currentResult && !string.IsNullOrWhiteSpace(op?.Slot),
+          HasCurrentInput = op is not null || input is not null, NeedsAttention = !Fresh || failed || style.Foreground is "#B52F38" or "#895509" };
     }).ToArray() ?? [];
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");

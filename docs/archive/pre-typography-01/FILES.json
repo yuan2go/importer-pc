@@ -1,0 +1,40 @@
+{
+  "SourceCommit": "e5ed46d",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "archive": "AGENTS.md.txt",
+      "sha256": "c82196801d011359fab1cce74528708b608aa6a6d4cbbf665261736530349799"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs__INDEX.md.txt",
+      "sha256": "ee383e1103ea618dce7010578721c431e2c109ea8c0d171780f82b040f110588"
+    },
+    {
+      "path": "docs/design/parameter-settings-experience-02.md",
+      "archive": "docs__design__parameter-settings-experience-02.md.txt",
+      "sha256": "513da1407904d769c5c071861d747f6f12ba0ddd41bb92085098b235baf072d7"
+    },
+    {
+      "path": "docs/design/sportmaster-task-redesign-01.md",
+      "archive": "docs__design__sportmaster-task-redesign-01.md.txt",
+      "sha256": "f838c6449d1a1d62b9d0d18ffe3ceb8f91c5e52bcbabe154c534109f0e106626"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "archive": "docs__baseline__PUBLICATION.md.txt",
+      "sha256": "21edc22ea9187ec36a66f2dac537d1d0a59313df9f3bc8642be86a65c6461777"
+    },
+    {
+      "path": "docs/runtime/windows-application-delivery.md",
+      "archive": "docs__runtime__windows-application-delivery.md.txt",
+      "sha256": "51618a5523386f93ec86934a1d08d43c2462e12a288c5fda1ab5813b45f75340"
+    },
+    {
+      "path": ".agents/skills/impeccable/WPF.md",
+      "archive": ".agents__skills__impeccable__WPF.md.txt",
+      "sha256": "2aca573af69f392a23763f08fd598f9a95b30d69baca7afbe013244416f5ff68"
+    }
+  ]
+}

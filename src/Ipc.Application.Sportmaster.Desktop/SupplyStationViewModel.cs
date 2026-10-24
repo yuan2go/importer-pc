@@ -168,8 +168,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
     public string ScanSummary => Input is null ? "等待本位相机读码" : "读取 " + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
-    public double SlotFontSize => !SlotAvailable ? 24 : (Operation!.Slot!.Length, IsCompact) switch
-    { (<= 6, false) => 64, (<= 6, true) => 44, (<= 16, false) => 40, (<= 16, true) => 28, (_, false) => 28, _ => 24 };
+    public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.SlotSize(Operation!.Slot!, IsCompact);
+    public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.Foreground is "#B52F38" or "#895509";
     public string OperatorInstruction => !owner.Fresh ? "等待有效状态；保留原件，不重复放货。" :
         InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次输入及准入条件，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
         Operation?.State switch
@@ -267,7 +267,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity),
-            (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(SlotFontSize), SlotFontSize),
+            (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
             (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ScanSummary), ScanSummary), (nameof(ObservationIdentity), ObservationIdentity),

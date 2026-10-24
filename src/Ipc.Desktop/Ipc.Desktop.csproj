@@ -8,4 +8,4 @@
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'"><Compile Include="ParcelApp.xaml.cs"/><Compile Include="DesktopLaunchOptions.cs"/><Compile Include="StartupWorkflows.cs"/><ApplicationDefinition Include="ParcelApp.xaml"/><ProjectReference Include="../Ipc.Assembly/Ipc.Assembly.csproj"/><ProjectReference Include="../Ipc.Application.$(BusinessModule).Desktop/Ipc.Application.$(BusinessModule).Desktop.csproj"/></ItemGroup>
  <Target Name="CheckDesktopSelection" BeforeTargets="PrepareForBuild" Condition="'$(BusinessModule)' != 'Supply' And '$(BusinessModule)' != 'Sportmaster' And '$(BusinessModule)' != 'DirectPlc' And '$(BusinessModule)' != 'WcsToPlc'"><Error Text="This desktop supports Supply, Sportmaster, DirectPlc or WcsToPlc"/></Target>
  <ItemGroup Condition="'$(BusinessModule)' != 'Supply'"><Compile Include="ProductMaintenanceWindow.cs"/><Compile Include="StartupSetupWindow.cs"/></ItemGroup>
-</Project>
+<ItemGroup><ProjectReference Include="../Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj"/><Using Include="Ipc.Presentation.Wpf"/></ItemGroup></Project>

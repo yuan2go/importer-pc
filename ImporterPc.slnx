@@ -22,6 +22,7 @@
     <Project Path="src/Ipc.Desktop/Ipc.Desktop.csproj" />
     <Project Path="src/Ipc.Fixture/Ipc.Fixture.csproj" />
     <Project Path="src/Ipc.Platform/Ipc.Platform.csproj" />
+    <Project Path="src/Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj" />
     <Project Path="src/Ipc.Product/Ipc.Product.csproj" />
     <Project Path="src/Ipc.Application.Supply/Ipc.Application.Supply.csproj" />
     <Project Path="src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj" />

@@ -1,0 +1,26 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-94b0107e97074eb39d9b2a00e58fd729
+PASS STABILITY01: first delivery accepted durably
+PASS STABILITY01: second delivery accepted before first T3 fails
+PASS STABILITY01: both successful handoffs already have persistent receipts
+PASS STABILITY01: healthy waiter and failed worker are separately visible; aggregate active work is not health
+PASS STABILITY01: failed current input stays Pending, queued input becomes Interrupted, no invented second entity
+PASS STABILITY01: terminal failure reported after actual safe resource release
+PASS STABILITY01: restart reconciles original raw locally, retains both input responsibilities, never resends or replays queued input
+PASS STABILITY01: management inspection records actor/reason against exact input receipt
+PASS STABILITY01: management inspection records actor/reason against exact input receipt
+PASS STABILITY01: inspection clears input barrier while preserving original request/attempt/entity ledger
+PASS STABILITY01: slow-marker first left input
+PASS STABILITY01: left queue overflow rejects delivery explicitly
+PASS STABILITY01: marker owner reached injected slow durable I/O
+PASS STABILITY01: other position handoff does not acquire marker lock
+PASS STABILITY01: right business reaches actual accepted raw/T3 while left marker storage is still blocked
+PASS STABILITY01: diagnostic worker delayed independently
+PASS STABILITY01: diagnostic overload remains bounded and counted
+PASS STABILITY01: successful recovery probe restores diagnostics; historical failure and loss counter retained
+Unhandled exception. System.TimeoutException: The operation has timed out.
+   at StabilityRemediation.Until(Func`1 predicate) in D:\projects\importer-pc-integration-01\tests\Ipc.Application.Verification\StabilityRemediation.cs:line 16
+   at StabilityRemediation.DiagnosticIdleRetention(String path) in D:\projects\importer-pc-integration-01\tests\Ipc.Application.Verification\StabilityRemediation.cs:line 145
+   at StabilityRemediation.DiagnosticIdleRetention(String path) in D:\projects\importer-pc-integration-01\tests\Ipc.Application.Verification\StabilityRemediation.cs:line 147
+   at StabilityRemediation.Run(String workspace, String root) in D:\projects\importer-pc-integration-01\tests\Ipc.Application.Verification\StabilityRemediation.cs:line 37
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-integration-01\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

@@ -1,0 +1,11 @@
+{
+  "CodeCommit": "43e03cecbd0fe4df187834c70d4ca0f5ba8f68da",
+  "BuildIdentity": "d4e42c3 worktree plus matching followup source bytes; not a new frozen release",
+  "SourceFiles": {
+    "src/Ipc.Platform/RuntimeJournal.cs": "d273eea4f0a3dcb0df756fd2418e991a351f1ae453197b808a6acee062cd5910",
+    "tests/Ipc.Application.Verification/StabilityRemediation.cs": "cb083265f06b3c496a4a98dab2e25ec336cb89d1acb95a7bce677ece2c642c5b"
+  },
+  "CompiledPlatformSha256": "e39036fecd3fd43b12f77aba67fb47d2caf28bccd55bfff8c5ad1010216fb1d3",
+  "OldPRRun": "40095971023 PASS; superseded before merge",
+  "FinalCI": "New exact PR head required"
+}

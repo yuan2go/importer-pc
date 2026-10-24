@@ -230,6 +230,51 @@
     "bytes": 2902
   },
   {
+    "path": "journal-followup/idle-before-build.log",
+    "sha256": "bf9fc3796830ab34ef8f56e45a1398f2db9d0624f991e52b948a9f686912e974",
+    "bytes": 2207
+  },
+  {
+    "path": "journal-followup/idle-before-fix.log",
+    "sha256": "74bc177f349914044c4cd984ec458374bc201946494521818a7507fae7774224",
+    "bytes": 2546
+  },
+  {
+    "path": "journal-followup/idle-fixed-architecture-quality-remediation.log",
+    "sha256": "8545d85c9a4a02e72484853e758a2797386f65c04a64ee3e00b1aa2b75bf763a",
+    "bytes": 8785
+  },
+  {
+    "path": "journal-followup/idle-fixed-build.log",
+    "sha256": "4d59336673b85854e66dfc8e01912cffbd9afbb1c88a4fe2fbfdb68d97f9ad2f",
+    "bytes": 2207
+  },
+  {
+    "path": "journal-followup/idle-fixed-dual-camera-communication.log",
+    "sha256": "f2d26b080d5ccc4bdfd0317dc895a2546ec049fb27196f38cca331f6049c54fc",
+    "bytes": 6548
+  },
+  {
+    "path": "journal-followup/idle-fixed-resource-risks.log",
+    "sha256": "48e685578efc39f1782c4399ef8fd387fc975723668304bfdc6fdd778fa12916",
+    "bytes": 1405
+  },
+  {
+    "path": "journal-followup/idle-fixed-tests.json",
+    "sha256": "e00fd1c48f37243998818094b65a07c2f246ad815ee8982c90c901a3d53a3651",
+    "bytes": 768
+  },
+  {
+    "path": "journal-followup/idle-fixed-win11-stability.log",
+    "sha256": "66504b3bc35514aace3648de5019f337ba016ac689af633d7d5d3fdbf4a06d73",
+    "bytes": 4142
+  },
+  {
+    "path": "journal-followup/RESULT.json",
+    "sha256": "b495d656cf1e3219eec94fbdba22c6ceab5366ecab8057336652f0484d961086",
+    "bytes": 640
+  },
+  {
     "path": "local-tests.json",
     "sha256": "30424407900177fb8d4be998c59b9844e143800d0da75d5eb3c88ee553d3dbb6",
     "bytes": 1777
@@ -391,8 +436,8 @@
   },
   {
     "path": "README.md",
-    "sha256": "6b8f723605a872ab17dc5c07199f6a395068de2623482e5cb4b3c5d0f622bb82",
-    "bytes": 4700
+    "sha256": "edb8a012fbd8e62a5f3e9a40808e78f5fc0ed12f696ad429be8be41b1ce55313",
+    "bytes": 5211
   },
   {
     "path": "release-b2b2f0f/RELEASE.json",
@@ -431,8 +476,8 @@
   },
   {
     "path": "RESULT.json",
-    "sha256": "578046f28b5767141448aeafe7fcabc4a2b9de3ceaed96905e9b0b0d13e9dbea",
-    "bytes": 1164
+    "sha256": "dc324a2a806b930719d262ad3c41da8d0f187afe4b2e44decab87c826f6ea4e5",
+    "bytes": 1426
   },
   {
     "path": "retention-final-build.log",

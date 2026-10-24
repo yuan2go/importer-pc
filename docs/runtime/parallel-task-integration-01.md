@@ -41,7 +41,9 @@ INDEX把PR97写为尚未合并已过期，代码合入前改为97/98实际已合
 
 ## 最终组合验证与交付门禁
 
-最终运行源码固定`cbb04528e48d39f9d89bb39fc6d7b625ae73f171`，Sportmaster1.12.0 / Application.Contracts1.17.0 / DB9；同源win-x64 ZIP SHA256 `597BED671E8A8B441B193E2571D5AC9E1D488396D303D5398251821FB8F2354E`。介质仅本地验证，不发布/安装。之后的索引、整合报告、manifest和证据登记不改变src/config/scripts/tests/.github；远端CI仍须验证最终PR精确合成版本。
+本机原生冻结源码为`cbb04528e48d39f9d89bb39fc6d7b625ae73f171`，Sportmaster1.12.0 / Application.Contracts1.17.0 / DB9；同源win-x64 ZIP SHA256 `597BED671E8A8B441B193E2571D5AC9E1D488396D303D5398251821FB8F2354E`。介质仅本地验证，不发布/安装。PR100首轮head`d4e42c3`/合成源码`f0b3c3e4`的[CI40095971023](https://github.com/yuan2go/importer-pc/actions/runs/40095971023)两项通过，但审查发现空闲日志保留缺陷，未合并。
+
+日志续修源码`43e03cecbd0fe4df187834c70d4ca0f5ba8f68da`仅改RuntimeJournal、对应回归和说明；本机新四项核心/资源验证PASS，修复前新增测试在原实现超时的反证保留。该本机编译是在d4e42c3工作树加续修源码进行，源码字节与43e03ce一致，程序集不是伪称43e03ce的冻结发行。cbb0452的UI图与SDK托管记录保持其原身份；最终PR的精确合成源码必须再次完成全部既有Linux/WindowsCI（含重新冻结、原生交互、管理员边界和安装器），不能沿用40095971023的旧PASS。
 
 |验证|版本、实际结果与限制|
 |---|---|
@@ -52,6 +54,7 @@ INDEX把PR97写为尚未合并已过期，代码合入前改为97/98实际已合
 |Python|采集器5项、应用兼容17项、发布文档2项PASS；相关脚本在后续UI修复中不变，采集器不授予24h资格|
 |保留查询计划|相同冻结SQLite3.54.0、实际SQL1–9、1万/10万审计配对；原逐作业扫描改为一次构造临时索引，Pending owner守卫及下一轮集合重建PASS。数值只适用该合成查询，不外推RTO/目标机容量|
 |最终原生组合|cbb0452同源DLL/夹具的TaskHierarchy、ManagementMode、Win11Stability结果逐项见[证据](evidence/parallel-task-integration-01/README.md)；800×420、1092×614、1366×768代表场景、实际125%。严格完整首行断言、跨页回执、无效新输入与另一位隔离、日志清详情后筛选、输入核对、7天共模及Dispatcher探针均保留；实际照片已复核|
+|合并前日志续修|43e03ce源码对应的win11-stability、ResourceRisks、AQA01、双TCP均PASS；包含健康空闲期间跨日轮转/到期删除、无新增写入、既有满载/真实写探针恢复与关闭排空。最终同源发行及原生结果以新PR精确CI另外计证|
 |不可扩张项|本机Windows11 22631、约16GB；目标4核8GB、多Windows11版本、本机100%/150%、真实双SDK/RCS、完整raw规模/RTO、受保护到期CLI端到端、24h/72h仍NOT_RUN/BLOCKED；Unknown用户要求先保留，无虚构权威查询|
 
 软件集成不关闭原D/RV，也不宣布稳定性整改工作包已获得现场资格。旧audit03-rcs预期失配、原受保护恢复权限限制仍保持原记录；本次通过的Windows托管CI只能证明相应Server2025隔离范围。

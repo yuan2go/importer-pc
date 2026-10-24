@@ -14,5 +14,8 @@
     "Status": "FAIL; retained original screenshot and full-row assertion"
   },
   "QueryFixed": "cbb0452: final same-source medium and fixture; strict late-receipt full-row assertion retained; b2b2f0f fractional-DPI failure retained separately",
-  "RuntimeInputTreeSHA256": "e4f5123ae1e788e03b322a861d015890f61ff44475f231f90c4fe0e80f43167f"
+  "RuntimeInputTreeSHA256": "931755d4ffc3250090b454cd98c2c664e490380b386df907d17b6d4d0dde068e",
+  "LocalFrozenSourceCommit": "cbb04528e48d39f9d89bb39fc6d7b625ae73f171",
+  "FinalCodeSourceCommit": "43e03cecbd0fe4df187834c70d4ca0f5ba8f68da",
+  "PreviousLocalFrozenRuntimeInputTreeSHA256": "e4f5123ae1e788e03b322a861d015890f61ff44475f231f90c4fe0e80f43167f"
 }

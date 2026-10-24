@@ -15,6 +15,8 @@
 
 `b2b2f0f`的`final-native-*`结果保留第一版高度预算的严格几何FAIL、管理及输入专项PASS；不改标为最终通过。最终冻结为`cbb04528e48d39f9d89bb39fc6d7b625ae73f171`，ZIP哈希见`release-query-fixed/SHA256SUMS`；最终三组使用`accepted-native-*`，同源DLL与夹具`FixtureMatchesMedium=true`。`464e8e2`结果、旧DLL新夹具反证、分数DPI失败均保持原身份。
 
+上述cbb0452是本机UI续修的冻结阶段。PR100首轮CI全绿后、合并前发现健康空闲时日志保留未按定时器推进；`journal-followup/`保留新增测试在旧实现超时的反证，以及恢复周期维护后的四项专项。续修源码为43e03ce，本机程序集实际从d4e42c3加同字节续修的工作树编译，文件hash单列，不冒称新冻结发行。最终PR新合成源码的Linux/Windows流水线需重新验证；原40095971023及本机cbb0452记录均不倒写。
+
 ## 运行方式
 
 所有命令先从对应源码工作树执行 `. ./scripts/project-environment.ps1`。

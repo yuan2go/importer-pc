@@ -37,7 +37,7 @@ public partial class ShellWindow : Window
     public Func<Task>? StopOwnerAsync { get; set; }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
-        InitializeComponent(); ProductBrand.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
+        InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
         maintenance.DataContext = vm; history.DataContext = vm; work.DataContext = vm;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         vm.PropertyChanged += (_, e) =>

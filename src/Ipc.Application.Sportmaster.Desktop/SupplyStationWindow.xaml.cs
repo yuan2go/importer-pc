@@ -25,7 +25,7 @@ public partial class SupplyStationWindow : Window
 
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
-        InitializeComponent(); ProductBrand.Apply(this);
+        InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.

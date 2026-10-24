@@ -48,12 +48,13 @@ static partial class Program
                 vm.SelectedPositionId = "left"; vm.AdmissionId = "typography-fixed-entity"; vm.ParcelCode = "000123456789"; vm.Emit();
                 for (var i = 0; i < 150 && vm.Current?.State != ParcelState.SlotResolved; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
                 Check(vm.Current?.State == ParcelState.SlotResolved, "fixture obtains a synthetic accepted result");
-                frozen = vm.Snapshot!;
+                frozen = vm.Snapshot! with { Operations = vm.Snapshot!.Operations.Select(o => o with { Slot = "L-07",
+                    Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = "L-07" }).ToArray() } }).ToArray() };
                 Directory.CreateDirectory(Path.GetDirectoryName(fixturePath)!); File.WriteAllText(fixturePath, Wire.Encode(frozen));
             }
             var snapshot = frozen;
             probe.Project = _ => snapshot;
-            foreach (var (scenario, width, height) in new[] { ("normal", 1092d, 614d), ("normal", 800d, 420d), ("unknown", 800d, 420d), ("long", 800d, 420d) })
+            foreach (var (scenario, width, height) in new[] { ("normal", 1366d, 768d), ("normal", 1092d, 614d), ("normal", 800d, 420d), ("unknown", 800d, 420d), ("long", 800d, 420d) })
             {
                 var longCode = new string('0', 72) + "123456789";
                 var longSlot = "SYNTHETIC-LONG-DESTINATION-" + new string('8', 40);

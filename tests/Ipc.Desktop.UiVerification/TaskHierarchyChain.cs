@@ -104,7 +104,7 @@ static partial class Program
         await NativeResult("invalid-after-slot-800", "条码筛选拒绝 · 没有匹配码", "INVALID", false);
         Check(vm.Left.Input!.OperationId is null && vm.Left.Operation is null && vm.Left.InputFailed && !vm.Left.CurrentTaskAvailable &&
             peer.Exchanges.Count == posts && vm.Right.OperationId == rightOriginal.Id && vm.Right.Slot == "R-09", "invalid new entity creates no operation/POST, cannot borrow old destination, right remains unchanged");
-        Check((await runtime.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs!.Request == original.Wcs!.Request && !vm.Left.CanReconcile,
+        Check(Wire.Encode((await runtime.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && !vm.Left.CanReconcile,
             "completed original request remains in history, not in the rejected new input's disabled detail action");
         Check(vm.Left.NextStep.Contains("作业记录") && !vm.Left.NextStep.Contains("请查看详情") && !vm.Left.AttentionReason.Contains("NoMatchingCode"),
             "rejected input directs the operator to reachable history and explains filtering in Chinese");

@@ -1,0 +1,108 @@
+{
+  "Task": "WP-IPC-TASK-CONTENT-HIERARCHY-02",
+  "Date": "2026-10-24",
+  "BaselineCommit": "c91559f6f981a9f2c9f89bd5afc271089f0e9d8e",
+  "SourceCommit": "c1e7950ce7dd8b62ffa6c0015e31759b921f622f",
+  "ParameterSourceCommit": "4c54d857af99cc36dfc85c7fa5ed53b0f9de8a2e",
+  "Scope": "Real native WPF HWND/Dispatcher rendering and synthetic software behavior; no physical device or field acceptance",
+  "Windows": "10.0.22631 x64",
+  "DotnetSdk": "10.0.402",
+  "DotnetRuntime": "10.0.13",
+  "ActualDpi": {
+    "X": 1.25,
+    "Y": 1.25
+  },
+  "TargetClientSizesDip": [
+    [
+      1366,
+      768
+    ],
+    [
+      1092,
+      614
+    ],
+    [
+      800,
+      420
+    ]
+  ],
+  "ActualClientSizes": "Per CAPTURE log: 1366.4x768, 1092x613.6 or 614, 800x420 DIP; rounding varies by window chrome.",
+  "Verification": [
+    {
+      "Log": "after/task-hierarchy.log",
+      "SourceCommit": "c1e7950ce7dd8b62ffa6c0015e31759b921f622f",
+      "Status": "PASS",
+      "Assertions": 145
+    },
+    {
+      "Log": "after/task-hierarchy-parameters.log",
+      "SourceCommit": "4c54d857af99cc36dfc85c7fa5ed53b0f9de8a2e",
+      "Status": "PASS",
+      "Assertions": 9
+    },
+    {
+      "Log": "regression/parameter-shell-polish.log",
+      "SourceCommit": "4c54d857af99cc36dfc85c7fa5ed53b0f9de8a2e",
+      "Status": "PASS",
+      "Assertions": 30
+    },
+    {
+      "Log": "regression/internal-pages.log",
+      "SourceCommit": "c1e7950ce7dd8b62ffa6c0015e31759b921f622f",
+      "Status": "PASS",
+      "Assertions": 25
+    },
+    {
+      "Log": "regression/parameter-v3-only.log",
+      "SourceCommit": "4c54d857af99cc36dfc85c7fa5ed53b0f9de8a2e",
+      "Status": "PASS",
+      "Assertions": 23
+    }
+  ],
+  "TotalPassedAssertions": 232,
+  "Builds": {
+    "Native": "PASS: 0 warnings, 0 errors",
+    "PortableLinkedViewModel": "PASS: 0 warnings, 0 errors",
+    "Publish": "PASS: Sportmaster win-x64 framework-dependent",
+    "EnvironmentReport": "PASS: explicit process wait, exit 0, valid JSON; no full installed startup"
+  },
+  "BaselineParameterHarness": {
+    "ProductionSource": "origin/main archive at baseline commit",
+    "FixtureSha256": "6932b218011ce5714a0c10b48edba56f39d2fb5e86c9c745caf24303d9d46adc",
+    "Changes": "Only test fixture and Program routing; baseline skips new assertions, production files unchanged"
+  },
+  "Screenshots": {
+    "Before": 33,
+    "After": 59,
+    "SupplementaryV3": 3
+  },
+  "PublishedBinaries": [
+    {
+      "File": "Ipc.Desktop.exe",
+      "Sha256": "f4b945398aa0cd0169f88a02bddfe85009e00bbe7d6f8b352d4370780e077f0c"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "11c048f38b1549acea33ac8250124ae4b2557d6111c2c8a0d737596e4f5d28f8"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "806244c44be667dcfe976091065f6c4ea4b590f2e538e87f1a4f864db8375380"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "3b794a1af7c1bcb2f6114a286dea1364dc38e856b241d1dfea315c74897982b2"
+    }
+  ],
+  "CI": "Existing mandatory jobs retained; task-hierarchy added to frozen Windows medium. Check actual PR status separately.",
+  "NotRun": [
+    "Real dual cameras/SDK/RCS",
+    "Target industrial PC",
+    "Physical mouse/keyboard/scanner interactions",
+    "Other OS DPI",
+    "Installation/upgrade/UAC and protected service startup",
+    "Field acceptance"
+  ],
+  "NoProductionConfigurationChanges": true,
+  "NoAutomaticMergeOrInstallation": true
+}

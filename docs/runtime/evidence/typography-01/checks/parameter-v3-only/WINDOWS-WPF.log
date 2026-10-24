@@ -1,0 +1,33 @@
+PASS PS05 Chinese pause/mode presentation preserves original application facts
+PASS PS05 unchanged native form disables save without requiring authentication
+PASS PS05 forced empty review remains non-submittable and creates no revision
+PASS PS05 live context updates preserve native selection and enable edited save before authorization
+PASS PS05 runtime context is derived from Effective rather than edited values
+CAPTURE v3-left-running: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 camera diagnostics exposes its full context through the current disclosure
+PASS PS05 selected camera opens its existing native diagnostics with exact object context
+CAPTURE v3-object-diagnostics: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 object diagnostics returns to the cached form and preserves draft identity
+PASS PS05 stale snapshot cannot continue presenting a healthy connection
+PASS PS05 stale saved pause state cannot hide the independent pause action in review
+CAPTURE v3-save-review: 880x740 DIP, Windows DPI 1.25/1.25
+PASS PS05 native save confirms Pending while Effective stays unchanged
+PASS PS05 confirmed Pending disables repeat save and labels the running configuration separately
+CAPTURE v3-saved-pending: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 RCS summary preserves local health evidence and Effective address without claiming remote acceptance
+PASS PS05 shared RCS diagnostics preserves its exact instance identity
+CAPTURE v3-rcs-running: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 native choice displays Chinese while selection retains its protocol value
+PASS PS05 Chinese choice change persists original protocol value without changing binding identity
+PASS PS05 sensitive and secret-reference values never appear in ordinary text editors
+PASS PS05 masked editing and object navigation preserve the exact reference instead of a sentinel
+PASS PS05 native password automation returns an empty value, never the reference
+CAPTURE v3-sensitive-reference: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 review masks secret-reference even without the Sensitive flag
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (1366, 768): footer=1226.4,714.4,120,44, client=1366.4,768, editorHeight=552, visible=True
+CAPTURE v3-size-1366x768: 1366.4x768 DIP; scale=1.25,1.25
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (1092, 614): footer=952,560,120,44, client=1092,613.6, editorHeight=405.6, visible=True
+CAPTURE v3-size-1092x614: 1092x613.6 DIP; scale=1.25,1.25
+PASS PS05 native saved-state footer and scrollable editor remain reachable at (800, 420): footer=660,366.40000000000003,120,44, client=800,420, editorHeight=212, visible=True
+CAPTURE v3-size-800x420: 800x420 DIP; scale=1.25,1.25
+Native HWND/Dispatcher synthetic runtime; real SDK/RCS, target IPC, physical 100% DPI and touch NOT_RUN.

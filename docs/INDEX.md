@@ -1,4 +1,4 @@
-> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)。基于 PR97 `37b27a9` 与 main `c5ac51d`；PR97 尚未合并，为本包前置依赖。保留格口优先、空态、回执、参数帮助与查询空间。
+> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)、[实现/复现/边界](runtime/typography-01.md)、[原生前后对照与证据](runtime/evidence/typography-01/README.md)。基于 PR97 `37b27a9` 与 main `c5ac51d`；PR97 尚未合并，为本包前置依赖。保留格口优先、空态、回执、参数帮助与查询空间。
 
 > 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。基于main c91559f6，保留PR93～96成果。01页面层级和CI记录保持原身份，默认位布局、跨页反馈和异常夹具由02增量替代。
 

@@ -1,0 +1,115 @@
+{
+  "BaselineMain": "c5ac51d",
+  "PrerequisitePr": 97,
+  "PrerequisiteHead": "37b27a9e7f8ef7f90bc9aa6ddf383c542daf5fc5",
+  "CodeCommits": [
+    "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
+    "a6065f04013e74df02cc9d7e3648628001ac11f1"
+  ],
+  "Cases": [
+    {
+      "Case": "task-hierarchy",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1fee48aa48394a4882934b98072207b2",
+      "PassCount": 165,
+      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+      "Log": "checks/task-hierarchy/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "task-hierarchy-parameters",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-c4d85ec8e8de4abbac239fef51cf390b",
+      "PassCount": 9,
+      "SourceCommit": "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
+      "Log": "checks/task-hierarchy-parameters/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "internal-pages",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-503caeedaa6c4f20ad1f2fd184c6ab51",
+      "PassCount": 25,
+      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+      "Log": "checks/internal-pages/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "visual-productization",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-3aacd9a466ff4d39b90f8cd20ed1c5a8",
+      "PassCount": 126,
+      "SourceCommit": "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
+      "Log": "checks/visual-productization/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "parameter-v3-only",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-5abf887b096346a9a30dfb8e1041d260",
+      "PassCount": 23,
+      "SourceCommit": "169fcca9c0cf56cb86963c20bea1fc420ad6bff6",
+      "Log": "checks/parameter-v3-only/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "parameter-shell-polish",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1bd59d5bccb44318937c439446418c3e",
+      "PassCount": 30,
+      "SourceCommit": "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
+      "Log": "checks/parameter-shell-polish/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "management-mode",
+      "ExitCode": 0,
+      "Evidence": "D:\\projects\\importer-pc-typography\\.artifacts\\wpf-v2-1a0cfae983474035b4e5d2f108c749a2",
+      "PassCount": 28,
+      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+      "Log": "checks/management-mode/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "installer-first-run-ui",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a5d0af442e424d3ea8060038ba74b368",
+      "PassCount": 88,
+      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+      "Log": "checks/installer-first-run-ui/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "startup-experience",
+      "ExitCode": 0,
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-4e2d3cb95b3e4bdfbb1467aa7e1b058d",
+      "PassCount": 172,
+      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+      "Log": "checks/startup-experience/WINDOWS-WPF.log",
+      "Synthetic": true,
+      "ActualDpiScale": 1.25
+    }
+  ],
+  "FinalSelectedPassCount": 666,
+  "PublishedFontPassCount": 11,
+  "PublishedFontEvidence": "published-font/FONT-RESOLUTION.json",
+  "NotRun": [
+    "actual 100% DPI",
+    "actual 150% DPI",
+    "target IPC",
+    "physical keyboard/mouse hardware",
+    "UAC or actual installation",
+    "SDK/cameras/RCS",
+    "production/site acceptance"
+  ],
+  "NoFormalMediaOrInstall": true,
+  "CaptureFixtureCommit": "169fcca9c0cf56cb86963c20bea1fc420ad6bff6"
+}

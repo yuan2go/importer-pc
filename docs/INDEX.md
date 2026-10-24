@@ -35,6 +35,8 @@
 
 2026-10-24历史清理查询独立复核：[报告和验证边界](runtime/validation/retention-performance-review-01.md)、[原件/hash与仓库复现](runtime/evidence/retention-performance-review-01/README.md)。固定复核main `12a7cbd`；PR100已包含性能修复。本次仅归档，不重改业务代码，不将短测、CI或安装器构建扩张为24h/72h或现场验收。
 
+同日RECHECK-02从main `5bb032d`再次配对到百万审计，并保留首次升级夹具竞态失败及实际回执修复；详见上述报告的再核查段和[新证据清单](runtime/evidence/retention-performance-review-01/recheck-02/FILES.json)。原归档结论保持形成时身份，未重复修改生产清理实现。
+
 当前参数呈现增量：[PARAMETER-UI-REFINE-01](work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)，替代冲突的首配重复导航、表单/错误和管理入口布局；四类归属、真实字段与保存/授权守卫继承V3。安装与设密修复继续保留。
 
 安装/首配后续实机问题：[窗口比例与首次设密批准修复](runtime/installer-first-run-ui-02-bootstrap-layout.md)。替代此前窗口默认尺寸及首次设密批准调用；原证据不扩张为实际UAC引导验收。

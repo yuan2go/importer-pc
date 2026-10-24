@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 3.05 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 3.09 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.DirectPlc\Ipc.Application.DirectPlc.csproj (用时 3.09 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 3.09 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 3.06 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj (用时 3.11 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 3.1 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 26 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 31 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 29 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Integrations.SportmasterRcs\Ipc.Integrations.SportmasterRcs.csproj (用时 11 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 31 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 40 毫秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Platform\Ipc.Platform.csproj (用时 3.05 秒)。
+  已还原 D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Components\Ipc.Components.csproj (用时 33 毫秒)。
+  Ipc.Platform -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Integrations.SportmasterRcs -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Components -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Integrations -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.WcsToPlc -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc-retention-recheck-20261024\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.Verification -> D:\projects\importer-pc-retention-recheck-20261024\tests\Ipc.Application.Verification\bin\Release\net10.0\Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:01:07.33

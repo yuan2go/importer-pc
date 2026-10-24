@@ -4,6 +4,8 @@
 
 # 2026-10-24 历史清理查询独立复核归档
 
+RECHECK-02增量授权：本轮用户要求核查PR99查询/规模风险、必要性能/完整性/恢复验证并安全合入main。允许本轮通用测试夹具竞态修复、CI升级专项、再核查报告和合成日志/hash；生产查询修复已在PR100，不重复改写。新证据位于`docs/runtime/evidence/retention-performance-review-01/recheck-02/`，首次失败与原样重跑/修复后结果分开保留；不包含DLL、SDK、字体、安装包、数据库、凭据或真实业务资料，不扩大任何现场资格。
+
 用户明确授权归档本次独立复核报告、复现脚本和性能证据，同步索引与验证边界，经PR及CI合入main。范围仅为[复核报告](../runtime/validation/retention-performance-review-01.md)、[原始合成证据/hash](../runtime/evidence/retention-performance-review-01/README.md)及仓库复现入口；保持原字节、原SourceCommit、原CI及先行计时身份。不重复修改业务代码，不上传SDK、DLL、字体、安装包、合成数据库、客户原稿、私链、凭据或生产数据，不扩大为24h/72h或现场验收通过。
 
 # 2026-10-24 Windows 11 24×7独立审查产物发布

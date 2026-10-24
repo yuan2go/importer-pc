@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "493c251b0301978bda3707d7dfb1b46f601402e28c8ae50742024297c82be087",
-      "size_bytes": 7388,
-      "git_blob": "4c19db2baa725a45a640196d4e0c49fd18861601",
-      "version": "parallel-task-integration-01",
-      "status": "current_source_or_preserved_integration_evidence",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "e1206d73ee89ed98180850267a5b89831d4e6231931ef75cccd38e8e140c3e88",
+      "size_bytes": 7712,
+      "git_blob": "ade9e57666cb1c8c2bd79fe1bb973b88da35fba4",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
@@ -1712,6 +1712,14 @@
         "version": "typography-01",
         "status": "current_source_or_specification",
         "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      },
+      "pre_retention_performance_review_01_identity": {
+        "git_blob": "4c19db2baa725a45a640196d4e0c49fd18861601",
+        "sha256": "493c251b0301978bda3707d7dfb1b46f601402e28c8ae50742024297c82be087",
+        "size_bytes": 7388,
+        "version": "parallel-task-integration-01",
+        "status": "current_source_or_preserved_integration_evidence",
+        "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
       }
     },
     {
@@ -2068,13 +2076,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "d920e5ff63d98139f0d5683475e598f649be5ccccf25408faad53afcf6ed5080",
-      "size_bytes": 10542,
-      "git_blob": "32529ad9b5ac7e760deee58c94e2c0291e774280",
-      "version": "parallel-task-integration-01",
-      "status": "current_source_or_preserved_integration_evidence",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "c6d0f3e3c6603933db288cb6a73a4b7d0d28d6130ce4693e98c8fb07b7833e4a",
+      "size_bytes": 10928,
+      "git_blob": "9e5811ded25cb4732d7f875edad420efdd6426ba",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2130,6 +2138,14 @@
         "version": "typography-01-controlled-review",
         "status": "current_source_or_specification",
         "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json"
+      },
+      "pre_retention_performance_review_01_identity": {
+        "git_blob": "32529ad9b5ac7e760deee58c94e2c0291e774280",
+        "sha256": "d920e5ff63d98139f0d5683475e598f649be5ccccf25408faad53afcf6ed5080",
+        "size_bytes": 10542,
+        "version": "parallel-task-integration-01",
+        "status": "current_source_or_preserved_integration_evidence",
+        "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
       }
     },
     {
@@ -6792,13 +6808,13 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "5de79525725ee806e4a92ea82909256c8afe8dc1",
-      "sha256": "db61260ec31e2fe3c8ae7457170d4bedaf849bcded27c7b60f299a1112455b38",
-      "size_bytes": 11353,
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "git_blob": "929dc834f2b14984ee278c58e19b811a3ac829d9",
+      "sha256": "00925940056022a461266d100f83ef7661e2941173d61523f29115652bea0ba3",
+      "size_bytes": 11985,
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -6818,6 +6834,14 @@
         "version": "ui-task-redesign-01",
         "status": "design_publication_and_implementation_plan",
         "source": "User explicit complete generated UI publication to main request, 2026-10-20"
+      },
+      "pre_retention_performance_review_01_identity": {
+        "git_blob": "5de79525725ee806e4a92ea82909256c8afe8dc1",
+        "sha256": "db61260ec31e2fe3c8ae7457170d4bedaf849bcded27c7b60f299a1112455b38",
+        "size_bytes": 11353,
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
       }
     },
     {
@@ -75149,14 +75173,22 @@
     },
     {
       "path": "docs/runtime/validation/win11-24x7-stability-remediation-01.md",
-      "version": "win11-24x7-stability-remediation-01",
-      "status": "current_source_or_scoped_synthetic_evidence",
-      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
-      "sha256": "a951084873070fdbbb32aa52d69c22ea39d4e8d4318dcbacd2da370e6e3aca1f",
-      "size_bytes": 8688,
-      "git_blob": "13a178f3ad55b3d28d2510c8d60ec58d654bc9fa"
+      "sha256": "9611955412313cdf723c32e27b1c27d64af6cc3cfb30dce0a96164b980ffed58",
+      "size_bytes": 9101,
+      "git_blob": "f45b5c451dce9be7fa91bf0888826c2bd2f48327",
+      "pre_retention_performance_review_01_identity": {
+        "git_blob": "13a178f3ad55b3d28d2510c8d60ec58d654bc9fa",
+        "sha256": "a951084873070fdbbb32aa52d69c22ea39d4e8d4318dcbacd2da370e6e3aca1f",
+        "size_bytes": 8688,
+        "version": "win11-24x7-stability-remediation-01",
+        "status": "current_source_or_scoped_synthetic_evidence",
+        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      }
     },
     {
       "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
@@ -75171,14 +75203,22 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md",
-      "version": "win11-24x7-stability-remediation-01",
-      "status": "current_source_or_scoped_synthetic_evidence",
-      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
-      "sha256": "99854c45a0a7abadb5129bf6f31eb649149d0efae0fbbbbcd2d11cd800933d5c",
-      "size_bytes": 4158,
-      "git_blob": "15e3c53aae2e675fb9c4436310823ca77478ea14"
+      "sha256": "589d636e7f3af7a0be498e65a5c69c830ee1fd356546c732b2ca1a85e402fe47",
+      "size_bytes": 4522,
+      "git_blob": "09057993fc8530a2bf129f0c79a6c760d0b92532",
+      "pre_retention_performance_review_01_identity": {
+        "git_blob": "15e3c53aae2e675fb9c4436310823ca77478ea14",
+        "sha256": "99854c45a0a7abadb5129bf6f31eb649149d0efae0fbbbbcd2d11cd800933d5c",
+        "size_bytes": 4158,
+        "version": "win11-24x7-stability-remediation-01",
+        "status": "current_source_or_scoped_synthetic_evidence",
+        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      }
     },
     {
       "path": "scripts/stability-qualification.py",
@@ -76916,6 +76956,380 @@
       "version": "parallel-task-integration-01",
       "status": "current_source_or_preserved_integration_evidence",
       "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/FILES.json",
+      "sha256": "e4abe069b491bf70eb3edf8606013c420afdbdb228e1db1afc726f9e8d3b567a",
+      "size_bytes": 7987,
+      "git_blob": "c2c3e4610c63e4f9c871eb55c1154a5c8dde2bc6",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/README.md",
+      "sha256": "8dc243e6bf7dac47d09e33c8973e57cbe7646c4382a0f700ad90a05db8b392bf",
+      "size_bytes": 4975,
+      "git_blob": "a646b5bbdab5ec4b96d966b83a2e932fcee8e67f",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/ENVIRONMENT.json",
+      "sha256": "2c3828fcfe85e2a2317266f0a0d8bd1658d8f3452a16a6778f157d8c3b0c5e0a",
+      "size_bytes": 407,
+      "git_blob": "03ae8362af0fcaa2431e30f1b6858723c550db49",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/IDENTITY.json",
+      "sha256": "7eb8ff48a1ccdd3fc9cd8f7e5f70d1e9afd00c6ff5a693e9dbc93b64728b6991",
+      "size_bytes": 1489,
+      "git_blob": "6ba1000f56120d989a4380985b310ffe57ec4439",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/MigrationProbe.csproj",
+      "sha256": "826c3e7789d709472d18126e132863ac277a670c02c1e867dbdbafb2eaa4cd9a",
+      "size_bytes": 482,
+      "git_blob": "53bf07da33a362194f9d9940fb354e255fb8c675",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/MigrationProgram.cs",
+      "sha256": "1d658a4744f8805b904369195d2b9e2be24a24723c71cb702e1df52ceb041793",
+      "size_bytes": 2132,
+      "git_blob": "449e1f5f5dbb6fb1247639dd7fe14ef058a1e71e",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/Probe.csproj",
+      "sha256": "288ac30988f427be14278caa3647963769f9231842a87851155a4245cb66adaa",
+      "size_bytes": 1368,
+      "git_blob": "c08b260cb269d5ee3cee8cfe9179bf3514921e1f",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/Program.cs",
+      "sha256": "81300d8597c5477ee95ff08afe7cd6c5d34a8066f33df62e0c774fc7ae4fcc7c",
+      "size_bytes": 7926,
+      "git_blob": "c7fbff2abc3d3caa5e4607059d9bdbf3709bb9b1",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/REMOTE.json",
+      "sha256": "90388811341670323e1ab64ca968b60970eeba678092bc30984f6ba929cfa211",
+      "size_bytes": 10397,
+      "git_blob": "60d47c195cf1f4dfd2dcac43d9402667456b9494",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/REPORT.txt",
+      "sha256": "537a56894f2ba6ef1c6b25c5b960723474829e43c5ed2a32430ed6913c6edc68",
+      "size_bytes": 6853,
+      "git_blob": "a556d38fe06e72873d0abdd5168767ccbb5d65f4",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/RESULT-timing-with-progress-callback.json",
+      "sha256": "b50464f8fe95fee278908326980ceffa939410b5a623ba9377044ed05634d79b",
+      "size_bytes": 14203,
+      "git_blob": "383dca869b3a49f1243d0a2a547b28a5989d9b68",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/RESULT.json",
+      "sha256": "15bf6583edea627f5171bfa98cb231754a8013d267c2dea0ad425a5e0451f505",
+      "size_bytes": 15216,
+      "git_blob": "9caa2eea6e9485047e8391f39bafa1916de9a3e6",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/SHA256SUMS",
+      "sha256": "cffd07864f1a56cdafb662d2142dec9696b5df6af7c78b9d59e37a65341ae1fe",
+      "size_bytes": 2260,
+      "git_blob": "97495dd3f8622a866979d12c5c988b5052504e04",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/audit03-maintenance.log",
+      "sha256": "f9e80bfdc1e12620ab95cdd255a86457a040a85138b16a30cce37d50047cfbd3",
+      "size_bytes": 824,
+      "git_blob": "21f61ca44c5cc2287a7611746656fba7d22b6fa7",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/build.log",
+      "sha256": "3ee039a83e81f54614f8336676f23de773a9bfb1db4a4994e5069d5556f89348",
+      "size_bytes": 4452,
+      "git_blob": "e8f2374f4e9c5ffc5275e378f23010e0f31889c3",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/indexes.json",
+      "sha256": "5b92d17d4870c9651f6246030d6e0d030c7db7668fcc668bf30259c120b00e5a",
+      "size_bytes": 637,
+      "git_blob": "77d908f391baefdb2d626a7b71bfbd1f86258fc5",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/migration-result.json",
+      "sha256": "31cb46a39a3cf9e85c1568ee619a3e0d2ffad709840d23fd09a7761ad84e122d",
+      "size_bytes": 2008,
+      "git_blob": "8e4653ab98c5a1e4008fded9ad5bef1e465114de",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/migration.log",
+      "sha256": "f0b74e21177857cf429d2748cbd1a46b6f3cf237dc51949d72cb3cac6476c085",
+      "size_bytes": 57,
+      "git_blob": "e555e37b59c9ef1292c7c503d7ba26db48642996",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/new.sql",
+      "sha256": "29e4a99558024f735342e3b1a8c7983f37b7f8a9dcb43e3995f6fc3dd367ce60",
+      "size_bytes": 766,
+      "git_blob": "f5eed66a035e3a30d79c2658ce98dc1c8e745055",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/old.sql",
+      "sha256": "131e962a40871147d47afd69cfdf7cfac4d8e5e1baafacf52ad9314e807e4fe2",
+      "size_bytes": 953,
+      "git_blob": "0f49dc79b082e32e3b4111f23a6058db415b2c2b",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/prepare-plan.json",
+      "sha256": "d22bf297e095edc6f34f9a39f51c1fc4c6b352040ec17c6e6ae4fc0092a6c4ad",
+      "size_bytes": 85,
+      "git_blob": "8c883b0790e6fdc3d6324ac480feafbbfd0c578a",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/prepare.sql",
+      "sha256": "250be14bf273a5abc4d8ef39ca351afbe602c1bc2a4cb87f976f673bcdc38580",
+      "size_bytes": 590,
+      "git_blob": "89b02991c9066469975f61e8385d1b49b6fa5bc3",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/prepare_probe.py",
+      "sha256": "f6e1960349189874c8fbc05aa7e5af438012ed55951f43602b81a08004e90416",
+      "size_bytes": 2762,
+      "git_blob": "9ad7b7a573089388c490a94e2f4b8e09eb9801e1",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/probe-build.log",
+      "sha256": "db7fd975521c339ff232926c5eb20c30df2075c3130b0e7506a7a1a4f4066a9c",
+      "size_bytes": 308,
+      "git_blob": "9498112186327496aa32bdfa04f9e43df65902fc",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/probe.log",
+      "sha256": "c68a3b3ccec54ae1b926032c0bd623ddcc81d44e4757c74edf30e5c8cc8f9697",
+      "size_bytes": 72,
+      "git_blob": "a43397dd550cf3c7e9a1ad47941e85015315b9dc",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/runtime-tests.json",
+      "sha256": "3208d72e760fbe4cec85d877f17834aed54ef3f4a021681326057ebb71535bd2",
+      "size_bytes": 1091,
+      "git_blob": "0e75ad10d5c7f9a3da865c8c2588d70b86c79f5c",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/schema.sql",
+      "sha256": "db0bb1cf696ea569ed06618f7351848b5fd84cda92dd30159004753cefa23bc0",
+      "size_bytes": 15018,
+      "git_blob": "8461b09c5850fd5b54fb258843b484eb146ebed4",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/upgrade-conflict-closure.log",
+      "sha256": "94a63d6a334e893077a3ec142298ba2f4fb42ea45f6ec642aab79a34a32df2be",
+      "size_bytes": 5527,
+      "git_blob": "3e3bd11da06d8d90bec26abd5752ea67ac05e0fa",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/version-compatibility.log",
+      "sha256": "9610458419295792f54b28a68720140e5bbc8ebaaa644b632d346a7fceb8f163",
+      "size_bytes": 3984,
+      "git_blob": "896778346c7076a78348b354b6980fb6e5c28d81",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/original/win11-stability.log",
+      "sha256": "bbc3de07c88bb4b803c1705cff18c611fc94ac26854d5f439850e4c747220937",
+      "size_bytes": 4142,
+      "git_blob": "2af8846f3d83c4759324dd4d9dc77a8f92e979c6",
+      "version": "retention-performance-review-01",
+      "status": "archived_original_evidence",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/validation/retention-performance-review-01.md",
+      "sha256": "adad3f085765c11a9f22de14e520f4bc9e2363a0229ef47cfc77f5e22376bc1f",
+      "size_bytes": 5978,
+      "git_blob": "93d92994513a02db566d8ec092502191fb86c388",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/reproduce-retention-review.py",
+      "sha256": "a0b29ca1a218a9db312680ee78496650590c4edd046b8c0e2eb3b4fcd2fbabbb",
+      "size_bytes": 6900,
+      "git_blob": "13f679f4836510381cefa1c950220ffd9ed2b292",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
+      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/publication/REPRODUCTION.json",
+      "sha256": "ef341f58c102070dbe12c7929357c8256178120311f3797b63a96cab4a902027",
+      "size_bytes": 5009,
+      "git_blob": "22e20d3da65f3d0ce731f4cc4ea3141da3f5747c",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/publication/archive-tool-tests.log",
+      "sha256": "3ec80a61bfaa9c1ba9a333535a414aae565f90beb4a74a37b8bed6e0f6f8e345",
+      "size_bytes": 2028,
+      "git_blob": "b0d1fa3cb599032052d361a4c9c7ca3095663203",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository"
     }
   ],
@@ -79563,5 +79977,28 @@
     "publication": "Integration PR; actual main inclusion and exact CI verified separately",
     "field_qualification": "NOT_RUN/BLOCKED; original user Unknown preservation decision retained",
     "inventory_scope": "Only owned integration delta refreshed from staged canonical Git bytes; unrelated historical records preserved."
+  },
+  "retention_performance_review_01": {
+    "report": "docs/runtime/validation/retention-performance-review-01.md",
+    "evidence": "docs/runtime/evidence/retention-performance-review-01/README.md",
+    "inventory": "docs/runtime/evidence/retention-performance-review-01/FILES.json",
+    "reproduce": "scripts/reproduce-retention-review.py",
+    "original_source_commit": "12a7cbdc11839dfae7eec88f9514e8559694bdd0",
+    "original_tree": "94ebc204eb8898fe239e8941d9696e6b807b25bd",
+    "original_ci_source": "6cebb3015f5a975bb2cd158b5b772ac7fbb60afc",
+    "original_ci_run": 40096864628,
+    "original_files": 28,
+    "product_code_changes": false,
+    "database": 9,
+    "sql_1_to_9": "UNCHANGED",
+    "qualification": "Synthetic short query/migration/recovery verification; full expiry RTO, protected expire-history CLI, target IPC, real SDK/RCS, 24h/72h and field acceptance NOT_RUN/BLOCKED",
+    "inventory_scope": "Only this archival delta refreshed from staged canonical Git bytes; unrelated historical manifest identities retained. New PR CI and merge receipt verified separately.",
+    "publication_verification": {
+      "reproduction": "docs/runtime/evidence/retention-performance-review-01/publication/REPRODUCTION.json",
+      "archive_tool_log": "docs/runtime/evidence/retention-performance-review-01/publication/archive-tool-tests.log",
+      "new_reproduction_steps": 8,
+      "archive_tool_suite": "FAIL_ENVIRONMENT; 6 passed, 1 WinError1314 symlink privilege error; no skips or permission changes",
+      "full_historical_archive_revalidation": "NOT_CLAIMED"
+    }
   }
 }

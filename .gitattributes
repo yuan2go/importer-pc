@@ -110,3 +110,7 @@ docs/runtime/evidence/typography-01/** -text whitespace=cr-at-eol,-blank-at-eol,
 
 # Preserve integration failures, fixed-version results and native captures byte-for-byte.
 docs/runtime/evidence/parallel-task-integration-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Independent retention review captures keep their original bytes and hashes.
+docs/runtime/evidence/retention-performance-review-01/original/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/retention-performance-review-01/publication/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

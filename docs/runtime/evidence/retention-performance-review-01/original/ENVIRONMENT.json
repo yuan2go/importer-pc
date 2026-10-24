@@ -1,0 +1,11 @@
+{
+  "OS": "Microsoft Windows 11 家庭中文版",
+  "Version": "10.0.22631",
+  "Build": "22631",
+  "ProcessArchitecture": "X64",
+  "DotNet": "10.0.402",
+  "SourceCommit": "12a7cbdc11839dfae7eec88f9514e8559694bdd0",
+  "SourceTree": "94ebc204eb8898fe239e8941d9696e6b807b25bd",
+  "CiSourceCommit": "6cebb3015f5a975bb2cd158b5b772ac7fbb60afc",
+  "CiTree": "94ebc204eb8898fe239e8941d9696e6b807b25bd"
+}

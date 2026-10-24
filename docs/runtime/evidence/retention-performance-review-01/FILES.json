@@ -1,0 +1,170 @@
+[
+  {
+    "path": "original/audit03-maintenance.log",
+    "sha256": "f9e80bfdc1e12620ab95cdd255a86457a040a85138b16a30cce37d50047cfbd3",
+    "bytes": 824,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/build.log",
+    "sha256": "3ee039a83e81f54614f8336676f23de773a9bfb1db4a4994e5069d5556f89348",
+    "bytes": 4452,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/ENVIRONMENT.json",
+    "sha256": "2c3828fcfe85e2a2317266f0a0d8bd1658d8f3452a16a6778f157d8c3b0c5e0a",
+    "bytes": 407,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/IDENTITY.json",
+    "sha256": "7eb8ff48a1ccdd3fc9cd8f7e5f70d1e9afd00c6ff5a693e9dbc93b64728b6991",
+    "bytes": 1489,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/indexes.json",
+    "sha256": "5b92d17d4870c9651f6246030d6e0d030c7db7668fcc668bf30259c120b00e5a",
+    "bytes": 637,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/migration-result.json",
+    "sha256": "31cb46a39a3cf9e85c1568ee619a3e0d2ffad709840d23fd09a7761ad84e122d",
+    "bytes": 2008,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/migration.log",
+    "sha256": "f0b74e21177857cf429d2748cbd1a46b6f3cf237dc51949d72cb3cac6476c085",
+    "bytes": 57,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/MigrationProbe.csproj",
+    "sha256": "826c3e7789d709472d18126e132863ac277a670c02c1e867dbdbafb2eaa4cd9a",
+    "bytes": 482,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/MigrationProgram.cs",
+    "sha256": "1d658a4744f8805b904369195d2b9e2be24a24723c71cb702e1df52ceb041793",
+    "bytes": 2132,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/new.sql",
+    "sha256": "29e4a99558024f735342e3b1a8c7983f37b7f8a9dcb43e3995f6fc3dd367ce60",
+    "bytes": 766,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/old.sql",
+    "sha256": "131e962a40871147d47afd69cfdf7cfac4d8e5e1baafacf52ad9314e807e4fe2",
+    "bytes": 953,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/prepare-plan.json",
+    "sha256": "d22bf297e095edc6f34f9a39f51c1fc4c6b352040ec17c6e6ae4fc0092a6c4ad",
+    "bytes": 85,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/prepare.sql",
+    "sha256": "250be14bf273a5abc4d8ef39ca351afbe602c1bc2a4cb87f976f673bcdc38580",
+    "bytes": 590,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/prepare_probe.py",
+    "sha256": "f6e1960349189874c8fbc05aa7e5af438012ed55951f43602b81a08004e90416",
+    "bytes": 2762,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/probe-build.log",
+    "sha256": "db7fd975521c339ff232926c5eb20c30df2075c3130b0e7506a7a1a4f4066a9c",
+    "bytes": 308,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/Probe.csproj",
+    "sha256": "288ac30988f427be14278caa3647963769f9231842a87851155a4245cb66adaa",
+    "bytes": 1368,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/probe.log",
+    "sha256": "c68a3b3ccec54ae1b926032c0bd623ddcc81d44e4757c74edf30e5c8cc8f9697",
+    "bytes": 72,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/Program.cs",
+    "sha256": "81300d8597c5477ee95ff08afe7cd6c5d34a8066f33df62e0c774fc7ae4fcc7c",
+    "bytes": 7926,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/REMOTE.json",
+    "sha256": "90388811341670323e1ab64ca968b60970eeba678092bc30984f6ba929cfa211",
+    "bytes": 10397,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/REPORT.txt",
+    "sha256": "537a56894f2ba6ef1c6b25c5b960723474829e43c5ed2a32430ed6913c6edc68",
+    "bytes": 6853,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/RESULT-timing-with-progress-callback.json",
+    "sha256": "b50464f8fe95fee278908326980ceffa939410b5a623ba9377044ed05634d79b",
+    "bytes": 14203,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/RESULT.json",
+    "sha256": "15bf6583edea627f5171bfa98cb231754a8013d267c2dea0ad425a5e0451f505",
+    "bytes": 15216,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/runtime-tests.json",
+    "sha256": "3208d72e760fbe4cec85d877f17834aed54ef3f4a021681326057ebb71535bd2",
+    "bytes": 1091,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/schema.sql",
+    "sha256": "db0bb1cf696ea569ed06618f7351848b5fd84cda92dd30159004753cefa23bc0",
+    "bytes": 15018,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/SHA256SUMS",
+    "sha256": "cffd07864f1a56cdafb662d2142dec9696b5df6af7c78b9d59e37a65341ae1fe",
+    "bytes": 2260,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/upgrade-conflict-closure.log",
+    "sha256": "94a63d6a334e893077a3ec142298ba2f4fb42ea45f6ec642aab79a34a32df2be",
+    "bytes": 5527,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/version-compatibility.log",
+    "sha256": "9610458419295792f54b28a68720140e5bbc8ebaaa644b632d346a7fceb8f163",
+    "bytes": 3984,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  },
+  {
+    "path": "original/win11-stability.log",
+    "sha256": "bbc3de07c88bb4b803c1705cff18c611fc94ac26854d5f439850e4c747220937",
+    "bytes": 4142,
+    "source": "2026-10-24 independent review; original D:/projects/ipc-retention-verification-20261024; SourceCommit12a7cbd unchanged"
+  }
+]

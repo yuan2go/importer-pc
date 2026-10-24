@@ -1,5 +1,7 @@
 # WIN11-24X7-STABILITY-REMEDIATION-01 验证边界
 
+2026-10-24后续独立复核见[历史清理查询报告](retention-performance-review-01.md)及[原件和复现](../evidence/retention-performance-review-01/README.md)：固定main `12a7cbd`、原CI合成源码`6cebb301`，验证PR100的一次性TEMP归属查询。下文各阶段证据保持原SourceCommit；新百万行查询、迁移和恢复短测不代表完整维护RTO、真实24h/72h或现场资格。
+
 2026-10-24，基线main `c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b`，开发工作树 `D:/projects/importer-pc-stability`。本记录只覆盖本轮代码和合成证据；原审查、旧发布、REQ/BR/CAPI/D/RV保持各自身份。固定Release的SourceCommit、SHA256、启动退出码和原始证据清单在[证据目录](../evidence/win11-24x7-stability-remediation-01/README.md)。
 
 2026-10-24随后PR97由其他获授权工作合入main `c310705b5a927c90e8f6bb93de908b2fea36e826`，本分支整合为 `ac085f3`，保留有效格口/跨页回执/意图和导航代次保护。只把新任务链夹具的内置RCS版本改为本发布1.3.2，原断言不改；其后PR98已由其他获授权工作合入main `016976c`；本分支再次整合并保留其字体、布局及日志筛选恢复，固定组合再次单独计证。本任务没有代合并PR。

@@ -2,6 +2,10 @@
 
 本轮用户明确授权上传并随应用离线交付 `NotoSansCJKsc-Regular.otf` 与 `NotoSansCJKsc-Medium.otf`，仅限官方 Sans2.004 的未修改静态桌面字库，连同原始 OFL 和[来源/哈希清单](../../src/Ipc.Presentation.Wpf/Fonts/NOTICE.json)。允许本轮合成原生截图与验证记录；不包含客户原稿、未授权衍生资产、私链、凭据、生产数据、其他字体或 SDK。以下各历史条款仍限于其原任务/发布范围。
 
+# 2026-10-24 历史清理查询独立复核归档
+
+用户明确授权归档本次独立复核报告、复现脚本和性能证据，同步索引与验证边界，经PR及CI合入main。范围仅为[复核报告](../runtime/validation/retention-performance-review-01.md)、[原始合成证据/hash](../runtime/evidence/retention-performance-review-01/README.md)及仓库复现入口；保持原字节、原SourceCommit、原CI及先行计时身份。不重复修改业务代码，不上传SDK、DLL、字体、安装包、合成数据库、客户原稿、私链、凭据或生产数据，不扩大为24h/72h或现场验收通过。
+
 # 2026-10-24 Windows 11 24×7独立审查产物发布
 
 用户明确授权将上一轮长期稳定性分析产物提交main，并据最新代码、文档提供后续Codex修复提示。本次范围为[原报告、原始证据、独立验证脚本和交接](../reviews/win11-24x7-stability-audit-01/README.md)，含合成数据及公开源码/CI证据；PDF和ZIP保留原字节与SHA256。原审查“只读、未提交”保持形成时含义，本次归档不代表修复、24h、Windows11或真实设备验收通过。

@@ -35,7 +35,7 @@ public sealed class SoftwareLogControl : UserControl
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
         var title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
-        var hint = new TextBlock { Text = "默认最近24小时，每页200条；选择记录查看完整原文。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; heading.Children.Add(hint);
+        var hint = new TextBlock { Text = "默认最近24小时，每页200条；选择记录查看完整原文。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
         var actions = new WrapPanel { Margin = new(0, 6, 0, 4) }; DockPanel.SetDock(actions, Dock.Bottom); header.Children.Add(actions);
         Button Action(string label, Func<Task> action)
         {
@@ -84,7 +84,7 @@ public sealed class SoftwareLogControl : UserControl
             if (shortPage && !compact) detailPanel.IsExpanded = false;
             compact = shortPage; root.Margin = compact ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
             results.RowHeight = compact ? 32 : 44; results.ColumnHeaderHeight = compact ? 32 : 36;
-            title.FontSize = compact ? 18 : 22; hint.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            title.FontSize = 16;
             headerScroll.MaxHeight = compact ? 74 : Math.Min(260, ActualHeight * .42);
             detail.MaxHeight = compact ? 60 : ActualHeight * .30; status.MaxHeight = compact ? 20 : 48;
         };

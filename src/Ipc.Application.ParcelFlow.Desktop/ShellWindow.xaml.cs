@@ -9,7 +9,13 @@ public partial class ShellWindow : Window
     static readonly DependencyPropertyKey SelectedWorkspacePropertyKey = DependencyProperty.RegisterReadOnly(nameof(SelectedWorkspace), typeof(string), typeof(ShellWindow), new PropertyMetadata("work"));
     public static readonly DependencyProperty SelectedWorkspaceProperty = SelectedWorkspacePropertyKey.DependencyProperty;
     public string SelectedWorkspace => (string)GetValue(SelectedWorkspaceProperty);
-    void SelectWorkspace(UserControl content, string workspace) { PageHost.Content = content; SetValue(SelectedWorkspacePropertyKey, workspace); }
+    public static readonly DependencyProperty ShowWorkspaceFeedbackProperty = DependencyProperty.Register(nameof(ShowWorkspaceFeedback), typeof(bool), typeof(ShellWindow), new PropertyMetadata(false));
+    public bool ShowWorkspaceFeedback { get => (bool)GetValue(ShowWorkspaceFeedbackProperty); private set => SetValue(ShowWorkspaceFeedbackProperty, value); }
+    void SelectWorkspace(UserControl content, string workspace)
+    {
+        if (SelectedWorkspace != workspace) ShowWorkspaceFeedback = false;
+        PageHost.Content = content; SetValue(SelectedWorkspacePropertyKey, workspace);
+    }
     void CloseRestrictedWorkspace()
     {
         if (vm.IsManagementMode || !ReferenceEquals(PageHost.Content, maintenance) && PageHost.Content is not SoftwareLogControl) return;
@@ -35,6 +41,7 @@ public partial class ShellWindow : Window
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         vm.PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(ParcelViewModel.Feedback)) ShowWorkspaceFeedback = true;
             if (e.PropertyName == nameof(ParcelViewModel.IsManagementMode)) CloseRestrictedWorkspace();
             if (e.PropertyName == nameof(ParcelViewModel.Busy) && !vm.Busy && pendingMaintenanceLoad)
                 Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));

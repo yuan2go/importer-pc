@@ -44,6 +44,8 @@ static partial class Program
         if (!baseline) Check(((PasswordBox)window.FindName("LoginProof")).IsVisible, "unauthenticated operator keeps a visible login editor on the work page");
         await ManagementModeFixture.Authorize(runtime); await vm.RefreshAsync();
         vm.OperatorSubject = "alice"; await vm.LoginAsync("SIMULATION_ONLY"); await vm.RefreshAsync();
+        for (var i = 0; i < 100 && vm.Snapshot?.CurrentOperator is null; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
+        Check(vm.Snapshot?.CurrentOperator is not null, "operator login receipt reaches the current snapshot before session assertions");
         var operatorSession = vm.Snapshot!.CurrentOperator!.SessionId;
         projection.Project = s => s with { CurrentOperator = s.CurrentOperator is { } user ? user with { DisplayName = "合成操作员显示名称用于检查长文本布局与完整身份保留" } : null };
         await vm.RefreshAsync();

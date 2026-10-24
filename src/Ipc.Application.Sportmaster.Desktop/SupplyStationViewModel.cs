@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -48,8 +48,9 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "";
     public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
     public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
-    public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
-        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。" ? "" : SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(OperatorFeedback) : OperatorFeedback;
+    string feedbackPage = "workstation";
+    public string WorkFeedback => SelectedPage != feedbackPage ? "" : Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
+        SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。" ? "" : SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
     public string SelectedPage
     {
         get => selectedPage;
@@ -63,7 +64,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         {
             if (e.PropertyName == nameof(StationDisplaySummary)) Changed(nameof(Station));
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
-            if (e.PropertyName == nameof(Feedback)) Changed(nameof(WorkFeedback));
+            if (e.PropertyName == nameof(Feedback)) { feedbackPage = SelectedPage; Changed(nameof(WorkFeedback)); }
         };
     }
     protected override void SnapshotValidityChanged(DateTimeOffset now)

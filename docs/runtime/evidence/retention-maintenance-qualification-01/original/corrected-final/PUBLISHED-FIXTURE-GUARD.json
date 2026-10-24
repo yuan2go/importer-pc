@@ -1,0 +1,8 @@
+{
+  "Status": "PASS_FIXTURE_INPUT_GUARD_ONLY",
+  "AtUtc": "2026-10-24T15:08:15.0395215+00:00",
+  "ExitCode": -532462766,
+  "DatabaseCount": 0,
+  "Scope": "Synthetic reference configuration with only Mode changed to Production was rejected before runtime/provider activation; no actual production deployment",
+  "PublishedFixtureSha256": "2617687B1408C96507B1078DA24FB94EF5385BD0FE15636EF244AB9C97E8B563"
+}

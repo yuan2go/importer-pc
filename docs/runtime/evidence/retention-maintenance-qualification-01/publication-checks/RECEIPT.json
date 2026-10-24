@@ -1,0 +1,15 @@
+{
+  "AtUtc": "2026-10-24T17:45:04.7199332+00:00",
+  "Status": "PASS_CLOSED_SMALL_CASE_RECONCILIATION_ONLY",
+  "OriginalRunStatus": "FAIL",
+  "ReconciledCounts": [
+    1000,
+    10000
+  ],
+  "Checks": 73,
+  "SourceHeadBeforePublication": "69fe77c28415c95674267be9cf1d9bf28442041f",
+  "ReconcilerSha256": "B29D322A9A1F3D429553C4DEFA969632577B72609E16AC2E6B5448F66C4126D2",
+  "NegativeCheckerSha256": "51FB0EAFB0A811B6A891BAC0463E9FB09E6187C6CDE2C769AE57ABC238647375",
+  "Changes": "Published checker adds exact protected receipt/input-audit checks and a WAL recheck after writer exclusion; original 67-assertion evidence retained",
+  "Scope": "Ordinary-token closed-snapshot verification only; no new CLI maintenance run, elevated recovery, large-case completion, target IPC, continuous run or field acceptance"
+}

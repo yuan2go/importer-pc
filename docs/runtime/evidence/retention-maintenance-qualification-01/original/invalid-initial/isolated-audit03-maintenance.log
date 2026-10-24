@@ -1,0 +1,10 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-f3f3bf27f961408c94d3b93c39a83972
+PASS A03: offline maintenance cannot race a running application owner
+PASS A03: read-only maintenance reports original WaitingWeight and preserves exact database without upgrade or source startup
+PASS A03: diagnostic export contains explicit source metadata, not a hidden database/credential dump
+PASS A03: diagnostic binds original database/configuration fingerprints
+PASS A03: offline backup retains unclosed originals and registers custody before completion, without changing source
+PASS A03: actual restore preserves the unresolved original and starts isolated
+PASS A03: existing diagnostic output cannot be overwritten
+PASS A03: missing database leaves no alternate empty runtime root
+PASS A03 MAINTENANCE COMPLETE

@@ -1,0 +1,13 @@
+{
+  "BaselineMain": "5bb032d7354ef619064a015484a5001204edfff5",
+  "FixtureStatus": "Uncommitted qualification fixture; production src unchanged from baseline",
+  "Files": {
+    "scripts/verify-retention-maintenance.ps1": "3f9f037f0e7f9dcd9132be4d1976a098ce273a7d13aa0a63825b5caff422853a",
+    "tests/Ipc.Application.Verification/RetentionQualification.cs": "faf9c8065b8b9814e467b0c627e30d6f73c567ac516e21d46bd7e4e492c7c92a",
+    "tests/Ipc.Application.Verification/Program.cs": "7636f7859cc925e79d9a23d63470b14b053382d5e9bfe1a279b85a23cbc69a69",
+    "src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll": "ecd2045e475d114206c55da2711d7837d6d27b13492a0f1a35df7bfc01327551",
+    "src/Ipc.Assembly/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll": "e865fc377bebf9d11edde09ad477b35fab7c7c04c51909dd586254e0c50b9ada",
+    "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll": "7f5ca31637fe980c75282accb28ec7ac0cba5977b4fe524c071b9289f28500e5"
+  },
+  "Scope": "Synthetic protected Simulation CLI qualification; not an installed production release"
+}

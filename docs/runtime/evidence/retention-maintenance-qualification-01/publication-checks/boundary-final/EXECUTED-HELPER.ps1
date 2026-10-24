@@ -1,0 +1,114 @@
+#requires -Version 7.0
+param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$Evidence,[Parameter(Mandatory)][string]$Seed,[int[]]$Counts=@(1000,10000,604800,2592000),[switch]$RestoreAll)
+$ErrorActionPreference='Stop'
+. (Join-Path $Workspace 'scripts/project-environment.ps1')
+$principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+if(-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){throw 'Actual elevated Windows installer token required; do not bypass this check'}
+# Process-local handling for intentionally failing child CLIs; preserve stderr/nonzero exit.
+# No registry/WER/machine policy is changed. Children inherit this documented Windows error mode.
+Add-Type 'using System.Runtime.InteropServices; public static class RetentionErrorMode { [DllImport("kernel32.dll")] public static extern uint GetErrorMode(); [DllImport("kernel32.dll")] public static extern uint SetErrorMode(uint value); }'
+[RetentionErrorMode]::SetErrorMode([RetentionErrorMode]::GetErrorMode() -bor 3) | Out-Null
+$Workspace=[IO.Path]::GetFullPath($Workspace);$Evidence=[IO.Path]::GetFullPath($Evidence);$Seed=[IO.Path]::GetFullPath($Seed)
+if(@($Workspace,$Evidence,$Seed)|Where-Object{[IO.Path]::GetPathRoot($_) -ne 'D:\'}){throw 'All validation inputs/outputs must be on D:'}
+if(-not(Test-Path -LiteralPath $Evidence) -or (Test-Path -LiteralPath (Join-Path $Evidence 'PROTECTED-RESULT.json'))){throw 'Use an existing fresh evidence directory without a previous protected result'}
+if(-not(Test-Path -LiteralPath (Join-Path $Seed 'operation.json'))){throw 'Prepare the actual reference seed before requesting elevation'}
+& git -C $Workspace diff --exit-code HEAD -- src
+if($LASTEXITCODE -ne 0){throw 'Commit or restore product inputs before fixed-source qualification'}
+$sourceHead=(& git -C $Workspace rev-parse HEAD).Trim()
+$productVersion=[Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0/Ipc.Application.Sportmaster.dll')).ProductVersion
+if(-not $productVersion.EndsWith($sourceHead,[StringComparison]::OrdinalIgnoreCase)){throw 'Build the actual CLI from this exact source HEAD before qualification'}
+if($Counts.Count -eq 0 -or @($Counts|Sort-Object -Unique).Count -ne $Counts.Count -or ($Counts|Where-Object{$_ -lt 1 -or $_ -gt 2592000})){throw 'Provide nonempty unique counts within the documented synthetic 30-day upper bound'}
+$anchor=(Get-ItemProperty -LiteralPath HKLM:/SOFTWARE/ImporterPc/Storage).Root
+if([IO.Path]::GetPathRoot($anchor) -ne 'D:\'){throw 'Use the administrator-configured D: storage anchor'}
+for($parent=Get-Item -LiteralPath $anchor;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked protected ancestor refused'}}
+$runId='retention-'+[Guid]::NewGuid().ToString('N')
+$protectedRoot=Join-Path $anchor ('Qualification/'+$runId)
+if(Test-Path -LiteralPath $protectedRoot){throw 'A new isolated protected qualification root is required'}
+# Also inspect Qualification itself if an earlier administrator created it.
+# Check before any elevated directory creation, ACL change or binary copy.
+for($taskParent=Split-Path -LiteralPath $protectedRoot;$taskParent;$taskParent=Split-Path -LiteralPath $taskParent){
+ if((Test-Path -LiteralPath $taskParent) -and ((Get-Item -LiteralPath $taskParent).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Linked qualification ancestor refused'}
+}
+New-Item -ItemType Directory -Path $protectedRoot -Force | Out-Null
+$acl=[Security.AccessControl.DirectorySecurity]::new();$acl.SetAccessRuleProtection($true,$false)
+$admin=[Security.Principal.SecurityIdentifier]::new('S-1-5-32-544');$system=[Security.Principal.SecurityIdentifier]::new('S-1-5-18');$users=[Security.Principal.SecurityIdentifier]::new('S-1-5-32-545')
+$acl.SetOwner($admin)
+foreach($sid in @($admin,$system)){$acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($sid,'FullControl','ContainerInherit,ObjectInherit','None','Allow'))}
+$acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($users,'ReadAndExecute','ContainerInherit,ObjectInherit','None','Allow'))
+Set-Acl -LiteralPath $protectedRoot -AclObject $acl
+$cli=Join-Path $protectedRoot 'cli';$fixtureHost=Join-Path $protectedRoot 'fixture'
+Copy-Item -LiteralPath (Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0') -Destination $cli -Recurse
+Copy-Item -LiteralPath (Join-Path $Workspace 'tests/Ipc.Application.Verification/bin/Release/net10.0') -Destination $fixtureHost -Recurse
+$cliExe=Join-Path $cli 'Ipc.Assembly.exe';$fixtureDll=Join-Path $fixtureHost 'Ipc.Application.Verification.dll'
+$result=[ordered]@{Status='InProgress';StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');ProtectedRoot=$protectedRoot;ElevatedAdministrator=$true;SourceCommit=(& git -C $Workspace rev-parse HEAD);ProductSha256=(Get-FileHash -LiteralPath (Join-Path $cli 'Ipc.Application.ParcelFlow.dll')).Hash;FixtureSha256=(Get-FileHash -LiteralPath $fixtureDll).Hash;Qualification='Isolated protected Windows CLI and synthetic full-custody scale only; no installed production application, real SDK/RCS, target IPC or 24h/72h';Cases=@();Runs=@()}
+function Save-Result { $result | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $Evidence 'PROTECTED-RESULT.json') -Encoding utf8NoBOM }
+function Invoke-Observed([string]$Name,[string]$Executable,[string[]]$Arguments,[string]$Database='') {
+ $entry=[ordered]@{Name=$Name;StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');Executable=$Executable;Arguments=$Arguments;PeakWorkingSet=0L;PeakWalBytes=0L}
+ $start=[Diagnostics.ProcessStartInfo]::new($Executable);$start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.WindowStyle='Hidden';$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+ foreach($arg in $Arguments){$start.ArgumentList.Add($arg)}
+ $watch=[Diagnostics.Stopwatch]::StartNew();$process=[Diagnostics.Process]::Start($start)
+ $stdout=$process.StandardOutput.ReadToEndAsync();$stderr=$process.StandardError.ReadToEndAsync()
+ $tick=[DateTimeOffset]::MinValue
+ while(-not $process.WaitForExit(1000)){
+  $process.Refresh();$entry.PeakWorkingSet=[Math]::Max($entry.PeakWorkingSet,$process.PeakWorkingSet64)
+  if($Database -and (Test-Path -LiteralPath ($Database+'-wal'))){$entry.PeakWalBytes=[Math]::Max($entry.PeakWalBytes,(Get-Item -LiteralPath ($Database+'-wal')).Length)}
+  if(([DateTimeOffset]::UtcNow-$tick).TotalSeconds -ge 10){[ordered]@{Name=$Name;Pid=$process.Id;Seconds=$watch.Elapsed.TotalSeconds;PeakWorkingSet=$entry.PeakWorkingSet;PeakWalBytes=$entry.PeakWalBytes;At=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $Evidence 'LIVE.json') -Encoding utf8NoBOM;$tick=[DateTimeOffset]::UtcNow}
+ }
+ $entry.Seconds=$watch.Elapsed.TotalSeconds;$entry.EndedUtc=[DateTimeOffset]::UtcNow.ToString('o');$entry.ExitCode=$process.ExitCode
+ $entry.PeakObservation=if($entry.PeakWorkingSet -eq 0){'NOT_OBSERVED; child exited before one-second sample'}else{'Kernel peak observed while alive; one-second sampling'}
+ if($entry.PeakWorkingSet -eq 0){$entry.PeakWorkingSet=$null}
+ [IO.File]::WriteAllText((Join-Path $Evidence ($Name+'.out.log')),$stdout.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
+ [IO.File]::WriteAllText((Join-Path $Evidence ($Name+'.err.log')),$stderr.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
+ $process.Dispose();$result.Runs+=,$entry;Save-Result
+ return $entry
+}
+try {
+ Save-Result
+ foreach($count in $Counts){
+  $case=Join-Path $protectedRoot ('case-'+$count)
+  # Local disk preflight is additional fixture protection, not a changed production reserve/budget.
+  if($result.Cases.Count -gt 0){$sample=$result.Cases[0];$copies=if($RestoreAll){3.15}else{2.15};$estimate=[long]($sample.OriginalBytes/$sample.Count*$count*$copies+8GB);if((Get-PSDrive D).Free -lt $estimate){$result.Cases+=,[ordered]@{Count=$count;Status='NOT_RUN_DISK_CAPACITY';RequiredEstimateBytes=$estimate;AvailableBytes=(Get-PSDrive D).Free};Save-Result;continue}}
+  $created=Invoke-Observed ('create-'+$count) (Join-Path $env:DOTNET_ROOT 'dotnet.exe') @($fixtureDll,$Workspace,'--retention-qualification','create',$case,$Seed,"$count")
+  if($created.ExitCode -ne 0){throw "Fixture creation failed: $count"}
+  $fixture=Get-Content -LiteralPath (Join-Path $case 'FIXTURE.json') -Raw | ConvertFrom-Json;$database=$fixture.Database
+  Copy-Item -LiteralPath (Join-Path $case 'FIXTURE.json') -Destination (Join-Path $Evidence ('fixture-'+$count+'.json'))
+  $item=[ordered]@{Count=$count;CaseRoot=$case;OriginalBytes=$fixture.DatabaseBytes;OriginalHash=$fixture.DatabaseSha256;Status='Created'};$result.Cases+=,$item;Save-Result
+  $inspect=Invoke-Observed ('inspect-'+$count) $cliExe @('--action','maintenance-inspect','--file',$database) $database
+  if($inspect.ExitCode -ne 0){throw "Actual CLI inspection failed: $count"}
+  if($count -eq $Counts[0]){
+   $bad=Join-Path $case 'wrong-hash.db';$rejected=Invoke-Observed 'wrong-hash' $cliExe @('--action','expire-history','--file',$database,'--sha256',('A'*64),'--destination',$bad) $database
+   if($rejected.ExitCode -eq 0 -or (Test-Path -LiteralPath $bad) -or (Get-FileHash -LiteralPath $database).Hash -ne $fixture.DatabaseSha256){throw 'Wrong-hash maintenance did not refuse without changing originals'}
+  }
+  $backup=Join-Path $case 'complete-before-expiry.db';$action=if($count -eq 10000){'expire-history-compact'}else{'expire-history'}
+  $expired=Invoke-Observed ('expire-'+$count) $cliExe @('--action',$action,'--file',$database,'--sha256',$fixture.DatabaseSha256,'--destination',$backup) $database
+  if($expired.ExitCode -ne 0){$item.Status='FAIL_CLI';Save-Result;throw "Actual CLI expiry failed: $count"}
+  $manifest=Get-Content -LiteralPath ($backup+'.recovery/COMPLETED.json') -Raw | ConvertFrom-Json
+  if((Get-FileHash -LiteralPath $backup).Hash -ne $manifest.DatabaseHash){throw 'Completed backup database hash differs'}
+  $verified=Invoke-Observed ('verify-'+$count) (Join-Path $env:DOTNET_ROOT 'dotnet.exe') @($fixtureDll,$Workspace,'--retention-qualification','verify',$case)
+  if($verified.ExitCode -ne 0){throw "Post-expiry permanent/raw/input verification failed: $count"}
+  Copy-Item -LiteralPath (Join-Path $case 'VERIFIED.json') -Destination (Join-Path $Evidence ('verified-'+$count+'.json'))
+  $item.Status='ExpiryVerified';$item.Action=$action;$item.ExpireSeconds=$expired.Seconds;$item.BackupBytes=(Get-Item -LiteralPath $backup).Length;$item.PostBytes=(Get-Item -LiteralPath $database).Length;$item.BackupHash=$manifest.DatabaseHash
+  if($count -eq $Counts[0] -or $RestoreAll){
+   $restored=Join-Path $case 'restored/Simulation/retention-qualification/sportmaster'
+   $plan=Invoke-Observed ('restore-plan-'+$count) $cliExe @('--action','recovery-plan','--file',$backup,'--destination',$restored)
+   if($plan.ExitCode -ne 0){throw 'Actual restore capacity plan failed'}
+   $restore=Invoke-Observed ('restore-isolated-'+$count) $cliExe @('--action','restore','--file',$backup,'--destination',$restored)
+   if($restore.ExitCode -ne 0 -or -not(Test-Path -LiteralPath (Join-Path $restored 'RESTORED-ISOLATED.json'))){throw 'Actual isolated CLI restore failed'}
+   $restoreInspect=Invoke-Observed ('inspect-restored-'+$count) $cliExe @('--action','maintenance-inspect','--file',(Join-Path $restored 'sportmaster.db'))
+   if($restoreInspect.ExitCode -ne 0){throw 'Restored pre-expiry originals cannot be inspected'}
+   $restoredFacts=Get-Content -LiteralPath (Join-Path $Evidence ('inspect-restored-'+$count+'.out.log')) -Raw | ConvertFrom-Json
+   if($restoredFacts.Archived -ne ($count+6) -or $restoredFacts.PendingReceipts -ne 1){throw 'Restore lost pre-expiry original or unresolved receipt responsibility'}
+   $item.IsolatedRestoreSeconds=$restore.Seconds
+  }
+  if($count -eq $Counts[0]){
+   $again=Join-Path $case 'complete-second-maintenance.db';$hash=(Get-FileHash -LiteralPath $database).Hash
+   $repeat=Invoke-Observed 'repeat-expiry' $cliExe @('--action','expire-history','--file',$database,'--sha256',$hash,'--destination',$again) $database
+   if($repeat.ExitCode -ne 0){throw 'Second actual CLI maintenance failed'}
+   $json=Get-Content -LiteralPath (Join-Path $Evidence 'repeat-expiry.out.log') -Raw | ConvertFrom-Json
+   if($json.Operations -ne 0 -or $json.Inputs -ne 0){throw 'Repeated maintenance retired the same or guarded facts again'}
+  }
+  $item.Status='PASS_PROTECTED_CLI_SYNTHETIC';Save-Result
+ }
+ $result.Status=if($result.Cases|Where-Object{$_.Status -ne 'PASS_PROTECTED_CLI_SYNTHETIC'}){'PARTIAL_WITH_RECORDED_GAPS'}else{'PASS_PROTECTED_CLI_SYNTHETIC'}
+} catch { $result.Status='FAIL';$result.Error=$_.Exception.ToString();throw }
+finally { $result.EndedUtc=[DateTimeOffset]::UtcNow.ToString('o');Save-Result }

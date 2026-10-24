@@ -1,5 +1,7 @@
 # WIN11-24X7-STABILITY-REMEDIATION-01 验证边界
 
+后续本机维护补证见[完整原件规模与受保护CLI](retention-maintenance-qualification-01.md)，固定产品`5bb032d`并继承PR102。1千/1万维护及隔离恢复通过；60.48万输入清理超预算FAIL，259.2万未运行、60.48万恢复UAC取消。下文“受保护CLI端到端NOT_RUN”等保持原形成时范围；新增隔离Simulation证据不授予Production安装/接管、目标工控机、24h/72h或现场资格。
+
 2026-10-24后续独立复核见[历史清理查询报告](retention-performance-review-01.md)及[原件和复现](../evidence/retention-performance-review-01/README.md)：固定main `12a7cbd`、原CI合成源码`6cebb301`，验证PR100的一次性TEMP归属查询。下文各阶段证据保持原SourceCommit；新百万行查询、迁移和恢复短测不代表完整维护RTO、真实24h/72h或现场资格。
 
 2026-10-24，基线main `c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b`，开发工作树 `D:/projects/importer-pc-stability`。本记录只覆盖本轮代码和合成证据；原审查、旧发布、REQ/BR/CAPI/D/RV保持各自身份。固定Release的SourceCommit、SHA256、启动退出码和原始证据清单在[证据目录](../evidence/win11-24x7-stability-remediation-01/README.md)。

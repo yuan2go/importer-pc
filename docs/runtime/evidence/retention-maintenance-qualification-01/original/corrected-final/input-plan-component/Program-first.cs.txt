@@ -1,0 +1,14 @@
+using System.Text.Json;
+using Microsoft.Data.Sqlite;
+var folder=args[0]; var path=args[1];
+using var db=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=path,Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString());db.Open();
+using(var queryOnly=db.CreateCommand()){queryOnly.CommandText="PRAGMA query_only=ON";queryOnly.ExecuteNonQuery();}
+var results=new Dictionary<string,object>();
+using(var version=db.CreateCommand()){version.CommandText="SELECT sqlite_version()";results["SQLite"]=version.ExecuteScalar()!;}
+foreach(var name in new[]{"original","rowid-proposal"}){
+ using var plan=db.CreateCommand();plan.CommandText="EXPLAIN QUERY PLAN "+File.ReadAllText(Path.Combine(folder,name+".sql"));plan.Parameters.AddWithValue("$cursor",0);plan.Parameters.AddWithValue("$cutoff",DateTimeOffset.UtcNow.AddDays(-7).ToString("O"));
+ using var rows=plan.ExecuteReader();var lines=new List<string>();while(rows.Read())lines.Add(rows.GetString(3));results[name]=lines;
+}
+using(var indexes=db.CreateCommand()){indexes.CommandText="SELECT name,sql FROM sqlite_master WHERE type='index' AND tbl_name='parcel_ingress'";using var rows=indexes.ExecuteReader();var list=new List<object>();while(rows.Read())list.Add(new{Name=rows.GetString(0),Sql=rows.IsDBNull(1)?null:rows.GetString(1)});results["IngressIndexes"]=list;}
+results["Mode"]="Actual SQLite3.54 via product project; read-only closed complete backup; EXPLAIN only, no business source changes or maintenance timeout changes";
+var output=JsonSerializer.Serialize(results,new JsonSerializerOptions{WriteIndented=true});File.WriteAllText(Path.Combine(folder,"PLAN.json"),output);Console.WriteLine(output);

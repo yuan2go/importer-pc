@@ -1,0 +1,26 @@
+[
+  {
+    "Case": "win11-stability",
+    "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+    "SyntheticBindings": "Unique copied simulation IDs; existing lease holders untouched",
+    "StartedUtc": "2026-10-24T14:14:22.8170011Z",
+    "EndedUtc": "2026-10-24T14:14:34.0205220Z",
+    "ExitCode": 0
+  },
+  {
+    "Case": "audit03-maintenance",
+    "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+    "SyntheticBindings": "Unique copied simulation IDs; existing lease holders untouched",
+    "StartedUtc": "2026-10-24T14:14:34.1089246Z",
+    "EndedUtc": "2026-10-24T14:14:36.6612841Z",
+    "ExitCode": 0
+  },
+  {
+    "Case": "version-compatibility",
+    "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+    "SyntheticBindings": "Unique copied simulation IDs; existing lease holders untouched",
+    "StartedUtc": "2026-10-24T14:14:36.6706893Z",
+    "EndedUtc": "2026-10-24T14:14:37.3034051Z",
+    "ExitCode": -532462766
+  }
+]

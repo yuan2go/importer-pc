@@ -1,0 +1,8 @@
+{
+  "Pid": 40552,
+  "Parent": 62520,
+  "CommandLine": "\"D:\\tools\\dotnet\\dotnet.exe\" D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll D:\\projects\\importer-pc-retention-verification --retention-qualification create D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-2592000 D:\\projects\\ipc-retention-full-scale-20261024\\seed-canonical 2592000",
+  "Reason": "Controlled termination of this explicitly synthetic generator: input-envelope fixture was simplified and cannot qualify complete historical structure",
+  "AtUtc": "2026-10-24T14:40:12.3070746+00:00",
+  "PartialDatabase": "Preserved; no deletion or lease removal"
+}

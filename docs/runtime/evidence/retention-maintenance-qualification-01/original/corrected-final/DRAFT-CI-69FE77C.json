@@ -1,0 +1,22 @@
+{
+  "CapturedUtc": "2026-10-24T16:19:31.2183921+00:00",
+  "PullRequest": 103,
+  "DraftHead": "69fe77c28415c95674267be9cf1d9bf28442041f",
+  "Run": 40110028611,
+  "RunUrl": "https://github.com/yuan2go/importer-pc/actions/runs/40110028611",
+  "Conclusion": "success",
+  "Jobs": [
+    {
+      "Id": 120919621222,
+      "Name": "aqa01-boundaries",
+      "Conclusion": "success"
+    },
+    {
+      "Id": 120919621411,
+      "Name": "frozen-sportmaster",
+      "Conclusion": "success"
+    }
+  ],
+  "FinalHeadGateSatisfied": false,
+  "Scope": "Intermediate draft CI only. Final full-scale evidence, final source HEAD, review and CI still pending. No target hardware/installation/24h/72h/field qualification"
+}

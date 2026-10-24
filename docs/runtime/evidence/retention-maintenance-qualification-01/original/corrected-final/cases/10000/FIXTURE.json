@@ -1,0 +1,28 @@
+{
+  "Status": "CREATED_FULL_SYNTHETIC_CUSTODY",
+  "Eligible": 10000,
+  "Guards": 6,
+  "Database": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+  "DatabaseSha256": "76DAD49AEAB22686D648D5EA3F4C22D0E729F42D445FB5E271355E6E3D0B3A70",
+  "DatabaseBytes": 156327936,
+  "PrefillSeconds": 12.4514909,
+  "Operations": 8,
+  "Archives": 9998,
+  "RawRows": 9997,
+  "Ingress": 10006,
+  "Audit": 40027,
+  "ReplyIdentities": 10005,
+  "IdentityFingerprint": "ADEB97EBBE45816D7B2E6F875DFEEEE0223E8CAA6EC6FBCA3A1091206A054C14",
+  "ReplyFingerprint": "B9C28A4AF88A6C25AAF373B958DF2BC0C7E6BD9291C2B55EF498E44156EC26EC",
+  "GuardKinds": [
+    "PendingCommand",
+    "UnacknowledgedConflict",
+    "InterruptedInput",
+    "UnknownAwaitingRaw",
+    "RecentAudit",
+    "NotExpired"
+  ],
+  "Scope": "Reference-flow synthetic import with complete operation/frozen intent/reply raw/input/audit identities; no real device/RCS traffic, no real-time duration, no images or RCS numeric wire profile",
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "FixtureSha256": "16527F76A217784E01CE1875B3411DDD241A7FAB6771B90D64224BB9A14FDCF1"
+}

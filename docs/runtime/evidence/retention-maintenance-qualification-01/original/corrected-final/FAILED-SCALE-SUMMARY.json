@@ -1,0 +1,21 @@
+{
+  "Status": "FAILED_COMPLETE_SCALE_MAINTENANCE",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "Eligible": 604800,
+  "ExpireSeconds": 7855.7052751,
+  "InspectSeconds": 463.5789612,
+  "InspectPlusExpireSeconds": 8319.2842363,
+  "ApproxThroughCompleteBackupSeconds": 1470.993292093277,
+  "ApproxAfterBackupUntilInterruptionSeconds": 6384.711983006723,
+  "ExitCode": -532462766,
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "FixtureSha256": "16527F76A217784E01CE1875B3411DDD241A7FAB6771B90D64224BB9A14FDCF1",
+  "CliPeakWorkingSet": 62943232,
+  "ObservedPeakWalBytes": 17250472,
+  "OriginalBytes": 9464287232,
+  "CurrentBytes": 9464315904,
+  "BackupBytes": 9464315904,
+  "NativeFailure": "SQLite Error 9 interrupted at input candidate selection in ExpireHistoryCore",
+  "TimingBoundary": "Real process total includes pre-timer original hash/Repository construction. Product internal two-hour CTS starts afterward. No timeout was changed. COMPLETED mtime phase split is approximate.",
+  "Qualification": "FAILED; full input retirement, post-maintenance exact verifier, complete scale restore and field acceptance not granted"
+}

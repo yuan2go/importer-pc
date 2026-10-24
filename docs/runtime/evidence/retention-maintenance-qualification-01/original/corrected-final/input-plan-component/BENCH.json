@@ -1,0 +1,312 @@
+{
+  "SQLite": "3.54.0",
+  "Scope": "In-memory query-component replica using actual DB9 schema/indexes and original synthetic input JSON; not a complete fixture, production mutation, CLI RTO or field qualification",
+  "Samples": [
+    {
+      "Count": 1000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        7.1315,
+        11.769,
+        7.2216,
+        7.7548,
+        7.8692
+      ],
+      "ApproximateVmInstructions": 40000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.6991,
+        1.7109,
+        1.8503,
+        1.88,
+        1.8609
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 500,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        3.9714,
+        3.6723,
+        3.945,
+        3.7505,
+        3.5907
+      ],
+      "ApproximateVmInstructions": 24000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 500,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.7443,
+        1.7302,
+        1.7357,
+        1.8182,
+        1.7474
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        1.017,
+        1.0268,
+        0.9931,
+        0.9784,
+        0.9855
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.7255,
+        0.707,
+        0.7249,
+        0.7656,
+        0.7352
+      ],
+      "ApproximateVmInstructions": 4000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        75.486,
+        64.5737,
+        63.8567,
+        67.9371,
+        76.8228
+      ],
+      "ApproximateVmInstructions": 382000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.8559,
+        3.8418,
+        1.9675,
+        1.8623,
+        2.0873
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 5000,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        32.4963,
+        40.7514,
+        39.1837,
+        44.3187,
+        39.1471
+      ],
+      "ApproximateVmInstructions": 217000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 5000,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        2.2468,
+        1.842,
+        1.8453,
+        1.8578,
+        1.9394
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 9900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        2.553,
+        2.4917,
+        2.5972,
+        3.1953,
+        2.9506
+      ],
+      "ApproximateVmInstructions": 54000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 9900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.8654,
+        0.9731,
+        0.8985,
+        0.9402,
+        0.7626
+      ],
+      "ApproximateVmInstructions": 4000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        526.6246,
+        522.5966,
+        512.9947,
+        561.2196,
+        554.7404
+      ],
+      "ApproximateVmInstructions": 3802000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.6419,
+        1.6542,
+        1.5818,
+        1.713,
+        1.5422
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 50000,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        298.194,
+        299.033,
+        298.9391,
+        277.5025,
+        281.9587
+      ],
+      "ApproximateVmInstructions": 2152000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 50000,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.2691,
+        1.4252,
+        1.4962,
+        1.1836,
+        1.1573
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 99900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        16.4936,
+        10.1677,
+        10.5463,
+        10.384,
+        14.6782
+      ],
+      "ApproximateVmInstructions": 504000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 99900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.4319,
+        0.4121,
+        0.4174,
+        0.4136,
+        0.4472
+      ],
+      "ApproximateVmInstructions": 4000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true,
+      "SixOriginalProtectedOwnersIncluded": true
+    }
+  ]
+}

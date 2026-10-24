@@ -1,0 +1,13 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-f1bc7db7afd94890ac9a9cd8d890fe5d
+PREFILL 1000/10006 elapsed=1.9s
+PREFILL 2000/10006 elapsed=3.1s
+PREFILL 3000/10006 elapsed=3.9s
+PREFILL 4000/10006 elapsed=4.7s
+PREFILL 5000/10006 elapsed=5.6s
+PREFILL 6000/10006 elapsed=6.5s
+PREFILL 7000/10006 elapsed=7.6s
+PREFILL 8000/10006 elapsed=8.7s
+PREFILL 9000/10006 elapsed=9.6s
+PREFILL 10000/10006 elapsed=10.5s
+PREFILL 10006/10006 elapsed=10.5s
+PASS RETENTION-QUAL: complete synthetic DB integrity

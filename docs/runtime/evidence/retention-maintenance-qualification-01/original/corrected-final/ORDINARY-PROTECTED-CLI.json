@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_ORDINARY_TOKEN_PROTECTED_CLI_REFUSAL",
+  "AtUtc": "2026-10-24T15:15:43.1727916+00:00",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000",
+  "ExitCode": -532462766,
+  "RejectedBy": "MachineRuntimePolicy.RequireExtensionInstallerAuthority",
+  "DatabaseSha256": "A0B3894350CCE450A05DC1651AFE004260AE9F4ABF75411F5EA0A3C6ADD9AAAB",
+  "OriginalUnchanged": true,
+  "BackupCreated": false,
+  "ActualProtectedCli": true,
+  "ElevatedToken": false
+}

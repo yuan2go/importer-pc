@@ -1,0 +1,296 @@
+{
+  "Status": "FAIL",
+  "StartedUtc": "2026-10-24T14:07:06.0761899+00:00",
+  "ProtectedRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f",
+  "ElevatedAdministrator": true,
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "FixtureSha256": "7F5CA31637FE980C75282ACCB28EC7AC0CBA5977B4FE524C071B9289F28500E5",
+  "Qualification": "Isolated protected Windows CLI and synthetic full-custody scale only; no installed production application, real SDK/RCS, target IPC or 24h/72h",
+  "Cases": [
+    {
+      "Count": 1000,
+      "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000",
+      "OriginalBytes": 14401536,
+      "OriginalHash": "A6C47B44834B039D1A6A04CA7E96858CC109AE7346F4E61C696D17F7E28FD884",
+      "Status": "PASS_PROTECTED_CLI_SYNTHETIC",
+      "Action": "expire-history",
+      "ExpireSeconds": 6.9321872,
+      "BackupBytes": 14422016,
+      "PostBytes": 14422016,
+      "BackupHash": "0468BAC6D12239496A91AF0177F8DA365F19FBF1701720760D6E64D10A7891AA",
+      "IsolatedRestoreSeconds": 0.6634445
+    },
+    {
+      "Count": 10000,
+      "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000",
+      "OriginalBytes": 140513280,
+      "OriginalHash": "A15FEEAE4351FAC39310C09FC46903E921EA7A237A222DBAEB0EC7F0EA78CE92",
+      "Status": "PASS_PROTECTED_CLI_SYNTHETIC",
+      "Action": "expire-history-compact",
+      "ExpireSeconds": 54.2967837,
+      "BackupBytes": 140533760,
+      "PostBytes": 9072640,
+      "BackupHash": "B6A1A32BAAB25FE64F1F2B1E918A59AE42CF4404065A69AD65824FEF66E764B3"
+    }
+  ],
+  "Runs": [
+    {
+      "Name": "create-1000",
+      "StartedUtc": "2026-10-24T14:07:06.5305819+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "create",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000",
+        "D:\\projects\\ipc-retention-full-scale-20261024\\seed-canonical",
+        "1000"
+      ],
+      "PeakWorkingSet": 56004608,
+      "PeakWalBytes": 0,
+      "Seconds": 4.0947403,
+      "EndedUtc": "2026-10-24T14:07:10.6506272+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "inspect-1000",
+      "StartedUtc": "2026-10-24T14:07:10.7548835+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 53219328,
+      "PeakWalBytes": 0,
+      "Seconds": 2.1640219,
+      "EndedUtc": "2026-10-24T14:07:12.9191927+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "wrong-hash",
+      "StartedUtc": "2026-10-24T14:07:12.9292969+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\wrong-hash.db"
+      ],
+      "PeakWorkingSet": 0,
+      "PeakWalBytes": 0,
+      "Seconds": 0.3395377,
+      "EndedUtc": "2026-10-24T14:07:13.2692290+00:00",
+      "ExitCode": -532462766
+    },
+    {
+      "Name": "expire-1000",
+      "StartedUtc": "2026-10-24T14:07:13.3192776+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "A6C47B44834B039D1A6A04CA7E96858CC109AE7346F4E61C696D17F7E28FD884",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\complete-before-expiry.db"
+      ],
+      "PeakWorkingSet": 59322368,
+      "PeakWalBytes": 4260112,
+      "Seconds": 6.9321872,
+      "EndedUtc": "2026-10-24T14:07:20.2515811+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "verify-1000",
+      "StartedUtc": "2026-10-24T14:07:20.2968778+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "verify",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000"
+      ],
+      "PeakWorkingSet": 0,
+      "PeakWalBytes": 0,
+      "Seconds": 0.5448353,
+      "EndedUtc": "2026-10-24T14:07:20.8418012+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "restore-plan",
+      "StartedUtc": "2026-10-24T14:07:20.8634616+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "recovery-plan",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": 0,
+      "PeakWalBytes": 0,
+      "Seconds": 0.6725275,
+      "EndedUtc": "2026-10-24T14:07:21.5361346+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "restore-isolated",
+      "StartedUtc": "2026-10-24T14:07:21.5475840+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": 0,
+      "PeakWalBytes": 0,
+      "Seconds": 0.6634445,
+      "EndedUtc": "2026-10-24T14:07:22.2111614+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "inspect-restored",
+      "StartedUtc": "2026-10-24T14:07:22.2242332+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 50241536,
+      "PeakWalBytes": 0,
+      "Seconds": 1.7016998,
+      "EndedUtc": "2026-10-24T14:07:23.9260763+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "repeat-expiry",
+      "StartedUtc": "2026-10-24T14:07:24.0096153+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "081D37C78AB5437DC30E13C5DD1C1BC5630D60CCE30BF4544AFF5BB799E35AE3",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-1000\\complete-second-maintenance.db"
+      ],
+      "PeakWorkingSet": 47898624,
+      "PeakWalBytes": 0,
+      "Seconds": 1.2131308,
+      "EndedUtc": "2026-10-24T14:07:25.2228564+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "create-10000",
+      "StartedUtc": "2026-10-24T14:07:25.4268975+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "create",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000",
+        "D:\\projects\\ipc-retention-full-scale-20261024\\seed-canonical",
+        "10000"
+      ],
+      "PeakWorkingSet": 66551808,
+      "PeakWalBytes": 0,
+      "Seconds": 21.9339895,
+      "EndedUtc": "2026-10-24T14:07:47.3610592+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "inspect-10000",
+      "StartedUtc": "2026-10-24T14:07:47.3974441+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 57827328,
+      "PeakWalBytes": 0,
+      "Seconds": 10.4002423,
+      "EndedUtc": "2026-10-24T14:07:57.7978274+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "expire-10000",
+      "StartedUtc": "2026-10-24T14:07:57.8086173+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history-compact",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "A15FEEAE4351FAC39310C09FC46903E921EA7A237A222DBAEB0EC7F0EA78CE92",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000\\complete-before-expiry.db"
+      ],
+      "PeakWorkingSet": 66125824,
+      "PeakWalBytes": 4371352,
+      "Seconds": 54.2967837,
+      "EndedUtc": "2026-10-24T14:08:52.1055343+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "verify-10000",
+      "StartedUtc": "2026-10-24T14:08:52.6304517+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "verify",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-10000"
+      ],
+      "PeakWorkingSet": 0,
+      "PeakWalBytes": 0,
+      "Seconds": 0.8118642,
+      "EndedUtc": "2026-10-24T14:08:53.4424663+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Name": "create-2592000",
+      "StartedUtc": "2026-10-24T14:08:53.5005847+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "create",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-2592000",
+        "D:\\projects\\ipc-retention-full-scale-20261024\\seed-canonical",
+        "2592000"
+      ],
+      "PeakWorkingSet": 57450496,
+      "PeakWalBytes": 0,
+      "Seconds": 1878.8959089,
+      "EndedUtc": "2026-10-24T14:40:12.3965939+00:00",
+      "ExitCode": -1
+    }
+  ],
+  "Error": "System.Management.Automation.RuntimeException: Fixture creation failed: 2592000",
+  "EndedUtc": "2026-10-24T14:40:12.4263451+00:00"
+}

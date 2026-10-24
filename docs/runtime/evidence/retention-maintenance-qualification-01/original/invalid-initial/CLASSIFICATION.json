@@ -1,0 +1,10 @@
+{
+  "Classification": "INVALID_FOR_COMPLETE_INPUT_STRUCTURE",
+  "OriginalRunStatus": "FAIL",
+  "ComponentEvidence": "Actual Windows authority/ACL/CLI/backup/restore and raw/identity mechanisms observed; timings retained only for the simplified input profile",
+  "CompleteScaleQualification": "NOT_ACCEPTED",
+  "OriginalPartialDatabase": "Preserved after user-approved stop",
+  "StoppedPid": 40552,
+  "CorrectedEvidence": "D:/projects/ipc-retention-full-scale-corrected-20261024",
+  "Reason": "Initial ingress JSON omitted actual Operator/ReceivedAt and full Observation contract"
+}

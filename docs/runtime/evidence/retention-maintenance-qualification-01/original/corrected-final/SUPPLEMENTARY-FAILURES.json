@@ -1,0 +1,32 @@
+{
+  "CapturedUtc": "2026-10-24T15:37:32.9948606+00:00",
+  "EvidenceType": "Failure summaries; not reconstructed raw console logs",
+  "Entries": [
+    {
+      "Status": "FAIL_NEGATIVE_CHECK_HARNESS",
+      "OriginalTimeUtc": null,
+      "Reason": "Early inline negative check left a SQLite connection open, encountered the nonempty-WAL guard before the intended changed-hash check, then hit WinError32 during temporary-directory cleanup",
+      "OriginalsChanged": false,
+      "Correction": "Standalone negative checker explicitly closes connections; later writer/WAL/hash refusals pass",
+      "RetainedTemporaryDirectory": "D:/DevCache/importer-pc/temp/retention-negative-proof-roe7d6ng"
+    },
+    {
+      "Status": "FAIL_NEGATIVE_CHECK_RESTORE_CLONE",
+      "Record": "NEGATIVE-RESTORE-CLONE-FAILURE.json",
+      "Correction": "Copy the already completed synthetic isolated restore into the disposable negative-test clone"
+    },
+    {
+      "Status": "FAIL_OVERSTRICT_FIXTURE_PROFILE",
+      "RawLog": "published-smoke-1000.log",
+      "Reason": "New fixture guard rejected runtime-generated local reference peer-root in frozen intent",
+      "Correction": "Keep startup input strict; frozen bulk input is read-only and never activates a provider",
+      "PassingLog": "published-smoke-corrected-1000.log"
+    },
+    {
+      "Status": "REFUSED_ORDINARY_TOKEN_LEASE_ACCESS",
+      "Record": "RESTORE-REINSPECTION.json",
+      "RawStderr": "reinspect-restored-1000.err.log",
+      "Qualification": "Protected read-only database inspection still requires a writable exclusive lease; no ACL relaxation and no successful reinspection claimed"
+    }
+  ]
+}

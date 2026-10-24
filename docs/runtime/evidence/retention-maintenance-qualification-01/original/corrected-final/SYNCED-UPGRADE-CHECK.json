@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "8071b2e0ef978f5ccddb651ba61c33fe78a9042c",
+  "BaseMain": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+  "StartedUtc": "2026-10-24T16:03:07.0053360+00:00",
+  "EndedUtc": "2026-10-24T16:03:20.4683631+00:00",
+  "Seconds": 13.4631855,
+  "ExitCode": 0,
+  "ProductSha256": "1E051135908B11E6F74E3C9E22930B24077F0CC7A343D786239AF3629FDB6D6F",
+  "FixtureSha256": "9AF929D090B5CD3C1B517BF1570D5D2CF668C525AE922FF24426D232AC388626",
+  "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll D:/projects/importer-pc-retention-verification --upgrade-conflict-closure",
+  "Scope": "Synchronized PR102 synthetic upgrade/conflict verification only; separate from the frozen 5bb032d full-scale protected CLI run"
+}

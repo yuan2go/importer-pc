@@ -1,5 +1,7 @@
 # 长期稳定性运行、维护及资格
 
+2026-10-24～25新增[本机维护补证与剩余缺口](validation/retention-maintenance-qualification-01.md)：真实受保护CLI的1千/1万完整清理、备份、隔离恢复及拒绝路径通过；60.48万在输入分页处超预算FAIL，业务未改。259.2万未运行，60.48万隔离恢复UAC取消。原投影/微基准PASS不覆盖这些缺口；目标8GB、真实SDK/RCS、24h/72h和现场仍待验。
+
 [工作包与R01–R12](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md) · [设计](../design/win11-24x7-stability-remediation-01.md) · [原审查](../reviews/win11-24x7-stability-audit-01/README.md)。当前源码Sportmaster **1.12.0**、DirectPlc/WcsToPlc **1.6.0**、Application.Contracts **1.17.0**、Parcel **DB9**。原SQL1～8/checksum、REQ/BR/CAPI/D/RV和旧媒介身份不改。实际冻结与验证身份在本页末尾关联的验证记录，不以本文或开发分支代替24h资格。
 
 ## 输入、故障和关闭

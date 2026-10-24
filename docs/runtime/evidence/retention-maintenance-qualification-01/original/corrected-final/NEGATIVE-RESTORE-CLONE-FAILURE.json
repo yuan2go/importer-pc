@@ -1,0 +1,9 @@
+{
+  "Status": "FAIL_NEGATIVE_TEST_FIXTURE",
+  "AtUtc": "2026-10-24T15:02:30.4369337+00:00",
+  "FailureSummary": "WinError 3 while opening the isolated restored snapshot in the disposable negative-test clone",
+  "Reason": "Restore verification was added to the reconciler; the negative-test fixture had not yet copied the restored directory",
+  "OriginalsChanged": false,
+  "EvidenceType": "Recorded failure summary, not a reconstruction of raw stdout/stderr",
+  "Correction": "Copy the already completed synthetic isolated restore into the disposable clone; preserve all assertions"
+}

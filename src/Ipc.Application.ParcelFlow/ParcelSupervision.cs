@@ -44,13 +44,13 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     public void UnregisterUi(string id) => uiProgress.TryRemove(id, out _);
     public object RuntimeProgress()
     {
-        int reads, administration; lock (readOwnership) { reads = readOperations.Count; administration = administrationOperations.Count; }
+        int reads, administration, managementStatus; lock (readOwnership) { reads = readOperations.Count; administration = administrationOperations.Count; managementStatus = managementStatusOperations.Count; }
         return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
             Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new { Name = p.Key, State = p.Value.Status.ToString(),
                 LastProgress = backgroundProgress.TryGetValue(p.Key, out var seen) ? (DateTimeOffset?)seen.At : null,
                 Detail = backgroundProgress.TryGetValue(p.Key, out var detail) ? detail.Detail : "NotStarted" }).ToArray(),
-            ReadOperations = reads, AdministrationOperations = administration, OverloadWrites = Volatile.Read(ref pendingOverloadWrites), Diagnostics = journal?.Status,
+            ReadOperations = reads, AdministrationOperations = administration, ManagementStatusOperations = managementStatus, OverloadWrites = Volatile.Read(ref pendingOverloadWrites), Diagnostics = journal?.Status,
             Failure = Volatile.Read(ref failure), SupervisionFailure = Volatile.Read(ref supervisionFailure) };
     }
     void StartSupervision() => supervisor = Task.Run(async () =>

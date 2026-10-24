@@ -8,7 +8,7 @@
 
 普通诊断使用256项有界队列，拥塞/写失败公开Dropped、State、Failure、LastFailure、LastProgress；恢复必须实际写入探测成功，不清空业务故障。业务SQLite/raw失败仍关闭相关共享准入。过载marker有独立有界写者，不在双位共享锁内落盘；写失败不会伪造接受。
 
-Stop关闭接收后等真实任务排空；读者最多4个、管理操作另有2个保留席位，日志授权/扫描/导出、历史SQLite执行、备份和最终Dispose均有所有者。UI超时只报告尚未停止，同一停止任务继续保有资源/租约。不得删lease、同时启动第二实例、杀进程后把原Unknown当失败。SDK已开始的native调用不能由托管token强行结束；Stop取消只取消等待，委托、缓冲、handle保有至native实际结束。若一直未结束，按下面挂起诊断保全证据，在获授权的维护窗口协调设备和进程处置。
+Stop关闭接收后等真实任务排空；读者最多4个、管理命令另有2个保留席位，管理状态多页观察合并为独立的一个在途读取（ManagementStatusOperations），不占命令席位、不缓存已完成状态。日志授权/扫描/导出、历史SQLite执行、状态观察、备份和最终Dispose均有所有者。UI超时只报告尚未停止，同一停止任务继续保有资源/租约。不得删lease、同时启动第二实例、杀进程后把原Unknown当失败。SDK已开始的native调用不能由托管token强行结束；Stop取消只取消等待，委托、缓冲、handle保有至native实际结束。若一直未结束，按下面挂起诊断保全证据，在获授权的维护窗口协调设备和进程处置。
 
 TCP EOF/读错误按位隔离；无数据可能是无来件，本地Ready不证明远端仍活着，不发送虚构相机心跳。SDK1.0.4补缺单机ConfiguredReaderMissing分类、帧Received=Delivered+Rejected+InFlight及公开错误原因。真实SDK停止、重连、驱动/网卡断电与双机吞吐仍须目标组合实测。
 

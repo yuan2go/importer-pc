@@ -5,7 +5,9 @@ public sealed partial class ParcelRuntime
     readonly object readOwnership = new();
     readonly HashSet<Task> readOperations = [];
     readonly HashSet<Task> administrationOperations = [];
+    readonly HashSet<Task> managementStatusOperations = [];
     internal Func<CancellationToken, Task>? BeforeRead { get; set; }
+    internal Func<CancellationToken, Task>? BeforeManagementStatusRead { get; set; }
     // Reject excess readers instead of building an unbounded Task.Run backlog.
     Task<T> OwnedRead<T>(Func<CancellationToken, Task<T>> read, CancellationToken token = default)
         => OwnedOperation(read, readOperations, 4, token);
@@ -40,6 +42,6 @@ public sealed partial class ParcelRuntime
     }
     Task DrainReadOperations(CancellationToken token)
     {
-        lock (readOwnership) return Task.WhenAll(readOperations.Concat(administrationOperations).ToArray()).WaitAsync(token);
+        lock (readOwnership) return Task.WhenAll(readOperations.Concat(administrationOperations).Concat(managementStatusOperations).ToArray()).WaitAsync(token);
     }
 }

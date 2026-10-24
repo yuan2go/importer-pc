@@ -35,6 +35,7 @@ static partial class StabilityRemediation
         await SlowMarker(workspace, Path.Combine(root, "slow-marker"));
         await DiagnosticRecovery(Path.Combine(root, "diagnostic"));
         await OwnedReads(workspace, Path.Combine(root, "reads"));
+        await OwnedManagementStatus(workspace, Path.Combine(root, "management-status"));
         await Retention(workspace, Path.Combine(root, "retention"));
         Console.WriteLine("PASS STABILITY01 COMPLETE; synthetic fault verification, not a 24h qualification");
     }
@@ -160,6 +161,33 @@ static partial class StabilityRemediation
         await begun.Task; await Task.Delay(50); activeCancel.Cancel();
         try { await longQuery.WaitAsync(TimeSpan.FromSeconds(3)); throw new Exception("Long SQL ignored cancellation"); }
         catch (SqliteException ex) { Check(ex.SqliteErrorCode == 9, "active SQLite engine work interrupted by the owned reader progress handler, not just cancelled wait"); }
+    }
+    static async Task OwnedManagementStatus(string workspace, string path)
+    {
+        var c = Config(workspace); var launch = Launch(path, c);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        app.BeforeManagementStatusRead = async token => { entered.TrySetResult(); await release.Task.WaitAsync(token); };
+        var first = app.ManagementModeStatusAsync(); await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var observers = Enumerable.Range(0, 32).Select(_ => app.ManagementModeStatusAsync()).ToArray();
+        Check(observers.All(t => ReferenceEquals(t, first)), "32 overlapping management observers share one actual read, not command slots or queued tasks");
+        using (var progress = JsonDocument.Parse(Wire.Encode(app.RuntimeProgress())))
+            Check(progress.RootElement.GetProperty("ManagementStatusOperations").GetInt32() == 1 && progress.RootElement.GetProperty("AdministrationOperations").GetInt32() == 0,
+                "management observation ownership is independently visible and bounded to one");
+        await app.ExitManagementModeAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        Check(!first.IsCompleted, "revocation command completes while the independent observation is blocked");
+        release.TrySetResult();
+        Check(!(await first).Authorized && (await Task.WhenAll(observers)).All(s => !s.Authorized), "all observers receive the actual revoked authority result");
+        await ManagementModeFixture.Authorize(app);
+        Check((await app.ManagementModeStatusAsync()).Authorized, "completed status is never cached across the next authority change");
+        entered = new(TaskCreationOptions.RunContinuationsAsynchronously); release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        var stoppedRead = app.ManagementModeStatusAsync(); await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await app.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(5));
+        try { await stoppedRead; throw new Exception("Stopped management observation completed unexpectedly"); } catch (OperationCanceledException) { }
+        using var stopped = JsonDocument.Parse(Wire.Encode(app.RuntimeProgress()));
+        Check(stopped.RootElement.GetProperty("ManagementStatusOperations").GetInt32() == 0, "stop cancels and drains the coalesced authority observation");
     }
     sealed class DelayedFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
     {

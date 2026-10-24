@@ -9,7 +9,23 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
     SoftwareLogReader Logs { get { Management.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
     void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
     public Func<string, Task>? ManagementPasswordSetupApproval { get; set; }
-    public Task<ManagementModeStatus> ManagementModeStatusAsync() => OwnedAdministration(_ => Task.FromResult(Management.InspectStatus()));
+    Task<ManagementModeStatus>? managementStatusRead;
+    public Task<ManagementModeStatus> ManagementModeStatusAsync()
+    {
+        lock (readOwnership)
+        {
+            if (stopping.IsCancellationRequested || disposed) throw new InvalidOperationException("运行正在停止，不能开始读取");
+            // Multiple pages/timers observe one actual read. Observation cannot consume
+            // either reserved command slot or build a background polling backlog.
+            if (managementStatusRead is { IsCompleted: false }) return managementStatusRead;
+            return managementStatusRead = OwnedOperation(async token =>
+            {
+                if (BeforeManagementStatusRead is { } before) await before(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                return Management.InspectStatus();
+            }, managementStatusOperations, 1, default);
+        }
+    }
     public Task ConfigureManagementPasswordAsync(string password) => OwnedAdministration(async token =>
     { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); Diagnostic("管理模式", "管理密码已设置"); return true; });
     public Task<bool> EnterManagementModeAsync(string password) => OwnedAdministration(async token =>

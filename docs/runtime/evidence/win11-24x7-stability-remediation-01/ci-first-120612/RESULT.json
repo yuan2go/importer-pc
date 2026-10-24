@@ -1,0 +1,12 @@
+{
+  "HeadRevision": "12061273bc6bc6d3ee7003981ebb6e1be5ac7232",
+  "SourceCommit": "28fb86b18a599e5f2bb10da5f8e381859cd442fb",
+  "RunId": 40083342205,
+  "JobId": 120841199323,
+  "Status": "FAIL",
+  "Failure": "ManagementModeStatusAsync observation consumed reserved administration slots during overlapping native UI refresh",
+  "LogOrigin": "GitHub job diagnostics decoded text, CRLF normalized to LF; GitHub credential masking retained",
+  "ArtifactId": 12556252524,
+  "ArtifactZipSha256": "14f3eefd7553fbe655d8442bf725f3857fd656a45118b9f537a9a9c8933813dd",
+  "Platform": "GitHub Windows Server 2025 10.0.26100; not target Windows 11 qualification"
+}

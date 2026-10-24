@@ -65,8 +65,26 @@ static class UxCommercialPresentation
         await VerifyBusy(probe, baseline);
         await VerifyFeedback(probe, baseline);
         await VerifyServiceContext(probe, baseline);
+        await VerifyManagementStatusOrder(probe);
         await app.StopAsync(CancellationToken.None);
         Console.WriteLine("PASS UX-PRESENTATION COMPLETE; reference projection/service ownership only; Windows native NOT_RUN");
+    }
+    static async Task VerifyManagementStatusOrder(UxPresentationProbe probe)
+    {
+        var original = probe.ManagementStatus;
+        try
+        {
+            var delayed = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var vm = new ParcelViewModel((IParcelApplication)(object)probe, "management-order", "test");
+            probe.ManagementStatus = () => delayed.Task;
+            var older = vm.RefreshManagementModeAsync();
+            probe.ManagementStatus = () => Task.FromResult(new ManagementModeStatus(true, false, null));
+            await vm.RefreshManagementModeAsync();
+            delayed.TrySetResult(new(true, true, DateTimeOffset.UtcNow.AddMinutes(1)));
+            await older;
+            Check(!vm.IsManagementMode, "late authorized observation cannot replace a newer revoked management status");
+        }
+        finally { probe.ManagementStatus = original; }
     }
     static async Task VerifySelectionInterleaving(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b)
     {

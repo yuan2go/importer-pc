@@ -49,3 +49,5 @@
 运行、SQL9升级/回退、保留天数、到期删除、完整备份、Windows ACL/SDK/NIC/锁屏/RDP/休眠/更新政策和采集命令见[运行指南](../win11-24x7-stability-remediation-01.md)。缺设备/合同/执行时间的项目保持NOT_RUN/BLOCKED，不以CI、模拟、加速预置或重启片段累计填补。工作包保留待资格验证状态。
 
 整合PR97后的受影响回归（win11-stability、sportmaster-rcs、ux-commercial-presentation、sportmaster-window-lifecycle、原生task-hierarchy）通过；不将旧CI/旧冻结结果扩张至该树。旧精确扩展绑定须按现有启动维护/完整候选/兼容检查完成受控版本转换，缺原版本/资格时拒绝启动，不能把旧冻结请求的版本、ID和报文改成新值以消除阻断。
+
+PR99首次Windows CI（head `12061273`，实际合并源码 `28fb86b1`，run `40083342205`）在原生管理/日志交互中发现状态观察占用管理命令席位，重叠刷新触发并发上限；安装目录/权限边界、首次配置/参数/任务链及业务流程已通过，但整个Windows job为FAIL。保留[首次日志](../evidence/win11-24x7-stability-remediation-01/ci-first-120612/WINDOWS-JOB.log)。后续修复把状态观察独立合并为一个有停止所有权的任务，管理命令两个席位不变；补充32个重叠观察、观察阻塞时撤销、完成后重新读取、停止排空及迟到授权不得覆盖新撤销状态的验证，原有原生断言保持不变。后续冻结和CI结果按各自SourceCommit另记。

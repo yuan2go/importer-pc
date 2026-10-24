@@ -38,5 +38,25 @@
   {
     "Source": "docs/design/framework-decisions.md",
     "Sha256": "C78A8D975E882FB9A96523CB95ECA8A2D9D5B7B6632EA2893E727195B8B5AC47"
+  },
+  {
+    "Source": "docs/runtime/version-compatibility-01.md",
+    "Sha256": "AF01CA3791AFD4975254F722B81C1C464026CBB636AF8079C26F423CDFD6ABF2",
+    "SourceCommit": "016976c65a4ba3c9119f4cc0a131bae82283aae5"
+  },
+  {
+    "Source": "docs/extensions/developer-guide.md",
+    "Sha256": "E716ABA50F3E064854C8CE81532724B4F32D439E5517A727230B586DA6A4D6F9",
+    "SourceCommit": "016976c65a4ba3c9119f4cc0a131bae82283aae5"
+  },
+  {
+    "Source": "docs/design/application-architecture-22.md",
+    "Sha256": "BF8DE024E8310959EDB2E4A4B61F630FF31E620AD0B5AA86994CCD29B2B99296",
+    "SourceCommit": "016976c65a4ba3c9119f4cc0a131bae82283aae5"
+  },
+  {
+    "Source": "docs/runtime/runtime-identity-preflight-02.md",
+    "Sha256": "133A2A226ECDCF35FBF8B6FFBCD5405CD05A56E255B698E39653CFE51524D28A",
+    "SourceCommit": "016976c65a4ba3c9119f4cc0a131bae82283aae5"
   }
 ]

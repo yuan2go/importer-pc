@@ -27,4 +27,4 @@
 
 本轮用户决策：4核/8GB、双位合计30～60件/分钟；现场选择7～30天，到期删除已结明细，永久防重与未决保留；RCS Unknown先保留。当前[运行/删除/迁移与回退](../runtime/win11-24x7-stability-remediation-01.md)及[R01～R12结果/未执行项](../runtime/validation/win11-24x7-stability-remediation-01.md)为实施入口。
 
-收口期间PR97已由其他获授权工作合并，main `c310705b5a927c90e8f6bb93de908b2fea36e826`；本分支整合该main并保留其全部有效业务呈现守卫。PR98最新已核对head `2badc3c7bb340a5bc3085d0421e7736fa8a5ac55`仍开放，不代合并。上方开放PR状态为开工记录，不作为交付当前状态。
+收口期间PR97已由其他获授权工作合并，main `c310705b5a927c90e8f6bb93de908b2fea36e826`；本分支整合该main并保留其全部有效业务呈现守卫。PR98随后也由其他获授权工作合入main `016976c65a4ba3c9119f4cc0a131bae82283aae5`，本分支继承其字体/布局/日志恢复；没有代合并PR。上方开放PR状态为开工记录，不作为交付当前状态。

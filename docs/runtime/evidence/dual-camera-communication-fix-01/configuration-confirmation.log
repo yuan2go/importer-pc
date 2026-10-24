@@ -1,0 +1,43 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-fe9a14a02df64d17b0ca545fe89c13b7
+PASS AQ: a readable seed without an existing authority opens first configuration without creating runtime data
+PASS AQ: missing parameters still open the existing first-configuration route with system defaults and no runtime resources
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: the original runtime stages a complete candidate before its simulated exact dependency becomes unavailable
+PASS AQ: a statically unusable Pending remains an existing-runtime launch, never a new-station wizard
+PASS AQ: controlled startup uses the confirmed Effective and retains failed Pending plus activation evidence
+PASS AQ: fallback constructs only Effective resources and preserves the original request, reply and attempt count without resend
+PASS AQ: an unreadable existing authority opens ordinary repair and preserves its bytes instead of reclassifying it as first configuration
+PASS AQ: legacy Effective successful startup remains explicitly unconfirmed and paused; seed does not replace old value
+PASS AQ: legacy envelope original bytes including BOM and SHA256 retained in the authoritative envelope
+PASS AQ: legacy confirmation requires maintenance grant
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: software Resume cannot bypass unconfirmed Effective
+PASS AQ: legacy confirmation binds current configuration CAS
+PASS AQ: legacy confirmation binds inspected Effective hash
+PASS AQ: legacy confirmation binds the inspected runtime identity at the business guard
+PASS AQ: legacy confirmation also binds application CAS
+PASS AQ: management mode confirms current revision and content with reason: Persisted Application command committed
+PASS AQ: confirmation records identity but keeps software pause for explicit Resume
+PASS AQ: confirmed Effective can resume through ordinary guards
+PASS AQ: confirmed legacy status survives restart without a new approval
+PASS AQ: failure on ordinary confirmed restart does not invent unknown prior Effective or erase confirmation
+PASS AQ: legacy Create failure persists original Effective and failed startup attempt without claiming activated
+PASS AQ: legacy failure restart retains both failed and successful resource attempts and still requires maintenance
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: legacy confirmation does not erase independent Pending candidate
+PASS AQ: Stage and restart retain exact legacy envelope and Pending without activating an unconfirmed base
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: maintenance can confirm legacy base while preserving candidate
+PASS AQ: candidate activates only after legacy confirmation plus a subsequent successful resource startup
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-7157facd67ec46d7952bb4cfcb8d3826
+PASS AQ: real child process termination before Create leaves durable unfinished legacy resource attempt
+PASS AQ: restart records interrupted legacy attempt and requires maintenance even after resources subsequently start
+PASS AQ: new seed is not effective after resource Create failure
+PASS AQ: new seed can confirm automatically only after actual resource startup succeeds
+PASS AQ: historical successful activation is sufficient evidence; regular restart does not require new maintenance approval
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: real confirmation VM refresh keeps read-time identity, original evidence and unsaved draft; unconfirmed input is not labelled confirmed Effective
+PASS AQ: two real maintenance VMs reject stale confirmation after refresh without advancing Owner or erasing evidence, reason or draft
+PASS AQ: explicit re-read updates confirmation identity while keeping independent edit draft
+PASS AQ: WPF confirmation action calls the shared business guard and preserves pause plus other window Pending
+PASS CONFIGURATION CONFIRMATION COMPLETE

@@ -247,7 +247,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DeviceStatus = !fresh ? "设备旧状态已失效" : device is null ? "设备状态未取得" : device.IsValid(now) ? "读码就绪 · " + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · " + device.ValidityReason(now);
+        DeviceStatus = !fresh ? "设备旧状态已失效" : device is null ? "设备状态未取得" : device.IsValid(now) ?
+            (device.Source.StartsWith("TCP:client-LF:", StringComparison.Ordinal) ? "TCP 已连接 · " : "设备已确认 · ") + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · 请查看本相机诊断";
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
         CanAdmit = !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;

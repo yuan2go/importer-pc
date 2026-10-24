@@ -1,0 +1,19 @@
+Evidence written locally: D:\DevCache\importer-pc\temp\dcc01-script-7cd2f694a1a0411e9c10de8cd8a9ec20\readonly; incomplete sections: 0
+PASS DCC01 SCRIPT: actual Windows PowerShell 5.1 executes the collector
+PASS DCC01 SCRIPT: default configuration-derived targets never authorize active probes
+PASS DCC01 SCRIPT: envelope, pending and DeviceId-to-position evidence stay distinct
+PASS DCC01 SCRIPT: alias, interface index, selected source and complete next hop remain separate
+PASS DCC01 SCRIPT: existing TCP sockets map to owning process
+PASS DCC01 SCRIPT: IPv4 prefix and subnet mask are both explicit
+PASS DCC01 SCRIPT: evidence-based next step distinguishes existing TCP from protocol and business checks
+PASS DCC01 SCRIPT: only allowlisted configuration metadata is exported
+PASS DCC01 SCRIPT: active probing refuses inferred configuration targets
+PASS DCC01 SCRIPT: collector never overwrites earlier evidence
+Evidence written locally: D:\DevCache\importer-pc\temp\dcc01-script-7cd2f694a1a0411e9c10de8cd8a9ec20\limited; incomplete sections: 1
+PASS DCC01 SCRIPT: unavailable sections are explicit evidence gaps
+WARNING: Active probes explicitly enabled. TCP may occupy a single-client camera connection. Pause and coordinate 
+ownership first; no application payload is sent.
+Evidence written locally: D:\DevCache\importer-pc\temp\dcc01-script-7cd2f694a1a0411e9c10de8cd8a9ec20\loopback; incomplete sections: 1
+PASS DCC01 SCRIPT: explicit loopback TCP probe closes without sending any application bytes
+PASS DCC01 SCRIPT: explicit TCP probe reports actual local and remote endpoints
+PASS DCC01 SCRIPT COMPLETE

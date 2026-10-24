@@ -31,8 +31,14 @@ public partial class ParcelViewModel
             address = reader.Parameters?.GetValueOrDefault("device.ip") is { } tcpIp ? tcpIp + ":" + reader.Parameters.GetValueOrDefault("device.port") : extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
             var health = snapshot.Devices?.SingleOrDefault(x => x.DeviceId == device);
             ready = health?.IsValid(now) == true;
-            status = ready ? "已确认" : "未就绪";
+            status = ready ? reader.Driver == "tcp-line" ? "TCP 已连接" : "设备已确认" : "未就绪";
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
+            if (reader.Driver == "tcp-line")
+                notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
+            if (IsManagementMode && health is not null)
+                evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
+                    "\n连接周期：" + health.Epoch + " · 已处理序号：" + health.Sequence + "\n连接证据：" + health.Source;
+            if (!ready) notice += "\n请检查本相机连接证据和现场实体，暂停并进入管理模式后按当前运行配置受控重连。";
         }
         else
         {

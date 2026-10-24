@@ -1,0 +1,256 @@
+{
+  "Task": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+  "BaselineMain": "165c2ffe353c59e69729ede4c92fcfd827344c9f",
+  "Platform": "Windows x64; .NET SDK 10.0.402; Windows PowerShell 5.1.22621.6133",
+  "SourceIdentity": "Implementation commit is recorded in the follow-up package receipt; captured code built from this task branch",
+  "Checks": [
+    {
+      "Command": "--dual-camera-communication",
+      "Assertions": 77,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "dual-camera.log"
+    },
+    {
+      "Command": "--application-architecture",
+      "Assertions": 63,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "application-architecture.log"
+    },
+    {
+      "Command": "--architecture-quality-remediation",
+      "Assertions": 100,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "architecture-quality.log"
+    },
+    {
+      "Command": "--configuration-confirmation",
+      "Assertions": 40,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "configuration-confirmation.log"
+    },
+    {
+      "Command": "--sportmaster-rcs",
+      "Assertions": 138,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "rcs.log"
+    },
+    {
+      "Command": "--rcs-heartbeat",
+      "Assertions": 26,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "heartbeat.log"
+    },
+    {
+      "Command": "--version-compatibility",
+      "Assertions": 56,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "version-compatibility.log"
+    },
+    {
+      "Command": "--parameter-refactor (ParameterRefactor portion)",
+      "Assertions": 41,
+      "Result": "PASS_PARTIAL_SUITE",
+      "ExitCode": null,
+      "Log": "parameter-core.log",
+      "ContainingCommandExitCode": -532462766
+    },
+    {
+      "Command": "--parameter-inheritance",
+      "Assertions": null,
+      "Result": "ENVIRONMENT_BLOCKED",
+      "ExitCode": -532462766,
+      "Log": null
+    },
+    {
+      "Command": "--dual-camera-diagnostics",
+      "Assertions": 4,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "native-diagnostics.log"
+    },
+    {
+      "Command": "powershell.exe -File scripts/test-diagnose-camera-network.ps1",
+      "Assertions": 13,
+      "Result": "PASS",
+      "ExitCode": 0,
+      "Log": "script.log"
+    }
+  ],
+  "EnvironmentLimitation": "Registered protected D-drive UserData/<current SID>/presentation denies display-preference writes. ACL/registry left unchanged. Full original log retained outside Git; inheritance suite stopped here, later checks NOT_RUN.",
+  "ReadOnlyCollector": {
+    "PowerShell": "5.1.22621.6133",
+    "ActiveProbes": 0,
+    "IncompleteSections": 0,
+    "AdapterRows": 19,
+    "PrivateOutput": "Outside Git; not copied into evidence"
+  },
+  "EarlyFailures": [
+    {
+      "Log": "startup-before.log",
+      "Meaning": "Latest-main runtime with deterministic immediate-frame fixture rejects first ingress; reproduced root cause"
+    },
+    {
+      "Log": "architecture-before-scope-fix.log",
+      "Meaning": "Initial broad IOException isolation swallowed generic resource-start failure; narrowed to explicit cleaned transport exception; original assertions retained"
+    },
+    {
+      "Log": "configuration-before-fixture-fix.log",
+      "Meaning": "Pre-I/O monitor drain guard rejected confirmation, causing 4 dependent failures; existing bounded helper now also handles explicit guard rejection"
+    },
+    {
+      "Log": "rcs-before-fixture-fix.log",
+      "Meaning": "Historical SKU wording and raw-custody fixture without current management authorization; aligned fixture with current source and policy"
+    }
+  ],
+  "Boundaries": {
+    "RealCameras": "NOT_CONNECTED",
+    "RealRcs": "NOT_RUN",
+    "VendorSdk": "NOT_RUN",
+    "InstallationUac": "NOT_RUN",
+    "ProductionNetworkMutation": "NONE",
+    "ProductionBusinessRequests": "NONE",
+    "D_RV": "UNCHANGED"
+  },
+  "PackageSmoke": "PASS_LOCAL_FROZEN_CANDIDATE",
+  "Files": [
+    {
+      "Path": "application-architecture.log",
+      "Sha256": "7ead84be10a771617757f9e09eb15fc6ecca8215ba9aba6804cf7af37a30c255",
+      "Bytes": 5543
+    },
+    {
+      "Path": "architecture-before-scope-fix.log",
+      "Sha256": "b1757bdbb7efac35be3712bf16dfe13e21ace75a8f36331323d56ce025131b19",
+      "Bytes": 4815
+    },
+    {
+      "Path": "architecture-quality.log",
+      "Sha256": "fee6808bd61024326c83db43fe681d0ecf2304515ebdcc99666f3a7ce25a03dd",
+      "Bytes": 8785
+    },
+    {
+      "Path": "build-core.log",
+      "Sha256": "3f97619c906fb3223497c110b1074326fdb337db70823f48a66ec2d225ed2ae4",
+      "Bytes": 2248
+    },
+    {
+      "Path": "build-desktop.log",
+      "Sha256": "5b761ac246a97a107ca47f0a975cce3b601d1b4445769bb6018a8b63441191c0",
+      "Bytes": 2447
+    },
+    {
+      "Path": "build-wpf.log",
+      "Sha256": "a07364fd76479b437116a90b6a2c4eeb8c64cd65469760ed50646c6e125d4897",
+      "Bytes": 2160
+    },
+    {
+      "Path": "configuration-before-fixture-fix.log",
+      "Sha256": "cb803b57885e7213cb0e1d04363b5e4ca4fca191aed8fd2b210fb8ed4f1732be",
+      "Bytes": 4410
+    },
+    {
+      "Path": "configuration-confirmation.log",
+      "Sha256": "b38ac9e132b6e91b60f2826f023c5811ff50f0d4bec44127916b3548c724729d",
+      "Bytes": 3959
+    },
+    {
+      "Path": "dual-camera.log",
+      "Sha256": "09e9f7132b1232dbfda6895bc9486d5182c84e010760df3268b41d365b25516d",
+      "Bytes": 6315
+    },
+    {
+      "Path": "guide-tests.log",
+      "Sha256": "c81bf509eec835c5785ea1c8fc872e1d20b8e214d1160d48d5712c184d7de457",
+      "Bytes": 427
+    },
+    {
+      "Path": "heartbeat.log",
+      "Sha256": "900b23638ccfe8982f281579ef4a3a5251303f08cff7df03553ccc69c56a7e24",
+      "Bytes": 2021
+    },
+    {
+      "Path": "manifest-blob-check.json",
+      "Sha256": "261445d4b665fbfe35c177ba6c5e1fae33c03991de4495105495f089695e1653",
+      "Bytes": 7890
+    },
+    {
+      "Path": "native-diagnostics.log",
+      "Sha256": "5e3a7cfcf1f01b90b290d37475e71ed91bccb5164e7a687d44388ed2d1e6658f",
+      "Bytes": 451
+    },
+    {
+      "Path": "native-diagnostics.png",
+      "Sha256": "0e213ca9b42ae15d6d5fcb57c24fa6ac9411f7780e6ee68c45104a10295ae208",
+      "Bytes": 87883
+    },
+    {
+      "Path": "package-receipt.json",
+      "Sha256": "c89441af3dbe941aaa1214d75dc16f61e84b8321f5d837f9387cd792d63117a4",
+      "Bytes": 864
+    },
+    {
+      "Path": "package-smoke.json",
+      "Sha256": "3436d25146b26647af19b80532d71efeb790dfd89911847408efd1ae209a0100",
+      "Bytes": 7848
+    },
+    {
+      "Path": "package-smoke.log",
+      "Sha256": "11689d8887eac7c329b289e15afa16c3ebdaa23a9fcf0b18533ee2cd0ead9dd4",
+      "Bytes": 561
+    },
+    {
+      "Path": "package.log",
+      "Sha256": "deb33f175877dc2b119c117b657aaffec255ed2faa1f635544147f007b50660f",
+      "Bytes": 4452
+    },
+    {
+      "Path": "parameter-core.log",
+      "Sha256": "decb0afd1a7bff1b4c01274321a9cfe9fd2634a57235686d9afe2588eb4178b0",
+      "Bytes": 3967
+    },
+    {
+      "Path": "python-compatibility.log",
+      "Sha256": "5bfefcbc07b0ba91b88b792c59c20bee7a88f19c920f9b5add1938e02ae3eaf9",
+      "Bytes": 3138
+    },
+    {
+      "Path": "rcs-before-fixture-fix.log",
+      "Sha256": "b33c47306520750209a394f5534bd27150485e17986855b97157685028241f10",
+      "Bytes": 10075
+    },
+    {
+      "Path": "rcs.log",
+      "Sha256": "e0a02ab2820e9993b5e54d3801e348d64d3d1c21874b1b63459e6b5b35ca1529",
+      "Bytes": 12622
+    },
+    {
+      "Path": "README.md",
+      "Sha256": "1e18dc356b26c4b14158ab4b5ae341a4e67736bbe6149fd564724eb5097119a1",
+      "Bytes": 601
+    },
+    {
+      "Path": "script.log",
+      "Sha256": "7008f7c8d8b4ce1a83c9515fb93d2f2f400e268e10dd2b2ef44e8cf5f125474e",
+      "Bytes": 1630
+    },
+    {
+      "Path": "startup-before.log",
+      "Sha256": "96c773bb947fa597d852031803906b91858da68580389b2fe98b1532693f91ce",
+      "Bytes": 1010
+    },
+    {
+      "Path": "version-compatibility.log",
+      "Sha256": "ca32b0ec5aa4337a6696ba7f43d2f135c37334ad4d21f67306c32dac0ced24c2",
+      "Bytes": 3984
+    }
+  ],
+  "RuntimeSourceCommit": "04fa9a258704b46acf7477fe8aee3d9d358c07e5",
+  "PackageReceipt": "package-receipt.json"
+}

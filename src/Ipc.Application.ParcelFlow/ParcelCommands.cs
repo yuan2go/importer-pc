@@ -199,6 +199,7 @@ public sealed partial class ParcelRuntime
     {
         if (stopped) return;
         Interlocked.Exchange(ref accepting, 0); stopping.Cancel();
+        ingressStartup.TrySetResult(false);
         // A timeout leaves every downstream resource owned; a subsequent Stop waits again.
         if (ports is not null)
         {

@@ -86,7 +86,7 @@ public sealed partial class ParcelRuntime
                 repository.Commit(null, "DeviceReconnected", "Actor=" + actor.AuditActor + "; device=" + key + "; no original request resent");
                 return new("Reconnected", "Selected lifecycle completed; software paused=" + repository.Paused + "; current health is required before dependent work", repository.Revision);
             }
-            catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
+            catch (Exception ex) when (ex is IOException or System.Net.Sockets.SocketException or TimeoutException or OperationCanceledException)
             {
                 foreach (var port in selectedPorts) { var now = DateTimeOffset.UtcNow; capabilityHealth[port.InstanceId] = new(port.InstanceId, false, now, now, "Maintenance incomplete: " + ex.GetType().Name); }
                 repository.Commit(null, "MaintenanceIncomplete", "Device=" + key + "; " + ex.GetType().Name + "; ownership retained, no successful stop/reconnect asserted");

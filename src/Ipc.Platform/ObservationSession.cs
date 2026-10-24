@@ -18,18 +18,26 @@ public sealed class ObservationSession(IControlledObservationSource source)
         return true;
     }
     public Task StartAsync(Func<Observation, bool> receive, CancellationToken token)
+        => StartAsync(receive, null, token);
+    Action<DeviceHealthConfirmation>? healthChanged;
+    public Task StartAsync(Func<Observation, bool> receive, Action<DeviceHealthConfirmation>? onHealthChanged, CancellationToken token)
     {
+        healthChanged = onHealthChanged;
         var registration = Epoch;
         return source.StartControlledAsync(registration, o => o.DeviceId == source.DeviceId && o.Epoch == registration && registration == Epoch && receive(o), h =>
         {
             if (h.DeviceId == source.DeviceId && h.Epoch == registration && registration == Epoch)
+            {
+                var previous = Health;
                 Volatile.Write(ref health, new(h.DeviceId, h.Epoch, Interlocked.Read(ref sequence), h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
+                if (previous is null || previous.Health != h.Health || previous.Epoch != h.Epoch) onHealthChanged?.Invoke(h);
+            }
         }, token);
     }
     public async Task ReconnectAsync(Func<Observation, bool> receive, CancellationToken token)
     {
         Volatile.Write(ref epoch, Wire.Id()); Interlocked.Exchange(ref sequence, 0); Volatile.Write(ref health, null);
         await source.StopAsync(token).ConfigureAwait(false);
-        await StartAsync(receive, token).ConfigureAwait(false);
+        await StartAsync(receive, healthChanged, token).ConfigureAwait(false);
     }
 }

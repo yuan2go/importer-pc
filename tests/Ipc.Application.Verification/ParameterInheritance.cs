@@ -45,7 +45,7 @@ static class ParameterInheritance
             var startup = new StartupConfigurationDraft(vm.Snapshot!.Configuration.Effective, await app.CapabilitiesAsync());
             Check(Wire.Encode(startup.Build()) == Wire.Encode(vm.BuildStructuredConfiguration()) && vm.StructuredPolicy!.BarcodeExclusionPattern == rule.ExclusionPattern && vm.StructuredPolicy.DiagnosticLogDays == "2", "first and daily editors round-trip the same complete candidate including exclusion and retention");
             var revision = vm.Snapshot!.Configuration.Revision;
-            vm.DisplayNameDraft = "合成站点"; vm.TargetEfficiencyDraft = "1800"; Check(vm.ApplyStationDisplay(), "display preferences persist through the existing local preference mechanism");
+            vm.DisplayNameDraft = "合成站点"; vm.TargetEfficiencyDraft = "1800"; Check(vm.ApplyStationDisplay(), "display preferences persist through the existing local preference mechanism: " + vm.DisplayPreferenceStatus);
             vm.DisplayNameDraft = "未应用草稿"; await vm.RefreshAsync();
             Check(vm.DisplayNameDraft == "未应用草稿" && vm.StationDisplaySummary.Contains("合成站点") && vm.StationDisplaySummary.Contains("1800 件/小时") && vm.Snapshot!.Configuration.Revision == revision && !vm.HasUnsavedConfiguration, "display has real consumers, preserves drafts during snapshots and never creates a runtime revision");
             var secondVm = new ParcelViewModel(app, "另一个窗口", "合成验证"); await secondVm.RefreshAsync();

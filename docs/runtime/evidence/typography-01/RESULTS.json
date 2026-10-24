@@ -10,12 +10,22 @@
     {
       "Case": "task-hierarchy",
       "ExitCode": 0,
-      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1fee48aa48394a4882934b98072207b2",
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-e525abac7f6a4bec8a22a896e28f5c1c",
       "PassCount": 165,
-      "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-      "Log": "checks/task-hierarchy/WINDOWS-WPF.log",
+      "SourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+      "Log": "ci-fix/local/task-hierarchy/WINDOWS-WPF.log",
       "Synthetic": true,
-      "ActualDpiScale": 1.25
+      "ActualDpiScale": 1.25,
+      "PreviousRun": {
+        "Case": "task-hierarchy",
+        "ExitCode": 0,
+        "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1fee48aa48394a4882934b98072207b2",
+        "PassCount": 165,
+        "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+        "Log": "checks/task-hierarchy/WINDOWS-WPF.log",
+        "Synthetic": true,
+        "ActualDpiScale": 1.25
+      }
     },
     {
       "Case": "task-hierarchy-parameters",
@@ -40,12 +50,22 @@
     {
       "Case": "visual-productization",
       "ExitCode": 0,
-      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-3aacd9a466ff4d39b90f8cd20ed1c5a8",
-      "PassCount": 126,
-      "SourceCommit": "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
-      "Log": "checks/visual-productization/WINDOWS-WPF.log",
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-0d3ff6b8bb444b1195c02292e759129c",
+      "PassCount": 115,
+      "SourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+      "Log": "ci-fix/local/visual-productization/WINDOWS-WPF.log",
       "Synthetic": true,
-      "ActualDpiScale": 1.25
+      "ActualDpiScale": 1.25,
+      "PreviousRun": {
+        "Case": "visual-productization",
+        "ExitCode": 0,
+        "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-3aacd9a466ff4d39b90f8cd20ed1c5a8",
+        "PassCount": 126,
+        "SourceCommit": "9e6c6280665a16114f5bca6aad59d4599b7e3c6d",
+        "Log": "checks/visual-productization/WINDOWS-WPF.log",
+        "Synthetic": true,
+        "ActualDpiScale": 1.25
+      }
     },
     {
       "Case": "parameter-v3-only",
@@ -98,7 +118,7 @@
       "ActualDpiScale": 1.25
     }
   ],
-  "FinalSelectedPassCount": 666,
+  "FinalSelectedPassCount": 655,
   "PublishedFontPassCount": 11,
   "PublishedFontEvidence": "published-font/FONT-RESOLUTION.json",
   "NotRun": [
@@ -111,5 +131,7 @@
     "production/site acceptance"
   ],
   "NoFormalMediaOrInstall": true,
-  "CaptureFixtureCommit": "169fcca9c0cf56cb86963c20bea1fc420ad6bff6"
+  "CaptureFixtureCommit": "169fcca9c0cf56cb86963c20bea1fc420ad6bff6",
+  "CiFix": "ci-fix/RESULT.json",
+  "InitialRoundPassCount": 666
 }

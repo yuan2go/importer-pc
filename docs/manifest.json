@@ -54935,9 +54935,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "6249182f2fa25e7e2f60d8657c16632ad80e4bff7c93b6053b53e215e3b9bb00",
-      "size_bytes": 12963,
-      "git_blob": "082cae7d63d29e3654e046cf78ad360bbdc3bb3c",
+      "sha256": "76d44cf5ccede32ce34fb7d7eff02c2ea0ad5f77bffbf0f6ea4033360c241111",
+      "size_bytes": 13842,
+      "git_blob": "cdd0ae54c2b4048302f3ede301681bfb191a18f8",
       "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
@@ -59142,14 +59142,14 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "version": "typography-01",
+      "status": "current_source_or_specification",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "93e7a2e0a8e2eed513ae7e30e0cc8c8a66c0517001fc94e24699103d2b920fc4",
-      "size_bytes": 28078,
-      "git_blob": "2b786175ff8428de6aa9a0b8cf59601dd85c6a4f",
+      "sha256": "2f6981501bf87ce89a99f4f0065311a14468f0e9d19777c204a267edfcf76198",
+      "size_bytes": 29206,
+      "git_blob": "20c3b59ea850413af7df60456b85eeb19b8731b7",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7d2b140df1a7a8d11518c4232c9df3853c946c3e",
         "sha256": "0c3a3922962cebdd116f7f0f714e5e792a0ae943de046f26ff3c6ced0a767ff4",
@@ -70191,9 +70191,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "955a88f6d2e42dbef62d0da8041000b94c13a899bdd9e0c1660bee20032bdded",
-      "size_bytes": 14700,
-      "git_blob": "6289399311c237fa1b078cd58afb9d3f5efc81a9"
+      "sha256": "5aaf74704fe0c43be8d66676ffb8915d40e13769ffaea9336f37564927615402",
+      "size_bytes": 19311,
+      "git_blob": "ea1d89a7c06a02c829d34906d5bb3840ccc1efaf"
     },
     {
       "path": "docs/runtime/evidence/typography-01/PUBLISH-RESOURCES.json",
@@ -70213,9 +70213,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "9cd312c631deaa578ad00cf07209d2beeb0bc877ebb084a8d14ceca5dbf3542a",
-      "size_bytes": 7421,
-      "git_blob": "04c2113f07b835d5f889993bdfb2997aabc9488e"
+      "sha256": "b9e22ef139d347d204d44112d3efeb27b3d69e1c120934ad22d70e42d2e7b8bd",
+      "size_bytes": 8275,
+      "git_blob": "964b5c2d88eccf8242044861564e5ad275aff469"
     },
     {
       "path": "docs/runtime/evidence/typography-01/RESULTS.json",
@@ -70224,9 +70224,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "c779945b700d951f7c91fd65cfa3df56aa387d544d8566fb8171358276433301",
-      "size_bytes": 4241,
-      "git_blob": "ded698f508e7aa3e6b08ef050ff004fe992823f8"
+      "sha256": "db7014b356cd857d6ba0b6889da92cb30804583b0c9f4f97ffcfc6faacb3eeea",
+      "size_bytes": 5166,
+      "git_blob": "12cf7217f3317e01f5734d2d92d977f80a5f149a"
     },
     {
       "path": "docs/runtime/evidence/typography-01/SCREENSHOTS.json",
@@ -70235,9 +70235,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "067169b5afad71e7e3644b55ff8373a766b95bb5b90718a5d61d8bda09f2f30a",
-      "size_bytes": 6137,
-      "git_blob": "fda2416fe3d1bd065845fb5f7cfd28787b4a1c5c"
+      "sha256": "9edf5ef0418acfd1cf5f98531cc6b5fb57ff5528c87aebe6132726e0339c8663",
+      "size_bytes": 8270,
+      "git_blob": "96f59cbc3af96f653acb6511aeb6cae3479f5f5e"
     },
     {
       "path": "docs/runtime/evidence/typography-01/after/installer-first-run-ui/after-configuration-start-gate.png",
@@ -70917,9 +70917,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "a53e08c411e3939dbd1914c5b17a989b0d5fba8edade44974200737b36c232de",
-      "size_bytes": 5272,
-      "git_blob": "682bfc4e7283c3f7c1b8d8303017d8fef8a65abd"
+      "sha256": "6cce672e0a68b1e8a206f7438938108e087feeecc9072989d50f5140e7e21507",
+      "size_bytes": 5994,
+      "git_blob": "fc6cd8a07661bc648a5064b5dddc973492d624f8"
     },
     {
       "path": "docs/work-packages/WP-IPC-TYPOGRAPHY-01.md",
@@ -70928,9 +70928,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "1da93265e67faddfcd8206cd835ef44c50666277c345824d130df1e784c7bed2",
-      "size_bytes": 1963,
-      "git_blob": "59375c934f561302d91277b8038338d54bfb910a"
+      "sha256": "c5d48d598d519576075daf81d8dd306bfe92a75f7ae6520d62e6fa3245c7b5ac",
+      "size_bytes": 2281,
+      "git_blob": "15644c70067c14c732bd04b5ae20c11b75191e8c"
     },
     {
       "path": "src/Ipc.Presentation.Wpf/Fonts/NOTICE.json",
@@ -71263,6 +71263,270 @@
       "sha256": "166d78c877a0e70b55a9cab40eee95e531ac2eeaa21d7af698d7c6e8da580698",
       "size_bytes": 50006,
       "git_blob": "8c0a9a50e27520e829d492664facd7ad6d2bdaab"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/RESULT.json",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "a636286a003b76daec1979ec06ab78b7bad60afd959381298dfc0d136fe96d98",
+      "size_bytes": 1534,
+      "git_blob": "c98e661f8b6f5191373368201bc8bde1f48d66f4"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/first-ci/job.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "45b495afb6b27dc3381cd76f5b601acf10f3abafff9ed20bd46678e31394731d",
+      "size_bytes": 66850,
+      "git_blob": "0691a2b6117791f0043a124ef33816dee8c4917e"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/first-ci/parameters-v3/RESULT.json",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "e5cef51fad519371605d8c5f263f2839e4facfa802cbcd504ae5677c3cb34387",
+      "size_bytes": 3287,
+      "git_blob": "0bab05269e7febeec44d3de669be68e061a7b7de"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/first-ci/parameters-v3/WINDOWS-WPF.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "b3b215d0b293adb45c0e744f9f7f1352ac63c0bc4a7eb236b97afb80cb1884d6",
+      "size_bytes": 8757,
+      "git_blob": "ce71510ee1d46a1862b7e8140781bd1a17682e7a"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/first-ci/visual/RESULT.json",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "e5cef51fad519371605d8c5f263f2839e4facfa802cbcd504ae5677c3cb34387",
+      "size_bytes": 3287,
+      "git_blob": "0bab05269e7febeec44d3de669be68e061a7b7de"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/first-ci/visual/WINDOWS-WPF.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "496a65113ceff8978d1c7f2e5a49c19087f096e0ad998e4549fe37f77b04059a",
+      "size_bytes": 12483,
+      "git_blob": "b8cedbf3b3152abf19d2e1ff1354b5430459e26e"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/build.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "eec4e0785e17fb85a2c8c6a68ba9eb977ab55ea5e5091d294b2150c2cd092605",
+      "size_bytes": 3545,
+      "git_blob": "ac89aaa665b4166ec7278791069be2f51380a833"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/WINDOWS-WPF.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "cb0beb42e1998a7d556eb815314558e2e9ee76bc73e2726aa9c19188f4a90256",
+      "size_bytes": 18410,
+      "git_blob": "1b8569bcfc2fb9a0fac6a20c1691f141a062c82d"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/classic-工作台-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "7075ef996b541e881f0da5c79b49e04f790a50dfeb35989581affd91539c9032",
+      "size_bytes": 55417,
+      "git_blob": "694e521a978d8712aa48cfb9f0333fd5b98b8c7a"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-Conflict-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "557b99e26d49023115b50652556876893d0d0cd68fe07a0e44211fe872f9d927",
+      "size_bytes": 61661,
+      "git_blob": "622c23946384d4f52ba974c6dbb6cf992ef45b5d"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-Rejected-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "7ecacea4b2365d32f7dbfcdfd40f34eacb28e57e61e7c1cac380cef0fa28963c",
+      "size_bytes": 56591,
+      "git_blob": "a88f5732ccd761216fa69deda3bcd5e528e4aa3f"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-Unknown-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "84ec1766d823ded73d7a657fa2194d9f9942db44526c964ca2b9f73e21bb8638",
+      "size_bytes": 59500,
+      "git_blob": "e219344124e2d89de66b14962a028c9ec086929d"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-log-range-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "4506375366c15c665338b1a882a53bec808c364c507f5b0cce591b93eca3a3ab",
+      "size_bytes": 73750,
+      "git_blob": "9c601cdeae7cd1a1e8254836c817acb113744f32"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-logs-command-Unknown-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "a8c09843e5afee2c86716f5c17a8b1ff66b9e0d15ca479d0b25c907f347d7a83",
+      "size_bytes": 53112,
+      "git_blob": "bbd7dcef5e3eceb623ed4d8c121b119eb7a32047"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-long-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "42829369e11853e85b75e8f69c95b918c77af0ac50f1b51bba3655a0180a8fa9",
+      "size_bytes": 59935,
+      "git_blob": "8c8e52d6243ba428f37b9b1be89a584aca3e2687"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-stale-1366.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "e3539de04f3161d87c404e5bbf230361f8f75641a22a6bf65846b6af52a3425e",
+      "size_bytes": 80119,
+      "git_blob": "d72c02a1a57ddfb0c58f4417ab39cf22876f4c51"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-unadmitted-1366.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "691783cdb5271f2bc1c5e6c315ba05eea5ef41384af71b5b1eac6e2f0c1dc6fd",
+      "size_bytes": 75079,
+      "git_blob": "44e8924f8f2e89de1b0030629be38632f437a897"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-作业记录-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "633e4c1535a1ff2d6e2459b728d3168623a748d03a885a473aa3f77faa19450c",
+      "size_bytes": 48575,
+      "git_blob": "e6349ac4af8944cbffe64207fd2f746ff9b53a8b"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-工作台-1366.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "c9c3c18aaa3e54f339c3974098a628f414863686b86f413c165d6c85993163db",
+      "size_bytes": 83943,
+      "git_blob": "4ad54e2c79748598d4f0339f9af8877467b6e4fe"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-工作台-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "42867d2daeb55c1fd58ea95e924e6800c80048ed721f1a3906709e0787ed60a8",
+      "size_bytes": 54271,
+      "git_blob": "2c90e4091d13d77afa68550b25caa54d537cde63"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/task-hierarchy/supply-station-日志查询-800.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "4506375366c15c665338b1a882a53bec808c364c507f5b0cce591b93eca3a3ab",
+      "size_bytes": 73750,
+      "git_blob": "9c601cdeae7cd1a1e8254836c817acb113744f32"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/visual-productization/CLIENT-MATRIX.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "8f4e21dc6f5d3824ad358871fe566548f418787026148edf7eb7084ee66c045a",
+      "size_bytes": 1388,
+      "git_blob": "8ce55ef1a11ebd10e25231d4a6d03e1c8f5cb38b"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/visual-productization/WINDOWS-WPF.log",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "29127c48413f2ed9f699ffdc59af1fbbf8772b6a9b4d5051c6aac36bf7a7360b",
+      "size_bytes": 11943,
+      "git_blob": "aec76ffd5d059f79640a678390941003f57fdacf"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/ci-fix/local/visual-productization/supply-station-client-800x420-unknown-rejection.png",
+      "version": "typography-01",
+      "status": "native_synthetic_evidence",
+      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "storage_scope": "public_repository",
+      "sha256": "0158daa1aa771a7f509b36ebe223962c32e8382def4502ccc245ead5a473708e",
+      "size_bytes": 46865,
+      "git_blob": "36ba69923090112e3b52f1fe027161deee61325b"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -73842,7 +74106,7 @@
     "runtime": "docs/runtime/typography-01.md",
     "font_notice": "src/Ipc.Presentation.Wpf/Fonts/NOTICE.json",
     "evidence": "docs/runtime/evidence/typography-01/RESULTS.json",
-    "native_passes": 666,
+    "native_passes": 655,
     "published_font_passes": 11,
     "actual_dpi": 1.25,
     "not_run": [

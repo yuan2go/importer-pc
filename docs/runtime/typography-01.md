@@ -40,3 +40,7 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 ```
 
 `--typography` 可独立检查内嵌字形、Regular/Medium真实文件、Consolas及 Microsoft YaHei UI 回退。其余本包选用 `--task-hierarchy-parameters`、`--internal-pages`、`--parameter-v3-only`、`--parameter-shell-polish`、`--visual-productization`。每次原生证据位置由 `.artifacts/WINDOWS-WPF-EVIDENCE.txt` 返回。上述为本地构建/发布资源和模拟入口核验，不执行正式安装或设备控制。
+
+## 首次托管CI续修
+
+PR98首次CI的Windows Server 2025实际100%缩放发现800×420未准入输入加原Unknown责任时条码越过正文视口。`f4f6045`仅减少紧凑位标题、结果框及条码标签留白，不减字号、不隐藏原责任、不改业务文本/守卫；本机余量由2.4增至27.2 DIP，受影响视觉/层级两组280项重新通过。原断言保留并增加几何诊断。首轮666项记录、后续分组最新655项记录和[原始托管失败/续修](evidence/typography-01/ci-fix/RESULT.json)分别保留来源；托管重跑的最终状态以[PR98检查](https://github.com/yuan2go/importer-pc/pull/98/checks)为准，不能替代本机Windows11实际100%/150%或现场证据。

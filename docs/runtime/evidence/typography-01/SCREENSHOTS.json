@@ -2,106 +2,132 @@
   {
     "Scenario": "supply-station-工作台-1366",
     "Before": "before/task-hierarchy/supply-station-工作台-1366.png",
-    "After": "after/task-hierarchy/supply-station-工作台-1366.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-工作台-1366.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-工作台-1366.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-工作台-800",
     "Before": "before/task-hierarchy/supply-station-工作台-800.png",
-    "After": "after/task-hierarchy/supply-station-工作台-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-工作台-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-工作台-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "classic-工作台-800",
     "Before": "before/task-hierarchy/classic-工作台-800.png",
-    "After": "after/task-hierarchy/classic-工作台-800.png",
+    "After": "ci-fix/local/task-hierarchy/classic-工作台-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/classic-工作台-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-long-800",
     "Before": "before/task-hierarchy/supply-station-long-800.png",
-    "After": "after/task-hierarchy/supply-station-long-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-long-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-long-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-Unknown-800",
     "Before": "before/task-hierarchy/supply-station-Unknown-800.png",
-    "After": "after/task-hierarchy/supply-station-Unknown-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-Unknown-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-Unknown-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-Rejected-800",
     "Before": "before/task-hierarchy/supply-station-Rejected-800.png",
-    "After": "after/task-hierarchy/supply-station-Rejected-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-Rejected-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-Rejected-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-Conflict-800",
     "Before": "before/task-hierarchy/supply-station-Conflict-800.png",
-    "After": "after/task-hierarchy/supply-station-Conflict-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-Conflict-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-Conflict-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-stale-1366",
     "Before": "before/task-hierarchy/supply-station-stale-1366.png",
-    "After": "after/task-hierarchy/supply-station-stale-1366.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-stale-1366.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-stale-1366.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-unadmitted-1366",
     "Before": "before/task-hierarchy/supply-station-unadmitted-1366.png",
-    "After": "after/task-hierarchy/supply-station-unadmitted-1366.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-unadmitted-1366.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-unadmitted-1366.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-作业记录-800",
     "Before": "before/task-hierarchy/supply-station-作业记录-800.png",
-    "After": "after/task-hierarchy/supply-station-作业记录-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-作业记录-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-作业记录-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-日志查询-800",
     "Before": "before/task-hierarchy/supply-station-日志查询-800.png",
-    "After": "after/task-hierarchy/supply-station-日志查询-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-日志查询-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-日志查询-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-log-range-800",
     "Before": "before/task-hierarchy/supply-station-log-range-800.png",
-    "After": "after/task-hierarchy/supply-station-log-range-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-log-range-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-log-range-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "supply-station-logs-command-Unknown-800",
     "Before": "before/task-hierarchy/supply-station-logs-command-Unknown-800.png",
-    "After": "after/task-hierarchy/supply-station-logs-command-Unknown-800.png",
+    "After": "ci-fix/local/task-hierarchy/supply-station-logs-command-Unknown-800.png",
     "BeforeSourceCommit": "e5ed46d",
-    "AfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
-    "ActualDpiScale": 1.25
+    "AfterSourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+    "ActualDpiScale": 1.25,
+    "PreviousAfter": "after/task-hierarchy/supply-station-logs-command-Unknown-800.png",
+    "PreviousAfterSourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1"
   },
   {
     "Scenario": "parameters-供包台标识-1366",

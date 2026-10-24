@@ -1,0 +1,15 @@
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=511.2 target=(1440, 768)
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=511.2 target=(1440, 768)
+supply-station target=(1440, 768) client=1440x768 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=643.2 target=(1600, 900)
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=643.2 target=(1600, 900)
+supply-station target=(1600, 900) client=1600x900 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=367.2 target=(1100, 600)
+FIELD CurrentBarcode top=184.8 bottom=256.8 height=72 body=367.2 target=(1100, 600)
+supply-station target=(1100, 600) client=1100x600 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=136 bottom=184 height=48 body=303.2 target=(911, 512)
+FIELD CurrentBarcode top=136 bottom=184 height=48 body=303.2 target=(911, 512)
+supply-station target=(911, 512) client=911.2x512 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=136 bottom=184 height=48 body=211.2 target=(800, 420)
+FIELD CurrentBarcode top=136 bottom=184 height=48 body=211.2 target=(800, 420)
+supply-station target=(800, 420) client=800x420 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan

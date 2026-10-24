@@ -99,13 +99,25 @@ static partial class Program
         await ClickManagementMenu(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
         Check(vm.SelectedPage == "workstation" && !vm.IsManagementMode, "revocation removes an already-open log page");
         await SetClient(window, 1366, 768);
-        var modeDialog = new ManagementModeWindow(runtime) { Owner = window }; modeDialog.Show(); await Task.Delay(150);
+        // A frozen published DLL can finish the real status I/O after 150ms.
+        // Await the observable state instead of inspecting constructor defaults.
+        async Task WaitModeReady(ManagementModeWindow dialog, string action)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            while (!Descendants(dialog).OfType<Button>().Any(b => Equals(b.Content, action) && b.IsVisible && b.IsEnabled))
+            {
+                if (watch.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Management dialog did not become ready: " + action);
+                await Task.Delay(10);
+            }
+            await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        }
+        var modeDialog = new ManagementModeWindow(runtime) { Owner = window }; modeDialog.Show(); await WaitModeReady(modeDialog, "进入管理模式");
         Check(!Descendants(modeDialog).OfType<TextBox>().Any(t => t.IsVisible) && Descendants(modeDialog).OfType<PasswordBox>().Count(t => t.IsVisible) == 1, "normal mode entry asks only for a management password, without username or account tools");
         Check(Descendants(window).OfType<ManagementModeMenu>().Any(b => b.IsVisible && !b.Status.Authorized), "normal and compact work headers expose an explicit mode entry action");
         Capture("management-mode-entry", modeDialog); modeDialog.Close();
         Check(!Descendants(window).OfType<MenuItem>().Any(m => m.Header is string text && text.Contains("支持")), "compact and expanded navigation contain no help/support entry");
         var setupMode = new ParcelManagementMode(Path.Combine(evidence, "mode-first-setup"));
-        var setup = new ManagementModeWindow(setupMode) { Owner = window }; setup.Show(); await Task.Delay(150);
+        var setup = new ManagementModeWindow(setupMode) { Owner = window }; setup.Show(); await WaitModeReady(setup, "设置并继续");
         Check(Descendants(setup).OfType<PasswordBox>().Count(p => p.IsVisible) == 2 && !Descendants(setup).OfType<TextBox>().Any(p => p.IsVisible), "first mode setup has password confirmation and no account creation");
         Capture("management-mode-first-setup", setup);
         Check(Descendants(setup).OfType<TextBlock>().Any(p => p.Text == "5–256 个字符，可使用纯数字。"), "first setup states the five-character numeric-compatible password policy");
@@ -119,7 +131,7 @@ static partial class Program
         Click(setup, "设置并继续");
         for(int i=0;i<100 && !(await setupMode.ManagementModeStatusAsync()).Authorized;i++) await Task.Delay(30);
         await Task.Delay(100); Check((await setupMode.ManagementModeStatusAsync()).Authorized && !setup.IsVisible, "password-only first setup enters management mode and returns to the original work window");
-        var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await Task.Delay(150);
+        var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await WaitModeReady(editPassword, "退出管理模式");
         Descendants(editPassword).OfType<Expander>().Single().IsExpanded = true; editPassword.UpdateLayout(); Capture("management-mode-password-change", editPassword);
         var replacement = "22222";
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPassword").Password = replacement;

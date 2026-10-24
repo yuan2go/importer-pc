@@ -1,0 +1,24 @@
+# RETENTION-QUALIFICATION-01：本机维护资格补证
+
+2026-10-24。以最新远端main `5bb032d7354ef619064a015484a5001204edfff5`开工，复用独立D盘工作树，分支`codex/retention-full-scale-qualification-01`。原主工作区四个附件和其他任务进程保持原位，不覆盖并行工作。此包补验证夹具、运行工具、证据和缺口登记，不重复修改PR100的业务查询修复。
+
+中途同步main `1dfb676` / PR102的验证夹具、CI和RECHECK-02归档增量；其src/config tree与开工main相同。完整规模运行固定原产品和执行夹具，不因同步文档/测试而换写运行身份；新增合并和CI身份单列。
+
+依据：[稳定性工作包](WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[运行与维护](../runtime/win11-24x7-stability-remediation-01.md)、[原查询独立复核](../runtime/validation/retention-performance-review-01.md)。框架F-01/F-09/F-12、唯一账、未决原请求和D/RV边界继续有效；原查询、CI、发行及历史失败保持各自SourceCommit。
+
+## 本轮范围
+
+1. 按R01–R12重新区分本机已覆盖、完整历史/维护补证、目标工控机、真实SDK/RCS、持续24h/72h及现场验收缺口。
+2. 使用实际reference运行产生种子，直接从Repository读取原冻结事实；公开快照已脱敏，不能作为冻结配置原件。批量预置明确为加速合成导入，不伪称逐件经历真实设备或运行了7/30天。
+3. 完整DB9样本包含作业/冻结请求、Committed回包原件BLOB、永久回复指纹、输入账和审计；保留少量未归档raw文件以实际走先归档再备份流程。独立设置未决命令、身份冲突、中断输入、Unknown、近期审计和未到期六类保护。
+4. 使用真实Windows普通/提权token和真实CLI。标准RunAs/UAC在现有HKLM登记的D盘存储根下新建受保护隔离目录，管理员/System写、Users只读；不更改原部署、权限策略、HKLM登记或既有设备租约。
+5. 实测检查、完整COMPLETED备份、正常清理/压缩、隔离恢复、重复清理、错误hash拒绝、普通权限拒绝，以及永久身份与原件责任逐笔对账。原两小时预算不延长；失败和未完成场景如实登记。
+6. 大规模优先尝试259.2万条（30天×60/min上界）的完整合成结构；实际生成、清理和磁盘结果另记，不把1万条或索引投影测试外推为最大规模通过。
+
+## 原件与资格
+
+新增结果使用本轮源码/产品DLL/夹具DLL及执行脚本hash。旧`12a7cbd`查询配对、`6cebb301`/PR100 CI、`3512f3ac`/PR101归档CI及各历史介质不改写。夹具或环境失败保留原日志，不删断言、不跳过关键测试或把预估时间标实测。
+
+本轮维护是受保护隔离Simulation目录的CLI验证，不是已登记Production部署/正式安装的完整生命周期，不取得真实RCS原报文规模、数字号段合同、真实双SDK、目标4核8GB、多Windows版本、完整24h/72h或工业现场资格。
+
+当前结果、复现和剩余缺口见[本轮验证报告](../runtime/validation/retention-maintenance-qualification-01.md)。

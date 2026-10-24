@@ -33,6 +33,8 @@
 
 # 文档索引 · 作业、管理模式与日志
 
+2026-10-24长稳维护补证：[本轮工作包](work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[完整原件规模/受保护CLI结果和剩余缺口](runtime/validation/retention-maintenance-qualification-01.md)。固定开工main `5bb032d`，原查询微基准和各次CI保持原身份；本机隔离Simulation补证不替代目标工控机、真实设备或24h/72h验收。
+
 2026-10-24历史清理查询独立复核：[报告和验证边界](runtime/validation/retention-performance-review-01.md)、[原件/hash与仓库复现](runtime/evidence/retention-performance-review-01/README.md)。固定复核main `12a7cbd`；PR100已包含性能修复。本次仅归档，不重改业务代码，不将短测、CI或安装器构建扩张为24h/72h或现场验收。
 
 同日RECHECK-02从main `5bb032d`再次配对到百万审计，并保留首次升级夹具竞态失败及实际回执修复；详见上述报告的再核查段和[新证据清单](runtime/evidence/retention-performance-review-01/recheck-02/FILES.json)。原归档结论保持形成时身份，未重复修改生产清理实现。

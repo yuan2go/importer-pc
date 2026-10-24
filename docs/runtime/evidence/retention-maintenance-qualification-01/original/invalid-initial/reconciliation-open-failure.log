@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc-retention-verification\scripts\reconcile-retention-qualification.py", line 104, in <module>
+    value = reconcile(args.run, args.output, args.completed_only)
+  File "D:\projects\importer-pc-retention-verification\scripts\reconcile-retention-qualification.py", line 52, in reconcile
+    db.execute('ATTACH DATABASE ? AS original', (backup.as_uri() + '?mode=ro',))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: unable to open database file

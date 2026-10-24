@@ -1,0 +1,807 @@
+{
+  "OriginalRunStatus": "FAIL",
+  "ProductSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "CapturedFiles": [
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\BACKUP-604800-OBSERVATION.json",
+      "path": "original/corrected-final/BACKUP-604800-OBSERVATION.json",
+      "bytes": 432,
+      "sha256": "e66583ecc87deb0d5387db9212b70a5ab0c93b0e968058bc44ba1b13bcd49562"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\backup-604800.COMPLETED.json",
+      "path": "original/corrected-final/backup-604800.COMPLETED.json",
+      "bytes": 459,
+      "sha256": "5a8d3da6aff93580f64ecde07bffbf7966c1861e04618feb7aab0456339dec45"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\CHECK-DELTA-IDENTITY.py",
+      "path": "original/corrected-final/CHECK-DELTA-IDENTITY.py",
+      "bytes": 2446,
+      "sha256": "48e219fb41ae2406da699a262a88e193efe63f646771b303c55d30b9160bd56d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-1000.err.log",
+      "path": "original/corrected-final/create-1000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-1000.out.log",
+      "path": "original/corrected-final/create-1000.out.log",
+      "bytes": 422,
+      "sha256": "db85429e7f2d49ca663040ec866080a6a32ee8d3a1a602c8f94e29312e471d36"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-10000.err.log",
+      "path": "original/corrected-final/create-10000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-10000.out.log",
+      "path": "original/corrected-final/create-10000.out.log",
+      "bytes": 723,
+      "sha256": "6b82e836807c90236df5e7cab3289107d08639c79560643d39dbeb8d74c88179"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-604800.err.log",
+      "path": "original/corrected-final/create-604800.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\create-604800.out.log",
+      "path": "original/corrected-final/create-604800.out.log",
+      "bytes": 23056,
+      "sha256": "c519bff9c876b069ce40e4eb6a6e6b82e1e0f888599afdaca197a3dda91278f9"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\DRAFT-CI-69FE77C.json",
+      "path": "original/corrected-final/DRAFT-CI-69FE77C.json",
+      "bytes": 724,
+      "sha256": "61b953fb6a319ed33d51657ae1816a0890611f77376f886d25a20d9f5d6a865d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\DRAFT-DELTA-CHECK.json",
+      "path": "original/corrected-final/DRAFT-DELTA-CHECK.json",
+      "bytes": 541,
+      "sha256": "ab760ed365c3c9b77a97acd135256e1bcc635f45708acb722175ff5b4e3daee1"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\ENVIRONMENT.json",
+      "path": "original/corrected-final/ENVIRONMENT.json",
+      "bytes": 980,
+      "sha256": "9b94c8d728ea335aa6e56f9ef6b8769d8933bfaf92b627e545ac10b36ab2ad17"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\EXECUTED-FIXTURE.cs",
+      "path": "original/corrected-final/EXECUTED-FIXTURE.cs",
+      "bytes": 20508,
+      "sha256": "b85ddf52d0e681d166d383296a070a24edaed0ff39a0975f8a9fbc13c17404ab"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\EXECUTED-HELPER.ps1",
+      "path": "original/corrected-final/EXECUTED-HELPER.ps1",
+      "bytes": 12244,
+      "sha256": "8d5761ce86ce27d8ca673a5b4747c6ed82436e8799638f2e0d3a7fa4540c000e"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-1000.err.log",
+      "path": "original/corrected-final/expire-1000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-1000.out.log",
+      "path": "original/corrected-final/expire-1000.out.log",
+      "bytes": 272,
+      "sha256": "102a96eb9208fe145721a035dc6728ca8ebc3cec167b8134ff569ab479908f79"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-10000.err.log",
+      "path": "original/corrected-final/expire-10000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-10000.out.log",
+      "path": "original/corrected-final/expire-10000.out.log",
+      "bytes": 275,
+      "sha256": "776c81f506ef5a108752737f474450c4c33be1fc3dbd2a547868507b89fce643"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-604800.err.log",
+      "path": "original/corrected-final/expire-604800.err.log",
+      "bytes": 1534,
+      "sha256": "56b190ef50de3f4e23f7f5d764e22dfe5ca5d75ba7c1713a9d9539309fe62e30"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\expire-604800.out.log",
+      "path": "original/corrected-final/expire-604800.out.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\FAILED-SCALE-SUMMARY.json",
+      "path": "original/corrected-final/FAILED-SCALE-SUMMARY.json",
+      "bytes": 1208,
+      "sha256": "2b562d9679b378dfd1206cc947484476e229236fc32ac955f0a13b9a51f06acf"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\fixture-1000.json",
+      "path": "original/corrected-final/fixture-1000.json",
+      "bytes": 1287,
+      "sha256": "b62cb0d30f4745988edacf2c34b58032d9f28ed80b03e728f72accd1138d82d5"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\fixture-10000.json",
+      "path": "original/corrected-final/fixture-10000.json",
+      "bytes": 1296,
+      "sha256": "f5df37e723bf02d8b2c4b1e2097f64c8d0b02d43524b798ac6ed3ce7e5ce272c"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\fixture-604800.json",
+      "path": "original/corrected-final/fixture-604800.json",
+      "bytes": 1309,
+      "sha256": "23a5ab01a5c018408f4bf114e4937ac87800981124716ed7edff11b4bc9f78db"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\HELPER.json",
+      "path": "original/corrected-final/HELPER.json",
+      "bytes": 227,
+      "sha256": "eb28d70371aa7c82541f57a763e04aade76a4aa8ba4a79d2827f9e207fa4c2c5"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\HOST-DISK.json",
+      "path": "original/corrected-final/HOST-DISK.json",
+      "bytes": 368,
+      "sha256": "08057c96e3acd762b78340fd4891ed50d7b878c5d3cf41e38590ba33e982066b"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-1000.err.log",
+      "path": "original/corrected-final/inspect-1000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-1000.out.log",
+      "path": "original/corrected-final/inspect-1000.out.log",
+      "bytes": 1899,
+      "sha256": "383285c2e1e035ec63e20da6913be08c922354030b25170efa2cc9a694614315"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-10000.err.log",
+      "path": "original/corrected-final/inspect-10000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-10000.out.log",
+      "path": "original/corrected-final/inspect-10000.out.log",
+      "bytes": 1899,
+      "sha256": "ed23632801075e6f751ab3b20e4111fee13d07704d162ee4f3e3210438e0c1d6"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-604800.err.log",
+      "path": "original/corrected-final/inspect-604800.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-604800.out.log",
+      "path": "original/corrected-final/inspect-604800.out.log",
+      "bytes": 1904,
+      "sha256": "8bf8cd30ff843476f44c72b9d6002e8cba0beaf965f9f1efd913f0871cc8b637"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-restored.err.log",
+      "path": "original/corrected-final/inspect-restored.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\inspect-restored.out.log",
+      "path": "original/corrected-final/inspect-restored.out.log",
+      "bytes": 1901,
+      "sha256": "da219982fc4d46dac40141a0a22e175d58f3b935102ceebd3f599e81507e9d1c"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\LIVE-RETIREMENT-OBSERVATIONS.jsonl",
+      "path": "original/corrected-final/LIVE-RETIREMENT-OBSERVATIONS.jsonl",
+      "bytes": 1942,
+      "sha256": "b587edff15ca6cb4f175dbf2c5eac4766d0cf91bdf9d771e668d3846999b73a1"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\LIVE.json",
+      "path": "original/corrected-final/LIVE.json",
+      "bytes": 184,
+      "sha256": "90351a3ab04fb0d4f3720670c7ec2833bbcffe56a54b6f8196f76e90848dabf2"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\MAIN-ADVANCE-COMPARISON.json",
+      "path": "original/corrected-final/MAIN-ADVANCE-COMPARISON.json",
+      "bytes": 3361,
+      "sha256": "ca9ed0dc0a09d2168ee8ca9926c1cf13d99aed1d2734c2417d9ec2a46b0ccd51"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\MAINTENANCE-OBSERVATIONS.jsonl",
+      "path": "original/corrected-final/MAINTENANCE-OBSERVATIONS.jsonl",
+      "bytes": 126399,
+      "sha256": "5fe15233a48ac655e173a2d38aa52d3ea037f63333bf8678a79cf1ec8c1cdc84"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\NEGATIVE-RESTORE-CLONE-FAILURE.json",
+      "path": "original/corrected-final/NEGATIVE-RESTORE-CLONE-FAILURE.json",
+      "bytes": 594,
+      "sha256": "e7d55116843a322e5f606048f4ef2737114b51847f247efd38ddb18f309d530e"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\NOT-RUN-2592000.json",
+      "path": "original/corrected-final/NOT-RUN-2592000.json",
+      "bytes": 519,
+      "sha256": "5d0a89ed9a4fc2962fdbda87cd178e1e2cf0dca59dd9222ded67d579070af132"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\OBSERVE-COMMITTED-RETIREMENTS.py",
+      "path": "original/corrected-final/OBSERVE-COMMITTED-RETIREMENTS.py",
+      "bytes": 1660,
+      "sha256": "ffe901fa01a6946c587cbc91ab86986d2e559b0d1d1955f77e8da00a43fb619d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\OBSERVE-MAINTENANCE.ps1",
+      "path": "original/corrected-final/OBSERVE-MAINTENANCE.ps1",
+      "bytes": 2033,
+      "sha256": "7350a8554b2cc9d491240fa31f82049ae2a6a5ed401bccef643f62d724e6dc3b"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\OBSERVE-PARTIAL-CUSTODY.py",
+      "path": "original/corrected-final/OBSERVE-PARTIAL-CUSTODY.py",
+      "bytes": 4841,
+      "sha256": "67b0635fe5f6ccb9d58985a76f9b7b053fe0478f776c8122d22edb9dfe4c2d67"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\ORDINARY-PROTECTED-CLI.json",
+      "path": "original/corrected-final/ORDINARY-PROTECTED-CLI.json",
+      "bytes": 684,
+      "sha256": "b69a5320f89247c0ad125c5349768416ac23c13d7d3b7cf953eab69e6de6331e"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\ordinary-protected-cli.log",
+      "path": "original/corrected-final/ordinary-protected-cli.log",
+      "bytes": 626,
+      "sha256": "a7277483af52edbb70b056fbec4c1f9c649b128c9702b0a94cd5cf196b0dce99"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\ORIGINAL-REVIEW-IDENTITY-CHECK.log",
+      "path": "original/corrected-final/ORIGINAL-REVIEW-IDENTITY-CHECK.log",
+      "bytes": 57,
+      "sha256": "b0ba14714b3dfb0fd0cabc4a48a16ab3f56b3a14b8390539323ef84b1227714c"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PARTIAL-CUSTODY-DIAGNOSTIC.json",
+      "path": "original/corrected-final/PARTIAL-CUSTODY-DIAGNOSTIC.json",
+      "bytes": 1409,
+      "sha256": "f92ac04d4c1508fa8ac3dafdca08590370ff518ad81213512b10aa2845d121c0"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\POST-BUDGET-RECOVERY-HELPER.json",
+      "path": "original/corrected-final/POST-BUDGET-RECOVERY-HELPER.json",
+      "bytes": 292,
+      "sha256": "b0892c048fdcc2a053e869ca0d95921aaba34184d54a670ac30d983a72b38243"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\POST-BUDGET-RECOVERY-LAUNCH-CANCELLED.json",
+      "path": "original/corrected-final/POST-BUDGET-RECOVERY-LAUNCH-CANCELLED.json",
+      "bytes": 555,
+      "sha256": "db79255f148e87d74de426d8a6f1c0555f66cf1d1d1a5f44bf6714fa4fdb082d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PRESERVED-INVALID-PARTIAL.json",
+      "path": "original/corrected-final/PRESERVED-INVALID-PARTIAL.json",
+      "bytes": 1199,
+      "sha256": "0d0eb4c25afb5d597ce35fa9c51540db156a6f8bda2c8eeee50f3861b13b0334"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PROTECTED-RESULT.json",
+      "path": "original/corrected-final/PROTECTED-RESULT.json",
+      "bytes": 19276,
+      "sha256": "51c7a6869d93021956aa9e5d27b752fa5c60c719ff234d7f98cf639ed1c59ac8"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-fixture-build-final.log",
+      "path": "original/corrected-final/published-fixture-build-final.log",
+      "bytes": 2413,
+      "sha256": "3101eac35c44a694521cae5c70b7750e5a52e2f0c1815cef48e400f40caec387"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-fixture-build-peer-fix.log",
+      "path": "original/corrected-final/published-fixture-build-peer-fix.log",
+      "bytes": 2413,
+      "sha256": "5f4d00689a23831185099b130d6c4a93fe8fc00ffc1c8ed42fb78c5221e1b1dd"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-fixture-build.log",
+      "path": "original/corrected-final/published-fixture-build.log",
+      "bytes": 2413,
+      "sha256": "9bc70bd3cc0617f6fe7ab5d63ba577bd53af9bd150b01ee77865bc5f24ef3e41"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PUBLISHED-FIXTURE-GUARD.json",
+      "path": "original/corrected-final/PUBLISHED-FIXTURE-GUARD.json",
+      "bytes": 414,
+      "sha256": "8fc4b333a62772dd75863e6c15479683ecf94e401abea1da77610a30579a2b2a"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-reject-production.log",
+      "path": "original/corrected-final/published-reject-production.log",
+      "bytes": 1037,
+      "sha256": "ef8c38c9cfdea3d854cd7f71669b06c2b7b8f74a7e4b5670e56b6898342506ce"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-seed.log",
+      "path": "original/corrected-final/published-seed.log",
+      "bytes": 160,
+      "sha256": "a2dbc81c0355111a18f9bf560a5b383ef1666f2f72cb0386d2e01af39610ec9a"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-smoke-1000.log",
+      "path": "original/corrected-final/published-smoke-1000.log",
+      "bytes": 1031,
+      "sha256": "3e060d189a6b26b3a18bbe0fdf68414e5407a9a7bd106fdd41de3ffac1f44eac"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\published-smoke-corrected-1000.log",
+      "path": "original/corrected-final/published-smoke-corrected-1000.log",
+      "bytes": 422,
+      "sha256": "4b4b07e16477396cc1b72fe08205bddebcc0a2628747b29b0bcc53998e0b5317"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PUBLISHED-SOURCE-IDENTITY.json",
+      "path": "original/corrected-final/PUBLISHED-SOURCE-IDENTITY.json",
+      "bytes": 1522,
+      "sha256": "48b588ba1a55bfe49086f29b020d3b1cb88a785f3a011aaf7ee08cf4eb7f3082"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-final-completed-cases.json",
+      "path": "original/corrected-final/RECONCILIATION-final-completed-cases.json",
+      "bytes": 7072,
+      "sha256": "2f47c583da0a80b273b2eea2cbdb5d8be6ac0f4151af653ebf9e7e185fa6c176"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-full-guards-small.json",
+      "path": "original/corrected-final/RECONCILIATION-full-guards-small.json",
+      "bytes": 5468,
+      "sha256": "7a5b6288e398e5a922f1dc0dcc87df30265f65ad52571b1a5ae08359d00160bd"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-NEGATIVE-final.log",
+      "path": "original/corrected-final/RECONCILIATION-NEGATIVE-final.log",
+      "bytes": 120,
+      "sha256": "f4dce489318432ba4619ddfa5622481bc5505921fa1a393a6ca30d8d27535382"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-NEGATIVE-pending-responsibility.log",
+      "path": "original/corrected-final/RECONCILIATION-NEGATIVE-pending-responsibility.log",
+      "bytes": 120,
+      "sha256": "f4dce489318432ba4619ddfa5622481bc5505921fa1a393a6ca30d8d27535382"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-NEGATIVE-with-restores.log",
+      "path": "original/corrected-final/RECONCILIATION-NEGATIVE-with-restores.log",
+      "bytes": 120,
+      "sha256": "f4dce489318432ba4619ddfa5622481bc5505921fa1a393a6ca30d8d27535382"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-NEGATIVE.log",
+      "path": "original/corrected-final/RECONCILIATION-NEGATIVE.log",
+      "bytes": 120,
+      "sha256": "f4dce489318432ba4619ddfa5622481bc5505921fa1a393a6ca30d8d27535382"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-pending-responsibility-small.json",
+      "path": "original/corrected-final/RECONCILIATION-pending-responsibility-small.json",
+      "bytes": 7076,
+      "sha256": "c8e6a6e7d9a118ee4857fb2274d6b5e42b4042608b7d7215897d43af89c81b5c"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-restores-small.json",
+      "path": "original/corrected-final/RECONCILIATION-restores-small.json",
+      "bytes": 5091,
+      "sha256": "dcf9d98dbdc985603dfc5be92b165d26e42ae289db834bd5000f12c393e8b197"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-small.json",
+      "path": "original/corrected-final/RECONCILIATION-small.json",
+      "bytes": 3879,
+      "sha256": "174bd842556d8b658da6cbe476f95d12c1381225efdc3d870018701a38b23857"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RECONCILIATION-workflow-small.json",
+      "path": "original/corrected-final/RECONCILIATION-workflow-small.json",
+      "bytes": 6488,
+      "sha256": "5a3d5170897f3bcf0b28d8e225d1f205219f5737db9f09ad1f004583fbb61f1a"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\reinspect-restored-1000.err.log",
+      "path": "original/corrected-final/reinspect-restored-1000.err.log",
+      "bytes": 1837,
+      "sha256": "f3addd82ae39957e9c90265c197da4696ce0f22be591c0e6d2fdefd408789041"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\reinspect-restored-1000.out.log",
+      "path": "original/corrected-final/reinspect-restored-1000.out.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\repeat-expiry.err.log",
+      "path": "original/corrected-final/repeat-expiry.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\repeat-expiry.out.log",
+      "path": "original/corrected-final/repeat-expiry.out.log",
+      "bytes": 266,
+      "sha256": "d5da369aab183691ab3aa27ca4061d470292ad22868c4a96676c2affd1a4d6a9"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\restore-isolated.err.log",
+      "path": "original/corrected-final/restore-isolated.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\restore-isolated.out.log",
+      "path": "original/corrected-final/restore-isolated.out.log",
+      "bytes": 106,
+      "sha256": "9a2d883890142617105a689eccda5c9b6975993d27a9524378b2a5141c661cc9"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\restore-plan.err.log",
+      "path": "original/corrected-final/restore-plan.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\restore-plan.out.log",
+      "path": "original/corrected-final/restore-plan.out.log",
+      "bytes": 156,
+      "sha256": "814fc172a6c20ebfec82ac3abbbf6315e80a2299096b718109d7404c70412fca"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\RESTORE-REINSPECTION.json",
+      "path": "original/corrected-final/RESTORE-REINSPECTION.json",
+      "bytes": 992,
+      "sha256": "f29fcfc52783febd11708e9b63e5c95c37883de018e7821b2aacb32715236ed8"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\SOURCE-IDENTITY-CORRECTED.json",
+      "path": "original/corrected-final/SOURCE-IDENTITY-CORRECTED.json",
+      "bytes": 1633,
+      "sha256": "baa93da81290f0f25ddb4031deb5b72c8a345ad76f1d6bb5a0ace414f32f6e1d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\SUPPLEMENTARY-FAILURES.json",
+      "path": "original/corrected-final/SUPPLEMENTARY-FAILURES.json",
+      "bytes": 1687,
+      "sha256": "c0514cd2fbd8f891460322b6d733a0eafa0a54b050f21462fde962321576a8df"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\synced-fixture-build.log",
+      "path": "original/corrected-final/synced-fixture-build.log",
+      "bytes": 2413,
+      "sha256": "34afb46ef9c653fc348bf0135fbd791de98360c1a0b05152d2fdc160fa41f146"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\SYNCED-UPGRADE-CHECK.json",
+      "path": "original/corrected-final/SYNCED-UPGRADE-CHECK.json",
+      "bytes": 781,
+      "sha256": "a15e5ee208ede7b3309f20e6a6a379807167803ba5bdf7b793b7bf0bf994f40d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\synced-upgrade-conflict-closure.log",
+      "path": "original/corrected-final/synced-upgrade-conflict-closure.log",
+      "bytes": 5616,
+      "sha256": "a6ce0962329bd62559f53b804fc9746ea9516e708d863f87f63ba34f7ac3fd6e"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verified-1000.json",
+      "path": "original/corrected-final/verified-1000.json",
+      "bytes": 471,
+      "sha256": "db6ea7d22831280dab637592f991bb16b305d33a4086665a3797987b5a0b89eb"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verified-10000.json",
+      "path": "original/corrected-final/verified-10000.json",
+      "bytes": 471,
+      "sha256": "8b6603d3abe1ade863b6d0cc9e38ac98e9de98f29de758c47f6b0ea91caabfaa"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verify-1000.err.log",
+      "path": "original/corrected-final/verify-1000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verify-1000.out.log",
+      "path": "original/corrected-final/verify-1000.out.log",
+      "bytes": 718,
+      "sha256": "4eb85da0860b7e32974bcf5d34f23cc1218d62964ebc663381755a840b7e25c9"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verify-10000.err.log",
+      "path": "original/corrected-final/verify-10000.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\verify-10000.out.log",
+      "path": "original/corrected-final/verify-10000.out.log",
+      "bytes": 718,
+      "sha256": "8754b2b0a2c53319c789c8a29062d0941a6263df10a85d23b4161537fb951b3e"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\VERIFY-BUDGET-RECOVERY.ps1",
+      "path": "original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1",
+      "bytes": 5504,
+      "sha256": "2cd5de8b790db4be7b490d85656fb89d1c2031790ca0f641c556470eed127511"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\wrong-hash.err.log",
+      "path": "original/corrected-final/wrong-hash.err.log",
+      "bytes": 1025,
+      "sha256": "1b70ae833da72cd59ac40b5183063fa90d3b4f9b8f7deae67a014a75f38d418f"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\wrong-hash.out.log",
+      "path": "original/corrected-final/wrong-hash.out.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\inspect-restored.err.log",
+      "path": "original/corrected-final/captured-restore-10000/inspect-restored.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\inspect-restored.out.log",
+      "path": "original/corrected-final/captured-restore-10000/inspect-restored.out.log",
+      "bytes": 1901,
+      "sha256": "da219982fc4d46dac40141a0a22e175d58f3b935102ceebd3f599e81507e9d1c"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\restore-isolated.err.log",
+      "path": "original/corrected-final/captured-restore-10000/restore-isolated.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\restore-isolated.out.log",
+      "path": "original/corrected-final/captured-restore-10000/restore-isolated.out.log",
+      "bytes": 106,
+      "sha256": "9a2d883890142617105a689eccda5c9b6975993d27a9524378b2a5141c661cc9"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\restore-plan.err.log",
+      "path": "original/corrected-final/captured-restore-10000/restore-plan.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\captured-restore-10000\\restore-plan.out.log",
+      "path": "original/corrected-final/captured-restore-10000/restore-plan.out.log",
+      "bytes": 156,
+      "sha256": "814fc172a6c20ebfec82ac3abbbf6315e80a2299096b718109d7404c70412fca"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\BENCH-with-guards-identity-pair.json",
+      "path": "original/corrected-final/input-plan-component/BENCH-with-guards-identity-pair.json",
+      "bytes": 7698,
+      "sha256": "d9caf993172ad9c42aac51a668419444e805c731e4b373df883eeb19df060b1d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\BENCH-without-guards.json",
+      "path": "original/corrected-final/input-plan-component/BENCH-without-guards.json",
+      "bytes": 6769,
+      "sha256": "74e6697ee35d8eca666e41a61c6196ea02071dcf14149772b1e86f24d9d21ab2"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\BENCH.json",
+      "path": "original/corrected-final/input-plan-component/BENCH.json",
+      "bytes": 7693,
+      "sha256": "83414d3a86f71d7d465222c0b4a92cdfea6362b407b45a8e1becc7e9feb1e836"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\component-bench-exact-eligible.log",
+      "path": "original/corrected-final/input-plan-component/component-bench-exact-eligible.log",
+      "bytes": 1453,
+      "sha256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\component-bench-first-failure.log",
+      "path": "original/corrected-final/input-plan-component/component-bench-first-failure.log",
+      "bytes": 2102,
+      "sha256": "978738a07f14d4e8bc9be5ac201376add18f19d8de5ca1da2073196c6c011266"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\component-bench-fixed.log",
+      "path": "original/corrected-final/input-plan-component/component-bench-fixed.log",
+      "bytes": 1453,
+      "sha256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\component-bench-with-guards.log",
+      "path": "original/corrected-final/input-plan-component/component-bench-with-guards.log",
+      "bytes": 1453,
+      "sha256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\component-bench.log",
+      "path": "original/corrected-final/input-plan-component/component-bench.log",
+      "bytes": 2102,
+      "sha256": "978738a07f14d4e8bc9be5ac201376add18f19d8de5ca1da2073196c6c011266"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\InputPlan.csproj",
+      "path": "original/corrected-final/input-plan-component/InputPlan.csproj",
+      "bytes": 377,
+      "sha256": "15a2644ab6ebc2d8b14a9918db178a38b2b02c5c88edcfd5f914770d9ca61484"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\original.sql",
+      "path": "original/corrected-final/input-plan-component/original.sql",
+      "bytes": 469,
+      "sha256": "490448815ebce416c232c316a181ae9fcb64aa8640074403abb991bacf9fdbda"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\plan-first-failure.log",
+      "path": "original/corrected-final/input-plan-component/plan-first-failure.log",
+      "bytes": 731,
+      "sha256": "d88130c6b6852c3f5a827f3869cccb444cd202c3d60591443a26785bcf0fcac1"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\plan-fixed.log",
+      "path": "original/corrected-final/input-plan-component/plan-fixed.log",
+      "bytes": 1380,
+      "sha256": "4c9a3750046c1dd952a805fb9e917c9c5abb4ca8f69e2bd9e1478e62cb3036cf"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\PLAN.json",
+      "path": "original/corrected-final/input-plan-component/PLAN.json",
+      "bytes": 1378,
+      "sha256": "3b1a1a1451e9b25f6d1771b80e0a014a83faa6519dfeff366508a878f3c89de7"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\plan.log",
+      "path": "original/corrected-final/input-plan-component/plan.log",
+      "bytes": 731,
+      "sha256": "d88130c6b6852c3f5a827f3869cccb444cd202c3d60591443a26785bcf0fcac1"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\Program-before-guards.cs.txt",
+      "path": "original/corrected-final/input-plan-component/Program-before-guards.cs.txt",
+      "bytes": 5799,
+      "sha256": "20e079a480d51a15e802d58f4bf54a4f980f7a212fb032f84613a4034681208a"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\Program-first.cs.txt",
+      "path": "original/corrected-final/input-plan-component/Program-first.cs.txt",
+      "bytes": 1666,
+      "sha256": "c52df4a3e0fdc21246fa02f8c9d2441b6b1f9f07596586c69be89d67051d24c6"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\Program.cs",
+      "path": "original/corrected-final/input-plan-component/Program.cs",
+      "bytes": 6168,
+      "sha256": "bfd1647265974a1a9401d56bc5ab132013bda347181c056130db196d401549e8"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\PROVENANCE.json",
+      "path": "original/corrected-final/input-plan-component/PROVENANCE.json",
+      "bytes": 3985,
+      "sha256": "5a4c27f4c74c8c5afee9e2912776a7fbe7321177237f1f7d539b28c655296c7d"
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-input-plan-20261025\\rowid-proposal.sql",
+      "path": "original/corrected-final/input-plan-component/rowid-proposal.sql",
+      "bytes": 481,
+      "sha256": "84881e6b1270c01a60453ed5a4165b17385075469624df695ce1b10c627d2f98"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\FIXTURE.json",
+      "path": "original/corrected-final/cases/1000/FIXTURE.json",
+      "bytes": 1287,
+      "sha256": "b62cb0d30f4745988edacf2c34b58032d9f28ed80b03e728f72accd1138d82d5"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\VERIFIED.json",
+      "path": "original/corrected-final/cases/1000/VERIFIED.json",
+      "bytes": 471,
+      "sha256": "db6ea7d22831280dab637592f991bb16b305d33a4086665a3797987b5a0b89eb"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\complete-before-expiry.db.recovery\\COMPLETED.json",
+      "path": "original/corrected-final/cases/1000/complete-before-expiry.db.recovery/COMPLETED.json",
+      "bytes": 459,
+      "sha256": "18eca310f2b24aafcd38dbb0797bddc74927f85b30fa08eb9951e4764a00720b"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\complete-before-expiry.db.recovery\\configuration.json",
+      "path": "original/corrected-final/cases/1000/complete-before-expiry.db.recovery/configuration.json",
+      "bytes": 3477,
+      "sha256": "cc12abf7871df2fcfc55188511bc31821f598be5089ff02c4ee17fb3f9da4e05"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster\\RESTORED-ISOLATED.json",
+      "path": "original/corrected-final/cases/1000/restored/Simulation/retention-qualification/sportmaster/RESTORED-ISOLATED.json",
+      "bytes": 459,
+      "sha256": "18eca310f2b24aafcd38dbb0797bddc74927f85b30fa08eb9951e4764a00720b"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster\\configuration.json",
+      "path": "original/corrected-final/cases/1000/restored/Simulation/retention-qualification/sportmaster/configuration.json",
+      "bytes": 3477,
+      "sha256": "cc12abf7871df2fcfc55188511bc31821f598be5089ff02c4ee17fb3f9da4e05"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\FIXTURE.json",
+      "path": "original/corrected-final/cases/10000/FIXTURE.json",
+      "bytes": 1296,
+      "sha256": "f5df37e723bf02d8b2c4b1e2097f64c8d0b02d43524b798ac6ed3ce7e5ce272c"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\VERIFIED.json",
+      "path": "original/corrected-final/cases/10000/VERIFIED.json",
+      "bytes": 471,
+      "sha256": "8b6603d3abe1ade863b6d0cc9e38ac98e9de98f29de758c47f6b0ea91caabfaa"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\complete-before-expiry.db.recovery\\COMPLETED.json",
+      "path": "original/corrected-final/cases/10000/complete-before-expiry.db.recovery/COMPLETED.json",
+      "bytes": 459,
+      "sha256": "abed71d1e428c9ce81572f2d01b35c47e8d6b5f2660d66db23848aa5a9900636"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\complete-before-expiry.db.recovery\\configuration.json",
+      "path": "original/corrected-final/cases/10000/complete-before-expiry.db.recovery/configuration.json",
+      "bytes": 3477,
+      "sha256": "cc12abf7871df2fcfc55188511bc31821f598be5089ff02c4ee17fb3f9da4e05"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\restored\\Simulation\\retention-qualification\\sportmaster\\RESTORED-ISOLATED.json",
+      "path": "original/corrected-final/cases/10000/restored/Simulation/retention-qualification/sportmaster/RESTORED-ISOLATED.json",
+      "bytes": 459,
+      "sha256": "abed71d1e428c9ce81572f2d01b35c47e8d6b5f2660d66db23848aa5a9900636"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\restored\\Simulation\\retention-qualification\\sportmaster\\configuration.json",
+      "path": "original/corrected-final/cases/10000/restored/Simulation/retention-qualification/sportmaster/configuration.json",
+      "bytes": 3477,
+      "sha256": "cc12abf7871df2fcfc55188511bc31821f598be5089ff02c4ee17fb3f9da4e05"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\FIXTURE.json",
+      "path": "original/corrected-final/cases/604800/FIXTURE.json",
+      "bytes": 1309,
+      "sha256": "23a5ab01a5c018408f4bf114e4937ac87800981124716ed7edff11b4bc9f78db"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db.recovery\\COMPLETED.json",
+      "path": "original/corrected-final/cases/604800/complete-before-expiry.db.recovery/COMPLETED.json",
+      "bytes": 459,
+      "sha256": "5a8d3da6aff93580f64ecde07bffbf7966c1861e04618feb7aab0456339dec45"
+    },
+    {
+      "source": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db.recovery\\configuration.json",
+      "path": "original/corrected-final/cases/604800/complete-before-expiry.db.recovery/configuration.json",
+      "bytes": 3477,
+      "sha256": "cc12abf7871df2fcfc55188511bc31821f598be5089ff02c4ee17fb3f9da4e05"
+    }
+  ],
+  "DatabasesOrBinariesCopied": false,
+  "OriginalTextFiles": 210,
+  "Scope": "Exact synthetic text capture only; no target/24h/72h/field qualification"
+}

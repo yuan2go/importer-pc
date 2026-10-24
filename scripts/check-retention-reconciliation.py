@@ -1,5 +1,6 @@
 """Windows-only negative verification of the read-only synthetic retention reconciler."""
 import argparse
+from contextlib import contextmanager
 import importlib.util
 import json
 from pathlib import Path
@@ -55,6 +56,22 @@ with tempfile.TemporaryDirectory(prefix='retention-negative-check-') as folder:
     else:
         raise AssertionError('Reconciliation ignored a nonempty WAL')
     wal.unlink()  # Only this explicitly created fake WAL in the disposable unit-test clone.
+    original_sharing = module.closed_snapshots
+    @contextmanager
+    def wal_after_initial_check(paths):
+        with original_sharing(paths):
+            wal.write_bytes(b'synthetic WAL left by a writer before snapshot handles were acquired')
+            yield
+    module.closed_snapshots = wal_after_initial_check
+    try:
+        module.reconcile(run, root / 'must-refuse-late-wal.json')
+    except ValueError as error:
+        assert 'nonempty WAL after writer exclusion' in str(error), error
+    else:
+        raise AssertionError('Reconciliation ignored a WAL created between precheck and sharing lock')
+    finally:
+        module.closed_snapshots = original_sharing
+        wal.unlink()  # Disposable synthetic clone only, never an original database WAL.
     connection = sqlite3.connect(database)
     try:
         connection.execute('UPDATE parcel_retired_operations SET body_hash=? WHERE rowid=1', ('A' * 64,))
@@ -68,4 +85,4 @@ with tempfile.TemporaryDirectory(prefix='retention-negative-check-') as folder:
     else:
         raise AssertionError('Reconciliation accepted a changed retirement hash')
     assert not (root / 'must-refuse-hash.json').exists()
-print('PASS: Windows writer sharing refusal, nonempty-WAL refusal, changed-original-hash refusal; original fixtures untouched')
+print('PASS: Windows writer sharing refusal, nonempty-WAL refusal, post-lock WAL recheck, changed-original-hash refusal; original fixtures untouched')

@@ -1,0 +1,12 @@
+{
+  "Status": "NOT_RUN_UAC_CANCELLED",
+  "CapturedUtc": "2026-10-24T17:37:08.0442198+00:00",
+  "Action": "Separate actual CLI isolated recovery of complete pre-retention synthetic backup",
+  "LaunchSession": 71679,
+  "NativeError": "操作已被用户取消",
+  "HelperPid": null,
+  "RecoveryStarted": false,
+  "PermissionBypass": false,
+  "EvidenceType": "Recorded tool launch failure summary, not a reconstructed raw shell log",
+  "Qualification": "No 604800-case protected recovery PASS; explicit confirmation requested before any retry"
+}

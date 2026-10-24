@@ -1,0 +1,7 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-aad80b1d4e4d4516ae2df64f8ab97ee9
+Unhandled exception. System.InvalidOperationException: This offline fixture requires the two-manual-reader Simulation reference profile; no SDK, network, peer or Production activation
+   at RetentionQualification.RequireReference(ParcelConfiguration c, Boolean frozen) in D:\projects\importer-pc-retention-verification\tests\Ipc.Application.Verification\RetentionQualification.cs:line 37
+   at RetentionQualification.Seed(String workspace, String output) in D:\projects\importer-pc-retention-verification\tests\Ipc.Application.Verification\RetentionQualification.cs:line 54
+   at RetentionQualification.Run(String workspace, String[] args) in D:\projects\importer-pc-retention-verification\tests\Ipc.Application.Verification\RetentionQualification.cs:line 43
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-retention-verification\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

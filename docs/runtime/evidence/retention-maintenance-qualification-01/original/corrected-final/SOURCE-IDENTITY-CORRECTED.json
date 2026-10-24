@@ -1,0 +1,33 @@
+{
+  "ProductSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSourceChanged": false,
+  "ValidationSourcesUncommittedAtExecution": true,
+  "Files": {
+    "ExecutedHelper": {
+      "Path": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\EXECUTED-HELPER.ps1",
+      "SHA256": "8d5761ce86ce27d8ca673a5b4747c6ed82436e8799638f2e0d3a7fa4540c000e",
+      "Bytes": 12244
+    },
+    "ExecutedFixture": {
+      "Path": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\EXECUTED-FIXTURE.cs",
+      "SHA256": "b85ddf52d0e681d166d383296a070a24edaed0ff39a0975f8a9fbc13c17404ab",
+      "Bytes": 20508
+    },
+    "PublishedHelper": {
+      "Path": "D:\\projects\\importer-pc-retention-verification\\scripts\\verify-retention-maintenance.ps1",
+      "SHA256": "f22c807ea74cd4c2de1d493f85bfd89ce04ba2b966255b359bb8a0fe0b212f2e",
+      "Bytes": 12287
+    },
+    "PublishedFixture": {
+      "Path": "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\RetentionQualification.cs",
+      "SHA256": "b85ddf52d0e681d166d383296a070a24edaed0ff39a0975f8a9fbc13c17404ab",
+      "Bytes": 20508
+    },
+    "FixtureEntryPoint": {
+      "Path": "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\Program.cs",
+      "SHA256": "7636f7859cc925e79d9a23d63470b14b053382d5e9bfe1a279b85a23cbc69a69",
+      "Bytes": 21155
+    }
+  },
+  "Meaning": "Executed helper remains original bytes; published helper adds identity/fresh-output checks, per-case restore logs, explicit unobserved peak. Fixture bytes match executed source."
+}

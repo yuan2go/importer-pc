@@ -84,6 +84,11 @@ def reconcile(run_file, output, completed_only=False):
         sharing.__enter__()
         db = None
         try:
+            # Close the check/lock race: a writer may have closed after the initial
+            # WAL check but before our sharing handles were acquired.
+            for path in snapshots:
+                wal = Path(str(path) + '-wal')
+                check(not wal.exists() or wal.stat().st_size == 0, f'{count}: no nonempty WAL after writer exclusion: {path.name}')
             db = sqlite3.connect(database.as_uri() + '?mode=ro&immutable=1', uri=True)
             db.execute('PRAGMA query_only=ON')
             db.execute('ATTACH DATABASE ? AS original', (backup.as_uri() + '?mode=ro&immutable=1',))
@@ -106,6 +111,12 @@ def reconcile(run_file, output, completed_only=False):
             check(set(retained_inputs) == {guid(5, n) for n in range(count + 1, count + 7)}, f'{count}: exact six protected input identities remain')
             original_inputs = {row[0]: row[1:] for row in db.execute('SELECT id,body,body_hash,state FROM original.parcel_ingress WHERE id>?', (guid(5, count),))}
             check(retained_inputs == original_inputs, f'{count}: protected input bytes, hashes and dispositions unchanged')
+            check(list(db.execute('SELECT * FROM parcel_commands ORDER BY id')) == list(db.execute('SELECT * FROM original.parcel_commands ORDER BY id')), f'{count}: every original pending command and receipt unchanged')
+            check(list(db.execute('SELECT * FROM parcel_identity_conflicts ORDER BY id')) == list(db.execute('SELECT * FROM original.parcel_identity_conflicts ORDER BY id')), f'{count}: original unresolved conflict and acknowledgement state unchanged')
+            retained_receipts = {row[0]: row[1:] for row in db.execute('SELECT * FROM parcel_receipts')}
+            original_receipts = {row[0]: row[1:] for row in db.execute('SELECT * FROM original.parcel_receipts WHERE operation>?', (guid(1, count),))}
+            check(retained_receipts == original_receipts and len(retained_receipts) == 6, f'{count}: all protected original receipt/request/state/hash rows unchanged')
+            check(list(db.execute('SELECT * FROM parcel_ingress_audits ORDER BY input,seq')) == list(db.execute('SELECT * FROM original.parcel_ingress_audits WHERE input>? ORDER BY input,seq', (guid(5, count),))), f'{count}: protected input/audit custody associations unchanged')
             check(scalar('SELECT count(*) FROM parcel_archived_receipts') == 5, f'{count}: guarded original raw remains')
             check(scalar('SELECT count(*) FROM parcel_archived_receipts r LEFT JOIN original.parcel_archived_receipts a ON a.id=r.id WHERE a.id IS NULL OR r.body!=a.body OR r.raw_hash!=a.raw_hash') == 0, f'{count}: every protected raw BLOB and hash unchanged')
             check(fingerprint(db, 'SELECT id,admission,observation,position FROM parcel_history_index ORDER BY seq') == fixture['IdentityFingerprint'], f'{count}: complete permanent admission fingerprint unchanged')
@@ -157,7 +168,7 @@ def reconcile(run_file, output, completed_only=False):
                           InspectPlusExpirySeconds=runs[f'inspect-{count}']['Seconds'] + expire['Seconds'],
                           IsolatedRestoreSeconds=case.get('IsolatedRestoreSeconds'), RestoredDatabaseSHA256=restore_hash,
                           RestorePlanCopyInspectSeconds=sum(r['Seconds'] for r in restore_runs) if restore_runs else None,
-                          TimingBoundary='Two-hour product budget applies to expire-history, not fixture generation, preceding inspection, restore drill, operator review or business takeover'))
+                          TimingBoundary='Two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.'))
     check(bool(cases), 'at least one completed case reconciled')
     result = dict(Status='PARTIAL_COMPLETED_CASES_VERIFIED' if run['Status'] == 'InProgress' else 'VERIFIED_COMPLETED_SYNTHETIC_CASES',
                   SourceCommit=run['SourceCommit'], ProductSha256=run['ProductSha256'], FixtureSha256=run['FixtureSha256'],

@@ -1,0 +1,10 @@
+{
+  "Status": "NOT_RUN_AFTER_PRIOR_LARGE_CASE_FAILURE",
+  "RequestedCount": 2592000,
+  "RequiredEstimateBytes": 139118044774,
+  "AvailableBytes": 41818718208,
+  "EstimateMethod": "Original helper policy: 3.15 copies based on first complete structure sample plus 8GiB reserve",
+  "CapacityEstimateFits": false,
+  "ActualCapacityPreflightInControllerReached": false,
+  "Scope": "Independent capacity observation only; actual loop aborted after 604800 CLI failure, no 2592000 fixture created in corrected run"
+}

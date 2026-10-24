@@ -1,0 +1,106 @@
+{
+  "CapturedUtc": "2026-10-24T17:14:03.630451+00:00",
+  "ProductBaseline": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProbeWorkspaceHead": "69fe77c28415c95674267be9cf1d9bf28442041f",
+  "SQLite": "3.54.0",
+  "NoProductionCodeChanges": true,
+  "SchemaSource": "Closed complete synthetic pre-retention backup; exact DB9 ingress/history/tombstone DDL and indexes copied into a separate in-memory query component",
+  "FinalComponentScope": "1000/10000/100000 normal input rows plus all six original protected owners; 3 cursor positions; 5 callback-free timing repetitions; separate approximate VM sampling; exact eligible IDs and ordering asserted",
+  "Files": [
+    {
+      "Name": "BENCH-with-guards-identity-pair.json",
+      "SHA256": "d9caf993172ad9c42aac51a668419444e805c731e4b373df883eeb19df060b1d",
+      "Bytes": 7698
+    },
+    {
+      "Name": "BENCH-without-guards.json",
+      "SHA256": "74e6697ee35d8eca666e41a61c6196ea02071dcf14149772b1e86f24d9d21ab2",
+      "Bytes": 6769
+    },
+    {
+      "Name": "BENCH.json",
+      "SHA256": "83414d3a86f71d7d465222c0b4a92cdfea6362b407b45a8e1becc7e9feb1e836",
+      "Bytes": 7693
+    },
+    {
+      "Name": "component-bench-exact-eligible.log",
+      "SHA256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597",
+      "Bytes": 1453
+    },
+    {
+      "Name": "component-bench-first-failure.log",
+      "SHA256": "978738a07f14d4e8bc9be5ac201376add18f19d8de5ca1da2073196c6c011266",
+      "Bytes": 2102
+    },
+    {
+      "Name": "component-bench-fixed.log",
+      "SHA256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597",
+      "Bytes": 1453
+    },
+    {
+      "Name": "component-bench-with-guards.log",
+      "SHA256": "eee9a44f7d2df7802e06c41530cc37643cc7a66dc0bea82f200575905fa24597",
+      "Bytes": 1453
+    },
+    {
+      "Name": "component-bench.log",
+      "SHA256": "978738a07f14d4e8bc9be5ac201376add18f19d8de5ca1da2073196c6c011266",
+      "Bytes": 2102
+    },
+    {
+      "Name": "InputPlan.csproj",
+      "SHA256": "15a2644ab6ebc2d8b14a9918db178a38b2b02c5c88edcfd5f914770d9ca61484",
+      "Bytes": 377
+    },
+    {
+      "Name": "original.sql",
+      "SHA256": "490448815ebce416c232c316a181ae9fcb64aa8640074403abb991bacf9fdbda",
+      "Bytes": 469
+    },
+    {
+      "Name": "plan-first-failure.log",
+      "SHA256": "d88130c6b6852c3f5a827f3869cccb444cd202c3d60591443a26785bcf0fcac1",
+      "Bytes": 731
+    },
+    {
+      "Name": "plan-fixed.log",
+      "SHA256": "4c9a3750046c1dd952a805fb9e917c9c5abb4ca8f69e2bd9e1478e62cb3036cf",
+      "Bytes": 1380
+    },
+    {
+      "Name": "PLAN.json",
+      "SHA256": "3b1a1a1451e9b25f6d1771b80e0a014a83faa6519dfeff366508a878f3c89de7",
+      "Bytes": 1378
+    },
+    {
+      "Name": "plan.log",
+      "SHA256": "d88130c6b6852c3f5a827f3869cccb444cd202c3d60591443a26785bcf0fcac1",
+      "Bytes": 731
+    },
+    {
+      "Name": "Program-before-guards.cs.txt",
+      "SHA256": "20e079a480d51a15e802d58f4bf54a4f980f7a212fb032f84613a4034681208a",
+      "Bytes": 5799
+    },
+    {
+      "Name": "Program-first.cs.txt",
+      "SHA256": "c52df4a3e0fdc21246fa02f8c9d2441b6b1f9f07596586c69be89d67051d24c6",
+      "Bytes": 1666
+    },
+    {
+      "Name": "Program.cs",
+      "SHA256": "bfd1647265974a1a9401d56bc5ab132013bda347181c056130db196d401549e8",
+      "Bytes": 6168
+    },
+    {
+      "Name": "rowid-proposal.sql",
+      "SHA256": "84881e6b1270c01a60453ed5a4165b17385075469624df695ce1b10c627d2f98",
+      "Bytes": 481
+    }
+  ],
+  "FailuresRetained": [
+    "plan-first-failure.log: ordinary read-only WAL side-file access refused, fixed only for a closed shared-read-locked immutable backup",
+    "component-bench-first-failure.log: in-memory connection URI flag did not permit attached URI, fixed with explicit memory URI"
+  ],
+  "Qualification": "Proposed query component only; not a product fix, full CLI RTO, target hardware or field pass"
+}

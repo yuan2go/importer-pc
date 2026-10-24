@@ -1,0 +1,25 @@
+{
+  "Status": "PARTIAL_CUSTODY_INVARIANTS_VERIFIED_NOT_FULL_MAINTENANCE_PASS",
+  "AtUtc": "2026-10-24T17:36:10.620649+00:00",
+  "ActualRunStatus": "FAIL",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "Eligible": 604800,
+  "RetiredOperations": 604800,
+  "RetiredInputs": 157184,
+  "RemainingInputs": 447622,
+  "AllEligibleInputsRetired": false,
+  "Checks": [
+    "retired counts within original eligible population",
+    "every committed operation retirement matches its original body hash",
+    "every committed input retirement matches its original body hash and disposition",
+    "all original input identities partition between retired and remaining without overlap",
+    "every remaining input is unchanged from the complete backup",
+    "all six protected operation bodies remain unchanged",
+    "pending command and original receipt responsibility unchanged",
+    "original conflict and acknowledgement responsibility unchanged",
+    "complete permanent admission fingerprint unchanged",
+    "complete permanent reply fingerprint unchanged"
+  ],
+  "Scope": "Closed-snapshot partial accounting only. Retains actual CLI failure/incompletion; cannot replace the exact all-N verifier, two-hour maintenance result, protected restore, target hardware or field qualification."
+}

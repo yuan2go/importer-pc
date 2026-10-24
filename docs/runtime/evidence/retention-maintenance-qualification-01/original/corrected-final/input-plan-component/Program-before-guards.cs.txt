@@ -1,0 +1,47 @@
+using System.Text.Json;
+using Microsoft.Data.Sqlite;
+var folder=args[0]; var path=args[1];
+if(File.Exists(path+"-wal") && new FileInfo(path+"-wal").Length!=0)throw new InvalidDataException("A closed backup without nonempty WAL is required");
+using var sharing=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read);
+using var db=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=new Uri(Path.GetFullPath(path)).AbsoluteUri+"?mode=ro&immutable=1",Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString());db.Open();
+using(var queryOnly=db.CreateCommand()){queryOnly.CommandText="PRAGMA query_only=ON";queryOnly.ExecuteNonQuery();}
+var results=new Dictionary<string,object>();
+using(var version=db.CreateCommand()){version.CommandText="SELECT sqlite_version()";results["SQLite"]=version.ExecuteScalar()!;}
+foreach(var name in new[]{"original","rowid-proposal"}){
+ using var plan=db.CreateCommand();plan.CommandText="EXPLAIN QUERY PLAN "+File.ReadAllText(Path.Combine(folder,name+".sql"));plan.Parameters.AddWithValue("$cursor",0);plan.Parameters.AddWithValue("$cutoff",DateTimeOffset.UtcNow.AddDays(-7).ToString("O"));
+ using var rows=plan.ExecuteReader();var lines=new List<string>();while(rows.Read())lines.Add(rows.GetString(3));results[name]=lines;
+}
+using(var indexes=db.CreateCommand()){indexes.CommandText="SELECT name,sql FROM sqlite_master WHERE type='index' AND tbl_name='parcel_ingress'";using var rows=indexes.ExecuteReader();var list=new List<object>();while(rows.Read())list.Add(new{Name=rows.GetString(0),Sql=rows.IsDBNull(1)?null:rows.GetString(1)});results["IngressIndexes"]=list;}
+results["Mode"]="Actual SQLite3.54 via product project; Windows read-sharing lock denies writers; closed backup has no nonempty WAL; immutable read-only URI; EXPLAIN only, no business source changes or maintenance timeout changes";
+var output=JsonSerializer.Serialize(results,new JsonSerializerOptions{WriteIndented=true});File.WriteAllText(Path.Combine(folder,"PLAN.json"),output);Console.WriteLine(output);
+if(args.Contains("--bench"))
+{
+ using var memory=new SqliteConnection("Data Source=file:retention-input-component?mode=memory&cache=private;Pooling=False");memory.Open();
+ void Exec(string sql){using var command=memory.CreateCommand();command.CommandText=sql;command.ExecuteNonQuery();}
+ using(var attach=memory.CreateCommand()){attach.CommandText="ATTACH DATABASE $file AS source";attach.Parameters.AddWithValue("$file",new Uri(Path.GetFullPath(path)).AbsoluteUri+"?mode=ro&immutable=1");attach.ExecuteNonQuery();}
+ var names=new[]{"parcel_ingress","parcel_history_index","parcel_retired_operations"};
+ foreach(var table in names){using var schema=db.CreateCommand();schema.CommandText="SELECT sql FROM sqlite_master WHERE type='table' AND name=$name";schema.Parameters.AddWithValue("$name",table);Exec((string)schema.ExecuteScalar()!);}
+ using(var indexes=db.CreateCommand()){indexes.CommandText="SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name IN ('parcel_ingress','parcel_history_index','parcel_retired_operations') AND sql IS NOT NULL";using var reader=indexes.ExecuteReader();while(reader.Read())Exec(reader.GetString(0));}
+ var samples=new List<object>();var cutoff=DateTimeOffset.UtcNow.AddDays(-7).ToString("O");
+ foreach(var count in new[]{1000,10000,100000})
+ {
+  // Query-component replica only: exact DB9 table/index DDL and original input JSON.
+  // Marking terminal owners here is not an actual CLI retirement or complete data fixture.
+  Exec($"DELETE FROM parcel_ingress;DELETE FROM parcel_history_index;DELETE FROM parcel_retired_operations;INSERT INTO parcel_ingress SELECT * FROM source.parcel_ingress WHERE rowid<={count};INSERT INTO parcel_history_index SELECT * FROM source.parcel_history_index WHERE seq<={count};INSERT INTO parcel_retired_operations SELECT id,'COMPONENT_ONLY','2000-01-01','COMPONENT_ONLY' FROM parcel_history_index;");
+  foreach(var cursor in new[]{0,count/2,count-100})
+  {
+   string[]? expected=null;
+   foreach(var variant in new[]{"original","rowid-proposal"})
+   {
+    using var query=memory.CreateCommand();query.CommandText=File.ReadAllText(Path.Combine(folder,variant+".sql"));query.Parameters.AddWithValue("$cursor",cursor);query.Parameters.AddWithValue("$cutoff",cutoff);query.Prepare();
+    string[] Read(){using var rows=query.ExecuteReader();var ids=new List<string>();while(rows.Read())ids.Add(rows.GetString(1));return ids.ToArray();}
+    var actual=Read();if(expected is not null&&!actual.SequenceEqual(expected))throw new InvalidDataException("Candidate identity/order differs");expected=actual;
+    var timings=new List<double>();for(var i=0;i<5;i++){var watch=System.Diagnostics.Stopwatch.StartNew();var repeated=Read();timings.Add(watch.Elapsed.TotalMilliseconds);if(!repeated.SequenceEqual(actual))throw new InvalidDataException("Repeated selection changed");}
+    long callbacks=0;SQLitePCL.raw.sqlite3_progress_handler(memory.Handle,1000,_=>{callbacks++;return 0;},null);try{_ = Read();}finally{SQLitePCL.raw.sqlite3_progress_handler(memory.Handle,0,null,null);}
+    samples.Add(new{Count=count,Cursor=cursor,Variant=variant,Returned=actual.Length,Milliseconds=timings,ApproximateVmInstructions=callbacks*1000,TimingExcludesProgressCallback=true,IdentityOrderMatches=true});
+   }
+  }
+ }
+ File.WriteAllText(Path.Combine(folder,"BENCH.json"),JsonSerializer.Serialize(new{SQLite=results["SQLite"],Scope="In-memory query-component replica using actual DB9 schema/indexes and original synthetic input JSON; not a complete fixture, production mutation, CLI RTO or field qualification",Samples=samples},new JsonSerializerOptions{WriteIndented=true}));
+ Console.WriteLine("PASS component candidate identity/order and separated timing/VM samples");
+}

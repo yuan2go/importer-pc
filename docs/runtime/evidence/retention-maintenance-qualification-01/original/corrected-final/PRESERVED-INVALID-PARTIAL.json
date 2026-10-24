@@ -1,0 +1,30 @@
+{
+  "Status": "PRESERVED_INVALID_PARTIAL_FIXTURE",
+  "CapturedUtc": "2026-10-24T15:16:32.1301914+00:00",
+  "Directory": "D:\\ImporterPc.Deployment\\Qualification\\retention-47f8c36ed4fb43dfbb044a81e7eb8f4f\\case-2592000\\data\\Simulation\\retention-qualification\\sportmaster",
+  "Files": [
+    {
+      "Name": "sportmaster.db",
+      "Bytes": 23894446080,
+      "LastWriteUtc": "2026-10-24T14:40:11.5555582Z",
+      "HashStatus": "NOT_HASHED_PARTIAL_DATABASE; metadata only"
+    },
+    {
+      "Name": "sportmaster.db-shm",
+      "Bytes": 32768,
+      "LastWriteUtc": "2026-10-24T14:08:54.3352963Z",
+      "HashStatus": "NOT_HASHED_PARTIAL_DATABASE; metadata only"
+    },
+    {
+      "Name": "sportmaster.db-wal",
+      "Bytes": 15235792,
+      "LastWriteUtc": "2026-10-24T14:40:12.3769897Z",
+      "HashStatus": "NOT_HASHED_PARTIAL_DATABASE; metadata only"
+    }
+  ],
+  "TerminationEvidence": "invalid-initial/INVALID-FIXTURE-STOP.json",
+  "Qualification": "Incomplete generation with simplified input envelope; not a valid full-history/retention qualification",
+  "ReadOnlyMetadataCollection": true,
+  "CheckpointOrRepairPerformed": false,
+  "FilesDeleted": false
+}

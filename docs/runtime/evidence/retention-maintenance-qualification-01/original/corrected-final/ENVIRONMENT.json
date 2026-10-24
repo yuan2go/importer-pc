@@ -1,0 +1,22 @@
+{
+  "CapturedUtc": "2026-10-24T14:54:52.5742372Z",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "OS": "Microsoft Windows 11 家庭中文版",
+  "EditionID": "CoreCountrySpecific",
+  "DisplayVersion": "23H2",
+  "Build": "22631.6199",
+  "CPU": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+  "PhysicalCores": 4,
+  "LogicalProcessors": 8,
+  "RAMBytes": 16038637568,
+  "AvailableDBytes": 54545317888,
+  "SDK": "10.0.402",
+  "RuntimeList": [
+    "Microsoft.AspNetCore.App 10.0.13 [D:\\tools\\dotnet\\shared\\Microsoft.AspNetCore.App]",
+    "Microsoft.NETCore.App 10.0.13 [D:\\tools\\dotnet\\shared\\Microsoft.NETCore.App]",
+    "Microsoft.WindowsDesktop.App 10.0.13 [D:\\tools\\dotnet\\shared\\Microsoft.WindowsDesktop.App]"
+  ],
+  "QualifiedTarget4Core8GiB": false,
+  "HostLoadIsolation": "Other independent synthetic tasks were observed; no process was stopped except this explicitly confirmed invalid generator",
+  "DDriveOnly": true
+}

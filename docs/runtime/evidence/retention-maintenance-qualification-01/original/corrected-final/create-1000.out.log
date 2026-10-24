@@ -1,0 +1,6 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-090cf8cfa84f4d0eabcdbb59cc41f26a
+PASS RETENTION-QUAL: fixture envelope fields match actual runtime storage type
+PREFILL 1000/1006 elapsed=1.8s
+PREFILL 1006/1006 elapsed=1.8s
+PASS RETENTION-QUAL: every original input parses as the actual runtime envelope with matching admission/observation/device/hash
+PASS RETENTION-QUAL: complete synthetic DB integrity

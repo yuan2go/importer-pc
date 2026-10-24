@@ -1,0 +1,36 @@
+{
+  "AtUtc": "2026-10-24T15:27:42.6664071+00:00",
+  "ProductSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSourceDiff": "",
+  "PublishedFixtureSha256": "2617687B1408C96507B1078DA24FB94EF5385BD0FE15636EF244AB9C97E8B563",
+  "ExecutedLargeFixtureSha256": "16527F76A217784E01CE1875B3411DDD241A7FAB6771B90D64224BB9A14FDCF1",
+  "PythonVersion": "Python 3.14.3",
+  "Files": [
+    {
+      "Path": "tests/Ipc.Application.Verification/RetentionQualification.cs",
+      "SHA256": "EB8F27969E562F0974B11450FE1B03947DAB2672745D6ABC43A89245335C12AF",
+      "Bytes": 21754
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/Program.cs",
+      "SHA256": "7636F7859CC925E79D9A23D63470B14B053382D5E9BFE1A279B85A23CBC69A69",
+      "Bytes": 21155
+    },
+    {
+      "Path": "scripts/verify-retention-maintenance.ps1",
+      "SHA256": "4F8DFA2F067E94DED5A9DD3AC2EAE21D8DA1883000533A62121D00377B428160",
+      "Bytes": 12418
+    },
+    {
+      "Path": "scripts/reconcile-retention-qualification.py",
+      "SHA256": "9F6FE7B3D11E0F6AC8EF921F9026CFBCD396CF522488D91F365CC73B25402E38",
+      "Bytes": 12872
+    },
+    {
+      "Path": "scripts/check-retention-reconciliation.py",
+      "SHA256": "52D2CD8465D1730033FBC79E5D82F98C34380AF0D85F504A68A827405F097AD0",
+      "Bytes": 3429
+    }
+  ],
+  "Boundary": "Published entry guards and logging checks were added after large-run freeze; executed original sources remain separate; bulk operation/input construction unchanged"
+}

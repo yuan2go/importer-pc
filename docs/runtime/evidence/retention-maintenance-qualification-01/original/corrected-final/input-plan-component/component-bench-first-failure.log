@@ -1,0 +1,40 @@
+{
+  "SQLite": "3.54.0",
+  "original": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ],
+  "rowid-proposal": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ],
+  "IngressIndexes": [
+    {
+      "Name": "sqlite_autoindex_parcel_ingress_1",
+      "Sql": null
+    },
+    {
+      "Name": "parcel_ingress_pending",
+      "Sql": "CREATE INDEX parcel_ingress_pending ON parcel_ingress(state,position,received_at)"
+    },
+    {
+      "Name": "parcel_ingress_session",
+      "Sql": "CREATE INDEX parcel_ingress_session ON parcel_ingress(session,received_at,position)"
+    }
+  ],
+  "Mode": "Actual SQLite3.54 via product project; Windows read-sharing lock denies writers; closed backup has no nonempty WAL; immutable read-only URI; EXPLAIN only, no business source changes or maintenance timeout changes"
+}
+Unhandled exception. Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 14: 'unable to open database: file:///D:/ImporterPc.Deployment/Qualification/retention-3690d26d3ae8427fba5a1558bffb2385/case-604800/complete-before-expiry.db?mode=ro&immutable=1'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteNonQuery()
+   at Program.<Main>$(String[] args) in D:\projects\ipc-retention-input-plan-20261025\Program.cs:line 21

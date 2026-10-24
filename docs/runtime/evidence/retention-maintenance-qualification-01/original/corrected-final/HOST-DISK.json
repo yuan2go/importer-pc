@@ -1,0 +1,12 @@
+{
+  "CapturedUtc": "2026-10-24T15:12:47.7233374+00:00",
+  "DiskNumber": 0,
+  "Model": "HFS512GD9TNG-L2A0A",
+  "BusType": "NVMe",
+  "DiskSizeBytes": 512110190592,
+  "PartitionStyle": "GPT",
+  "FileSystem": "NTFS",
+  "VolumeSizeBytes": 411592290304,
+  "VolumeFreeBytes": 54527242240,
+  "Scope": "Observed host D volume only; target IPC disk not qualified"
+}

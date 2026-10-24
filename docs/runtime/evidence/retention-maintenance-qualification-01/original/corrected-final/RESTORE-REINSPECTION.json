@@ -1,0 +1,18 @@
+{
+  "Status": "REFUSED_ORDINARY_TOKEN_LEASE_ACCESS",
+  "AtUtc": "2026-10-24T15:20:19.2529405+00:00",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "Count": 1000,
+  "Action": "maintenance-inspect",
+  "ElevatedToken": false,
+  "DatabaseStillMatchesCompleteBackup": true,
+  "DatabaseSha256": "096E7F5B2A5A1598A5ED679E08E7E7063EA00349883FB142D8BF74CCFFCFF6F9",
+  "Reason": "Read-only database inspection first acquires the application-owner lease; Users ReadAndExecute cannot create/open the protected writable lease",
+  "ChildExitCode": null,
+  "ChildExitCodeCapture": "Not persisted by this failing supplementary harness; shell exit 1 recorded, actual stderr retained",
+  "Stdout": "reinspect-restored-1000.out.log",
+  "Stderr": "reinspect-restored-1000.err.log",
+  "Case10000": "NOT_RUN_AFTER_FIRST_REFUSAL",
+  "AclRelaxed": false,
+  "Qualification": "Permission-boundary observation, not a successful restore reinspection and not a product data failure"
+}

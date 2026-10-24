@@ -1,0 +1,50 @@
+{
+  "CapturedUtc": "2026-10-24T15:59:35.305789+00:00",
+  "OriginalRunningSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ObservedMain": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+  "MergedPullRequest": 102,
+  "ProductionTrees": {
+    "src": {
+      "RunBaseline": "64a5f02756c782648e40fea7b733a4731d3815c8",
+      "ObservedMain": "64a5f02756c782648e40fea7b733a4731d3815c8"
+    },
+    "config": {
+      "RunBaseline": "585493174341d1208770f3bcce3857e44d483dc1",
+      "ObservedMain": "585493174341d1208770f3bcce3857e44d483dc1"
+    }
+  },
+  "ChangedPaths": [
+    ".gitattributes",
+    ".github/workflows/sportmaster-commercial.yml",
+    "docs/INDEX.md",
+    "docs/baseline/PUBLICATION.md",
+    "docs/manifest.json",
+    "docs/manifest.sha256",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/FILES.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/FIXED-TESTS.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/REMOTE-RECHECK.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/REPRODUCTION.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/audit03-maintenance.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/build.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/compatibility-fixed.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/fixed-build.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/maintenance-fixed.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/migration/migration-result.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/IDENTITY.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/RESULT.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/indexes.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/prepare-plan.json",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/stability-fixed.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-conflict-closure-repeat.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-conflict-closure.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-1.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-2.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-3.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/version-compatibility.log",
+    "docs/runtime/evidence/retention-performance-review-01/recheck-02/win11-stability.log",
+    "docs/runtime/validation/retention-performance-review-01.md",
+    "docs/work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md",
+    "tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs"
+  ],
+  "Meaning": "PR102 changes verification, CI and archive guidance only; src/config identical. Keep the running product/DLL evidence at 5bb032d; separately integrate current test changes and verify the new PR CI. No new main or binary identity is assigned to old results."
+}

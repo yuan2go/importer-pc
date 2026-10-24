@@ -1,0 +1,294 @@
+{
+  "SQLite": "3.54.0",
+  "Scope": "In-memory query-component replica using actual DB9 schema/indexes and original synthetic input JSON; not a complete fixture, production mutation, CLI RTO or field qualification",
+  "Samples": [
+    {
+      "Count": 1000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        6.6295,
+        5.4929,
+        4.4005,
+        4.2743,
+        4.4252
+      ],
+      "ApproximateVmInstructions": 40000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.0791,
+        1.0139,
+        1.0119,
+        1.0596,
+        1.0258
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 500,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        2.52,
+        2.5479,
+        2.4462,
+        2.527,
+        2.719
+      ],
+      "ApproximateVmInstructions": 24000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 500,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.08,
+        1.1717,
+        1.4124,
+        1.2107,
+        1.2365
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        0.5903,
+        0.5672,
+        0.5706,
+        0.6583,
+        0.5837
+      ],
+      "ApproximateVmInstructions": 8000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 1000,
+      "Cursor": 900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.4296,
+        0.4327,
+        0.4202,
+        0.4369,
+        0.4193
+      ],
+      "ApproximateVmInstructions": 3000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        53.8974,
+        56.3049,
+        61.6785,
+        47.047,
+        50.7929
+      ],
+      "ApproximateVmInstructions": 382000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.456,
+        1.7662,
+        1.9501,
+        1.7849,
+        1.8115
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 5000,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        31.5763,
+        30.1329,
+        27.795,
+        26.0183,
+        30.5475
+      ],
+      "ApproximateVmInstructions": 217000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 5000,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.1927,
+        1.1516,
+        1.1557,
+        1.144,
+        1.1085
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 9900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        1.6169,
+        1.7485,
+        1.4321,
+        1.3988,
+        1.3887
+      ],
+      "ApproximateVmInstructions": 53000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 10000,
+      "Cursor": 9900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.3883,
+        0.3836,
+        0.5344,
+        0.5446,
+        0.6551
+      ],
+      "ApproximateVmInstructions": 3000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 0,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        505.8699,
+        703.4101,
+        497.1599,
+        508.9123,
+        476.6288
+      ],
+      "ApproximateVmInstructions": 3802000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 0,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.5576,
+        1.3745,
+        1.258,
+        1.2013,
+        1.535
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 50000,
+      "Variant": "original",
+      "Returned": 256,
+      "Milliseconds": [
+        237.4488,
+        274.8702,
+        243.3206,
+        234.7703,
+        246.4611
+      ],
+      "ApproximateVmInstructions": 2152000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 50000,
+      "Variant": "rowid-proposal",
+      "Returned": 256,
+      "Milliseconds": [
+        1.3589,
+        1.1131,
+        1.0228,
+        1.0423,
+        1.1393
+      ],
+      "ApproximateVmInstructions": 9000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 99900,
+      "Variant": "original",
+      "Returned": 100,
+      "Milliseconds": [
+        10.5105,
+        9.4344,
+        11.033,
+        9.709,
+        9.4124
+      ],
+      "ApproximateVmInstructions": 503000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    },
+    {
+      "Count": 100000,
+      "Cursor": 99900,
+      "Variant": "rowid-proposal",
+      "Returned": 100,
+      "Milliseconds": [
+        0.4003,
+        0.3911,
+        0.615,
+        0.6263,
+        0.6877
+      ],
+      "ApproximateVmInstructions": 3000,
+      "TimingExcludesProgressCallback": true,
+      "IdentityOrderMatches": true
+    }
+  ]
+}

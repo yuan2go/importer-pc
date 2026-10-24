@@ -13,6 +13,7 @@ static partial class Program
     static async Task VerifyStartupExperience(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS STARTUP02 " + text); }
+        VerifyReaderCatalogBindings(root, lines);
         await VerifyTcpLineReader(Check);
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set IPC_FROZEN_DESKTOP to this build."));
         var type = assembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;

@@ -27,6 +27,18 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
 }
 public sealed class CapabilityDraft : INotifyPropertyChanged
 {
+    internal static CapabilityBinding BuiltInReaderBinding(DeviceBinding reader, string instanceId, CapabilityCatalog catalog)
+    {
+        // DeviceBinding pins the built-in implementation, not a provider version.
+        // Use this host's declarative inventory; extension bindings take a separate,
+        // exact package/version/module path and must never be upgraded here.
+        var contract = reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1";
+        var installed = catalog.Providers.SingleOrDefault(p => p.Kind == "observation" && p.Implementation == reader.Driver &&
+            p.Contract == contract && p.Package is null && p.Module is null);
+        // An unavailable provider remains unresolved and cannot be built/saved.
+        return new("observation", reader.Driver, installed?.Version ?? "", instanceId, reader.DeviceId, contract, reader.Parameters ?? []);
+    }
+
     readonly CapabilityBinding? originalBinding;
     public sealed record Saved(string Kind, string Role, CapabilityBinding? Original, string ProviderIdentity, string Instance, string Target, string Contract, bool Enabled, bool Bound, Dictionary<string, string> Parameters);
     static string Identity(CapabilityDescriptor? p) => p is null ? "" : Wire.Encode(new { p.Kind, p.Implementation, p.Version, p.Contract, p.Package, p.Module });

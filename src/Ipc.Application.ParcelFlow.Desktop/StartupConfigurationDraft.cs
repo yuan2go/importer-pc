@@ -37,7 +37,7 @@ public sealed class StartupConfigurationDraft
         Readers = ParcelBindings.Readers(c).Select((reader, index) =>
         {
             var binding = readers.SingleOrDefault(b => "extension:" + b.InstanceId == reader.Driver) ??
-                new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + index, reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? []);
+                CapabilityDraft.BuiltInReaderBinding(reader, "reader." + index, catalog);
             return new CapabilityDraft("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id);
         }).ToArray();
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();

@@ -1,4 +1,4 @@
-> 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。
+> 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)、[PR93首次配置CI续修](runtime/validation/dual-camera-first-configuration-ci-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。
 
 > 当前质量整改：[AQA01-F01～F06工作包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。[PR92独立复核、边界与CI](reviews/pr92-independent-quality-review.md)、[实现与命令生命周期](runtime/architecture-quality-remediation-01.md)、[验证记录](runtime/validation/architecture-quality-remediation-01.md)。原审查基线0c5d7d2、旧版本及原验收保持身份；相关过期当前入口原字节见[归档](archive/pre-architecture-quality-remediation-01/README.md)。
 

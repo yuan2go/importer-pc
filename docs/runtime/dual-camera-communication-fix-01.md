@@ -1,5 +1,7 @@
 # Sportmaster 双相机通信与现场诊断
 
+> 2026-10-24 PR93已合并后的首次配置CI回归，见[续修与验证身份](validation/dual-camera-first-configuration-ci-01.md)。首配和运行参数现在按当前目录解析无版本字段的内置读取器；扩展包精确身份、配置账和原请求责任不变。下述原包局部PASS不扩张为PR93失败CI的完整交付PASS。
+
 本包基线 main `165c2ffe353c59e69729ede4c92fcfd827344c9f`，任务[WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01](../work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)。本轮只进行Windows隔离合成/loopback验证与本机只读网络元数据采集；未连接生产相机、调用真实RCS、改现场网络或安装介质。历史D/RV、旧安装包和原验收不变。[修改前TCP说明](../archive/pre-dual-camera-communication-fix-01/README.md)保留原字节。
 
 ## 已证实与实施

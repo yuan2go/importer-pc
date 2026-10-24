@@ -1,5 +1,11 @@
 # WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01
 
+## 2026-10-24 首配CI续修裁决
+
+续修基线 main `c2300cdb73bda9192e2e7912b4fee12753b81121`（PR93已合并）。原PR HEAD `b6e9350`、CI合成提交 `bad2734cc49c07fd6077cbcdc590e4817fcff9ec` 与本次基线分别保留身份。[失败CI](https://github.com/yuan2go/importer-pc/actions/runs/39997147826) 的冻结原生首配在 `VerifyParameterUiRefinement` 提取 `device.ip` 时失败，后续参数壳检查未执行；已生成介质不能视为完整交付PASS。本段补充原实现和局部验证的适用范围，不改写原证据。
+
+源码已证实：TCP目录升级为1.0.1后，`StartupConfigurationDraft` 和运行参数的 `LoadStructuredConfiguration` 仍为无版本字段的内置DeviceBinding伪造1.0.0；精确提供者匹配返回空，导致真实首配及运行参数均缺相机字段。这是模型构造回归，非测试应跳过字段。修复方案是两入口共用内置读取器的目录解析，扩展包仍按原精确身份匹配，目录缺失保持阻断；不改协议/字段/配置账或准入条件。必要验证限定Windows原生首配、运行参数壳，以及目录版本变化、缺失和扩展版本保护的回归。设备/SDK/RCS和现场不执行。
+
 2026-10-24，基线 main `165c2ffe353c59e69729ede4c92fcfd827344c9f`。开工无开放PR。独立分支实施；原工作区与未跟踪附件不动，不合并、不发布、不安装、不连接现场设备。
 
 ## 编码前裁决

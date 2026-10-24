@@ -5,13 +5,17 @@ using Microsoft.Data.Sqlite;
 
 static partial class ArchitectureQuality
 {
+    // Only for a fixture's deliberately open, quiescent WAL writer. Production custody
+    // keeps strict sharing; do not weaken its hash checks to accommodate this fixture.
+    static string StableOpenFixtureHash(string path)
+    { using var s = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite); return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(s)); }
     static string UpgradeDatabase(string name, ParcelConfiguration c) => Path.Combine(DirectoryFor(name,c), c.ApplicationId+".db");
     static void Sql(string file, string sql)
-    { using var db=new SqliteConnection("Data Source="+file); db.Open(); using var q=db.CreateCommand(); q.CommandText=sql; q.ExecuteNonQuery(); }
+    { using var db=new SqliteConnection(new SqliteConnectionStringBuilder { DataSource=file, Pooling=false }.ToString()); db.Open(); using var q=db.CreateCommand(); q.CommandText=sql; q.ExecuteNonQuery(); }
     // Explicit synthetic format fixture. Source facts are produced by the real current
     // Application; historical-release fixtures are verified separately, never relabelled.
-    static void SyntheticDb4(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version>=5");
-    static void SyntheticDb5(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6");
+    static void SyntheticDb4(string file) => Sql(file,SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version>=5");
+    static void SyntheticDb5(string file) => Sql(file,SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6");
     static Dictionary<string,string> CustodyFiles(string name,ParcelConfiguration c) => Directory.EnumerateFiles(DirectoryFor(name,c),"*",SearchOption.AllDirectories)
         .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock") &&
             // ResourceLease rewrites only this root control file with the current PID;
@@ -68,15 +72,15 @@ static partial class ArchitectureQuality
         using(var writer=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=walDb,Pooling=false}.ToString()))
         {
             writer.Open();using var q=writer.CreateCommand();q.CommandText="PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; UPDATE parcel_meta SET revision=revision+1";q.ExecuteNonQuery();
-            var dbHash=Wire.FileHash(walDb);var walHash=Wire.FileHash(walDb+"-wal");var configHash=Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"));
+            var dbHash=StableOpenFixtureHash(walDb);var walHash=StableOpenFixtureHash(walDb+"-wal");var configHash=Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"));
             try {await using var unexpected=await Open(changed,walName);Check(false,"nonempty WAL unresolved upgrade must refuse");}
-            catch(InvalidDataException ex){Check(ex.Message.Contains("LegacyUnsettled")&&Wire.FileHash(walDb)==dbHash&&Wire.FileHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
+            catch(InvalidDataException ex){Check(ex.Message.Contains("LegacyUnsettled")&&StableOpenFixtureHash(walDb)==dbHash&&StableOpenFixtureHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
         }
         var settled=Config("sportmaster");var terminal="db4-terminal";
         await using(var app=await Open(settled,terminal)) {app.EmitReference("settled-upgrade","00082","settled-upgrade-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved);}
         var database=UpgradeDatabase(terminal,settled);SyntheticDb4(database);
         using(var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId))
-            Check(repo.StorageVersion==8&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades without changing original send attempts");
+            Check(repo.StorageVersion==9&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades to DB9 without changing original send attempts");
     }
     static async Task LegacyActualPositionChecks(int schema,bool previouslyRecovered)
     {

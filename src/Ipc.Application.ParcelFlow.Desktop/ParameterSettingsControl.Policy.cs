@@ -38,6 +38,8 @@ public sealed partial class ParameterSettingsControl
         Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000");
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "空间不足时停止新入场。");
         Input(form, "日志保留", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "仅诊断日志；留空按容量轮转。");
+        Input(form, "已结历史保留", m.Policy, "HistoryDays", "HistoryDays", data, "7～30天；到期在维护窗口删除已结明细。留空保持原历史。");
+        Technical(data, "历史到期维护", "HistoryDays", "保存并重启后生效。先暂停和退出软件，再用本发布的expire-history命令备份、核验并删除到期已结明细；未决责任、防重及编号索引永久保留。正常运行期间不执行批量删除。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");

@@ -16,7 +16,12 @@ public static class Wire
     public static string Encode<T>(T value) => JsonSerializer.Serialize(value, Json);
     public static T Decode<T>(string json) => JsonSerializer.Deserialize<T>(json, Json) ?? throw new InvalidDataException("Null document");
     public static string Hash(string value) => Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value)));
-    public static string FileHash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+    public static string FileHash(string path)
+    {
+        // Preserve strict sharing for immutable custody, without allocating the whole DB/raw/package.
+        using var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, FileOptions.SequentialScan);
+        return Convert.ToHexString(SHA256.HashData(input));
+    }
     public static string Id() => Guid.NewGuid().ToString("N");
 }
 

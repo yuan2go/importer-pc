@@ -132,7 +132,7 @@ static class ReliabilityClosure
             string originalBody, originalChecksum;
             using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + file))
             {
-                db.Open(); using var command = db.CreateCommand(); command.CommandText = "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DROP INDEX parcel_receipts_pending; DROP INDEX parcel_receipts_operation; DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
+                db.Open(); using var command = db.CreateCommand(); command.CommandText = SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DROP INDEX parcel_receipts_pending; DROP INDEX parcel_receipts_operation; DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
                 command.CommandText = "SELECT body FROM parcel_operations"; originalBody = (string)command.ExecuteScalar()!;
                 command.CommandText = "SELECT sha FROM platform_migrations WHERE version=1"; originalChecksum = (string)command.ExecuteScalar()!;
             }

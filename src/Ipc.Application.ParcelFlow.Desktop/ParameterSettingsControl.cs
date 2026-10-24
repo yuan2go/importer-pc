@@ -177,7 +177,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.Margin = new(0, 8, 12, 0);
         var value = new StackPanel(); Grid.SetColumn(value, 1); field.Children.Add(caption); field.Children.Add(value);
         var line = new DockPanel { LastChildFill = true };
-        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
+        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
         if (unit.Length > 0) { line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; line.HorizontalAlignment = HorizontalAlignment.Left; line.SetBinding(WidthProperty, new Binding(nameof(ActualWidth)) { Source = value }); var suffix = Text(unit); suffix.Width = 54; suffix.Margin = new(10, 8, 0, 0); DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
         line.SizeChanged += (_, _) => { if (unit.Length > 0) line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; };
         var inputHost = new Grid(); inputHost.Children.Add(control); line.Children.Add(inputHost); value.Children.Add(line);
@@ -224,7 +224,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, FontSize = 14, VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         box.MaxWidth = multiline || property is "Target" or "BarcodePattern" or "BackupDirectory" ? 760 :
-            property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
+            property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "HistoryDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
         Field(form, label, box, help, path, page); return box;
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)

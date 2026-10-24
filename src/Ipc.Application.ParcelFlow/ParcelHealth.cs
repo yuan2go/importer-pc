@@ -28,13 +28,14 @@ public sealed partial class ParcelRuntime
                         if (!capabilityHealth.TryGetValue(port.InstanceId, out var previous) || previous.Ready != health.Ready)
                             Diagnostic("设备通信", health.Ready ? "设备或服务已就绪" : "设备或服务不可用", health.Ready ? "信息" : "警告", port.InstanceId + ": " + health.Detail);
                         capabilityHealth[port.InstanceId] = health;
+                        backgroundProgress["capability:" + port.InstanceId] = (DateTimeOffset.UtcNow, health.Ready ? "Ready" : "Unavailable:" + health.Detail);
                     }
                 }
                 finally { gate.Release(); }
             }
         }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
-        catch (Exception ex) { Diagnostic("异常", "设备监测异常", "错误", ex.ToString()); failure = "Capability monitor failed: " + port.InstanceId + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+        catch (Exception ex) { backgroundProgress["capability:" + port.InstanceId] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); Diagnostic("异常", "设备监测异常", "错误", ex.ToString()); failure = "Capability monitor failed: " + port.InstanceId + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
     }
     // Only this boundary knows both the configured budget and the lifecycle token.
     // A port receives one token and must not guess why that token was cancelled.

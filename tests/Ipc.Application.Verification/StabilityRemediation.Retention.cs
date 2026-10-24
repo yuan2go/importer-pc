@@ -1,0 +1,68 @@
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Application.Sportmaster;
+using Ipc.Assembly;
+using Ipc.Platform;
+using Microsoft.Data.Sqlite;
+
+static partial class StabilityRemediation
+{
+    static async Task Retention(string workspace, string path)
+    {
+        var c = Config(workspace) with { Retention = new(200, 67108864, HistoryDays: 7) }; var launch = Launch(path, c);
+        var draft = ConfigurationPolicyDraft.From(c);
+        Check(draft.HistoryDays == "7" && draft.ApplyParameters(c).Retention!.HistoryDays == 7, "7-day retention round trips through shared parameter/first-configuration model");
+        draft.HistoryDays = "30"; Check(draft.ApplyParameters(c).Retention!.HistoryDays == 30, "30-day site choice retained");
+        draft.HistoryDays = "6";
+        try { draft.ApplyParameters(c); throw new Exception("Accepted invalid retention"); } catch (InvalidOperationException) { Check(true, "retention below seven days rejected"); }
+        ParcelOperation[] originals;
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)))
+        {
+            await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
+            for (var i = 0; i < 5; i++)
+            {
+                Check(app.EmitReferenceAt("left", "retention-" + i, "000" + i, "retention-event-" + i), "retention fixture uses actual accepted ingress " + i);
+                var deadline = DateTimeOffset.UtcNow.AddSeconds(5);
+                while (!(await app.SnapshotAsync()).Operations.Any(o => o.AdmissionId == "retention-" + i && o.State == ParcelState.SlotResolved))
+                { if (DateTimeOffset.UtcNow > deadline) throw new TimeoutException(); await Task.Delay(10); }
+            }
+            await Command(app, "Pause"); originals = (await app.SnapshotAsync()).Operations.OrderBy(o => o.AdmissionId).ToArray();
+        }
+        var directory = DirectoryFor(launch, c); var database = Path.Combine(directory, "sportmaster.db");
+        using (var repo = new ParcelRepository(directory, c.ApplicationId))
+        {
+            var unknown = originals[4] with { State = ParcelState.WcsUnknown, Wcs = originals[4].Wcs! with { State = StageState.Unknown }, RecoveryRequired = true };
+            repo.Commit(unknown, "SyntheticUnknown", "Explicit synthetic historical unknown; deletion must retain original");
+            repo.Archive(originals.Take(4).Select(o => o.Id).ToArray(), "Synthetic retention fixture");
+            repo.Commit(null, "IdentityConflict", "Synthetic unresolved identity", identityConflict: new(Wire.Id(), originals[1].Id, ["left"], "Inspect before expiry", DateTimeOffset.UtcNow));
+            repo.AdmitCommand(new(Wire.Id(), repo.Revision, "Reconcile", originals[2].Id, "Synthetic interrupted command"));
+            using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Pooling = false }.ToString()))
+            {
+                db.Open(); using var q = db.CreateCommand(); q.CommandText = "UPDATE parcel_ingress SET state='Interrupted' WHERE json_extract(body,'$.Observation.AdmissionId')=$admission"; q.Parameters.AddWithValue("$admission", originals[3].AdmissionId); q.ExecuteNonQuery();
+            }
+            repo.Boundary = point => { if (point == "BeforeRetentionCommit") throw new IOException("Synthetic precommit interruption"); };
+            try { repo.ExpireHistoryCore(new SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), new string('A', 64), () => { }); throw new Exception("Missing injected fault"); }
+            catch (IOException) { Check(Scalar(database, "SELECT count(*) FROM parcel_retired_operations") == 0 && repo.ReadOperation(originals[0].Id) is not null, "retention precommit interruption retains original details and permanent identities"); }
+            repo.Boundary = point => { if (point == "AfterRetentionCommit") throw new IOException("Synthetic postcommit interruption"); };
+            try { repo.ExpireHistoryCore(new SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), new string('A', 64), () => { }); throw new Exception("Missing injected fault"); }
+            catch (IOException) { Check(repo.ReadOperation(originals[0].Id) is null && repo.RetiredIdentity(originals[0].AdmissionId, originals[0].ObservationId) is not null, "postcommit interruption preserves durable retirement; no resurrection"); }
+            repo.Boundary = null;
+            var result = repo.ExpireHistoryCore(new SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), new string('A', 64), () => { });
+            Check(result.Operations == 0 && originals.Skip(1).All(o => repo.ReadOperation(o.Id) is not null), "unknown, unacknowledged conflict, pending command and interrupted input all prevent expiry");
+            Check(Scalar(database, "SELECT count(*) FROM parcel_history_index") == 5 && repo.History(long.MaxValue, 50).Items.Length == 4,
+                "expired details disappear from history while all five permanent admission identities remain");
+            Check(repo.OriginalReplyHash(originals[0].Wcs!.Request.Id, originals[0].Wcs!.Replies[0].Id) is not null, "permanent original reply fingerprint survives detail expiry");
+            try { repo.Commit(originals[0], "InvalidResurrection", "Must refuse"); throw new Exception("Resurrected retired entity"); }
+            catch (InvalidDataException) { Check(true, "repository independently rejects retired identity recreation"); }
+            repo.ValidateRawInventory();
+        }
+        await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await reopened.StartAsync(default);
+        Check(reopened.EmitReferenceAt("left", originals[0].AdmissionId, originals[0].ParcelCode, "retired-duplicate"), "old admission delivery remains durably accounted");
+        var end = DateTimeOffset.UtcNow.AddSeconds(5); ParcelSnapshot state;
+        do { state = await reopened.SnapshotAsync(); if (state.Inputs!.Any(i => i.Reason.StartsWith("ExpiredIdentity:"))) break; await Task.Delay(10); } while (DateTimeOffset.UtcNow < end);
+        Check(state.Inputs!.Any(i => i.Reason.StartsWith("ExpiredIdentity:")) && Scalar(database, "SELECT count(*) FROM parcel_history_index") == 5,
+            "actual restarted runtime blocks expired entity before new intent or numeric ID");
+    }
+}

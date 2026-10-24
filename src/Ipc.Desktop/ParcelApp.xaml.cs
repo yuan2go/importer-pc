@@ -141,12 +141,22 @@ public partial class App : System.Windows.Application
         if (setup.Launched) { startup.AllowClose = true; Shutdown(); }
         else { MainWindow = startup; startup.Show(); }
     }
+    Task? ownedShutdown;
     async Task StopAsync()
     {
         if (runtime is null) return;
-        using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var stopping = runtime;
-        await Task.Run(async () => { await stopping.StopAsync(budget.Token); await stopping.DisposeAsync(); }); runtime = null;
+        if (ownedShutdown is null || ownedShutdown.IsFaulted || ownedShutdown.IsCanceled)
+        {
+            ownedShutdown = Task.Run(async () => await stopping.DisposeAsync());
+            _ = ownedShutdown.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+        try { await ownedShutdown.WaitAsync(TimeSpan.FromSeconds(5)); runtime = null; ownedShutdown = null; }
+        catch
+        {
+            if (stopping is Ipc.Platform.IRuntimeOwnership { HasUnreleasedResources: false }) { runtime = null; ownedShutdown = null; }
+            throw; // Existing close UI remains usable and explicitly reports retained ownership.
+        }
     }
 }
 

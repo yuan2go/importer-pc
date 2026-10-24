@@ -13,7 +13,7 @@ public static class ChineseInterfaceText
         "decision" => "模拟业务结果", "reply-mode" => "模拟回执方式", "complete-on-query" => "查询时报告完成",
         "queue" or "QueueCapacity" => "输入队列容量", "timeout" or "TimeoutMs" => "调用超时", "operations" or "MaximumOperations" => "作业容量",
         "resident" or "ResidentHistory" => "常驻记录条数", "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
-        "StationCode" => "心跳供包台编码", "DiagnosticLogDays" => "诊断日志保留天数", "SessionLifetimeMs" => "登录会话时长",
+        "StationCode" => "心跳供包台编码", "DiagnosticLogDays" => "诊断日志保留天数", "HistoryDays" => "已结历史保留天数", "SessionLifetimeMs" => "登录会话时长",
         "WeightRange.MinimumWeight" or "MinimumWeight" => "包裹重量下限", "WeightRange.MaximumWeight" or "MaximumWeight" => "包裹重量上限",
         "DisplayNameDraft" => "站点显示名称", "TargetEfficiencyDraft" => "目标效率",
         "MaximumAgeMs" => "测量新鲜度", "WaitTimeoutMs" => "测量等待期限", "Precision" => "重量精度",
@@ -34,7 +34,7 @@ public static class ChineseInterfaceText
         if (text.Contains(": required", StringComparison.Ordinal) || text.Contains(": invalid value", StringComparison.Ordinal))
             return "有参数尚未设置或格式不正确，请修正标出的字段。";
         if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
-        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "bcr-code", "source", "locale", "reply-mode", "decision" })
+        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "bcr-code", "source", "locale", "reply-mode", "decision" })
             text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
         text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
         // Raw property paths and exception types belong to diagnostic details.
@@ -71,6 +71,9 @@ public static class ChineseInterfaceText
         ("Temporary image capacity/backlog exhausted; existing originals retained", "临时图像空间或待处理容量已满；原件保留"),
         ("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required", "需要确认配置：检查保留的原配置账；资源启动成功并经认证确认当前修订后才能继续"),
         ("Overload: rejected callback; inspect parcel and acknowledge while paused", "输入过载，已拒收回调；暂停后检查包裹并确认"),
+        ("IngressInterrupted:left; pause, enter management mode and inspect original input responsibilities", "左位存在未决输入；暂停并进入管理模式，在原作业与接收责任中逐笔核对"),
+        ("IngressInterrupted:right; pause, enter management mode and inspect original input responsibilities", "右位存在未决输入；暂停并进入管理模式，在原作业与接收责任中逐笔核对"),
+        ("IngressInterrupted:main; pause, enter management mode and inspect original input responsibilities", "存在未决输入；暂停并进入管理模式，在原作业与接收责任中逐笔核对"),
         ("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required", "需要核对恢复交接：保持隔离，核对原机来源退出并完成维护认证；换机仍需独立证据"),
         ("MaintenanceInProgress:", "维护进行中："), ("Capability unavailable: ", "能力不可用："),
         ("Measurement missing/expired for admission ", "本次准入的测量缺失或已过期："),

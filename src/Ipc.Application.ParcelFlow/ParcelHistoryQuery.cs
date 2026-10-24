@@ -20,25 +20,38 @@ public sealed class ParcelHistoryReader : IDisposable
 {
     readonly SqliteConnection db;
     readonly SqliteTransaction tx;
-    public ParcelHistoryReader(string database)
+    readonly CancellationToken cancellation;
+    public ParcelHistoryReader(string database, CancellationToken token = default)
     {
         RecoveryFiles.RequireOrdinaryAncestors(database);
         db = new(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
-        tx = db.BeginTransaction(deferred: true);
+        cancellation = token;
+        try
+        {
+            token.ThrowIfCancellationRequested();
+            SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
+            tx = db.BeginTransaction(deferred: true);
+        }
+        catch { db.Dispose(); throw; }
     }
     public static void Validate(ParcelHistoryFilter f)
     {
         if (f.Barcode?.Length > 256 || f.Position?.Length > 128 || f.RequestId?.Length > 256 || f.State is { } state && !Enum.IsDefined(state) ||
             f.From is { } start && f.ToExclusive is { } end && start >= end) throw new InvalidDataException("查询条件无效；时间为含开始、不含结束的明确时区区间");
     }
-    const string Source = " FROM parcel_history_index h JOIN (SELECT id,body,NULL AS hash,0 AS archived FROM parcel_operations UNION ALL SELECT id,body,body_hash,1 FROM parcel_archives) o ON o.id=h.id ";
-    static string Conditions => " WHERE h.seq<=$upper AND ($code IS NULL OR json_extract(o.body,'$.ParcelCode')=$code) AND ($position IS NULL OR h.position=$position)" +
-        " AND ($state IS NULL OR json_extract(o.body,'$.State')=$state) AND ($from IS NULL OR julianday(json_extract(o.body,'$.ObservedAt'))>=julianday($from))" +
-        " AND ($to IS NULL OR julianday(json_extract(o.body,'$.ObservedAt'))<julianday($to))" +
-        " AND ($request IS NULL OR json_extract(o.body,'$.Wcs.Request.Id')=$request OR json_extract(o.body,'$.Plc.Request.Id')=$request OR json_extract(o.body,'$.Upload.Request.Id')=$request OR json_extract(o.body,'$.Capture.Request.Id')=$request)";
+    const string Source = " FROM parcel_history_index h JOIN parcel_history_projection p ON p.id=h.id ";
+    const string Originals = " LEFT JOIN parcel_operations o ON o.id=h.id LEFT JOIN parcel_archives a ON a.id=h.id ";
+    static string Conditions(ParcelHistorySelection s)
+    {
+        var f = s.Filter;
+        return " WHERE h.seq<=$upper" + (f.Barcode is null ? "" : " AND p.barcode=$code") +
+            (f.Position is null ? "" : " AND h.position=$position") + (f.State is null ? "" : " AND p.state=$state") +
+            (f.From is null ? "" : " AND p.observed>=julianday($from)") + (f.ToExclusive is null ? "" : " AND p.observed<julianday($to)") +
+            (f.RequestId is null ? "" : " AND (p.wcs=$request OR p.plc=$request OR p.upload=$request OR p.capture=$request)");
+    }
     SqliteCommand Command(ParcelHistorySelection s, string sql)
     {
-        Validate(s.Filter); if (s.UpperSequence < 0) throw new InvalidDataException("Invalid history boundary");
+        cancellation.ThrowIfCancellationRequested(); Validate(s.Filter); if (s.UpperSequence < 0) throw new InvalidDataException("Invalid history boundary");
         var c = db.CreateCommand(); c.Transaction = tx; c.CommandText = sql;
         void Add(string key, object? value) => c.Parameters.AddWithValue(key, value ?? DBNull.Value);
         Add("$upper", s.UpperSequence); Add("$code", s.Filter.Barcode); Add("$position", s.Filter.Position);
@@ -48,7 +61,7 @@ public sealed class ParcelHistoryReader : IDisposable
     public ParcelHistoryPage Page(ParcelHistorySelection s, long before, int limit)
     {
         if (limit is < 1 or > 200 || before < 1) throw new ArgumentOutOfRangeException(nameof(limit));
-        using var c = Command(s, "SELECT h.seq,o.archived,o.body,o.hash" + Source + Conditions + " AND h.seq<$before ORDER BY h.seq DESC LIMIT $limit");
+        using var c = Command(s, "SELECT h.seq,a.id IS NOT NULL,coalesce(o.body,a.body),a.body_hash" + Source + Originals + Conditions(s) + " AND h.seq<$before ORDER BY h.seq DESC LIMIT $limit");
         c.Parameters.AddWithValue("$before", before); c.Parameters.AddWithValue("$limit", limit + 1);
         using var r = c.ExecuteReader(); List<ParcelHistoryItem> items = [];
         while (r.Read())
@@ -61,11 +74,7 @@ public sealed class ParcelHistoryReader : IDisposable
     }
     public ParcelHistoryMetrics Metrics(ParcelHistorySelection s)
     {
-        using var c = Command(s, "SELECT count(*),coalesce(sum(json_extract(o.body,'$.Wcs.Request.Id') IS NOT NULL),0)," +
-            "coalesce(sum(json_extract(o.body,'$.Wcs.State')='Accepted'),0)," +
-            "coalesce(sum(json_extract(o.body,'$.Wcs.State')='Unknown' OR json_extract(o.body,'$.Plc.State')='Unknown' OR json_extract(o.body,'$.Upload.State')='Unknown' OR json_extract(o.body,'$.Capture.State')='Unknown'),0)," +
-            "coalesce(sum(json_extract(o.body,'$.State')='PhysicalCompleted'),0)," +
-            "coalesce(sum(coalesce(json_extract(o.body,'$.Wcs.Attempts'),0)+coalesce(json_extract(o.body,'$.Plc.Attempts'),0)+coalesce(json_extract(o.body,'$.Upload.Attempts'),0)+coalesce(json_extract(o.body,'$.Capture.Attempts'),0)),0)" + Source + Conditions);
+        using var c = Command(s, "SELECT count(*),coalesce(sum(p.wcs IS NOT NULL),0),coalesce(sum(p.accepted),0),coalesce(sum(p.unknown),0),coalesce(sum(p.physical),0),coalesce(sum(p.attempts),0)" + Source + Conditions(s));
         using var r = c.ExecuteReader(); r.Read(); return new(r.GetInt64(0), r.GetInt64(1), r.GetInt64(2), r.GetInt64(3), r.GetInt64(4), r.GetInt64(5));
     }
     public async Task<ParcelExportReceipt> Export(ParcelHistorySelection selection, string destination, CancellationToken token)
@@ -116,7 +125,7 @@ public sealed class ParcelHistoryReader : IDisposable
             if (status != "Completed") ExtensionStore.AtomicWrite(destination + ".result.json", new ParcelExportReceipt(status, rows, bytes, null, selection, destination));
         }
     }
-    public void Dispose() { tx.Dispose(); db.Dispose(); }
+    public void Dispose() { tx.Dispose(); SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 0, null, null); db.Dispose(); }
 }
 
 public sealed partial class ParcelRuntime : IParcelHistoryApplication
@@ -127,34 +136,27 @@ public sealed partial class ParcelRuntime : IParcelHistoryApplication
         => OperatorHistory(await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit)).ConfigureAwait(false));
     public async Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection)
         => await ReadHistoryAsync(reader => reader.Metrics(selection)).ConfigureAwait(false);
-    async Task<T> ReadHistoryAsync<T>(Func<ParcelHistoryReader, T> read)
-    {
-        Task<T> task;
-        await gate.WaitAsync().ConfigureAwait(false);
-        try
+    Task<T> ReadHistoryAsync<T>(Func<ParcelHistoryReader, T> read)
+        => OwnedRead(t =>
         {
-            if (!started || stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("运行正在停止，不能开始历史读取");
-            var database = Path.Combine(directory!, Id + ".db");
-            task = Task.Run(() => { using var reader = new ParcelHistoryReader(database); return read(reader); });
-            auxiliary.Add(ObserveExport(task)); // Stop drains independent readers before releasing the owner.
-        }
-        finally { gate.Release(); }
-        return await task.ConfigureAwait(false);
-    }
+            using var reader = new ParcelHistoryReader(Path.Combine(directory!, Id + ".db"), t);
+            try { var result = read(reader); t.ThrowIfCancellationRequested(); return Task.FromResult(result); }
+            catch (SqliteException) when (t.IsCancellationRequested) { throw new OperationCanceledException(t); }
+        });
     public async Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token)
     {
-        Task<ParcelExportReceipt> task;
-        await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (!started || stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("运行正在停止，不能开始导出");
-            var relative = Path.GetRelativePath(directory!, Path.GetFullPath(destination));
-            if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar)) throw new IOException("导出必须位于业务根以外");
-            task = Task.Run(async () => { using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token); using var reader = new ParcelHistoryReader(Path.Combine(directory!, Id + ".db")); return await reader.Export(selection, destination, linked.Token); });
-            auxiliary.Add(ObserveExport(task));
+            return await OwnedRead(async t =>
+            {
+                var relative = Path.GetRelativePath(directory!, Path.GetFullPath(destination));
+                if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar)) throw new IOException("导出必须位于业务根以外");
+                using var reader = new ParcelHistoryReader(Path.Combine(directory!, Id + ".db"), t);
+                try { return await reader.Export(selection, destination, t).ConfigureAwait(false); }
+                catch (SqliteException) when (t.IsCancellationRequested) { throw new OperationCanceledException(t); }
+            }, token).ConfigureAwait(false);
         }
-        finally { gate.Release(); }
-        return await task.ConfigureAwait(false);
+        catch (Exception ex) { Volatile.Write(ref lastExportFailure, ex.GetType().Name + "; original history retained"); throw; }
     }
     string? lastExportFailure;
     async Task ObserveExport(Task task)

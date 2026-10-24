@@ -7,7 +7,9 @@
  <Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DispatcherProgressMonitor.cs" Link="Client/DispatcherProgressMonitor.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/IngressRecoveryPresentation.cs" Link="Client/IngressRecoveryPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ManagementModePresentation.cs" Link="Client/ManagementModePresentation.cs"/>

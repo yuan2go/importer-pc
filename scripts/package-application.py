@@ -102,7 +102,7 @@ for directory in [output / 'app', output / 'desktop']:
     release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
-selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
+selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, ApplicationContractVersion=next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts'), DatabaseFormat=9, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()
@@ -112,6 +112,8 @@ selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.targ
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 publish_guides(build_source, output, source, a.application)
 publish_dependencies(build_source, output, source)
+shutil.copyfile(build_source / 'scripts/stability-qualification.py', output / 'stability-qualification.py')
+shutil.copyfile(build_source / 'config/stability-target-plan.example.json', output / 'stability-target-plan.example.json')
 if a.application == 'sportmaster':
     shutil.copyfile(build_source / 'scripts/diagnose-camera-network.ps1', output / 'diagnose-camera-network.ps1')
 if a.target == 'win-x64':

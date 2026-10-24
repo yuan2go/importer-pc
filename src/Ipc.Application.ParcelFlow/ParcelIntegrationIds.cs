@@ -3,8 +3,28 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
+public sealed record IntegrationIdBudget(long First, long Last, long PermanentHighWater, long Remaining, string State);
+
+public sealed partial class ParcelRuntime
+{
+    IntegrationIdBudget? integrationBudget;
+    void RefreshIntegrationBudget()
+    {
+        integrationBudget = ports?.Wcs is IWcsRequestPreparer preparer && Effective.Wcs is { } binding && preparer.GetRequestIdRange(binding) is { } range
+            ? repository!.IntegrationBudget(range) : null;
+    }
+}
+
 public sealed partial class ParcelRepository
 {
+    public IntegrationIdBudget IntegrationBudget(IntegrationRequestIdRange range)
+    {
+        if (range.First <= 0 || range.Last < range.First) throw new InvalidDataException("Invalid numeric request ID range");
+        var floor = IntegrationRequestIdFloor();
+        var remaining = Math.Max(0, range.Last - Math.Max(floor, range.First - 1));
+        var total = range.Last - range.First + 1;
+        return new(range.First, range.Last, floor, remaining, remaining == 0 ? "Exhausted" : remaining <= Math.Max(1, total / 10) ? "RenewalRequired" : "Available");
+    }
     internal long NextIntegrationPreparationSequence(IntegrationRequestIdRange range)
     {
         if (range.First <= 0 || range.Last < range.First) throw new InvalidDataException("Invalid numeric request ID range");
@@ -37,8 +57,11 @@ public sealed partial class ParcelRepository
             if (range is null) continue;
             if (range.First <= 0 || range.Last < range.First) throw new InvalidDataException("Invalid numeric request ID range");
             using var c = db.CreateCommand(); c.Transaction = tx;
+            c.CommandText = "SELECT NOT EXISTS(SELECT 1 FROM parcel_integration_id_ranges WHERE first_id=$first AND last_id=$last) AND EXISTS(SELECT 1 FROM parcel_integration_id_ranges WHERE first_id<=$last AND last_id>=$first)";
+            c.Parameters.AddWithValue("$first", range.First); c.Parameters.AddWithValue("$last", range.Last);
+            if ((long)c.ExecuteScalar()! != 0) throw new InvalidDataException("A newly sized numeric range overlaps a previously registered allocation; obtain a disjoint range, never resize or reuse its tail");
             c.CommandText = "INSERT OR IGNORE INTO parcel_integration_id_ranges VALUES($hash,$first,$last)";
-            c.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(binding))); c.Parameters.AddWithValue("$first", range.First); c.Parameters.AddWithValue("$last", range.Last); c.ExecuteNonQuery();
+            c.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(binding))); c.ExecuteNonQuery();
             c.CommandText = "SELECT count(*) FROM parcel_integration_id_ranges WHERE binding_hash=$hash AND first_id=$first AND last_id=$last";
             if ((long)c.ExecuteScalar()! != 1) throw new InvalidDataException("Original configured numeric range cannot change meaning");
         }

@@ -84,7 +84,8 @@ public sealed partial class ParcelRepository
     { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_overload_ack WHERE identity=$id"; c.Parameters.AddWithValue("$id", identity); return (long)c.ExecuteScalar()! == 1; }
     public ParcelOperation[] FindIdentities(string admission, string observation)
     {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT id FROM parcel_history_index WHERE admission=$admission OR observation=$observation ORDER BY seq LIMIT 2";
+        using var c = db.CreateCommand(); c.CommandText = "SELECT id FROM parcel_history_index WHERE (admission=$admission OR observation=$observation)" +
+            (StorageVersion >= 9 ? " AND NOT EXISTS(SELECT 1 FROM parcel_retired_operations t WHERE t.id=parcel_history_index.id)" : "") + " ORDER BY seq LIMIT 2";
         c.Parameters.AddWithValue("$admission", admission); c.Parameters.AddWithValue("$observation", observation);
         List<string> ids = []; using (var r = c.ExecuteReader()) while (r.Read()) ids.Add(r.GetString(0));
         return ids.Select(id => ReadOperation(id) ?? throw new InvalidDataException("Identity original missing")).ToArray();
@@ -99,7 +100,7 @@ public sealed partial class ParcelRepository
     }
     public ParcelOperation? Latest(string position)
     {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT id FROM parcel_history_index WHERE position=$position ORDER BY seq DESC LIMIT 1";
+        using var c = db.CreateCommand(); c.CommandText = StorageVersion >= 9 ? "SELECT h.id FROM parcel_history_index h JOIN parcel_history_projection p ON p.id=h.id WHERE h.position=$position ORDER BY h.seq DESC LIMIT 1" : "SELECT id FROM parcel_history_index WHERE position=$position ORDER BY seq DESC LIMIT 1";
         c.Parameters.AddWithValue("$position", position); var id = c.ExecuteScalar() as string; return id is null ? null : ReadOperation(id);
     }
     public ParcelHistoryPage History(long before, int limit)
@@ -108,7 +109,8 @@ public sealed partial class ParcelRepository
         List<(long Sequence, string Id, bool Archived)> index = [];
         using (var c = db.CreateCommand())
         {
-            c.CommandText = "SELECT h.seq,h.id,a.id IS NOT NULL FROM parcel_history_index h LEFT JOIN parcel_archives a ON a.id=h.id WHERE h.seq<$before ORDER BY h.seq DESC LIMIT $limit";
+            c.CommandText = "SELECT h.seq,h.id,a.id IS NOT NULL FROM parcel_history_index h LEFT JOIN parcel_archives a ON a.id=h.id WHERE h.seq<$before" +
+                (StorageVersion >= 9 ? " AND NOT EXISTS(SELECT 1 FROM parcel_retired_operations t WHERE t.id=h.id)" : "") + " ORDER BY h.seq DESC LIMIT $limit";
             c.Parameters.AddWithValue("$before", before); c.Parameters.AddWithValue("$limit", limit + 1);
             using var r = c.ExecuteReader(); while (r.Read()) index.Add((r.GetInt64(0), r.GetString(1), r.GetBoolean(2)));
         }
@@ -131,7 +133,7 @@ public sealed partial class ParcelRepository
         }
         using var audit = db.CreateCommand(); audit.Transaction = tx;
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'HistoryArchived','runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
-        audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Terminal originals retained in same-database immutable archive; no expiry deletion" })); audit.ExecuteNonQuery();
+        audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Archive retains terminal originals in the same database; expiry deletion requires separate authorized retention maintenance" })); audit.ExecuteNonQuery();
         if (command is not null) WriteCommand(tx, command, new("Persisted", "Application command committed", Revision + 1));
         Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
     }
@@ -181,9 +183,11 @@ public sealed partial class ParcelRuntime
 {
     bool ArchiveEligible(ParcelOperation op) => IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
-    bool CapacityAvailable => storageCapacityFailure is null && operations.Values.Count(x => !ArchiveEligible(x)) < Effective.MaximumOperations;
-    ParcelCapacity Capacity() => new(operations.Values.Count(x => !ArchiveEligible(x)), operations.Count, repository!.ArchivedCount,
-        Effective.MaximumOperations, CapacityAvailable, "Terminal originals transactionally archived; all historical identities/receipts/audit retained; no automatic disk deletion", freeStorageBytes, Retention.MinimumFreeBytes);
+    int? projectedCapacity;
+    int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
+    bool CapacityAvailable => storageCapacityFailure is null && UnresolvedCapacity < Effective.MaximumOperations;
+    ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, repository!.ArchivedCount,
+        Effective.MaximumOperations, CapacityAvailable, "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain", freeStorageBytes, Retention.MinimumFreeBytes);
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
         if (!requested && operations.Count < Math.Min(Retention.ResidentHistory, Effective.MaximumOperations)) return;

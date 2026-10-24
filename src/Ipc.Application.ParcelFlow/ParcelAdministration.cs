@@ -9,13 +9,13 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
     SoftwareLogReader Logs { get { Management.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
     void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
     public Func<string, Task>? ManagementPasswordSetupApproval { get; set; }
-    public Task<ManagementModeStatus> ManagementModeStatusAsync() => Task.Run(Management.InspectStatus);
-    public async Task ConfigureManagementPasswordAsync(string password)
-    { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); Diagnostic("管理模式", "管理密码已设置"); }
-    public async Task<bool> EnterManagementModeAsync(string password)
+    public Task<ManagementModeStatus> ManagementModeStatusAsync() => OwnedAdministration(_ => Task.FromResult(Management.InspectStatus()));
+    public Task ConfigureManagementPasswordAsync(string password) => OwnedAdministration(async token =>
+    { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); Diagnostic("管理模式", "管理密码已设置"); return true; });
+    public Task<bool> EnterManagementModeAsync(string password) => OwnedAdministration(async token =>
     {
-        var accepted = await Task.Run(() => Management.Enter(password)).ConfigureAwait(false);
-        await gate.WaitAsync().ConfigureAwait(false);
+        var accepted = Management.Enter(password);
+        await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
             Diagnostic("管理模式", accepted ? "已进入管理模式" : "管理密码验证失败", accepted ? "信息" : "警告");
@@ -23,15 +23,15 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
             return accepted;
         }
         finally { gate.Release(); }
-    }
+    });
     public Task ExitManagementModeAsync()
-        => Task.Run(() => { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); });
-    public Task ChangeManagementPasswordAsync(string password) => Task.Run(() => { Management.ChangePassword(password); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); });
-    public Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword) => Task.Run(() => Management.ConvertLegacyCredentials(oldAccount, oldPassword, newPassword));
+        => OwnedAdministration(_ => { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); return Task.FromResult(true); });
+    public Task ChangeManagementPasswordAsync(string password) => OwnedAdministration(_ => { Management.ChangePassword(password); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); return Task.FromResult(true); });
+    public Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword) => OwnedAdministration(_ => Task.FromResult(Management.ConvertLegacyCredentials(oldAccount, oldPassword, newPassword)));
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)
-    { var logs = Logs; return Task.Run(() => logs.QueryAsync(query, selection, offset, token), token); }
+        => OwnedRead(t => Logs.QueryAsync(query, selection, offset, t), token);
     public Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token)
-    { var logs = Logs; return Task.Run(() => logs.ContextAsync(selection, location, before, after, token), token); }
+        => OwnedRead(t => Logs.ContextAsync(selection, location, before, after, t), token);
     public async Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token)
-    { var logs = Logs; var count = await Task.Run(() => logs.ExportAsync(selection, destination, allInRange, context, token), token).ConfigureAwait(false); Diagnostic("日志", "日志导出完成", detail: "Records=" + count); return count; }
+    { var count = await OwnedRead(t => Logs.ExportAsync(selection, destination, allInRange, context, t), token).ConfigureAwait(false); Diagnostic("日志", "日志导出完成", detail: "Records=" + count); return count; }
 }

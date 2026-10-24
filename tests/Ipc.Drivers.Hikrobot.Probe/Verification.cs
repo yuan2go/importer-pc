@@ -80,7 +80,8 @@ internal static class Verification
             await Until(() => blockedApi.Calls.Contains("stop"));
             Check(!stopping.IsCompleted && blockedLease.Releases == 0 && !blockedApi.Calls.Contains("destroy"), "blocked consumer retains SDK and lease during stop");
             release.Set(); await stopping;
-            Check(blockedLease.Releases == 1 && blocked.FramesRejected == 1, "faulted queued observation counted and teardown finishes after consumer");
+            Check(blockedLease.Releases == 1 && blocked.FramesRejected == 2 && blocked.FramesReceived == blocked.FramesDelivered + blocked.FramesRejected + blocked.FramesInFlight,
+                "overflow and faulted queued frame both counted; received equals delivered plus rejected plus in-flight after teardown");
         }
         var stopApi = new FakeApi { FailStop = true }; var stopLease = new TestLease();
         await using (var retry = Reader(stopApi, stopLease))
@@ -98,13 +99,59 @@ internal static class Verification
             healthApi.FailHealth = true; await Until(() => connection.LastFailure is not null);
             Check(healthStates.Last().Health == DeviceHealth.Faulted, "failed real health roundtrip closes readiness without reconnect/retrigger");
         }
+        var hungApi = new FakeApi(); var hungLease = new TestLease();
+        using (var entered = new ManualResetEventSlim())
+        using (var release = new ManualResetEventSlim())
+        await using (var hung = Reader(hungApi, hungLease))
+        {
+            await hung.StartControlledAsync("native-wait", _ => true, _ => { }, default);
+            hungApi.Enumerating = () => { entered.Set(); release.Wait(); };
+            try
+            {
+                Check(entered.Wait(4000), "native health enumeration entered");
+                using var cancel = new CancellationTokenSource(50);
+                try { await hung.StopAsync(cancel.Token); throw new Exception("Native call was falsely terminated"); }
+                catch (OperationCanceledException) { Check(hungLease.Releases == 0 && !hungApi.Calls.Contains("destroy"), "cancelled Stop wait retains actual blocked native owner and handle"); }
+                var retry = hung.StopAsync(default);
+                Check(!retry.IsCompleted, "repeat Stop joins original outstanding teardown");
+                release.Set(); await retry.WaitAsync(TimeSpan.FromSeconds(5));
+                Check(hungLease.Releases == 1 && hungApi.Calls.Count(x => x == "destroy") == 1, "native return allows exactly one destroy and lease release");
+            }
+            finally { release.Set(); }
+        }
+        var startApi = new FakeApi(); var startLease = new TestLease();
+        using (var entered = new ManualResetEventSlim())
+        using (var release = new ManualResetEventSlim())
+        using (var cancel = new CancellationTokenSource())
+        await using (var starting = Reader(startApi, startLease))
+        {
+            startApi.Enumerating = () => { entered.Set(); release.Wait(); };
+            var start = starting.StartControlledAsync("cancel-start", _ => true, _ => { }, cancel.Token);
+            try
+            {
+                Check(entered.Wait(3000), "startup native enumeration entered before cancellation"); cancel.Cancel();
+                Check(!start.IsCompleted, "cancellation cannot end already entered synchronous native call");
+                release.Set();
+                try { await start; throw new Exception("Cancelled native start became Ready"); } catch (OperationCanceledException) { }
+                Check(!startApi.Calls.Contains("create") && !startApi.Calls.Contains("start"), "returned cancelled enumeration cannot acquire handle or start grabbing");
+            }
+            finally { release.Set(); }
+        }
+        var rejectedApi = new FakeApi();
+        await using (var rejected = Reader(rejectedApi, new()))
+        {
+            await rejected.StartControlledAsync("copy-failure", _ => true, _ => { }, default);
+            rejectedApi.Failure!(new HikFrameRejectedException(new InvalidDataException("synthetic malformed native frame")));
+            Check(rejected.FramesReceived == 1 && rejected.FramesRejected == 1 && rejected.FramesInFlight == 0 && rejected.ConfirmationSource.Contains("malformed native frame"),
+                "native buffer rejection belongs to conservation and public reason");
+        }
         Console.WriteLine("SELF_TEST_PASS checks=" + checks);
     }
     static HikrobotReader Reader(FakeApi api, TestLease lease, string mode = "trigger", int capacity = 128) => new(
         new("test", "reader", new Dictionary<string, string>() { ["device.ip"] = "192.0.2.1", ["entity.mode"] = mode, ["queue.capacity"] = capacity.ToString() }), api, _ => lease);
     static async Task Reject(Func<Task> action)
     {
-        try { await action(); } catch (Exception ex) when (ex is IOException or InvalidDataException) { return; }
+        try { await action(); } catch (Exception ex) when (ex is IOException or InvalidDataException or ObservationConnectionException) { return; }
         throw new InvalidOperationException("Expected explicit failure");
     }
     static void BufferChecks()
@@ -146,11 +193,13 @@ internal static class Verification
     {
         public ConcurrentQueue<string> Calls = new(); public uint Mode = 1; public bool FailStop, FailHealth;
         public Action<HikFrame>? Frame;
-        public HikDevice[] Enumerate() => [new("192.0.2.1", "synthetic-camera", "synthetic", "synthetic", [])];
+        public Action<Exception>? Failure;
+        public Action? Enumerating;
+        public HikDevice[] Enumerate() { Enumerating?.Invoke(); return [new("192.0.2.1", "synthetic-camera", "synthetic", "synthetic", [])]; }
         public void Create(HikDevice device) => Calls.Enqueue("create");
         public void Open() => Calls.Enqueue("open");
         public uint TriggerMode() => FailHealth ? throw new IOException("Synthetic SDK health loss") : Mode;
-        public void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding) => Frame = frame;
+        public void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding) { Frame = frame; Failure = failure; }
         public void Emit(uint trigger, uint frame, string code) => Frame!(new(trigger, frame, 0, 0, 0, 0, [code]));
         public void Start() => Calls.Enqueue("start");
         public void Stop() { Calls.Enqueue("stop"); if (FailStop) throw new IOException("Synthetic native stop failure"); }

@@ -428,7 +428,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     void OpenTools()
     {
-        var menu = new ContextMenu();
+        var menu = new ContextMenu { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
         foreach (var label in new[] { "导入配置文件…", "保存未完成草稿", "继续已保存草稿" })
             Add(menu.Items, label);
         menu.Items.Add(new Separator());

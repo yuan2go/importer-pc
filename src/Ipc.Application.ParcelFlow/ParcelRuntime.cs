@@ -200,11 +200,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception ex)
         {
             Interlocked.Exchange(ref accepting, 0);
-            ingressStartup.TrySetResult(false);
-            if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
-            else configuration.CompleteEffectiveStartup(ex);
-            startupConfiguration = null;
-            CompleteConfigurationAudit("ActivationFailed");
+            // The terminal startup writer and ingress consumers share one connection.
+            // Publish the failed outcome only after its configuration/audit writes end;
+            // also serialize against an already-started Stop or snapshot reader.
+            await gate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                Boundary?.Invoke("BeforeStartupFailureAudit");
+                if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
+                else configuration.CompleteEffectiveStartup(ex);
+                startupConfiguration = null;
+                CompleteConfigurationAudit("ActivationFailed");
+                Boundary?.Invoke("AfterStartupFailureAudit");
+            }
+            finally { gate.Release(); ingressStartup.TrySetResult(false); }
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }
     }
@@ -290,6 +299,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 {
                     if (!startupCompleted || stopping.IsCancellationRequested)
                     {
+                        Boundary?.Invoke("BeforeStartupIngressDisposition");
                         repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
                         FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
                         interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);

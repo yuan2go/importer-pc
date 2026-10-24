@@ -31,6 +31,11 @@ jobs:
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
           python3 -m unittest discover -s scripts -p test_stability_qualification.py -v 2>&1 | tee stability-collector.log
+      - name: Exercise dual-camera startup failure and cancellation ownership
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
       - name: Retain the actual boundary result including failures
         if: always()
         uses: actions/upload-artifact@v4
@@ -40,6 +45,7 @@ jobs:
             aqa01-boundaries.log
             stability-boundaries.log
             stability-collector.log
+            dual-camera-boundaries.log
           if-no-files-found: warn
           retention-days: 30
   frozen-sportmaster:

@@ -63,7 +63,9 @@ static partial class Program
                     Operations = frozen.Operations.Select(o => o.PositionId != "left" ? o : o with { ParcelCode = longCode, Slot = longSlot,
                         Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = longSlot }).ToArray() } }).ToArray()
                 } : frozen;
-                await SetClient(window, width, height); await vm.RefreshAsync();
+                await SetClient(window, width, height);
+                for (var i = 0; i < 100 && !ReferenceEquals(vm.Snapshot, snapshot); i++) { await vm.RefreshAsync(); await Task.Delay(20); }
+                Check(ReferenceEquals(vm.Snapshot, snapshot), variant + " " + ui + " " + scenario + " converges to the exact frozen presentation input");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
                 var beforeOverrides = new Dictionary<DependencyObject, string>();
                 if (variant == "system")
@@ -89,7 +91,7 @@ static partial class Program
                 reports.Add(new { Variant = variant, Ui = ui, Scenario = scenario, Client = new { client.ActualWidth, client.ActualHeight },
                     Dpi = VisualTreeHelper.GetDpi(window).DpiScaleX, Host = TypographyBounds(host, client), Controls = rows });
                 var code = controls.OfType<TextBox>().FirstOrDefault(b => b.Name == "CurrentBarcode" || Equals(b.Tag, "CurrentBarcode"));
-                Check(code is not null && code.Text == (scenario == "long" ? longCode : "000123456789"), key + " exact barcode text preserved");
+                Check(code is not null && code.Text == (scenario == "long" ? longCode : "000123456789"), key + " exact barcode text preserved; actual=" + code?.Text);
                 code!.SelectAll(); Check(code.SelectedText == code.Text, key + " entire barcode remains selectable");
                 if (scenario == "unknown") Check(vm.CurrentSlot == "未取得", key + " unknown never exposes accepted slot");
                 if (variant == "noto" && !args.Contains("--observe-only"))

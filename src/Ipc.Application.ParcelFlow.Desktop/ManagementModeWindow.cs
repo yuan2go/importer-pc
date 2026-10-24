@@ -41,6 +41,10 @@ public sealed class ManagementModeWindow : Window
         changeBody.Children.Add(new TextBlock { Text = rules.Text + " 修改后退出管理模式，原授权立即撤销。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) });
         var save = new Button { Name = "ChangeManagementPassword", Content = "修改密码并退出管理模式", MinHeight = 44 }; changeBody.Children.Add(save);
         var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 12) }; AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); Grid.SetRow(feedback, 1); layout.Children.Add(feedback);
+        var feedbackStyle = new Style(typeof(TextBlock));
+        var emptyFeedback = new Trigger { Property = TextBlock.TextProperty, Value = "" };
+        emptyFeedback.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
+        feedbackStyle.Triggers.Add(emptyFeedback); feedback.Style = feedbackStyle;
         var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right }; Grid.SetRow(actions, 2); layout.Children.Add(actions);
         var enterButton = new Button { Name = "EnterManagementMode", Content = "进入管理模式", MinHeight = 44, MinWidth = 140, IsDefault = true }; actions.Children.Add(enterButton);
         StartupAppearance.Primary(enterButton); StartupAppearance.Primary(save); feedback.Foreground = Brushes.Firebrick;

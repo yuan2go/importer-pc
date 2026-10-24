@@ -480,9 +480,134 @@
     "Sha256": "135fdea917932aa5689bfb54c2d41a0949953ec009dab6e5c330e998f36e554a"
   },
   {
+    "Path": "ci-fix/after-history-filters-minimum.png",
+    "Bytes": 54340,
+    "Sha256": "51b30c4bb83dcf97c8c5b5e2c7958e446cbe57778f1745d691c6a234e7657740"
+  },
+  {
+    "Path": "ci-fix/build.log",
+    "Bytes": 1992,
+    "Sha256": "a7b332ab1cb5d732c53bc3e5a8e3caf4de7b2a16fb51cf404ecd6022147d5c9d"
+  },
+  {
+    "Path": "ci-fix/environment-report.log",
+    "Bytes": 731,
+    "Sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0"
+  },
+  {
+    "Path": "ci-fix/initial-ci-failures.log",
+    "Bytes": 664,
+    "Sha256": "4a8fd9b22931164b3e0f2126588df6308be91f5673a34b4d980e65751699edd0"
+  },
+  {
+    "Path": "ci-fix/internal-pages.log",
+    "Bytes": 2773,
+    "Sha256": "b21feacd9edc55a2d3c3acf5b467a9881ad5cd5757259a058195eac45131f201"
+  },
+  {
+    "Path": "ci-fix/management-logs-800.png",
+    "Bytes": 49079,
+    "Sha256": "f326457c22611aa5256b1dc7c9ba244cbe758f2c98a3a0e3e4308e7a9ccbbd87"
+  },
+  {
+    "Path": "ci-fix/management-mode.log",
+    "Bytes": 3238,
+    "Sha256": "050e04d0b4d5b4a5f57336e0e822482b97d94e1349e9cbc6d8ae25d2a0df27a5"
+  },
+  {
+    "Path": "ci-fix/parameter-shell-polish.log",
+    "Bytes": 3590,
+    "Sha256": "38d31990be6d4c74ed8a5248406857856a913fb95acf612eca67591aeb623db7"
+  },
+  {
+    "Path": "ci-fix/parameter-v3-only.log",
+    "Bytes": 2820,
+    "Sha256": "cafacf140c0a34bbd46bee28eee59ce3bacc7128f900d1825fec3d050ea43c16"
+  },
+  {
+    "Path": "ci-fix/portable-build.log",
+    "Bytes": 2068,
+    "Sha256": "13f3c80b4fe0c4c6bd0eed3d08b6a88dcb634461bf707033dd98ecf1f09e6563"
+  },
+  {
+    "Path": "ci-fix/publish.log",
+    "Bytes": 3589,
+    "Sha256": "c3f32c2689b66e6a8206f99144d29f68d9c3eccafd4fcaf49b9598444f680cde"
+  },
+  {
+    "Path": "ci-fix/README.md",
+    "Bytes": 2746,
+    "Sha256": "af976f1768559b56679b8ebf4bcec6f11f0595e4a5eb6a7d0b0386a47dc5c7be"
+  },
+  {
+    "Path": "ci-fix/supply-station-client-800x420-unknown-rejection.png",
+    "Bytes": 46348,
+    "Sha256": "2eb52126c982bae4bf0315971b5d44a38c9421649a94d8b3e7d77a5fe60c28ee"
+  },
+  {
+    "Path": "ci-fix/supply-station-logs-command-Conflict-800.png",
+    "Bytes": 43342,
+    "Sha256": "43970fdb60406b59c536eb3349e9fcfc3b86a6f82f736e5be1d29d2a292ee5b8"
+  },
+  {
+    "Path": "ci-fix/supply-station-long-800.png",
+    "Bytes": 55237,
+    "Sha256": "67f5c957809d538f9afb92a571d4d8c39cce8b3a986f1abc2f15f5936fc5f05b"
+  },
+  {
+    "Path": "ci-fix/supply-station-pending-800.png",
+    "Bytes": 54186,
+    "Sha256": "e4fa38098153cebd19eae9a9b1b9a99ba3ceb95917e7c1c91684f6bb515fb213"
+  },
+  {
+    "Path": "ci-fix/supply-station-unadmitted-1366.png",
+    "Bytes": 72173,
+    "Sha256": "dcacf13929030e36bedce1801b3487073a478b9593228a3a1ef6056a8d837bc3"
+  },
+  {
+    "Path": "ci-fix/supply-station-Unknown-800.png",
+    "Bytes": 57301,
+    "Sha256": "d6145498bd3d2a78c0dad891e1490a597493bce33a4c7f8c535b7dfa348adbe6"
+  },
+  {
+    "Path": "ci-fix/supply-station-作业记录-800.png",
+    "Bytes": 51846,
+    "Sha256": "00f36517e3c6ff915253ab6562ff4f78a7e6ef1362edce74f6449815d9ab15ae"
+  },
+  {
+    "Path": "ci-fix/supply-station-工作台-1366.png",
+    "Bytes": 78418,
+    "Sha256": "a155071397b3a6a02465e3a3fe6150b58f7264e171c653a3be2f8949bb16eebc"
+  },
+  {
+    "Path": "ci-fix/supply-station-工作台-800.png",
+    "Bytes": 52067,
+    "Sha256": "803ffabf4a575e1b1d8fcd5dd00e647ae491e1cfe5208aff9fda49f6506a1d25"
+  },
+  {
+    "Path": "ci-fix/supply-station-日志查询-800.png",
+    "Bytes": 49797,
+    "Sha256": "cd6210656129b9790a1e2a7f0257d555e47ff1477f249d3576256605dbec86b1"
+  },
+  {
+    "Path": "ci-fix/task-hierarchy.log",
+    "Bytes": 17418,
+    "Sha256": "76916bfa09743bcaedad418d2d7f5b389869ba5bf5640b1063248d00fb64640e"
+  },
+  {
+    "Path": "ci-fix/visual-productization.log",
+    "Bytes": 11564,
+    "Sha256": "3a4a6375e1b3c9d3bc40ffe85aaeb7b5af56ca62a82cf363e452ad02470e8be7"
+  },
+  {
+    "Path": "CI-FIX.json",
+    "Bytes": 3738,
+    "Sha256": "f275207a5f88003dffe18f20d105254802712fb4537554cb87e735b2454abe49"
+  },
+  {
     "Path": "README.md",
-    "Bytes": 3398,
-    "Sha256": "533b75ef7b9c6af710347d78f826657352604d6e96befe2cf17cd81b32e718a1"
+    "Bytes": 3744,
+    "Sha256": "d29d4f961a6c3b21fe1e3f71feb206637771be1305e3d4eb7bc38c6a25ed4889"
   },
   {
     "Path": "regression/environment-report.log",

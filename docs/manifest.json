@@ -72633,6 +72633,14 @@
     "native_assertions": 232,
     "actual_dpi": 1.25,
     "field": "NOT_RUN",
-    "publication": "PR_ONLY_NO_RELEASE_OR_INSTALL"
+    "publication": "PR_ONLY_NO_RELEASE_OR_INSTALL",
+    "ci_closure": {
+      "source_commit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "evidence": "docs/runtime/evidence/task-content-hierarchy-02/CI-FIX.json",
+      "evidence_sha256": "f275207a5f88003dffe18f20d105254802712fb4537554cb87e735b2454abe49",
+      "native_assertions": 371,
+      "local_parameter_full_chain": "ENVIRONMENT_BLOCKED_PROTECTED_USER_PRESENTATION_ACL",
+      "pull_request": "https://github.com/yuan2go/importer-pc/pull/97"
+    }
   }
 }

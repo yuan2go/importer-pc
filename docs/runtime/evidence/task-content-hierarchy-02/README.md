@@ -2,17 +2,19 @@
 
 所有图片来自真实Windows WPF HWND/Dispatcher渲染；本机实际DPI 125%，合成数据和端口，不是HTML、实机双相机或现场验收。前后默认供包台使用同一合成新包裹、同窗口客户区；参数使用同一合成TCP/RCS完整候选、同一共享日常表单。
 
+当前最终源码`1663033`及371项本机回归见[CI-FIX.json](CI-FIX.json)、[CI续修与最终截图](ci-fix/README.md)。下方`after`/RESULT保持初次`c1e7950`/`4c54d85`来源；CI发现后另行修复，未倒写这些旧图/日志。默认工作台及日志对照已指向最终采集，参数控件实现未在CI续修中更改。
+
 baseline生产源码：`c91559f6f981a9f2c9f89bd5afc271089f0e9d8e`。最终源码与各组验证的精确提交、实际尺寸、计数见[RESULT.json](RESULT.json)，文件hash见[FILES.json](FILES.json)。图片名称尺寸是目标DIP，实际值以日志为准（1366.4×768、1092×613.6或614、800×420）；图片像素随实际125%DPI放大。
 
 ## 同场景前后
 
 | 场景 | main之前 | 本轮之后 |
 |---|---|---|
-| 默认作业1366×768 | ![before](before/supply-station-工作台-1366.png) | ![after](after/supply-station-工作台-1366.png) |
-| 默认作业最小800×420 | ![before](before/supply-station-工作台-800.png) | ![after](after/supply-station-工作台-800.png) |
+| 默认作业1366×768 | ![before](before/supply-station-工作台-1366.png) | ![after](ci-fix/supply-station-工作台-1366.png) |
+| 默认作业最小800×420 | ![before](before/supply-station-工作台-800.png) | ![after](ci-fix/supply-station-工作台-800.png) |
 | 左相机最小800×420 | ![before](before/parameters-左相机-800.png) | ![after](after/parameters-左相机-800.png) |
 | 供包台标识1366×768 | ![before](before/parameters-供包台标识-1366.png) | ![after](after/parameters-供包台标识-1366.png) |
-| 日志最小800×420 | ![before](before/supply-station-日志查询-800.png) | ![after](after/supply-station-日志查询-800.png) |
+| 日志最小800×420 | ![before](before/supply-station-日志查询-800.png) | ![after](ci-fix/supply-station-日志查询-800.png) |
 
 参数对照仅共享编辑控件，不把它扩大为整窗保存可达性；整窗保存、Pending/Effective、焦点/滚动及授权边界分别见regression中的V3与parameter-shell-polish原生结果。
 

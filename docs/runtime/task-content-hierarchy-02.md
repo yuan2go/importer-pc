@@ -1,6 +1,6 @@
 # Sportmaster默认供包台信息层级与操作反馈
 
-2026-10-24。开工main `c91559f6f981a9f2c9f89bd5afc271089f0e9d8e`，当时无开放PR；继承PR93～96。最终生产/夹具源码`c1e7950ce7dd8b62ffa6c0015e31759b921f622f`，核心实现始于`50c5245`。精确分组验证版本和结果见[证据清单](evidence/task-content-hierarchy-02/RESULT.json)。工作包及替代关系见[HIERARCHY-02](../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。
+2026-10-24。开工main `c91559f6f981a9f2c9f89bd5afc271089f0e9d8e`，当时无开放PR；继承PR93～96。最终生产/夹具源码`166303306e73e2d970ab44231ec26d4792a943a6`，包含首次CI发现的紧凑视口续修；初次`c1e7950`结果保留来源。最终结果见[CI续修清单](evidence/task-content-hierarchy-02/CI-FIX.json)，[初次清单](evidence/task-content-hierarchy-02/RESULT.json)不覆盖最终源码。工作包及替代关系见[HIERARCHY-02](../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)，交付[PR97](https://github.com/yuan2go/importer-pc/pull/97)。
 
 ## 实现与使用
 
@@ -8,7 +8,7 @@
 
 Unknown、Rejected、Conflict、等待回应、新输入未准入和快照失效使用同一事实投影；原因、下一步在普通作业视图可见。新输入未准入隐藏旧格口和任务矩阵，原作业责任仍可查；单侧异常不改变另一位资格或整站暂停。长条码/格口可以选择复制，受限高度内部滚动；800×420时长格口限高64 DIP以保留至少一行条码，固定动作保持可达。取得格口不表示物理投递完成。
 
-`TaskContextPresentation`维护本窗反馈归属，不是业务状态机。全局暂停/恢复的当前回执有独立紧凑区域，日志页不会隐藏，普通页内读取不会覆盖；下一次全局意图替代旧回执，迟到的旧命令结果不能覆盖较新的独立暂停。可手动收起回执；运行实例变更后旧回执退出。页内反馈绑定导航代次，页面切换后的迟到结果不进入当前页。原Application守卫、暂停独立通道及三次冲突上限保持。
+`TaskContextPresentation`维护本窗反馈归属，不是业务状态机。全局暂停/恢复的当前回执有独立紧凑区域，日志页不会隐藏，普通页内读取不会覆盖；下一次全局意图替代旧回执，迟到的旧命令结果不能覆盖较新的独立暂停。可手动收起回执；运行实例变更后旧回执退出。已收到`Persisted`的成功回执在发起页显示后，离开该页即退场，避免旧成功回执挤占查询列表；拒绝、连续冲突、未知和待核对结果继续跨页保留。页内反馈绑定导航代次，页面切换后的迟到结果不进入当前页。原Application守卫、暂停独立通道及三次冲突上限保持。
 
 左右相机与供包台标识页缩紧字段间距，将连接/编码说明归入现有“参数说明与诊断详情”；字段标签、必填星号、数值单位/约束和错误保持就近。心跳供包台编码明确命名；取格口和心跳编码仍是独立字段，共用首配/日常模型、完整候选和统一保存，不增加独立配置账。
 
@@ -20,7 +20,9 @@ Unknown、Rejected、Conflict、等待回应、新输入未准入和快照失效
 
 [原生前后对照](evidence/task-content-hierarchy-02/README.md)和[逐项结果](evidence/task-content-hierarchy-02/RESULT.json)绑定实际源码。前后是同尺寸、同合成场景的真实WPF HWND/Dispatcher渲染；参数对照使用同一日常共用表单、实际TCP/RCS描述和合成候选，未保存、连接或修改生产配置。不是HTML或物理桌面截屏。
 
-本机合计232项PASS：任务层级145、参数精修9、既有parameter-shell-polish 30、internal-pages 25、parameter-v3-only 23。任务/查询在最终`c1e7950`运行；参数三组在`4c54d85`运行，之后只修改日志空态列头避让。V3验证真实Application保存后Pending/Effective分离和三尺寸整窗保存入口；不把模拟保存扩大到生产配置。两项构建均0警告/0错误；本地Sportmaster win-x64 framework-dependent publish成功，显式等待进程的`--environment-report`退出0并产生有效JSON。这不是完整安装/受保护服务启动冒烟；CI保留全部既有门禁，另将task-hierarchy纳入同一冻结Windows介质回归并保留失败日志/截图，CI以PR实际检查结果为准。
+初次本机232项PASS分属`c1e7950`与`4c54d85`；后续CI暴露查询视口和旧几何断言问题，[续修记录](evidence/task-content-hierarchy-02/ci-fix/README.md)保留失败及裁决。最终`1663033`本机6组371项PASS：task-hierarchy 151、visual-productization 115、management-mode 27、internal-pages 25、parameter-v3-only 23、parameter-shell-polish 30。原参数精修9项及对应表单图保持`4c54d85`身份，不与371重复求和。
+
+V3验证真实Application保存后Pending/Effective分离和三尺寸整窗保存入口；不把模拟保存扩大到生产配置。最终两项构建0警告/0错误；本地Sportmaster win-x64 framework-dependent publish成功，显式等待进程的`--environment-report`退出0并产生有效JSON。这不是完整安装/受保护服务启动冒烟。完整parameter-v3链在本机显示偏好写入处受既有受保护D盘用户目录ACL阻断，未降低断言或修改权限，未标PASS；完整冻结参数链由PR Windows CI独立验证。CI保留全部既有门禁，另将task-hierarchy纳入同一冻结Windows介质回归并保留失败日志/截图，CI以PR实际检查结果为准。
 
 旧TaskHierarchy异常夹具只改Wcs.State，不能作为完整异常证据。本包同步原请求回执、作业状态/原因/格口及位置准入/完成事实，另一位保持原快照。Unknown无成功回执，Rejected有明确拒绝，Conflict保留矛盾原回执；不修改生产规则去迁就夹具。
 
@@ -38,6 +40,8 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --parameter-shell-polish
 dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --internal-pages
 dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --parameter-v3-only
+dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --visual-productization
+dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --management-mode
 ```
 
 输出目录由`.artifacts/WINDOWS-WPF-EVIDENCE.txt`记录，隔离数据/临时文件均在D盘。before参数在main归档源码的隔离目录中仅加入本轮参数采集夹具和Program路由，以`--baseline`运行；生产源码保持main原字节。正式测试不使用baseline跳过新断言。

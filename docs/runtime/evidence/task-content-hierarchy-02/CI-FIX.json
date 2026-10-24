@@ -1,0 +1,98 @@
+{
+  "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+  "Date": "2026-10-24",
+  "ActualDpi": 1.25,
+  "Status": "SCOPED_PASS_WITH_SEPARATE_LOCAL_ENVIRONMENT_BLOCK",
+  "TotalPassedAssertions": 371,
+  "Verification": [
+    {
+      "Scenario": "task-hierarchy",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 151,
+      "Log": "ci-fix/task-hierarchy.log"
+    },
+    {
+      "Scenario": "visual-productization",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 115,
+      "Log": "ci-fix/visual-productization.log"
+    },
+    {
+      "Scenario": "management-mode",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 27,
+      "Log": "ci-fix/management-mode.log"
+    },
+    {
+      "Scenario": "internal-pages",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 25,
+      "Log": "ci-fix/internal-pages.log"
+    },
+    {
+      "Scenario": "parameter-v3-only",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 23,
+      "Log": "ci-fix/parameter-v3-only.log"
+    },
+    {
+      "Scenario": "parameter-shell-polish",
+      "SourceCommit": "166303306e73e2d970ab44231ec26d4792a943a6",
+      "Status": "PASS",
+      "Assertions": 30,
+      "Log": "ci-fix/parameter-shell-polish.log"
+    }
+  ],
+  "Builds": {
+    "Native": "PASS: 0 warnings, 0 errors",
+    "PortableLinkedViewModel": "PASS: 0 warnings, 0 errors",
+    "Publish": "PASS: Sportmaster win-x64 framework-dependent",
+    "EnvironmentEntry": "PASS: explicitly waited exit 0 and valid JSON, not installed startup"
+  },
+  "PublishedBinaries": [
+    {
+      "File": "Ipc.Desktop.exe",
+      "Sha256": "63b0cc63ef46a876b7a2cf6f39949aa212381493b33a8e11dec468ef0d024b50"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "35cb26d7a10e2e1e2aa434af547eeaebf89fec688992e538b02e48ce049757df"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "a4e7d82483543ced5e9c79b2d732a764bf1293c0194d5eec41b5805a55b381a2"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "0bf453721d4670c5f8b54d81af34b1b5b5866c53ee8cb70b3089ead5548f1125"
+    }
+  ],
+  "LocalFullParameterV3Chain": {
+    "Status": "ENVIRONMENT_BLOCKED",
+    "Boundary": "Existing protected D-drive per-user presentation directory denies display-preference save. Original assertion remains failing; no ACL edit, path override or symlink.",
+    "Evidence": "Full diagnostic with local account path retained in local .artifacts only. Independent frozen Windows CI retains the full parameter chain."
+  },
+  "InitialCI": {
+    "Run": "https://github.com/yuan2go/importer-pc/actions/runs/40067934154",
+    "Head": "31bd5fc7a3342612ede3b476c52ad6c45dd5f933",
+    "TestedMerge": "5fd41efe890186a00342aa212574cd064bcc43e1",
+    "Status": "FAIL: three native layout/assertion issues; corrected in current SourceCommit",
+    "Log": "ci-fix/initial-ci-failures.log"
+  },
+  "DeliveryPR": "https://github.com/yuan2go/importer-pc/pull/97",
+  "CurrentCI": "Read the latest PR checks for the actual head and merge revision; no earlier PASS is extended.",
+  "InitialEvidence": "RESULT.json retains the c1e7950 / 4c54d85 result identity.",
+  "NotRun": [
+    "Real dual cameras/SDK/RCS",
+    "Target industrial PC",
+    "Physical keyboard/mouse/scanner/touch",
+    "Local other OS DPI",
+    "Local install/upgrade/UAC/protected service startup",
+    "Field acceptance"
+  ]
+}

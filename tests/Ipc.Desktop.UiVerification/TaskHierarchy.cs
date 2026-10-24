@@ -169,9 +169,11 @@ static partial class Program
 public class HierarchyProjectionProbe : ProjectionProbe
 {
     public Func<BusinessCommand, Task<BusinessReceipt>>? Command;
+    public bool FailSnapshots;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
-        if (method!.Name == nameof(IBusinessApplication.CommandAsync) && Command is not null) return Command((BusinessCommand)arguments![0]!);
+        if (method!.Name == nameof(IParcelApplication.SnapshotAsync) && FailSnapshots) return Task.FromException<ParcelSnapshot>(new IOException("合成状态读取失败"));
+        if (method.Name == nameof(IBusinessApplication.CommandAsync) && Command is not null) return Command((BusinessCommand)arguments![0]!);
         if (method.Name == nameof(IWorkstationAdministration.QueryLogsAsync))
         {
             var rows = Enumerable.Range(1, 12).Select(i => new SoftwareLogEntry(new("synthetic", i, "fixture", "synthetic.jsonl"),

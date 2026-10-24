@@ -115,10 +115,13 @@ static partial class Program
         await RefreshUntil(() => station.Left.InputUnadmitted && station.Left.Barcode == "NEW-INPUT-02");
         Check(station.Left.Barcode == "NEW-INPUT-02" && !slot.IsVisible && !((Grid)left.FindName("TaskFields")).IsVisible && station.Left.OriginalResponsibility.Contains(original.Id), "unadmitted input cannot inherit original slot and retains original owner");
         CaptureInternal(evidence, "supply-station-unadmitted-1366", client, lines);
-        probe.Project = null; await vm.RefreshAsync(); vm.MarkReadFailure("合成状态读取失败"); await Flush();
+        probe.Project = null; probe.FailSnapshots = true;
+        var readFailed = false;
+        try { await vm.RefreshAsync(); } catch (System.IO.IOException error) when (error.Message == "合成状态读取失败") { readFailed = true; }
+        await Flush(); Check(readFailed && !vm.Fresh, "snapshot read fault reaches the real freshness path");
         Check(!slot.IsVisible && !station.Left.CanAdmit && !station.Left.CanContinue && station.Left.Status == "状态已失效", "stale snapshot hides actionable destination and preserves command guards");
         CaptureInternal(evidence, "supply-station-stale-1366", client, lines);
-        await vm.RefreshAsync();
+        probe.FailSnapshots = false; await RefreshUntil(() => vm.Fresh);
         navigate("日志查询"); await Task.Delay(80); Click(host, "查询");
         var queryButton = Descendants(host).OfType<Button>().Single(b => Equals(b.Content, "查询"));
         for (var i = 0; i < 100 && !queryButton.IsEnabled; i++) await Task.Delay(20);

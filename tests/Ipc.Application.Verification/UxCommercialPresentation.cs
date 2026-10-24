@@ -210,7 +210,9 @@ static class UxCommercialPresentation
             var vm = new ParcelViewModel((IParcelApplication)(object)probe, "test", "test");
             vm.PropertyChanged += (_, _) => changedOnUi &= Environment.CurrentManagedThreadId == uiThread;
             var refresh = vm.RefreshAsync();
-            Check(entered.Wait(TimeSpan.FromSeconds(2)) && !refresh.IsCompleted && serviceThread != uiThread, "synchronously blocking snapshot service returns control without occupying the UI caller thread");
+            // Management status is read before the snapshot. Keep this synthetic
+            // dispatcher pumping while waiting for snapshot entry, as WPF does.
+            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(2))) && !refresh.IsCompleted && serviceThread != uiThread, "synchronously blocking snapshot service returns control without occupying the UI caller thread");
             var drain = vm.DrainAsync(); Check(!drain.IsCompleted, "close drain retains synchronous service ownership until actual completion");
             release.Set(); await refresh; await drain;
             Check(changedOnUi && vm.Fresh, "snapshot collection/property projection resumes on captured UI context");

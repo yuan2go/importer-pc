@@ -31,4 +31,4 @@
   <Target Name="RequireInstallerPayload" BeforeTargets="Publish">
     <Error Condition="!Exists('$(InstallerPayload)') Or !Exists('$(InstallerDescriptor)')" Text="Use scripts/package-installer.py with a verified frozen Windows medium."/>
   </Target>
-</Project>
+<ItemGroup><Using Include="Ipc.Presentation.Wpf"/></ItemGroup></Project>

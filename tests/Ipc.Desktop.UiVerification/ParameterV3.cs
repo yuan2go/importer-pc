@@ -4,6 +4,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -62,13 +63,23 @@ static partial class Program
         var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
         Check(Descendants(staleReview).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
             "stale saved pause state cannot hide the independent pause action in review");
+        CaptureInternal(evidence, "v3-save-review", staleReview, lines);
         staleReview.Close();
         await Until(() => vm.Fresh);
         var probesRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         runtime.BeforeMonitorProbe = (_, token) => probesRelease.Task.WaitAsync(token);
         await vm.PauseAsync(); await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync("SIMULATION_ONLY"));
         await Until(() => vm.CanConfigure);
-        vm.ConfigurationReason = "Synthetic V3 native save"; await vm.SaveStructuredConfigurationAsync();
+        vm.ConfigurationReason = "Synthetic V3 native save";
+        Check(await vm.PrepareConfigurationReviewAsync(), "edited candidate is ready for the native save review");
+        var readyReview = new ConfigurationSaveReviewWindow(window, vm); readyReview.Show();
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); readyReview.UpdateLayout();
+        var confirm = Descendants(readyReview).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges");
+        var confirmBounds = confirm.TransformToAncestor(readyReview).TransformBounds(new Rect(confirm.RenderSize));
+        Check(confirm.IsEnabled && confirmBounds.Top >= 0 && confirmBounds.Bottom <= readyReview.ActualHeight && confirmBounds.Right <= readyReview.ActualWidth,
+            "review exposes its enabled confirm action inside the actual window");
+        CaptureInternal(evidence, "v3-save-review-ready", readyReview, lines); readyReview.Close();
+        await vm.SaveStructuredConfigurationAsync();
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT" && vm.Snapshot.Configuration.Effective.StationCode == "SYNTHETIC-STATION" && !vm.HasUnsavedConfiguration,
             "native save confirms Pending while Effective stays unchanged");

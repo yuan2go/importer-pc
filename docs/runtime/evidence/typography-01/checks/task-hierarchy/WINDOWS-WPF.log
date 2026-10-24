@@ -1,0 +1,244 @@
+PASS FONT regular has actual glyphs without .notdef
+PASS FONT regular resolves expected font file and real weight
+PASS FONT medium has actual glyphs without .notdef
+PASS FONT medium resolves expected font file and real weight
+PASS FONT code has actual glyphs without .notdef
+PASS FONT code resolves expected font file and real weight
+PASS FONT fallback has actual glyphs without .notdef
+PASS FONT fallback resolves expected font file and real weight
+PASS FONT Regular embedded bytes match official SHA256
+PASS FONT Medium embedded bytes match official SHA256
+PASS FONT offline OFL license is embedded
+CAPTURE typography-font-resolution: 945.6x282.4 DIP, Windows DPI 1.25/1.25
+CAPTURE classic-login-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic captures the newly emitted synthetic parcel, not the previous one
+CAPTURE classic-工作台-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1366: PageHost Y=123.2 Height=550.4
+PASS HIERARCHY classic-工作台-1366 preserves usable task content
+PASS HIERARCHY classic-工作台-1366 keeps one full current barcode line visible without scrolling
+CAPTURE classic-作业记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1366: PageHost Y=97.6 Height=620.0
+PASS HIERARCHY classic-作业记录-1366 preserves usable task content
+PASS HIERARCHY classic-作业记录-1366 does not expose unrelated login or current-position recovery
+CAPTURE classic-参数设置-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1366: PageHost Y=97.6 Height=620.0
+PASS HIERARCHY classic-参数设置-1366 preserves usable task content
+PASS HIERARCHY classic-参数设置-1366 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic-参数设置-1366 keeps the actual save action visible
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1366: PageHost Y=97.6 Height=620.0
+PASS HIERARCHY classic-日志查询-1366 preserves usable task content
+PASS HIERARCHY classic-日志查询-1366 does not expose unrelated login or current-position recovery
+CAPTURE classic-工作台-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1092: PageHost Y=123.2 Height=396.0
+PASS HIERARCHY classic-工作台-1092 preserves usable task content
+PASS HIERARCHY classic-工作台-1092 keeps one full current barcode line visible without scrolling
+CAPTURE classic-作业记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1092: PageHost Y=97.6 Height=465.6
+PASS HIERARCHY classic-作业记录-1092 preserves usable task content
+PASS HIERARCHY classic-作业记录-1092 does not expose unrelated login or current-position recovery
+CAPTURE classic-参数设置-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1092: PageHost Y=97.6 Height=465.6
+PASS HIERARCHY classic-参数设置-1092 preserves usable task content
+PASS HIERARCHY classic-参数设置-1092 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic-参数设置-1092 keeps the actual save action visible
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1092: PageHost Y=97.6 Height=465.6
+PASS HIERARCHY classic-日志查询-1092 preserves usable task content
+PASS HIERARCHY classic-日志查询-1092 does not expose unrelated login or current-position recovery
+CAPTURE classic-工作台-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-800: PageHost Y=123.2 Height=202.4
+PASS HIERARCHY classic-工作台-800 preserves usable task content
+PASS HIERARCHY classic-工作台-800 keeps one full current barcode line visible without scrolling
+CAPTURE classic-作业记录-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-800: PageHost Y=97.6 Height=272.0
+PASS HIERARCHY classic-作业记录-800 preserves usable task content
+PASS HIERARCHY classic-作业记录-800 does not expose unrelated login or current-position recovery
+CAPTURE classic-参数设置-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-800: PageHost Y=97.6 Height=272.0
+PASS HIERARCHY classic-参数设置-800 preserves usable task content
+PASS HIERARCHY classic-参数设置-800 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic-参数设置-800 keeps the actual save action visible
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-800: PageHost Y=97.6 Height=272.0
+PASS HIERARCHY classic-日志查询-800 preserves usable task content
+PASS HIERARCHY classic-日志查询-800 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic navigation retains original operations without creating another parcel
+PASS HIERARCHY classic polling preserves field focus and selection
+PASS HIERARCHY classic native keyboard traversal remains available
+PASS HIERARCHY parameter feedback retains Chinese projection
+PASS HIERARCHY expanded bottom diagnostics leave task content available
+CAPTURE classic-diagnostics-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY busy operation disables recovery without hiding or moving its fixed command row
+PASS HIERARCHY classic position refresh retains native detail expansion and scroll offset
+PASS HIERARCHY stale state remains visible and commands remain guarded
+CAPTURE classic-stale-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY long blocker projection replaces the stale snapshot before measuring layout
+LONG-BLOCKERS host=145.6 status=48 scrollable=289.6
+CAPTURE classic-long-blockers-start-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY long blockers have one bounded scroll without taking the task viewport
+PASS HIERARCHY all blocker lines remain reachable
+CAPTURE classic-long-blockers-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic Unknown does not reuse the previously accepted slot
+CAPTURE classic-Unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic unresolved original result remains visible while searching logs
+CAPTURE classic-logs-unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic Rejected does not reuse the previously accepted slot
+CAPTURE classic-Rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic Conflict does not reuse the previously accepted slot
+CAPTURE classic-Conflict-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 classic log page exposes Rejected pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE classic-logs-command-Rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 classic log page exposes Conflict pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE classic-logs-command-Conflict-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 classic log page exposes Unknown pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE classic-logs-command-Unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 classic log page exposes Throw pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE classic-logs-command-Throw-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 resume rejection replaces previous pause result
+PASS HIERARCHY02 unresolved global rejection persists across navigation
+PASS HIERARCHY02 independent pause remains visible while busy; an older command cannot replace its receipt
+PASS HIERARCHY02 explicit collapse removes acknowledged receipt without changing application state
+PASS HIERARCHY02 previous global receipt cannot suppress a later page failure
+PASS HIERARCHY02 late result from a previous page does not become current page feedback
+PASS HIERARCHY02 durable success is visible on the originating page
+PASS HIERARCHY02 navigation retires already committed success without hiding unresolved results; fresh=True; page=; receipt=
+PASS HIERARCHY classic revocation retains draft and independent operator while closing protected content
+PASS HIERARCHY classic direct save remains denied after revocation
+PASS HIERARCHY classic window drains and closes
+CAPTURE supply-station-login-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station captures the newly emitted synthetic parcel, not the previous one
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-1366: PageHost Y=105.6 Height=628.8
+PASS HIERARCHY supply-station-工作台-1366 preserves usable task content
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-1366: PageHost Y=105.6 Height=628.8
+PASS HIERARCHY supply-station-作业记录-1366 preserves usable task content
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-1366: PageHost Y=93.6 Height=674.4
+PASS HIERARCHY supply-station-参数设置-1366 preserves usable task content
+PASS HIERARCHY supply-station-参数设置-1366 keeps the actual save action visible
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-1366: PageHost Y=60.8 Height=707.2
+PASS HIERARCHY supply-station-日志查询-1366 preserves usable task content
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-1092: PageHost Y=93.6 Height=490.4
+PASS HIERARCHY supply-station-工作台-1092 preserves usable task content
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-1092: PageHost Y=93.6 Height=490.4
+PASS HIERARCHY supply-station-作业记录-1092 preserves usable task content
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-1092: PageHost Y=85.6 Height=528.0
+PASS HIERARCHY supply-station-参数设置-1092 preserves usable task content
+PASS HIERARCHY supply-station-参数设置-1092 keeps the actual save action visible
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-1092: PageHost Y=52.8 Height=560.8
+PASS HIERARCHY supply-station-日志查询-1092 preserves usable task content
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-800: PageHost Y=77.6 Height=312.8
+PASS HIERARCHY supply-station-工作台-800 preserves usable task content
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-800: PageHost Y=77.6 Height=312.8
+PASS HIERARCHY supply-station-作业记录-800 preserves usable task content
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-800: PageHost Y=85.6 Height=334.4
+PASS HIERARCHY supply-station-参数设置-800 preserves usable task content
+PASS HIERARCHY supply-station-参数设置-800 keeps the actual save action visible
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-800: PageHost Y=52.8 Height=367.2
+PASS HIERARCHY supply-station-日志查询-800 preserves usable task content
+PASS HIERARCHY supply-station navigation retains original operations without creating another parcel
+PASS HIERARCHY supply-station polling preserves field focus and selection
+PASS HIERARCHY supply-station native keyboard traversal remains available
+PASS HIERARCHY supply-station Unknown does not reuse the previously accepted slot
+PASS HIERARCHY Unknown result text and semantic color agree with operation facts
+PASS HIERARCHY Unknown explains reason and next step without permitting resend
+PASS HIERARCHY Unknown remains local to left; right idle position remains ready
+PASS HIERARCHY Unknown admission follows application position availability
+CAPTURE supply-station-Unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station unresolved original result remains visible while searching logs
+CAPTURE supply-station-logs-unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station Rejected does not reuse the previously accepted slot
+PASS HIERARCHY Rejected result text and semantic color agree with operation facts
+PASS HIERARCHY Rejected explains reason and next step without permitting resend
+PASS HIERARCHY Rejected remains local to left; right idle position remains ready
+PASS HIERARCHY Rejected admission follows application position availability
+CAPTURE supply-station-Rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station Conflict does not reuse the previously accepted slot
+PASS HIERARCHY Conflict result text and semantic color agree with operation facts
+PASS HIERARCHY Conflict explains reason and next step without permitting resend
+PASS HIERARCHY Conflict remains local to left; right idle position remains ready
+PASS HIERARCHY Conflict admission follows application position availability
+CAPTURE supply-station-Conflict-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 supply-station log page exposes Rejected pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE supply-station-logs-command-Rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 supply-station log page exposes Conflict pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE supply-station-logs-command-Conflict-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 supply-station log page exposes Unknown pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE supply-station-logs-command-Unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 supply-station log page exposes Throw pause result
+PASS HIERARCHY02 pause uses existing bounded conflict policy
+PASS HIERARCHY02 page feedback cannot erase current global receipt
+CAPTURE supply-station-logs-command-Throw-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 resume rejection replaces previous pause result
+PASS HIERARCHY02 unresolved global rejection persists across navigation
+PASS HIERARCHY02 independent pause remains visible while busy; an older command cannot replace its receipt
+PASS HIERARCHY02 explicit collapse removes acknowledged receipt without changing application state
+PASS HIERARCHY02 previous global receipt cannot suppress a later page failure
+PASS HIERARCHY02 late result from a previous page does not become current page feedback
+PASS HIERARCHY02 durable success is visible on the originating page
+PASS HIERARCHY02 navigation retires already committed success without hiding unresolved results; fresh=True; page=logs; receipt=
+PASS HIERARCHY02 idle position has no empty task matrix or duplicate placeholder barcode
+PASS HIERARCHY02 valid receipt shows missing optional fields explicitly
+PASS HIERARCHY02 pending request has one waiting result, no empty fields, and leaves right availability intact
+CAPTURE supply-station-pending-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 long barcode remains fully selectable across refresh
+PASS HIERARCHY02 long slot remains fully selectable
+PASS HIERARCHY02 position polling preserves scroll position
+PASS HIERARCHY02 minimum viewport shows at least one full barcode line even with a long slot
+CAPTURE supply-station-long-800: 800x420 DIP, Windows DPI 1.25/1.25
+CAPTURE supply-station-long-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 unadmitted input cannot inherit original slot and retains original owner
+CAPTURE supply-station-unadmitted-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 snapshot read fault reaches the real freshness path
+PASS HIERARCHY02 stale snapshot hides actionable destination and preserves command guards
+CAPTURE supply-station-stale-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY02 collapsed advanced filters retain actual query range and reachable entry at minimum size
+PASS HIERARCHY02 list conversion preserves instant and uses local offset for nonlocal records
+CAPTURE supply-station-log-range-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station revocation retains draft and independent operator while closing protected content
+PASS HIERARCHY supply-station direct save remains denied after revocation
+PASS HIERARCHY supply-station window drains and closes
+Real Windows HWND/Dispatcher rendering at actual DPI; isolated synthetic ports/data. Physical input, other OS DPI, target IPC, installation, SDK/RCS/site NOT_RUN.

@@ -1,0 +1,30 @@
+{
+  "FirstRun": 40073577213,
+  "FirstHead": "bc0ce7b7ca5de94751a56ccf5a589ae4207c0c35",
+  "FirstMerge": "b69ff22b2b35e0d5c4862da8c2a0e6d1ee9ac5cf",
+  "FirstHostedOs": "Windows Server 2025 26100; native actual DPI 1.0 (not local Windows 11 100% evidence)",
+  "Failure": "800x420 new unadmitted input plus retained Unknown responsibility: barcode extends below body viewport",
+  "FixCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+  "Change": "Tight layout reduces position heading/result panel/label margins by 24 DIP total; no font reduction or hidden responsibility",
+  "LocalReruns": [
+    {
+      "Case": "visual-productization",
+      "SourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+      "PassCount": 115,
+      "Log": "ci-fix/local/visual-productization/WINDOWS-WPF.log",
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-0d3ff6b8bb444b1195c02292e759129c",
+      "ActualDpiScale": 1.25
+    },
+    {
+      "Case": "task-hierarchy",
+      "SourceCommit": "f4f60456e6c1667dd7d0091e24ffdcf49a3091bb",
+      "PassCount": 165,
+      "Log": "ci-fix/local/task-hierarchy/WINDOWS-WPF.log",
+      "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-e525abac7f6a4bec8a22a896e28f5c1c",
+      "ActualDpiScale": 1.25
+    }
+  ],
+  "FirstArtifactSha256": "01e73e35055e62c12adcde5261f0c9cf36967a6542bbe3143cb997c4c4c92f1f",
+  "HostedRerunAtCapture": "PENDING",
+  "CurrentHostedStatus": "See PR98 checks; source-bound run status is not retroactively rewritten"
+}

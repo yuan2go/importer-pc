@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,15 +8,15 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
-    readonly TextBox search = new() { MinHeight = 38, FontSize = 14, VerticalContentAlignment = VerticalAlignment.Center };
-    readonly TextBlock searchCount = new() { Margin = new(4, 8, 0, 4), Foreground = Brush("#5A6878"), FontSize = 13 };
+    readonly TextBox search = new() { MinHeight = 38, FontSize = UiTypography.Body, VerticalContentAlignment = VerticalAlignment.Center };
+    readonly TextBlock searchCount = new() { Margin = new(4, 8, 0, 4), Foreground = Brush("#5A6878"), FontSize = UiTypography.Label };
     readonly ListBox searchResults = new() { Visibility = Visibility.Collapsed, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     sealed record SearchHit(string Path, string Title, string Context);
     FrameworkElement BuildSearch()
     {
         var bar = new StackPanel { Margin = new(0, 0, 0, 8) };
         var input = new Grid(); input.Children.Add(search);
-        var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = 13; hint.Margin = new(10, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
+        var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = UiTypography.Label; hint.Margin = new(10, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
         AutomationProperties.SetName(search, "搜索参数"); AutomationProperties.SetAutomationId(search, "ParameterSearch");
         AutomationProperties.SetHelpText(search, "按名称、用途、技术键或实例搜索。回车定位首项，下方向键选择结果，退出键清除搜索。草稿保留。");
         searchResults.ItemTemplate = (DataTemplate)Resources["ParameterSearchTemplate"];

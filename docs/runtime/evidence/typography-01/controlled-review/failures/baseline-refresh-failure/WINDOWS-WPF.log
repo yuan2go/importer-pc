@@ -1,0 +1,6 @@
+CAPTURE baseline-supply-station-normal-1366: 1173.6x632 DIP, Windows DPI 1.25/1.25
+FAIL System.InvalidOperationException: baseline-supply-station-normal-1366 exact barcode text preserved
+   at Program.<VerifyTypographyComparison>g__Check|38_0(Boolean ok, String reason, <>c__DisplayClass38_0&) in D:\projects\importer-pc-typography\.artifacts\typography\comparison\baseline-source\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 25
+   at Program.VerifyTypographyComparison(String root, String evidence, List`1 lines, String[] args) in D:\projects\importer-pc-typography\.artifacts\typography\comparison\baseline-source\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 92
+   at Program.VerifyTypographyComparison(String root, String evidence, List`1 lines, String[] args) in D:\projects\importer-pc-typography\.artifacts\typography\comparison\baseline-source\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 112
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-typography\.artifacts\typography\comparison\baseline-source\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

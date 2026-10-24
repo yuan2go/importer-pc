@@ -31,7 +31,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     {
         vm = model; this.authorizationOnly = authorizationOnly; Owner = owner; DataContext = vm;
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontFamily = owner?.FontFamily ?? SystemFonts.MessageFontFamily; FontSize = 14; FontWeight = FontWeights.Normal; Background = Brushes.White;
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Background = Brushes.White;
         Title = authorizationOnly ? "管理模式与操作条件" : "保存更改"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         Width = Math.Min(880, Math.Max(540, (owner?.ActualWidth ?? 944) - 64)); Height = Math.Min(740, Math.Max(340, (owner?.ActualHeight ?? 804) - 64));
         MaxWidth = Math.Max(540, SystemParameters.WorkArea.Width - 24); MaxHeight = Math.Max(340, SystemParameters.WorkArea.Height - 24); MinWidth = 520; MinHeight = 320;
@@ -45,12 +45,12 @@ public sealed class ConfigurationSaveReviewWindow : Window
         var footerChrome = new Border { BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 1, 0, 0), Child = footer };
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
-        body.Children.Add(Heading(Title, 24, 0));
+        body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
         body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : "保存后待受控重启生效，当前作业继续使用运行配置。"));
         body.Children.Add(outcome); AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
         if (!authorizationOnly)
         {
-            body.Children.Add(Heading("本次更改", 16, 12));
+            body.Children.Add(Heading("本次更改", UiTypography.Group, 12));
             var changes = ChangeTable(vm.ReviewedConfigurationChanges); changes.MaxHeight = 256;
             changes.MouseDoubleClick += (_, _) =>
             {
@@ -61,7 +61,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
             if (vm.ReviewedConfigurationChanges.Length == 0) body.Children.Add(Note("当前完整候选与读取基线没有字段差异。"));
             body.Children.Add(Note(vm.ReviewedConfigurationChanges.Any(c => c.Path.Length > 0) ? "双击设置可返回修改；敏感内容已隐藏。" : "技术路径见行提示；敏感内容已隐藏。"));
         }
-        body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", 16, 16)); body.Children.Add(pauseState);
+        body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", UiTypography.Group, 16)); body.Children.Add(pauseState);
         pause.Click += async (_, _) => { pause.IsEnabled = false; try { await vm.PauseAsync(); } finally { pause.IsEnabled = true; } }; body.Children.Add(pause);
         guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
         if (vm.Application is IWorkstationAdministration administrator)
@@ -70,7 +70,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
             login.Click += async (_, _) => { new ManagementModeWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); };
             authentication.Header = "管理模式"; authentication.Content = login; authentication.IsExpanded = !vm.IsManagementMode; body.Children.Add(authentication);
         }
-        body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", 16, 12));
+        body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", UiTypography.Group, 12));
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
         reason.TextChanged += (_, _) => reasonError.Visibility = Visibility.Collapsed; body.Children.Add(reason); body.Children.Add(reasonError);
@@ -131,14 +131,14 @@ public sealed class ConfigurationSaveReviewWindow : Window
         outcome.Foreground = Brush(vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "#915300" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "#19745A" : "#5A6878");
     }
     static SolidColorBrush Brush(string value) => (SolidColorBrush)new BrushConverter().ConvertFromString(value)!;
-    static TextBlock Heading(string value, double size, double top) => new() { Text = value, FontSize = size, FontWeight = FontWeights.SemiBold, Foreground = Brush("#1C3044"), Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap };
-    static TextBlock Note(string value) => new() { Text = value, FontSize = 14, Foreground = Brush("#5A6878"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
+    static TextBlock Heading(string value, double size, double top) => new() { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Foreground = Brush("#1C3044"), Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap };
+    static TextBlock Note(string value) => new() { Text = value, FontSize = UiTypography.Body, Foreground = Brush("#5A6878"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
     static TextBlock Label(string value) => new() { Text = value, Margin = new(0, 0, 0, 6), Foreground = Brush("#25384B") };
     internal static DataGrid ChangeTable(ConfigurationChangeItem[] changes)
     {
         var table = new DataGrid { ItemsSource = changes, IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, CanUserDeleteRows = false, CanUserResizeRows = false,
             HeadersVisibility = DataGridHeadersVisibility.Column, GridLinesVisibility = DataGridGridLinesVisibility.Horizontal, HorizontalGridLinesBrush = Brush("#E5E9EF"),
-            Background = Brushes.White, BorderBrush = Brush("#E1E5EB"), BorderThickness = new(1), RowHeaderWidth = 0, RowHeight = double.NaN, MinRowHeight = 44, MinHeight = 80, FontSize = 14, SelectionMode = DataGridSelectionMode.Single };
+            Background = Brushes.White, BorderBrush = Brush("#E1E5EB"), BorderThickness = new(1), RowHeaderWidth = 0, RowHeight = double.NaN, MinRowHeight = 44, MinHeight = 80, FontSize = UiTypography.Body, SelectionMode = DataGridSelectionMode.Single };
         var textStyle = new Style(typeof(TextBlock)); textStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap)); textStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(8)));
         table.Columns.Add(new DataGridTextColumn { Header = "设置", Binding = new Binding(nameof(ConfigurationChangeItem.Label)), Width = new(2, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "所在页面", Binding = new Binding(nameof(ConfigurationChangeItem.Location)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
@@ -150,9 +150,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
     public static void ShowChanges(Window? owner, ConfigurationChangeItem[] changes, string revision)
     {
         var body = new DockPanel { Margin = new(24) }; var close = new Button { Content = "返回设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Right, Padding = new(16, 8, 16, 8), Margin = new(0, 12, 0, 0) };
-        var window = new Window { Owner = owner, Title = "查看更改", Content = body, Background = Brushes.White, FontSize = 14, Width = Math.Min(880, SystemParameters.WorkArea.Width - 24), Height = Math.Min(640, SystemParameters.WorkArea.Height - 24), WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var window = new Window { Owner = owner, Title = "查看更改", FontFamily = UiTypography.Interface, Content = body, Background = Brushes.White, FontSize = UiTypography.Body, Width = Math.Min(880, SystemParameters.WorkArea.Width - 24), Height = Math.Min(640, SystemParameters.WorkArea.Height - 24), WindowStartupLocation = WindowStartupLocation.CenterOwner };
         DockPanel.SetDock(close, Dock.Bottom); close.Click += (_, _) => window.Close(); body.Children.Add(close);
-        var heading = new StackPanel(); heading.Children.Add(Heading(changes.Length == 0 ? "没有设置差异" : "本次更改", 24, 0)); heading.Children.Add(Note(revision));
+        var heading = new StackPanel(); heading.Children.Add(Heading(changes.Length == 0 ? "没有设置差异" : "本次更改", UiTypography.PageTitle, 0)); heading.Children.Add(Note(revision));
         DockPanel.SetDock(heading, Dock.Top); body.Children.Add(heading); body.Children.Add(ChangeTable(changes)); window.ShowDialog();
     }
 }

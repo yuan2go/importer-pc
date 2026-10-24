@@ -1,0 +1,45 @@
+CAPTURE classic-login-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic captures the newly emitted synthetic parcel, not the previous one
+CAPTURE classic-工作台-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1366: PageHost Y=128.8 Height=539.2
+PASS HIERARCHY classic-工作台-1366 preserves usable task content
+PASS HIERARCHY classic-工作台-1366 keeps one full current barcode line visible without scrolling
+CAPTURE classic-作业记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1366: PageHost Y=97.6 Height=614.4
+PASS HIERARCHY classic-作业记录-1366 preserves usable task content
+PASS HIERARCHY classic-作业记录-1366 does not expose unrelated login or current-position recovery
+CAPTURE classic-参数设置-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1366: PageHost Y=97.6 Height=614.4
+PASS HIERARCHY classic-参数设置-1366 preserves usable task content
+PASS HIERARCHY classic-参数设置-1366 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic-参数设置-1366 keeps the actual save action visible
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1366: PageHost Y=97.6 Height=614.4
+PASS HIERARCHY classic-日志查询-1366 preserves usable task content
+PASS HIERARCHY classic-日志查询-1366 does not expose unrelated login or current-position recovery
+CAPTURE classic-工作台-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1092: PageHost Y=128.8 Height=384.8
+PASS HIERARCHY classic-工作台-1092 preserves usable task content
+PASS HIERARCHY classic-工作台-1092 keeps one full current barcode line visible without scrolling
+CAPTURE classic-作业记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1092: PageHost Y=97.6 Height=460.0
+PASS HIERARCHY classic-作业记录-1092 preserves usable task content
+PASS HIERARCHY classic-作业记录-1092 does not expose unrelated login or current-position recovery
+CAPTURE classic-参数设置-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1092: PageHost Y=97.6 Height=460.0
+PASS HIERARCHY classic-参数设置-1092 preserves usable task content
+PASS HIERARCHY classic-参数设置-1092 does not expose unrelated login or current-position recovery
+PASS HIERARCHY classic-参数设置-1092 keeps the actual save action visible
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1092: PageHost Y=97.6 Height=460.0
+PASS HIERARCHY classic-日志查询-1092 preserves usable task content
+PASS HIERARCHY classic-日志查询-1092 does not expose unrelated login or current-position recovery
+CAPTURE classic-工作台-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-800: PageHost Y=128.8 Height=191.2
+FAIL System.InvalidOperationException: classic-工作台-800 preserves usable task content
+   at Program.<VerifyTaskHierarchy>g__Check|29_0(Boolean ok, String reason, <>c__DisplayClass29_0&) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TaskHierarchy.cs:line 17
+   at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TaskHierarchy.cs:line 76
+   at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TaskHierarchy.cs:line 174
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\Program.cs:line 35

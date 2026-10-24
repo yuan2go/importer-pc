@@ -30,6 +30,15 @@ static partial class Program
         bitmap.Render(visual); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));
         using var file = File.Create(Path.Combine(evidence, name + ".png")); png.Save(file);
         lines.Add($"CAPTURE {name}: {bounds.Width}x{bounds.Height} DIP, Windows DPI {dpi.DpiScaleX}/{dpi.DpiScaleY}");
+        if (Environment.GetEnvironmentVariable("IPC_TYPOGRAPHY_CONTROLS") == "1")
+        {
+            var controls = new FrameworkElement[] { target }.Concat(Descendants(target).OfType<FrameworkElement>())
+                .Where(e => e.IsVisible && (e is TextBlock || e is TextBox || e is Button || e is Window));
+            File.WriteAllText(Path.Combine(evidence, name + "-typography.json"), System.Text.Json.JsonSerializer.Serialize(new {
+                Dpi = dpi.DpiScaleX, Client = new { Width = bounds.Width, Height = bounds.Height },
+                Controls = controls.Select(e => TypographyControlRow(e, target)).ToArray()
+            }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+        }
     }
     static async Task VerifyLeafNavigation(Window window, ParameterSettingsControl editor, string evidence, List<string> lines)
     {
@@ -141,6 +150,7 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS LOG-UI " + reason); }
         var service = DispatchProxy.Create<IWorkstationAdministration, LogUiProbe>(); var probe = (LogUiProbe)(object)service; probe.Inner = administration;
         var control = new SoftwareLogControl(service); var window = new Window { Content = control, Width = 820, Height = 620 }; window.Show();
+        async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         Button Button(string label) => Descendants(control).OfType<Button>().Single(b => Equals(b.Content, label));
         async Task Settled() { for (var i = 0; i < 200 && !Button("查询").IsEnabled; i++) await Task.Delay(20); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Check(Button("查询").IsEnabled, "query state settles after cancellation/failure/success"); }
         probe.Query = async (_, _, token) => { await Task.Delay(Timeout.Infinite, token); throw new InvalidOperationException(); };
@@ -169,6 +179,33 @@ static partial class Program
         Check(Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text), "selected row detail preserves the exact original record");
         Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "时间、更多筛选、上下文与导出")).IsExpanded = true; window.UpdateLayout();
         Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
+        window.Width = 800 + window.ActualWidth - control.ActualWidth;
+        window.Height = 420 + window.ActualHeight - control.ActualHeight;
+        await Flush();
+        Check(Math.Abs(control.ActualWidth - 800) < 1 && Math.Abs(control.ActualHeight - 420) < 1, "log regression uses the actual 800x420 DIP client");
+        var keyword = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词");
+        var level = Descendants(control).OfType<ComboBox>().Single();
+        var details = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文"));
+        async Task ExpandDetail()
+        {
+            grid.SelectedIndex = 0; details.IsExpanded = true; await Flush();
+            Check(details.IsVisible && details.IsExpanded && !keyword.IsVisible && !level.IsVisible, "compact detail temporarily owns the filter space");
+        }
+        void CheckFilters(string transition)
+        {
+            Check(keyword.IsVisible && level.IsVisible && !details.IsExpanded && !details.IsVisible && keyword.Text == "changed",
+                transition + " restores keyword/level controls and draft after clearing detail");
+        }
+        Click(window, "查询"); await Settled(); await ExpandDetail();
+        CaptureInternal(evidence, "logs-compact-detail-before-query", control, lines);
+        Click(window, "查询"); await Settled(); CheckFilters("query");
+        CaptureInternal(evidence, "logs-compact-filters-after-query", control, lines);
+        await ExpandDetail(); Click(window, "下一页"); await Settled(); CheckFilters("paging");
+        await ExpandDetail(); level.SelectedIndex = 1; await Flush(); CheckFilters("filter change");
+        Check(grid.Items.Count == 0 && !Button("下一页").IsEnabled, "restored filters retain snapshot invalidation");
+        Click(window, "查询"); await Settled(); await ExpandDetail();
+        window.Content = null; await Flush(); window.Content = control; await Flush(); CheckFilters("unload and return");
+        Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled, "return requires a fresh query before export");
         window.Close();
     }
 }

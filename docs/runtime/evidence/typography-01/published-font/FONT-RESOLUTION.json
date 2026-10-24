@@ -1,0 +1,42 @@
+{
+  "OperatingSystem": "Microsoft Windows NT 10.0.22631.0",
+  "Dpi": 1.25,
+  "Assembly": "D:\\projects\\importer-pc-typography\\.artifacts\\typography\\published-font-probe\\Ipc.Presentation.Wpf.dll",
+  "Fonts": [
+    {
+      "Role": "regular",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+      "Weight": 400,
+      "Version": 0,
+      "GlyphCount": 33
+    },
+    {
+      "Role": "medium",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+      "Weight": 500,
+      "Version": 0,
+      "GlyphCount": 33
+    },
+    {
+      "Role": "code",
+      "FontUri": "file:///C:/WINDOWS/FONTS/CONSOLA.TTF",
+      "Weight": 400,
+      "Version": 7,
+      "GlyphCount": 26
+    },
+    {
+      "Role": "code",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+      "Weight": 400,
+      "Version": 0,
+      "GlyphCount": 7
+    },
+    {
+      "Role": "fallback",
+      "FontUri": "file:///C:/WINDOWS/FONTS/MSYH.TTC#1",
+      "Weight": 400,
+      "Version": 6.31,
+      "GlyphCount": 10
+    }
+  ]
+}

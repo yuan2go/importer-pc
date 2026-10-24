@@ -1,0 +1,70 @@
+{
+  "OperatingSystem": "Microsoft Windows NT 10.0.22631.0",
+  "Dpi": 1.25,
+  "Assembly": "D:\\projects\\importer-pc-typography\\.artifacts\\typography\\comparison\\publish-probe\\Ipc.Presentation.Wpf.dll",
+  "Fonts": [
+    {
+      "Role": "regular",
+      "Sample": "\u4F9B\u5305\u53F0 \u5F53\u524D\u683C\u53E3 \u5305\u88F9 \u5F02\u5E38 \u53C2\u6570 \u4FDD\u5B58\u6838\u5BF9 0123456789",
+      "Characters": "\u4F9B\u5305\u53F0 \u5F53\u524D\u683C\u53E3 \u5305\u88F9 \u5F02\u5E38 \u53C2\u6570 \u4FDD\u5B58\u6838\u5BF9 0123456789",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+      "Weight": 400,
+      "Version": 0,
+      "GlyphCount": 33
+    },
+    {
+      "Role": "medium",
+      "Sample": "\u4F9B\u5305\u53F0 \u5F53\u524D\u683C\u53E3 \u5305\u88F9 \u5F02\u5E38 \u53C2\u6570 \u4FDD\u5B58\u6838\u5BF9 0123456789",
+      "Characters": "\u4F9B\u5305\u53F0 \u5F53\u524D\u683C\u53E3 \u5305\u88F9 \u5F02\u5E38 \u53C2\u6570 \u4FDD\u5B58\u6838\u5BF9 0123456789",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+      "Weight": 500,
+      "Version": 0,
+      "GlyphCount": 33
+    },
+    {
+      "Role": "code",
+      "Sample": "I l 1 | O 0 8 B S 5 Z 2 \u00B7 \u6761\u7801\u4E0E\u65E5\u5FD7\u539F\u6587",
+      "Characters": "I l 1 | O 0 8 B S 5 Z 2 \u00B7 ",
+      "FontUri": "file:///C:/WINDOWS/FONTS/CONSOLA.TTF",
+      "Weight": 400,
+      "Version": 7,
+      "GlyphCount": 26
+    },
+    {
+      "Role": "code",
+      "Sample": "I l 1 | O 0 8 B S 5 Z 2 \u00B7 \u6761\u7801\u4E0E\u65E5\u5FD7\u539F\u6587",
+      "Characters": "\u6761\u7801\u4E0E\u65E5\u5FD7\u539F\u6587",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+      "Weight": 400,
+      "Version": 0,
+      "GlyphCount": 7
+    },
+    {
+      "Role": "fallback",
+      "Sample": "\u4E2D\u6587\u56DE\u9000\uFF1A\u683C\u53E3\u4E0E\u5305\u88F9",
+      "Characters": "\u4E2D\u6587\u56DE\u9000\uFF1A\u683C\u53E3\u4E0E\u5305\u88F9",
+      "FontUri": "file:///C:/WINDOWS/FONTS/MSYH.TTC#1",
+      "Weight": 400,
+      "Version": 6.31,
+      "GlyphCount": 10
+    },
+    {
+      "Role": "missing-character",
+      "Sample": "\u4E3B\u5B57\u5E93\u7F3A\u5B57\u56DE\u9000\uFF1A\uD83D\uDE80",
+      "Characters": "\u4E3B\u5B57\u5E93\u7F3A\u5B57\u56DE\u9000\uFF1A",
+      "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+      "Weight": 400,
+      "Version": 0,
+      "GlyphCount": 8
+    },
+    {
+      "Role": "missing-character",
+      "Sample": "\u4E3B\u5B57\u5E93\u7F3A\u5B57\u56DE\u9000\uFF1A\uD83D\uDE80",
+      "Characters": "\uD83D\uDE80",
+      "FontUri": "file:///C:/WINDOWS/FONTS/SEGUIEMJ.TTF",
+      "Weight": 400,
+      "Version": 1.51,
+      "GlyphCount": 1
+    }
+  ]
+}

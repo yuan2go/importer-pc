@@ -154,7 +154,7 @@ public partial class App : System.Windows.Application
 // describe completed calls, never guessed device health or simulated percentages.
 sealed class ParcelStartupWindow : Window
 {
-    readonly TextBlock title = new() { FontSize = 24, FontWeight = FontWeights.Bold, Text = "正在启动客户端" };
+    readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = "正在启动客户端" };
     readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "校验启动参数，尚未创建业务或设备会话。" };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
     readonly WrapPanel actions = new();

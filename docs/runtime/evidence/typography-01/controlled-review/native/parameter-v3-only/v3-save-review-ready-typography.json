@@ -1,0 +1,1215 @@
+{
+  "Dpi": 1.25,
+  "Client": {
+    "Width": 880,
+    "Height": 740
+  },
+  "Controls": [
+    {
+      "Type": "ConfigurationSaveReviewWindow",
+      "Name": "",
+      "AutomationName": "",
+      "Text": null,
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 0,
+        "Y": 0,
+        "Width": 880,
+        "Height": 740
+      },
+      "MaxHeight": 792,
+      "Wrapping": null,
+      "Scroll": null,
+      "GlyphRuns": []
+    },
+    {
+      "Type": "Button",
+      "Name": "ConfirmSaveChanges",
+      "AutomationName": "",
+      "Text": "\u786E\u8BA4\u4FDD\u5B58",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 729.6,
+        "Y": 646.4,
+        "Width": 112,
+        "Height": 44
+      },
+      "MaxHeight": null,
+      "Wrapping": null,
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u786E\u8BA4\u4FDD\u5B58",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            28470,
+            38433,
+            10186,
+            15367
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u786E\u8BA4\u4FDD\u5B58",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 753.6,
+        "Y": 656.8166666666666,
+        "Width": 64,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u786E\u8BA4\u4FDD\u5B58",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            28470,
+            38433,
+            10186,
+            15367
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "Button",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u8FD4\u56DE\u8BBE\u7F6E",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 623.6,
+        "Y": 646.4,
+        "Width": 98,
+        "Height": 44
+      },
+      "MaxHeight": null,
+      "Wrapping": null,
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u8FD4\u56DE\u8BBE\u7F6E",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            40110,
+            13137,
+            38459,
+            31948
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u8FD4\u56DE\u8BBE\u7F6E",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 640.6,
+        "Y": 656.8166666666666,
+        "Width": 64,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u8FD4\u56DE\u8BBE\u7F6E",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            40110,
+            13137,
+            38459,
+            31948
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u4FDD\u5B58\u66F4\u6539",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "20",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 20,
+        "Width": 809.6,
+        "Height": 28.96
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u4FDD\u5B58\u66F4\u6539",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            10186,
+            15367,
+            20652,
+            19914
+          ],
+          "AdvanceWidth": 80,
+          "FontRenderingEmSize": 20
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u4FDD\u5B58\u540E\u5F85\u53D7\u63A7\u91CD\u542F\u751F\u6548\uFF0C\u5F53\u524D\u4F5C\u4E1A\u7EE7\u7EED\u4F7F\u7528\u8FD0\u884C\u914D\u7F6E\u3002",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 56.96,
+        "Width": 809.6,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u4FDD\u5B58\u540E\u5F85\u53D7\u63A7\u91CD\u542F\u751F\u6548\uFF0C\u5F53\u524D\u4F5C\u4E1A\u7EE7\u7EED\u4F7F\u7528\u8FD0\u884C\u914D\u7F6E\u3002",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            10186,
+            15367,
+            11957,
+            17384,
+            11880,
+            19165,
+            41222,
+            12010,
+            27039,
+            19934,
+            59058,
+            17294,
+            11237,
+            9980,
+            9519,
+            31762,
+            31768,
+            10035,
+            27051,
+            40097,
+            36710,
+            40933,
+            31948,
+            1398
+          ],
+          "AdvanceWidth": 384,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u672C\u6B21\u66F4\u6539",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 100.12666666666667,
+        "Width": 809.6,
+        "Height": 23.16666666666667
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u672C\u6B21\u66F4\u6539",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            20759,
+            22496,
+            20652,
+            19914
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u8BBE\u7F6E",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "14",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 39,
+        "Y": 142.29333333333335,
+        "Width": 28.000000000000004,
+        "Height": 20.273333333333333
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u8BBE\u7F6E",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            38459,
+            31948
+          ],
+          "AdvanceWidth": 28.000000000000004,
+          "FontRenderingEmSize": 14
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u6240\u5728\u9875\u9762",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "14",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 287.4923076923077,
+        "Y": 142.29333333333335,
+        "Width": 56.00000000000001,
+        "Height": 20.273333333333333
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u6240\u5728\u9875\u9762",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            18598,
+            13255,
+            44148,
+            43691
+          ],
+          "AdvanceWidth": 56.00000000000001,
+          "FontRenderingEmSize": 14
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u539F\u503C",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "14",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 473.8615384615385,
+        "Y": 142.29333333333335,
+        "Width": 28.000000000000004,
+        "Height": 20.273333333333333
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u539F\u503C",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            11786,
+            10348
+          ],
+          "AdvanceWidth": 28.000000000000004,
+          "FontRenderingEmSize": 14
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u66F4\u6539\u540E",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "14",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 660.2307692307693,
+        "Y": 142.29333333333335,
+        "Width": 42,
+        "Height": 20.273333333333333
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u66F4\u6539\u540E",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            20652,
+            19914,
+            11957
+          ],
+          "AdvanceWidth": 42.00000000000001,
+          "FontRenderingEmSize": 14
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u5DE5\u4F4D\u7F16\u7801\uFF08\u5FC3\u8DF3\uFF09",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 37,
+        "Y": 181.56666666666666,
+        "Width": 232.4923076923077,
+        "Height": 27
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u5DE5\u4F4D\u7F16\u7801\uFF08\u5FC3\u8DF3\uFF09",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            16644,
+            9956,
+            31809,
+            28318,
+            59054,
+            17488,
+            39269,
+            59055
+          ],
+          "AdvanceWidth": 128,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u7CFB\u7EDF / \u4F9B\u5305\u53F0\u6807\u8BC6",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 285.4923076923077,
+        "Y": 181.56666666666666,
+        "Width": 170.3692307692308,
+        "Height": 27
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u7CFB\u7EDF / \u4F9B\u5305\u53F0\u6807\u8BC6",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            30797,
+            31754,
+            1,
+            16,
+            1,
+            10080,
+            11534,
+            11920,
+            21085,
+            38467
+          ],
+          "AdvanceWidth": 125.44,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "SYNTHETIC-STATION",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 471.8615384615385,
+        "Y": 181.56666666666666,
+        "Width": 170.3692307692308,
+        "Height": 27
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "SYNTHETIC",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            52,
+            58,
+            47,
+            53,
+            41,
+            38,
+            53,
+            42,
+            36
+          ],
+          "AdvanceWidth": 84.032,
+          "FontRenderingEmSize": 16
+        },
+        {
+          "Characters": "-",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            14
+          ],
+          "AdvanceWidth": 5.248,
+          "FontRenderingEmSize": 16
+        },
+        {
+          "Characters": "STATION",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            52,
+            53,
+            34,
+            53,
+            42,
+            48,
+            47
+          ],
+          "AdvanceWidth": 64.512,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "SYNTHETIC-EDIT",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 658.2307692307693,
+        "Y": 181.56666666666666,
+        "Width": 170.3692307692308,
+        "Height": 27
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "SYNTHETIC",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            52,
+            58,
+            47,
+            53,
+            41,
+            38,
+            53,
+            42,
+            36
+          ],
+          "AdvanceWidth": 84.032,
+          "FontRenderingEmSize": 16
+        },
+        {
+          "Characters": "-",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            14
+          ],
+          "AdvanceWidth": 5.5520000000000005,
+          "FontRenderingEmSize": 16
+        },
+        {
+          "Characters": "EDIT",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            38,
+            37,
+            42,
+            53
+          ],
+          "AdvanceWidth": 34.704,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u53CC\u51FB\u8BBE\u7F6E\u53EF\u8FD4\u56DE\u4FEE\u6539\uFF1B\u654F\u611F\u5185\u5BB9\u5DF2\u9690\u85CF\u3002",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 218.56666666666666,
+        "Width": 809.6,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u53CC\u51FB\u8BBE\u7F6E\u53EF\u8FD4\u56DE\u4FEE\u6539\uFF1B\u654F\u611F\u5185\u5BB9\u5DF2\u9690\u85CF\u3002",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            11865,
+            11125,
+            38459,
+            31948,
+            11918,
+            40110,
+            13137,
+            10212,
+            19914,
+            63151,
+            19944,
+            18058,
+            10946,
+            15563,
+            16662,
+            43248,
+            35518,
+            1398
+          ],
+          "AdvanceWidth": 288,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u4FDD\u5B58\u6761\u4EF6",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 265.73333333333335,
+        "Width": 809.6,
+        "Height": 23.16666666666667
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u4FDD\u5B58\u6761\u4EF6",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            10186,
+            15367,
+            20835,
+            9837
+          ],
+          "AdvanceWidth": 64,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u5DF2\u6682\u505C\u65B0\u5165\u573A\u3002\u8F6F\u4EF6\u6682\u505C\u4E0D\u662F\u5B89\u5168\u6025\u505C\u3002",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 296.9,
+        "Width": 809.6,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u5DF2\u6682\u505C\u65B0\u5165\u573A\u3002\u8F6F\u4EF6\u6682\u505C\u4E0D\u662F\u5B89\u5168\u6025\u505C\u3002",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            16662,
+            20458,
+            10406,
+            20109,
+            10893,
+            13276,
+            1398,
+            39931,
+            9837,
+            20458,
+            10406,
+            9496,
+            20333,
+            15463,
+            10899,
+            17639,
+            10406,
+            1398
+          ],
+          "AdvanceWidth": 288,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u53D8\u66F4\u539F\u56E0 *",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 340.06666666666666,
+        "Width": 809.6,
+        "Height": 23.16666666666667
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u53D8\u66F4\u539F\u56E0 *",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            11881,
+            20652,
+            11786,
+            13141,
+            1,
+            11
+          ],
+          "AdvanceWidth": 75.344,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBox",
+      "Name": "ChangeReason",
+      "AutomationName": "\u7EF4\u62A4\u53D8\u66F4\u539F\u56E0",
+      "Text": "Synthetic V3 native save",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Style",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 371.23333333333335,
+        "Width": 809.6,
+        "Height": 72
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": {
+        "ExtentHeight": 23.166666666666668,
+        "ViewportHeight": 56,
+        "VerticalOffset": 0
+      },
+      "GlyphRuns": [
+        {
+          "Characters": "Synthetic V3 native save",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            52,
+            90,
+            79,
+            85,
+            73,
+            70,
+            85,
+            74,
+            68,
+            1,
+            55,
+            63156,
+            1,
+            79,
+            66,
+            85,
+            74,
+            87,
+            70,
+            1,
+            84,
+            66,
+            87,
+            70
+          ],
+          "AdvanceWidth": 179.21600000000004,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u6700\u591A 1024 \u5B57\u7B26\u3002\u53D8\u66F4\u539F\u56E0\u968F\u5B8C\u6574\u4FEE\u8BA2\u8BB0\u5F55\u3002",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Local",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Normal",
+        "Source": "Default",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 28,
+        "Y": 443.23333333333335,
+        "Width": 809.6,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u6700\u591A 1024 \u5B57\u7B26\u3002\u53D8\u66F4\u539F\u56E0\u968F\u5B8C\u6574\u4FEE\u8BA2\u8BB0\u5F55\u3002",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-regular.otf",
+          "Weight": 400,
+          "Glyphs": [
+            20676,
+            14050,
+            1,
+            18,
+            17,
+            19,
+            21,
+            1,
+            15365,
+            29790,
+            1398,
+            11881,
+            20652,
+            11786,
+            13141,
+            43246,
+            15470,
+            19998,
+            10212,
+            38431,
+            38445,
+            17299,
+            1398
+          ],
+          "AdvanceWidth": 314.688,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    },
+    {
+      "Type": "TextBlock",
+      "Name": "",
+      "AutomationName": "",
+      "Text": "\u5B8C\u6574\u56DE\u6267\u4E0E\u914D\u7F6E\u4FEE\u8BA2",
+      "Family": {
+        "Value": "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Size": {
+        "Value": "16",
+        "Source": "Inherited",
+        "IsExpression": false
+      },
+      "Weight": {
+        "Value": "Medium",
+        "Source": "ParentTemplate",
+        "IsExpression": false
+      },
+      "TestOverrideFrom": null,
+      "Bounds": {
+        "X": 53,
+        "Y": 506.8166666666667,
+        "Width": 144,
+        "Height": 23.166666666666668
+      },
+      "MaxHeight": null,
+      "Wrapping": "Wrap",
+      "Scroll": null,
+      "GlyphRuns": [
+        {
+          "Characters": "\u5B8C\u6574\u56DE\u6267\u4E0E\u914D\u7F6E\u4FEE\u8BA2",
+          "FontUri": "pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/notosanscjksc-medium.otf",
+          "Weight": 500,
+          "Glyphs": [
+            15470,
+            19998,
+            13137,
+            18670,
+            9498,
+            40933,
+            31948,
+            10212,
+            38431
+          ],
+          "AdvanceWidth": 144,
+          "FontRenderingEmSize": 16
+        }
+      ]
+    }
+  ]
+}

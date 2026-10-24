@@ -15,6 +15,13 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 
+# TYPOGRAPHY-01 explicitly authorizes only these unmodified official OFL desktop
+# faces. Other binary/font restrictions and historical archive checks remain.
+REVIEWED_FONTS = {
+    'src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Regular.otf': '2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b',
+    'src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Medium.otf': 'ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7',
+}
+
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
@@ -267,7 +274,8 @@ def verify(root, manifest_path, scope, registry_path=None):
         counts['files'] += 1
         try:
             if suffix in ('.dll', '.exe', '.msi', '.ttf', '.otf', '.woff', '.woff2', '.odttf'):
-                fail('excluded_binary', rel)
+                if rel not in REVIEWED_FONTS or digest(f.read_bytes()) != REVIEWED_FONTS[rel]:
+                    fail('excluded_binary', rel)
             if suffix == '.json':
                 value = json.loads(f.read_text()); counts['json'] += 1
                 if isinstance(value, list) and value and all(isinstance(b, dict) and 'objects' in b for b in value):

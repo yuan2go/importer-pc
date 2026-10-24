@@ -1,5 +1,8 @@
-> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。2026-10-24续做PR97并整合main c5ac51d；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)补充真实Application/原回包链、无效输入指引与原生键鼠。01及02上一轮的原图/CI保留原身份，不代表本轮现场或使用者验收。
+> TYPOGRAPHY-01追加复核：[三组原生对照、选择依据、实际字体来源与续修](runtime/evidence/typography-01/controlled-review/README.md)。继承PR97 `a43ecb8`；旧截图/测试身份保留。
 
+> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)、[实现/复现/边界](runtime/typography-01.md)、[原生前后对照与证据](runtime/evidence/typography-01/README.md)。基于 PR97 `a43ecb8` 与 main `c5ac51d`；PR97 尚未合并，为本包前置依赖。[受控对照与验收](design/typography-comparison-01.md)。保留格口优先、空态、回执、参数帮助与查询空间。
+
+> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。2026-10-24续做PR97并整合main c5ac51d；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)补充真实Application/原回包链、无效输入指引与原生键鼠。01及02上一轮的原图/CI保留原身份，不代表本轮现场或使用者验收。
 > 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
 
 > PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。

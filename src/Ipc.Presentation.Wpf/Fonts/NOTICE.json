@@ -1,0 +1,52 @@
+{
+  "family": "Noto Sans CJK SC",
+  "version": "2.004",
+  "upstream": "https://github.com/notofonts/noto-cjk",
+  "commit": "523d033d6cb47f4a80c58a35753646f5c3608a78",
+  "directory": "Sans/OTF/SimplifiedChinese",
+  "license": "SIL Open Font License 1.1",
+  "licenseSha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+  "modifications": "None; official static desktop OTF bytes",
+  "files": [
+    {
+      "file": "NotoSansCJKsc-Medium.otf",
+      "sha256": "ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7",
+      "bytes": 16523632,
+      "names": {
+        "1": "Noto Sans CJK SC Medium",
+        "2": "Regular",
+        "4": "Noto Sans CJK SC Medium",
+        "5": "Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603",
+        "6": "NotoSansCJKsc-Medium",
+        "16": "Noto Sans CJK SC",
+        "17": "Medium"
+      },
+      "weight": 500,
+      "glyphs": 65535,
+      "unicodeMappings": 44810,
+      "static": true,
+      "embeddingFsType": 0,
+      "missingSample": []
+    },
+    {
+      "file": "NotoSansCJKsc-Regular.otf",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+      "bytes": 16437364,
+      "names": {
+        "1": "Noto Sans CJK SC",
+        "2": "Regular",
+        "4": "Noto Sans CJK SC",
+        "5": "Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603",
+        "6": "NotoSansCJKsc-Regular",
+        "16": null,
+        "17": null
+      },
+      "weight": 400,
+      "glyphs": 65535,
+      "unicodeMappings": 44810,
+      "static": true,
+      "embeddingFsType": 0,
+      "missingSample": []
+    }
+  ]
+}

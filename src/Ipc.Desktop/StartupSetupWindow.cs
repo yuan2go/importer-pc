@@ -20,8 +20,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
-    readonly TextBlock preparationFile = new() { TextWrapping = TextWrapping.Wrap, FontSize = 13 };
-    readonly TextBlock installationStage = new() { FontSize = 16, TextWrapping = TextWrapping.Wrap, Margin = new(0, 24, 0, 14) };
+    readonly TextBlock preparationFile = new() { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label };
+    readonly TextBlock installationStage = new() { FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 24, 0, 14) };
     readonly List<string> installationDetails = [];
     DeploymentMedia? media;
     WindowsDeploymentRequest? reviewed;
@@ -39,7 +39,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string newStation = "", selectedProgram = "";
     string? enteredData;
     string? installationRecordDirectory;
-    readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = 13, Margin = new(0, 10, 0, 0) };
+    readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) };
     bool selectedStartMenu = true, selectedDesktop = true;
     int step;
     double optionsHeight = 560;
@@ -67,7 +67,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string ApplicationId => ParcelStartupServices.ApplicationId;
     void Section(string label)
     {
-        Body.Children.Add(new TextBlock { Text = label, FontSize = 15, FontWeight = FontWeights.SemiBold, Margin = new(0, 20, 0, 10) });
+        Body.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 20, 0, 10) });
         Body.Children.Add(new Border { Height = 1, Background = new SolidColorBrush(Color.FromRgb(231, 235, 239)), Margin = new(0, 0, 0, 6) });
     }
     Grid Row(string label, UIElement value, UIElement? end = null)
@@ -82,7 +82,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     }
     TextBox InstallationFolder(string label, string value)
     {
-        var box = new TextBox { Text = value, MinWidth = 0, FontSize = 13, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto };
+        var box = new TextBox { Text = value, MinWidth = 0, FontSize = UiTypography.Label, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto };
         AutomationProperties.SetName(box, label);
         box.SetBinding(ToolTipProperty, new System.Windows.Data.Binding(nameof(TextBox.Text)) { Source = box });
         var browse = new Button { Content = "浏览…", MinWidth = 72, Margin = new(10, 0, 0, 0) };
@@ -125,7 +125,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
             Body.Children.Add(new Border { Background = new SolidColorBrush(Color.FromRgb(255, 248, 231)), CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution });
             Details(historical: true);
-            Body.Children.Add(new TextBlock { Text = "关闭不会取消可能仍在执行的安装；准备文件将保留。", TextWrapping = TextWrapping.Wrap, FontSize = 13, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
+            Body.Children.Add(new TextBlock { Text = "关闭不会取消可能仍在执行的安装；准备文件将保留。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
             Body.Children.Add(recordFeedback);
             return;
         }
@@ -191,12 +191,12 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         var original = installationDetails.Count == 0 ? "未收到阶段消息。" : string.Join("\n", installationDetails);
         if (historical)
         {
-            content.Children.Add(new TextBlock { Text = "历史消息", FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new(0, 0, 0, 6) });
-            content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = 13, TextWrapping = TextWrapping.Wrap });
-            content.Children.Add(new TextBlock { Text = "历史消息仅供核对，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = 13, Margin = new(0, 8, 0, 12) });
-            content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new(0, 0, 0, 6) });
-            content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = 13, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-            content.Children.Add(new Expander { Header = "原始消息文本", FontSize = 13, Margin = new(0, 12, 0, 0), Content = new TextBox { Text = original + "\n" + failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = 13, MinHeight = 0, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+            content.Children.Add(new TextBlock { Text = "历史消息", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
+            content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap });
+            content.Children.Add(new TextBlock { Text = "历史消息仅供核对，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) });
+            content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
+            content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+            content.Children.Add(new Expander { Header = "原始消息文本", FontSize = UiTypography.Label, Margin = new(0, 12, 0, 0), Content = new TextBox { Text = original + "\n" + failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
             Body.Children.Add(new Expander { Header = "安装详情", Content = new Border { Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)), CornerRadius = new(4), Padding = new(12), Margin = new(0, 8, 0, 0), Child = content }, IsExpanded = false });
             return;
         }

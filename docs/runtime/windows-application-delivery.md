@@ -1,3 +1,5 @@
+> TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](../design/typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
+
 > 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
 
 > Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
@@ -82,4 +84,4 @@ $db = "$data\Simulation\reference-17\sportmaster\sportmaster.db"
 
 支持记录至少包含源码完整SHA、ZIP与SHA256SUMS hash、Application/ABI/DB/config版本、Effective/Pending指纹、站/模式/账户SID、设备/固件/SDK/协议版本、源时间及请求/发生/冲突ID。参考负载结果仅解释合成场景；目标正常/突发速率、离线时长、图片大小/保留、容量增速和RPO/RTO未确认，不能承诺长期稳定或按参考默认推现场预算。真实断电/设备重连/普通账户/ACL/UAC/目标DPI验收需同一ZIP/机器记录，现场运行还需明确授权。
 
-DEPENDENCIES.json从实际发布deps.json及锁定NuGet元数据登记版本、包hash、license表达式、copyright和来源；licenses保留标准MIT/Apache-2.0文本（SPDX license-list-data v3.27.0），自包含运行时的LICENSE/ThirdPartyNotices按实际随包原文保留。包声明是依赖来源依据，不授予本项目新的商业许可，也不代替维护角色的最终再分发核对。PowerShell独立安装，不随包再分发；无厂商SDK/字体/凭据。真实SDK/驱动/系统组件需另外取得合法分发依据与精确资格，不改Reference/Simulation包名充作Production。
+DEPENDENCIES.json从实际发布deps.json及锁定NuGet元数据登记版本、包hash、license表达式、copyright和来源；licenses保留标准MIT/Apache-2.0文本（SPDX license-list-data v3.27.0），自包含运行时的LICENSE/ThirdPartyNotices按实际随包原文保留。包声明是依赖来源依据，不授予本项目新的商业许可，也不代替维护角色的最终再分发核对。PowerShell独立安装，不随包再分发；无厂商SDK/凭据；仅按TYPOGRAPHY-01交付获授权官方OFL字体、原许可和来源哈希。真实SDK/驱动/系统组件需另外取得合法分发依据与精确资格，不改Reference/Simulation包名充作Production。

@@ -1,0 +1,35 @@
+{
+  "SourceCommit": "02af32e6b188e893c92f9b33c017262a72c00970",
+  "ProductionFix": "5e9f8b4",
+  "PrerequisiteMerged": {
+    "PR": 97,
+    "Commit": "c310705b5a927c90e8f6bb93de908b2fea36e826"
+  },
+  "BeforeProduction": "2fb04fec970443539c73ced4482032c263ee32c7",
+  "BeforeFixture": "5e9f8b4 InternalPages.cs regression added to old production; working tree test, not old commit PASS",
+  "Build": "PASS zero warnings/errors",
+  "NativeManagementModePasses": 56,
+  "ActualDpi": 1.25,
+  "LogClientDip": [
+    800,
+    420
+  ],
+  "Scenario": "synthetic query results; real WPF HWND/Dispatcher; query, paging, filter edit, unload/return",
+  "NotRun": [
+    "actual installation/deployment",
+    "target IPC/operator trial",
+    "physical keyboard/mouse",
+    "Windows11 actual100/150%DPI",
+    "SDK/devices/RCS/site"
+  ],
+  "Assemblies": [
+    {
+      "Name": "Ipc.Desktop.UiVerification.dll",
+      "Sha256": "73cf95f15e14f7fc859302cecd1fa4340e521ee53366d5eb86304eb20fb9bc50"
+    },
+    {
+      "Name": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "0515ffe058ad2814a9d1678f9527c227eea5faac648e9f9f8d748baac497bd15"
+    }
+  ]
+}

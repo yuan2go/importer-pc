@@ -13,9 +13,9 @@ public sealed class DateTimeInput : UserControl
         new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, (o, _) => ((DateTimeInput)o).ReadTimestamp()));
     public string Timestamp { get => (string)GetValue(TimestampProperty); set => SetValue(TimestampProperty, value); }
     readonly DatePicker date = new() { Width = 158, MinHeight = 44, Margin = new(0, 0, 8, 0) };
-    readonly TextBox clock = new() { Width = 92, Text = "00:00:00", Margin = new(0, 0, 8, 0) };
-    readonly TextBox offset = new() { Width = 82, Text = DateTimeOffset.Now.ToString("zzz"), Margin = new(0, 0, 8, 0) };
-    readonly TextBlock hint = new() { FontSize = 12, Text = "留空表示不限；UTC偏移固定解释该时间。" };
+    readonly TextBox clock = new() { Width = 110, Text = "00:00:00", Margin = new(0, 0, 8, 0) };
+    readonly TextBox offset = new() { Width = 94, Text = DateTimeOffset.Now.ToString("zzz"), Margin = new(0, 0, 8, 0) };
+    readonly TextBlock hint = new() { FontSize = UiTypography.Label, Text = "留空表示不限；UTC偏移固定解释该时间。" };
     bool syncing;
     string? invalidDate;
     public DateTimeInput()
@@ -49,7 +49,7 @@ public sealed class DateTimeInput : UserControl
     static StackPanel Labelled(string label, Control field)
     {
         System.Windows.Automation.AutomationProperties.SetName(field, label);
-        var panel = new StackPanel(); panel.Children.Add(new TextBlock { Text = label, FontSize = 12 }); panel.Children.Add(field); return panel;
+        var panel = new StackPanel(); panel.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Label }); panel.Children.Add(field); return panel;
     }
     void ReadTimestamp()
     {

@@ -30,13 +30,13 @@ public sealed partial class ParameterSettingsControl
         AutomationProperties.SetName(diagnostic, page.Title + "连接诊断");
         diagnostic.Click += (_, _) => DiagnosticsRequested?.Invoke(this, target);
         DockPanel.SetDock(diagnostic, Dock.Right); row.Children.Add(diagnostic);
-        var summary = Text(""); summary.FontWeight = FontWeights.SemiBold; summary.Margin = new(0, 0, 0, 6);
+        var summary = Text(""); summary.FontWeight = UiTypography.Emphasis; summary.Margin = new(0, 0, 0, 6);
         AutomationProperties.SetAutomationId(summary, draft.InstanceId + "/RuntimeSummary");
-        var address = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, MinHeight = 0, Padding = new(0), FontSize = 13 };
+        var address = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, MinHeight = 0, Padding = new(0), FontSize = UiTypography.Label };
         AutomationProperties.SetName(address, "当前运行地址");
-        var notice = Text(""); notice.FontSize = 13; notice.Margin = new(0, 8, 0, 0);
+        var notice = Text(""); notice.FontSize = UiTypography.Label; notice.Margin = new(0, 8, 0, 0);
         var main = new StackPanel(); main.Children.Add(summary); main.Children.Add(address); main.Children.Add(notice); row.Children.Add(main);
-        var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Padding = new(0), FontSize = 13 };
+        var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Padding = new(0), FontSize = UiTypography.Label };
         page.Technical.Children.Add(details);
         void Update()
         {

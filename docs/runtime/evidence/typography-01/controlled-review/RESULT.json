@@ -1,0 +1,274 @@
+{
+  "Date": "2026-10-24",
+  "Main": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
+  "PrerequisitePR": 97,
+  "PrerequisiteHead": "a43ecb86efdc78ddc48e7082dcb6f96848138a8b",
+  "ProductionSource": "e61e9f3e0076cf04916fe663f01c90e5c547aa60",
+  "PortableShimSource": "6ff61fa",
+  "BaselineSrcFilesVerified": 475,
+  "BaselineTextNormalization": "Repository CRLF text checkout normalized to Git LF; binary bytes unchanged",
+  "BaselineTestAdaptation": "Only TypographyComparison.cs and dispatch; SourceRevisionId explicitly fixed to a43ecb8. Fixture implementation from 2424db3 is identical to current fixture.",
+  "Variants": [
+    {
+      "Name": "baseline",
+      "FixtureSha256": "8fa1a37078097e57edce16b4d16bf27e7110e081bb53516ed31e2876cf8f4718",
+      "Assemblies": [
+        {
+          "Name": "Ipc.Application.Sportmaster.Desktop",
+          "Sha256": "ad9e7f9151dccc92bd8aab9dd2de685c26a29a81fd18f1f8fb2a06d8ddf1fcab",
+          "Version": "1.0.0+a43ecb86efdc78ddc48e7082dcb6f96848138a8b"
+        },
+        {
+          "Name": "Ipc.Application.ParcelFlow.Desktop",
+          "Sha256": "3ab275d0e22151887007f4fcf359a954cdf3582bbd0bf32be8f86e81dddbe56d",
+          "Version": "1.0.0+a43ecb86efdc78ddc48e7082dcb6f96848138a8b"
+        },
+        {
+          "Name": "Ipc.Desktop.UiVerification",
+          "Sha256": "a0f6d474fb02411024760540b3d596026d90e521c658028f31f22834e6f1272d",
+          "Version": "1.0.0+a43ecb86efdc78ddc48e7082dcb6f96848138a8b"
+        }
+      ],
+      "Scenes": 10,
+      "ActualDpi": 1.25
+    },
+    {
+      "Name": "system",
+      "FixtureSha256": "8fa1a37078097e57edce16b4d16bf27e7110e081bb53516ed31e2876cf8f4718",
+      "Assemblies": [
+        {
+          "Name": "Ipc.Application.Sportmaster.Desktop",
+          "Sha256": "34c740590d8bd1bbb8a29077a07d0fd5c9d5efc94d49274564a3f8acf1560d82",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        },
+        {
+          "Name": "Ipc.Application.ParcelFlow.Desktop",
+          "Sha256": "77000707405027626dd060434fb4ecafc4a71971d428dc2961b0c21af3476c66",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        },
+        {
+          "Name": "Ipc.Desktop.UiVerification",
+          "Sha256": "1fdc3bbf7cccf0d4fdca94bb8601e3cd909767b38dd777e5befcb76b8ca5aa43",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        }
+      ],
+      "Scenes": 10,
+      "ActualDpi": 1.25
+    },
+    {
+      "Name": "noto",
+      "FixtureSha256": "8fa1a37078097e57edce16b4d16bf27e7110e081bb53516ed31e2876cf8f4718",
+      "Assemblies": [
+        {
+          "Name": "Ipc.Application.Sportmaster.Desktop",
+          "Sha256": "34c740590d8bd1bbb8a29077a07d0fd5c9d5efc94d49274564a3f8acf1560d82",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        },
+        {
+          "Name": "Ipc.Application.ParcelFlow.Desktop",
+          "Sha256": "77000707405027626dd060434fb4ecafc4a71971d428dc2961b0c21af3476c66",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        },
+        {
+          "Name": "Ipc.Desktop.UiVerification",
+          "Sha256": "1fdc3bbf7cccf0d4fdca94bb8601e3cd909767b38dd777e5befcb76b8ca5aa43",
+          "Version": "1.0.0+e61e9f3e0076cf04916fe663f01c90e5c547aa60"
+        }
+      ],
+      "Scenes": 10,
+      "ActualDpi": 1.25
+    }
+  ],
+  "Native": [
+    {
+      "Mode": "task-hierarchy",
+      "Passes": 226,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": null,
+      "Files": [
+        "chain-blocked-after-unknown-800.png",
+        "chain-blocked-after-unknown-800-typography.json",
+        "chain-conflict-right-800.png",
+        "chain-conflict-right-800-typography.json",
+        "chain-late-pause-history-800.png",
+        "chain-late-pause-history-800-typography.json",
+        "chain-stale-800.png",
+        "chain-stale-800-typography.json",
+        "classic-日志查询-800.png",
+        "classic-日志查询-800-typography.json"
+      ]
+    },
+    {
+      "Mode": "task-hierarchy-parameters",
+      "Passes": 9,
+      "Status": "PASS",
+      "NativeFixtureSource": "648c92c",
+      "PublishedEntrySource": null,
+      "Files": [
+        "parameters-right-error-800.png",
+        "parameters-right-error-800-typography.json"
+      ]
+    },
+    {
+      "Mode": "internal-pages",
+      "Passes": 25,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": null,
+      "Files": [
+        "history-800.png",
+        "history-800-typography.json",
+        "history-filters-800.png",
+        "history-filters-800-typography.json",
+        "daily-parameter-error-800.png",
+        "daily-parameter-error-800-typography.json",
+        "logs-failed.png",
+        "logs-failed-typography.json"
+      ]
+    },
+    {
+      "Mode": "visual-productization",
+      "Passes": 126,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": "648c92c",
+      "Files": [
+        "after-classic-1366.png"
+      ]
+    },
+    {
+      "Mode": "parameter-v3-only",
+      "Passes": 25,
+      "Status": "PASS",
+      "NativeFixtureSource": "05fd5e9",
+      "PublishedEntrySource": null,
+      "Files": [
+        "v3-save-review.png",
+        "v3-save-review-typography.json",
+        "v3-saved-pending.png",
+        "v3-save-review-ready.png",
+        "v3-save-review-ready-typography.json"
+      ],
+      "PriorFixture": "e61e9f3; 23 assertions retained in WINDOWS-WPF-before-ready.log"
+    },
+    {
+      "Mode": "management-mode",
+      "Passes": 28,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": null,
+      "Files": [
+        "management-log-context-800.png"
+      ]
+    },
+    {
+      "Mode": "installer-first-run-ui",
+      "Passes": 88,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": "648c92c",
+      "Files": [
+        "first-run-unconfigured.png",
+        "installer-confirm-long.png"
+      ]
+    },
+    {
+      "Mode": "startup-experience",
+      "Passes": 172,
+      "Status": "PASS",
+      "NativeFixtureSource": "e61e9f3",
+      "PublishedEntrySource": "648c92c",
+      "Files": [
+        "configuration-paused.png"
+      ]
+    }
+  ],
+  "NativePasses": 699,
+  "PublishedFontPasses": 15,
+  "PublishedSource": "e61e9f3",
+  "PublishedAssemblies": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "27d4f8ff0eb2351a381fca2048521657321639d19a04d62a6f7d81fa329911ba"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "77000707405027626dd060434fb4ecafc4a71971d428dc2961b0c21af3476c66"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "b015f46041840ed9fbc1d131deaeac532aa9aed926fbf9bc13c22f47acf6c4b7"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "34c740590d8bd1bbb8a29077a07d0fd5c9d5efc94d49274564a3f8acf1560d82"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "1e64e4ca28f14bfc5a1c28851783e2d508da0ebbceaa1ce2a17b03defcd9723f"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "0b803206350473542ccb1ca1a056d32646ce73f4f2b2279ecd519b7261e54686"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "d5f6fd172e2bb9f6f9f6bb414c532b22e650420f09cde10500722a2d00ef3b09"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "0fee39673b05b116eb557900dac2a4e10f7bacfde6e9a7fb151e557ad081f815"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "16d3de375946fe51291fb58c88af56dda2bc9156a5c355cecf3c34810c409c67"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "ead523a1eed3ad022ab85a7e268e4ae137e3d6577fe82aabac1b1a0139473e43"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "e351dd42e17f3bf62c2d120e3cfa0469728ec04d20fb3d4ce090a4a4aa2e2495"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "8a34b4c11e05d859c8368be58116fed6c7e03a11fbda8903b663f44f138f01e9"
+    },
+    {
+      "File": "Ipc.Presentation.Wpf.dll",
+      "Sha256": "741ec88ca5efb2e194a295e51d6db83b9470d2659dc3d9c388878c58dff87475"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "2ac231ac30bae164ba5ec45d1a69fde104d2214df1097afa14cfea2bbc9f4722"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "ed1fdaa3c17ac13bdc909bd93d13532f46e00c1d87b74f641f8c34cbe42b395f"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "edf8305c0124e7b1e0796cd430b614909a4673426b5fc0679988dc2d679bfca6"
+    }
+  ],
+  "OfflineLicenseAndNotice": "PASS",
+  "OS": "Windows 11 23H2 22631",
+  "ActualSystemDpi": 1.25,
+  "CI": "See current PR98 checks; prior commits retain their status",
+  "NotRun": [
+    "Windows 11 actual 100% and 150%",
+    "target IPC and field conditions",
+    "representative operator cross-over accuracy/time/preference",
+    "physical device/RCS/SDK",
+    "actual installation/UAC"
+  ],
+  "CodexReference": "NOT_OBTAINED: native target returned a browser page rather than a verifiable Codex main surface; excluded, no font inferred",
+  "IsolatedPublishedEnvironmentReport": {
+    "Source": "e61e9f3",
+    "ExitCode": 0,
+    "JsonValid": true
+  },
+  "AdditionalFixtureSource": "05fd5e9; actionable save review only; production unchanged from e61e9f3"
+}

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -149,7 +149,7 @@ public sealed partial class ParameterSettingsControl
         {
             // PasswordBox keeps the existing reference masked. Never replace it
             // with a display sentinel, clear it on navigation, or expose it to UIA.
-            var box = new PasswordBox { Password = p.Value, MaxLength = p.EditorMaximumLength, MinHeight = 38, MaxWidth = 400, FontSize = 14, VerticalContentAlignment = VerticalAlignment.Center };
+            var box = new PasswordBox { Password = p.Value, MaxLength = p.EditorMaximumLength, MinHeight = 38, MaxWidth = 400, FontSize = UiTypography.Body, VerticalContentAlignment = VerticalAlignment.Center };
             box.PasswordChanged += (_, _) => { if (p.Value != box.Password) p.Value = box.Password; };
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(p.Value) && box.Password != p.Value) box.Password = p.Value; };
             p.PropertyChanged += changed; unsubscribe.Add(() => p.PropertyChanged -= changed);

@@ -1,0 +1,17 @@
+CAPTURE parameters-供包台标识-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 供包台标识 has real editable fields at 1366
+CAPTURE parameters-左相机-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 左相机 has real editable fields at 1366
+CAPTURE parameters-右相机-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 右相机 has real editable fields at 1366
+CAPTURE parameters-供包台标识-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 供包台标识 has real editable fields at 800
+CAPTURE parameters-左相机-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 左相机 has real editable fields at 800
+CAPTURE parameters-右相机-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS 右相机 has real editable fields at 800
+CAPTURE parameters-right-error-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY-PARAMETERS invalid input stays intact with its exact field issue
+PASS HIERARCHY-PARAMETERS task and heartbeat camera codes remain independent in the shared candidate
+PASS HIERARCHY-PARAMETERS task and heartbeat station codes remain independent
+Shared native daily parameter form; synthetic candidate only, no save, connection or production configuration change.

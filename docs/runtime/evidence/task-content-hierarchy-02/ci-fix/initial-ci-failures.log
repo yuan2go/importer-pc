@@ -1,0 +1,3 @@
+2026-10-24T05:58:12.7433577Z FAIL System.InvalidOperationException: expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows=33/True, row=32, rowBottom=65, scroll=434, detail=False; buttons=查询:44/True/101|清除筛选:44/True/101|下一页:44/True/101|导出表格…:44/True/101
+2026-10-24T05:58:24.0224454Z FAIL System.InvalidOperationException: supply-station-v2 (992, 672) barcode/result remains inside actual client without scrolling the entire page
+2026-10-24T05:58:36.1534122Z FAIL System.InvalidOperationException: compact log results remain inside the native viewport

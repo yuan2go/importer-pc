@@ -97,7 +97,7 @@ static partial class Program
         Check(vm.HasUnsavedDisplayPreferences, "native display input participates in the close guard before explicit apply");
         var configRevision = vm.Snapshot!.Configuration.Revision;
         Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "应用本机显示")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        Check(!vm.HasUnsavedDisplayPreferences, "explicit local apply clears only the display draft state");
+        Check(!vm.HasUnsavedDisplayPreferences, "explicit local apply clears only the display draft state; " + vm.DisplayPreferenceStatus);
         Check(vm.StationDisplaySummary.Contains("合成供包台") && vm.StationDisplaySummary.Contains("2400 件/小时") && vm.Snapshot.Configuration.Revision == configRevision, "native display action updates its consumer independently of runtime save");
         Capture("parameters-display");
         Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");

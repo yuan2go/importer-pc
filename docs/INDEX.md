@@ -1,6 +1,6 @@
-> 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
+> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。2026-10-24续做PR97并整合main c5ac51d；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)补充真实Application/原回包链、无效输入指引与原生键鼠。01及02上一轮的原图/CI保留原身份，不代表本轮现场或使用者验收。
 
-> 当前页面信息层级：[TASK-CONTENT-HIERARCHY-01](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-01.md)。PR90已合并；本轮按页面职责调整全局状态/诊断及标题，原权限、保存和历史证据保持。
+> 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
 
 > PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。
 

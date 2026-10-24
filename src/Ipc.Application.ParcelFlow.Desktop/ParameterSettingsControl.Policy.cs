@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -31,7 +31,7 @@ public sealed partial class ParameterSettingsControl
             }
         }
         form = Form(station, hasRcs ? "心跳身份" : null);
-        Input(form, "供包台编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
+        Input(form, "心跳供包台编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
         Technical(station, "心跳供包台编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
         var data = Page(0, "数据与记录", ""); form = Form(data);

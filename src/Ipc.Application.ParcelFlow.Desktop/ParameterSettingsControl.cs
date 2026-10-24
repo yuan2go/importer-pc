@@ -171,7 +171,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
-        var field = new Grid { Margin = new(0, 0, 0, 18) };
+        var focusedPage = page.Title is "左相机" or "右相机" or "供包台标识";
+        var field = new Grid { Margin = new(0, 0, 0, focusedPage ? 12 : 18) };
         field.ColumnDefinitions.Add(new() { Width = new(148) }); field.ColumnDefinitions.Add(new());
         field.RowDefinitions.Add(new() { Height = GridLength.Auto }); field.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.Margin = new(0, 8, 12, 0);
@@ -196,7 +197,18 @@ public sealed partial class ParameterSettingsControl : UserControl
         // technical information, without adding a repeated line to every field.
         var routine = help is not null && (help == "选择已声明的可用值" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
         if (routine) control.ToolTip = help;
-        else if (!string.IsNullOrEmpty(help)) { var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0); value.Children.Add(hint); }
+        else if (!string.IsNullOrEmpty(help))
+        {
+            var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0);
+            // Identity/connection explanations are on demand. Entity admission and
+            // required constraints remain inline; errors always stay next to the field.
+            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "bcr-code" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
+            {
+                control.ToolTip = help;
+                page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));
+            }
+            else value.Children.Add(hint);
+        }
         var error = Text(""); error.Foreground = Brush("#B42318"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; value.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "", Row: field);
         field.SizeChanged += (_, _) =>

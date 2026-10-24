@@ -18,7 +18,12 @@ static partial class Program
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot); ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
-        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        // Match the existing frozen native fixtures: exercise real Application,
+        // SQLite and WPF with explicit synthetic ports/identity. This scenario
+        // neither installs machine policy nor qualifies deployment permission.
+        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch))
+            { RuntimeIdentityPreflight = () => { } };
+        lines.Add("SYNTHETIC ports/runtime identity; real Application/SQLite/WPF. Machine policy and production permissions remain independently guarded.");
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
         var service = DispatchProxy.Create<IWorkstationAdministration, LogUiProbe>(); var probe = (LogUiProbe)(object)service; probe.Inner = runtime;
         var entries = Enumerable.Range(1, 401).Select(i => new SoftwareLogEntry(new("synthetic", i, "hash-" + i, "运行/runtime.jsonl"), "合成", DateTimeOffset.UtcNow, "错误",

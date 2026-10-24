@@ -59089,12 +59089,12 @@
       "path": "tests/Ipc.Desktop.UiVerification/ParameterV3.cs",
       "version": "typography-01-controlled-review",
       "status": "current_source_or_specification",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository",
-      "sha256": "b70491661d6689ecdf1ca9c3c6418ea4c7a21cc3dae8f0946e52e6343db1f203",
-      "size_bytes": 18322,
-      "git_blob": "82827602fa642b822ccba3916b6bfa2604582919"
+      "sha256": "481df55522a825dc21ca8f579c97346c1e4f2254291d0ea1d384f52cf117e406",
+      "size_bytes": 18578,
+      "git_blob": "0c6e203387910d670832896bafc109200f4f2c0c"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
@@ -70914,12 +70914,12 @@
       "path": "docs/runtime/typography-01.md",
       "version": "typography-01-controlled-review",
       "status": "current_source_or_specification",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository",
-      "sha256": "45188b8170e0801e115c59e649fe17d28221f27ff531aabfb4fc40d4adec5147",
+      "sha256": "0d65758b47f905d0e32bb2829bd6fc3671114e0698778ac934fcd4253f62aba7",
       "size_bytes": 6470,
-      "git_blob": "55c887968f2d0050ee943ba2c2c655a50f614d3a"
+      "git_blob": "10b44c1e211b973223e2b822c3d3fc6557bac21e"
     },
     {
       "path": "docs/work-packages/WP-IPC-TYPOGRAPHY-01.md",
@@ -72465,13 +72465,13 @@
     },
     {
       "path": "docs/runtime/evidence/typography-01/controlled-review/README.md",
-      "sha256": "64d39ae4c95655aba7f660a04561cb6d0c5d0a0171254100c5699ce4488dcb0b",
-      "size_bytes": 8199,
-      "git_blob": "4edf2e9df9be8e93305912edfd02fa63ab83e2ad",
+      "sha256": "be80dcd11e5b730fc0ac6358b718f29ec057b47aeab04cd19aa07f6910250f1d",
+      "size_bytes": 8633,
+      "git_blob": "c9e70ab9b6cbd19206e036acf7e94567fef01bde",
       "version": "typography-01-controlled-review",
       "status": "native_synthetic_evidence",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
     },
     {
@@ -72707,13 +72707,13 @@
     },
     {
       "path": "docs/runtime/evidence/typography-01/controlled-review/RESULT.json",
-      "sha256": "5eb51e510331e90910d25c949766d55c92633e3891e51506849dcdad81cf0c19",
-      "size_bytes": 9188,
-      "git_blob": "19a3fd06a07c6082fd95a4925d6f0ae7c83bffa7",
+      "sha256": "5d23802fb29ceb1065119e59200f703b6fd4cd5333d2e5da0597c48d1642d5e3",
+      "size_bytes": 9587,
+      "git_blob": "66ce1493ad23ee633766139381ed34c5c9f8bc31",
       "version": "typography-01-controlled-review",
       "status": "native_synthetic_evidence",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
     },
     {
@@ -72949,13 +72949,13 @@
     },
     {
       "path": "docs/runtime/evidence/typography-01/controlled-review/native/parameter-v3-only/WINDOWS-WPF.log",
-      "sha256": "d05e7b6526c5e902b7ca2fd23579422cc9880de67e39e9eabba5c9585ad8d920",
-      "size_bytes": 2898,
-      "git_blob": "cfe76cd593631eab8698803ac75dbe55f9a095f7",
+      "sha256": "d08a9c613fbcae2018bbd66eeb2188a771d5b214f7cd3ae87a4e77d152e1157d",
+      "size_bytes": 3106,
+      "git_blob": "7b7388d96bab7dcdada255ea94355cf847fdec12",
       "version": "typography-01-controlled-review",
       "status": "native_synthetic_evidence",
-      "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
     },
     {
@@ -73297,6 +73297,94 @@
       "status": "native_synthetic_evidence",
       "purpose": "Controlled native typography comparison and actual font/layout verification",
       "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/parameter-v3-only/v3-save-review-ready.png",
+      "sha256": "6b64b452d4523d797c4f3dce223b3b45e9938d5c3f314a04b671be021a00ebf4",
+      "size_bytes": 75279,
+      "git_blob": "f2cacdd46bb5afd7f59b13017931190d0aaec6c0",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/task-hierarchy/chain-pause-rejected-logs-800.png",
+      "sha256": "4a77c629f287bb8df810e29039fcb21049564e4f5b8aac1d5eac22d220f6e0c7",
+      "size_bytes": 69367,
+      "git_blob": "e76734c1d7af7703a102514c7ee5a69715548eda",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/task-hierarchy/supply-station-log-range-800-typography.json",
+      "sha256": "262e752a78fa81022a919d64468ee833f4c2bb13dbd406fd66a4e0478643aa35",
+      "size_bytes": 119984,
+      "git_blob": "b9ffa272d9537ed19a1e3e4e7ef43128138fa2cc",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/parameter-v3-only/v3-save-review-ready-typography.json",
+      "sha256": "ddf5a04135c148a7b0d3d251b9a34026851acd13a4010ab26ae0c557d70f4106",
+      "size_bytes": 32018,
+      "git_blob": "46223baf6e72af236e45a207750ea2cfcb0e38b8",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/FILES.json",
+      "sha256": "c84e73d94e5af52077d5603568c7e84794e25749f3f7e208ae691fb6d820f1a7",
+      "size_bytes": 19173,
+      "git_blob": "b3a3ef45ee74b35907c10713354b8e8328e31fa2",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/verification/review-fixture-build.log",
+      "sha256": "110d137768bf22f78c9b37afb24787e175a5d4e11d39aff99106020dfd923fc7",
+      "size_bytes": 2286,
+      "git_blob": "49e0a826409f3ea7ee2345af9ca9687cd9cf59cd",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/task-hierarchy/supply-station-log-range-800.png",
+      "sha256": "da3ac9ebdac6f8bbbd8816496a541fd33cf674450852f25f35ada480f9f493ab",
+      "size_bytes": 77538,
+      "git_blob": "6c5f95252d99d77ef26c4ba703c85aa2c14dfc19",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/verification/review-fixture-compile-failure.log",
+      "sha256": "c17fafa2d031d0d6d13cd79b87afedee90b2bc178785b6978a54b7cd6b0f649a",
+      "size_bytes": 4306,
+      "git_blob": "eff059f6d6fbcbd9d4793fb066193377955de70a",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence and bounded validation",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
     }
   ],
@@ -75901,7 +75989,7 @@
         32,
         52
       ],
-      "fixture": "e193142",
+      "fixture": "05fd5e9",
       "portable_shim": "6ff61fa"
     }
   }

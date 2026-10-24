@@ -139,15 +139,18 @@
     },
     {
       "Mode": "parameter-v3-only",
-      "Passes": 23,
+      "Passes": 25,
       "Status": "PASS",
-      "NativeFixtureSource": "e61e9f3",
+      "NativeFixtureSource": "05fd5e9",
       "PublishedEntrySource": null,
       "Files": [
         "v3-save-review.png",
         "v3-save-review-typography.json",
-        "v3-saved-pending.png"
-      ]
+        "v3-saved-pending.png",
+        "v3-save-review-ready.png",
+        "v3-save-review-ready-typography.json"
+      ],
+      "PriorFixture": "e61e9f3; 23 assertions retained in WINDOWS-WPF-before-ready.log"
     },
     {
       "Mode": "management-mode",
@@ -181,7 +184,7 @@
       ]
     }
   ],
-  "NativePasses": 697,
+  "NativePasses": 699,
   "PublishedFontPasses": 15,
   "PublishedSource": "e61e9f3",
   "PublishedAssemblies": [
@@ -261,5 +264,11 @@
     "physical device/RCS/SDK",
     "actual installation/UAC"
   ],
-  "CodexReference": "NOT_OBTAINED: native target returned a browser page rather than a verifiable Codex main surface; excluded, no font inferred"
+  "CodexReference": "NOT_OBTAINED: native target returned a browser page rather than a verifiable Codex main surface; excluded, no font inferred",
+  "IsolatedPublishedEnvironmentReport": {
+    "Source": "e61e9f3",
+    "ExitCode": 0,
+    "JsonValid": true
+  },
+  "AdditionalFixtureSource": "05fd5e9; actionable save review only; production unchanged from e61e9f3"
 }

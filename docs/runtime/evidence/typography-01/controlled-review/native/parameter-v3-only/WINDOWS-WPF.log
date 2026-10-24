@@ -11,6 +11,9 @@ PASS PS05 object diagnostics returns to the cached form and preserves draft iden
 PASS PS05 stale snapshot cannot continue presenting a healthy connection
 PASS PS05 stale saved pause state cannot hide the independent pause action in review
 CAPTURE v3-save-review: 880x740 DIP, Windows DPI 1.25/1.25
+PASS PS05 edited candidate is ready for the native save review
+PASS PS05 review exposes its enabled confirm action inside the actual window
+CAPTURE v3-save-review-ready: 880x740 DIP, Windows DPI 1.25/1.25
 PASS PS05 native save confirms Pending while Effective stays unchanged
 PASS PS05 confirmed Pending disables repeat save and labels the running configuration separately
 CAPTURE v3-saved-pending: 1365.6x768 DIP; scale=1.25,1.25

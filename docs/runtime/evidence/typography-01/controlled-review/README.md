@@ -37,9 +37,11 @@ Codex参考：本次原生工具返回的画面无法可靠绑定Codex主界面�
 4. `history-viewport-failure`：字体真实生效后结果区62.4 DIP，只见部分行；`e61e9f3`将标题/操作同行、筛选区60改72，保留完整表头/行及局部滚动。修复图见[记录](native/internal-pages/history-800.png)。
 5. `baseline-refresh-failure`为夹具捕获早于冻结快照收敛，修为有界等待同一个快照对象，仍逐字断言独立条码预期。`portable-shim-failure`为可移植窗口替身缺新增Apply入口；`6ff61fa`只补替身，不能验证字体，原生验证仍是权威。托管首跑[40077954374](https://github.com/yuan2go/importer-pc/actions/runs/40077954374)在5cd156a也报告同一可移植构建失败，见verification/CI-FIRST.json；未删除或跳过Linux门禁。
 
-8组原生检查合计697项PASS（226层级/真实任务链、9参数归属、25内部页、126视觉、23参数V3、28管理、88安装首配、172启动）；三组比较32/32/52项、实际发布DLL字体15项另列。受影响UI/可移植/安装器构建0警告0错误，win-x64本地发布、离线OFL/NOTICE核验和隔离environment-report成功；交付文档测试2项通过。具体来源分别见[RESULT](RESULT.json)和日志，不把后续文档/替身提交倒写为旧二进制身份。参数归属组来自648c92c；其余最终原生夹具来自e61e9f3；首配/启动组调用的发布入口为648c92c，最终e61e9f3发布DLL另经字体与隔离启动核验。e61只调整作业记录布局和身份宽度，未改首配/启动实现。
+8组原生检查合计699项PASS（226层级/真实任务链、9参数归属、25内部页、126视觉、25参数V3、28管理、88安装首配、172启动）；三组比较32/32/52项、实际发布DLL字体15项另列。受影响UI/可移植/安装器构建0警告0错误，win-x64本地发布、离线OFL/NOTICE核验和隔离environment-report成功；交付文档测试2项通过。具体来源分别见[RESULT](RESULT.json)和日志，不把后续文档/替身提交倒写为旧二进制身份。参数归属组来自648c92c；参数V3可确认保存态补充夹具为05fd5e9（25项，旧23项日志另存）；其余最终原生夹具来自e61e9f3；首配/启动组调用的发布入口为648c92c，最终e61e9f3发布DLL另经字体与隔离启动核验。e61只调整作业记录布局和身份宽度，未改首配/启动实现。
 
 所有截图与原生证据为Windows 11 23H2、实际125%缩放及合成数据。Windows11实际100%/150%、目标IPC/代表性操作员交叉试验、持续阅读、物理扫码/设备/SDK/RCS、真实安装/UAC/现场验收均 **NOT_RUN**。托管Windows Server100%由当前[PR98 CI](https://github.com/yuan2go/importer-pc/pull/98/checks)独立记录，不能替代这些边界。未发布正式介质、安装字体或修改生产数据。
+
+补充保存核对截图先出现夹具编译错误（缺Dispatcher命名空间、误用Grid边界助手），原日志保留verification/review-fixture-compile-failure.log；05fd5e9修正后重新构建并执行25项，新增[可确认保存态](native/parameter-v3-only/v3-save-review-ready.png)。此前失效守卫图继续保持原身份。
 
 ## 复现
 

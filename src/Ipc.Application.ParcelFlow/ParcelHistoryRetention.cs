@@ -32,6 +32,22 @@ public sealed partial class ParcelRepository
         (op.FrozenConfiguration.Images is null || op.ImageReleased) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().All(s => s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled) &&
         (op.Upload is null || SettledStageHasCustody(op, op.Upload));
+    void PrepareRetentionCommandOwners()
+    {
+        // Offline maintenance owns this connection exclusively. Materialize once,
+        // rather than scan all command-admission audits for every expired operation.
+        // TEMP is derived and connection-scoped; original commands/audits stay authoritative.
+        using var c = db.CreateCommand(); c.CommandText = """
+            CREATE TEMP TABLE IF NOT EXISTS parcel_retention_pending_owners(owner TEXT PRIMARY KEY) WITHOUT ROWID;
+            DELETE FROM temp.parcel_retention_pending_owners;
+            INSERT OR IGNORE INTO temp.parcel_retention_pending_owners
+            SELECT json_extract(a.detail,'$.Owner') FROM parcel_audit a
+            JOIN parcel_commands c ON c.id=json_extract(a.detail,'$.Id')
+            WHERE a.event='CommandAdmitted' AND json_valid(a.detail)
+                AND json_type(a.detail,'$.Owner')='text' AND json_extract(c.receipt,'$.Status')='Pending';
+            """;
+        c.ExecuteNonQuery();
+    }
     bool RetentionClear(string id, DateTimeOffset cutoff)
     {
         using var c = db.CreateCommand(); c.CommandText = """
@@ -40,8 +56,7 @@ public sealed partial class ParcelRepository
             AND NOT EXISTS(SELECT 1 FROM parcel_ingress i JOIN parcel_history_index h ON h.id=$id
                 WHERE i.state IN ('Pending','Interrupted') AND coalesce(json_extract(i.body,'$.Observation.AdmissionId'),json_extract(i.body,'$.Measurement.AdmissionId'))=h.admission)
             AND NOT EXISTS(SELECT 1 FROM parcel_audit WHERE owner=$id AND julianday(at)>=julianday($cutoff))
-            AND NOT EXISTS(SELECT 1 FROM parcel_audit a JOIN parcel_commands c ON c.id=json_extract(a.detail,'$.Id')
-                WHERE a.event='CommandAdmitted' AND json_valid(a.detail) AND json_extract(a.detail,'$.Owner')=$id AND json_extract(c.receipt,'$.Status')='Pending')
+            AND NOT EXISTS(SELECT 1 FROM temp.parcel_retention_pending_owners WHERE owner=$id)
             """;
         c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$cutoff", cutoff.ToString("O")); return (long)c.ExecuteScalar()! != 0;
     }
@@ -73,6 +88,7 @@ public sealed partial class ParcelRepository
         var originalAuthority = authority;
         authority = () => { timeBudget.Token.ThrowIfCancellationRequested(); originalAuthority(); };
         repository.ValidateRawInventory();
+        repository.PrepareRetentionCommandOwners();
         var now = DateTimeOffset.UtcNow; var days = envelope.Effective.Retention.HistoryDays.Value; var cutoff = now.AddDays(-days);
         var resident = repository.Load().Where(op => repository.RetentionSettled(op, flow) && repository.RetentionClear(op.Id, cutoff)).Select(op => op.Id).ToArray();
         foreach (var batch in resident.Chunk(128)) repository.Archive(batch, "Confirmed retention maintenance; originals archived before complete backup");
@@ -97,6 +113,7 @@ public sealed partial class ParcelRepository
     {
         if (days is < 7 or > 30 || !Paused || StorageVersion != 9) throw new InvalidOperationException("Invalid retention maintenance state");
         var cutoff = now.AddDays(-days); var run = Wire.Id(); long removed = 0, inputs = 0, cursor = 0;
+        PrepareRetentionCommandOwners();
         using (var start = db.CreateCommand())
         {
             start.CommandText = "INSERT INTO parcel_retention_runs VALUES($id,$at,$days,$cutoff,$backup,'InProgress; committed tombstones remain authoritative after interruption')";

@@ -36,7 +36,8 @@ static partial class StabilityRemediation
             repo.Commit(unknown, "SyntheticUnknown", "Explicit synthetic historical unknown; deletion must retain original");
             repo.Archive(originals.Take(4).Select(o => o.Id).ToArray(), "Synthetic retention fixture");
             repo.Commit(null, "IdentityConflict", "Synthetic unresolved identity", identityConflict: new(Wire.Id(), originals[1].Id, ["left"], "Inspect before expiry", DateTimeOffset.UtcNow));
-            repo.AdmitCommand(new(Wire.Id(), repo.Revision, "Reconcile", originals[2].Id, "Synthetic interrupted command"));
+            var pendingCommand = new BusinessCommand(Wire.Id(), repo.Revision, "Reconcile", originals[2].Id, "Synthetic interrupted command");
+            repo.AdmitCommand(pendingCommand);
             using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Pooling = false }.ToString()))
             {
                 db.Open(); using var q = db.CreateCommand(); q.CommandText = "UPDATE parcel_ingress SET state='Interrupted' WHERE json_extract(body,'$.Observation.AdmissionId')=$admission"; q.Parameters.AddWithValue("$admission", originals[3].AdmissionId); q.ExecuteNonQuery();
@@ -55,6 +56,11 @@ static partial class StabilityRemediation
             Check(repo.OriginalReplyHash(originals[0].Wcs!.Request.Id, originals[0].Wcs!.Replies[0].Id) is not null, "permanent original reply fingerprint survives detail expiry");
             try { repo.Commit(originals[0], "InvalidResurrection", "Must refuse"); throw new Exception("Resurrected retired entity"); }
             catch (InvalidDataException) { Check(true, "repository independently rejects retired identity recreation"); }
+            repo.CompleteCommand(pendingCommand, new("Inspected", "Original interrupted command checked; no replay", repo.Revision));
+            var afterCommand = repo.ExpireHistoryCore(new SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), new string('A', 64), () => { });
+            Check(afterCommand.Operations == 1 && repo.ReadOperation(originals[2].Id) is null &&
+                new[] { originals[1], originals[3], originals[4] }.All(o => repo.ReadOperation(o.Id) is not null),
+                "each maintenance rebuilds pending-command owners from current facts; settling one command never clears another responsibility");
             repo.ValidateRawInventory();
         }
         await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));

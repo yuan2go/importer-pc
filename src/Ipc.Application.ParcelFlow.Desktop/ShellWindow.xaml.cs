@@ -66,6 +66,7 @@ public partial class ShellWindow : Window
             if (initialPage == "maintenance") { pendingMaintenanceLoad = true; await LoadRequestedMaintenanceAsync(); }
         };
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
+        var progress = new DispatcherProgressMonitor(vm.Application, Dispatcher); Closed += (_, _) => progress.Dispose();
     }
     async Task RefreshAsync()
     { try { await vm.RefreshAsync(); CloseRestrictedWorkspace(); } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }

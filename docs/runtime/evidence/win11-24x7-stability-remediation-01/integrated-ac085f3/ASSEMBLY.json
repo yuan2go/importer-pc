@@ -1,0 +1,154 @@
+{
+  "schema": 2,
+  "composition": "sportmaster-reference",
+  "product": {
+    "business": "sportmaster",
+    "views": [
+      "sportmaster",
+      "sportmaster-history",
+      "sportmaster-maintenance"
+    ],
+    "layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "definition_sha256": "42cc1e7c1e8f1d97f1d77114e514b2c20a229d2ea17341476da9d537e360cfb4",
+  "components": [
+    {
+      "id": "platform",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [],
+      "delivery": "core"
+    },
+    {
+      "id": "platform-storage",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "application-contracts",
+      "version": "1.17.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "application.sportmaster",
+      "version": "1.12.0",
+      "contract": 1,
+      "dependencies": [
+        "platform-storage",
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "reference-protocol",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "drivers",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "supply-contracts",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "integrations",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol",
+        "supply-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "optional-components",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "assembly.sportmaster",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application.sportmaster",
+        "drivers",
+        "integrations",
+        "optional-components"
+      ],
+      "delivery": "core"
+    }
+  ],
+  "offline_bundles": [],
+  "BusinessVersion": "1.12.0",
+  "BusinessAssembly": "Ipc.Application.Sportmaster.dll",
+  "CompatibilitySha256": "5061B50E6A88FD3975D586955CE22BC85103BC884571DCAA2B5EAFE30D914E19",
+  "ApplicationId": "sportmaster",
+  "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+  "Target": "win-x64",
+  "ApplicationContractVersion": "1.17.0",
+  "DatabaseFormat": 9,
+  "EntryPoint": "app/Ipc.Assembly.dll",
+  "DesktopEntryPoint": "desktop/Ipc.Desktop.exe",
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Binaries": {
+    "app\\Ipc.Application.Contracts.dll": "90de3b7cca0c7062145cd69093a932be4186f4b314d638d49a1286b80edee8ae",
+    "app\\Ipc.Application.ParcelFlow.dll": "5cfdd04fc0bb06082512ef45d5c16b8745535cdb949f6e3ede0bcf02c603a410",
+    "app\\Ipc.Application.Sportmaster.dll": "e539cc4eb9498cf8f22caea4fe840bf9d443fb18c82d6d5aeaedfc48206c0167",
+    "app\\Ipc.Assembly.dll": "caa7861a812c07d638eaa57a665997f269cfeb4da571936994c5976c76598d13",
+    "app\\Ipc.Components.dll": "852e03409bfa5945375ac8cf83fedf77fd01b9bfa3a30185f7f8d3e9c1b1178b",
+    "app\\Ipc.Drivers.dll": "591b22096798a7790c092bb5e8040840825e333239707b50112a506ac4fc5c8d",
+    "app\\Ipc.Integrations.dll": "e94e8e63c3b57cadbe934f7c576882127c2e9f2554d44b6f85d90645e793ee72",
+    "app\\Ipc.Platform.dll": "d5768c3f3ecbd646db1930f0344a792a06cebcf4c86a4165db24dab866a8da6c",
+    "app\\Ipc.Platform.Storage.dll": "d54aff14608ed23f91451d66e325397f10e4196932ad4fbbb0d18046e5baafc1",
+    "app\\Ipc.Reference.Protocol.dll": "8396712fc05befa8346ffcfdf6d488b77d06f15ee3b88b1cd88edb4af3f90517",
+    "app\\Ipc.Supply.Contracts.dll": "705f25a07021812fb000d93190a991b9361ac0c9acb7ecc8271b8bc1b391dc50",
+    "app\\Ipc.Supply.dll": "35d119a4f6a4046f3dade31d833bdc4c53e1baa8427131ddd535db2a773f57f1",
+    "desktop\\Ipc.Application.Contracts.dll": "90de3b7cca0c7062145cd69093a932be4186f4b314d638d49a1286b80edee8ae",
+    "desktop\\Ipc.Application.ParcelFlow.Desktop.dll": "6fd43fa9d21ac7138005ebdd1ace2f0cb6c27a5006c1bcb3d80f99420930a572",
+    "desktop\\Ipc.Application.ParcelFlow.dll": "5cfdd04fc0bb06082512ef45d5c16b8745535cdb949f6e3ede0bcf02c603a410",
+    "desktop\\Ipc.Application.Sportmaster.Desktop.dll": "a94cb96064503895a72565ec4f27cf89a9815c382c67b1874a10e2c378ce7484",
+    "desktop\\Ipc.Application.Sportmaster.dll": "e539cc4eb9498cf8f22caea4fe840bf9d443fb18c82d6d5aeaedfc48206c0167",
+    "desktop\\Ipc.Assembly.dll": "caa7861a812c07d638eaa57a665997f269cfeb4da571936994c5976c76598d13",
+    "desktop\\Ipc.Components.dll": "852e03409bfa5945375ac8cf83fedf77fd01b9bfa3a30185f7f8d3e9c1b1178b",
+    "desktop\\Ipc.Desktop.dll": "e4270736d3d9997adb4694b6b060fc245c37af727b4882ca82f59d26d501102e",
+    "desktop\\Ipc.Drivers.dll": "591b22096798a7790c092bb5e8040840825e333239707b50112a506ac4fc5c8d",
+    "desktop\\Ipc.Integrations.dll": "e94e8e63c3b57cadbe934f7c576882127c2e9f2554d44b6f85d90645e793ee72",
+    "desktop\\Ipc.Platform.dll": "d5768c3f3ecbd646db1930f0344a792a06cebcf4c86a4165db24dab866a8da6c",
+    "desktop\\Ipc.Platform.Storage.dll": "d54aff14608ed23f91451d66e325397f10e4196932ad4fbbb0d18046e5baafc1",
+    "desktop\\Ipc.Reference.Protocol.dll": "8396712fc05befa8346ffcfdf6d488b77d06f15ee3b88b1cd88edb4af3f90517",
+    "desktop\\Ipc.Supply.Contracts.dll": "705f25a07021812fb000d93190a991b9361ac0c9acb7ecc8271b8bc1b391dc50",
+    "desktop\\Ipc.Supply.dll": "35d119a4f6a4046f3dade31d833bdc4c53e1baa8427131ddd535db2a773f57f1"
+  }
+}

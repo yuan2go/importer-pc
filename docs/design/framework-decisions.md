@@ -154,3 +154,8 @@ F-10：局部编辑默认目标只读当前草稿目标，不要求所有临时�
 ## WINDOWS-FIRST-RUN-01 工程决定
 
 由用户针对Windows实际启动失败授权：F-12交付补齐首次运行安装入口；F-03/机级资源租约与F-09业务数据保持。普通双击在策略缺失时请求一次UAC，固定helper仅建立机器策略/ACL，原未提权进程读回后自动初始化业务数据。允许指定账户的deny-only管理员身份，启用管理员权限及服务账户仍拒绝日常作业。此项替代旧SID前置包的账户组限制；历史证据及Windows实际NOT_RUN不倒写。安装使用[.NET创建时ACL](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemaclextensions.create?view=net-10.0)和[ProcessStartInfo.Verb](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.verb?view=net-10.0)的runas，软件不伪造授权或降级Production。
+
+
+## WIN11-24X7-STABILITY-REMEDIATION-01 工程决定
+
+依据用户本轮实施授权，F-03/F-09在唯一Parcel账追加输入接收责任和永久到期身份凭据（DB9，SQL1～8原字节不改）。普通诊断拥塞与业务原账分级；逐位、后台、UI及外部独立观察分别计证，native取消不等于停止。4核/8GB、双位合计30～60件/分钟、7～30天已结明细到期删除按[本轮设计](win11-24x7-stability-remediation-01.md)执行。Unknown按用户答复先保留，真实权威合同缺失继续BLOCKED；不新增伪Query、自动重发或重启策略。本工程决定不替代历史D批准或任何RV/现场验收。

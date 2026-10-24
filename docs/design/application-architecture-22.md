@@ -1,4 +1,4 @@
-> AQA01/PR92复核：本文的Application所有权与业务拓扑继续有效；当前实现版本为Sportmaster1.11.2、DirectPlc/WcsToPlc1.5.1、Contracts1.16.0、Parcel DB8，SQL1～8保持。本轮复核及证据见[整改说明](../runtime/architecture-quality-remediation-01.md)。下文2026-10-20及22形成时的软件版本和验证保持历史身份，不是当前程序集版本。修订前原字节见[归档](../archive/pre-aqa01-pr92-review/README.md)。
+> AQA01/PR92复核：本文的Application所有权与业务拓扑继续有效；当前实现版本为Sportmaster1.12.0、DirectPlc/WcsToPlc1.6.0、Contracts1.17.0、Parcel DB9，SQL1～8保持并追加9。本轮复核及证据见[整改说明](../runtime/architecture-quality-remediation-01.md)。下文2026-10-20及22形成时的软件版本和验证保持历史身份，不是当前程序集版本。修订前原字节见[归档](../archive/pre-aqa01-pr92-review/README.md)。
 
 > 2026-10-20形成时操作裁决：[审查整改](../runtime/sportmaster-audit-remediation-01.md)使用业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
 
@@ -34,7 +34,7 @@ Application声明角色、数量、绑定和完成规则。Platform保持通用�
 
 同一CAS/Pending/Effective，所有绑定受控重启生效；在途冻结原位、实际reader、操作人、配置和实现。已接纳原件不随Pending变化。旧schema1/2保持显式单reader历史模式，不自动推断Sportmaster左右；采用schema3必须提交完整拓扑。旧UI不能编辑schema3结构，配置保持只读并拒绝保存；运行/快照契约保持兼容。
 
-22形成时追加数据库迁移3，后续归档阶段追加4，PR26修复追加5；RCS追加6，审查03追加7，此后追加8；各次迁移均保留此前SQL及checksum原字节，当前为DB8/SQL1～8。DB5将缺raw资料责任与已确认业务结果分开，修复旧OutcomeReconciled责任与归档引用；不反填历史拓扑或改原请求/hash。进入新存储版本前先检查旧业务及资料责任，普通启动仍拒绝无法证明兼容的旧外部动作。旧DB2/3 Attached污染场景由[现行维护入口](../runtime/architecture-quality-closure-01.md)取得离线所有权、完整备份并以匹配原发布只Query原请求；仅确认外部业务已终结且各缺raw均有权威依据后，由recover-legacy-receipt CLI显式升级当前DB8（旧API默认DB5），资料、原图及包引用持续保留。旧代码已释放原图只能如实登记缺口，不伪造恢复。配置2→3仍通过完整候选与CAS显式完成；旧schema2保持历史语义。配置旧账未知须成功启动资源并由维护身份确认；新公共DLL字节变化要求新不可变包，不重签/覆盖旧包。
+22形成时追加数据库迁移3，后续归档阶段追加4，PR26修复追加5；RCS追加6，审查03追加7，此后追加8，本轮追加9接收责任、历史投影与到期凭据；各次迁移均保留此前SQL及checksum原字节，当前为DB9/SQL1～9。DB5将缺raw资料责任与已确认业务结果分开，修复旧OutcomeReconciled责任与归档引用；不反填历史拓扑或改原请求/hash。进入新存储版本前先检查旧业务及资料责任，普通启动仍拒绝无法证明兼容的旧外部动作。旧DB2/3 Attached污染场景由[现行维护入口](../runtime/architecture-quality-closure-01.md)取得离线所有权、完整备份并以匹配原发布只Query原请求；仅确认外部业务已终结且各缺raw均有权威依据后，由recover-legacy-receipt CLI显式升级当前DB9（旧API默认DB5），资料、原图及包引用持续保留。旧代码已释放原图只能如实登记缺口，不伪造恢复。配置2→3仍通过完整候选与CAS显式完成；旧schema2保持历史语义。配置旧账未知须成功启动资源并由维护身份确认；新公共DLL字节变化要求新不可变包，不重签/覆盖旧包。
 
 ## 验证与交付
 

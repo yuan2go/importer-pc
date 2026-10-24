@@ -1,4 +1,4 @@
-> 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
+> 当前业务/Contracts/DB版本及停止责任见[长稳运行指南](win11-24x7-stability-remediation-01.md)；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
 
 # 全部运行入口身份门禁 · 2026-10-19
 

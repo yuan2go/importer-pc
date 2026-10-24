@@ -1,0 +1,9 @@
+{
+  "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+  "Main": "c310705b5a927c90e8f6bb93de908b2fea36e826",
+  "Started": "2026-10-24T09:30:34.3846505Z",
+  "Ended": "2026-10-24T09:31:48.2370848Z",
+  "ExitCode": 0,
+  "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-release-main97",
+  "Scope": "Local Sportmaster reference-composition candidate after PR97 main integration; no installer or production device"
+}

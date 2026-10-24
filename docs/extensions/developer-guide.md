@@ -1,4 +1,4 @@
-> 2026-10-23 当前源码基线：Application.Contracts ABI 1.16.0、Parcel DB8；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](../runtime/management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
+> 2026-10-24 当前源码基线：Application.Contracts ABI 1.17.0、Parcel DB9；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](../runtime/management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
 
 > 海康原生SDK边界增量：[接入说明](../runtime/hikrobot-reader-01.md)。仅签名vendor-sdk声明、win-x64及独立精确本地文件资格允许受控P/Invoke；未声明导入仍拒绝，SDK不进入扩展包。本文原无条件原生限制仅由此增量替代，历史验证不倒写。
 

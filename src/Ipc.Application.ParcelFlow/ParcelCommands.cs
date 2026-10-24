@@ -4,15 +4,28 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
+    readonly SemaphoreSlim shutdown = new(1, 1);
     public async Task<ParcelSnapshot> SnapshotAsync()
     {
+        string encoded;
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
+            ObjectDisposedException.ThrowIf(disposed, this);
+            // Single consistent read per projection; this scope never releases the business gate.
+            repository.BeginReceiptProjection();
+            projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
+            RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);
+            foreach (var position in interruptedPositions.Keys) reasons.Add("IngressInterrupted:" + position + "; pause, enter management mode and inspect original input responsibilities");
+            if (journal is not null) auxiliaryReasons.Add("Diagnostics:" + Wire.Encode(journal.Status));
+            if (integrationBudget is not null) auxiliaryReasons.Add("IntegrationIdBudget:" + Wire.Encode(integrationBudget));
+            if (storageCapacityWarning is not null) auxiliaryReasons.Add(storageCapacityWarning);
+            if (retentionWarning is not null) auxiliaryReasons.Add(retentionWarning);
+            auxiliaryReasons.Add("Workers:" + Wire.Encode(WorkerProgress()));
             if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required");
             if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
             foreach (var conflict in identityConflicts.Values) reasons.Add("IdentityConflict:" + conflict.Id + "; positions=" + string.Join(",", conflict.Positions));
@@ -39,9 +52,11 @@ public sealed partial class ParcelRuntime
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray());
-            return Wire.Decode<ParcelSnapshot>(Wire.Encode(OperatorSnapshot(projection)));
+            encoded = Wire.Encode(OperatorSnapshot(projection));
         }
-        finally { gate.Release(); }
+        finally { projectedCapacity = null; repository?.EndReceiptProjection(); gate.Release(); }
+        // Deserialize the detached UI copy after releasing the business gate.
+        return Wire.Decode<ParcelSnapshot>(encoded);
     }
     public async Task<BusinessProjection> QueryAsync()
     {
@@ -60,6 +75,9 @@ public sealed partial class ParcelRuntime
             if (command.ExpectedRevision != repository.Revision) return new("Conflict", "Refresh the current application projection", repository.Revision);
             switch (command.Kind)
             {
+                case "RuntimeProgress": return new("RuntimeProgress", Wire.Encode(RuntimeProgress()), repository.Revision);
+                case "IngressResponsibilities" when MaintenanceAuthorized: return new("IngressResponsibilities", Wire.Encode(repository.IngressResponsibilities()), repository.Revision);
+                case "InspectInterruptedIngress": return InspectInterruptedIngress(command);
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
@@ -83,10 +101,10 @@ public sealed partial class ParcelRuntime
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
-                case "AcknowledgeOverload" when repository.Paused && overload != 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
+                case "AcknowledgeOverload" when repository.Paused && overload != 0 && Volatile.Read(ref pendingOverloadWrites) == 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
                     var originalOverload = OverloadIdentity();
                     repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged; original=" + originalOverload, command: command, acknowledgedOverload: originalOverload);
-                    Boundary?.Invoke("AfterOverloadAcknowledged"); RecoverOverloadAcknowledgement(); break;
+                    Boundary?.Invoke("AfterOverloadAcknowledged"); await ExternalAsync(async () => { await RemoveAcknowledgedOverload(originalOverload).ConfigureAwait(false); return true; }).ConfigureAwait(false); break;
                 case "AcknowledgeIdentityConflict" when CanConfigure && command.Owner is not null && identityConflicts.ContainsKey(command.Owner) && !string.IsNullOrWhiteSpace(command.Value):
                     repository.Commit(null, "IdentityConflictAcknowledged", "Maintenance=" + ManagementEvidence!.AuditActor + "; original=" + command.Owner + "; " + command.Value, command: command, clearConflict: command.Owner);
                     identityConflicts.Remove(command.Owner); break;
@@ -155,7 +173,7 @@ public sealed partial class ParcelRuntime
                 repository.Commit(null, "ConfigurationUnchanged", Wire.Encode(audit), configurationAudit: audit);
                 return new("Unchanged", "No configuration changes; Effective and revision retained", repository.Revision);
             }
-            if (configuration.Current.Revision == expectedRevision && configuration.Current.Pending is { } pending && Wire.Encode(pending) == Wire.Encode(candidate))
+            if (configuration.Current.Revision == expectedRevision && configuration.Current.Status == "PendingRestart" && configuration.Current.Pending is { } pending && Wire.Encode(pending) == Wire.Encode(candidate))
             {
                 audit = audit with { AfterRevision = expectedRevision, Status = "PendingRestart", Result = "Existing identical Pending retained; no second configuration revision" };
                 repository.Commit(null, "ConfigurationPendingAlreadySaved", Wire.Encode(audit), configurationAudit: audit);
@@ -182,20 +200,27 @@ public sealed partial class ParcelRuntime
     }
     public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
     public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);
-    public async Task<BusinessReceipt> BackupAsync(string destination)
+    public Task<BusinessReceipt> BackupAsync(string destination) => OwnedRead(token => BackupCoreAsync(destination, token));
+    async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
-        await gate.WaitAsync().ConfigureAwait(false);
+        await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
             foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
             ParcelRecovery.CreateBackup(directory!, destination, Effective, configuration!.Current.Pending, repository.StorageBytes,
-                repository.Backup, factory.RegisterBackup, () => { Management.Require(); });
+                repository.Backup, factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); });
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
         }
         finally { gate.Release(); }
     }
     public async Task StopAsync(CancellationToken token)
+    {
+        await shutdown.WaitAsync(token).ConfigureAwait(false);
+        try { await StopCoreAsync(token).ConfigureAwait(false); }
+        finally { shutdown.Release(); }
+    }
+    async Task StopCoreAsync(CancellationToken token)
     {
         if (stopped) return;
         Interlocked.Exchange(ref accepting, 0); stopping.Cancel();
@@ -217,13 +242,18 @@ public sealed partial class ParcelRuntime
                 throw new AggregateException("Source stop failures; all downstream ownership retained", sourceFailures);
             }
         }
+        // Sources have actually stopped, hence all durable handoffs have returned.
         foreach (var queue in positionQueues.Values) queue.Writer.TryComplete();
+        overloadWrites.Writer.TryComplete();
+        if (overloadWorker is not null) await overloadWorker.WaitAsync(token).ConfigureAwait(false);
+        await DrainReadOperations(token).ConfigureAwait(false);
         if (worker is not null)
         {
             try { await worker.WaitAsync(token).ConfigureAwait(false); }
             catch (Exception ex) when (worker.IsCompleted) { terminalWorkerFailure = ex; }
         }
         if (maintenanceWorker is not null) await maintenanceWorker.WaitAsync(token).ConfigureAwait(false);
+        if (supervisor is not null) await supervisor.WaitAsync(token).ConfigureAwait(false);
         await Task.WhenAll(auxiliary.ToArray()).WaitAsync(token).ConfigureAwait(false);
         Task drain;
         await gate.WaitAsync(token).ConfigureAwait(false);
@@ -247,9 +277,15 @@ public sealed partial class ParcelRuntime
     }
     public async ValueTask DisposeAsync()
     {
+        await shutdown.WaitAsync().ConfigureAwait(false);
+        try { await DisposeCoreAsync().ConfigureAwait(false); }
+        finally { shutdown.Release(); }
+    }
+    async Task DisposeCoreAsync()
+    {
         if (disposed) return;
         Exception? stopFailure = null;
-        try { await StopAsync(CancellationToken.None).ConfigureAwait(false); }
+        try { await StopCoreAsync(CancellationToken.None).ConfigureAwait(false); }
         catch (Exception ex) when (stopped) { stopFailure = ex; }
         if (ports is not null)
         {
@@ -263,7 +299,13 @@ public sealed partial class ParcelRuntime
         await factory.DisposeAsync().ConfigureAwait(false);
         logReader?.Dispose();
         if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false);
-        repository?.Dispose(); lease?.Dispose(); stopping.Dispose(); disposed = true;
+        await gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            foreach (var lane in ingressLanes.Values) lane.Dispose();
+            repository?.Dispose(); lease?.Dispose(); stopping.Dispose(); disposed = true;
+        }
+        finally { gate.Release(); }
         if (stopFailure is not null) throw new InvalidOperationException("Application resources released after terminal worker failure", stopFailure);
     }
 }

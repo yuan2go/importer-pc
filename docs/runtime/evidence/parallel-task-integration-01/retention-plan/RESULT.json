@@ -1,0 +1,96 @@
+[
+  {
+    "Rows": 10000,
+    "Mode": "old",
+    "SQLite": "3.54.0",
+    "PreparationMs": 0.0008,
+    "Checks": 100,
+    "CheckMs": 121.0612,
+    "Plan": [
+      "SCAN CONSTANT ROW",
+      "SCALAR SUBQUERY 1",
+      "SEARCH parcel_receipts USING INDEX parcel_receipts_operation (operation=?)",
+      "SCALAR SUBQUERY 2",
+      "SCAN parcel_identity_conflicts",
+      "SCALAR SUBQUERY 3",
+      "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_1 (id=?)",
+      "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+      "SCALAR SUBQUERY 4",
+      "SEARCH parcel_audit USING COVERING INDEX parcel_audit_owner_at (owner=?)",
+      "SCALAR SUBQUERY 5",
+      "SCAN a",
+      "SEARCH c USING INDEX sqlite_autoindex_parcel_commands_1 (id=?)"
+    ],
+    "PendingOwnerPreserved": true
+  },
+  {
+    "Rows": 10000,
+    "Mode": "new",
+    "SQLite": "3.54.0",
+    "PreparationMs": 1.4252,
+    "Checks": 100,
+    "CheckMs": 10.806,
+    "Plan": [
+      "SCAN CONSTANT ROW",
+      "SCALAR SUBQUERY 1",
+      "SEARCH parcel_receipts USING INDEX parcel_receipts_operation (operation=?)",
+      "SCALAR SUBQUERY 2",
+      "SCAN parcel_identity_conflicts",
+      "SCALAR SUBQUERY 3",
+      "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_1 (id=?)",
+      "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+      "SCALAR SUBQUERY 4",
+      "SEARCH parcel_audit USING COVERING INDEX parcel_audit_owner_at (owner=?)",
+      "SCALAR SUBQUERY 5",
+      "SEARCH temp.parcel_retention_pending_owners USING PRIMARY KEY (owner=?)"
+    ],
+    "PendingOwnerPreserved": true
+  },
+  {
+    "Rows": 100000,
+    "Mode": "old",
+    "SQLite": "3.54.0",
+    "PreparationMs": 0.0011,
+    "Checks": 100,
+    "CheckMs": 991.7417,
+    "Plan": [
+      "SCAN CONSTANT ROW",
+      "SCALAR SUBQUERY 1",
+      "SEARCH parcel_receipts USING INDEX parcel_receipts_operation (operation=?)",
+      "SCALAR SUBQUERY 2",
+      "SCAN parcel_identity_conflicts",
+      "SCALAR SUBQUERY 3",
+      "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_1 (id=?)",
+      "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+      "SCALAR SUBQUERY 4",
+      "SEARCH parcel_audit USING COVERING INDEX parcel_audit_owner_at (owner=?)",
+      "SCALAR SUBQUERY 5",
+      "SCAN a",
+      "SEARCH c USING INDEX sqlite_autoindex_parcel_commands_1 (id=?)"
+    ],
+    "PendingOwnerPreserved": true
+  },
+  {
+    "Rows": 100000,
+    "Mode": "new",
+    "SQLite": "3.54.0",
+    "PreparationMs": 10.3678,
+    "Checks": 100,
+    "CheckMs": 9.9609,
+    "Plan": [
+      "SCAN CONSTANT ROW",
+      "SCALAR SUBQUERY 1",
+      "SEARCH parcel_receipts USING INDEX parcel_receipts_operation (operation=?)",
+      "SCALAR SUBQUERY 2",
+      "SCAN parcel_identity_conflicts",
+      "SCALAR SUBQUERY 3",
+      "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_1 (id=?)",
+      "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+      "SCALAR SUBQUERY 4",
+      "SEARCH parcel_audit USING COVERING INDEX parcel_audit_owner_at (owner=?)",
+      "SCALAR SUBQUERY 5",
+      "SEARCH temp.parcel_retention_pending_owners USING PRIMARY KEY (owner=?)"
+    ],
+    "PendingOwnerPreserved": true
+  }
+]

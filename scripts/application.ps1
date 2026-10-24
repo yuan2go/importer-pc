@@ -12,8 +12,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-if (-not $IsWindows -or [Environment]::OSVersion.Version.Build -lt 26100 -or [Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64') {
-    throw 'Candidate baseline is Windows build 26100+ x64 / PowerShell 7. Actual Windows qualification is NOT_RUN.'
+if (-not $IsWindows -or [Environment]::OSVersion.Version.Major -ne 10 -or [Environment]::OSVersion.Version.Build -lt 14393 -or [Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64' -or [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -ne 'X64') {
+    throw 'Functional baseline matches GUI: Windows 10.0 build 14393+ with native x64 OS/process / PowerShell 7. Device and 24x7 qualification are separate.'
 }
 function Ordinary([string]$Path) {
     $pathInfo = [IO.DirectoryInfo]::new([IO.Path]::GetFullPath($Path))

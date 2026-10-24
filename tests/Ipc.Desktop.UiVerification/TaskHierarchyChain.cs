@@ -30,7 +30,7 @@ static partial class Program
         await using var peer = new HierarchyRcsPeer();
         var configRoot = Path.Combine(evidence, "chain-config"); Directory.CreateDirectory(configRoot);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.3.1", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.3.2", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
             ["source"] = "SYNTHETIC-HIERARCHY", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",
@@ -166,6 +166,12 @@ static partial class Program
         transport.ReleasePause.TrySetResult(); await pendingPause; await Flush();
         Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("暂停供包") && vm.HasGlobalOperationFeedback, "real persisted pause receipt arrives after navigation and remains visible on the receiving page");
         await Record("late-pause-history-800");
+        var history = Descendants(window).OfType<HistoryPage>().Single();
+        var rows = (DataGrid)history.FindName("HistoryRows");
+        var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+        Check(Inside(rows, client) && firstRow.ActualHeight >= 32 &&
+            firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight,
+            $"minimum history viewport retains a complete result row with late pause receipt and unresolved custody visible: grid={rows.ActualHeight:F2}, rowTop={firstRow.TranslatePoint(new Point(), rows).Y:F2}, rowHeight={firstRow.ActualHeight:F2}, inside={Inside(rows, client)}");
         transport.HoldPause = false; Click(window, "日志查询"); await Flush();
         // Keep unresolved old receipt out of a new global intent; real Resume is rejected
         // because both positions now carry unsettled custody.

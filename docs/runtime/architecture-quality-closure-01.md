@@ -2,22 +2,22 @@
 
 > 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
-> 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
+> 当前版本与DB9迁移、7～30天到期维护见[长稳运行指南](win11-24x7-stability-remediation-01.md)。COMM形成时业务1.4.0/Contracts1.10.0/DB8及其SQL1～7不变事实保留为历史；本次SQL1～8未改。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 # Application运行、维护与兼容
 
 审查03形成时实施范围见[原工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
 
-本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
+本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。本页历史Windows结果保持原身份；本轮Windows原生合成结果、真实SDK/合同及24h资格分别见[长稳指南](win11-24x7-stability-remediation-01.md)。软件暂停不是安全急停。
 
-PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页旧DB7阶段的验证保持形成时身份；当前DB8操作见页首指引，旧账确认与独立资料规则继续适用，不以历史DB4候选或PASS替代。
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页旧DB7阶段的验证保持形成时身份；当前DB9操作见页首指引，旧账确认与独立资料规则继续适用，不以历史DB4候选或PASS替代。
 
 ## 容量及原件
 
 schema3增加可缺省Retention：ResidentHistory=200（1～10000）、MinimumFreeBytes=67108864（技术默认64MiB，允许1MiB～1TiB）。旧配置缺省时按同一显式软件策略读取，不改原FrozenConfiguration。MaximumOperations现在约束不能归档的责任数量；工作集高水位为min(ResidentHistory,MaximumOperations)。默认及optional种子已登记策略，不通过提高上限延迟故障。
 
-满足本业务主链终态、图像已释放、无附加Prepared/Unknown/Conflict、无活动阶段和未清接收发生，才能归档。一次至多256件，事务保存完整原JSON/hash、永久Admission/Observation索引及原响应字节/hash后移出工作表。所有测量、请求、发送次数、回执和审计仍保留；原raw从文件转为同数据库BLOB的持久原字节后才清理冗余spool。删除失败显示待清理并重启续清，不能丢失已提交归档。没有按年龄删除、历史覆盖或长期图片库。
+满足本业务主链终态、图像已释放、无附加Prepared/Unknown/Conflict、无活动阶段和未清接收发生，才能归档。一次至多256件，事务保存完整原JSON/hash、永久Admission/Observation索引及原响应字节/hash后移出工作表。所有测量、请求、发送次数、回执和审计仍保留；原raw从文件转为同数据库BLOB的持久原字节后才清理冗余spool。删除失败显示待清理并重启续清，不能丢失已提交归档。归档本身不删除明细。启用HistoryDays（7～30天）后，仅在独立维护窗口依完整备份及永久身份凭据删除已结明细；未决、原件及永久索引守卫见[长稳指南](win11-24x7-stability-remediation-01.md)。没有长期图片库。
 
-快照只投影当前有界工作集及各位最新结果，完整历史走HistoryAsync(beforeSequence,limit)，limit=1～200，默认50，稳定递减游标。OperationAsync(id)读取原件。CLI命令History（Owner为可选游标、Value为可选页长）、Operation（Owner=原ID）；桌面记录页读取50条/下一页/按需详情，分别显示加载、空记录和读取失败；保留原选择与完整JSON复制，查询结果不得由迟到旧请求覆盖。归档旧观察仍去重，跨位身份复用写持续冲突责任。磁盘增长保留全部历史，不推断客户保留天数。维护实际路径是将完整恢复集迁至容量足够的新卷：暂停并认证维护，Backup取得COMPLETED集，停止旧根；以新卷的原Mode/Station/Application目录执行recovery-plan，读取CopyBytes、MinimumFreeBytes、AvailableBytes及RemainingGrowthBytes，再restore。预检不足不建目标；副本hash不符拒绝。按包内原发布、配置、信任和包启动新根，恢复隔离后核对外部事实并显式Resume；旧根仍保留，禁止两个根同时操作设备。重复运行期间记录已归档件数与卷剩余增长字节，按实际增长安排下次扩容；不存在自动删除历史或“永久无限磁盘”承诺。
+快照只投影当前有界工作集及各位最新结果，完整历史走HistoryAsync(beforeSequence,limit)，limit=1～200，默认50，稳定递减游标。OperationAsync(id)读取原件。CLI命令History（Owner为可选游标、Value为可选页长）、Operation（Owner=原ID）；桌面记录页读取50条/下一页/按需详情，分别显示加载、空记录和读取失败；保留原选择与完整JSON复制，查询结果不得由迟到旧请求覆盖。归档旧观察仍去重，跨位身份复用写持续冲突责任。用户已确认已结明细7～30天，到期维护删除；旧配置未选HistoryDays继续保留。永久索引和未决责任不随明细删除。维护实际路径是将完整恢复集迁至容量足够的新卷：暂停并认证维护，Backup取得COMPLETED集，停止旧根；以新卷的原Mode/Station/Application目录执行recovery-plan，读取CopyBytes、MinimumFreeBytes、AvailableBytes及RemainingGrowthBytes，再restore。预检不足不建目标；副本hash不符拒绝。按包内原发布、配置、信任和包启动新根，恢复隔离后核对外部事实并显式Resume；旧根仍保留，禁止两个根同时操作设备。重复运行期间记录已归档件数与卷剩余增长字节，按实际增长安排下次扩容；不存在自动删除历史或“永久无限磁盘”承诺。
 
 Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。低于磁盘保留或未结数耗尽，准入/Resume/UI同源阻断；维护轮询重新读取容量后可恢复。未结、Unknown、原图/上传及原接收责任不得被归档解锁。暂停、维护认证及检查原因齐备时可显式ArchiveHistory；例行策略本身不授权删除磁盘历史。
 
@@ -29,7 +29,7 @@ Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。�
 
 Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。维护页“异常与恢复”或CLI的ReceiptResponsibilities（Owner=原OperationId）列出原发生ID/阶段/请求/来源/资料状态；ReconcileReceipt（Owner=原发生ID、Value=检查说明、ExpectedRevision=当前应用Revision）要求暂停和维护认证，仅适用于Awaiting且raw_hash为空、无原文件。只调用冻结原实现/原目标的Query，不Submit。原查询无结果、错误、不支持或冲突仍保留原发生、原图和包责任；有效权威终态只确认上传结果并关联新的Committed Query发生；旧发生保留缺raw资料责任，仍阻原图释放、归档及原包退休。SQL5把已有OutcomeReconciled旧行恢复为Awaiting并建立资料索引；已归档作业因原资料责任重新进入工作集，原归档JSON/hash在后续更新前另存版本。旧代码已释放或删除的图像只能如实保留缺口，不能由新Query、种子或迁移制造原字节。真正原文件仅从完整恢复集按原发生/清单hash恢复后本地T3清偿；缺原字节和合同处置依据时责任持续可见，不提供强制清除。Production须实际提供者支持权威原Query，缺合同仍BLOCKED。
 
-旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3/4普通启动在写库和SQL5前拒绝未明责任；repair-main-projection仅在原库租约及完整备份下修可证明主投影，保持旧schema，不构成完整升级步骤。缺raw的Attached场景改用下述recover-legacy-receipt：通过逐文件校验的匹配原发布、冻结配置/请求往返及原实现指纹，只启动原上传端口并Health/Query，不启动reader、不Submit。持久化独立Query原件和已证明主状态后，仅在所有外部业务已终结、每个缺raw均有权威依据时显式升级当前DB8；原发生仍Awaiting、原图/包和资料屏障保留。无结果、冲突、原发布/原图/合同缺失保持隔离，不先写未来迁移标记。
+旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3/4普通启动在写库和SQL5前拒绝未明责任；repair-main-projection仅在原库租约及完整备份下修可证明主投影，保持旧schema，不构成完整升级步骤。缺raw的Attached场景改用下述recover-legacy-receipt：通过逐文件校验的匹配原发布、冻结配置/请求往返及原实现指纹，只启动原上传端口并Health/Query，不启动reader、不Submit。持久化独立Query原件和已证明主状态后，仅在所有外部业务已终结、每个缺raw均有权威依据时显式升级当前DB9；原发生仍Awaiting、原图/包和资料屏障保留。无结果、冲突、原发布/原图/合同缺失保持隔离，不先写未来迁移标记。
 
 历史仅审计而无作用域的IdentityConflict须按持久Effective实际位恢复为待检查责任，schema1/2必须保护main，不能套用schema3的left/right。未确认冲突阻止Pending拓扑激活；已经错误持久化的legacy范围须保留旧body并追加修复审计，已确认项不重新武装。原审计没有设备/实体范围时保护所有可能位，明确显示资料不足。维护暂停/认证/说明后沿原AcknowledgeIdentityConflict解除；解除记录保留，重启不重复制造阻断。已有明确范围的冲突仍只影响相关位。
 
@@ -63,7 +63,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 ## 升级、回退与验证
 
-Parcel现行数据库8；SQL1～7/checksum逐字节继承。SQL8为商业维护读者屏障。SQL5独立资料责任、SQL6原报文/拆包语义继续生效，SQL7追加数字请求唯一归属、已配置范围及恢复退役边界。普通DB2–7升级至8必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，CLI显式选择DB8，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为8的库不降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
+Parcel现行数据库9；SQL1～8/checksum逐字节继承。SQL9追加持久接收责任、查询投影及到期删除凭据；DB8→9保留原未决请求，不因追加表而重发。SQL8为商业维护读者屏障。SQL5独立资料责任、SQL6原报文/拆包语义继续生效，SQL7追加数字请求唯一归属、已配置范围及恢复退役边界。普通DB2–7升级至8必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，当前CLI显式选择DB9，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为9的库不降级；旧DB8读者拒绝DB9。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
 Application.Contracts当前为ABI1.10.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 

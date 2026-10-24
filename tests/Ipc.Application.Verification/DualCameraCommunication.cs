@@ -243,7 +243,20 @@ static class DualCameraCommunication
         c = c with { Reader = r, Topology = c.Topology! with { Readers = [r, c.Topology!.Readers[1]] } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new StartupFactory(new(launch)) { Fail = !cancel };
-        var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
+        int failureAuditCompleted = 0, prematureDisposition = 0;
+        var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
+        {
+            RuntimeIdentityPreflight = () => { },
+            Boundary = point =>
+            {
+                // Hold the original startup writer while another worker can run.
+                // This detects the ownership overlap without relying on SQLite to crash.
+                if (point == "BeforeStartupFailureAudit") Thread.Sleep(150);
+                if (point == "AfterStartupFailureAudit") Volatile.Write(ref failureAuditCompleted, 1);
+                if (point == "BeforeStartupIngressDisposition" && Volatile.Read(ref failureAuditCompleted) == 0)
+                    Interlocked.Exchange(ref prematureDisposition, 1);
+            }
+        };
         using var cancellation = new CancellationTokenSource();
         try
         {
@@ -254,6 +267,8 @@ static class DualCameraCommunication
             Check(failed && (await app.SnapshotAsync()).Operations.Length == 0, (cancel ? "cancelled" : "failed") + " startup cannot dispatch buffered observations");
         }
         finally { factory.Release.TrySetResult(true); await app.DisposeAsync(); }
+        Check(failureAuditCompleted == 1 && prematureDisposition == 0,
+            (cancel ? "cancelled" : "failed") + " startup records its terminal audit before buffered-input disposition shares the database owner");
         var db = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "sportmaster.db");
         using var connection = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder { DataSource = db, Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); connection.Open();
         using var command = connection.CreateCommand(); command.CommandText = "SELECT count(*) FROM parcel_audit WHERE event='StartupIngressBlocked'";

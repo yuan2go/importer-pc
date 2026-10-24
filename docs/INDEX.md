@@ -1,8 +1,12 @@
+> 本轮并行成果整合：[工作包与固定来源](work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)、[处置、冲突及验证报告](runtime/parallel-task-integration-01.md)。起始远端main `016976c6`已包含PR97/98；旧分支与历史证据身份保留，稳定性资格另计。
+
+> 当前Windows 11长期稳定性整改：[工作包与风险矩阵](work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[输入、故障与运行设计](design/win11-24x7-stability-remediation-01.md)。原[独立审查及证据](reviews/win11-24x7-stability-audit-01/README.md)固定main `c91559f6`，保留历史身份；整改实施与24h/真实设备资格分别记录。当前[运行与到期删除](runtime/win11-24x7-stability-remediation-01.md)、[R01～R12验证及边界](runtime/validation/win11-24x7-stability-remediation-01.md)。
+
 > TYPOGRAPHY-01追加复核：[三组原生对照、选择依据、实际字体来源与续修](runtime/evidence/typography-01/controlled-review/README.md)。继承PR97 `a43ecb8`；旧截图/测试身份保留。
 
-> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)、[实现/复现/边界](runtime/typography-01.md)、[原生前后对照与证据](runtime/evidence/typography-01/README.md)。基于 PR97 `a43ecb8` 与 main `c5ac51d`；PR97 尚未合并，为本包前置依赖。[受控对照与验收](design/typography-comparison-01.md)。保留格口优先、空态、回执、参数帮助与查询空间。
+> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)、[实现/复现/边界](runtime/typography-01.md)、[原生前后对照与证据](runtime/evidence/typography-01/README.md)。PR97已合并为 `c310705`，PR98已合并为 `016976c`；依赖已在main。[受控对照与验收](design/typography-comparison-01.md)。保留格口优先、空态、回执、参数帮助与查询空间；旧证据仍对应其原SourceCommit。
 
-> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。2026-10-24续做PR97并整合main c5ac51d；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)补充真实Application/原回包链、无效输入指引与原生键鼠。01及02上一轮的原图/CI保留原身份，不代表本轮现场或使用者验收。
+> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。PR97已以`c310705`合入main；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)保留其真实Application/原回包链、无效输入指引与原生键鼠身份。01及02上一轮的原图/CI不代表后续整合版本、现场或使用者验收。
 > 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
 
 > PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。

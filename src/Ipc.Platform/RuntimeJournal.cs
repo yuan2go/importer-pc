@@ -5,9 +5,21 @@ namespace Ipc.Platform;
 // Diagnostic metadata only; authoritative business facts remain in the transactional store.
 public sealed class RuntimeJournal : IAsyncDisposable
 {
+    long dropped, written;
+    string? lastFailure, currentFailure;
+    long progressTicks;
+    public object Status => new { State = worker.IsCompleted ? "Stopped" : Volatile.Read(ref currentFailure) is null ? "Running" : "Degraded",
+        QueueDepth = queue.Reader.Count, Dropped = Interlocked.Read(ref dropped), Written = Interlocked.Read(ref written),
+        LastFailure = Volatile.Read(ref lastFailure), CurrentFailure = Volatile.Read(ref currentFailure), LastProgressUtcTicks = Interlocked.Read(ref progressTicks) };
+    void Report(string detail)
+    {
+        Volatile.Write(ref lastFailure, detail);
+        if (Interlocked.Exchange(ref currentFailure, detail) is null) failure(detail);
+    }
     readonly Channel<object> queue = Channel.CreateBounded<object>(new BoundedChannelOptions(256) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     readonly Task worker;
     readonly Action<string> failure;
+    internal Action? BeforeAppend { get; set; }
     sealed record RetentionChange(int? Days);
     RetentionChange retention;
     public RuntimeJournal(string directory, Action<string> failure) : this(directory, failure, null) { }
@@ -25,27 +37,51 @@ public sealed class RuntimeJournal : IAsyncDisposable
             {
                 var path = Path.Combine(directory, "runtime.jsonl");
                 void Maintain() => MaintainFiles(directory, Volatile.Read(ref retention).Days);
-                Maintain();
-                using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+                void TryMaintain() { try { Maintain(); } catch (Exception ex) { Report("Diagnostic maintenance failure: " + ex.GetType().Name); } }
+                TryMaintain();
+                var nextProbe = DateTimeOffset.MinValue;
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
                 var available = queue.Reader.WaitToReadAsync().AsTask();
                 var tick = timer.WaitForNextTickAsync().AsTask();
                 while (true)
                 {
                     await Task.WhenAny(available, tick);
-                    if (tick.IsCompleted) { if (!await tick) break; Maintain(); tick = timer.WaitForNextTickAsync().AsTask(); }
+                    if (tick.IsCompleted)
+                    {
+                        if (!await tick) break;
+                        // Retention/daily rotation also advance while healthy and idle.
+                        // Maintenance alone cannot clear an append failure; a real probe must write.
+                        TryMaintain();
+                        if (Volatile.Read(ref currentFailure) is not null && DateTimeOffset.UtcNow >= nextProbe)
+                            queue.Writer.TryWrite(new { At = DateTimeOffset.UtcNow, Event = "DiagnosticRecoveryProbe" });
+                        tick = timer.WaitForNextTickAsync().AsTask();
+                    }
                     if (!available.IsCompleted) continue;
                     if (!await available) break;
                     while (queue.Reader.TryRead(out var entry))
                     {
-                        if (entry is RetentionChange) { Maintain(); continue; }
-                        Maintain();
-                        var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
-                        await File.AppendAllTextAsync(path, DiagnosticText.Protect(line) + Environment.NewLine);
+                        if (DateTimeOffset.UtcNow < nextProbe) { Interlocked.Increment(ref dropped); continue; }
+                        try
+                        {
+                            BeforeAppend?.Invoke();
+                            Maintain();
+                            var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
+                            await File.AppendAllTextAsync(path, DiagnosticText.Protect(line) + Environment.NewLine);
+                            Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);
+                            Volatile.Write(ref currentFailure, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.Increment(ref dropped); Report("Diagnostic append failure: " + ex.GetType().Name);
+                            // Drain disposable metadata promptly; one subsequent probe per second.
+                            // Never delay disposal once per dropped entry, or retry an old entry.
+                            nextProbe = DateTimeOffset.UtcNow.AddSeconds(1);
+                        }
                     }
                     available = queue.Reader.WaitToReadAsync().AsTask();
                 }
             }
-            catch (Exception ex) { failure("Diagnostic journal failure: " + ex.GetType().Name); }
+            catch (Exception ex) { Report("Diagnostic journal worker failure: " + ex.GetType().Name); queue.Writer.TryComplete(ex); }
         });
     }
     public static void AppendMetadata(string directory, object metadata)
@@ -99,6 +135,10 @@ public sealed class RuntimeJournal : IAsyncDisposable
         // The worker observes this value on its next entry or maintenance tick.
         Volatile.Write(ref retention, next); Write(next);
     }
-    public void Write(object metadata) { if (!queue.Writer.TryWrite(metadata)) failure("Diagnostic journal queue full; business audit remains in SQLite"); }
+    public void Write(object metadata)
+    {
+        if (!queue.Writer.TryWrite(metadata))
+        { Interlocked.Increment(ref dropped); Report("Diagnostic queue full/closed; metadata dropped; authoritative business audit remains in SQLite"); }
+    }
     public async ValueTask DisposeAsync() { queue.Writer.TryComplete(); await worker; }
 }

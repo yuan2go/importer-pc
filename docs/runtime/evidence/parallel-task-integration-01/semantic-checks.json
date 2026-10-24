@@ -1,0 +1,31 @@
+{
+  "sql_1_to_8": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+  },
+  "src/Ipc.Drivers/TcpLineObservationSource.cs": true,
+  "src/Ipc.Presentation.Wpf/Fonts/NOTICE.json": {
+    "start": "debd6a2db8bd01b1285117e2d1256835fd96886437e5cede3f7b51f249a47c78",
+    "candidate": "debd6a2db8bd01b1285117e2d1256835fd96886437e5cede3f7b51f249a47c78"
+  },
+  "src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Medium.otf": {
+    "start": "ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7",
+    "candidate": "ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7"
+  },
+  "src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Regular.otf": {
+    "start": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+    "candidate": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+  },
+  "src/Ipc.Presentation.Wpf/Fonts/OFL.txt": {
+    "start": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "candidate": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+  },
+  "source_head": "5074660fd10e7a91d81923edac782891e377a519",
+  "main": "016976c65a4ba3c9119f4cc0a131bae82283aae5"
+}

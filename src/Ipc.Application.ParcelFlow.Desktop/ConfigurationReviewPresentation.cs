@@ -114,6 +114,7 @@ public partial class ParcelViewModel
                     "SessionLifetimeMs" => ("业务模块", "作业登录", "操作员会话时长（毫秒）", "SessionLifetimeMs"),
                     "Login" => ("业务模块", "作业登录", "操作员登录绑定", "OperatorLogin"),
                     "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "诊断日志保留天数", "DiagnosticLogDays"),
+                    "Retention.HistoryDays" => ("系统", "数据与记录", "已结历史保留天数", "HistoryDays"),
                     "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻历史条数", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),

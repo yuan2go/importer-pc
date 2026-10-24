@@ -1,0 +1,11 @@
+PASS STABILITY-WPF: failed handoff does not claim source delivery success
+PASS STABILITY-WPF: initial native snapshot and management observation are applied before guarded recovery
+PASS STABILITY-WPF: native recovery view reads exact interrupted receipt from current application
+PASS STABILITY-WPF: native recovery action commits exact input inspection through application guards
+PASS STABILITY-WPF: retention policy has an accessible system-settings destination
+PASS STABILITY-WPF: native seven-day setting reaches the shared complete candidate without saving or starting devices
+PASS STABILITY-WPF: independent timer observes a stalled real WPF Dispatcher; UI cannot renew its own progress
+PASS STABILITY-WPF: dispatcher progress recovers after actual dispatch resumes
+PASS STABILITY-WPF: native window async close drains lifecycle
+PASS STABILITY-WPF: closed window removes independent timer registration
+Scope: native Windows WPF + synthetic runtime; actual SDK/RCS/hardware and 24h NOT_RUN.

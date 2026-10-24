@@ -1,0 +1,6 @@
+{
+  "Scope": "Read-only EXE hooks; no install or device start",
+  "DesktopExit": 0,
+  "AssemblyExit": 0,
+  "SourceCommit": "b2b2f0f9a3960ebaad937bf354231e8586c944bd"
+}

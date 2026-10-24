@@ -1,0 +1,20 @@
+{
+  "At": "2026-10-24T08:49:07.7941754Z",
+  "OS": {
+    "Caption": "Microsoft Windows 11 家庭中文版",
+    "Version": "10.0.22631",
+    "BuildNumber": "22631",
+    "TotalVisibleMemorySize": 15662732
+  },
+  "CPU": {
+    "Name": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 8
+  },
+  "ProcessArchitecture": "X64",
+  "Runtime": ".NET 10.0.11",
+  "Drive": {
+    "Size": 411592290304,
+    "SizeRemaining": 105303707648
+  }
+}

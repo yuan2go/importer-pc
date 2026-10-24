@@ -30,8 +30,8 @@ public sealed partial class ParcelStartupMaintenance
         {
             if (new FileInfo(copy.Database).Length > 16 * 1024 * 1024) throw new InvalidDataException("旧模拟账超过目录接管预算，使用完整恢复。");
             var inspection = ParcelRepository.InspectMaintenance(copy.Database, definition);
-            if (inspection.DatabaseVersion != 8 || inspection.Resident != 0 || inspection.Archived != 0 || inspection.Unsettled != 0 || inspection.PendingReceipts != 0 || inspection.IdentityConflicts != 0)
-                throw new InvalidOperationException("检测到原作业/请求或非DB8账，不能按未使用模拟目录接管；使用完整恢复。");
+            if (inspection.DatabaseVersion != 9 || inspection.Resident != 0 || inspection.Archived != 0 || inspection.Unsettled != 0 || inspection.PendingReceipts != 0 || inspection.IdentityConflicts != 0)
+                throw new InvalidOperationException("检测到原作业/请求或非DB9账，不能按未使用模拟目录接管；使用完整恢复。");
         }
         if (Wire.FileHash(Path.Combine(original, "configuration.json")) != state.Hash) throw new InvalidDataException("原完整配置账与目标不同。");
         ParcelRepository.RequireUnusedRelocationStatePreserved(sourceCopy.Database, targetCopy.Database);
@@ -77,7 +77,7 @@ public sealed partial class ParcelRepository
             if ((string?)currentSchema.ExecuteScalar() != table.Sql) throw new InvalidDataException("目标账结构不同。");
             var previous = Rows(oldDb, table.Name, ref budget); var current = Rows(newDb, table.Name, ref budget);
             if (previous.Any(row => current.GetValueOrDefault(row.Key) < row.Value)) throw new InvalidDataException("目标遗漏或改变原账记录；保留原责任，不能用旧副本接管。");
-            if (table.Name is "parcel_operations" or "parcel_history_index" or "parcel_archives" or "parcel_archive_versions" or "parcel_receipts" or "parcel_archived_receipts" or "parcel_reply_identities" or "parcel_receipt_custody" or "parcel_identity_conflicts" or "parcel_overload_ack" or "parcel_measurements" or "parcel_integration_id_owners" or "parcel_integration_id_ranges" or "parcel_integration_id_restores" && (previous.Count > 0 || current.Count > 0)) throw new InvalidOperationException("原编号或测量责任存在，不能按未使用模拟账接管。");
+            if (table.Name is "parcel_ingress" or "parcel_operations" or "parcel_history_index" or "parcel_archives" or "parcel_archive_versions" or "parcel_receipts" or "parcel_archived_receipts" or "parcel_reply_identities" or "parcel_receipt_custody" or "parcel_identity_conflicts" or "parcel_overload_ack" or "parcel_measurements" or "parcel_integration_id_owners" or "parcel_integration_id_ranges" or "parcel_integration_id_restores" && (previous.Count > 0 || current.Count > 0)) throw new InvalidOperationException("原编号或测量责任存在，不能按未使用模拟账接管。");
         }
     }
 }

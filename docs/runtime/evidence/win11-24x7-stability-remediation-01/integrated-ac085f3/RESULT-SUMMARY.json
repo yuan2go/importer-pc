@@ -1,0 +1,51 @@
+{
+  "Status": "CODE_AND_SCOPED_WINDOWS_SYNTHETIC_VERIFIED; FIELD_QUALIFICATION_PENDING",
+  "BaselineMain": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
+  "IntegratedMain": "c310705b5a927c90e8f6bb93de908b2fea36e826",
+  "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+  "BusinessVersion": "1.12.0",
+  "ApplicationContracts": "1.17.0",
+  "DatabaseFormat": 9,
+  "PackageSha256": "2387E07531885FBE1F3B6812F818E44429173C1855DB5B358F9C62267B613A55",
+  "PackageLocalPath": "D:\\DevCache\\importer-pc\\stability-release-main97.zip",
+  "Publication": "LOCAL_TEST_CANDIDATE_ONLY; no installer, install, GitHub release or production device",
+  "FrozenBuild": {
+    "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+    "Main": "c310705b5a927c90e8f6bb93de908b2fea36e826",
+    "Started": "2026-10-24T09:30:34.3846505Z",
+    "Ended": "2026-10-24T09:31:48.2370848Z",
+    "ExitCode": 0,
+    "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-release-main97",
+    "Scope": "Local Sportmaster reference-composition candidate after PR97 main integration; no installer or production device"
+  },
+  "FrozenSmoke": {
+    "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+    "Started": "2026-10-24T09:32:32.4547939Z",
+    "Ended": "2026-10-24T09:32:33.1898173Z",
+    "AssemblyExit": 0,
+    "DesktopExit": 0,
+    "Scope": "Frozen EXE read-only startup hooks; no install or device start"
+  },
+  "FrozenNativeStatus": "PASS",
+  "FrozenHierarchyStatus": "PASS",
+  "FrozenCustodyExit": 0,
+  "Retention": "Site-selectable 7..30 days; stopped authorized maintenance removes eligible settled details after complete backup; unresolved responsibility and permanent fences retained",
+  "ExternalBlocked": [
+    "RCS authoritative Unknown query/disposition contract: user requested HOLD",
+    "Protected end-to-end restore/retention CLI and user-presentation ACL environment"
+  ],
+  "NotRun": [
+    "Real Hikrobot dual devices/native DLL stop/reconnect",
+    "Target 4-core 8GiB IPC and multiple Windows 11 builds",
+    "Full-original/raw history scale and recovery timing",
+    "24h normal after warmup",
+    "72h and multiple cross-day qualification",
+    "Native long-soak collector end-to-end with real source evidence"
+  ],
+  "PreservedFailures": [
+    "development/parameter-refactor.log",
+    "development/PROTECTED-RESTORE-BLOCKED.log",
+    "development/OLD-AUDIT03-RCS-FAILED.log",
+    "first-freeze-7017899/INITIAL-COMPILE-FAILURE.log"
+  ]
+}

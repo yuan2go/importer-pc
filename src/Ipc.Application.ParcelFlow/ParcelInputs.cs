@@ -31,7 +31,7 @@ public sealed partial class ParcelRuntime
     DeviceBinding ReaderBinding(string position) => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == positions[position].ReaderDeviceId);
     void RecordInput(ParcelInputSnapshot input, string eventName, bool? paused = null)
     {
-        repository!.Commit(null, eventName, input.Reason, paused: paused, input: input);
+        repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
         latestInputs[input.PositionId] = input;
     }
     // A failed latest observation must not borrow a previous terminal result.

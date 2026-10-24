@@ -1,0 +1,4 @@
+D:\tools\dotnet\sdk\10.0.402\Microsoft.Common.CurrentVersion.targets(2453,5): warning MSB3245: 未能解析此引用。未能找到程序集“Ipc.Platform”。请检查磁盘上是否存在该程序集。 如果您的代码需要此引用，则可能出现编译错误。 [D:\projects\importer-pc-integration-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj]
+D:\projects\importer-pc-integration-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj(4,74): error : Provide IpcContractPath from the exact frozen host delivery.
+
+生成失败。请修复生成错误并重新运行。

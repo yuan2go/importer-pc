@@ -1,6 +1,6 @@
-> 当前心跳增量（2026-10-20）：组件1.2.0、Contracts1.11.0、Sportmaster1.4.2；新增配置与实际验证见[心跳说明](rcs-heartbeat-01.md)。原发布包、历史版本和验收保持原身份；当前Parcel DB8不变。
+> 当前组件1.3.2、Contracts1.17.0、Sportmaster1.12.0、Parcel DB9。继承心跳、原请求和数值ID永久高水位；增加额度提示与保留维护。用户本轮明确Unknown先保留，未提供权威查询/处置合同，不自动重发；见[长稳指南](win11-24x7-stability-remediation-01.md)。
 
-> 2026-10-20操作裁决：[审查整改](sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
+> 历史2026-10-20裁决：[审查整改](sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
 
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
@@ -58,7 +58,7 @@ python3 scripts/configure-sportmaster-rcs.py \
 
 ## 兼容与验证边界
 
-公共契约1.8.0已引入纯数字范围描述；1.9.0另增加可省略Inputs观察快照；当前1.10.0增加商业维护契约，不改变RCS原请求语义。组件可按原binding解释配置范围；原1.7.0新增的可省略wire/HTTP/拆包字段保持原序列化。扩展精确指纹改变，旧包不重签。Parcel当前DB8，SQL1～7/hash原样继承；SQL8追加首配/恢复/配置绑定备份读者屏障；SQL7永久绑定数字ID→Operation/Request/hash、登记范围和恢复退役边界。普通DB2～6未结先用匹配发布清偿；窄custody CLI在原件/完整备份/权威Query门禁下显式8，旧API默认5。原Unknown/UnpackRequired及独立资料责任不能靠降级消除。
+公共契约1.8.0已引入纯数字范围描述；1.9.0另增加可省略Inputs观察快照；历史1.10.0增加商业维护契约，当前1.17.0追加可空HistoryDays保留参数，不改变RCS原请求语义。组件可按原binding解释配置范围；原1.7.0新增的可省略wire/HTTP/拆包字段保持原序列化。扩展精确指纹改变，旧包不重签。Parcel当前DB9，SQL1～8/hash原样继承；SQL9责任及维护按长稳指南；SQL8追加首配/恢复/配置绑定备份读者屏障；SQL7永久绑定数字ID→Operation/Request/hash、登记范围和恢复退役边界。普通DB2～6未结先用匹配发布清偿；窄custody CLI在原件/完整备份/权威Query门禁下显式9，旧API默认5。原Unknown/UnpackRequired及独立资料责任不能靠降级消除。
 
 运行定向验证：
 
@@ -71,6 +71,6 @@ python3 scripts/configure-sportmaster-rcs.py \
 
 编号范围按实际T1的持久高水位分配，入场序号只标识历史顺序；恢复退役及外部划分范围可能减少剩余可用编号，request-id-count不是吞吐承诺。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
 
-并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB8；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–6未结责任。原SQL1–5和历史发布指令按其固定版本保留。
+并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB9；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–6未结责任。原SQL1–5和历史发布指令按其固定版本保留。
 
 并发整合补充：请求数字ID在准备时必须高于本Application库原始T1（含归档）的已分配上界。重配低基值会在发送前阻断本件，WCS尝试为零；暂停、维护认证并检查实体后按原弃置/配置CAS流程处理。重启和备份恢复从原件重建上界，原Prepared/Unknown固定原ID/报文，不因基值变更重配。此约束不是跨站全局分配；现场仍须治理各站互不重叠的区间及服务端幂等合同。

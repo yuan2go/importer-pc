@@ -1,0 +1,14 @@
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
+static class FrozenDraftAccess
+{
+    static object Invoke(string method, ConfigurationPolicyDraft? instance, ParcelConfiguration configuration)
+    {
+        try { return typeof(ConfigurationPolicyDraft).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)!.Invoke(instance, [configuration])!; }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null) { ExceptionDispatchInfo.Capture(ex.InnerException).Throw(); throw; }
+    }
+    public static ConfigurationPolicyDraft From(ParcelConfiguration configuration) => (ConfigurationPolicyDraft)Invoke("From", null, configuration);
+    public static ParcelConfiguration ApplyParameters(this ConfigurationPolicyDraft draft, ParcelConfiguration configuration) => (ParcelConfiguration)Invoke("ApplyParameters", draft, configuration);
+}

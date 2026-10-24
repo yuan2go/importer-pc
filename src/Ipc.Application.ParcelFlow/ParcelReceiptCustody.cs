@@ -98,7 +98,7 @@ public sealed partial class ParcelRepository
     {
         // Caller holds the application owner and has created a full backup. No sources
         // are constructed here. Ordinary startup does not opt into this old-reader transition.
-        if (targetStorageVersion is not (5 or 6 or 7 or 8)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
+        if (targetStorageVersion is not (5 or 6 or 7 or 8 or 9)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         var file=Path.Combine(directory,application+".db");var version=ReadStorageVersion(file,application);
         using(var original=new ParcelRepository(directory,application,version))
         {
@@ -114,7 +114,10 @@ public sealed partial class ParcelRepository
 }
 public sealed partial class ParcelRuntime
 {
-    bool ConfigurationResponsibilitiesClear() => identityConflicts.Count == 0 && operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) &&
-        repository!.PendingReceipts().All(x=>repository.HasReceiptOutcomeBasis(x.Id));
+    bool ConfigurationResponsibilitiesClear()
+    {
+        return interruptedPositions.IsEmpty && ingressLanes.Values.All(l => l.Waiting.IsEmpty) && identityConflicts.Count == 0 &&
+            operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) && repository!.PendingReceipts().All(x=>repository.HasReceiptOutcomeBasis(x.Id));
+    }
     bool RequiresOriginalExecution(ParcelOperation op) => !IsSettled(op) && !repository!.CustodyOnly(op,Id);
 }

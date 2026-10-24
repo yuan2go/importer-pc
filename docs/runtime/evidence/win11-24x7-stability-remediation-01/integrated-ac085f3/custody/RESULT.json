@@ -1,0 +1,78 @@
+{
+  "SourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+  "Started": "2026-10-24T09:33:32.0079352Z",
+  "Ended": "2026-10-24T09:33:41.1516152Z",
+  "ExitCode": 0,
+  "Scope": "Pinned synthetic custody/retention fixtures referencing frozen published DLLs; no production devices",
+  "Binaries": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "90DE3B7CCA0C7062145CD69093A932BE4186F4B314D638D49A1286B80EDEE8AE"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "5CFDD04FC0BB06082512EF45D5C16B8745535CDB949F6E3EDE0BCF02C603A410"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "E539CC4EB9498CF8F22CAEA4FE840BF9D443FB18C82D6D5AEAEDFC48206C0167"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "CAA7861A812C07D638EAA57A665997F269CFEB4DA571936994C5976C76598D13"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "852E03409BFA5945375AC8CF83FEDF77FD01B9BFA3A30185F7F8D3E9C1B1178B"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "591B22096798A7790C092BB5E8040840825E333239707B50112A506AC4FC5C8D"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "E94E8E63C3B57CADBE934F7C576882127C2E9F2554D44B6F85D90645E793EE72"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "D5768C3F3ECBD646DB1930F0344A792A06CEBCF4C86A4165DB24DAB866A8DA6C"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "D54AFF14608ED23F91451D66E325397F10E4196932AD4FBBB0D18046E5BAAFC1"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "8396712FC05BEFA8346FFCFDF6D488B77D06F15EE3B88B1CD88EDB4AF3F90517"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "705F25A07021812FB000D93190A991B9361AC0C9ACB7ECC8271B8BC1B391DC50"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "35D119A4F6A4046F3DADE31D833BDC4C53E1BAA8427131DDD535DB2A773F57F1"
+    },
+    {
+      "File": "Microsoft.Data.Sqlite.dll",
+      "Sha256": "9F1FE804321767B6CC8DB751ECEDD56AB308E5F15492A7F40D7093BB61AB7638"
+    },
+    {
+      "File": "SQLitePCLRaw.batteries_v2.dll",
+      "Sha256": "29C9CF3060789066682BA5FBF81DEA584563E6AB60B5D9861C73BA8B29ED1142"
+    },
+    {
+      "File": "SQLitePCLRaw.core.dll",
+      "Sha256": "E60E22452BA79C306A59ECC01A97C29BAFE69D9FA612F40253852ED450AD27E8"
+    },
+    {
+      "File": "SQLitePCLRaw.provider.e_sqlite3.dll",
+      "Sha256": "82238D46BCA0CA8B2D57C3EC6FD6F0BCBD7A2DC2F7343A5377E0469112DBA474"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "6FD43FA9D21AC7138005EBDD1ACE2F0CB6C27A5006C1BCB3D80F99420930A572"
+    }
+  ],
+  "FixtureAccessAdaptation": "Pinned fixture retains all assertions; internal UI From/ApplyParameters invoked reflectively against published DLL, preserving original exception. No production changes."
+}

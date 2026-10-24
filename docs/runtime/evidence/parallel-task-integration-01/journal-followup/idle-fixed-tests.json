@@ -1,0 +1,26 @@
+[
+  {
+    "Selector": "win11-stability",
+    "ExitCode": 0,
+    "Seconds": 7.3473151,
+    "Source": "d4e42c3 plus committed-followup RuntimeJournal idle maintenance and test"
+  },
+  {
+    "Selector": "resource-risks",
+    "ExitCode": 0,
+    "Seconds": 2.8662588,
+    "Source": "d4e42c3 plus committed-followup RuntimeJournal idle maintenance and test"
+  },
+  {
+    "Selector": "architecture-quality-remediation",
+    "ExitCode": 0,
+    "Seconds": 29.4516131,
+    "Source": "d4e42c3 plus committed-followup RuntimeJournal idle maintenance and test"
+  },
+  {
+    "Selector": "dual-camera-communication",
+    "ExitCode": 0,
+    "Seconds": 8.7130975,
+    "Source": "d4e42c3 plus committed-followup RuntimeJournal idle maintenance and test"
+  }
+]

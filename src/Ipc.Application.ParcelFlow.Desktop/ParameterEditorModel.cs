@@ -58,6 +58,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
         else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
+        else if (message.Contains("HistoryDays", StringComparison.Ordinal)) Issues.Add(new("系统", "HistoryDays", message));
         else if (message.Contains("WeightRange", StringComparison.Ordinal)) Issues.Add(new("业务模块", WeightRangeField(message), message));
         else if (message.Contains("StationCode", StringComparison.Ordinal) || message.Contains("station code", StringComparison.OrdinalIgnoreCase)) Issues.Add(new("系统", "StationCode", message));
         else
@@ -86,6 +87,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
         Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
+        if (Policy.HistoryDays.Length > 0) Number(nameof(Policy.HistoryDays), Policy.HistoryDays, 7, 30);
         if (Policy.WeightRangeEnabled)
             try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)

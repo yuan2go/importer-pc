@@ -1,0 +1,12 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-954667dc28a3409c810f8ec333690880
+PASS UX-PRESENTATION: reference observation A enters left position
+PASS UX-PRESENTATION: independent reference observation B follows A
+Unhandled exception. System.InvalidOperationException: Unexpected presentation service ManagementModeStatusAsync
+   at UxPresentationProbe.Invoke(MethodInfo method, Object[] args) in D:\projects\importer-pc\tests\Ipc.Application.Verification\UxCommercialPresentation.cs:line 245
+   at generatedProxy_1.ManagementModeStatusAsync()
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.RefreshManagementModeAsync() in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow.Desktop\ManagementModePresentation.cs:line 18
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.RefreshAsync() in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow.Desktop\ParcelViewModel.cs:line 141
+   at UxCommercialPresentation.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\UxCommercialPresentation.cs:line 38
+   at UxCommercialPresentation.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\UxCommercialPresentation.cs:line 67
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\tests\Ipc.Application.Verification\Program.cs:line 29
+   at Program.<Main>(String[] args)

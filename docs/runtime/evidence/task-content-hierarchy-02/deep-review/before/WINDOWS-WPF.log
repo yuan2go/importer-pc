@@ -1,0 +1,20 @@
+PASS CHAIN observation queued: left/entity-l1
+PASS CHAIN observation queued: right/entity-r1
+PASS CHAIN same barcode has independent entities, operations and frozen requests
+PASS CHAIN raw response fields retain leading zeros; response quantity is not request quantity 1
+PASS CHAIN left acquisition/operation/frozen wire/raw HTTP receipt have one owner and one attempt, no physical-completion claim
+PASS CHAIN right acquisition/operation/frozen wire/raw HTTP receipt have one owner and one attempt, no physical-completion claim
+CAPTURE chain-same-code-normal-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS CHAIN observation queued: left/entity-l-invalid
+CAPTURE chain-invalid-after-slot-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN invalid-after-slot-800 result and barcode agree with independent scenario
+PASS CHAIN invalid-after-slot-800 barcode and next action fit the actual position viewport
+PASS CHAIN invalid-after-slot-800 original detail action remains reachable
+PASS CHAIN invalid new entity creates no operation/POST, cannot borrow old destination, right remains unchanged
+PASS CHAIN completed original request remains in history, not in the rejected new input's disabled detail action
+FAIL System.InvalidOperationException: rejected input directs the operator to reachable history and explains filtering in Chinese
+   at Program.<>c__DisplayClass32_0.<VerifyHierarchyChain>g__Check|0(Boolean ok, String reason) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\TaskHierarchyChain.cs:line 27
+   at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive)
+   at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\TaskHierarchyChain.cs:line 173
+   at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\TaskHierarchyChain.cs:line 173
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

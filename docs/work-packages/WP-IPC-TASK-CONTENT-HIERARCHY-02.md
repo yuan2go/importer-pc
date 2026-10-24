@@ -19,6 +19,8 @@
 
 ## 上一轮记录（历史来源）
 
+本轮实施结论及复现见[深度复核证据表](../runtime/evidence/task-content-hierarchy-02/deep-review/README.md)。在 `cf2ab07` 修正无效新输入指向禁用详情的提示及关键内部原因的中文映射；布局、四类参数、两类编码、查询快照与命令归属机制经核对后保留。RCS的taskId/skuId为接受所需字段，waveNo/quantity才是允许缺省的新增回包字段；旧“有效回执任意字段缺省”的概述不再适用。软件收口与现场验证分开，无代表性操作员证据，不宣称判断效率或现场可用性已改善。
+
 2026-10-24 开工基线 `c91559f6`（执行时origin/main），PR93～96已合并，无开放PR。分支 `codex/task-content-hierarchy-02`；四个本地原稿/ZIP不提交。
 
 ## 编码前现状裁决

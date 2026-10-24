@@ -1,4 +1,4 @@
-> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。基于main c91559f6，保留PR93～96成果。01页面层级和CI记录保持原身份，默认位布局、跨页反馈和异常夹具由02增量替代。
+> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。2026-10-24续做PR97并整合main c5ac51d；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)补充真实Application/原回包链、无效输入指引与原生键鼠。01及02上一轮的原图/CI保留原身份，不代表本轮现场或使用者验收。
 
 > 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
 

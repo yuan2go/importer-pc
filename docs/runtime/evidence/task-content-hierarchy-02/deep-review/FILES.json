@@ -3,9 +3,9 @@
   "files": [
     {
       "path": "README.md",
-      "sha256": "60c50e83a4f0643d3fcddba3e4175406c78726568cd388870a3c8bcd4bdb593b",
-      "size_bytes": 10766,
-      "git_blob": "9ad1d9abbda81bc155a15aa6708e0b6b7c51b5f5"
+      "sha256": "959d324ca061eb4df081532bd827cfb6d4a1a0cf5b266d2f3bd3124602301b4b",
+      "size_bytes": 11635,
+      "git_blob": "c0b3fb3e9cfbca0bfbf7509c8ac2611d82754806"
     },
     {
       "path": "RESULT.json",
@@ -168,6 +168,18 @@
       "sha256": "c3cc5d12794682f45c5c46b34c0304fdd22144c4b210e70e9e03f5600e0dd5d2",
       "size_bytes": 57939,
       "git_blob": "be84c792153e522be9af8e036a5bcf2a6999154f"
+    },
+    {
+      "path": "ci-fixture-chain.log",
+      "sha256": "7e354be59a57cd76def2dcb6f6ae09fd1b26c05e39c45de44bbcc4a171524fb1",
+      "size_bytes": 4814,
+      "git_blob": "c130e505b1ae13c6311e606792fc54d263aa3e05"
+    },
+    {
+      "path": "ci112-machine-policy-failure.log",
+      "sha256": "309836ba43fab55381f05161e4246085881eab6d3603c58088b0fa4b70d0f606",
+      "size_bytes": 5567,
+      "git_blob": "c3e04d8bfa39e46be4030238560e42d3b138c8f6"
     },
     {
       "path": "final-build.log",

@@ -70246,9 +70246,9 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
       "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
-      "sha256": "755a88bca98b854b45afebd22edf675381704b38d191fd067e6e610f62ad63bc",
-      "size_bytes": 10113,
-      "git_blob": "c55294652214ac4c96224c9efd634f2aa9f0f608"
+      "sha256": "8bf22db77d6f43fe0b84cbcce14fed57482fcaf653feb85c11a318cb680a4e3e",
+      "size_bytes": 10581,
+      "git_blob": "9704ee910ff7a8221cd2a0aa097750677b387a96"
     },
     {
       "path": "docs/runtime/evidence/task-content-hierarchy-02/deep-review/README.md",
@@ -70257,9 +70257,9 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
       "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
-      "sha256": "60c50e83a4f0643d3fcddba3e4175406c78726568cd388870a3c8bcd4bdb593b",
-      "size_bytes": 10766,
-      "git_blob": "9ad1d9abbda81bc155a15aa6708e0b6b7c51b5f5"
+      "sha256": "959d324ca061eb4df081532bd827cfb6d4a1a0cf5b266d2f3bd3124602301b4b",
+      "size_bytes": 11635,
+      "git_blob": "c0b3fb3e9cfbca0bfbf7509c8ac2611d82754806"
     },
     {
       "path": "docs/runtime/evidence/task-content-hierarchy-02/deep-review/RESULT.json",
@@ -70752,9 +70752,9 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
       "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
-      "sha256": "22a72fdaca315e4414959492bc2779ac5d8f39e8c83a9b267817a21f5b2cecfc",
-      "size_bytes": 24385,
-      "git_blob": "f40d9af7503c1fa44fbb6daa811e838214025c13"
+      "sha256": "340df4190fdad8b077bc50e01bfd46ee38f409069ab6a99004a81de24214503f",
+      "size_bytes": 25532,
+      "git_blob": "c4894bf8c89f54cdc7cbcee333b80600e5d0d0f6"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyParameters.cs",
@@ -70766,6 +70766,28 @@
       "sha256": "f30d40e937752f4f19c616afa914ba40de6f78b49579c6fe60703495c325b325",
       "size_bytes": 5007,
       "git_blob": "8fff62be15e86079e591897ec10f21870a3055f3"
+    },
+    {
+      "path": "docs/runtime/evidence/task-content-hierarchy-02/deep-review/ci-fixture-chain.log",
+      "storage_scope": "public_repository",
+      "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
+      "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
+      "sha256": "7e354be59a57cd76def2dcb6f6ae09fd1b26c05e39c45de44bbcc4a171524fb1",
+      "size_bytes": 4814,
+      "git_blob": "c130e505b1ae13c6311e606792fc54d263aa3e05"
+    },
+    {
+      "path": "docs/runtime/evidence/task-content-hierarchy-02/deep-review/ci112-machine-policy-failure.log",
+      "storage_scope": "public_repository",
+      "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
+      "status": "current_source_or_separately_scoped_evidence",
+      "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
+      "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
+      "sha256": "309836ba43fab55381f05161e4246085881eab6d3603c58088b0fa4b70d0f606",
+      "size_bytes": 5567,
+      "git_blob": "c3e04d8bfa39e46be4030238560e42d3b138c8f6"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

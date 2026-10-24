@@ -40,6 +40,8 @@
 
 ## 复现与停止范围
 
+CI run112（PR head `9d49983`，实际合并源码 `389d4b7`）在新任务链启动时失败：[原始失败节选](ci112-machine-policy-failure.log)。原生首配、参数壳和原任务层级断言已执行通过；新夹具错误调用生产能力工厂，依赖本机已有的受保护机器租约策略，干净CI拒绝启动。此失败不改写上面的本机PASS，但推翻了旧夹具可在未部署机器独立复现的假设。修正仅在测试工厂：沿用既有SyntheticFactory的manual/登录端口构造边界，显式限制Simulation、manual与loopback，直接实例化原RCS适配器并注入真实Application；仍调用生产配置校验，保留全部47项链路断言。未安装机器策略、修改生产租约检查或拼接快照。最终冻结介质CI状态以PR97当前源码检查为准；旧RESULT及图保留各自源码身份。
+
 ```powershell
 . ./scripts/project-environment.ps1
 dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=true -m:1 -nr:false

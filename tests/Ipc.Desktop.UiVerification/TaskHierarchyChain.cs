@@ -13,7 +13,9 @@ using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
 using Ipc.Application.Sportmaster.Desktop;
+using Ipc.Adapters;
 using Ipc.Assembly;
+using Ipc.Components;
 using Ipc.Integrations.SportmasterRcs;
 using Ipc.Platform;
 
@@ -199,8 +201,18 @@ public sealed class HierarchyRcsFactory(BusinessLaunch launch) : IParcelCapabili
     public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
     public ParcelPorts Create(ParcelConfiguration c)
     {
-        var ports = inner.Create(c);
-        return ports with { Wcs = new InvalidIdentityReceipt(ports.Wcs!) };
+        // Match the existing native SyntheticFactory boundary: real Application
+        // and RCS adapter, isolated manual inputs, no machine provisioning or
+        // production device leases. The production factory still validates c.
+        if (c.Mode != RunMode.Simulation || ParcelBindings.Readers(c).Any(r => r.Driver != "manual") ||
+            c.Wcs is not { Implementation: "sportmaster-rcs", Package: null } ||
+            !Uri.TryCreate(c.Wcs.Target, UriKind.Absolute, out var endpoint) || !endpoint.IsLoopback)
+            throw new InvalidOperationException("Hierarchy fixture requires simulation/manual readers and loopback RCS");
+        var readers = ParcelBindings.Readers(c).ToDictionary(r => r.DeviceId, r => (IControlledObservationSource)new ManualObservationSource(r.DeviceId));
+        var rcs = new SportmasterRcsTaskService(c.Wcs); rcs.ConfigureRuntime(c);
+        return new(readers[c.Reader.DeviceId], null, new InvalidIdentityReceipt(rcs), null,
+            new Dictionary<string, string> { [rcs.InstanceId] = Wire.FileHash(typeof(SportmasterRcsTaskService).Assembly.Location) },
+            Login: c.Login is null ? null : new ReferenceOperatorAuthenticator(c.Login), Readers: readers);
     }
     public ValueTask DisposeAsync() => inner.DisposeAsync();
     sealed class InvalidIdentityReceipt(IWcsPort inner) : IWcsPort, IWcsRequestPreparer, IWcsRuntimeConfiguration

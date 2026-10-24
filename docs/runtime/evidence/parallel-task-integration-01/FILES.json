@@ -1,0 +1,502 @@
+[
+  {
+    "path": "464e8e2-tests.json",
+    "sha256": "35eae6efec835875e7d3b3bbb64ddc6cfe94ed78185026bbea6d0bbff9cc41d6",
+    "bytes": 507
+  },
+  {
+    "path": "accepted-native-ManagementMode/logs-compact-filters-after-query.png",
+    "sha256": "05b31a7f2961c6c482ee585a0237f0b9992ac1daf48e7b510c16862c2f780abb",
+    "bytes": 52847
+  },
+  {
+    "path": "accepted-native-ManagementMode/management-log-context-800.png",
+    "sha256": "ef39498e1627cde6df52da450848c6298b07112c50193936664b2def5593fd51",
+    "bytes": 76914
+  },
+  {
+    "path": "accepted-native-ManagementMode/RESULT.json",
+    "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+    "bytes": 3287
+  },
+  {
+    "path": "accepted-native-ManagementMode/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "accepted-native-ManagementMode/WINDOWS-WPF.log",
+    "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+    "bytes": 5736
+  },
+  {
+    "path": "accepted-native-results.json",
+    "sha256": "6496aaa0818459718b6ebf6c14379b3c741e6d17168ea982c5a91dc63dc5c61e",
+    "bytes": 474
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/chain-invalid-after-slot-800.png",
+    "sha256": "3ed46e8701624994847dafc09adff7fbead8d98fd673993a88b52f1bce77e4a2",
+    "bytes": 93309
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/chain-late-pause-history-800.json",
+    "sha256": "6d5e9bb8e68a7f5c7e01c61d164da2dcb01ec87ab93a9440187a13d110603391",
+    "bytes": 56102
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/chain-late-pause-history-800.png",
+    "sha256": "c1d2974201b9d3759a319dc4fdceecd8b4516bc60e98c78641f37a0a1915a949",
+    "bytes": 90051
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/RESULT.json",
+    "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+    "bytes": 3287
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/typography-font-resolution.png",
+    "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+    "bytes": 49052
+  },
+  {
+    "path": "accepted-native-TaskHierarchy/WINDOWS-WPF.log",
+    "sha256": "a4aa40f3457f964fd0e23b2fe2610738f1ad802bcfa5ee1377e6890d2443e59b",
+    "bytes": 24728
+  },
+  {
+    "path": "accepted-native-Win11Stability/native-history-retention.png",
+    "sha256": "0c8361cfc541a63eddbd91fb80600c09754692981ec9c3548fb7b898c59d755d",
+    "bytes": 127553
+  },
+  {
+    "path": "accepted-native-Win11Stability/native-input-recovery.png",
+    "sha256": "180d73dcc57f948a7a8d5667778a640880a16d223f1e18852f68b2c63c2baf2e",
+    "bytes": 143697
+  },
+  {
+    "path": "accepted-native-Win11Stability/RESULT.json",
+    "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+    "bytes": 3287
+  },
+  {
+    "path": "accepted-native-Win11Stability/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "accepted-native-Win11Stability/WINDOWS-WPF.log",
+    "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+    "bytes": 1006
+  },
+  {
+    "path": "build-application.log",
+    "sha256": "48ebee1605960d2cd38b67c8fa67906bcc0d7f33e766b94188117570257a40f5",
+    "bytes": 4213
+  },
+  {
+    "path": "dual-camera-communication.log",
+    "sha256": "e7c88d2d6eb676ff7a73a98c453000965bfda588e7f81bce5e7919fe956ddbcf",
+    "bytes": 6730
+  },
+  {
+    "path": "environment-b2b2f0f.json",
+    "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+    "bytes": 731
+  },
+  {
+    "path": "environment-query-fixed.json",
+    "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+    "bytes": 731
+  },
+  {
+    "path": "environment.json",
+    "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+    "bytes": 731
+  },
+  {
+    "path": "final-hikrobot-frozen.log",
+    "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+    "bytes": 2902
+  },
+  {
+    "path": "final-hikrobot-managed.log",
+    "sha256": "4a1282756b85a9b0f8a4ffb717bd1f96ac14141ba257727ffc7c1c13c3c54c6f",
+    "bytes": 596
+  },
+  {
+    "path": "final-native-ManagementMode/logs-compact-filters-after-query.png",
+    "sha256": "71a1bbab3ca45b888bc9a07b00a562fd3b1623f4d26485426c30fe625e809b16",
+    "bytes": 52465
+  },
+  {
+    "path": "final-native-ManagementMode/management-log-context-800.png",
+    "sha256": "b0ec2c6e5b4998f32712fb5146f3e9f689be7b47f91cb49ec7270ddcea0138b6",
+    "bytes": 77185
+  },
+  {
+    "path": "final-native-ManagementMode/RESULT.json",
+    "sha256": "d5aae73ee6dc6cd0c4491cee5625c6c5a85f1ac1cd61ac6e0a7046bda37075b4",
+    "bytes": 3287
+  },
+  {
+    "path": "final-native-ManagementMode/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "final-native-ManagementMode/WINDOWS-WPF.log",
+    "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+    "bytes": 5736
+  },
+  {
+    "path": "final-native-results.json",
+    "sha256": "5154ac5a3b91bda0afbf1b5a7c1218ed034594619fda2449a0d6d55d75b47285",
+    "bytes": 473
+  },
+  {
+    "path": "final-native-TaskHierarchy/chain-invalid-after-slot-800.png",
+    "sha256": "6662a4e9dfc630cd1c1a5725bdc6947196c46741264bed57148c3e0a1999f295",
+    "bytes": 93352
+  },
+  {
+    "path": "final-native-TaskHierarchy/chain-late-pause-history-800.json",
+    "sha256": "066a9a075f608596e036cb5aa62cb7fc54e6d38df16c419f5b0581e3052fc1f9",
+    "bytes": 56101
+  },
+  {
+    "path": "final-native-TaskHierarchy/chain-late-pause-history-800.png",
+    "sha256": "1e64d681fa64e412ec08cd3e2665ac006b56629f869d830dcd6aa550bad4d468",
+    "bytes": 89628
+  },
+  {
+    "path": "final-native-TaskHierarchy/RESULT.json",
+    "sha256": "3cc99ec564107578b33b70e2ccfeb9a656d45647d64e10ebece445aecd95f360",
+    "bytes": 3287
+  },
+  {
+    "path": "final-native-TaskHierarchy/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "final-native-TaskHierarchy/typography-font-resolution.png",
+    "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+    "bytes": 49052
+  },
+  {
+    "path": "final-native-TaskHierarchy/WINDOWS-WPF.log",
+    "sha256": "cbddaef89b86bca959defcbf2475e8848bc3006dee6ce982dae9864dbc78ef42",
+    "bytes": 25260
+  },
+  {
+    "path": "final-native-Win11Stability/native-history-retention.png",
+    "sha256": "0d02a8b1bf29e07d016e90101ddddce5d9874f8f84ae479f46e8ffa34a9e8a66",
+    "bytes": 126223
+  },
+  {
+    "path": "final-native-Win11Stability/native-input-recovery.png",
+    "sha256": "4a53ae84c5586a3be2c073a7e0fc26ae9c130b35055b5eddcffa5d0b8b8be029",
+    "bytes": 143223
+  },
+  {
+    "path": "final-native-Win11Stability/RESULT.json",
+    "sha256": "d5aae73ee6dc6cd0c4491cee5625c6c5a85f1ac1cd61ac6e0a7046bda37075b4",
+    "bytes": 3287
+  },
+  {
+    "path": "final-native-Win11Stability/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "final-native-Win11Stability/WINDOWS-WPF.log",
+    "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+    "bytes": 1006
+  },
+  {
+    "path": "hikrobot-b2b2f0f.log",
+    "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+    "bytes": 2902
+  },
+  {
+    "path": "hikrobot-query-fixed.log",
+    "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+    "bytes": 2902
+  },
+  {
+    "path": "local-tests.json",
+    "sha256": "30424407900177fb8d4be998c59b9844e143800d0da75d5eb3c88ee553d3dbb6",
+    "bytes": 1777
+  },
+  {
+    "path": "native-dpi-diagnosis/RESULT.json",
+    "sha256": "9b6d1c5bc50a92cb21feba9f6c3216c8a3d18cc50f722dcd7799fa8274e0cc31",
+    "bytes": 3288
+  },
+  {
+    "path": "native-dpi-diagnosis/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "native-dpi-diagnosis/WINDOWS-WPF.log",
+    "sha256": "62ba8b46fbe7c210930a1aae90726379d44c456b786301ab379f6b5e6404dcdb",
+    "bytes": 25286
+  },
+  {
+    "path": "native-ManagementMode/RESULT.json",
+    "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+    "bytes": 3287
+  },
+  {
+    "path": "native-ManagementMode/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "native-ManagementMode/WINDOWS-WPF.log",
+    "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+    "bytes": 5736
+  },
+  {
+    "path": "native-query-before-fix/chain-late-pause-history-800.png",
+    "sha256": "15aa22d0e4c786a8bdc0865f555530687ecea6a59e47105a2ea39434e7afa69b",
+    "bytes": 87226
+  },
+  {
+    "path": "native-query-before-fix/RESULT.json",
+    "sha256": "9f7a1cda62441e119af567e709844004437faecaa9a14bb3ea27ac5675b412b0",
+    "bytes": 3288
+  },
+  {
+    "path": "native-query-before-fix/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "native-query-before-fix/WINDOWS-WPF.log",
+    "sha256": "dd70e6e3e7f881001835ab568c4de3c5af001869ceb851b06849af056a7b22ed",
+    "bytes": 25245
+  },
+  {
+    "path": "native-results.json",
+    "sha256": "4f38cc11fefcf583a2d31bd4c4a05faa11b633f1f280d9d9a8ea56c9c9313817",
+    "bytes": 474
+  },
+  {
+    "path": "native-TaskHierarchy/chain-invalid-after-slot-800.json",
+    "sha256": "4159b7dac324a563c3a7693f4fa5ad54eaed7a85964e88cac021afad32608592",
+    "bytes": 17551
+  },
+  {
+    "path": "native-TaskHierarchy/chain-invalid-after-slot-800.png",
+    "sha256": "a8bd3c78bda4345148130503fab5b5ae49b8c09095c244dd81f80205a2a22b47",
+    "bytes": 93177
+  },
+  {
+    "path": "native-TaskHierarchy/chain-late-pause-history-800.json",
+    "sha256": "f2e1b369bc8ce0cf16b20a9caae5fdc2de3e2be493c785cfb36ae44d69b9ef9a",
+    "bytes": 56098
+  },
+  {
+    "path": "native-TaskHierarchy/chain-late-pause-history-800.png",
+    "sha256": "458bcf0cc614c18181b41debc39cac454ec7b62992c56e21fa3ac5a8a8d1e3c8",
+    "bytes": 87932
+  },
+  {
+    "path": "native-TaskHierarchy/chain-same-code-normal-1366.png",
+    "sha256": "8b312720b06852af9c92c12e4c2b3ea719bb90bd127cac211a8e405bdce0e3f4",
+    "bytes": 112873
+  },
+  {
+    "path": "native-TaskHierarchy/RESULT.json",
+    "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+    "bytes": 3287
+  },
+  {
+    "path": "native-TaskHierarchy/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "native-TaskHierarchy/typography-font-resolution.png",
+    "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+    "bytes": 49052
+  },
+  {
+    "path": "native-TaskHierarchy/WINDOWS-WPF.log",
+    "sha256": "e414e1808f866a5a56081faf025d29f2966ecc280e7522642b801bb476dfd7e9",
+    "bytes": 24550
+  },
+  {
+    "path": "native-Win11Stability/native-history-retention.png",
+    "sha256": "ef99f70f8ec4d3a41ab07f37742dfb52d2486451e99c7246b72594bd7a55439e",
+    "bytes": 126886
+  },
+  {
+    "path": "native-Win11Stability/native-input-recovery.png",
+    "sha256": "d3d30572f5f8b81ddc45ed0a6992d43fa5740ab4bd0210017e5f465ad0bd18c6",
+    "bytes": 143020
+  },
+  {
+    "path": "native-Win11Stability/RESULT.json",
+    "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+    "bytes": 3287
+  },
+  {
+    "path": "native-Win11Stability/RUN.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "native-Win11Stability/WINDOWS-WPF.log",
+    "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+    "bytes": 1006
+  },
+  {
+    "path": "python-compatibility.log",
+    "sha256": "85a66d4a68230779a8dd6a27618afb933e2b42cf9275e85d4157fd4082238c21",
+    "bytes": 3138
+  },
+  {
+    "path": "python-documents.log",
+    "sha256": "c9f24b15f0b2c9cb069ff0b141d9b1e29ab80c61b4e7bce31f707afdf0900ae3",
+    "bytes": 427
+  },
+  {
+    "path": "python-stability.log",
+    "sha256": "0b101e27d90ec7c5b1711892cf7611aff0a7ee204a968fbfa75421ac01fe4c4f",
+    "bytes": 950
+  },
+  {
+    "path": "race-before-fix.log",
+    "sha256": "8a37255c526d8186045ba22a4539e186058682f324aa35123d43051789a7f029",
+    "bytes": 6288
+  },
+  {
+    "path": "race-fixed-build.log",
+    "sha256": "2e3092b3881eb7dde84950d0cb916a0d1717fc0b828545ef27f87b20437e45bd",
+    "bytes": 2207
+  },
+  {
+    "path": "race-fixed-dual-camera.log",
+    "sha256": "d2407e01e0e18c9cddf931d50c6db5233b23945fa61a57cea60ad6f31f596247",
+    "bytes": 6548
+  },
+  {
+    "path": "README.md",
+    "sha256": "6b8f723605a872ab17dc5c07199f6a395068de2623482e5cb4b3c5d0f622bb82",
+    "bytes": 4700
+  },
+  {
+    "path": "release-b2b2f0f/RELEASE.json",
+    "sha256": "94d372b63988e06d792df7fa5430c1cb771a3075a14dc847e0979f7397412f69",
+    "bytes": 25223
+  },
+  {
+    "path": "release-b2b2f0f/SHA256SUMS",
+    "sha256": "a5aedbcbba2434789579955b94c2c662afbcd60d50c1a0d75a81111c426ffe93",
+    "bytes": 577
+  },
+  {
+    "path": "release-final/RELEASE.json",
+    "sha256": "1c5bdcf215a55bb77705ca91b8925773d5b90aef8c588f5dc92d2b438966bc13",
+    "bytes": 25217
+  },
+  {
+    "path": "release-final/SHA256SUMS",
+    "sha256": "6d5ff9cf5f40fd618cec776c8d40ffd1341c9fee16c78fa64a707a8180bbc21b",
+    "bytes": 577
+  },
+  {
+    "path": "release-query-fixed/RELEASE.json",
+    "sha256": "363dcdad0e2e67df8c74508565e7cfc5baeee33c478f359395da714b972b5823",
+    "bytes": 25235
+  },
+  {
+    "path": "release-query-fixed/SHA256SUMS",
+    "sha256": "6d07cd80a0dfb3f37ea2cbbf583a17698dd04139ff1241c61ed591dc4348952e",
+    "bytes": 577
+  },
+  {
+    "path": "remote-start.jsonl",
+    "sha256": "3a9626f557483ce20976dc86637039437dd37a781f1863bb4a475fa2629c074d",
+    "bytes": 20927
+  },
+  {
+    "path": "RESULT.json",
+    "sha256": "578046f28b5767141448aeafe7fcabc4a2b9de3ceaed96905e9b0b0d13e9dbea",
+    "bytes": 1164
+  },
+  {
+    "path": "retention-final-build.log",
+    "sha256": "9003f4006b32c429c6036432eb1a084d6a3edbf19abba931355cfb9c9c090c84",
+    "bytes": 2207
+  },
+  {
+    "path": "retention-final.log",
+    "sha256": "886245a43fedfb2f63f1f18d384bf767552de398cbbd2e1e206e6fee8b8dc038",
+    "bytes": 4027
+  },
+  {
+    "path": "retention-plan/new.sql",
+    "sha256": "29e4a99558024f735342e3b1a8c7983f37b7f8a9dcb43e3995f6fc3dd367ce60",
+    "bytes": 766
+  },
+  {
+    "path": "retention-plan/old.sql",
+    "sha256": "131e962a40871147d47afd69cfdf7cfac4d8e5e1baafacf52ad9314e807e4fe2",
+    "bytes": 953
+  },
+  {
+    "path": "retention-plan/prepare.sql",
+    "sha256": "250be14bf273a5abc4d8ef39ca351afbe602c1bc2a4cb87f976f673bcdc38580",
+    "bytes": 590
+  },
+  {
+    "path": "retention-plan/Program.cs",
+    "sha256": "6a6cd3e2e2c7ce7c2c697e6d38532c5f6c9c7179a29075a504c096a9a578ba0e",
+    "bytes": 2092
+  },
+  {
+    "path": "retention-plan/RESULT.json",
+    "sha256": "c614c0ff1bec8ec808f97561db8dabb130977b7e225a94f3d759d4b3a2a1663b",
+    "bytes": 3258
+  },
+  {
+    "path": "retention-plan/schema.sql",
+    "sha256": "db0bb1cf696ea569ed06618f7351848b5fd84cda92dd30159004753cefa23bc0",
+    "bytes": 15018
+  },
+  {
+    "path": "retention-plan.py",
+    "sha256": "a9bcacd714c07f1ddc39c11b9945326057b4e5a2aae6fcd60b89e170f43fef7d",
+    "bytes": 3706
+  },
+  {
+    "path": "semantic-checks.json",
+    "sha256": "4da95f49b2246b9e8325a0a304bd80e41a895b174886f045d84ac748117b9943",
+    "bytes": 1247
+  },
+  {
+    "path": "smoke-b2b2f0f.json",
+    "sha256": "fae621b603007cdeaaab14f5357193655f0ab93b5cae2b1f58ef572ef44b29a9",
+    "bytes": 174
+  },
+  {
+    "path": "smoke-query-fixed.json",
+    "sha256": "154f1b88d8e674d2029b6d0270a799e1c27bff09b06c39bcdbdcac6d19ec42c2",
+    "bytes": 174
+  },
+  {
+    "path": "smoke.json",
+    "sha256": "51ca5ab6640e6f6f70afacc65d01d4ba943d8c8941d62b677a2ce6e1fa3e78c8",
+    "bytes": 212
+  }
+]

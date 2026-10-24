@@ -1692,31 +1692,47 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "58c84e6a49c45c4b9d8f6c0892a9829497a250c18a9e00675b456c9b5bd6c926",
-      "size_bytes": 7188,
-      "git_blob": "7cc3726a7974ab4060f3d828410e68a82f5bb51b",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
+      "sha256": "493c251b0301978bda3707d7dfb1b46f601402e28c8ae50742024297c82be087",
+      "size_bytes": 7388,
+      "git_blob": "4c19db2baa725a45a640196d4e0c49fd18861601",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
       "pre_windows_no_test_release_git_blob": "df7184653b0db09e6b19350dc7d89571e852b4da",
       "pre_publication_pr57_pr58_git_blob": "ac73f6a6599d857fc50b3abecef3502fe724d039",
-      "pre_installer_info_publication_git_blob": "523623cf869d118c163efd97f7423142387511e7"
+      "pre_installer_info_publication_git_blob": "523623cf869d118c163efd97f7423142387511e7",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "7cc3726a7974ab4060f3d828410e68a82f5bb51b",
+        "sha256": "58c84e6a49c45c4b9d8f6c0892a9829497a250c18a9e00675b456c9b5bd6c926",
+        "size_bytes": 7188,
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      }
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "dfd3d80122026b803e10313dce57f7d24cde22ecf234b8ee5e965545a63e4998",
-      "size_bytes": 12236,
-      "git_blob": "5abbdd1638ab51993439e96d3dcee73f9bbc27bf",
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
+      "sha256": "3533bf225a30fb53a6aa6ccbf5a9a08f13b0bdd80631c59d89e2e540e8d65150",
+      "size_bytes": 12587,
+      "git_blob": "6baf7def39fb271c7272e4eff4106e446e4f9c42",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "previous_git_blob_before_visual_main_closure_01": "afa35ec61e535f14e45b6ad7691796c5d98b3148"
+      "previous_git_blob_before_visual_main_closure_01": "afa35ec61e535f14e45b6ad7691796c5d98b3148",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "5abbdd1638ab51993439e96d3dcee73f9bbc27bf",
+        "sha256": "dfd3d80122026b803e10313dce57f7d24cde22ecf234b8ee5e965545a63e4998",
+        "size_bytes": 12236,
+        "version": "MANAGEMENT-MODE-01",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately"
+      }
     },
     {
       "path": ".github/workflows/unified-windows-release.yml",
@@ -2052,13 +2068,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5a02aa09aec51985e6a1747f049078e9f574f9bbec15b95cf422af8b2be93d8c",
-      "size_bytes": 10649,
-      "git_blob": "44da602ad617f0bd5fb13f7a8996c2c7577db85f",
-      "version": "typography-01-controlled-review",
-      "status": "current_source_or_specification",
+      "sha256": "d920e5ff63d98139f0d5683475e598f649be5ccccf25408faad53afcf6ed5080",
+      "size_bytes": 10542,
+      "git_blob": "32529ad9b5ac7e760deee58c94e2c0291e774280",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2106,6 +2122,14 @@
         "version": "PARAM-UX-02-PS05",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-SETTINGS-02 explicit native delivery authorization"
+      },
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "44da602ad617f0bd5fb13f7a8996c2c7577db85f",
+        "sha256": "5a02aa09aec51985e6a1747f049078e9f574f9bbec15b95cf422af8b2be93d8c",
+        "size_bytes": 10649,
+        "version": "typography-01-controlled-review",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json"
       }
     },
     {
@@ -53761,27 +53785,43 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
-      "version": "typography-01-controlled-review",
-      "status": "current_source_or_specification",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
-      "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "9ce174d27eb261b2d12f643aee2e48ad317452811e8b3c06a27f5ac69c4ab7df",
-      "size_bytes": 10477,
-      "git_blob": "0764f67a235adb121a40793c24b18ebb386baf7f",
-      "previous_git_blob": "042d059b24ae09dcf1ffe584b36ecf427eba2eba"
+      "sha256": "73a1e4bce04cf25959cad6698c745a398e6b7e4a14d0e3c7e22bb6a30c76e176",
+      "size_bytes": 10504,
+      "git_blob": "0a773558781b5afd1f8c968f6e90b25e759cc8e4",
+      "previous_git_blob": "042d059b24ae09dcf1ffe584b36ecf427eba2eba",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "0764f67a235adb121a40793c24b18ebb386baf7f",
+        "sha256": "9ce174d27eb261b2d12f643aee2e48ad317452811e8b3c06a27f5ac69c4ab7df",
+        "size_bytes": 10477,
+        "version": "typography-01-controlled-review",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
-      "version": "typography-01-controlled-review",
-      "status": "current_source_or_specification",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
-      "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "a55f15c7442115c962359f8e3930a6a74368bbf1a7ca071d2d235c038b228b82",
-      "size_bytes": 2879,
-      "git_blob": "81603ab46e3d6c607769e5bfd2fb4e4b1679e395",
-      "previous_git_blob": "f4114faeccddf4adcf7b17625e6d6bdbd375f584"
+      "sha256": "dde9b95850cb3062a0ce12492602658726367ce00f818a5a6c380b5dae087c8c",
+      "size_bytes": 4148,
+      "git_blob": "6528ba3569faf1a6b881cc3039863946c4326aa4",
+      "previous_git_blob": "f4114faeccddf4adcf7b17625e6d6bdbd375f584",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "81603ab46e3d6c607769e5bfd2fb4e4b1679e395",
+        "sha256": "a55f15c7442115c962359f8e3930a6a74368bbf1a7ca071d2d235c038b228b82",
+        "size_bytes": 2879,
+        "version": "typography-01-controlled-review",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj",
@@ -54722,17 +54762,25 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
-      "status": "current_source_or_synthetic_evidence",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
-      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "e8d89e855a70e3c38e2eefd60d5bb7e91600fb723977565d289a5077f39a59e7",
-      "size_bytes": 42624,
-      "git_blob": "10fa6bdb5244c3aa69f529ff4523c504e8991e08",
+      "sha256": "5de263fde051070d4f9d718100dc0e64f3de68828e1db14a179ab276dfa51a70",
+      "size_bytes": 43230,
+      "git_blob": "9a64fc695b636e3966dca87e88c54812f75164f2",
       "previous_git_blob": "b8778e6ba71396bc184658696a12b548ce0958aa",
       "pre_publication_merge_git_blob": "2e98969df94d3451e6f531e26a1200da2da46822",
-      "pre_publication_no_test_git_blob": "2664aa48b2fbb442f7b4b5748a505462aa8dbe40"
+      "pre_publication_no_test_git_blob": "2664aa48b2fbb442f7b4b5748a505462aa8dbe40",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "10fa6bdb5244c3aa69f529ff4523c504e8991e08",
+        "sha256": "e8d89e855a70e3c38e2eefd60d5bb7e91600fb723977565d289a5077f39a59e7",
+        "size_bytes": 42624,
+        "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs",
@@ -69856,14 +69904,22 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/DualCameraCommunication.cs",
-      "sha256": "3aa5eed7314256aa0fddfccfa0e0ea33370c0459c0532dfac9afce495027de4b",
-      "size_bytes": 27363,
-      "git_blob": "7530a3ab7fca5e47cfb5cb436a527499a89f4df7",
-      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
-      "status": "current_source_or_synthetic_evidence",
+      "sha256": "2aeb85704861d650a54996c9d5c756f972cb90a4596be7908d0262a3529e5a79",
+      "size_bytes": 28272,
+      "git_blob": "62cc01b67b16d117ebeb83cc21662d7b06dab75d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
-      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "7530a3ab7fca5e47cfb5cb436a527499a89f4df7",
+        "sha256": "3aa5eed7314256aa0fddfccfa0e0ea33370c0459c0532dfac9afce495027de4b",
+        "size_bytes": 27363,
+        "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/DualCameraDiagnostics.cs",
@@ -70923,14 +70979,22 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-TYPOGRAPHY-01.md",
-      "version": "typography-01-controlled-review",
-      "status": "current_source_or_specification",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Controlled native typography comparison and actual font/layout verification",
-      "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "2185d46bbcffbb7b26a41a6f4abd37ee426856764e2c50df8d8f469bf3da2c0c",
-      "size_bytes": 2680,
-      "git_blob": "12489a422a81ac0d6555f2f0f482f873e1675ba9"
+      "sha256": "51b83619a7cab7997eb29014a9d7018b90e3e272944c5156ec57fef14db8f3a4",
+      "size_bytes": 2908,
+      "git_blob": "60ad704cf9b4a0d4b699aa27e0bff758892e8826",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "12489a422a81ac0d6555f2f0f482f873e1675ba9",
+        "sha256": "2185d46bbcffbb7b26a41a6f4abd37ee426856764e2c50df8d8f469bf3da2c0c",
+        "size_bytes": 2680,
+        "version": "typography-01-controlled-review",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; per-file source identity in controlled-review/RESULT.json"
+      }
     },
     {
       "path": "src/Ipc.Presentation.Wpf/Fonts/NOTICE.json",
@@ -72180,24 +72244,40 @@
     {
       "path": "docs/work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md",
       "storage_scope": "public_repository",
-      "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
-      "status": "current_source_or_separately_scoped_evidence",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
-      "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
-      "sha256": "93c8154c77de61cbb2565e2deb1dba51cbbf377aef1e36e3b285dbe289af36b3",
-      "size_bytes": 5885,
-      "git_blob": "c03e6ad5108f8eb8fa3c2b1ea4b72cad5bc8f8ba"
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "744497dcdf1650dff04d88d67fee7bd58908a1748edc9901fc73535161eb5b84",
+      "size_bytes": 6155,
+      "git_blob": "6b31d918ce142485357417771a1fdff83f8839aa",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "c03e6ad5108f8eb8fa3c2b1ea4b72cad5bc8f8ba",
+        "sha256": "93c8154c77de61cbb2565e2deb1dba51cbbf377aef1e36e3b285dbe289af36b3",
+        "size_bytes": 5885,
+        "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyChain.cs",
       "storage_scope": "public_repository",
-      "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
-      "status": "current_source_or_separately_scoped_evidence",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Independent synthetic Application/native evidence and scoped hierarchy closure",
-      "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source",
-      "sha256": "8024572eca53dab202cd6be7cd217b5160199f68a085bc1db024252ece88d12e",
-      "size_bytes": 25532,
-      "git_blob": "5b5090a39dc39ab65876d502cd95bf7d956b1ae5"
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "121367aafdf3ecd16511cc9b9d08e1fafaa8c49b4972c73f81b8203b6437fb56",
+      "size_bytes": 26222,
+      "git_blob": "f948dab87b5756dd802f72a9ca2d7b916abdcc11",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "5b5090a39dc39ab65876d502cd95bf7d956b1ae5",
+        "sha256": "8024572eca53dab202cd6be7cd217b5160199f68a085bc1db024252ece88d12e",
+        "size_bytes": 25532,
+        "version": "TASK-CONTENT-HIERARCHY-02-DEEP-REVIEW",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "Production cf2ab07, native de8bcb6, portable 13953c3; historical artifacts retain their source"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyParameters.cs",
@@ -75138,14 +75218,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs",
-      "version": "win11-24x7-stability-remediation-01",
-      "status": "current_source_or_scoped_synthetic_evidence",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "6ef8df2f152180df733352275c74dc679b4d748ed59484cce71ec456a7bcf628",
-      "size_bytes": 16028,
-      "git_blob": "85991afcd3809ca76dedc09cc8447b082470f07b"
+      "sha256": "bcd4e62c85a2dc3473769ac38fbfbe8703c552a1fcdb0f9c5d68ad363245966c",
+      "size_bytes": 16929,
+      "git_blob": "14e2fb8fd3562ffb45d0d76a0b09ded4a54087ae",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "85991afcd3809ca76dedc09cc8447b082470f07b",
+        "sha256": "6ef8df2f152180df733352275c74dc679b4d748ed59484cce71ec456a7bcf628",
+        "size_bytes": 16028,
+        "version": "win11-24x7-stability-remediation-01",
+        "status": "current_source_or_scoped_synthetic_evidence",
+        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelIngress.cs",
@@ -75204,14 +75292,22 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs",
-      "version": "win11-24x7-stability-remediation-01",
-      "status": "current_source_or_scoped_synthetic_evidence",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "24c390102572687687658f47911694a171a6a63e4f45bf75f074dfd5201164df",
-      "size_bytes": 6449,
-      "git_blob": "2c9884433028b00d8a6b1c4da0ada15268d6cf7e"
+      "sha256": "b2c86d8803ca81944b848c6a2ba38c71c80dcd3c9102734ba9a9d42a8faff128",
+      "size_bytes": 7153,
+      "git_blob": "9c07682c0f8e46b32d1dfa53aaaa2c6568a7630b",
+      "pre_parallel_task_integration_01_identity": {
+        "git_blob": "2c9884433028b00d8a6b1c4da0ada15268d6cf7e",
+        "sha256": "24c390102572687687658f47911694a171a6a63e4f45bf75f074dfd5201164df",
+        "size_bytes": 6449,
+        "version": "win11-24x7-stability-remediation-01",
+        "status": "current_source_or_scoped_synthetic_evidence",
+        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      }
     },
     {
       "path": "tests/Ipc.Application.Verification/StabilityRemediation.cs",
@@ -75685,6 +75781,1036 @@
       "sha256": "a7ce5475fc37d3c9aa20daca562f5b8d77820b0cc9563bbea4d2d1ec59c165ad",
       "size_bytes": 142932,
       "git_blob": "3af01db1878ca597c7bcd0720e599b084618ae4f"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/464e8e2-tests.json",
+      "sha256": "35eae6efec835875e7d3b3bbb64ddc6cfe94ed78185026bbea6d0bbff9cc41d6",
+      "size_bytes": 507,
+      "git_blob": "ef6fbd6349d391062360d9bde6c9523d25bcf80a",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/FILES.json",
+      "sha256": "646cd427a85c66371f9110f3484018d475357d24e0bcbe519a049dca2c8ee436",
+      "size_bytes": 16568,
+      "git_blob": "5573f0968f8f6801f3822f8c3d3bf04a244e4b56",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/README.md",
+      "sha256": "6b8f723605a872ab17dc5c07199f6a395068de2623482e5cb4b3c5d0f622bb82",
+      "size_bytes": 4700,
+      "git_blob": "91f94820926e8c4957fdabd00080e914263c0aee",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/RESULT.json",
+      "sha256": "578046f28b5767141448aeafe7fcabc4a2b9de3ceaed96905e9b0b0d13e9dbea",
+      "size_bytes": 1164,
+      "git_blob": "b49e258d7437c78baacfb605a8c8e302e9638b08",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-ManagementMode/RESULT.json",
+      "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+      "size_bytes": 3287,
+      "git_blob": "c343a112f182a7875064fbb6c07798b620962939",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-ManagementMode/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-ManagementMode/WINDOWS-WPF.log",
+      "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+      "size_bytes": 5736,
+      "git_blob": "141bbeacaafc42d01cdef97f7b632e3e1797396f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-ManagementMode/logs-compact-filters-after-query.png",
+      "sha256": "05b31a7f2961c6c482ee585a0237f0b9992ac1daf48e7b510c16862c2f780abb",
+      "size_bytes": 52847,
+      "git_blob": "e9e954d5fd990c2a667ad341d4829081376d79c7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-ManagementMode/management-log-context-800.png",
+      "sha256": "ef39498e1627cde6df52da450848c6298b07112c50193936664b2def5593fd51",
+      "size_bytes": 76914,
+      "git_blob": "c44ed923f19ba8d1c64bddc9db5031de57724b0e",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/RESULT.json",
+      "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+      "size_bytes": 3287,
+      "git_blob": "c343a112f182a7875064fbb6c07798b620962939",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/WINDOWS-WPF.log",
+      "sha256": "a4aa40f3457f964fd0e23b2fe2610738f1ad802bcfa5ee1377e6890d2443e59b",
+      "size_bytes": 24728,
+      "git_blob": "83417c4cc48b76ed730aceaf98d333e47f87c935",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/chain-invalid-after-slot-800.png",
+      "sha256": "3ed46e8701624994847dafc09adff7fbead8d98fd673993a88b52f1bce77e4a2",
+      "size_bytes": 93309,
+      "git_blob": "1d100da6c34ba5f351df01bddc313f5c2d2c3239",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/chain-late-pause-history-800.json",
+      "sha256": "6d5e9bb8e68a7f5c7e01c61d164da2dcb01ec87ab93a9440187a13d110603391",
+      "size_bytes": 56102,
+      "git_blob": "fe2a4b8c67ed024297d7bf2e4eb2f4c9f6f0a1bb",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/chain-late-pause-history-800.png",
+      "sha256": "c1d2974201b9d3759a319dc4fdceecd8b4516bc60e98c78641f37a0a1915a949",
+      "size_bytes": 90051,
+      "git_blob": "ba54a634618e9fa31410ba8366247f510df2f3fc",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-TaskHierarchy/typography-font-resolution.png",
+      "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+      "size_bytes": 49052,
+      "git_blob": "2d5f9b4548e0f3cdb43d41617545f1da5b85eac4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-Win11Stability/RESULT.json",
+      "sha256": "06ae965febc57863ad690f031bef2caaa5bc4735357f3fab1d998f4c3ef7f144",
+      "size_bytes": 3287,
+      "git_blob": "c343a112f182a7875064fbb6c07798b620962939",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-Win11Stability/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-Win11Stability/WINDOWS-WPF.log",
+      "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+      "size_bytes": 1006,
+      "git_blob": "b11ecb3411d9b798c0ff8d5d37ef0430d9e1dfc2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-Win11Stability/native-history-retention.png",
+      "sha256": "0c8361cfc541a63eddbd91fb80600c09754692981ec9c3548fb7b898c59d755d",
+      "size_bytes": 127553,
+      "git_blob": "9be883a9a391a456483ac24c7ca11edc0119d370",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-Win11Stability/native-input-recovery.png",
+      "sha256": "180d73dcc57f948a7a8d5667778a640880a16d223f1e18852f68b2c63c2baf2e",
+      "size_bytes": 143697,
+      "git_blob": "7b0dca2c20adfec8aacbd14e53c3f2aab9b74464",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/accepted-native-results.json",
+      "sha256": "6496aaa0818459718b6ebf6c14379b3c741e6d17168ea982c5a91dc63dc5c61e",
+      "size_bytes": 474,
+      "git_blob": "e98d7669aa38ae2b9a85ecafeb338b574de1a3ff",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/build-application.log",
+      "sha256": "48ebee1605960d2cd38b67c8fa67906bcc0d7f33e766b94188117570257a40f5",
+      "size_bytes": 4213,
+      "git_blob": "b19b17cb586da26391f50728a508b390cf37b536",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/dual-camera-communication.log",
+      "sha256": "e7c88d2d6eb676ff7a73a98c453000965bfda588e7f81bce5e7919fe956ddbcf",
+      "size_bytes": 6730,
+      "git_blob": "8c568efefa570c145c38375c06cc3e053a18b710",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/environment-b2b2f0f.json",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "size_bytes": 731,
+      "git_blob": "5b4cce80e98fab8f04ff4560bdc022b8b9b77ec8",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/environment-query-fixed.json",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "size_bytes": 731,
+      "git_blob": "5b4cce80e98fab8f04ff4560bdc022b8b9b77ec8",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/environment.json",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "size_bytes": 731,
+      "git_blob": "5b4cce80e98fab8f04ff4560bdc022b8b9b77ec8",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-hikrobot-frozen.log",
+      "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+      "size_bytes": 2902,
+      "git_blob": "fdb33a6436f8241b94a10ef1c2edd4497dcbcd43",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-hikrobot-managed.log",
+      "sha256": "4a1282756b85a9b0f8a4ffb717bd1f96ac14141ba257727ffc7c1c13c3c54c6f",
+      "size_bytes": 596,
+      "git_blob": "7c9b26ef14cd6bae0d3ee1791de218a474c6737f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-ManagementMode/RESULT.json",
+      "sha256": "d5aae73ee6dc6cd0c4491cee5625c6c5a85f1ac1cd61ac6e0a7046bda37075b4",
+      "size_bytes": 3287,
+      "git_blob": "667ceb09cd98d9d729188b179efa8bac377ac9c1",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-ManagementMode/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-ManagementMode/WINDOWS-WPF.log",
+      "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+      "size_bytes": 5736,
+      "git_blob": "141bbeacaafc42d01cdef97f7b632e3e1797396f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-ManagementMode/logs-compact-filters-after-query.png",
+      "sha256": "71a1bbab3ca45b888bc9a07b00a562fd3b1623f4d26485426c30fe625e809b16",
+      "size_bytes": 52465,
+      "git_blob": "4643863de6f3b0ece1dc04b72e6038bc986eda04",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-ManagementMode/management-log-context-800.png",
+      "sha256": "b0ec2c6e5b4998f32712fb5146f3e9f689be7b47f91cb49ec7270ddcea0138b6",
+      "size_bytes": 77185,
+      "git_blob": "e3437ab9586c06b827320ba7b48e87fd9d351347",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/RESULT.json",
+      "sha256": "3cc99ec564107578b33b70e2ccfeb9a656d45647d64e10ebece445aecd95f360",
+      "size_bytes": 3287,
+      "git_blob": "61177f844764f3da9d966dd4ca4ebe48d62ba57e",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/WINDOWS-WPF.log",
+      "sha256": "cbddaef89b86bca959defcbf2475e8848bc3006dee6ce982dae9864dbc78ef42",
+      "size_bytes": 25260,
+      "git_blob": "91132b026beae60dd820d33331ff71dda78a74a4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/chain-invalid-after-slot-800.png",
+      "sha256": "6662a4e9dfc630cd1c1a5725bdc6947196c46741264bed57148c3e0a1999f295",
+      "size_bytes": 93352,
+      "git_blob": "344d6dbd5fba14617455274eb43deea39b0e047f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/chain-late-pause-history-800.json",
+      "sha256": "066a9a075f608596e036cb5aa62cb7fc54e6d38df16c419f5b0581e3052fc1f9",
+      "size_bytes": 56101,
+      "git_blob": "abc9f9ec3dabfc8f6926934f6c9d28fcaf0e5881",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/chain-late-pause-history-800.png",
+      "sha256": "1e64d681fa64e412ec08cd3e2665ac006b56629f869d830dcd6aa550bad4d468",
+      "size_bytes": 89628,
+      "git_blob": "545849348fd7e8a9a768a05d17aa21e8a9feb209",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-TaskHierarchy/typography-font-resolution.png",
+      "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+      "size_bytes": 49052,
+      "git_blob": "2d5f9b4548e0f3cdb43d41617545f1da5b85eac4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-Win11Stability/RESULT.json",
+      "sha256": "d5aae73ee6dc6cd0c4491cee5625c6c5a85f1ac1cd61ac6e0a7046bda37075b4",
+      "size_bytes": 3287,
+      "git_blob": "667ceb09cd98d9d729188b179efa8bac377ac9c1",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-Win11Stability/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-Win11Stability/WINDOWS-WPF.log",
+      "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+      "size_bytes": 1006,
+      "git_blob": "b11ecb3411d9b798c0ff8d5d37ef0430d9e1dfc2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-Win11Stability/native-history-retention.png",
+      "sha256": "0d02a8b1bf29e07d016e90101ddddce5d9874f8f84ae479f46e8ffa34a9e8a66",
+      "size_bytes": 126223,
+      "git_blob": "23012aff71c4be0cf459d6c5c8550491664b1667",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-Win11Stability/native-input-recovery.png",
+      "sha256": "4a53ae84c5586a3be2c073a7e0fc26ae9c130b35055b5eddcffa5d0b8b8be029",
+      "size_bytes": 143223,
+      "git_blob": "3a7e9527398f8c89f233f33a56572174ee513971",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/final-native-results.json",
+      "sha256": "5154ac5a3b91bda0afbf1b5a7c1218ed034594619fda2449a0d6d55d75b47285",
+      "size_bytes": 473,
+      "git_blob": "ec6df09231c15f26093f5e8d0a970f2f980591d7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/hikrobot-b2b2f0f.log",
+      "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+      "size_bytes": 2902,
+      "git_blob": "fdb33a6436f8241b94a10ef1c2edd4497dcbcd43",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/hikrobot-query-fixed.log",
+      "sha256": "5bed360e7417ac4f392c972b6c30bbf0d1c73b92d466df48ee42f6aec4ca2a39",
+      "size_bytes": 2902,
+      "git_blob": "fdb33a6436f8241b94a10ef1c2edd4497dcbcd43",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/local-tests.json",
+      "sha256": "30424407900177fb8d4be998c59b9844e143800d0da75d5eb3c88ee553d3dbb6",
+      "size_bytes": 1777,
+      "git_blob": "09c6586da66cc1953774ad3ee256ec60f7d89c62",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-ManagementMode/RESULT.json",
+      "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+      "size_bytes": 3287,
+      "git_blob": "a6c2da4fb378bbb84ce862f0c33208e2956026c2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-ManagementMode/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-ManagementMode/WINDOWS-WPF.log",
+      "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+      "size_bytes": 5736,
+      "git_blob": "141bbeacaafc42d01cdef97f7b632e3e1797396f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/RESULT.json",
+      "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+      "size_bytes": 3287,
+      "git_blob": "a6c2da4fb378bbb84ce862f0c33208e2956026c2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/WINDOWS-WPF.log",
+      "sha256": "e414e1808f866a5a56081faf025d29f2966ecc280e7522642b801bb476dfd7e9",
+      "size_bytes": 24550,
+      "git_blob": "28221e52b666d0236df5e3ff71d242461b525bfc",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/chain-invalid-after-slot-800.json",
+      "sha256": "4159b7dac324a563c3a7693f4fa5ad54eaed7a85964e88cac021afad32608592",
+      "size_bytes": 17551,
+      "git_blob": "c56a6611b1d56f36292c7f9e9b47c0cb557f215e",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/chain-invalid-after-slot-800.png",
+      "sha256": "a8bd3c78bda4345148130503fab5b5ae49b8c09095c244dd81f80205a2a22b47",
+      "size_bytes": 93177,
+      "git_blob": "d847295552e0107d3e9b9897c888974f629e46bd",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/chain-late-pause-history-800.json",
+      "sha256": "f2e1b369bc8ce0cf16b20a9caae5fdc2de3e2be493c785cfb36ae44d69b9ef9a",
+      "size_bytes": 56098,
+      "git_blob": "95a2a47d726ae51660e2478926750a9bc5cd4311",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/chain-late-pause-history-800.png",
+      "sha256": "458bcf0cc614c18181b41debc39cac454ec7b62992c56e21fa3ac5a8a8d1e3c8",
+      "size_bytes": 87932,
+      "git_blob": "b6488433a342c9ac12f0ea343cae030e33f41918",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/chain-same-code-normal-1366.png",
+      "sha256": "8b312720b06852af9c92c12e4c2b3ea719bb90bd127cac211a8e405bdce0e3f4",
+      "size_bytes": 112873,
+      "git_blob": "76d40d75ac90aec2d960326ed190195fef5ac1bc",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-TaskHierarchy/typography-font-resolution.png",
+      "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+      "size_bytes": 49052,
+      "git_blob": "2d5f9b4548e0f3cdb43d41617545f1da5b85eac4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-Win11Stability/RESULT.json",
+      "sha256": "74d19e66a7fffd6480dbd864f3106ebb710a56088d9c1678325fb7cf036cd7fc",
+      "size_bytes": 3287,
+      "git_blob": "a6c2da4fb378bbb84ce862f0c33208e2956026c2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-Win11Stability/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-Win11Stability/WINDOWS-WPF.log",
+      "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+      "size_bytes": 1006,
+      "git_blob": "b11ecb3411d9b798c0ff8d5d37ef0430d9e1dfc2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-Win11Stability/native-history-retention.png",
+      "sha256": "ef99f70f8ec4d3a41ab07f37742dfb52d2486451e99c7246b72594bd7a55439e",
+      "size_bytes": 126886,
+      "git_blob": "bb608531aa5a3642a95fd70f526676fcdd561ea2",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-Win11Stability/native-input-recovery.png",
+      "sha256": "d3d30572f5f8b81ddc45ed0a6992d43fa5740ab4bd0210017e5f465ad0bd18c6",
+      "size_bytes": 143020,
+      "git_blob": "07d4b7c17983833a2f9412dee1a0022810e93ad7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-dpi-diagnosis/RESULT.json",
+      "sha256": "9b6d1c5bc50a92cb21feba9f6c3216c8a3d18cc50f722dcd7799fa8274e0cc31",
+      "size_bytes": 3288,
+      "git_blob": "8480e42918175f5bdc9089be18d2971b5a8652e9",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-dpi-diagnosis/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-dpi-diagnosis/WINDOWS-WPF.log",
+      "sha256": "62ba8b46fbe7c210930a1aae90726379d44c456b786301ab379f6b5e6404dcdb",
+      "size_bytes": 25286,
+      "git_blob": "8c85ac7b29d1aae10a6be89ed9ad9c9fae39e224",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-query-before-fix/RESULT.json",
+      "sha256": "9f7a1cda62441e119af567e709844004437faecaa9a14bb3ea27ac5675b412b0",
+      "size_bytes": 3288,
+      "git_blob": "c15b53cab22068a79896546827cd9bfae715e5b7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-query-before-fix/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-query-before-fix/WINDOWS-WPF.log",
+      "sha256": "dd70e6e3e7f881001835ab568c4de3c5af001869ceb851b06849af056a7b22ed",
+      "size_bytes": 25245,
+      "git_blob": "898e9c3bcd097ec41b74e45a81f583a5ade445d0",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-query-before-fix/chain-late-pause-history-800.png",
+      "sha256": "15aa22d0e4c786a8bdc0865f555530687ecea6a59e47105a2ea39434e7afa69b",
+      "size_bytes": 87226,
+      "git_blob": "c141cdb1a87b3d53c62f8647baff20268d33a65d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/native-results.json",
+      "sha256": "4f38cc11fefcf583a2d31bd4c4a05faa11b633f1f280d9d9a8ea56c9c9313817",
+      "size_bytes": 474,
+      "git_blob": "f1450523e652b88edbf72d2f403beea5f1a8da24",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/python-compatibility.log",
+      "sha256": "85a66d4a68230779a8dd6a27618afb933e2b42cf9275e85d4157fd4082238c21",
+      "size_bytes": 3138,
+      "git_blob": "7616668860ccdd27fb470e487698f164788a70c4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/python-documents.log",
+      "sha256": "c9f24b15f0b2c9cb069ff0b141d9b1e29ab80c61b4e7bce31f707afdf0900ae3",
+      "size_bytes": 427,
+      "git_blob": "22f7a823ef03395559c109538433a299b9b1c1fb",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/python-stability.log",
+      "sha256": "0b101e27d90ec7c5b1711892cf7611aff0a7ee204a968fbfa75421ac01fe4c4f",
+      "size_bytes": 950,
+      "git_blob": "f5fc3c024ab736bed456fbd3f65237d3ff05613d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/race-before-fix.log",
+      "sha256": "8a37255c526d8186045ba22a4539e186058682f324aa35123d43051789a7f029",
+      "size_bytes": 6288,
+      "git_blob": "70c0b20fea4b56e8c0e80a657150280fb3037e82",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/race-fixed-build.log",
+      "sha256": "2e3092b3881eb7dde84950d0cb916a0d1717fc0b828545ef27f87b20437e45bd",
+      "size_bytes": 2207,
+      "git_blob": "9fdc02f019254b5fbe0b1b864c3c8bdfe1e7aadf",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/race-fixed-dual-camera.log",
+      "sha256": "d2407e01e0e18c9cddf931d50c6db5233b23945fa61a57cea60ad6f31f596247",
+      "size_bytes": 6548,
+      "git_blob": "e4b559c709b89a4c4704c428c09c029532faa447",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-b2b2f0f/RELEASE.json",
+      "sha256": "94d372b63988e06d792df7fa5430c1cb771a3075a14dc847e0979f7397412f69",
+      "size_bytes": 25223,
+      "git_blob": "850160818a585dc20dfa2dd157157fde9b631852",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-b2b2f0f/SHA256SUMS",
+      "sha256": "a5aedbcbba2434789579955b94c2c662afbcd60d50c1a0d75a81111c426ffe93",
+      "size_bytes": 577,
+      "git_blob": "e4835e5dfba61018fded931b9ecf4f15fc99690d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-final/RELEASE.json",
+      "sha256": "1c5bdcf215a55bb77705ca91b8925773d5b90aef8c588f5dc92d2b438966bc13",
+      "size_bytes": 25217,
+      "git_blob": "c0602137af8e49ca8ce8110dfe5a06074b6fbcb9",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-final/SHA256SUMS",
+      "sha256": "6d5ff9cf5f40fd618cec776c8d40ffd1341c9fee16c78fa64a707a8180bbc21b",
+      "size_bytes": 577,
+      "git_blob": "de6a94eca517126b8e073b9cbe30c51520237c59",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-query-fixed/RELEASE.json",
+      "sha256": "363dcdad0e2e67df8c74508565e7cfc5baeee33c478f359395da714b972b5823",
+      "size_bytes": 25235,
+      "git_blob": "11dc5dcc7b02110b0326b3f60ae3ba68745551f7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/release-query-fixed/SHA256SUMS",
+      "sha256": "6d07cd80a0dfb3f37ea2cbbf583a17698dd04139ff1241c61ed591dc4348952e",
+      "size_bytes": 577,
+      "git_blob": "67d854d48de6d31ef06d995d91658546b92424b0",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/remote-start.jsonl",
+      "sha256": "3a9626f557483ce20976dc86637039437dd37a781f1863bb4a475fa2629c074d",
+      "size_bytes": 20927,
+      "git_blob": "918beeb9ecf89e34ece8451e4ea6ae2b7f4d5332",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-final-build.log",
+      "sha256": "9003f4006b32c429c6036432eb1a084d6a3edbf19abba931355cfb9c9c090c84",
+      "size_bytes": 2207,
+      "git_blob": "2fbdc55803af90eb91ae00f47d61e06e7a802728",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-final.log",
+      "sha256": "886245a43fedfb2f63f1f18d384bf767552de398cbbd2e1e206e6fee8b8dc038",
+      "size_bytes": 4027,
+      "git_blob": "c8ac108049ff510771a5f27a2a2a2b8334f15d2e",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan.py",
+      "sha256": "a9bcacd714c07f1ddc39c11b9945326057b4e5a2aae6fcd60b89e170f43fef7d",
+      "size_bytes": 3706,
+      "git_blob": "941be793ebd5c1c8298c6c0301952827da93a40f",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/Program.cs",
+      "sha256": "6a6cd3e2e2c7ce7c2c697e6d38532c5f6c9c7179a29075a504c096a9a578ba0e",
+      "size_bytes": 2092,
+      "git_blob": "055ed5a4fce080a7fcbf4ab816fa88055f2c4b4d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/RESULT.json",
+      "sha256": "c614c0ff1bec8ec808f97561db8dabb130977b7e225a94f3d759d4b3a2a1663b",
+      "size_bytes": 3258,
+      "git_blob": "4e4eff2e2e58667b5ebfa75922f7dd4ea7345ed4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/new.sql",
+      "sha256": "29e4a99558024f735342e3b1a8c7983f37b7f8a9dcb43e3995f6fc3dd367ce60",
+      "size_bytes": 766,
+      "git_blob": "f5eed66a035e3a30d79c2658ce98dc1c8e745055",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/old.sql",
+      "sha256": "131e962a40871147d47afd69cfdf7cfac4d8e5e1baafacf52ad9314e807e4fe2",
+      "size_bytes": 953,
+      "git_blob": "0f49dc79b082e32e3b4111f23a6058db415b2c2b",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/prepare.sql",
+      "sha256": "250be14bf273a5abc4d8ef39ca351afbe602c1bc2a4cb87f976f673bcdc38580",
+      "size_bytes": 590,
+      "git_blob": "89b02991c9066469975f61e8385d1b49b6fa5bc3",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/retention-plan/schema.sql",
+      "sha256": "db0bb1cf696ea569ed06618f7351848b5fd84cda92dd30159004753cefa23bc0",
+      "size_bytes": 15018,
+      "git_blob": "8461b09c5850fd5b54fb258843b484eb146ebed4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/semantic-checks.json",
+      "sha256": "4da95f49b2246b9e8325a0a304bd80e41a895b174886f045d84ac748117b9943",
+      "size_bytes": 1247,
+      "git_blob": "50fbc902868f57c32f386b996165f0b149eb22ff",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/smoke-b2b2f0f.json",
+      "sha256": "fae621b603007cdeaaab14f5357193655f0ab93b5cae2b1f58ef572ef44b29a9",
+      "size_bytes": 174,
+      "git_blob": "4a42bfc52efd94f7f2759b4b8552253659cd0bf6",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/smoke-query-fixed.json",
+      "sha256": "154f1b88d8e674d2029b6d0270a799e1c27bff09b06c39bcdbdcac6d19ec42c2",
+      "size_bytes": 174,
+      "git_blob": "e2ad3111d0c0e81979d9a6fe7e4e52b3cbd6a482",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-integration-01/smoke.json",
+      "sha256": "51ca5ab6640e6f6f70afacc65d01d4ba943d8c8941d62b677a2ce6e1fa3e78c8",
+      "size_bytes": 212,
+      "git_blob": "c1554e78f6782e970ce83b030acab14908b64f9d",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/parallel-task-integration-01.md",
+      "sha256": "6e1b4f3c21ac521190448972bdef334897dd64e300fb9a4f3abf498a48b6d906",
+      "size_bytes": 11473,
+      "git_blob": "08211ab5e46dee17e92271f1b51779cadd1be6c4",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md",
+      "sha256": "efaf256cf195bd120c653b2e2b977f69c15177eefea6bc45244b2b72efe3ebee",
+      "size_bytes": 3549,
+      "git_blob": "8e521eeb89cd455b723fb29fcfe3683d0b5093d7",
+      "version": "parallel-task-integration-01",
+      "status": "current_source_or_preserved_integration_evidence",
+      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -78318,5 +79444,18 @@
     "inventory_scope": "Only this work package delta against fixed main016976c refreshed from canonical Git bytes; unrelated historical metadata retained. Not a new full archive verification.",
     "native_stability_fixture": "a14c1d978472bf411814b2535f5433edab1ceef0",
     "initial_ci": "FAIL retained; management observation ownership corrected; new head rerun required"
+  },
+  "parallel_task_integration_01": {
+    "work_package": "docs/work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md",
+    "report": "docs/runtime/parallel-task-integration-01.md",
+    "evidence": "docs/runtime/evidence/parallel-task-integration-01/RESULT.json",
+    "starting_main": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+    "source_pr_99": "5074660fd10e7a91d81923edac782891e377a519",
+    "frozen_runtime_source": "cbb04528e48d39f9d89bb39fc6d7b625ae73f171",
+    "database": 9,
+    "sql_1_to_9": "UNCHANGED",
+    "publication": "Integration PR; actual main inclusion and exact CI verified separately",
+    "field_qualification": "NOT_RUN/BLOCKED; original user Unknown preservation decision retained",
+    "inventory_scope": "Only owned integration delta refreshed from staged canonical Git bytes; unrelated historical records preserved."
   }
 }

@@ -1,0 +1,1055 @@
+{
+  "Scenario": "late-pause-history-800",
+  "Synthetic": true,
+  "Snapshot": {
+    "RuntimeId": "36e52214-3991-4e83-b652-f2032f980dfa",
+    "Revision": 38,
+    "State": "Blocked",
+    "Paused": true,
+    "BlockingReasons": [
+      "Software admission paused; this is not an emergency stop",
+      "Original stage outcome or receipt responsibility is unresolved"
+    ],
+    "Positions": [
+      {
+        "Id": "left",
+        "ReaderDeviceId": "sportmaster.camera.left",
+        "Admit": false,
+        "CurrentOperation": "c053ef38bfb84b44be9551c757d5fed2",
+        "BlockingReasons": [
+          "Position dependency/health or original responsibility blocked",
+          "Current entity main result is incomplete",
+          "Global software pause"
+        ],
+        "MainResultComplete": false,
+        "BackgroundComplete": false
+      },
+      {
+        "Id": "right",
+        "ReaderDeviceId": "sportmaster.camera.right",
+        "Admit": false,
+        "CurrentOperation": "9f892d11ac6a4feebc2b79ce8f5b47e1",
+        "BlockingReasons": [
+          "Position dependency/health or original responsibility blocked",
+          "Current entity main result is incomplete",
+          "Global software pause"
+        ],
+        "MainResultComplete": false,
+        "BackgroundComplete": false
+      }
+    ],
+    "Inputs": [
+      {
+        "PositionId": "left",
+        "Observation": {
+          "Id": "19a5e76ef8c34626a5302292344a2365",
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l6-blocked",
+          "Sequence": 7,
+          "AdmissionId": "entity-l6-blocked",
+          "Kind": "Read",
+          "Codes": [
+            "000128"
+          ],
+          "PackageQuantity": null,
+          "ObservedAt": "2026-10-24T12:51:37.9615581+00:00"
+        },
+        "Outcome": "Blocked",
+        "Reason": "Position=left; paused/faulted/unresolved responsibility or operator not authorized",
+        "OperationId": null,
+        "RecordedAt": "2026-10-24T12:51:37.9678538+00:00",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "BarcodeSelection": {
+          "Outcome": "Selected",
+          "SelectedCode": "000128",
+          "Matches": 1,
+          "RuleHash": "29E9042BBEB5576FC8769DFD7E9335520F557C59315CAA37CD143CD00BE6251B",
+          "Detail": "\u552F\u4E00\u6709\u6548\u6761\u7801\uFF1B\u7EE7\u7EED\u6267\u884C\u539F\u6709\u51C6\u5165\u5B88\u536B",
+          "Candidates": [
+            {
+              "Index": 0,
+              "Outcome": "Eligible",
+              "Reason": "\u7B26\u5408\u5141\u8BB8\u89C4\u5219\u4E14\u672A\u88AB\u6392\u9664"
+            }
+          ]
+        }
+      },
+      {
+        "PositionId": "right",
+        "Observation": {
+          "Id": "b1f77b6f3f9744b38cf638a1297a41cf",
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "297037b84611466fae3b1d5c3d054bba",
+          "SourceEventId": "event-entity-r-conflict",
+          "Sequence": 3,
+          "AdmissionId": "entity-r-conflict",
+          "Kind": "Read",
+          "Codes": [
+            "000129"
+          ],
+          "PackageQuantity": null,
+          "ObservedAt": "2026-10-24T12:51:38.0786865+00:00"
+        },
+        "Outcome": "Admitted",
+        "Reason": "Admitted; external result pending",
+        "OperationId": "9f892d11ac6a4feebc2b79ce8f5b47e1",
+        "RecordedAt": "2026-10-24T12:51:38.0863649+00:00",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "BarcodeSelection": {
+          "Outcome": "Selected",
+          "SelectedCode": "000129",
+          "Matches": 1,
+          "RuleHash": "29E9042BBEB5576FC8769DFD7E9335520F557C59315CAA37CD143CD00BE6251B",
+          "Detail": "\u552F\u4E00\u6709\u6548\u6761\u7801\uFF1B\u7EE7\u7EED\u6267\u884C\u539F\u6709\u51C6\u5165\u5B88\u536B",
+          "Candidates": [
+            {
+              "Index": 0,
+              "Outcome": "Eligible",
+              "Reason": "\u7B26\u5408\u5141\u8BB8\u89C4\u5219\u4E14\u672A\u88AB\u6392\u9664"
+            }
+          ]
+        }
+      }
+    ],
+    "Operations": [
+      {
+        "Id": "9f892d11ac6a4feebc2b79ce8f5b47e1",
+        "AdmissionId": "entity-r-conflict",
+        "ObservationId": "2DFCB634D509052AFA2D5C547121F4EE9B7771DBEB0816C63A9235238E1D6326",
+        "ObservedAt": "2026-10-24T12:51:38.0786865+00:00",
+        "ParcelCode": "000129",
+        "PositionId": "right",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "297037b84611466fae3b1d5c3d054bba",
+          "SourceEventId": "event-entity-r-conflict",
+          "AdmissionId": "entity-r-conflict",
+          "ObservedAt": "2026-10-24T12:51:38.0786865+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "Blocked",
+        "Slot": null,
+        "Reason": "Contradictory or invalid original-stage receipt",
+        "Wcs": {
+          "State": "Conflict",
+          "Attempts": 1,
+          "Failure": "Contradictory or invalid original-stage receipt",
+          "Replies": [
+            {
+              "Id": "34038610318e4352b92d85faff1664ce",
+              "RequestId": "synthetic-wrong-owner",
+              "PayloadHash": "B375C5EA01FAE07150E571FA8429F2B59CD983A480F14F64DC3FE826C93B84DF",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "R-10",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:38.1206014+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-R2",
+                "SkuId": "SKU-R2",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwOCwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiUi0xMCIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJ0YXNrSWQiOiJUQVNLLVIyIiwic2t1SWQiOiJTS1UtUjIifX1dfQ==",
+                "BodyHash": "3A37625066CAA564F71A7E200C98CFC8FC12F84A17E56E1BCDB9E58F9D42E34E",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "2454c52877ad4a7598729c75aadacf1d",
+            "ApplicationId": "sportmaster",
+            "OperationId": "9f892d11ac6a4feebc2b79ce8f5b47e1",
+            "AdmissionId": "entity-r-conflict",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "B375C5EA01FAE07150E571FA8429F2B59CD983A480F14F64DC3FE826C93B84DF",
+            "PreparedAt": "2026-10-24T12:51:38.0913769+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000008,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000008,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000129\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "A1C487B87D76C9CCE1203417C82DA34BA67B584DE7EDFE38A19FA1C17EF4B258"
+            }
+          }
+        }
+      },
+      {
+        "Id": "c053ef38bfb84b44be9551c757d5fed2",
+        "AdmissionId": "entity-l5",
+        "ObservationId": "90D1073D56EC6BB718A471CD5208027639D2D5D262E23DEF55E7CB774849D63F",
+        "ObservedAt": "2026-10-24T12:51:37.7410036+00:00",
+        "ParcelCode": "000127",
+        "PositionId": "left",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l5",
+          "AdmissionId": "entity-l5",
+          "ObservedAt": "2026-10-24T12:51:37.7410036+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "WcsUnknown",
+        "Slot": null,
+        "Reason": "Provider declares no authoritative query capability; preserve unknown and original responsibility",
+        "Wcs": {
+          "State": "Unknown",
+          "Attempts": 1,
+          "Failure": "Provider declares no authoritative query capability; preserve unknown and original responsibility",
+          "Replies": [
+            {
+              "Id": "e3878cfd4166411e89709f12c7fe3830",
+              "RequestId": "3838f6b2fe184c2b8d690c0913501e68",
+              "PayloadHash": "47E7BD7E6885534E43176F1F47E5C86C5D418D1A632EF6DFE4ABD0E1159E2FE6",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": null,
+              "BusinessAccepted": null,
+              "PhysicalCompleted": null,
+              "Slot": null,
+              "Evidence": "Invalid/unmatched RCS response: KeyNotFoundException; original response retained, outcome unknown",
+              "At": "2026-10-24T12:51:37.7697443+00:00",
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwNywicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiUi0xMCIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJza3VJZCI6IlNLVS1NSVNTSU5HLVRBU0sifX1dfQ==",
+                "BodyHash": "32A8E890C782DB85E565B9EF6B445007E10E84426F5AB9F09638BEA39B6E0E5E",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "3838f6b2fe184c2b8d690c0913501e68",
+            "ApplicationId": "sportmaster",
+            "OperationId": "c053ef38bfb84b44be9551c757d5fed2",
+            "AdmissionId": "entity-l5",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "47E7BD7E6885534E43176F1F47E5C86C5D418D1A632EF6DFE4ABD0E1159E2FE6",
+            "PreparedAt": "2026-10-24T12:51:37.7552692+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000007,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000007,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000127\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "B0884E8524728D92C3B0804649B1EF8EC6EEFD2F42AB86713010D18DE81D60D4"
+            }
+          }
+        }
+      },
+      {
+        "Id": "882fa6218bfa45c5a5a4d8a70a32a3b4",
+        "AdmissionId": "entity-l4",
+        "ObservationId": "D42D61AC97B8487F96B6949DABD7515E3A7A40AD1B4C249F5C3E7501773FA556",
+        "ObservedAt": "2026-10-24T12:51:37.5819016+00:00",
+        "ParcelCode": "000126",
+        "PositionId": "left",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l4",
+          "AdmissionId": "entity-l4",
+          "ObservedAt": "2026-10-24T12:51:37.5819016+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "WcsRejected",
+        "Slot": null,
+        "Reason": "RCS SYNTH_CHUTE_CLOSED: \u5408\u6210\u683C\u53E3\u5173\u95ED",
+        "Wcs": {
+          "State": "Rejected",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "a181c3ae5b494109aa0c0146ae5d6533",
+              "RequestId": "5a9acdf6b39f4a298f0dbd1c56c38c8d",
+              "PayloadHash": "CFC7284F3C82E26471105B55A90F0918C2A1753DFBC698E8669C7FA2A8934DDB",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": false,
+              "PhysicalCompleted": null,
+              "Slot": null,
+              "Evidence": "RCS SYNTH_CHUTE_CLOSED: \u5408\u6210\u683C\u53E3\u5173\u95ED",
+              "At": "2026-10-24T12:51:37.6250223+00:00",
+              "Destination": {
+                "Outcome": "Rejected",
+                "Code": "SYNTH_CHUTE_CLOSED",
+                "Message": "\u5408\u6210\u683C\u53E3\u5173\u95ED",
+                "ArgsJson": null,
+                "TaskId": null,
+                "SkuId": null,
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwNiwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOmZhbHNlLCJjb2RlIjoiU1lOVEhfQ0hVVEVfQ0xPU0VEIiwibWVzc2FnZSI6IuWQiOaIkOagvOWPo\u002BWFs\u002BmXrSIsImRhdGEiOm51bGx9XX0=",
+                "BodyHash": "F33B0A3BB23FDB31DE1339B36FE951D7C6ED30707488F40D17C14831C95E0165",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "5a9acdf6b39f4a298f0dbd1c56c38c8d",
+            "ApplicationId": "sportmaster",
+            "OperationId": "882fa6218bfa45c5a5a4d8a70a32a3b4",
+            "AdmissionId": "entity-l4",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "CFC7284F3C82E26471105B55A90F0918C2A1753DFBC698E8669C7FA2A8934DDB",
+            "PreparedAt": "2026-10-24T12:51:37.5929357+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000006,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000006,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000126\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "CA44606618ECDD8ED10EDD7D83507B4274471E1B81173428626E5F9D4CC865BA"
+            }
+          }
+        }
+      },
+      {
+        "Id": "e84f7fe40c8944ecafd38c7d831edca3",
+        "AdmissionId": "entity-r2",
+        "ObservationId": "23AE0947C055D1DC827B0F9CFD79B3378A55D3DDB48372C2BE1D7C57A3FE3A2C",
+        "ObservedAt": "2026-10-24T12:51:37.3245848+00:00",
+        "ParcelCode": "000124",
+        "PositionId": "right",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "297037b84611466fae3b1d5c3d054bba",
+          "SourceEventId": "event-entity-r2",
+          "AdmissionId": "entity-r2",
+          "ObservedAt": "2026-10-24T12:51:37.3245848+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "SlotResolved",
+        "Slot": "R-10",
+        "Reason": null,
+        "Wcs": {
+          "State": "Accepted",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "240e99dce4624c03995effdfa5d504fe",
+              "RequestId": "48a87d5a02ca4cdc8741722bc11e5e7b",
+              "PayloadHash": "84AB75323E0A476743D1C68F8289D69BD9B12E89C714ACEB3DE1DC0808DCC072",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "R-10",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:37.3898174+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-R2",
+                "SkuId": "SKU-R2",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwNSwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiUi0xMCIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJ0YXNrSWQiOiJUQVNLLVIyIiwic2t1SWQiOiJTS1UtUjIifX1dfQ==",
+                "BodyHash": "2653B11946198D39F456A89E5EE8B79E4155D400045BBB837D710192FFB7B887",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "48a87d5a02ca4cdc8741722bc11e5e7b",
+            "ApplicationId": "sportmaster",
+            "OperationId": "e84f7fe40c8944ecafd38c7d831edca3",
+            "AdmissionId": "entity-r2",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "84AB75323E0A476743D1C68F8289D69BD9B12E89C714ACEB3DE1DC0808DCC072",
+            "PreparedAt": "2026-10-24T12:51:37.338225+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000005,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000005,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000124\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "4211A751C9435455196B9C0B52DD0EC3233D17C1DAF2B894BCD36EAC2CBF5385"
+            }
+          }
+        }
+      },
+      {
+        "Id": "c1ca549317f7408fa7e58a932b488527",
+        "AdmissionId": "entity-l3",
+        "ObservationId": "D0D755FA9FBB5FBE7A992336F4770992DD897C3F2FC29B0C7F1367AC94CF9EC2",
+        "ObservedAt": "2026-10-24T12:51:37.2708076+00:00",
+        "ParcelCode": "000125",
+        "PositionId": "left",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l3",
+          "AdmissionId": "entity-l3",
+          "ObservedAt": "2026-10-24T12:51:37.2708076+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "SlotResolved",
+        "Slot": "L-09",
+        "Reason": null,
+        "Wcs": {
+          "State": "Accepted",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "7ff64dc72e7a42689976f2aa0ac20626",
+              "RequestId": "6f5d030dfcbd4eb48ffdce84a8a7e6bb",
+              "PayloadHash": "8132A54297D6B4F8DB50AAAE43D8304ACAB9DC676A686D0438817BCF9376AAF9",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "L-09",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:37.5325518+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-L2",
+                "SkuId": "SKU-L2",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwNCwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiTC0wOSIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJ0YXNrSWQiOiJUQVNLLUwyIiwic2t1SWQiOiJTS1UtTDIifX1dfQ==",
+                "BodyHash": "91B7AE9EFA70FA89B42775EC73DA67967DB4F69248DB780DFC28C08E36E76FF1",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "6f5d030dfcbd4eb48ffdce84a8a7e6bb",
+            "ApplicationId": "sportmaster",
+            "OperationId": "c1ca549317f7408fa7e58a932b488527",
+            "AdmissionId": "entity-l3",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "8132A54297D6B4F8DB50AAAE43D8304ACAB9DC676A686D0438817BCF9376AAF9",
+            "PreparedAt": "2026-10-24T12:51:37.2855503+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000004,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000004,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000125\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "EF684EB4909CAFFC9B66AE6ECF19066030958B67F3E34082F30D1191D21CE248"
+            }
+          }
+        }
+      },
+      {
+        "Id": "0c287828254b478e96098fd10f8548a3",
+        "AdmissionId": "entity-l2",
+        "ObservationId": "D807D853EE0FE9A02C32050508B05420541FB669D7F47A4E96F52824602E2176",
+        "ObservedAt": "2026-10-24T12:51:37.0997675+00:00",
+        "ParcelCode": "000124",
+        "PositionId": "left",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l2",
+          "AdmissionId": "entity-l2",
+          "ObservedAt": "2026-10-24T12:51:37.0997675+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "SlotResolved",
+        "Slot": "L-08",
+        "Reason": null,
+        "Wcs": {
+          "State": "Accepted",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "bf453fb34517484a999e40bfe83d1d39",
+              "RequestId": "0659db7f74e54ab3845c2e770e03f388",
+              "PayloadHash": "210574AA81913BA9A0C879EE5877A7E2C4520B835BEB84C1D692E92AEE75195D",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "L-08",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:37.1270356+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-L2",
+                "SkuId": "SKU-L2",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwMywicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiTC0wOCIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJ0YXNrSWQiOiJUQVNLLUwyIiwic2t1SWQiOiJTS1UtTDIifX1dfQ==",
+                "BodyHash": "AD2237CC288114EDE7F2EE31EC6976011FB9D035CBE056C036AF0F89BAB1F01E",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "0659db7f74e54ab3845c2e770e03f388",
+            "ApplicationId": "sportmaster",
+            "OperationId": "0c287828254b478e96098fd10f8548a3",
+            "AdmissionId": "entity-l2",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "210574AA81913BA9A0C879EE5877A7E2C4520B835BEB84C1D692E92AEE75195D",
+            "PreparedAt": "2026-10-24T12:51:37.111857+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000003,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000003,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000124\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "10E48E2D5CF6CA8842B4B2AFCE154478736144F51C5D3A84F640FBF9F293FCD1"
+            }
+          }
+        }
+      },
+      {
+        "Id": "e860afaaaa7f4701bcc73c24cce2bd9f",
+        "AdmissionId": "entity-r1",
+        "ObservationId": "C52A3BD95F6630F5F34C1D279AD1037A3C86BC29FE9710A022A6DE941DDC6DB5",
+        "ObservedAt": "2026-10-24T12:51:36.3912134+00:00",
+        "ParcelCode": "000123",
+        "PositionId": "right",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "297037b84611466fae3b1d5c3d054bba",
+          "SourceEventId": "event-entity-r1",
+          "AdmissionId": "entity-r1",
+          "ObservedAt": "2026-10-24T12:51:36.3912134+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "SlotResolved",
+        "Slot": "R-09",
+        "Reason": null,
+        "Wcs": {
+          "State": "Accepted",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "28fdd636447c470795966fab4e77361a",
+              "RequestId": "6243fe28beac4a63869c73f560c44e2f",
+              "PayloadHash": "057A648214A8884D5025F8D680B9974058F44319BB2012C841E10F189EA12ED3",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "R-09",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:36.4202131+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-R2",
+                "SkuId": "SKU-R2",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwMiwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiUi0wOSIsImxlbmd0aCI6bnVsbCwid2lkdGgiOm51bGwsImhlaWdodCI6bnVsbCwid2VpZ2h0IjpudWxsLCJ0YXNrSWQiOiJUQVNLLVIyIiwic2t1SWQiOiJTS1UtUjIifX1dfQ==",
+                "BodyHash": "6F751A2D6AD430D5F0730B4258EE0CF75645BD2DAD8E6528119D9F21FCBF464D",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "6243fe28beac4a63869c73f560c44e2f",
+            "ApplicationId": "sportmaster",
+            "OperationId": "e860afaaaa7f4701bcc73c24cce2bd9f",
+            "AdmissionId": "entity-r1",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "057A648214A8884D5025F8D680B9974058F44319BB2012C841E10F189EA12ED3",
+            "PreparedAt": "2026-10-24T12:51:36.4034496+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000002,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000002,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000123\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "12FEABD5415240B691BE5A2E7D2F861AE628FBA7AA4604592CDF70B020B66849"
+            }
+          }
+        }
+      },
+      {
+        "Id": "0eda8378b9ef462ebbe8824e1722a288",
+        "AdmissionId": "entity-l1",
+        "ObservationId": "BC91CD96BCA3EDDC9AC40B891A11B3A93595386F44BDA64BDBAC81495429253D",
+        "ObservedAt": "2026-10-24T12:51:36.1948832+00:00",
+        "ParcelCode": "000123",
+        "PositionId": "left",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "ebe19c439c0d4c328b03d427b2e2b902",
+          "SourceEventId": "event-entity-l1",
+          "AdmissionId": "entity-l1",
+          "ObservedAt": "2026-10-24T12:51:36.1948832+00:00"
+        },
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "State": "SlotResolved",
+        "Slot": "L-07",
+        "Reason": null,
+        "Wcs": {
+          "State": "Accepted",
+          "Attempts": 1,
+          "Failure": null,
+          "Replies": [
+            {
+              "Id": "84a8fe2edc7444869962ea36222eb337",
+              "RequestId": "4abbaf488ce1450d80361fe2149fda84",
+              "PayloadHash": "744D2ED7F26EE3043B58C73B805FCCA26D1D03A875606B983A74AB338A45FE68",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "L-07",
+              "Evidence": "RCS destination assigned; physical completion is unconfirmed",
+              "At": "2026-10-24T12:51:36.3227206+00:00",
+              "Destination": {
+                "Outcome": "Assigned",
+                "Code": null,
+                "Message": null,
+                "ArgsJson": null,
+                "TaskId": "TASK-L1",
+                "SkuId": "SKU-L1",
+                "Length": null,
+                "Width": null,
+                "Height": null,
+                "Weight": null,
+                "Unpack": null,
+                "WaveNo": "0007",
+                "Quantity": "0002"
+              },
+              "HttpResponse": {
+                "StatusCode": 200,
+                "BodyBase64": "eyJyZXF1ZXN0SWQiOjgxMDAwMDAwMSwicmVzdWx0IjpbeyJpbmRleCI6MSwiY29tbWFuZCI6InNvcnRlci50YXNrLmRlc3RfcmVxdWVzdCIsImFyZ3MiOm51bGwsInN1Y2Nlc3MiOnRydWUsImNvZGUiOm51bGwsIm1lc3NhZ2UiOm51bGwsImRhdGEiOnsiY2h1dGVDb2RlIjoiTC0wNyIsIndhdmVObyI6IjAwMDciLCJ0YXNrSWQiOiJUQVNLLUwxIiwic2t1SWQiOiJTS1UtTDEiLCJxdWFudGl0eSI6IjAwMDIiLCJsZW5ndGgiOm51bGwsIndpZHRoIjpudWxsLCJoZWlnaHQiOm51bGwsIndlaWdodCI6bnVsbH19XX0=",
+                "BodyHash": "5F0A496D7A584AEEEFDF21B079F35857B2E8A6F0DF02B273FDADB958849656D3",
+                "Complete": true
+              }
+            }
+          ],
+          "Request": {
+            "Id": "4abbaf488ce1450d80361fe2149fda84",
+            "ApplicationId": "sportmaster",
+            "OperationId": "0eda8378b9ef462ebbe8824e1722a288",
+            "AdmissionId": "entity-l1",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.3.2",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:49407/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "source": "SYNTHETIC-HIERARCHY",
+                "locale": "zh_CN",
+                "zone-id": "71",
+                "project-id": "83",
+                "quantity": "1",
+                "specified-chute": "false",
+                "request-id-base": "810000000",
+                "request-id-count": "10000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TASK-STATION",
+                "right-station-code": "TASK-STATION",
+                "left-bcr-code": "TASK-LEFT",
+                "right-bcr-code": "TASK-RIGHT"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "60A0F98E7FC4803C4C8FF4FA5221A9F6EDFCBA675017E418710434C02AA82856",
+            "ConfigurationHash": "5772B3905ACAC4BDA41E13727C445037FFA2F26993167B03259E8B2DCFC08D5A",
+            "PayloadHash": "744D2ED7F26EE3043B58C73B805FCCA26D1D03A875606B983A74AB338A45FE68",
+            "PreparedAt": "2026-10-24T12:51:36.2108571+00:00",
+            "IntegrationRequest": {
+              "RequestId": 810000001,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000001,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000123\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "5F01C097CD62AD529B068CEC21A6F2D0526A93BF39955146D594166D57C8D8BB"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "Exchanges": [
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000001,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000123\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000001,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022L-07\u0022,\u0022waveNo\u0022:\u00220007\u0022,\u0022taskId\u0022:\u0022TASK-L1\u0022,\u0022skuId\u0022:\u0022SKU-L1\u0022,\u0022quantity\u0022:\u00220002\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000002,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000123\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000002,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022R-09\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022taskId\u0022:\u0022TASK-R2\u0022,\u0022skuId\u0022:\u0022SKU-R2\u0022}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000003,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000124\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000003,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022L-08\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022taskId\u0022:\u0022TASK-L2\u0022,\u0022skuId\u0022:\u0022SKU-L2\u0022}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000004,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000125\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000004,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022L-09\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022taskId\u0022:\u0022TASK-L2\u0022,\u0022skuId\u0022:\u0022SKU-L2\u0022}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000005,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000124\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000005,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022R-10\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022taskId\u0022:\u0022TASK-R2\u0022,\u0022skuId\u0022:\u0022SKU-R2\u0022}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000006,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000126\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000006,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:false,\u0022code\u0022:\u0022SYNTH_CHUTE_CLOSED\u0022,\u0022message\u0022:\u0022\u5408\u6210\u683C\u53E3\u5173\u95ED\u0022,\u0022data\u0022:null}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000007,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000127\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-LEFT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000007,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022R-10\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022skuId\u0022:\u0022SKU-MISSING-TASK\u0022}}]}"
+    },
+    {
+      "Request": "{\u0022source\u0022:\u0022SYNTHETIC-HIERARCHY\u0022,\u0022version\u0022:1,\u0022requestId\u0022:810000008,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022000129\u0022,\u0022stationCode\u0022:\u0022TASK-STATION\u0022,\u0022bcrCode\u0022:\u0022TASK-RIGHT\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+      "Response": "{\u0022requestId\u0022:810000008,\u0022result\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022args\u0022:null,\u0022success\u0022:true,\u0022code\u0022:null,\u0022message\u0022:null,\u0022data\u0022:{\u0022chuteCode\u0022:\u0022R-10\u0022,\u0022length\u0022:null,\u0022width\u0022:null,\u0022height\u0022:null,\u0022weight\u0022:null,\u0022taskId\u0022:\u0022TASK-R2\u0022,\u0022skuId\u0022:\u0022SKU-R2\u0022}}]}"
+    }
+  ],
+  "Commands": [
+    {
+      "Command": {
+        "Id": "59730bfa8b794b08832b58a42006737b",
+        "ExpectedRevision": 37,
+        "Kind": "Pause",
+        "Owner": null,
+        "Value": null
+      },
+      "Receipt": {
+        "Status": "Rejected",
+        "Reason": "SYNTH_PAUSE_NOT_SENT",
+        "Revision": 37
+      },
+      "SyntheticRejection": true
+    },
+    {
+      "Command": {
+        "Id": "6b498aeb7f864bdfa52551443142e6dc",
+        "ExpectedRevision": 37,
+        "Kind": "Pause",
+        "Owner": null,
+        "Value": null
+      },
+      "Receipt": {
+        "Status": "Persisted",
+        "Reason": "Application command committed",
+        "Revision": 38
+      },
+      "SyntheticRejection": false
+    }
+  ],
+  "Display": {
+    "Left": {
+      "Barcode": "000128",
+      "Slot": "\u672A\u53D6\u5F97",
+      "Status": "\u672C\u6B21\u8F93\u5165\u672A\u51C6\u5165",
+      "AttentionReason": "\u672C\u6B21\u51C6\u5165\u6761\u4EF6\u672A\u6EE1\u8DB3\u3002 \u5F53\u524D\uFF1A\u539F\u4F5C\u4E1A\u7ED3\u679C\u5F85\u6838\u5BF9\u3002",
+      "NextStep": "\u672C\u6B21\u672A\u5EFA\u4F5C\u4E1A\uFF1B\u8BF7\u67E5\u770B\u539F\u4F5C\u4E1A\u8BE6\u60C5\u5E76\u6838\u5BF9\u3002",
+      "WaveNo": "\u2014",
+      "TaskId": "\u2014",
+      "SkuId": "\u2014",
+      "ResponseQuantity": "\u2014",
+      "CanAdmit": false,
+      "CanContinue": false
+    },
+    "Right": {
+      "Barcode": "000129",
+      "Slot": "\u672A\u53D6\u5F97",
+      "Status": "\u56DE\u6267\u51B2\u7A81 \u00B7 \u5F85\u6838\u5BF9",
+      "CanAdmit": false
+    },
+    "GlobalOperationFeedback": "\u6682\u505C\u4F9B\u5305 \u00B7 \u5DF2\u63D0\u4EA4 \u00B7 \u5E94\u7528\u5DF2\u8BB0\u5F55\u8BE5\u64CD\u4F5C"
+  }
+}

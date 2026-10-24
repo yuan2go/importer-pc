@@ -1,6 +1,8 @@
 # WP-IPC-TYPOGRAPHY-01 · 供包台字体与排版统一
 
-追加复核：2026-10-24 main 仍为 `c5ac51d`，PR97 已推进 `a43ecb8`。现以[对照与判定](../design/typography-comparison-01.md)约束后续工作；已完成[受控对照与续修](../runtime/evidence/typography-01/controlled-review/README.md)，保留Noto并修复实际字体入口、紧凑异常及记录空间；下文为首轮实施记录，不能代替新依赖的本次验证。
+当前代码状态：PR97已以`c310705`合入，PR98已以`016976c`合入；后续组合核验见[整合报告](../runtime/parallel-task-integration-01.md)。本包的实际DPI、设备和现场资格保持各自边界。
+
+形成时追加复核：2026-10-24当时main为 `c5ac51d`，PR97 已推进 `a43ecb8`。以[对照与判定](../design/typography-comparison-01.md)约束该轮工作；已完成[受控对照与续修](../runtime/evidence/typography-01/controlled-review/README.md)，保留Noto并修复实际字体入口、紧凑异常及记录空间；下文为首轮实施记录，不能代替其他源码的验证。
 
 开工核验（2026-10-24）：origin/main `c5ac51d`，PR97 HIERARCHY-02 仍开放，head `37b27a9`。D盘隔离工作树、分支 `codex/typography-01` 从该head衔接；`e5ed46d` 纳入最新main文档，索引冲突保留02入口和24×7审查原身份。不合并其他PR，四份未跟踪原稿/ZIP不进入本包。
 

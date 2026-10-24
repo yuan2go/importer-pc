@@ -1,0 +1,68 @@
+[
+  {
+    "Selector": "win11-stability",
+    "ExitCode": 0,
+    "Seconds": 6.05,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "architecture-quality-remediation",
+    "ExitCode": 0,
+    "Seconds": 27.58,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "dual-camera-communication",
+    "ExitCode": -532462766,
+    "Seconds": 9.93,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "resource-risks",
+    "ExitCode": 0,
+    "Seconds": 3.18,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "sportmaster-rcs",
+    "ExitCode": 0,
+    "Seconds": 10.54,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "rcs-heartbeat",
+    "ExitCode": 0,
+    "Seconds": 15.39,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "ux-commercial-presentation",
+    "ExitCode": 0,
+    "Seconds": 2.26,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "sportmaster-window-lifecycle",
+    "ExitCode": 0,
+    "Seconds": 6.11,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "upgrade-conflict-closure",
+    "ExitCode": 0,
+    "Seconds": 12.25,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "version-compatibility",
+    "ExitCode": 0,
+    "Seconds": 2.84,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  },
+  {
+    "Selector": "windows-client-compatibility",
+    "ExitCode": 0,
+    "Seconds": 0.13,
+    "SourceCommit": "d7166973d8b5157ca643046d595d48817339acd8"
+  }
+]

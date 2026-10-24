@@ -1,0 +1,20 @@
+[
+  {
+    "Case": "TaskHierarchy",
+    "Result": "PASS",
+    "Seconds": 42.203569,
+    "SourceCommit": "464e8e2e225c832f358837afdd28a0772e117a65"
+  },
+  {
+    "Case": "ManagementMode",
+    "Result": "PASS",
+    "Seconds": 27.1958457,
+    "SourceCommit": "464e8e2e225c832f358837afdd28a0772e117a65"
+  },
+  {
+    "Case": "Win11Stability",
+    "Result": "PASS",
+    "Seconds": 19.6334831,
+    "SourceCommit": "464e8e2e225c832f358837afdd28a0772e117a65"
+  }
+]

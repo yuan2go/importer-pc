@@ -8,7 +8,7 @@ using Ipc.Platform;
 
 static partial class Program
 {
-    static async Task VerifyHierarchyParameters(string root, string evidence, List<string> lines, bool baseline)
+    static async Task VerifyHierarchyParameters(string root, string evidence, List<string> lines, bool baseline, bool interactive = false)
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS HIERARCHY-PARAMETERS " + reason); }
         var initial = new SportmasterFlow().InitialConfiguration();
@@ -54,7 +54,13 @@ static partial class Program
             Check(model.Readers[0].Parameters.Single(p => p.Field.Key == "bcr-code").Value == "HEARTBEAT-0" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "task and heartbeat camera codes remain independent in the shared candidate");
             Check(model.Policy.StationCode == "HEARTBEAT-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-station-code").Value == "TASK-STATION", "task and heartbeat station codes remain independent");
         }
-        window.Close();
+        if (interactive)
+        {
+            await SetClient(window, 1092, 614);
+            var closed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
+        }
+        else window.Close();
         lines.Add("Shared native daily parameter form; synthetic candidate only, no save, connection or production configuration change.");
     }
 }

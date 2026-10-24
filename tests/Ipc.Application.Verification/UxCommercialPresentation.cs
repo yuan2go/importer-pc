@@ -25,6 +25,7 @@ static class UxCommercialPresentation
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
         await app.StartAsync(CancellationToken.None);
+        await ManagementModeFixture.Authorize(app);
         Check(app.EmitReferenceAt("left", "presentation-a", "00000123", "event-a"), "reference observation A enters left position");
         var first = await Wait(app, s => s.Operations.Any(x => x.AdmissionId == "presentation-a" && x.State == ParcelState.SlotResolved));
         var a = first.Operations.Single(x => x.AdmissionId == "presentation-a");
@@ -33,6 +34,7 @@ static class UxCommercialPresentation
         var b = baseline.Operations.Single(x => x.AdmissionId == "presentation-b");
         var original = Wire.Encode(a.Wcs!.Request);
         var proxy = DispatchProxy.Create<IManagementParcelFixture, UxPresentationProbe>(); var probe = (UxPresentationProbe)(object)proxy;
+        probe.ManagementStatus = ((IWorkstationAdministration)app).ManagementModeStatusAsync;
         var presented = baseline; probe.Read = () => Task.FromResult(presented);
         var ui = new SupplyStationViewModel(proxy); var classic = new ParcelViewModel(proxy, "test", "test");
         await ui.RefreshAsync(); await classic.RefreshAsync(); classic.SelectedPositionId = "left";
@@ -180,12 +182,12 @@ static class UxCommercialPresentation
             "bound feedback retains successful no-message read completion after Busy and duplicate rejection");
         vm.Message = "PendingRestart · SYNTHETIC identical receipt";
         await vm.RunAsync(() => { vm.Message = "PendingRestart · SYNTHETIC identical receipt"; return Task.CompletedTask; }, "保存表单");
-        Check(vm.Feedback == "PendingRestart · SYNTHETIC identical receipt", "same-text new receipt remains the exact command result instead of generic completion");
+        Check(vm.Message == "PendingRestart · SYNTHETIC identical receipt" && vm.Feedback == "已保存待重启 · SYNTHETIC identical receipt", "same-text new receipt retains raw status and its Chinese presentation instead of generic completion");
         release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         run = vm.RunAsync(() => release.Task, "慢历史读取");
         probe.Command = _ => Task.FromResult(new BusinessReceipt("Rejected", "SYNTHETIC independent pause refusal", baseline.Revision));
         await vm.PauseAsync(); release.SetResult(); await run;
-        Check(vm.Feedback.Contains("Rejected") && vm.Feedback.Contains("independent pause refusal"), "successful read cannot overwrite independent Pause result");
+        Check(vm.Message == "Rejected · SYNTHETIC independent pause refusal" && vm.Feedback == "已拒绝 · SYNTHETIC independent pause refusal" && vm.GlobalOperationFeedback.Contains("independent pause refusal"), "successful read cannot overwrite independent Pause result or its Chinese presentation");
         await vm.RunAsync(() => Task.FromException(new IOException("SYNTHETIC action failure")), "创建备份");
         Check(!vm.Busy && vm.Feedback.Contains("SYNTHETIC action failure"), "bound feedback retains the actual failed action after Busy ends");
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("SYNTHETIC post-action snapshot failure"));
@@ -208,7 +210,9 @@ static class UxCommercialPresentation
             var vm = new ParcelViewModel((IParcelApplication)(object)probe, "test", "test");
             vm.PropertyChanged += (_, _) => changedOnUi &= Environment.CurrentManagedThreadId == uiThread;
             var refresh = vm.RefreshAsync();
-            Check(entered.Wait(TimeSpan.FromSeconds(2)) && !refresh.IsCompleted && serviceThread != uiThread, "synchronously blocking snapshot service returns control without occupying the UI caller thread");
+            // Management status is read before the snapshot. Keep this synthetic
+            // dispatcher pumping while waiting for snapshot entry, as WPF does.
+            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(2))) && !refresh.IsCompleted && serviceThread != uiThread, "synchronously blocking snapshot service returns control without occupying the UI caller thread");
             var drain = vm.DrainAsync(); Check(!drain.IsCompleted, "close drain retains synchronous service ownership until actual completion");
             release.Set(); await refresh; await drain;
             Check(changedOnUi && vm.Fresh, "snapshot collection/property projection resumes on captured UI context");
@@ -231,6 +235,7 @@ static class UxCommercialPresentation
 
 public class UxPresentationProbe : DispatchProxy
 {
+    public Func<Task<ManagementModeStatus>> ManagementStatus = null!;
     public Func<Task<ParcelSnapshot>> Read = null!;
     public Func<long, Task<ParcelHistoryPage>> History = _ => Task.FromResult(new ParcelHistoryPage([], null));
     public Func<BusinessCommand, Task<BusinessReceipt>> Command = _ => throw new InvalidOperationException("Unexpected command");
@@ -238,6 +243,7 @@ public class UxPresentationProbe : DispatchProxy
     protected override object? Invoke(MethodInfo? method, object?[]? args) => method!.Name switch
     {
         "SnapshotAsync" => Read(),
+        "ManagementModeStatusAsync" => ManagementStatus(),
         "HistoryAsync" => History((long)args![0]!),
         "OperationAsync" => ReadOperation((string)args![0]!),
         "ReconcileAsync" => Reconcile((string)args![0]!),

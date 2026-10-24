@@ -74,6 +74,7 @@ foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $
 if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')){
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
+ if($TaskHierarchy){Get-ChildItem -LiteralPath $evidence -Filter 'chain-*.json' | Copy-Item -Destination $Output}
  if($AuditPerformance -and (Test-Path -LiteralPath (Join-Path $evidence 'R02-performance.json'))){Copy-Item -LiteralPath (Join-Path $evidence 'R02-performance.json') -Destination $Output}
  if($ParameterV3 -or $ManagementMode -or $CleanInstallBootstrap -or $StartupExperience -or $ParameterShellPolish -or $TaskHierarchy){Get-ChildItem -LiteralPath $evidence -Filter '*.png' | Copy-Item -Destination $Output}
  elseif($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}

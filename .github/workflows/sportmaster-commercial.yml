@@ -200,6 +200,7 @@ jobs:
             C:/scd-task-hierarchy/RUN.log
             C:/scd-task-hierarchy/WINDOWS-WPF.log
             C:/scd-task-hierarchy/*.png
+            C:/scd-task-hierarchy/chain-*.json
             C:/scd-evidence/acceptance.json
             C:/scd-evidence/environment.json
             C:/scd-evidence/media.json

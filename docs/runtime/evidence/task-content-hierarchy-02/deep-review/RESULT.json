@@ -1,0 +1,134 @@
+{
+  "status": "PASS_WITH_DECLARED_EXTERNAL_NOT_RUN",
+  "work_package": "WP-IPC-TASK-CONTENT-HIERARCHY-02",
+  "baseline_main": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
+  "inherited_pr_head": "37b27a9e7f8ef7f90bc9aa6ddf383c542daf5fc5",
+  "before_source": "3086b37e47c2d86d71bbc01627154f08e96d780a",
+  "production_change": "cf2ab078120242e0f5c50c08525381fabc812d4b",
+  "native_source": "de8bcb6c24c470fe34c2cf01e85b1a3ab4f5100b",
+  "portable_source": "13953c3ff6d4bb2409400fdbc98779c7d2ca8af6",
+  "source_equivalence": "No src or native fixture changes between de8bcb6 and 13953c3; later changes repair the portable test probe only.",
+  "native_build": "0 warnings / 0 errors; locked dependencies",
+  "native_pass_counts": {
+    "task-hierarchy": 202,
+    "task-hierarchy-parameters": 9,
+    "internal-pages": 25
+  },
+  "portable_pass_count_including_completion_line": 49,
+  "portable_build": "0 warnings / 0 errors; locked dependencies",
+  "native_assembly_informational_version": "1.0.0+de8bcb6c24c470fe34c2cf01e85b1a3ab4f5100b",
+  "native_binaries": [
+    {
+      "file": "Ipc.Application.Contracts.dll",
+      "sha256": "a6c1484f0a7bfb52443d9f5cd1adf19490c566545e6010a7397cc05eacddd4ff"
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "sha256": "72931ec5606ea0d0df454bb907aaf1c25692e89f5a2163c1372b7c54e059a48e"
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.dll",
+      "sha256": "339fc43a9d2b622c2f39fdf5c8d2ddf2fecf4c0e2964a6a4ca2e67cd69c5993c"
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.Desktop.dll",
+      "sha256": "7b7d55602b75ee06ebea56b866e139e71693a524755c1969fce0287374b755c1"
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.dll",
+      "sha256": "5427bfac94ff679640f7b022390e1630deac647c509d3e46814c03b1d88435e3"
+    },
+    {
+      "file": "Ipc.Components.dll",
+      "sha256": "a0f914cfdb406da10cf73615c32c8891de3ccf77fea548d19d9f8d7f1a2ef5ac"
+    },
+    {
+      "file": "Ipc.Desktop.UiVerification.dll",
+      "sha256": "81fc4a47e779f044fe3bb2969d5f4be85b039cc9f56e159336e57971e497ad01"
+    },
+    {
+      "file": "Ipc.Drivers.dll",
+      "sha256": "c7d94c30fe98293ca4698e62429c9b9acdbf69e1426a888cd3abdcb39229f1be"
+    },
+    {
+      "file": "Ipc.Integrations.dll",
+      "sha256": "2bdd8ee0b4e9165e35127fd2a4f9917ff5ebdca8988b472211823c8e83cb11e6"
+    },
+    {
+      "file": "Ipc.Platform.dll",
+      "sha256": "feed4cb858d342a7f5ced9c5acb48836ca258d78e22ca1d3f6ed6f26d66dd5da"
+    },
+    {
+      "file": "Ipc.Platform.Storage.dll",
+      "sha256": "422bdd8832356c1c6d345297be5b1b5c557ab3fac34bb792b7eec0e24dad9f6a"
+    },
+    {
+      "file": "Ipc.Reference.Protocol.dll",
+      "sha256": "729c315048eac571af6fc19125858c6f8892767906ac927fdbabaa251b6f9f65"
+    },
+    {
+      "file": "Ipc.Supply.Contracts.dll",
+      "sha256": "26d3627a4f74eaf68cce4c6495fa86666e0d4f30842a293bf4e0d96268981190"
+    },
+    {
+      "file": "Ipc.Supply.dll",
+      "sha256": "17ee6e7bd5d589223c022616ca9f76d9c9a649c91d1b5cf952db062c7474cf9a"
+    }
+  ],
+  "actual_windows_dpi": 1.25,
+  "target_client_dip": [
+    [
+      1366,
+      768
+    ],
+    [
+      1092,
+      614
+    ],
+    [
+      800,
+      420
+    ]
+  ],
+  "exact_geometry": "See native logs; Windows rounding retained.",
+  "os": {
+    "OsVersion": "10.0.22631.0",
+    "DisplayVersion": "23H2",
+    "OsArchitecture": "X64",
+    "Runtime": ".NET 10.0.13"
+  },
+  "published_entry_smoke": {
+    "source": "cf2ab078120242e0f5c50c08525381fabc812d4b",
+    "rid": "win-x64",
+    "self_contained": false,
+    "exit_code": 0,
+    "argument": "--environment-report",
+    "json_parsed": true,
+    "original_report_sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+    "desktop_dll_sha256": "f490b2c024a49dca9a6857b657365e6c09b8039c4aa8a2364176bec0a53b9a80",
+    "scope": "Published entry only; no installation or protected service startup."
+  },
+  "independent_expectations": "Literal scene values and business contract; real Application, manual observations, loopback RCS raw wire; no projected snapshot manufacture.",
+  "interactive_review": {
+    "final_native_source": "de8bcb6c24c470fe34c2cf01e85b1a3ab4f5100b",
+    "method": "Windows native AX + screen + mouse/keyboard; final query edit/focus/navigation/global receipt rechecked with frozen DLLs.",
+    "parameter_review": "Shared synthetic candidate: corrected right IPv4, visited left/right and retained independent TASK/HEARTBEAT codes; no save or device connection."
+  },
+  "retained_failures": [
+    "before/WINDOWS-WPF.log",
+    "login-refresh-race.log",
+    "publish-wrong-lock.log",
+    "presentation-obsolete-probe.log",
+    "presentation-obsolete-english.log",
+    "presentation-overlapping-lease.log",
+    "presentation-blocked-test-dispatcher.log"
+  ],
+  "not_run": [
+    "representative operator comparison / throughput thresholds",
+    "real cameras / SDK / RCS / physical parcels",
+    "target IPC and other OS DPI",
+    "installation / upgrade / UAC / field acceptance"
+  ],
+  "ci": "Existing mandatory gates retained; current PR checks are authoritative, previous run 40069505614 remains historical.",
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/97"
+}

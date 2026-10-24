@@ -1,0 +1,32 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Platform\Ipc.Platform.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 2.21 秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 51 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Components\Ipc.Components.csproj (用时 54 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 54 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 56 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 56 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 61 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 86 毫秒)。
+  Ipc.Platform -> D:\projects\importer-pc\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\projects\importer-pc\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\projects\importer-pc\src\Ipc.Assembly\bin\Release\net10.0\win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\projects\importer-pc\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc\src\Ipc.Desktop\bin\Release\net10.0-windows\win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc\.artifacts\hierarchy-review\publish\

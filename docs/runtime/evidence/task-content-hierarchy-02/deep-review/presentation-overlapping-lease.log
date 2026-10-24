@@ -1,0 +1,14 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-ddfcb687bbbc4865afa0a6e68c7061c6
+Unhandled exception. System.IO.IOException: The process cannot access the file 'D:\ImporterPc.Deployment\Machine\leases\EFA3CE7DEA7C1023FC63E0C3A3C9BB94792C5A8BE295CD81D57F625B2B889E34.lease' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at Ipc.Platform.ResourceLease..ctor(String root, IEnumerable`1 resources) in D:\projects\importer-pc\src\Ipc.Platform\Lifecycle.cs:line 102
+   at Ipc.Assembly.ParcelCapabilityFactory.Create(ParcelConfiguration c) in D:\projects\importer-pc\src\Ipc.Assembly\ParcelCapabilityFactory.cs:line 379
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelRuntime.cs:line 142
+   at UxCommercialPresentation.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\UxCommercialPresentation.cs:line 27
+   at UxCommercialPresentation.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\UxCommercialPresentation.cs:line 69
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\tests\Ipc.Application.Verification\Program.cs:line 29
+   at Program.<Main>(String[] args)

@@ -1,0 +1,59 @@
+PASS CHAIN observation queued: left/entity-l1
+PASS CHAIN observation queued: right/entity-r1
+PASS CHAIN same barcode has independent entities, operations and frozen requests
+PASS CHAIN raw response fields retain leading zeros; response quantity is not request quantity 1
+PASS CHAIN left acquisition/operation/frozen wire/raw HTTP receipt have one owner and one attempt, no physical-completion claim
+PASS CHAIN right acquisition/operation/frozen wire/raw HTTP receipt have one owner and one attempt, no physical-completion claim
+CAPTURE chain-same-code-normal-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS CHAIN observation queued: left/entity-l-invalid
+CAPTURE chain-invalid-after-slot-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN invalid-after-slot-800 result and barcode agree with independent scenario
+PASS CHAIN invalid-after-slot-800 barcode and next action fit the actual position viewport
+PASS CHAIN invalid-after-slot-800 original detail action remains reachable
+PASS CHAIN invalid new entity creates no operation/POST, cannot borrow old destination, right remains unchanged
+PASS CHAIN completed original request remains in history, not in the rejected new input's disabled detail action
+PASS CHAIN rejected input directs the operator to reachable history and explains filtering in Chinese
+PASS CHAIN observation queued: left/entity-l2
+PASS CHAIN missing optional wave/quantity never inherit L1 or request quantity; required task/SKU remain current
+CAPTURE chain-missing-fields-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN observation queued: left/entity-l3
+PASS CHAIN observation queued: right/entity-r2
+CAPTURE chain-pending-left-right-success-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN pending-left-right-success-800 result and barcode agree with independent scenario
+PASS CHAIN pending-left-right-success-800 barcode and next action fit the actual position viewport
+PASS CHAIN pending-left-right-success-800 original detail action remains reachable
+PASS CHAIN pending left does not block right and exposes no resend/continuation
+PASS CHAIN observation queued: left/entity-l4
+CAPTURE chain-rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN rejected-800 result and barcode agree with independent scenario
+PASS CHAIN rejected-800 barcode and next action fit the actual position viewport
+PASS CHAIN rejected-800 original detail action remains reachable
+PASS CHAIN explicit business rejection preserves original cause and healthy right result
+PASS CHAIN observation queued: left/entity-l5
+CAPTURE chain-unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN unknown-800 result and barcode agree with independent scenario
+PASS CHAIN unknown-800 barcode and next action fit the actual position viewport
+PASS CHAIN unknown-800 original detail action remains reachable
+PASS CHAIN unknown explains insufficient acceptance evidence in the primary result
+PASS CHAIN response missing required taskId leaves unknown custody on left, not a usable partial result or global pause
+PASS CHAIN unsupported RCS reconciliation cannot resend or clear unknown
+PASS CHAIN observation queued: left/entity-l6-blocked
+CAPTURE chain-blocked-after-unknown-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN blocked-after-unknown-800 result and barcode agree with independent scenario
+PASS CHAIN blocked-after-unknown-800 barcode and next action fit the actual position viewport
+PASS CHAIN blocked-after-unknown-800 original detail action remains reachable
+PASS CHAIN valid new barcode blocked by unknown retains original request owner
+PASS CHAIN blocked new input separates its admission outcome from current unresolved custody
+PASS CHAIN observation queued: right/entity-r-conflict
+PASS CHAIN real Application rejects invalid original-stage identity as Conflict, with no destination or repeat permission
+PASS CHAIN conflict explains incompatible receipt evidence, distinct from missing acceptance
+CAPTURE chain-conflict-right-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN pause transport rejection remains visible alongside a normal fresh unpaused snapshot
+CAPTURE chain-pause-rejected-logs-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN real persisted pause receipt arrives after navigation and remains visible on the receiving page
+CAPTURE chain-late-pause-history-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN latest resume intent owns its real Application rejection and pause remains in force
+CAPTURE chain-resume-guard-logs-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN read failure invalidates both actionable results without altering application custody
+CAPTURE chain-stale-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS CHAIN navigation, pause/resume and stale recovery send no additional destination requests

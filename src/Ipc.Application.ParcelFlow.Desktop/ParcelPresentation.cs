@@ -51,6 +51,12 @@ public static class ParcelPresentation
         _ => "本次输入已准入"
     };
     public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted;
+    public static string InputReason(ParcelInputSnapshot input) =>
+        input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
+        input.Reason == selection.Outcome + "; no operation or external intent created"
+            ? ChineseInterfaceText.Status(selection.Outcome) + "；本次未创建作业或请求。"
+            : input.Reason == "Position=" + input.PositionId + "; paused/faulted/unresolved responsibility or operator not authorized"
+                ? "本次准入条件未满足。" : ChineseInterfaceText.Notice(input.Reason);
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :
         "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n观察来源：" + input.Observation.DeviceId + " · " + input.Observation.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +

@@ -1,0 +1,261 @@
+{
+  "task": "WP-IPC-WIN11-24X7-STABILITY-AUDIT-01",
+  "generated_at_utc": "2026-10-24T06:00:02.977756+00:00",
+  "source_commit": "c91559f6f981a9f2c9f89bd5afc271089f0e9d8e",
+  "source_tree": "670e37021dd526dd1045efebc14e8a1ab4e82569",
+  "verdict": "NOT_QUALIFIED_FOR_WINDOWS11_24X7_DELIVERY",
+  "reasons": [
+    "Reproduced unaccounted queued source input after consumer failure",
+    "Reproduced diagnostic overflow fences current runtime with no existing management recovery",
+    "Native SDK lifecycle/isolation/accounting risks for that separate combination",
+    "Real Windows11/hardware/device/RCS/24h evidence and installation lifecycle absent"
+  ],
+  "versions": {
+    "Sportmaster": "1.11.3",
+    "DirectPlc": "1.5.2",
+    "WcsToPlc": "1.5.2",
+    "tcp-line": "1.0.1",
+    "sportmaster-rcs": "1.3.1",
+    "Hikrobot extension": "1.0.3",
+    "Hikrobot SDK boundary": "2.0.0.4"
+  },
+  "environment_class": "LINUX_ISOLATED_NOT_WINDOWS_NOT_REAL_DEVICE",
+  "tests": [
+    {
+      "name": "build-managed-release",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true",
+        "-m:1",
+        "-nr:false"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:37:25.433714+00:00",
+      "end_utc": "2026-10-24T05:37:41.812842+00:00",
+      "duration_seconds": 16.379206615998555,
+      "exit_code": 0,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "2fef2a2af977ad318f249a26aea61a0eaa56b51f7efe95348b42fc0573c84797"
+    },
+    {
+      "name": "resource-risks",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--resource-risks"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:38:19.527636+00:00",
+      "end_utc": "2026-10-24T05:38:21.347826+00:00",
+      "duration_seconds": 1.8202225470013218,
+      "exit_code": 0,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "9ef96261ccf086f20c48e61926773ee828a7e6b1c3766cb76fd8b47d53ddec78"
+    },
+    {
+      "name": "dual-camera-communication",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--dual-camera-communication"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:38:53.406872+00:00",
+      "end_utc": "2026-10-24T05:38:53.571401+00:00",
+      "duration_seconds": 0.16455546799988952,
+      "exit_code": -6,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "0ab769345e561e1ebfed2a4d9547f174a39b3a8fa74b2b4798f23f376ee07ab4"
+    },
+    {
+      "name": "dual-camera-loopback",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--dual-camera-communication"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:39:05.103583+00:00",
+      "end_utc": "2026-10-24T05:39:08.525815+00:00",
+      "duration_seconds": 3.4222700760001317,
+      "exit_code": 0,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "1d8ab0d78cc59e91fa3045c21f2a44b1bca0cbbcae5bf67a1cde3ae4eab1fdcc"
+    },
+    {
+      "name": "rcs-heartbeat",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--rcs-heartbeat"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:39:28.331108+00:00",
+      "end_utc": "2026-10-24T05:39:43.306961+00:00",
+      "duration_seconds": 14.97595563700088,
+      "exit_code": 0,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "79ef18affa75f3941a614d23043ef8dc7a4010bfeb71a43ce17ed0a7fce453df"
+    },
+    {
+      "name": "sportmaster-rcs",
+      "command": [
+        "/tmp/ipc-audit-dotnet/dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--sportmaster-rcs"
+      ],
+      "cwd": "/workspace/scratch/4d42c7c75922/importer-pc-audit",
+      "start_utc": "2026-10-24T05:40:02.832750+00:00",
+      "end_utc": "2026-10-24T05:40:10.088236+00:00",
+      "duration_seconds": 7.255519275000552,
+      "exit_code": 0,
+      "timed_out": false,
+      "environment_class": "LINUX_ISOLATED_MANAGED_NOT_WINDOWS_NOT_DEVICE",
+      "os": "Linux-6.18.55-x86_64-with-glibc2.39",
+      "log_sha256": "7e45ae1696365e0d361db5cade2d0430ea10b3ba7c9bfc3d8593feab80246a66"
+    }
+  ],
+  "new_probe_results": {
+    "runtime_result": "agent-runtime/probe-run-02/result.json",
+    "runtime_scope": "Exact runtime DLL bytes; 12 matched Ipc assemblies include Verification; manual/reference ports; no-op runtime identity preflight; synthetic AfterRawDurable exception; not a disk fault test; not WPF closing test",
+    "native_result": "agent-drivers/probe-execution.json",
+    "native_scope": "Exact Hikrobot source plus FakeApi; real vendor DLL NOT_RUN",
+    "sql_result": "agent-runtime/sql-scale-result.json",
+    "sql_scope": "Synthetic preseeded JSON and exact migration/query shape, Linux Python SQLite3.53.1, not .NET/Win11 business load or elapsed-day evidence",
+    "collector_syntax": "evidence/collector-syntax.json",
+    "collector_scope": "PowerShell7.6.8 Linux parser only; native Windows NOT_RUN"
+  },
+  "risks": [
+    {
+      "id": "R01",
+      "priority": "P0",
+      "evidence": "REPRODUCED_SYNTHETIC_BOUNDARY_AND_STATIC_PRODUCTION_PROPAGATION",
+      "scope": "shared runtime; source callback true is not business Admitted"
+    },
+    {
+      "id": "R02",
+      "priority": "P1",
+      "evidence": "REPRODUCED",
+      "scope": "current runtime instance; do not claim mandatory process restart"
+    },
+    {
+      "id": "R03",
+      "priority": "P1",
+      "evidence": "REPRODUCED_FAKE_API_CANCELLATION_BOUNDARY",
+      "scope": "Hikrobot only; real native hang/crash NOT_RUN"
+    },
+    {
+      "id": "R04",
+      "priority": "P1",
+      "evidence": "STATIC_REACHABLE",
+      "scope": "SDK missing one reader at startup"
+    },
+    {
+      "id": "R05",
+      "priority": "P1",
+      "evidence": "REPRODUCED_FAKE_API_ACCOUNTING",
+      "scope": "SDK callback overflow"
+    },
+    {
+      "id": "R06",
+      "priority": "P1",
+      "evidence": "STATIC_REACHABLE_SLOW_IO_PROPAGATION",
+      "scope": "shared overloadSync/gate; no proved cyclic deadlock"
+    },
+    {
+      "id": "R07",
+      "priority": "P1_DELIVERY_GATE",
+      "evidence": "STATIC_CONTRACT_GAP",
+      "scope": "RCS Unknown correctly preserved; authoritative reconciliation missing"
+    },
+    {
+      "id": "R08",
+      "priority": "P1_CAPACITY_GATE",
+      "evidence": "STATIC_AND_SQL_MICROEXPERIMENT",
+      "scope": "snapshots/history/startup; target performance NOT_RUN"
+    },
+    {
+      "id": "R09",
+      "priority": "P2_OR_P1_BY_UI_BUDGET",
+      "evidence": "STATIC_UI_REACHABLE",
+      "scope": "synchronous authorization prefix, real delay NOT_MEASURED"
+    },
+    {
+      "id": "R10",
+      "priority": "P1_DELIVERY_GATE",
+      "evidence": "STATIC_CAPACITY_POLICY",
+      "scope": "disk/finite numeric IDs/backup windows; not MaximumOperations total-count exhaustion"
+    },
+    {
+      "id": "R11",
+      "priority": "P1_DELIVERY_GATE",
+      "evidence": "AGGREGATE_ACTIVE_FLAG_REPRODUCED_AND_MONITORING_GAP",
+      "scope": "UI/task/device/business health separately"
+    },
+    {
+      "id": "R12",
+      "priority": "P1_OR_P2",
+      "evidence": "STATIC_CLOSING_IO_BOUNDARY",
+      "scope": "no unconditional deadline for native or file I/O"
+    }
+  ],
+  "not_run": [
+    "Windows11 native WPF load",
+    "Normal independent-rate 24h",
+    "72h extended run",
+    "Real dual TCP cameras/network",
+    "Real Hikrobot SDK and dual cameras",
+    "Real RCS authority-based Unknown recovery",
+    "Physical disk slow/full/failure",
+    "Actual target install/repair/uninstall/migration",
+    "Lock/unlock/RDP/monitor/minimize matrix",
+    "Target per-parcel storage growth",
+    "Maximum-retention cold recovery"
+  ],
+  "not_measured": [
+    "Current-main exact Dispatcher P95/P99",
+    "Current-main business latency distribution under open-loop load",
+    "Queue oldest age time series",
+    "Managed GC/heap long-term trend",
+    "Target GDI/USER/handle long-term trend",
+    "Target disk I/O latency and WAL worst case"
+  ],
+  "non_claims": [
+    "No proved continuous memory leak",
+    "No Windows or hardware never-crash guarantee",
+    "No 10000 total-parcel cap claim",
+    "No process-alive or heartbeat-only health claim",
+    "No sum of short runs as soak duration"
+  ],
+  "ci": {
+    "run": 40060123734,
+    "head_sha": "758905d2e79fe31302f7d920e31fc08cc643e0fd",
+    "tested_merge_sha": "4396162517520776480a532bc469dd32ab2355ab",
+    "tree_matches_main": true,
+    "os": "Windows Server 2025 Datacenter 10.0.26100",
+    "engineering_gate": "PASS",
+    "production_gate": "FAIL",
+    "real_installation": "NOT_RUN",
+    "authenticode": "NOT_SIGNED",
+    "equipment": "BLOCKED"
+  }
+}

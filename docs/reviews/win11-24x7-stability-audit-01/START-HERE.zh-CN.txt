@@ -1,0 +1,76 @@
+WP-IPC-WIN11-24X7-STABILITY-AUDIT-01
+只读独立审查 · 2026-10-24 · importer-pc
+
+结论
+当前不能按“Windows 11 下已通过24×7持续作业验收”交付。既有已复现的输入责任收口与诊断恢复缺口，也缺少真实Windows11、设备、RCS合同、目标负载和完整24小时正常段证据。完整裁决、风险行号、修复工作包和容量预算见PDF及audit-report.zh-CN.txt。本包中任何脚本退出0、CI工程PASS或秒级探针结果均不等于24小时通过。
+
+固定身份
+main：c91559f6f981a9f2c9f89bd5afc271089f0e9d8e
+tree：670e37021dd526dd1045efebc14e8a1ab4e82569
+工作区未修改：见evidence/final-baseline.json。
+本轮实际环境：Linux x64 / .NET SDK10.0.402 / runtime10.0.13。
+现场Windows11 Edition/build、硬件、驱动/SDK与实际配置尚未提供。
+当前源码Sportmaster1.11.3；DirectPlc/WcsToPlc1.5.2；TCP1.0.1；RCS1.3.1；Hikrobot扩展1.0.3，SDK边界2.0.0.4。
+同源码tree的CI产物SourceCommit仍为4396162517520776480a532bc469dd32ab2355ab，不能改写成main SHA。公开旧SM1.10.2包属于c9e482a3。安装包EXE本体本轮未独立下载重算；CI证据ZIP已重算。详见审查报告与CI回执。
+
+目录
+1. audit-report.zh-CN.txt：完整报告的文本版本。
+2. report-source-references.json：固定SHA的代码路径/行号与可点击URL。
+3. evidence/audit-summary.json：核心裁决、环境、已执行与NOT_RUN矩阵。
+4. evidence/*.json与*.log：本轮构建/测试命令、UTC起止、实际时长、退出码、日志SHA；包括首次环境失败。
+5. evidence/ci40060123734/：从实际下载的CI证据提取的门禁、安装、核心/WPF等结果；production-gate为FAIL。
+6. agent-runtime/：新增运行时探针源、程序集比对、run01/run02原记录、SQL规模实验及结果。
+7. agent-drivers/：新增SDK FakeApi探针源/记录，loopback_load.py及自测原记录。
+8. agent-wpf/：Collect-Win11Stability.ps1与README-collector.md。
+9. SHA256SUMS.json：包内每份交付文件的SHA256。ZIP自身哈希在外部交付记录中，清单不包含自身。
+
+最少使用顺序
+先按报告关闭阻断并冻结实际Release/扩展/SDK/配置及目标机身份。
+先阅读agent-wpf/README-collector.md和agent-drivers/LOOPBACK-README.md。
+Windows采集脚本仅附着已运行PID，不启动/停止应用、不改配置或策略、不接设备。先在隔离Windows11做1分钟自身预检，核对PID/窗口、CSV、身份和退出行为，再用于正式实验。
+loopback夹具只监听127.0.0.1；按受支持的隔离Simulation装配方式配置同版TCP/RCS实现，保留原资格/配置守卫，不指向生产安装。真实SDK和设备必须另验。
+
+Windows采集示例（在agent-wpf目录运行，替换PID/路径/实际SHA）
+.\Collect-Win11Stability.ps1 -TargetProcessId 1234 -DataRoot D:\isolated\sportmaster-data -OutputDirectory D:\audits\sm-tcp-001 -DurationHours 24.05 -ExpectedSourceCommit c91559f6f981a9f2c9f89bd5afc271089f0e9d8e -Combination 'SM / tcp-line x2 / RCS exact identity recorded separately'
+
+声明的ExpectedSourceCommit必须与实际application-release.json、EXE和扩展身份一致；若用CI介质应声明其4396162 SourceCommit。不得为了匹配声明修改介质元数据。采集器输出永远是EVIDENCE_ONLY_NOT_A_PASS；WM_NULL不是精确Dispatcher延迟，也不是业务健康。
+
+合成双TCP正常24小时示例（在agent-drivers目录运行）
+python .\loopback_load.py --output D:\IpcAudit\load-normal-001 --duration 86520 --warmup 120 --left-hz 1 --right-hz 1
+
+每侧1/s只是示例，替换为实际额定/峰值。duration包含warmup；120秒预热后才有86400秒计划负载。必须预热结束前两侧Reader、共享能力与准入守卫均Ready；脚本不检测Ready。如果晚于预热、断连或人工干预，本段不能宣称完整正常24小时。
+脚本到点关闭连接，没有独立尾部排空参数。正常负载窗口结束、尾部核对、关闭产生的事件应分别记录，不能丢弃末笔和在途请求。不能把脚本运行时间当业务连续可用时间。
+空闲、突发、持续积压、故障恢复使用不同输出目录和独立实验段。脚本README有慢RCS/丢回复/错关联/相机Close/非法帧示例；Close不等于静默黑洞，合成RCS不等于现场RCS。
+
+必须补充的业务与原生指标
+发生器计划/写出输入 + 应用InputObserved/接纳/拒绝/完成/未决 + RCS接收/回应账逐笔关联，使用position、barcode、Epoch/源事件、AdmissionId、requestId与payload hash；不得仅凭HTTP2xx、socket写出或UI数据判完成。
+准确Dispatcher投递/执行时间、队列深度与最老等待、输入到自身结果延迟目前不由附带外部采集器提供。需复用现有测试入口或后续加入有界只读指标；缺失须标NOT_MEASURED。
+托管GC/堆/暂停用对应版本dotnet-counters附着现有PID；真实I/O延迟、System/Application事件用PerfMon/WPR/事件日志。ProcDump挂起/异常转储单独记录干预、限制数量与容量。
+不强制GC，不自动重启，不自动重发，不清理原账来取得通过。
+
+复现本轮短时托管验证
+在新的隔离克隆检出上述SHA，使用global.json指定SDK与锁文件：
+dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --resource-risks
+dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication
+dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --rcs-heartbeat
+dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --sportmaster-rcs
+只有在改动风险需要时复用，不要为数量重复运行无关测试。完整本轮argv与UTC见各JSON；Linux loopback第一次失败为执行环境socket权限，后续本机loopback运行通过。
+
+探针复现边界
+agent-runtime/probe保存本轮原始绝对路径/项目与结果，不是现场安装器。包含Verification测试程序集；RuntimeIdentityPreflight被置为隔离no-op，端口manual/reference，故障由Boundary注入。它证明真实Runtime/Platform/Storage字节中的异常退出/残队/诊断行为，不覆盖生产身份门禁、真实磁盘或设备。重放请复制探针到新证据目录并调整原绝对路径到新的固定克隆/Release输出，不覆盖原始证据。
+agent-drivers/probe通过AuditRepo与AuditPlatform参数链接冻结Hikrobot源，使用FakeApi，不加载厂商SDK。完整实际命令在probe-execution.json。
+sql_scale_probe.py是Linux/Python SQLite微实验，原路径及输出拒绝覆盖，数据是人工JSON。若重放，复制到新目录并调整REPO；不能用数据库大小估真实每件成本，也不能把预置100k等同实际跑相应天数。
+scripts/run_record.py保留本轮Linux缓存/SDK路径，仅为执行证据工具；不应直接当Windows现场采集器。
+
+证据优先级与更正
+总报告及audit-summary.json为最终裁决。子工作笔记是审查底稿，可能保留较早措辞；以下最终限定优先：
+- R01第二笔仅来源接收/内存入队true，尚未业务Admitted；Dispose报告终结错误后释放，不是无错误关闭；没有验证WPF首次关窗。
+- R02当前ParcelRuntime实例没有现有管理恢复入口；不能绝对称必须重启进程或Windows。
+- 生产T3/原件存储异常可达同一worker退出链是静态证据，物理磁盘故障NOT_RUN。
+- 容量检查是至少1秒间隔的节流，实际受gate和I/O影响，不是硬性1秒发现SLA。
+- 当前DirectPlc/WcsToPlc源码版本是1.5.2。
+
+包完整性与隐私
+没有打包测试临时凭据/机器身份/SQLite原库、可重建的人工大DB、bin/obj、下载SDK/字体/运行时。所需查询原始样本、运行结果与哈希已保留；真实现场数据本轮不存在。所有后续真实转储和业务原件应在获准受保护目录保留。
+本包新增脚本与报告不会改动仓库设计/业务文件、现有测试或历史证据；未来修复另开工作包，先更新当前设计，再做必要代码变更与风险验证。

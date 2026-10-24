@@ -1,5 +1,7 @@
 > 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。基于main c91559f6，保留PR93～96成果。01页面层级和CI记录保持原身份，默认位布局、跨页反馈和异常夹具由02增量替代。
 
+> 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
+
 > PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。
 
 > 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)、[PR93首次配置CI续修](runtime/validation/dual-camera-first-configuration-ci-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。

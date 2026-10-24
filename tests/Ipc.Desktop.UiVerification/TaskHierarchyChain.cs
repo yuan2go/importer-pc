@@ -171,7 +171,7 @@ static partial class Program
         var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
         Check(Inside(rows, client) && firstRow.ActualHeight >= 32 &&
             firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight,
-            "minimum history viewport retains a complete result row with late pause receipt and unresolved custody visible");
+            $"minimum history viewport retains a complete result row with late pause receipt and unresolved custody visible: grid={rows.ActualHeight:F2}, rowTop={firstRow.TranslatePoint(new Point(), rows).Y:F2}, rowHeight={firstRow.ActualHeight:F2}, inside={Inside(rows, client)}");
         transport.HoldPause = false; Click(window, "日志查询"); await Flush();
         // Keep unresolved old receipt out of a new global intent; real Resume is rejected
         // because both positions now carry unsettled custody.

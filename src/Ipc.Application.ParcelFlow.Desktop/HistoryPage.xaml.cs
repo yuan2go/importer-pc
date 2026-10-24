@@ -22,7 +22,10 @@ public partial class HistoryPage : UserControl
             HistoryStatusLine.ActualHeight + HistoryStatusLine.Margin.Top + HistoryStatusLine.Margin.Bottom;
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
-        var filterBudget = Math.Max(0, ActualHeight - fixedHeight - header - row - 2);
+        var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;
+        var resultHeight = Math.Ceiling((header + row + HistoryRows.BorderThickness.Top + HistoryRows.BorderThickness.Bottom) * dpi) / dpi;
+        // Header/cell borders snap independently at fractional DPI; reserve two pixels.
+        var filterBudget = Math.Max(0, ActualHeight - fixedHeight - resultHeight - 2 / dpi);
         HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 72 : Math.Min(240, ActualHeight * .35), filterBudget);
     }
     void ClearFilters_Click(object sender, RoutedEventArgs e)

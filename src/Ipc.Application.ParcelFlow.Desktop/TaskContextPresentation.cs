@@ -10,10 +10,14 @@ public partial class ParcelViewModel
     long feedbackScope, messageScope;
     long? runningFeedbackScope;
     Exception? globalOperationError;
+    bool globalReceiptCommitted;
     public void SetFeedbackContext(string context)
     {
         if (feedbackContext == context) return;
         feedbackContext = context; feedbackScope++;
+        // A durable successful receipt has already been shown on its originating
+        // page. Navigation can retire it; rejected/unknown/conflict replies persist.
+        if (globalReceiptCommitted) SetGlobalFeedback("");
         Changed(nameof(TaskFeedback));
     }
     public string GlobalOperationFeedback { get; private set; } = "";
@@ -21,6 +25,7 @@ public partial class ParcelViewModel
     long BeginGlobalOperation(string label)
     {
         var generation = ++globalOperationGeneration;
+        globalReceiptCommitted = false;
         SetGlobalFeedback("正在" + label + "… 以应用回执和最新状态为准。");
         return generation;
     }
@@ -29,11 +34,12 @@ public partial class ParcelViewModel
         GlobalOperationFeedback = value;
         Changed(nameof(GlobalOperationFeedback)); Changed(nameof(HasGlobalOperationFeedback));
     }
-    void CompleteGlobalOperation(long generation, string label, string result)
+    void CompleteGlobalOperation(long generation, string label, string result, bool committed = false)
     {
         // Independent Pause may finish while another command/read is still running.
         // Only the latest global intent owns this banner; page reads never clear it.
         if (generation != globalOperationGeneration) return;
+        globalReceiptCommitted = committed;
         globalMessageRevision = messageRevision + 1; Message = result;
         SetGlobalFeedback(label + " · " + ChineseInterfaceText.Message(result));
         Changed(nameof(TaskFeedback));

@@ -15,8 +15,8 @@
       <TextBox x:Name="CurrentSlot" Text="{Binding Slot,Mode=OneWay}" FontSize="{Binding SlotFontSize}" Foreground="{Binding Presentation.Foreground}" FontWeight="SemiBold" MinHeight="48" Margin="0" AutomationProperties.Name="本次有效格口，可选择复制">
        <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource StationValue}"><Setter Property="MaxHeight" Value="104"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="64"/></DataTrigger><DataTrigger Binding="{Binding CurrentTaskAvailable}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
       </TextBox>
-      <TextBox x:Name="AttentionReason" Text="{Binding AttentionReason,Mode=OneWay}" Foreground="{Binding Presentation.Foreground}" MaxHeight="64" Margin="0,4,0,0" AutomationProperties.Name="本位原因，可选择复制">
-       <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource StationValue}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBox.Style>
+      <TextBox x:Name="AttentionReason" Text="{Binding AttentionReason,Mode=OneWay}" Foreground="{Binding Presentation.Foreground}" Margin="0,4,0,0" AutomationProperties.Name="本位原因，可选择复制">
+       <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource StationValue}"><Setter Property="MaxHeight" Value="64"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="32"/></DataTrigger><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBox.Style>
       </TextBox>
       <TextBlock x:Name="NextStep" Text="{Binding NextStep}" Foreground="{Binding Presentation.Foreground}" FontSize="13" TextWrapping="Wrap" Margin="0,4,0,0"/>
       <TextBlock x:Name="RetainedResponsibility" Text="{Binding OriginalResultSummary}" ToolTip="{Binding OriginalResponsibility}" Foreground="{StaticResource Warning}" TextWrapping="Wrap" Style="{StaticResource StationNotice}"/>
@@ -24,7 +24,7 @@
     </Border>
     <StackPanel><StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding HasCurrentInput}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
      <TextBlock Text="本次条码" Style="{StaticResource StationLabel}"/>
-     <TextBox x:Name="CurrentBarcode" Text="{Binding Barcode,Mode=OneWay}" Style="{StaticResource StationValue}" FontSize="24" FontWeight="SemiBold" MinHeight="32" MaxHeight="72" Margin="0" AutomationProperties.Name="本次条码，可选择复制"/>
+     <TextBox x:Name="CurrentBarcode" Text="{Binding Barcode,Mode=OneWay}" FontSize="24" FontWeight="SemiBold" MinHeight="36" Margin="0" AutomationProperties.Name="本次条码，可选择复制"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource StationValue}"><Setter Property="MaxHeight" Value="72"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="48"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox>
      <TextBlock x:Name="ScanSummary" Text="{Binding ScanSummary}" ToolTip="{Binding SelectionSummary}" FontSize="12" Foreground="{StaticResource StationMuted}" Margin="0,4,0,8"/>
     </StackPanel>
     <Grid x:Name="TaskFields" Margin="0,8,0,0"><Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding CurrentTaskAvailable}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>

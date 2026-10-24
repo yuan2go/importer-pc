@@ -226,7 +226,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
                 var s = retry == 0 && Snapshot is { } displayed ? displayed : await ServiceAsync(application.SnapshotAsync).WaitAsync(TimeSpan.FromSeconds(2));
                 var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause")));
                 if (r.Status == "Conflict") continue;
-                CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason);
+                CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason, r.Status == "Persisted");
                 try { await RefreshAsync().WaitAsync(TimeSpan.FromSeconds(2)); }
                 catch (Exception ex) { MarkReadFailure(ex.Message); CompleteGlobalOperation(generation, "暂停供包", "软件暂停命令回执：" + r.Status + " · " + r.Reason + "；快照读取未恢复，请核对状态。"); }
                 return;
@@ -243,7 +243,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         {
             var s = RequireFreshSnapshot();
             var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, kind, owner)));
-            if (global) CompleteGlobalOperation(generation, "恢复供包", r.Status + " · " + r.Reason);
+            if (global) CompleteGlobalOperation(generation, "恢复供包", r.Status + " · " + r.Reason, r.Status == "Persisted");
             else Message = r.Status + " · " + r.Reason;
         }
         catch (Exception ex)

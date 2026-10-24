@@ -58,6 +58,8 @@ static partial class Program
         probe.Command = _ => Task.FromResult(new BusinessReceipt("Rejected", "合成恢复条件不足", vm.Snapshot!.Revision));
         await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复供包"); await Flush();
         Check(((TextBox)window.FindName("GlobalOperationFeedback")).Text.Contains("合成恢复条件不足"), "resume rejection replaces previous pause result");
+        navigate("工作台"); navigate("日志查询"); await RefreshUntil(() => host.Content is SoftwareLogControl);
+        Check(vm.GlobalOperationFeedback.Contains("合成恢复条件不足"), "unresolved global rejection persists across navigation");
         var resumeStarted = new TaskCompletionSource();
         var resumeResult = new TaskCompletionSource<BusinessReceipt>();
         probe.Command = command =>
@@ -79,6 +81,12 @@ static partial class Program
         var pendingRead = vm.RunAsync(() => lateRead.Task, "合成跨页读取");
         navigate("工作台"); await Flush(); lateRead.SetResult(); await pendingRead; await Flush();
         Check(vm.TaskFeedback == "", "late result from a previous page does not become current page feedback");
+        probe.Command = _ => Task.FromResult(new BusinessReceipt("Persisted", "应用已记录该操作", vm.Snapshot!.Revision));
+        await vm.PauseAsync(); await Flush();
+        Check(vm.HasGlobalOperationFeedback, "durable success is visible on the originating page");
+        navigate("日志查询"); await RefreshUntil(() => host.Content is SoftwareLogControl);
+        Check(!vm.HasGlobalOperationFeedback, "navigation retires already committed success without hiding unresolved results; fresh=" + vm.Fresh + "; page=" + (vm as SupplyStationViewModel)?.SelectedPage + "; receipt=" + vm.GlobalOperationFeedback);
+        probe.Command = null; navigate("工作台"); await Flush();
         if (vm is not SupplyStationViewModel station) return;
 
         navigate("工作台"); await Task.Delay(80); await Flush();

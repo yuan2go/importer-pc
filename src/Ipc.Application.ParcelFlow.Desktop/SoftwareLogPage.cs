@@ -17,7 +17,7 @@ public sealed class SoftwareLogControl : UserControl
     readonly TextBox detail = new() { IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
     readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap };
     readonly StackPanel filters = new();
-    readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, FontSize = 12, MaxHeight = 36, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Padding = new(0), MinHeight = 0, Background = System.Windows.Media.Brushes.Transparent, FontSize = 12, MaxHeight = 36, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Expander advancedFilters;
     readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel;
     readonly Expander detailPanel, diagnostics;
@@ -65,6 +65,7 @@ public sealed class SoftwareLogControl : UserControl
         fields.Children.Add(Field("开始时间（本地）", from, 200)); fields.Children.Add(Field("结束时间（不含）", to, 200)); fields.Children.Add(Field("来源", source, 140));
         extra.Children.Add(regex); var contextFields = new WrapPanel(); contextFields.Children.Add(Field("前后上下文条数", context, 140)); extra.Children.Add(contextFields);
         advancedFilters = new Expander { Header = "时间、更多筛选、上下文与导出", Content = new ScrollViewer { Content = extra, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
+        advancedFilters.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
         DockPanel.SetDock(advancedFilters, Dock.Bottom); header.Children.Insert(header.Children.Count - 1, advancedFilters);
         DockPanel.SetDock(effectiveRange, Dock.Bottom); header.Children.Insert(header.Children.Count - 2, effectiveRange);
         System.Windows.Automation.AutomationProperties.SetName(effectiveRange, "日志当前查询范围");
@@ -76,6 +77,7 @@ public sealed class SoftwareLogControl : UserControl
         System.Windows.Automation.AutomationProperties.SetLiveSetting(status, System.Windows.Automation.AutomationLiveSetting.Polite);
         diagnostics = new Expander { Header = "诊断详情", Content = new ScrollViewer { Content = diagnosticText, MaxHeight = 90, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }, Visibility = Visibility.Collapsed }; footer.Children.Add(diagnostics);
         detailPanel = new Expander { Header = "完整日志与上下文", Content = detail, Visibility = Visibility.Collapsed, Margin = new(0, 8, 0, 0) }; DockPanel.SetDock(detailPanel, Dock.Bottom); root.Children.Add(detailPanel);
+        detailPanel.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
         results.Style = (Style)FindResource("QueryResultsGrid");
         var cellStyle = (Style)FindResource("QueryCellText");
         results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 220, ElementStyle = cellStyle });

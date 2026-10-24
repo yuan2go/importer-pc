@@ -2,7 +2,9 @@
 
 2026-10-24，基线main `c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b`，开发工作树 `D:/projects/importer-pc-stability`。本记录只覆盖本轮代码和合成证据；原审查、旧发布、REQ/BR/CAPI/D/RV保持各自身份。固定Release的SourceCommit、SHA256、启动退出码和原始证据清单在[证据目录](../evidence/win11-24x7-stability-remediation-01/README.md)。
 
-本机：Windows 11家庭中文版10.0.22631，AMD Ryzen 5 3550H，4物理核/8逻辑线程，约16GB RAM，.NET 10.0.11 x64。全部工程、临时、测试、数据在D盘；未改变全机策略、ACL或生产设备。用户目标为4核/8GB、双位合计30～60件/分钟、已结明细保留7～30天。当前主机不是8GB目标机。
+2026-10-24随后PR97由其他获授权工作合入main `c310705b5a927c90e8f6bb93de908b2fea36e826`，本分支整合为 `ac085f3`，保留有效格口/跨页回执/意图和导航代次保护。只把新任务链夹具的内置RCS版本改为本发布1.3.2，原断言不改；PR98仍独立，不代合并。
+
+本机：Windows 11家庭中文版10.0.22631，AMD Ryzen 5 3550H，4物理核/8逻辑线程，约16GB RAM，.NET 10.0.11 x64。上述.NET10.0.11为开发/原生夹具宿主；自包含固定EXE实际报告.NET10.0.13，独立见ENVIRONMENT.json。全部工程、临时、测试、数据在D盘；未改变全机策略、ACL或生产设备。用户目标为4核/8GB、双位合计30～60件/分钟、已结明细保留7～30天。当前主机不是8GB目标机。
 
 ## 已执行与受阻
 
@@ -14,7 +16,7 @@
 |快照 / 维护 / 升级冲突 / 窗口生命周期 / 版本兼容 / Windows门禁|对应受影响选择器PASS。升级测试发现并修复ActivationFailed后相同候选无法重新产生激活意图的实际缺陷；断言未删除。|
 |海康Probe self-test|35 checks PASS：模拟native阻塞/取消/帧守恒/缺机/停止持有句柄。真实厂商DLL、双机、已入native后的最长阻塞时间NOT_RUN。|
 |原生WPF `--win11-stability`|PASS：实际窗口显示/核对持久未决输入、7天参数进入共模、独立线程捕获1400ms真实Dispatcher卡顿、恢复、关闭及探针注销。合成业务，非设备验收。|
-|Python采集器/兼容/发布文档|4、17、2项对应测试PASS；短时工具执行和规模预置不算24h。|
+|Python采集器/兼容/发布文档|5、17、2项对应测试PASS；短时工具执行和规模预置不算24h。|
 |`--parameter-refactor`整体|FAIL_ENVIRONMENT：参数重构段通过，后续本机显示继承用例在受保护 `D:/ImporterPc.Deployment/UserData/<SID>/presentation` 遭AccessDenied；未改ACL。新增保留天数另由原生和应用测试覆盖，不能把该选择器整体标PASS。|
 |commercial-productization完整恢复|BLOCKED：40项先行断言通过，RestoreAsync因安装者权限拒绝；完整受保护恢复/接管需获授权维护环境。|
 |历史 `--audit03-rcs`|FAIL_STALE_EXPECTATION：旧测试预期恢复后能Resume再形成Blocked作业；当前受保护恢复隔离在Resume前拒绝。原断言保留，不能绕过交接门禁以跑后续流程。当前RCS恢复/退役由上述新旧RCS专项覆盖；该旧选择器仍未整体通过。|
@@ -45,3 +47,5 @@
 |R12|查询/导出/CTS/订阅/后台及真实停止任务排空，超时保有租约PASS|真实SDK永久阻塞与现场挂起处置NOT_RUN|
 
 运行、SQL9升级/回退、保留天数、到期删除、完整备份、Windows ACL/SDK/NIC/锁屏/RDP/休眠/更新政策和采集命令见[运行指南](../win11-24x7-stability-remediation-01.md)。缺设备/合同/执行时间的项目保持NOT_RUN/BLOCKED，不以CI、模拟、加速预置或重启片段累计填补。工作包保留待资格验证状态。
+
+整合PR97后的受影响回归（win11-stability、sportmaster-rcs、ux-commercial-presentation、sportmaster-window-lifecycle、原生task-hierarchy）通过；不将旧CI/旧冻结结果扩张至该树。旧精确扩展绑定须按现有启动维护/完整候选/兼容检查完成受控版本转换，缺原版本/资格时拒绝启动，不能把旧冻结请求的版本、ID和报文改成新值以消除阻断。

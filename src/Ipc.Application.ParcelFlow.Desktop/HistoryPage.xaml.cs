@@ -6,13 +6,24 @@ public partial class HistoryPage : UserControl
     public HistoryPage()
     {
         InitializeComponent();
-        SizeChanged += (_, _) =>
-        {
-            var shortPage = ActualHeight < 500;
-            HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
-            HistoryHeading.FontSize = UiTypography.Body;
-            HistoryFilterScroll.MaxHeight = shortPage ? 72 : Math.Min(240, ActualHeight * .35);
-        };
+        SizeChanged += (_, _) => FitQueryViewport();
+        HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
+        HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
+    }
+    void FitQueryViewport()
+    {
+        var shortPage = ActualHeight < 500;
+        HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
+        HistoryHeading.FontSize = UiTypography.Body;
+        var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
+        var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
+        var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom +
+            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom +
+            HistoryStatusLine.ActualHeight + HistoryStatusLine.Margin.Top + HistoryStatusLine.Margin.Bottom;
+        // Global receipts and custody reasons change the page's available height.
+        // Keep the real header and one full result row; filters retain their own scroll.
+        var filterBudget = Math.Max(0, ActualHeight - fixedHeight - header - row - 2);
+        HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 72 : Math.Min(240, ActualHeight * .35), filterBudget);
     }
     void ClearFilters_Click(object sender, RoutedEventArgs e)
     {

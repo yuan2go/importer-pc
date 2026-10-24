@@ -1,0 +1,92 @@
+2026-10-24 历史到期清理查询：合并后独立复核
+
+结论
+开始核实时，PR99及后续整合PR100已由其他获授权工作合并。main为
+12a7cbdc11839dfae7eec88f9514e8559694bdd0；性能修复实际提交为
+464e8e2e225c832f358837afdd28a0772e117a65。没有重复修改产品代码或重新合并。
+本轮在独立D盘工作树复核现有修复，未发现本项查询缺陷仍然存在或本项安全条件被削弱。
+原工作区与未跟踪附件未改动。
+
+状态与验证身份
+PR99: https://github.com/yuan2go/importer-pc/pull/99
+原HEAD 5074660fd10e7a91d81923edac782891e377a519，合并提交d7166973d8b5157ca643046d595d48817339acd8。
+性能review discussion_r4366762288现为resolved；原自动审查提交为COMMENTED，不能称为最终HEAD的新批准。
+修复随PR100合入: https://github.com/yuan2go/importer-pc/pull/100
+其最终HEAD ff95d3a384a9440b35d8a3a23aa89d1428b292db，实际CI源码
+6cebb3015f5a975bb2cd158b5b772ac7fbb60afc。
+CI: https://github.com/yuan2go/importer-pc/actions/runs/40096864628
+aqa01-boundaries及frozen-sportmaster均success，安装器打包步骤success。
+合并main与CI源码完整tree均为94ebc204eb8898fe239e8941d9696e6b807b25bd，git diff为空。
+安装器SourceCommit和Payload.SourceCommit均为该CI源码，实际安装NOT_RUN。
+原PR99 CI40084796638/dd0c2f20保持原身份，不作为性能修复后的验证。
+
+实际计划、索引与复杂度
+探针从原HEAD及main直接抽取RetentionClear，使用实际SQL1-9及当前构建的SQLite3.54.0。
+DB9有parcel_audit_owner_at(owner,at)、InputObserved OperationId部分表达式索引、
+parcel_commands_pending(id)部分索引及commands主键，但没有匹配CommandAdmitted的JSON Owner索引。
+原SQL实际计划含SCAN a，按每个候选操作重复扫描审计；此项成本约O(K*A)，
+K为候选数，A为审计条数，二者随历史一起增长时会产生二次增长项。
+现实现每轮从原审计及命令账派生TEMP待决owner集合，按owner主键查找。
+准备阶段仍含一次SCAN a及command主键join，逐作业阶段改为
+SEARCH temp.parcel_retention_pending_owners USING PRIMARY KEY (owner=?)。
+此项成本由一次准备约O(A+M*log C+M*log P)加K次O(log P)查找组成，
+M是命令准入审计数，C是命令账条数，P是不同待决owner数。
+这是待决命令归属检查的复杂度结论，不是整个删除流程的RTO证明。
+
+性能证据（RESULT.json）
+每组128个不同且无未决归属的候选，另有128条真实结构命令，分别测试0/128条Pending。
+时间使用预热后的内存SQLite，计时阶段不启用progress计数回调；VM指令单独采样。
+下表为128条Pending场景，时间仅适用本机合成查询：
+审计噪声行数     修复前每候选ms    修复后每候选ms    每轮准备ms
+10,000           1.0313            0.0832            1.1770
+100,000          7.2444            0.0557            6.8093
+1,000,000        67.6878           0.1017            111.3877
+128次检查的原查询近似VM指令数为3,998,000 / 38,558,000 / 384,158,000，
+修复后均约10,000（1000指令采样粒度）。0条Pending场景也保持同样趋势。
+完整12组配对结果、查询计划及45项归属/计划/schema/备份断言均通过。
+最初带progress回调的计时另存RESULT-timing-with-progress-callback.json，不能与正式独立计时混用。
+
+安全边界复核
+Temp集合每轮清空重建，不成为新的持久权威；同owner多个命令不会漏保，
+仅完成其中一个仍保留该作业，全部完成后下一轮才释放；空Owner不影响无关作业。
+原命令Id、报文、合同、目标与原审计保持权威。
+对比修复前后，未决回复、未确认身份冲突、Pending/Interrupted输入、近期审计、
+终态/原件责任守卫均保持；维护权限、独占租约、完整备份先于删除、逐作业事务、
+永久防重与两小时预算均未变；没有通过修改SQL1-9或checksum消除问题。
+TEMP主键表不进入main schema或SQLite备份，探针已核验。
+
+本机实际验证
+Windows11 22631 x64，.NET SDK10.0.402，当前main的Release构建0警告0错误。
+win11-stability、upgrade-conflict-closure、audit03-maintenance、version-compatibility全通过。
+包含删除提交前异常回滚、提交后永久退役保留、再次维护重建待决归属、
+Unknown/冲突/未决命令/中断输入保留、原回复指纹保留、重启拒绝退役实体复活、
+原库独占、完整离线备份和隔离恢复。
+额外以真实ParcelRepository构造合成DB8，升级DB9、DB9重开、SQL1-8账面checksum
+保留、旧DB8读者拒绝DB9且原库字节不变，6项通过。既有未决DB4/5拒绝升级亦通过。
+详见runtime-tests.json、各.log及migration-result.json。
+
+未验证范围
+上述为短时合成查询及业务恢复验证。不是完整raw规模的全流程维护RTO，
+不是目标4核8GB工控机、受保护expire-history CLI全链、真实SDK/RCS、
+真实24小时/72小时连续运行或工业现场验收。均未因源码合并、CI、安装器构建而取得资格。
+最新CI的Windows环境为Windows Server2025；安装器NOT_SIGNED、ActualWindowsInstallation NOT_RUN。
+原D/RV及客户/设备/合同边界不变。
+
+复现（全部输出到D盘）
+Set-Location D:/projects/importer-pc-retention-verification
+. ./scripts/project-environment.ps1
+dotnet build tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj -c Release -p:RestoreLockedMode=true
+python D:/projects/ipc-retention-verification-20261024/prepare_probe.py D:/projects/importer-pc-retention-verification D:/projects/ipc-retention-verification-20261024
+dotnet run --project D:/projects/ipc-retention-verification-20261024/Probe.csproj -c Release -- D:/projects/ipc-retention-verification-20261024
+dotnet run --project D:/projects/ipc-retention-verification-20261024/MigrationProbe.csproj -c Release -- D:/projects/ipc-retention-verification-20261024
+dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability
+其余三个模式依次替换为--upgrade-conflict-closure、--audit03-maintenance、--version-compatibility。
+
+证据文件
+IDENTITY.json: 固定源码、SQL1-9与SQLite托管/native文件hash。
+REMOTE.json: 实际PR/CI/安装器摘要；ENVIRONMENT.json: 本机与tree身份。
+old.sql/new.sql/prepare.sql/schema.sql/indexes.json/prepare-plan.json: 可复现查询与计划。
+RESULT.json: 正式独立计时及VM计数；runtime-tests.json: 四组实际命令起止与退出码。
+原已提交性能证据：
+https://github.com/yuan2go/importer-pc/tree/12a7cbdc11839dfae7eec88f9514e8559694bdd0/docs/runtime/evidence/parallel-task-integration-01/retention-plan
+本轮附加证据保留D盘，没有为重复修复新建PR或改写历史验证。

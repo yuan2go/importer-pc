@@ -1,0 +1,4 @@
+[
+  "SCAN a",
+  "SEARCH c USING INDEX sqlite_autoindex_parcel_commands_1 (id=?)"
+]

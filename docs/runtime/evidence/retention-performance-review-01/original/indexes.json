@@ -1,0 +1,18 @@
+[
+  {
+    "Name": "parcel_audit_input_operation",
+    "Sql": "CREATE INDEX parcel_audit_input_operation ON parcel_audit(json_extract(detail,\u0027$.OperationId\u0027)) WHERE event=\u0027InputObserved\u0027 AND json_valid(detail)"
+  },
+  {
+    "Name": "parcel_audit_owner_at",
+    "Sql": "CREATE INDEX parcel_audit_owner_at ON parcel_audit(owner,at)"
+  },
+  {
+    "Name": "parcel_commands_pending",
+    "Sql": "CREATE INDEX parcel_commands_pending ON parcel_commands(id) WHERE json_extract(receipt,\u0027$.Status\u0027)=\u0027Pending\u0027"
+  },
+  {
+    "Name": "sqlite_autoindex_parcel_commands_1",
+    "Sql": null
+  }
+]

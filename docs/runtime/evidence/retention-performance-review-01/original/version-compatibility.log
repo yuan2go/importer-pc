@@ -1,0 +1,58 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-493b21a121274f01a210efa2511be015
+PASS VC01: sportmaster compiled business version and embedded declaration
+PASS VC01: sportmaster default and all optional provider versions declared
+PASS VC01: RCS and original optional capabilities match the same business declaration
+PASS VC01: old immutable RCS version is not silently relabelled for new host
+PASS VC01: unknown provider version rejected before constructing any resource
+PASS VC01: wrong provider protocol rejected
+PASS VC01: unapproved implementation rejected
+PASS VC01: rejection did not open readers or create external ports
+PASS VC01: mixing members from distinct compatibility sets rejected
+PASS VC01: whole selected set matches a single declaration
+PASS VC01: schema2 binds actual compiled version, binary and declaration bytes
+PASS VC01: protected maintenance accepts actual schema2 business release
+PASS VC01: wrong declared business version rejected
+PASS VC01: protected maintenance rejects wrong business version
+PASS VC01: new compiled business cannot downgrade to release schema1
+PASS VC01: protected maintenance rejects schema1 downgrade
+PASS VC01: cross-business binary rejected
+PASS VC01: changing external declaration and manifest together cannot widen compiled policy
+PASS VC01: protected maintenance rejects altered embedded declaration identity
+PASS VC01: actual maintenance reaches compatibility rejection without replacing Effective/Pending
+PASS VC01: direct-plc compiled business version and embedded declaration
+PASS VC01: direct-plc default and all optional provider versions declared
+PASS VC01: unknown provider version rejected before constructing any resource
+PASS VC01: wrong provider protocol rejected
+PASS VC01: unapproved implementation rejected
+PASS VC01: rejection did not open readers or create external ports
+PASS VC01: mixing members from distinct compatibility sets rejected
+PASS VC01: whole selected set matches a single declaration
+PASS VC01: schema2 binds actual compiled version, binary and declaration bytes
+PASS VC01: protected maintenance accepts actual schema2 business release
+PASS VC01: wrong declared business version rejected
+PASS VC01: protected maintenance rejects wrong business version
+PASS VC01: new compiled business cannot downgrade to release schema1
+PASS VC01: protected maintenance rejects schema1 downgrade
+PASS VC01: cross-business binary rejected
+PASS VC01: changing external declaration and manifest together cannot widen compiled policy
+PASS VC01: protected maintenance rejects altered embedded declaration identity
+PASS VC01: actual maintenance reaches compatibility rejection without replacing Effective/Pending
+PASS VC01: wcs-to-plc compiled business version and embedded declaration
+PASS VC01: wcs-to-plc default and all optional provider versions declared
+PASS VC01: unknown provider version rejected before constructing any resource
+PASS VC01: wrong provider protocol rejected
+PASS VC01: unapproved implementation rejected
+PASS VC01: rejection did not open readers or create external ports
+PASS VC01: mixing members from distinct compatibility sets rejected
+PASS VC01: whole selected set matches a single declaration
+PASS VC01: schema2 binds actual compiled version, binary and declaration bytes
+PASS VC01: protected maintenance accepts actual schema2 business release
+PASS VC01: wrong declared business version rejected
+PASS VC01: protected maintenance rejects wrong business version
+PASS VC01: new compiled business cannot downgrade to release schema1
+PASS VC01: protected maintenance rejects schema1 downgrade
+PASS VC01: cross-business binary rejected
+PASS VC01: changing external declaration and manifest together cannot widen compiled policy
+PASS VC01: protected maintenance rejects altered embedded declaration identity
+PASS VC01: actual maintenance reaches compatibility rejection without replacing Effective/Pending
+PASS VC01 COMPLETE

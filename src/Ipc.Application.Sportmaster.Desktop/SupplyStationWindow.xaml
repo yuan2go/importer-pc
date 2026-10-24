@@ -7,7 +7,7 @@
   <Border Grid.ColumnSpan="2" Background="White" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1"><Border.Style><Style TargetType="Border"><Setter Property="Padding" Value="16,8"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Padding" Value="12,4"/></DataTrigger></Style.Triggers></Style></Border.Style>
    <DockPanel LastChildFill="True">
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="8,0,0,0">
-     <TextBlock x:Name="AccountIdentity" Text="{Binding AccountDisplay}" FontSize="{x:Static type:UiTypography.Body}" VerticalAlignment="Center" MaxWidth="230" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding AccountDisplay}" Margin="0,0,8,0"/>
+     <TextBlock x:Name="AccountIdentity" Text="{Binding AccountDisplay}" FontSize="{x:Static type:UiTypography.Body}" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding AccountDisplay}" Margin="0,0,8,0"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="MaxWidth" Value="230"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="MaxWidth" Value="120"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
      <parameters:ManagementModeMenu Status="{Binding ManagementStatus}" ModeActionRequested="ManagementMode_Click"/>
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationButton}"/>
      <Button Content="暂停供包" Click="Pause_Click" Visibility="{Binding PauseVisibility}" Style="{StaticResource StationButton}"/>

@@ -39,4 +39,4 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
 </ItemGroup><ItemGroup>
  <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
-</ItemGroup></Project>
+</ItemGroup><ItemGroup><Compile Include="../../src/Ipc.Presentation.Wpf/TypographyScale.cs" Link="Client/TypographyScale.cs"/><Using Include="Ipc.Presentation.Wpf"/></ItemGroup></Project>

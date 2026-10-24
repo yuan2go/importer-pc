@@ -1,0 +1,41 @@
+import hashlib, json, shutil, subprocess, sys
+from pathlib import Path
+root=Path.cwd()
+area=root/'.artifacts/typography'
+source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+sha=lambda b:hashlib.sha256(b).hexdigest()
+fonts=root/'src/Ipc.Presentation.Wpf/Fonts'
+notice=json.loads((fonts/'NOTICE.json').read_text())
+for item in notice['files']:
+    assert sha((fonts/item['file']).read_bytes())==item['sha256']
+    assert sha(subprocess.check_output(['git','show',f"HEAD:src/Ipc.Presentation.Wpf/Fonts/{item['file']}"]))==item['sha256']
+assert sha((fonts/'OFL.txt').read_bytes())==notice['licenseSha256']
+assert sha(subprocess.check_output(['git','show','HEAD:src/Ipc.Presentation.Wpf/Fonts/OFL.txt']))==notice['licenseSha256']
+archive=root/'docs/archive/pre-typography-01'
+for item in json.loads((archive/'FILES.json').read_text(encoding='utf-8-sig'))['files']:
+    assert sha((archive/item['archive']).read_bytes())==item['sha256']
+    assert sha(subprocess.check_output(['git','show','HEAD:docs/archive/pre-typography-01/'+item['archive']]))==item['sha256']
+published=area/'publish/desktop'
+assert sha((published/'licenses/NotoSansCJKSC-OFL.txt').read_bytes())==notice['licenseSha256']
+assert (published/'licenses/NotoSansCJKSC-NOTICE.json').read_bytes()==(fonts/'NOTICE.json').read_bytes()
+release=area/'release-resource-check'
+(release/'app').mkdir(parents=True,exist_ok=True)
+(release/'desktop').mkdir(exist_ok=True)
+for filename,target in [('Ipc.Assembly.deps.json','app'),('Ipc.Desktop.deps.json','desktop'),('Ipc.Presentation.Wpf.dll','desktop')]:
+    shutil.copyfile(published/filename,release/target/filename)
+sys.path.insert(0,str(root/'scripts'))
+import release_dependencies
+release_dependencies.publish(root,release,source)
+dependencies=json.loads((release/'DEPENDENCIES.json').read_text())
+assert dependencies['BundledFonts']==[notice]
+assert sha((release/'licenses/NotoSansCJKSC-OFL.txt').read_bytes())==notice['licenseSha256']
+record={'SourceCommit':source,'Status':'PASS','Desktop':'local self-contained win-x64 publish; not formal medium',
+        'FontAssemblySha256':sha((published/'Ipc.Presentation.Wpf.dll').read_bytes()),
+        'FontAssemblyBytes':(published/'Ipc.Presentation.Wpf.dll').stat().st_size,
+        'PublishedIpcAssemblies':[{ 'File':p.name,'Sha256':sha(p.read_bytes())} for p in sorted(published.glob('Ipc.*.dll'))],
+        'OfficialFontHashesAndLicense':'PASS in working tree and exact committed blobs',
+        'ArchivedGuidanceHashes':'PASS in working tree and committed blobs',
+        'PublishLicenseAndNotice':'PASS', 'ReleaseDependenciesBundledFonts':'PASS',
+        'NoGlobalInstallOrNetworkDownload':'font resources resolve through assembly pack URI; no loader downloads or installs fonts'}
+(area/'PUBLISH-RESOURCES.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print('PASS official bytes, exact archive custody, offline publish licenses and release font provenance')

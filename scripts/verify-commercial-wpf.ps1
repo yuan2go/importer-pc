@@ -22,6 +22,8 @@ foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
 $refs=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll')+@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Application.ParcelFlow.Desktop.dll'))+@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Application.Sportmaster.Desktop.dll'))+@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Microsoft.Data.Sqlite*.dll')
 $refs+=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll')
 $refs+=@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Desktop.dll'))
+$typography=Join-Path $Media 'desktop/Ipc.Presentation.Wpf.dll'
+if(Test-Path -LiteralPath $typography){$refs+=@(Get-Item -LiteralPath $typography)}
 $xml=($refs | Sort-Object FullName -Unique | ForEach-Object {'<Reference Include="'+$_.BaseName+'"><HintPath>'+[Security.SecurityElement]::Escape($_.FullName)+'</HintPath><Private>true</Private></Reference>'}) -join "`n"
 $sourcePaths=@(& git -C $repo ls-tree -r --name-only $fixtureSource -- tests/Ipc.Desktop.UiVerification)
 if($LASTEXITCODE -ne 0){throw 'Frozen native fixture tree is unavailable'}

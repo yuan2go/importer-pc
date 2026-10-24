@@ -1,0 +1,15 @@
+PASS COMPARE fixture obtains a synthetic accepted result
+CAPTURE noto-supply-station-normal-1366: 1173.6x623.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-1366 exact barcode text preserved
+PASS COMPARE noto-supply-station-normal-1366 entire barcode remains selectable
+PASS COMPARE noto-supply-station-normal-1366 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-normal-1366 every rendered ordinary Chinese run uses bundled font without missing glyphs
+CAPTURE noto-supply-station-normal-1092: 1084x484.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-1092 exact barcode text preserved
+PASS COMPARE noto-supply-station-normal-1092 entire barcode remains selectable
+PASS COMPARE noto-supply-station-normal-1092 inspects actual production Chinese controls
+FAIL System.InvalidOperationException: noto-supply-station-normal-1092 every rendered ordinary Chinese run uses bundled font without missing glyphs
+   at Program.<VerifyTypographyComparison>g__Check|40_0(Boolean ok, String reason, <>c__DisplayClass40_0&) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 25
+   at Program.VerifyTypographyComparison(String root, String evidence, List`1 lines, String[] args) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 100
+   at Program.VerifyTypographyComparison(String root, String evidence, List`1 lines, String[] args) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\TypographyComparison.cs:line 112
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

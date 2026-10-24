@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
@@ -162,8 +162,8 @@ public partial class MaintenancePage : UserControl
             preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(await File.ReadAllTextAsync(picker.FileName)));
         }, "比较模板与当前草稿");
         if (preview is null) return;
-        var dialog = new Window { Owner = Window.GetWindow(this), Title = "模板适用对象与变更预览", Width = Math.Min(760, SystemParameters.WorkArea.Width - 24), Height = Math.Min(620, SystemParameters.WorkArea.Height - 24),
-            MinWidth = 440, MinHeight = 320, FontSize = 14, Background = System.Windows.Media.Brushes.White, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = Window.GetWindow(this), Title = "模板适用对象与变更预览", Width = Math.Min(760, SystemParameters.WorkArea.Width - 24), Height = Math.Min(620, SystemParameters.WorkArea.Height - 24),
+            MinWidth = 440, MinHeight = 320, Background = System.Windows.Media.Brushes.White, WindowStartupLocation = WindowStartupLocation.CenterOwner };
         dialog.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         var body = new DockPanel { Margin = new(24) }; var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 16, 0, 0) };
         var cancel = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0), IsCancel = true }; cancel.Click += (_, _) => dialog.DialogResult = false;

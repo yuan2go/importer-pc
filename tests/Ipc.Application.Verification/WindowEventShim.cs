@@ -1,5 +1,14 @@
 // Event/control boundary only: runs the unchanged window code-behind, never WPF layout,
 // HWND ownership, dispatcher delivery, DPI or native resource loading.
+namespace Ipc.Presentation.Wpf
+{
+    public static partial class UiTypography
+    {
+        // This portable boundary has no fonts. Native UiVerification is the
+        // authority for GlyphRun resolution, weights, inheritance and geometry.
+        public static void Apply(System.Windows.Window window) => window.FontSize = Body;
+    }
+}
 namespace System.Windows
 {
     public class RoutedEventArgs : EventArgs;

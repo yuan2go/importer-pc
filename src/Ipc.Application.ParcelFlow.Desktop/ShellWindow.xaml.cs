@@ -37,7 +37,7 @@ public partial class ShellWindow : Window
     public Func<Task>? StopOwnerAsync { get; set; }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
-        InitializeComponent(); ProductBrand.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
+        InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
         maintenance.DataContext = vm; history.DataContext = vm; work.DataContext = vm;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         vm.PropertyChanged += (_, e) =>
@@ -100,7 +100,7 @@ public partial class ShellWindow : Window
         try { Ipc.Platform.PresentationPreferences.Save(vm.PresentationId, "classic", compact); }
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { vm.Message = "本窗口布局已切换；展示偏好未保存，原文件保留：" + error.GetType().Name; }
     }
-    void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = vm.IsCompact ? 14 : 16; }
+    void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = UiTypography.Body; }
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
     async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场"); }
     async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync, "核对原请求"); }

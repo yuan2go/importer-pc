@@ -1,0 +1,11 @@
+{
+  "SourceCommit": "5cd156a121b97b8c3d605f14e6c2d10f95d4bc35",
+  "Run": "https://github.com/yuan2go/importer-pc/actions/runs/40077954374",
+  "Job": 120825306983,
+  "Status": "FAIL",
+  "Failure": "SupplyStationWindow.xaml.cs:28 UiTypography does not contain a definition for Apply",
+  "Cause": "Portable event-only window shim did not expose new presentation initialization method",
+  "Fix": "6ff61fa: add event-only shim method; actual WPF font assertions remain in native verification",
+  "LocalRebuild": "PASS; portable-build.log",
+  "RemainingJobs": "Result not inferred; final PR checks recorded separately"
+}

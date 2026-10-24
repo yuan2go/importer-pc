@@ -1,0 +1,515 @@
+{
+  "SelfExcluded": "FILES.json",
+  "Files": [
+    {
+      "path": "comparison/baseline/baseline-classic-long-800.png",
+      "sha256": "362dfa3cacd704df16e1dabe3bd80a7f6c6e6a988795ee55c68243d4c372c2b3",
+      "bytes": 30315
+    },
+    {
+      "path": "comparison/baseline/baseline-classic-normal-1092.png",
+      "sha256": "c3a4bcd59f515135f7fc3670ee6fa21cb19c372d0cbb74bda2a1aa14bb8edd88",
+      "bytes": 33531
+    },
+    {
+      "path": "comparison/baseline/baseline-classic-normal-1366.png",
+      "sha256": "ccefecbebaeab52d9f5bc248adba91c8ee7f8a287933bc7ceb94671b2860fa5e",
+      "bytes": 37972
+    },
+    {
+      "path": "comparison/baseline/baseline-classic-normal-800.png",
+      "sha256": "b8452afebb1e9b064fb3d6ed752c4cd423b63aa32197a8f2f53e999031688b71",
+      "bytes": 27394
+    },
+    {
+      "path": "comparison/baseline/baseline-classic-unknown-800.png",
+      "sha256": "398bb9a10754edb07e57c5038ad997ebfc45bfa216e836ea7c4f9e163a154167",
+      "bytes": 22307
+    },
+    {
+      "path": "comparison/baseline/baseline-supply-station-long-800.png",
+      "sha256": "7ddad9f4229ae1093209eb10913ce0f8ae3127f95004cdd1d2e77eccf526cd91",
+      "bytes": 32497
+    },
+    {
+      "path": "comparison/baseline/baseline-supply-station-normal-1092.png",
+      "sha256": "c13018285332090a824a44e60a07b51a3b9b377cb08d3f93d40861ed74962dbe",
+      "bytes": 37684
+    },
+    {
+      "path": "comparison/baseline/baseline-supply-station-normal-1366.png",
+      "sha256": "887ef8c296294b15b94d5e4a5c555e774150d5d75e2e33adb757616fbe72f444",
+      "bytes": 40871
+    },
+    {
+      "path": "comparison/baseline/baseline-supply-station-normal-800.png",
+      "sha256": "5678d0055b0b16a389cdb56d7473d794d3728db7e97ea36c95ec5618aaf7ae64",
+      "bytes": 28911
+    },
+    {
+      "path": "comparison/baseline/baseline-supply-station-unknown-800.png",
+      "sha256": "264536267e48fc07092ab73e00a98724e6d23840ba810426ef8793c6fb666a69",
+      "bytes": 31374
+    },
+    {
+      "path": "comparison/baseline/COMPARISON.json",
+      "sha256": "428d30dd77ce326bf2908962adf48dbf206401c9d8e886f39c2a5baa5814313d",
+      "bytes": 571578
+    },
+    {
+      "path": "comparison/baseline/WINDOWS-WPF.log",
+      "sha256": "171f1c845dc7dc76009560db12563839572600b184fb83fcef0cb96fc0628de4",
+      "bytes": 3877
+    },
+    {
+      "path": "comparison/noto/COMPARISON.json",
+      "sha256": "10c7794d2e173c86c51b74686ebb0b5081df418f32ecfb0299d8e09bbd38eefc",
+      "bytes": 561713
+    },
+    {
+      "path": "comparison/noto/noto-classic-long-800.png",
+      "sha256": "0d995818e1c77ed62bc3a6977ac93629ca8e5f0485c5b4fdcc2489921b8ec214",
+      "bytes": 35463
+    },
+    {
+      "path": "comparison/noto/noto-classic-normal-1092.png",
+      "sha256": "2b8a636e9e77d58d78d4b1c8b550fbfcf1ddeda85bd15a495138ff5772c16f1c",
+      "bytes": 44523
+    },
+    {
+      "path": "comparison/noto/noto-classic-normal-1366.png",
+      "sha256": "6f707dbc164fc315f7e54d9808a2fe77193477cd702f8a0b41b5878e44c664b0",
+      "bytes": 47199
+    },
+    {
+      "path": "comparison/noto/noto-classic-normal-800.png",
+      "sha256": "2736da246a7f8201bccdc356650a064e84f3ed378dd2df397f671edba1e1e276",
+      "bytes": 34167
+    },
+    {
+      "path": "comparison/noto/noto-classic-unknown-800.png",
+      "sha256": "dbf73cf98a35c6dd11cca20a5daef0a87667112c581d6be71033eeae4b78bfd8",
+      "bytes": 27558
+    },
+    {
+      "path": "comparison/noto/noto-supply-station-long-800.png",
+      "sha256": "3a11830b762eb60dbaa5359139b5f51e4e93de12ef2db14df9abf17bf0f300e5",
+      "bytes": 49609
+    },
+    {
+      "path": "comparison/noto/noto-supply-station-normal-1092.png",
+      "sha256": "bb3ba3b56a3971156c6de6092fe30c2eee81f2337e446d6fb922955c07809ee0",
+      "bytes": 52403
+    },
+    {
+      "path": "comparison/noto/noto-supply-station-normal-1366.png",
+      "sha256": "a242b7aa89b3a5e73eaa572923c5a60f260eabb9c9596cfa0b965c9e312deb3d",
+      "bytes": 57122
+    },
+    {
+      "path": "comparison/noto/noto-supply-station-normal-800.png",
+      "sha256": "9ef4b3fb5249f8817ef1a88db87340d3c0318fbf883adacd7f16d1a1eb732868",
+      "bytes": 40937
+    },
+    {
+      "path": "comparison/noto/noto-supply-station-unknown-800.png",
+      "sha256": "a5c1ee2cb5acde99a8af652ec8e3f308c2c58bdabbc16f87587ff45befbff68a",
+      "bytes": 45469
+    },
+    {
+      "path": "comparison/noto/WINDOWS-WPF.log",
+      "sha256": "1f8bd04e6ed2f26cf82792f0afdacdccea13924730d11d82b74cb88a2147d9d3",
+      "bytes": 5761
+    },
+    {
+      "path": "comparison/system/COMPARISON.json",
+      "sha256": "b97bcaab913f0d5d124613d70b432be635d6c6f3488e5af91221e84d8aa4c30d",
+      "bytes": 533940
+    },
+    {
+      "path": "comparison/system/system-classic-long-800.png",
+      "sha256": "a9f0d95177f651a478715648f2ef85a0a384b6b8bba4c2ee08d2888cc41fb13b",
+      "bytes": 27805
+    },
+    {
+      "path": "comparison/system/system-classic-normal-1092.png",
+      "sha256": "a55725387c7d5c9e5c1b8a0aca402566425166e15138691cc81fd482f62da412",
+      "bytes": 32170
+    },
+    {
+      "path": "comparison/system/system-classic-normal-1366.png",
+      "sha256": "97736220d825b42fb410cef7c0df6ed865e6a67bec7e0177e8706177408f6825",
+      "bytes": 36472
+    },
+    {
+      "path": "comparison/system/system-classic-normal-800.png",
+      "sha256": "59c17ed1b103ebc7ae8eb087607e59f96985ce84b814b74c58b4d31b86fba90a",
+      "bytes": 27346
+    },
+    {
+      "path": "comparison/system/system-classic-unknown-800.png",
+      "sha256": "84c41ce86aae4105bedc49e522c44a8ab756fa3b0226d65ff7c680eab9d13273",
+      "bytes": 21757
+    },
+    {
+      "path": "comparison/system/system-supply-station-long-800.png",
+      "sha256": "5e470c4ba6fba99c287f60716c0f2172d937906cbe18f550dc6fe6bcdf447287",
+      "bytes": 38790
+    },
+    {
+      "path": "comparison/system/system-supply-station-normal-1092.png",
+      "sha256": "5c2dcb51639cf7df417bd91288d69397970d4bcd076981dfe1bb33b6e0bed7f7",
+      "bytes": 36658
+    },
+    {
+      "path": "comparison/system/system-supply-station-normal-1366.png",
+      "sha256": "df4d3cef2d50dd612429618bb038a67675bde939d18d475dc53e0af1d0cd843a",
+      "bytes": 40729
+    },
+    {
+      "path": "comparison/system/system-supply-station-normal-800.png",
+      "sha256": "e07a5d7119c41518804f4b849c86d79fae58d613b563d2a399bf6193cc729a9d",
+      "bytes": 31084
+    },
+    {
+      "path": "comparison/system/system-supply-station-unknown-800.png",
+      "sha256": "955b7ccf39d9d19765d9356366b1f051c2136f3246ddb7a051c5d1e00fe30914",
+      "bytes": 32764
+    },
+    {
+      "path": "comparison/system/WINDOWS-WPF.log",
+      "sha256": "c043c1dd5a584d49f80a247b071ad33a02876c318c0585b5b2cc24bd1bd25092",
+      "bytes": 3801
+    },
+    {
+      "path": "failures/baseline-refresh-failure/WINDOWS-WPF.log",
+      "sha256": "9b891572780b73930315318ac3146feda85bcfb8105c936cb2c2395466d190cc",
+      "bytes": 1157
+    },
+    {
+      "path": "failures/chain-viewport-failure/chain-blocked-after-unknown-800.png",
+      "sha256": "59600147d84bdc7d6cdcdda21f73b0f39308a549d681c8134d6957e4a51d691d",
+      "bytes": 87947
+    },
+    {
+      "path": "failures/chain-viewport-failure/WINDOWS-WPF.log",
+      "sha256": "8fef649c65ed076387c2e8e494997107229e5161aed03ad99f555161f8cbdbef",
+      "bytes": 24407
+    },
+    {
+      "path": "failures/first-noto-failure/WINDOWS-WPF.log",
+      "sha256": "ff11543b31ecc2b97c05e66c705f008d7f82ab58e63dd3b2a8fc60a98fe096bd",
+      "bytes": 1755
+    },
+    {
+      "path": "failures/history-viewport-failure/history-800.png",
+      "sha256": "932ae3c862b49a2d6c21628d9dedd7872e5054b0bd1193597d2a24dae61b7552",
+      "bytes": 78442
+    },
+    {
+      "path": "failures/history-viewport-failure/WINDOWS-WPF.log",
+      "sha256": "a859782539026a8452b90d9084caaa76de94484602811d575513e0ec10baef6e",
+      "bytes": 1436
+    },
+    {
+      "path": "failures/pre-root-fix/COMPARISON.json",
+      "sha256": "db38ff11276e773b962d8b1bd00f572b02350fe019b6b1d5f492dca61e91e4d3",
+      "bytes": 756649
+    },
+    {
+      "path": "failures/pre-root-fix/WINDOWS-WPF.log",
+      "sha256": "3cd44248158ebafe8acd42187ea748af72a64f4cbffa24209244eb67d35efc9f",
+      "bytes": 2109
+    },
+    {
+      "path": "native/installer-first-run-ui/first-run-unconfigured.png",
+      "sha256": "2d1ffd6cc05cb9c00619f89251b2ed93decc2ddf2d445c7a0601b0034a9ffb92",
+      "bytes": 38901
+    },
+    {
+      "path": "native/installer-first-run-ui/installer-confirm-long.png",
+      "sha256": "d3b455999cdfcaf9714e7111054f80bfc745294974f8765c9e5cc9920c56551a",
+      "bytes": 144735
+    },
+    {
+      "path": "native/installer-first-run-ui/WINDOWS-WPF.log",
+      "sha256": "a4a9f070c0ed61df0e7e446d13f4dbda3a2bceefcf53a1dd5fcaad0c1529b075",
+      "bytes": 11297
+    },
+    {
+      "path": "native/internal-pages/daily-parameter-error-800-typography.json",
+      "sha256": "faeefd737e6ff69defc93bcbc698c2af86408c513470e31a57623f6f53e5cd03",
+      "bytes": 75190
+    },
+    {
+      "path": "native/internal-pages/daily-parameter-error-800.png",
+      "sha256": "5c750e8af07924f884f365bd0b0d6a6ec6b2106066f907d98a8e475730a56a91",
+      "bytes": 90128
+    },
+    {
+      "path": "native/internal-pages/history-800-typography.json",
+      "sha256": "fd1d3e41c8102a65279ce424ab448f8b21c19d7bd12cb28ed8387751c09b4f85",
+      "bytes": 61814
+    },
+    {
+      "path": "native/internal-pages/history-800.png",
+      "sha256": "a61160f2710a886a9f7e7545991d506f21040e08451ab577fcd7a401e5c6d46a",
+      "bytes": 79684
+    },
+    {
+      "path": "native/internal-pages/history-filters-800-typography.json",
+      "sha256": "a86349c7983342b1f604789cd3893de8c0167380b755a70ca17f89e336d2aa0b",
+      "bytes": 103584
+    },
+    {
+      "path": "native/internal-pages/history-filters-800.png",
+      "sha256": "e1a64c274511dc076f83b201557e7ef80d51bc6dd60309db179de149186ba0eb",
+      "bytes": 79675
+    },
+    {
+      "path": "native/internal-pages/logs-failed-typography.json",
+      "sha256": "550e291c83cb7720863c3a01759e46111391ea058d74a9d25b0c08a57c819041",
+      "bytes": 29129
+    },
+    {
+      "path": "native/internal-pages/logs-failed.png",
+      "sha256": "3b604805b5a67ffa4cd1bafc3619916ccf97775d0d0862a3bb3994399dff3f06",
+      "bytes": 54685
+    },
+    {
+      "path": "native/internal-pages/WINDOWS-WPF.log",
+      "sha256": "b0302c0735c9e6986e7b9295dbc38605cced0251f9f1baa027782996ba81bff6",
+      "bytes": 2773
+    },
+    {
+      "path": "native/management-mode/management-log-context-800.png",
+      "sha256": "d7ec89d1ce2c88650fc06aac49ebf15971d89a47f4958adee323fc4580f5bc31",
+      "bytes": 77081
+    },
+    {
+      "path": "native/management-mode/WINDOWS-WPF.log",
+      "sha256": "ff30be220e70356a3a05e31a55d3a6cc14670fe0999b35b0db58c64613732dd4",
+      "bytes": 3408
+    },
+    {
+      "path": "native/parameter-v3-only/v3-save-review-ready-typography.json",
+      "sha256": "ddf5a04135c148a7b0d3d251b9a34026851acd13a4010ab26ae0c557d70f4106",
+      "bytes": 32018
+    },
+    {
+      "path": "native/parameter-v3-only/v3-save-review-ready.png",
+      "sha256": "6b64b452d4523d797c4f3dce223b3b45e9938d5c3f314a04b671be021a00ebf4",
+      "bytes": 75279
+    },
+    {
+      "path": "native/parameter-v3-only/v3-save-review-typography.json",
+      "sha256": "0e685b424fd9a35a90de14925fce63a3f2f71d6e21c849f4e780d94de1549c16",
+      "bytes": 36359
+    },
+    {
+      "path": "native/parameter-v3-only/v3-save-review.png",
+      "sha256": "995e79d8976d227e7c7423c28ac4f54274956d215d281cfe56e91d87a9ea3121",
+      "bytes": 80734
+    },
+    {
+      "path": "native/parameter-v3-only/v3-saved-pending.png",
+      "sha256": "6c9aa064adabb8f91c72212a38d635114452102abe36f104ec427663625ba377",
+      "bytes": 137543
+    },
+    {
+      "path": "native/parameter-v3-only/WINDOWS-WPF-before-ready.log",
+      "sha256": "d05e7b6526c5e902b7ca2fd23579422cc9880de67e39e9eabba5c9585ad8d920",
+      "bytes": 2898
+    },
+    {
+      "path": "native/parameter-v3-only/WINDOWS-WPF.log",
+      "sha256": "d08a9c613fbcae2018bbd66eeb2188a771d5b214f7cd3ae87a4e77d152e1157d",
+      "bytes": 3106
+    },
+    {
+      "path": "native/startup-experience/configuration-paused.png",
+      "sha256": "2e5be437ea3e75fb0d45fae7c38911f23c3411da2bbfa8ae273789737797d238",
+      "bytes": 13688
+    },
+    {
+      "path": "native/startup-experience/WINDOWS-WPF.log",
+      "sha256": "5023641f7fe049ecabe2fe0285708d3c3903efaf890779b7b93478f08201ed80",
+      "bytes": 14353
+    },
+    {
+      "path": "native/task-hierarchy/chain-blocked-after-unknown-800-typography.json",
+      "sha256": "c14da47bc503149066f4b0584c6a63631a46394fca6425fdddbaa7541be3d0f3",
+      "bytes": 68123
+    },
+    {
+      "path": "native/task-hierarchy/chain-blocked-after-unknown-800.png",
+      "sha256": "20860d2e7241035b137bdffd2dcd1618489d1677362a586bb5d2ddc6f7e85888",
+      "bytes": 92938
+    },
+    {
+      "path": "native/task-hierarchy/chain-conflict-right-800-typography.json",
+      "sha256": "2c54b70038b7b13e7797bcd23d40d6001e12e9ae2e536d8ca00fb0f5274dedf9",
+      "bytes": 57968
+    },
+    {
+      "path": "native/task-hierarchy/chain-conflict-right-800.png",
+      "sha256": "980948aabdefc94a4b1e1521375792b3aa473d14e1bc38cf020bd45d03550d02",
+      "bytes": 97985
+    },
+    {
+      "path": "native/task-hierarchy/chain-late-pause-history-800-typography.json",
+      "sha256": "5eeb81445145150fac728921fb6c81381feb05077b51a8a511431b33f34cd576",
+      "bytes": 67004
+    },
+    {
+      "path": "native/task-hierarchy/chain-late-pause-history-800.png",
+      "sha256": "3f705e0f58b51674e18db4a205374d0833c891bfc28cd57d07c8e90a72b622a6",
+      "bytes": 87814
+    },
+    {
+      "path": "native/task-hierarchy/chain-pause-rejected-logs-800.png",
+      "sha256": "4a77c629f287bb8df810e29039fcb21049564e4f5b8aac1d5eac22d220f6e0c7",
+      "bytes": 69367
+    },
+    {
+      "path": "native/task-hierarchy/chain-stale-800-typography.json",
+      "sha256": "7491d64fd294619b65d9cd901813d74a35c626279ced9341b00eb4816c881dd4",
+      "bytes": 61890
+    },
+    {
+      "path": "native/task-hierarchy/chain-stale-800.png",
+      "sha256": "1dbf28deec882c31ad6cca2504da2e3f0901e2c8148885c4421946f557a4f6fa",
+      "bytes": 90914
+    },
+    {
+      "path": "native/task-hierarchy/classic-日志查询-800-typography.json",
+      "sha256": "8dd607f218a9d48eb4f5a24e5c08f14f1ceb3aee0ad670bf5ff1b51f7e125eef",
+      "bytes": 55958
+    },
+    {
+      "path": "native/task-hierarchy/classic-日志查询-800.png",
+      "sha256": "b7e48c43a64ce9950285139bc2ebbf62fb2d49503738f7488e9ae710268ce538",
+      "bytes": 63754
+    },
+    {
+      "path": "native/task-hierarchy/supply-station-log-range-800-typography.json",
+      "sha256": "262e752a78fa81022a919d64468ee833f4c2bb13dbd406fd66a4e0478643aa35",
+      "bytes": 119984
+    },
+    {
+      "path": "native/task-hierarchy/supply-station-log-range-800.png",
+      "sha256": "da3ac9ebdac6f8bbbd8816496a541fd33cf674450852f25f35ada480f9f493ab",
+      "bytes": 77538
+    },
+    {
+      "path": "native/task-hierarchy/WINDOWS-WPF.log",
+      "sha256": "f682c5fbe50c8229fa31496c98bc88035dcf6fd2ac3947a140b12a3b0671f396",
+      "bytes": 24550
+    },
+    {
+      "path": "native/task-hierarchy-parameters/parameters-right-error-800-typography.json",
+      "sha256": "04d6364df8795a18ca0c09be0e0503c86a78788e5743c4c38a892028aa9ac15d",
+      "bytes": 61357
+    },
+    {
+      "path": "native/task-hierarchy-parameters/parameters-right-error-800.png",
+      "sha256": "5e89cd2aa28a2adc4ac816054b5bad192ce12d557f65d8a79eaacfd930a84080",
+      "bytes": 68622
+    },
+    {
+      "path": "native/task-hierarchy-parameters/WINDOWS-WPF.log",
+      "sha256": "03c35531f9184a3bcae97f2136252c9838b39756053424640541bf55de751d83",
+      "bytes": 1382
+    },
+    {
+      "path": "native/visual-productization/after-classic-1366.png",
+      "sha256": "218dc96e081bb7dc4dbdf5a83ff2cb76d6212ae8e231032e52fa5645ca145f72",
+      "bytes": 137157
+    },
+    {
+      "path": "native/visual-productization/WINDOWS-WPF.log",
+      "sha256": "950450012dc0beaf86214418aac00b760a4b4d56af66067457d7360e81dabaa0",
+      "bytes": 12957
+    },
+    {
+      "path": "published-font/FONT-RESOLUTION.json",
+      "sha256": "903d8be3d25fe1d834a92ed11f0555692a91275550f6283a75e30065cb4f9a93",
+      "bytes": 2916
+    },
+    {
+      "path": "published-font/typography-font-resolution.png",
+      "sha256": "78750ee40baa5641b68028a0a6e4bb7c9c4e53946c16e5e8731d6a1a3e6bd64f",
+      "bytes": 49052
+    },
+    {
+      "path": "published-font/WINDOWS-WPF.log",
+      "sha256": "b06640637151d5e827c6acd8e963fe998f66919927d6df2279b767890e3cb9a3",
+      "bytes": 929
+    },
+    {
+      "path": "README.md",
+      "sha256": "be80dcd11e5b730fc0ac6358b718f29ec057b47aeab04cd19aa07f6910250f1d",
+      "bytes": 8633
+    },
+    {
+      "path": "RESULT.json",
+      "sha256": "5d23802fb29ceb1065119e59200f703b6fd4cd5333d2e5da0597c48d1642d5e3",
+      "bytes": 9587
+    },
+    {
+      "path": "verification/baseline-build.log",
+      "sha256": "2d1c4115c3a22a3c4c55419aeda05694b38ca055cbb5fefac205842d27037316",
+      "bytes": 2832
+    },
+    {
+      "path": "verification/CI-FIRST.json",
+      "sha256": "f76295fa2f6be38185af1f30ca91cf58d0a45319fb6b73be8576c36c55f4d37d",
+      "bytes": 626
+    },
+    {
+      "path": "verification/COVERAGE.json",
+      "sha256": "291bcd166dd4ec5fb2afc4de26a71fbd9642bbddc86f2537a1175af670b50d54",
+      "bytes": 15129
+    },
+    {
+      "path": "verification/final-build.log",
+      "sha256": "64446cc13505bd0a3b0e8f8ace7816ffd3b1882f21f8ea39bca4b0f29e678cb0",
+      "bytes": 4097
+    },
+    {
+      "path": "verification/installer-build.log",
+      "sha256": "b25bf0f7eb4f2987c9996fdcf58585a3f34a05f5904656e5b4caf260ca7c6edf",
+      "bytes": 2490
+    },
+    {
+      "path": "verification/portable-build.log",
+      "sha256": "c06d512516ec7092a50d1299f7cc56780b32ef8e4c1862e646f72597f42e3cf0",
+      "bytes": 2233
+    },
+    {
+      "path": "verification/portable-shim-failure.log",
+      "sha256": "80207eb2d0324777d7046a5503826da3909156eeb061dcf103cc8353db5a1938",
+      "bytes": 4021
+    },
+    {
+      "path": "verification/publish-final.log",
+      "sha256": "d225c9e7003f8c7a24648ef5066fee1d8f076da56d23f6bb796183dd652b8c30",
+      "bytes": 4190
+    },
+    {
+      "path": "verification/release-documents.log",
+      "sha256": "90fcabc0233280de79c8b57c61bb7cce6620d85bb536ef0648f285119e64f9d0",
+      "bytes": 105
+    },
+    {
+      "path": "verification/review-fixture-build.log",
+      "sha256": "110d137768bf22f78c9b37afb24787e175a5d4e11d39aff99106020dfd923fc7",
+      "bytes": 2286
+    },
+    {
+      "path": "verification/review-fixture-compile-failure.log",
+      "sha256": "c17fafa2d031d0d6d13cd79b87afedee90b2bc178785b6978a54b7cd6b0f649a",
+      "bytes": 4306
+    }
+  ]
+}

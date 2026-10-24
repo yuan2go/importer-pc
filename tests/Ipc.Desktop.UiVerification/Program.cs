@@ -31,10 +31,13 @@ static partial class Program
             try
             {
                 if (args.Contains("--win11-stability")) await VerifyStabilityNative(root, evidence, lines);
+                else if (args.Contains("--typography-comparison")) await VerifyTypographyComparison(root, evidence, lines, args);
+                else if (args.Contains("--typography")) await VerifyTypography(evidence, lines);
                 else if (args.Contains("--task-hierarchy-chain")) await VerifyHierarchyChain(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--task-hierarchy-parameters")) await VerifyHierarchyParameters(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
                 else if (args.Contains("--task-hierarchy"))
                 {
+                    if (!args.Contains("--baseline")) await VerifyTypography(evidence, lines);
                     await VerifyTaskHierarchy(root, evidence, lines, args.Contains("--baseline"));
                     if (!args.Contains("--baseline")) await VerifyHierarchyChain(root, evidence, lines, args.Contains("--interactive"));
                 }

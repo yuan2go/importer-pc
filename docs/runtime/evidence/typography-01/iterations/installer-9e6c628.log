@@ -1,0 +1,85 @@
+PASS INSTALLER-UI02 actual production progress writer and parser round-trip every stage as one-line frames before accepting completion
+PASS INSTALLER-UI02 a disconnected progress observer cannot abort the helper transaction
+PASS INSTALLER-UI02 actual helper parser drains progress before accepting terminal receipt
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 truncated unterminated receipt cannot become completion
+PASS INSTALLER-UI02 explicit Failed terminal remains distinguishable from unknown result
+PASS INSTALLER-UI02 helper progress accepts only the fixed installation stage vocabulary
+PASS INSTALLER-UI02 preparation exposes a working cancellation action while preparing the media
+PASS INSTALLER-UI02 preparation cancellation drains the operation before closing without invoking installation
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 preparation failure restores retry and cancel instead of leaving a disabled action
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 installation options use a compact default aspect with fixed reachable actions
+CAPTURE installer-options-default: 880x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 new installation hides scope while retaining the shared default data root
+PASS INSTALLER-UI02 existing per-user deployment retains its original data root with scope hidden
+PASS INSTALLER-UI02 native tab traversal follows label/path/browse reading order
+PASS INSTALLER-UI02 confirmation omits scope details for the retained per-user deployment
+PASS INSTALLER-UI02 confirmation reads the exact reviewed paths and independent shortcuts
+CAPTURE installer-confirm-long: 880x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 back navigation retains exact input and independent choices
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1366x768-100-equivalent
+CAPTURE installer-options-1366x768-100-equivalent: 960x700 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-125-equivalent
+CAPTURE installer-options-1024x768-125-equivalent: 800x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-150-equivalent
+CAPTURE installer-options-1024x768-150-equivalent: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 install action calls the real service binding with a progress observer; synthetic transaction boundary injected
+PASS INSTALLER-UI02 record directory is captured from the authoritative registration route for this installation attempt
+PASS INSTALLER-UI02 in-progress transaction cannot release its preparation files
+PASS INSTALLER-UI02 hidden scope does not rewrite the reviewed upgrade identity at installation submission
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; WaitingForAuthorization
+PASS INSTALLER-UI02 stage changes only with observed service reports; WaitingForAuthorization
+CAPTURE installer-stage-WaitingForAuthorization: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CopyingFiles
+PASS INSTALLER-UI02 stage changes only with observed service reports; CopyingFiles
+PASS INSTALLER-UI02 UAC prompt disappears after helper begins work
+CAPTURE installer-stage-CopyingFiles: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CommittingInstallation
+PASS INSTALLER-UI02 stage changes only with observed service reports; CommittingInstallation
+CAPTURE installer-stage-CommittingInstallation: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 window close cannot abandon the in-progress transaction
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 known failure exposes explicit re-review without claiming rollback
+CAPTURE installer-failure: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 failure recovery retains inputs and requires new review
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 unknown result has its own neutral title and never claims success or failure
+PASS INSTALLER-UI02 unknown outcome is distinct from confirmed failure and does not mark installation complete
+PASS INSTALLER-UI02 unknown result emphasizes the repeat-install warning with the approved pale amber surface
+PASS INSTALLER-UI02 unknown result offers only the real records action and close, without retry, rollback or refresh
+PASS INSTALLER-UI02 historical authorization instructions remain collapsed rather than masquerading as the current stage
+CAPTURE installer-unknown: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 expanded summary identifies history and diagnostics without repeating an obsolete authorization command or inventing timestamps
+CAPTURE installer-unknown-expanded: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 explicit raw-message expansion retains the exact received text separately from the readable summary
+CAPTURE installer-unknown-original-text: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 the completed wait moves keyboard focus to the available records action
+PASS INSTALLER-UI02 records is the primary default action and native Tab reaches close
+PASS INSTALLER-UI02 unknown-result actions remain reachable in the small logical workspace 125-equivalent
+CAPTURE installer-unknown-125-equivalent: 800x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown-result actions remain reachable in the small logical workspace 150-equivalent
+CAPTURE installer-unknown-150-equivalent: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 missing records report a real access problem without fabricating logs, changing the outcome or replaying installation
+CAPTURE installer-unknown-records-unavailable: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown result rejects a stale install command and retains preparation even after the wait has ended
+PASS INSTALLER-UI02 completion separates installation from first configuration and keeps open choice
+CAPTURE installer-complete-first: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 recognized existing configuration is not forced to repeat first configuration
+CAPTURE installer-complete-existing: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown-result close finishes the window while the installer host is instructed to retain media, without cancel or replay
+PASS INSTALLER-UI02 initial password setup is distinct from expiry and existing-password verification
+FAIL System.InvalidOperationException: first-password fields and reveal control fit without initial scrolling at the default size
+   at Program.<>c__DisplayClass6_0.<VerifyInstallerFirstRunUi>g__Check|0(Boolean ok, String text) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 20
+   at Program.VerifyInstallerFirstRunUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\InstallerFirstRunUi.cs:line 170
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-typography\tests\Ipc.Desktop.UiVerification\Program.cs:line 42

@@ -11,7 +11,7 @@ public static class StartupAppearance
     {
         window.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
         window.Background = Brushes.White; window.Foreground = new SolidColorBrush(Color.FromRgb(32, 37, 45));
-        window.FontFamily = new FontFamily("Microsoft YaHei UI, Segoe UI"); window.FontSize = 14;
+        UiTypography.Apply(window);
         window.UseLayoutRounding = true;
         FitToWorkArea(window);
     }

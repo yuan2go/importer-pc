@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Fonts/*.otf" />
+    <Resource Include="Fonts/OFL.txt" />
+    <Resource Include="Fonts/NOTICE.json" />
+    <Content Include="Fonts/OFL.txt" Link="licenses/NotoSansCJKSC-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="Fonts/NOTICE.json" Link="licenses/NotoSansCJKSC-NOTICE.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

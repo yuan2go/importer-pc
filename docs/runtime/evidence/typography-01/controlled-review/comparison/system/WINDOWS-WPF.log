@@ -1,0 +1,43 @@
+PASS COMPARE system supply-station normal converges to the exact frozen presentation input
+CAPTURE system-supply-station-normal-1366: 1173.6x628.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-supply-station-normal-1366 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-supply-station-normal-1366 entire barcode remains selectable
+PASS COMPARE system supply-station normal converges to the exact frozen presentation input
+CAPTURE system-supply-station-normal-1092: 1084x490.4 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-supply-station-normal-1092 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-supply-station-normal-1092 entire barcode remains selectable
+PASS COMPARE system supply-station normal converges to the exact frozen presentation input
+CAPTURE system-supply-station-normal-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-supply-station-normal-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-supply-station-normal-800 entire barcode remains selectable
+PASS COMPARE system supply-station unknown converges to the exact frozen presentation input
+CAPTURE system-supply-station-unknown-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-supply-station-unknown-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-supply-station-unknown-800 entire barcode remains selectable
+PASS COMPARE system-supply-station-unknown-800 unknown never exposes accepted slot
+PASS COMPARE system supply-station long converges to the exact frozen presentation input
+CAPTURE system-supply-station-long-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-supply-station-long-800 exact barcode text preserved; actual=000000000000000000000000000000000000000000000000000000000000000000000000123456789
+PASS COMPARE system-supply-station-long-800 entire barcode remains selectable
+PASS COMPARE system classic normal converges to the exact frozen presentation input
+CAPTURE system-classic-normal-1366: 1354.4x577.6 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-classic-normal-1366 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-classic-normal-1366 entire barcode remains selectable
+PASS COMPARE system classic normal converges to the exact frozen presentation input
+CAPTURE system-classic-normal-1092: 1080x423.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-classic-normal-1092 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-classic-normal-1092 entire barcode remains selectable
+PASS COMPARE system classic normal converges to the exact frozen presentation input
+CAPTURE system-classic-normal-800: 788x229.6 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-classic-normal-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-classic-normal-800 entire barcode remains selectable
+PASS COMPARE system classic unknown converges to the exact frozen presentation input
+CAPTURE system-classic-unknown-800: 788x172.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-classic-unknown-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE system-classic-unknown-800 entire barcode remains selectable
+PASS COMPARE system-classic-unknown-800 unknown never exposes accepted slot
+PASS COMPARE system classic long converges to the exact frozen presentation input
+CAPTURE system-classic-long-800: 788x229.6 DIP, Windows DPI 1.25/1.25
+PASS COMPARE system-classic-long-800 exact barcode text preserved; actual=000000000000000000000000000000000000000000000000000000000000000000000000123456789
+PASS COMPARE system-classic-long-800 entire barcode remains selectable
+Comparison uses frozen synthetic presentation input, not an Application/field acceptance test. Private fixture is not published.

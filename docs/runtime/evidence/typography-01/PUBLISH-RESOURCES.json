@@ -1,0 +1,78 @@
+{
+  "SourceCommit": "a6065f04013e74df02cc9d7e3648628001ac11f1",
+  "Status": "PASS",
+  "Desktop": "local self-contained win-x64 publish; not formal medium",
+  "FontAssemblySha256": "995f08b58e2b6312c8595b9655807385665b466df3c7c83ee77e012bb245f3f7",
+  "FontAssemblyBytes": 32973312,
+  "PublishedIpcAssemblies": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "1acd3a861ee6d8e48082f83e7a4bafe2a80d1fd49c24ef4f7e851dddaa9b70ee"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "913c51959bc877b789f4bea739c5fde5bdb652b706c9965ac26a4174d75485bb"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "474ab04a2ff20e4f6c23f356bf21f0e4aa26c870b7369628311efd45af0da0d9"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "ad5594bee9f4cd0c2cfd1ab70c0d4cb889c1a8b1eda7636d736203352e4c4616"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "3bd835178acd8cfb30ec93c84f3f2a18d8df23e8c28b2ecdd51b824215b77760"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "2430095d922e8dae95298062b3ed2a9991548ec1eaae8fbe93c70de3c4d08887"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "e24db07e415f740cb18ae671479ad0167631e99014ca04ff25c11f761577fa97"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "f1873e9bbc1295a8f3bbed7920e9f6e4cb902afdd50bf9cad326cf0942f976b6"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "a4531ad76260ce4ca14ce716bf4a21a09684e45feeb5d6314f8f5dbd937b30f5"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "d5dcad7d3ad2c23a059e54e1172dd430bed8ef4c5ca7f56dc031a9ddf0474db7"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "68e987d0e4aad31e7f448e70f1350626c7fa488d7d9b058413f149f62d32a10d"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "749c8027e0a54a2d8dfeef8c1bd0e66a6e5e2869fa7fd63d8cf6a4e5b4855525"
+    },
+    {
+      "File": "Ipc.Presentation.Wpf.dll",
+      "Sha256": "995f08b58e2b6312c8595b9655807385665b466df3c7c83ee77e012bb245f3f7"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "254d29c256e02f4f99e8f0c3e0a44f7c5851a64eedd181d2924d62d25f29f390"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "db19ff1e2ca95001a88e88b92f985899f53df7aed6ab28e030a8407f4a8e6dd1"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "5a2058b879ae09d0bc40b770478ea583eb38994d8c6d7f9d9fff2debada77778"
+    }
+  ],
+  "OfficialFontHashesAndLicense": "PASS in working tree and exact committed blobs",
+  "ArchivedGuidanceHashes": "PASS in working tree and committed blobs",
+  "PublishLicenseAndNotice": "PASS",
+  "ReleaseDependenciesBundledFonts": "PASS",
+  "NoGlobalInstallOrNetworkDownload": "font resources resolve through assembly pack URI; no loader downloads or installs fonts"
+}

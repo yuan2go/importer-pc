@@ -1,0 +1,12 @@
+PASS FONT regular has actual glyphs without .notdef
+PASS FONT regular resolves expected font file and real weight
+PASS FONT medium has actual glyphs without .notdef
+PASS FONT medium resolves expected font file and real weight
+PASS FONT code has actual glyphs without .notdef
+PASS FONT code resolves expected font file and real weight
+PASS FONT fallback has actual glyphs without .notdef
+PASS FONT fallback resolves expected font file and real weight
+PASS FONT Regular embedded bytes match official SHA256
+PASS FONT Medium embedded bytes match official SHA256
+PASS FONT offline OFL license is embedded
+CAPTURE typography-font-resolution: 945.6x282.4 DIP, Windows DPI 1.25/1.25

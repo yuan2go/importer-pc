@@ -1,3 +1,5 @@
+> TYPOGRAPHY-01：现行字体与字号以 [字体规范](docs/design/typography-01.md) 为准。用户授权离线交付官方 OFL Noto Sans CJK SC Regular/Medium；只替代此前系统字体/不交付字体限制，其他受限资产不变。
+
 > 2026-10-22用户纠偏优先：管理能力改为[管理模式](docs/runtime/management-mode-01.md)，不是管理员账号；本轮见[MANAGEMENT-MODE-01](docs/work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。旧账号说明及SM1.10.2证据保留历史适用范围。
 
 > SM1.10.2历史软件管理员、导航和日志实现见 [OPS-ADMIN-LOGS-01](docs/runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。

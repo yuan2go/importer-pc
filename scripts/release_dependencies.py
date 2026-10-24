@@ -33,8 +33,21 @@ def publish(root, output, source):
     licenses = output / 'licenses'; licenses.mkdir()
     for name in sorted(set(r['LicenseExpression'] for r in records)):
         shutil.copyfile(root / 'docs/licenses' / (name + '.txt'), licenses / (name + '.txt'))
+    font_notice = root / 'src/Ipc.Presentation.Wpf/Fonts/NOTICE.json'
+    fonts = []
+    if (output / 'desktop/Ipc.Presentation.Wpf.dll').is_file():
+        notice = json.loads(font_notice.read_text(encoding='utf-8'))
+        font_root = font_notice.parent
+        for item in notice['files']:
+            if hashlib.sha256((font_root / item['file']).read_bytes()).hexdigest() != item['sha256']:
+                raise ValueError('Bundled font differs from reviewed official bytes: ' + item['file'])
+        if hashlib.sha256((font_root / 'OFL.txt').read_bytes()).hexdigest() != notice['licenseSha256']:
+            raise ValueError('Bundled font license differs from reviewed OFL')
+        shutil.copyfile(font_root / 'OFL.txt', licenses / 'NotoSansCJKSC-OFL.txt')
+        shutil.copyfile(font_notice, licenses / 'NotoSansCJKSC-NOTICE.json')
+        fonts.append(notice)
     record = dict(SchemaVersion=1, SourceCommit=source, Source='Resolved app deps.json and restored NuGet nuspec metadata',
-                  Packages=records, RuntimeNoticeFiles=[p.relative_to(output).as_posix() for area in ('app', 'desktop') for p in (output / area).rglob('*')
+                  Packages=records, BundledFonts=fonts, RuntimeNoticeFiles=[p.relative_to(output).as_posix() for area in ('app', 'desktop') for p in (output / area).rglob('*')
                       if p.is_file() and p.name.lower() in ('license.txt', 'thirdpartynotices.txt')],
                   ExternalPrerequisites=['PowerShell 7 only for explicit advanced .ps1 scripts; native Setup/Run/Maintenance do not require it', 'Optional diagnose-camera-network.ps1 supports Windows PowerShell 5.1; read-only by default', 'Approved vendor SDK/driver/runtime only for a qualified real combination'],
                   VendorSdkRedistribution='BLOCKED: no approved vendor SDK or redistribution grant supplied',

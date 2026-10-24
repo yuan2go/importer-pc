@@ -1,0 +1,27 @@
+{
+  "Id": "78b46d266e4b411cb59cafa69ddd8b30",
+  "ApplicationId": "sportmaster",
+  "OperationId": "9084c218bf1344d7a73cb2ec5ecd6ee9",
+  "AdmissionId": "right-control",
+  "Stage": "wcs-slot",
+  "Binding": {
+    "Kind": "integration",
+    "Implementation": "reference-integration",
+    "Version": "1.0.0",
+    "InstanceId": "sportmaster.integration",
+    "Target": "reference://integration/sportmaster",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "slot": "REFERENCE-07",
+      "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-IntentPrepared\\data\\Simulation\\reference-peers"
+    },
+    "Package": null,
+    "Module": null,
+    "Enabled": true
+  },
+  "ImplementationHash": "BC5DCF3A6322DEE6C2FF07A4F22E6430951A88C739E4EABA57E16A0592662355",
+  "ConfigurationHash": "73133057F91F6B628F862FBF68119BD225711EC166CFBF017A7B5DD379402FAD",
+  "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022002\u0022,\r\n  \u0022AdmissionId\u0022: \u0022right-control\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.right\u0022,\r\n    \u0022Epoch\u0022: \u002268de254bc90a4b81a05c611ef35389b7\u0022,\r\n    \u0022SourceEventId\u0022: \u0022right-event\u0022,\r\n    \u0022AdmissionId\u0022: \u0022right-control\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-24T16:57:36.4211434\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022right\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.right\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+  "PayloadHash": "840A4B271FCAA5EB6FF42C8134339BF5074E416AD9C492457036E00CB7D08565",
+  "PreparedAt": "2026-10-24T16:57:36.5363765+00:00"
+}

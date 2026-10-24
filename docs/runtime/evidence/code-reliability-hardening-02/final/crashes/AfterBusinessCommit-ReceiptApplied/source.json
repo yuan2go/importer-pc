@@ -1,0 +1,14 @@
+[
+  {
+    "Position": "right",
+    "Admission": "right-control",
+    "Code": "002",
+    "Event": "right-event"
+  },
+  {
+    "Position": "left",
+    "Admission": "left-original",
+    "Code": "001",
+    "Event": "left-event"
+  }
+]

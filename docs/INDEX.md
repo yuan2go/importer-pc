@@ -1,4 +1,4 @@
-> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)。继承 main `1dfb676a` 的 DB9、生命周期及清理成果；进程强杀、并发、日志、争用与时间边界单独计证，不扩张既有现场资格。
+> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。继承 main `1dfb676a` 的 DB9、生命周期及清理成果；进程强杀、并发、日志、争用与时间边界单独计证，不扩张既有现场资格。
 
 > 本轮并行成果整合：[工作包与固定来源](work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)、[处置、冲突及验证报告](runtime/parallel-task-integration-01.md)。起始远端main `016976c6`已包含PR97/98；旧分支与历史证据身份保留，稳定性资格另计。
 

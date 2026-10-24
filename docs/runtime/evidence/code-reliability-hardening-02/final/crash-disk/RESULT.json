@@ -1,0 +1,90 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "c161b0238671475c203600850965197c6a3b3d3f",
+  "CoreSourceEquals51ad850": true,
+  "Commands": [
+    {
+      "Command": [
+        "dotnet",
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "--nologo",
+        "-p:RestoreLockedMode=true"
+      ],
+      "ExitCode": 0
+    },
+    {
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--h02-crashes"
+      ],
+      "ExitCode": 0
+    }
+  ],
+  "Binaries": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "def2cc6a9dfeca5aff6eff1315836a6d3b99c7c5a94e9be0c955059c78e3e057"
+    },
+    {
+      "File": "Ipc.Application.DirectPlc.dll",
+      "Sha256": "10095540a0e8c749dba43624ff71232c7d4549f30fccb1c864f668c59478276b"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "8181b59282076e4e8cf106ae387c9d33964782ca9e276a20dd52a3975ddb12d2"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "71d1c77fed571b9db885284cbbb88c7d3737689687df78bfc45629cbd8841b3c"
+    },
+    {
+      "File": "Ipc.Application.Verification.dll",
+      "Sha256": "8ccc7ac82799687dc7047a41519bd2dc8ad423a1c3e34ec327d47e6e6b10fcea"
+    },
+    {
+      "File": "Ipc.Application.WcsToPlc.dll",
+      "Sha256": "5b99dac86dd1c070af5f88a6d905072840df44ab99803c12c34402e301cc1b79"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "111e7b1034c78fc30f4116a207bd1066b8d2e32a73391cea4f74578bfcbb1780"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "a72f4e8c621bdedc5b8a17cf07f6d34989ff6cc47149cbd5227d4f73762a3375"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "cf62869025d7bf2da1fe217660fae869da3330ca9b4cd190fe921283d03aeeb0"
+    },
+    {
+      "File": "Ipc.Integrations.SportmasterRcs.dll",
+      "Sha256": "6d63f92df93ce00f24b298de9aadfd3b93dec381e9f673a79f489914c3bceb9e"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "3266c6278dcf58ed58a58078d2a814b4bd45ae3bd2393b53d23a8590d4da0556"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "a230ee125d9dd6273fb22d63b8d506e9a61691387e7159120b7fb20de3999233"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "d905a6f5791094018154b9bef5b9d53237e7eca1d466669c8aedae3058e1bb94"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "c07f319eacf76e4c1bb3556623a0cfc5f4d681b1a4fb3d0cace1078f75dbc7e7"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "23375f5126740d62fdc496c5bb86cafdecb1b89f81a1b46edea2279b101d8f00"
+    }
+  ]
+}

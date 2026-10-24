@@ -1,0 +1,28 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-aad1fb8584be4e98a5d1d7f862fc154b
+PASS RCS20: missing station/driver configuration refuses start before network I/O
+PASS RCS20: repeated start owns one timer and default heartbeat waits for its interval
+PASS RCS20: omitted component interval defaults to five seconds
+PASS RCS20: heartbeat uses the configured RCS endpoint and envelope with numeric version/requestId
+PASS RCS20: one batch uses system StationCode and every synthetic manual reader identity with distinct indexes, without destination mapping copies
+PASS RCS20: batch timestamp is numeric UTC Unix milliseconds
+PASS RCS20: HTTP delivery never fabricates an application acknowledgement
+PASS RCS20: running component rejects context replacement
+PASS RCS20: stop drains the timer and reports stopped
+PASS RCS20: component parameter schema exposes a valid five-second default and bounded editable interval
+PASS RCS20: configured one-second schedule exposes HTTP failures
+PASS RCS20: heartbeat does not follow redirects
+PASS RCS20: stalled heartbeat times out and leaves destination outcomes untouched
+PASS RCS20: reconnect restarts a single loop with fresh increasing heartbeat IDs
+PASS RCS20: heartbeat neither consumes durable destination IDs nor changes destination acceptance semantics
+PASS RCS20: stopped component performs no later scheduled requests
+PASS RCS20: invalid interval refused: 0
+PASS RCS20: invalid interval refused: -1
+PASS RCS20: invalid interval refused: 1.5
+PASS RCS20: invalid interval refused: 3601
+PASS RCS20: invalid interval refused: bad
+PASS RCS20: missing system StationCode refuses configuration
+PASS RCS20: duplicate driver codes refuse configuration
+PASS RCS20: hardware reader without driver bcr-code refuses configuration
+PASS RCS20: effective system and driver edits determine the next runtime's heartbeat
+PASS RCS20: heartbeat refuses destination-ID range collisions before HTTP without consuming business IDs
+PASS RCS HEARTBEAT COMPLETE

@@ -16,4 +16,4 @@
 
 前阶段证据：[稳定性](../runtime/validation/win11-24x7-stability-remediation-01.md)、[整合](../runtime/parallel-task-integration-01.md)、[保留查询复核](../runtime/validation/retention-performance-review-01.md)。已正确实现不重复重建。编码前清理全后台化与无限原文呈现的冲突说明，原字节见[归档](../archive/pre-code-reliability-hardening-02/README.md)；[增量设计](../design/code-reliability-hardening-02.md)只替代该范围。
 
-验证先留修复前反证，再跑定向补测、受影响回归、Release/原生启动及现有CI；不反复全库测试。每次保留真实源码/程序集hash、命令、退出码及原始日志，不用旧PASS扩张新树。运行、结果及升级/回退说明随实际实施补齐。
+验证先留修复前反证，再跑定向补测、受影响回归、Release/原生启动及现有CI；不反复全库测试。最终冻结验证保留真实源码/程序集hash、命令、退出码及原始日志；开发阶段未逐次保有二进制hash的记录明确标注未提交工作树身份，不用旧PASS扩张新树。已交付[运行/升级/回退](../runtime/code-reliability-hardening-02.md)与[五项处置和验证](../runtime/validation/code-reliability-hardening-02.md)，原始失败和最终冻结身份分列。

@@ -1,0 +1,86 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-7f292ad21a0c458db712faf276d1ecb3
+PASS H02: AfterIngressDurable controller observed live process blocked inside actual boundary
+PASS H02: AfterIngressDurable terminated externally without orderly Dispose
+PASS H02: AfterIngressDurable independent left/right inputs both retain durable receipt identities
+PASS H02: AfterIngressDurable recovery pauses for original input inspection without external resend
+PASS H02: AfterIngressDurable right accepted control survives unchanged
+PASS H02: AfterIngressDurable no invented acceptance; only original durable raw converges locally
+PASS H02: AfterIngressDurable interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterIngressDurable; elapsed_ms=2844.43; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterBusinessCommit:IntentPrepared controller observed live process blocked inside actual boundary
+PASS H02: AfterBusinessCommit:IntentPrepared terminated externally without orderly Dispose
+PASS H02: AfterBusinessCommit:IntentPrepared independent left/right inputs both retain durable receipt identities
+PASS H02: AfterBusinessCommit:IntentPrepared recovery pauses for original input inspection without external resend
+PASS H02: AfterBusinessCommit:IntentPrepared right accepted control survives unchanged
+PASS H02: AfterBusinessCommit:IntentPrepared no invented acceptance; only original durable raw converges locally
+PASS H02: AfterBusinessCommit:IntentPrepared service-side receive count matches the selected crash window
+PASS H02: AfterBusinessCommit:IntentPrepared interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterBusinessCommit:IntentPrepared; elapsed_ms=1877.44; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterBusinessCommit:Dispatching controller observed live process blocked inside actual boundary
+PASS H02: AfterBusinessCommit:Dispatching terminated externally without orderly Dispose
+PASS H02: AfterBusinessCommit:Dispatching independent left/right inputs both retain durable receipt identities
+PASS H02: AfterBusinessCommit:Dispatching recovery pauses for original input inspection without external resend
+PASS H02: AfterBusinessCommit:Dispatching right accepted control survives unchanged
+PASS H02: AfterBusinessCommit:Dispatching no invented acceptance; only original durable raw converges locally
+PASS H02: AfterBusinessCommit:Dispatching service-side receive count matches the selected crash window
+PASS H02: AfterBusinessCommit:Dispatching interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterBusinessCommit:Dispatching; elapsed_ms=1908.72; input_receipts=2; recovery_external_calls=0
+PASS H02: BeforeExternal controller observed live process blocked inside actual boundary
+PASS H02: BeforeExternal terminated externally without orderly Dispose
+PASS H02: BeforeExternal independent left/right inputs both retain durable receipt identities
+PASS H02: BeforeExternal recovery pauses for original input inspection without external resend
+PASS H02: BeforeExternal right accepted control survives unchanged
+PASS H02: BeforeExternal no invented acceptance; only original durable raw converges locally
+PASS H02: BeforeExternal service-side receive count matches the selected crash window
+PASS H02: BeforeExternal interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=BeforeExternal; elapsed_ms=2056.77; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterExternal controller observed live process blocked inside actual boundary
+PASS H02: AfterExternal terminated externally without orderly Dispose
+PASS H02: AfterExternal independent left/right inputs both retain durable receipt identities
+PASS H02: AfterExternal recovery pauses for original input inspection without external resend
+PASS H02: AfterExternal right accepted control survives unchanged
+PASS H02: AfterExternal no invented acceptance; only original durable raw converges locally
+PASS H02: AfterExternal service-side receive count matches the selected crash window
+PASS H02: AfterExternal exact original request ID/body/hash/target/contract preserved
+PASS H02: AfterExternal interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterExternal; elapsed_ms=1871.32; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterRawFileDurable:wcs-slot controller observed live process blocked inside actual boundary
+PASS H02: AfterRawFileDurable:wcs-slot terminated externally without orderly Dispose
+PASS H02: AfterRawFileDurable:wcs-slot independent left/right inputs both retain durable receipt identities
+PASS H02: AfterRawFileDurable:wcs-slot recovery pauses for original input inspection without external resend
+PASS H02: AfterRawFileDurable:wcs-slot right accepted control survives unchanged
+PASS H02: AfterRawFileDurable:wcs-slot no invented acceptance; only original durable raw converges locally
+PASS H02: AfterRawFileDurable:wcs-slot service-side receive count matches the selected crash window
+PASS H02: AfterRawFileDurable:wcs-slot exact original request ID/body/hash/target/contract preserved
+PASS H02: AfterRawFileDurable:wcs-slot interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterRawFileDurable:wcs-slot; elapsed_ms=1841.10; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterRawDurable controller observed live process blocked inside actual boundary
+PASS H02: AfterRawDurable terminated externally without orderly Dispose
+PASS H02: AfterRawDurable independent left/right inputs both retain durable receipt identities
+PASS H02: AfterRawDurable recovery pauses for original input inspection without external resend
+PASS H02: AfterRawDurable right accepted control survives unchanged
+PASS H02: AfterRawDurable no invented acceptance; only original durable raw converges locally
+PASS H02: AfterRawDurable service-side receive count matches the selected crash window
+PASS H02: AfterRawDurable exact original request ID/body/hash/target/contract preserved
+PASS H02: AfterRawDurable interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterRawDurable; elapsed_ms=1779.52; input_receipts=2; recovery_external_calls=0
+PASS H02: BeforeBusinessCommit:ReceiptApplied controller observed live process blocked inside actual boundary
+PASS H02: BeforeBusinessCommit:ReceiptApplied terminated externally without orderly Dispose
+PASS H02: BeforeBusinessCommit:ReceiptApplied independent left/right inputs both retain durable receipt identities
+PASS H02: BeforeBusinessCommit:ReceiptApplied recovery pauses for original input inspection without external resend
+PASS H02: BeforeBusinessCommit:ReceiptApplied right accepted control survives unchanged
+PASS H02: BeforeBusinessCommit:ReceiptApplied no invented acceptance; only original durable raw converges locally
+PASS H02: BeforeBusinessCommit:ReceiptApplied service-side receive count matches the selected crash window
+PASS H02: BeforeBusinessCommit:ReceiptApplied exact original request ID/body/hash/target/contract preserved
+PASS H02: BeforeBusinessCommit:ReceiptApplied interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=BeforeBusinessCommit:ReceiptApplied; elapsed_ms=1782.09; input_receipts=2; recovery_external_calls=0
+PASS H02: AfterBusinessCommit:ReceiptApplied controller observed live process blocked inside actual boundary
+PASS H02: AfterBusinessCommit:ReceiptApplied terminated externally without orderly Dispose
+PASS H02: AfterBusinessCommit:ReceiptApplied independent left/right inputs both retain durable receipt identities
+PASS H02: AfterBusinessCommit:ReceiptApplied recovery pauses for original input inspection without external resend
+PASS H02: AfterBusinessCommit:ReceiptApplied right accepted control survives unchanged
+PASS H02: AfterBusinessCommit:ReceiptApplied no invented acceptance; only original durable raw converges locally
+PASS H02: AfterBusinessCommit:ReceiptApplied service-side receive count matches the selected crash window
+PASS H02: AfterBusinessCommit:ReceiptApplied exact original request ID/body/hash/target/contract preserved
+PASS H02: AfterBusinessCommit:ReceiptApplied interrupted left handoff remains inspectable even after business T3
+MEASURE H02 crash=AfterBusinessCommit:ReceiptApplied; elapsed_ms=1756.03; input_receipts=2; recovery_external_calls=0

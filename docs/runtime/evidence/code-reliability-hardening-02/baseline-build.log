@@ -1,0 +1,39 @@
+  正在确定要还原的项目…
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 3.25 秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Platform\Ipc.Platform.csproj (用时 17 毫秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Integrations.SportmasterRcs\Ipc.Integrations.SportmasterRcs.csproj (用时 17 毫秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 17 毫秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Components\Ipc.Components.csproj (用时 15 毫秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 19 毫秒)。
+  已还原 D:\w\ipc-reliability-02\src\Ipc.Application.DirectPlc\Ipc.Application.DirectPlc.csproj (用时 20 毫秒)。
+  已还原 D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj (用时 44 毫秒)。
+  Ipc.Platform -> D:\w\ipc-reliability-02\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Platform.Storage -> D:\w\ipc-reliability-02\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply.Contracts -> D:\w\ipc-reliability-02\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Contracts -> D:\w\ipc-reliability-02\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> D:\w\ipc-reliability-02\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Integrations.SportmasterRcs -> D:\w\ipc-reliability-02\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Components -> D:\w\ipc-reliability-02\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\w\ipc-reliability-02\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply -> D:\w\ipc-reliability-02\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> D:\w\ipc-reliability-02\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Integrations -> D:\w\ipc-reliability-02\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.WcsToPlc -> D:\w\ipc-reliability-02\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Application.Sportmaster -> D:\w\ipc-reliability-02\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> D:\w\ipc-reliability-02\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs(58,74): error CS0649: 从未对字段“ReliabilityHardening.WrappedWcs.Resolve”赋值，字段将一直保持其默认值 null [D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+
+生成失败。
+
+D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs(58,74): error CS0649: 从未对字段“ReliabilityHardening.WrappedWcs.Resolve”赋值，字段将一直保持其默认值 null [D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:35.59

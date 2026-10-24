@@ -1,0 +1,81 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-32328446f1d14a799fec18a18d988276
+PASS DCC01: split: connecting sends no handshake or application data
+PASS DCC01: split: complete valid frame retained without transport failure
+PASS DCC01: split UTF8 and coalesced LF/CRLF retain order and distinct same-code entities
+PASS DCC01: split: stop drains reading and local-confirmation tasks
+PASS DCC01: observe: connecting sends no handshake or application data
+PASS DCC01: observe: complete valid frame retained without transport failure
+PASS DCC01: observe-only never invents an entity boundary
+PASS DCC01: observe: stop drains reading and local-confirmation tasks
+PASS DCC01: max-lf: connecting sends no handshake or application data
+PASS DCC01: max-lf: complete valid frame retained without transport failure
+PASS DCC01: max-lf: stop drains reading and local-confirmation tasks
+PASS DCC01: max-crlf: connecting sends no handshake or application data
+PASS DCC01: max-crlf: complete valid frame retained without transport failure
+PASS DCC01: max-crlf: stop drains reading and local-confirmation tasks
+PASS DCC01: long: connecting sends no handshake or application data
+PASS DCC01: long: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: long: stop drains reading and local-confirmation tasks
+PASS DCC01: utf8: connecting sends no handshake or application data
+PASS DCC01: utf8: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: utf8: stop drains reading and local-confirmation tasks
+PASS DCC01: empty: connecting sends no handshake or application data
+PASS DCC01: empty: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: empty: stop drains reading and local-confirmation tasks
+PASS DCC01: control: connecting sends no handshake or application data
+PASS DCC01: control: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: control: stop drains reading and local-confirmation tasks
+PASS DCC01: partial: connecting sends no handshake or application data
+PASS DCC01: partial: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: partial: stop drains reading and local-confirmation tasks
+PASS DCC01: eof: connecting sends no handshake or application data
+PASS DCC01: eof: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: eof: stop drains reading and local-confirmation tasks
+PASS DCC01: reject: connecting sends no handshake or application data
+PASS DCC01: reject: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: reject: stop drains reading and local-confirmation tasks
+PASS DCC01: throw: connecting sends no handshake or application data
+PASS DCC01: throw: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: throw: stop drains reading and local-confirmation tasks
+PASS DCC01: blocked callback allows bounded Stop cancellation without pretending drain completed
+PASS DCC01: cancelled stop retains original resource ownership and refuses overlapping start
+PASS DCC01: explicit drain permits controlled new epoch
+PASS DCC01: startup bounded reception is open before business admission
+PASS DCC01: startup barrier forbids operations and external requests while another reader is not started
+PASS DCC01: legal frame sent immediately on connect enters bounded queue during startup
+PASS DCC01: startup ingress rejection does not spuriously disconnect left camera
+PASS DCC01: effective endpoint maps through DeviceId and topology to original left acquisition
+PASS DCC01: left protocol fault does not block right; same barcode retains two entities and matching original requests
+PASS DCC01: ordinary health projection conceals actual TCP endpoints
+PASS DCC01: business guard rejection is audited without disconnecting healthy TCP or creating an RCS request
+PASS DCC01: explicit single-side reconnect stops original and opens a new epoch
+PASS DCC01: left reconnect preserves right epoch and never replays original requests
+PASS DCC01: old registered callback cannot contaminate reconnected camera
+PASS DCC01: management snapshot separates local endpoints, recent bytes and valid observation evidence
+PASS DCC01: workstation labels only TCP establishment; existing management detail exposes separate receive/observation evidence and recovery limits
+PASS DCC01: endpoint edit saves one Pending candidate through original configuration CAS
+PASS DCC01: reconnect uses old Effective endpoint while Pending exists
+PASS DCC01: save and reconnect cannot masquerade as Pending activation
+PASS DCC01: controlled restart alone activates saved endpoint and preserves pause
+PASS DCC01: configuration activation preserves original request bytes, target and attempt count
+PASS DCC01: failed startup cannot dispatch buffered observations
+PASS DCC01: failed startup records its terminal audit before buffered-input disposition shares the database owner
+PASS DCC01: unsuccessful startup drains bounded input into explicit durable inspection evidence
+PASS DCC01: cancelled startup cannot dispatch buffered observations
+PASS DCC01: cancelled startup records its terminal audit before buffered-input disposition shares the database owner
+PASS DCC01: unsuccessful startup drains bounded input into explicit durable inspection evidence
+PASS DCC01: startup connection refusal isolates left and allows independent right business
+PASS DCC01: connection-refused controlled reconnect returns classified incomplete receipt instead of escaping SocketException
+PASS DCC01: startup queue overflow preserves durable side-specific overload fence; no dropped-frame success
+PASS DCC01: healthy right source still receives after left startup overflow
+PASS DCC01: physical endpoint remains exclusive across device aliases and numeric port spellings
+PASS DCC01: health refreshes and valid data update current evidence without transition-log flooding or mutable-draft rebinding
+PASS DCC01 COMPLETE

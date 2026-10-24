@@ -7,3 +7,8 @@ startup-before、log-time-before、health-before、storage-log-after及native-be
 crashes/regression-h02-crashes是外部父进程强杀后的核对；测试来源/服务端记录为合成，真实Application/SQLite不替换。data/security、账户、数据库、原始客户资产和二进制均不上传。仅复制允许的合成输入、模拟服务端记录、结果和日志。
 
 Windows原生日志来自真实Dispatcher/HWND，合成数据和接口；不表示最终IPC、真实SDK/RCS、物理断电或24h/72h通过。WPF dispatcher_max包含窗口操作/首次布局，不等于纯格式化耗时。所有本机缓存和隔离数据在D盘。
+
+
+`final/CORE-RESULT.json`与首个`final/RELEASE.json`固定51ad850；`native-management`为80dc783独立等待夹具配51ad850产品；`crash-disk`为c161b02（src/config等同51ad850）的磁盘逐笔对账补测。原生管理失败截图、并行资源租约拒绝、最终布局收口各保留实际身份。最终23af651介质另存`final/release-23af651`，不覆盖先前候选。
+
+最终23af651同源portable/win-x64及三组冻结WPF均PASS；布局收口只涉及原文提示，不改变核心源码，因此核心51ad850全定向回归和c161b02磁盘逐笔强杀补测保持各自身份。EXE只读启动与原生DLL交互分开计证，正式安装未执行。

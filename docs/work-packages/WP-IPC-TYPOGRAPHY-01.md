@@ -1,5 +1,7 @@
 # WP-IPC-TYPOGRAPHY-01 · 供包台字体与排版统一
 
+追加复核：2026-10-24 main 仍为 `c5ac51d`，PR97 已推进 `a43ecb8`。现以[对照与判定](../design/typography-comparison-01.md)约束后续工作；下文为首轮实施记录，不能代替新依赖的本次验证。
+
 开工核验（2026-10-24）：origin/main `c5ac51d`，PR97 HIERARCHY-02 仍开放，head `37b27a9`。D盘隔离工作树、分支 `codex/typography-01` 从该head衔接；`e5ed46d` 纳入最新main文档，索引冲突保留02入口和24×7审查原身份。不合并其他PR，四份未跟踪原稿/ZIP不进入本包。
 
 编码前已归档相关当前指引，并统一[字体规范](../design/typography-01.md)。继承97的格口优先、空态简化、跨页回执、参数帮助及查询空间。具体字体文件仅来自官方固定版本，核验OFL、家族、字重、字形和哈希后离线打包。

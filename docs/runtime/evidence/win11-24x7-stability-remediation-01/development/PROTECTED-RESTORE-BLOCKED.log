@@ -1,0 +1,46 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-d55dba6e48bc4900aad8afa98f976a60
+PASS new-site authoritative discovery offers first configuration without starting a runtime or creating a database
+PASS unavailable saved provider rejects the entire replacement draft
+PASS failed offline resume preserves every current unsaved field
+PASS first configuration uses the existing revision/repair authority and records machine custody before the first business database
+PASS a copied origin file without a fenced handoff cannot certify another source directory
+PASS explicit new-site configuration starts the approved candidate without first starting the reference seed
+PASS previous startup facts refuse a replacement empty database even without receipt or image custody
+PASS missing previously-started database preserves original ledger and retained database bytes without creating a new ledger
+PASS database without its original configuration ledger cannot start from a replacement seed
+PASS missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim
+PASS original custody without a database cannot be replaced by a new empty business ledger
+PASS missing-database rejection preserves raw custody and creates no replacement authority
+Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.
+PASS original unconfirmed configuration fails resource construction
+PASS settled DB7 migrates to DB9 before failed initial resources and retains the repair route
+PASS failed startup is durable and does not confirm Effective
+PASS incomplete draft resumes without becoming Pending or changing Effective
+PASS actual Windows DPAPI output excludes plaintext secret marker
+PASS concurrent stale draft cannot overwrite newer input
+PASS ordinary Pending still cannot bypass unconfirmed original
+PASS failed repair candidate retains the original Effective
+PASS candidate failure does not confirm or erase pending repair evidence
+PASS interrupted repair remains explicit-restage-only with original Effective
+PASS stale initial repair cannot overwrite a newer intent
+PASS repair intent keeps old Effective and confirmation until candidate resources succeed
+PASS correct candidate starts despite permanently broken original and confirms only after resource startup
+PASS original repair bytes and failed attempts remain in authoritative envelope
+PASS history/settings use the same runtime and cannot reconstruct readers
+PASS scheduled backup stays pending without authenticated pause and never pauses production itself
+PASS synthetic maintenance authentication grants the existing backup permission
+PASS actual in-flight health reservation blocks maintenance even after authentication
+PASS live in-flight maintenance guard rejects draft persistence without bypassing authorization
+PASS in-flight refusal preserves both encrypted draft bytes and current invalid editor input
+PASS maintenance becomes available only after the actual external reservation drains
+PASS running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration
+PASS scheduled path actually creates the original complete recovery set engine output
+PASS backup count budget leaves the prior complete set and reports failure without deletion
+PASS backup list verifies the actual scheduled complete set
+Unhandled exception. System.UnauthorizedAccessException: Extension writes require a separate elevated installer; ordinary runtime is read-only
+   at Ipc.Platform.MachineRuntimePolicy.RequireExtensionInstallerAuthority() in D:\projects\importer-pc-stability\src\Ipc.Platform\MachineRuntimePolicy.cs:line 40
+   at Ipc.Platform.WindowsDeploymentSetup.PrepareRestoreDataRoot(String dataRoot) in D:\projects\importer-pc-stability\src\Ipc.Platform\WindowsDeploymentSetup.cs:line 67
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.RestoreAsync(String backup, String destination, String expectedBackupHash) in D:\projects\importer-pc-stability\src\Ipc.Application.ParcelFlow\ParcelStartupMaintenance.cs:line 189
+   at CommercialProductization.Run(String workspace, String root) in D:\projects\importer-pc-stability\tests\Ipc.Application.Verification\CommercialProductization.cs:line 161
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-stability\tests\Ipc.Application.Verification\Program.cs:line 28
+   at Program.<Main>(String[] args)

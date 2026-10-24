@@ -1,7 +1,9 @@
-# 本轮证据身份
+# 稳定性整改证据身份
 
-本目录只收录获授权合成测试、Windows主机规格和原生截图，不包含生产数据、凭据、厂商DLL、字体或客户原稿。原审查ZIP保持原路径及哈希。
+本目录只收录获授权合成测试、Windows主机规格和原生截图，不含生产数据、凭据、厂商DLL、字体或客户原稿。原审查ZIP保持原路径和哈希。development/中账号SID已在一份公开失败日志中排除，原始SHA及替换规则见ORIGINALS.json；其他日志保持原字节。原文件在D盘本地保管。
 
-开发树预冻结的原始记录与后续固定Release记录分开。固定Release记录将在构建后以追加证据提交保存其实际SourceCommit和SHA256；不把文档所在HEAD当作被测二进制身份。初始源码提交时固定Release尚未执行，仍为NOT_RUN。
+- development/：预冻结工作树的受影响回归与259.2万索引规模记录，不能冒充固定发布验证；其完整二进制集合未留存。
+- first-freeze-7017899/：原第一候选源码7017899c1657a2fd6ca2f38adfc97c32e0d5a299的构建/启动/原生结果。其采集器结束报告有后续修复，不作为长稳采集交付。保留内部UI方法不可访问导致的首次测试编译失败；后续仅用反射调用该原方法，保留所有断言及异常语义。
+- fixed-c728754/：采集器修复后、整合PR97之前的实际候选，SourceCommit c728754e2156a8616cba8bf0bdb40f2f95135086。ZIP SHA256 812D8B910B61464F0696963D1875850CC6321606BE77CEF0C6F2C5CD558921C1。Win-x64参考组合，实际EXE环境报告.NET10.0.13，原生/责任夹具宿主.NET10.0.11；两者分别计证。冻结EXE只读启动与相同发布DLL的原生/责任测试通过，未安装或发布。
 
-[结果与边界](../../validation/win11-24x7-stability-remediation-01.md) · [运行指南](../../win11-24x7-stability-remediation-01.md)。真实设备/RCS查询合同/8GB目标机/多Windows版本/24h/72h均未获得资格。
+2026-10-24随后main合入PR97（c310705），以上结果不自动扩张至整合后的树。最终整合记录另列。[结果与边界](../../validation/win11-24x7-stability-remediation-01.md) · [运行指南](../../win11-24x7-stability-remediation-01.md)。真实设备/RCS查询合同/8GB目标机/多Windows版本/24h/72h均未获得资格。

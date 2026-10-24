@@ -1,0 +1,13 @@
+{"Group":"win11-stability","Started":"2026-10-24T08:49:06.9811404Z","Ended":"2026-10-24T08:49:13.0013175Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-win11-stability.log"}
+{"Group":"architecture-quality-remediation","Started":"2026-10-24T08:49:13.0351504Z","Ended":"2026-10-24T08:49:36.7333542Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-architecture-quality-remediation.log"}
+{"Group":"dual-camera-communication","Started":"2026-10-24T08:49:36.7368418Z","Ended":"2026-10-24T08:49:44.5993082Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-dual-camera-communication.log"}
+{"Group":"resource-risks","Started":"2026-10-24T08:49:44.6013935Z","Ended":"2026-10-24T08:49:46.9426521Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-resource-risks.log"}
+{"Group":"sportmaster-rcs","Started":"2026-10-24T08:49:46.9449197Z","Ended":"2026-10-24T08:49:54.4602676Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-sportmaster-rcs.log"}
+{"Group":"rcs-heartbeat","Started":"2026-10-24T08:49:54.4627118Z","Ended":"2026-10-24T08:50:10.0472618Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-rcs-heartbeat.log"}
+{"Group":"audit03-snapshots","Started":"2026-10-24T08:50:10.0491856Z","Ended":"2026-10-24T08:50:11.5094505Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-audit03-snapshots.log"}
+{"Group":"audit03-maintenance","Started":"2026-10-24T08:50:11.5118953Z","Ended":"2026-10-24T08:50:12.7076486Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-audit03-maintenance.log"}
+{"Group":"upgrade-conflict-closure","Started":"2026-10-24T08:50:12.7099230Z","Ended":"2026-10-24T08:50:22.6376075Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-upgrade-conflict-closure.log"}
+{"Group":"parameter-refactor","Started":"2026-10-24T08:50:22.6414668Z","Ended":"2026-10-24T08:50:31.7300975Z","ExitCode":-532462766,"Log":"D:/DevCache/importer-pc/stability-final-parameter-refactor.log"}
+{"Group":"sportmaster-window-lifecycle","Started":"2026-10-24T08:50:31.7390618Z","Ended":"2026-10-24T08:50:37.8392784Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-sportmaster-window-lifecycle.log"}
+{"Group":"version-compatibility","Started":"2026-10-24T08:50:37.8413527Z","Ended":"2026-10-24T08:50:40.0394087Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-version-compatibility.log"}
+{"Group":"windows-client-compatibility","Started":"2026-10-24T08:50:40.0418477Z","Ended":"2026-10-24T08:50:40.1546423Z","ExitCode":0,"Log":"D:/DevCache/importer-pc/stability-final-windows-client-compatibility.log"}

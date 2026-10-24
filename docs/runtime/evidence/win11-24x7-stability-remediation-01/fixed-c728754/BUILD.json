@@ -1,0 +1,8 @@
+{
+  "SourceCommit": "c728754e2156a8616cba8bf0bdb40f2f95135086",
+  "Started": "2026-10-24T09:25:17.3209210Z",
+  "Ended": "2026-10-24T09:26:36.1624310Z",
+  "ExitCode": 0,
+  "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-release-final",
+  "Scope": "Local reference-composition test candidate; no installer/publication/production device"
+}

@@ -1,0 +1,163 @@
+[
+  {
+    "File": "development/RUNS.jsonl",
+    "OriginalSha256": "63C94016443D238B7CC56273BB27A75997CAF328F578A6BC484FF87393FF8078",
+    "PublishedSha256": "63C94016443D238B7CC56273BB27A75997CAF328F578A6BC484FF87393FF8078",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/HOST.json",
+    "OriginalSha256": "EAC7F41096CB303A437943A91131EDC1B8D716647BE65A993A44C05B8E95DD98",
+    "PublishedSha256": "EAC7F41096CB303A437943A91131EDC1B8D716647BE65A993A44C05B8E95DD98",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/SQL1-8.json",
+    "OriginalSha256": "FB67CD8D46CDDDC0C3B42E0E3BBA940AF007EEF35697E99ACD5AE1E86DC0D663",
+    "PublishedSha256": "FB67CD8D46CDDDC0C3B42E0E3BBA940AF007EEF35697E99ACD5AE1E86DC0D663",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/SDK-MANAGED-SELF-TEST.log",
+    "OriginalSha256": "5BED360E7417AC4F392C972B6C30BBF0D1C73B92D466DF48EE42F6AEC4CA2A39",
+    "PublishedSha256": "5BED360E7417AC4F392C972B6C30BBF0D1C73B92D466DF48EE42F6AEC4CA2A39",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/RCS-RENEWAL-EXPIRY.log",
+    "OriginalSha256": "7306E2FAF037795F5FC60D7B64076246C02DDFE386EDEE58846609D2421F0FE3",
+    "PublishedSha256": "7306E2FAF037795F5FC60D7B64076246C02DDFE386EDEE58846609D2421F0FE3",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/COLLECTOR-TESTS.log",
+    "OriginalSha256": "008C4A625D5616AEA9F0538F17ECA2BA66EB1E668E82FAFFDF52AAA6F6D207C6",
+    "PublishedSha256": "008C4A625D5616AEA9F0538F17ECA2BA66EB1E668E82FAFFDF52AAA6F6D207C6",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/COMPATIBILITY-TESTS.log",
+    "OriginalSha256": "A4D25822C4A86439D3DAFCAF2C0856CC4A911F1C8CA717674EFD7916EE5516FA",
+    "PublishedSha256": "A4D25822C4A86439D3DAFCAF2C0856CC4A911F1C8CA717674EFD7916EE5516FA",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/GUIDE-TESTS.log",
+    "OriginalSha256": "540F6FD479E4C284F3A571BD35FED0429F0E287C1BFE0F9142AD7730800BA015",
+    "PublishedSha256": "540F6FD479E4C284F3A571BD35FED0429F0E287C1BFE0F9142AD7730800BA015",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/PROTECTED-RESTORE-BLOCKED.log",
+    "OriginalSha256": "A26499498C2A73C8CE0C82CD729C22B8965CF8D2C9F368FEE0DA7B82DAFBF605",
+    "PublishedSha256": "A26499498C2A73C8CE0C82CD729C22B8965CF8D2C9F368FEE0DA7B82DAFBF605",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/OLD-AUDIT03-RCS-FAILED.log",
+    "OriginalSha256": "245D302C0BF92D833B1522A48F0520196D796359878F00FB1B3F620AD0F9DCA3",
+    "PublishedSha256": "245D302C0BF92D833B1522A48F0520196D796359878F00FB1B3F620AD0F9DCA3",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/win11-stability.log",
+    "OriginalSha256": "3238A1CD98F4A216C2601EC51DA182426EA7724A0231E918F0EC8F2FF39AD651",
+    "PublishedSha256": "3238A1CD98F4A216C2601EC51DA182426EA7724A0231E918F0EC8F2FF39AD651",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/architecture-quality-remediation.log",
+    "OriginalSha256": "8D692F668F52977DCAAF757978B909D694EE86FFBB4274C2635004E57FB18337",
+    "PublishedSha256": "8D692F668F52977DCAAF757978B909D694EE86FFBB4274C2635004E57FB18337",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/dual-camera-communication.log",
+    "OriginalSha256": "A5086FA8DCE8E5748D7BA6ACC19E037D5135A5AD0648FAF74FAC93129484537E",
+    "PublishedSha256": "A5086FA8DCE8E5748D7BA6ACC19E037D5135A5AD0648FAF74FAC93129484537E",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/resource-risks.log",
+    "OriginalSha256": "4B8F4C5BC161BC852E76AB7AD57BE349EFC33D559F35CC6365860998AA5DF2AD",
+    "PublishedSha256": "4B8F4C5BC161BC852E76AB7AD57BE349EFC33D559F35CC6365860998AA5DF2AD",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/sportmaster-rcs.log",
+    "OriginalSha256": "E01CD443185DD88C1D536C751E1EF28629DC56C4C334FABDE9F6A3F7EDA2358F",
+    "PublishedSha256": "E01CD443185DD88C1D536C751E1EF28629DC56C4C334FABDE9F6A3F7EDA2358F",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/rcs-heartbeat.log",
+    "OriginalSha256": "BD76CF3B77ADFDAB24FBF839460F20FABD8E6932AEB0FA171734573A63A6941D",
+    "PublishedSha256": "BD76CF3B77ADFDAB24FBF839460F20FABD8E6932AEB0FA171734573A63A6941D",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/audit03-snapshots.log",
+    "OriginalSha256": "30ACE10C24953C9A5A78AA9F80F371FBB54DA311AABE0ECA592BC37A57ED3102",
+    "PublishedSha256": "30ACE10C24953C9A5A78AA9F80F371FBB54DA311AABE0ECA592BC37A57ED3102",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/audit03-maintenance.log",
+    "OriginalSha256": "C1DFB1ABF101799AFCDC7E518E51CC7607C04C861E05F9CF9B05A953A040AE07",
+    "PublishedSha256": "C1DFB1ABF101799AFCDC7E518E51CC7607C04C861E05F9CF9B05A953A040AE07",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/upgrade-conflict-closure.log",
+    "OriginalSha256": "153F2CE714FD34048A09E53AD314DD281F3671A0C94306BC39A04FCCC57BC185",
+    "PublishedSha256": "153F2CE714FD34048A09E53AD314DD281F3671A0C94306BC39A04FCCC57BC185",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/parameter-refactor.log",
+    "OriginalSha256": "E05186BD40E290259DC772AE7A9B97765136C59012CD17FB4A5FAA310E2C1144",
+    "PublishedSha256": "2B8B9C8E019C905C027B55B61C931AAE5D1E9DDAD612BF71A1348902971A5548",
+    "Redaction": "Windows user SID only; original remains on D: outside Git",
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/sportmaster-window-lifecycle.log",
+    "OriginalSha256": "107DF327A6FAF70BFD5C772C28CEF25C8E8702F3BD9E62EE5894AC61132D3CF1",
+    "PublishedSha256": "107DF327A6FAF70BFD5C772C28CEF25C8E8702F3BD9E62EE5894AC61132D3CF1",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/version-compatibility.log",
+    "OriginalSha256": "2D1D40022A229CD487CE5C84DAE370E080A74FBD103D74C3F310C0BC679A562A",
+    "PublishedSha256": "2D1D40022A229CD487CE5C84DAE370E080A74FBD103D74C3F310C0BC679A562A",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  },
+  {
+    "File": "development/windows-client-compatibility.log",
+    "OriginalSha256": "B5D5836605B4FD53BFAA8CD2D3507A35964CCCFEB81180B526BCD9A6CEC72379",
+    "PublishedSha256": "B5D5836605B4FD53BFAA8CD2D3507A35964CCCFEB81180B526BCD9A6CEC72379",
+    "Redaction": null,
+    "Phase": "Development working tree before frozen code 7017899; not frozen release evidence"
+  }
+]

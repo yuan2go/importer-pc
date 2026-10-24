@@ -1,0 +1,46 @@
+{
+  "Baseline": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
+  "Scope": "Source SQL raw strings 1..8 unchanged; normalized SQL hashes, not replacement migration ledger",
+  "Migrations": [
+    {
+      "Version": 1,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "4829ACE166B3C1C1EF42B30E6EC9A1A76327D7A0886CD1E26C9856D11F3D7438"
+    },
+    {
+      "Version": 2,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "73DC166BAB495E3AC78515F5AE09994188FC9CCB242ED815DE1C583300088507"
+    },
+    {
+      "Version": 3,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "880B984094625D55B7DE90C6A52A9858DFE7F6B4D77F6FAE4A7EB7D3BD484C5A"
+    },
+    {
+      "Version": 4,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "6561117E93BF1C956D380CF0FA9C1CA7D1DD9660A5863FAC2422414F14117B7C"
+    },
+    {
+      "Version": 5,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "68B09C6D26F0FD04715EC7886A31C15EEA578585C35F7AC016BB4B6DDFAED5CE"
+    },
+    {
+      "Version": 6,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "5E5C3614871C04311028E12F58AEF03EFE9E201F41969C69E5C82F763D57C499"
+    },
+    {
+      "Version": 7,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "5999921087154F65A31F2BD7776F4A6F96F6860E719062DA59B4A2242E43BDA5"
+    },
+    {
+      "Version": 8,
+      "Unchanged": true,
+      "NormalizedSqlSha256": "CC6C9FF1A9A95BEA305FE77D84D4637ECFE7176DFBF9922825C9DCDD0B047B95"
+    }
+  ]
+}

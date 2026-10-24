@@ -32,6 +32,11 @@ static partial class Program
         try
         {
             await window.ViewModel.RefreshAsync();
+            // Loaded/timer can own a newer read than this explicit refresh. Wait
+            // for the actual applied state, never bypass the production freshness guard.
+            var initialRead = Stopwatch.StartNew();
+            while (!window.ViewModel.Fresh && initialRead.Elapsed < TimeSpan.FromSeconds(5)) await Task.Delay(20);
+            Check(window.ViewModel.Fresh && window.ViewModel.IsManagementMode, "initial native snapshot and management observation are applied before guarded recovery");
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["maintenance"]);
             var page = (MaintenancePage)typeof(SupplyStationWindow).GetField("maintenance", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!;
             typeof(MaintenancePage).GetMethod("TechnicalTool_Click", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(page, [new MenuItem { Tag = "8" }, new RoutedEventArgs()]);

@@ -1,0 +1,51 @@
+Retained build workspace on failure: D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 991 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 34 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 34 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 71 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 86 毫秒)。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\stability-release-main98\app\
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Presentation.Wpf\Ipc.Presentation.Wpf.csproj (用时 870 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 1.07 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.07 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 982 毫秒)。
+  12 个项目(共 16 个)是最新的，无法还原。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Presentation.Wpf -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Presentation.Wpf\release\Ipc.Presentation.Wpf.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-slmi9a2w\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\DevCache\importer-pc\stability-release-main98\desktop\
+{"Package": "D:\\DevCache\\importer-pc\\stability-release-main98.zip", "Sha256": "38a8d5307cf01f37139886051f7269ea4937cdaad614b2ced3f5b00a661e0ad0", "SourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a", "Application": "sportmaster", "Target": "win-x64", "BusinessVersion": "1.12.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "5061B50E6A88FD3975D586955CE22BC85103BC884571DCAA2B5EAFE30D914E19"}

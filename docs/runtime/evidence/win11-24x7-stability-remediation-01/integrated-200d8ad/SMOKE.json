@@ -1,0 +1,8 @@
+{
+  "SourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a",
+  "Started": "2026-10-24T09:40:45.4934884Z",
+  "Ended": "2026-10-24T09:40:46.2527866Z",
+  "AssemblyExit": 0,
+  "DesktopExit": 0,
+  "Scope": "Frozen EXE read-only startup hooks; no install or device start"
+}

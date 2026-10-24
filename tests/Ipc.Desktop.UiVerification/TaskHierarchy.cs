@@ -40,6 +40,13 @@ static partial class Program
             await SetClient(window, 1366, 768); await vm.RefreshAsync();
             CaptureInternal(evidence, ui + "-login-1366", client, lines);
             await ManagementModeFixture.Authorize(runtime); vm.OperatorSubject = "alice"; await vm.LoginAsync("SIMULATION_ONLY"); await vm.RefreshAsync();
+            var authenticated = (await runtime.SnapshotAsync()).CurrentOperator;
+            Check(authenticated is { Subject: "alice", Simulation: true }, ui + " login creates the expected actual operator session");
+            // A timer refresh already in flight may complete with the pre-login
+            // snapshot. Await convergence to the application's issued session.
+            for (var i = 0; i < 100 && vm.Snapshot?.CurrentOperator?.SessionId != authenticated!.SessionId; i++)
+            { await Task.Delay(20); await vm.RefreshAsync(); }
+            Check(vm.Snapshot?.CurrentOperator?.SessionId == authenticated!.SessionId, ui + " display converges to the issued operator session");
             var session = vm.Snapshot!.CurrentOperator!.SessionId;
             vm.SelectedPositionId = "left"; vm.AdmissionId = "hierarchy-" + ui; vm.ParcelCode = "000123456789"; vm.Emit();
             for (var i = 0; i < 150 && (vm.Current?.State != ParcelState.SlotResolved || vm.Current.AdmissionId != vm.AdmissionId); i++) { await Task.Delay(20); await vm.RefreshAsync(); }
@@ -130,12 +137,20 @@ static partial class Program
                 status.ScrollToEnd(); window.UpdateLayout(); Check(status.VerticalOffset > 0, "all blocker lines remain reachable");
                 CaptureInternal(evidence, "classic-long-blockers-800", client, lines); probe.Project = null; await vm.RefreshAsync();
             }
-            foreach (var state in new[] { StageState.Unknown, StageState.Rejected })
+            foreach (var state in new[] { StageState.Unknown, StageState.Rejected, StageState.Conflict })
             {
-                probe.Project = s => s with { Operations = s.Operations.Select(o => o.Wcs is null ? o : o with { Wcs = o.Wcs with { State = state } }).ToArray() };
+                probe.Project = s => HierarchyState(s, state);
                 for (var i = 0; i < 100 && vm.Current?.Wcs?.State != state; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
                 Navigate("工作台"); await Task.Delay(50); window.UpdateLayout();
                 Check(vm.Current?.Wcs?.State == state && vm.CurrentSlot == "未取得", ui + " " + state + " does not reuse the previously accepted slot");
+                if (vm is SupplyStationViewModel station)
+                {
+                    var left = station.Left; var right = station.Right;
+                    Check(left.Status.Contains(state == StageState.Rejected ? "拒绝" : "核对") && left.Presentation.Foreground == (state == StageState.Rejected ? "#B52F38" : "#895509"), state + " result text and semantic color agree with operation facts");
+                    Check(left.AttentionReason.Contains("合成") && left.NextStep.Contains(state == StageState.Rejected ? "拒绝" : "请勿重复") && !left.CanContinue, state + " explains reason and next step without permitting resend");
+                    Check(!station.Snapshot!.Paused && right.CanAdmit && !right.HasUncertainOriginal && !right.CurrentTaskAvailable, state + " remains local to left; right idle position remains ready");
+                    Check(left.CanAdmit == (state == StageState.Rejected), state + " admission follows application position availability");
+                }
                 CaptureInternal(evidence, ui + "-" + state + "-800", client, lines);
                 if (state == StageState.Unknown)
                 {
@@ -146,6 +161,7 @@ static partial class Program
                 }
             }
             probe.Project = null; await vm.RefreshAsync();
+            await VerifyHierarchy02(window, vm, (HierarchyProjectionProbe)probe, Navigate, evidence, lines);
             await runtime.ExitManagementModeAsync(); await vm.RefreshAsync(); await Task.Delay(650);
             Check(host.Content is not MaintenancePage && host.Content is not SoftwareLogControl && ReferenceEquals(draft, vm.StructuredPolicy) && draft.TimeoutMs == "28000" && vm.Snapshot!.CurrentOperator!.SessionId == session, ui + " revocation retains draft and independent operator while closing protected content");
             bool denied = false; try { await vm.SaveStructuredConfigurationAsync(); } catch (UnauthorizedAccessException) { denied = true; }
@@ -159,9 +175,13 @@ static partial class Program
 
 public class HierarchyProjectionProbe : ProjectionProbe
 {
+    public Func<BusinessCommand, Task<BusinessReceipt>>? Command;
+    public bool FailSnapshots;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
-        if (method!.Name == nameof(IWorkstationAdministration.QueryLogsAsync))
+        if (method!.Name == nameof(IParcelApplication.SnapshotAsync) && FailSnapshots) return Task.FromException<ParcelSnapshot>(new IOException("合成状态读取失败"));
+        if (method.Name == nameof(IBusinessApplication.CommandAsync) && Command is not null) return Command((BusinessCommand)arguments![0]!);
+        if (method.Name == nameof(IWorkstationAdministration.QueryLogsAsync))
         {
             var rows = Enumerable.Range(1, 12).Select(i => new SoftwareLogEntry(new("synthetic", i, "fixture", "synthetic.jsonl"),
                 "合成运行日志", new DateTimeOffset(2026, 10, 24, 8, 0, i, TimeSpan.FromHours(8)), "信息", "合成记录 " + i + "：运行状态已读取。")).ToArray();

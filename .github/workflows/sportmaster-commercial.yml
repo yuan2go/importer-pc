@@ -110,6 +110,8 @@ jobs:
           if (-not $?) { throw 'Frozen first-configuration regression failed' }
           ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-shell -ParameterShellPolish
           if (-not $?) { throw 'Frozen parameter-shell regression failed' }
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-task-hierarchy -TaskHierarchy
+          if (-not $?) { throw 'Frozen task-hierarchy regression failed' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
         run: |
@@ -203,6 +205,11 @@ jobs:
             C:/scd-parameter-shell/RUN.log
             C:/scd-parameter-shell/WINDOWS-WPF.log
             C:/scd-parameter-shell/*.png
+            C:/scd-task-hierarchy/RESULT.json
+            C:/scd-task-hierarchy/RUN.log
+            C:/scd-task-hierarchy/WINDOWS-WPF.log
+            C:/scd-task-hierarchy/*.png
+            C:/scd-task-hierarchy/chain-*.json
             C:/scd-evidence/acceptance.json
             C:/scd-evidence/environment.json
             C:/scd-evidence/media.json

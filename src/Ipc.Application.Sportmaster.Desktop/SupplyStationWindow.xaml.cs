@@ -80,6 +80,7 @@ public partial class SupplyStationWindow : Window
         ViewModel.SelectedPage = page; ApplyLayout();
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => work };
     }
+    void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)

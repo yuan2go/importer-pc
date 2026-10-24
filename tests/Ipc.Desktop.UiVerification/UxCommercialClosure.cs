@@ -286,8 +286,9 @@ static partial class Program
         var longCode = "000" + new string('7', 90);
         probe.Project = snapshot => snapshot with
         {
-            Operations = snapshot.Operations.Select(op => op with { ParcelCode = longCode, State = ParcelState.WcsUnknown,
-                Wcs = op.Wcs is { } fact ? fact with { State = StageState.Unknown } : null }).ToArray(),
+            Operations = snapshot.Operations.Select(op => op with { ParcelCode = longCode, State = ParcelState.WcsUnknown, Slot = null, Reason = "原请求回应未知",
+                Wcs = op.Wcs is { } fact ? fact with { State = StageState.Unknown, Replies = [], Failure = "原请求回应未知" } : null }).ToArray(),
+            Positions = snapshot.Positions!.Select(p => p with { Admit = false, MainResultComplete = false, BackgroundComplete = false, BlockingReasons = ["原请求回应未知"] }).ToArray(),
             Inputs = snapshot.Inputs!.Select(input => input with { Outcome = ParcelInputOutcome.Blocked,
                 Observation = input.Observation with { Codes = [longCode] }, Reason = string.Join(" ", Enumerable.Repeat("SYNTHETIC new input rejected; retain original Unknown", 30)) }).ToArray()
         };
@@ -308,6 +309,11 @@ static partial class Program
             check(fields.Length == 4, "both positions expose actual barcode and result controls");
             foreach (var text in fields)
             {
+                if (window is SupplyStationWindow && text.Name == "CurrentSlot")
+                {
+                    check(!text.IsVisible && text.DataContext is SupplyStationPositionViewModel { CurrentTaskAvailable: false }, "unadmitted input with Unknown original cannot expose a destination");
+                    continue;
+                }
                 var bounds = text.TransformToAncestor(client).TransformBounds(new Rect(text.RenderSize));
                 check(text.ActualHeight > 0 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight && bounds.Left >= 0 && bounds.Right <= client.ActualWidth,
                     $"{ui} {target} barcode/result remains inside actual client without scrolling the entire page");
@@ -319,13 +325,14 @@ static partial class Program
                 foreach (var position in Descendants(host).OfType<SupplyStationPosition>())
                 {
                     var body = (ScrollViewer)position.FindName("PositionBody");
-                    check(new[] { "CurrentBarcode", "CurrentSlot" }.All(name =>
+                    check(new[] { "CurrentBarcode" }.All(name =>
                     {
                         var field = (TextBox)position.FindName(name);
                         var bounds = field.TransformToAncestor(body).TransformBounds(new Rect(field.RenderSize));
                         File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"FIELD {name} top={bounds.Top} bottom={bounds.Bottom} height={field.ActualHeight} body={body.ActualHeight} target={target}\n");
                         return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && field.ActualHeight >= 36;
-                    }), "failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility");
+                    }), "failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden");
+                    check(new[] { "AttentionReason", "NextStep" }.All(name => { var detail = (FrameworkElement)position.FindName(name); return detail.IsVisible && Inside(detail, client); }), "failure cause and next step remain visible at every supported size");
                 }
             }
             var summaries = Descendants(host).OfType<TextBlock>().Where(x => x.Name == "RetainedResponsibility" || Equals(x.Tag, "RetainedResponsibility")).ToArray();

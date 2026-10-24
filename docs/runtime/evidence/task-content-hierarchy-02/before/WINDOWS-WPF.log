@@ -1,0 +1,71 @@
+CAPTURE classic-login-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY classic captures the newly emitted synthetic parcel, not the previous one
+CAPTURE classic-工作台-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1366: PageHost Y=120.0 Height=556.8
+CAPTURE classic-作业记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1366: PageHost Y=97.6 Height=623.2
+CAPTURE classic-参数设置-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1366: PageHost Y=97.6 Height=623.2
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1366: PageHost Y=97.6 Height=623.2
+CAPTURE classic-工作台-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-1092: PageHost Y=120.0 Height=402.4
+CAPTURE classic-作业记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-1092: PageHost Y=97.6 Height=468.8
+CAPTURE classic-参数设置-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-1092: PageHost Y=97.6 Height=468.8
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-1092: PageHost Y=97.6 Height=468.8
+CAPTURE classic-工作台-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-工作台-800: PageHost Y=120.0 Height=208.8
+CAPTURE classic-作业记录-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-作业记录-800: PageHost Y=97.6 Height=275.2
+CAPTURE classic-参数设置-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-参数设置-800: PageHost Y=97.6 Height=275.2
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE classic-日志查询-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY classic-日志查询-800: PageHost Y=97.6 Height=275.2
+CAPTURE supply-station-login-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS HIERARCHY supply-station captures the newly emitted synthetic parcel, not the previous one
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-1366: PageHost Y=103.2 Height=632.0
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-1366: PageHost Y=103.2 Height=632.0
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-1366: PageHost Y=91.2 Height=676.8
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-1366: PageHost Y=60.8 Height=707.2
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-1092: PageHost Y=91.2 Height=493.6
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-1092: PageHost Y=91.2 Height=493.6
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-1092: PageHost Y=83.2 Height=530.4
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-1092: PageHost Y=52.8 Height=560.8
+PASS HIERARCHY native navigation reaches workstation
+CAPTURE supply-station-工作台-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-工作台-800: PageHost Y=75.2 Height=316.0
+PASS HIERARCHY native navigation reaches history
+CAPTURE supply-station-作业记录-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-作业记录-800: PageHost Y=75.2 Height=316.0
+PASS HIERARCHY native navigation reaches maintenance
+CAPTURE supply-station-参数设置-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-参数设置-800: PageHost Y=83.2 Height=336.8
+PASS HIERARCHY native navigation reaches logs
+PASS HIERARCHY native log page shows the completed synthetic query result
+CAPTURE supply-station-日志查询-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY supply-station-日志查询-800: PageHost Y=52.8 Height=367.2
+Real Windows HWND/Dispatcher rendering at actual DPI; isolated synthetic ports/data. Physical input, other OS DPI, target IPC, installation, SDK/RCS/site NOT_RUN.

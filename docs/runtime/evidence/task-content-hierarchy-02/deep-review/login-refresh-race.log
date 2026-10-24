@@ -1,0 +1,5 @@
+CAPTURE classic-login-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+FAIL System.NullReferenceException: Object reference not set to an instance of an object.
+   at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\TaskHierarchy.cs:line 43
+   at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\TaskHierarchy.cs:line 165
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 37

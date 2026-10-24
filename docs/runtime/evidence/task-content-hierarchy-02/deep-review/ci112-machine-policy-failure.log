@@ -1,0 +1,45 @@
+2026-10-24T07:38:32.5578272Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-24T07:38:32.5578703Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-24T07:38:32.5579150Z [36;1m$release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json[0m
+2026-10-24T07:38:32.5579824Z [36;1m$package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })[0m
+2026-10-24T07:38:32.5580478Z [36;1mif ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }[0m
+2026-10-24T07:38:32.5581094Z [36;1m$media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))[0m
+2026-10-24T07:38:32.5581806Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-startup-experience -StartupExperience[0m
+2026-10-24T07:38:32.5582468Z [36;1mif (-not $?) { throw 'Frozen first-configuration regression failed' }[0m
+2026-10-24T07:38:32.5583188Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-shell -ParameterShellPolish[0m
+2026-10-24T07:38:32.5583960Z [36;1mif (-not $?) { throw 'Frozen parameter-shell regression failed' }[0m
+2026-10-24T07:38:32.5584528Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-task-hierarchy -TaskHierarchy[0m
+2026-10-24T07:38:32.5585087Z [36;1mif (-not $?) { throw 'Frozen task-hierarchy regression failed' }[0m
+2026-10-24T07:38:32.5657675Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T07:38:32.5658029Z env:
+2026-10-24T07:38:32.5658294Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T07:38:32.5658752Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T07:38:32.5659201Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T07:38:32.5659596Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T07:38:32.5660168Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T07:38:32.5660499Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T07:38:32.5660735Z ##[endgroup]
+2026-10-24T07:39:27.9494349Z CAPTURE supply-station-stale-1366: 1366x768 DIP, Windows DPI 1/1
+2026-10-24T07:39:27.9495732Z PASS HIERARCHY02 collapsed advanced filters retain actual query range and reachable entry at minimum size
+2026-10-24T07:39:27.9497001Z PASS HIERARCHY02 list conversion preserves instant and uses local offset for nonlocal records
+2026-10-24T07:39:27.9497915Z CAPTURE supply-station-log-range-800: 800x420 DIP, Windows DPI 1/1
+2026-10-24T07:39:27.9500325Z PASS HIERARCHY supply-station revocation retains draft and independent operator while closing protected content
+2026-10-24T07:39:27.9502245Z PASS HIERARCHY supply-station direct save remains denied after revocation
+2026-10-24T07:39:27.9503980Z PASS HIERARCHY supply-station window drains and closes
+2026-10-24T07:39:27.9509683Z Real Windows HWND/Dispatcher rendering at actual DPI; isolated synthetic ports/data. Physical input, other OS DPI, target IPC, installation, SDK/RCS/site NOT_RUN.
+2026-10-24T07:39:27.9511817Z FAIL System.IO.InvalidDataException: Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account
+2026-10-24T07:39:27.9513627Z    at Ipc.Platform.MachineRuntimePolicy.ResolveWindowsLeaseRoot(String requestedRoot, Boolean requireOrdinaryAccount) in /_/src/src/Ipc.Platform/MachineRuntimePolicy.cs:line 99
+2026-10-24T07:39:27.9515083Z    at Ipc.Platform.MachineRuntimePolicy.ResolveLeaseRoot(String requestedRoot) in /_/src/src/Ipc.Platform/MachineRuntimePolicy.cs:line 74
+2026-10-24T07:39:27.9516335Z    at Ipc.Assembly.ParcelCapabilityFactory.Create(ParcelConfiguration c) in /_/src/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 375
+2026-10-24T07:39:27.9517383Z    at HierarchyRcsFactory.Create(ParcelConfiguration c) in C:\scd-task-hierarchy\TaskHierarchyChain.cs:line 202
+2026-10-24T07:39:27.9520777Z    at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 142
+2026-10-24T07:39:27.9521949Z    at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive) in C:\scd-task-hierarchy\TaskHierarchyChain.cs:line 42
+2026-10-24T07:39:27.9523021Z    at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive) in C:\scd-task-hierarchy\TaskHierarchyChain.cs:line 188
+2026-10-24T07:39:27.9524064Z    at Program.VerifyHierarchyChain(String root, String evidence, List`1 lines, Boolean interactive) in C:\scd-task-hierarchy\TaskHierarchyChain.cs:line 188
+2026-10-24T07:39:27.9525017Z    at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in C:\scd-task-hierarchy\Program.cs:line 38
+2026-10-24T07:39:28.0775427Z [31;1mException: [0mD:\a\importer-pc\importer-pc\scripts\verify-commercial-wpf.ps1:86[0m
+2026-10-24T07:39:28.0776443Z [31;1m[0m[36;1mLine |[0m
+2026-10-24T07:39:28.0777619Z [31;1m[0m[36;1m[36;1m  86 | [0m … ) -Tail 18};[36;1mthrow 'Frozen native WPF verification failed; original lo[0m …[0m
+2026-10-24T07:39:28.0779051Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+2026-10-24T07:39:28.0780523Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mFrozen native WPF verification failed; original log retained[0m
+2026-10-24T07:39:28.1008367Z ##[error]Process completed with exit code 1.

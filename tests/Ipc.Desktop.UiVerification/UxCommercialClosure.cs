@@ -331,7 +331,8 @@ static partial class Program
                         var bounds = field.TransformToAncestor(body).TransformBounds(new Rect(field.RenderSize));
                         File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"FIELD {name} top={bounds.Top} bottom={bounds.Bottom} height={field.ActualHeight} body={body.ActualHeight} target={target}\n");
                         return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && field.ActualHeight >= 36;
-                    }), "failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden");
+                    }), "failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=" + body.ActualHeight +
+                        "; barcode=" + ((TextBox)position.FindName("CurrentBarcode")).TransformToAncestor(body).TransformBounds(new Rect(((TextBox)position.FindName("CurrentBarcode")).RenderSize)));
                     check(new[] { "AttentionReason", "NextStep" }.All(name => { var detail = (FrameworkElement)position.FindName(name); return detail.IsVisible && Inside(detail, client); }), "failure cause and next step remain visible at every supported size");
                 }
             }

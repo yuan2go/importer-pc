@@ -40,6 +40,13 @@ static partial class Program
             await SetClient(window, 1366, 768); await vm.RefreshAsync();
             CaptureInternal(evidence, ui + "-login-1366", client, lines);
             await ManagementModeFixture.Authorize(runtime); vm.OperatorSubject = "alice"; await vm.LoginAsync("SIMULATION_ONLY"); await vm.RefreshAsync();
+            var authenticated = (await runtime.SnapshotAsync()).CurrentOperator;
+            Check(authenticated is { Subject: "alice", Simulation: true }, ui + " login creates the expected actual operator session");
+            // A timer refresh already in flight may complete with the pre-login
+            // snapshot. Await convergence to the application's issued session.
+            for (var i = 0; i < 100 && vm.Snapshot?.CurrentOperator?.SessionId != authenticated!.SessionId; i++)
+            { await Task.Delay(20); await vm.RefreshAsync(); }
+            Check(vm.Snapshot?.CurrentOperator?.SessionId == authenticated!.SessionId, ui + " display converges to the issued operator session");
             var session = vm.Snapshot!.CurrentOperator!.SessionId;
             vm.SelectedPositionId = "left"; vm.AdmissionId = "hierarchy-" + ui; vm.ParcelCode = "000123456789"; vm.Emit();
             for (var i = 0; i < 150 && (vm.Current?.State != ParcelState.SlotResolved || vm.Current.AdmissionId != vm.AdmissionId); i++) { await Task.Delay(20); await vm.RefreshAsync(); }

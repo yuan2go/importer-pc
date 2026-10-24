@@ -10,11 +10,9 @@ static class SoftwareLogText
 {
     internal const int MaximumCharacters = 65536;
     const string BudgetNotice = "\n\n【已到本次呈现预算，后续内容未显示。请使用“导出全部匹配”或“导出时间范围”，并设置所需上下文，取得完整脱敏原记录。】";
-    public static string Notice(string text) => text.EndsWith(BudgetNotice, StringComparison.Ordinal)
-        ? "\n详情已到呈现预算；完整脱敏原记录可通过导出取得。" : "";
     public static string Format(IEnumerable<SoftwareLogEntry> entries, CancellationToken token)
     {
-        var text = new StringBuilder(); var remaining = MaximumCharacters - BudgetNotice.Length;
+        var text = new StringBuilder(); var remaining = MaximumCharacters - 2 * BudgetNotice.Length;
         foreach (var entry in entries)
         {
             token.ThrowIfCancellationRequested();
@@ -24,7 +22,10 @@ static class SoftwareLogText
             {
                 var take = remaining;
                 if (take > 0 && char.IsHighSurrogate(original[take - 1])) take--;
-                text.Append(original.AsSpan(0, take)); text.Append(BudgetNotice); return text.ToString();
+                text.Append(original.AsSpan(0, take)); text.Append(BudgetNotice);
+                // Disclose the budget at the top as well as the end, within the
+                // existing scrollable detail. Do not grow the status/footer area.
+                text.Insert(0, BudgetNotice.TrimStart() + "\n\n"); return text.ToString();
             }
             text.Append(original); remaining -= original.Length;
         }

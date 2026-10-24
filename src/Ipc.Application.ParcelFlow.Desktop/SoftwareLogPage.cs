@@ -232,7 +232,6 @@ public sealed class SoftwareLogControl : UserControl
             if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
             if (!authorized) { Revoke(); return; }
             detail.Text = text;
-            if (SoftwareLogText.Notice(text) is { Length: > 0 } notice) status.Text += notice;
         }
         catch (OperationCanceledException) { }
         catch (Exception error)
@@ -250,7 +249,7 @@ public sealed class SoftwareLogControl : UserControl
         if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested();
         if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
-        detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices) + SoftwareLogText.Notice(text);
+        detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices);
     }
     static string OriginalRecord(SoftwareLogEntry entry) => SoftwareLogText.Original(entry, CancellationToken.None);
     async Task Export(bool range)

@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using Microsoft.Data.Sqlite;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
@@ -11,9 +13,30 @@ using Ipc.Platform;
 
 static partial class ReliabilityHardening
 {
+    sealed record ControllerInput(string Position, string Admission, string Code, string Event);
+    static void VerifyInputLedger(string database, string source, string result)
+    {
+        var expected = Wire.Decode<ControllerInput[]>(File.ReadAllText(source));
+        using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+        db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT id,position,state,body,body_hash FROM parcel_ingress ORDER BY position";
+        using var rows = command.ExecuteReader(); List<object> ledger = []; List<string> positions = [];
+        while (rows.Read())
+        {
+            var position = rows.GetString(1); var body = rows.GetString(3); var hash = rows.GetString(4);
+            using var document = JsonDocument.Parse(body);
+            var observation = Wire.Decode<Observation>(document.RootElement.GetProperty("Observation").GetRawText());
+            var input = expected.Single(x => x.Position == position);
+            Check(Wire.Hash(body) == hash && observation.AdmissionId == input.Admission && observation.SourceEventId == input.Event &&
+                observation.Codes.SequenceEqual(new[] { input.Code }), "persisted controller input equals actual durable observation and hash at " + position);
+            positions.Add(position); ledger.Add(new { Id = rows.GetString(0), Position = position, State = rows.GetString(2), Body = body, Hash = hash });
+        }
+        Check(positions.Order().SequenceEqual(expected.Select(x => x.Position).Order()), "independent persisted source has exactly one receipt per original input");
+        File.WriteAllText(result, Wire.Encode(ledger));
+    }
     public static async Task CrashChild(string workspace, string path, string cut, string endpoint)
     {
         var c = Config(workspace); var launch = Launch(path, c);
+        var source = Wire.Decode<ControllerInput[]>(File.ReadAllText(Path.Combine(path, "source.json")));
         using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
         var factory = new WrappedFactory(new(launch), p => new WrappedWcs(p)
         {
@@ -31,10 +54,12 @@ static partial class ReliabilityHardening
         // an actual business frame is blocked. A normal exit fails the test.
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
         await app.StartAsync(default);
-        Check(app.EmitReferenceAt("right", "right-control", "002", "right-event"), "right control durable handoff");
+        var right = source.Single(x => x.Position == "right");
+        Check(app.EmitReferenceAt(right.Position, right.Admission, right.Code, right.Event), "right control durable handoff");
         await Until(() => app.WorkerProgress().Single(p => p.Position == "right").Processed == 1);
         app.Boundary = point => { if (point == cut) Cut(cut); };
-        var accepted = app.EmitReferenceAt("left", "left-original", "001", "left-event");
+        var left = source.Single(x => x.Position == "left");
+        var accepted = app.EmitReferenceAt(left.Position, left.Admission, left.Code, left.Event);
         Console.WriteLine("HANDOFF left=" + accepted); Console.Out.Flush();
         await Task.Delay(TimeSpan.FromSeconds(30));
         throw new Exception("External controller failed to kill the child at " + cut);
@@ -55,13 +80,13 @@ static partial class ReliabilityHardening
         Directory.CreateDirectory(path);
         // Source evidence belongs to the controller, not the process under test.
         File.WriteAllText(Path.Combine(path, "source.json"), Wire.Encode(new[] {
-            new { Position = "right", Admission = "right-control", Code = "002", Event = "right-event" },
-            new { Position = "left", Admission = "left-original", Code = "001", Event = "left-event" } }));
+            new ControllerInput("right", "right-control", "002", "right-event"),
+            new ControllerInput("left", "left-original", "001", "left-event") }));
         using var reserve = new TcpListener(IPAddress.Loopback, 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
         var endpoint = "http://127.0.0.1:" + port + "/";
         using var listener = new HttpListener(); listener.Prefixes.Add(endpoint); listener.Start();
         using var serverStop = new CancellationTokenSource();
-        var received = new List<FrozenRequest>();
+        var compact = new JsonSerializerOptions(Wire.Json) { WriteIndented = false };
         var server = Task.Run(async () =>
         {
             while (!serverStop.IsCancellationRequested)
@@ -71,9 +96,8 @@ static partial class ReliabilityHardening
                 catch (OperationCanceledException) when (serverStop.IsCancellationRequested) { break; }
                 using var input = new StreamReader(context.Request.InputStream);
                 var request = Wire.Decode<FrozenRequest>(await input.ReadToEndAsync());
-                lock (received) received.Add(request);
                 using (var record = new FileStream(Path.Combine(path, "server-received.jsonl"), FileMode.Append, FileAccess.Write, FileShare.Read))
-                { record.Write(Encoding.UTF8.GetBytes(Wire.Encode(request) + "\n")); record.Flush(true); }
+                { record.Write(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request, compact) + "\n")); record.Flush(true); }
                 var reply = new StageReply(Wire.Id(), request.Id, request.PayloadHash, true, true, true, null, "SYN-01", "Controlled loopback server; not RCS qualification", DateTimeOffset.UtcNow);
                 var bytes = Encoding.UTF8.GetBytes(Wire.Encode(reply)); context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes); context.Response.Close();
@@ -96,6 +120,7 @@ static partial class ReliabilityHardening
             var c = Config(workspace); var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
             var database = Path.Combine(Data(launch, c), "sportmaster.db");
             Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 2, cut + " independent left/right inputs both retain durable receipt identities");
+            VerifyInputLedger(database, Path.Combine(path, "source.json"), Path.Combine(path, "input-before.json"));
             using (var originals = new ParcelRepository(Data(launch, c), "sportmaster", 9))
                 File.WriteAllText(Path.Combine(path, "before-recovery.json"), Wire.Encode(originals.Load()));
             int calls = 0;
@@ -112,12 +137,13 @@ static partial class ReliabilityHardening
                 cut + " no invented acceptance; only original durable raw converges locally");
             if (left?.Wcs is { } stage)
             {
-                FrozenRequest[] leftReceived; lock (received) leftReceived = received.Where(r => r.AdmissionId == "left-original").ToArray();
+                var leftReceived = File.ReadAllLines(Path.Combine(path, "server-received.jsonl")).Select(Wire.Decode<FrozenRequest>).Where(r => r.AdmissionId == "left-original").ToArray();
                 Check(leftReceived.Length == (cut == "AfterExternal" || hasRaw ? 1 : 0), cut + " service-side receive count matches the selected crash window");
                 if (leftReceived.Length == 1) Check(Wire.Encode(stage.Request) == Wire.Encode(leftReceived[0]), cut + " exact original request ID/body/hash/target/contract preserved");
             }
             Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted' AND position='left'") == 1,
                 cut + " interrupted left handoff remains inspectable even after business T3");
+            VerifyInputLedger(database, Path.Combine(path, "source.json"), Path.Combine(path, "input-after.json"));
             await recovered.DisposeAsync();
             File.WriteAllText(Path.Combine(path, "result.json"), Wire.Encode(new { Cut = cut, SourceCommit = typeof(ParcelRuntime).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
                 ProcessId = process.Id, process.ExitCode, Milliseconds = watch.Elapsed.TotalMilliseconds, ExternalCallsOnRecovery = calls, Snapshot = snapshot }));

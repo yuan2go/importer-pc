@@ -1,0 +1,284 @@
+{
+  "S01": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+    "lines": "220-277",
+    "title": "来源入队与按位 worker",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs#L220-L277"
+  },
+  "S02": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+    "lines": "220-267",
+    "title": "停止与释放所有权",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelCommands.cs#L220-L267"
+  },
+  "S03": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+    "lines": "100-104",
+    "title": "诊断失败关闭准入",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs#L100-L104"
+  },
+  "S04": {
+    "path": "src/Ipc.Platform/RuntimeJournal.cs",
+    "lines": "8-43",
+    "title": "有界诊断队列与写盘",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform/RuntimeJournal.cs#L8-L43"
+  },
+  "S05": {
+    "path": "src/Ipc.Platform/RuntimeJournal.cs",
+    "lines": "96-104",
+    "title": "日志入队失败与 Dispose",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform/RuntimeJournal.cs#L96-L104"
+  },
+  "S06": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+    "lines": "7-28",
+    "title": "共享、本位及 Unknown 守卫",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelGuards.cs#L7-L28"
+  },
+  "S07": {
+    "path": "src/Ipc.Platform/ExtensionStore.cs",
+    "lines": "31-37",
+    "title": "同步 WriteThrough 与 Flush",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform/ExtensionStore.cs#L31-L37"
+  },
+  "S08": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelOverload.cs",
+    "lines": "9-18",
+    "title": "过载标记恢复锁",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelOverload.cs#L9-L18"
+  },
+  "S09": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+    "lines": "46-85",
+    "title": "维护循环与共享 gate",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelGuards.cs#L46-L85"
+  },
+  "S10": {
+    "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
+    "lines": "70-95",
+    "title": "SDK 启动、取消与异常分类",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Drivers.Hikrobot/HikrobotReader.cs#L70-L95"
+  },
+  "S11": {
+    "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
+    "lines": "99-200",
+    "title": "SDK 回调、队列、健康及停止",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Drivers.Hikrobot/HikrobotReader.cs#L99-L200"
+  },
+  "S12": {
+    "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
+    "lines": "90-108",
+    "title": "跨 reader 的原生枚举锁",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Drivers.Hikrobot/NativeMethods.cs#L90-L108"
+  },
+  "S13": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+    "lines": "150-200",
+    "title": "双位启动和连接失败隔离",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs#L150-L200"
+  },
+  "S14": {
+    "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
+    "lines": "63-138",
+    "title": "数值 ID、未知响应及 Query 合同",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs#L63-L138"
+  },
+  "S15": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+    "lines": "20-94",
+    "title": "T2、原始响应与 T3",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelStages.cs#L20-L94"
+  },
+  "S16": {
+    "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+    "lines": "250-263",
+    "title": "RCS 能力声明",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Assembly/ParcelCapabilityFactory.cs#L250-L263"
+  },
+  "S17": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
+    "lines": "8-49",
+    "title": "永久高水位与恢复退役范围",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs#L8-L49"
+  },
+  "S18": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+    "lines": "7-44",
+    "title": "gate 内快照与完整克隆",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelCommands.cs#L7-L44"
+  },
+  "S19": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
+    "lines": "118-193",
+    "title": "同库归档、容量与可归档判定",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelHistory.cs#L118-L193"
+  },
+  "S20": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+    "lines": "376-380",
+    "title": "未决命令 JSON 查询",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelRepository.cs#L376-L380"
+  },
+  "S21": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs",
+    "lines": "23-69",
+    "title": "历史查询、统计与读事务",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs#L23-L69"
+  },
+  "S22": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs",
+    "lines": "78-156",
+    "title": "导出、异步读取与取消边界",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs#L78-L156"
+  },
+  "S23": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelAdministration.cs",
+    "lines": "9-36",
+    "title": "日志授权同步前缀",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelAdministration.cs#L9-L36"
+  },
+  "S24": {
+    "path": "src/Ipc.Platform/LocalManagementMode.cs",
+    "lines": "114-132",
+    "title": "管理授权检查",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform/LocalManagementMode.cs#L114-L132"
+  },
+  "S25": {
+    "path": "src/Ipc.Platform/ManagementModeBroker.Protocol.cs",
+    "lines": "28-79",
+    "title": "同步管理服务 RPC",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform/ManagementModeBroker.Protocol.cs#L28-L79"
+  },
+  "S26": {
+    "path": "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs",
+    "lines": "135-192",
+    "title": "日志页面调用路径",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs#L135-L192"
+  },
+  "S27": {
+    "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs",
+    "lines": "13-52",
+    "title": "陈旧快照与 Dispatcher 时效",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs#L13-L52"
+  },
+  "S28": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs",
+    "lines": "24-45",
+    "title": "计划备份条件与集数上限",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs#L24-L45"
+  },
+  "S29": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs",
+    "lines": "1-30",
+    "title": "磁盘余量准入守卫",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs#L1-L30"
+  },
+  "S30": {
+    "path": "src/Ipc.Platform.Storage/Database.cs",
+    "lines": "9-27",
+    "title": "SQLite 连接与持久化设置",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Platform.Storage/Database.cs#L9-L27"
+  },
+  "S31": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+    "lines": "90-100",
+    "title": "每次启动修复与身份检查",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelRepository.cs#L90-L100"
+  },
+  "S32": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
+    "lines": "76-121",
+    "title": "启动终态恢复扫描",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs#L76-L121"
+  },
+  "S33": {
+    "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
+    "lines": "71-77",
+    "title": "启动历史数值 ID 核对",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs#L71-L77"
+  },
+  "S34": {
+    "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
+    "lines": "144-149",
+    "title": "停止 token 与最终 Dispose",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Desktop/ParcelApp.xaml.cs#L144-L149"
+  },
+  "S35": {
+    "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
+    "lines": "79-90",
+    "title": "视口变化与暂停",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs#L79-L90"
+  },
+  "S36": {
+    "path": "docs/runtime/windows-client-compatibility-01.md",
+    "lines": "3-25",
+    "title": "当前 Windows 功能兼容政策",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/docs/runtime/windows-client-compatibility-01.md#L3-L25"
+  },
+  "S37": {
+    "path": "docs/runtime/windows-application-delivery.md",
+    "lines": "29",
+    "title": "仍冲突的旧当前门禁说明",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/docs/runtime/windows-application-delivery.md#L29"
+  },
+  "S38": {
+    "path": "scripts/application.ps1",
+    "lines": "15-16",
+    "title": "仍要求 build 26100 的高级脚本",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/scripts/application.ps1#L15-L16"
+  },
+  "S39": {
+    "path": "docs/runtime/architecture-quality-remediation-01.md",
+    "lines": "",
+    "title": "当前架构整改依据",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/docs/runtime/architecture-quality-remediation-01.md"
+  },
+  "S40": {
+    "path": "docs/runtime/dual-camera-communication-fix-01.md",
+    "lines": "",
+    "title": "当前双相机通信依据",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/docs/runtime/dual-camera-communication-fix-01.md"
+  },
+  "S41": {
+    "path": "docs/runtime/evidence/sportmaster-audit-remediation-01/performance-result.json",
+    "lines": "",
+    "title": "旧性能证据身份",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/docs/runtime/evidence/sportmaster-audit-remediation-01/performance-result.json"
+  },
+  "S42": {
+    "path": "tests/Ipc.Desktop.UiVerification/AuditPerformance.cs",
+    "lines": "35-55",
+    "title": "串行等待式性能夹具",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/tests/Ipc.Desktop.UiVerification/AuditPerformance.cs#L35-L55"
+  },
+  "S43": {
+    "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
+    "lines": "",
+    "title": "SDK ABI 与语义边界",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Drivers.Hikrobot/sdk-boundary.json"
+  },
+  "S44": {
+    "path": "config/sportmaster/rcs.parameters.json",
+    "lines": "8-9",
+    "title": "示例数值请求范围",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/config/sportmaster/rcs.parameters.json#L8-L9"
+  },
+  "S45": {
+    "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
+    "lines": "101-172",
+    "title": "TCP读取与LocalTransportOnly健康",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Drivers/TcpLineObservationSource.cs#L101-L172"
+  },
+  "S46": {
+    "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+    "lines": "26-154",
+    "title": "窗口刷新、共享实例和停止",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs#L26-L154"
+  },
+  "S47": {
+    "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs",
+    "lines": "85-86",
+    "title": "配置核对窗口解除订阅",
+    "url": "https://github.com/yuan2go/importer-pc/blob/c91559f6f981a9f2c9f89bd5afc271089f0e9d8e/src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs#L85-L86"
+  }
+}

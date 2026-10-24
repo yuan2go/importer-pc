@@ -4,6 +4,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -74,7 +75,9 @@ static partial class Program
         var readyReview = new ConfigurationSaveReviewWindow(window, vm); readyReview.Show();
         await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); readyReview.UpdateLayout();
         var confirm = Descendants(readyReview).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges");
-        Check(confirm.IsEnabled && Inside(confirm, readyReview), "review exposes its enabled confirm action inside the actual window");
+        var confirmBounds = confirm.TransformToAncestor(readyReview).TransformBounds(new Rect(confirm.RenderSize));
+        Check(confirm.IsEnabled && confirmBounds.Top >= 0 && confirmBounds.Bottom <= readyReview.ActualHeight && confirmBounds.Right <= readyReview.ActualWidth,
+            "review exposes its enabled confirm action inside the actual window");
         CaptureInternal(evidence, "v3-save-review-ready", readyReview, lines); readyReview.Close();
         await vm.SaveStructuredConfigurationAsync();
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT");

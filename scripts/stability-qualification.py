@@ -146,6 +146,8 @@ def collect(args):
                 if now - last > 5:
                     failures['CollectorGapOver5s'] += 1
                 last = now
+                if now - started > warmup + normal_seconds + 5:
+                    failures['CollectionTimeBudgetExceeded'] += 1; break
                 if shutil.disk_usage(output).free < plan['MinimumFreeBytes']:
                     failures['EvidenceVolumeReserve'] += 1; break
                 try:
@@ -169,7 +171,9 @@ def collect(args):
                             bins = {b['UpperMs']: b['Count'] for b in ui['HistogramCounts']}
                             window_start.setdefault(ui['Id'], bins.copy())
                             previous = window_last.get(ui['Id'], bins)
-                            if any(count > previous.get(upper, 0) and upper > plan['MaximumUiStallMs'] for upper, count in bins.items()):
+                            if any(count > previous.get(upper, 0) and
+                                   (ui['MaximumDispatchMs'] if upper == 2048 else upper) > plan['MaximumUiStallMs']
+                                   for upper, count in bins.items()):
                                 failures['CompletedUiDispatchStall'] += 1
                             window_last[ui['Id']] = bins
                             if ui['LastDispatchAgeMs'] > plan['MaximumUiStallMs']:
@@ -205,8 +209,8 @@ def collect(args):
         actual = max(0, (last_normal_tick or started) - (normal_tick or started))
         rates = {}
         normal_ui = []
-        for identity, last_ui in windows.items():
-            bins = {upper: count - window_start[identity].get(upper, 0) for upper, count in window_last[identity].items()}
+        for window_id, last_ui in windows.items():
+            bins = {upper: count - window_start[window_id].get(upper, 0) for upper, count in window_last[window_id].items()}
             bins = {upper: count for upper, count in bins.items() if count > 0}; total = sum(bins.values())
             def percentile(fraction):
                 cumulative = 0
@@ -215,7 +219,7 @@ def collect(args):
                     if cumulative >= math.ceil(total * fraction):
                         return last_ui['MaximumDispatchMs'] if upper == 2048 else upper
                 return None
-            normal_ui.append(dict(Id=identity, Samples=total, P95UpperBoundMs=percentile(.95), P99UpperBoundMs=percentile(.99),
+            normal_ui.append(dict(Id=window_id, Samples=total, P95UpperBoundMs=percentile(.95), P99UpperBoundMs=percentile(.99),
                                   MaximumUpperBoundMs=percentile(1), Scope='Normal-segment histogram delta; overflow uses conservative lifetime maximum'))
         if first_normal and last_normal and actual:
             for position, target in [('left', plan['LeftHz']), ('right', plan['RightHz'])]:

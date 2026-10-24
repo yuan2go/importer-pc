@@ -1,0 +1,28 @@
+PASS COMPARE fixture obtains a synthetic accepted result
+CAPTURE noto-supply-station-normal-1092: 1084x490.4 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-1092 exact barcode text preserved
+PASS COMPARE noto-supply-station-normal-1092 entire barcode remains selectable
+CAPTURE noto-supply-station-normal-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-800 exact barcode text preserved
+PASS COMPARE noto-supply-station-normal-800 entire barcode remains selectable
+CAPTURE noto-supply-station-unknown-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-unknown-800 exact barcode text preserved
+PASS COMPARE noto-supply-station-unknown-800 entire barcode remains selectable
+PASS COMPARE noto-supply-station-unknown-800 unknown never exposes accepted slot
+CAPTURE noto-supply-station-long-800: 792x312.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-long-800 exact barcode text preserved
+PASS COMPARE noto-supply-station-long-800 entire barcode remains selectable
+CAPTURE noto-classic-normal-1092: 1080x396 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-normal-1092 exact barcode text preserved
+PASS COMPARE noto-classic-normal-1092 entire barcode remains selectable
+CAPTURE noto-classic-normal-800: 788x202.4 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-normal-800 exact barcode text preserved
+PASS COMPARE noto-classic-normal-800 entire barcode remains selectable
+CAPTURE noto-classic-unknown-800: 788x145.6 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-unknown-800 exact barcode text preserved
+PASS COMPARE noto-classic-unknown-800 entire barcode remains selectable
+PASS COMPARE noto-classic-unknown-800 unknown never exposes accepted slot
+CAPTURE noto-classic-long-800: 788x202.4 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-long-800 exact barcode text preserved
+PASS COMPARE noto-classic-long-800 entire barcode remains selectable
+Comparison uses frozen synthetic presentation input, not an Application/field acceptance test. Private fixture is not published.

@@ -2,7 +2,7 @@
 
 2026-10-24 工作包工程规范，适用于 Windows 11 原生 WPF 两套宿主、Sportmaster、参数、查询、管理/登录、保存核对、安装与首次配置。本规范覆盖旧当前指引中冲突的字体、字重及字号；PARAM-UX-02/V3、管理模式和 HIERARCHY-02 的导航、字段归属、空态及业务守卫继续有效。原型和历史截图不重制，清理前字节见[归档](../archive/pre-typography-01/README.md)。
 
-本轮追加要求优先：Noto 与下列尺度是待原生对照确认的候选，不再以“用户已决定字体”代替工程判断。旧实现/验证保留 `c993418` 身份，现行选择由[对照方案与验收条件](typography-comparison-01.md)和本次结果共同约束；不推定 Codex 使用的具体字体。
+本轮追加要求优先：Noto 与下列尺度先作为候选，完成原生对照后保留为当前工程选择，不以“用户已决定字体”代替工程判断。旧实现/验证保留 `c993418` 身份，现行选择由[对照方案与验收条件](typography-comparison-01.md)和[本次结果](../runtime/evidence/typography-01/controlled-review/README.md)共同约束；不推定 Codex 使用的具体字体。
 
 ## 字体及交付
 

@@ -1,0 +1,63 @@
+PASS COMPARE noto supply-station normal converges to the exact frozen presentation input
+CAPTURE noto-supply-station-normal-1366: 1173.6x623.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-1366 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-supply-station-normal-1366 entire barcode remains selectable
+PASS COMPARE noto-supply-station-normal-1366 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-normal-1366 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto supply-station normal converges to the exact frozen presentation input
+CAPTURE noto-supply-station-normal-1092: 1084x484.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-1092 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-supply-station-normal-1092 entire barcode remains selectable
+PASS COMPARE noto-supply-station-normal-1092 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-normal-1092 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto supply-station normal converges to the exact frozen presentation input
+CAPTURE noto-supply-station-normal-800: 792x307.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-normal-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-supply-station-normal-800 entire barcode remains selectable
+PASS COMPARE noto-supply-station-normal-800 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-normal-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto supply-station unknown converges to the exact frozen presentation input
+CAPTURE noto-supply-station-unknown-800: 792x307.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-unknown-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-supply-station-unknown-800 entire barcode remains selectable
+PASS COMPARE noto-supply-station-unknown-800 unknown never exposes accepted slot
+PASS COMPARE noto-supply-station-unknown-800 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-unknown-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto supply-station long converges to the exact frozen presentation input
+CAPTURE noto-supply-station-long-800: 792x307.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-supply-station-long-800 exact barcode text preserved; actual=000000000000000000000000000000000000000000000000000000000000000000000000123456789
+PASS COMPARE noto-supply-station-long-800 entire barcode remains selectable
+PASS COMPARE noto-supply-station-long-800 inspects actual production Chinese controls
+PASS COMPARE noto-supply-station-long-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto classic normal converges to the exact frozen presentation input
+CAPTURE noto-classic-normal-1366: 1354.4x575.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-normal-1366 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-classic-normal-1366 entire barcode remains selectable
+PASS COMPARE noto-classic-normal-1366 inspects actual production Chinese controls
+PASS COMPARE noto-classic-normal-1366 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto classic normal converges to the exact frozen presentation input
+CAPTURE noto-classic-normal-1092: 1080x420.8 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-normal-1092 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-classic-normal-1092 entire barcode remains selectable
+PASS COMPARE noto-classic-normal-1092 inspects actual production Chinese controls
+PASS COMPARE noto-classic-normal-1092 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto classic normal converges to the exact frozen presentation input
+CAPTURE noto-classic-normal-800: 788x227.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-normal-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-classic-normal-800 entire barcode remains selectable
+PASS COMPARE noto-classic-normal-800 inspects actual production Chinese controls
+PASS COMPARE noto-classic-normal-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto classic unknown converges to the exact frozen presentation input
+CAPTURE noto-classic-unknown-800: 788x170.4 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-unknown-800 exact barcode text preserved; actual=000123456789
+PASS COMPARE noto-classic-unknown-800 entire barcode remains selectable
+PASS COMPARE noto-classic-unknown-800 unknown never exposes accepted slot
+PASS COMPARE noto-classic-unknown-800 inspects actual production Chinese controls
+PASS COMPARE noto-classic-unknown-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+PASS COMPARE noto classic long converges to the exact frozen presentation input
+CAPTURE noto-classic-long-800: 788x227.2 DIP, Windows DPI 1.25/1.25
+PASS COMPARE noto-classic-long-800 exact barcode text preserved; actual=000000000000000000000000000000000000000000000000000000000000000000000000123456789
+PASS COMPARE noto-classic-long-800 entire barcode remains selectable
+PASS COMPARE noto-classic-long-800 inspects actual production Chinese controls
+PASS COMPARE noto-classic-long-800 every rendered ordinary Chinese run uses bundled font without missing glyphs
+Comparison uses frozen synthetic presentation input, not an Application/field acceptance test. Private fixture is not published.

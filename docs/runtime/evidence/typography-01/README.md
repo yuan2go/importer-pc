@@ -1,3 +1,5 @@
+> 追加原生对照及真实字体入口续修见[controlled-review](controlled-review/README.md)；本页及下列原图/日志保持首轮身份。
+
 # TYPOGRAPHY-01 · 本机原生证据
 
 基线为 PR97 `37b27a9` + main `c5ac51d` 的隔离整合 `e5ed46d`。生产代码 `9e6c628` / `a6065f0`，紧凑异常区续修 `f4f6045`；`169fcca`仅增加保存核对原生截图。每次运行源码与原日志见 [RESULTS.json](RESULTS.json)，不将中间PASS扩张为后续整树验收。

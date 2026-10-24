@@ -1,0 +1,144 @@
+PASS INSTALLER-UI02 actual production progress writer and parser round-trip every stage as one-line frames before accepting completion
+PASS INSTALLER-UI02 a disconnected progress observer cannot abort the helper transaction
+PASS INSTALLER-UI02 actual helper parser drains progress before accepting terminal receipt
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 missing, malformed or inconsistent terminal is classified unknown without repeat permission
+PASS INSTALLER-UI02 truncated unterminated receipt cannot become completion
+PASS INSTALLER-UI02 explicit Failed terminal remains distinguishable from unknown result
+PASS INSTALLER-UI02 helper progress accepts only the fixed installation stage vocabulary
+PASS INSTALLER-UI02 preparation exposes a working cancellation action while preparing the media
+PASS INSTALLER-UI02 preparation cancellation drains the operation before closing without invoking installation
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 preparation failure restores retry and cancel instead of leaving a disabled action
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 installation options use a compact default aspect with fixed reachable actions
+CAPTURE installer-options-default: 880x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 new installation hides scope while retaining the shared default data root
+PASS INSTALLER-UI02 existing per-user deployment retains its original data root with scope hidden
+PASS INSTALLER-UI02 native tab traversal follows label/path/browse reading order
+PASS INSTALLER-UI02 confirmation omits scope details for the retained per-user deployment
+PASS INSTALLER-UI02 confirmation reads the exact reviewed paths and independent shortcuts
+CAPTURE installer-confirm-long: 880x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 back navigation retains exact input and independent choices
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1366x768-100-equivalent
+CAPTURE installer-options-1366x768-100-equivalent: 960x700 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-125-equivalent
+CAPTURE installer-options-1024x768-125-equivalent: 800x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 fixed primary action fits logical workspace 1024x768-150-equivalent
+CAPTURE installer-options-1024x768-150-equivalent: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 install action calls the real service binding with a progress observer; synthetic transaction boundary injected
+PASS INSTALLER-UI02 record directory is captured from the authoritative registration route for this installation attempt
+PASS INSTALLER-UI02 in-progress transaction cannot release its preparation files
+PASS INSTALLER-UI02 hidden scope does not rewrite the reviewed upgrade identity at installation submission
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; WaitingForAuthorization
+PASS INSTALLER-UI02 stage changes only with observed service reports; WaitingForAuthorization
+CAPTURE installer-stage-WaitingForAuthorization: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CopyingFiles
+PASS INSTALLER-UI02 stage changes only with observed service reports; CopyingFiles
+PASS INSTALLER-UI02 UAC prompt disappears after helper begins work
+CAPTURE installer-stage-CopyingFiles: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unmetered installation has no fake percent or unsafe navigation; CommittingInstallation
+PASS INSTALLER-UI02 stage changes only with observed service reports; CommittingInstallation
+CAPTURE installer-stage-CommittingInstallation: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 window close cannot abandon the in-progress transaction
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 known failure exposes explicit re-review without claiming rollback
+CAPTURE installer-failure: 880x680 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 failure recovery retains inputs and requires new review
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 unknown result has its own neutral title and never claims success or failure
+PASS INSTALLER-UI02 unknown outcome is distinct from confirmed failure and does not mark installation complete
+PASS INSTALLER-UI02 unknown result emphasizes the repeat-install warning with the approved pale amber surface
+PASS INSTALLER-UI02 unknown result offers only the real records action and close, without retry, rollback or refresh
+PASS INSTALLER-UI02 historical authorization instructions remain collapsed rather than masquerading as the current stage
+CAPTURE installer-unknown: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 expanded summary identifies history and diagnostics without repeating an obsolete authorization command or inventing timestamps
+CAPTURE installer-unknown-expanded: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 explicit raw-message expansion retains the exact received text separately from the readable summary
+CAPTURE installer-unknown-original-text: 880x520 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 the completed wait moves keyboard focus to the available records action
+PASS INSTALLER-UI02 records is the primary default action and native Tab reaches close
+PASS INSTALLER-UI02 unknown-result actions remain reachable in the small logical workspace 125-equivalent
+CAPTURE installer-unknown-125-equivalent: 800x560 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown-result actions remain reachable in the small logical workspace 150-equivalent
+CAPTURE installer-unknown-150-equivalent: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native asynchronous operation settles
+PASS INSTALLER-UI02 missing records report a real access problem without fabricating logs, changing the outcome or replaying installation
+CAPTURE installer-unknown-records-unavailable: 664.8x460 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown result rejects a stale install command and retains preparation even after the wait has ended
+PASS INSTALLER-UI02 completion separates installation from first configuration and keeps open choice
+CAPTURE installer-complete-first: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 recognized existing configuration is not forced to repeat first configuration
+CAPTURE installer-complete-existing: 880x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 unknown-result close finishes the window while the installer host is instructed to retain media, without cancel or replay
+PASS INSTALLER-UI02 initial password setup is distinct from expiry and existing-password verification
+PASS INSTALLER-UI02 first-password fields and reveal control fit without initial scrolling at the default size
+CAPTURE password-first-setup: 520x480 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 native keyboard traversal reaches confirmation directly in first setup
+PASS INSTALLER-UI02 mismatch stays near fields and clears password input without calling configure
+PASS INSTALLER-UI02 Windows bootstrap cancellation leaves an actionable setup with no grant or retained passwords
+CAPTURE password-bootstrap-cancelled: 520x480 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 configure does not count as authorization when actual entry is rejected
+PASS INSTALLER-UI02 configured password requires one proof and no confirmation
+CAPTURE password-rejected: 520x380 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 explicit reveal conceals and clears plain display buffers without discarding masked input
+PASS INSTALLER-UI02 closing authorization clears all password buffers
+PASS INSTALLER-UI02 unavailable authorization service cannot enable setup or entry
+CAPTURE password-service-unavailable: 520x480 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 first configuration opens a clear gate instead of an automatic modal on an empty background
+PASS INSTALLER-UI02 first-configuration authorization gate uses the compact near-golden default without resizing the parameter editor
+CAPTURE first-run-unconfigured: 720x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 gate opens actual management service dialog
+PASS INSTALLER-UI02 cancel returns to actionable gate with no protected submit buttons
+PASS INSTALLER-UI02 five repeated digits configure and authorize the actual local service
+PASS INSTALLER-UI02 exiting mode blocks configuration immediately at the entry surface
+PASS INSTALLER-UI02 editor loads authorized original candidate: 导入配置
+管理模式
+首次配置
+SM 供包业务
+搜索设置  Ctrl+F
+业务模块
+作业登录
+条码筛选
+格口请求
+处理参数
+系统
+供包台标识
+数据与记录
+自动备份
+显示偏好
+驱动
+左相机
+右相机
+组件
+RCS 服务
+检查
+检查与完成
+作业登录
+操作员登录与管理模式分别授权。
+作业登录要求
+要求操作员登录
+启用后需在组件中选择已安装的登录服务并设置连接。
+参数说明与诊断详情
+保存草稿并退出
+未保存
+继续：条码筛选
+PASS INSTALLER-UI02 actual expired grant removes save/apply and presents reauthorization
+PASS INSTALLER-UI02 service rejects direct draft persistence after revocation before touching any configuration
+PASS INSTALLER-UI02 service rejects direct stage configuration after revocation before touching any configuration
+PASS INSTALLER-UI02 service rejects direct initial configuration repair after revocation before touching any configuration
+CAPTURE first-run-expired: 720x440 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 reauthorization restores the same process-only unsaved candidate
+PASS INSTALLER-UI02 post-install entry waits for an explicit startup action without creating runtime or device ports
+CAPTURE after-install-start-gate: 760x280 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 completing configuration also waits for a separate explicit startup action
+CAPTURE after-configuration-start-gate: 760x280 DIP; actual scale 1.25/1.25
+PASS INSTALLER-UI02 explicit post-configuration start calls the supplied real startup contract
+Native WPF HWND/Dispatcher and real local authorization; synthetic installation contract only. Actual Windows display DPI=1.25; logical workspace matrix is not an OS DPI change. UAC/full installation transaction, target IPC/keyboard hardware and devices NOT_RUN.

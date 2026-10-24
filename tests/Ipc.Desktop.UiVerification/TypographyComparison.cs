@@ -125,7 +125,7 @@ static partial class Program
         object Property(DependencyProperty property) => new { Value = e.GetValue(property).ToString(),
             Source = DependencyPropertyHelper.GetValueSource(e, property).BaseValueSource.ToString(),
             DependencyPropertyHelper.GetValueSource(e, property).IsExpression };
-        var runs = TypographyGlyphRuns(e).Select(r => new { Characters = r.Characters is null ? null : new string(r.Characters.ToArray()),
+        var runs = (e is Window ? [] : TypographyGlyphRuns(e)).Select(r => new { Characters = r.Characters is null ? null : new string(r.Characters.ToArray()),
             FontUri = r.GlyphTypeface.FontUri.ToString(), Weight = r.GlyphTypeface.Weight.ToOpenTypeWeight(),
             Glyphs = r.GlyphIndices.ToArray(), AdvanceWidth = r.AdvanceWidths.Sum(), r.FontRenderingEmSize }).ToArray();
         return new { Type = e.GetType().Name, e.Name, AutomationName = AutomationProperties.GetName(e),

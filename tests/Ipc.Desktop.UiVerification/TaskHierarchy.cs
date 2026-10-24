@@ -80,6 +80,13 @@ static partial class Program
                     lines.Add($"GEOMETRY {key}: PageHost Y={host.TranslatePoint(new Point(), client).Y:F1} Height={host.ActualHeight:F1}");
                     if (!baseline)
                     {
+                        if (page == "工作台")
+                        {
+                            var textRuns = Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible)
+                                .SelectMany(TypographyGlyphRuns).Where(r => r.Characters is not null && r.Characters.Any(c => c >= 0x4e00 && c <= 0x9fff)).ToArray();
+                            Check(textRuns.Length > 0 && textRuns.All(r => r.GlyphTypeface.FontUri.ToString().Contains("notosanscjksc", StringComparison.OrdinalIgnoreCase) && r.GlyphIndices.All(g => g != 0)),
+                                key + " production Chinese glyphs keep bundled font after resize, including compact navigation");
+                        }
                         Check(Inside(host, client) && host.ActualHeight >= (size.Item1 == 800 ? 200 : size.Item2 * .60), key + " preserves usable task content");
                         if (page != "工作台" && window is ShellWindow)
                             Check(!((PasswordBox)window.FindName("LoginProof")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "核对原请求")).IsVisible, key + " does not expose unrelated login or current-position recovery");

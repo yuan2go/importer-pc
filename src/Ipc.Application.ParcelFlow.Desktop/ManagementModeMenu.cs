@@ -18,7 +18,7 @@ public sealed class ManagementModeMenu : Button
     readonly MenuItem state = new() { IsEnabled = false };
     readonly MenuItem expires = new() { IsEnabled = false };
     readonly MenuItem action = new();
-    readonly ContextMenu menu = new();
+    readonly ContextMenu menu = new() { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
     public ManagementModeMenu()
     {
         FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; MinHeight = 36; Padding = new(10, 6, 10, 6);

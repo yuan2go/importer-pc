@@ -30,6 +30,15 @@ static partial class Program
         bitmap.Render(visual); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));
         using var file = File.Create(Path.Combine(evidence, name + ".png")); png.Save(file);
         lines.Add($"CAPTURE {name}: {bounds.Width}x{bounds.Height} DIP, Windows DPI {dpi.DpiScaleX}/{dpi.DpiScaleY}");
+        if (Environment.GetEnvironmentVariable("IPC_TYPOGRAPHY_CONTROLS") == "1")
+        {
+            var controls = new FrameworkElement[] { target }.Concat(Descendants(target).OfType<FrameworkElement>())
+                .Where(e => e.IsVisible && (e is TextBlock || e is TextBox || e is Button || e is Window));
+            File.WriteAllText(Path.Combine(evidence, name + "-typography.json"), System.Text.Json.JsonSerializer.Serialize(new {
+                Dpi = dpi.DpiScaleX, Client = new { Width = bounds.Width, Height = bounds.Height },
+                Controls = controls.Select(e => TypographyControlRow(e, target)).ToArray()
+            }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+        }
     }
     static async Task VerifyLeafNavigation(Window window, ParameterSettingsControl editor, string evidence, List<string> lines)
     {

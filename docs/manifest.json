@@ -73386,6 +73386,28 @@
       "purpose": "Native typography evidence and bounded validation",
       "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/task-hierarchy/classic-日志查询-800-typography.json",
+      "sha256": "8dd607f218a9d48eb4f5a24e5c08f14f1ceb3aee0ad670bf5ff1b51f7e125eef",
+      "size_bytes": 55958,
+      "git_blob": "0b028d1879722cbcdf5b47952596abbb24abee87",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual source identity in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/controlled-review/native/task-hierarchy/classic-日志查询-800.png",
+      "sha256": "b7e48c43a64ce9950285139bc2ebbf62fb2d49503738f7488e9ae710268ce538",
+      "size_bytes": 63754,
+      "git_blob": "02b752f0c3b5f804d1cac5ed7c88ef407a9590cd",
+      "version": "typography-01-controlled-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Native typography evidence",
+      "source": "WP-IPC-TYPOGRAPHY-01; actual source identity in controlled-review/RESULT.json",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

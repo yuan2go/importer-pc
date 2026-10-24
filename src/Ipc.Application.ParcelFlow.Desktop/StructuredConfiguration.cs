@@ -44,6 +44,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BarcodePattern { get => Get<string>(); set => Set(value); }
     public string BarcodeExclusionPattern { get => Get<string>(); set => Set(value); }
     public string DiagnosticLogDays { get => Get<string>(); set => Set(value); }
+    public string HistoryDays { get => Get<string>(); set => Set(value); }
     public bool WeightRangeEnabled { get => Get<bool>(); set => Set(value); }
     public string MinimumWeight { get => Get<string>(); set => Set(value); }
     public string MaximumWeight { get => Get<string>(); set => Set(value); }
@@ -57,7 +58,8 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
         var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)),
-            DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650));
+            DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650),
+            HistoryDays.Length == 0 ? null : Integer(HistoryDays, "系统/HistoryDays", 7, 30));
         return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
             WeightRange = BuildWeightRange(),
@@ -83,7 +85,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
         StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
-        BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "", DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "",
+        BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "", DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "", HistoryDays = c.Retention?.HistoryDays?.ToString(CultureInfo.InvariantCulture) ?? "",
         WeightRangeEnabled = c.WeightRange is not null, MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "", MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),

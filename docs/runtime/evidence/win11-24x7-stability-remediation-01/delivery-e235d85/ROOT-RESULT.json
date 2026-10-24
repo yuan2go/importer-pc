@@ -1,0 +1,69 @@
+{
+  "Status": "CODE_AND_SCOPED_WINDOWS_SYNTHETIC_VERIFIED; FIELD_QUALIFICATION_PENDING",
+  "BaselineMain": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
+  "IntegratedMain": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+  "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+  "BusinessVersion": "1.12.0",
+  "ApplicationContracts": "1.17.0",
+  "DatabaseFormat": 9,
+  "PackageSha256": "B16ACE94A1D4F51E37F5D888C8EA046859B76D20024D5BE394AAA2204FD51B15",
+  "PackageLocalPath": "D:\\DevCache\\importer-pc\\stability-delivery-e235d85.zip",
+  "Publication": "LOCAL_TEST_CANDIDATE_ONLY; no installer, install, GitHub release or production device",
+  "FrozenBuild": {
+    "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+    "Main": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+    "Started": "2026-10-24T09:42:59.5182691Z",
+    "Ended": "2026-10-24T09:44:17.3485497Z",
+    "ExitCode": 0,
+    "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-delivery-e235d85",
+    "Scope": "Local reference candidate including reconciled guides; no installer or production device"
+  },
+  "FrozenSmoke": {
+    "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+    "Started": "2026-10-24T09:44:38.9385445Z",
+    "Ended": "2026-10-24T09:44:39.6736811Z",
+    "AssemblyExit": 0,
+    "DesktopExit": 0,
+    "Scope": "Frozen EXE read-only startup hooks; no install or device start"
+  },
+  "FrozenNativeStatus": "PASS",
+  "FrozenHierarchyStatus": "PASS",
+  "FrozenCustodyExit": 0,
+  "Retention": "Site-selectable 7..30 days; stopped authorized maintenance removes eligible settled details after complete backup; unresolved responsibility and permanent fences retained",
+  "ExternalBlocked": [
+    "RCS authoritative Unknown query/disposition contract: user requested HOLD",
+    "Protected end-to-end restore/retention CLI and user-presentation ACL environment"
+  ],
+  "NotRun": [
+    "Real Hikrobot dual devices/native DLL stop/reconnect",
+    "Target 4-core 8GiB IPC and multiple Windows 11 builds",
+    "Full-original/raw history scale and recovery timing",
+    "24h normal after warmup",
+    "72h and multiple cross-day qualification",
+    "Native long-soak collector end-to-end with real source evidence"
+  ],
+  "PreservedFailures": [
+    "development/parameter-refactor.log",
+    "development/PROTECTED-RESTORE-BLOCKED.log",
+    "development/OLD-AUDIT03-RCS-FAILED.log",
+    "first-freeze-7017899/INITIAL-COMPILE-FAILURE.log"
+  ],
+  "FrozenCustodySourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
+  "FrozenHierarchySourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a",
+  "FrozenManagementSourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a",
+  "FrozenManagementStatus": "PASS",
+  "ProductTreeComparison": {
+    "Sources": [
+      "200d8adf2678ff9e5ab52eb3e64302537636545a",
+      "e235d85597dfa93ff42a55268ca006f13e90fb7d"
+    ],
+    "Paths": [
+      "src",
+      "config",
+      "scripts"
+    ],
+    "Identical": true,
+    "TreeListingSha256": "30C55BE43BF91E8DECC266F43BFCC99D974AF1E19229E5E2FB39A85CD96AE596",
+    "Meaning": "Only current guides changed; prior exact binary records keep their own SourceCommit"
+  }
+}

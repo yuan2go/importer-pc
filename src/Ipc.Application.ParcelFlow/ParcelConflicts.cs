@@ -54,6 +54,11 @@ public sealed partial class ParcelRuntime
     readonly Dictionary<string, IdentityConflict> identityConflicts = [];
     IdentityConflict[] IdentityConflicts() => identityConflicts.Values.ToArray();
     bool HasIdentityConflict(string position) => identityConflicts.Values.Any(c => c.Positions.Contains(position));
+    void RecordRetiredConflict(string original, string[] affectedPositions, string detail)
+    {
+        var fact = new IdentityConflict(Wire.Id(), original, affectedPositions.Distinct(StringComparer.Ordinal).ToArray(), detail, DateTimeOffset.UtcNow);
+        repository!.Commit(null, "IdentityConflict", Wire.Encode(fact), identityConflict: fact); identityConflicts.Add(fact.Id, fact);
+    }
     void RecordIdentityConflict(ParcelOperation original, string position, string detail)
         => RecordIdentityConflict(original, new[] { original.PositionId ?? "main", position }.Distinct().ToArray(), detail);
     void RecordIdentityConflict(ParcelOperation original, string[] affectedPositions, string detail)

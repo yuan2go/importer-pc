@@ -19,6 +19,7 @@ public static partial class ParcelConfigurationRules
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
         if (c.Retention is { } retention && (retention.ResidentHistory is < 1 or > 10000 || retention.MinimumFreeBytes is < 1048576 or > 1099511627776)) e.Add("Invalid resident history/storage reserve policy");
         if (c.Retention?.DiagnosticLogDays is < 1 or > 3650) e.Add("Retention.DiagnosticLogDays: 诊断日志保留须为1～3650天，或留空使用原轮转策略");
+        if (c.Retention?.HistoryDays is < 7 or > 30) e.Add("Retention.HistoryDays: 已结历史保留须为7～30天；旧配置留空不删除");
         if (c.WeightRange is { } range)
         {
             if (application == "sportmaster" || c.Weight.Source == WeightSource.Disabled) e.Add("WeightRange: 当前业务未启用称重，不能配置重量范围");

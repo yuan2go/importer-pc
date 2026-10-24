@@ -1,0 +1,49 @@
+{
+  "Status": "PASS_INDEX_SCALE_ONLY",
+  "Rows": 2592000,
+  "PrefillMs": 41378.9821,
+  "DatabaseBytes": 1280540672,
+  "ProcessPeakWorkingSet": 42143744,
+  "Queries": [
+    {
+      "Query": "all",
+      "SamplesMs": [
+        3492.0468,
+        3490.3856,
+        3482.1483,
+        3503.8819,
+        3473.4336
+      ],
+      "MaximumMs": 3503.8819,
+      "Scope": "Five diagnostic samples; not sustained-load P95/P99 qualification"
+    },
+    {
+      "Query": "left",
+      "SamplesMs": [
+        3206.473,
+        2998.7919,
+        3027.6548,
+        3111.6581,
+        3163.886
+      ],
+      "MaximumMs": 3206.473,
+      "Scope": "Five diagnostic samples; not sustained-load P95/P99 qualification"
+    },
+    {
+      "Query": "exact-barcode",
+      "SamplesMs": [
+        2.1946,
+        2.6602,
+        1.9802,
+        1.6138,
+        1.8108
+      ],
+      "MaximumMs": 2.6602,
+      "Scope": "Five diagnostic samples; not sustained-load P95/P99 qualification"
+    }
+  ],
+  "RuntimeSha256": "B6794C27EA3EB232A9433CDDB83BEE9FA1447DAF7DBD4B2D293261156EF2B114",
+  "FullCustodyScale": "NOT_RUN",
+  "Target8GiB": "NOT_RUN",
+  "DurationQualification": "NOT_RUN"
+}

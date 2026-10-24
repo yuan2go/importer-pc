@@ -8,6 +8,11 @@ public sealed partial class ParcelRepository
     internal bool InitialRepairResponsibilitiesClear(FlowDefinition flow)
     {
         ValidateRawInventory();
+        if (StorageVersion >= 9)
+        {
+            using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')";
+            if ((long)pending.ExecuteScalar()! != 0) return false;
+        }
         if (PendingReceipts().Length != 0 || LoadConflicts().Length != 0) return false;
         // Include immutable archives and image/attached/unsent responsibility, not
         // just the resident working set or the absence of an outbound request.
@@ -65,7 +70,7 @@ public sealed partial class ParcelStartupMaintenance
             if (Directory.Exists(Path.Combine(directory, "receipts")))
                 foreach (var file in RecoveryFiles.Enumerate(directory, "receipts"))
                 { var target = RecoveryFiles.Resolve(scratch, file); Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, file), target, Wire.FileHash(RecoveryFiles.Resolve(directory, file))); }
-            using var repository = new ParcelRepository(scratch, definition.Id, 8);
+            using var repository = new ParcelRepository(scratch, definition.Id, 9);
             if (!repository.InitialRepairResponsibilitiesClear(definition)) throw new InvalidOperationException("原作业、回执、图像或身份责任未清；须使用原发布核对，不允许初始配置替换");
         }
         finally { Directory.Delete(scratch, true); }

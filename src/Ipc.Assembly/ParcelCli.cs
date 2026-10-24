@@ -54,17 +54,22 @@ static class ParcelCli
             }
             finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
         }
-        if (map["--action"] is "maintenance-inspect" or "diagnostic-export" or "backup-offline")
+        if (map["--action"] is "maintenance-inspect" or "diagnostic-export" or "backup-offline" or "expire-history" or "expire-history-compact")
         {
             var database = Path.GetFullPath(map["--file"]);
             var directory = Path.GetDirectoryName(database)!;
             var definition = ParcelAssembly.Definition();
-            if (map["--action"] == "backup-offline")
+            if (map["--action"] is "backup-offline" or "expire-history" or "expire-history-compact")
             {
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority();
                 var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
                 var factory = new ParcelCapabilityFactory(new(directory, dataRoot, null, null));
-                try { Console.WriteLine(Wire.Encode(ParcelRepository.BackupOffline(database, map["--destination"], definition, (backup, c) => { factory.Normalize(c); factory.RegisterBackup(backup, c); }))); }
+                try
+                {
+                    void Register(string backup, ParcelConfiguration c) { factory.Normalize(c); factory.RegisterBackup(backup, c); }
+                    Console.WriteLine(Wire.Encode<object>(map["--action"] == "backup-offline" ? ParcelRepository.BackupOffline(database, map["--destination"], definition, Register) :
+                        ParcelRepository.ExpireHistory(database, map["--sha256"], map["--destination"], definition, Register, map["--action"] == "expire-history-compact")));
+                }
                 finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
             }
             else Console.WriteLine(Wire.Encode(map["--action"] == "diagnostic-export"
@@ -81,7 +86,7 @@ static class ParcelCli
             {
                 Console.WriteLine(Wire.Encode(ParcelLegacyReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
                     (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
-                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:8).GetAwaiter().GetResult())); return true;
+                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:9).GetAwaiter().GetResult())); return true;
             }
             finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }

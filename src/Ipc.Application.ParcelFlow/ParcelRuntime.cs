@@ -54,7 +54,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public string[] Dependencies => [];
     public IBusinessApplication Application => this;
     public BusinessPresentation Presentation { get; } = new([definition.Id, definition.Id + "-history", definition.Id + "-maintenance"], ["standard", "compact"]);
-    public bool HasActiveWork => worker is { IsCompleted: false };
+    public bool HasActiveWork => positionWorkers.Values.Any(t => !t.IsCompleted);
     public bool HasUnreleasedResources => !disposed;
     public string[] OwnershipDiagnostics => disposed ? [] : [Id + ": owns reader/ports/worker/database/leases until Stop and Dispose complete"];
     ParcelConfiguration? startupConfiguration;
@@ -97,10 +97,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 8) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
+        foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
-        journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
+        journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
         logReader = new(Path.Combine(directory, "diagnostics"), Management, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
         repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
@@ -147,6 +148,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (ports.Wcs is IWcsRequestPreparer numericPreparer)
                 repository.RegisterIntegrationRequestRanges(numericPreparer, new[] { priorEffective, Effective, configuration.Current.Pending }.OfType<ParcelConfiguration>(),
                     File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);
+            RefreshIntegrationBudget();
             foreach (var binding in ParcelBindings.Positions(Effective))
             {
                 positions.Add(binding.Id, binding);
@@ -157,7 +159,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
             Volatile.Write(ref accepting, 2);
-            worker = Task.WhenAll(positions.Keys.Select(position => Task.Run(() => ProcessIngressAsync(position), CancellationToken.None)));
+            InitializeIngress();
+            StartOverloadWriter();
+            foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
+            worker = Task.WhenAll(positionWorkers.Values);
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
@@ -187,7 +192,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
-            maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
+            foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
+            backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
+            maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
+            StartSupervision();
         }
         catch (Exception ex)
         {
@@ -217,64 +225,121 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             await scale.StartMeasurementsAsync(m => scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration && Enqueue(new ParcelMeasurement(scale.InstanceId, registration, Interlocked.Increment(ref sequence), m)), token).ConfigureAwait(false);
         }
     }
-    bool Enqueue(object item) { lock (overloadSync) return EnqueueCore(item); }
-    bool EnqueueCore(object item)
+    bool Enqueue(object item)
     {
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
-        if (positionId is null) return false;
-        if (overloadedPositions.ContainsKey(positionId)) return false;
-        if (observation is not null)
+        if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
+        // One position owns this synchronous durable handoff. No shared callback lock,
+        // business gate or native callback is held while SQLite commits.
+        lock (lane.Sync)
         {
-            var identity = SessionValid ? currentOperator : null;
-            // Driver buffers remain driver-owned after callback return.
-            var raw = observation.Codes ?? [];
-            var overflow = raw.Length > BarcodeFiltering.MaximumCandidates || raw.Any(x => x is null || x.Length > BarcodeFiltering.MaximumRawLength);
-            observation = observation with { Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
-                CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
-            item = new ParcelObservation(observation, identity, DateTimeOffset.UtcNow); Interlocked.Increment(ref pendingObservations);
+            if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
+            var at = DateTimeOffset.UtcNow;
+            if (observation is not null)
+            {
+                var identity = SessionValid ? currentOperator : null;
+                var raw = observation.Codes ?? [];
+                var overflow = raw.Length > BarcodeFiltering.MaximumCandidates || raw.Any(x => x is null || x.Length > BarcodeFiltering.MaximumRawLength);
+                observation = observation with { Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
+                    CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
+                item = new ParcelObservation(observation, identity, at);
+            }
+            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
+            try
+            {
+                WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"));
+                Boundary?.Invoke("AfterIngressDurable");
+                Interlocked.Increment(ref lane.Received);
+                lane.Waiting.TryAdd(received.Id, at);
+                if (observation is not null) Interlocked.Increment(ref pendingObservations);
+                if (positionQueues[positionId].Writer.TryWrite(received)) return true;
+                lane.Waiting.TryRemove(received.Id, out _);
+                if (observation is not null) Interlocked.Decrement(ref pendingObservations);
+                SignalOverload(positionId);
+                interruptedPositions.TryAdd(positionId, 0);
+                FinishIngress(lane.Db, received.Id, "Interrupted", "Source retains delivery responsibility; inspect original entity and acknowledge overload");
+            }
+            catch (Exception ex)
+            {
+                Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
+                Volatile.Write(ref lane.Failure, failure); Interlocked.Exchange(ref accepting, 0);
+                // A possibly committed Pending is intentionally kept for recovery.
+            }
+            return false;
         }
-        if (positionQueues[positionId].Writer.TryWrite(item)) return true;
-        if (observation is not null) Interlocked.Decrement(ref pendingObservations);
-        overloadedPositions.TryAdd(positionId, 0); Interlocked.Exchange(ref overload, 1);
-        // Small durable independent marker: a full queue must not hide callback loss.
-        try { ExtensionStore.AtomicWrite(overloadMarker!, new { At = DateTimeOffset.UtcNow, Positions = overloadedPositions.Keys.ToArray(), Device = observation?.DeviceId, Reason = "Callback queue full; inspect the same physical parcel before resuming" }); }
-        catch (Exception ex) { Volatile.Write(ref failure, "Overload marker persistence failed: " + ex.GetType().Name); }
-        return false;
     }
     async Task ProcessIngressAsync(string position)
     {
+        var lane = ingressLanes[position];
         try
         {
             var startupCompleted = await ingressStartup.Task.ConfigureAwait(false);
-            await foreach (var item in positionQueues[position].Reader.ReadAllAsync().ConfigureAwait(false))
+            Volatile.Write(ref lane.State, "Waiting");
+            await foreach (var queued in positionQueues[position].Reader.ReadAllAsync().ConfigureAwait(false))
             {
+                var item = (IngressItem)queued;
+                activeIngress.Value = item.Id;
+                lane.Waiting.TryRemove(item.Id, out _);
+                Interlocked.Exchange(ref lane.ProcessingTicks, DateTimeOffset.UtcNow.UtcTicks);
+                Volatile.Write(ref lane.State, "Processing");
                 await gate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (!startupCompleted)
-                        repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, Reason = "StartupIncomplete; inspect original input; no automatic replay", Input = item }));
-                    else if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
-                    else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
-                }
-                finally
-                {
-                    try
+                    if (!startupCompleted || stopping.IsCancellationRequested)
                     {
-                        if (item is ParcelObservation o)
-                        {
-                            try { ReleaseIngressAcquisition(o.Observation); }
-                            finally { Interlocked.Decrement(ref pendingObservations); }
-                        }
+                        repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
+                        FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
+                        interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
                     }
-                    finally { gate.Release(); }
+                    else
+                    {
+                        var processingStarted = System.Diagnostics.Stopwatch.GetTimestamp();
+                        repository!.BeginIngress(item.Id, System.Diagnostics.Stopwatch.GetElapsedTime(item.ReceivedTicks).TotalMilliseconds);
+                        if (item.Value is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
+                        else if (item.Value is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
+                        var input = latestInputs.GetValueOrDefault(position);
+                        if (item.Value is ParcelObservation source && (input?.Observation.SourceEventId != source.Observation.SourceEventId || input.Observation.Epoch != source.Observation.Epoch)) input = null;
+                        FinishIngress(item.Id, "Processed", Wire.Encode(new { Policy = "Business handler completed; not physical completion", Revision = repository!.Revision,
+                            Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"), Input = input }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
+                        Interlocked.Increment(ref lane.Processed);
+                    }
+                    Interlocked.Exchange(ref lane.ProgressTicks, DateTimeOffset.UtcNow.UtcTicks);
                 }
+                catch
+                {
+                    interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                    // Original Pending exists even when the store cannot accept a failure disposition.
+                    throw;
+                }
+                finally { try { ReleaseIngressItem(item.Value); } finally { activeIngress.Value = null; Interlocked.Exchange(ref lane.ProcessingTicks, 0); gate.Release(); } }
+                Volatile.Write(ref lane.State, "Waiting");
             }
+            Volatile.Write(ref lane.State, "Stopped");
         }
         catch (Exception ex)
-        { failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); throw; }
+        {
+            failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message;
+            Interlocked.Exchange(ref accepting, 0); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
+            // Close after the last position handoff; no producer can enqueue behind the drain.
+            lock (lane.Sync) positionQueues[position].Writer.TryComplete();
+            await gate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                while (positionQueues[position].Reader.TryRead(out var queued))
+                {
+                    var item = (IngressItem)queued; lane.Waiting.TryRemove(item.Id, out _);
+                    interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                    try { FinishIngress(item.Id, "Interrupted", "Consumer failed before processing; original input retained; no replay"); }
+                    catch (Exception custodyFailure) { Volatile.Write(ref lane.Failure, failure + "; Pending custody retained: " + custodyFailure.GetType().Name); }
+                    finally { ReleaseIngressItem(item.Value); }
+                }
+            }
+            finally { gate.Release(); }
+            throw;
+        }
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
     {
@@ -283,6 +348,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
         { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
+        if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)
+        {
+            if (retired.Admission != o.AdmissionId || retired.Observation != observationId || retired.Position != position)
+                RecordRetiredConflict(retired.Id, [retired.Position, position], "Expired identity reused with changed admission/observation/position; no new request");
+            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ExpiredIdentity: terminal detail was removed under retention; permanent identity prevents re-admission; original=" + retired.Id), "RetiredIdentityObserved");
+            return;
+        }
         var priors = repository!.FindIdentities(o.AdmissionId, observationId);
         // Re-observing an existing entity uses its original policy, never a newly applied rule.
         var selection = definition.SelectBarcode(priors.FirstOrDefault()?.FrozenConfiguration ?? Effective, o);
@@ -349,6 +421,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         { repository!.Commit(null, "MeasurementRejected", "Unconfirmed scale source/device/measurement identity"); return; }
         // Compare the durable identity before phase/admission/freshness guards can
         // hide a contradiction. The original sample remains immutable.
+        if (repository!.RetiredMeasurement(m) is { } retiredMeasurement)
+        {
+            if (!retiredMeasurement.Same) RecordRetiredConflict(retiredMeasurement.Id, sourcePositions.Concat([retiredMeasurement.Position]).ToArray(), "Expired measurement ID reused with changed content");
+            return;
+        }
         var prior = repository!.ReadMeasurement(m.Id);
         if (prior is not null)
         {
@@ -384,7 +461,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null, BusinessCommand? command = null)
     {
-        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command); operations[op.Id] = op;
+        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command, ingressIdentity: activeIngress.Value); operations[op.Id] = op;
+        if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) latestInputs[input.PositionId] = input;
         journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
     }

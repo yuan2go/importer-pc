@@ -76,6 +76,8 @@ public sealed partial class ParcelRepository
             }
         }
         var reasons = new List<string>();
+        if (version >= 9 && Scalar("SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')") != 0)
+            reasons.Add("Original input custody requires matching-release inspection; never replay accepted source input");
         if (invalidRaw != 0) reasons.Add("Original receipt bytes missing/changed: " + invalidRaw);
         if (unsettled != 0) reasons.Add("Original business/image/recovery responsibilities require matching-release settlement");
         if (pending != 0) reasons.Add("Original receipt custody is unsettled; Query is not the missing original raw");

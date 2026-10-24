@@ -1,0 +1,9 @@
+PASS STABILITY-WPF: failed handoff does not claim source delivery success
+PASS STABILITY-WPF: native window async close drains lifecycle
+FAIL System.InvalidOperationException: 快照已失效 · 正在读取或读取超时 · 最后成功读取：尚未取得快照
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.RequireFreshSnapshot() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs:line 18
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.LoadIngressResponsibilitiesAsync() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/IngressRecoveryPresentation.cs:line 23
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\stability-native-f938924-stability\StabilityNative.cs:line 38
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\stability-native-f938924-stability\StabilityNative.cs:line 84
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\stability-native-f938924-stability\StabilityNative.cs:line 87
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\DevCache\importer-pc\stability-native-f938924-stability\Program.cs:line 33

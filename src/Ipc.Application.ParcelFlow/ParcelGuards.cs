@@ -7,7 +7,7 @@ public sealed partial class ParcelRuntime
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && (overload == 0 || Effective.SchemaVersion >= 3);
     bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
-    bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !overloadedPositions.ContainsKey(position) &&
+    bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
@@ -77,11 +77,11 @@ public sealed partial class ParcelRuntime
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
-                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); RecoverOverloadAcknowledgement(); TryScheduledBackup(DateTimeOffset.UtcNow); auxiliary.RemoveAll(x => x.IsCompleted); }
+                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); TryScheduledBackup(DateTimeOffset.UtcNow); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle"); }
                 finally { gate.Release(); }
             }
         }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
-        catch (Exception ex) { failure = "Maintenance worker failed: " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+        catch (Exception ex) { backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); failure = "Maintenance worker failed: " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
     }
 }

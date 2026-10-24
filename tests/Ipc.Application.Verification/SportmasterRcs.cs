@@ -156,16 +156,32 @@ static partial class SportmasterRcs
             var s=await Wait(app,x=>x.Inputs?.Any(i=>i.Observation.AdmissionId=="numeric-restored-blocked")==true);
             Check(resume.Status=="Rejected"&&s.Paused&&s.BlockingReasons.Any(r=>r.StartsWith("RestoreHandoffRequired",StringComparison.Ordinal))&&
                 !s.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked")&&peer.Requests.Count==posts,
-                "restored DB8 remains isolated before handoff; attempted admission cannot create a request or POST");
+                "restored DB9 remains isolated before handoff; attempted admission cannot create a request or POST");
             using var repository = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId),c.ApplicationId);
             await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
             var range = preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!)!;
+            var retiredBudget = repository.IntegrationBudget(range);
+            Check(retiredBudget.Remaining == 0 && retiredBudget.State == "Exhausted" && retiredBudget.PermanentHighWater >= range.Last,
+                "restored numeric budget publicly reports zero remaining and permanent retirement floor");
+            var nextRange = new IntegrationRequestIdRange(retiredBudget.PermanentHighWater + 1, retiredBudget.PermanentHighWater + 100);
+            Check(repository.IntegrationBudget(nextRange).Remaining == 100 && repository.NextIntegrationPreparationSequence(nextRange) == 1,
+                "new externally allocated disjoint range starts beyond permanent floor without reusing retired IDs");
+            var resized = s.Configuration.Effective.Wcs! with { Parameters = new(s.Configuration.Effective.Wcs!.Parameters) { ["request-id-count"] = "100001" } };
+            try { repository.RegisterIntegrationRequestRanges(preparer, [s.Configuration.Effective with { Wcs = resized }], null); throw new Exception("Overlapping resized range accepted"); }
+            catch (InvalidDataException error) { Check(error.Message.Contains("overlaps"), "controlled renewal rejects resizing into a previous allocation; identical existing range remains compatible"); }
             try { repository.NextIntegrationPreparationSequence(range); throw new Exception("Restored retired range reused"); }
             catch(InvalidDataException error)
             {
                 Check(error.Message.Contains("exhausted/retired",StringComparison.Ordinal)&&repository.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived&&i.Operation.Wcs!.Request.IntegrationRequest!.RequestId==allocated),
                     "fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
             }
+        }
+        using (var retired = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId), c.ApplicationId))
+        {
+            var before = retired.IntegrationBudget(new(1, 900000000));
+            retired.ExpireHistoryCore(new Ipc.Application.Sportmaster.SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), Wire.FileHash(backup), () => { });
+            Check(retired.ReadOperation(original) is null && retired.IntegrationBudget(new(1, 900000000)).PermanentHighWater == before.PermanentHighWater &&
+                retired.RetiredIdentity("numeric-original", "") is not null, "expiry removes settled RCS detail while retaining permanent numeric ownership, restored retirement floor and entity fence");
         }
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
@@ -358,7 +374,7 @@ static partial class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 8, "actual ParcelRuntime startup retains SQL7 numeric ownership with current SQL8 custody semantics");
+            Check((long)command.ExecuteScalar()! == 9, "actual ParcelRuntime startup retains SQL7 numeric ownership with current SQL9 input custody semantics");
         }
         try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
         catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
@@ -410,13 +426,13 @@ static partial class SportmasterRcs
             terminalRaw=original.BeginReceipt(terminal,terminal.Wcs!,"Submit"); original.StoreRaw(terminalRaw,terminalReply);original.Commit(terminal,"SyntheticTerminalCustody","Committed original raw",occurrence:terminalRaw);
         }
         using(var upgraded=new ParcelRepository(settledDirectory,"sportmaster"))
-            Check(upgraded.StorageVersion==8&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
+            Check(upgraded.StorageVersion==9&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
                 "settled SQL5 original upgrades to SQL8 preserving exact request/result/committed raw");
         using(var db=new SqliteConnection("Data Source="+Path.Combine(settledDirectory,"sportmaster.db")))
         {
             db.Open();using var q=db.CreateCommand();q.CommandText="SELECT version,sha FROM platform_migrations ORDER BY version";
             using var r=q.ExecuteReader();Dictionary<long,string> history=[];while(r.Read())history.Add(r.GetInt64(0),r.GetString(1));
-            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==8,"SQL6/7/8 append preserves every original SQL1-5 checksum");
+            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==9,"SQL6/7/8/9 append preserves every original SQL1-5 checksum");
         }
         try { using var rejected=new ParcelRepository(settledDirectory,"sportmaster",5);throw new Exception("Old reader accepted SQL6"); }
         catch(InvalidDataException){Check(true,"old SQL5 reader rejects settled future SQL6 without downgrade");}

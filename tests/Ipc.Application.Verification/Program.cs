@@ -13,6 +13,8 @@ var root = (args.Contains("--management-mode") || args.Contains("--operator-admi
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--win11-stability")) { await StabilityRemediation.Run(workspace, root); return; }
+if (args.Contains("--stability-history-scale")) { StabilityHistoryScale.Run(root); return; }
 if (args.Contains("--dual-camera-communication")) { await DualCameraCommunication.Run(workspace, root); return; }
 if (args.Contains("--parameter-inheritance")) { await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--aqa01-crash-child")) { var i = Array.IndexOf(args, "--aqa01-crash-child"); await ArchitectureQualityRemediation.CrashChild(workspace, args[i + 1], args[i + 2]); return; }

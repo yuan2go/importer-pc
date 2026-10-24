@@ -55,12 +55,48 @@ public sealed partial class ParcelRepository : IDisposable
         """), new(8, """
         CREATE TABLE parcel_commercial_semantics(version INTEGER PRIMARY KEY CHECK(version=8),description TEXT NOT NULL);
         INSERT INTO parcel_commercial_semantics VALUES(8,'Explicit initial repair, protected restore handoff and configuration-bound backup schedule; prior readers must refuse');
+        """), new(9, """
+        CREATE TABLE parcel_ingress(id TEXT PRIMARY KEY,position TEXT NOT NULL,received_at TEXT NOT NULL,state TEXT NOT NULL,body TEXT NOT NULL,body_hash TEXT NOT NULL,detail TEXT,session TEXT NOT NULL,started_at TEXT,completed_at TEXT,queue_ms REAL,processing_ms REAL);
+        CREATE INDEX parcel_ingress_pending ON parcel_ingress(state,position,received_at);
+        CREATE INDEX parcel_ingress_session ON parcel_ingress(session,received_at,position);
+        CREATE TABLE parcel_history_projection(id TEXT PRIMARY KEY,barcode TEXT,state TEXT,observed REAL,wcs TEXT,plc TEXT,upload TEXT,capture TEXT,accepted INTEGER,unknown INTEGER,physical INTEGER,attempts INTEGER);
+        INSERT INTO parcel_history_projection SELECT id,json_extract(body,'$.ParcelCode'),json_extract(body,'$.State'),julianday(json_extract(body,'$.ObservedAt')),json_extract(body,'$.Wcs.Request.Id'),json_extract(body,'$.Plc.Request.Id'),json_extract(body,'$.Upload.Request.Id'),json_extract(body,'$.Capture.Request.Id'),coalesce(json_extract(body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(body,'$.Capture.State')='Unknown',0),json_extract(body,'$.State')='PhysicalCompleted',coalesce(json_extract(body,'$.Wcs.Attempts'),0)+coalesce(json_extract(body,'$.Plc.Attempts'),0)+coalesce(json_extract(body,'$.Upload.Attempts'),0)+coalesce(json_extract(body,'$.Capture.Attempts'),0) FROM parcel_operations;
+        CREATE TRIGGER parcel_operations_projection_insert AFTER INSERT ON parcel_operations BEGIN
+            INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,'$.ParcelCode'),json_extract(NEW.body,'$.State'),julianday(json_extract(NEW.body,'$.ObservedAt')),json_extract(NEW.body,'$.Wcs.Request.Id'),json_extract(NEW.body,'$.Plc.Request.Id'),json_extract(NEW.body,'$.Upload.Request.Id'),json_extract(NEW.body,'$.Capture.Request.Id'),coalesce(json_extract(NEW.body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(NEW.body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Capture.State')='Unknown',0),json_extract(NEW.body,'$.State')='PhysicalCompleted',coalesce(json_extract(NEW.body,'$.Wcs.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Plc.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Upload.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Capture.Attempts'),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts;
+        END;
+        CREATE TRIGGER parcel_operations_projection_update AFTER UPDATE ON parcel_operations BEGIN
+            INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,'$.ParcelCode'),json_extract(NEW.body,'$.State'),julianday(json_extract(NEW.body,'$.ObservedAt')),json_extract(NEW.body,'$.Wcs.Request.Id'),json_extract(NEW.body,'$.Plc.Request.Id'),json_extract(NEW.body,'$.Upload.Request.Id'),json_extract(NEW.body,'$.Capture.Request.Id'),coalesce(json_extract(NEW.body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(NEW.body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Capture.State')='Unknown',0),json_extract(NEW.body,'$.State')='PhysicalCompleted',coalesce(json_extract(NEW.body,'$.Wcs.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Plc.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Upload.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Capture.Attempts'),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts;
+        END;
+        INSERT INTO parcel_history_projection SELECT id,json_extract(body,'$.ParcelCode'),json_extract(body,'$.State'),julianday(json_extract(body,'$.ObservedAt')),json_extract(body,'$.Wcs.Request.Id'),json_extract(body,'$.Plc.Request.Id'),json_extract(body,'$.Upload.Request.Id'),json_extract(body,'$.Capture.Request.Id'),coalesce(json_extract(body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(body,'$.Capture.State')='Unknown',0),json_extract(body,'$.State')='PhysicalCompleted',coalesce(json_extract(body,'$.Wcs.Attempts'),0)+coalesce(json_extract(body,'$.Plc.Attempts'),0)+coalesce(json_extract(body,'$.Upload.Attempts'),0)+coalesce(json_extract(body,'$.Capture.Attempts'),0) FROM parcel_archives;
+        CREATE TRIGGER parcel_archives_projection_insert AFTER INSERT ON parcel_archives BEGIN
+            INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,'$.ParcelCode'),json_extract(NEW.body,'$.State'),julianday(json_extract(NEW.body,'$.ObservedAt')),json_extract(NEW.body,'$.Wcs.Request.Id'),json_extract(NEW.body,'$.Plc.Request.Id'),json_extract(NEW.body,'$.Upload.Request.Id'),json_extract(NEW.body,'$.Capture.Request.Id'),coalesce(json_extract(NEW.body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(NEW.body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Capture.State')='Unknown',0),json_extract(NEW.body,'$.State')='PhysicalCompleted',coalesce(json_extract(NEW.body,'$.Wcs.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Plc.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Upload.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Capture.Attempts'),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts;
+        END;
+        CREATE TRIGGER parcel_archives_projection_update AFTER UPDATE ON parcel_archives BEGIN
+            INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,'$.ParcelCode'),json_extract(NEW.body,'$.State'),julianday(json_extract(NEW.body,'$.ObservedAt')),json_extract(NEW.body,'$.Wcs.Request.Id'),json_extract(NEW.body,'$.Plc.Request.Id'),json_extract(NEW.body,'$.Upload.Request.Id'),json_extract(NEW.body,'$.Capture.Request.Id'),coalesce(json_extract(NEW.body,'$.Wcs.State')='Accepted',0),coalesce(json_extract(NEW.body,'$.Wcs.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Plc.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Upload.State')='Unknown',0) OR coalesce(json_extract(NEW.body,'$.Capture.State')='Unknown',0),json_extract(NEW.body,'$.State')='PhysicalCompleted',coalesce(json_extract(NEW.body,'$.Wcs.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Plc.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Upload.Attempts'),0)+coalesce(json_extract(NEW.body,'$.Capture.Attempts'),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts;
+        END;
+        CREATE INDEX parcel_history_barcode ON parcel_history_projection(barcode,id);
+        CREATE INDEX parcel_history_state ON parcel_history_projection(state,id);
+        CREATE INDEX parcel_history_observed ON parcel_history_projection(observed,id);
+        CREATE INDEX parcel_history_wcs ON parcel_history_projection(wcs,id);
+        CREATE INDEX parcel_history_plc ON parcel_history_projection(plc,id);
+        CREATE INDEX parcel_history_upload ON parcel_history_projection(upload,id);
+        CREATE INDEX parcel_history_capture ON parcel_history_projection(capture,id);
+        CREATE INDEX parcel_commands_pending ON parcel_commands(id) WHERE json_extract(receipt,'$.Status')='Pending';
+        CREATE INDEX parcel_operations_recovery ON parcel_operations(id) WHERE json_extract(body,'$.RecoveryRequired')=1;
+        CREATE INDEX parcel_archives_recovery ON parcel_archives(id) WHERE json_extract(body,'$.RecoveryRequired')=1;
+        CREATE TABLE parcel_retired_operations(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,at TEXT NOT NULL,run TEXT NOT NULL);
+        CREATE TABLE parcel_retired_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body_hash TEXT NOT NULL);
+        CREATE TABLE parcel_retired_inputs(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,state TEXT NOT NULL,at TEXT NOT NULL);
+        CREATE TABLE parcel_ingress_audits(input TEXT NOT NULL,seq INTEGER NOT NULL,PRIMARY KEY(input,seq));
+        CREATE TABLE parcel_retention_runs(id TEXT PRIMARY KEY,at TEXT NOT NULL,days INTEGER NOT NULL,cutoff TEXT NOT NULL,backup_hash TEXT NOT NULL,summary TEXT NOT NULL);
+        CREATE INDEX parcel_audit_owner_at ON parcel_audit(owner,at);
+        CREATE INDEX parcel_audit_input_operation ON parcel_audit(json_extract(detail,'$.OperationId')) WHERE event='InputObserved' AND json_valid(detail);
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 8, bool allowCustodyUpgrade = false)
+    public ParcelRepository(string directory, string application, int storageVersion = 9, bool allowCustodyUpgrade = false)
     {
-        if (storageVersion is not (2 or 3 or 4 or 5 or 6 or 7 or 8)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5 or 6 or 7 or 8 or 9)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         var database = Path.Combine(directory, application + ".db");
         if (File.Exists(database) && new FileInfo(database).Length != 0)
@@ -141,9 +177,19 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null)
     {
+        if (StorageVersion >= 9 && (operation is not null && RetiredIdentity(operation.AdmissionId, operation.ObservationId) is not null || measurement is not null && RetiredMeasurement(measurement) is not null))
+            throw new InvalidDataException("Expired identity cannot be recreated; permanent retention evidence remains authoritative");
         using var tx = db.BeginTransaction();
+        if (inspectedIngress is not null)
+        {
+            using var inspected = db.CreateCommand(); inspected.Transaction = tx;
+            inspected.CommandText = "UPDATE parcel_ingress SET state='Inspected',detail=$detail,completed_at=$at WHERE id=$id AND state='Interrupted'";
+            inspected.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O"));
+            inspected.Parameters.AddWithValue("$id", inspectedIngress); inspected.Parameters.AddWithValue("$detail", detail);
+            if (inspected.ExecuteNonQuery() != 1) throw new InvalidOperationException("Interrupted ingress changed; inspect again");
+        }
         if (interruptedCommand is not null)
         {
             using var close = db.CreateCommand(); close.Transaction = tx;
@@ -226,6 +272,12 @@ public sealed partial class ParcelRepository : IDisposable
             audit.Parameters.AddWithValue("$at", input.RecordedAt.ToString("O"));
             audit.Parameters.AddWithValue("$owner", input.OperationId ?? input.PositionId);
             audit.Parameters.AddWithValue("$detail", Wire.Encode(input)); audit.ExecuteNonQuery();
+            if (StorageVersion >= 9 && ingressIdentity is not null)
+            {
+                using var association = db.CreateCommand(); association.Transaction = tx;
+                association.CommandText = "INSERT INTO parcel_ingress_audits VALUES($input,last_insert_rowid())";
+                association.Parameters.AddWithValue("$input", ingressIdentity); association.ExecuteNonQuery();
+            }
             Boundary?.Invoke("AfterInputObservedInsert");
         }
         if (occurrence is not null)
@@ -306,8 +358,12 @@ public sealed partial class ParcelRepository : IDisposable
         ValidateDurableReplyIdentities();
         CleanupArchivedRawFiles();
     }
+    (string Id, string Operation, string Stage, string Request, StageReply? Reply)[]? projectedReceipts;
+    internal void BeginReceiptProjection() => projectedReceipts = PendingReceipts();
+    internal void EndReceiptProjection() => projectedReceipts = null;
     public (string Id, string Operation, string Stage, string Request, StageReply? Reply)[] PendingReceipts()
     {
+        if (projectedReceipts is not null) return projectedReceipts;
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,operation,stage,request,raw_hash FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
         using var r = cmd.ExecuteReader(); List<(string, string, string, string, StageReply?)> result = [];
         while (r.Read())

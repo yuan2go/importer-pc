@@ -163,7 +163,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         foreach (var b in bindings.DistinctBy(x => x.InstanceId))
         {
 #if !DIRECTPLC
-            if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == "1.3.1" && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
+            if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == "1.3.2" && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
                 _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
                 if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null) throw new InvalidDataException("RCS生产部署资格尚未完成");
@@ -278,7 +278,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
 #if !DIRECTPLC
         using var stream = typeof(ParcelCapabilityFactory).Assembly.GetManifestResourceStream("Ipc.BuiltInRcs.Parameters.json") ?? throw new InvalidDataException("内置RCS参数描述缺失");
         using var reader = new StreamReader(stream);
-        providers = providers.Append(new("integration", "sportmaster-rcs", "1.3.1", "SPORTMASTER-RCS-SORTER-v1", Wire.Decode<ParameterField[]>(reader.ReadToEnd()), new(Query: false)));
+        providers = providers.Append(new("integration", "sportmaster-rcs", "1.3.2", "SPORTMASTER-RCS-SORTER-v1", Wire.Decode<ParameterField[]>(reader.ReadToEnd()), new(Query: false)));
 #endif
         return providers.ToArray();
     }

@@ -1,0 +1,8 @@
+{
+  "AssemblyExit": 0,
+  "Scope": "Frozen EXE read-only startup hooks; no install or device start",
+  "DesktopExit": 0,
+  "Ended": "2026-10-24T10:04:51.9944377+00:00",
+  "Started": "2026-10-24T10:04:51.1156289+00:00",
+  "SourceCommit": "f9389241025aa83747e84753007b90cd20604533"
+}

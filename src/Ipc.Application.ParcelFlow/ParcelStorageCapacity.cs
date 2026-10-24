@@ -5,7 +5,10 @@ public sealed partial class ParcelRuntime
 {
     long freeStorageBytes;
     string? storageCapacityFailure;
+    string? storageCapacityWarning;
     DateTimeOffset storageChecked;
+    DateTimeOffset retentionChecked;
+    string? retentionWarning;
     ParcelRetentionPolicy Retention => Effective.Retention ?? new();
     void RefreshStorageCapacity()
     {
@@ -14,6 +17,14 @@ public sealed partial class ParcelRuntime
         {
             freeStorageBytes = ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
             storageCapacityFailure = freeStorageBytes < Retention.MinimumFreeBytes ? "Storage reserve exhausted; preserve original history and use approved external retention procedure" : null;
+            storageCapacityWarning = freeStorageBytes < checked(Retention.MinimumFreeBytes * 2) ?
+                "StorageGrowthWarning: less than twice the configured reserve remains; plan a maintenance backup/volume relocation before admission is blocked; archives do not reclaim disk" : null;
+            if (repository?.StorageVersion >= 9 && DateTimeOffset.UtcNow - retentionChecked > TimeSpan.FromMinutes(1))
+            {
+                retentionWarning = Retention.HistoryDays is not { } days ? "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion" :
+                    repository.RetentionDue(days, DateTimeOffset.UtcNow) ? "HistoryRetentionMaintenanceDue: aged history exists; pause, stop and run matching-release expire-history; unresolved originals are retained" : null;
+                retentionChecked = DateTimeOffset.UtcNow;
+            }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         { storageCapacityFailure = "Storage capacity unavailable: " + ex.GetType().Name; }

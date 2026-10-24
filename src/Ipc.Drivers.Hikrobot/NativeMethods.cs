@@ -94,6 +94,8 @@ internal sealed class HikrobotApi : IHikrobotApi
     readonly object callbackGate = new();
     bool callbacksEnabled;
     int callbacks;
+    string? callbackFailure;
+    internal string? CallbackFailure => Volatile.Read(ref callbackFailure);
     public HikDevice[] Enumerate()
     {
         if (!OperatingSystem.IsWindows() || IntPtr.Size != 8) throw new PlatformNotSupportedException("IDMVS reader requires Windows x64");
@@ -145,10 +147,21 @@ internal sealed class HikrobotApi : IHikrobotApi
         {
             lock (callbackGate) { if (!callbacksEnabled) return; callbacks++; }
             try { action(); }
-            catch (Exception ex) { failure(ex); }
+            catch (Exception ex)
+            {
+                Volatile.Write(ref callbackFailure, ex.GetType().Name);
+                try { failure(ex); }
+                catch (Exception receiverFailure) { Volatile.Write(ref callbackFailure, ex.GetType().Name + "; fault receiver=" + receiverFailure.GetType().Name); }
+            }
             finally { lock (callbackGate) { callbacks--; Monitor.PulseAll(callbackGate); } }
         }
-        callback = (_, info, _) => Invoke(() => frame(NativeMethods.CopyFrame(info, encoding)));
+        callback = (_, info, _) => Invoke(() =>
+        {
+            HikFrame copied;
+            try { copied = NativeMethods.CopyFrame(info, encoding); }
+            catch (Exception ex) { throw new HikFrameRejectedException(ex); }
+            frame(copied);
+        });
         exception = (message, _) => Invoke(() => failure(new IOException("SDK exception: 0x" + message.ToString("X8"))));
         NativeMethods.Check(NativeMethods.MV_CODEREADER_RegisterExceptionCallBack(handle, exception, 0), "RegisterExceptionCallback");
         NativeMethods.Check(NativeMethods.MV_CODEREADER_RegisterImageCallBackEx2(handle, callback, 0), "RegisterReadCallback");
@@ -163,6 +176,7 @@ internal sealed class HikrobotApi : IHikrobotApi
     public void Destroy()
     {
         if (handle == 0) return;
+        DrainCallbacks();
         NativeMethods.Check(NativeMethods.MV_CODEREADER_DestroyHandle(handle), "DestroyHandle");
         handle = 0; GC.KeepAlive(callback); GC.KeepAlive(exception); callback = null; exception = null;
     }

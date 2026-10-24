@@ -1,0 +1,9 @@
+{
+  "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+  "Main": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+  "Started": "2026-10-24T09:42:59.5182691Z",
+  "Ended": "2026-10-24T09:44:17.3485497Z",
+  "ExitCode": 0,
+  "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-delivery-e235d85",
+  "Scope": "Local reference candidate including reconciled guides; no installer or production device"
+}

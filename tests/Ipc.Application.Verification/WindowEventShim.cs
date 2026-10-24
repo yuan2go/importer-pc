@@ -20,6 +20,7 @@ namespace System.Windows
     public static class SystemParameters { public static (double Width, double Height) WorkArea => (1440, 980); }
     public class Window
     {
+        public Threading.Dispatcher Dispatcher { get; } = new();
         public object? DataContext { get; set; }
         public Window? Owner { get; set; }
         public bool IsEnabled { get; set; } = true;
@@ -69,11 +70,14 @@ namespace System.Windows.Controls
 }
 namespace System.Windows.Threading
 {
-    public static class Dispatcher
+    public enum DispatcherPriority { Background }
+    public class Dispatcher
     {
+        public bool HasShutdownStarted => false;
         public static Task Yield() => System.Windows.Window.YieldClosingEvent();
         // Scheduling boundary only. Native dispatcher order is verified by the WPF fixture.
-        public static Task BeginInvoke(Action action) => Task.Run(action);
+        public Task BeginInvoke(Action action) => Task.Run(action);
+        public Task BeginInvoke(DispatcherPriority priority, Action action) => Task.Run(action);
     }
     public class DispatcherTimer
     {

@@ -1,0 +1,10 @@
+test_backup_requires_complete_unchanged_original_set (test_stability_qualification.QualificationChecks.test_backup_requires_complete_unchanged_original_set) ... ok
+test_json_duplicate_keys_and_bounded_input (test_stability_qualification.QualificationChecks.test_json_duplicate_keys_and_bounded_input) ... ok
+test_plan_does_not_invent_target_qualification (test_stability_qualification.QualificationChecks.test_plan_does_not_invent_target_qualification) ... ok
+test_short_collector_preserves_release_identity_and_has_an_independent_deadline (test_stability_qualification.QualificationChecks.test_short_collector_preserves_release_identity_and_has_an_independent_deadline) ... ok
+test_source_buffer_write_cannot_stand_in_for_receipt (test_stability_qualification.QualificationChecks.test_source_buffer_write_cannot_stand_in_for_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.346s
+
+OK

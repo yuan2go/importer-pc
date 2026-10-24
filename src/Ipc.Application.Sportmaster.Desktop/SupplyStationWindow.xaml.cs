@@ -66,6 +66,7 @@ public partial class SupplyStationWindow : Window
         };
         Closing += ClosingWindow;
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); };
+        var progress = new DispatcherProgressMonitor(application, Dispatcher); Closed += (_, _) => progress.Dispose();
     }
     async Task RefreshAsync()
     {

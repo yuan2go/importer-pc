@@ -16,7 +16,7 @@ public sealed partial class ParcelRepository
             if (r.GetString(0) != application || version > migrations.Length || r.GetInt64(1) != version || r.GetString(2) != Wire.Hash(migrations[version - 1].Sql))
                 throw new InvalidDataException("Unknown/changed original database; matching maintenance reader required");
         }
-        if (version is < 2 or > 8) throw new InvalidDataException("This maintenance reader supports exact Parcel DB2/3/4/5/6/7/8 only");
+        if (version is < 2 or > 9) throw new InvalidDataException("This maintenance reader supports exact Parcel DB2/3/4/5/6/7/8/9 only");
         return version;
     }
     // Offline, no provider construction or schema upgrade. Restores only a derived main

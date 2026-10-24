@@ -1,0 +1,42 @@
+[
+  {
+    "Source": "docs/INDEX.md",
+    "Sha256": "A475C3F1320FF47CDF75AEFD62AE0766BAD614DD4FACE0C0E2058CE5925CBDD6"
+  },
+  {
+    "Source": "docs/runtime/architecture-quality-remediation-01.md",
+    "Sha256": "E5BA2F2507B2B3D5D766914A83285FC685B7349AC1D3715CE85FA4C412328EAB"
+  },
+  {
+    "Source": "docs/runtime/windows-application-delivery.md",
+    "Sha256": "51618A5523386F93EC86934A1D08D43C2462E12A288C5FDA1AB5813B45F75340"
+  },
+  {
+    "Source": "docs/runtime/dual-camera-communication-fix-01.md",
+    "Sha256": "E335B44AC0F81B3BEECF49B51823E924BF66813A937126076DE5C36F59DB3060"
+  },
+  {
+    "Source": "docs/runtime/architecture-quality-closure-01.md",
+    "Sha256": "D798EF29A6A22237BD293D12BE3D39CB9028A7063DE7E190F15C908F0467D1EE"
+  },
+  {
+    "Source": "docs/runtime/application-architecture-22.md",
+    "Sha256": "0A9532E7D8CC12BAE09646F29A42917BE47438EE490B1C3D504DD617A13763D5"
+  },
+  {
+    "Source": "docs/runtime/sportmaster-rcs-task.md",
+    "Sha256": "E499A9A72D450CACF9DA62BAE5900F022CBF32977E2BBFA3A5A9498D3F610F36"
+  },
+  {
+    "Source": "docs/runtime/hikrobot-reader-01.md",
+    "Sha256": "A220D89DACE2156CF92D97AD56B43C1E37B17116E3F814489393915152948451"
+  },
+  {
+    "Source": "docs/runtime/commercial-productization-01-operations.md",
+    "Sha256": "E14EB0E224844310806BA68496E2BB45D9773F3BD9A799AB58DA262E1650EC8E"
+  },
+  {
+    "Source": "docs/design/framework-decisions.md",
+    "Sha256": "C78A8D975E882FB9A96523CB95ECA8A2D9D5B7B6632EA2893E727195B8B5AC47"
+  }
+]

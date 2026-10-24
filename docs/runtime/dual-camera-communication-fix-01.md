@@ -13,6 +13,8 @@
 
 ## 当前协议和资源规则
 
+成功交给Application现已先写入DB9输入接收账；驱动Ready、内存入队、持久接收、Admitted和完成分别计证。队列满/异常/停止的逐笔残留与独立worker进展见[长稳指南](win11-24x7-stability-remediation-01.md)。本地Ready仍不能证明静默远端存活。
+
 供包台是TCP客户端，主动连配置IPv4/端口，不发送握手或测试业务报文。严格UTF-8；LF结束，也接受CRLF；正文最多4096字节，不含LF及可选的末尾CR。拆包（含UTF-8拆字节）和多行粘包按顺序处理。空行、控制字符、非法编码、超长行和不完整帧EOF均围栏连接；不截断、不替换乱码、不跳过坏帧继续声称健康。EOF即使无半帧也表示RemoteClosed。连接未建立时实际端点可能为空，仅保留ConfiguredRemote，不根据路由查询伪造已用源端点。没有新增应用读超时、自动重连/重放、源IP绑定或新配置字段。五秒连接预算是既有行为，预算超时现在明确分类为ConnectTimeout；调用方取消仍为ConnectCancelled。
 
 默认`entity.mode=observe-only`：形成UncorrelatedRead观察，不能建立包裹准入。`line`须现场确认一行一个实体并满足原Production资格；同码两行有不同实体身份，不按条码合并。旧配置格式、默认模式和字段不变。构造时复制连接参数，外部草稿修改不能改变当前套接字。

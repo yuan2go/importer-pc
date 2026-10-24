@@ -1,4 +1,4 @@
-> 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
+> 当前Windows 11长期稳定性整改：[工作包与风险矩阵](work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[输入、故障与运行设计](design/win11-24x7-stability-remediation-01.md)。原[独立审查及证据](reviews/win11-24x7-stability-audit-01/README.md)固定main `c91559f6`，保留历史身份；整改实施与24h/真实设备资格分别记录。当前[运行与到期删除](runtime/win11-24x7-stability-remediation-01.md)、[R01～R12验证及边界](runtime/validation/win11-24x7-stability-remediation-01.md)。
 
 > 当前页面信息层级：[TASK-CONTENT-HIERARCHY-01](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-01.md)。PR90已合并；本轮按页面职责调整全局状态/诊断及标题，原权限、保存和历史证据保持。
 

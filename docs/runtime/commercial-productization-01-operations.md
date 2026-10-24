@@ -1,10 +1,10 @@
-> 当前软件管理员、导航和日志采用 [OPS-ADMIN-LOGS-01](operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+> 当前管理能力为[管理模式](management-mode-01.md)，不是软件管理员账号。四类参数、原请求及历史账号证据各守原身份；本轮稳定性和到期维护见[长稳指南](win11-24x7-stability-remediation-01.md)。
 
 > Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
 
 # Importer PC 商业交付操作指南
 
-适用：COMM-00～10 实施源码；Sportmaster / DirectPlc / WcsToPlc 业务 1.4.0、Application.Contracts 1.10.0、DB8。具体源码、介质与已执行结果见[实施结果](commercial-productization-01-results.md)。旧 ZIP 仍按各自 SourceCommit 和随包说明使用。通用工程能力不代表真实设备、客户协议、Windows 现场或投产资格通过。
+适用：COMM-00～10的操作机制及后续合并源码。当前Sportmaster1.12.0、DirectPlc/WcsToPlc1.6.0、Contracts1.17.0、DB9；COMM形成时1.4.0/1.10.0/DB8介质保留历史身份。具体源码、介质与已执行结果见[实施结果](commercial-productization-01-results.md)。旧 ZIP 仍按各自 SourceCommit 和随包说明使用。通用工程能力不代表真实设备、客户协议、Windows 现场或投产资格通过。
 
 > 当前安装交付为普通人工安装包和必要说明，见[范围收敛记录](installation-delivery-scope-01.md)。下列人工向导是正常路径；已有高级部署入口仅保留实现说明，不是交付前置条件。
 

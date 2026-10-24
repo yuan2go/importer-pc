@@ -62,6 +62,7 @@ static partial class Program
         var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
         Check(Descendants(staleReview).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
             "stale saved pause state cannot hide the independent pause action in review");
+        CaptureInternal(evidence, "v3-save-review", staleReview, lines);
         staleReview.Close();
         await Until(() => vm.Fresh);
         var probesRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

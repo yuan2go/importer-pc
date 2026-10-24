@@ -166,6 +166,12 @@ static partial class Program
         transport.ReleasePause.TrySetResult(); await pendingPause; await Flush();
         Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("暂停供包") && vm.HasGlobalOperationFeedback, "real persisted pause receipt arrives after navigation and remains visible on the receiving page");
         await Record("late-pause-history-800");
+        var history = Descendants(window).OfType<HistoryPage>().Single();
+        var rows = (DataGrid)history.FindName("HistoryRows");
+        var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+        Check(Inside(rows, client) && firstRow.ActualHeight >= 32 &&
+            firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight,
+            "minimum history viewport retains a complete result row with late pause receipt and unresolved custody visible");
         transport.HoldPause = false; Click(window, "日志查询"); await Flush();
         // Keep unresolved old receipt out of a new global intent; real Resume is rejected
         // because both positions now carry unsettled custody.

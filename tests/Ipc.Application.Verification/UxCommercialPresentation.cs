@@ -182,12 +182,12 @@ static class UxCommercialPresentation
             "bound feedback retains successful no-message read completion after Busy and duplicate rejection");
         vm.Message = "PendingRestart · SYNTHETIC identical receipt";
         await vm.RunAsync(() => { vm.Message = "PendingRestart · SYNTHETIC identical receipt"; return Task.CompletedTask; }, "保存表单");
-        Check(vm.Feedback == "PendingRestart · SYNTHETIC identical receipt", "same-text new receipt remains the exact command result instead of generic completion");
+        Check(vm.Message == "PendingRestart · SYNTHETIC identical receipt" && vm.Feedback == "已保存待重启 · SYNTHETIC identical receipt", "same-text new receipt retains raw status and its Chinese presentation instead of generic completion");
         release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         run = vm.RunAsync(() => release.Task, "慢历史读取");
         probe.Command = _ => Task.FromResult(new BusinessReceipt("Rejected", "SYNTHETIC independent pause refusal", baseline.Revision));
         await vm.PauseAsync(); release.SetResult(); await run;
-        Check(vm.Feedback.Contains("Rejected") && vm.Feedback.Contains("independent pause refusal"), "successful read cannot overwrite independent Pause result");
+        Check(vm.Message == "Rejected · SYNTHETIC independent pause refusal" && vm.Feedback == "已拒绝 · SYNTHETIC independent pause refusal" && vm.GlobalOperationFeedback.Contains("independent pause refusal"), "successful read cannot overwrite independent Pause result or its Chinese presentation");
         await vm.RunAsync(() => Task.FromException(new IOException("SYNTHETIC action failure")), "创建备份");
         Check(!vm.Busy && vm.Feedback.Contains("SYNTHETIC action failure"), "bound feedback retains the actual failed action after Busy ends");
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("SYNTHETIC post-action snapshot failure"));

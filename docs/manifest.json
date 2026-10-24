@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "e1206d73ee89ed98180850267a5b89831d4e6231931ef75cccd38e8e140c3e88",
-      "size_bytes": 7712,
-      "git_blob": "ade9e57666cb1c8c2bd79fe1bb973b88da35fba4",
-      "version": "retention-performance-review-01",
-      "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention review archive; separate publication verification and environment limit",
-      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "sha256": "3f529c1b64eeee97aaa99b823128db65db1b7a11114c54b90d612637afae87c0",
+      "size_bytes": 7835,
+      "git_blob": "1aff1756e119d850cf342dce488ab34ea5d3f32c",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
@@ -1720,17 +1720,25 @@
         "version": "parallel-task-integration-01",
         "status": "current_source_or_preserved_integration_evidence",
         "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
+      },
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "ade9e57666cb1c8c2bd79fe1bb973b88da35fba4",
+        "sha256": "e1206d73ee89ed98180850267a5b89831d4e6231931ef75cccd38e8e140c3e88",
+        "size_bytes": 7712,
+        "version": "retention-performance-review-01",
+        "status": "scoped_archive_guidance_or_reproduction_tool",
+        "source": "User-authorized archival; original SourceCommit12a7cbd retained"
       }
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "3533bf225a30fb53a6aa6ccbf5a9a08f13b0bdd80631c59d89e2e540e8d65150",
-      "size_bytes": 12587,
-      "git_blob": "6baf7def39fb271c7272e4eff4106e446e4f9c42",
-      "version": "parallel-task-integration-01",
-      "status": "current_source_or_preserved_integration_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "2c28fdb74163b8bba78464dbcacf15c4013fffad8b20576de09d72e75533521d",
+      "size_bytes": 12806,
+      "git_blob": "fa5747e63b424d57472e4410dbb5ae49fa243dc3",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
       "previous_git_blob_before_visual_main_closure_01": "afa35ec61e535f14e45b6ad7691796c5d98b3148",
       "pre_parallel_task_integration_01_identity": {
@@ -1740,6 +1748,14 @@
         "version": "MANAGEMENT-MODE-01",
         "status": "current_source_or_separately_scoped_evidence",
         "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately"
+      },
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "6baf7def39fb271c7272e4eff4106e446e4f9c42",
+        "sha256": "3533bf225a30fb53a6aa6ccbf5a9a08f13b0bdd80631c59d89e2e540e8d65150",
+        "size_bytes": 12587,
+        "version": "parallel-task-integration-01",
+        "status": "current_source_or_preserved_integration_evidence",
+        "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
       }
     },
     {
@@ -2076,13 +2092,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "c6d0f3e3c6603933db288cb6a73a4b7d0d28d6130ce4693e98c8fb07b7833e4a",
-      "size_bytes": 10928,
-      "git_blob": "9e5811ded25cb4732d7f875edad420efdd6426ba",
-      "version": "retention-performance-review-01",
-      "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "sha256": "6867ad7772f953c934e6020aa081c853912626cae3b0f40f9c5af679e807479c",
+      "size_bytes": 11259,
+      "git_blob": "36b21b4cbfb992515a7a989f9ccc87cc4b052773",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2146,6 +2162,14 @@
         "version": "parallel-task-integration-01",
         "status": "current_source_or_preserved_integration_evidence",
         "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
+      },
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "9e5811ded25cb4732d7f875edad420efdd6426ba",
+        "sha256": "c6d0f3e3c6603933db288cb6a73a4b7d0d28d6130ce4693e98c8fb07b7833e4a",
+        "size_bytes": 10928,
+        "version": "retention-performance-review-01",
+        "status": "scoped_archive_guidance_or_reproduction_tool",
+        "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained"
       }
     },
     {
@@ -6808,13 +6832,13 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "929dc834f2b14984ee278c58e19b811a3ac829d9",
-      "sha256": "00925940056022a461266d100f83ef7661e2941173d61523f29115652bea0ba3",
-      "size_bytes": 11985,
-      "version": "retention-performance-review-01",
-      "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "git_blob": "0b874bc4d367a4e350ccd3a7edccd95f8b8800f7",
+      "sha256": "a51e572267769fa88745931f61792dbf94c8e923d84a4533fcaa4da5110fa426",
+      "size_bytes": 12526,
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -6842,6 +6866,14 @@
         "version": "typography-01",
         "status": "current_source_or_specification",
         "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      },
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "929dc834f2b14984ee278c58e19b811a3ac829d9",
+        "sha256": "00925940056022a461266d100f83ef7661e2941173d61523f29115652bea0ba3",
+        "size_bytes": 11985,
+        "version": "retention-performance-review-01",
+        "status": "scoped_archive_guidance_or_reproduction_tool",
+        "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained"
       }
     },
     {
@@ -58618,15 +58650,23 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
-      "sha256": "79ec35efcc4ab497b5de77f9e8c85a217045620b61c288a6858e2cf7f633fe91",
-      "size_bytes": 15374,
-      "git_blob": "cb16c12623f91fe1b2268b92ebdee67505424478",
-      "previous_git_blob": "b8787ac25fd837e830b4ece3c1ba2615f7d21644"
+      "sha256": "7aae052af198b6dbdb4ad2c8d9616cc24298b08c4657ed821e64705094743cc9",
+      "size_bytes": 16895,
+      "git_blob": "fdb9246165c600fc595b18fb676bad3a8c7131de",
+      "previous_git_blob": "b8787ac25fd837e830b4ece3c1ba2615f7d21644",
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "cb16c12623f91fe1b2268b92ebdee67505424478",
+        "sha256": "79ec35efcc4ab497b5de77f9e8c85a217045620b61c288a6858e2cf7f633fe91",
+        "size_bytes": 15374,
+        "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization"
+      }
     },
     {
       "version": "MANAGEMENT-MODE-01",
@@ -75203,14 +75243,14 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md",
-      "version": "retention-performance-review-01",
-      "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository",
-      "sha256": "589d636e7f3af7a0be498e65a5c69c830ee1fd356546c732b2ca1a85e402fe47",
-      "size_bytes": 4522,
-      "git_blob": "09057993fc8530a2bf129f0c79a6c760d0b92532",
+      "sha256": "37bce9657f15f3495850b3bd58b7fa812caa6909c11b20e9e29b8a837a8aded5",
+      "size_bytes": 5000,
+      "git_blob": "b8b012c53cda1335b84d21f64ad31db7b7b04f0b",
       "pre_retention_performance_review_01_identity": {
         "git_blob": "15e3c53aae2e675fb9c4436310823ca77478ea14",
         "sha256": "99854c45a0a7abadb5129bf6f31eb649149d0efae0fbbbbcd2d11cd800933d5c",
@@ -75218,6 +75258,14 @@
         "version": "win11-24x7-stability-remediation-01",
         "status": "current_source_or_scoped_synthetic_evidence",
         "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      },
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "09057993fc8530a2bf129f0c79a6c760d0b92532",
+        "sha256": "589d636e7f3af7a0be498e65a5c69c830ee1fd356546c732b2ca1a85e402fe47",
+        "size_bytes": 4522,
+        "version": "retention-performance-review-01",
+        "status": "scoped_archive_guidance_or_reproduction_tool",
+        "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained"
       }
     },
     {
@@ -77290,14 +77338,22 @@
     },
     {
       "path": "docs/runtime/validation/retention-performance-review-01.md",
-      "sha256": "adad3f085765c11a9f22de14e520f4bc9e2363a0229ef47cfc77f5e22376bc1f",
-      "size_bytes": 5978,
-      "git_blob": "93d92994513a02db566d8ec092502191fb86c388",
-      "version": "retention-performance-review-01",
-      "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention review archive; separate publication verification and environment limit",
-      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
-      "storage_scope": "public_repository"
+      "sha256": "c618eedc324cc73a7546d0753e92e76238b20cfa2439623237970251a5170739",
+      "size_bytes": 10547,
+      "git_blob": "e304a10d205154083c54be5d221f5b38b9b0d3bd",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository",
+      "pre_retention_recheck_02_identity": {
+        "git_blob": "93d92994513a02db566d8ec092502191fb86c388",
+        "sha256": "adad3f085765c11a9f22de14e520f4bc9e2363a0229ef47cfc77f5e22376bc1f",
+        "size_bytes": 5978,
+        "version": "retention-performance-review-01",
+        "status": "scoped_archive_guidance_or_reproduction_tool",
+        "source": "User-authorized archival; original SourceCommit12a7cbd retained"
+      }
     },
     {
       "path": "scripts/reproduce-retention-review.py",
@@ -77330,6 +77386,248 @@
       "status": "scoped_archive_guidance_or_reproduction_tool",
       "purpose": "Independent retention review archive; separate publication verification and environment limit",
       "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/FILES.json",
+      "sha256": "0b449ff3555af1fd0b89df02256052ece67821f73e53150c478df9ced8cfacd0",
+      "size_bytes": 3871,
+      "git_blob": "c12fe96b603196eea8a57931fa5b9c3572434c62",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/FIXED-TESTS.json",
+      "sha256": "a0ee093d0fa000459f386418e35d2844be8514efbbf72d66f6d1ba338e5d4389",
+      "size_bytes": 3862,
+      "git_blob": "6ecf9b51692c5cc6fdcdf21745b9630a6383e0ab",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/REMOTE-RECHECK.json",
+      "sha256": "305860ba69f22e70b62aa83f64e37a0189f9a4bbed8b910cf11f8aabd1386ac9",
+      "size_bytes": 6895,
+      "git_blob": "9a7e9ca75be26f89d48b16bd6c47fc54c7b55593",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/REPRODUCTION.json",
+      "sha256": "c5157f39126f8a9277b8a745b5d727471ff6c46e0a0aabb5c885b49df78b6287",
+      "size_bytes": 4020,
+      "git_blob": "724354c3ea61fc0a8b5724c234c3ef839de329d5",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/audit03-maintenance.log",
+      "sha256": "b66644cb9ef9d38230db63632e43cd1f498b0d06a098c2ad0bf4f1527f087419",
+      "size_bytes": 824,
+      "git_blob": "e0d76cbb267f5ef0c75d17a23dc18eabd81c0ef8",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/build.log",
+      "sha256": "d5f4fddfc65933bdbfafea2a16b93d13ad0b7794ec9f4ec7e9c944e2beb7ee8c",
+      "size_bytes": 4572,
+      "git_blob": "bfbcaa5d8381da6a24893ce1052230d18272ca32",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/compatibility-fixed.log",
+      "sha256": "34aa0d4e369dd200d95b63c6d7762f48b3cedd4031243e122439e86f13f39dfa",
+      "size_bytes": 3984,
+      "git_blob": "0d88d0e1ee3338437e660c6d205c74d25fdac51c",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/fixed-build.log",
+      "sha256": "796cb83dfab5ea3a00ea95c569838f13e143fd45203754f62aa2e4af92a8ab98",
+      "size_bytes": 2473,
+      "git_blob": "3294cea7d6d04b6fab8880f385a66a2f05ebb09e",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/maintenance-fixed.log",
+      "sha256": "d1ea62dc881a310293b2515daded04d06a626601f066e276e393758eb3214c1b",
+      "size_bytes": 824,
+      "git_blob": "85d5bfee00ea196a53b55e27f10ba31309c5b8da",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/migration/migration-result.json",
+      "sha256": "02f24cfa6c5c1d685aac8873052930ee5aff31766e83049a912528b10bacd476",
+      "size_bytes": 2023,
+      "git_blob": "ebac19814cf4f428378b1f64b8ffd05cdc7b5728",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/IDENTITY.json",
+      "sha256": "13b6284f13a4274694e750789bc6b569ec6169e4d7737cc1265ea521aae989d6",
+      "size_bytes": 1489,
+      "git_blob": "e6c32f00bdeb232791d70a1e8ae3ff68e5e61b50",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/RESULT.json",
+      "sha256": "87fbb6233fd0a9f26de2d774462a6a9b796c08250ab98185127a5dbefa4ba8ca",
+      "size_bytes": 15219,
+      "git_blob": "f93560f62a2124520ac5330e515ad4864a9b85d8",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/indexes.json",
+      "sha256": "5b92d17d4870c9651f6246030d6e0d030c7db7668fcc668bf30259c120b00e5a",
+      "size_bytes": 637,
+      "git_blob": "77d908f391baefdb2d626a7b71bfbd1f86258fc5",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/query/prepare-plan.json",
+      "sha256": "d22bf297e095edc6f34f9a39f51c1fc4c6b352040ec17c6e6ae4fc0092a6c4ad",
+      "size_bytes": 85,
+      "git_blob": "8c883b0790e6fdc3d6324ac480feafbbfd0c578a",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/stability-fixed.log",
+      "sha256": "7eac10fef0ea3a432552b8facf37c984fb626e692a43f6314ff37322c6d36745",
+      "size_bytes": 4142,
+      "git_blob": "2cf42eb77f6dfbbb7e855d4ff2b38eab36a14df3",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-conflict-closure-repeat.log",
+      "sha256": "b2c213a53b97d6e2d28ddd689ef587c41ac1606e1492547ab8ebe56d7772f131",
+      "size_bytes": 5527,
+      "git_blob": "434819e90e3872c35ea0f4ce600603c4efa417cb",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-conflict-closure.log",
+      "sha256": "c9aaa4465fe57d7158b5447694da2f74d676153797732fe06b4d0e16b63288e0",
+      "size_bytes": 5979,
+      "git_blob": "f2c7cf182d1d0a8ce7056e0caa913009f2230e14",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-1.log",
+      "sha256": "b3d4c10b3d2de7715daa8973a8f70722e9c5f2f9e45b63739b7ffe87317e894c",
+      "size_bytes": 5616,
+      "git_blob": "734e8ec068c4d62595f6522138b925f68b5ca6f5",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-2.log",
+      "sha256": "2dbdcacfd69e3e0c3caacdb69fc5af3345c0cccfb3483abde9ce46b32f50e5e4",
+      "size_bytes": 5616,
+      "git_blob": "ba2a4d0270f31a439edb0fcd1224f03f2b16dd25",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/upgrade-fixed-3.log",
+      "sha256": "127df3201149abc36a6bf913d1083a6ce847bcdde6ea253150f9e49f30b4badb",
+      "size_bytes": 5616,
+      "git_blob": "ebb817a7fe63a9c04632316e1139dba1a2cde910",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/version-compatibility.log",
+      "sha256": "fa07bdcb29acee1bb803d956244bc1cba8978b5fdec58817b1e00f8cb9fae251",
+      "size_bytes": 3984,
+      "git_blob": "64776ea7c60ad2489f1684b511191e98429b5c4e",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/recheck-02/win11-stability.log",
+      "sha256": "a4b090c44cc407eb3f274339d040a8dc514391f32b04b016c1f2e8bf80af1a40",
+      "size_bytes": 4142,
+      "git_blob": "40d73ad2bfcc01ee48cb0febca7d3148bbb46221",
+      "version": "retention-query-recheck-02",
+      "status": "scoped_verification_or_evidence",
+      "purpose": "Recheck existing retention fix and make legacy-upgrade acknowledgement verification reliable",
+      "source": "User-authorized PR99 query verification and safe main integration; original failures retained",
       "storage_scope": "public_repository"
     }
   ],
@@ -80000,5 +80298,16 @@
       "archive_tool_suite": "FAIL_ENVIRONMENT; 6 passed, 1 WinError1314 symlink privilege error; no skips or permission changes",
       "full_historical_archive_revalidation": "NOT_CLAIMED"
     }
+  },
+  "retention_query_recheck_02": {
+    "report": "docs/runtime/validation/retention-performance-review-01.md",
+    "evidence": "docs/runtime/evidence/retention-performance-review-01/recheck-02/FILES.json",
+    "starting_main": "5bb032d7354ef619064a015484a5001204edfff5",
+    "fixed_verification_source": "f4a62457150d859f5b778fb7de0d91687a691cda",
+    "runtime_changes": false,
+    "migrations": "SQL1-9 unchanged",
+    "local_result": "Query/migration/protections PASS; initial upgrade fixture FAIL, unchanged repeat PASS; fixed fixture three runs plus three runtime suites PASS",
+    "qualification": "Synthetic short verification only; full maintenance RTO/protected expiry CLI/real SDK-RCS/24h/72h/field NOT_RUN or BLOCKED",
+    "inventory_scope": "Owned delta only, staged Git bytes; prior evidence identities retained; final PR/CI/merge verified separately"
   }
 }

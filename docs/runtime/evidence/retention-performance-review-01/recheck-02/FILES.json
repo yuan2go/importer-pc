@@ -1,0 +1,115 @@
+{
+  "initialSource": "5bb032d7354ef619064a015484a5001204edfff5",
+  "fixedVerificationSource": "f4a62457150d859f5b778fb7de0d91687a691cda",
+  "initialReproduction": "FAIL; original upgrade fixture race retained",
+  "fixedTests": "PASS; three upgrade runs and stability/maintenance/compatibility",
+  "productionCodeChanges": false,
+  "scope": "Synthetic SQL, migration and recovery only; no full maintenance RTO, protected expiry CLI, SDK/RCS or 24h/72h/field qualification",
+  "files": [
+    {
+      "path": "REMOTE-RECHECK.json",
+      "bytes": 6895,
+      "sha256": "305860ba69f22e70b62aa83f64e37a0189f9a4bbed8b910cf11f8aabd1386ac9"
+    },
+    {
+      "path": "REPRODUCTION.json",
+      "bytes": 4020,
+      "sha256": "c5157f39126f8a9277b8a745b5d727471ff6c46e0a0aabb5c885b49df78b6287"
+    },
+    {
+      "path": "build.log",
+      "bytes": 4572,
+      "sha256": "d5f4fddfc65933bdbfafea2a16b93d13ad0b7794ec9f4ec7e9c944e2beb7ee8c"
+    },
+    {
+      "path": "upgrade-conflict-closure.log",
+      "bytes": 5979,
+      "sha256": "c9aaa4465fe57d7158b5447694da2f74d676153797732fe06b4d0e16b63288e0"
+    },
+    {
+      "path": "upgrade-conflict-closure-repeat.log",
+      "bytes": 5527,
+      "sha256": "b2c213a53b97d6e2d28ddd689ef587c41ac1606e1492547ab8ebe56d7772f131"
+    },
+    {
+      "path": "win11-stability.log",
+      "bytes": 4142,
+      "sha256": "a4b090c44cc407eb3f274339d040a8dc514391f32b04b016c1f2e8bf80af1a40"
+    },
+    {
+      "path": "audit03-maintenance.log",
+      "bytes": 824,
+      "sha256": "b66644cb9ef9d38230db63632e43cd1f498b0d06a098c2ad0bf4f1527f087419"
+    },
+    {
+      "path": "version-compatibility.log",
+      "bytes": 3984,
+      "sha256": "fa07bdcb29acee1bb803d956244bc1cba8978b5fdec58817b1e00f8cb9fae251"
+    },
+    {
+      "path": "fixed-build.log",
+      "bytes": 2473,
+      "sha256": "796cb83dfab5ea3a00ea95c569838f13e143fd45203754f62aa2e4af92a8ab98"
+    },
+    {
+      "path": "FIXED-TESTS.json",
+      "bytes": 3862,
+      "sha256": "a0ee093d0fa000459f386418e35d2844be8514efbbf72d66f6d1ba338e5d4389"
+    },
+    {
+      "path": "upgrade-fixed-1.log",
+      "bytes": 5616,
+      "sha256": "b3d4c10b3d2de7715daa8973a8f70722e9c5f2f9e45b63739b7ffe87317e894c"
+    },
+    {
+      "path": "upgrade-fixed-2.log",
+      "bytes": 5616,
+      "sha256": "2dbdcacfd69e3e0c3caacdb69fc5af3345c0cccfb3483abde9ce46b32f50e5e4"
+    },
+    {
+      "path": "upgrade-fixed-3.log",
+      "bytes": 5616,
+      "sha256": "127df3201149abc36a6bf913d1083a6ce847bcdde6ea253150f9e49f30b4badb"
+    },
+    {
+      "path": "stability-fixed.log",
+      "bytes": 4142,
+      "sha256": "7eac10fef0ea3a432552b8facf37c984fb626e692a43f6314ff37322c6d36745"
+    },
+    {
+      "path": "maintenance-fixed.log",
+      "bytes": 824,
+      "sha256": "d1ea62dc881a310293b2515daded04d06a626601f066e276e393758eb3214c1b"
+    },
+    {
+      "path": "compatibility-fixed.log",
+      "bytes": 3984,
+      "sha256": "34aa0d4e369dd200d95b63c6d7762f48b3cedd4031243e122439e86f13f39dfa"
+    },
+    {
+      "path": "query/RESULT.json",
+      "bytes": 15219,
+      "sha256": "87fbb6233fd0a9f26de2d774462a6a9b796c08250ab98185127a5dbefa4ba8ca"
+    },
+    {
+      "path": "query/IDENTITY.json",
+      "bytes": 1489,
+      "sha256": "13b6284f13a4274694e750789bc6b569ec6169e4d7737cc1265ea521aae989d6"
+    },
+    {
+      "path": "query/prepare-plan.json",
+      "bytes": 85,
+      "sha256": "d22bf297e095edc6f34f9a39f51c1fc4c6b352040ec17c6e6ae4fc0092a6c4ad"
+    },
+    {
+      "path": "query/indexes.json",
+      "bytes": 637,
+      "sha256": "5b92d17d4870c9651f6246030d6e0d030c7db7668fcc668bf30259c120b00e5a"
+    },
+    {
+      "path": "migration/migration-result.json",
+      "bytes": 2023,
+      "sha256": "02f24cfa6c5c1d685aac8873052930ee5aff31766e83049a912528b10bacd476"
+    }
+  ]
+}

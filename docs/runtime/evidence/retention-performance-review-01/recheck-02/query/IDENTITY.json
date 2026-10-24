@@ -1,0 +1,24 @@
+{
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "SourceTree": "9870a8b864638683f712fffac58f7ce691b4da4b",
+  "Baseline": "5074660fd10e7a91d81923edac782891e377a519",
+  "MigrationSql1To9Unchanged": true,
+  "MigrationHashes": {
+    "1": "1559bee20c41361c095d90468713d929da7edb4c09f6a2a643ebfee01bfe0eae",
+    "2": "ff1531ce414cbb2eafd80a79fb16b80cf5973f9090b344f8794b4e118532a800",
+    "3": "b5c3c2b147373daad5f4fa2195e92e54d17d5dba110bda7ee79163c3e1852a04",
+    "4": "f54bdeba07c877438171128a490f50a9dc9116624b8e0529de67af5ac0a17755",
+    "5": "42e4f24fd0ea9846cd488e8b22ff0be2a4e3732e8bc26985b495806c2f597bf9",
+    "6": "509c7c83e844b41937fcd820dbf09564d3ab144241af33332dc92cbe28884b6d",
+    "7": "558f28568826a5503997d1454e4344b3887257ace3cd9e470d861f218f3bcbe7",
+    "8": "cb6c4d6ba0d70520cbf763839f1ce1e126939b67d47d19591f1d41c66579699b",
+    "9": "d862d61ca498c2a34e4fc4e57bda7cd9f1666b7c78b3c0f0258c3863b74671dd"
+  },
+  "BinaryHashes": {
+    "Microsoft.Data.Sqlite.dll": "9f1fe804321767b6cc8db751ecedd56ab308e5f15492a7f40d7093bb61ab7638",
+    "SQLitePCLRaw.batteries_v2.dll": "29c9cf3060789066682ba5fbf81dea584563e6ab60b5d9861c73ba8b29ed1142",
+    "SQLitePCLRaw.core.dll": "e60e22452ba79c306a59ecc01a97c29bafe69d9fa612f40253852ed450ad27e8",
+    "SQLitePCLRaw.provider.e_sqlite3.dll": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474",
+    "e_sqlite3.dll": "b082e8a72ad4ce908234eac970b09b7d328d16157cec34a3ebccfd9dfe2221c6"
+  }
+}

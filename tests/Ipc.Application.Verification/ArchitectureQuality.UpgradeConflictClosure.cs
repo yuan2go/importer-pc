@@ -82,6 +82,25 @@ static partial class ArchitectureQuality
         using(var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId))
             Check(repo.StorageVersion==9&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades to DB9 without changing original send attempts");
     }
+    static async Task<BusinessReceipt> LegacyMaintenanceAction(ParcelRuntime app, Func<ParcelSnapshot, Task<BusinessReceipt>> action)
+    {
+        // Configure in a snapshot is not a reservation: a health probe can acquire
+        // the external-I/O guard before the next call. Retry only explicit rejection
+        // before admission (or command CAS conflict), never accepted/unknown work.
+        for (var attempt = 0; attempt < 200; attempt++)
+        {
+            var snapshot = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
+            if (snapshot.Availability?.Configure == true)
+            {
+                var result = await action(snapshot);
+                if (result.Status != "Conflict" && !(result.Status == "Rejected" && result.Reason is
+                    "Unsupported command or an application guard is closed" or "Pause and authenticate maintenance before configuration"))
+                    return result;
+            }
+            await Task.Delay(20);
+        }
+        throw new TimeoutException("Legacy maintenance guard did not settle; no successful receipt inferred");
+    }
     static async Task LegacyActualPositionChecks(int schema,bool previouslyRecovered)
     {
         var c=Config("sportmaster") with{SchemaVersion=schema,Topology=null}; if(schema==1)c=c with{WeightValidity=null};
@@ -101,7 +120,8 @@ static partial class ArchitectureQuality
                 name+": actual main remains blocked until explicit conflict acknowledgement");
             if(previouslyRecovered)Check(fact.Id==conflictId,"scope repair preserves original responsibility identity");
             await Maintenance(app);await Wait(app,x=>x.Availability?.Configure==true);
-            var ack=await Command(app,"AcknowledgeIdentityConflict",fact.Id,"Original legacy conflict and current main position inspected");
+            var ack=await LegacyMaintenanceAction(app, snapshot => app.CommandAsync(new(Wire.Id(), snapshot.Revision,
+                "AcknowledgeIdentityConflict", fact.Id, "Original legacy conflict and current main position inspected")));
             Check(ack.Status=="Persisted",name+": authorized original conflict acknowledgement commits");
             await Command(app,"Resume");Check((await app.SnapshotAsync()).Positions!.Single().Admit,name+": inspected main can resume");
         }
@@ -118,13 +138,17 @@ static partial class ArchitectureQuality
     {
         var c=Config("sportmaster") with{SchemaVersion=2,Topology=null};var name="legacy-pending-topology";var candidate=Config("sportmaster");
         await using(var app=await Open(c,name))
-        { await Maintenance(app);await Wait(app,s=>s.Availability?.Configure==true);var s=await app.SnapshotAsync();Check((await app.StageConfigurationAsync(s.Configuration.Revision,candidate,"Controlled main to independent positions transition")).Status=="PendingRestart","schema2 to schema3 candidate saved before legacy conflict appears"); }
+        { await Maintenance(app);Check((await LegacyMaintenanceAction(app, s => app.StageConfigurationAsync(s.Configuration.Revision,candidate,"Controlled main to independent positions transition"))).Status=="PendingRestart","schema2 to schema3 candidate saved before legacy conflict appears"); }
         using(var repo=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId))repo.Commit(null,"IdentityConflict","Unscoped old conflict must not disappear on topology activation");
         await using(var app=await Open(c,name))
         {
             var s=await app.SnapshotAsync();Check(s.Configuration.Effective.SchemaVersion==2&&s.Configuration.Pending?.SchemaVersion==3&&s.Configuration.Status=="ActivationFailed"&&s.Positions!.Single().Id=="main"&&!s.Positions!.Single().Admit,"unacknowledged legacy conflict blocks Pending topology activation and retains actual main");
-            await Maintenance(app);await Wait(app,x=>x.Availability?.Configure==true);await Command(app,"AcknowledgeIdentityConflict",s.IdentityConflicts!.Single().Id,"Main position and legacy original inspected before topology transition");
-            s=await app.SnapshotAsync();Check((await app.StageConfigurationAsync(s.Configuration.Revision,candidate,"Restage only after original conflict acknowledgement")).Status=="PendingRestart","topology transition requires explicit restage after acknowledgement");
+            await Maintenance(app);var conflict = s.IdentityConflicts!.Single().Id;
+            var ack = await LegacyMaintenanceAction(app, snapshot => app.CommandAsync(new(Wire.Id(), snapshot.Revision,
+                "AcknowledgeIdentityConflict", conflict, "Main position and legacy original inspected before topology transition")));
+            Check(ack.Status == "Persisted" && !(await app.SnapshotAsync()).IdentityConflicts!.Any(fact => fact.Id == conflict),
+                "topology restage requires a persisted acknowledgement of the original conflict");
+            Check((await LegacyMaintenanceAction(app, snapshot => app.StageConfigurationAsync(snapshot.Configuration.Revision,candidate,"Restage only after original conflict acknowledgement"))).Status=="PendingRestart","topology transition requires explicit restage after acknowledgement");
         }
         await using(var app=await Open(c,name)){var s=await app.SnapshotAsync();Check(s.Configuration.Effective.SchemaVersion==3&&s.Positions!.Select(p=>p.Id).Order().SequenceEqual(new[]{"left","right"}),"acknowledged conflict permits controlled schema3 activation on later startup");}
     }

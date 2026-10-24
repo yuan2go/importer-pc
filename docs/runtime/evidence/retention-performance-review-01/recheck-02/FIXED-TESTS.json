@@ -1,0 +1,99 @@
+{
+  "sourceCommit": "f4a62457150d859f5b778fb7de0d91687a691cda",
+  "workingTreeCleanForProductInputs": true,
+  "runs": [
+    {
+      "name": "upgrade-fixed-1",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--upgrade-conflict-closure"
+      ],
+      "startedUtc": "2026-10-24T14:47:03.774353+00:00",
+      "endedUtc": "2026-10-24T14:47:18.187595+00:00",
+      "seconds": 14.413237300002947,
+      "exitCode": 0,
+      "log": "upgrade-fixed-1.log"
+    },
+    {
+      "name": "upgrade-fixed-2",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--upgrade-conflict-closure"
+      ],
+      "startedUtc": "2026-10-24T14:47:18.345394+00:00",
+      "endedUtc": "2026-10-24T14:47:31.245162+00:00",
+      "seconds": 12.89978500000143,
+      "exitCode": 0,
+      "log": "upgrade-fixed-2.log"
+    },
+    {
+      "name": "upgrade-fixed-3",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--upgrade-conflict-closure"
+      ],
+      "startedUtc": "2026-10-24T14:47:31.387343+00:00",
+      "endedUtc": "2026-10-24T14:47:44.682313+00:00",
+      "seconds": 13.29497740000079,
+      "exitCode": 0,
+      "log": "upgrade-fixed-3.log"
+    },
+    {
+      "name": "stability-fixed",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--win11-stability"
+      ],
+      "startedUtc": "2026-10-24T14:47:44.842965+00:00",
+      "endedUtc": "2026-10-24T14:47:52.483697+00:00",
+      "seconds": 7.6407364000042435,
+      "exitCode": 0,
+      "log": "stability-fixed.log"
+    },
+    {
+      "name": "maintenance-fixed",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--audit03-maintenance"
+      ],
+      "startedUtc": "2026-10-24T14:47:52.641317+00:00",
+      "endedUtc": "2026-10-24T14:47:54.010470+00:00",
+      "seconds": 1.369159000008949,
+      "exitCode": 0,
+      "log": "maintenance-fixed.log"
+    },
+    {
+      "name": "compatibility-fixed",
+      "command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-recheck-20261024",
+        "--version-compatibility"
+      ],
+      "startedUtc": "2026-10-24T14:47:54.150032+00:00",
+      "endedUtc": "2026-10-24T14:47:56.930984+00:00",
+      "seconds": 2.780962399992859,
+      "exitCode": 0,
+      "log": "compatibility-fixed.log"
+    }
+  ],
+  "assemblies": {
+    "Ipc.Application.Contracts.dll": "92978ec093e4247f7ff9eab7780cceda2a31b4e98ec87f916ef1437092d0050d",
+    "Ipc.Application.DirectPlc.dll": "eba707d4a44bef0e5db133617dfe23e38eb2ec15698ff3b25420f2161d188601",
+    "Ipc.Application.ParcelFlow.dll": "b164603f386b136bf7b0d696f62a0941d2a9e453b34d9733dd5250ce8fdcba5c",
+    "Ipc.Application.Sportmaster.dll": "acca3cc57c4b03a1e0d5a4d7c6813fd394168074ca0638db603f46d8c8df0dbf",
+    "Ipc.Application.Verification.dll": "fbdc40ad081f23658d85723d83fcd3e01e9e2ce5a02ec2bd810c6121d6d4df12",
+    "Ipc.Application.WcsToPlc.dll": "f991e053a62fca4264cf73b600d30e6c46ee5288e8ee4e518a6005bea6f384e7"
+  },
+  "status": "PASS"
+}

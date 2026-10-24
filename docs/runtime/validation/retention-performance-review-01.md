@@ -52,3 +52,27 @@ TEMP集合每轮清空重建，不成为第二份持久权威。同owner多个�
 归档工具验证单列在[发布阶段证据](../evidence/retention-performance-review-01/README.md#归档工具验证与环境限制)：新复现8个步骤退出0、原件/局部manifest及文档检查通过；补充归档工具7项测试中，符号链接用例因本机缺少特权报WinError1314，整体FAIL_ENVIRONMENT（6项通过、1项环境错误）。原日志保留，没有改权限或跳过断言，不能被新CI的PASS覆盖。
 
 完整raw规模维护RTO、受保护`expire-history` CLI全链、目标4核8GB、多Windows11版本、真实SDK/RCS、真实24小时/72小时连续运行和工业现场验收均未由本次复核或归档完成，保持NOT_RUN/BLOCKED。原D/RV及客户/设备/合同边界不变。
+
+## 2026-10-24 再核查 RECHECK-02
+
+本轮用户要求以PR99最新代码核查、修复并安全集成main。实际开工远端main已是`5bb032d7354ef619064a015484a5001204edfff5`：PR99/100/101均已合并，修复`464e8e2`已可达，原P2线程已resolved；没有再次修改生产清理逻辑或重复合并旧PR。其他工作区（包括另一个维护资格工作区）的未提交修改和四份附件均未吸收。
+
+在新的D盘独立工作树使用Windows11 22631、SDK10.0.402、实际SQLite3.54.0重跑。SQL1～9与PR99 HEAD完全一致；旧查询明确`SCAN a`，新查询为`SEARCH temp.parcel_retention_pending_owners USING PRIMARY KEY (owner=?)`。`CommandAdmitted`审计的实际`owner`为runtime，业务归属在detail.Owner；既有owner/at索引不能直接替代这项JSON关联。当前准备阶段在驻留归档和已归档删除各安全阶段重建集合，均为常数次数，不按候选重建。连接独占、TEMP主键去重和每次清空重建保持原命令事实权威，不添加持久第二账或迁移。参见[SQLite查询规划](https://www.sqlite.org/queryplanner.html)、[表达式索引匹配要求](https://www.sqlite.org/expridx.html)和[TEMP生命周期](https://www.sqlite.org/tempfiles.html)。
+
+128条Pending、128次不同无归属候选的本次正式配对如下，计时排除VM采样回调；0条Pending另有同规模配对：
+
+|审计噪声条数|旧每候选ms|新每候选ms|新准备ms|旧/新128次近似VM指令|
+|---|---:|---:|---:|---:|
+|10,000|1.3758|0.0990|2.0738|3,998,000 / 10,000|
+|100,000|10.5759|0.0892|7.2807|38,558,000 / 10,000|
+|1,000,000|65.3926|0.0601|68.2305|384,158,000 / 10,000|
+
+12组配对/45项计划、重复owner、单命令完成仍阻断、重建清除、主schema和备份不带TEMP断言通过；6项真实Repository迁移通过。`--win11-stability`验证Unknown、未决回复/命令、中断输入及冲突保护、提交前回滚、提交后永久退役、原回复指纹和重启不复活。维护备份/隔离恢复和版本兼容专项也通过。完整原始输出及来源hash见[本轮证据清单](../evidence/retention-performance-review-01/recheck-02/FILES.json)。
+
+首次整组复现的`--upgrade-conflict-closure`失败，原`REPRODUCTION.json`保持FAIL。原库显示旧冲突未被确认、配置保持ActivationFailed，没有丢原责任；原样第二次通过。静态核查定位到夹具只等待Configure快照、忽略确认回执，后台健康I/O可在下一调用前关闭守卫。新增有界等待仅重试明确的准入前守卫拒绝/命令CAS冲突，必须取得Persisted并确认原冲突不再活动，才检查拓扑重启。其他拒绝、异常、超时和已接受结果不重试，不改变运行守卫、SQL或业务命令重放规则。该专项加入现有Linux CI并保留日志，原Windows冻结/安装器步骤和断言全部保留。修复夹具源码为`f4a62457150d859f5b778fb7de0d91687a691cda`；本轮最终CI/合并身份另按PR回执核对。
+
+开工核对CI40099200158两项success，实际源码`3512f3ac9f1cac1a1382a3a1ddfa1bfe72e443c4`与开工main完整tree同为`9870a8b864638683f712fffac58f7ce691b4da4b`。安装器及Payload.SourceCommit均为该CI源码，安装器SHA256为`1b04853e174419673a545628258b65b388b43acf0ecf56c789665f3c30f450ab`；NOT_SIGNED、ActualWindowsInstallation=NOT_RUN。此为开工版本证据，不冒充本轮新提交的CI或新APPROVED审查。
+
+`f4a6245`的本机Release构建0警告0错误；升级专项连续3次通过，随后`--win11-stability`、`--audit03-maintenance`、`--version-compatibility`均通过，命令、源码及程序集hash记于`recheck-02/FIXED-TESTS.json`。此前原样复现的首次FAIL与第二次PASS均保留。运行时先`. ./scripts/project-environment.ps1`，再`dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true`和`dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --upgrade-conflict-closure`；其余专项仅替换末尾flag。原`reproduce-retention-review.py`仍严格锁定形成时产品/测试输入，复现原SQL整组时应使用`5bb032d`独立工作树，不放宽旧来源校验来接纳本次测试差异。
+
+本次只确认原审计重复扫描热点消除；计划仍有身份冲突扫描及未决输入筛选，微基准不构成整个维护线性复杂度或两小时预算证明。完整原件规模、受保护CLI、真实设备与24h/72h资格继续NOT_RUN/BLOCKED；另一个正在形成的维护资格工作包不被本轮代验收。

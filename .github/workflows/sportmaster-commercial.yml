@@ -30,6 +30,7 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --upgrade-conflict-closure 2>&1 | tee history-upgrade-boundaries.log
           python3 -m unittest discover -s scripts -p test_stability_qualification.py -v 2>&1 | tee stability-collector.log
       - name: Exercise dual-camera startup failure and cancellation ownership
         shell: bash
@@ -44,6 +45,7 @@ jobs:
           path: |
             aqa01-boundaries.log
             stability-boundaries.log
+            history-upgrade-boundaries.log
             stability-collector.log
             dual-camera-boundaries.log
           if-no-files-found: warn

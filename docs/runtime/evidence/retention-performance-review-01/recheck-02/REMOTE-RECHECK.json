@@ -1,0 +1,160 @@
+{
+  "CheckedUtc": {
+    "current_time": "2026-10-24 14:40:38 UTC"
+  },
+  "PullRequests": [
+    {
+      "number": 99,
+      "state": "closed",
+      "head": "5074660fd10e7a91d81923edac782891e377a519",
+      "mergedAt": "2026-10-24T13:17:01Z",
+      "merge": "d7166973d8b5157ca643046d595d48817339acd8"
+    },
+    {
+      "number": 100,
+      "state": "closed",
+      "head": "ff95d3a384a9440b35d8a3a23aa89d1428b292db",
+      "mergedAt": "2026-10-24T13:16:59Z",
+      "merge": "12a7cbdc11839dfae7eec88f9514e8559694bdd0"
+    },
+    {
+      "number": 101,
+      "state": "closed",
+      "head": "5f0258f51303d21a091b47eadcdebb152a49d6be",
+      "mergedAt": "2026-10-24T13:50:04Z",
+      "merge": "5bb032d7354ef619064a015484a5001204edfff5"
+    }
+  ],
+  "Ci": {
+    "id": 40099200158,
+    "event": "pull_request",
+    "head": "5f0258f51303d21a091b47eadcdebb152a49d6be",
+    "status": "completed",
+    "conclusion": "success",
+    "actualCheckout": "3512f3ac9f1cac1a1382a3a1ddfa1bfe72e443c4",
+    "actualTree": "9870a8b864638683f712fffac58f7ce691b4da4b",
+    "Jobs": [
+      {
+        "id": 120887662394,
+        "name": "frozen-sportmaster",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 120887662526,
+        "name": "aqa01-boundaries",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "Installer": {
+    "Installer": "C:\\scd-installer\\CainiaoSupplyStation_SM_Setup_v1.12.0_win-x64.exe",
+    "Sha256": "1b04853e174419673a545628258b65b388b43acf0ecf56c789665f3c30f450ab",
+    "SourceCommit": "3512f3ac9f1cac1a1382a3a1ddfa1bfe72e443c4",
+    "Payload": {
+      "ApplicationId": "sportmaster",
+      "SourceCommit": "3512f3ac9f1cac1a1382a3a1ddfa1bfe72e443c4",
+      "SourceBranch": "codex/ci-sportmaster-40099200158",
+      "BusinessModuleShortName": "SM",
+      "BusinessVersion": "1.12.0",
+      "Sha256": "0bc6642cc3448f14d31d0f66aa46da400c5d09e849f7d55e611ba828bee9e7cc",
+      "ZipBytes": 134290416,
+      "UnpackedBytes": 276379531,
+      "FileCount": 751
+    },
+    "DeliveryFiles": 1,
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "ReviewThreads": {
+    "pr99": [
+      {
+        "id": "PRRT_kwDOVLQU8s6v3cO5",
+        "is_resolved": true,
+        "is_outdated": false,
+        "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs",
+        "line": 44,
+        "diff_side": "RIGHT",
+        "start_line": 43,
+        "start_diff_side": "RIGHT",
+        "original_line": 44,
+        "original_start_line": 43,
+        "resolved_by": {
+          "login": "yuan2go",
+          "name": "yuan2go",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/96060646?v=4",
+          "id": null
+        },
+        "comments": [
+          {
+            "id": "PRRC_kwDOVLQU8s8AAAABBEeBMA",
+            "database_id": 4366762288,
+            "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Index the per-operation pending-command retention check**\n\nWhen expiring history at the documented 7–30-day production volumes, this subquery scans the entire `parcel_audit` table for every candidate operation, even when no pending commands exist. Using the actual migration schema, SQLite's query plan reports `SCAN a`; a synthetic check increased from approximately 0.4 ms at 10,000 audit rows to 4.7 ms at 100,000 rows per candidate. Since `ExpireHistoryCore` calls `RetentionClear` separately for each expired operation, cleanup becomes quadratic as history grows and can exhaust the two-hour maintenance budget without clearing the accumulated history. Add an appropriate partial/expression index for the command-admission lookup, or restructure it to use indexed pending-command ownership.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->",
+            "created_at": "2026-10-24T09:51:21Z",
+            "updated_at": "2026-10-24T09:51:21Z",
+            "author": {
+              "login": "chatgpt-codex-connector",
+              "name": "chatgpt-codex-connector",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+              "id": null
+            },
+            "viewer_did_author": false
+          }
+        ]
+      }
+    ],
+    "pr100": [
+      {
+        "id": "PRRT_kwDOVLQU8s6v4gFP",
+        "is_resolved": true,
+        "is_outdated": false,
+        "path": "src/Ipc.Platform/RuntimeJournal.cs",
+        "line": 57,
+        "diff_side": "RIGHT",
+        "start_line": 51,
+        "start_diff_side": "RIGHT",
+        "original_line": 54,
+        "original_start_line": 51,
+        "resolved_by": {
+          "login": "yuan2go",
+          "name": "yuan2go",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/96060646?v=4",
+          "id": null
+        },
+        "comments": [
+          {
+            "id": "PRRC_kwDOVLQU8s8AAAABBE4bzA",
+            "database_id": 4367195084,
+            "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve periodic log retention maintenance while idle**\n\nWhen the application remains running without new diagnostic entries and the journal is healthy, timer ticks no longer call `MaintainFiles`: they only enqueue probes after a failure. Consequently, existing diagnostic files can remain beyond the configured retention period indefinitely until another entry arrives or the application restarts. The previous timer performed maintenance even while idle. Restore periodic maintenance independently of recovery probes so configured expiry and daily rotation still run during idle periods.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->",
+            "created_at": "2026-10-24T13:00:54Z",
+            "updated_at": "2026-10-24T13:00:54Z",
+            "author": {
+              "login": "chatgpt-codex-connector",
+              "name": "chatgpt-codex-connector",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+              "id": null
+            },
+            "viewer_did_author": false
+          }
+        ]
+      }
+    ],
+    "pr101": []
+  },
+  "OfficialReferences": [
+    "https://www.sqlite.org/queryplanner.html",
+    "https://www.sqlite.org/expridx.html",
+    "https://www.sqlite.org/tempfiles.html"
+  ],
+  "Limitations": [
+    "No final-head APPROVED review inferred from older COMMENTED reviews or resolved threads.",
+    "Main SHA has no separate push-triggered CI; exact complete tree equals the tested PR merge checkout.",
+    "Short synthetic SQL and recovery tests do not prove complete 7-30 day raw maintenance RTO, protected expire-history CLI, target 4-core/8GB IPC, real SDK/RCS, 24h/72h or field qualification."
+  ],
+  "NoRepositoryChanges": true
+}

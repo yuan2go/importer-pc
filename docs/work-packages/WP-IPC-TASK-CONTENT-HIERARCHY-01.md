@@ -1,5 +1,7 @@
 # TASK-CONTENT-HIERARCHY-01
 
+2026-10-24 CI续修：PR94已合并为`524ff26264003b283ae188ee28fd6630513b36d2`，PR95已合并为`67a6440711d1069f2cf82df265279d635d4e61b8`。本次从后者建立`codex/task-context-ci-fix`，补齐跨平台验证工程的TaskContextPresentation源码链接，继承PR94 TCP绑定修复和原安全断言。以下未合并描述保留原开发时点；新验证、提交和产物身份见[CI续修记录](../runtime/validation/task-context-ci-fix-01.md)。
+
 2026-10-24：承接用户2026-10-23对信息主次的纠偏，以最新 main `c2300cd` 开工；无开放PR。开发分支 `codex/task-content-hierarchy-01`，四个未跟踪原稿/ZIP保留本地。
 
 提交前再次核对：origin/main仍为`c2300cd`；并行PR94修复PR93后的TCP参数提供者版本匹配。本包不纳入其未合并代码，不覆盖其修复；当前视觉验证不宣称TCP首配问题已解决。

@@ -1,5 +1,7 @@
 # 页面任务优先级调整与原生验证
 
+2026-10-24整合后CI续修见[独立记录](validation/task-context-ci-fix-01.md)：PR94/95已合并，补齐跨平台源码链接后另行验证。下文140项本机验证及截图保持原源码、DPI和场景范围，不扩张为整合后托管CI或现场验收。
+
 2026-10-24，基线main `c2300cdb73bda9192e2e7912b4fee12753b81121`，实现提交 `8bf2a9d00144d5a4cdc9432d1d09851dc086815d`。工作包：[TASK-CONTENT-HIERARCHY-01](../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-01.md)。后续提交仅补证据与说明，不把历史介质或D/RV改标为本轮通过。
 
 ## 结果及实现路径

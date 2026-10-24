@@ -77551,9 +77551,9 @@
     },
     {
       "path": "docs/runtime/evidence/code-reliability-hardening-02/FILES.json",
-      "sha256": "4ebe3b93dc78c3fe4c2cfe87737772eefddcb45dbf60fb2623bfa1e7b06b4313",
-      "size_bytes": 66988,
-      "git_blob": "f4af3ede293e50852e5e386a2018b508319ae90e",
+      "sha256": "acc648eedf2dc068be9aee8f54bc5718965c0764215af5955326fb1697f14618",
+      "size_bytes": 68083,
+      "git_blob": "80391428c764d2bd3dfbf9ac3611da7ac1d0763f",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -77562,9 +77562,9 @@
     },
     {
       "path": "docs/runtime/evidence/code-reliability-hardening-02/README.md",
-      "sha256": "b83b58306959e041a981957879f270327dc768c84b44b7a2063a04bfeebdd49c",
-      "size_bytes": 2128,
-      "git_blob": "ebce1c23979925bb64c754984300f9906b3b6726",
+      "sha256": "0a10ed143a4da2ac8436429bb80f838659020c3dd98659da8c907589c1b077a6",
+      "size_bytes": 2339,
+      "git_blob": "4c6002bd92bb74e2b388eea66ef1764886dcc727",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -81423,9 +81423,9 @@
     },
     {
       "path": "docs/runtime/validation/code-reliability-hardening-02.md",
-      "sha256": "b1c0a400c12a00f92c4d6bcacfd21541fa96bd22db29726392234c8f075276d4",
-      "size_bytes": 7762,
-      "git_blob": "353b238a1eac60c7f35f7dbf1fe7b930a4e140dc",
+      "sha256": "6324324baed2f7835ca5a27a62354c5e645592e2a9dc07c3be90d58bad75adfc",
+      "size_bytes": 8943,
+      "git_blob": "279c917f442a497448b11731458bfdc57838e40c",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -81544,9 +81544,75 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ReliabilityLogs.cs",
-      "sha256": "c3221208ee3534bc7c45865089eb6f3d49d72164f2cc83a9e4f3cf37e8c27e4f",
-      "size_bytes": 5146,
-      "git_blob": "7c8dd4124b11223428f9133955b65e2629c46eb5",
+      "sha256": "7bae3339ad7e09675511f9748f5ffb1421453d7964259c17366ba32b7b7b48cf",
+      "size_bytes": 5615,
+      "git_blob": "fb3f5eac3df73ccdc37adb167642d5f744ac951b",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/RESULT.json",
+      "sha256": "c7e39e034cfc3690c627f69412b92d08206f0241c2cce9030b083317e98b3f09",
+      "size_bytes": 708,
+      "git_blob": "31a5aa224b3a4e075e4233428fd2f6d755024508",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/local-fixed-fixture/RESULT.json",
+      "sha256": "5dad064ca860c9db4d64a19eacb62f5c1af5e5f517f8acbb6cb82d23fce706e9",
+      "size_bytes": 3288,
+      "git_blob": "f9d9f08b93075b57a786b1c75a49ebf7b578aed2",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/local-fixed-fixture/RUN.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/local-fixed-fixture/WINDOWS-WPF.log",
+      "sha256": "5c856348ef9124a4a49dfd406d3a092f3446bb55a178edb23ad8fcbcd81b94eb",
+      "size_bytes": 452,
+      "git_blob": "7cade8497ce7d040ed37ee59adf75dc897a225f3",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/local-fixed-fixture/logs-bounded-context.png",
+      "sha256": "e1f83ab10d96c374b1c71804921ca3939b711c3455f773180064d9023c98bd57",
+      "size_bytes": 107922,
+      "git_blob": "8a8950c934244064e69699a627d3823161eae2c2",
+      "version": "code-reliability-hardening-02",
+      "status": "scoped_implementation_or_evidence",
+      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/code-reliability-hardening-02/ci-40115179715/windows-job.log",
+      "sha256": "c924ab323b338cd9cfaaebf5a76c90a7105837841c2a616c9e55a758be07e840",
+      "size_bytes": 64406,
+      "git_blob": "639677fa34c3ba56aabf475c55357ea0973c2d70",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -84262,6 +84328,14 @@
     "publication": "PR_ONLY; local reference media, no production installation",
     "field_sdk_rcs_physical_power_24h_72h": "NOT_RUN/BLOCKED",
     "inventory_scope": "Only owned delta refreshed from staged Git bytes. Prior source commits, failures, migrations and checksums preserved; CI separately reported.",
-    "evidence_sha256": "4ebe3b93dc78c3fe4c2cfe87737772eefddcb45dbf60fb2623bfa1e7b06b4313"
+    "evidence_sha256": "acc648eedf2dc068be9aee8f54bc5718965c0764215af5955326fb1697f14618",
+    "initial_ci": {
+      "head": "8da0ddc8572e9c9c4caf9665f5a6e610fb9ed513",
+      "run": 40115179715,
+      "linux": "PASS",
+      "windows": "FAIL_TEST_FIXTURE_USED_REAL_DEPLOYMENT_PREFLIGHT",
+      "fixture_fix": "8d3a67d3b359917b9476a75d89a399afe4b2b2bc",
+      "final_head_checks": "See PR104; old success does not qualify new head"
+    }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "HeadCommit": "8da0ddc8572e9c9c4caf9665f5a6e610fb9ed513",
+  "MergeCommit": "af0c4ade61913f64f2dcc88eb15ed69742282b22",
+  "Run": 40115179715,
+  "Url": "https://github.com/yuan2go/importer-pc/actions/runs/40115179715",
+  "Linux": "PASS",
+  "Windows": "FAIL",
+  "Failure": "New native log fixture used real deployment policy preflight on an unprovisioned CI host",
+  "FixFixtureCommit": "8d3a67d3b359917b9476a75d89a399afe4b2b2bc",
+  "ProductSourceChanged": false,
+  "WindowsLogSha256": "c924ab323b338cd9cfaaebf5a76c90a7105837841c2a616c9e55a758be07e840",
+  "Scope": "Preserve production identity/permission guard; only the test uses existing synthetic factory and explicit test identity seam"
+}

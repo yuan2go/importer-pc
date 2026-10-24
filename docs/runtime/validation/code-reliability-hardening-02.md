@@ -36,3 +36,10 @@
 最终 **23af651** portable/win-x64介质均PASS，见[最终RELEASE.json](../evidence/code-reliability-hardening-02/final/release-23af651/RELEASE.json)。Windows最终三组冻结原生（日志、管理模式、稳定性）都以相同23af651夹具/DLL通过，回执和实际程序集hash见该目录各`native-*/RESULT.json`。日志上下文153.45ms，Dispatcher采样最大393.46ms（含首次布局），实际呈现65536字符；预算提示在原文开头/末尾可见，不增加状态栏高度。实际发布EXE只读business-identity启动exit0。未执行安装、真实设备或现场验收。
 
 可复现命令已记录CORE-RESULT、crash-disk/RESULT、RELEASE及运行说明；Windows冻结命令为`. ./scripts/project-environment.ps1`后执行`scripts/verify-commercial-wpf.ps1 -Media D:/releases/ipc-reliability-02-final/sportmaster-win-x64-23af6518f55b -Output <新的D盘目录> -ReliabilityLogs`，另外两个入口为`-ManagementMode`和`-Win11Stability`。三项串行执行，避免合成设备租约冲突。最终CI以PR所列精确head/merge checks为准，仓库本机回执不代替远端CI。
+
+
+## PR104首轮CI及夹具修复
+
+HEAD8da0ddc、PR合成merge af0c4ade的[运行40115179715](https://github.com/yuan2go/importer-pc/actions/runs/40115179715)：Linux边界PASS；Windows冻结发布/受保护管理边界/首配参数与任务层级/工程流程通过，但新增日志专项在实际机器身份预检处拒绝，最终Windows job FAIL。原日志与失败身份见[CI原件](../evidence/code-reliability-hardening-02/ci-40115179715/RESULT.json)。
+
+该夹具本应验证真实Application/SQLite/WPF及合成日志，不能要求CI安装真实机器运行策略。8d3a67d复用既有CommercialProductization.SyntheticFactory和显式RuntimeIdentityPreflight测试接缝，与原管理/稳定性原生夹具一致；只改tests，不改产品部署、身份、权限或业务断言。修正夹具配同一23af651冻结DLL本机PASS（169.20ms上下文、436.09ms全程最大Dispatcher采样，原文预算和撤权断言保留），[独立身份回执](../evidence/code-reliability-hardening-02/ci-40115179715/local-fixed-fixture/RESULT.json)标明FixtureMatchesMedium=false。最终PR head的完整CI须重新通过，不能沿用首轮Linux结果替代新head。

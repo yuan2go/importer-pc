@@ -12,3 +12,5 @@ Windows原生日志来自真实Dispatcher/HWND，合成数据和接口；不表�
 `final/CORE-RESULT.json`与首个`final/RELEASE.json`固定51ad850；`native-management`为80dc783独立等待夹具配51ad850产品；`crash-disk`为c161b02（src/config等同51ad850）的磁盘逐笔对账补测。原生管理失败截图、并行资源租约拒绝、最终布局收口各保留实际身份。最终23af651介质另存`final/release-23af651`，不覆盖先前候选。
 
 最终23af651同源portable/win-x64及三组冻结WPF均PASS；布局收口只涉及原文提示，不改变核心源码，因此核心51ad850全定向回归和c161b02磁盘逐笔强杀补测保持各自身份。EXE只读启动与原生DLL交互分开计证，正式安装未执行。
+
+CI首轮40115179715的Windows真实身份拒绝与修复夹具本机复核保留于ci-40115179715；产品src/config仍与23af651相同。完整远端结论按PR104最终head检查，首轮失败不改写。

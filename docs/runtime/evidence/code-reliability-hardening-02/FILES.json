@@ -1,5 +1,5 @@
 {
-  "SourceSemantics": "See README; development, frozen 51ad850, independent fixtures and final 23af651 identities stay separate",
+  "SourceSemantics": "See README; development, frozen 51ad850, independent fixtures, final 23af651 and CI identities stay separate",
   "Files": [
     {
       "path": "baseline-build-corrected.log",
@@ -20,6 +20,36 @@
       "path": "build-native-latest.log",
       "bytes": 2257,
       "sha256": "2854bbae52690c110d06ab0782bd8312151895ca0061088962e8fdc87e90f11d"
+    },
+    {
+      "path": "ci-40115179715/local-fixed-fixture/logs-bounded-context.png",
+      "bytes": 107922,
+      "sha256": "e1f83ab10d96c374b1c71804921ca3939b711c3455f773180064d9023c98bd57"
+    },
+    {
+      "path": "ci-40115179715/local-fixed-fixture/RESULT.json",
+      "bytes": 3288,
+      "sha256": "5dad064ca860c9db4d64a19eacb62f5c1af5e5f517f8acbb6cb82d23fce706e9"
+    },
+    {
+      "path": "ci-40115179715/local-fixed-fixture/RUN.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ci-40115179715/local-fixed-fixture/WINDOWS-WPF.log",
+      "bytes": 452,
+      "sha256": "5c856348ef9124a4a49dfd406d3a092f3446bb55a178edb23ad8fcbcd81b94eb"
+    },
+    {
+      "path": "ci-40115179715/RESULT.json",
+      "bytes": 708,
+      "sha256": "c7e39e034cfc3690c627f69412b92d08206f0241c2cce9030b083317e98b3f09"
+    },
+    {
+      "path": "ci-40115179715/windows-job.log",
+      "bytes": 64406,
+      "sha256": "c924ab323b338cd9cfaaebf5a76c90a7105837841c2a616c9e55a758be07e840"
     },
     {
       "path": "core-after.log",
@@ -1453,8 +1483,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2128,
-      "sha256": "b83b58306959e041a981957879f270327dc768c84b44b7a2063a04bfeebdd49c"
+      "bytes": 2339,
+      "sha256": "0a10ed143a4da2ac8436429bb80f838659020c3dd98659da8c907589c1b077a6"
     },
     {
       "path": "regression-architecture-quality-remediation.log",

@@ -101,7 +101,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         return string.Join("\n", lines);
     }
     long messageRevision;
-    public string Message { get => message; set { message = value; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
+    public string Message { get => message; set { message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {
@@ -146,6 +146,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         { MarkReadFailure("运行实例已退役或快照修订倒退；旧事实失效，请重新读取并核对当前运行实例"); return; }
         if (Snapshot is { } original && original.RuntimeId != next.RuntimeId)
         {
+            globalOperationGeneration++; SetGlobalFeedback("");
             retiredRuntimeIds.Add(original.RuntimeId);
             ResetHistoryForRuntime();
             Selected = null;
@@ -185,6 +186,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     async Task RunCoreAsync(Func<Task> action, string operation)
     {
         if (Busy) return; // The active feedback already explains this lane; do not replace its result.
+        runningFeedbackScope = feedbackScope;
         OperationStatus = "正在" + operation + "… 冲突操作暂不可用，软件暂停仍可独立执行。";
         SetBusy(true);
         var priorMessageRevision = messageRevision;
@@ -207,14 +209,15 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         }
         catch (Exception ex)
         {
-            ReportCommandFailure(ex, ex.GetType().Name + ": ");
+            if (!ReferenceEquals(ex, globalOperationError)) ReportCommandFailure(ex, ex.GetType().Name + ": ");
             OperationStatus = operation + "未完成 · " + ex.Message + "；保留原对象与草稿，核对原因后重试。";
         }
-        finally { SetBusy(false); }
+        finally { SetBusy(false); runningFeedbackScope = null; }
     }
     public Task PauseAsync() => Own(PauseCoreAsync());
     async Task PauseCoreAsync()
     {
+        var generation = BeginGlobalOperation("暂停供包");
         // Independent control lane: ordinary write mutual exclusion cannot hide Pause.
         try
         {
@@ -223,19 +226,31 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
                 var s = retry == 0 && Snapshot is { } displayed ? displayed : await ServiceAsync(application.SnapshotAsync).WaitAsync(TimeSpan.FromSeconds(2));
                 var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause")));
                 if (r.Status == "Conflict") continue;
-                Message = r.Status + " · " + r.Reason;
+                CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason);
                 try { await RefreshAsync().WaitAsync(TimeSpan.FromSeconds(2)); }
-                catch (Exception ex) { MarkReadFailure(ex.Message); Message = "软件暂停命令回执：" + r.Status + " · " + r.Reason + "；快照读取未恢复，请核对状态。"; }
+                catch (Exception ex) { MarkReadFailure(ex.Message); CompleteGlobalOperation(generation, "暂停供包", "软件暂停命令回执：" + r.Status + " · " + r.Reason + "；快照读取未恢复，请核对状态。"); }
                 return;
             }
-            Message = "暂停遇到连续修订冲突，请重试；状态仍由应用服务确认。";
+            CompleteGlobalOperation(generation, "暂停供包", "暂停遇到连续修订冲突，请重新读取并核对；状态仍由应用服务确认。");
         }
-        catch (Exception ex) { ReportCommandFailure(ex,"暂停失败："); }
+        catch (Exception ex) { CompleteGlobalOperation(generation, "暂停供包", "暂停结果待核对：" + ex.Message + "；请读取最新状态，勿将通信失败当作未执行。"); }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {
-        var s = RequireFreshSnapshot();
-        var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, kind, owner))); Message = r.Status + " · " + r.Reason;
+        var global = kind == "Resume";
+        var generation = global ? BeginGlobalOperation("恢复供包") : 0;
+        try
+        {
+            var s = RequireFreshSnapshot();
+            var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, kind, owner)));
+            if (global) CompleteGlobalOperation(generation, "恢复供包", r.Status + " · " + r.Reason);
+            else Message = r.Status + " · " + r.Reason;
+        }
+        catch (Exception ex)
+        {
+            if (global) { globalOperationError = ex; CompleteGlobalOperation(generation, "恢复供包", "操作未确认：" + ex.Message + "；请读取最新状态并核对。"); }
+            throw;
+        }
     }
     public void Emit()
     {

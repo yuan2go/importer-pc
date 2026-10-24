@@ -48,8 +48,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有原请求结果待核对；请查看诊断。" : "";
     public string WorkspaceStatusBackground => IsSettingsWorkspace && !SettingsHasAttention ? "#F6F7F9" : StatusPresentation.Background;
     public string WorkspaceStatusForeground => IsSettingsWorkspace && !SettingsHasAttention ? "#25384B" : StatusPresentation.Foreground;
-    string feedbackPage = "workstation";
-    public string WorkFeedback => SelectedPage != feedbackPage ? "" : Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
+    public string WorkFeedback => Feedback is "等待相机读码；模拟工程不操作真实设备。" or "模拟观察已排队；实体身份保持，结果由应用服务确认。" ||
         SelectedPage is "workstation" or "maintenance" && Feedback == "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。" ? "" : SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
     public string SelectedPage
     {
@@ -64,7 +63,8 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         {
             if (e.PropertyName == nameof(StationDisplaySummary)) Changed(nameof(Station));
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
-            if (e.PropertyName == nameof(Feedback)) { feedbackPage = SelectedPage; Changed(nameof(WorkFeedback)); }
+            if (e.PropertyName == nameof(SelectedPage)) SetFeedbackContext(SelectedPage);
+            if (e.PropertyName == nameof(TaskFeedback)) Changed(nameof(WorkFeedback));
         };
     }
     protected override void SnapshotValidityChanged(DateTimeOffset now)
@@ -138,6 +138,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
     public string LatestInputSummary => ParcelPresentation.InputSummary(Input);
     public bool InputFailed => ParcelPresentation.IsInputFailure(Input);
+    public bool HasCurrentInput => Operation is not null || Input is not null;
     public bool IsCompact => owner.IsCompact;
     public bool IsTight => owner.IsTight;
     public bool CanStartOperation => owner.CanStartOperation;
@@ -146,12 +147,14 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
-    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? Operation!.Slot ?? "未取得" : "未取得";
-    public bool SlotAvailable => CurrentTaskAvailable && Operation!.Slot is not null;
+    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? Operation!.Slot ?? "回执未包含" : "未取得";
+    public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ChineseInterfaceText.Notice(Input!.Reason) :
+        Operation is { } op && !CurrentTaskAvailable ? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
+    public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);
     WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
         ? Operation!.Wcs!.Replies.LastOrDefault(r => r.BusinessAccepted == true && r.RequestId == Operation.Wcs.Request.Id &&
             r.PayloadHash == Operation.Wcs.Request.PayloadHash)?.Destination : null;
-    string TaskValue(string? value) => !owner.Fresh ? "已失效" : !CurrentTaskAvailable ? "—" : value ?? "回执未包含";
+    string TaskValue(string? value) => !owner.Fresh ? "已失效" : !CurrentTaskAvailable ? "—" : string.IsNullOrWhiteSpace(value) ? "回执未包含" : value;
     public string WaveNo => TaskValue(CurrentDestination?.WaveNo);
     public string TaskId => TaskValue(CurrentDestination?.TaskId);
     public string SkuId => TaskValue(CurrentDestination?.SkuId);
@@ -184,7 +187,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelInputOutcome.Blocked => "本次输入未准入",
         ParcelInputOutcome.Duplicate => "重复输入",
         _ => Presentation.Text
-    } : Operation?.State switch
+    } : Operation?.Wcs?.State == StageState.Conflict ? "回执冲突 · 待核对" : Operation?.State switch
     {
         ParcelState.SlotResolved => "格口已取得",
         ParcelState.ResolvingWcs => "正在取格口",
@@ -199,7 +202,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ? "新输入未建作业；原作业请查看详情。" :
-        CurrentTaskAvailable ? "按本次格口投递；下一包信息自动更新。" :
+        SlotAvailable ? "按本次格口投递；下一包信息自动更新。" :
+        CurrentTaskAvailable ? "回执未包含格口；查看详情并核对原回执。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :
         HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
@@ -264,7 +268,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(SlotFontSize), SlotFontSize),
-            (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
+            (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
             (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ScanSummary), ScanSummary), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),

@@ -14,6 +14,7 @@ public partial class ShellWindow : Window
     void SelectWorkspace(UserControl content, string workspace)
     {
         if (SelectedWorkspace != workspace) ShowWorkspaceFeedback = false;
+        vm.SetFeedbackContext(workspace);
         PageHost.Content = content; SetValue(SelectedWorkspacePropertyKey, workspace);
     }
     void CloseRestrictedWorkspace()
@@ -77,6 +78,7 @@ public partial class ShellWindow : Window
     void Maximize_Click(object s, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
+    void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => vm.DismissGlobalOperationFeedback();
     void Workstation_Click(object s, RoutedEventArgs e) => SelectWorkspace(work, "work");
     async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { await vm.RefreshManagementModeAsync(); if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); } catch(Exception error) { vm.Message=error.Message; } }
     void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsManagementMode && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) SelectWorkspace(new SoftwareLogControl(admin), "logs"); }

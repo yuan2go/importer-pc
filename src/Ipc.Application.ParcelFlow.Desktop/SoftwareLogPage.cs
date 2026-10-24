@@ -17,6 +17,8 @@ public sealed class SoftwareLogControl : UserControl
     readonly TextBox detail = new() { IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
     readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap };
     readonly StackPanel filters = new();
+    readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, FontSize = 12, MaxHeight = 36, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    readonly Expander advancedFilters;
     readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel;
     readonly Expander detailPanel, diagnostics;
     readonly TextBox diagnosticText = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
@@ -62,7 +64,10 @@ public sealed class SoftwareLogControl : UserControl
         var extra = new StackPanel(); var fields = new WrapPanel(); extra.Children.Add(fields);
         fields.Children.Add(Field("开始时间（本地）", from, 200)); fields.Children.Add(Field("结束时间（不含）", to, 200)); fields.Children.Add(Field("来源", source, 140));
         extra.Children.Add(regex); var contextFields = new WrapPanel(); contextFields.Children.Add(Field("前后上下文条数", context, 140)); extra.Children.Add(contextFields);
-        filters.Children.Add(new Expander { Header = "时间、更多筛选、上下文与导出", Content = extra });
+        advancedFilters = new Expander { Header = "时间、更多筛选、上下文与导出", Content = new ScrollViewer { Content = extra, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
+        DockPanel.SetDock(advancedFilters, Dock.Bottom); header.Children.Insert(header.Children.Count - 1, advancedFilters);
+        DockPanel.SetDock(effectiveRange, Dock.Bottom); header.Children.Insert(header.Children.Count - 2, effectiveRange);
+        System.Windows.Automation.AutomationProperties.SetName(effectiveRange, "日志当前查询范围");
         var extraActions = new WrapPanel(); extra.Children.Add(extraActions);
         contextButton = Action("查看原始上下文", LoadContext); exportButton = Action("导出全部匹配…", () => Export(false)); rangeButton = Action("导出时间范围…", () => Export(true));
         foreach (var button in new[] { contextButton, exportButton, rangeButton }) { actions.Children.Remove(button); extraActions.Children.Add(button); }
@@ -73,7 +78,7 @@ public sealed class SoftwareLogControl : UserControl
         detailPanel = new Expander { Header = "完整日志与上下文", Content = detail, Visibility = Visibility.Collapsed, Margin = new(0, 8, 0, 0) }; DockPanel.SetDock(detailPanel, Dock.Bottom); root.Children.Add(detailPanel);
         results.Style = (Style)FindResource("QueryResultsGrid");
         var cellStyle = (Style)FindResource("QueryCellText");
-        results.Columns.Add(new DataGridTextColumn { Header = "时间", Binding = new Binding("At") { StringFormat = "yyyy-MM-dd HH:mm:ss.fff zzz" }, Width = 220, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 220, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 100, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 70, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = new LogSummaryConverter() }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = cellStyle });
@@ -102,7 +107,12 @@ public sealed class SoftwareLogControl : UserControl
     }
     void UpdateActions()
     {
-        filters.IsEnabled = !busy; searchButton.IsEnabled = !busy;
+        filters.IsEnabled = !busy; advancedFilters.IsEnabled = !busy; searchButton.IsEnabled = !busy;
+        effectiveRange.Text = selection is not null && query is not null
+            ? "当前查询（本地） " + query.From.ToLocalTime().ToString("yyyy-MM-dd HH:mm") + " 至 " + query.ToExclusive.ToLocalTime().ToString("yyyy-MM-dd HH:mm") + "（不含）" +
+                " · " + (string.IsNullOrEmpty(query.Level) ? "全部级别" : query.Level) + " · " + (string.IsNullOrEmpty(query.Source) ? "全部来源" : query.Source) +
+                (string.IsNullOrEmpty(query.Keyword) ? "" : " · " + (query.Regex ? "正则：" : "关键词：") + query.Keyword)
+            : "待查询（本地） " + from.Text + " 至 " + to.Text + "（不含）；尚无有效查询快照";
         previousButton.IsEnabled = !busy && selection is not null && offset > 0; nextButton.IsEnabled = !busy && selection is not null && more;
         contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
         exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
@@ -169,7 +179,7 @@ public sealed class SoftwareLogControl : UserControl
     {
         // Keep raw JSON intact, including literal backslashes in Windows paths.
         // Decode actual multiline string values separately for readable full stacks.
-        var text = "[" + entry.Location.File + ":" + entry.Location.Line + "]\n" + entry.Text;
+        var text = "原始时间：" + entry.At?.ToString("O") + "\n[" + entry.Location.File + ":" + entry.Location.Line + "]\n" + entry.Text;
         try
         {
             using var json = System.Text.Json.JsonDocument.Parse(entry.Text); var multiline = new List<string>();

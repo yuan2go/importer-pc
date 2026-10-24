@@ -1,4 +1,4 @@
-> 当前页面信息层级：[TASK-CONTENT-HIERARCHY-01](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-01.md)。PR90已合并；本轮按页面职责调整全局状态/诊断及标题，原权限、保存和历史证据保持。
+> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。基于main c91559f6，保留PR93～96成果。01页面层级和CI记录保持原身份，默认位布局、跨页反馈和异常夹具由02增量替代。
 
 > PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。
 

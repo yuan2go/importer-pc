@@ -1,0 +1,6 @@
+MEASURE H02 native context_records=401; original_chars=3881973; presented_chars=7646852; elapsed_ms=3007.70; dispatcher_max_ms=2969.90
+FAIL System.InvalidOperationException: H02 context presentation exceeded the 65536-character total budget
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\w\ipc-reliability-02\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 53
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\w\ipc-reliability-02\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 62
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\w\ipc-reliability-02\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 62
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\w\ipc-reliability-02\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

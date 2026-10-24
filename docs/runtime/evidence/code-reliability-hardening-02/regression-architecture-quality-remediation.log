@@ -1,0 +1,102 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-17352899004d48468c954a0ed5cfc6d2
+PASS AQA01: first fresh left input enqueued
+PASS AQA01: two fresh observations accepted during first external wait
+PASS AQA01: queue-expired current input is durable rejection without an operation/request or borrowed prior slot
+PASS AQA01: actual shared UI projection suppresses left delivery instruction while right stays independent
+PASS AQA01: old sequence cannot overwrite current rejected input
+PASS AQA01: source already stale at ingress remains audit-only and cannot poison sequence
+PASS AQA01: direct runtime restart restores queue-expired rejection and does not resurrect previous terminal slot
+PASS AQA01: old registration fenced after real reconnect
+PASS AQA01: resume only after controlled reconnect
+PASS AQA01: duplicate old entity creates no request and cannot display a new-epoch slot
+PASS AQA01: restart restores persisted failed input without resurrecting terminal slot; prior operations remain history
+PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+PASS AQA01: untrusted high sequence cannot overwrite current input: future-source
+PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+PASS AQA01: untrusted high sequence cannot overwrite current input: stale-source
+PASS AQA01: invalid time/event callback reaches actual ingress for rejection
+PASS AQA01: untrusted high sequence cannot overwrite current input: 
+PASS AQA01: wrong epoch/device fenced before ingress
+PASS AQA01: next ordinary reader sequence enters after rejected high sequences
+PASS AQA01: future/stale/missing-event high sequences do not poison the next genuine entity
+PASS AQA01: failed real ArchiveHistory rolls back command receipt, business archive and revision together
+PASS AQA01: same command can commit once after proven transaction rollback, then replays its exact receipt
+PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+PASS AQA01: actual receipt process crash at ReceiptQueryAfterAdmission: 
+PASS AQA01: parent real management re-entry
+PASS AQA01: query crash retains identity; same ID never re-queries and changed content is rejected: ReceiptQueryAfterAdmission
+PASS AQA01: query recovery preserves original missing occurrence/request and creates no submit or replay Query: ReceiptQueryAfterAdmission
+PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+PASS AQA01: actual receipt process crash at ReceiptQueryAfterRawDurable: 
+PASS AQA01: parent real management re-entry
+PASS AQA01: query crash retains identity; same ID never re-queries and changed content is rejected: ReceiptQueryAfterRawDurable
+PASS AQA01: query recovery preserves original missing occurrence/request and creates no submit or replay Query: ReceiptQueryAfterRawDurable
+PASS AQA01: restart applies durable Query locally; interrupted original-occurrence inspection is not silently completed
+PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+PASS AQA01: in-flight real management re-entry
+PASS AQA01: concurrent identical command returns Pending; changed content never starts another Query
+PASS AQA01: in-flight external call cannot be inspected as interrupted
+PASS AQA01: final receipt replaces only Pending and exact replay stays stable: authoritative Query
+PASS AQA01: cancellation or Query never clears original raw custody or resubmits business request
+PASS AQA01: actual receipt process crash at ReceiptQuerySeed: 
+PASS AQA01: seed is a real flushed response interrupted before its durable SQL fact
+PASS AQA01: in-flight real management re-entry
+PASS AQA01: concurrent identical command returns Pending; changed content never starts another Query
+PASS AQA01: in-flight external call cannot be inspected as interrupted
+PASS AQA01: final receipt replaces only Pending and exact replay stays stable: authorization revoked
+PASS AQA01: cancellation or Query never clears original raw custody or resubmits business request
+PASS AQA01: pause before associating original weight
+PASS AQA01: UntilDispatch expired same-parcel weight remains original evidence and prevents PLC/Resume; recovery fixture policy does not bypass this guard
+PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: before authorization
+PASS AQA01: real management password authorizes synthetic TCP root
+PASS AQA01: authorized projection retains original descriptor and raw T1 payload
+PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: explicit exit
+PASS AQA01: re-entry retains original management credential
+PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: real session expiry
+PASS AQA01: re-entry after expiry
+PASS AQA01: all ordinary DTO reader/configuration/request branches redacted: password change revokes session
+PASS AQA01: new password re-entry
+PASS AQA01: projection never mutates durable original inputs or requests
+PASS AQA01: real CAS saves TCP Pending while original operation remains frozen
+PASS AQA01: live Effective/Pending/Frozen and complete backup recognize built-in TCP without extension references
+PASS AQA01: unknown future reader in a valid-custody backup still fails closed
+PASS AQA01: actual process crash at AfterAbandonedDurable: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterAbandonedDurable
+PASS AQA01: same ID changed content rejected before revision or guard: AfterAbandonedDurable
+PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+PASS AQA01: actual process crash at AfterImageReleaseDurable: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterImageReleaseDurable
+PASS AQA01: same ID changed content rejected before revision or guard: AfterImageReleaseDurable
+PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+PASS AQA01: actual process crash at AfterContinuationAdmitted: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterContinuationAdmitted
+PASS AQA01: same ID changed content rejected before revision or guard: AfterContinuationAdmitted
+PASS AQA01: replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup
+PASS AQA01: actual process crash at AfterCommandAdmitted: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterCommandAdmitted
+PASS AQA01: same ID changed content rejected before revision or guard: AfterCommandAdmitted
+PASS AQA01: interrupted identity visible alongside actual file confirmation state; replay does not re-confirm
+PASS AQA01: ordinary mode cannot close an interrupted command
+PASS AQA01: real parent management re-entry after child crash
+PASS AQA01: explicit guarded inspection closes only command responsibility, retaining configuration and original guards
+PASS AQA01: actual process crash at AfterConfigurationConfirmed: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterConfigurationConfirmed
+PASS AQA01: same ID changed content rejected before revision or guard: AfterConfigurationConfirmed
+PASS AQA01: interrupted identity visible alongside actual file confirmation state; replay does not re-confirm
+PASS AQA01: ordinary mode cannot close an interrupted command
+PASS AQA01: real parent management re-entry after child crash
+PASS AQA01: explicit guarded inspection closes only command responsibility, retaining configuration and original guards
+PASS AQA01: actual process crash at AfterArchiveCommit: 
+PASS AQA01: command identity survives atomic local commit or interrupted cross-resource action
+PASS AQA01: same-content replay returns exact stored receipt after restart: AfterArchiveCommit
+PASS AQA01: same ID changed content rejected before revision or guard: AfterArchiveCommit
+PASS AQA01: archive and command identity share one committed transaction
+PASS AQA01 COMPLETE

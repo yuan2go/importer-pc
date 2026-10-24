@@ -1,0 +1,31 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-b4b7aca588b348e2af761b2c1cbf789c
+MEASURE H02 startup-stop wait_ms=219.07; retained=True; stops=1
+PASS H02: cancelled Stop waits for the real startup owner without stopping/disposal underneath it
+PASS H02: startup cancellation followed by disposal releases all application ownership
+MEASURE H02 logs first_ms=338.79; two_pages_ms=629.58; first_scanned=3000; additional_scanned=6000
+PASS H02: pagination preserves frozen order and original file/line/hash
+FAIL CASE logs: System.Exception: FAIL H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.Logs(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 25
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 30
+MEASURE H02 time rollback_hours=12; monotonic_seconds=2; attempts=1; written=0
+FAIL CASE time: System.Exception: FAIL H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.JournalTime(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 48
+   at ReliabilityHardening.JournalTime(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 59
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 30
+Unhandled exception. System.AggregateException: One or more errors occurred. (FAIL H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows) (FAIL H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval)
+ ---> System.Exception: FAIL H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.Logs(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 25
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 30
+   --- End of inner exception stack trace ---
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 33
+   at Program.<Main>$(String[] args) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)
+ ---> (Inner Exception #1) System.Exception: FAIL H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.JournalTime(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 48
+   at ReliabilityHardening.JournalTime(String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.LogsTime.cs:line 59
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 30<---
+

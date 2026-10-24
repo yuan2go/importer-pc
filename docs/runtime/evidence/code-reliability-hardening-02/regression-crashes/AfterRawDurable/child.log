@@ -1,0 +1,4 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-4f3da6d8304a417c9790ea9f1762399e
+PASS H02: right control durable handoff
+HANDOFF left=True
+CUT AfterRawDurable

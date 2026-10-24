@@ -1,0 +1,215 @@
+{
+  "SourceCommit": "51ad8500753c005e3bf98d5baf5c9699297d184c",
+  "OS": "Windows-11-10.0.22631-SP0",
+  "Commands": [
+    {
+      "Name": "build-core",
+      "Command": [
+        "dotnet",
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "--nologo",
+        "-p:RestoreLockedMode=true"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 12.959
+    },
+    {
+      "Name": "reliability-02",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--reliability-02"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 34.957
+    },
+    {
+      "Name": "h02-crashes",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--h02-crashes"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 18.112
+    },
+    {
+      "Name": "win11-stability",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--win11-stability"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 7.31
+    },
+    {
+      "Name": "architecture-quality-remediation",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--architecture-quality-remediation"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 29.504
+    },
+    {
+      "Name": "dual-camera-communication",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--dual-camera-communication"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 8.998
+    },
+    {
+      "Name": "resource-risks",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--resource-risks"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 2.806
+    },
+    {
+      "Name": "sportmaster-rcs",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--sportmaster-rcs"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 8.738
+    },
+    {
+      "Name": "rcs-heartbeat",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--rcs-heartbeat"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 15.331
+    },
+    {
+      "Name": "sportmaster-window-lifecycle",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--sportmaster-window-lifecycle"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 6.278
+    },
+    {
+      "Name": "ux-commercial-presentation",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--ux-commercial-presentation"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 1.871
+    },
+    {
+      "Name": "upgrade-conflict-closure",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--upgrade-conflict-closure"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 11.361
+    },
+    {
+      "Name": "version-compatibility",
+      "Command": [
+        "dotnet",
+        "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        ".",
+        "--version-compatibility"
+      ],
+      "ExitCode": 0,
+      "ElapsedSeconds": 2.595
+    }
+  ],
+  "Binaries": [
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Contracts.dll",
+      "Sha256": "2d7c00b78a3dbcd8574dec192c7898f976687c207011ef05d4375388a97d4265"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.DirectPlc.dll",
+      "Sha256": "c3ea1e14e9f7761c6225b1813131ea475a5f7669f46f2e263fc3b7cee7e56b8e"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.ParcelFlow.dll",
+      "Sha256": "ea5b46c32eb50dcf239e49b08332b0ea936184683220de762d664b3cbb4b74d1"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Sportmaster.dll",
+      "Sha256": "ec4e7b2eaf6c4179375342d77d2909e28f3aaf094dd6aae306457da58dad253f"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+      "Sha256": "5be92029b8830efa91b91818d664a98ef7fad58c2ae7611c4a4a5f14637e2bb9"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.WcsToPlc.dll",
+      "Sha256": "3db7e970d21ae0f695d85649efca9b780c5a2b076e31d70400abe4374e53970b"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Components.dll",
+      "Sha256": "589b4f746f873aaefc877a56299f7e044c7787b7fd6a4f817f6d717a12117b04"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Drivers.dll",
+      "Sha256": "c8b971b0c6773d243f54708b8cad6efb13b4ef69981424aae6f89874055af60f"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Integrations.dll",
+      "Sha256": "5c01e5f17108963dbadf5d276de43529e9a66101ac2cfc02426e1848c54d2077"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Integrations.SportmasterRcs.dll",
+      "Sha256": "22ccba8fc9d2fd7adb736769c7dfba76321a86197a0859425db368fd9f55d44c"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Platform.dll",
+      "Sha256": "e0281663b820bba4ee3b33443f19881296fdb90aff1011f8b637bb6ef11b4469"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Platform.Storage.dll",
+      "Sha256": "c0046d4d9e82c4b4f38844845771aebd14557d4063e69691248271959d7720ac"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Reference.Protocol.dll",
+      "Sha256": "4ee29dbd8940eab205c52381c5757c55586eb6d0a17db85c8dfe9e6e17937d5b"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Supply.Contracts.dll",
+      "Sha256": "867c44a4be02623dcd64da4730bf6562fd76cde99bc41897ffc32ad3930a0565"
+    },
+    {
+      "File": "tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Supply.dll",
+      "Sha256": "d12779f95100629ef0455886c65387255cdc216f5861ee9b48e67125e2a53e4c"
+    }
+  ],
+  "Status": "PASS"
+}

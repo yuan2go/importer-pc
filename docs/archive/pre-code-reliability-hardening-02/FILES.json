@@ -1,0 +1,34 @@
+[
+  {
+    "path": "docs/INDEX.md",
+    "archive": "docs__INDEX.md.txt",
+    "sha256": "a94a69f66b10b5d9466cc941d4d1f1022cd5fad9551de6bca63f87b279d6a67b",
+    "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+    "canonical_git_sha256": "6867ad7772f953c934e6020aa081c853912626cae3b0f40f9c5af679e807479c",
+    "capture": "Windows checkout bytes with CRLF"
+  },
+  {
+    "path": "docs/design/win11-24x7-stability-remediation-01.md",
+    "archive": "docs__design__win11-24x7-stability-remediation-01.md.txt",
+    "sha256": "2b45191f4dab1b5a4dbf7ad71a151892561e4b9d79c7362ca73da9935c280a60",
+    "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+    "canonical_git_sha256": "4a71ce7fa73c06d4a75712240fc5af9644e7f12e5b3e63f5dcc39e6a436977cb",
+    "capture": "Windows checkout bytes with CRLF"
+  },
+  {
+    "path": "docs/runtime/operator-administrator-logs-01.md",
+    "archive": "docs__runtime__operator-administrator-logs-01.md.txt",
+    "sha256": "517e5a13973f1a350d4605cf90a302f88199e8d96980dbef34e0ff38c0bd3a49",
+    "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+    "canonical_git_sha256": "1360c9426ac7b1df663776a43ccb70d4eeedaef560330a96609c95f4fc5963c8",
+    "capture": "Windows checkout bytes with CRLF"
+  },
+  {
+    "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
+    "archive": "runtime-stability-before.md",
+    "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
+    "SourceCommit": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+    "canonical_git_sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
+    "capture": "Canonical Git blob bytes"
+  }
+]

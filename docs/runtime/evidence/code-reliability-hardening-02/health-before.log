@@ -1,0 +1,57 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-c1d876485fd249d196b55d2f3d9b4d51
+MEASURE H02 startup-stop wait_ms=206.42; retained=True; stops=1
+PASS H02: cancelled Stop waits for the real startup owner without stopping/disposal underneath it
+PASS H02: startup cancellation followed by disposal releases all application ownership
+PASS H02: old health callback reached the registration-check/publication interleaving
+FAIL CASE old-health: System.Exception: FAIL H02: old health publication cannot overwrite the new reconnect registration
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.OldHealth() in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Health.cs:line 17
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 34
+MEASURE H02 logs first_ms=565.85; two_pages_ms=272.40; first_scanned=3200; additional_scanned=400
+PASS H02: pagination preserves frozen order and original file/line/hash
+PASS H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows
+PASS H02: rotation pins the old file object instead of following the new path
+PASS H02: indexed context preserves actual adjacency and original line numbers
+PASS H02: complete export passes every original hash and redacts all retained records
+PASS H02: same-length original mutation fails hash validation instead of serving cached text
+PASS H02: dispose context owns a real pinned file before cancellation
+PASS H02: dispose retains active file ownership while cancellation is pending
+PASS H02: dispose final read exit releases all pinned sources and selection CTS
+PASS H02: evict context owns a real pinned file before cancellation
+PASS H02: evict retains active file ownership while cancellation is pending
+PASS H02: evict final read exit releases all pinned sources and selection CTS
+PASS H02: revoke context owns a real pinned file before cancellation
+PASS H02: revoke retains active file ownership while cancellation is pending
+PASS H02: revoke final read exit releases all pinned sources and selection CTS
+PASS H02: both positions reached SQLite while an independent real write transaction owns the lock
+PASS H02: WAL history reader completes while both durable handoffs await the shared writer
+PASS H02: bounded write-lock failure returns no handoff success and creates no fictitious custody
+PASS H02: shared storage fault fences both positions, unlike a single camera connection failure
+PASS H02: after lock release and explicit restart a new source handoff is durable
+PASS H02: recovery has only the explicit new input; rejected source inputs are not silently replayed
+MEASURE H02 sqlite_lock_wait_ms=5507.18; history_query_ms=22.22; rejected=2; new_processed=1; durability=WAL/FULL unchanged
+PASS H02: slow handoff reached actual durable SQLite boundary
+FAIL CASE handoff-stop: System.Exception: FAIL H02: Stop cancellation retains the in-flight durable handoff; successful handoff is drained to Interrupted without executing business
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.HandoffStop(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Storage.cs:line 26
+   at ReliabilityHardening.HandoffStop(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Storage.cs:line 30
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 34
+MEASURE H02 time rollback_hours=12; monotonic_seconds=2; attempts=2; written=1
+PASS H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval
+PASS H02: wall-clock jump cannot bypass the monotonic recovery backoff
+PASS H02: existing health validity rejects future confirmations after rollback and expiry after forward jump
+Unhandled exception. System.AggregateException: One or more errors occurred. (FAIL H02: old health publication cannot overwrite the new reconnect registration) (FAIL H02: Stop cancellation retains the in-flight durable handoff; successful handoff is drained to Interrupted without executing business)
+ ---> System.Exception: FAIL H02: old health publication cannot overwrite the new reconnect registration
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.OldHealth() in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Health.cs:line 17
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 34
+   --- End of inner exception stack trace ---
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 37
+   at Program.<Main>$(String[] args) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\Program.cs:line 18
+   at Program.<Main>(String[] args)
+ ---> (Inner Exception #1) System.Exception: FAIL H02: Stop cancellation retains the in-flight durable handoff; successful handoff is drained to Interrupted without executing business
+   at ReliabilityHardening.Check(Boolean condition, String message) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 12
+   at ReliabilityHardening.HandoffStop(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Storage.cs:line 26
+   at ReliabilityHardening.HandoffStop(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.Storage.cs:line 30
+   at ReliabilityHardening.Run(String workspace, String root) in D:\w\ipc-reliability-02\tests\Ipc.Application.Verification\ReliabilityHardening.cs:line 34<---
+

@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> D:\w\ipc-reliability-02\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Presentation.Wpf -> D:\w\ipc-reliability-02\src\Ipc.Presentation.Wpf\bin\Release\net10.0-windows\Ipc.Presentation.Wpf.dll
+  Ipc.Application.Supply.Contracts -> D:\w\ipc-reliability-02\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\w\ipc-reliability-02\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Contracts -> D:\w\ipc-reliability-02\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.Supply -> D:\w\ipc-reliability-02\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> D:\w\ipc-reliability-02\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Reference.Protocol -> D:\w\ipc-reliability-02\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Application.Sportmaster -> D:\w\ipc-reliability-02\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Components -> D:\w\ipc-reliability-02\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\w\ipc-reliability-02\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\w\ipc-reliability-02\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\w\ipc-reliability-02\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\w\ipc-reliability-02\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> D:\w\ipc-reliability-02\tests\Ipc.Desktop.UiVerification\bin\Release\net10.0-windows\Ipc.Desktop.UiVerification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.58

@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "e9d18cbe5ce6444ca9e420f0bce0299f",
+    "Position": "left",
+    "State": "Interrupted",
+    "Body": "{\r\n  \u0022Observation\u0022: {\r\n    \u0022Id\u0022: \u00225af88cb5e32d43aa8f646abbe7ae80e2\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Epoch\u0022: \u0022e164c8f303ff419eabdc756315b3b66f\u0022,\r\n    \u0022SourceEventId\u0022: \u0022left-event\u0022,\r\n    \u0022Sequence\u0022: 1,\r\n    \u0022AdmissionId\u0022: \u0022left-original\u0022,\r\n    \u0022Kind\u0022: \u0022Read\u0022,\r\n    \u0022Codes\u0022: [\r\n      \u0022001\u0022\r\n    ],\r\n    \u0022PackageQuantity\u0022: null,\r\n    \u0022ObservedAt\u0022: \u00222026-10-24T17:05:41.6871413\u002B00:00\u0022\r\n  },\r\n  \u0022Operator\u0022: null,\r\n  \u0022ReceivedAt\u0022: \u00222026-10-24T17:05:41.6871506\u002B00:00\u0022\r\n}",
+    "Hash": "FF59D5F4C503C48FE5F625FD1779BEC9573EDAA15BC47B1F7489B8EC74A857BF"
+  },
+  {
+    "Id": "748849cb32c7463db5321f113f3b89c5",
+    "Position": "right",
+    "State": "Processed",
+    "Body": "{\r\n  \u0022Observation\u0022: {\r\n    \u0022Id\u0022: \u0022040c311e34b347bb9d8779c12e81830c\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.right\u0022,\r\n    \u0022Epoch\u0022: \u0022cd5026c181da4f0f81584039e42f6985\u0022,\r\n    \u0022SourceEventId\u0022: \u0022right-event\u0022,\r\n    \u0022Sequence\u0022: 1,\r\n    \u0022AdmissionId\u0022: \u0022right-control\u0022,\r\n    \u0022Kind\u0022: \u0022Read\u0022,\r\n    \u0022Codes\u0022: [\r\n      \u0022002\u0022\r\n    ],\r\n    \u0022PackageQuantity\u0022: null,\r\n    \u0022ObservedAt\u0022: \u00222026-10-24T17:05:41.1210643\u002B00:00\u0022\r\n  },\r\n  \u0022Operator\u0022: null,\r\n  \u0022ReceivedAt\u0022: \u00222026-10-24T17:05:41.124587\u002B00:00\u0022\r\n}",
+    "Hash": "24A8F3BA57FF267F49A932AB78099F2A547CF44CEE3D3223F3E009B18986175B"
+  }
+]

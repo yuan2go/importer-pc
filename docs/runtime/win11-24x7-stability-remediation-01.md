@@ -1,6 +1,6 @@
 # 长期稳定性运行、维护及资格
 
-[工作包与R01–R12](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md) · [设计](../design/win11-24x7-stability-remediation-01.md) · [原审查](../reviews/win11-24x7-stability-audit-01/README.md)。当前源码Sportmaster **1.12.0**、DirectPlc/WcsToPlc **1.6.0**、Application.Contracts **1.17.0**、Parcel **DB9**。原SQL1～8/checksum、REQ/BR/CAPI/D/RV和旧媒介身份不改。实际冻结与验证身份在本页末尾关联的验证记录，不以本文或开发分支代替24h资格。
+[工作包与R01–R12](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md) · [设计](../design/win11-24x7-stability-remediation-01.md) · [原审查](../reviews/win11-24x7-stability-audit-01/README.md)。本阶段历史源码Sportmaster **1.12.0**、DirectPlc/WcsToPlc **1.6.0**、Application.Contracts **1.17.0**、Parcel **DB9**。当前可靠性增量见[代码可靠性02](code-reliability-hardening-02.md)，下述版本和验证保持前阶段身份。原SQL1～8/checksum、REQ/BR/CAPI/D/RV和旧媒介身份不改。实际冻结与验证身份在本页末尾关联的验证记录，不以本文或开发分支代替24h资格。
 
 ## 输入、故障和关闭
 

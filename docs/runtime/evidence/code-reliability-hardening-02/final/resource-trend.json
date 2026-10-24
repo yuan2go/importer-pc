@@ -1,0 +1,102 @@
+[
+  {
+    "Cycle": 0,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 72171520,
+    "WorkingSet64": 121421824,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 356352
+  },
+  {
+    "Cycle": 1,
+    "HandleCount": 364,
+    "Threads": 21,
+    "PrivateMemorySize64": 66801664,
+    "WorkingSet64": 116318208,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 368640
+  },
+  {
+    "Cycle": 2,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 67317760,
+    "WorkingSet64": 117141504,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 393216
+  },
+  {
+    "Cycle": 3,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 68870144,
+    "WorkingSet64": 118902784,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 401408
+  },
+  {
+    "Cycle": 4,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69439488,
+    "WorkingSet64": 119468032,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 417792
+  },
+  {
+    "Cycle": 5,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69505024,
+    "WorkingSet64": 119664640,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 425984
+  },
+  {
+    "Cycle": 6,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69783552,
+    "WorkingSet64": 120549376,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 442368
+  },
+  {
+    "Cycle": 7,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69300224,
+    "WorkingSet64": 120365056,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 450560
+  },
+  {
+    "Cycle": 8,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69525504,
+    "WorkingSet64": 121319424,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 466944
+  },
+  {
+    "Cycle": 9,
+    "HandleCount": 368,
+    "Threads": 21,
+    "PrivateMemorySize64": 69640192,
+    "WorkingSet64": 121901056,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 479232
+  }
+]

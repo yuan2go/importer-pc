@@ -23,7 +23,8 @@ public sealed class RuntimeJournal : IAsyncDisposable
     sealed record RetentionChange(int? Days);
     RetentionChange retention;
     public RuntimeJournal(string directory, Action<string> failure) : this(directory, failure, null) { }
-    public RuntimeJournal(string directory, Action<string> failure, int? retentionDays)
+    public RuntimeJournal(string directory, Action<string> failure, int? retentionDays) : this(directory, failure, retentionDays, TimeProvider.System) { }
+    internal RuntimeJournal(string directory, Action<string> failure, int? retentionDays, TimeProvider clock)
     {
         ValidateDays(retentionDays);
         retention = new(retentionDays);
@@ -39,7 +40,8 @@ public sealed class RuntimeJournal : IAsyncDisposable
                 void Maintain() => MaintainFiles(directory, Volatile.Read(ref retention).Days);
                 void TryMaintain() { try { Maintain(); } catch (Exception ex) { Report("Diagnostic maintenance failure: " + ex.GetType().Name); } }
                 TryMaintain();
-                var nextProbe = DateTimeOffset.MinValue;
+                long? failedAt = null;
+                bool ProbeDue() => failedAt is not { } stamp || clock.GetElapsedTime(stamp) >= TimeSpan.FromSeconds(1);
                 using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
                 var available = queue.Reader.WaitToReadAsync().AsTask();
                 var tick = timer.WaitForNextTickAsync().AsTask();
@@ -52,15 +54,15 @@ public sealed class RuntimeJournal : IAsyncDisposable
                         // Retention/daily rotation also advance while healthy and idle.
                         // Maintenance alone cannot clear an append failure; a real probe must write.
                         TryMaintain();
-                        if (Volatile.Read(ref currentFailure) is not null && DateTimeOffset.UtcNow >= nextProbe)
-                            queue.Writer.TryWrite(new { At = DateTimeOffset.UtcNow, Event = "DiagnosticRecoveryProbe" });
+                        if (Volatile.Read(ref currentFailure) is not null && ProbeDue())
+                            queue.Writer.TryWrite(new { At = clock.GetUtcNow(), Event = "DiagnosticRecoveryProbe" });
                         tick = timer.WaitForNextTickAsync().AsTask();
                     }
                     if (!available.IsCompleted) continue;
                     if (!await available) break;
                     while (queue.Reader.TryRead(out var entry))
                     {
-                        if (DateTimeOffset.UtcNow < nextProbe) { Interlocked.Increment(ref dropped); continue; }
+                        if (!ProbeDue()) { Interlocked.Increment(ref dropped); continue; }
                         try
                         {
                             BeforeAppend?.Invoke();
@@ -69,13 +71,14 @@ public sealed class RuntimeJournal : IAsyncDisposable
                             await File.AppendAllTextAsync(path, DiagnosticText.Protect(line) + Environment.NewLine);
                             Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);
                             Volatile.Write(ref currentFailure, null);
+                            failedAt = null;
                         }
                         catch (Exception ex)
                         {
+                            failedAt = clock.GetTimestamp();
                             Interlocked.Increment(ref dropped); Report("Diagnostic append failure: " + ex.GetType().Name);
                             // Drain disposable metadata promptly; one subsequent probe per second.
                             // Never delay disposal once per dropped entry, or retry an old entry.
-                            nextProbe = DateTimeOffset.UtcNow.AddSeconds(1);
                         }
                     }
                     available = queue.Reader.WaitToReadAsync().AsTask();

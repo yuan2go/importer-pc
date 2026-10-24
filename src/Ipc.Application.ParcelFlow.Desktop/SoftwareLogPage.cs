@@ -83,6 +83,7 @@ public sealed class SoftwareLogControl : UserControl
         results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 70, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = new LogSummaryConverter() }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = cellStyle });
         var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(empty); root.Children.Add(panel);
+        results.SizeChanged += (_, _) => UpdateEmpty();
         SizeChanged += (_, _) =>
         {
             var shortPage = ActualHeight < 500;
@@ -117,8 +118,10 @@ public sealed class SoftwareLogControl : UserControl
         contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
         exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
         cancel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
-        empty.Visibility = results.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        UpdateEmpty();
     }
+    // At minimum height the status line owns the empty message; never paint it over column headers.
+    void UpdateEmpty() => empty.Visibility = results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
     {
         pending?.Cancel(); selection = null; more = false; offset = 0; results.ItemsSource = null; detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;

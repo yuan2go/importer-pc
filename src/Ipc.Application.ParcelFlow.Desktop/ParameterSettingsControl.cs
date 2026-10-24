@@ -202,7 +202,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             var hint = Text(help); hint.FontSize = 13; hint.Margin = new(0, 4, 0, 0);
             // Identity/connection explanations are on demand. Entity admission and
             // required constraints remain inline; errors always stay next to the field.
-            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "bcr-code" or "left-bcr-code" or "right-bcr-code" or "StationCode")
+            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "bcr-code" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
             {
                 control.ToolTip = help;
                 page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));

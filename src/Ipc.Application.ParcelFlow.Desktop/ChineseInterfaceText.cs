@@ -67,6 +67,7 @@ public static class ChineseInterfaceText
         ("Operator authentication required for new admission", "新入场前需要操作员认证"),
         ("Reader confirmation missing/expired", "读码设备确认缺失或已过期"),
         ("Original stage outcome or receipt responsibility is unresolved", "原阶段结果或回执责任尚未核对"),
+        ("Current entity main result is incomplete", "当前包裹的任务仍在处理"),
         ("Unresolved operation capacity exhausted; original responsibilities cannot be archived", "未清偿作业容量已满；原责任不能归档"),
         ("Temporary image capacity/backlog exhausted; existing originals retained", "临时图像空间或待处理容量已满；原件保留"),
         ("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required", "需要确认配置：检查保留的原配置账；资源启动成功并经认证确认当前修订后才能继续"),

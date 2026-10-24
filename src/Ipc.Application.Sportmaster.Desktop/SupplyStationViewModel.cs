@@ -147,7 +147,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
-    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? Operation!.Slot ?? "回执未包含" : "未取得";
+    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? "回执未包含" : Operation.Slot : "未取得";
     public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ChineseInterfaceText.Notice(Input!.Reason) :
         Operation is { } op && !CurrentTaskAvailable ? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
     public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);

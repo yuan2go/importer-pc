@@ -95,6 +95,7 @@ static partial class Program
             "expanded compact log context preserves a complete result row and column header");
         Capture("management-log-context-800", client); compactContext.IsExpanded = false; window.UpdateLayout();
         Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "取消当前任务") && !b.IsVisible) && Descendants(window).OfType<Button>().Where(b => b.Content is string s && s is "上一页" or "下一页").All(b => !b.IsEnabled), "idle single-page query hides cancellation and disables paging without a real next range");
+        await VerifyLogRecovery(runtime, evidence, lines);
         await ClickManagementMenu(window, "退出管理模式"); await Task.Delay(250); await vm.RefreshAsync(); await Task.Delay(650);
         Check(vm.SelectedPage == "workstation" && !vm.IsManagementMode, "revocation removes an already-open log page");
         await SetClient(window, 1366, 768);

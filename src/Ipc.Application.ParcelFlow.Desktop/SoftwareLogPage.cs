@@ -121,8 +121,11 @@ public sealed class SoftwareLogControl : UserControl
         advancedFilters.Expanded += (_, _) => { if (compact) detailPanel.IsExpanded = false; };
         results.SelectionChanged += (_, _) =>
         {
-            detail.Text = results.SelectedItem is SoftwareLogEntry entry ? OriginalRecord(entry) : "";
-            detailPanel.Visibility = results.SelectedItem is null ? Visibility.Collapsed : Visibility.Visible;
+            if (results.SelectedItem is SoftwareLogEntry entry)
+            {
+                detail.Text = OriginalRecord(entry); detailPanel.Visibility = Visibility.Visible;
+            }
+            else ClearDetail();
             UpdateActions();
         };
         results.MouseDoubleClick += async (_, _) => { if (results.SelectedItem is SoftwareLogEntry) await Run(LoadContext); };
@@ -149,8 +152,15 @@ public sealed class SoftwareLogControl : UserControl
     void UpdateEmpty() => empty.Visibility = results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
     {
-        pending?.Cancel(); selection = null; more = false; offset = 0; results.ItemsSource = null; detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
+        pending?.Cancel(); selection = null; more = false; offset = 0; results.ItemsSource = null; ClearDetail();
         status.Text = "筛选已改变，请重新查询。"; empty.Text = "填写条件后查询日志"; UpdateActions();
+    }
+    void ClearDetail()
+    {
+        // Visibility alone does not raise Collapsed; restore compact filters as
+        // well as clearing the previous record when its selection is revoked.
+        detailPanel.IsExpanded = false;
+        detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
     }
     public void Revoke()
     {
@@ -161,7 +171,7 @@ public sealed class SoftwareLogControl : UserControl
     async Task Search()
     {
         var candidate = ReadQuery(); query = candidate; selection = null; more = false; offset = 0;
-        results.ItemsSource = null; detail.Clear(); detailPanel.Visibility = Visibility.Collapsed; UpdateActions();
+        results.ItemsSource = null; ClearDetail(); UpdateActions();
         await Load(0);
     }
     SoftwareLogQuery ReadQuery()
@@ -194,7 +204,8 @@ public sealed class SoftwareLogControl : UserControl
     async Task Load(int requestedOffset)
     {
         var page = await service.QueryLogsAsync(query ?? throw new InvalidOperationException("请先查询。"), selection, requestedOffset, pending!.Token);
-        pending.Token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore; results.ItemsSource = page.Entries; detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
+        pending.Token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
+        results.SelectedItem = null; results.ItemsSource = page.Entries; ClearDetail();
         status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 可继续下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices);
     }
     async Task LoadContext()

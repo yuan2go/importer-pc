@@ -1,0 +1,135 @@
+{
+  "OriginalSourceCommit": "12a7cbdc11839dfae7eec88f9514e8559694bdd0",
+  "ReproducedSourceCommit": "12a7cbdc11839dfae7eec88f9514e8559694bdd0",
+  "ReproducedSourceTree": "94ebc204eb8898fe239e8941d9696e6b807b25bd",
+  "ProductInputsMatchOriginal": true,
+  "OriginalEvidence": "docs\\runtime\\evidence\\retention-performance-review-01",
+  "StartedUtc": "2026-10-24T13:37:20.836660+00:00",
+  "Runs": [
+    {
+      "Name": "build",
+      "Command": [
+        "dotnet",
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true"
+      ],
+      "StartedUtc": "2026-10-24T13:37:20.837314+00:00",
+      "Log": "build.log",
+      "EndedUtc": "2026-10-24T13:37:25.954649+00:00",
+      "Seconds": 5.117332599998917,
+      "ExitCode": 0
+    },
+    {
+      "Name": "extract-query",
+      "Command": [
+        "C:\\Scoop\\apps\\python\\current\\python.exe",
+        "D:\\projects\\importer-pc-retention-verification\\docs\\runtime\\evidence\\retention-performance-review-01\\original\\prepare_probe.py",
+        "D:\\projects\\importer-pc-retention-verification",
+        "D:\\projects\\ipc-retention-archive-reproduction-20261024\\query"
+      ],
+      "StartedUtc": "2026-10-24T13:37:25.960259+00:00",
+      "Log": "extract-query.log",
+      "EndedUtc": "2026-10-24T13:37:26.788077+00:00",
+      "Seconds": 0.8278189999982715,
+      "ExitCode": 0
+    },
+    {
+      "Name": "query",
+      "Command": [
+        "dotnet",
+        "run",
+        "--project",
+        "D:\\projects\\ipc-retention-archive-reproduction-20261024\\query\\Probe.csproj",
+        "-c",
+        "Release",
+        "--",
+        "D:\\projects\\ipc-retention-archive-reproduction-20261024\\query"
+      ],
+      "StartedUtc": "2026-10-24T13:37:26.789163+00:00",
+      "Log": "query.log",
+      "EndedUtc": "2026-10-24T13:38:17.711731+00:00",
+      "Seconds": 50.92257640000025,
+      "ExitCode": 0
+    },
+    {
+      "Name": "migration",
+      "Command": [
+        "dotnet",
+        "run",
+        "--project",
+        "D:\\projects\\ipc-retention-archive-reproduction-20261024\\migration\\MigrationProbe.csproj",
+        "-c",
+        "Release",
+        "--",
+        "D:\\projects\\ipc-retention-archive-reproduction-20261024\\migration"
+      ],
+      "StartedUtc": "2026-10-24T13:38:17.718332+00:00",
+      "Log": "migration.log",
+      "EndedUtc": "2026-10-24T13:38:24.154389+00:00",
+      "Seconds": 6.436064199995599,
+      "ExitCode": 0
+    },
+    {
+      "Name": "win11-stability",
+      "Command": [
+        "dotnet",
+        "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--win11-stability"
+      ],
+      "StartedUtc": "2026-10-24T13:38:24.155823+00:00",
+      "Log": "win11-stability.log",
+      "EndedUtc": "2026-10-24T13:38:31.784904+00:00",
+      "Seconds": 7.629078400001163,
+      "ExitCode": 0
+    },
+    {
+      "Name": "upgrade-conflict-closure",
+      "Command": [
+        "dotnet",
+        "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--upgrade-conflict-closure"
+      ],
+      "StartedUtc": "2026-10-24T13:38:31.785931+00:00",
+      "Log": "upgrade-conflict-closure.log",
+      "EndedUtc": "2026-10-24T13:38:43.306790+00:00",
+      "Seconds": 11.520864200007054,
+      "ExitCode": 0
+    },
+    {
+      "Name": "audit03-maintenance",
+      "Command": [
+        "dotnet",
+        "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--audit03-maintenance"
+      ],
+      "StartedUtc": "2026-10-24T13:38:43.308185+00:00",
+      "Log": "audit03-maintenance.log",
+      "EndedUtc": "2026-10-24T13:38:44.560481+00:00",
+      "Seconds": 1.2522975000028964,
+      "ExitCode": 0
+    },
+    {
+      "Name": "version-compatibility",
+      "Command": [
+        "dotnet",
+        "D:\\projects\\importer-pc-retention-verification\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--version-compatibility"
+      ],
+      "StartedUtc": "2026-10-24T13:38:44.561640+00:00",
+      "Log": "version-compatibility.log",
+      "EndedUtc": "2026-10-24T13:38:47.130317+00:00",
+      "Seconds": 2.568678399999044,
+      "ExitCode": 0
+    }
+  ],
+  "Status": "PASS",
+  "Qualification": "Synthetic short tests only; no protected CLI, full expiry RTO, 24h/72h or field acceptance",
+  "EndedUtc": "2026-10-24T13:38:47.131399+00:00"
+}

@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "468ae696721e808c6d4aafb07868ed1d25b568309742df17ccb857c42a208e8f",
-      "size_bytes": 7588,
-      "git_blob": "9b396c315ec0940ebe9d7a5dd95b4337a3bb28a0",
+      "sha256": "e1206d73ee89ed98180850267a5b89831d4e6231931ef75cccd38e8e140c3e88",
+      "size_bytes": 7712,
+      "git_blob": "ade9e57666cb1c8c2bd79fe1bb973b88da35fba4",
       "version": "retention-performance-review-01",
       "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
@@ -76971,13 +76971,13 @@
     },
     {
       "path": "docs/runtime/evidence/retention-performance-review-01/README.md",
-      "sha256": "06ab016b714d2f1bd1214985d4182f410c1b3043a8061c24093ce0ea0d9d2ec8",
-      "size_bytes": 4024,
-      "git_blob": "7a00b5568e25190ce99996645a2bf153b4ca2bcd",
+      "sha256": "8dc243e6bf7dac47d09e33c8973e57cbe7646c4382a0f700ad90a05db8b392bf",
+      "size_bytes": 4975,
+      "git_blob": "a646b5bbdab5ec4b96d966b83a2e932fcee8e67f",
       "version": "retention-performance-review-01",
       "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository"
     },
     {
@@ -77290,13 +77290,13 @@
     },
     {
       "path": "docs/runtime/validation/retention-performance-review-01.md",
-      "sha256": "6924ec590e3f3fab2e9a029c7fd31d7ca6beaeac39ffd229c351f08a713c88f9",
-      "size_bytes": 5531,
-      "git_blob": "9cfc0e66b31c03855cdd85f61f648a9778a4c487",
+      "sha256": "adad3f085765c11a9f22de14e520f4bc9e2363a0229ef47cfc77f5e22376bc1f",
+      "size_bytes": 5978,
+      "git_blob": "93d92994513a02db566d8ec092502191fb86c388",
       "version": "retention-performance-review-01",
       "status": "scoped_archive_guidance_or_reproduction_tool",
-      "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
-      "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository"
     },
     {
@@ -77308,6 +77308,28 @@
       "status": "scoped_archive_guidance_or_reproduction_tool",
       "purpose": "Independent retention-query review archive, immutable evidence and separate reproduction identity",
       "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/publication/REPRODUCTION.json",
+      "sha256": "ef341f58c102070dbe12c7929357c8256178120311f3797b63a96cab4a902027",
+      "size_bytes": 5009,
+      "git_blob": "22e20d3da65f3d0ce731f4cc4ea3141da3f5747c",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/retention-performance-review-01/publication/archive-tool-tests.log",
+      "sha256": "3ec80a61bfaa9c1ba9a333535a414aae565f90beb4a74a37b8bed6e0f6f8e345",
+      "size_bytes": 2028,
+      "git_blob": "b0d1fa3cb599032052d361a4c9c7ca3095663203",
+      "version": "retention-performance-review-01",
+      "status": "scoped_archive_guidance_or_reproduction_tool",
+      "purpose": "Independent retention review archive; separate publication verification and environment limit",
+      "source": "User-authorized archival; original SourceCommit12a7cbd retained",
       "storage_scope": "public_repository"
     }
   ],
@@ -79970,6 +79992,13 @@
     "database": 9,
     "sql_1_to_9": "UNCHANGED",
     "qualification": "Synthetic short query/migration/recovery verification; full expiry RTO, protected expire-history CLI, target IPC, real SDK/RCS, 24h/72h and field acceptance NOT_RUN/BLOCKED",
-    "inventory_scope": "Only this archival delta refreshed from staged canonical Git bytes; unrelated historical manifest identities retained. New PR CI and merge receipt verified separately."
+    "inventory_scope": "Only this archival delta refreshed from staged canonical Git bytes; unrelated historical manifest identities retained. New PR CI and merge receipt verified separately.",
+    "publication_verification": {
+      "reproduction": "docs/runtime/evidence/retention-performance-review-01/publication/REPRODUCTION.json",
+      "archive_tool_log": "docs/runtime/evidence/retention-performance-review-01/publication/archive-tool-tests.log",
+      "new_reproduction_steps": 8,
+      "archive_tool_suite": "FAIL_ENVIRONMENT; 6 passed, 1 WinError1314 symlink privilege error; no skips or permission changes",
+      "full_historical_archive_revalidation": "NOT_CLAIMED"
+    }
   }
 }

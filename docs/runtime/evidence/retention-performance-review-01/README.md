@@ -48,3 +48,9 @@ python scripts/reproduce-retention-review.py --output D:/projects/ipc-retention-
 脚本校验产品源码与原复核基线一致，在新目录生成适配当前工作树的项目路径，使用当前Release构建的SQLite托管/native依赖。新输出包含查询配对、迁移、四组业务验证日志及`REPRODUCTION.json`，记录本次实际HEAD、命令、起止和退出码。新结果保持新的复现身份，不写回`original/`，也不覆盖已有输出。历史csproj中的绝对路径仅适用于原本机。
 
 不归档DLL、SDK、字体、安装包或合成数据库。完整raw规模维护RTO、受保护`expire-history` CLI全链、目标4核8GB、真实SDK/RCS、真实24h/72h和工业现场验收仍为NOT_RUN/BLOCKED。原安装器NOT_SIGNED、ActualWindowsInstallation=NOT_RUN。本次归档PR的CI独立核对，不替换原CI和SourceCommit。
+
+## 归档工具验证与环境限制
+
+`publication/`单独保存归档时的[新复现回执](publication/REPRODUCTION.json)及[归档工具原始测试日志](publication/archive-tool-tests.log)，不混入28个原件。新复现是在`12a7cbd`工作树加本次归档增量时运行，产品输入与原基线一致；不是归档提交的新冻结发行。8个执行步骤（构建、提取、查询、迁移及四组业务验证）均退出0。
+
+原件hash核对、修改原件必须拒绝的反证、暂存Git原件字节/局部manifest/链接检查通过；发布文档2项测试通过。补充`tools/test_verify_archive.py`运行7项，6项通过，符号链接用例因Windows WinError1314缺少特权报错，整体为FAIL_ENVIRONMENT；没有更改机级权限、跳过或删除断言。该日志保持原字节，CI成功也不将这组本机结果倒写成PASS。此处局部manifest检查不宣称完成全仓历史归档重新验收。

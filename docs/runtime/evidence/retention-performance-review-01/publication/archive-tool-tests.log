@@ -1,0 +1,24 @@
+test_hash_json_manifest_and_unlisted_fail (test_verify_archive.ArchiveTests.test_hash_json_manifest_and_unlisted_fail) ... ok
+test_images_pptx_relations_and_public_secrets_fail (test_verify_archive.ArchiveTests.test_images_pptx_relations_and_public_secrets_fail) ... ok
+test_links_anchors_css_and_symlink_fail (test_verify_archive.ArchiveTests.test_links_anchors_css_and_symlink_fail) ... ERROR
+test_registered_gap_has_reason_and_cannot_hide_unrelated_gap (test_verify_archive.ArchiveTests.test_registered_gap_has_reason_and_cannot_hide_unrelated_gap) ... ok
+test_repeated_verification_is_read_only (test_verify_archive.ArchiveTests.test_repeated_verification_is_read_only) ... ok
+test_runtime_outputs_do_not_hide_documentation_or_source (test_verify_archive.ArchiveTests.test_runtime_outputs_do_not_hide_documentation_or_source) ... ok
+test_zip_traversal_link_crc_identity (test_verify_archive.ArchiveTests.test_zip_traversal_link_crc_identity) ... ok
+
+======================================================================
+ERROR: test_links_anchors_css_and_symlink_fail (test_verify_archive.ArchiveTests.test_links_anchors_css_and_symlink_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\projects\importer-pc-retention-verification\tools\test_verify_archive.py", line 78, in test_links_anchors_css_and_symlink_fail
+    (self.root / 'docs/link').symlink_to(self.root / 'README.md')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 1314] 客户端没有所需的特权。: 'D:\\DevCache\\importer-pc\\temp\\tmpdyxi_5k3\\README.md' -> 'D:\\DevCache\\importer-pc\\temp\\tmpdyxi_5k3\\docs\\link'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.947s
+
+FAILED (errors=1)

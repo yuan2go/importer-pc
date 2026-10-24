@@ -49,4 +49,6 @@ TEMP集合每轮清空重建，不成为第二份持久权威。同owner多个�
 
 本次归档PR的最终HEAD、CI合成源码和合并回执另行核对，只证明归档版本通过对应检查，不倒写原性能、恢复、介质及CI身份，不把旧PASS扩张到新源码。
 
+归档工具验证单列在[发布阶段证据](../evidence/retention-performance-review-01/README.md#归档工具验证与环境限制)：新复现8个步骤退出0、原件/局部manifest及文档检查通过；补充归档工具7项测试中，符号链接用例因本机缺少特权报WinError1314，整体FAIL_ENVIRONMENT（6项通过、1项环境错误）。原日志保留，没有改权限或跳过断言，不能被新CI的PASS覆盖。
+
 完整raw规模维护RTO、受保护`expire-history` CLI全链、目标4核8GB、多Windows11版本、真实SDK/RCS、真实24小时/72小时连续运行和工业现场验收均未由本次复核或归档完成，保持NOT_RUN/BLOCKED。原D/RV及客户/设备/合同边界不变。

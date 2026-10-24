@@ -1,0 +1,105 @@
+{
+  "workPackage": "TASK-CONTENT-HIERARCHY-01",
+  "date": "2026-10-24",
+  "baselineCommit": "c2300cdb73bda9192e2e7912b4fee12753b81121",
+  "implementationCommit": "8bf2a9d00144d5a4cdc9432d1d09851dc086815d",
+  "actualDpiScale": 1.25,
+  "captureMethod": "Shown native HWND/Dispatcher, WPF VisualBrush/RenderTargetBitmap; synthetic ports and data",
+  "clientSizesDip": [
+    [
+      1366,
+      768
+    ],
+    [
+      1092,
+      614
+    ],
+    [
+      800,
+      420
+    ]
+  ],
+  "tests": {
+    "task-hierarchy": 85,
+    "parameter-shell-polish": 30,
+    "internal-pages": 25
+  },
+  "build": "PASS: 0 warnings, 0 errors",
+  "publish": "PASS: local framework-dependent win-x64, not release distribution",
+  "startup": "PASS: --environment-report branch only",
+  "notRun": [
+    "physical keyboard/mouse acceptance",
+    "other OS DPI settings",
+    "target industrial PC",
+    "Windows installation/full first-run journey",
+    "real SDK/RCS/devices",
+    "site acceptance"
+  ],
+  "productionSourceFiles": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
+      "gitBlobSha256": "218da4d18f69e22f82ba773369360746f943c45e0d5d3c61b0e116faece3947e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
+      "gitBlobSha256": "b98c0f86621da1b5a870485489b8720c5a7103a442593f9a9d0ff4d70005ed7b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "gitBlobSha256": "4cc027881add0fd14d4be6e47c834983da0838420e12d9ff19be6d4c6f88953e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
+      "gitBlobSha256": "c71d2533b5d46d6936f018cb8e3a41c13407c17da7359b14c7884ed49fb7e98e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/QueryWorkspaceTheme.xaml",
+      "gitBlobSha256": "aefcfb8dfec63752cdd6d59f1e112bb5fd4860c35b6ab8db105b17e8b744d22a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
+      "gitBlobSha256": "791311bf8f5dbdf88fb58c905a3a5e06062652f6c15508df3e7738e6f5515fba"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
+      "gitBlobSha256": "aba199a714a9455a34e7c455109656bd93643d43afc7df7812d1c14c0f570d7f"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs",
+      "gitBlobSha256": "d18600cfd0e58c5eb335d2510f0d9a928463b4497d43ec80a9afcdc15416848f"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/TaskContextPresentation.cs",
+      "gitBlobSha256": "c04e9fc37de9f8e3a1e2fdda544602d27419b00d711b8af6ed33fd00fd1fa5e7"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "gitBlobSha256": "da8ec9dcba74b4b995f5a74f30fbb3b505d317571253c778258884d3c3b6a4f9"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "gitBlobSha256": "5c2b3c11b3d579795ae31a4dbf6cb182ceed825814dd09ddcd3304eb247b9009"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
+      "gitBlobSha256": "e5ee5ab00a299974941833c65b109160d9421956b26a7f2ca8bd3cfc22a1aaa9"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml.cs",
+      "gitBlobSha256": "72b0ae750460e1e4f34d433084833bccf763b38b57937bfcfae0fb43ac3542f3"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs",
+      "gitBlobSha256": "f794aa1b6ad247524c4aa02b1b7d8f7db2a17f3e6f7e9ad22e7896794c0c932d"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "gitBlobSha256": "0412a92bade7f120bf352a51b9d02f941b9d2061892bd07b95f03b3a294536db"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchy.cs",
+      "gitBlobSha256": "2f73e06d3c7a787bf3a8b0ee048452f44cd594100fc0abe44bc49a5d954313eb"
+    }
+  ],
+  "baselineNote": "Baseline production sources compiled with current comparison fixture --baseline. Final source formatting and existing login-test wait were rebuilt after final hierarchy screenshots; no visual implementation changed."
+}

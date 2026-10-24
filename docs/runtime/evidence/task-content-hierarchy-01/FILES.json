@@ -1,0 +1,357 @@
+[
+  {
+    "path": "after/classic-diagnostics-800.png",
+    "bytes": 43258,
+    "sha256": "5859d0046202a386159b14dc79c8454ff193326b085bcd97e9df52b8772416ed"
+  },
+  {
+    "path": "after/classic-login-1366.png",
+    "bytes": 59876,
+    "sha256": "b9376f80f7ceb1938ad522e874cc544c26b60b6fdc86c9a6d540734af77bde5b"
+  },
+  {
+    "path": "after/classic-logs-unknown-800.png",
+    "bytes": 42253,
+    "sha256": "bf91317098ecbb4bb1b44dfd48d546a7563a712bcdab022905451e7dc4f5a740"
+  },
+  {
+    "path": "after/classic-long-blockers-800.png",
+    "bytes": 53389,
+    "sha256": "97f7511fc268e9bf32c925f66c07a83f48e5bb8e05ce511e7a78aeb231424745"
+  },
+  {
+    "path": "after/classic-long-blockers-start-800.png",
+    "bytes": 53615,
+    "sha256": "87790c20ede2637e68533cf67afce62997db1212ddd85af0d289429a7345394e"
+  },
+  {
+    "path": "after/classic-Rejected-800.png",
+    "bytes": 55371,
+    "sha256": "56f4f872e58103c0466aed37fb08edc88018b75efbf9757721ac5aa3642e57ec"
+  },
+  {
+    "path": "after/classic-stale-800.png",
+    "bytes": 57451,
+    "sha256": "9db7d5b0d16372d71a633843034309129cae9f6ae1212b24c2c758875da9e762"
+  },
+  {
+    "path": "after/classic-Unknown-800.png",
+    "bytes": 55062,
+    "sha256": "307ae6d91bde71775f273da37e9972aa82550fe923307c50020ea8884c25ed16"
+  },
+  {
+    "path": "after/classic-作业记录-1092.png",
+    "bytes": 50824,
+    "sha256": "4f02b6b7d4dcbaa58a720886790098cab3d07f594e7882384feabb8cc4690a7d"
+  },
+  {
+    "path": "after/classic-作业记录-1366.png",
+    "bytes": 64946,
+    "sha256": "790be9b75d23a41feb20c8d67c04982403c8343a94d38cdc9b28275f0027a04c"
+  },
+  {
+    "path": "after/classic-作业记录-800.png",
+    "bytes": 46343,
+    "sha256": "1d03c1214967506803803537f6ec88daa1e6cb70fe48be408af49632c253b45d"
+  },
+  {
+    "path": "after/classic-参数设置-1092.png",
+    "bytes": 59005,
+    "sha256": "06b1ab0acd0f54739e4766f789c685d4442bba8b8c8a26fdc89bf91f5da7fb77"
+  },
+  {
+    "path": "after/classic-参数设置-1366.png",
+    "bytes": 77033,
+    "sha256": "59957b05d04dedd4f086dadf630b760be6618a702d49f086f7fac7d11f3bfc20"
+  },
+  {
+    "path": "after/classic-参数设置-800.png",
+    "bytes": 39891,
+    "sha256": "b05c7129d2b580a9fe849c850315a9b7cdd6c99f1575001e300ad3dcff6770bb"
+  },
+  {
+    "path": "after/classic-工作台-1092.png",
+    "bytes": 69394,
+    "sha256": "04405cad662925884c43243fbbb2f684c203095a56ef537ff83c3472745db175"
+  },
+  {
+    "path": "after/classic-工作台-1366.png",
+    "bytes": 76405,
+    "sha256": "e11c63caa7b30dfe2d600f2ed432e3f21ebfd88cd19a0a7f9a1b859d8669802f"
+  },
+  {
+    "path": "after/classic-工作台-800.png",
+    "bytes": 55592,
+    "sha256": "118a5d30cb226c0b5354492d1aa4e3d6702bc5fa8d5fd5e0eae0ab2b8fbdcb64"
+  },
+  {
+    "path": "after/classic-日志查询-1092.png",
+    "bytes": 74648,
+    "sha256": "a7357e377de0372439700158a269dd5a2132673e161de793f91e18961dcd0da4"
+  },
+  {
+    "path": "after/classic-日志查询-1366.png",
+    "bytes": 81409,
+    "sha256": "8dcad88b016beadb2200dd52579107925fea34034d9dcbbc8b97b98db3fab242"
+  },
+  {
+    "path": "after/classic-日志查询-800.png",
+    "bytes": 36121,
+    "sha256": "11b0d55ca12ac2d3fe42a3119d1aabcad326ae1a37fb63306a296d45651ca21c"
+  },
+  {
+    "path": "after/supply-station-login-1366.png",
+    "bytes": 82730,
+    "sha256": "99aa91c70c37500c656c66fa7ae471a454a09df13b9a4b2ec523072dac094290"
+  },
+  {
+    "path": "after/supply-station-logs-unknown-800.png",
+    "bytes": 34017,
+    "sha256": "16764c8c9b6a6ce4d27c1189bd7865e296128ca641647a7d134faafdfc119fb8"
+  },
+  {
+    "path": "after/supply-station-Rejected-800.png",
+    "bytes": 56401,
+    "sha256": "ffb921954058e82e463ae68b13b7af6ebbca87087e4169b23b3e5d4e682e63c5"
+  },
+  {
+    "path": "after/supply-station-Unknown-800.png",
+    "bytes": 57063,
+    "sha256": "2d6146b385b9c64c6b993fd39c0e2eaaecdb35010f62c5a8341c84ecc183f8be"
+  },
+  {
+    "path": "after/supply-station-作业记录-1092.png",
+    "bytes": 55709,
+    "sha256": "fdd99aaa7b55f1db05e24b321f2ca0e89448a7e811fedfbaefb4b2b7ee072e2c"
+  },
+  {
+    "path": "after/supply-station-作业记录-1366.png",
+    "bytes": 70378,
+    "sha256": "89eb80fdd4b01ed8bc55e097aa5b9b0f9137b6631c62a6dd2f4a230b813211f8"
+  },
+  {
+    "path": "after/supply-station-作业记录-800.png",
+    "bytes": 51278,
+    "sha256": "26fd06c55ba7aa11d8e61c8332a1e8014bfc663debc4d0204dd3f223fefc63aa"
+  },
+  {
+    "path": "after/supply-station-参数设置-1092.png",
+    "bytes": 60922,
+    "sha256": "0c38a78285cdb08442c0731b6f202427092497fe92a2ca8078c7e7bf8822cda6"
+  },
+  {
+    "path": "after/supply-station-参数设置-1366.png",
+    "bytes": 72883,
+    "sha256": "19192f8ecbf255cbca0496e9370fac78e36b9c64682a708c1eacd733d73854d5"
+  },
+  {
+    "path": "after/supply-station-参数设置-800.png",
+    "bytes": 43141,
+    "sha256": "7b08ca2f992aabac94062e28ad9fcea3fe25530258c83faa7b4add9723d509ee"
+  },
+  {
+    "path": "after/supply-station-工作台-1092.png",
+    "bytes": 78751,
+    "sha256": "0c95479ba8495980382766f03fe4459c02517505a46fa1ea498a2cbd3099e0a8"
+  },
+  {
+    "path": "after/supply-station-工作台-1366.png",
+    "bytes": 93523,
+    "sha256": "afc78a4126afc01f1963548afcee5c329e5e0246acce4b09b6e0c0a19683a1be"
+  },
+  {
+    "path": "after/supply-station-工作台-800.png",
+    "bytes": 60212,
+    "sha256": "44100c38ab6394daa9b435ee8c88d7c92d6f083e0f58afd7a60d160043e18966"
+  },
+  {
+    "path": "after/supply-station-日志查询-1092.png",
+    "bytes": 68250,
+    "sha256": "0cdcdc24149010548e8ffbaf8e1f259340f256d41c0bc91c6587cefaa3f1ca39"
+  },
+  {
+    "path": "after/supply-station-日志查询-1366.png",
+    "bytes": 81305,
+    "sha256": "7ae0808e8e4a49a89b6566717e0301d562b88449d5c7eeaa6ac02dc084178d39"
+  },
+  {
+    "path": "after/supply-station-日志查询-800.png",
+    "bytes": 43716,
+    "sha256": "2bef7efdee3e74af56109aec0c072a6c970f267e31eaca3fd834a29ed8ce136c"
+  },
+  {
+    "path": "after/WINDOWS-WPF.log",
+    "bytes": 11048,
+    "sha256": "fddc7aeb4a0cf5662cb6177ad27de95ec9444d1d8c113f49bc4bdf7e1140b8b8"
+  },
+  {
+    "path": "before/classic-login-1366.png",
+    "bytes": 86010,
+    "sha256": "4e5fb4162f73de9b1cc760bd0ed6d7fcbff9ac44a98ee00b05e699e147785f7b"
+  },
+  {
+    "path": "before/classic-作业记录-1092.png",
+    "bytes": 73303,
+    "sha256": "dd16ac5c1dce7d41ef234719d2d3a32087c1ab0775788426bb115a08afb511f7"
+  },
+  {
+    "path": "before/classic-作业记录-1366.png",
+    "bytes": 93987,
+    "sha256": "4c163dd39926affab4fe01fe6a95548534d14a19ab3527393c2557235089b1ab"
+  },
+  {
+    "path": "before/classic-作业记录-800.png",
+    "bytes": 48092,
+    "sha256": "fedc16ff5d46f5f7185b8e85f2dec1de0b39baf943249f5173d490d56432b278"
+  },
+  {
+    "path": "before/classic-参数设置-1092.png",
+    "bytes": 66796,
+    "sha256": "570a827899a717f01e36a1afa3a54290f5bc0ecfd38f6488b16c172084dca9f3"
+  },
+  {
+    "path": "before/classic-参数设置-1366.png",
+    "bytes": 90096,
+    "sha256": "71707df4bca6d18650c934814859d0bbcbc8b0b3244ba963959e7302f5ba9cb3"
+  },
+  {
+    "path": "before/classic-参数设置-800.png",
+    "bytes": 48506,
+    "sha256": "393cae32bd92d144e4ff0264de788ecb5c0fe77cb4811edc1fd7c79223941660"
+  },
+  {
+    "path": "before/classic-工作台-1092.png",
+    "bytes": 90319,
+    "sha256": "007d80a56aa0035c3bcc648d9f78094a5dc607dece8b1d9f8fa260d6ac2ea2a2"
+  },
+  {
+    "path": "before/classic-工作台-1366.png",
+    "bytes": 102781,
+    "sha256": "3252e19fa95bb7e9a97ce71d8dea3625bad94d1510843428fea1b8b779a971ec"
+  },
+  {
+    "path": "before/classic-工作台-800.png",
+    "bytes": 59687,
+    "sha256": "c6ffe77575508d608a381f577abb1d00ce19176e4f0c3c18c067ff9f145416e4"
+  },
+  {
+    "path": "before/classic-日志查询-1092.png",
+    "bytes": 75656,
+    "sha256": "b983f3b1985b3d06e6ddc70fdb28d9ef0ff1d27050b8875dae01aa6ef7f35f29"
+  },
+  {
+    "path": "before/classic-日志查询-1366.png",
+    "bytes": 93955,
+    "sha256": "c33b12e4cbc4d89a0587c679583dd332f9c11efe2c01cd6cd10fd6c9b050b4df"
+  },
+  {
+    "path": "before/classic-日志查询-800.png",
+    "bytes": 41136,
+    "sha256": "d1a1ab2480754867c1b85beb0f89a5e16189698d81cd4381bd35a05097368dbc"
+  },
+  {
+    "path": "before/supply-station-login-1366.png",
+    "bytes": 98110,
+    "sha256": "2bafee9368558aca53d765a4055eb2b91572c555cd12b96f9008fb5fe9765989"
+  },
+  {
+    "path": "before/supply-station-作业记录-1092.png",
+    "bytes": 66267,
+    "sha256": "e09df0a324c07ae8c9a494c87daeab2be77e855f60126aa7aab0c54a8ed7596a"
+  },
+  {
+    "path": "before/supply-station-作业记录-1366.png",
+    "bytes": 82004,
+    "sha256": "29c2f7149fd4d89a0ca192858a321ac16485da7bfac64e89d351c60e38bd1b75"
+  },
+  {
+    "path": "before/supply-station-作业记录-800.png",
+    "bytes": 60611,
+    "sha256": "ddc8cd06ce24a6b58c43ef05fcfaf1b83e6f07c2ed91b786f51f933271e1fa9d"
+  },
+  {
+    "path": "before/supply-station-参数设置-1092.png",
+    "bytes": 63686,
+    "sha256": "9e19fd61a2e91bbd024b0012021b94acbfbe927b55f81c64b7ef76ca8dc37822"
+  },
+  {
+    "path": "before/supply-station-参数设置-1366.png",
+    "bytes": 76682,
+    "sha256": "29a280c7694c7a5f81a010b96581d6a1503daf5bac717015d550fbb6a1864628"
+  },
+  {
+    "path": "before/supply-station-参数设置-800.png",
+    "bytes": 46487,
+    "sha256": "647ff4776f642ce8df6bc229ea47b24b2930805326b06aa72a57fb0c0febd1a3"
+  },
+  {
+    "path": "before/supply-station-工作台-1092.png",
+    "bytes": 82839,
+    "sha256": "503b1c30309c8a455f024398a126300ad64bde6b3934018d729f27788aba310b"
+  },
+  {
+    "path": "before/supply-station-工作台-1366.png",
+    "bytes": 101565,
+    "sha256": "5ce190aee135f6a3485935909447cb1f98b161f03f8a887f6dd71e48b885d18e"
+  },
+  {
+    "path": "before/supply-station-工作台-800.png",
+    "bytes": 63067,
+    "sha256": "0029e9dfb5e375a8090aecaa1e8c9767c41ceb90c358466c35bbba8714cb3151"
+  },
+  {
+    "path": "before/supply-station-日志查询-1092.png",
+    "bytes": 69196,
+    "sha256": "13289b097a95a4d974feaf2717c38a7de8687147b4f2c9730acdb6d6186697ef"
+  },
+  {
+    "path": "before/supply-station-日志查询-1366.png",
+    "bytes": 83232,
+    "sha256": "adc868e956fa64ccc0bee9a623cfd401f0b38dbda053ed73adb7db2de1a45dbb"
+  },
+  {
+    "path": "before/supply-station-日志查询-800.png",
+    "bytes": 46700,
+    "sha256": "67e315d45ce2c2018f5258a612e48577dce70120153eb93762275729805c5420"
+  },
+  {
+    "path": "before/WINDOWS-WPF.log",
+    "bytes": 5025,
+    "sha256": "da78adef97015f08d97997b85bfa20392d0e36599203f11ea0bb49c74cc0df14"
+  },
+  {
+    "path": "README.md",
+    "bytes": 5059,
+    "sha256": "94b280e0d669dfbd5b67fd45e029e2bdf79a523884a121ca3861593e2d3274a0"
+  },
+  {
+    "path": "regression/build.log",
+    "bytes": 1992,
+    "sha256": "5468c96f37ee82af8f654b27295f0ebfc3cc33fa3802c65faf26858fe6b30167"
+  },
+  {
+    "path": "regression/internal-pages.log",
+    "bytes": 2773,
+    "sha256": "b21feacd9edc55a2d3c3acf5b467a9881ad5cd5757259a058195eac45131f201"
+  },
+  {
+    "path": "regression/parameter-shell-polish.log",
+    "bytes": 3590,
+    "sha256": "38d31990be6d4c74ed8a5248406857856a913fb95acf612eca67591aeb623db7"
+  },
+  {
+    "path": "regression/publish.log",
+    "bytes": 3728,
+    "sha256": "c648cda7cedf4dc484c5fb2e80388f2c26cc2079f29a1cd7a3ea9b16261c197b"
+  },
+  {
+    "path": "regression/startup-entry.log",
+    "bytes": 731,
+    "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0"
+  },
+  {
+    "path": "RESULT.json",
+    "bytes": 4213,
+    "sha256": "9c1d22b50377ee752b9e5fc134de8280a0f4603c69545e12220cdb7c51d484c4"
+  }
+]

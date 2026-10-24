@@ -1,6 +1,8 @@
 # TYPOGRAPHY-01 · 原生字体与排版交付
 
-2026-10-24。现行规范为[字体与排版](../design/typography-01.md)，来源、许可和官方文件哈希见[字体清单](../../src/Ipc.Presentation.Wpf/Fonts/NOTICE.json)及[原始 OFL](../../src/Ipc.Presentation.Wpf/Fonts/OFL.txt)。本包继承 PR97 HIERARCHY-02；没有合并其他 PR、安装应用或发布正式介质。
+2026-10-24。现行规范为[字体与排版](../design/typography-01.md)，来源、许可和官方文件哈希见[字体清单](../../src/Ipc.Presentation.Wpf/Fonts/NOTICE.json)及[原始 OFL](../../src/Ipc.Presentation.Wpf/Fonts/OFL.txt)。本包继承 PR97 HIERARCHY-02；首次交付时未合并其他 PR、安装应用或发布正式介质。
+
+用户后续授权按97→98顺序合并。97已以 `c310705` 合入main；98合并前发现并修正紧凑日志清详情后筛选隐藏问题，`02af32e`整合源码构建及原生管理模式56项PASS，见[审查续修与独立失败/通过证据](evidence/typography-01/merge-review/README.md)。最终托管CI与合并结果见[PR98](https://github.com/yuan2go/importer-pc/pull/98)，旧对照/验收保持原SourceCommit；不安装或发布正式介质。
 
 ## 基线与实现
 

@@ -63603,9 +63603,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs",
-      "sha256": "54822a10a0f8e664e7b19711fe3a9900176e9548351324bc4e652f3e024058c2",
-      "size_bytes": 21781,
-      "git_blob": "bfb9d6c93526cf6a362fc6078c8be78e8cec615a",
+      "sha256": "39ba9c203ebcc39bc911e3270243f1bac728b5386e30222256c2ae45279282ae",
+      "size_bytes": 21988,
+      "git_blob": "058dc0b67ece84bc987671b151788d7361c8fde6",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -63682,9 +63682,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
-      "sha256": "b394c28dfc1764c60ceb49445d24e76518d9c8a08806f459f8ba045465bd3dd0",
-      "size_bytes": 14897,
-      "git_blob": "16023f433490b4c7c0fa576c08d3c0c99c813faf",
+      "sha256": "4bd0188e029e066b5a0e74d407ad9c29da6dad9b051176cfa63da49b9c5ad0e1",
+      "size_bytes": 14956,
+      "git_blob": "f8b711d84d438be7dde03b8f83fdb67b40659db0",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -69119,9 +69119,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/InternalPages.cs",
-      "sha256": "35eec99afe7638d04394190b29de219fc0db060d22a99f586e2df502f3af52e4",
-      "size_bytes": 20647,
-      "git_blob": "017947c8a2db0fa527e71442d9f6b83e511ec790",
+      "sha256": "669aede4bee4fe794a16b52a68b6eab3a97eab748bcb6d97703915b273f30f4c",
+      "size_bytes": 22945,
+      "git_blob": "13e7109bf4ebeb181f720f4e02d09eab0349359e",
       "version": "typography-01-controlled-review",
       "status": "current_source_or_specification",
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
@@ -70917,9 +70917,9 @@
       "purpose": "Native typography evidence and bounded validation",
       "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository",
-      "sha256": "0d65758b47f905d0e32bb2829bd6fc3671114e0698778ac934fcd4253f62aba7",
-      "size_bytes": 6470,
-      "git_blob": "10b44c1e211b973223e2b822c3d3fc6557bac21e"
+      "sha256": "b163ec727f995f7c9f1927493bef5c7f16d47b3460348c216334f716e18b2b1a",
+      "size_bytes": 6947,
+      "git_blob": "2828782282d3a5e127bc689039eddc547bfc127b"
     },
     {
       "path": "docs/work-packages/WP-IPC-TYPOGRAPHY-01.md",
@@ -73408,6 +73408,116 @@
       "purpose": "Native typography evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; actual source identity in controlled-review/RESULT.json",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/README.md",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "bcb84f9a09470625ff245786df3e4b69c3ece7aa76dce6a501e20063d044df78",
+      "size_bytes": 2287,
+      "git_blob": "ef569601fc2abc8110f24599fb2b37e924e007d1"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/RESULT.json",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "467d47b626518f7df38b65ab3c37a72e7efde42e4da89a4f30a72538f789dd90",
+      "size_bytes": 1170,
+      "git_blob": "23ecca6352937e1fa6e5a5ad90aa59d747fff2b9"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/before.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "0499138c03c14fa6d75cb03c70f73eee21fea41525645fd95ebd6a360831ccae",
+      "size_bytes": 4209,
+      "git_blob": "ebe3cec7644848e4b3157b9f887e0346a3bb5bee"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/build-02af32e.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "d8f0ceadcc81fdd9dfbae132b035e6b92d58348f0587472c5f8da5158a2b9b2b",
+      "size_bytes": 2286,
+      "git_blob": "ea851bd59901bf07776d244563c83d2552494ec9"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/fixture-client-error.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "804c7adba7408b6cb70da8f1db4e7a590fb05b5630c90044290d8d1ebbd8c6ca",
+      "size_bytes": 3627,
+      "git_blob": "c9004c3de9cd4010d9bdf87ee37a46d048ce26bd"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/fixture-compile-error.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "d4ae872902b66bbdce4182e797504e714271f4c7a9ea77c5d38d5994f8364b98",
+      "size_bytes": 4189,
+      "git_blob": "fd873f864f3cdd52010dca68687acc5ddffe2bc4"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/logs-compact-detail-before-query.png",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "c33df95a4862d278cf4f1dc69abcb1f1069904c176f15c8e192fb03d9a3e8e4f",
+      "size_bytes": 62469,
+      "git_blob": "243fc1db92fa539c664ef4c1b71f1da4ba8323cc"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/logs-compact-filters-after-query.png",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "6aa22fbe234e61fcbe3524d55fc6be40c9a70bd733da96f0c5545804510f2a6f",
+      "size_bytes": 52652,
+      "git_blob": "0276b6192ddd39ada4fe90e70e07b9d42fa0566d"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/management-02af32e.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+      "size_bytes": 5736,
+      "git_blob": "141bbeacaafc42d01cdef97f7b632e3e1797396f"
+    },
+    {
+      "path": "docs/runtime/evidence/typography-01/merge-review/paging-selection-failure.log",
+      "version": "typography-01-merge-review",
+      "status": "native_synthetic_evidence",
+      "purpose": "Compact log selection/filter recovery regression",
+      "source": "WP-IPC-TYPOGRAPHY-01; per-run identities in merge-review/RESULT.json",
+      "storage_scope": "public_repository",
+      "sha256": "0c0fa24282419ec352afb55b0f289278ab3c4b277e0506bcfdeb47ae5ffcd9e9",
+      "size_bytes": 4623,
+      "git_blob": "bef3e9951a72e3479195c69891627e192752f783"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -76013,6 +76123,16 @@
       ],
       "fixture": "05fd5e9",
       "portable_shim": "6ff61fa"
+    },
+    "merge_review": {
+      "prerequisite_merged": "c310705b5a927c90e8f6bb93de908b2fea36e826",
+      "source": "02af32e6b188e893c92f9b33c017262a72c00970",
+      "production_fix": "5e9f8b4",
+      "evidence": "docs/runtime/evidence/typography-01/merge-review/RESULT.json",
+      "native_management_passes": 56,
+      "actual_dpi": 1.25,
+      "ci": "Final PR98 checks required; earlier CI/source identities retained",
+      "formal_release_or_install": false
     }
   }
 }

@@ -51,3 +51,6 @@
 整合PR97后的受影响回归（win11-stability、sportmaster-rcs、ux-commercial-presentation、sportmaster-window-lifecycle、原生task-hierarchy）通过；不将旧CI/旧冻结结果扩张至该树。旧精确扩展绑定须按现有启动维护/完整候选/兼容检查完成受控版本转换，缺原版本/资格时拒绝启动，不能把旧冻结请求的版本、ID和报文改成新值以消除阻断。
 
 PR99首次Windows CI（head `12061273`，实际合并源码 `28fb86b1`，run `40083342205`）在原生管理/日志交互中发现状态观察占用管理命令席位，重叠刷新触发并发上限；安装目录/权限边界、首次配置/参数/任务链及业务流程已通过，但整个Windows job为FAIL。保留[首次日志](../evidence/win11-24x7-stability-remediation-01/ci-first-120612/WINDOWS-JOB.log)。后续修复把状态观察独立合并为一个有停止所有权的任务，管理命令两个席位不变；补充32个重叠观察、观察阻塞时撤销、完成后重新读取、停止排空及迟到授权不得覆盖新撤销状态的验证，原有原生断言保持不变。后续冻结和CI结果按各自SourceCommit另记。
+
+
+最终本地冻结代码f938924：新增管理观察专项和UX迟到状态专项PASS，原生管理/日志恢复PASS、实际EXE只读启动PASS。该DLL的原生稳定性初次在Loaded刷新重叠时被新鲜度守卫正确拒绝；夹具a14c1d9增加有界等待及实际首帧就绪断言后10项PASS。生产DLL与夹具身份分别记录，首次失败保留，不把以前e235d85或200d8ad的原生证据改写成最终源码。

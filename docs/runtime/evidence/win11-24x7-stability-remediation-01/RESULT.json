@@ -2,29 +2,28 @@
   "Status": "CODE_AND_SCOPED_WINDOWS_SYNTHETIC_VERIFIED; FIELD_QUALIFICATION_PENDING",
   "BaselineMain": "c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b",
   "IntegratedMain": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
-  "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+  "SourceCommit": "f9389241025aa83747e84753007b90cd20604533",
   "BusinessVersion": "1.12.0",
   "ApplicationContracts": "1.17.0",
   "DatabaseFormat": 9,
-  "PackageSha256": "B16ACE94A1D4F51E37F5D888C8EA046859B76D20024D5BE394AAA2204FD51B15",
-  "PackageLocalPath": "D:\\DevCache\\importer-pc\\stability-delivery-e235d85.zip",
+  "PackageSha256": "A91348FDDF1D21F840F16200AB37BD00EC3ADCD45A832EE2553F17F1AAC5FA44",
+  "PackageLocalPath": "D:/DevCache/importer-pc/stability-delivery-f938924.zip",
   "Publication": "LOCAL_TEST_CANDIDATE_ONLY; no installer, install, GitHub release or production device",
   "FrozenBuild": {
-    "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
-    "Main": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
-    "Started": "2026-10-24T09:42:59.5182691Z",
-    "Ended": "2026-10-24T09:44:17.3485497Z",
     "ExitCode": 0,
-    "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-delivery-e235d85",
-    "Scope": "Local reference candidate including reconciled guides; no installer or production device"
+    "SourceCommit": "f9389241025aa83747e84753007b90cd20604533",
+    "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-delivery-f938924",
+    "Scope": "Local reference candidate; no installer, installation or device",
+    "Started": "2026-10-24T10:02:35.6923814+00:00",
+    "Ended": "2026-10-24T10:04:06.1282559+00:00"
   },
   "FrozenSmoke": {
-    "SourceCommit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
-    "Started": "2026-10-24T09:44:38.9385445Z",
-    "Ended": "2026-10-24T09:44:39.6736811Z",
     "AssemblyExit": 0,
+    "Scope": "Frozen EXE read-only startup hooks; no install or device start",
     "DesktopExit": 0,
-    "Scope": "Frozen EXE read-only startup hooks; no install or device start"
+    "Ended": "2026-10-24T10:04:51.9944377+00:00",
+    "Started": "2026-10-24T10:04:51.1156289+00:00",
+    "SourceCommit": "f9389241025aa83747e84753007b90cd20604533"
   },
   "FrozenNativeStatus": "PASS",
   "FrozenHierarchyStatus": "PASS",
@@ -46,24 +45,17 @@
     "development/parameter-refactor.log",
     "development/PROTECTED-RESTORE-BLOCKED.log",
     "development/OLD-AUDIT03-RCS-FAILED.log",
-    "first-freeze-7017899/INITIAL-COMPILE-FAILURE.log"
+    "first-freeze-7017899/INITIAL-COMPILE-FAILURE.log",
+    "ci-first-120612/WINDOWS-JOB.log",
+    "delivery-f938924/stability-initial-failure/WINDOWS-WPF.log"
   ],
   "FrozenCustodySourceCommit": "ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc",
   "FrozenHierarchySourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a",
-  "FrozenManagementSourceCommit": "200d8adf2678ff9e5ab52eb3e64302537636545a",
+  "FrozenManagementSourceCommit": "f9389241025aa83747e84753007b90cd20604533",
   "FrozenManagementStatus": "PASS",
-  "ProductTreeComparison": {
-    "Sources": [
-      "200d8adf2678ff9e5ab52eb3e64302537636545a",
-      "e235d85597dfa93ff42a55268ca006f13e90fb7d"
-    ],
-    "Paths": [
-      "src",
-      "config",
-      "scripts"
-    ],
-    "Identical": true,
-    "TreeListingSha256": "30C55BE43BF91E8DECC266F43BFCC99D974AF1E19229E5E2FB39A85CD96AE596",
-    "Meaning": "Only current guides changed; prior exact binary records keep their own SourceCommit"
-  }
+  "FrozenNativeSourceCommit": "f9389241025aa83747e84753007b90cd20604533",
+  "FrozenNativeFixtureCommit": "a14c1d978472bf411814b2535f5433edab1ceef0",
+  "FrozenNativeFixtureMeaning": "Same frozen production DLLs, independently pinned fixture only adds bounded wait/assert for actual first applied snapshot. Original failure retained.",
+  "PriorDelivery": "delivery-e235d85/ROOT-RESULT.json",
+  "FirstCi": "ci-first-120612/RESULT.json"
 }

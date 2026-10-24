@@ -16,10 +16,15 @@ PR97阶段整合固定源码 **ac085f37c0ed04569d9bbf0c35c7ead226bc0ecc**，ZIP 
 归档目录的Git属性明确关闭换行归一化，Git blob也已核对FILES.json原哈希。FILES.json只覆盖本证据目录并排除它自身；原件/旧失败/先前冻结结果不倒写为最终SourceCommit。没有长稳PASS，也没有真实查询合同或设备验收结论。
 
 
-最终交付源码 **e235d85597dfa93ff42a55268ca006f13e90fb7d**，ZIP SHA256 **B16ACE94A1D4F51E37F5D888C8EA046859B76D20024D5BE394AAA2204FD51B15**，见[delivery-e235d85](delivery-e235d85/BUILD.json)。已继承main **016976c**中他人获授权合并的PR97/98，保留最新格口、跨页回执、意图/导航代次保护、字体和日志恢复。
+此前交付源码 **e235d85597dfa93ff42a55268ca006f13e90fb7d**，ZIP SHA256 **B16ACE94A1D4F51E37F5D888C8EA046859B76D20024D5BE394AAA2204FD51B15**，见[delivery-e235d85](delivery-e235d85/BUILD.json)。已继承main **016976c**中他人获授权合并的PR97/98，保留最新格口、跨页回执、意图/导航代次保护、字体和日志恢复。
 
 - [integrated-200d8ad](integrated-200d8ad/BUILD.json)：整合PR98后的固定实际DLL，原生稳定性、任务链、管理/日志恢复均PASS；应用持久责任和关闭专项PASS，实际图已查看。
-- [delivery-e235d85](delivery-e235d85/BUILD.json)：清理剩余当前ABI/DB指引后的最终固定候选，实际EXE只读启动及原生稳定性PASS。src/config/scripts与200d8ad完全一致，树摘要在RESULT中；200d8ad的其他原生结果保留其身份，不倒写成e235d85。
+- [delivery-e235d85](delivery-e235d85/BUILD.json)：清理剩余当前ABI/DB指引后的阶段固定候选，实际EXE只读启动及原生稳定性PASS。src/config/scripts与200d8ad完全一致，树摘要在RESULT中；200d8ad的其他原生结果保留其身份，不倒写成e235d85。
 - 长稳采集器5项独立测试PASS，包含带UI的结束报告、不可读监督的时限及超2048ms直方图溢出；真实EXE完整长稳采集、24h和72h仍NOT_RUN。
 
 本轮manifest仅更新对固定main016976c的本包差异，保留无关历史登记，不将旧文件改列为本包新交付。开发树、前后冻结候选、受阻项和现场资格继续分开。
+
+
+PR99首次Windows CI发现管理状态观察竞争管理命令席位（head12061273，实际merge28fb86b1），整次job为FAIL，原日志见[ci-first-120612](ci-first-120612/RESULT.json)。修复后最终本地Release源码 **f9389241025aa83747e84753007b90cd20604533**，ZIP SHA256 **A91348FDDF1D21F840F16200AB37BD00EC3ADCD45A832EE2553F17F1AAC5FA44**，见[delivery-f938924](delivery-f938924/BUILD.json)。独立管理观察单任务合并、32并发观察/撤销/停止排空和迟到状态测试PASS，原生管理/日志恢复PASS，实际EXE只读启动PASS。
+
+同一f938924冻结DLL的首次稳定性夹具因Loaded刷新先后顺序被生产新鲜度守卫拒绝，失败原件保留。固定夹具 **a14c1d978472bf411814b2535f5433edab1ceef0** 仅增加首帧实际就绪的有界等待和断言，不改生产DLL/守卫，之后原生稳定性10项PASS；FixtureMatchesMedium=false明确记录此独立夹具身份。运行时在原命令后加 `-FixtureCommit a14c1d978472bf411814b2535f5433edab1ceef0`，原生管理测试仍直接使用f938924同源夹具。最新源码的CI以PR精确head另计，当前没有现场长稳资格。

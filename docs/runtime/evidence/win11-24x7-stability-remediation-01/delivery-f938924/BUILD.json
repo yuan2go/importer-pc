@@ -1,0 +1,8 @@
+{
+  "ExitCode": 0,
+  "SourceCommit": "f9389241025aa83747e84753007b90cd20604533",
+  "Command": "python scripts/package-application.py --application sportmaster --target win-x64 --output D:/DevCache/importer-pc/stability-delivery-f938924",
+  "Scope": "Local reference candidate; no installer, installation or device",
+  "Started": "2026-10-24T10:02:35.6923814+00:00",
+  "Ended": "2026-10-24T10:04:06.1282559+00:00"
+}

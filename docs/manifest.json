@@ -58911,9 +58911,9 @@
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
-      "sha256": "439ea995d3849a2d13393c13a221ee3db30de5ba8e92c39136c0235bd44fbdef",
-      "size_bytes": 24784,
-      "git_blob": "29535d917e1b400043a4a490cd8da1a20bb8ff54"
+      "sha256": "1217eb78fd79fd60f40d57ae3447dca1f97eb0bf31c303321da609ea193c2452",
+      "size_bytes": 25792,
+      "git_blob": "578a95a97f86b4ae970f46f448cf643e3b72568c"
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
@@ -63614,9 +63614,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelAdministration.cs",
-      "sha256": "926ba749e23b4013669e71e12c9b40dbe7fc10b613cec7bff69d866f7fc06937",
-      "size_bytes": 3484,
-      "git_blob": "5d8ea3536bd98d7928152a3c9fae6f69ba7b49cc",
+      "sha256": "9510a527e45566ca8ae9791bb757cf5d2edeef8a01071c0cd4c699afb156983d",
+      "size_bytes": 4284,
+      "git_blob": "305ac60c3df5024fd60936a5d5766b9776c74ef3",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -64875,9 +64875,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModePresentation.cs",
-      "sha256": "6361252b374a78e04501bd365af0a65d0771083f47f40b66e37b43b8fb8cd276",
-      "size_bytes": 1871,
-      "git_blob": "94d3d6e33b93f2a82c72cb57416fc181dd1f16f2",
+      "sha256": "81c66d49feecc7a1403191357d475f55aaa6c98440cb79f54e007a7d17bb99f4",
+      "size_bytes": 2063,
+      "git_blob": "0ca28b96d086eef04ed7ad8f926f8f56529c737d",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
@@ -73713,9 +73713,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "991c9f4ff1ea11f00c341ccb7412e6b4bef75f2128f784e945df6a69a8095bd1",
-      "size_bytes": 7676,
-      "git_blob": "c31a6745a9d3373dd9dd012f8af9bcc2f62ec0c5"
+      "sha256": "4a71ce7fa73c06d4a75712240fc5af9644e7f12e5b3e63f5dcc39e6a436977cb",
+      "size_bytes": 7967,
+      "git_blob": "cd4f355f2e26c6e4ef19533c39d797a389981cf2"
     },
     {
       "path": "docs/runtime/architecture-quality-remediation-01.md",
@@ -73746,9 +73746,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "4716b9f850a5ae5b9b73eb4c9840eadb6cc6c80eb68d4e4afc2efa85d77f234f",
-      "size_bytes": 13373,
-      "git_blob": "e7f02fbdaa14d1a30d68f2b188c02867ba7bd1db"
+      "sha256": "05f339b8327b1e06b885d2970230d5278fe112202ee97be839be5ea75154244e",
+      "size_bytes": 18153,
+      "git_blob": "c3f9ca40141d02cd712cbc8f874c67c9e0809fe4"
     },
     {
       "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/README.md",
@@ -73757,9 +73757,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "ebcd62c8cd313d825fdaf11c53df5ffb99b8ca0572117f6fc3e4978629484d94",
-      "size_bytes": 4257,
-      "git_blob": "57e7a252e0daea46f16dd885eeba056bd4e8ac23"
+      "sha256": "e359ca715f3033d8fc9dae1b4b7d5b837c345d75a06af6a65c4ba3ee0e00103d",
+      "size_bytes": 5409,
+      "git_blob": "5d4ef177b053b7514e11f2abf81e49d056952eb9"
     },
     {
       "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/RESULT.json",
@@ -73768,9 +73768,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "c857832f57c3d4d3973a8789b8bc5acdd6da1245ec2c552fc3cdb191701738b1",
-      "size_bytes": 3287,
-      "git_blob": "1c4c186a2566a73e85e19619375f6f941fbb2e0e"
+      "sha256": "4ddab061b83fe754adca66e8cbd8414c49de8d1ff95cb734692f7f2970bbbcbf",
+      "size_bytes": 3315,
+      "git_blob": "e8fe6379994d2baf147fa8d56e1b8ec7916403c5"
     },
     {
       "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-e235d85/ASSEMBLY.json",
@@ -75066,9 +75066,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "a6eed39b3001dfa7af4f1e42c9004b08be2ee9ebabd58890c692cc2a05585b82",
-      "size_bytes": 7490,
-      "git_blob": "12eb29bfe4542eae03074449316496f9b6953032"
+      "sha256": "a951084873070fdbbb32aa52d69c22ea39d4e8d4318dcbacd2da370e6e3aca1f",
+      "size_bytes": 8688,
+      "git_blob": "13a178f3ad55b3d28d2510c8d60ec58d654bc9fa"
     },
     {
       "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
@@ -75077,9 +75077,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "cfc27288a8c02924f560a3bb3298d3dc8797f4566861a32b6e91a560aa428cb2",
-      "size_bytes": 13548,
-      "git_blob": "395a7c2ab5a36cffc00037d0ea3c5479c76656e7"
+      "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
+      "size_bytes": 13706,
+      "git_blob": "4fff3ebf9af0d92fe3551af09875d3b259f72ce2"
     },
     {
       "path": "docs/work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md",
@@ -75165,9 +75165,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "e9ee2cef018cdae37ab8cb42855f791814b9e3911979ec5864f68f455bae6672",
-      "size_bytes": 2381,
-      "git_blob": "71709519185afb890cd96ab568e720178df505e2"
+      "sha256": "ff296a69a5d5f4109282a34ce7d8ebe5fc7c9da8d66864f7e76cbc5433444ea2",
+      "size_bytes": 2561,
+      "git_blob": "f0c5d91bc3d702e82805a0cae775ce216af2fecc"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelSupervision.cs",
@@ -75176,9 +75176,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "32c75a4f41c9c6bca3fdc18652164a74a1ff6092ebe87b79992bd0dcf6c6c82d",
-      "size_bytes": 5071,
-      "git_blob": "36aa89a6dd39b79c1a45957af973365a2e4d1c08"
+      "sha256": "7328a09b2a9dd75ce173d09cacda3ce8765b907103b24eef2530429d367e4ed0",
+      "size_bytes": 5189,
+      "git_blob": "074595b83c474ea74cfb58dd8a15b6627e992882"
     },
     {
       "path": "src/Ipc.Platform/IRuntimeProgress.cs",
@@ -75220,9 +75220,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "4e75737329d6b8bb6f5b227092f8d43235bd5aaf14fb0cef83a9ba54aadb5b6c",
-      "size_bytes": 15012,
-      "git_blob": "5e617745a15e636f5ec2206713d1f1c94903a4d6"
+      "sha256": "2cb22ea686f0042f7ba7e8c0ad49e5fe985bd6b64b934f2c590fcdd61980b1e3",
+      "size_bytes": 17802,
+      "git_blob": "5b28987fcc6805fa45f49c6fe4b409e5b1348376"
     },
     {
       "path": "tests/Ipc.Application.Verification/SyntheticPriorStorage.cs",
@@ -75242,9 +75242,449 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "888e2e7da4723ea464c860ad673943065b6f051b6d58b4369f1828340791badd",
-      "size_bytes": 7044,
-      "git_blob": "941e47e5a062cc81f9bf286966cd3fbe78ef1189"
+      "sha256": "5e6283615b54443cd17c0286745c2f2dff41ec638dca57464b8f13aee173b6b4",
+      "size_bytes": 7553,
+      "git_blob": "347646c944ff7bcf93bb49dcc01ee540a0120514"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/ci-first-120612/RESULT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "f597a6d61e6ba0af60c523eb70fef9110584f3ec78c109e8684e7fb35792d33f",
+      "size_bytes": 651,
+      "git_blob": "c12e6c8a11b092b04c8988fc6d58bb0254bab98b"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/ci-first-120612/WINDOWS-JOB.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "836c1bed4eff128a9ba01f638ce01e04d7d2fa50ccb877a5c8d81a972478424f",
+      "size_bytes": 64523,
+      "git_blob": "e8196871588e2f5fd58310b329954a68fea9cb7b"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-e235d85/ROOT-RESULT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "c857832f57c3d4d3973a8789b8bc5acdd6da1245ec2c552fc3cdb191701738b1",
+      "size_bytes": 3287,
+      "git_blob": "1c4c186a2566a73e85e19619375f6f941fbb2e0e"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/ASSEMBLY.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "f3ab8c17337f84c3dd1844d81fabff9fb4cbc318b959bc2a51f4ece1db052002",
+      "size_bytes": 5941,
+      "git_blob": "84f441e45ca2e2e928e24a0cc2a0dad8111a1fd9"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/BUILD.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "2c7e8bfa18f7774a7ecc9f676ff985c9463beb7e0287f90b465327c8196e1891",
+      "size_bytes": 423,
+      "git_blob": "f575c850c427b9a88c13c5eefdb9044b959ba113"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/BUILD.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "24c1686fd030a17f6c585ee0b951ed868d71e8ba8ae860ccec3c56ceaac5000e",
+      "size_bytes": 7859,
+      "git_blob": "f79b2e90e9f9ed46ab3f50d33e4bf4e8d57a6c29"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/BUSINESS-IDENTITY.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "3004009d60ef17bc5732551bc01308c3620d7822b979c65efc0c4a109dd79683",
+      "size_bytes": 13399,
+      "git_blob": "764be9a6cfef69c066646d10e979fd3da6d6fe0f"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/ENVIRONMENT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "size_bytes": 731,
+      "git_blob": "5b4cce80e98fab8f04ff4560bdc022b8b9b77ec8"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/REGRESSION-BUILD.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "93d53f0a024c7d822b993383f4ef95394ad9e4193a5614e04deb714a991cf9fa",
+      "size_bytes": 2218,
+      "git_blob": "06c05a7f376fda4a2fd0dee09ee79da6a1a966fb"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/REGRESSION-PRESENTATION.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "6384a77f23c303eb447582090898574e72b328ee8dab82de287678071f072125",
+      "size_bytes": 4820,
+      "git_blob": "8694efaf88c77465c6f45b563690649f89e6f242"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/REGRESSION-STABILITY.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "b0f97f62f89d99fbd945f60f8f56b147325bf52c7ef9a845ff7948288c122d2b",
+      "size_bytes": 3882,
+      "git_blob": "15dea0f93198e558c2dcd9b67cc990ef322cbacb"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/SHA256SUMS",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "a15ba8b68f65b4c0388f5b76fa0d9fe6f574fbdfed45b584b02eff61f1201946",
+      "size_bytes": 77593,
+      "git_blob": "f3a44bde60c9b6bedd523997bf7db9a567e95117"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/SMOKE.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "e642beebdcb23879d7a5aa990c58a318502b1052dde0d882de259d184d42c69a",
+      "size_bytes": 289,
+      "git_blob": "bf52a465360723466edea256d86ecf7f301b1fd7"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/RESULT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "b5ff53afbd6f6e0f5165100ce76c1b51fee1d94ee41482dbe0aa37bb2cdd765c",
+      "size_bytes": 3287,
+      "git_blob": "87d1f6f253b30bd8d5eb99ee0ba340087d4cb5d9"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/RUN.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/WINDOWS-WPF.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "77909428478d7bd29e880a915e4518705f1e718223ae046f62445ad8c7b10a66",
+      "size_bytes": 5736,
+      "git_blob": "141bbeacaafc42d01cdef97f7b632e3e1797396f"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/logs-compact-detail-before-query.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "efe2637ed1127bda7bf761f5f8cf676be88b9a61f4214ff33b02365d62b9704c",
+      "size_bytes": 62877,
+      "git_blob": "91a5f4b00b3b68f1b630c711ec8f3844ed025bed"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/logs-compact-filters-after-query.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "97e00a109b0686cb82f225b4ff4099f1c867b1d57762db0d7c7283f26aefde21",
+      "size_bytes": 53089,
+      "git_blob": "a279ab3fae7519193111e15c45bbb584c1050626"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/logs-empty.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "1912330713c0922b252414396860c1a2a186f2023da7e497dcb60dc6e274118b",
+      "size_bytes": 48181,
+      "git_blob": "e057aaf94b4a2c74949c29eafaedcdfd26a72523"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/logs-failed.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "64684bbd11e7bb8476ad7bfa2a69b888a92dc084d08697405eda7e51b2673cdc",
+      "size_bytes": 54763,
+      "git_blob": "776800e63001833140f557aabf73c0643db88681"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/logs-pending.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "d4a215f47199983e3869dee67ef44b4ec305b0a6d697e6e04b8166d462c62465",
+      "size_bytes": 45456,
+      "git_blob": "c7a2abf5ce22c78ad75633c55224e4997778d845"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-log-context-800.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "ad36585827dc8ad955b323682d3e0f8affaaf967b8b8857cdaccffd7c6954fa2",
+      "size_bytes": 77811,
+      "git_blob": "9146bcf1eff5a323ec99907ade40098171d5a20a"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-log-context.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "bf446555a055fd12195020bfe34031c3f029b4bd83c7baf0d697c93fc80265b0",
+      "size_bytes": 145712,
+      "git_blob": "760cb5b9a0b1e8a2018a54c661e7c8592981f886"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-logs-1366.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "6a1a93bd56b291f076876774468f5bc53a890fcb5b0248e1af7d1b3f85e7d902",
+      "size_bytes": 161786,
+      "git_blob": "ba801c30dad1f9a90d36c5f74a5c5e5cf7643e2c"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-logs-800.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "92c099a403b90d23d3ddc0418acf1e557f8674e8642c13f0a108b266930b9c4a",
+      "size_bytes": 78548,
+      "git_blob": "e9b71dce05dc8b3cdd98846fd5f8e6f6695667ef"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-mode-entry.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "a9575499351d44482cde60eaab23f3ad10fce6350889393263c92469052e6ae3",
+      "size_bytes": 24117,
+      "git_blob": "e724a4a367aafbfa310ad8d047268a03ae5e849a"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-mode-first-setup.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "61106b53e6549fb9dd9754a24c68adb36f088eba225f2d3863866a3d7fe48ae0",
+      "size_bytes": 27357,
+      "git_blob": "9e5a46ab029b16a2cd5f6ffe6e2194b6e7a40998"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-mode-password-change.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "09b6c5c3a1f7806089fc8806bbe350e1825b430075abcca548211a3732295559",
+      "size_bytes": 25135,
+      "git_blob": "56268ef1460dca5c5520cab8d9cee32ae1500ec7"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-parameters-1366.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "2a1b359c8ceffeb3f34af4b7aaa3618e2c9f75ef2036b7b2fa5cf92c926a25e0",
+      "size_bytes": 109375,
+      "git_blob": "7e1640dc513ce9955b48b42654a6f438a254fc4a"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/management-work-1366.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "173cc9bb0b38414cd0017bc433c92a77bfda0a7a53a9c765ff70d6b4883275d5",
+      "size_bytes": 100572,
+      "git_blob": "b36f88f792b25ce8f903526c42d9a6e6e2d37021"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/ordinary-work-1366.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "e13003fa5e62483a8fd18426e74af91733d722e4404a5d1e3ed753228ce9c977",
+      "size_bytes": 84173,
+      "git_blob": "2c55f6b4be5a663820b6ccec3ef4ee01d1beba4b"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/management/ordinary-work-800.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "821e5655fc038731caec012110c76ec8952e6390650966cd9057bfef9a909575",
+      "size_bytes": 57870,
+      "git_blob": "fb830de22c5f1d374091f0cf8ba953352622bfc6"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability-initial-failure/RESULT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "6198f4edcaababff0377ff1ea0ee9e73fbcdb02283929106667b3f8755412e6f",
+      "size_bytes": 3287,
+      "git_blob": "d3bca665de8fdfcc39e7f82654be0540dfff0fb3"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability-initial-failure/RUN.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability-initial-failure/WINDOWS-WPF.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "1b0c6d332ef7eb9b69f60ca4be8fd4cebca35aa48fec72ca8dc30e449179a720",
+      "size_bytes": 1267,
+      "git_blob": "a7b84159e3817eb0a34a6a67aafc36ea73e72988"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability/RESULT.json",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "1a47e224ec9ea04ed66b73f5dbb3443da16a98ba212bf83eaa60b02c640cc59a",
+      "size_bytes": 3288,
+      "git_blob": "2f8a885031f163c8404917d20882159c36d79ab8"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability/RUN.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability/WINDOWS-WPF.log",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "fd4ac1527e7d0b1adbd14d0fef0c69f517af45e050f6d47392ec9383d7fbc4a6",
+      "size_bytes": 1006,
+      "git_blob": "b11ecb3411d9b798c0ff8d5d37ef0430d9e1dfc2"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability/native-history-retention.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "190a08610c30388e3a9b1bba5ee0787b58770ef38441f6977ab5e0e800c6632f",
+      "size_bytes": 127758,
+      "git_blob": "356a5d694a0fe99d8cd361a3d0c3a4102d08777e"
+    },
+    {
+      "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/delivery-f938924/stability/native-input-recovery.png",
+      "version": "win11-24x7-stability-remediation-01",
+      "status": "current_source_or_scoped_synthetic_evidence",
+      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "storage_scope": "public_repository",
+      "sha256": "a7ce5475fc37d3c9aa20daca562f5b8d77820b0cc9563bbea4d2d1ec59c165ad",
+      "size_bytes": 142932,
+      "git_blob": "3af01db1878ca597c7bcd0720e599b084618ae4f"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -77864,17 +78304,19 @@
   },
   "win11_stability_remediation_01": {
     "work_package": "docs/work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md",
-    "source_commit": "e235d85597dfa93ff42a55268ca006f13e90fb7d",
+    "source_commit": "f9389241025aa83747e84753007b90cd20604533",
     "integrated_main": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
     "runtime": "docs/runtime/win11-24x7-stability-remediation-01.md",
     "validation": "docs/runtime/validation/win11-24x7-stability-remediation-01.md",
     "evidence": "docs/runtime/evidence/win11-24x7-stability-remediation-01/RESULT.json",
-    "evidence_sha256": "c857832f57c3d4d3973a8789b8bc5acdd6da1245ec2c552fc3cdb191701738b1",
+    "evidence_sha256": "4ddab061b83fe754adca66e8cbd8414c49de8d1ff95cb734692f7f2970bbbcbf",
     "database": 9,
     "sql_1_to_8": "UNCHANGED",
     "field_sdk_rcs_contract": "NOT_RUN/BLOCKED",
     "normal_24h_72h": "NOT_RUN",
     "publication": "PR_ONLY; local candidate, no installer or production device",
-    "inventory_scope": "Only this work package delta against fixed main016976c refreshed from canonical Git bytes; unrelated historical metadata retained. Not a new full archive verification."
+    "inventory_scope": "Only this work package delta against fixed main016976c refreshed from canonical Git bytes; unrelated historical metadata retained. Not a new full archive verification.",
+    "native_stability_fixture": "a14c1d978472bf411814b2535f5433edab1ceef0",
+    "initial_ci": "FAIL retained; management observation ownership corrected; new head rerun required"
   }
 }

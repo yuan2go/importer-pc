@@ -49,6 +49,9 @@ public sealed class RuntimeJournal : IAsyncDisposable
                     if (tick.IsCompleted)
                     {
                         if (!await tick) break;
+                        // Retention/daily rotation also advance while healthy and idle.
+                        // Maintenance alone cannot clear an append failure; a real probe must write.
+                        TryMaintain();
                         if (Volatile.Read(ref currentFailure) is not null && DateTimeOffset.UtcNow >= nextProbe)
                             queue.Writer.TryWrite(new { At = DateTimeOffset.UtcNow, Event = "DiagnosticRecoveryProbe" });
                         tick = timer.WaitForNextTickAsync().AsTask();

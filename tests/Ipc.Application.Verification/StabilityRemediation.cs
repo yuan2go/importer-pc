@@ -34,6 +34,7 @@ static partial class StabilityRemediation
         await InputCustody(workspace, Path.Combine(root, "input"));
         await SlowMarker(workspace, Path.Combine(root, "slow-marker"));
         await DiagnosticRecovery(Path.Combine(root, "diagnostic"));
+        await DiagnosticIdleRetention(Path.Combine(root, "diagnostic-idle"));
         await OwnedReads(workspace, Path.Combine(root, "reads"));
         await OwnedManagementStatus(workspace, Path.Combine(root, "management-status"));
         await Retention(workspace, Path.Combine(root, "retention"));
@@ -129,6 +130,22 @@ static partial class StabilityRemediation
         using var final = JsonDocument.Parse(Wire.Encode(journal.Status));
         Check(final.RootElement.GetProperty("State").GetString() == "Running" && final.RootElement.GetProperty("Dropped").GetInt64() > 0 &&
             final.RootElement.GetProperty("LastFailure").ValueKind == JsonValueKind.String, "successful recovery probe restores diagnostics; historical failure and loss counter retained");
+    }
+    static async Task DiagnosticIdleRetention(string path)
+    {
+        await using var journal = new RuntimeJournal(path, _ => { }, 2);
+        journal.Write(new { Event = "Warmup" });
+        await Until(() => { using var s = JsonDocument.Parse(Wire.Encode(journal.Status)); return s.RootElement.GetProperty("Written").GetInt64() == 1; });
+        var current = Path.Combine(path, "runtime.jsonl");
+        var archive = current + ".1";
+        File.WriteAllText(archive, "Synthetic expired diagnostic metadata\n");
+        File.SetLastWriteTimeUtc(archive, DateTime.UtcNow.AddDays(-5));
+        File.SetLastWriteTimeUtc(current, DateTime.UtcNow.AddDays(-5));
+        // No producer call follows warmup. Only the periodic owner may rotate/expire.
+        await Until(() => !File.Exists(current) && !File.Exists(archive) && !File.Exists(current + ".2"));
+        using var result = JsonDocument.Parse(Wire.Encode(journal.Status));
+        Check(result.RootElement.GetProperty("State").GetString() == "Running" && result.RootElement.GetProperty("Written").GetInt64() == 1,
+            "healthy idle diagnostics rotate and expire on their timer without a new entry or recovery probe");
     }
     static async Task OwnedReads(string workspace, string path)
     {

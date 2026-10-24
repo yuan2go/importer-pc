@@ -1,10 +1,10 @@
 > 当前页面信息层级：[TASK-CONTENT-HIERARCHY-01](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-01.md)。PR90已合并；本轮按页面职责调整全局状态/诊断及标题，原权限、保存和历史证据保持。
 
-> 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。
+> 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)、[PR93首次配置CI续修](runtime/validation/dual-camera-first-configuration-ci-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。
 
 > 当前质量整改：[AQA01-F01～F06工作包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。[PR92独立复核、边界与CI](reviews/pr92-independent-quality-review.md)、[实现与命令生命周期](runtime/architecture-quality-remediation-01.md)、[验证记录](runtime/validation/architecture-quality-remediation-01.md)。原审查基线0c5d7d2、旧版本及原验收保持身份；相关过期当前入口原字节见[归档](archive/pre-architecture-quality-remediation-01/README.md)。
 
-> 经典窗口与参数文案前序增量：[PARAMETER-SHELL-POLISH-02](work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)。其常驻状态/诊断布局由本轮TASK-CONTENT-HIERARCHY-01接续；原权限、参数合同与历史证据保留。
+> 当前经典窗口与参数文案增量：[PARAMETER-SHELL-POLISH-02](work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)。PR88 已合并；不重建管理身份或参数架构。
 
 > 2026-10-23 内部页面与逐页校验续做见[本轮工作包](work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md)。替代上轮按整类继续及普通错误中的变量名呈现，查询快照与业务/权限责任保持。
 

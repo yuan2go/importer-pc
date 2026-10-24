@@ -1,0 +1,20 @@
+{
+  "SourceCommit": "57bfc2319ed8c234c2778309dfc0c9feee7b6b73",
+  "BaselineMain": "c2300cdb73bda9192e2e7912b4fee12753b81121",
+  "FailedCiMerge": "bad2734cc49c07fd6077cbcdc590e4817fcff9ec",
+  "FailedCiSourceMatchesBaseline": true,
+  "Application": "sportmaster",
+  "Target": "win-x64",
+  "BusinessVersion": "1.11.3",
+  "PackageSha256": "34E64F8B448E32076F28FD3E41E28A74252E51521982BCF808BC21620EF7C1DD",
+  "InventorySha256": "F97994C062E6A4DEB12D8547A399FF668CB850DD8EDECC2B055CA719B266C5FE",
+  "LocalPackage": "D:/DevCache/importer-pc/first-config-ci-57bfc23",
+  "StartupAssertions": 172,
+  "ParameterShellAssertions": 29,
+  "MediumAndFixtureSameSource": true,
+  "Site": "NOT_RUN",
+  "ProductionDevices": "NOT_CONNECTED",
+  "ProductionNetworkChanges": "NONE",
+  "Installation": "NOT_RUN",
+  "Publication": "PR_ONLY_NO_RELEASE"
+}

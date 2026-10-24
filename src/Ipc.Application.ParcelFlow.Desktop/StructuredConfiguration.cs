@@ -223,7 +223,7 @@ public partial class ParcelViewModel
             var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = instance is null ? null : c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);
             var descriptor = package is null ? null : catalog.Providers.SingleOrDefault(x => x.Package == package && x.Module == instance!.ModuleId);
-            var binding = instance is null ? new CapabilityBinding("observation", reader.Driver, "1.0.0", "reader." + (++readerIndex), reader.DeviceId, reader.Driver == "tcp-line" ? "TCP-LINE-OBSERVATION-v1" : "CONTROLLED-OBSERVATION-v1", reader.Parameters ?? [])
+            var binding = instance is null ? CapabilityDraft.BuiltInReaderBinding(reader, "reader." + (++readerIndex), catalog)
                 : new("observation", "extension:" + package!.Id + "/" + instance.ModuleId, package.Version, instance.Id, reader.DeviceId, descriptor?.Contract ?? "CONTROLLED-OBSERVATION-v1", instance.Parameters, package, instance.ModuleId, instance.Enabled);
             readers.Add(new(reader, new("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id)));
         }

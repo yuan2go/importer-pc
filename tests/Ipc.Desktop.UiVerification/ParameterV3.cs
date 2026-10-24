@@ -69,7 +69,14 @@ static partial class Program
         runtime.BeforeMonitorProbe = (_, token) => probesRelease.Task.WaitAsync(token);
         await vm.PauseAsync(); await vm.RunAsync(() => vm.AuthorizeMaintenanceAsync("SIMULATION_ONLY"));
         await Until(() => vm.CanConfigure);
-        vm.ConfigurationReason = "Synthetic V3 native save"; await vm.SaveStructuredConfigurationAsync();
+        vm.ConfigurationReason = "Synthetic V3 native save";
+        Check(await vm.PrepareConfigurationReviewAsync(), "edited candidate is ready for the native save review");
+        var readyReview = new ConfigurationSaveReviewWindow(window, vm); readyReview.Show();
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); readyReview.UpdateLayout();
+        var confirm = Descendants(readyReview).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges");
+        Check(confirm.IsEnabled && Inside(confirm, readyReview), "review exposes its enabled confirm action inside the actual window");
+        CaptureInternal(evidence, "v3-save-review-ready", readyReview, lines); readyReview.Close();
+        await vm.SaveStructuredConfigurationAsync();
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT" && vm.Snapshot.Configuration.Effective.StationCode == "SYNTHETIC-STATION" && !vm.HasUnsavedConfiguration,
             "native save confirms Pending while Effective stays unchanged");

@@ -2052,9 +2052,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "3e801305111c4095da81360fee6d00505ee5bfced2f9e0afbe0e8be1e689f904",
-      "size_bytes": 7988,
-      "git_blob": "901cd88a3067dffec00e731619e4521a02d35431",
+      "sha256": "f7a5ce1098ad5d2c0a47f6ebd3b0f3f11e6f71d744c2b2a353079039a07039da",
+      "size_bytes": 8216,
+      "git_blob": "9d109c67006c9e73e1a2bb571749e95b05e2dda2",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -71277,7 +71277,7 @@
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/maintenance-publication-20261019/final-publication-receipt.json"
   },
-  "last_updated": "2026-10-23",
+  "last_updated": "2026-10-24",
   "runtime_identity_preflight_02": {
     "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
     "report": "docs/runtime/runtime-identity-preflight-02.md",

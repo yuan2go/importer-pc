@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -149,7 +149,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     {
         var body = new StackPanel { Margin = new(28, 20, 28, 20), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
-        var heading = Text(title, true); heading.FontSize = 24; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
+        var heading = Text(title, true); heading.FontSize = 20; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
         if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 12); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left, Focusable = false };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));

@@ -1,0 +1,86 @@
+[
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\chain-blocked-after-unknown-800.png",
+    "Bytes": 92979,
+    "Sha256": "7ac3e68392c8d2f9a67a544c9bc1cfd3b870311fcc6b49ee38144c697c49a168",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\chain-conflict-right-800.png",
+    "Bytes": 98144,
+    "Sha256": "4d95febd946d3e8021cff4317de749fdac2022f5f435a7f0b886f9d916e6adb9",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\chain-late-pause-history-800.png",
+    "Bytes": 89950,
+    "Sha256": "cc948525c9deb40685bb5006435b5a2b2280d3f310f818b4364dba98757469d3",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\chain-same-code-normal-1366.png",
+    "Bytes": 112868,
+    "Sha256": "9d42848db71fbabbe4410c1e85017e58ea6a7381de7fe22a87a4b0e2786626b8",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\chain-stale-800.png",
+    "Bytes": 90528,
+    "Sha256": "6be5f8b148009949b411cac1470b72971d877680f701ec43b4a30e5f32d5ed2a",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\pgs-供包台标识-1092.png",
+    "Bytes": 89064,
+    "Sha256": "60b2621d6824dab6b5a442b48f7ad6473681cc62654b5e75d5b2e3390ff91816",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\pgs-数据与记录-1092.png",
+    "Bytes": 103114,
+    "Sha256": "5780e0153e62b82611855a56259069db77559bc7b6c6f2fe28192fb8eb225802",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\pgs-左相机-800.png",
+    "Bytes": 81298,
+    "Sha256": "4aed12bd4a4d075ea9a61f62475c9857ed490591b57674559db48010a3c5ff01",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\screenshots\\pgs-workstation-fullscreen.png",
+    "Bytes": 76954,
+    "Sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\01-logs-before.png",
+    "Bytes": 58049,
+    "Sha256": "05cbc141ae71ef62a77673ee4e9bb692e5f5cca676e56ca74167cb433e86a01c",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\02-work-return.png",
+    "Bytes": 84620,
+    "Sha256": "fb90184f8bfdc325fb93e506eaf2bb1c24536d3b8e5e671b9552df74953f73f8",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\04-history-loaded.png",
+    "Bytes": 85134,
+    "Sha256": "6608ed3517d7ecba2cb36d6f9467ca5f30648020865c9c41bcded5dfb566cdc3",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\05-history-after-input-timeout.png",
+    "Bytes": 87434,
+    "Sha256": "48d57df2265058488345c6f8b59500cdf09dcfc1f1c6fe76bea2fba3ae0df24f",
+    "Storage": "Local external evidence, not copied to repository"
+  },
+  {
+    "Path": "D:\\audits\\lifecycle-audit-r2-20261025\\06-history-query-empty.png",
+    "Bytes": 86948,
+    "Sha256": "8a04662e00d50745774cb1900556cc870370386c9c319b67c37797b6378466ad",
+    "Storage": "Local external evidence, not copied to repository"
+  }
+]

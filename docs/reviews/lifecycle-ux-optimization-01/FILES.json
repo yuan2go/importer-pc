@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "status": "VERIFIED_DOCUMENTATION",
+  "source_commit": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "created_on": "2026-10-25",
+  "implementation_status": "NOT_IMPLEMENTED",
+  "git_commit": "NOT_CREATED",
+  "validation": {
+    "scope": "documentation only; no business test, native application run, installation, or field qualification performed",
+    "local_link_occurrences": 197,
+    "markdown_files": 12,
+    "original_byte_snapshots": 6,
+    "work_packages": 7,
+    "reconciled_units": 21,
+    "external_gates": [
+      "G01",
+      "G02"
+    ],
+    "git_diff_check": "PASS",
+    "tracked_changes_documentation_only": true,
+    "rendered_shipped_guides": [
+      {
+        "path": "docs/runtime/commercial-productization-01-operations.md",
+        "rendered_characters": 7470,
+        "scope": "in-memory link rendering only; no package created"
+      },
+      {
+        "path": "docs/runtime/sportmaster-commercial-delivery-01-operations.md",
+        "rendered_characters": 3920,
+        "scope": "in-memory link rendering only; no package created"
+      },
+      {
+        "path": "docs/runtime/startup-deployment-02.md",
+        "rendered_characters": 3639,
+        "scope": "in-memory link rendering only; no package created"
+      }
+    ],
+    "release_mapping_update": "DEFERRED_TO_LIA_04; new guide not yet in release inventory"
+  },
+  "original_audit_checksum_list": {
+    "path": "docs/reviews/lifecycle-interaction-audit-01/evidence/SHA256SUMS.txt",
+    "sha256": "0cbe6d301c6df528299b969c815b3db1fc07b0dceb1cc122a4fe3d84c2a1c2fe"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 6111,
+      "sha256": "7a47f6fd72d34600bede8a0ba96d64d314086853ea632bd7828dd4c26f067081"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "bytes": 14590,
+      "sha256": "14b87f821900a199657386e8917f5f68ab3510d3bb7143e2a5f059e4310366a3"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "bytes": 3055,
+      "sha256": "a9d80bfc4a72ade946ca598070a308e2b420d8d8c9cb4c8ee5a1e9fa7fabd6ce"
+    },
+    {
+      "path": "docs/runtime/commercial-productization-01-operations.md",
+      "bytes": 15906,
+      "sha256": "0b0499ee418677ffc4d7d19405e156ff7bb0d49e3a6a3b8f9f0ffa1ec733461d"
+    },
+    {
+      "path": "docs/runtime/sportmaster-commercial-delivery-01-operations.md",
+      "bytes": 8781,
+      "sha256": "7becc30ca4008cef8967454aa6e0db9425c6134d86fae795d9229ae34f1ec084"
+    },
+    {
+      "path": "docs/runtime/startup-deployment-02.md",
+      "bytes": 7467,
+      "sha256": "a81ab3346a50b620e761107104a385491888c7321beeca27b162a199a355b90a"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "bytes": 19461,
+      "sha256": "1d57732c8e00b5c7fdf969473fe5d893f08958743d9874dd40866473501eee49"
+    },
+    {
+      "path": "docs/work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "bytes": 3066,
+      "sha256": "f3ce0bb52c0240afbb55528a300a037792ecd3b7cfabe368bc465aa658b870da"
+    },
+    {
+      "path": "docs/reviews/lifecycle-ux-reconciliation-01.md",
+      "bytes": 10354,
+      "sha256": "01da5795cef2ee2b56c71067d3a3308f66f70f62024f63921ed701b1a5eb9fb4"
+    },
+    {
+      "path": "docs/design/lifecycle-ux-optimization-01.md",
+      "bytes": 7015,
+      "sha256": "eba66c8437e77fbe8ff3240f169a56233a40d5d47e359fb36216f3dc5483617a"
+    },
+    {
+      "path": "docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "bytes": 6518,
+      "sha256": "898e021cc507a67600261c6b04340e0416ed3bf360ab1000d6a3d4c709f6f40b"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/README.md",
+      "bytes": 726,
+      "sha256": "9df973bf37e9dc56a918fcb953ce21809949258029b348490f572b046190f347"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/FILES.json",
+      "bytes": 1598,
+      "sha256": "cd0c1dae19d3f6965080fbe5653e5efeb787d6458873fef2778b55e163848e30"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/README.md.txt",
+      "bytes": 5800,
+      "sha256": "271c66fb0b2e3f47c01d3b9d9d481d2dfd805152d55dc421f5093ea91bf9f196"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/docs__INDEX.md.txt",
+      "bytes": 13961,
+      "sha256": "5ca37f29802de33e65fad1c94c0aa6d2efb99fbd1498c10242bff62f80a8f7b6"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/docs__ui__STATUS.md.txt",
+      "bytes": 2735,
+      "sha256": "13b38c9bd54c7fb99689c799f7956c821f4e5df7e17998650d9c8b2044751bb4"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/docs__runtime__commercial-productization-01-operations.md.txt",
+      "bytes": 16579,
+      "sha256": "b923f0caf425917b40532e14d95b3f3c5950a8fc9fe7fe32bd0b6fb94372dee1"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/docs__runtime__sportmaster-commercial-delivery-01-operations.md.txt",
+      "bytes": 8520,
+      "sha256": "f1906c04c7e06875fdf95e0fb8131cb330846b30da51b417cc35bdf42e699c72"
+    },
+    {
+      "path": "docs/archive/pre-lifecycle-ux-optimization-01/docs__runtime__startup-deployment-02.md.txt",
+      "bytes": 9467,
+      "sha256": "cc5cca5921fcc7d927e3a8f7efaca1dc51b8e38def4a6237a8776d8f704340ff"
+    }
+  ],
+  "excluded": [
+    "this manifest (self-reference)",
+    "pre-existing audit outputs",
+    "four pre-existing restricted user attachments",
+    "product source and historical acceptance manifests"
+  ]
+}

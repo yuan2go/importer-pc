@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-25 Asia/Singapore",
+  "scope": "30 visible releases returned; metadata only, artifacts not downloaded or executed",
+  "newestByPublish": [
+    {
+      "tag": "installer-sm-v1.10.2-c9e482a30d2d",
+      "published_at": "2026-10-21T16:22:30Z",
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.10.2-c9e482a30d2d"
+    },
+    {
+      "tag": "pr79-ci-evidence-5d722f8a4eeb",
+      "published_at": "2026-10-21T00:43:51Z",
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/pr79-ci-evidence-5d722f8a4eeb"
+    }
+  ],
+  "latestVisibleRelease": {
+    "tag": "installer-sm-v1.10.2-c9e482a30d2d",
+    "name": "SM 1.10.2 original frozen delivery — c9e482a30d2d",
+    "published_at": "2026-10-21T16:22:30Z",
+    "prerelease": true,
+    "url": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.10.2-c9e482a30d2d"
+  }
+}

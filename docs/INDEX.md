@@ -1,3 +1,5 @@
+> 2026-10-25生命周期优化当前入口：[七包范围、依赖与必要验收](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[三审查问题总账](reviews/lifecycle-ux-reconciliation-01.md)、[增量设计](design/lifecycle-ux-optimization-01.md)、[当前源码操作与交付身份](runtime/lifecycle-ux-current-guidance-01.md)、[Codex执行提示](work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)。基线main `3a5b1d13`；本轮只完成文档规划与指引清理，七包工程待实施。保留管理模式、独立操作员、参数服务层权限、真实日志及帮助模块删除。原件见[归档](archive/pre-lifecycle-ux-optimization-01/README.md)。
+
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。
 
 > 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。原开工main为`1dfb676a`，2026-10-25与已合并PR103/main `c425435`的[同步、证据保全及最终集成检查](runtime/validation/pr104-main-integration-01.md)另列；进程强杀、并发、日志、争用与时间边界单独计证，不关闭下述大规模维护FAIL或扩张现场资格。
@@ -27,9 +29,9 @@
 
 ﻿> 2026-10-23 当前参数与首配细化：[实施及源码映射](runtime/parameter-ui-refine-01.md)、[原生验收/截图及边界](runtime/validation/parameter-ui-refine-01.md)。本地同源测试包不推送、不发布、不自动安装；下列历史安装包和清理结论保持原时点。
 
-> 当前重测安装包为SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。修复保存D盘位置但目录不存在时启动报错；已验证到确认页并取消，尚未正式安装。下述SM1.11.0交付与清理保持历史时点。
+> 2026-10-22历史重测安装包SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。当时修复保存D盘位置但目录不存在时启动报错，验证到确认页并取消；不是本机最新SM1.12.3介质或当前安装状态。
 >
-> 当前管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验；其后按用户要求已卸载并清空旧运行状态，保留海康及D盘存储位置，等待重新测试安装。[当前清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md) 各守时间范围。
+> 2026-10-22历史管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验，随后卸载清空；[当时清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md)各守时间范围，不推定当前机器状态。
 >
 > 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
 

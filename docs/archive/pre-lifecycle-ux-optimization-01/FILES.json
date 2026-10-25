@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "source_commit": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "scope": "Original bytes before current-guidance corrections; historical evidence unchanged",
+  "files": [
+    {
+      "path": "README.md",
+      "snapshot": "README.md.txt",
+      "sha256": "271c66fb0b2e3f47c01d3b9d9d481d2dfd805152d55dc421f5093ea91bf9f196",
+      "bytes": 5800
+    },
+    {
+      "path": "docs/INDEX.md",
+      "snapshot": "docs__INDEX.md.txt",
+      "sha256": "5ca37f29802de33e65fad1c94c0aa6d2efb99fbd1498c10242bff62f80a8f7b6",
+      "bytes": 13961
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "snapshot": "docs__ui__STATUS.md.txt",
+      "sha256": "13b38c9bd54c7fb99689c799f7956c821f4e5df7e17998650d9c8b2044751bb4",
+      "bytes": 2735
+    },
+    {
+      "path": "docs/runtime/commercial-productization-01-operations.md",
+      "snapshot": "docs__runtime__commercial-productization-01-operations.md.txt",
+      "sha256": "b923f0caf425917b40532e14d95b3f3c5950a8fc9fe7fe32bd0b6fb94372dee1",
+      "bytes": 16579
+    },
+    {
+      "path": "docs/runtime/sportmaster-commercial-delivery-01-operations.md",
+      "snapshot": "docs__runtime__sportmaster-commercial-delivery-01-operations.md.txt",
+      "sha256": "f1906c04c7e06875fdf95e0fb8131cb330846b30da51b417cc35bdf42e699c72",
+      "bytes": 8520
+    },
+    {
+      "path": "docs/runtime/startup-deployment-02.md",
+      "snapshot": "docs__runtime__startup-deployment-02.md.txt",
+      "sha256": "cc5cca5921fcc7d927e3a8f7efaca1dc51b8e38def4a6237a8776d8f704340ff",
+      "bytes": 9467
+    }
+  ]
+}

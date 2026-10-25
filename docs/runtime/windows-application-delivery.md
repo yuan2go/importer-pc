@@ -1,4 +1,4 @@
-> 当前源码：Sportmaster1.12.0 / DirectPlc及WcsToPlc1.6.0 / Application.Contracts1.17.0 / Parcel DB9。普通权限、D盘受保护部署和管理模式继续适用；输入接收、停止、保留维护及资格边界见[长稳运行指南](win11-24x7-stability-remediation-01.md)。旧COMM版本与验收保留在原结果及[本次原文归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)。
+> 当前源码：Sportmaster1.12.3 / DirectPlc及WcsToPlc1.6.0 / Application.Contracts1.18.0 / Parcel DB9。普通权限、D盘受保护部署和管理模式继续适用；输入接收、停止、保留维护及资格边界见[长稳运行指南](win11-24x7-stability-remediation-01.md)。旧COMM版本与验收保留在原结果及[本次原文归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)。
 
 > TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](../design/typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
 
@@ -20,7 +20,7 @@
 
 ## 首次启动与自动配置
 
-Sportmaster 当前主入口为同源[单 EXE 安装程序](single-exe-installer-01.md)，准备后进入同一原生向导。高级兼容路径为完整解压可信Windows媒介后双击`Setup.cmd`；首次从未安装媒介双击`application.cmd`或`desktop/Ipc.Desktop.exe`也会进入原生四步向导。选择已有运行账户、原数据根、配置来源及可选独立信任/离线包，检查摘要后授权一次UAC。安装自动创建受保护策略、版本程序目录、新数据根和开始菜单入口；日常进程保持未提权。默认原用户及HKLM登记的D盘数据根，升级自动带入既有位置；不会以新seed覆盖数据账。已知机级政策/其他账户材料保持原值，身份冲突明确失败，不能删lease绕过。
+当前人工安装步骤、源码/介质/现场身份分别见[当前操作入口](lifecycle-ux-current-guidance-01.md)。普通向导自动准备并检查同源介质，核对程序目录、数据目录及快捷方式，执行时一次Windows授权。正常配置使用管理模式；账户/模式/信任等高级部署参数不在普通向导选择。并排部署、D盘受保护根、唯一登记和原责任检查继续有效。
 
 开始菜单“运行”读取受保护的同版本部署位置；“启动修复”无需业务Start成功，提供配置/参数表单、待生效保存、摘要导出与完整备份隔离恢复。启动失败页也可进入维护、安装修复或重试。原Stop/Dispose未完成时不能创建第二个实例。详情及失败保旧、种子修复、精确扩展/Production边界见[随包向导指南](startup-deployment-02.md)。Windows原生交互、UAC、ACL、快捷方式与升级中断仍NOT_RUN。
 

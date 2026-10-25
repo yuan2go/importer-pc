@@ -1,0 +1,12 @@
+[
+  {
+    "source": "docs/runtime/getting-started.md",
+    "archive": "docs__runtime__getting-started.md.txt",
+    "sha256": "519889cf690737745d568d560d0c0d89248fd0ca5bfa9a2bae862697f902b385"
+  },
+  {
+    "source": "docs/runtime/windows-application-delivery.md",
+    "archive": "docs__runtime__windows-application-delivery.md.txt",
+    "sha256": "6a6c4826381a3781ee3dcc5587cf565f52ce7049b25603cb7c05bae8ba2c1568"
+  }
+]

@@ -1,4 +1,4 @@
-> 当前源码操作入口：[文档索引](docs/INDEX.md)、[管理模式](docs/runtime/management-mode-01.md)、[本轮架构质量整改](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。本轮不是安装包发行；SM1.11.1重测介质及历史发布按索引分别读取。下述V3形成时状态保留历史范围。
+> 当前源码操作入口：[安装、首配、身份、参数、日志与维护](docs/runtime/lifecycle-ux-current-guidance-01.md)。2026-10-25核查main `3a5b1d13`；本机已有同源SM1.12.3测试EXE，安装未运行，公开旧发行与现场版本分别核对。本批[七包优化与依赖](docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[问题总账](docs/reviews/lifecycle-ux-reconciliation-01.md)、[Codex执行提示](docs/work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)为下一阶段实施入口；业务修复尚未执行。下述V3形成时状态及历史发布保留原身份。
 
 > 历史安装包：[SM v1.6.1 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76 已合并，固定源 `92586bf44cde`；[发布记录、哈希与边界](docs/runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏，未签名预发布，真实设备/现场待验。
 >
@@ -26,8 +26,8 @@ Sportmaster、DirectPlc、WcsToPlc是独立主流程。Sportmaster左右读码�
 
 | 任务 | 有效入口 |
 | --- | --- |
-| 人工安装、升级与依赖 | [历史1.6.1下载及回执](docs/runtime/publication-login-session-20261020.md)、[单窗口/一次授权](docs/runtime/installer-single-window-01.md)、[固定桌面名称](docs/runtime/desktop-shortcut-name-01.md)、[发行依赖](docs/runtime/installer-release-info-01.md) |
-| 首配、故障修复与数据恢复 | [安装与启动修复](docs/runtime/startup-deployment-02.md)、[商业操作手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md) |
+| 人工安装、升级与依赖 | [当前操作与介质身份](docs/runtime/lifecycle-ux-current-guidance-01.md)、[发行依赖](docs/runtime/installer-release-info-01.md)；[1.6.1历史回执](docs/runtime/publication-login-session-20261020.md)不代表最新源码 |
+| 首配、故障修复与数据恢复 | [当前操作入口](docs/runtime/lifecycle-ux-current-guidance-01.md)、[安装与启动修复机制](docs/runtime/startup-deployment-02.md)、[商业操作手册](docs/runtime/sportmaster-commercial-delivery-01-operations.md) |
 | 架构、构建与扩展 | [框架](docs/design/framework.md)、[Application运行](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md) |
 
 继承菜鸟品牌、首配、单窗口单EXE安装、目录/快捷方式、一次UAC与普通权限启动、BUILD-INFO，不重建安装平台。历史SM1.6.1来自已合并main `92586bf44cde7efb6cec1538d7b9654ee518c0fb`，本轮验证同源构建、完整介质、最终DLL的会话字段、实际输入与安装准备/取消，未重验完整安装/UAC/升级。历史[SM1.6.0](docs/runtime/publication-pr74-20261020.md)、SM1.4.1介质 `27b0d8f` 的58项、原7c的41项及心跳portable CLI/签名夹具 `3f8a58ba` 各守原来源，详见[历史发布范围](docs/runtime/publication-pr69-pr71-20261020.md)。

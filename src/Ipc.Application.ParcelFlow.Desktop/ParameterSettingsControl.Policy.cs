@@ -55,7 +55,7 @@ public sealed partial class ParameterSettingsControl
         if (RuntimeContext is { } backupContext)
         {
             var actual = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, MaxHeight = 220, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            actual.SetBinding(TextBox.TextProperty, new Binding(nameof(ParcelViewModel.BackupStatusText)) { Source = backupContext });
+            actual.SetBinding(TextBox.TextProperty, new Binding(nameof(ParcelViewModel.BackupStatusText)) { Source = backupContext, Mode = BindingMode.OneWay });
             backup.Body.Children.Add(actual);
         }
         var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };

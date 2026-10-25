@@ -66,6 +66,7 @@ static partial class Program
             Check(editor.NavigateTo("HistoryDays"), "retention policy has an accessible system-settings destination");
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var historyDays = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "HistoryDays");
+            var originalHistoryDays = historyDays.Text;
             historyDays.Text = "7";
             Check(historyDays.IsVisible && window.ViewModel.BuildStructuredConfiguration().Retention?.HistoryDays == 7,
                 "native seven-day setting reaches the shared complete candidate without saving or starting devices");
@@ -73,7 +74,11 @@ static partial class Program
             bitmap = new RenderTargetBitmap((int)window.ActualWidth, (int)window.ActualHeight, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
             bitmap.Render(window); png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));
             using (var output = File.Create(Path.Combine(evidence, "native-history-retention.png"))) png.Save(output);
-            historyDays.Text = ""; // Restore the original draft; this test does not persist operator settings.
+            historyDays.Text = originalHistoryDays; // Restore the exact original draft, including explicit defaults.
+            Check(editor.NavigateTo("BackupEnabled"), "backup policy has a native settings destination");
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            Check(Descendants(editor).OfType<TextBox>().Any(t => t.IsReadOnly && t.Text == window.ViewModel.BackupStatusText && t.Text.Contains("当前运行计划")),
+                "native backup page reads the formal runtime status without writing the computed presentation property");
             await Task.Delay(600);
             var independent = Task.Run(async () =>
             {

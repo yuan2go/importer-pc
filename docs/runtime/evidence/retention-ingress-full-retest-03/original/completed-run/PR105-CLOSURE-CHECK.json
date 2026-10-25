@@ -1,0 +1,9 @@
+{
+  "State": "closed",
+  "Merged": true,
+  "MergedAt": "2026-10-25T07:16:40Z",
+  "ClosedAt": "2026-10-25T07:16:40Z",
+  "MergeCommit": "ed42da8187be08d9a65e067313d3039e2f2e9ebd",
+  "Head": "f86f61a9297772992e61db5094051b3022d9a4c0",
+  "Base": "c425435c6f980ca537a29e4e8353d12be341df61"
+}

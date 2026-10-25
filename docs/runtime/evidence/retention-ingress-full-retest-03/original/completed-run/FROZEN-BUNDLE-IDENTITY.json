@@ -1,0 +1,542 @@
+{
+  "SourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "AtUtc": "2026-10-25T08:18:54.082227+00:00",
+  "Files": [
+    {
+      "Path": "cli/Ipc.Application.Contracts.dll",
+      "Bytes": 157696,
+      "Sha256": "31f8d00fdad4369186b68120b21a39b924f9822c0180bb9c43097b961aa2c60e"
+    },
+    {
+      "Path": "cli/Ipc.Application.ParcelFlow.dll",
+      "Bytes": 621568,
+      "Sha256": "379560d5c546393b503be8e748183da138bc936cd17cfd729b895b273ffe2ade"
+    },
+    {
+      "Path": "cli/Ipc.Application.Sportmaster.dll",
+      "Bytes": 23552,
+      "Sha256": "5d0d676b9ede26bb3873933677f46c6a4f966b49d3a8ffdea3b5d0cf2a9b2c89"
+    },
+    {
+      "Path": "cli/Ipc.Assembly.deps.json",
+      "Bytes": 40489,
+      "Sha256": "f49af3fe0655ce85b741cbafab83ef50097ee1dda2ca282781d3242fa18ef960"
+    },
+    {
+      "Path": "cli/Ipc.Assembly.dll",
+      "Bytes": 226816,
+      "Sha256": "67175f5e154c125ca1ae0b719d2acf9ed760a1809702d2c3113f095f577125d8"
+    },
+    {
+      "Path": "cli/Ipc.Assembly.exe",
+      "Bytes": 162304,
+      "Sha256": "f1fb47a804123b9bb35978624e7bf16f7fef05872a7fda3ed928def49541c319"
+    },
+    {
+      "Path": "cli/Ipc.Assembly.runtimeconfig.json",
+      "Bytes": 342,
+      "Sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+    },
+    {
+      "Path": "cli/Ipc.Components.dll",
+      "Bytes": 11264,
+      "Sha256": "bf6fade175d58908cab6a884c6329833c276b27d19ee41795a027728b09022b9"
+    },
+    {
+      "Path": "cli/Ipc.Drivers.dll",
+      "Bytes": 43008,
+      "Sha256": "955a1b026b392988437bbc9f5550033cfdc6867060928555d6a993bcddafb63f"
+    },
+    {
+      "Path": "cli/Ipc.Integrations.dll",
+      "Bytes": 21504,
+      "Sha256": "577b54e07c2f30e1e96a3f6e618f1baa5605920897598af492ca3b77f8dae230"
+    },
+    {
+      "Path": "cli/Ipc.Platform.dll",
+      "Bytes": 457216,
+      "Sha256": "3328ce3277c1104d8572e98d6e6dfe1c875c53498c1b3d6e10463af9a4999c6e"
+    },
+    {
+      "Path": "cli/Ipc.Platform.Storage.dll",
+      "Bytes": 11776,
+      "Sha256": "7157e16b419a34baa805397f02ba0b6c8d457357140a1f40b03befb7515cef32"
+    },
+    {
+      "Path": "cli/Ipc.Reference.Protocol.dll",
+      "Bytes": 32768,
+      "Sha256": "40ef12ba86a51b5c074dc659b7b1b98ecd8ee3a6f606662149a4333dfba8eaa5"
+    },
+    {
+      "Path": "cli/Ipc.Supply.Contracts.dll",
+      "Bytes": 130560,
+      "Sha256": "107ff15ac1dcacf2e71feb9b13ae292ad8c6754aa276f7f9cec903aaf684bb44"
+    },
+    {
+      "Path": "cli/Ipc.Supply.dll",
+      "Bytes": 193536,
+      "Sha256": "5bfb8eaef363f7e2d99e1b802db094285faeadf4aca927069a076b3b228f6346"
+    },
+    {
+      "Path": "cli/Microsoft.Data.Sqlite.dll",
+      "Bytes": 177464,
+      "Sha256": "9f1fe804321767b6cc8db751ecedd56ab308e5f15492a7f40d7093bb61ab7638"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.Abstractions.dll",
+      "Bytes": 28496,
+      "Sha256": "a6e043abc339b7341bf7dabf6f101bc16fd5d10dcde67587ac6418f7fd6615f0"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.Binder.dll",
+      "Bytes": 43304,
+      "Sha256": "53dd1d292fe99d94c03d42a6783e3b3604c2847580c76f7b1f6e0eb1419049d0"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.CommandLine.dll",
+      "Bytes": 25424,
+      "Sha256": "757974ea4b65545c0e2c61dea5da765fb3ba63d149468b560bdc60b0ba81f6eb"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.dll",
+      "Bytes": 44880,
+      "Sha256": "2afbe810f4988debd8c0011053e2c5b751facecd211933f48ba0f4ffc12bb94b"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "Bytes": 21840,
+      "Sha256": "1cbe9651c65f65ce3cc649f5920d00809d71093507d964eabf89c477bdd4b2a1"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "Bytes": 28456,
+      "Sha256": "8518caf1f3888ed33188a92495ed51905964ec66a916c09d346078ef9e8a0b04"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.Json.dll",
+      "Bytes": 27944,
+      "Sha256": "dfced8d327661c0a9edc1b3122d28c0a522d45d824d64821332dcb1232bd3ea7"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "Bytes": 26408,
+      "Sha256": "40866ddc26c6ff5d1fc54b33f6099fd8f0a149a640b97ee4767e5fcc7e6a9a10"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "Bytes": 65872,
+      "Sha256": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.DependencyInjection.dll",
+      "Bytes": 95528,
+      "Sha256": "ba7e45a53867bfcf4b12997c2d565ce7c0eaa9595d2b509c56605b46a28228b1"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "Bytes": 31056,
+      "Sha256": "f8dc83f39fa7aa57833fe06c6af149b3c050325bfda9f2325557b84ae7fd95a5"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Diagnostics.dll",
+      "Bytes": 36136,
+      "Sha256": "dbf06d7f3d2937400ac706f2f0491549a9aa4a4f6ff9deca62ad92ec29ae6c2e"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "Bytes": 23336,
+      "Sha256": "23f3ab8c92b4687b53454395d3b09f0940c3692025b2020882775133d02d0cac"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.FileProviders.Physical.dll",
+      "Bytes": 45392,
+      "Sha256": "a21fb353cf06856cdb8b643b927d82e588cd8fb3d0d442dc8b38cd92c1679441"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.FileSystemGlobbing.dll",
+      "Bytes": 47912,
+      "Sha256": "262e242f9dd268422864a1282d9a43e55c5fdc49725e59d8a8f50f718bb8813d"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Hosting.Abstractions.dll",
+      "Bytes": 54056,
+      "Sha256": "c71749c0adafc6a77995429a7d777cf4eddc723b0b29fbba40ba2b91ce9b8e06"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Hosting.dll",
+      "Bytes": 71976,
+      "Sha256": "5b96db7650b3b2dd17f94995f0622a28759a63ed1560973cb1da22d38bc332a7"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.Abstractions.dll",
+      "Bytes": 66856,
+      "Sha256": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.Configuration.dll",
+      "Bytes": 28456,
+      "Sha256": "da412f47d1b3c7dbebc415c698a0455fba74d3b0b4aa2d264d56fd732a233e34"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.Console.dll",
+      "Bytes": 76072,
+      "Sha256": "b34ad1019a6c57c12729905de3cf3d027db4b6ddb7d7ce206725481962a9577b"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.Debug.dll",
+      "Bytes": 19752,
+      "Sha256": "072fe39ffd1f5adc9ecf4a842063e5cabd044bd017c5b512dc1a6bf50c2ea4d3"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.dll",
+      "Bytes": 51536,
+      "Sha256": "16944de682f1db805b8aa4148e167d5c16a63a75ff8d3d753cb9a3a1dc6c63ff"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.EventLog.dll",
+      "Bytes": 24912,
+      "Sha256": "d4352c3512b171ac7a933b5d7e6e915fafb9f4adad4c471c78f5cf6e8dd2302d"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Logging.EventSource.dll",
+      "Bytes": 34640,
+      "Sha256": "581615c5921eed60d72545abc08c4853e4354108ed67f9db725a4972c47c0483"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "Bytes": 21800,
+      "Sha256": "e4268aa2fffa635b28a4ab11aa2c75b7442278e12e98fcd72c677923c0ead52e"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Options.dll",
+      "Bytes": 65320,
+      "Sha256": "b99e0911eb18a1819923d812f6e5424b4a63b6959bfcde26d8f202bc8a9e807e"
+    },
+    {
+      "Path": "cli/Microsoft.Extensions.Primitives.dll",
+      "Bytes": 44840,
+      "Sha256": "deb951c8de3092d81dd4459ac4e51b819883f30f6488abc4bfb915f1e33db183"
+    },
+    {
+      "Path": "cli/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.dll",
+      "Bytes": 176464,
+      "Sha256": "bf7bfb5f25ac87844c296605a5f0d91950e0b0f0f5e6ee00c2055ef2b7a20cdd"
+    },
+    {
+      "Path": "cli/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.Messages.dll",
+      "Bytes": 800552,
+      "Sha256": "8caf8d059ed75d232cdcc63c4d95164029b5dcf5f27cca7abad81f534db1648f"
+    },
+    {
+      "Path": "cli/runtimes/win-arm64/native/e_sqlite3.dll",
+      "Bytes": 1831936,
+      "Sha256": "e3d17b136b58e9e3f768f97ddb406cff3595632126371ad97546be368603bff6"
+    },
+    {
+      "Path": "cli/runtimes/win-x64/native/e_sqlite3.dll",
+      "Bytes": 2008576,
+      "Sha256": "b082e8a72ad4ce908234eac970b09b7d328d16157cec34a3ebccfd9dfe2221c6"
+    },
+    {
+      "Path": "cli/runtimes/win-x86/native/e_sqlite3.dll",
+      "Bytes": 1565184,
+      "Sha256": "329e6c6c5e7da09d0397a25073d556e9156e067dfc9279cdf4cc54da7d2566e0"
+    },
+    {
+      "Path": "cli/SQLitePCLRaw.batteries_v2.dll",
+      "Bytes": 5120,
+      "Sha256": "29c9cf3060789066682ba5fbf81dea584563e6ab60b5d9861c73ba8b29ed1142"
+    },
+    {
+      "Path": "cli/SQLitePCLRaw.core.dll",
+      "Bytes": 51200,
+      "Sha256": "e60e22452ba79c306a59ecc01a97c29bafe69d9fa612f40253852ed450ad27e8"
+    },
+    {
+      "Path": "cli/SQLitePCLRaw.provider.e_sqlite3.dll",
+      "Bytes": 36864,
+      "Sha256": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474"
+    },
+    {
+      "Path": "cli/System.Diagnostics.EventLog.dll",
+      "Bytes": 53584,
+      "Sha256": "ce377bd710852d96edb952e5e9d353825938854da77e9d3561548b3067ac1ce5"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Contracts.dll",
+      "Bytes": 157696,
+      "Sha256": "31f8d00fdad4369186b68120b21a39b924f9822c0180bb9c43097b961aa2c60e"
+    },
+    {
+      "Path": "fixture/Ipc.Application.DirectPlc.dll",
+      "Bytes": 12800,
+      "Sha256": "a43021897d8c08564e420deba7bcc9bdb450148ca652fd8c0c777e02bbc94d21"
+    },
+    {
+      "Path": "fixture/Ipc.Application.ParcelFlow.dll",
+      "Bytes": 621568,
+      "Sha256": "379560d5c546393b503be8e748183da138bc936cd17cfd729b895b273ffe2ade"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Sportmaster.dll",
+      "Bytes": 23552,
+      "Sha256": "5d0d676b9ede26bb3873933677f46c6a4f966b49d3a8ffdea3b5d0cf2a9b2c89"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Verification.deps.json",
+      "Bytes": 41988,
+      "Sha256": "46fde37bbf43552cb84f89ea69a147f980d4668b62767ca0ba284cf9ab29d081"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Verification.dll",
+      "Bytes": 2073600,
+      "Sha256": "f4b29860d22d3aa991cbba75d9f4c8c7d1891d9b099aa215f6944852ac590bc5"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Verification.exe",
+      "Bytes": 162816,
+      "Sha256": "23fc8b9a0d49cb4524751d626af4ac404ad4900ab912bf1b5678881511092855"
+    },
+    {
+      "Path": "fixture/Ipc.Application.Verification.runtimeconfig.json",
+      "Bytes": 342,
+      "Sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+    },
+    {
+      "Path": "fixture/Ipc.Application.WcsToPlc.dll",
+      "Bytes": 18944,
+      "Sha256": "458451ed1dc0a029f058b9558c069e6438aa6291a6a3c6725609880a8fdaa554"
+    },
+    {
+      "Path": "fixture/Ipc.Components.dll",
+      "Bytes": 11264,
+      "Sha256": "bf6fade175d58908cab6a884c6329833c276b27d19ee41795a027728b09022b9"
+    },
+    {
+      "Path": "fixture/Ipc.Drivers.dll",
+      "Bytes": 43008,
+      "Sha256": "955a1b026b392988437bbc9f5550033cfdc6867060928555d6a993bcddafb63f"
+    },
+    {
+      "Path": "fixture/Ipc.Integrations.dll",
+      "Bytes": 21504,
+      "Sha256": "577b54e07c2f30e1e96a3f6e618f1baa5605920897598af492ca3b77f8dae230"
+    },
+    {
+      "Path": "fixture/Ipc.Integrations.SportmasterRcs.dll",
+      "Bytes": 48128,
+      "Sha256": "c523cf2f991f92becd68bac9cd09d5dc3a8384ad784167353cd7ed25b7b00d8f"
+    },
+    {
+      "Path": "fixture/Ipc.Platform.dll",
+      "Bytes": 457216,
+      "Sha256": "3328ce3277c1104d8572e98d6e6dfe1c875c53498c1b3d6e10463af9a4999c6e"
+    },
+    {
+      "Path": "fixture/Ipc.Platform.Storage.dll",
+      "Bytes": 11776,
+      "Sha256": "7157e16b419a34baa805397f02ba0b6c8d457357140a1f40b03befb7515cef32"
+    },
+    {
+      "Path": "fixture/Ipc.Reference.Protocol.dll",
+      "Bytes": 32768,
+      "Sha256": "40ef12ba86a51b5c074dc659b7b1b98ecd8ee3a6f606662149a4333dfba8eaa5"
+    },
+    {
+      "Path": "fixture/Ipc.Supply.Contracts.dll",
+      "Bytes": 130560,
+      "Sha256": "107ff15ac1dcacf2e71feb9b13ae292ad8c6754aa276f7f9cec903aaf684bb44"
+    },
+    {
+      "Path": "fixture/Ipc.Supply.dll",
+      "Bytes": 193536,
+      "Sha256": "5bfb8eaef363f7e2d99e1b802db094285faeadf4aca927069a076b3b228f6346"
+    },
+    {
+      "Path": "fixture/Microsoft.Data.Sqlite.dll",
+      "Bytes": 177464,
+      "Sha256": "9f1fe804321767b6cc8db751ecedd56ab308e5f15492a7f40d7093bb61ab7638"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.Abstractions.dll",
+      "Bytes": 28496,
+      "Sha256": "a6e043abc339b7341bf7dabf6f101bc16fd5d10dcde67587ac6418f7fd6615f0"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.Binder.dll",
+      "Bytes": 43304,
+      "Sha256": "53dd1d292fe99d94c03d42a6783e3b3604c2847580c76f7b1f6e0eb1419049d0"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.CommandLine.dll",
+      "Bytes": 25424,
+      "Sha256": "757974ea4b65545c0e2c61dea5da765fb3ba63d149468b560bdc60b0ba81f6eb"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.dll",
+      "Bytes": 44880,
+      "Sha256": "2afbe810f4988debd8c0011053e2c5b751facecd211933f48ba0f4ffc12bb94b"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "Bytes": 21840,
+      "Sha256": "1cbe9651c65f65ce3cc649f5920d00809d71093507d964eabf89c477bdd4b2a1"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "Bytes": 28456,
+      "Sha256": "8518caf1f3888ed33188a92495ed51905964ec66a916c09d346078ef9e8a0b04"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.Json.dll",
+      "Bytes": 27944,
+      "Sha256": "dfced8d327661c0a9edc1b3122d28c0a522d45d824d64821332dcb1232bd3ea7"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "Bytes": 26408,
+      "Sha256": "40866ddc26c6ff5d1fc54b33f6099fd8f0a149a640b97ee4767e5fcc7e6a9a10"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "Bytes": 65872,
+      "Sha256": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.DependencyInjection.dll",
+      "Bytes": 95528,
+      "Sha256": "ba7e45a53867bfcf4b12997c2d565ce7c0eaa9595d2b509c56605b46a28228b1"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "Bytes": 31056,
+      "Sha256": "f8dc83f39fa7aa57833fe06c6af149b3c050325bfda9f2325557b84ae7fd95a5"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Diagnostics.dll",
+      "Bytes": 36136,
+      "Sha256": "dbf06d7f3d2937400ac706f2f0491549a9aa4a4f6ff9deca62ad92ec29ae6c2e"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "Bytes": 23336,
+      "Sha256": "23f3ab8c92b4687b53454395d3b09f0940c3692025b2020882775133d02d0cac"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.FileProviders.Physical.dll",
+      "Bytes": 45392,
+      "Sha256": "a21fb353cf06856cdb8b643b927d82e588cd8fb3d0d442dc8b38cd92c1679441"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.FileSystemGlobbing.dll",
+      "Bytes": 47912,
+      "Sha256": "262e242f9dd268422864a1282d9a43e55c5fdc49725e59d8a8f50f718bb8813d"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Hosting.Abstractions.dll",
+      "Bytes": 54056,
+      "Sha256": "c71749c0adafc6a77995429a7d777cf4eddc723b0b29fbba40ba2b91ce9b8e06"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Hosting.dll",
+      "Bytes": 71976,
+      "Sha256": "5b96db7650b3b2dd17f94995f0622a28759a63ed1560973cb1da22d38bc332a7"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.Abstractions.dll",
+      "Bytes": 66856,
+      "Sha256": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.Configuration.dll",
+      "Bytes": 28456,
+      "Sha256": "da412f47d1b3c7dbebc415c698a0455fba74d3b0b4aa2d264d56fd732a233e34"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.Console.dll",
+      "Bytes": 76072,
+      "Sha256": "b34ad1019a6c57c12729905de3cf3d027db4b6ddb7d7ce206725481962a9577b"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.Debug.dll",
+      "Bytes": 19752,
+      "Sha256": "072fe39ffd1f5adc9ecf4a842063e5cabd044bd017c5b512dc1a6bf50c2ea4d3"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.dll",
+      "Bytes": 51536,
+      "Sha256": "16944de682f1db805b8aa4148e167d5c16a63a75ff8d3d753cb9a3a1dc6c63ff"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.EventLog.dll",
+      "Bytes": 24912,
+      "Sha256": "d4352c3512b171ac7a933b5d7e6e915fafb9f4adad4c471c78f5cf6e8dd2302d"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Logging.EventSource.dll",
+      "Bytes": 34640,
+      "Sha256": "581615c5921eed60d72545abc08c4853e4354108ed67f9db725a4972c47c0483"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "Bytes": 21800,
+      "Sha256": "e4268aa2fffa635b28a4ab11aa2c75b7442278e12e98fcd72c677923c0ead52e"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Options.dll",
+      "Bytes": 65320,
+      "Sha256": "b99e0911eb18a1819923d812f6e5424b4a63b6959bfcde26d8f202bc8a9e807e"
+    },
+    {
+      "Path": "fixture/Microsoft.Extensions.Primitives.dll",
+      "Bytes": 44840,
+      "Sha256": "deb951c8de3092d81dd4459ac4e51b819883f30f6488abc4bfb915f1e33db183"
+    },
+    {
+      "Path": "fixture/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.dll",
+      "Bytes": 176464,
+      "Sha256": "bf7bfb5f25ac87844c296605a5f0d91950e0b0f0f5e6ee00c2055ef2b7a20cdd"
+    },
+    {
+      "Path": "fixture/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.Messages.dll",
+      "Bytes": 800552,
+      "Sha256": "8caf8d059ed75d232cdcc63c4d95164029b5dcf5f27cca7abad81f534db1648f"
+    },
+    {
+      "Path": "fixture/runtimes/win-arm64/native/e_sqlite3.dll",
+      "Bytes": 1831936,
+      "Sha256": "e3d17b136b58e9e3f768f97ddb406cff3595632126371ad97546be368603bff6"
+    },
+    {
+      "Path": "fixture/runtimes/win-x64/native/e_sqlite3.dll",
+      "Bytes": 2008576,
+      "Sha256": "b082e8a72ad4ce908234eac970b09b7d328d16157cec34a3ebccfd9dfe2221c6"
+    },
+    {
+      "Path": "fixture/runtimes/win-x86/native/e_sqlite3.dll",
+      "Bytes": 1565184,
+      "Sha256": "329e6c6c5e7da09d0397a25073d556e9156e067dfc9279cdf4cc54da7d2566e0"
+    },
+    {
+      "Path": "fixture/SQLitePCLRaw.batteries_v2.dll",
+      "Bytes": 5120,
+      "Sha256": "29c9cf3060789066682ba5fbf81dea584563e6ab60b5d9861c73ba8b29ed1142"
+    },
+    {
+      "Path": "fixture/SQLitePCLRaw.core.dll",
+      "Bytes": 51200,
+      "Sha256": "e60e22452ba79c306a59ecc01a97c29bafe69d9fa612f40253852ed450ad27e8"
+    },
+    {
+      "Path": "fixture/SQLitePCLRaw.provider.e_sqlite3.dll",
+      "Bytes": 36864,
+      "Sha256": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474"
+    },
+    {
+      "Path": "fixture/System.Diagnostics.EventLog.dll",
+      "Bytes": 53584,
+      "Sha256": "ce377bd710852d96edb952e5e9d353825938854da77e9d3561548b3067ac1ce5"
+    }
+  ],
+  "Scope": "Frozen executed CLI and fixture bundle hash inventory only; no binary archived or installer acceptance"
+}

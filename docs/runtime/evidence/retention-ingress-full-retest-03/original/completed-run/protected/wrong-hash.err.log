@@ -1,0 +1,7 @@
+Unhandled exception. System.IO.InvalidDataException: Original database hash changed; inspect again
+   at Ipc.Application.ParcelFlow.ParcelRepository.ExpireHistoryWithinBudget(String database, String expectedHash, String backup, FlowDefinition flow, Action`2 registerBackup, Boolean compact, Action authority, CancellationToken cancellationToken, Action`1 phase) in D:\projects\importer-pc-retention-verification\src\Ipc.Application.ParcelFlow\ParcelHistoryRetention.cs:line 107
+   at Ipc.Application.ParcelFlow.ParcelRepository.ExpireHistoryAuthorized(String database, String expectedHash, String backup, FlowDefinition flow, Action`2 registerBackup, Boolean compact, Action authority, CancellationToken cancellationToken, Action`1 phase) in D:\projects\importer-pc-retention-verification\src\Ipc.Application.ParcelFlow\ParcelHistoryRetention.cs:line 95
+   at Ipc.Application.ParcelFlow.ParcelRepository.ExpireHistory(String database, String expectedHash, String backup, FlowDefinition flow, Action`2 registerBackup, Boolean compact, CancellationToken cancellationToken) in D:\projects\importer-pc-retention-verification\src\Ipc.Application.ParcelFlow\ParcelHistoryRetention.cs:line 80
+   at Ipc.Assembly.ParcelCli.Management(String[] args) in D:\projects\importer-pc-retention-verification\src\Ipc.Assembly\ParcelCli.cs:line 75
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-retention-verification\src\Ipc.Assembly\Program.cs:line 10
+   at Program.<Main>(String[] args)

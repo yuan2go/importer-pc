@@ -1,0 +1,70 @@
+{
+  "AtUtc": "2026-10-25T07:34:30.570023+00:00",
+  "NewManifestSha256": "1c15189ecce671d72a99a9ab0da13a84880df79f6c3a03c8e7b5ad788a44df36",
+  "OriginalManifestSha256": "5a8d3da6aff93580f64ecde07bffbf7966c1861e04618feb7aab0456339dec45",
+  "DatabaseHashEqual": true,
+  "CustodyFileHashesEqual": true,
+  "DatabaseHash": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "ChangedManifestFields": [
+    "At"
+  ],
+  "RestoredFixtureOriginFields": {
+    "Operations": 8,
+    "Archives": 604798,
+    "RawRows": 604797,
+    "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+    "FixtureSha256": "16527F76A217784E01CE1875B3411DDD241A7FAB6771B90D64224BB9A14FDCF1",
+    "ReusedFromBackup": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db",
+    "PriorFixtureSha256": "23A5AB01A5C018408F4BF114E4937AC87800981124716ED7EDFF11B4BC9F78DB"
+  },
+  "ActualPreMaintenanceInspection": {
+    "Application": "sportmaster",
+    "Station": "retention-qualification",
+    "Mode": "Simulation",
+    "DatabaseVersion": 9,
+    "Revision": 4,
+    "Paused": true,
+    "Resident": 0,
+    "Archived": 604806,
+    "Unsettled": 1,
+    "PendingReceipts": 1,
+    "IdentityConflicts": 1,
+    "DatabaseBytes": 9464315904,
+    "CustodyBytes": 3477,
+    "DatabaseSha256": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+    "WalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ConfigurationSha256": "CC12ABF7871DF2FCFC55188511BC31821F598BE5089FF02C4EE17FB3F9DA4E05",
+    "OrdinaryUpgradeAllowed": false,
+    "Reasons": [
+      "Original input custody requires matching-release inspection; never replay accepted source input",
+      "Original business/image/recovery responsibilities require matching-release settlement",
+      "Original receipt custody is unsettled; Query is not the missing original raw",
+      "Persistent identity conflicts require authorized inspection"
+    ],
+    "At": "2026-10-25T06:52:18.4113634+00:00",
+    "BusinessVersion": "1.12.2",
+    "SourceIdentity": "1.12.2+b83998f18c56df2dd965630b25908feedc00a56f",
+    "ApplicationContractSha256": "31F8D00FDAD4369186B68120B21A39B924F9822C0180BB9C43097B961AA2C60E",
+    "ConfigurationSchema": 3,
+    "Providers": [
+      {
+        "InstanceId": "sportmaster.integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "TargetSha256": "CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5",
+        "PackageSha256": null
+      },
+      {
+        "InstanceId": "maintenance",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "TargetSha256": "28C52C39DB1B968ED558A80E582B2CFD1017064E2B6AFE08B53B29FA7D5B77B6",
+        "PackageSha256": null
+      }
+    ]
+  },
+  "InspectionFileSha256": "1c392dcce8737ce6b5b8f97f2e50888170ac86df4086d50c8e223e71853a288e",
+  "Scope": "Completed backup manifests and closed prior inspection only; fixture copied counts/DLL fields describe origin, not this restored state. No active SQLite connection and no new after-maintenance restore claim."
+}

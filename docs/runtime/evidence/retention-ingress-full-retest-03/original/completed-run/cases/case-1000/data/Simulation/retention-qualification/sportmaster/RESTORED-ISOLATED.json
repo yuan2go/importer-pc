@@ -1,0 +1,10 @@
+{
+  "Application": "sportmaster",
+  "Database": "complete-before-expiry.db",
+  "DatabaseHash": "096E7F5B2A5A1598A5ED679E08E7E7063EA00349883FB142D8BF74CCFFCFF6F9",
+  "Files": {
+    "configuration.json": "CC12ABF7871DF2FCFC55188511BC31821F598BE5089FF02C4EE17FB3F9DA4E05"
+  },
+  "At": "2026-10-24T14:41:31.5828514+00:00",
+  "Recovery": "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges"
+}

@@ -1,0 +1,9 @@
+{
+  "Case": "management-mode",
+  "ExitCode": 0,
+  "Evidence": "D:\\DevCache\\importer-pc\\lifecycle-final-native-0a3d4152\\workspace\\.artifacts\\wpf-v2-1a5d0d04b1404d7e95acb98d57394d58",
+  "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureSourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureMatchesMedium": true,
+  "Scope": "frozen published DLLs; serial WPF/SQLite with explicit synthetic identity/ports"
+}

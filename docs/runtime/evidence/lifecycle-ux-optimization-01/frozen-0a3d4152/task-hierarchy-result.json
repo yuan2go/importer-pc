@@ -1,0 +1,9 @@
+{
+  "Case": "task-hierarchy",
+  "ExitCode": 0,
+  "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-d8b7fa77fd304ba9a335ee11b29744cf",
+  "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureSourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureMatchesMedium": true,
+  "Scope": "frozen published DLLs; serial WPF/SQLite with explicit synthetic identity/ports"
+}

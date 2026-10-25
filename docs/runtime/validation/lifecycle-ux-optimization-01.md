@@ -1,6 +1,8 @@
 # 生命周期优化 · 验证与交付边界
 
-开工 main `3a5b1d13`，规划原件提交 `4c42f567`。本批测试使用 D 盘独立合成数据，真实 Application、SQLite、Windows WPF/HWND/Dispatcher；设备、身份预检和外部服务按夹具明确模拟。工程提交`8488b1ce`；启动说明同步提交`36fb420e`；只读备份绑定修正`9fa0e80f`。实际候选的SourceCommit以其ASSEMBLY.json/BUILD-INFO.json为准，后续报告提交另列。最终证据见下表及[evidence清单](../evidence/lifecycle-ux-optimization-01/FILES.json)。最终报告提交与冻结产物分别计证。
+开工 main `3a5b1d13`，规划原件提交 `4c42f567`。本批测试使用 D 盘独立合成数据，真实 Application、SQLite、Windows WPF/HWND/Dispatcher；设备、身份预检和外部服务按夹具明确模拟。**最终冻结源`0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8`，2026-10-26收口；当前主PR为[#108](https://github.com/yuan2go/importer-pc/pull/108)，未合并。最终结果见末节及frozen-0a3d4152证据；中间候选不作最终资格。**
+
+工程提交`8488b1ce`；启动说明同步提交`36fb420e`；只读备份绑定修正`9fa0e80f`。实际候选的SourceCommit以其ASSEMBLY.json/BUILD-INFO.json为准，后续报告提交另列。最终证据见下表及[evidence清单](../evidence/lifecycle-ux-optimization-01/FILES.json)。最终报告提交与冻结产物分别计证。
 
 ## 必要验证
 
@@ -78,3 +80,29 @@ dotnet D:/DevCache/importer-pc/lifecycle-frozen-native-36fb420e/bin/Debug/net10.
 affdd79c仅澄清日志日期清空后仍须选择固定起止，历史可选时间边界保持。48e6da29是中间候选，已被上述布局修正替代；其局部PASS和新增FAIL分开保存，不用于最终交付声明。最终发布源/库存以候选ASSEMBLY/BUILD-INFO/SHA256SUMS为准，最终冻结验证在报告末尾追加。
 
 本机已通过新增最小窗口/完整查询视觉、经典与默认全部页面/真实请求链、参数壳/草稿/会话、冻结V3参数、启动体验、模式/改密码及短程恢复→备份→退出旅程。未修改删除算法、索引或后端业务守卫；未重复大库/长期资格。两次必要重冻结均有新发现的实际UI缺陷，旧候选及失败原件不覆盖。
+
+## 最终冻结验证 · 2026-10-26
+
+实现、配置、打包和完整夹具固定源均为`0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8`。同源Windows发布DLL的八套旅程全部通过：parameter-v3（含作业重设计、参数体验、重构/V3）、startup-experience、visual-productization、management-mode、win11-stability短程、reliability-logs、lifecycle-ux、task-hierarchy及真实请求链。SourceCommit=FixtureSourceCommit；运行副本逐一匹配发布DLL哈希；全部原生旅程串行，结束后741个介质文件哈希不变。后续提交只记录报告/证据，不改四棵工程树或随包当前指南。
+
+|最终对象|真实身份/结果|
+|---|---|
+|SM版本|1.13.0；Contracts1.19.0；DB9。DirectPlc/WcsToPlc1.7.0完成公共壳最后增量构建，无新介质资格|
+|portable|18755766 bytes；SHA256 `b62c9999165823e2b44a0cb8f788e8f3d879fde7629e7a693652b58f45f4f403`；110文件库存通过|
+|Windows x64|134212735 bytes；SHA256 `239648b7a1d0467e006c0bdcee3e025f3be7c6fedac6ab883c2fb25b73e71d99`；741文件库存通过|
+|真实可执行入口|自包含`Ipc.Desktop.exe --environment-report`及`Ipc.Assembly.exe --action business-identity` exit0；在原生旅程全部关闭后串行运行；均为只读入口|
+|正常机器业务启动|仍**BLOCKED_ENVIRONMENT**：最终只读RequireRuntimeIdentity确认缺维护安装的machine runtime policy/指定运行账户。未重试普通入口，未安装/改策略；原36fb420e普通CLI失败保留|
+|权限/原请求|到期隐藏/返回同页、模式独立于操作员、真实B读回暂停/原请求A不改、停止失败/资源释放、原卸载状态；原断言保持|
+|最小窗口与日志|完整固定查询契约、展开筛选/晚到暂停回执均保留完整记录行；经典准入动作44DIP/作业区≥200DIP；日志401条上下文有界呈现与撤权/固定日期/两类导出守卫|
+|外部资格|G01/G02继续BLOCKED_EXTERNAL；真实UAC/系统安装卸载往返/重启、目标IPC触控、SDK/RCS、24h/72h及现场NOT_RUN|
+
+最终产物在`D:/deliveries/lifecycle-ux-20261025-0a3d4152/`，目录日期保留冻结批次；跨午夜收口不重命名或重写历史文件。未上传ZIP/安装器；原受限四份附件保持未跟踪。没有合并main、强推或改变仓库可见性。必要验证通过后停止扩测。
+
+运行/复核：先`. ./scripts/project-environment.ps1`；本机可只读运行上述environment-report。正常软件使用合法同源部署的非提权入口，缺策略时不通过链接/环境覆盖或重新首配绕过。完整操作见[当前指南](../lifecycle-ux-current-guidance-01.md)。最终冻结复核命令：
+
+```powershell
+./scripts/verify-commercial-wpf.ps1 -Media D:/deliveries/lifecycle-ux-20261025-0a3d4152/sportmaster-win-x64 -Output D:/DevCache/importer-pc/lifecycle-final-native-0a3d4152 -ParameterV3
+# 同一NativeMedia工程随后按case-results记录的flag串行运行其余七套；输出目录须为新的独立目录。
+```
+
+最终原始日志、八个结果、DLL/工程树身份、精选PNG和完整字节清单见[evidence](../evidence/lifecycle-ux-optimization-01/README.md)。首轮ed925459的CI成功/失败只属于该头；PR最新头远端CI状态按GitHub实际检查，不把首轮结果倒写为最新PASS。工程已完成与正常部署/真实联调/外部门槛明确分列。

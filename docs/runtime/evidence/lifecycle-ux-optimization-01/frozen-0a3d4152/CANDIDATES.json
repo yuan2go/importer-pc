@@ -1,0 +1,24 @@
+{
+  "portable": {
+    "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+    "BusinessVersion": "1.13.0",
+    "Contracts": "1.19.0",
+    "DatabaseFormat": 9,
+    "Bytes": 18755766,
+    "Sha256": "b62c9999165823e2b44a0cb8f788e8f3d879fde7629e7a693652b58f45f4f403",
+    "InventoryFiles": 110,
+    "InventorySha256": "dc0fd1c97dcab233f6fe78aabd3c43a481756911eec581c80ee955e3568b3d53",
+    "Status": "PASS_STATIC_INVENTORY_GUIDES"
+  },
+  "win-x64": {
+    "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+    "BusinessVersion": "1.13.0",
+    "Contracts": "1.19.0",
+    "DatabaseFormat": 9,
+    "Bytes": 134212735,
+    "Sha256": "239648b7a1d0467e006c0bdcee3e025f3be7c6fedac6ab883c2fb25b73e71d99",
+    "InventoryFiles": 741,
+    "InventorySha256": "d7664447b58dd8b4dd11a003e3a6b080a230bfaae359cb79f11f4124c204e27e",
+    "Status": "PASS_STATIC_INVENTORY_GUIDES"
+  }
+}

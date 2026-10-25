@@ -17,3 +17,9 @@ Windows 11 Home 10.0.22631，.NET10，Windows DPI1.25。HWND/Dispatcher/SQLite/�
 ## 后续发现的备份绑定缺陷
 
 `backup-binding-fix/`保留同一冻结36fb420e DLL在恢复→参数旅程的真实FAIL，以及显式OneWay修正后的本机原生PASS/两产品公共控件构建。该FAIL不覆盖原两套局部PASS，36fb420e候选被替代；最终候选另存新的SourceCommit。原删除/后端/权限内核没有因修正改变。
+
+## 最终冻结交付 · 0a3d4152
+
+2026-10-26收口。`frozen-0a3d4152/FINAL-RESULT.json`为最终独立工程冻结验证：八套原生旅程同一SourceCommit、同一FixtureSourceCommit，全部引用冻结发布DLL；运行副本逐一匹配发布哈希，741个介质文件在全部串行旅程后保持不变。两目标库存、当前指南和真实只读EXE/CLI入口通过。36fb420e及48e6da29均为被替代中间候选，原局部PASS和FAIL完整保留。
+
+最终业务/配置/脚本/夹具树ID见SOURCE-TREES；后续报告提交不改树。普通机器业务启动仍缺受维护安装的策略，不重试可能进入首次运行维护的普通入口。G01/G02、真实系统往返/重启/SDK/RCS/长期/现场门槛保持。

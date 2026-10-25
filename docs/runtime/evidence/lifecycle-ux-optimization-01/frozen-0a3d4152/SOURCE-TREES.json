@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "Trees": {
+    "src": "f9bd2c90cb9c9620632d2ff612562d344644b624",
+    "config": "545c07b37a7a420a1fc707dce21e57e5a3582706",
+    "scripts": "41788bf6558d5d7c2fdff23ada6ea9df56111599",
+    "tests": "d62343e4480611b1ca105d24d728415c589fb240"
+  },
+  "Scope": "frozen exact implementation, configuration, packaging and complete native fixture; later report-only commits must not change these trees"
+}

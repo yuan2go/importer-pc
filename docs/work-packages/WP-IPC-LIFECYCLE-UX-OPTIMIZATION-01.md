@@ -162,3 +162,7 @@
 每包更新U/G来源、实现commit/PR、测试实际命令/源SHA/环境/结果、原生图及未验项；不同源PASS不累加为最终版本PASS。完成报告分别列工程已完成、待真实联调、外部受阻和未完成。G01/G02不能静默取消，也不扩大为禁止交付已完成的其余工程。
 
 原规划文档验证清单见 [FILES.json](../reviews/lifecycle-ux-optimization-01/FILES.json)。该清单只记录原规划文档字节（可在规划归档核对），不修改旧产品manifest及原验收身份。后续可使用[精简执行提示](CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)启动整批实施。
+
+## 本轮独立工程收口 · 2026-10-26
+
+LIA-01～07统一实现/夹具冻结源`0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8`，main PR[#108](https://github.com/yuan2go/importer-pc/pull/108)，不合并。各包实际路径、原编号和必要证据见实现/总账/最终验证；U01～21为IMPLEMENTED并有局部本机验证，不等于历史RV或现场关闭。最终同源八套原生旅程、三装配构建、当前指南/库存通过；前轮不足已实际修正，旧FAIL和旧候选保留。G01/G02继续BLOCKED_EXTERNAL；本机正常业务启动缺受维护安装的运行策略，不改策略或安装来换PASS；真实系统往返、SDK/RCS、目标IPC、长期/现场门槛保留。后续报告提交不改冻结工程树及介质SourceCommit。

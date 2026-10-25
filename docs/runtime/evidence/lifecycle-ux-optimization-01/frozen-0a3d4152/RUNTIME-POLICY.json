@@ -1,0 +1,6 @@
+{
+  "Status": "BLOCKED_ENVIRONMENT",
+  "Reason": "Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account",
+  "Mutations": "NONE",
+  "Scope": "read-only RequireRuntimeIdentity; ordinary startup/provisioning not invoked"
+}

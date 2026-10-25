@@ -1,8 +1,10 @@
 # P0-STABILITY-01 本次验证
 
-基线 `3a5b1d13ec5969213db35ed43d72a5aecd437777`。本页只记录本轮实际执行；尚未执行项保持 NOT_RUN，不继承历史 PASS。
+交付基线 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`。F0原基线为3a5b1d13；下面历史段落/摘要保留实际当时身份。新main重新核查、再执行本批回归，未执行项保持NOT_RUN，不继承历史PASS。
 
 ## ST01 问题卡
+
+新main核查：PR109/a8cd4314已解决八组合的原心跳阻断、零读码器心跳、待配置重连及补齐RCS后的编号恢复。本包重放时保留这些主线代码，撤去重复修改。八组合在新main已通过；明确禁用的扩展读码器仍因缺bcr-code抛错，补充st01-main-a8-before.json先失败、after.json通过，当前新增产品差异只有禁用实例过滤及版本/兼容声明。后面的F0修复过程不是将已合并工作再次算成本包新缺陷。
 
 确认：八组合夹具先于产品修改运行；mask 1/2/3（RCS启用且左/右/双相机延后）在联合校验、离线保存及Application启动复现缺少驱动bcr-code异常。首次夹具存在种子身份不一致和缺Windows运行政策的独立失败，修正夹具后再次记录，不将它们当产品缺陷。
 
@@ -13,6 +15,8 @@
 测试装配使用真实Application/SQLite/TCP/RCS组件及本地桩，不安装机器租约政策，不替代正式装配资格。新增扫码夹具首次错误读取正常投影的隐藏字段；改为只读原SQLite后通过，未放宽产品脱敏。
 
 预留SM1.14.0（避开并行PR108的1.13.0）、RCS1.3.3；旧内置1.3.2候选可读取，新候选1.3.3，原请求字节/实现hash守卫不变。Contracts1.18.0/DB9不变。原始日志保留本地，公开回执无账户路径、凭据或现场数据。
+
+2026-10-26复查新增并行PR109后，再以本包独立夹具证实同类遗漏：延后RCS的request-id-base/count为空时，补齐后Pending保存成功，受控重启仍解析旧未配置候选而失败；待配置相机重连错误报告Reconnected，待配置RCS重连抛异常。补充修改前/后摘要st01-activation-before/after.json保持实际当时本机父提交10eb35b9及工作树身份。修复仅筛除未配置候选的编号范围，既有范围表、永久编号底账、在库和归档原绑定仍全量核验；重连按Effective筛选，待配置项明确Rejected。原件、Unknown和Pending守卫未放宽。新夹具保留在ST01提交；集成PR109后丢弃重复的守卫代码修改，沿主线实现，不混入ST14。
 
 残余：全部读码器延后时不发心跳待合同确认。正式Production资格/真实设备/RCS、完整24h/72h：NOT_RUN。
 
@@ -35,3 +39,43 @@
 验收：Windows本地FIN/RST/停止转发三场景通过，读取实际socket验证time=1秒、interval=1秒、retry=2；入站期限2秒的停止转发场景约2.2秒内Faulted。只观察到一个原条码，旧连接后续数据未交接，无自动重连。原12类协议、停止取消保有/重启Epoch、健康证据组件断言原样执行通过。
 
 残余与NOT_RUN：静默丢包的OS keepalive实际发现时间、真实相机空闲/网络/重连缓冲合同、目标IPC和24h/72h。300秒无来件期限需现场确认。自动重连方案已提交，开关及执行路径待合同确认；本轮没有把它标成已完成。
+
+2026-10-26用户明确答复“尚未确认，先交付第一阶段和重连方案”；本批范围据此收口，不能把自动重连实现标成待交付欠项。
+
+## ST14 问题卡
+
+确认：在src、安装器、scripts及docs检索DispatcherUnhandledException、AppDomain.CurrentDomain.UnhandledException、TaskScheduler.UnobservedTaskException、SetUnhandledExceptionMode、WER/LocalDumps、计划任务/Run键/启动文件夹、sc failure。旧实现只有业务观察器、普通快捷方式和自动启动的授权服务；未发现三类全局钩子、自动WER投影、客户端自启动/失败重启和SCM恢复配置。原长稳文档要求管理员手配WER、外部诊断/电源/更新维护；前述程序化闭环未落实，电源/更新等仍属现场政策。新真实子进程夹具在修改前两场景均失败：异常退出无刷盘上下文，未观察任务无记录/计数。
+
+修复：三类钩子及0xE0000014快速失败；已有一次UAC中登记有限WER、普通交互账号计划任务及SCM恢复；外部监督使用持久启动账、有限次数、单调健康间隔和明确循环保护。新任务/注册表/受控dump/服务动作全部进入卸载清单；原服务及WER按共享消费者处理，外部条目不覆盖。新部署可选策略不改变旧记录字节/构造合同，DB9和业务重放规则不变。独立Windows CI job纳入这些隔离夹具，CI本身不授予运行资格。
+
+验收（本机Windows、全新隔离Simulation/合成进程）：AppDomain真实异常退出与任务未观察场景通过，日志含版本、commit、实例、Epoch、最近状态及进度，任务计数可见；编译原生产App构造器/Dispatcher钩子的WPF子进程记录后以指定退出码终止。进程监督验证强杀后按配置拉起、正常退出不重启、连续崩溃后预算持久围栏、更换监督者接管原PID/启动时间/hash、退役不杀业务、创建结果不明不创建第二进程、常规系统修复不清不明启动、单调健康预算复位。Windows Task Scheduler以TASK_VALIDATE_ONLY=1接受生成XML，没有注册任务。隔离文件清理只删受控WER名称，保留外部/畸形名字。
+
+实际Application/SQLite/本地HTTP桩确认响应超时留下Unknown；停止再启动后冻结原请求不变，获得合成管理授权后核对/重连均未清除Unknown、未产生第二次HTTP请求。首次新增夹具漏掉管理授权，退出时旧超时HTTP桩又因listener过早Dispose掩盖了原授权异常；只修正新夹具并等待原桩完成，未改产品授权守卫或旧断言。
+
+静态复查还探索了元数据读/替换：一个刻意跨消费阶段持有目标文件句柄的夹具失败，ShareDelete也未令Windows覆盖移动成功。但原File.ReadAllText在反序列化前已关闭句柄，该夹具不等价于实际调用生命周期，不能据此宣布原实现缺陷或删断言换PASS；撤回探索代码/夹具，原日志hash仅作未确认假设记录，实际投影竞争保留VM待验。构造器的版本文件读取上限4MiB、仅启动一次；目标IPC冷启动延迟未测，不能声称UI启动路径完全无同步IO。
+
+残余：外部监督只处理进程异常退出，不能把进程挂起变为可安全强杀；系统登录会话、D盘可用性、WER政策/ACL、实际SCM/任务行为仍需要VM。全局记录为最后机会，磁盘不可写/挂起或native堆损坏时可能不完整。mini dump限制类型和份数，不承诺固定字节大小。周期读取部署登记与升级/退役投影的竞争仍需在VM重入场景覆盖。第三方同名Ipc.Desktop.exe及共享WER政策须由现场核对。
+
+NOT_RUN：本机未UAC安装/卸载、未创建任务/HKLM项、未改变SCM或防火墙/网络政策；真实计划任务强杀自拉起、WER生成/份数轮换、SCM崩溃动作、系统卸载无登记残留、4核8GB/26100+、真实SDK/RCS/相机、24h/72h和物理断电均未验。签名、Production接管、604800完整恢复UAC及2592000规模维护也未因本包获得PASS。
+
+## 本次回归与证据身份
+
+新基线a8cd4314整合后重新执行14组，含PR109的deferred-connections全部通过；原生WPF参数/七组合与生产Dispatcher钩子子进程通过；四产品WPF及自包含安装器构建零警告/零错误。准确日志hash、源码blob和范围在integration-a8-after.json；这份整合补证独立于旧ST01～ST14摘要。发布文档两项检查通过。
+
+本包实际重新筛查src九个工程目录的28个修改文件（其中21个C#）、config两个文件、scripts一个文件及CI一个文件；清单在整合摘要。未将本轮P0定向修复称作全src长期稳定性审查。确认无DB9/SQL1–9结构变更；与主线重复的重连/编号恢复及心跳循环源码没有差异。
+
+本页记录实际工作树验证，最初ST14确认父提交为10eb35b9、后续重跑父提交见各摘要；产品文件身份由本次manifest及最终提交固定，未把旧介质PASS改记本次版本。结构化摘要在evidence/p0-stability-01/st14-before.json、st14-after.json；本机原日志仅保留本地hash，不上传机器账号路径或私有日志。提交后的同源介质构建/启动冒烟如执行，由PR补充准确SourceCommit和范围，不反写历史介质。
+
+最终重跑12组均PASS：p0-recovery、p0-supervisor、p0-deferred、p0-cleanup、p0-tcp、p0-tcp-components、p0-rcs、p0-unknown-restart、parameter-guidance-startup、rcs-heartbeat、installer-options、installer-change-guards。补充原生产WPF钩子子进程和Windows任务XML仅验证均PASS。ST02提交时的retention-ingress默认1000/10000档PASS仍守当时身份，没有当作30天规模证据。新改文件重新核对UI调度、持有等待、异常观察、句柄释放、单调期限、未知原件和卸载登记。
+
+Windows WPF四产品及安装器构建结果见摘要。安装器首次直接build因依赖未统一self-contained出现NETSDK1150；按发行方式传入-r win-x64 --self-contained true及BusinessModule=Sportmaster后成功，不以更改项目去掩盖该命令差异。完整受保护RCS启动原测试仍受本机缺maintainer-installed runtime policy限制，NOT_RUN；新增Simulation装配不是其资格替代。
+
+## 隔离Windows VM验收步骤（尚未执行）
+
+1. 使用可回滚的Win11 26100+ VM、指定普通交互账号和全新D盘Simulation根；保留安装前任务、HKLM64 LocalDumps、服务及卸载登记清单。检查空间后用同源SM1.14.0候选安装，确认只有原一次UAC，启动普通权限，不连设备或真实RCS。
+2. 核对计划任务SID、InteractiveToken/LeastPrivilege、固定程序路径、默认30秒/3次客户端预算与至少60秒的任务自身重试；注销/登录确认自启动。未登录场景应无交互工作窗口，不用自动登录绕过验收。
+3. 在全新Simulation中记录客户端PID、启动时间及原请求；仅强杀该VM测试客户端，计时应在配置延迟加启动耗时内出现新PID。另对监督者强杀，确认任务按配置恢复且接管原客户端，不多建进程。连续异常退出超过阈值后停止拉起，state/alert、任务退出77及普通启动维护提示可见。常规已知循环保护仅在原客户端退出后由已有维护修复入口复位。
+4. 强杀不等于WER崩溃转储。另将本次UiVerification输出完整复制到全新隔离harness目录，仅把其apphost副本改名Ipc.Desktop.exe（保留原DLL及依赖），直接运行副本--p0-dispatcher-child <全新诊断根>，不要修改已安装介质。该合成WPF钩子触发真实fail-fast；连续3次后受控dump目录应最多2个mini dump，普通账号写入成功、其他账号不可读；不要附加会截获异常的调试器。记录SourceCommit、退出码、WER策略、dump数量/大小/hash。native SDK原生崩溃仍另验。
+5. 只对该VM安装的授权服务执行受控异常结束，核对5秒/30秒/NONE及86400秒复位、非零服务失败也触发；正常停止不触发。复核管理凭据、管道及会话权限没有被恢复动作绕过。
+6. 用合成RCS响应丢失制造Unknown，再按第3步崩溃重启，核对原ID/hash/字节、Attempts=1、原Unknown仍在且没有第二次请求。配置Pending只经原受控重启激活，不通过设备重连应用。
+7. 覆盖任务更新/数据根迁移、关闭客户端同时卸载、投影中断后修复、创建进程后记账中断等竞争。卸载后本产品任务不存在；最后消费者的拥有WER键/dump及SCM服务不存在；其他产品或外部登记保留。对比SystemEntries与卸载前清单，未知文件/业务数据的保留必须进入回执，不能用全目录强删换无残留。

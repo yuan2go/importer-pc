@@ -66,6 +66,47 @@ jobs:
             confirmed-camera-rcs.log
           if-no-files-found: warn
           retention-days: 30
+  p0-stability-boundaries:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.longpaths
+          GIT_CONFIG_VALUE_1: 'true'
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Isolated Simulation and owned process crash boundaries
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          foreach ($case in @('p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-options','installer-change-guards')) {
+            dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
+            if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
+          }
+          dotnet run --project tests/Ipc.Desktop.UiVerification -c Release -- . --p0-crash-hooks *> .artifacts/p0-stability/wpf-crash-hooks.log
+          if ($LASTEXITCODE) { Get-Content .artifacts/p0-stability/wpf-crash-hooks.log; exit $LASTEXITCODE }
+          # No task registration, HKLM writes, SCM changes, installation or devices.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p0-stability-boundaries-${{ github.sha }}
+          path: .artifacts/p0-stability
+          retention-days: 30
   frozen-sportmaster:
     runs-on: windows-2025
     timeout-minutes: 45

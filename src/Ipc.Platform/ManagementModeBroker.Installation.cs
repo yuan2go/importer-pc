@@ -86,6 +86,7 @@ public static partial class ManagementModeBroker
         {
             Stop(service);
             if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            ConfigureRecovery(service);
             Start(service); _ = Call<ManagementModeStatus>(dataRoot, new("Status"));
         }
         catch

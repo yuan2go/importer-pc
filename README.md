@@ -1,4 +1,4 @@
-> 当前源码操作入口：[文档索引](docs/INDEX.md)、[管理模式](docs/runtime/management-mode-01.md)、[本轮架构质量整改](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。本轮不是安装包发行；SM1.11.1重测介质及历史发布按索引分别读取。下述V3形成时状态保留历史范围。
+> 当前源码入口：[文档索引](docs/INDEX.md)、[P0稳定性工作包](docs/work-packages/WP-IPC-P0-STABILITY-01.md)、[本次问题卡](docs/runtime/validation/p0-stability-01.md)与[管理模式](docs/runtime/management-mode-01.md)。SM1.14.0工程候选、Contracts1.18.0、DB9；这不是Production运行资格。历史介质及下述V3形成时状态各守原SourceCommit。
 
 > 历史安装包：[SM v1.6.1 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76 已合并，固定源 `92586bf44cde`；[发布记录、哈希与边界](docs/runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏，未签名预发布，真实设备/现场待验。
 >

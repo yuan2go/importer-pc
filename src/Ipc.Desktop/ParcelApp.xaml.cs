@@ -12,6 +12,7 @@ public partial class App : System.Windows.Application
     IBusinessRuntime? runtime;
     ParcelStartupWindow startup = null!;
     DesktopLaunchOptions? selected;
+    bool recoveryChild;
 #if SPORTMASTER
     const string ApplicationId = "sportmaster";
 #elif DIRECTPLC
@@ -21,6 +22,14 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+        if (e.Args.FirstOrDefault() == "--supervise-desktop")
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            crashDiagnostics.SetContext("supervisor:" + e.Args.ElementAtOrDefault(1), "no-business-connections", "supervising");
+            await DesktopRecoverySupervisor.HandleAsync(e.Args); Shutdown(Environment.ExitCode); return;
+        }
+        recoveryChild = e.Args.FirstOrDefault() == "--recovery-child";
+        var arguments = recoveryChild ? e.Args[1..] : e.Args;
         if (e.Args.SequenceEqual(new[] { "--environment-report" }))
         {
             Console.WriteLine(Wire.Encode(WindowsClientCompatibility.Capture())); Shutdown(0); return;
@@ -36,9 +45,9 @@ public partial class App : System.Windows.Application
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? e.Args[0] : null;
+            var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? arguments[0] : null;
             if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
-            selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
+            selected = DesktopLaunchOptions.Parse(mode is null ? arguments : arguments[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {
@@ -66,6 +75,16 @@ public partial class App : System.Windows.Application
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
+            if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
+                DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
+                Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&
+                Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(installed.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
+            {
+                var presentation = new List<string> { "--ui", options.Ui };
+                if (launch.View is not null) presentation.AddRange(["--view", launch.View]);
+                if (launch.Layout is not null) presentation.AddRange(["--layout", launch.Layout]);
+                if (await Task.Run(() => DesktopRecoverySupervisor.StartForInstalledDesktop(installed, presentation.ToArray()))) { startup.AllowClose = true; Shutdown(0); return; }
+            }
             if (!firstConfigurationReviewed)
             {
                 var maintenance = ParcelStartupServices.Maintenance(launch);
@@ -87,6 +106,9 @@ public partial class App : System.Windows.Application
             startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照。", "启动流程已返回");
             var application = (IParcelApplication)starting.Application;
             var initial = await Task.Run(application.SnapshotAsync);
+            crashDiagnostics.SetContext(initial.RuntimeId.ToString(), string.Join(",", initial.Devices?.Select(d => d.DeviceId + ":" + d.Epoch) ?? []), initial.State);
+            var effective = initial.Configuration.Effective;
+            crashDiagnostics.SetProgressFile(Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "runtime-progress.json"));
             startup.Phase("创建工作窗口", "应用状态：" + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), "已取得运行实例 " + initial.RuntimeId);
 #if SPORTMASTER
             var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, options.Ui, StopAsync);

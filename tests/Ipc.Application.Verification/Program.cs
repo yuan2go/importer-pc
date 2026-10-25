@@ -13,6 +13,7 @@ var root = (args.Contains("--management-mode") || args.Contains("--operator-admi
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--latency-capacity-checks")) { await LatencyCapacityChecks.Run(workspace, root); return; }
 if (args.Contains("--parameter-guidance-startup")) { await ParameterGuidanceStartup.Run(workspace, root); return; }
 if (args.Contains("--deferred-connections")) { await SportmasterRcs.DeferredConnectionChecks(workspace, root); return; }
 if (args.Contains("--h02-crash-child")) { var i = Array.IndexOf(args, "--h02-crash-child"); await ReliabilityHardening.CrashChild(workspace, args[i + 1], args[i + 2], args[i + 3]); return; }

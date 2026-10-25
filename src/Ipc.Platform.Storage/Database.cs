@@ -6,6 +6,7 @@ public sealed record DatabaseMigration(int Version, string Sql);
 // interprets a business state or silently recreates a corrupt/unsupported database.
 public static class Database
 {
+    internal static Action<long>? BackupCopyBytesForVerification { get; set; }
     public static SqliteConnection Open(string path, bool create = true) => Open(path, create, CancellationToken.None);
     public static SqliteConnection Open(string path, bool create, CancellationToken cancellationToken)
     {
@@ -61,7 +62,13 @@ public static class Database
         using var reserve = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None);
         reserve.Dispose();
         using var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Pooling = false }.ToString());
-        target.Open(); source.BackupDatabase(target);
+        target.Open();
+        if (BackupCopyBytesForVerification is { } observe)
+        {
+            using var size = source.CreateCommand(); size.CommandText = "PRAGMA page_count"; var pages = (long)size.ExecuteScalar()!;
+            size.CommandText = "PRAGMA page_size"; observe(pages * (long)size.ExecuteScalar()!);
+        }
+        source.BackupDatabase(target);
     }
     // Online backup has no VM progress callbacks. Bound each copy step so the same
     // maintenance deadline also covers the database copy. Finish rolls back a partial
@@ -78,7 +85,15 @@ public static class Database
         do
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var remaining = SQLitePCL.raw.sqlite3_backup_remaining(copy);
             status = SQLitePCL.raw.sqlite3_backup_step(copy, 256);
+            if (BackupCopyBytesForVerification is { } observe)
+            {
+                var after = SQLitePCL.raw.sqlite3_backup_remaining(copy);
+                var total = SQLitePCL.raw.sqlite3_backup_pagecount(copy);
+                using var size = source.CreateCommand(); size.CommandText = "PRAGMA page_size";
+                observe((remaining == 0 ? total - after : remaining - after) * (long)size.ExecuteScalar()!);
+            }
             if (status is not (SQLitePCL.raw.SQLITE_OK or SQLitePCL.raw.SQLITE_DONE))
                 throw new SqliteException("Complete maintenance backup failed; incomplete target retained", status);
         } while (status != SQLitePCL.raw.SQLITE_DONE);

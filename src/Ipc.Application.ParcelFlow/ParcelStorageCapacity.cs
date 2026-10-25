@@ -9,13 +9,14 @@ public sealed partial class ParcelRuntime
     DateTimeOffset storageChecked;
     DateTimeOffset retentionChecked;
     string? retentionWarning;
+    internal Func<long>? StorageAvailableBytesForVerification { get; set; }
     ParcelRetentionPolicy Retention => Effective.Retention ?? new();
     void RefreshStorageCapacity()
     {
         if (DateTimeOffset.UtcNow - storageChecked < TimeSpan.FromSeconds(1)) return;
         try
         {
-            freeStorageBytes = ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
+            freeStorageBytes = StorageAvailableBytesForVerification?.Invoke() ?? ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
             storageCapacityFailure = freeStorageBytes < Retention.MinimumFreeBytes ? "Storage reserve exhausted; preserve original history and use approved external retention procedure" : null;
             storageCapacityWarning = freeStorageBytes < checked(Retention.MinimumFreeBytes * 2) ?
                 "StorageGrowthWarning: less than twice the configured reserve remains; plan a maintenance backup/volume relocation before admission is blocked; archives do not reclaim disk" : null;

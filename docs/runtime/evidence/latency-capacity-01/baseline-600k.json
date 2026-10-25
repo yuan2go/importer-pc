@@ -1,0 +1,506 @@
+{
+  "Main": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "MeasurementSource": "ece4a0d65a0a2d5dd665cc4ad7b3966ac0d1eeea",
+  "Identity": {
+    "Scope": "Actual runtime and HistoryPage/ViewModel, synthetic archives and unresolved resident records only; no full custody/retention/site qualification",
+    "Main": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "RuntimeSha256": "2B1AF3FC23A3883F927EB462812D1BF064F457BC7C5F9A265D1B0234E87436F2",
+    "UiSha256": "F844D316E60D56333FD4253D2284185D4E212B9088B0C37C52A5D6EE265529D0",
+    "FixtureSha256": "E6BD0879BCB2A7E09CD6E3E7EF9025F81865FF73C5965E993E3E55F98F7203F0",
+    "OS": "Microsoft Windows NT 10.0.22631.0",
+    "Cores": 8,
+    "DatabaseBytes": 2917666816
+  },
+  "Measurements": {
+    "Rows": 600000,
+    "PrefillSeconds": 218.1965595,
+    "FreeBytesBefore": 114965426176,
+    "Count": [
+      {
+        "Rows": 600000,
+        "Ms": 653.5816,
+        "VmSteps": 8
+      },
+      {
+        "Rows": 600000,
+        "Ms": 67.9268,
+        "VmSteps": 8
+      },
+      {
+        "Rows": 600000,
+        "Ms": 71.5808,
+        "VmSteps": 8
+      },
+      {
+        "Rows": 600000,
+        "Ms": 70.6803,
+        "VmSteps": 8
+      },
+      {
+        "Rows": 600000,
+        "Ms": 69.0959,
+        "VmSteps": 8
+      }
+    ],
+    "Cases": [
+      {
+        "Resident": 200,
+        "Windows": 1,
+        "WindowSetupMs": 13025.5242,
+        "Started": "2026-10-25T19:18:14.3835885+00:00",
+        "Ended": "2026-10-25T19:18:26.6533508+00:00",
+        "WallMs": 12269.7613,
+        "RefreshBatches": {
+          "Count": 15,
+          "P50Ms": 232.2661,
+          "P95Ms": 1402.7599,
+          "P99Ms": 1402.7599,
+          "MaxMs": 1402.7599
+        },
+        "GateHeld": {
+          "Count": 15,
+          "P50Ms": 120.5509,
+          "P95Ms": 1274.5611,
+          "P99Ms": 1274.5611,
+          "MaxMs": 1274.5611
+        },
+        "SnapshotEncodes": 15,
+        "DetailEvaluations": 45,
+        "DispatcherWait": {
+          "Count": 366,
+          "P50Ms": 0.3213,
+          "P95Ms": 2.0454,
+          "P99Ms": 67.6842,
+          "MaxMs": 76.5678
+        },
+        "AllocationBytes": 1178360752,
+        "Gen2Collections": 18,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 13,
+            "Mean": 40.07692307692308,
+            "Maximum": 96,
+            "Sum": 521
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 13,
+            "Mean": 82538786.46153846,
+            "Maximum": 158927624,
+            "Sum": 1073004224
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 13,
+            "Mean": 138.36457292307693,
+            "Maximum": 215.008384,
+            "Sum": 1798.739448
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 13,
+            "Mean": 1.2307692307692308,
+            "Maximum": 3,
+            "Sum": 16
+          },
+          "LOH Size (B)": {
+            "Samples": 13,
+            "Mean": 79482913.84615384,
+            "Maximum": 145085880,
+            "Sum": 1033277880
+          }
+        }
+      },
+      {
+        "Resident": 200,
+        "Windows": 2,
+        "WindowSetupMs": 11099.2408,
+        "Started": "2026-10-25T19:18:37.8429278+00:00",
+        "Ended": "2026-10-25T19:18:50.5778733+00:00",
+        "WallMs": 12734.945,
+        "RefreshBatches": {
+          "Count": 15,
+          "P50Ms": 342.6686,
+          "P95Ms": 430.1019,
+          "P99Ms": 430.1019,
+          "MaxMs": 430.1019
+        },
+        "GateHeld": {
+          "Count": 30,
+          "P50Ms": 107.0473,
+          "P95Ms": 152.1608,
+          "P99Ms": 168.9324,
+          "MaxMs": 168.9324
+        },
+        "SnapshotEncodes": 30,
+        "DetailEvaluations": 90,
+        "DispatcherWait": {
+          "Count": 345,
+          "P50Ms": 0.4595,
+          "P95Ms": 90.8836,
+          "P99Ms": 115.8056,
+          "MaxMs": 121.9335
+        },
+        "AllocationBytes": 2276713168,
+        "Gen2Collections": 20,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 13,
+            "Mean": 40.69230769230769,
+            "Maximum": 94,
+            "Sum": 529
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 13,
+            "Mean": 170097392.0,
+            "Maximum": 294554528,
+            "Sum": 2211266096
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 13,
+            "Mean": 239.44242892307693,
+            "Maximum": 310.854072,
+            "Sum": 3112.751576
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 13,
+            "Mean": 1.6153846153846154,
+            "Maximum": 3,
+            "Sum": 21
+          },
+          "LOH Size (B)": {
+            "Samples": 13,
+            "Mean": 134925323.07692307,
+            "Maximum": 160258200,
+            "Sum": 1754029200
+          }
+        }
+      },
+      {
+        "Resident": 200,
+        "Windows": 4,
+        "WindowSetupMs": 20939.1039,
+        "Started": "2026-10-25T19:19:11.6042251+00:00",
+        "Ended": "2026-10-25T19:19:23.955696+00:00",
+        "WallMs": 12351.4703,
+        "RefreshBatches": {
+          "Count": 11,
+          "P50Ms": 565.0998,
+          "P95Ms": 798.3133,
+          "P99Ms": 798.3133,
+          "MaxMs": 798.3133
+        },
+        "GateHeld": {
+          "Count": 44,
+          "P50Ms": 101.1013,
+          "P95Ms": 228.2351,
+          "P99Ms": 268.3331,
+          "MaxMs": 268.3331
+        },
+        "SnapshotEncodes": 44,
+        "DetailEvaluations": 132,
+        "DispatcherWait": {
+          "Count": 310,
+          "P50Ms": 0.5594,
+          "P95Ms": 26.5354,
+          "P99Ms": 186.1028,
+          "MaxMs": 200.5834
+        },
+        "AllocationBytes": 3142723960,
+        "Gen2Collections": 14,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 12,
+            "Mean": 13.5,
+            "Maximum": 98,
+            "Sum": 162
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 12,
+            "Mean": 234934834.0,
+            "Maximum": 317461120,
+            "Sum": 2819218008
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 12,
+            "Mean": 476.8741333333333,
+            "Maximum": 574.799064,
+            "Sum": 5722.4896
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 12,
+            "Mean": 1.1666666666666667,
+            "Maximum": 2,
+            "Sum": 14
+          },
+          "LOH Size (B)": {
+            "Samples": 12,
+            "Mean": 238456422.66666666,
+            "Maximum": 313272416,
+            "Sum": 2861477072
+          }
+        }
+      },
+      {
+        "Resident": 800,
+        "Windows": 1,
+        "WindowSetupMs": 5687.8668,
+        "Started": "2026-10-25T19:19:29.8254058+00:00",
+        "Ended": "2026-10-25T19:19:42.1289531+00:00",
+        "WallMs": 12303.547,
+        "RefreshBatches": {
+          "Count": 17,
+          "P50Ms": 220.8029,
+          "P95Ms": 237.7777,
+          "P99Ms": 237.7777,
+          "MaxMs": 237.7777
+        },
+        "GateHeld": {
+          "Count": 17,
+          "P50Ms": 103.6828,
+          "P95Ms": 118.277,
+          "P99Ms": 118.277,
+          "MaxMs": 118.277
+        },
+        "SnapshotEncodes": 17,
+        "DetailEvaluations": 51,
+        "DispatcherWait": {
+          "Count": 388,
+          "P50Ms": 0.619,
+          "P95Ms": 2.8474,
+          "P99Ms": 27.4949,
+          "MaxMs": 34.0584
+        },
+        "AllocationBytes": 2027032536,
+        "Gen2Collections": 15,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 12,
+            "Mean": 25.166666666666668,
+            "Maximum": 99,
+            "Sum": 302
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 12,
+            "Mean": 154568482.66666666,
+            "Maximum": 243594040,
+            "Sum": 1854821792
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 12,
+            "Mean": 218.6903593333333,
+            "Maximum": 339.675888,
+            "Sum": 2624.2843119999998
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 12,
+            "Mean": 1.3333333333333333,
+            "Maximum": 2,
+            "Sum": 16
+          },
+          "LOH Size (B)": {
+            "Samples": 12,
+            "Mean": 190455468.66666666,
+            "Maximum": 357221704,
+            "Sum": 2285465624
+          }
+        }
+      },
+      {
+        "Resident": 800,
+        "Windows": 2,
+        "WindowSetupMs": 10543.496,
+        "Started": "2026-10-25T19:19:52.7306328+00:00",
+        "Ended": "2026-10-25T19:20:04.9903113+00:00",
+        "WallMs": 12259.6776,
+        "RefreshBatches": {
+          "Count": 13,
+          "P50Ms": 432.0436,
+          "P95Ms": 644.999,
+          "P99Ms": 644.999,
+          "MaxMs": 644.999
+        },
+        "GateHeld": {
+          "Count": 26,
+          "P50Ms": 130.0993,
+          "P95Ms": 223.2919,
+          "P99Ms": 257.2751,
+          "MaxMs": 257.2751
+        },
+        "SnapshotEncodes": 26,
+        "DetailEvaluations": 78,
+        "DispatcherWait": {
+          "Count": 355,
+          "P50Ms": 0.6636,
+          "P95Ms": 12.304,
+          "P99Ms": 102.2086,
+          "MaxMs": 125.1172
+        },
+        "AllocationBytes": 3112724336,
+        "Gen2Collections": 22,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 12,
+            "Mean": 43.833333333333336,
+            "Maximum": 91,
+            "Sum": 526
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 12,
+            "Mean": 233910037.33333334,
+            "Maximum": 316122528,
+            "Sum": 2806920448
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 12,
+            "Mean": 328.1412506666667,
+            "Maximum": 455.5128,
+            "Sum": 3937.695008
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 12,
+            "Mean": 1.75,
+            "Maximum": 3,
+            "Sum": 21
+          },
+          "LOH Size (B)": {
+            "Samples": 12,
+            "Mean": 222661106.66666666,
+            "Maximum": 277452128,
+            "Sum": 2671933280
+          }
+        }
+      },
+      {
+        "Resident": 800,
+        "Windows": 4,
+        "WindowSetupMs": 24879.2529,
+        "Started": "2026-10-25T19:20:29.9644803+00:00",
+        "Ended": "2026-10-25T19:20:42.4653322+00:00",
+        "WallMs": 12500.8514,
+        "RefreshBatches": {
+          "Count": 8,
+          "P50Ms": 922.0055,
+          "P95Ms": 1778.6663,
+          "P99Ms": 1778.6663,
+          "MaxMs": 1778.6663
+        },
+        "GateHeld": {
+          "Count": 32,
+          "P50Ms": 141.4577,
+          "P95Ms": 327.1007,
+          "P99Ms": 915.3015,
+          "MaxMs": 915.3015
+        },
+        "SnapshotEncodes": 32,
+        "DetailEvaluations": 96,
+        "DispatcherWait": {
+          "Count": 350,
+          "P50Ms": 0.671,
+          "P95Ms": 13.4227,
+          "P99Ms": 175.0478,
+          "MaxMs": 207.9995
+        },
+        "AllocationBytes": 3684917856,
+        "Gen2Collections": 17,
+        "DotnetCounters": {
+          "% Time in GC since last GC (%)": {
+            "Samples": 13,
+            "Mean": 27.615384615384617,
+            "Maximum": 99,
+            "Sum": 359
+          },
+          "Allocation Rate (B / 1 sec)": {
+            "Samples": 13,
+            "Mean": 263362299.69230768,
+            "Maximum": 454367488,
+            "Sum": 3423709896
+          },
+          "GC Heap Size (MB)": {
+            "Samples": 13,
+            "Mean": 508.7696393846154,
+            "Maximum": 632.457056,
+            "Sum": 6614.005312
+          },
+          "Gen 2 GC Count (Count / 1 sec)": {
+            "Samples": 13,
+            "Mean": 1.2307692307692308,
+            "Maximum": 2,
+            "Sum": 16
+          },
+          "LOH Size (B)": {
+            "Samples": 13,
+            "Mean": 295568923.0769231,
+            "Maximum": 380886352,
+            "Sum": 3842396000
+          }
+        }
+      }
+    ]
+  },
+  "AdditionalBeforeChecks": {
+    "Checks": [
+      {
+        "Name": "ST03 snapshot gate is released across backup storage work",
+        "Passed": false,
+        "Evidence": {
+          "SnapshotCompletedBeforeBarrierRelease": false
+        }
+      },
+      {
+        "Name": "ST03 stop cancellation interrupts the copying budget",
+        "Passed": false,
+        "Evidence": {
+          "SourceBytes": 33980416,
+          "PartialBytes": 33980416,
+          "StopMs": 4383.018,
+          "ThrottledBytesPerSecond": 8388608,
+          "DelayCalls": [
+            33980416
+          ],
+          "Scope": "Controlled managed storage pacing; not a physical slow-volume test",
+          "CompletedMarker": false
+        }
+      },
+      {
+        "Name": "ST10 early capacity warning precedes the existing 2x reserve warning",
+        "Passed": false,
+        "Evidence": {
+          "FreeBytes": 201326592,
+          "Reserve": 67108864
+        }
+      },
+      {
+        "Name": "ST11 at most one export owns a read transaction",
+        "Passed": false,
+        "Evidence": {
+          "SecondExportRejected": false
+        }
+      },
+      {
+        "Name": "ST11 periodic passive checkpoint observations are visible",
+        "Passed": false,
+        "Evidence": {
+          "ObservationPresent": false
+        }
+      }
+    ],
+    "Failed": [
+      "ST03 snapshot gate is released across backup storage work",
+      "ST03 stop cancellation interrupts the copying budget",
+      "ST10 early capacity warning precedes the existing 2x reserve warning",
+      "ST11 at most one export owns a read transaction",
+      "ST11 periodic passive checkpoint observations are visible"
+    ]
+  },
+  "BeforeChecksSource": "ece4 plus only storage-probe, copy-byte pacing and failing test changes; no optimization",
+  "EvidenceSha256": {
+    "latency-baseline-600k-ece4/MEASUREMENTS.json": "5a792e943b7a8212d1886e26d79e6b1de632a1f42aa49b3459b5be9fcee3f4ab",
+    "latency-baseline-600k-ece4/IDENTITY.json": "6e357812be6e76754038eb475a2b27eb5070568cec3b8452b3ac4914a7330bd5",
+    "latency-baseline-600k-counters.json": "d6f16e8f81682db11e9daf3a198ee6504025c0093d1a8afa1e4ea265676abcb0",
+    "latency-checks-before-v2.log": "7b631c19bba3dcd99be1cbb94f6938d76c34b8f1c67d1fc4a2deecf45ca02131"
+  },
+  "Limits": [
+    "Synthetic performance import, not complete original custody or target IPC",
+    "Managed 8MiB/s storage pacing, not physical slow volume",
+    "VM step count does not include B-tree page traversal within Count opcode",
+    "All old SourceCommit/PASS retained"
+  ]
+}

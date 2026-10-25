@@ -55221,9 +55221,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs",
-      "sha256": "c490f7a6e0a3c3772c4631650297774ff47911af5dc548850007102455822c86",
-      "size_bytes": 2829,
-      "git_blob": "b093c9429bddc1d5dbf0286693c2f09943ed59f5"
+      "sha256": "f3a63eb67266b7b24eb0a97e0a58f9d1ebb0388349fc4bdf1238e55ae95b7c32",
+      "size_bytes": 2955,
+      "git_blob": "80d920a80be20dbf8b377900201e879702c9d005"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
@@ -57992,9 +57992,9 @@
     },
     {
       "path": "src/Ipc.Platform.Storage/Database.cs",
-      "sha256": "2df33f6fbfd3c524276e672c2258cb7ddc86711712a9f90de2351f82cb2a29e7",
-      "size_bytes": 5545,
-      "git_blob": "d82d191be3c6cd5190ea786bb210ec4585389d89",
+      "sha256": "11a84d4b636d2dfdcef900d7c21861677057a79ab84b1ab78a0840a8853373f0",
+      "size_bytes": 6460,
+      "git_blob": "f2e1a0fac142364131f8c70ab16d5d28e39d2550",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
@@ -59332,9 +59332,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "cecc54d8575289e397e6cda392834006e309692ba3f024dee9faf066b904d492",
-      "size_bytes": 22082,
-      "git_blob": "264af777c50a6da5215a3e1e481e73c04b8eec3a",
+      "sha256": "f193950edcbcfc32ac1b837e3fa1b5dc1ee188ed19f5cc6387f36ea3b02be6b9",
+      "size_bytes": 22192,
+      "git_blob": "caf38756a9749e58c5cc75d37f9bc6fcacb25fad",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -90399,6 +90399,28 @@
       "sha256": "eab8a2cc82fb8869f909c056cf0a99d59cda360116ac977009f2d635c7354db9",
       "size_bytes": 13198,
       "git_blob": "6567122912031658d0686bc01e61ddbbd0d638d5"
+    },
+    {
+      "path": "docs/runtime/evidence/latency-capacity-01/baseline-600k.json",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "35fd13665e0416cf74ee8428d39d41fd4717c7fff35177872d4b6a24944f52cb",
+      "size_bytes": 14748,
+      "git_blob": "1c8e3897fe7604eb2366b234e115ced992204672"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/LatencyCapacityChecks.cs",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "cb0cafa636d4f893791994836d8e2f4a41d6b4c971b9c4d0bafdfffad0e38611",
+      "size_bytes": 7526,
+      "git_blob": "fe47bfe030353972af19c184a250863f0c136496"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

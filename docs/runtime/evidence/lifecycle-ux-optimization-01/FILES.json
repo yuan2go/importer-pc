@@ -1,5 +1,5 @@
 {
-  "scope": "original phase and final frozen evidence; final SourceCommit 0a3d4152; normal machine startup blocked, G01/G02 external",
+  "scope": "Original phase/0a3d4152 evidence and 2026-10-26 batch follow-up; frozen720af857 readonly verified; latest CI pending, real deployment NOT_RUN, G01/G02 external",
   "files": [
     {
       "path": "backup-binding-fix/before-fix-RESULT.json",
@@ -30,6 +30,141 @@
       "path": "backup-binding-fix/stability.log",
       "bytes": 1296,
       "sha256": "6763cfd313ae228f2a9f6370b911de0601fd484ca00c9cf874a74c3a59da4822"
+    },
+    {
+      "path": "batch-preflight-20261026/baseline-0a3d4152/preflight.json",
+      "bytes": 132,
+      "sha256": "33b22bfca483fe2b2a6d95c03a4715c4161db31466088ad8fb0a598339cde030"
+    },
+    {
+      "path": "batch-preflight-20261026/baseline-0a3d4152/RESULT.json",
+      "bytes": 2287,
+      "sha256": "d15bb1425a3846c848c32f4f4b4805cc913197d730170f0f69d0967441234fa3"
+    },
+    {
+      "path": "batch-preflight-20261026/baseline-0a3d4152/RUN.log",
+      "bytes": 12826,
+      "sha256": "f2011dd1322aa779a299baebb8ce4ad87c70f5b5d8b2f37f4c94aa5e2e1c6055"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/BATCH-RESULT.json",
+      "bytes": 1476,
+      "sha256": "aef1f77b84ee1a5917d107250e976ab8a19296e967a49b5ccba0fd120c19af2d"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/BUILD-INFO.json",
+      "bytes": 522,
+      "sha256": "aeb3791ff6cd2c4310d554a75d593526232263690e4ca621b9a902ce1672875a"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/CLI-preflight.json",
+      "bytes": 330,
+      "sha256": "7d12452b9f13f5b84797d3b8a50966c7111c3bf433c7769bef8f40097aef21a0"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/CLI-preflight.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/CLI-RESULT.json",
+      "bytes": 569,
+      "sha256": "a381175e54d591fb850bdad3f48a1e08b69842d06e5ae82d887f81844e256a9e"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/RESULT.json",
+      "bytes": 2278,
+      "sha256": "ca1ba2eb14ca94a2c2dd9ddf963921516d9e1aa9091def50b7b7d8224d39acef"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/RUN.log",
+      "bytes": 12844,
+      "sha256": "17d8453f90080189f6ca6cffc9279d4a1c08e9acda82a53368d33c4a1ba44924"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-720af857/SHA256SUMS",
+      "bytes": 76800,
+      "sha256": "9945f7531f677961eaf04d9772c9ad1d91d5932eefcc0fe0c517ba45f87d5ebd"
+    },
+    {
+      "path": "batch-preflight-20261026/original-ci-40210140349/acceptance.json",
+      "bytes": 3823,
+      "sha256": "350392ffffd76894bb12c2949c9691d20eff0e72fdf15947f96862f5041727ae"
+    },
+    {
+      "path": "batch-preflight-20261026/original-ci-40210140349/RESULT.json",
+      "bytes": 2287,
+      "sha256": "ad7ed4d92aff14ec4f3b9c28fe2c83994eaaa24f24eb7f8b5fcb608add6ef114"
+    },
+    {
+      "path": "batch-preflight-20261026/original-ci-40210140349/RUN-IDENTITY.json",
+      "bytes": 360,
+      "sha256": "20dc983220e565f24fcaaa4d073a61a550147b291dad7955d94a129761c5bb9c"
+    },
+    {
+      "path": "batch-preflight-20261026/original-ci-40210140349/RUN.log",
+      "bytes": 12789,
+      "sha256": "d8af2d252f29ccb555c13a620bd63527503fc77e330505e36e83baa5ad161a0b"
+    },
+    {
+      "path": "batch-preflight-20261026/source-initial-fail/lifecycle-batch-20261026-source-r2.log",
+      "bytes": 575,
+      "sha256": "af6e3865ced68c10b51f5be7c614da30bf6d7b2a9dbc4f1b7f3eb505f6748c5b"
+    },
+    {
+      "path": "batch-preflight-20261026/source-initial-fail/lifecycle-batch-20261026-source.log",
+      "bytes": 988,
+      "sha256": "e33d13fed4230e7c87bc39647cbbb4690897b35cb9cb331377ad2cc91beccd96"
+    },
+    {
+      "path": "batch-preflight-20261026/source-r3/BATCH-RESULT.json",
+      "bytes": 1203,
+      "sha256": "2ac100486ca453eaf1155c5b8906a3425f2517d18f459b04680391f4abcb2e67"
+    },
+    {
+      "path": "batch-preflight-20261026/source-r4/BATCH-RESULT.json",
+      "bytes": 1284,
+      "sha256": "4dc13afb125902f02e69bce1a5b29e5cabda119d69c998cdc085e7976c8d063a"
+    },
+    {
+      "path": "batch-preflight-20261026/source-r4/RUN.log",
+      "bytes": 151,
+      "sha256": "af9636ef0b00c68600af7d5bc17eeeab90de85db704901c8cb5792cb52632111"
+    },
+    {
+      "path": "batch-preflight-20261026/SOURCE-SCOPE.json",
+      "bytes": 519,
+      "sha256": "22b08b84e0d8060cf4c2e6e3baaecc3506bd3ba7f41e11c6353e0a09b6834bbd"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/build-direct.log",
+      "bytes": 2655,
+      "sha256": "6dda011d57d9c4921f4308328f32c1c74afb374e9be566b99782429909947364"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/build-wcs.log",
+      "bytes": 1917,
+      "sha256": "d0067817374adf289cadf80375bfb89866e6fc3bb0e560ff2703642c842a2ffe"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/ci-fixture-build.log",
+      "bytes": 1856,
+      "sha256": "19783d0b1505d0c64dcef42dc2740819587329f925b69e9c6cb06b46be5b26ec"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/guides.log",
+      "bytes": 599,
+      "sha256": "11d411f42669cc91e8fc7b3b0cde114ae896a18465d31aee00a3e61973596771"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/lifecycle-ux.log",
+      "bytes": 12988,
+      "sha256": "a600300e05ab1e7020e5636f6c629e7d28b6988e9f3e424510a96769ebe0e8fd"
+    },
+    {
+      "path": "batch-preflight-20261026/targeted-checks/release-build.log",
+      "bytes": 251,
+      "sha256": "2c8a5d4066e72dfc96d80fc6159f21aacc653e6465208f268ada4ea4c9651e99"
     },
     {
       "path": "build-DirectPlc.log",

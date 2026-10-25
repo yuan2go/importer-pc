@@ -1,10 +1,10 @@
 # 批量部署预检回归 · 2026-10-26 续报
 
-当前为修复后的冻结介质及最新 CI 验证阶段，不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
+修复源码及本机冻结介质已通过本次定向检查，最新 CI 仍待核对；不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
 
 ## 原失败与原因
 
-- PR #108 头 `2a13b11c067841a0c88b0669fc43d03dc77adcc3`；main `3a5b1d13ec5969213db35ed43d72a5aecd437777`，无其他开放 PR、无已跟踪并行修改。
+- PR #108 头 `2a13b11c067841a0c88b0669fc43d03dc77adcc3`；main `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开工核查时无其他开放 PR、无已跟踪并行修改。收口前发现新增 PR #109（头75ae3417），生产源码无文件交集；共享属性/CI、文档索引/目录及测试调度由主线整合时处理。本分支未搬入109源码或证据，main仍未变化。
 - [Actions 40210140349](https://github.com/yuan2go/importer-pc/actions/runs/40210140349)：Linux 成功，Windows 冻结工程门失败。原介质/夹具均为实际 merge 源 `8408a38a2440097acee19d5101a528e738d413b8`，core `Frozen media batch preflight failed`，不是 head SHA 的另一名称。原始 core RUN/RESULT、acceptance 和 run/artifact 身份保存在 [original-ci-40210140349](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/original-ci-40210140349/RUN-IDENTITY.json)。
 - 本机用未改变的 `0a3d4152` 冻结 Windows DLL 及同提交夹具复现相同失败；原回执 InvalidDataException/退出2，库存未改变。原 [FAIL](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/baseline-0a3d4152/RESULT.json) 保留，不改标 PASS。
 - 批量入口以 `Review` 重新观察输入时生成新 OperationId，完整请求比较正确拒绝了不同身份。修复分开新建审阅与 `RevalidateDeployment`：重新观察全部输入、保留原 ID、继续完整 JSON 比较，验证后返回原冻结请求，避免字典枚举顺序改变原线性化哈希。
@@ -18,7 +18,7 @@
 |既有生命周期守卫|`--lifecycle-ux` PASS|原请求/安装核对、日志资源、完整备份/到期内核的受影响定向回归；合成身份/端口和私有SQLite|
 |共享装配构建|Sportmaster、DirectPlc、WcsToPlc Release PASS|没有新增应用契约或DB版本；未发布/安装|
 |指南与发布构建测试|指南3项 PASS；冻结构建1项 PASS（独立工作区DLL一致）|只验证本次随包映射/冻结构建风险，不扩测历史套件|
-|修复后冻结介质、只读CLI|待执行|必须使用新源码、实际发布DLL和同提交夹具|
+|修复后冻结介质、只读CLI|PASS；源码和夹具均720af857，core含14项批量检查；实际Ipc.Assembly.exe --preflight退出0；741文件库存及夹具DLL字节匹配|真实安装、设备及业务未启动，不作为正常部署成功|
 |PR最新CI|待运行|不能用本机夹具代替CI或正常部署成功|
 
 源码中间失败原件保留：首次新校验复用了旧ID语法而拒绝数字开头GUID；随后新增测试的GUID字面量长度误写33位导致断言失败，已修正测试输入为严格32位，未删断言。后续13项及新增顺序边界后的14项PASS分别保留；所有源码阶段证据与冻结证据分开。
@@ -36,3 +36,23 @@ Windows CI 的开发命令加载项目环境，SDK/缓存、发布介质、验�
 ## 未完成的真实边界
 
 本机实际安装/卸载/重启、系统登记提交往返、真实SDK/设备/现场均 NOT_RUN；预检/原DLL夹具不构成正常部署成功。G01真实RCS核对合同、G02管理密码恢复政策继续 BLOCKED_EXTERNAL，不增加查询、重发或密码恢复后门。管理模式与操作员分离、参数服务权限、真实日志查询/导出及帮助与支持删除成果不变；历史D/RV及原PASS/FAIL不改写。本PR不合并、不发布。
+
+## 本次实际冻结与交付清单
+
+修复提交 `720af857421f6c1b0bb67a5159691cff93c0ed29`；前置归档/撤回完成结论提交 `ea4333f4`。本机仅冻结受影响的Sportmaster Windows介质，未重复生成portable或运行其他历史/大库/长期套件。SM1.13.0 / DirectPlc及WcsToPlc1.7.0 / Contracts1.19.0 / DB9保持未发布候选版本；新增两个既有装配的精确NuGet锁文件，不升级依赖。
+
+- 本地介质：`D:/deliveries/lifecycle-batch-20261026-720af857/sportmaster-win-x64`。ZIP 134217082 bytes，SHA256 `a8b350ebaf8bfeeface332082a68afc4e6dcabd514be1b77f227819998b09a4b`。库存741文件，SHA256SUMS哈希 `9945f7531f677961eaf04d9772c9ad1d91d5932eefcc0fe0c517ba45f87d5ebd`。未上传该本地ZIP或创建Release。
+- 冻结证据：[RESULT](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-720af857/RESULT.json)、[14项批量结果](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-720af857/BATCH-RESULT.json)、[真实CLI只读结果](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-720af857/CLI-RESULT.json)。两个实际DLL哈希同时匹配原库存和夹具运行副本；CLI后重新核对741文件未改变，数据根未创建。
+- 原始失败、源码阶段、冻结证据分别保留；canonical Git manifest只收录已登记Git文件，原manifest及checksum追加按2a13b11c的Git原字节归档。仓库外附件、账号和计划输入未加入Git；受影响文档索引和证据清单同步。
+
+复核运行方法（PowerShell，输出必须用新目录/新回执）：
+
+```powershell
+Set-Location D:/projects/importer-pc
+. ./scripts/project-environment.ps1
+./scripts/verify-commercial-media.ps1 -Media D:/deliveries/lifecycle-batch-20261026-720af857/sportmaster-win-x64 -Output D:/DevCache/importer-pc/lifecycle-batch-new-evidence
+# 已有高级计划仅作只读预检；不是安装命令
+& D:/deliveries/lifecycle-batch-20261026-720af857/sportmaster-win-x64/app/Ipc.Assembly.exe --deployment-plan D:/delivery/site-plan.json --receipt D:/delivery/new-preflight.json --preflight
+```
+
+当前#108保持草稿，待最新CI后更新实际结论。不合并、不发布、不安装本机软件；不存在正常部署成功或现场放行的声明。

@@ -1,4 +1,4 @@
-> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+> 2026-10-26批量部署整改：修复源720af857已通过本机冻结core/14项批量守卫及实际只读CLI；最新CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](docs/runtime/validation/lifecycle-batch-preflight-01.md)。
 
 > 生命周期优化 LIA-01～07：独立工程已实现，当前候选 SM1.13.0 / DirectPlc及WcsToPlc1.7.0 / Contracts1.19.0 / DB9。[当前操作与运行](docs/runtime/lifecycle-ux-current-guidance-01.md)、[实现与来源](docs/runtime/lifecycle-ux-implementation-01.md)、[实际验证和未验门槛](docs/runtime/validation/lifecycle-ux-optimization-01.md)、[U/G问题状态](docs/reviews/lifecycle-ux-reconciliation-01.md)。G01/G02仍受真实合同/批准政策阻断，历史介质与现场资格分别核对。下述V3形成时状态及历史发布保持原身份。
 

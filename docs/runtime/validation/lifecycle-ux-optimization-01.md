@@ -1,4 +1,4 @@
-> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+> 2026-10-26批量部署整改：修复源720af857已通过本机冻结core/14项批量守卫及实际只读CLI；最新CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](lifecycle-batch-preflight-01.md)。
 
 当前批量整改、原CI失败/复现、新源码和冻结验证均见 [2026-10-26续报](lifecycle-batch-preflight-01.md)。以下保留上一轮原记录，不将其中“最终/完成”扩张为本次批量部署结论。
 

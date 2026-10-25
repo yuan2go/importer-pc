@@ -173,6 +173,7 @@ RUNTIME_PROJECTS = {
     'tests/Ipc.Verification',
     'tests/Ipc.Drivers.Hikrobot.Probe',
     'tests/Ipc.Application.Verification',
+    'tests/Ipc.Deployment.Verification',
     'examples/BarcodeExtension',
     'examples/IntegrationExtension',
     'examples/ParcelCapabilitiesExtension',

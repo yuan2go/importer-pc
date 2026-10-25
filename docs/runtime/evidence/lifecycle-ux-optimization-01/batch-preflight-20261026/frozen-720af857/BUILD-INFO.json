@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": 1,
+  "Product": "CainiaoSupplyStation",
+  "ApplicationId": "sportmaster",
+  "BusinessModuleShortName": "SM",
+  "BusinessVersion": "1.13.0",
+  "Target": "win-x64",
+  "SourceBranch": "codex/lifecycle-ux-optimization-01",
+  "SourceCommit": "720af857421f6c1b0bb67a5159691cff93c0ed29",
+  "SourceBranchVerified": true,
+  "SourceCommitUtc": "2026-10-25T17:03:06+00:00",
+  "PackagedUtc": "2026-10-25T17:03:32+00:00",
+  "SourceRepository": "https://github.com/yuan2go/importer-pc",
+  "FrozenGitExport": true
+}

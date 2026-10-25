@@ -49,6 +49,20 @@
       "Archive": "snapshots/docs/runtime/commercial-productization-01-operations.md",
       "Bytes": 16011,
       "Sha256": "3C34951B0058D248A4A44E3B489F9A53E1C4557656BB0A554222E2CB6324CF56"
+    },
+    {
+      "Path": "docs/manifest.json",
+      "Archive": "snapshots/docs/manifest.json",
+      "Bytes": 5533897,
+      "Sha256": "BCFDC6B110E570A1EDE42AFD41A17ABD730901372892C846A0B8235E5404A80A",
+      "SourceKind": "original Git blob"
+    },
+    {
+      "Path": "docs/manifest.sha256",
+      "Archive": "snapshots/docs/manifest.sha256",
+      "Bytes": 80,
+      "Sha256": "345373B3D46D894DB2536B349131E977C7CDA6E6F9A9CE37D9577AACFE80028F",
+      "SourceKind": "original Git blob"
     }
   ]
 }

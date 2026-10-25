@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "d394ef435105bc463b2d8ca35e7fc0bce6cb2ec4e22b36d969d01eeaed494a0f",
-      "size_bytes": 17123,
-      "git_blob": "3c08e7844c46b0ac2a23c1b50b9bd98c4f8bf37a"
+      "sha256": "4098ad66c80eaa6c742d447e23ae50fbe97f9f6d22c909edebbe70ef03872f22",
+      "size_bytes": 18732,
+      "git_blob": "daf841d202972a4d9c90a970dd2e0000a6d91af6"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
@@ -90451,9 +90451,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "5e884bf3a38ecb804e729fba30c483c84654dff658729a8890a5438a4b34fe31",
-      "size_bytes": 3561,
-      "git_blob": "580e2d8dfe9e1302a09192788108462a3bd13012"
+      "sha256": "08e54b5ab7b0fd2cda3811885f4e096b3ffe37b52ff6164ca2afa60466e90ba6",
+      "size_bytes": 3936,
+      "git_blob": "4e500f95793cfd44e43925e52b39008306e6240b"
     },
     {
       "path": "tests/Ipc.Application.Verification/P0SimulationFactory.cs",
@@ -90740,6 +90740,17 @@
       "sha256": "f1a2ee2aaf812a9c4014b81b2c577afa31bd1c4488d8a5bc070b634ce7a5092d",
       "size_bytes": 1720,
       "git_blob": "f178fe9be9842781581ba425c7e7413fbf650eb9"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/ci-1c-final.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0ec6a95d055f2933778b4e4131b49cbad119010ebcff239d300bda5f035604e3",
+      "size_bytes": 7355,
+      "git_blob": "b724e5a504b9ead1c1229d91d01f7e3302237208"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

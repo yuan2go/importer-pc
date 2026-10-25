@@ -80,6 +80,14 @@ ba3d8b08/run40222113898：Linux完整既有边界PASS；冻结WPF混编已解决
 
 补充确认原有快捷方式问题：DeploymentShortcuts.cs:45在main与本批字节相同；本机相同Platform DLL、全新目录且目标/中文父目录确实存在，探针只改变本进程manifest，ACP1252仍失败且COM路径变问号，ACP936/65001均PASS。没有改变系统区域设置，未将CI改为中文/UTF8来取代该失败；按用户不混无关改动规则另包待授权。本包CI保留失败门禁，将原COM测试独立列为最后一个always步骤，使P0 Dispatcher与安装守卫也得到实际执行，不删、不跳COM断言。该缺陷对非CJK代码页Windows安装投影仍是风险，不能因P0完成宣布安装链条通过。见ci-ba3-followup.json。
 
+### 最终已执行补证（检查绑定1c769e10，实际CI源32170b66）
+
+run40222910122：Linux完整既有边界PASS；frozen-sportmaster完整job PASS，11项原生WPF/合成核心/内部删除内核及真实SCM授权服务边界摘要均PASS。实际冻结介质与固定夹具同源32170b665eba672b1c091eb6bcc3a05d15a9d109（检查绑定head1c769e109a5b7e2eb2de585f1db4bb0f81c9b07f）；签名及完整实际安装仍NOT_RUN。CI单EXE打包成功，hash73f1a55834283dc67df0cb06e2f75c039668d13d7290ace693c51439a7c5c64e，NOT_SIGNED，独立于先前69df介质。
+
+Windows P0所有选择器、安装变更守卫及单列生产Dispatcher钩子步骤均退出0，之后原有COM快捷方式断言仍失败，job及整次CI仍FAIL，不宣称全绿。实际原生异常退出码-536870892且上下文刷盘；TCP FIN约105ms、RST约31ms、配置2秒入站期限的停止转发约2019.8ms退役Epoch，未重连或重放。P0日志、所有冻结RESULT的来源/范围/hash、构建安装器hash及NOT_RUN见[ci-1c-final.json](../evidence/p0-stability-01/ci-1c-final.json)，原件保留在该run artifacts。
+
+本机旧69df介质+固定1c独立夹具的完整StartupExperience也PASS，FixtureMatchesMedium=false；与同源CI证据分开。后续提交仅把本段及manifest固定进仓库，不修改产品/测试，不把这些PASS改记后续commit。原有COM缺陷另包待授权，未改系统区域设置、未弱化断言。真实计划任务、自启动/UAC、WER转储、SCM故障恢复动作及完整卸载仍按下述VM步骤NOT_RUN；授权服务边界PASS不能替代这些未执行项。
+
 ## 隔离Windows VM验收步骤（尚未执行）
 
 1. 使用可回滚的Win11 26100+ VM、指定普通交互账号和全新D盘Simulation根；保留安装前任务、HKLM64 LocalDumps、服务及卸载登记清单。检查空间后用同源SM1.14.0候选安装，确认只有原一次UAC，启动普通权限，不连设备或真实RCS。

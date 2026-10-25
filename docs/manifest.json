@@ -1964,9 +1964,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "539dd0fceced989fe5c2adf9da1e60f731bf83fde1539acee0d6f5bacc36e743",
-      "size_bytes": 5805,
-      "git_blob": "31d18d38cb5effd98705c4c837c5a0489dda1466",
+      "sha256": "b219ddeda69484df9907ab3da4a5f75a6f1df2201b122b64ce2251eca5f272ba",
+      "size_bytes": 6132,
+      "git_blob": "9ed7a47a191d577db5c4a4e576e250ec8527c71c",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "4098ad66c80eaa6c742d447e23ae50fbe97f9f6d22c909edebbe70ef03872f22",
+      "sha256": "12f404a15eea5073dbb066bc9ed6a7c8148f222627e6a2a69d7c3262c42b7cfb",
       "size_bytes": 18732,
-      "git_blob": "daf841d202972a4d9c90a970dd2e0000a6d91af6"
+      "git_blob": "ad84b6d2a0856a0b6a936f1a2def5aa1407c82a2"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",

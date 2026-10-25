@@ -82,7 +82,7 @@ ba3d8b08/run40222113898：Linux完整既有边界PASS；冻结WPF混编已解决
 
 ### 最终已执行补证（检查绑定1c769e10，实际CI源32170b66）
 
-run40222910122：Linux完整既有边界PASS；frozen-sportmaster完整job PASS，11项原生WPF/合成核心/内部删除内核及真实SCM授权服务边界摘要均PASS。实际冻结介质与固定夹具同源32170b665eba672b1c091eb6bcc3a05d15a9d109（检查绑定head1c769e109a5b7e2eb2de585f1db4bb0f81c9b07f）；签名及完整实际安装仍NOT_RUN。CI单EXE打包成功，hash73f1a55834283dc67df0cb06e2f75c039668d13d7290ace693c51439a7c5c64e，NOT_SIGNED，独立于先前69df介质。
+run40222910122：Linux完整既有边界PASS；frozen-sportmaster完整job PASS，12项原生WPF/合成核心/内部删除内核及真实SCM授权服务边界摘要均PASS。实际冻结介质与固定夹具同源32170b665eba672b1c091eb6bcc3a05d15a9d109（检查绑定head1c769e109a5b7e2eb2de585f1db4bb0f81c9b07f）；签名及完整实际安装仍NOT_RUN。CI单EXE打包成功，hash73f1a55834283dc67df0cb06e2f75c039668d13d7290ace693c51439a7c5c64e，NOT_SIGNED，独立于先前69df介质。
 
 Windows P0所有选择器、安装变更守卫及单列生产Dispatcher钩子步骤均退出0，之后原有COM快捷方式断言仍失败，job及整次CI仍FAIL，不宣称全绿。实际原生异常退出码-536870892且上下文刷盘；TCP FIN约105ms、RST约31ms、配置2秒入站期限的停止转发约2019.8ms退役Epoch，未重连或重放。P0日志、所有冻结RESULT的来源/范围/hash、构建安装器hash及NOT_RUN见[ci-1c-final.json](../evidence/p0-stability-01/ci-1c-final.json)，原件保留在该run artifacts。
 

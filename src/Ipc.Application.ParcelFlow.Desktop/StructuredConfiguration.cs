@@ -57,9 +57,12 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
-        var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)),
-            DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650),
-            HistoryDays.Length == 0 ? null : Integer(HistoryDays, "系统/HistoryDays", 7, 30));
+        var retention = (c.Retention ?? new ParcelRetentionPolicy()) with
+        {
+            ResidentHistory = Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), MinimumFreeBytes = checked((long)(reserve * 1048576)),
+            DiagnosticLogDays = DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650),
+            HistoryDays = HistoryDays.Length == 0 ? null : Integer(HistoryDays, "系统/HistoryDays", 7, 30)
+        };
         return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
             WeightRange = BuildWeightRange(),

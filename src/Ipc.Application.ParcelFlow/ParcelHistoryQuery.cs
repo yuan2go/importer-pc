@@ -130,6 +130,7 @@ public sealed class ParcelHistoryReader : IDisposable
 
 public sealed partial class ParcelRuntime : IParcelHistoryApplication
 {
+    int historyExportInProgress;
     public async Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter)
     { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.SelectHistory(filter); } finally { gate.Release(); } }
     public async Task<ParcelHistoryPage> QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence = long.MaxValue, int limit = 50)
@@ -145,6 +146,8 @@ public sealed partial class ParcelRuntime : IParcelHistoryApplication
         });
     public async Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token)
     {
+        if (Interlocked.CompareExchange(ref historyExportInProgress, 1, 0) != 0)
+            throw new InvalidOperationException("已有历史导出正在执行；等待原任务完成或取消后再导出");
         try
         {
             return await OwnedRead(async t =>
@@ -157,6 +160,7 @@ public sealed partial class ParcelRuntime : IParcelHistoryApplication
             }, token).ConfigureAwait(false);
         }
         catch (Exception ex) { Volatile.Write(ref lastExportFailure, ex.GetType().Name + "; original history retained"); throw; }
+        finally { Interlocked.Exchange(ref historyExportInProgress, 0); }
     }
     string? lastExportFailure;
     async Task ObserveExport(Task task)

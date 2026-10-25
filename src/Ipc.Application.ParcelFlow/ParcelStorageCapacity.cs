@@ -6,6 +6,11 @@ public sealed partial class ParcelRuntime
     long freeStorageBytes;
     string? storageCapacityFailure;
     string? storageCapacityWarning;
+    string? storageCapacityEstimate;
+    long storageCheckedTimestamp;
+    string? lastStorageLevel;
+    readonly Queue<(long At, long Sequence, long Bytes)> storageSamples = new();
+    internal TimeProvider StorageTimeForVerification { get; set; } = TimeProvider.System;
     DateTimeOffset storageChecked;
     DateTimeOffset retentionChecked;
     string? retentionWarning;
@@ -13,13 +18,32 @@ public sealed partial class ParcelRuntime
     ParcelRetentionPolicy Retention => Effective.Retention ?? new();
     void RefreshStorageCapacity()
     {
-        if (DateTimeOffset.UtcNow - storageChecked < TimeSpan.FromSeconds(1)) return;
+        var timestamp = StorageTimeForVerification.GetTimestamp();
+        if (storageChecked != default && StorageTimeForVerification.GetElapsedTime(storageCheckedTimestamp, timestamp) < TimeSpan.FromSeconds(1)) return;
         try
         {
             freeStorageBytes = StorageAvailableBytesForVerification?.Invoke() ?? ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
             storageCapacityFailure = freeStorageBytes < Retention.MinimumFreeBytes ? "Storage reserve exhausted; preserve original history and use approved external retention procedure" : null;
-            storageCapacityWarning = freeStorageBytes < checked(Retention.MinimumFreeBytes * 2) ?
-                "StorageGrowthWarning: less than twice the configured reserve remains; plan a maintenance backup/volume relocation before admission is blocked; archives do not reclaim disk" : null;
+            var warning = Retention.WarningFreeBytes ?? checked(Retention.MinimumFreeBytes * 4);
+            var critical = Retention.CriticalFreeBytes ?? checked(Retention.MinimumFreeBytes * 2);
+            var level = storageCapacityFailure is not null ? "Blocked" : freeStorageBytes < critical ? "Critical" : freeStorageBytes < warning ? "Warning" : "Normal";
+            storageCapacityWarning = level == "Normal" ? null : "StorageGrowthWarning: Level=" + level + "; free=" + freeStorageBytes + "; warning=" + warning + "; critical=" + critical + "; reserve=" + Retention.MinimumFreeBytes + "; preserve originals; plan authorized maintenance/relocation";
+            if (level != lastStorageLevel)
+            { Diagnostic("StorageCapacity", level, level == "Normal" ? "信息" : "警告", storageCapacityWarning); lastStorageLevel = level; }
+            if (repository is not null && (storageSamples.Count == 0 || StorageTimeForVerification.GetElapsedTime(storageSamples.Last().At, timestamp) >= TimeSpan.FromMinutes(1)))
+            {
+                var sequence = repository.SelectHistory(new()).UpperSequence;
+                var bytes = repository.StorageBytes;
+                if (storageSamples.Count != 0 && (sequence < storageSamples.Last().Sequence || bytes < storageSamples.Last().Bytes)) storageSamples.Clear();
+                storageSamples.Enqueue((timestamp, sequence, bytes)); while (storageSamples.Count > 12) storageSamples.Dequeue();
+                var first = storageSamples.Peek(); var elapsed = StorageTimeForVerification.GetElapsedTime(first.At, timestamp).TotalSeconds;
+                var jobs = sequence - first.Sequence; var growth = bytes - first.Bytes;
+                double? bytesPerJob = jobs > 0 && growth > 0 ? (double)growth / jobs : null;
+                double? remainingDays = elapsed > 0 && bytesPerJob is { } perJob ? Math.Max(0, freeStorageBytes - Retention.MinimumFreeBytes) / (perJob * jobs / elapsed * 86400) : null;
+                storageCapacityEstimate = "StorageForecast:" + Ipc.Platform.Wire.Encode(new { Result = remainingDays is null ? "InsufficientSamples" : "EstimateOnly", Jobs = jobs, SampleSeconds = elapsed, DatabaseGrowthBytes = growth,
+                    BytesPerJob = bytesPerJob, RemainingDays = remainingDays, Basis = "Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee" });
+                Diagnostic("StorageCapacity", "Forecast", "信息", storageCapacityEstimate);
+            }
             if (repository?.StorageVersion >= 9 && DateTimeOffset.UtcNow - retentionChecked > TimeSpan.FromMinutes(1))
             {
                 retentionWarning = Retention.HistoryDays is not { } days ? "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion" :
@@ -30,6 +54,7 @@ public sealed partial class ParcelRuntime
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         { storageCapacityFailure = "Storage capacity unavailable: " + ex.GetType().Name; }
         storageChecked = DateTimeOffset.UtcNow;
+        storageCheckedTimestamp = timestamp;
     }
 }
 

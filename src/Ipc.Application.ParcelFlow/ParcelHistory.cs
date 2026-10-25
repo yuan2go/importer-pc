@@ -80,6 +80,18 @@ public sealed partial class ParcelRepository
     }
     public long ArchivedCount
     { get { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_archives"; return (long)c.ExecuteScalar()!; } }
+    long archiveRevision;
+    internal long ArchiveRevision => Interlocked.Read(ref archiveRevision);
+    internal long ReadArchivedCount(CancellationToken token)
+    {
+        Boundary?.Invoke("ArchiveCountReading");
+        using var reader = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
+        { DataSource = db.DataSource, Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false, DefaultTimeout = 5 }.ToString());
+        token.ThrowIfCancellationRequested(); reader.Open();
+        SQLitePCL.raw.sqlite3_progress_handler(reader.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
+        using var command = reader.CreateCommand(); command.CommandText = "SELECT count(*) FROM parcel_archives";
+        var count = (long)command.ExecuteScalar()!; token.ThrowIfCancellationRequested(); return count;
+    }
     public bool HasOverloadAcknowledgement(string identity)
     { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_overload_ack WHERE identity=$id"; c.Parameters.AddWithValue("$id", identity); return (long)c.ExecuteScalar()! == 1; }
     public ParcelOperation[] FindIdentities(string admission, string observation)
@@ -136,7 +148,7 @@ public sealed partial class ParcelRepository
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'HistoryArchived','runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
         audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Archive retains terminal originals in the same database; expiry deletion requires separate authorized retention maintenance" })); audit.ExecuteNonQuery();
         if (command is not null) WriteCommand(tx, command, new("Persisted", "Application command committed", Revision + 1));
-        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
+        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Interlocked.Increment(ref archiveRevision); Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
     }
     void ArchiveRaw(string operation, Microsoft.Data.Sqlite.SqliteTransaction tx)
     {
@@ -188,7 +200,7 @@ public sealed partial class ParcelRuntime
     int? projectedCapacity;
     int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
     bool CapacityAvailable => storageCapacityFailure is null && UnresolvedCapacity < Effective.MaximumOperations;
-    ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, repository!.ArchivedCount,
+    ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, archiveCount?.Count ?? 0,
         Effective.MaximumOperations, CapacityAvailable, "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain", freeStorageBytes, Retention.MinimumFreeBytes);
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
@@ -196,6 +208,8 @@ public sealed partial class ParcelRuntime
         var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
         if (candidates.Length == 0 && command is null) return;
         repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);
+        if (archiveCount is { } count && count.Revision + 1 == repository.ArchiveRevision)
+            Volatile.Write(ref archiveCount, new(repository.ArchiveRevision, count.Count + candidates.Length));
         foreach (var id in candidates) { admissionPositions.TryRemove(operations[id].AdmissionId, out _); operations.Remove(id); }
     }
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)

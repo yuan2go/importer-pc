@@ -119,6 +119,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
         repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
+        await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
         foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
@@ -220,6 +221,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             ingressStartup.TrySetResult(true);
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
+            backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
             StartSupervision();
         }

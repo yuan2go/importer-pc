@@ -1,3 +1,5 @@
+> 当前卡顿与容量批：[LATENCY-CAPACITY-01](work-packages/WP-IPC-LATENCY-CAPACITY-01.md)、[运行/容量与维护公式](runtime/latency-capacity-01.md)、[基线和问题卡](runtime/validation/latency-capacity-01.md)。先测量后修改，旧证据保留SourceCommit，目标硬件/长稳资格另计。
+
 > 2026-10-26 PR107合并后独立延后修复：[DEFERRED-HEARTBEAT-01校验、恢复与验证边界](runtime/validation/deferred-heartbeat-01.md)。当前心跳只映射已配置相机；全部相机延后时停止心跳，恢复配置仍走Pending/受控重启，原请求和编号账保留。
 
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。

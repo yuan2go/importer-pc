@@ -47,6 +47,13 @@ jobs:
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
+      - name: Exercise measured latency capacity and WAL boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for case in latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks; do
+            dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
+          done
       - name: Retain the actual boundary result including failures
         if: always()
         uses: actions/upload-artifact@v4
@@ -64,6 +71,7 @@ jobs:
             parameter-guidance-startup.log
             deferred-connections.log
             confirmed-camera-rcs.log
+            latency-*-checks.log
           if-no-files-found: warn
           retention-days: 30
   frozen-sportmaster:

@@ -70,9 +70,15 @@ static class LatencyCapacityChecks
         await using var other = new ParcelRuntime(launch2, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch2)) { RuntimeIdentityPreflight = () => { } };
         await other.StartAsync(default);
         var reserve = c.Retention?.MinimumFreeBytes ?? 67108864;
-        typeof(ParcelRuntime).GetField("storageChecked", hidden)!.SetValue(other, DateTimeOffset.MinValue);
-        other.StorageAvailableBytesForVerification = () => reserve * 3;
-        typeof(ParcelRuntime).GetMethod("RefreshStorageCapacity", hidden)!.Invoke(other, null);
+        var capacityGate = (SemaphoreSlim)typeof(ParcelRuntime).GetField("gate", hidden)!.GetValue(other)!;
+        await capacityGate.WaitAsync();
+        try
+        {
+            typeof(ParcelRuntime).GetField("storageChecked", hidden)!.SetValue(other, DateTimeOffset.MinValue);
+            other.StorageAvailableBytesForVerification = () => reserve * 3;
+            typeof(ParcelRuntime).GetMethod("RefreshStorageCapacity", hidden)!.Invoke(other, null);
+        }
+        finally { capacityGate.Release(); }
         var early = await other.SnapshotAsync();
         Check(early.AuxiliaryReasons!.Any(x => x.Contains("StorageGrowthWarning", StringComparison.Ordinal)), "ST10 early capacity warning precedes the existing 2x reserve warning", new { FreeBytes = reserve * 3, Reserve = reserve, early.AuxiliaryReasons });
 
@@ -92,6 +98,23 @@ static class LatencyCapacityChecks
         Check(rejected, "ST11 at most one export owns a read transaction", new { SecondExportRejected = rejected });
         var wal = (await other.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("WalCheckpoint", StringComparison.Ordinal));
         Check(wal, "ST11 periodic passive checkpoint observations are visible", new { ObservationPresent = wal });
+        var scheduledRoot = Path.Combine(root, "scheduled"); var scheduledConfig = Path.Combine(scheduledRoot, "config");
+        var scheduledTarget = Path.Combine(scheduledRoot, "backups"); Directory.CreateDirectory(scheduledConfig); Directory.CreateDirectory(scheduledTarget);
+        var scheduled = c with { BackupSchedule = new(scheduledTarget, 60, 1) };
+        File.WriteAllText(Path.Combine(scheduledConfig, "business.json"), Wire.Encode(scheduled));
+        var scheduledLaunch = new BusinessLaunch(scheduledConfig, Path.Combine(scheduledRoot, "data"), null, null);
+        await using var scheduledRuntime = new ParcelRuntime(scheduledLaunch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(scheduledLaunch)) { RuntimeIdentityPreflight = () => { } };
+        await scheduledRuntime.StartAsync(default); await ManagementModeFixture.Authorize(scheduledRuntime);
+        var scheduledSnapshot = await scheduledRuntime.SnapshotAsync();
+        await scheduledRuntime.CommandAsync(new(Wire.Id(), scheduledSnapshot.Revision, "Pause"));
+        var scheduleAt = DateTimeOffset.UtcNow;
+        await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt);
+        await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt.AddMinutes(61));
+        var complete = Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).ToArray();
+        Check(complete.Length == 1, "ST03 scheduled backup publishes a complete recovery set through the owned cancellable path", new { CompletedSets = complete.Length });
+        await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt.AddMinutes(122));
+        Check(Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).Count() == 1,
+            "ST03 scheduled backup keeps the configured set limit and never deletes an earlier set", new { MaximumSets = 1 });
         ExtensionStore.AtomicWrite(Path.Combine(root, "LATENCY-CAPACITY-CHECKS.json"), new { Checks = checks, Failed = failed });
         if (failed.Count != 0) throw new InvalidOperationException("Measured latency/capacity regressions: " + string.Join("; ", failed));
     }

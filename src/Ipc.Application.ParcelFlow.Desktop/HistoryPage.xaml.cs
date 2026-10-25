@@ -6,10 +6,17 @@ public partial class HistoryPage : UserControl
     public HistoryPage()
     {
         InitializeComponent();
+        Loaded += (_, _) => UpdateDetailsVisibility();
+        Unloaded += (_, _) => { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false); };
+        DataContextChanged += (_, e) => { if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
+        StructuredDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
+        RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
     }
+    void UpdateDetailsVisibility()
+    { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsText.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
     void FitQueryViewport()
     {
         var shortPage = ActualHeight < 500;
@@ -36,10 +43,10 @@ public partial class HistoryPage : UserControl
     void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = day.AddDays(1).ToString("O"); } }
     void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeOffset.Now; vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
     void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }
-    void Copy_Click(object s, RoutedEventArgs e)
+    async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        try { Clipboard.SetText(vm.Details); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
+        try { Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
     async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取最新50条"); }

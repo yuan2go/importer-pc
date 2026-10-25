@@ -69,6 +69,10 @@ static partial class Program
                     if (first % 50000 == 0) Console.WriteLine("LATENCY PREFILL " + first + "/" + rows);
                 }
                 using var checkpoint = db.CreateCommand(); checkpoint.CommandText = "PRAGMA wal_checkpoint(TRUNCATE)"; checkpoint.ExecuteNonQuery();
+                // The synthetic import bypassed repository Archive; notify only an
+                // existing in-memory revision, never modify the DB schema or production API.
+                var revision = typeof(ParcelRepository).GetField("archiveRevision", hidden);
+                if (revision is not null) revision.SetValue(repo, (long)revision.GetValue(repo)! + 1);
             }
             finally { gate.Release(); }
         });
@@ -139,6 +143,7 @@ static partial class Program
                     windows.Add(window); models.Add(vm); window.Show();
                     await vm.RefreshAsync(); vm.Selected = vm.Operations.Single(x => x.Id == rich.Id);
                 }
+                await Task.WhenAll(models.Select(vm => vm.DrainAsync()));
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 setup.Stop();
                 gateTimes.Clear(); encodes = 0; details = 0;
@@ -169,6 +174,13 @@ static partial class Program
             }
         }
         runtime.Boundary = null;
+        if (args.Contains("--latency-assert"))
+        {
+            using var measured = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "MEASUREMENTS.json")));
+            if (measured.RootElement.GetProperty("Cases").EnumerateArray().Any(x => x.GetProperty("DetailEvaluations").GetInt32() != 0 ||
+                x.GetProperty("SnapshotEncodes").GetInt32() > x.GetProperty("RefreshBatches").GetProperty("Count").GetInt32()))
+                throw new InvalidOperationException("Warm revision refreshed full details or serialized once per window");
+        }
         ExtensionStore.AtomicWrite(Path.Combine(output, "IDENTITY.json"), new { Scope = "Actual runtime and HistoryPage/ViewModel, synthetic archives and unresolved resident records only; no full custody/retention/site qualification",
             Main = "a8cd431456f73e83040f75a0c5e3cc1423440d1b", RuntimeSha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location), UiSha256 = Wire.FileHash(typeof(ParcelViewModel).Assembly.Location), FixtureSha256 = Wire.FileHash(typeof(Program).Assembly.Location),
             OS = Environment.OSVersion.ToString(), Cores = Environment.ProcessorCount, DatabaseBytes = new FileInfo(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db")).Length });

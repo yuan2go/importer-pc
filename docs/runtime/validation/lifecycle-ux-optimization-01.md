@@ -1,5 +1,7 @@
 > 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
 
+当前批量整改、原CI失败/复现、新源码和冻结验证均见 [2026-10-26续报](lifecycle-batch-preflight-01.md)。以下保留上一轮原记录，不将其中“最终/完成”扩张为本次批量部署结论。
+
 # 生命周期优化 · 验证与交付边界
 
 开工 main `3a5b1d13`，规划原件提交 `4c42f567`。本批测试使用 D 盘独立合成数据，真实 Application、SQLite、Windows WPF/HWND/Dispatcher；设备、身份预检和外部服务按夹具明确模拟。**最终冻结源`0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8`，2026-10-26收口；当前主PR为[#108](https://github.com/yuan2go/importer-pc/pull/108)，未合并。最终结果见末节及frozen-0a3d4152证据；中间候选不作最终资格。**

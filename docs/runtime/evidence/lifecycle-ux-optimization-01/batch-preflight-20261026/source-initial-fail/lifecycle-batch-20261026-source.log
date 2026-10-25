@@ -1,0 +1,5 @@
+Unhandled exception. System.IO.InvalidDataException: Invalid installation operation identity
+   at Ipc.Assembly.ParcelStartupServices.ReviewCore(DeploymentMedia media, String account, String dataRoot, String configurationSource, String trustFile, String[] packages, Boolean repairSeed, String programRoot, String operationId) in D:\projects\importer-pc\src\Ipc.Assembly\ParcelStartupServices.cs:line 80
+   at Ipc.Assembly.ParcelStartupServices.Review(DeploymentMedia media, String account, String dataRoot, String configurationSource, String trustFile, String[] packages, Boolean repairSeed, String programRoot) in D:\projects\importer-pc\src\Ipc.Assembly\ParcelStartupServices.cs:line 62
+   at DeploymentBatchVerification.Run(DeploymentMedia media, String evidence) in D:\projects\importer-pc\tests\Ipc.Deployment.Verification\DeploymentBatchVerification.cs:line 20
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Program.cs:line 6

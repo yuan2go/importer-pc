@@ -6,9 +6,14 @@ public sealed record InstallationInspection(string Status, string Detail, Deploy
 
 public static partial class WindowsDeploymentSetup
 {
+    // Wire.Id is a canonical GUID and may start with a digit; extension IDs
+    // have a different grammar. Retain previously accepted safe named IDs.
+    public static bool IsInstallationOperationId(string? value) => value is not null &&
+        (ExtensionSchema.IsId(value) || value.Length == 32 && Guid.TryParseExact(value, "N", out var parsed) && parsed != Guid.Empty && parsed.ToString("N") == value);
+
     public static string InstallationOperationFile(WindowsDeploymentRequest request)
     {
-        if (!ExtensionSchema.IsId(request.ApplicationId) || request.OperationId is null || !ExtensionSchema.IsId(request.OperationId))
+        if (!ExtensionSchema.IsId(request.ApplicationId) || !IsInstallationOperationId(request.OperationId))
             throw new InvalidDataException("本次安装缺少固定操作身份；保留原记录，不能猜测或重复安装。");
         return Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".setup-" + request.OperationId + ".json");
     }

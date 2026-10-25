@@ -59,8 +59,27 @@ public static class ParcelStartupServices
     }
     public static WindowsDeploymentRequest Review(DeploymentMedia media, string account, string dataRoot, string configurationSource,
         string? trustFile, string[] packages, bool repairSeed, string? programRoot = null)
+        => ReviewCore(media, account, dataRoot, configurationSource, trustFile, packages, repairSeed, programRoot, Wire.Id());
+
+    internal static WindowsDeploymentRequest RevalidateDeployment(DeploymentMedia media, WindowsDeploymentRequest original)
+    {
+        // Re-observe every reviewed input; the original operation is an identity,
+        // not a new action. Legacy null identities stay null, including on the wire.
+        var reviewed = ReviewCore(media, original.RuntimeAccountSid, original.DataRoot, original.ConfigurationSource,
+            original.TrustFile, original.Packages.Keys.ToArray(), original.RepairSeed, original.ProgramRoot, original.OperationId)
+            with { ChangePlanIdentity = original.ChangePlanIdentity, BackupDestination = original.BackupDestination, Shortcuts = original.Shortcuts };
+        if (!System.Text.Json.Nodes.JsonNode.DeepEquals(System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(reviewed)), System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(original))))
+            throw new InvalidDataException("计划输入/原登记已变化；重新预检并审阅逐站差异");
+        // Preserve the frozen wire identity too: JSON object key order is not
+        // a changed input, and filesystem enumeration must not rehash a plan.
+        return original;
+    }
+
+    static WindowsDeploymentRequest ReviewCore(DeploymentMedia media, string account, string dataRoot, string configurationSource,
+        string? trustFile, string[] packages, bool repairSeed, string? programRoot, string? operationId)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+        if (operationId is not null && !WindowsDeploymentSetup.IsInstallationOperationId(operationId)) throw new InvalidDataException("Invalid installation operation identity");
         account = account.Trim();
         var sid = account.StartsWith("S-1-", StringComparison.Ordinal) ? new SecurityIdentifier(account) : (SecurityIdentifier)new NTAccount(account).Translate(typeof(SecurityIdentifier));
         _ = sid.Translate(typeof(NTAccount));
@@ -79,7 +98,7 @@ public static class ParcelStartupServices
         var request = new WindowsDeploymentRequest(media.Root, ApplicationId, media.SourceCommit, sid.Value, data, source, seed.Mode, trust,
             trust is null ? null : Wire.FileHash(trust), packages.ToDictionary(p => p, Wire.FileHash), repairSeed,
             files.ToDictionary(p => Path.GetFileName(p), Wire.FileHash), TrustedProgramRoots.Normalize(programRoot ?? TrustedProgramRoots.Default, data),
-            File.Exists(WindowsDeploymentSetup.Registration(ApplicationId)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) : null, OperationId: Wire.Id());
+            File.Exists(WindowsDeploymentSetup.Registration(ApplicationId)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) : null, OperationId: operationId);
         ValidateSeed(request);
         TrustedProgramRoots.Preview(request.ProgramRoot!, request.DataRoot);
         WindowsDeploymentSetup.PreviewDataAccess(request.DataRoot, request.RuntimeAccountSid);

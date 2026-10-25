@@ -1,0 +1,111 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "8408a38a2440097acee19d5101a528e738d413b8",
+  "MediumInventorySha256": "9C31D4537FF1FE0A3ADBA68EBB39B441DE3CD7B79FED29A7AFE8098EAC4E864C",
+  "Cases": [
+    {
+      "Id": "core",
+      "Status": "FAIL",
+      "Reason": "Frozen-medium verification failed; retained RUN.log and original evidence",
+      "Evidence": [
+        {
+          "Path": "core/RESULT.json",
+          "Sha256": "AD7ED4D92AFF14EC4F3B9C28FE2C83994EAAA24F24EB7F8B5FCB608ADD6EF114"
+        },
+        {
+          "Path": "core/RUN.log",
+          "Sha256": "D8AF2D252F29CCB555C13A620BD63527503FC77E330505E36E83BAA5AD161A0B"
+        }
+      ]
+    },
+    {
+      "Id": "wpf",
+      "Status": "PASS",
+      "Reason": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "Evidence": [
+        {
+          "Path": "wpf/RESULT.json",
+          "Sha256": "ABCEFCE0323DA339ECA7E816B28CD022C8EA0A87106424E6756CCBC1492AA98E"
+        },
+        {
+          "Path": "wpf/commercial-first-configuration.png",
+          "Sha256": "B9B4029CE57C9087EADDA5D0FE3C5E0E102EC00FC107FCD03BAD67656839FE1A"
+        },
+        {
+          "Path": "wpf/commercial-history-1100x600.png",
+          "Sha256": "8195C2CFD8CE2A9FFFC3E5DE95CB1E2D7E547629B5F38670BAF91BCBCD800B7C"
+        },
+        {
+          "Path": "wpf/RUN.log",
+          "Sha256": "166321183A74A5A3058251E8AD3EC58CDE1827DE76E92B3456846225008CE6DC"
+        },
+        {
+          "Path": "wpf/WINDOWS-WPF.log",
+          "Sha256": "E053C4A2DC675E2214463AFFA5AB23DFE9345D8227040B9F3CA2C5479CC09305"
+        }
+      ]
+    },
+    {
+      "Id": "media",
+      "Status": "PASS",
+      "Reason": "统一发行器双目标库存/ZIP/源码身份全部校验",
+      "Evidence": [
+        {
+          "Path": "media.json",
+          "Sha256": "5218E2561E606EF060DC525C9F9A7A78233A24273187970F55519B816F079584"
+        }
+      ]
+    },
+    {
+      "Id": "removal",
+      "Status": "PASS",
+      "Reason": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+      "Evidence": [
+        {
+          "Path": "removal/RESULT.json",
+          "Sha256": "35249D95CA8EC21A4650AF811ECD2A2E2B748E522CA51DAB5D2692278D5F7254"
+        },
+        {
+          "Path": "removal/RUN.log",
+          "Sha256": "2F630195C5D6C5DBBECF27427911C72B50EE1AD5401959F05D4981DCA7ACC58E"
+        }
+      ]
+    },
+    {
+      "Id": "windows-install",
+      "Status": "NOT_RUN",
+      "Reason": "隔离Windows：指定SID、非默认目录、helper ACL、登记/快捷方式、非提权启动、错误账户拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-repair",
+      "Status": "NOT_RUN",
+      "Reason": "同一介质：未确认配置启动失败修复、系统登记修复、并排升级及中断继续、错误介质拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-uninstall",
+      "Status": "NOT_RUN",
+      "Reason": "系统入口保留数据卸载、真实占用重启、中断恢复、共享组件及数据保留",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-migration",
+      "Status": "NOT_RUN",
+      "Reason": "完整恢复集、新根隔离、旧根退役、双账户/换机DPAPI拒绝、原请求不重发",
+      "Evidence": []
+    },
+    {
+      "Id": "field",
+      "Status": "BLOCKED",
+      "Reason": "真实SDK/合同/设备/实体许可、连续运行与异常恢复、目标触控/DPI、部署资格",
+      "Evidence": []
+    },
+    {
+      "Id": "signoff",
+      "Status": "BLOCKED",
+      "Reason": "可信分发签名、逐项资格和获授权负责方放行；不能用手填PASS代替证书/批准",
+      "Evidence": []
+    }
+  ]
+}

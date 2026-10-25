@@ -1,4 +1,4 @@
-> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+> 批量部署回归整改以本次实际 SourceCommit、下述旧计划边界和[定向验证报告](validation/lifecycle-ux-optimization-01.md)为准。0a3d4152 及此前介质不作为本次修复证据；原 FAIL/PASS 保留原范围。
 
 # 生命周期操作 · 当前候选指南
 
@@ -16,6 +16,12 @@
 2. 安装提交时沿既有Windows授权，固定本次请求和原操作记录。提交后关窗不代表取消或完成；连接/回执中断显示“结果待确认”，不提供重复安装。
 3. 选择“只读核对本次安装”，核对原请求指纹、受保护登记和原日志。仍持锁/事实不足继续待确认。原登记已经提交但系统入口未完成，仅“修复原系统入口”；只有明确未提交/失败才重新审阅新动作。核对不启动设备。
 4. 从正常非提权入口启动。维护和业务身份分开；首次管理设密沿既有批准通道，不提供默认密码。
+
+高级逐站计划继续使用 `--deployment-plan <原计划> --receipt <新回执> --preflight`；每次核验保留同一 OperationId 和 PlanSha256，回执必须换新文件。重新预检会重读介质、配置/信任/组件哈希及原登记 CAS，完整比较请求；输入或原登记改变则拒绝，不能手改 ID/散列绕过。新建显式审阅才生成新 ID。合法固定 GUID 可以数字开头，不重抽 ID。
+
+原安装记录一旦存在，本计划不得重新提交（`OriginalOperationNeedsInspection`，退出10）；Prepared、Unknown、失败、残缺记录均保留。授权维护者保留原计划，用其中 Deployment 调用既有 `ParcelStartupServices.InspectInstallation` 只读核对原终态；权限不足继续沿原授权通道。只有确认 Failed/NotCommitted 后才可显式重新审阅新动作，禁止以新 ID 掩盖 Unknown。
+
+Schema1 旧计划没有 OperationId 时，原序列化/PlanSha256 保持不变，允许只读预检；若唯一受保护登记已完整匹配原计划，继续只读返回 AlreadyInstalled。未提交旧计划执行返回 `LegacyPlanNeedsReview`（退出2），须显式重新审阅，不自动补 ID。PreflightPassed/AlreadyInstalled 均不代表本次执行了安装或获得现场资格。提交后丢回执先核对原登记和原记录；不能覆盖 Reviewing 或其他旧回执。
 
 卸载从Windows产品安装项进入维护。读取原部署/责任，选择完整备份目录，检查计划后确认；目录变化立即废弃旧计划与固定文件名，必须重新读取。执行前再次核对唯一登记、授权、账和备份目标；不删除业务数据、永久身份、扩展、共享驱动和清单外文件。
 

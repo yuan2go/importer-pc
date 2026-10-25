@@ -1,0 +1,6 @@
+{
+  "Status": "FailedOrNeedsRecovery",
+  "ExitCode": 2,
+  "ErrorCode": "InvalidDataException",
+  "OriginalDataRetained": true
+}

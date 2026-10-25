@@ -71,7 +71,7 @@
 
 系统“已安装应用”的修改/卸载和 `desktop/Ipc.Desktop.exe --product-maintenance` 打开同一独立产品维护。系统项/快捷方式损坏可按唯一受保护登记重建；程序损坏从完整介质并排修复。卸载前重新检查责任并备份，只移除原库存中的本发布文件、版本快捷方式及系统项；默认保留数据、种子、机器政策、永久身份、信任、扩展、消费者、备份及其他发布/共享驱动。被占用文件使用 Windows 重启删除并返回 RestartRequired，不谎称已删除。
 
-卸载中断后原登记可已退役而清理未完成，必须保留固定清单和回执。当前同源介质的ResumeRemovalAsync能力尚未接入用户可达入口，不能按旧说明寻找“继续退役程序的中断清理”按钮；LIA-01负责补齐。在此之前交获授权维护者核对，不反复提交或猜路径递归删除；重装仍沿原身份/责任守卫。
+卸载中断后原登记可已退役而清理未完成，必须保留固定清单和回执。LIA-01 已接入当前同源介质的原记录核对与续办入口，沿 ResumeRemovalAsync 继续原固定清单；结果与操作见[当前生命周期指南](lifecycle-ux-current-guidance-01.md)。不得反复提交或猜路径递归删除；重装仍沿原身份/责任守卫。
 
 ## 管理模式、操作员与日志
 
@@ -79,15 +79,15 @@
 
 ### 已有高级部署入口（按需使用）
 
-以下仅记录既有 `DeploymentBatch` 接口，退出普通安装交付与默认验收范围。普通用户无需导出计划、准备响应文件或使用以下命令。代码和历史验证未在本次修改。
+以下记录既有 `DeploymentBatch` 高级集成接口。普通用户无需导出计划、准备响应文件或使用以下命令。本次冻结介质工程回归包含只读预检与防重复，修复同计划身份保持；这些检查不替代正常系统安装验收，历史验证保留原范围。
 
-已有人工摘要页可保存已审阅的逐站部署计划，固定介质、种子/包/信任散列、原登记 CAS 和维护计划。计划只引用输入路径，不复制数据库；仍应保护实际配置及计划文件。明确的管理员部署会话中执行（不隐藏提权）：
+高级集成使用 `DeploymentBatch.Freeze` 固化现有 `ParcelStartupServices.Review` 的审阅结果；普通向导不提供导出计划按钮。计划固定介质、种子/包/信任散列、原登记 CAS、维护计划及 OperationId。计划只引用输入路径，不复制数据库；仍应保护实际配置及计划文件。明确的管理员部署会话中执行（不隐藏提权）：
 
 ```powershell
-.\app\Ipc.Assembly.exe --deployment-plan C:\delivery\site-plan.json --receipt C:\delivery\new-preflight.json --preflight
-.\app\Ipc.Assembly.exe --deployment-plan C:\delivery\site-plan.json --receipt C:\delivery\new-install.json
+.\app\Ipc.Assembly.exe --deployment-plan D:\delivery\site-plan.json --receipt D:\delivery\new-preflight.json --preflight
+.\app\Ipc.Assembly.exe --deployment-plan D:\delivery\site-plan.json --receipt D:\delivery\new-install.json
 ```
 
-退出0为 PreflightPassed/Installed/同一计划 AlreadyInstalled，2为无效格式/输入变化，5为缺维护权限，10为IO失败/需核对恢复。逐站回执必须用新文件；成功重入只核验原已提交计划，不重置站点。预检不安装/启动；输入变化须重新审阅。资格、真实 SDK/协议/实体及现场授权未获得时逐项 BLOCKED，不生成生产默认或虚假商业许可。
+退出0为 PreflightPassed/Installed/同一计划 AlreadyInstalled，2为无效格式/输入或原登记变化/LegacyPlanNeedsReview，5为缺维护权限，10为IO失败/OriginalOperationNeedsInspection。逐站回执必须用新文件，原 Reviewing/成功/失败回执均不覆盖。相同计划多次预检保留原 OperationId 和 PlanSha256；完整请求比较和登记 CAS 不省略。原记录存在即禁止再次提交，Unknown 只沿原计划调用既有 InspectInstallation 核对；明确 Failed/NotCommitted 后才能显式审阅新动作。无 OperationId 的 Schema1 旧计划允许原哈希只读预检及原提交的 AlreadyInstalled 核对，未提交计划执行须重新显式审阅，不自动补身份。成功重入只核验原已提交计划，不重置站点。预检不安装/启动，不替代正常部署验证；输入变化须重新审阅。资格、真实 SDK/协议/实体及现场授权未获得时逐项 BLOCKED，不生成生产默认或虚假商业许可。
 
 开发者冻结后可运行 `scripts/verify-commercial-media.ps1 -Media <同一win-x64介质目录> -Output <新证据目录> -Dotnet <固定SDK>`，将该提交的现有合成夹具绑定到介质真实 DLL，校验原介质未变化。该夹具显式注入内部合成身份/端口，不提供运行时绕过选项，不构成实际UAC安装或现场资格证据。原生权限/重启清理/跨账户、触控DPI、设备组合逐项按[验收计划](validation/commercial-productization-01.md)后验。

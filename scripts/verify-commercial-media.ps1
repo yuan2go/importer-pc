@@ -28,6 +28,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 $administration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/OperatorAdministration.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'OperatorAdministration.cs'), [string[]]$administration)
+$batch = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Deployment.Verification/DeploymentBatchVerification.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Frozen deployment batch fixture source is unavailable' }
+[IO.File]::WriteAllLines((Join-Path $Output 'DeploymentBatchVerification.cs'), [string[]]$batch)
 $entry = @'
 using Ipc.Platform;
 using Ipc.Assembly;
@@ -46,6 +49,7 @@ var receiptHash = Wire.FileHash(receipt);
 _ = DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receipt, "--preflight"]);
 if (Environment.ExitCode == 0 || Wire.FileHash(receipt) != receiptHash) throw new Exception("Batch overwrote original receipt");
 Environment.ExitCode = 0;
+DeploymentBatchVerification.Run(inventory, Path.Combine(evidence, "batch-regressions"));
 Console.WriteLine("PASS frozen native batch preflight and duplicate receipt refusal; no installation/device startup");
 '@
 [IO.File]::WriteAllText((Join-Path $Output 'Program.cs'), $entry)

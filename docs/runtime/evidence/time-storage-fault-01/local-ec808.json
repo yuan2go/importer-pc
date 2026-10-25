@@ -1,0 +1,139 @@
+{
+  "time-storage-fault-checks": {
+    "Result": {
+      "Checks": [
+        {
+          "Name": "ST12 capacity throttle survives UTC rollback",
+          "Passed": true,
+          "Data": {
+            "UtcJumpHours": -12,
+            "MonotonicElapsedSeconds": 2,
+            "ProbeRan": true
+          }
+        },
+        {
+          "Name": "ST12 UTC forward jump does not bypass interval",
+          "Passed": true,
+          "Data": {
+            "UtcJumpDays": 2,
+            "MonotonicElapsedSeconds": 0,
+            "Skipped": true
+          }
+        },
+        {
+          "Name": "ST12 retention notification interval also survives rollback",
+          "Passed": true,
+          "Data": {
+            "MonotonicElapsedSeconds": 61,
+            "RetentionProbeRan": true
+          }
+        },
+        {
+          "Name": "ST13 synthetic handoff is durable",
+          "Passed": true,
+          "Data": {
+            "SimulationOnly": true
+          }
+        },
+        {
+          "Name": "ST13 in-flight UTC rollback does not manufacture Conflict",
+          "Passed": true,
+          "Data": {
+            "State": "SlotResolved",
+            "Stage": "Accepted",
+            "Calls": 1,
+            "Prepared": "2026-10-25T20:59:40.1038292+00:00",
+            "Reply": "2026-10-25T19:59:40.1038292+00:00"
+          }
+        },
+        {
+          "Name": "ST13 rollback has request-bound durable local evidence",
+          "Passed": true,
+          "Data": {
+            "HasProof": true
+          }
+        },
+        {
+          "Name": "ST13 earlier reply without witnessed rollback remains invalid",
+          "Passed": true,
+          "Data": {
+            "OriginalUtcRetained": "2026-10-25T19:59:40.1038292+00:00"
+          }
+        },
+        {
+          "Name": "ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps",
+          "Passed": true,
+          "Data": {
+            "NoBlanketTimeWaiver": true
+          }
+        },
+        {
+          "Name": "ST13 an existing Conflict is never automatically cleared",
+          "Passed": true,
+          "Data": {
+            "State": "Blocked"
+          }
+        },
+        {
+          "Name": "ST13 restart validates original rollback evidence without redispatch",
+          "Passed": true,
+          "Data": {
+            "State": "SlotResolved",
+            "RecoveryRequired": false
+          }
+        },
+        {
+          "Name": "UTC inventory: operator maximum lifetime cannot be extended by rollback",
+          "Passed": true,
+          "Data": {
+            "MonotonicMinutes": 60,
+            "WallMinutes": 48
+          }
+        },
+        {
+          "Name": "UTC inventory: management status respects its monotonic expiry token",
+          "Passed": true,
+          "Data": {
+            "ExpiredToken": true
+          }
+        },
+        {
+          "Name": "ST08 bounded pre-write I/O jitter recovers without disabling ingress",
+          "Passed": true,
+          "Data": {
+            "Received": true,
+            "Attempts": 3
+          }
+        }
+      ],
+      "Failed": []
+    },
+    "LogSha256": "97222a4a0fbbd1bca3696f3e292e3eecb1a05b8d1b922f2ecc5d29e3884b9174",
+    "ResultSha256": "0fd92243224dd01f507db25b3fb82e24d292e14cb4ab2291ecd3b7d910ec4036"
+  },
+  "time-storage-atomic-checks": {
+    "Result": {
+      "Scope": "Standalone synthetic table; no product schema change or physical I/O fault",
+      "BudgetMilliseconds": 5000,
+      "ExhaustedElapsedMs": 5017.3151,
+      "Attempts": 28,
+      "Exhausted": "RetryBudgetExceeded",
+      "Uncertain": "DurableOutcomeUncertain",
+      "Permanent": "Unrecoverable"
+    },
+    "LogSha256": "6ac156791289764fe002d571b63c08c9e58b9a61794584cebb025b0722b309b4",
+    "ResultSha256": "842dac160d88e38ada306d43cafbaba7713f4b42676462eb3c80369ee5f1b612"
+  },
+  "SourceCommit": "ec8081f36f89d3068896abfcba77ac13c478cc1d",
+  "Baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "DllSha256": {
+    "Ipc.Application.Verification.dll": "ec542225ae4de2e5c5a5f71beca678e451197b806a3cb442f454e6bbcfa557e7",
+    "Ipc.Application.ParcelFlow.dll": "99649e6740f5f78dce0f694bd78b4bd3472affe982be64a93b93db22ab0090ca",
+    "Ipc.Platform.dll": "25ea4c13d3580d41a6fc33c485c1e5eb538f16da95e70076c71dab6712b754f8",
+    "Ipc.Platform.Storage.dll": "5a9a7203555fbf08ce47dd0904dd49dca5a9dabd039c4a51b87c5e2e42d964f9",
+    "Ipc.Integrations.SportmasterRcs.dll": "adea9cb3bdab718304263cd16c13a17017a43921285a41be03bfd16384a670d3",
+    "Ipc.Application.Contracts.dll": "fbacbcda13a9b499ae6b66bb5bbe283e5100a7f08a465a55aab415a702c7f4bc"
+  },
+  "Scope": "Windows 22631 isolated Simulation and standalone SQLite; no OS clock changes, physical storage fault or ST14 full process loop",
+  "ST08ProcessClosure": "NOT_IMPLEMENTED_PENDING_PR110_DEPENDENCY_CHOICE"
+}

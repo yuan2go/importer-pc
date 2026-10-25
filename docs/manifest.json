@@ -90714,9 +90714,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "0ba181dbf796890576c3e0878e2a6c9f7ace0ba03f94759b0c80491d6fbde81d",
-      "size_bytes": 4841,
-      "git_blob": "0eb7ac0cecf9329522f6f6a4c5f8d25715c16110"
+      "sha256": "bd9ab8a23a18603fcf45441c292d9b1bea0a7b8d10720ea3ee76ceb1dde5bd5c",
+      "size_bytes": 6837,
+      "git_blob": "a69a3a9090ea08348cdc24745cea94eb22b95373"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptChronology.cs",
@@ -90793,6 +90793,44 @@
       "sha256": "592ab740d272481c2ecf92fb92e95d8ebd0552e670e13652e1183f9c58fdfce1",
       "size_bytes": 11853,
       "git_blob": "52282de73f712d125a075ad953962a74af63c850"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/ci-ec808.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "d22e143439c603af210170ea04dfdbd39e54d9f25fe4b4db42090161787802e2",
+      "size_bytes": 843,
+      "git_blob": "a82cf34d2a52536780ffb750fe01d4ec902d9a14"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/local-ec808.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "1829ce52f8f36a4554e1b18c820a60bb9c2b90375da75cd49ca3d1b27af9b727",
+      "size_bytes": 4813,
+      "git_blob": "adf8bed9554c0261a777add8562348b98933e262"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -35,3 +35,19 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 新时间/存储夹具、Atomic边界、parameter-guidance-startup、deferred-connections、rcs-heartbeat、默认档retention-ingress均通过；core锁依赖构建、四产品WPF及自包含安装器编译0警告0错误。实际源与日志hash另附，不用这条摘要给后续提交授予PASS。未安装本机产品或政策，未关闭旧完整恢复缺口。
 
 统一NOT_RUN：目标26100+/4核8GB、24h/72h、真实SDK/相机/RCS、物理断电、Production安装/接管、604800完整UAC恢复、2592000。未执行大档；没有把短测或CI授予现场运行资格。
+
+## 固定源码本机证据
+
+修复源ec8081f36f89d3068896abfcba77ac13c478cc1d重新锁构建后，两新选择器再次通过。[逐断言、预算结果、DLL与原始log hash](../evidence/time-storage-fault-01/local-ec808.json)只归该源；四产品/安装器前述工作树编译不混为这次DLL身份。草稿PR112已创建，ST08进程闭环依赖仍未决定，不能合并后当作该闭环通过。
+
+|问题|当前修复源位置|
+|---|---|
+|ST12|ParcelStorageCapacity.cs:15、CommonCapabilities.cs:33、LocalManagementMode.cs:127、ManagementModeBroker.Installation.cs的Wait|
+|ST13|ParcelStages.cs:85/112、ParcelReceiptChronology.cs、ParcelReceiptCustody.cs:43、ParcelTerminalRecovery.cs:56、ParcelLegacyReceiptRecovery.cs:121；Contracts/ParcelContracts.cs可缺省字段|
+|ST08已修阶段|ParcelIngress.cs:45、Ipc.Platform.Storage/AtomicStorageWrite.cs:15；ParcelRuntime的Receive仍待进程级致命处理，未伪称已改|
+
+改动文件已复筛：没有新增HTTP/RCS重试；新的同步退避仅在原同步持久交接路径，仍由来源回调/原lane所有者保有资源；不在UI刷新getter内睡眠。事务回调只有本地SQL，COMMIT结果不明不重做，异常不会被吞掉变成功。时钟证据与nullable字段不修改旧JSON/null省略语义；原SQL1–9没有变更。长期内存/实际native挂起/现场资格不由这些检查授予。
+
+## CI实际检查身份
+
+[Linux job121289396953](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289396953)与[Windows冻结介质job121289397000](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289397000)均SUCCESS，head ec8081f3，实际检出合并ref d062ec8d3d3593c14f57f734488150479cd3db67。[原源/两job/新介质hash](../evidence/time-storage-fault-01/ci-ec808.json)固定身份；不是本机DLL，也不把它记成后续文档提交验证。未签名、实际Windows安装NOT_RUN。ST08缺失进程闭环没有被这次CI授予通过。

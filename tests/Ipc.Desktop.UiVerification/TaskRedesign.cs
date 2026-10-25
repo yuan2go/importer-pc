@@ -142,7 +142,8 @@ static partial class Program
         search.Text = "扫码消息"; window.UpdateLayout();
         Capture("parameters-search", client);
         var results = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "参数搜索结果");
-        Check(results.IsVisible && results.Items.Count > 0 && search.Focus(), "parameter search presents matches and accepts native keyboard input");
+        var searchFocused = search.Focus();
+        Check(results.IsVisible && results.Items.Count > 0 && searchFocused, "parameter search presents matches and accepts native keyboard input: visible=" + results.IsVisible + ", matches=" + results.Items.Count + ", focused=" + searchFocused + ", enabled=" + search.IsEnabled + ", active=" + window.IsActive);
         search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search)!, 0, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent }); window.UpdateLayout();
         Check(search.Text.Length == 0 && Descendants(editor).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused),
             "cross-category search locates and focuses the actual field without recreating editors");

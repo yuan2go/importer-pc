@@ -178,12 +178,12 @@ static partial class Program
         var removalType = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!;
         foreach (var restart in new[] { false, true })
         {
-            var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), [], restart);
+            var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
             var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
             removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
-            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "关闭" }) &&
-                !Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible), "retired product exposes only its result and close action, with no repeated repair or authentication entry");
-            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("已卸载") && (restart ? t.Text.Contains("重新启动 Windows") : t.Text.Contains("卸载操作已完成"))) &&
+            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "只读核对原卸载结果", "关闭" }) &&
+                Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("原程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");
+            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("原安装已退役") && t.Text.Contains("重新启动 Windows") : t.Text.Contains("程序清单已清理") && t.Text.Contains("原数据正常保留"))) &&
                 !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }

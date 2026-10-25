@@ -90743,11 +90743,11 @@
       "version": "latency-capacity-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Measured latency/capacity work package",
-      "source": "WP-IPC-LATENCY-CAPACITY-01; no historical qualification inherited",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "f5efdf34adb116d12341d0da732b0383c8dee81cf8535a369024d3dada424619",
-      "size_bytes": 2115,
-      "git_blob": "f7138e54eb1d89cda237d093f0ca633f7a20d8c7"
+      "sha256": "00b18be95b9f7c9a5ae5d976ad6ea8985b659f85a3c4c82b2efadc32fb86deed",
+      "size_bytes": 2384,
+      "git_blob": "c941e7b9b5da6e62ebbe66e9a4fde8af640451e2"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/LatencyCapacity.cs",
@@ -90789,9 +90789,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "adf04fe7e039913efb6e673368a80ed55694d722c7e5460bd3ed22350e93a04d",
-      "size_bytes": 6461,
-      "git_blob": "af59457710dd694ad9b75ca101b0c45c3f9309a5"
+      "sha256": "e555230c1a603c026b4398e8a5ef557372d6c47515e55ce12b9db9a681dab526",
+      "size_bytes": 7780,
+      "git_blob": "7b08072010946c776490b7127c7add63c827d6f0"
     },
     {
       "path": "docs/runtime/validation/latency-capacity-01.md",
@@ -90800,9 +90800,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "56f5d75c563cf917425155731b74d7ea69eee3c92c3b8fa68d6503b6a4294402",
-      "size_bytes": 5754,
-      "git_blob": "88a5b7527054163ca837f6c107739420d05e4a41"
+      "sha256": "7a4e3498ff686eec10a9aa353fb7339edc5dfd227117ee312e963905762863ae",
+      "size_bytes": 11962,
+      "git_blob": "30008ba0a53624bc44b6caf8e59d9dcda068450f"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelDetailsProjection.cs",
@@ -90880,6 +90880,28 @@
       "sha256": "10eee7bbf92e7e187710515ec483cccf7deb175bbf9e9dc8e6731a76df5a27ba",
       "size_bytes": 7540,
       "git_blob": "0dda80237bd5af60445154413f9b046a18f503a2"
+    },
+    {
+      "path": "docs/runtime/evidence/latency-capacity-01/ci-1898.json",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
+      "storage_scope": "public_repository",
+      "sha256": "896ae54c8f0cd1374024da2f1a2f2629fe02dbdf480e78bedc01fe0c6cc08871",
+      "size_bytes": 732,
+      "git_blob": "ff06014f074b6b91a47112afad5836278835e0d6"
+    },
+    {
+      "path": "docs/runtime/evidence/latency-capacity-01/clean-comparison.json",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
+      "storage_scope": "public_repository",
+      "sha256": "724a77602cb20d0fac40bfad9740ab1332b2a89a6e76868c2b0c77391001fcba",
+      "size_bytes": 69218,
+      "git_blob": "956e46bc298b3ee4771cf9f9e686ad18e7196644"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

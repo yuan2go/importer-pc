@@ -39,3 +39,14 @@ PASSIVE不强制等待所有读者；busy=0不等于全部完成，须比较log�
 技术依据：[SQLite PASSIVE及三列结果](https://www.sqlite.org/pragma.html#pragma_wal_checkpoint)、[分步在线备份](https://www.sqlite.org/backup.html)、[dotnet-counters采集](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters)。本地实测、夹具和目标现场资格分别记录，不以资料声明替代实测。
 
 同一窗口的新刷新不加入自己的旧请求；消费者用弱身份登记，不持有已关闭窗口。详情缓存还包括显式选择generation，普通500ms快照替换不增加该generation。
+
+## 隔离复现
+
+Windows开发shell先执行`. ./scripts/project-environment.ps1`，用匹配SourceCommit的Release构建和全新D盘输出根。`dotnet-counters`在D盘本地tool-path安装，采集版本见回执；不改机器环境。示意命令中的路径均需指向实际匹配的本地文件，不能对生产根执行：
+
+```powershell
+dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster
+D:/DevCache/importer-pc/tools/dotnet-counters.exe collect --format json --output D:/DevCache/importer-pc/new-counters --counters 'EventCounters\System.Runtime[alloc-rate,loh-size,gen-2-gc-count,time-in-gc,gc-heap-size]' -- dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --latency-capacity --latency-rows 600000 --latency-seconds 12 --latency-assert --latency-output D:/DevCache/importer-pc/new-latency-run
+```
+
+输出根必须不存在；夹具先检查20GiB可用空间、预置中保留12GiB，不运行2592000。先所有构建/功能测试结束，再顺序采样，完整保留MEASUREMENTS/IDENTITY和counter JSON及hash。`--latency-assert`只断言稳态不重复Details/作业序列化，不给出任意绝对延迟阈值。基线旧二进制不包含后加断言，不得把参数传入成功当作旧版语义通过。

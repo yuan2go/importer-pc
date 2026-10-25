@@ -1,0 +1,21 @@
+{
+  "Head": "1898ef43933a2fd2f0a855f1d39ab2e2dab65ea7",
+  "CheckedMergeCommit": "d196ecf5973babd7f7d3eec702b514ba7f8ec2a2",
+  "Run": 40229346516,
+  "Jobs": {
+    "LinuxAqa01": {
+      "Id": 121277510594,
+      "Conclusion": "success"
+    },
+    "WindowsFrozenSportmaster": {
+      "Id": 121277510763,
+      "Conclusion": "success"
+    }
+  },
+  "InstallerSha256": "f10f1615078dc69b93fb68091b40b4e886c09945567fcdbce58d33b29282f79e",
+  "InstallerPayloadSha256": "c5f8cd8456ed0863b528d8b037f6aed7777979d085739d629614961f84467608",
+  "Version": "SM1.15.0",
+  "Authenticode": "NOT_SIGNED",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "Scope": "CI compiled/frozen/package checks only, not local benchmark identity or site qualification"
+}

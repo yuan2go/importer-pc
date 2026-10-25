@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><AssemblyName>Ipc.Application.Verification</AssemblyName></PropertyGroup>
- <ItemGroup><ProjectReference Include="../../src/Ipc.Assembly/Ipc.Assembly.csproj" AdditionalProperties="BusinessModule=Sportmaster"/></ItemGroup>
+ <ItemGroup><ProjectReference Include="../../src/Ipc.Assembly/Ipc.Assembly.csproj"/></ItemGroup>
+ <Target Name="RequireDeploymentVerificationComposition" BeforeTargets="PrepareForBuild;CollectPackageReferences">
+  <Error Condition="'$(BusinessModule)' != 'Sportmaster'" Text="Build this fixture with -p:BusinessModule=Sportmaster so restore and build use the same explicit composition."/>
+ </Target>
 </Project>

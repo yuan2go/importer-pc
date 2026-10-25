@@ -85,3 +85,13 @@ Set-Location D:/projects/importer-pc
 运行40216393477的Linux SUCCESS；Windows的保护目录/权限、冻结、首配/参数、core/14项/生产拒绝、视觉及安装器打包全部SUCCESS，两个上传步骤FAIL，故整体FAIL。原错误：`The rootDirectory: D:\a\importer-pc\importer-pc is not a parent directory of the file: D:\scd-installer\...exe`。D盘多个顶层兄弟目录的共同根在artifact动作中退化为驱动器相对路径。
 
 仅将CI发布/证据输出统一为 `D:/scd/release`、`D:/scd/evidence`、`D:/scd/installer` 等，共同父目录明确为 `D:/scd/`；SDK/缓存和受保护HKLM存储不变。未删除上传、降低工程门或修改产品代码。两个上传都失败，不能伪造该轮Windows artifact；保留GitHub原job日志和实际步骤状态，后续以新运行真实留存结果为准。本机冻结183f9fac及其产品/配置/脚本/测试/随包指南输入不变，无须再次重复本机旅程；工作流目录变化单独记录并由最新CI验证。
+
+## 成功重入目标一致性补检
+
+CI40217369663已双绿，并实际留存安装介质与证据；其原始core/14项、工程/生产门、安装器回执和artifact摘要见 [该轮身份](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/RUN-IDENTITY.json)。该轮实际merge源d745fadf与本机183f9fac各守原身份，不覆盖以下新增守卫。
+
+复核AlreadyInstalled成功重入时，发现此前仅凭相同DeploymentPlanIdentity即可确认，原登记目标漂移仍可能被当作旧计划结果。现在批量入口复用原有InstalledReceipt的目标核对，检查应用、状态、来源、账户、数据根、快捷方式与完整请求指纹，并核对当前发布根介质的SourceCommit。正常安装结果读回也使用同一个守卫，不另建匹配规则。
+
+源码夹具新增同指纹下的七种登记投影漂移拒绝，以及合法新/旧计划回执；合计15项PASS，未改真实HKLM部署登记。新源码冻结及最新CI待完成，不能把14项旧源PASS当作该新增守卫的冻结证据。
+
+源码构建遇到共享obj写锁和隐式还原图选择Supply的锁文件不符，原FAIL保留。夹具项目改为明确要求全局 `-p:BusinessModule=Sportmaster`，统一NuGet还原与构建组合；串行构建后以RestoreLockedMode验证，再执行实际夹具。更新项目引用图及既有Contracts1.19引用元数据，没有外部NuGet版本升级，也未关闭锁定校验。复核命令：`dotnet build tests/Ipc.Deployment.Verification -c Release -p:BusinessModule=Sportmaster -p:BuildInParallel=false -m:1 -p:RestoreLockedMode=true`，再用该输出DLL运行新私有证据目录。

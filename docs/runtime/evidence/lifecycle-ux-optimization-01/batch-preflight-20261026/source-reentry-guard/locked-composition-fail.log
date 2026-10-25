@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Platform\Ipc.Platform.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 901 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 984 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 984 毫秒)。
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 依赖项已更改的项目引用 ipc.assembly。
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 找到 net10.0-windows7.0 目标框架的新 Ipc.Application.Sportmaster 项目引用。
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 找到 net10.0-windows7.0 目标框架的新 Ipc.Components 项目引用。包锁定文件与项目依赖项不一致，因此无法在锁定模式下运行还原。请禁用 RestoreLockedMode MSBuild 属性或传递显式 --force-evaluate 选项，运行还原来更新锁定文件。
+  已还原 D:\projects\importer-pc\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 75 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 51 毫秒)。
+  已还原 D:\projects\importer-pc\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 78 毫秒)。
+  未能还原 D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj (用时 71 毫秒)。
+  1 个项目(共 13 个)是最新的，无法还原。
+
+生成失败。
+
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 依赖项已更改的项目引用 ipc.assembly。
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 找到 net10.0-windows7.0 目标框架的新 Ipc.Application.Sportmaster 项目引用。
+D:\projects\importer-pc\tests\Ipc.Deployment.Verification\Ipc.Deployment.Verification.csproj : error NU1004: 找到 net10.0-windows7.0 目标框架的新 Ipc.Components 项目引用。包锁定文件与项目依赖项不一致，因此无法在锁定模式下运行还原。请禁用 RestoreLockedMode MSBuild 属性或传递显式 --force-evaluate 选项，运行还原来更新锁定文件。
+    0 个警告
+    1 个错误
+
+已用时间 00:00:03.53

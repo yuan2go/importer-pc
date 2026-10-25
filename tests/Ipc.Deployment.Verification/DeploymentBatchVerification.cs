@@ -103,6 +103,29 @@ public static class DeploymentBatchVerification
         Check(Invoke("legacy-submit", legacyFile, 2, preflight: false)["Status"]!.GetValue<string>() == "LegacyPlanNeedsReview", "Legacy plan executed instead of requiring an explicit new review");
         cases.Add("legacy-null-identity-preserved-readonly-and-new-submit-refused");
 
+        // The real registration remains untouched. Exercise the same receipt
+        // guard used by committed re-entry and normal installation completion.
+        var committed = new DeploymentLocation(original.ApplicationId, original.SourceCommit, media.Root, seed, original.DataRoot,
+            original.RuntimeAccountSid, DeploymentPlanIdentity: plan.PlanSha256, Shortcuts: original.Shortcuts);
+        ParcelStartupServices.RequireMatchingInstalledReceipt(original, committed);
+        ParcelStartupServices.RequireMatchingInstalledReceipt(legacy, committed with { DeploymentPlanIdentity = legacyHash });
+        foreach (var changed in new[]
+        {
+            committed with { DataRoot = original.DataRoot + "-migrated" },
+            committed with { RuntimeAccountSid = "S-1-5-21-synthetic-changed" },
+            committed with { SourceCommit = new string('b', 40) },
+            committed with { Shortcuts = new(true, false) },
+            committed with { DeploymentPlanIdentity = new string('c', 64) },
+            committed with { LifecycleState = "RemovedDataRetained" },
+            committed with { ApplicationId = "different-application" }
+        })
+        {
+            var refused = false;
+            try { ParcelStartupServices.RequireMatchingInstalledReceipt(original, changed); } catch (InvalidDataException) { refused = true; }
+            Check(refused, "Changed committed target accepted as the original installation");
+        }
+        cases.Add("committed-reentry-refuses-registration-target-drift-with-unchanged-plan-fingerprint");
+
         // Synthetic original journals exercise the actual published batch fence.
         // Never write HKLM, the protected machine store or an installation record.
         var journal = Path.Combine(evidence, "synthetic-original-operation.json");

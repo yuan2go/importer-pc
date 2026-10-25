@@ -46,7 +46,11 @@ public static class DeploymentBatch
             var committed = WindowsDeploymentSetup.Current(request.ApplicationId);
             if (committed is { LifecycleState: "Installed" } && committed.DeploymentPlanIdentity == plan.PlanSha256)
             {
-                _ = DeploymentMedia.Inspect(committed.ReleaseRoot, request.ApplicationId);
+                // Re-entry acknowledges only the original target. A migration or
+                // changed registration must not become a success for an old plan.
+                ParcelStartupServices.RequireMatchingInstalledReceipt(request, committed);
+                if (DeploymentMedia.Inspect(committed.ReleaseRoot, request.ApplicationId).SourceCommit != request.SourceCommit)
+                    throw new InvalidDataException("原部署介质与本计划来源不匹配；保留原登记并核对");
                 Result(new { Status = "AlreadyInstalled", plan.PlanSha256, Location = committed, DeviceOrBusinessStarted = false });
                 Environment.ExitCode = 0; return true;
             }

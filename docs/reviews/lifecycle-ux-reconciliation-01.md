@@ -1,4 +1,4 @@
-> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，CI40216393477工程/原生/打包通过但归档失败，共同D盘归档根已修正，完整CI待新运行核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，D盘归档修复的CI40217369663双绿；新增成功重入目标漂移守卫已通过15项源码验证，新冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
 
 # 生命周期交互审查整合与问题处置
 

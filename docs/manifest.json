@@ -1950,9 +1950,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "ca815928be2203a160d79d2714e9759ea6c487d90ca4374f60cea1844f07bd23",
-      "size_bytes": 6471,
-      "git_blob": "89e021dd6c70359d89580bc7950b02808282a000",
+      "sha256": "42da91dbac9728d6aa22efa0b0db513699f30c8cf658e112ffc618035524acee",
+      "size_bytes": 6486,
+      "git_blob": "1b7c3292e22c5e2d0ba2769aeaf14bd7c0b09e6d",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2199,9 +2199,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "0b22f2d84988daf351b6c98c97fe695f2e97291b34303f3ad8daa4015c4a877b",
-      "size_bytes": 15091,
-      "git_blob": "f6c0de00ba19a0e19e914a07b5425b4a12e0ad0e",
+      "sha256": "057c83a0de8f03296b2961136921206f8c9bb7ce7e02b0ea9a7d0faadeea6427",
+      "size_bytes": 15106,
+      "git_blob": "a80cb994a3bbffe711d77ee326d9105f961e59a0",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -55648,10 +55648,11 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "34aebb5cec46146bba86ad5820574e6f865d0f7b36e714d5f293be4e20231a80",
+      "sha256": "72a233a1c6d18ec490dbba5b35343d2077bdaf884f797987a6abed1105af9268",
       "size_bytes": 16387,
-      "git_blob": "983477d0c1b89c894051e29ae8f0776d711e402f",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "git_blob": "b5df0aa2d094f205edfaedf780efa3508e7e79ca",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.lock.json",
@@ -56587,15 +56588,15 @@
     },
     {
       "path": "src/Ipc.Assembly/DeploymentBatch.cs",
-      "sha256": "4d7bb8958de0fc213fccd75222080f93530d9efdc188cc75083bb56a0b7d32a3",
-      "size_bytes": 6389,
-      "git_blob": "f1aa3154820aad7c670c50d6839b64aa58fb86fe",
+      "sha256": "0e75bf782d1325d6d7352e1c6e678896443ece860065b9e61184c080c48e10f5",
+      "size_bytes": 6807,
+      "git_blob": "c733c7f2f4f758e84d7af0038216ea76edb09e33",
       "version": "parallel-reconciliation-20261020-02",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Assembly/DeploymentComponentReview.cs",
@@ -56727,12 +56728,12 @@
       "purpose": "First protected management password approval routing and compact native startup window sizing",
       "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "686c840c404780e6d5868634637ffa00bec62a925b1e8b479935b4eccfe0d537",
-      "size_bytes": 51989,
-      "git_blob": "c98aa7cb0ca7b9b2644d6cb5e2763b389881c3e6",
+      "sha256": "0c43fcc6d97804b9249a80941d11681003021f9336e316dc5a486fd08fd3a3ad",
+      "size_bytes": 52232,
+      "git_blob": "526e97568680b67e3ebe68b34aaed14a542f548a",
       "previous_git_blob": "c07c5a48336e8f7f8d0830bc7901ebb25dc07f31",
       "pre_publication_no_test_git_blob": "57a650b6b3ff5a862e64c1ea9c0c7118db2bdfe8",
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Assembly/Program.cs",
@@ -56812,10 +56813,11 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "4abe9d8a861e1fe070dec2fd44c693042fb7b901f04d5107c9d5c0fc3fdf2417",
+      "sha256": "0067c157ce4555785a2b3f37d9781b9b189b6be61b12beacb966154175caed9e",
       "size_bytes": 17521,
-      "git_blob": "eaa9ce3e02a2c155b51608e4f1029bdf3b4eb316",
-      "previous_git_blob": "eb83b03a8f030b57577d431c5168a8e9479096c5"
+      "git_blob": "e952b717108889104d3ddd2e3c4027608bc68a6c",
+      "previous_git_blob": "eb83b03a8f030b57577d431c5168a8e9479096c5",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Assembly/packages.sportmaster.win-x64.lock.json",
@@ -56931,10 +56933,11 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+      "sha256": "58f6883e660862773849298a7c69cea017fe5710199ac3c13432c4338bc346b5",
       "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7"
+      "git_blob": "8c2dcdf842f1635f5e97b654afc9b315fdac0709",
+      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Components/packages.sportmaster.lock.json",
@@ -57462,10 +57465,11 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+      "sha256": "58f6883e660862773849298a7c69cea017fe5710199ac3c13432c4338bc346b5",
       "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "git_blob": "8c2dcdf842f1635f5e97b654afc9b315fdac0709",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Drivers/packages.sportmaster.lock.json",
@@ -57945,10 +57949,11 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "e5bd4f1d200dbd692078139f50c9f746c4331c4facf2b2516953b815fe0a9ba0",
+      "sha256": "7b32d012958402b46a378bd8cebfb7b8cc42535f88fe500885a2ab4f507f5f30",
       "size_bytes": 14431,
-      "git_blob": "eaa40bc0e2ca53f652a93ad819b8ebe6c2408884",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "git_blob": "fb72536fae2be8fa18ecb8621ff618db92b1776f",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Integrations/packages.sportmaster.lock.json",
@@ -91286,9 +91291,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "f662d55311b6a70956c4989437304a3df00d12632cba8e9c17de884dd5e2df25",
-      "size_bytes": 14321,
-      "git_blob": "05e6b37d656abc763d8104d638c209dfb9fc8d5a",
+      "sha256": "15c5aea6914a7c4863f52d43a6975339a394de90fde641ffd85711b6de64fc37",
+      "size_bytes": 14336,
+      "git_blob": "3e66410390ec77cf080fe3f479d27a705f299e37",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -92618,9 +92623,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "b141ffc25b9e05dd6d4f04c6e1682d13bc894e0cf358d27d0ec047d8ff02143d",
-      "size_bytes": 28201,
-      "git_blob": "5b7de20e253241a793336c7e4205984000e28231",
+      "sha256": "914fc39ce908897dfe9a9d965704c2f09a792f737dea8b158429f19f56a26477",
+      "size_bytes": 30608,
+      "git_blob": "fc8860e5e8608b6b4748b8222b4537545b68d877",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97019,9 +97024,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "bf4c2f8d9ac496ef332780fdf30f7b60ee0fc083af29b1069db0154e57f9f7d6",
-      "size_bytes": 8601,
-      "git_blob": "7fb343d8d282770b556aec30b8a420d1b24eac82",
+      "sha256": "be7972acb4ed8b4db8eadd1b0e0f0f69bbf4d1cedc51123b8054a8469f512c36",
+      "size_bytes": 8616,
+      "git_blob": "eef43a31fc4836fd34fd0a4b2a50f99bb8a60923",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97042,9 +97047,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "a75b539f9e098a87ee417b1bf2375f34399486a310a4727ddd22b9d5343fb8d6",
-      "size_bytes": 12988,
-      "git_blob": "b8124af1b797fd41e59a714dfc2687e60db67869",
+      "sha256": "5f6bf35398e9e669ce7007b342bb41018b3adc6521e25fd48a006abd25fae8c1",
+      "size_bytes": 14675,
+      "git_blob": "bc15893ed6a7507c61ff67b582d14ff95ffcc650",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97054,9 +97059,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "8a36db415253794d4d4ef8c7d90e869150815460572b2b3cb74b29bf9df413b7",
-      "size_bytes": 15351,
-      "git_blob": "4aef59ce2dd7b80a96639902958908a3786ab4b2",
+      "sha256": "2b6926828bcd2bce935974adc6194ab1c66e72ecaefe2ca7afe41644638186b1",
+      "size_bytes": 15366,
+      "git_blob": "e98ad26dc83a7edccb60cb251e82ec6ee6b9553d",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97088,9 +97093,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "74e7ac5a00e8aa0594192f1c5d3d0c17ca71f90fa5cddbc4b662ba8e114c1b2a",
-      "size_bytes": 21256,
-      "git_blob": "a2bb7d7c11f9b5819442e0bffe51899e4ab5de68",
+      "sha256": "77fd5cde992377ebb12b69f875d18eba5b296b922e6b883c463210abc07ebf40",
+      "size_bytes": 21271,
+      "git_blob": "9913a45fb2db3f6131816fdfaa057502a1899aa6",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97232,9 +97237,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "78cc731c366d3beb702be5ccb499d0ccc3949af83dce26f64514dd567f706e69",
-      "size_bytes": 11194,
-      "git_blob": "7db5302db3430c6ac7e8565092a1e3560ff43002"
+      "sha256": "274745644a581bd7e120234e16ffa50a25c9fe17235d7158764e5d29546fc2ef",
+      "size_bytes": 12766,
+      "git_blob": "aefff48188d95116f3c052755163a4377eb4cce2",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/Ipc.Deployment.Verification.csproj",
@@ -97243,9 +97249,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "e4921dd2ff46575825395f7f5107c698f3ff6681ac90e1e5ccee725ddbad3d2d",
-      "size_bytes": 360,
-      "git_blob": "0c69f110a4743bb7b7faef56d1e2bf0ae938e417"
+      "sha256": "4fc68e87b71b4a85889b305010f513e45074ca34896d8590ed9b9d89d1589fcd",
+      "size_bytes": 613,
+      "git_blob": "e7e83a64ad846e41949ee3e86a9663cfcc4aa539",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/Program.cs",
@@ -97265,9 +97272,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "b0a96d449b4eca2fd10824f29fadd8859fa488994f9e5e5251db59dc3ced14b0",
-      "size_bytes": 17794,
-      "git_blob": "64a0668bf0358c2a5480fb922bcd1e8ddbf6971a"
+      "sha256": "4f14971c83efd1e6fe5262d97685f83fb4b93fe097b988bcb1c3c2c2e9085566",
+      "size_bytes": 17880,
+      "git_blob": "643a2f2fd8252afbebbf420223d50401b7b71abe",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/FirstConfigurationVerification.cs",
@@ -97455,6 +97463,138 @@
       "sha256": "6ef5fd07430c301f8cb36ee5ba8b2250f083afc7357cfbb2dd3a56fc12c23a67",
       "size_bytes": 1692,
       "git_blob": "0d3de3cdfa5ec407b580ae41bf4d81f9d615770d"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/BATCH-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "cde2bb9322c8c2d2061a0aadcfb51f98efd7df88170746d24f7d09a90ce50c48",
+      "size_bytes": 1476,
+      "git_blob": "b3453efb674aaf9b0ff4148b926fcf8fe0c89b18"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/CORE-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "2f101da5dc5db2e8dfc88ca5baf77fd5e33a41feed87cd384190ac6840c22be7",
+      "size_bytes": 2278,
+      "git_blob": "1bf0f26e00dfcb3a028eaf7d70bb8eeb186e393c"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/CORE-RUN.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "17d8453f90080189f6ca6cffc9279d4a1c08e9acda82a53368d33c4a1ba44924",
+      "size_bytes": 12844,
+      "git_blob": "18dbd5fa71385c35487cbbb787b3dbe1f3d65e02"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/INSTALLER.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "ae23af184341d212a73cd7a474bb76fc507d60c8db30c7cd18c634fb3bd67cd2",
+      "size_bytes": 756,
+      "git_blob": "86b1dc9dfd81c766dd416643b3af9fdab914f3ba"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/RUN-IDENTITY.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "fbbf1f28c4caad8982cac1c93b4e64978fff9e1c9c3c360de29d27e53a6dd3a6",
+      "size_bytes": 618,
+      "git_blob": "cbf73f72ff692595e3fb99b6267b7887ecaa133b"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/engineering-gate.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "039d3eb69bbc9922d0bb1dde65b4785e239bcbbcc82c121753e60b9e1f406056",
+      "size_bytes": 489,
+      "git_blob": "18e9b7d8ef5eb771e928801e434f449d7f97a3ac"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40217369663/production-gate.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "bb548292f46ff8f2b7f0c7126dd108216ffccd2315ca6f78c0601f82da053238",
+      "size_bytes": 2054,
+      "git_blob": "4fef308607c13d11cfaf4d44c9f02222721258c1"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/source-reentry-guard/BATCH-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "39af32063857c1924c51e1a2d4c46258059b6af7013cf257d9fb185e6ebd1f04",
+      "size_bytes": 1568,
+      "git_blob": "cf1b1673ba28e9802b3cada9b951db96d1b298e1"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/source-reentry-guard/RUN.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "ca9748c7fa977db6e99c8d6565148bd8dd69d4a2ee145112a8cd7768c8010040",
+      "size_bytes": 151,
+      "git_blob": "ec510070a4ba9fa4f8558c03c9af4f77064b6478"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/source-reentry-guard/build-explicit-locked-pass.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "57e03c2d9577c205a496e496d55d669074daeeb5d15786b00d704efe68b2fbca",
+      "size_bytes": 3161,
+      "git_blob": "50b8a7ec32bcbc78ce7f66dd51fbfa54b4d570a3"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/source-reentry-guard/build-parallel-fail.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "03b6e0864358a9ad76a66cffa59a9d23c43ba15030cab382607c406a4ae867d9",
+      "size_bytes": 415,
+      "git_blob": "4c0ff1689491634e23d908f9a690b1cb88e05b3a"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/source-reentry-guard/locked-composition-fail.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "c8f3c941cfc7660b73820d2cd42cc76f50404d27b919ef70086337bac7720daa",
+      "size_bytes": 3068,
+      "git_blob": "2b867440dce9965f0639fdf3947d504746d6d945"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -100295,7 +100435,7 @@
       "path": "docs/archive/pre-lifecycle-batch-preflight-01/snapshots/docs/manifest.json",
       "sha256": "bcfdc6b110e570a1ede42afd41a17abd730901372892c846a0b8235e5404a80a"
     },
-    "batch_preflight": "VERIFIED_LOCAL_183f9fac_CI_CORE_PASS_ARTIFACT_ROOT_FIX_PENDING",
+    "batch_preflight": "SOURCE15_CASES_PASS_REENTRY_FREEZE_PENDING",
     "windows_product_installation": "NOT_RUN",
     "equipment_and_field": "NOT_RUN",
     "G01": "BLOCKED_EXTERNAL",
@@ -100309,7 +100449,8 @@
       "meaning": "Metadata coverage of existing main does not credit that work or its acceptance to LIA"
     },
     "integrated_baseline_main": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
-    "current_ci_run": 40216393477,
-    "ci_artifact_retention": "FAIL_then_D:/scd_common_parent_fix"
+    "current_ci_run": 40217369663,
+    "ci_artifact_retention": "PASS_COMMON_D:/scd_ROOT",
+    "new_guard": "Reuse installed receipt target integrity in committed batch reentry; new frozen/CI pending"
   }
 }

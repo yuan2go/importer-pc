@@ -331,13 +331,6 @@
         "resolved": "10.0.13",
         "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
       },
-      "ipc.adapters": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Drivers": "[1.0.0, )",
-          "Ipc.Integrations": "[1.0.0, )"
-        }
-      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -351,11 +344,27 @@
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
+      "ipc.application.sportmaster": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow": "[1.0.0, )"
+        }
+      },
       "ipc.assembly": {
         "type": "Project",
         "dependencies": {
+          "Ipc.Application.Sportmaster": "[1.13.0, )",
+          "Ipc.Components": "[1.0.0, )",
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )",
           "Ipc.Platform": "[1.0.0, )",
-          "Ipc.Product": "[1.0.0, )"
+          "Ipc.Supply": "[1.0.0, )"
+        }
+      },
+      "ipc.components": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )"
         }
       },
       "ipc.drivers": {
@@ -383,14 +392,6 @@
           "Ipc.Platform": "[1.0.0, )",
           "Microsoft.Data.Sqlite": "[10.0.13, )",
           "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
-        }
-      },
-      "ipc.product": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Adapters": "[1.0.0, )",
-          "Ipc.Application.ParcelFlow": "[1.0.0, )",
-          "Ipc.Supply": "[1.0.0, )"
         }
       },
       "ipc.reference.protocol": {

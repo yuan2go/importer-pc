@@ -152,11 +152,15 @@ public static class ParcelStartupServices
     static DeploymentLocation InstalledReceipt(WindowsDeploymentRequest request)
     {
         var location = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new InvalidDataException("No installed deployment receipt");
-        if (location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
+        RequireMatchingInstalledReceipt(request, location);
+        return location;
+    }
+    internal static void RequireMatchingInstalledReceipt(WindowsDeploymentRequest request, DeploymentLocation location)
+    {
+        if (location.ApplicationId != request.ApplicationId || location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
             location.Shortcuts != request.Shortcuts || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
             !string.Equals(Path.GetFullPath(location.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Installation receipt differs from the selected deployment");
-        return location;
     }
     public static bool Handle(string[] args)
     {

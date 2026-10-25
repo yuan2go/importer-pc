@@ -1,3 +1,5 @@
+> 时间与存储故障分级进行中：[工作包](work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md)、[运行/依赖方案](runtime/time-storage-fault-01.md)、[问题卡与验证边界](runtime/validation/time-storage-fault-01.md)、[全仓UTC清单](runtime/time-storage-fault-01-utc-inventory.md)。ST12/ST13及事务重试已本机验证；ST08进程闭环依赖PR110，未计通过。
+
 > 2026-10-26 PR107合并后独立延后修复：[DEFERRED-HEARTBEAT-01校验、恢复与验证边界](runtime/validation/deferred-heartbeat-01.md)。当前心跳只映射已配置相机；全部相机延后时停止心跳，恢复配置仍走Pending/受控重启，原请求和编号账保留。
 
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。

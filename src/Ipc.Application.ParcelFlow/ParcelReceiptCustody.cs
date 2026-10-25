@@ -40,7 +40,7 @@ public sealed partial class ParcelRepository
         if (frozen.Id!=request || frozen.Stage!=stage || frozen.OperationId!=op.Id || frozen.AdmissionId!=op.AdmissionId ||
             frozen.ApplicationId!=op.FrozenConfiguration.ApplicationId || frozen.ConfigurationHash!=op.ConfigurationHash || op.ConfigurationHash!=Wire.Hash(Wire.Encode(op.FrozenConfiguration)) ||
             Wire.Hash(frozen.Payload)!=frozen.PayloadHash || reply.RequestId!=request || reply.PayloadHash!=frozen.PayloadHash ||
-            !Guid.TryParseExact(reply.Id,"N",out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At<frozen.PreparedAt || reply.At>DateTimeOffset.UtcNow.AddSeconds(1) ||
+            !Guid.TryParseExact(reply.Id,"N",out _) || string.IsNullOrWhiteSpace(reply.Evidence) || !ParcelReceiptChronology.Valid(frozen,reply,DateTimeOffset.UtcNow) ||
             OriginalReplyHash(request,reply.Id)!=Wire.Hash(Wire.Encode(reply)) || !reply.TransportSucceeded || reply.ProtocolAcknowledged!=true || reply.BusinessAccepted is null ||
             fact.State!=(reply.BusinessAccepted==true?StageState.Accepted:StageState.Rejected)) return false;
         // Retained terminal facts remain a consistency guard, never an existence test.

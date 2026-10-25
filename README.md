@@ -1,3 +1,5 @@
+> 时间与存储故障分级进行中：[工作包](docs/work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md)、[运行/依赖方案](docs/runtime/time-storage-fault-01.md)、[问题卡与验证边界](docs/runtime/validation/time-storage-fault-01.md)、[全仓UTC清单](docs/runtime/time-storage-fault-01-utc-inventory.md)。ST12/ST13及事务重试已本机验证；ST08进程闭环依赖PR110，未计通过。
+
 > 当前源码操作入口：[文档索引](docs/INDEX.md)、[管理模式](docs/runtime/management-mode-01.md)、[本轮架构质量整改](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。本轮不是安装包发行；SM1.11.1重测介质及历史发布按索引分别读取。下述V3形成时状态保留历史范围。
 
 > 历史安装包：[SM v1.6.1 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76 已合并，固定源 `92586bf44cde`；[发布记录、哈希与边界](docs/runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏，未签名预发布，真实设备/现场待验。

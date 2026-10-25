@@ -285,8 +285,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
             try
             {
-                Boundary?.Invoke("BeforeIngressDurable");
-                WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"));
+                WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"), () => Boundary?.Invoke("BeforeIngressDurable"));
                 Boundary?.Invoke("AfterIngressDurable");
                 Interlocked.Increment(ref lane.Received);
                 lane.Waiting.TryAdd(received.Id, at);

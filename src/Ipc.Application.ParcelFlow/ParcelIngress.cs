@@ -39,13 +39,16 @@ public sealed partial class ParcelRuntime
     {
         foreach (var position in positions.Keys) ingressLanes.Add(position, new(Path.Combine(directory!, Id + ".db")));
     }
-    static void WriteIngress(SqliteConnection db, string id, string position, object item, DateTimeOffset at, string session)
+    static void WriteIngress(SqliteConnection db, string id, string position, object item, DateTimeOffset at, string session, Action? beforeBegin = null)
     {
-        using var c = db.CreateCommand();
+        var body = Wire.Encode(item); var hash = Wire.Hash(body);
+        AtomicStorageWrite.Execute(db, tx =>
+        {
+        using var c = db.CreateCommand(); c.Transaction = tx;
         c.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session) VALUES($id,$position,$at,'Pending',$body,$hash,$session)";
-        var body = Wire.Encode(item);
         c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$position", position); c.Parameters.AddWithValue("$at", at.ToString("O"));
-        c.Parameters.AddWithValue("$body", body); c.Parameters.AddWithValue("$hash", Wire.Hash(body)); c.Parameters.AddWithValue("$session", session); c.ExecuteNonQuery();
+        c.Parameters.AddWithValue("$body", body); c.Parameters.AddWithValue("$hash", hash); c.Parameters.AddWithValue("$session", session); c.ExecuteNonQuery();
+        }, beforeBegin);
     }
     static void FinishIngress(SqliteConnection db, string id, string state, string detail)
     {

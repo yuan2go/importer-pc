@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "work_package": "WP-IPC-TIME-STORAGE-FAULT-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1827,13 +1827,13 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "cc71c2f5d757e01d4c5883d26544506042b8b53604597b0dcdb8e42a036e379f",
-      "size_bytes": 14854,
-      "git_blob": "da9986b92154176170796ebaf350c625721a86df",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "sha256": "e0137daae6f20b973bfa89ef3feade70c01ba5bba8e0dfc7b296785393e5fda1",
+      "size_bytes": 15247,
+      "git_blob": "c160b9ea74afc64733966f690efe144f8ddd3b2a",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -1860,6 +1860,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+        "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+        "sha256": "cc71c2f5d757e01d4c5883d26544506042b8b53604597b0dcdb8e42a036e379f",
+        "git_blob": "da9986b92154176170796ebaf350c625721a86df"
       }
     },
     {
@@ -1964,13 +1972,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "c06f055ac19b9f4b0aa96b1f05a1dc821c3ba8824129eb1d85270beca3423d21",
-      "size_bytes": 5761,
-      "git_blob": "a710224e5777817fa6fc49f88d634a8d072b777b",
-      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
-      "status": "current_guidance_static_review_not_runtime_validation",
-      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
-      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
+      "sha256": "55f255aecc9ec110b3d8ceec59a94f62eb9bbb70a6f49754be737e6a065dc4db",
+      "size_bytes": 6172,
+      "git_blob": "eb033fb01e39f347722131596d09b0a46d9df8a8",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "previous_git_blob": "d5d1118683b400abdfb72c288c4eddc4cd935459",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
@@ -2005,6 +2013,14 @@
         "version": "PARAM-UX-02-20261020",
         "status": "parameter_v3_design_or_current_guidance",
         "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+        "status": "current_guidance_static_review_not_runtime_validation",
+        "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
+        "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
+        "sha256": "c06f055ac19b9f4b0aa96b1f05a1dc821c3ba8824129eb1d85270beca3423d21",
+        "git_blob": "a710224e5777817fa6fc49f88d634a8d072b777b"
       }
     },
     {
@@ -2043,13 +2059,13 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "471c037475abada86e05ed8ec6f71239664b8751b49b01b8052b8b03c2674d0d",
+      "sha256": "0840018fe7b7f439cf3c7d0444d7f13c6967e7348cf2fe87e27cf93b3a2a4f74",
       "size_bytes": 7746,
-      "git_blob": "7a9da9b4bead32169238787a118c3cca3b33c3b2",
-      "version": "parameter-guidance-startup-01",
+      "git_blob": "8991833c1ecb854f7846ee221f98a1be568e58af",
+      "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -2068,6 +2084,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+        "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
+        "sha256": "471c037475abada86e05ed8ec6f71239664b8751b49b01b8052b8b03c2674d0d",
+        "git_blob": "7a9da9b4bead32169238787a118c3cca3b33c3b2"
       }
     },
     {
@@ -2211,13 +2235,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5553713f3a5baf1c9a92ff08b1310cb691769eafe0f46900e4b8d7b56071439f",
-      "size_bytes": 14183,
-      "git_blob": "dae8b1f835d16723ffba4fba1be6ce222309a528",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "sha256": "505794614904c2b62a64550b2695906ef8ef5c15a56cc1031ce56a33a32421be",
+      "size_bytes": 14574,
+      "git_blob": "072a5fca5a9ab73b2c521c406d170ab04c9a2719",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2434,6 +2458,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+        "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+        "sha256": "5553713f3a5baf1c9a92ff08b1310cb691769eafe0f46900e4b8d7b56071439f",
+        "git_blob": "dae8b1f835d16723ffba4fba1be6ce222309a528"
       }
     },
     {
@@ -53125,14 +53157,22 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "sha256": "a81e040c5d83940abd6e0dee409259d47d2edb7fa84ee61ca4b5b78014d5c0d9",
-      "size_bytes": 5231,
-      "git_blob": "55d38e24ccc52033688e6d185fecbfbfed1b4c94",
-      "version": "parameter-guidance-startup-01",
+      "sha256": "8926ae67ecaeaecbf5ecfb2a8d93f3da08ac680155357274f8a43e39f25f6077",
+      "size_bytes": 5306,
+      "git_blob": "9acd68344fcbab290981be0a6df2749d36723da2",
+      "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "storage_scope": "public_repository"
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+        "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
+        "sha256": "a81e040c5d83940abd6e0dee409259d47d2edb7fa84ee61ca4b5b78014d5c0d9",
+        "git_blob": "55d38e24ccc52033688e6d185fecbfbfed1b4c94"
+      }
     },
     {
       "path": "scripts/release_provenance.py",
@@ -53520,16 +53560,24 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj",
-      "version": "parameter-guidance-startup-01",
+      "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "bfc4eeed8c1a97c3da03862b9734c438ba5602cf470509dd2072f081c77b1ca9",
+      "sha256": "9453fe41907166ae3e8b55ffb9f4a382c798a23e7bd9aa28f03332a69e6956ba",
       "size_bytes": 188,
-      "git_blob": "478e01af8cd9a02633f15b12c96a01f1fe1a4fe9",
+      "git_blob": "d3f9bdb9a1f9ead847938293c443605839f8a71a",
       "previous_git_blob": "5815d026c332bbd1eaec37d271eaf65a2745578f",
-      "pre_publication_no_test_git_blob": "e38ff0ba7c9d6f0752092157029f258b96c0e366"
+      "pre_publication_no_test_git_blob": "e38ff0ba7c9d6f0752092157029f258b96c0e366",
+      "pre_time_storage_fault_01_identity": {
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+        "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
+        "sha256": "bfc4eeed8c1a97c3da03862b9734c438ba5602cf470509dd2072f081c77b1ca9",
+        "git_blob": "478e01af8cd9a02633f15b12c96a01f1fe1a4fe9"
+      }
     },
     {
       "path": "src/Ipc.Application.Contracts/OptionalCapabilities.cs",
@@ -53555,16 +53603,24 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
-      "version": "parameter-guidance-startup-01",
+      "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "b855696ea202b74afe4cc7ceb84bbac65e0cb60b50ba811dfc8881ad220dc6ab",
-      "size_bytes": 9366,
-      "git_blob": "90f009d4107c2c1ad37076a2d264319bf90b725f",
+      "sha256": "3a5381db341fc8e4d0c5a5518188ad8fe67866c763ffd69f6e364718051a3e0e",
+      "size_bytes": 9899,
+      "git_blob": "1331062c454e82e45630e0f335bd2f045ca79f90",
       "previous_git_blob": "793dac8284693f22eb7bf919f65bd88d556d6360",
-      "pre_publication_no_test_git_blob": "1e7191ccd313a6b7eae56172d5122320dedf9536"
+      "pre_publication_no_test_git_blob": "1e7191ccd313a6b7eae56172d5122320dedf9536",
+      "pre_time_storage_fault_01_identity": {
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+        "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
+        "sha256": "b855696ea202b74afe4cc7ceb84bbac65e0cb60b50ba811dfc8881ad220dc6ab",
+        "git_blob": "90f009d4107c2c1ad37076a2d264319bf90b725f"
+      }
     },
     {
       "version": "ux-commercial-fix-01",
@@ -53829,14 +53885,22 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc.Desktop/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
-      "size_bytes": 14311,
-      "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      "sha256": "f955475c8a5e36ce29c1e66d6e5525ef802f9232fa82f2535df363d09f3aaba8",
+      "size_bytes": 14151,
+      "git_blob": "38b9ae73ff28dea6d796c7149ebeeef72ef95c91",
+      "pre_time_storage_fault_01_identity": {
+        "version": "APPLICATION-CONVERGENCE-17",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+        "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+        "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
+        "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      }
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Application.cs",
@@ -53852,13 +53916,13 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "7b3ee2089b5cbb6e488b7a37e3223f02aacf5cb94c85bf1d4a1a3fec1071c6fa",
-      "size_bytes": 339,
-      "git_blob": "cd1ed31627a894642e3f874e14471e8b53501177",
-      "version": "retention-ingress-full-retest-03",
-      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
-      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "sha256": "84c62aa6a247bba5b63187bc5c051a299f3fd5a7e7f200ab80ea6f670ab87dc0",
+      "size_bytes": 340,
+      "git_blob": "25629a09e3aa3117a70b776536a5ee96638d142f",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -53877,6 +53941,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "retention-ingress-full-retest-03",
+        "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+        "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+        "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+        "sha256": "7b3ee2089b5cbb6e488b7a37e3223f02aacf5cb94c85bf1d4a1a3fec1071c6fa",
+        "git_blob": "cd1ed31627a894642e3f874e14471e8b53501177"
       }
     },
     {
@@ -53905,15 +53977,23 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
-      "size_bytes": 16386,
-      "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "dfbc25d290f62959db098ad5b8ce91fb9c50debd9958fb3a7faba0d2e9adee15",
+      "size_bytes": 16387,
+      "git_blob": "be83522ea97a3078ad54daacb15c0dc48f9b7f06",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "pre_time_storage_fault_01_identity": {
+        "version": "architecture-quality-audit-02-rereview",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+        "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+        "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
+        "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1"
+      }
     },
     {
       "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
@@ -54960,16 +55040,24 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "f4ccba8e781f62e0562ef7f9f8cf19a5254cd241a9d32ecb2e1ea489f50e9c48",
-      "size_bytes": 14943,
-      "git_blob": "61417aadf78345515a805d8e4d15cf9141cd40cf",
+      "sha256": "74ce6e929fd15f462dcbb6c78fe9b05c0bf632c3b1435529a921e0bdbb2c4dd3",
+      "size_bytes": 14937,
+      "git_blob": "94796c1319ec8718e34710b1a7a9a5f2188a2b3a",
       "previous_git_blob": "a15719a30d16a7fe28b13c5046b02242b33dc634",
-      "pre_publication_merge_git_blob": "c01c9403278c7ddbcd9989a022a22e37e441ac0b"
+      "pre_publication_merge_git_blob": "c01c9403278c7ddbcd9989a022a22e37e441ac0b",
+      "pre_time_storage_fault_01_identity": {
+        "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+        "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+        "sha256": "f4ccba8e781f62e0562ef7f9f8cf19a5254cd241a9d32ecb2e1ea489f50e9c48",
+        "git_blob": "61417aadf78345515a805d8e4d15cf9141cd40cf"
+      }
     },
     {
       "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
@@ -55062,15 +55150,23 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "4bd7aa9d800929453a7561e614b52e041530ddc66c4c36a4f74cd9f4ba23824e",
-      "size_bytes": 9814,
-      "git_blob": "a630af1ef276ddc54bbaf6b5b659087997f7c0d6",
-      "previous_git_blob": "956943e33a0b99cf8fd92e285b58a6b9d82887f9"
+      "sha256": "3a18670114331af1947fa8d2032298daeb9ac0521d8446013950d9fe536911f1",
+      "size_bytes": 9806,
+      "git_blob": "9d168d090f4bed78160ce08f4c61c1e4048c02f5",
+      "previous_git_blob": "956943e33a0b99cf8fd92e285b58a6b9d82887f9",
+      "pre_time_storage_fault_01_identity": {
+        "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+        "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+        "sha256": "4bd7aa9d800929453a7561e614b52e041530ddc66c4c36a4f74cd9f4ba23824e",
+        "git_blob": "a630af1ef276ddc54bbaf6b5b659087997f7c0d6"
+      }
     },
     {
       "version": "MANAGEMENT-MODE-01",
@@ -55168,14 +55264,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "sha256": "d6ef526f1a877347bb0ff79c5b764712bc25756fd6331404880c5034bffb562e",
-      "size_bytes": 44278,
-      "git_blob": "11256847a98de5cea5358dd3391a426fabd89802",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
-      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "sha256": "ea044d8c7841bc9ec50134193f3b3078b430d72c21dec31bf892d222ec8a95a2",
+      "size_bytes": 44285,
+      "git_blob": "49be135c86a021cfe47aa07c273e4a4c8ac0cf0f",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": "code-reliability-hardening-02",
+        "status": "scoped_implementation_or_evidence",
+        "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
+        "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+        "sha256": "d6ef526f1a877347bb0ff79c5b764712bc25756fd6331404880c5034bffb562e",
+        "git_blob": "11256847a98de5cea5358dd3391a426fabd89802"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs",
@@ -55190,15 +55294,23 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "8dae998f52b1169c66a3d6a75f2020d5d3c8c03206cd2327dcf34bb8215676a1",
-      "size_bytes": 17945,
-      "git_blob": "e71a87957e1dcd515fab8135c19a1483731a3288",
-      "previous_git_blob": "d8ade6e508099c41703c9d3ab8595c78bc08e868"
+      "sha256": "64a431a8b52ef5c743c936ba9e26dcd332507a5bf17cd71a6ca4d84d2e81ad43",
+      "size_bytes": 18651,
+      "git_blob": "5154a73987bb111addc1f0d5aa37211fcad7c176",
+      "previous_git_blob": "d8ade6e508099c41703c9d3ab8595c78bc08e868",
+      "pre_time_storage_fault_01_identity": {
+        "version": "MANAGEMENT-MODE-01",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+        "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+        "sha256": "8dae998f52b1169c66a3d6a75f2020d5d3c8c03206cd2327dcf34bb8215676a1",
+        "git_blob": "e71a87957e1dcd515fab8135c19a1483731a3288"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs",
@@ -55215,25 +55327,33 @@
       "pre_publication_no_test_git_blob": "ac647ffcaae26bd289abe21dfef384354b1499ce"
     },
     {
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
-      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs",
-      "sha256": "c490f7a6e0a3c3772c4631650297774ff47911af5dc548850007102455822c86",
-      "size_bytes": 2829,
-      "git_blob": "b093c9429bddc1d5dbf0286693c2f09943ed59f5"
+      "sha256": "7d45b97d867f487904c4c576944abf08959298c6f6df1cb5d70079445877aaf8",
+      "size_bytes": 3339,
+      "git_blob": "2da57f3985b183d0bf5c4dbb4fbb4d9bed158410",
+      "pre_time_storage_fault_01_identity": {
+        "version": "audit02-implementation",
+        "status": "current_navigation_or_verification",
+        "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+        "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+        "sha256": "c490f7a6e0a3c3772c4631650297774ff47911af5dc548850007102455822c86",
+        "git_blob": "b093c9429bddc1d5dbf0286693c2f09943ed59f5"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
-      "sha256": "74e100c76a78834fe5501053193d3c778e0cf58bdd82b421c92c05e20e9ec459",
-      "size_bytes": 8505,
-      "git_blob": "06cc5130938a8a56b653918f964ceefe2228e6fe",
-      "version": "retention-ingress-full-retest-03",
-      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
-      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
-      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "sha256": "f821cd088a480135d4fc9f91df8cc147f0284fb0fce3ff95a6b801128954cb36",
+      "size_bytes": 8497,
+      "git_blob": "941fd029a402cce9e57eff62116e8b09923f90af",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -55252,6 +55372,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "retention-ingress-full-retest-03",
+        "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+        "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+        "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+        "sha256": "74e100c76a78834fe5501053193d3c778e0cf58bdd82b421c92c05e20e9ec459",
+        "git_blob": "06cc5130938a8a56b653918f964ceefe2228e6fe"
       }
     },
     {
@@ -55547,14 +55675,22 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "056db47ad6ccb3afb6e89fbac5bb86d81292352670b73c9085bd5fad58bfde51",
+      "sha256": "f955475c8a5e36ce29c1e66d6e5525ef802f9232fa82f2535df363d09f3aaba8",
       "size_bytes": 14151,
-      "git_blob": "9b7211613b1480f145a8b47e2b1910b9361b1a95"
+      "git_blob": "38b9ae73ff28dea6d796c7149ebeeef72ef95c91",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "056db47ad6ccb3afb6e89fbac5bb86d81292352670b73c9085bd5fad58bfde51",
+        "git_blob": "9b7211613b1480f145a8b47e2b1910b9361b1a95"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/packages.sportmaster.lock.json",
@@ -55595,13 +55731,13 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "3e299fc3eaa206d243d8857751c6809fccf78fd9835368793d5db9da89bd2ad3",
+      "sha256": "65e2570744a6d4f27ee2e53069fd21cdf397e49481d40be93eef5323fb24df0b",
       "size_bytes": 341,
-      "git_blob": "b86404a1b18a49394b2929a7ebf6f71abc949578",
-      "version": "parameter-guidance-startup-01",
+      "git_blob": "aafdfbf92b144032083a2fb41426473714b0362c",
+      "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -55620,19 +55756,35 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+        "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
+        "sha256": "3e299fc3eaa206d243d8857751c6809fccf78fd9835368793d5db9da89bd2ad3",
+        "git_blob": "b86404a1b18a49394b2929a7ebf6f71abc949578"
       }
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "34aebb5cec46146bba86ad5820574e6f865d0f7b36e714d5f293be4e20231a80",
+      "sha256": "dfbc25d290f62959db098ad5b8ce91fb9c50debd9958fb3a7faba0d2e9adee15",
       "size_bytes": 16387,
-      "git_blob": "983477d0c1b89c894051e29ae8f0776d711e402f",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "git_blob": "be83522ea97a3078ad54daacb15c0dc48f9b7f06",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "34aebb5cec46146bba86ad5820574e6f865d0f7b36e714d5f293be4e20231a80",
+        "git_blob": "983477d0c1b89c894051e29ae8f0776d711e402f"
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.lock.json",
@@ -56454,14 +56606,22 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
-      "size_bytes": 14311,
-      "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      "sha256": "f955475c8a5e36ce29c1e66d6e5525ef802f9232fa82f2535df363d09f3aaba8",
+      "size_bytes": 14151,
+      "git_blob": "38b9ae73ff28dea6d796c7149ebeeef72ef95c91",
+      "pre_time_storage_fault_01_identity": {
+        "version": "APPLICATION-CONVERGENCE-17",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+        "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+        "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
+        "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.wcs-to-plc.lock.json",
@@ -56501,13 +56661,13 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "6a55b3397ab5453c47dc34054bf6a4bb26a62daffb22939cca78280ecb86929a",
-      "size_bytes": 339,
-      "git_blob": "263489437613392dd9bbbd9dd3f331a2c955ec38",
-      "version": "retention-ingress-full-retest-03",
-      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
-      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "sha256": "b53dc5677d1f333093ac30d0151950eb420c0b9a3c2ca42b2f98a8006d47ae4e",
+      "size_bytes": 340,
+      "git_blob": "c12e3d91a9b32dd8d13bbd4bad673ea330ef1868",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -56526,19 +56686,35 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "retention-ingress-full-retest-03",
+        "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+        "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+        "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
+        "sha256": "6a55b3397ab5453c47dc34054bf6a4bb26a62daffb22939cca78280ecb86929a",
+        "git_blob": "263489437613392dd9bbbd9dd3f331a2c955ec38"
       }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
-      "size_bytes": 16386,
-      "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "dfbc25d290f62959db098ad5b8ce91fb9c50debd9958fb3a7faba0d2e9adee15",
+      "size_bytes": 16387,
+      "git_blob": "be83522ea97a3078ad54daacb15c0dc48f9b7f06",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "pre_time_storage_fault_01_identity": {
+        "version": "architecture-quality-audit-02-rereview",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+        "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+        "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
+        "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1"
+      }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.lock.json",
@@ -56782,15 +56958,23 @@
     },
     {
       "path": "src/Ipc.Assembly/packages.sportmaster.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "4abe9d8a861e1fe070dec2fd44c693042fb7b901f04d5107c9d5c0fc3fdf2417",
+      "sha256": "eb2cd416e9d76c36559e83f03bc2e1724213a774f8ad6e20c8dba5071a9ab199",
       "size_bytes": 17521,
-      "git_blob": "eaa9ce3e02a2c155b51608e4f1029bdf3b4eb316",
-      "previous_git_blob": "eb83b03a8f030b57577d431c5168a8e9479096c5"
+      "git_blob": "d3825f73eaa87c67569a7c94d6746c3f28e72def",
+      "previous_git_blob": "eb83b03a8f030b57577d431c5168a8e9479096c5",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "4abe9d8a861e1fe070dec2fd44c693042fb7b901f04d5107c9d5c0fc3fdf2417",
+        "git_blob": "eaa9ce3e02a2c155b51608e4f1029bdf3b4eb316"
+      }
     },
     {
       "path": "src/Ipc.Assembly/packages.sportmaster.win-x64.lock.json",
@@ -56900,15 +57084,23 @@
     },
     {
       "path": "src/Ipc.Components/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+      "sha256": "462f85c68315e0358b813e43dde7fb13195c6f4a05fa89b9c51992e89514728e",
       "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7"
+      "git_blob": "12fbeab6e9d9c5a7266e9c17301dbfee7d4459e7",
+      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+        "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb"
+      }
     },
     {
       "path": "src/Ipc.Components/packages.sportmaster.lock.json",
@@ -57149,15 +57341,23 @@
     },
     {
       "path": "src/Ipc.Desktop/packages.sportmaster.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "632f815e0346689f68996d17e1be6e3586dc93bb30cb0bb1de75ab091a630552",
+      "sha256": "19ccb9bc1b443d6e24cf7daee62dcbe96d7f1302a0e8d265bd8415261e16a2eb",
       "size_bytes": 18068,
-      "git_blob": "5ae6133614212038e84dd7b264ece581d5096546",
-      "previous_git_blob": "4fe5f75f14270e25397401b8a82cb153d2d051a2"
+      "git_blob": "d30a95b6a5c1aa8337d1b21e8c4273077505104a",
+      "previous_git_blob": "4fe5f75f14270e25397401b8a82cb153d2d051a2",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "632f815e0346689f68996d17e1be6e3586dc93bb30cb0bb1de75ab091a630552",
+        "git_blob": "5ae6133614212038e84dd7b264ece581d5096546"
+      }
     },
     {
       "path": "src/Ipc.Desktop/packages.sportmaster.win-x64.lock.json",
@@ -57425,15 +57625,23 @@
     },
     {
       "path": "src/Ipc.Drivers/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+      "sha256": "462f85c68315e0358b813e43dde7fb13195c6f4a05fa89b9c51992e89514728e",
       "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "git_blob": "12fbeab6e9d9c5a7266e9c17301dbfee7d4459e7",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+        "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb"
+      }
     },
     {
       "path": "src/Ipc.Drivers/packages.sportmaster.lock.json",
@@ -57908,15 +58116,23 @@
     },
     {
       "path": "src/Ipc.Integrations/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "e5bd4f1d200dbd692078139f50c9f746c4331c4facf2b2516953b815fe0a9ba0",
+      "sha256": "6abef25e1ea0e491689f610f7dcf559fc61202560f2022a40641fa787d8c5b37",
       "size_bytes": 14431,
-      "git_blob": "eaa40bc0e2ca53f652a93ad819b8ebe6c2408884",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "git_blob": "d299bdbf2e6459f96bb1f0c50daa217aca2ec97d",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "pre_time_storage_fault_01_identity": {
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+        "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
+        "sha256": "e5bd4f1d200dbd692078139f50c9f746c4331c4facf2b2516953b815fe0a9ba0",
+        "git_blob": "eaa40bc0e2ca53f652a93ad819b8ebe6c2408884"
+      }
     },
     {
       "path": "src/Ipc.Integrations/packages.sportmaster.lock.json",
@@ -58175,15 +58391,23 @@
     },
     {
       "path": "src/Ipc.Platform/CommonCapabilities.cs",
-      "version": "ux-commercial-fix-01",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "bd0bb8c2de163e0a23c8d58712895e5c8701dd3cdc1071da234af71f60e18cad",
-      "size_bytes": 2683,
-      "git_blob": "3df64ecc687505a69896412a49db82e19d281ece",
-      "previous_git_blob": "e9b2756746089d5468cfac7fe0e0bb6f2cbb9b77"
+      "sha256": "8050dea132f3909a7fed1e5aefa76196d7409e2e25a1c4e7a7239f34eb0f7efd",
+      "size_bytes": 3463,
+      "git_blob": "993b18d52308d3da396248cc46f7db9143091ea7",
+      "previous_git_blob": "e9b2756746089d5468cfac7fe0e0bb6f2cbb9b77",
+      "pre_time_storage_fault_01_identity": {
+        "version": "ux-commercial-fix-01",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+        "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
+        "sha256": "bd0bb8c2de163e0a23c8d58712895e5c8701dd3cdc1071da234af71f60e18cad",
+        "git_blob": "3df64ecc687505a69896412a49db82e19d281ece"
+      }
     },
     {
       "path": "src/Ipc.Platform/Configuration.cs",
@@ -59327,14 +59551,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "cecc54d8575289e397e6cda392834006e309692ba3f024dee9faf066b904d492",
-      "size_bytes": 22082,
-      "git_blob": "264af777c50a6da5215a3e1e481e73c04b8eec3a",
+      "sha256": "6af43cfb44a004d3416914b5d8818bc8a8563dd82340b7a381d54b3e3e30da26",
+      "size_bytes": 22381,
+      "git_blob": "3aea4314d10e2bc444437346029979612f364837",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59404,6 +59628,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_time_storage_fault_01_identity": {
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+        "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+        "sha256": "cecc54d8575289e397e6cda392834006e309692ba3f024dee9faf066b904d492",
+        "git_blob": "264af777c50a6da5215a3e1e481e73c04b8eec3a"
       }
     },
     {
@@ -59658,15 +59890,23 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/packages.lock.json",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "3fc92f825745589e260bbe9266ec19d7c8e598a4ad5063263d95b50e6c51246e",
-      "size_bytes": 18006,
-      "git_blob": "9f7c4c9611699d6cccb3b50599e554648ad07c97",
-      "previous_git_blob": "3c215db40091c455932498b6feb82be4e7471eaa"
+      "sha256": "6171dc5a182123f67325ef2af86684b0d332d3b99315170f030b87d714b2cc81",
+      "size_bytes": 18009,
+      "git_blob": "568180731abc3fd54f250275d2ad8a5f4715cd26",
+      "previous_git_blob": "3c215db40091c455932498b6feb82be4e7471eaa",
+      "pre_time_storage_fault_01_identity": {
+        "version": "architecture-quality-audit-02-rereview",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+        "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+        "sha256": "3fc92f825745589e260bbe9266ec19d7c8e598a4ad5063263d95b50e6c51246e",
+        "git_blob": "9f7c4c9611699d6cccb3b50599e554648ad07c97"
+      }
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/AuditPerformance.cs",
@@ -65556,26 +65796,42 @@
     },
     {
       "path": "src/Ipc.Platform/LocalManagementMode.cs",
-      "sha256": "4e6b0d537a0df8f2c69d674ef56925032a5fe0a14f25958f502039db7ee0b515",
-      "size_bytes": 18478,
-      "git_blob": "372079c665a1e128e6fbb8d86bf64683ba687148",
-      "version": "INSTALLER-FIRST-RUN-UI-02-followup",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
-      "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+      "sha256": "887baf7428f0872d07843f1fdbca390e72c4544267a13735c0bb24da465d6207",
+      "size_bytes": 18549,
+      "git_blob": "c80020c630d4d3705902421339bd6ff1d9448540",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "previous_git_blob": "955e17d21c7ce8a9a3c77044a671a73b7e858236"
+      "previous_git_blob": "955e17d21c7ce8a9a3c77044a671a73b7e858236",
+      "pre_time_storage_fault_01_identity": {
+        "version": "INSTALLER-FIRST-RUN-UI-02-followup",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code 043157fb2238d3408582565e30a64350ca13a050; native Windows125%, actual UAC/installation/devices NOT_RUN",
+        "purpose": "User correction: minimum five-character management password and hidden installation scope; scoped native evidence",
+        "sha256": "4e6b0d537a0df8f2c69d674ef56925032a5fe0a14f25958f502039db7ee0b515",
+        "git_blob": "372079c665a1e128e6fbb8d86bf64683ba687148"
+      }
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
-      "sha256": "1e25b215497c2ddb7924b1bfeccc84db74e37c9f881c0ad94528f1fe693013db",
-      "size_bytes": 12152,
-      "git_blob": "4d0ceed1d2e93b6d53ffe5c2cee53b988b07b49a",
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "storage_scope": "public_repository"
+      "sha256": "d5f4f2b95ef8a964d78bfeaef3f82b3654823c23a4aa27d6a6d3a0bb150dc3fe",
+      "size_bytes": 12223,
+      "git_blob": "f01498b05a4c7a188777da9fa29a49d4235df868",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": "MANAGEMENT-MODE-01",
+        "status": "current_source_or_separately_scoped_evidence",
+        "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+        "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+        "sha256": "1e25b215497c2ddb7924b1bfeccc84db74e37c9f881c0ad94528f1fe693013db",
+        "git_blob": "4d0ceed1d2e93b6d53ffe5c2cee53b988b07b49a"
+      }
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Protocol.cs",
@@ -75935,14 +76191,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelIngress.cs",
-      "version": "win11-24x7-stability-remediation-01",
-      "status": "current_source_or_scoped_synthetic_evidence",
-      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "225b6f34a30f73fb5d536dfe4c6e14c88ea1515da5869012db873d1227e530b6",
-      "size_bytes": 9347,
-      "git_blob": "23ab9ca24439367fae4b65092d49070f90a202f9"
+      "sha256": "0bc29fda29e1726056a02ca587e7dfc74880b87838301070c926453fe39475d6",
+      "size_bytes": 9492,
+      "git_blob": "0043f841ef101e822a4ca1e14f6a2b1ecf46a0c6",
+      "pre_time_storage_fault_01_identity": {
+        "version": "win11-24x7-stability-remediation-01",
+        "status": "current_source_or_scoped_synthetic_evidence",
+        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
+        "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
+        "sha256": "225b6f34a30f73fb5d536dfe4c6e14c88ea1515da5869012db873d1227e530b6",
+        "git_blob": "23ab9ca24439367fae4b65092d49070f90a202f9"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
@@ -90377,6 +90641,158 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/utc-inventory-baseline.csv",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "f9423362c896e0f071c437a01085ac451d2918eaa7addff6c7617dc6f7f3ea01",
+      "size_bytes": 113233,
+      "git_blob": "08d01ff70b2f45a9a3e104c85206dc16b9be034a"
+    },
+    {
+      "path": "docs/runtime/time-storage-fault-01-utc-inventory.md",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "8babcd4c0f8b07563d187c1de8f0eca675e704c007e012da4c275a32cbdd0996",
+      "size_bytes": 33931,
+      "git_blob": "625b89a8788dd793489a1d6bf2a9ef9a8bb7de34"
+    },
+    {
+      "path": "docs/runtime/time-storage-fault-01.md",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "7cd1ff3ac0ac0927a6b69be4ade2a47df6764a1985e8e7b6ce9e703fc529abf3",
+      "size_bytes": 5508,
+      "git_blob": "493e602b49b6fad7b8c00332b0aea6d962f11d85"
+    },
+    {
+      "path": "docs/runtime/validation/time-storage-fault-01.md",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "0ba181dbf796890576c3e0878e2a6c9f7ace0ba03f94759b0c80491d6fbde81d",
+      "size_bytes": 4841,
+      "git_blob": "0eb7ac0cecf9329522f6f6a4c5f8d25715c16110"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptChronology.cs",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "d6b5329c044f4cd3c3f00c7a575bb4c7db62d234bebb3c8e07ffc77699664ae7",
+      "size_bytes": 2024,
+      "git_blob": "62cf66287a3d4859b07ef0192bfd5f2ae079a520"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/AtomicStorageWrite.cs",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "60a0dea16dc9c3c4e92bd062a86797a43fe7cd36320b4dc5b100c8afaa71deaa",
+      "size_bytes": 4836,
+      "git_blob": "5433dfa797d02d0aef64ec042d1ae1017c593e78"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/AtomicStorageChecks.cs",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "fd8053e1bebcd492f70c7d7af874754cf3ff998fb47ac2b48a5e745127ab6dca",
+      "size_bytes": 6050,
+      "git_blob": "dd6a19a3d8e81b67c313122d03fae26b8dc0f802"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/TimeStorageFaultChecks.cs",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "592ab740d272481c2ecf92fb92e95d8ebd0552e670e13652e1183f9c58fdfce1",
+      "size_bytes": 11853,
+      "git_blob": "52282de73f712d125a075ad953962a74af63c850"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -90456,7 +90872,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -93204,5 +93620,15 @@
       "RepeatedAuthentication": false,
       "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/active-entry/RESULT.json"
     }
+  },
+  "prior_current_pointers_before_time_storage_fault_01": {
+    "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+    "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02"
+  },
+  "time_storage_fault_01": {
+    "baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "branch": "codex/time-storage-fault-01",
+    "database": "DB9/SQL1-9 unchanged",
+    "qualification": "Only exact-source isolated synthetic evidence; ST08 full process loop pending PR110 dependency"
   }
 }

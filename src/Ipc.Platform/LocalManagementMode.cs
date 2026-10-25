@@ -118,13 +118,13 @@ public sealed partial class LocalManagementMode
         {
             using var held = LockStore(); var s = Read();
             if (active && !ValidSession(s))
-            { try { Save(s, Now >= expires ? "ManagementModeExpired" : "ManagementModeRevoked"); } finally { Revoke(); } }
+            { try { Save(s, revoked.IsCancellationRequested || Now >= expires ? "ManagementModeExpired" : "ManagementModeRevoked"); } finally { Revoke(); } }
             return new(s.Credential is not null, active, active ? expires : null, s.Credential is null && File.Exists(legacyPath));
         }
     }
     public ManagementModeStatus InspectStatus() => Remote ? RemoteStatus() : Status();
     public ManagementModeEvidence? Evidence { get { var s = Status(); return s.Authorized ? new(sessionId, expires.AddMinutes(-15), expires) : null; } }
-    bool ValidSession(Store s) => active && Now < expires && s.SessionHash == ProofHash(sessionSecret) && s.Credential?.Hash == credentialHash;
+    bool ValidSession(Store s) => active && !revoked.IsCancellationRequested && Now < expires && s.SessionHash == ProofHash(sessionSecret) && s.Credential?.Hash == credentialHash;
     void Revoke() { active = false; sessionSecret = ""; credentialHash = null; revoked.Cancel(); }
     public CancellationToken Require()
     {

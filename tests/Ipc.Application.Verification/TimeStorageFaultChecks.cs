@@ -70,6 +70,16 @@ static class TimeStorageFaultChecks
                 typeof(ParcelRuntime).GetMethod("RefreshStorageCapacity", hidden)!.Invoke(runtime, null);
                 var value = (long)typeof(ParcelRuntime).GetField("freeStorageBytes", hidden)!.GetValue(runtime)!;
                 Check(value != long.MaxValue, "ST12 capacity throttle survives UTC rollback", new { UtcJumpHours = -12, MonotonicElapsedSeconds = 2, ProbeRan = value != long.MaxValue });
+                typeof(ParcelRuntime).GetField("freeStorageBytes", hidden)!.SetValue(runtime, long.MaxValue);
+                capacityClock.Utc = capacityClock.Utc.AddDays(2);
+                typeof(ParcelRuntime).GetMethod("RefreshStorageCapacity", hidden)!.Invoke(runtime, null);
+                var skipped = (long)typeof(ParcelRuntime).GetField("freeStorageBytes", hidden)!.GetValue(runtime)! == long.MaxValue;
+                Check(skipped, "ST12 UTC forward jump does not bypass interval", new { UtcJumpDays = 2, MonotonicElapsedSeconds = 0, Skipped = skipped });
+                typeof(ParcelRuntime).GetField("retentionWarning", hidden)!.SetValue(runtime, "synthetic-stale-retention-probe");
+                capacityClock.Utc = capacityClock.Utc.AddDays(-3); capacityClock.Elapse(TimeSpan.FromSeconds(61));
+                typeof(ParcelRuntime).GetMethod("RefreshStorageCapacity", hidden)!.Invoke(runtime, null);
+                var retentionRan = (string?)typeof(ParcelRuntime).GetField("retentionWarning", hidden)!.GetValue(runtime) != "synthetic-stale-retention-probe";
+                Check(retentionRan, "ST12 retention notification interval also survives rollback", new { MonotonicElapsedSeconds = 61, RetentionProbeRan = retentionRan });
             }
             finally { gate.Release(); }
         }
@@ -84,8 +94,41 @@ static class TimeStorageFaultChecks
             var op = (await runtime.SnapshotAsync()).Operations.Single();
             Check(op.State == ParcelState.SlotResolved && op.Wcs!.State == StageState.Accepted && receiptFactory.Calls == 1,
                 "ST13 in-flight UTC rollback does not manufacture Conflict", new { op.State, Stage = op.Wcs!.State, receiptFactory.Calls, Prepared = op.Wcs.Request.PreparedAt, Reply = op.Wcs.Replies.Single().At });
+            var reply = op.Wcs.Replies.Single();
+            Check(reply.LocalClockEvidence is not null && ParcelReceiptChronology.Valid(op.Wcs.Request, reply, receiptClock.GetUtcNow()),
+                "ST13 rollback has request-bound durable local evidence", new { HasProof = reply.LocalClockEvidence is not null });
+            Check(!ParcelReceiptChronology.Valid(op.Wcs.Request, reply with { LocalClockEvidence = null }, receiptClock.GetUtcNow()),
+                "ST13 earlier reply without witnessed rollback remains invalid", new { OriginalUtcRetained = reply.At });
+            Check(!ParcelReceiptChronology.Valid(op.Wcs.Request, reply with { Evidence = "tampered evidence" }, receiptClock.GetUtcNow()) &&
+                  !ParcelReceiptChronology.Valid(op.Wcs.Request, reply with { At = reply.At.AddYears(-1) }, receiptClock.GetUtcNow()),
+                "ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps", new { NoBlanketTimeWaiver = true });
+            var gate = (SemaphoreSlim)typeof(ParcelRuntime).GetField("gate", hidden)!.GetValue(runtime)!;
+            await gate.WaitAsync();
+            try
+            {
+                var conflict = op with { State = ParcelState.Blocked, Wcs = op.Wcs with { State = StageState.Conflict } };
+                var applied = (ParcelOperation)typeof(ParcelRuntime).GetMethod("ApplyReply", hidden)!.Invoke(runtime, [conflict, ParcelStage.Wcs, reply])!;
+                Check(applied.State == ParcelState.Blocked && applied.Wcs!.State == StageState.Conflict,
+                    "ST13 an existing Conflict is never automatically cleared", new { applied.State });
+            }
+            finally { gate.Release(); }
+        }
+        await using (var recovered = new ParcelRuntime(receiptLaunch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(receiptLaunch)) { RuntimeIdentityPreflight = () => { } })
+        {
+            await recovered.StartAsync(default); var op = (await recovered.SnapshotAsync()).Operations.Single();
+            Check(op.State == ParcelState.SlotResolved && op.Wcs!.State == StageState.Accepted && !op.RecoveryRequired,
+                "ST13 restart validates original rollback evidence without redispatch", new { op.State, op.RecoveryRequired });
         }
         var ioLaunch = Launch("io");
+        var operatorClock = new ManualTime(); var session = new OperatorSession { TimeForVerification = operatorClock };
+        session.Set(new("synthetic-operator", "Synthetic", "reference", Wire.Id(), operatorClock.GetUtcNow(), true, operatorClock.GetUtcNow().AddHours(2)));
+        operatorClock.Elapse(TimeSpan.FromHours(1)); operatorClock.Utc = operatorClock.Utc.AddMinutes(48);
+        Check(!session.Valid(operatorClock.GetUtcNow(), 3600000), "UTC inventory: operator maximum lifetime cannot be extended by rollback",
+            new { MonotonicMinutes = 60, WallMinutes = 48 });
+        var managementRoot = Path.Combine(root, "management"); ManagementModeFixture.AuthorizeRoot(managementRoot);
+        var mode = LocalManagementMode.ForRoot(managementRoot);
+        var expired = (CancellationTokenSource)typeof(LocalManagementMode).GetField("revoked", hidden)!.GetValue(mode)!; expired.Cancel();
+        Check(!mode.Status().Authorized, "UTC inventory: management status respects its monotonic expiry token", new { ExpiredToken = true });
         await using (var runtime = new ParcelRuntime(ioLaunch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(ioLaunch)) { RuntimeIdentityPreflight = () => { } })
         {
             await runtime.StartAsync(default); var attempts = 0;

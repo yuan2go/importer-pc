@@ -1,0 +1,354 @@
+{
+  "ProductSourceCommit": "a192b7fe18b2f904fd7db9943e79b0173d0f8b28",
+  "CapturedFiles": [
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ACTUAL-FULL-BACKUP-PLAN.json",
+      "path": "ACTUAL-FULL-BACKUP-PLAN.json",
+      "sha256": "05b8a5575f6bc45ab8bbcfb9d834d7951089bd94b3eb7605b19109957057a846",
+      "bytes": 1125
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\actual-full-backup-plan.log",
+      "path": "actual-full-backup-plan.log",
+      "sha256": "325d1ddd634337c77a7309a39fa10c8ac4e070501b65068560c6a20208838026",
+      "bytes": 917
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\audit03-maintenance-a192b7f.log",
+      "path": "audit03-maintenance-a192b7f.log",
+      "sha256": "3d1e27d0ac46f2154ee4ef59c2f6424cbebfc1876a054d2e27d8d7b1a5ef417c",
+      "bytes": 2223
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\audit03-maintenance-fixed-a192b7f.log",
+      "path": "audit03-maintenance-fixed-a192b7f.log",
+      "sha256": "27977b20937b71e794eebac6428f67e8d57b750c22476e74e0317ad746cf6c70",
+      "bytes": 824
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-budget-tests.log",
+      "path": "build-budget-tests.log",
+      "sha256": "3f0c4456f38a32139ebcca186090f51c3cf68321d23391707f5dab242a766bbf",
+      "bytes": 2693
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-cli-a192b7f.log",
+      "path": "build-cli-a192b7f.log",
+      "sha256": "ba961db9908067b158d6389620db0172155e05c0539a4181fdd8ddbdab002daf",
+      "bytes": 1928
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-corrected-tests.log",
+      "path": "build-corrected-tests.log",
+      "sha256": "cf0debc7122d9d9b838f2a9ad2111ae1269ecfeccebfcda6e1a4e55e0bb66ae5",
+      "bytes": 2158
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-crash-tests-corrected.log",
+      "path": "build-crash-tests-corrected.log",
+      "sha256": "2753ed21859f03bbe03612acb3b9675b3c7d99c7adf18c726d2bdb52f8a4f509",
+      "bytes": 2158
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-crash-tests.log",
+      "path": "build-crash-tests.log",
+      "sha256": "193980160be57a7d6e3b8b5325108495d5c95a96d11413aa06b2b0e97f3b39f4",
+      "bytes": 2496
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-fixed-a192b7f.log",
+      "path": "build-fixed-a192b7f.log",
+      "sha256": "48e36b5e6aacc40a2b5750970d370eb4e376218e0facc41bca8cd00c5b2921a0",
+      "bytes": 2158
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-initial.log",
+      "path": "build-initial.log",
+      "sha256": "09748212b5dfd421a5bce42231404878955ddccab99198fa946435ae89d1b009",
+      "bytes": 3943
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-plan-final.log",
+      "path": "build-plan-final.log",
+      "sha256": "eaa12f5c1d9bde709ca07a608d6801817544ffaa25a9873af76a6991f31757f6",
+      "bytes": 2158
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-tests.log",
+      "path": "build-tests.log",
+      "sha256": "9480090f23438fb99abdeb217f8b85cbd4f0fdaf7ebc8813d0dce289c87b7d78",
+      "bytes": 2158
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\FINAL-FIXTURE-IDENTITY.json",
+      "path": "FINAL-FIXTURE-IDENTITY.json",
+      "sha256": "004d6e94e1eb8e3672cfb298607ac3a95334767e08839e70407f6be533940f2f",
+      "bytes": 429
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ingress-budget.log",
+      "path": "ingress-budget.log",
+      "sha256": "701d09c03786fa91804b101ac46a089fb32ecf287af5d1d3791e4d1d771f274a",
+      "bytes": 6187
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ingress-crash-tests.log",
+      "path": "ingress-crash-tests.log",
+      "sha256": "84e924853424878d47d0cfe25f4786a6b2b2ece4fd0d8efee206652c7acba641",
+      "bytes": 6769
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ingress-final.log",
+      "path": "ingress-final.log",
+      "sha256": "74d0a61b67e2f966ac03493f877a36ccaf8e94dbe212d565c1d081511f253fbb",
+      "bytes": 6769
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ingress-initial.log",
+      "path": "ingress-initial.log",
+      "sha256": "f4ac792eb0351d863581e159c9227fa583b7d47fcaa9a580555039bb1d0974f9",
+      "bytes": 870
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ingress-large.log",
+      "path": "ingress-large.log",
+      "sha256": "0411d2639763f708e22c240650d48d70f3f30f4de78aa4ad423d1c71dbffefff",
+      "bytes": 9666
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\MIGRATIONS.json",
+      "path": "MIGRATIONS.json",
+      "sha256": "b6642122d34cc2b87d4e75170ed17aff00108f71c31f58681703d7ce9f69340e",
+      "bytes": 112
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\PRODUCT-a192b7f.json",
+      "path": "PRODUCT-a192b7f.json",
+      "sha256": "110844ef25e9436eec1c12bbe4042e3b1b4fa146218de17437a336252e21e93f",
+      "bytes": 794
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\reconciler-negative.log",
+      "path": "reconciler-negative.log",
+      "sha256": "bb5fd943f9af331be9d40c63b7778780f4879e9f9be310b8d33ba4cb7821197e",
+      "bytes": 143
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\REGRESSIONS-a192b7f.json",
+      "path": "REGRESSIONS-a192b7f.json",
+      "sha256": "c31bb25330e45da17e5a47e11a4fe1d6c8d278ef0e5ed87950b19452cb0ea6f8",
+      "bytes": 1026
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\REGRESSIONS-fixed-a192b7f.json",
+      "path": "REGRESSIONS-fixed-a192b7f.json",
+      "sha256": "5acede1b0f10b9a478dd3e1b46944b00e7607ac857ed1ede74a2734b2973ba7a",
+      "bytes": 1877
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\retention-ingress-a192b7f.log",
+      "path": "retention-ingress-a192b7f.log",
+      "sha256": "b94b847cf8fa0a1d09e61e8c2f0aef7f06f912b8a87069eb5dff60e61ee8c499",
+      "bytes": 2223
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\retention-ingress-fixed-a192b7f.log",
+      "path": "retention-ingress-fixed-a192b7f.log",
+      "sha256": "c0a92cf12059a40eb8fc8e5707194bad1f55b68c4535985c6f60508a9db2730f",
+      "bytes": 9261
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\run-protected.ps1",
+      "path": "run-protected.ps1",
+      "sha256": "61f394ffeba46976a04eaa6c6668cc94c92a3cb7d70c4d287d80db0e1e9e4b4f",
+      "bytes": 893
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-create-1000.log",
+      "path": "simulated-create-1000.log",
+      "sha256": "a2e1a57c8508dc9c5e3a19d27d96c677487278def3723cfd445f426e6d20ce30",
+      "bytes": 422
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-create-10000.log",
+      "path": "simulated-create-10000.log",
+      "sha256": "3c8f07fa8b8facc2488289666ad3da9445900f1a81704c484dad6810d665bdd1",
+      "bytes": 723
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-maintain-1000.log",
+      "path": "simulated-maintain-1000.log",
+      "sha256": "5552fa4663852e3694eb499fc116a4cb31d481eca192a900bed6a0bbcfbc7c45",
+      "bytes": 718
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-maintain-10000.log",
+      "path": "simulated-maintain-10000.log",
+      "sha256": "1a300943be5a8a810e2b79c451ce56b8bba372e6101880a25bd3fd1e32035224",
+      "bytes": 718
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\SIMULATED-RECONCILE-INPUT.json",
+      "path": "SIMULATED-RECONCILE-INPUT.json",
+      "sha256": "791ecb7a9b7437ae7c547ac82c2e463bf25815869022eaa895ba739148ee9000",
+      "bytes": 755
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\SIMULATED-RECONCILED.json",
+      "path": "SIMULATED-RECONCILED.json",
+      "sha256": "3f3b53b04654e927f6e0b66c27f0464902c1c4dd7d7243a16fee53128c6000ed",
+      "bytes": 4564
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\SIMULATED-RESULTS.json",
+      "path": "SIMULATED-RESULTS.json",
+      "sha256": "eccecb0822c1c8690d2c977b1a02a6d6b0d01c85b6045287eba8d5785ae9d509",
+      "bytes": 517
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\UAC-START.json",
+      "path": "UAC-START.json",
+      "sha256": "07ff285d0b1ca1cb88ef15049f28246a052649587f99972feaef2d9cd1e8780c",
+      "bytes": 533
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\upgrade-conflict-closure-a192b7f.log",
+      "path": "upgrade-conflict-closure-a192b7f.log",
+      "sha256": "ceda18c8c291f978b24d1110c3660cd59ab619919d0c242c3a13f320f397ff53",
+      "bytes": 2223
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\upgrade-conflict-closure-fixed-a192b7f.log",
+      "path": "upgrade-conflict-closure-fixed-a192b7f.log",
+      "sha256": "5e33c346efb57832445289f48f13007b808df8333eb35d904c8ef81723fd486c",
+      "bytes": 5616
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\version-compatibility-a192b7f.log",
+      "path": "version-compatibility-a192b7f.log",
+      "sha256": "efd249398c41a48506ff3e5e556edaaa1296fdad8219a173ce0859480e1f60a0",
+      "bytes": 2223
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\version-compatibility-fixed-a192b7f.log",
+      "path": "version-compatibility-fixed-a192b7f.log",
+      "sha256": "e6f1f67bdfa4c508fc27edb95ec620b08ab99cdd5073894e77e628dd34da8de8",
+      "bytes": 3984
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\win11-stability-a192b7f.log",
+      "path": "win11-stability-a192b7f.log",
+      "sha256": "a10b9c81393c9ddaebb0182962f0f4d8d4441fc9123780a89ce2f1531ff19a89",
+      "bytes": 2223
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\win11-stability-fixed-a192b7f.log",
+      "path": "win11-stability-fixed-a192b7f.log",
+      "sha256": "b1c6b8052382c2c2b0d9589c19e2a2faeda79abef48f10a1ebf655b3bc49eebc",
+      "bytes": 4142
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-ba14e23afc06409cae0892ab766c284d\\RETENTION-INGRESS.json",
+      "path": "fixed-component/RETENTION-INGRESS.json",
+      "sha256": "2d66e0f31ecdc4f2e40878d2ab5d325fa19ab58f5479519afa815964ad9ccc4f",
+      "bytes": 3962
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-2813954b05b84398b975795a39dce327\\RETENTION-INGRESS.json",
+      "path": "development-component/RETENTION-INGRESS.json",
+      "sha256": "717e11da0b618f8bf2ebb2ffe86d7fd2331214776cce1581f0efbbdcef9dc9d1",
+      "bytes": 3963
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-1cc58ea8bdeb4bfdbadbdc0fbdc5adc9\\RETENTION-INGRESS.json",
+      "path": "final-component/RETENTION-INGRESS.json",
+      "sha256": "da8ac52c4abaa12eba856c0fbdf17c2353247ee6dab1fa5f634ee4c5c7316870",
+      "bytes": 2084
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-1cc58ea8bdeb4bfdbadbdc0fbdc5adc9\\crash-AfterRetentionInputCommit\\sportmaster.db.boundary.json",
+      "path": "final-component/crash-AfterRetentionInputCommit/sportmaster.db.boundary.json",
+      "sha256": "67962e80f27e7a236d68a7496598c7c0278f47c6bc3a1e43442f90c1472ae37e",
+      "bytes": 61
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-1cc58ea8bdeb4bfdbadbdc0fbdc5adc9\\crash-AfterRetentionInputCommit\\sportmaster.db.process.json",
+      "path": "final-component/crash-AfterRetentionInputCommit/sportmaster.db.process.json",
+      "sha256": "b7afab0143d3e6d6ee88d0faef9342c287521d16c89b7791811436dbcb500159",
+      "bytes": 214
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-1cc58ea8bdeb4bfdbadbdc0fbdc5adc9\\crash-AfterRetentionInputDelete\\sportmaster.db.boundary.json",
+      "path": "final-component/crash-AfterRetentionInputDelete/sportmaster.db.boundary.json",
+      "sha256": "78d7fb63796b8bb0d8f7fb2346cc9445749adb3e038c4aa491b98ec0f20047ec",
+      "bytes": 61
+    },
+    {
+      "source": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-1cc58ea8bdeb4bfdbadbdc0fbdc5adc9\\crash-AfterRetentionInputDelete\\sportmaster.db.process.json",
+      "path": "final-component/crash-AfterRetentionInputDelete/sportmaster.db.process.json",
+      "sha256": "b861a5914810b8189bd806ac474ea2b2fc39279ee32630ec18db1b4acb8df0d0",
+      "bytes": 214
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-1000\\FIXTURE.json",
+      "path": "simulated-1000/FIXTURE.json",
+      "sha256": "def68e3e6fd4e59cff70121aac7c3bb98a6dc0029902d7b8797318f536794ee0",
+      "bytes": 1261
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-1000\\VERIFIED.json",
+      "path": "simulated-1000/VERIFIED.json",
+      "sha256": "f24a3780e31f344a4425281589dd4980b1e656fdaf22430c28448baa1b6f58e4",
+      "bytes": 471
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-1000\\SIMULATED-AUTHORITY.json",
+      "path": "simulated-1000/SIMULATED-AUTHORITY.json",
+      "sha256": "3c830902bbbc12b709d4da57db25c725e30035e03e2d9e2a29920babad42594a",
+      "bytes": 645
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-10000\\FIXTURE.json",
+      "path": "simulated-10000/FIXTURE.json",
+      "sha256": "a1e982f5bdc881f9fa72bfcd9248838e678a6c0820fa7a2f6bba282179b44d8c",
+      "bytes": 1270
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-10000\\VERIFIED.json",
+      "path": "simulated-10000/VERIFIED.json",
+      "sha256": "2970189ee65f082c961c7a22342b1befcb7aa35f0f8f63ac1c2fe08a220fee68",
+      "bytes": 473
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-10000\\SIMULATED-AUTHORITY.json",
+      "path": "simulated-10000/SIMULATED-AUTHORITY.json",
+      "sha256": "7224a748f814d0c5e3efac40572b794d971bca9cab4c40833b60d5a4a6fbc7cf",
+      "bytes": 651
+    },
+    {
+      "source": "tests\\Ipc.Application.Verification\\RetentionIngress.cs",
+      "path": "final-source/RetentionIngress.cs.txt",
+      "sha256": "bb06f93b0f76c4510594f507633fa412e767c290cf2e223a66a2bdf174bc3351",
+      "bytes": 22161
+    },
+    {
+      "source": "tests\\Ipc.Application.Verification\\RetentionQualification.cs",
+      "path": "final-source/RetentionQualification.cs.txt",
+      "sha256": "07608f8ceba93e7366a91e3b9b600ac9596a4a9f6a96d519efab9849056dbc33",
+      "bytes": 21999
+    },
+    {
+      "source": "scripts\\verify-retention-maintenance.ps1",
+      "path": "final-source/verify-retention-maintenance.ps1.txt",
+      "sha256": "2dc5a5ef11bbf5758a1eb161dc54035f5705bfb9a17b715b18be3173662f4b1b",
+      "bytes": 16450
+    },
+    {
+      "source": "scripts\\reconcile-retention-qualification.py",
+      "path": "final-source/reconcile-retention-qualification.py.txt",
+      "sha256": "578a8df2c26d5600130b5533f459e31d639ff57606f046bfb87d27dae176e718",
+      "bytes": 15954
+    }
+  ],
+  "Scope": "Synthetic text only; original full-scale files unchanged; final tests identified separately"
+}

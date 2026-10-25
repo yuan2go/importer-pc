@@ -1,0 +1,5 @@
+{
+  "Status": "NOT_RUN_UAC_OR_LAUNCH_FAILED",
+  "Error": "System.InvalidOperationException: This command cannot be run due to the error: An error occurred trying to start process 'C:\\Users\\yuan\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe' with working directory 'D:\\w\\ipc-retention-ingress-02'. 操作已被用户取消。\r\n   at System.Management.Automation.MshCommandRuntime.ThrowTerminatingError(ErrorRecord errorRecord)",
+  "AtUtc": "2026-10-25T01:49:29.9836785+00:00"
+}

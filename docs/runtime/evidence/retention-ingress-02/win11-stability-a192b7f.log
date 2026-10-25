@@ -1,0 +1,27 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-3de30846547046e1ad8d7ed25f25b3d4
+PASS AC17: sportmaster camera callback accepted into bounded queue
+PASS AC17: sportmaster views share one stable application owner
+PASS AC17: sportmaster owns exactly its actual required phases
+PASS AC17: sportmaster code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: sportmaster duplicate callback/admission does not create another command
+PASS AC17: sportmaster same code different admitted entity queued
+PASS AC17: sportmaster pause committed after both stage calls drain
+PASS AC17: sportmaster maintenance authentication explicitly confirmed
+PASS AC17: sportmaster invalid configuration leaves old authority byte-equivalent
+PASS AC17: sportmaster online backup actually created
+PASS AC17: sportmaster full recovery set verified and copied into a new isolated application directory
+PASS AC17: sportmaster restored application starts paused with original stage/configuration facts
+PASS AC17: direct-plc camera callback accepted into bounded queue
+PASS AC17: direct-plc views share one stable application owner
+PASS AC17: direct-plc owns exactly its actual required phases
+PASS AC17: direct-plc code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: direct-plc duplicate callback/admission does not create another command
+PASS AC17: direct-plc same code different admitted entity queued
+Unhandled exception. System.UnauthorizedAccessException: 请先进入管理模式；作业继续，未保存输入保留。
+   at Ipc.Platform.LocalManagementMode.Require() in D:\w\ipc-retention-ingress-02\src\Ipc.Platform\LocalManagementMode.cs:line 131
+   at Ipc.Application.ParcelFlow.ParcelRuntime.ReconcileAsync(String operationId, String stage) in D:\w\ipc-retention-ingress-02\src\Ipc.Application.ParcelFlow\ParcelStages.cs:line 201
+   at Program.<Main>$(String[] args) in D:\w\ipc-retention-ingress-02\tests\Ipc.Application.Verification\Program.cs:line 112
+   at Program.<Main>$(String[] args) in D:\w\ipc-retention-ingress-02\tests\Ipc.Application.Verification\Program.cs:line 133
+   at Program.<Main>(String[] args)

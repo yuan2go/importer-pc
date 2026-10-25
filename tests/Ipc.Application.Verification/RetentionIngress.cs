@@ -10,6 +10,20 @@ using Microsoft.Data.Sqlite;
 // RetentionQualification; these deliberately small envelopes exercise SQL semantics.
 static class RetentionIngress
 {
+    public static void ExplainClosedBackup(string path, string output)
+    {
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("This probe requires Windows read-sharing exclusion");
+        if (File.Exists(output)) throw new IOException("New plan output required");
+        void Closed() { if (File.Exists(path + "-wal") && new FileInfo(path + "-wal").Length != 0) throw new IOException("Nonempty WAL refused"); }
+        Closed(); using var sharing = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read); Closed();
+        using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = new Uri(Path.GetFullPath(path)).AbsoluteUri + "?mode=ro&immutable=1", Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+        db.Open(); Exec(db, "PRAGMA query_only=ON");
+        using var version = db.CreateCommand(); version.CommandText = "SELECT sqlite_version()";
+        ExtensionStore.AtomicWrite(output, new { Source = path, Bytes = sharing.Length, SQLite = version.ExecuteScalar(),
+            Original = Plan(db, ParcelRepository.ExpiredInputPageSql.Replace(" i NOT INDEXED ", " i "), false),
+            Fixed = Plan(db, ParcelRepository.ExpiredInputPageSql, true), ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location),
+            Scope = "EXPLAIN only on closed original full backup, Windows sharing excludes writes/replacement; no data mutation or maintenance/restore qualification" });
+    }
     static readonly DateTimeOffset Now = new(2026, 10, 25, 0, 0, 0, TimeSpan.Zero);
     static void Check(bool value, string message)
     { if (!value) throw new InvalidDataException(message); Console.WriteLine("PASS RETENTION-INGRESS: " + message); }
@@ -113,11 +127,59 @@ static class RetentionIngress
             reports.Add(new { Count = count, OriginalPlan = oldPlan, Plan = plan, BeforeVm = beforeVm, AfterVm = afterVm, SelectSeconds = selectSeconds, DeleteSeconds = deleteSeconds, Commits = commits });
         }
         Faults(root);
+        CrashRecovery(root);
         Budgets(workspace, root);
         ExtensionStore.AtomicWrite(Path.Combine(root, "RETENTION-INGRESS.json"), new { Scope = "Query/transaction component and cancellation; not full custody CLI or field qualification", Samples = reports, ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location) });
     }
     static void CheckSequence(List<(long Row, string Id)> rows, long total)
     { if (!rows.Select(x => x.Id).SequenceEqual(Enumerable.Range((int)total + 1, rows.Count).Select(Id))) throw new InvalidDataException("Paging duplicated/skipped an identity"); }
+    public static void CrashChild(string path, string point)
+    {
+        var deletes = 0;
+        using var repo = new ParcelRepository(Path.GetDirectoryName(path)!, "sportmaster");
+        repo.Boundary = reached =>
+        {
+            if (reached != point || point == "AfterRetentionInputDelete" && ++deletes != 257) return;
+            ExtensionStore.AtomicWrite(path + ".boundary.json", new { Pid = Environment.ProcessId, Point = point });
+            Thread.Sleep(Timeout.Infinite);
+        };
+        repo.ExpireHistoryCore(new SportmasterFlow(), 7, Now, new string('A', 64), () => { });
+        throw new InvalidOperationException("Child missed crash window");
+    }
+    static void CrashRecovery(string root)
+    {
+        foreach (var point in new[] { "AfterRetentionInputDelete", "AfterRetentionInputCommit" })
+        {
+            var path = Create(Path.Combine(root, "crash-" + point), 600);
+            var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+            if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(typeof(RetentionIngress).Assembly.Location);
+            foreach (var arg in new[] { ".", "--retention-ingress-crash-child", path, point }) start.ArgumentList.Add(arg);
+            using var child = Process.Start(start)!; var output = child.StandardOutput.ReadToEndAsync(); var errors = child.StandardError.ReadToEndAsync();
+            try
+            {
+                var clock = Stopwatch.StartNew();
+                while (!File.Exists(path + ".boundary.json"))
+                {
+                    if (child.HasExited || clock.Elapsed > TimeSpan.FromSeconds(30)) throw new InvalidOperationException("Crash child did not reach window: " + point);
+                    Thread.Sleep(10);
+                }
+                child.Kill(entireProcessTree: true);
+                if (!child.WaitForExit(10000)) throw new TimeoutException("Owned crash child did not exit");
+                ExtensionStore.AtomicWrite(path + ".process.json", new { child.Id, child.ExitCode, Stdout = output.GetAwaiter().GetResult(), Stderr = errors.GetAwaiter().GetResult(), Point = point });
+            }
+            finally { if (!child.HasExited) { child.Kill(entireProcessTree: true); child.WaitForExit(); } }
+            using (var db = Open(path))
+            {
+                Check(Scalar(db, "SELECT count(*) FROM parcel_retired_inputs") == 256 && Scalar(db, "SELECT count(*) FROM parcel_ingress") == 353 &&
+                    Scalar(db, "SELECT count(*) FROM parcel_ingress_audits") == 353 && Scalar(db, "SELECT count(*) FROM parcel_audit WHERE event='ComponentInput'") == 353,
+                    "actual process kill at " + point + " preserves committed page and rolls back unfinished page");
+                Check(Scalar(db, "SELECT count(*) FROM parcel_retired_inputs WHERE id>'" + Id(256) + "'") == 0 &&
+                    Scalar(db, "SELECT count(*) FROM parcel_ingress WHERE id<='" + Id(256) + "'") == 0, "crash recovery partitions exact original input identities");
+            }
+            using (var repo = new ParcelRepository(Path.GetDirectoryName(path)!, "sportmaster"))
+                Check(repo.ExpireHistoryCore(new SportmasterFlow(), 7, Now, new string('B', 64), () => { }).Inputs == 344, "resume retires only remaining 344 eligible originals");
+        }
+    }
     static void Faults(string root)
     {
         foreach (var point in new[] { "AfterRetentionInputDelete", "BeforeRetentionInputCommit", "AfterRetentionInputCommit" })

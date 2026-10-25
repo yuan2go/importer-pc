@@ -34,3 +34,7 @@
 - `dotnet run --project tests/Ipc.Desktop.UiVerification -- . --parameter-guidance-startup`；冻结介质可用`scripts/verify-commercial-wpf.ps1 -Media <介质> -Output <新证据目录> -ParameterGuidanceStartup`。
 
 核心专项、原参数/继承回归、新原生专项与原首配/叶页回归已通过。Windows当前125%上的多客户区、键盘命令、草稿和Pending行为已验证；发布构建/冒烟身份在后续交付回执中记录。真实系统100%/目标IPC/DPI、受保护安装ACL、真实SDK/RCS、网络和现场验收保持未验。新增CI入口继承原完整门禁，不删除断言或跳过原流程。
+
+## 固定发行回执
+
+源码`7d7487a5`已在[PR107](https://github.com/yuan2go/importer-pc/pull/107)提交。`scripts/package-application.py`从该提交冻结Git导出，生成D盘参考win-x64介质；[交付身份](evidence/parameter-guidance-startup-01/frozen-7d7487a5/DELIVERY.json)记录ZIP及库存哈希。同源发布DLL的原生专项PASS，实际桌面EXE环境报告启动ExitCode=0；此结果不表示本机完成安装或生产业务启动。运行时变更仍为上述源码身份，后续文档提交只登记其回执。

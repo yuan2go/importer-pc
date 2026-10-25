@@ -89430,13 +89430,13 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-guidance-startup-01/README.md",
-      "sha256": "edf7d1515e7ac3e343957efa5007c2ee9789bbfb69231c68ec722edf391480ba",
-      "size_bytes": 1516,
-      "git_blob": "5f6b9498a80273ea95d7b3aff13a9ed01b03dc2a",
-      "version": "parameter-guidance-startup-01",
+      "sha256": "99716601f6410b24aa582487a867a882d50c3be0ab44ca968e84b879f932326e",
+      "size_bytes": 2148,
+      "git_blob": "734d795216905ada6b44899255f2ae48135d908d",
+      "version": "parameter-guidance-startup-01-frozen",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
       "storage_scope": "public_repository"
     },
     {
@@ -89661,13 +89661,13 @@
     },
     {
       "path": "docs/runtime/parameter-guidance-startup-01.md",
-      "sha256": "7aa727068436ebea644d7688cf322f44d90f2a7d4bd260c00180b5f87de80f4f",
-      "size_bytes": 5153,
-      "git_blob": "baabdf7d67b3029894e9a8abaadc53f88b71cfde",
-      "version": "parameter-guidance-startup-01",
+      "sha256": "ffdcf8fb664dc91499565096fdc045032770da9a58aaeef78520739253c0a4eb",
+      "size_bytes": 5694,
+      "git_blob": "22ad90b169578713f23be3102530d2abded12ecc",
+      "version": "parameter-guidance-startup-01-frozen",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
       "storage_scope": "public_repository"
     },
     {
@@ -89734,6 +89734,138 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/PRIVATE-FAILURE-FACTS.json",
+      "sha256": "33367d4c01ec5b925803ca8f8042f1d5f931c0ee4fc83c15f4f49de8582ef68c",
+      "size_bytes": 942,
+      "git_blob": "648c17cdd600f8d0cb9b79e2b6b8da6daee14858",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/BUILD-INFO.json",
+      "sha256": "89e6d62b5765b6ec518029f6d772aee92c0f33ec1ffd2d080f2b3f161879c702",
+      "size_bytes": 523,
+      "git_blob": "c378111a65a78f413f6132ee758973c79f5bf1ce",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/DELIVERY.json",
+      "sha256": "716f58228c99d1673bc0897f1289cca6d8dec5ecf71080a8b659c0e2d05760b2",
+      "size_bytes": 834,
+      "git_blob": "5b90bd80137167d71a953c630783f3c900f6142b",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/DEPENDENCIES.json",
+      "sha256": "b8072968439ed574804cbeeb5428e369fc04652387401313c7bf81975bc3fc5c",
+      "size_bytes": 19885,
+      "git_blob": "b27bc865ad18ba09b560544af47f6ed6384361c7",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/PUBLISHED-DESKTOP-STARTUP.json",
+      "sha256": "3772f4e0655051915f32d3406810e2998e1bd7c261a89c33b18e2dbd132a734b",
+      "size_bytes": 194,
+      "git_blob": "e2e0477e9547d14408991b0d8864e2c7107e8da9",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/RESULT.json",
+      "sha256": "a9856261270eb21d71c3c6d5d48fae558bdb8514f6f2c9d5e587d486d3f7b107",
+      "size_bytes": 3287,
+      "git_blob": "d02e0ee9effed2d8838ac88c5562c5b10d31f372",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/SHA256SUMS",
+      "sha256": "e63d00c27d44bb461917e4cf564e7fe9ff32da7ff2adaebbf7132e765aa95acf",
+      "size_bytes": 77775,
+      "git_blob": "0284b2a3a889e7ecc36f1de85d53f7d14ee26be7",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/WINDOWS-WPF.log",
+      "sha256": "84aa63245b2b21974907af2001b4b08f37f83c144524e9c9fa1b11d63ac1b2bf",
+      "size_bytes": 5398,
+      "git_blob": "8f4176e1812dbc34b17280146e078d8bd1bb929b",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/composition.lock.json",
+      "sha256": "78eb47e3af190b11475d23eef775a735fe48c06c68439e78e3949cf0a6cccc04",
+      "size_bytes": 5941,
+      "git_blob": "011da56866725ce76262a0b9186a747ae534c842",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/pgs-workstation-fullscreen.png",
+      "sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001",
+      "size_bytes": 76954,
+      "git_blob": "99a6b70f66981eb8852e78e4e5b7832ec08d194f",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/pgs-供包台标识-1366.png",
+      "sha256": "09af515e57b79e43674982af8442b365d11c2a3906048d55829f572b43d429fd",
+      "size_bytes": 99294,
+      "git_blob": "fed29ba79751accae3d4dea079c3e2c03d63c0ec",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/pgs-显示偏好-1366.png",
+      "sha256": "156ae3b9e4ce446921ab9a50b610da72807f692e0ec2ff481091abdb96c382e1",
+      "size_bytes": 99665,
+      "git_blob": "b311a39f26c6ff3e00eb3e37663923179a7cb831",
+      "version": "parameter-guidance-startup-01-frozen",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
       "storage_scope": "public_repository"
     }
   ],
@@ -92540,6 +92672,13 @@
       "actual system DPI 100%",
       "protected installer user-directory ACL on this machine",
       "real SDK/RCS and field acceptance"
-    ]
+    ],
+    "frozen_publication": {
+      "SourceCommit": "7d7487a571353f57aeaf01f14425760a737330b0",
+      "receipt": "docs/runtime/evidence/parameter-guidance-startup-01/frozen-7d7487a5/DELIVERY.json",
+      "FrozenNative": "PASS",
+      "PublishedDesktopEnvironmentStartupExitCode": 0,
+      "NotInstallationOrFieldAcceptance": true
+    }
   }
 }

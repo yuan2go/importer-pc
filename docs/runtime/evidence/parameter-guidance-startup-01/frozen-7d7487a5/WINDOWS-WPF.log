@@ -1,4 +1,4 @@
-PASS PGS01-WPF local preference and evidence remain on drive D
+PASS PGS01-WPF local preference is isolated under the evidence root
 PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 条码筛选
 PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 格口请求
 PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 接收与等待限制
@@ -61,8 +61,10 @@ PASS PGS01-WPF no second heartbeat station editor remains
 PASS PGS01-WPF first-run retention editors contain seven days
 PASS PGS01-WPF turning off deferred mode exposes required camera errors
 PASS PGS01-WPF reselecting deferred mode preserves inputs and removes inapplicable connection errors
-FAIL System.IO.DirectoryNotFoundException: Could not find a part of the path 'D:\ImporterPc.Deployment\UserData\S-1-5-21-732559097-496526457-2177757339-1001\presentation\sportmaster.window.json'.
-   at System.IO.FileSystem.DeleteFile(String fullPath)
-   at Program.VerifyParameterGuidanceStartup(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterGuidanceStartup.cs:line 88
-   at Program.VerifyParameterGuidanceStartup(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterGuidanceStartup.cs:line 89
-   at Program.<>c__DisplayClass22_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33
+PASS PGS01-WPF the visible first-run mode control persists the full-screen preference
+PASS PGS01-WPF the actual workstation opens in game-style borderless full screen
+PASS PGS01-WPF the open native workstation retains Application admission guards
+CAPTURE pgs-workstation-fullscreen: 1536x864 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF Escape returns the real HWND to an ordinary resizable window
+PASS PGS01-WPF F11 enters full screen through the native window command
+PASS PGS01-WPF F11 also exits full screen without changing business state

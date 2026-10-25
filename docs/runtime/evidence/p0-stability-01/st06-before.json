@@ -1,0 +1,54 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "PreviousIssueCommit": "df255631",
+  "Phase": "before",
+  "Environment": "Windows loopback FIN/RST/application-forwarder silence; no firewall or system network mutation",
+  "NotMeasured": "Kernel packet-drop detection upper bound; real camera; continuous 24h",
+  "OriginalLocalLogSha256": "5712f08cd7f7beda252fe7022a1cee0610e284f747a31e04704d6a80ac88bf67",
+  "EnumAliasesInBefore": {
+    "BlockSource": "TcpKeepAliveInterval at TCP level",
+    "DontRoute": "TcpKeepAliveRetryCount at TCP level"
+  },
+  "Cases": {
+    "tcp-FIN": {
+      "KeepAlive": 0,
+      "ConfigurableDeadline": false,
+      "TcpKeepAliveTime": 7200,
+      "BlockSource": 1,
+      "DontRoute": 10,
+      "FaultDetected": true,
+      "ElapsedMs": 138.6235,
+      "EpochRetired": false,
+      "LastFailure": "RemoteClosed",
+      "ObservationCount": 1,
+      "AutoReconnected": false
+    },
+    "tcp-RST": {
+      "KeepAlive": 0,
+      "ConfigurableDeadline": false,
+      "TcpKeepAliveTime": 7200,
+      "BlockSource": 1,
+      "DontRoute": 10,
+      "FaultDetected": true,
+      "ElapsedMs": 35.2805,
+      "EpochRetired": false,
+      "LastFailure": "RemoteClosed",
+      "ObservationCount": 1,
+      "AutoReconnected": false
+    },
+    "tcp-silent-forwarder": {
+      "KeepAlive": 0,
+      "ConfigurableDeadline": false,
+      "TcpKeepAliveTime": 7200,
+      "BlockSource": 1,
+      "DontRoute": 10,
+      "LocalTimerRenewedReady": true,
+      "FaultDetected": false,
+      "ElapsedMs": 4246.3413,
+      "EpochRetired": false,
+      "LastFailure": "none",
+      "ObservationCount": 1,
+      "AutoReconnected": false
+    }
+  }
+}

@@ -2025,9 +2025,9 @@
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "4721b1457c6e5496ee878a92e1f54ecbd77e74b60e5c61185ce0e077513e1358",
+      "sha256": "c2674921aba84ccc493de1fe34d1868c6a127938e8f8aa299ca151e6cc4a9870",
       "size_bytes": 13021,
-      "git_blob": "94abb2b3d97d5f8352a446b4a9b152bfef1f4104",
+      "git_blob": "6b30e3634ff841c1a665f4898a7347793010fd92",
       "pre_publication_no_test_git_blob": "4f07f412a822614aee06f52834b5f89d894b6124"
     },
     {
@@ -2043,9 +2043,9 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "5d96061fde30ae70c0f2aaf651a273c9c66495db42774718d23efcf30ada7aef",
+      "sha256": "1372ac7296bb367d5e8bfba8f81866f448597bd7ec7f7858f84d8cdc9eed8a58",
       "size_bytes": 7746,
-      "git_blob": "df5d40e9c39dca9ecbb5a09159c0fd87062e3ff6",
+      "git_blob": "89718216a3ca55af1a3813a47ebac398b00b9380",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -57360,9 +57360,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "f0f772f358f135edf86090d282b7d73b1c386bd15d7166fffcd132dd6be7bd5a",
-      "size_bytes": 152,
-      "git_blob": "31dcc289118a74f9a27873f1614e7c49a669f728"
+      "sha256": "876dd87b43b2772522b798baa1dd54ee9bb9038552fcc9fa8aeb6b28d788a2e0",
+      "size_bytes": 207,
+      "git_blob": "5a060244ac3f3b775c91d5000c8ab3410672fc94"
     },
     {
       "path": "src/Ipc.Drivers/ObservationSources.cs",
@@ -59332,9 +59332,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "49584cba9362b59829d8afb67d6c15f0cc64076d730212e1f15fb89085fed23a",
-      "size_bytes": 22368,
-      "git_blob": "82ccb1898d88ba04de3d2a1c1cd2924802e19e88",
+      "sha256": "5d5a7cfa27dd9318ab7ece24e153cbe0e7d9628a52af710eca612886af4dd07a",
+      "size_bytes": 22522,
+      "git_blob": "9e826581554bf3f5d54812e542e8239bab8e5edf",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -63210,9 +63210,9 @@
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "e69e2bf342263811f2e254e32eeb35fd6d12d7d61be20f35eacb1be9b1fee77e",
-      "size_bytes": 12017,
-      "git_blob": "22dba806dbb0922ae5de04356ec9fd866ebe5ace"
+      "sha256": "2203e25494b3565c689f03a3b904f7322ea26298996e56db77596c8ab7e53e66",
+      "size_bytes": 15195,
+      "git_blob": "bff8bd07de079052fc03407ba170ad5e08c7cbb5"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/TcpLineReader.cs",
@@ -70194,9 +70194,9 @@
     },
     {
       "path": "docs/runtime/dual-camera-communication-fix-01.md",
-      "sha256": "0dd102b68579557c7b46291563e9adc8c64b263eb503b8e85f5c9664a540b331",
-      "size_bytes": 12123,
-      "git_blob": "c775b7b8d59dc4f5669d475bcbf3dfe1fde9943f",
+      "sha256": "3e7b37d00de5c8d38608ab119247110c8612ff370e25c5193af8c273d4d78287",
+      "size_bytes": 12372,
+      "git_blob": "935b16efa888b0f191fa6d50ca0da0814b2dfe51",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -75771,9 +75771,9 @@
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
       "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "a0f9a29eeda108ceabbd2cae575388e0aa6628843d32fc0385e887a63b044375",
-      "size_bytes": 14571,
-      "git_blob": "e8cde3054a1dbe7eacded66e89280729f484c7ed",
+      "sha256": "c83682974008743467552d2f84f065b06cdaa69831cb8e58061e711ea526cfd2",
+      "size_bytes": 14820,
+      "git_blob": "31f94d1ac2cade79368820f1190b431539ece7e2",
       "pre_retention_maintenance_qualification_01_identity": {
         "git_blob": "4fff3ebf9af0d92fe3551af09875d3b259f72ce2",
         "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
@@ -90429,9 +90429,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "e855da1b329321c265ff384decd5d1fc386485aa906741183632840023276860",
-      "size_bytes": 2176,
-      "git_blob": "216a9dfec806fd263b895281c5d24c49161eeadd"
+      "sha256": "06e64f358db2ccd807bb5cdd196f66e2ff577fe3cbff2d8355b98297be11bc37",
+      "size_bytes": 4398,
+      "git_blob": "35b0e4c379185ba797f536ba5d62751f039d49b7"
     },
     {
       "path": "docs/runtime/validation/p0-stability-01.md",
@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "716962107b0a7cb64809a0f1b5f1f8afb1bf071eb3dfb36b9818ceb4bea7322b",
-      "size_bytes": 3319,
-      "git_blob": "f88733e7e1dcd765d25d44f7067de30f2a83c5ab"
+      "sha256": "676a885e4c2bbcfe49d0936ff144723176d4429a974bde13d010a2a967e59d8b",
+      "size_bytes": 4605,
+      "git_blob": "a163529db248ca726040d3c4003c1ab3bae7f456"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
@@ -90542,6 +90542,39 @@
       "sha256": "e2125a23aa222813c672568cfda85b8565b24e58f0d4af8f80aed0ea975a0abf",
       "size_bytes": 8658,
       "git_blob": "97349676f7e1173255a7b24264d91a2761578581"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st06-after.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "045cc9a62de30ec787362425a7bf9390778ee136227c0d11db0a63895fc21b0d",
+      "size_bytes": 1719,
+      "git_blob": "623bbbafe706568d47ded7a65e26ab6fba763b3f"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st06-before.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f511882f402f79b13d191e5dfd3c3c56c5a511d73efc19a845deb7e3267a132b",
+      "size_bytes": 1662,
+      "git_blob": "305832a6f15da760555f502c17c3d618367a1fa1"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/P0Stability.Tcp.cs",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0ea9283b2b8ddc66c74f62884e8c4c68c4aaf68bea79d477b47a53546dc6f07d",
+      "size_bytes": 5536,
+      "git_blob": "775684332642aa4a955b686b67ac009210519b59"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

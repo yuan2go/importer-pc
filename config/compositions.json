@@ -166,7 +166,7 @@
       "delivery": "core"
     },
     "drivers": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "contract": 1,
       "dependencies": [
         "reference-protocol"

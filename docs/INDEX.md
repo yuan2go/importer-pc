@@ -1,3 +1,5 @@
+> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+
 > 2026-10-25生命周期优化：[七包范围](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[U/G总账](reviews/lifecycle-ux-reconciliation-01.md)、[现行操作](runtime/lifecycle-ux-current-guidance-01.md)、[实际实现](runtime/lifecycle-ux-implementation-01.md)、[定向验证与同源身份](runtime/validation/lifecycle-ux-optimization-01.md)。独立工程已实现；原规划原件、编号与哈希见[规划归档](archive/lifecycle-ux-planning-01/README.md)。G01/G02、系统生命周期和现场门槛独立。
 
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。

@@ -1,3 +1,5 @@
+> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+
 # 生命周期优化实施记录
 
 2026-10-25，开工基线 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，已 fetch origin/main，开放 PR 为 0。开发分支 `codex/lifecycle-ux-optimization-01`。工作区原有六份入口修订、七包规划及三审查材料保留；四份 HTML/spec/ZIP 附件不提交。旧 worktree 不修改。

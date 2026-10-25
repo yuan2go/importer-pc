@@ -1,3 +1,5 @@
+> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+
 # 生命周期交互审查整合与问题处置
 
 2026-10-25，开工核对当时远端 main 与本地 HEAD 均为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开放 PR 为 0。源码为 Sportmaster 1.12.3 / Contracts 1.18.0 / DB9。本文整合三份审查和用户追加的 UI、身份显示、参数权限、软件日志及帮助删除要求；不将审查完成记为修复完成。

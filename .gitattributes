@@ -1,6 +1,7 @@
 # Preserve exact Windows verification receipts; CRLF is evidence, not trailing whitespace.
 docs/archive/pre-lifecycle-ux-optimization-01/** -text whitespace=cr-at-eol
 docs/archive/pre-lifecycle-ux-implementation-01/** -text whitespace=cr-at-eol
+docs/archive/pre-lifecycle-batch-preflight-01/** -text whitespace=cr-at-eol
 docs/archive/lifecycle-ux-planning-01/** -text whitespace=cr-at-eol
 docs/reviews/lifecycle-interaction-audit-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/lifecycle-ux-optimization-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

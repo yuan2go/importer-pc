@@ -1,3 +1,5 @@
+> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+
 # 生命周期操作 · 当前候选指南
 
 适用于生命周期优化候选 Sportmaster1.13.0、DirectPlc/WcsToPlc1.7.0、Contracts1.19.0、DB9。开工 main `3a5b1d13`；实际冻结源码/版本/库存以本包ASSEMBLY.json、BUILD-INFO.json和SHA256SUMS为准；形成过程和验证边界见[验证报告](validation/lifecycle-ux-optimization-01.md)。[实现记录](lifecycle-ux-implementation-01.md)和[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)保留每项来源。版本号不替代 SourceCommit/哈希，也不表示现场已升级。

@@ -1,3 +1,5 @@
+> 2026-10-26 批量部署复核：PR #108 的 run 40210140349 冻结介质 core 失败（Frozen media batch preflight failed）；U03/U21 重新整改，撤回本页既有“全部/独立工程完成”作为当前结论。0a3d4152 及此前 PASS/FAIL 仅保留原范围，未证明批量预检通过。修复和最新 CI 尚待验证；原页字节与哈希见 docs/archive/pre-lifecycle-batch-preflight-01/FILES.json。
+
 # WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01
 
 2026-10-25。用户要求规划并落地七个优化工作包及下一阶段Codex提示，覆盖整体UI/操作简化、身份显示、参数权限、软件日志查询导出和帮助与支持完整删除。原规划交付固定于`4c42f567`，原件见[规划归档](../archive/lifecycle-ux-planning-01/README.md)。用户本轮已授权并实施七包独立工程，实际状态见[实现](../runtime/lifecycle-ux-implementation-01.md)及[验证](../runtime/validation/lifecycle-ux-optimization-01.md)；G01/G02继续BLOCKED_EXTERNAL。

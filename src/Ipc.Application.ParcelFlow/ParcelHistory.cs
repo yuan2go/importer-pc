@@ -124,6 +124,7 @@ public sealed partial class ParcelRepository
         using var tx = db.BeginTransaction();
         foreach (var id in ids)
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             using var read = db.CreateCommand(); read.Transaction = tx; read.CommandText = "SELECT body FROM parcel_operations WHERE id=$id AND NOT EXISTS(SELECT 1 FROM parcel_receipts WHERE operation=$id AND state IN ('Awaiting','RawDurable'))";
             read.Parameters.AddWithValue("$id", id); var body = read.ExecuteScalar() as string ?? throw new InvalidOperationException("Archive candidate changed or has original receipt responsibility");
             ArchiveRaw(id, tx);
@@ -147,6 +148,7 @@ public sealed partial class ParcelRepository
         }
         foreach (var item in raw)
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             // Reactivated custody owners can already have immutable raw in the archive.
             // Verify and reuse it; cleanup may legitimately have removed its spool file.
             if (HasArchivedRaw(item.Id, item.Hash)) continue;
@@ -169,7 +171,7 @@ public sealed partial class ParcelRepository
         // DB custody commits before removing the redundant spool file; interrupted cleanup is idempotent.
         foreach (var path in Directory.EnumerateFiles(rawRoot, "*.json"))
         {
-            var id = Path.GetFileNameWithoutExtension(path); var hash = Wire.FileHash(path);
+            var id = Path.GetFileNameWithoutExtension(path); var hash = Wire.FileHash(path, maintenanceCancellation);
             if (HasArchivedRaw(id, hash))
                 try { File.Delete(path); }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

@@ -33,6 +33,7 @@ public sealed partial class ParcelRepository
         using var reader = rows.ExecuteReader();
         while (reader.Read())
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             var id = reader.GetString(0); var path = Path.Combine(rawRoot, id + ".json"); byte[] bytes;
             if (File.Exists(path)) bytes = File.ReadAllBytes(path);
             else

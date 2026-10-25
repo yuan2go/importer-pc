@@ -168,7 +168,7 @@ def reconcile(run_file, output, completed_only=False):
                           InspectPlusExpirySeconds=runs[f'inspect-{count}']['Seconds'] + expire['Seconds'],
                           IsolatedRestoreSeconds=case.get('IsolatedRestoreSeconds'), RestoredDatabaseSHA256=restore_hash,
                           RestorePlanCopyInspectSeconds=sum(r['Seconds'] for r in restore_runs) if restore_runs else None,
-                          TimingBoundary='Two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.'))
+                          TimingBoundary=run.get('MaintenanceBudgetScope', 'Historical two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.')))
     check(bool(cases), 'at least one completed case reconciled')
     result = dict(Status='PARTIAL_COMPLETED_CASES_VERIFIED' if run['Status'] == 'InProgress' else 'VERIFIED_COMPLETED_SYNTHETIC_CASES',
                   SourceCommit=run['SourceCommit'], ProductSha256=run['ProductSha256'], FixtureSha256=run['FixtureSha256'],

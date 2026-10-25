@@ -9,6 +9,10 @@ static class ParcelCli
     public static bool Management(string[] args)
     {
         if (!args.Contains("--action")) return false;
+        // Includes argument/authority/factory setup and final cleanup; the repository
+        // links this deadline rather than granting another two hours after setup.
+        using var maintenanceBudget = args.Any(a => a is "expire-history" or "expire-history-compact")
+            ? new CancellationTokenSource(ParcelRepository.RetentionMaintenanceBudget) : null;
         ParcelCapabilityFactory.RegisterContracts();
         var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("Missing value"));
         if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason" or "--original-release" or "--occurrence" or "--wal-sha256"))) throw new ArgumentException("Unknown extension option");
@@ -64,13 +68,16 @@ static class ParcelCli
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority();
                 var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
                 var factory = new ParcelCapabilityFactory(new(directory, dataRoot, null, null));
+                object result;
                 try
                 {
                     void Register(string backup, ParcelConfiguration c) { factory.Normalize(c); factory.RegisterBackup(backup, c); }
-                    Console.WriteLine(Wire.Encode<object>(map["--action"] == "backup-offline" ? ParcelRepository.BackupOffline(database, map["--destination"], definition, Register) :
-                        ParcelRepository.ExpireHistory(database, map["--sha256"], map["--destination"], definition, Register, map["--action"] == "expire-history-compact")));
+                    result = map["--action"] == "backup-offline" ? ParcelRepository.BackupOffline(database, map["--destination"], definition, Register) :
+                        ParcelRepository.ExpireHistory(database, map["--sha256"], map["--destination"], definition, Register, map["--action"] == "expire-history-compact", maintenanceBudget!.Token);
                 }
                 finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+                maintenanceBudget?.Token.ThrowIfCancellationRequested();
+                Console.WriteLine(Wire.Encode(result));
             }
             else Console.WriteLine(Wire.Encode(map["--action"] == "diagnostic-export"
                 ? ParcelRepository.ExportDiagnostics(database, map["--destination"], definition) : ParcelRepository.InspectMaintenance(database, definition)));

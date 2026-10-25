@@ -6,14 +6,20 @@ public sealed record DatabaseMigration(int Version, string Sql);
 // interprets a business state or silently recreates a corrupt/unsupported database.
 public static class Database
 {
-    public static SqliteConnection Open(string path, bool create = true)
+    public static SqliteConnection Open(string path, bool create = true) => Open(path, create, CancellationToken.None);
+    public static SqliteConnection Open(string path, bool create, CancellationToken cancellationToken)
     {
         var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path,
             Mode = create ? SqliteOpenMode.ReadWriteCreate : SqliteOpenMode.ReadWrite,
             Pooling = false, DefaultTimeout = 5, ForeignKeys = true }.ToString());
         try
         {
-            db.Open(); Execute(db, null, "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;");
+            cancellationToken.ThrowIfCancellationRequested();
+            db.Open();
+            if (cancellationToken.CanBeCanceled)
+                SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => cancellationToken.IsCancellationRequested ? 1 : 0, null);
+            Execute(db, null, "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;");
+            cancellationToken.ThrowIfCancellationRequested();
             return db;
         }
         catch { db.Dispose(); throw; }
@@ -56,5 +62,26 @@ public static class Database
         reserve.Dispose();
         using var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Pooling = false }.ToString());
         target.Open(); source.BackupDatabase(target);
+    }
+    // Online backup has no VM progress callbacks. Bound each copy step so the same
+    // maintenance deadline also covers the database copy. Finish rolls back a partial
+    // target; callers publish custody COMPLETED only after all hashes are verified.
+    public static void Backup(SqliteConnection source, string destination, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        using (var reserve = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { }
+        using var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Pooling = false, DefaultTimeout = 5 }.ToString());
+        target.Open();
+        using var copy = SQLitePCL.raw.sqlite3_backup_init(target.Handle, "main", source.Handle, "main");
+        if (copy is null) throw new SqliteException("Cannot initialize complete maintenance backup", SQLitePCL.raw.sqlite3_errcode(target.Handle));
+        int status;
+        do
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            status = SQLitePCL.raw.sqlite3_backup_step(copy, 256);
+            if (status is not (SQLitePCL.raw.SQLITE_OK or SQLitePCL.raw.SQLITE_DONE))
+                throw new SqliteException("Complete maintenance backup failed; incomplete target retained", status);
+        } while (status != SQLitePCL.raw.SQLITE_DONE);
+        cancellationToken.ThrowIfCancellationRequested();
     }
 }

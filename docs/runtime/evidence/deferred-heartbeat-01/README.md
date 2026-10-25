@@ -18,3 +18,9 @@
 早期新夹具编译错误及原生填写遗漏/断言层级错误的日志仍保留在D盘`.artifacts/deferred-heartbeat-01`和其各次临时证据目录，不改写为PASS。原生恢复缺编码断言最终落到真实离线预检（普通字段schema允许先保留空编码），依然要求拒绝启动候选；不是取消必要检查。
 
 后续冻结构建与CI按各自SourceCommit/HEAD记录，不扩张本次工作树回归至旧介质、真实设备或现场资格。原D/RV不改。
+
+## 固定源码原生复验
+
+`2d02ea30fa7fa70c2e7463cbbc86f0fe761ecd7c`已从Git冻结生成Windows x64参考介质，ZIP SHA256为`0a16c62ad603837d365072cf61e8148953c997013949864e38d84b1704f8e355`；[交付身份](frozen-2d02ea30/DELIVERY.json)不代表安装包发布或本机安装。相同SourceCommit的发布DLL和测试夹具通过[参数/延后专项](frozen-2d02ea30/PARAMETERS-RESULT.json)及[首次启动专项](frozen-2d02ea30/STARTUP-RESULT.json)，各自原始WPF日志在同目录。发布EXE的环境报告启动ExitCode=0，见[回执](frozen-2d02ea30/PUBLISHED-DESKTOP-STARTUP.json)。未配置机级运行策略的边界不变。
+
+[PR109](https://github.com/yuan2go/importer-pc/pull/109)的实现提交`2d02ea30`已获自动代码审查完成且无发现，Linux真实工厂矩阵及完整回归通过；归档本回执后的最新HEAD仍须重新核对完整CI及审查，不沿用前一HEAD的状态。最终合并条件和CI链接记在PR描述。

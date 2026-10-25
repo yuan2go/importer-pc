@@ -34,4 +34,6 @@ Windows本机未配置机级运行策略，真实工厂申请设备租约按原�
 
 原始复现、回归及原生结果见[证据清单](../evidence/deferred-heartbeat-01/README.md)。新增矩阵已加入既有CI，未移除或跳过原门禁。CI及最终提交身份在PR上按最新HEAD单独核对。
 
+源码`2d02ea30`冻结Windows x64介质及同源发布DLL的参数/延后、首次启动原生专项均PASS，实际EXE环境报告启动ExitCode=0，固定源码及库存/二进制哈希见[冻结复验](../evidence/deferred-heartbeat-01/README.md#固定源码原生复验)。本机工作树首配22条、心跳27条、七组合矩阵130条、WPF专项88条PASS；额外参数重构测试在21条静态PASS后因缺少已安装机级运行策略中止，整项未通过。真实工厂矩阵已由实现提交对应Linux CI执行通过；最终集成以[PR109](https://github.com/yuan2go/importer-pc/pull/109)最新HEAD的完整检查为准。
+
 真实相机/SDK、真实RCS合同/响应、目标IPC、物理触控/100%DPI、24h/72h及现场验收未执行；原D/RV继续保持原状态。

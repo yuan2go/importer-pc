@@ -65,6 +65,36 @@
       "path": "WINDOWS-WPF.log",
       "size_bytes": 8024,
       "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238"
+    },
+    {
+      "path": "frozen-2d02ea30/DELIVERY.json",
+      "size_bytes": 468,
+      "sha256": "4a8e6df94fe5efb7ea1143d8ba03a9ed45de4a8bcf7d5ccac01c1d7fa95283a1"
+    },
+    {
+      "path": "frozen-2d02ea30/PARAMETERS-RESULT.json",
+      "size_bytes": 3287,
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059"
+    },
+    {
+      "path": "frozen-2d02ea30/PARAMETERS-WPF.log",
+      "size_bytes": 8024,
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238"
+    },
+    {
+      "path": "frozen-2d02ea30/PUBLISHED-DESKTOP-STARTUP.json",
+      "size_bytes": 194,
+      "sha256": "e15e2cc71ae4875f5ddb48084f30c4f39c478c251208df7861acab21c2252853"
+    },
+    {
+      "path": "frozen-2d02ea30/STARTUP-RESULT.json",
+      "size_bytes": 3287,
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059"
+    },
+    {
+      "path": "frozen-2d02ea30/STARTUP-WPF.log",
+      "size_bytes": 14880,
+      "sha256": "ea675cd00b540f8b4d26cc438594d9371cb49dc51e2f4b304d69babeab436712"
     }
   ],
   "PassLineCounts": {
@@ -79,5 +109,6 @@
     "parameter-refactor.log": 21,
     "rcs-heartbeat.log": 27,
     "WINDOWS-WPF.log": 88
-  }
+  },
+  "FrozenSourceCommit": "2d02ea30fa7fa70c2e7463cbbc86f0fe761ecd7c"
 }

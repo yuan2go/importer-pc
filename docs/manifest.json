@@ -89991,25 +89991,41 @@
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/FILES.json",
-      "sha256": "a20d0eb6b3d81d8bafd24933da7039b95e016fba4a793b2b8d759c7527402b3b",
-      "size_bytes": 2594,
-      "git_blob": "0314f210d6d74eb37bde965d798b0e5b20fb38eb",
+      "sha256": "7259e30feb746a150159e169789453e00cd09e3b21a5cd183e3e5a0366cd18ee",
+      "size_bytes": 3745,
+      "git_blob": "03020a34dcb0b9b8d382d5d434eb087a6c07c8b9",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "0314f210d6d74eb37bde965d798b0e5b20fb38eb",
+        "sha256": "a20d0eb6b3d81d8bafd24933da7039b95e016fba4a793b2b8d759c7527402b3b",
+        "size_bytes": 2594,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/README.md",
-      "sha256": "76e9e0b295920e34e063be7ac057f1d85fc9d0cf7db6ab0531d7b527ff08b342",
-      "size_bytes": 2689,
-      "git_blob": "abb6696f9cddd3a5ba1a03a62051768c3e9d1a09",
+      "sha256": "ed5bf84cdf3ab4b9654b08a771b2a1601724cd523b86b89464749eb01190fbd6",
+      "size_bytes": 3660,
+      "git_blob": "8b7b67a81a3bff5d412fc0d56898b1b31a22ee1d",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "abb6696f9cddd3a5ba1a03a62051768c3e9d1a09",
+        "sha256": "76e9e0b295920e34e063be7ac057f1d85fc9d0cf7db6ab0531d7b527ff08b342",
+        "size_bytes": 2689,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/WINDOWS-WPF.log",
@@ -90020,7 +90036,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "6e94abd5e23bd801fa6f1588b2b37e990712d59a",
+        "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+        "size_bytes": 8024,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/before-fix.log",
@@ -90031,7 +90055,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "0b42398289c68bf7ae470bd45f0d6c7404ca0576",
+        "sha256": "e597259cd20bed6a7dc249a5eca06dec20f3dcb05300f59f51a458e03948bce5",
+        "size_bytes": 1325,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/build-final.log",
@@ -90042,7 +90074,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "99ce6da6919a2173c05378db3681475f0cadf6c1",
+        "sha256": "c7cda1f183862a477e9fe8827e17dee396f68b9da4a2a3ef39277570c7dbf453",
+        "size_bytes": 2143,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/build-wpf-accepted.log",
@@ -90053,7 +90093,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "40d7dae92123711e9782684857d9c09857629440",
+        "sha256": "f45159a7d044ee38d2e7387f98ed362edd58e5891848dc1397f29e451c03f474",
+        "size_bytes": 2196,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/deferred-left-active-rcs.png",
@@ -90064,7 +90112,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "afb74741b33086c66d414e54a61022a992b786b6",
+        "sha256": "557f1139138f2a463b3e946f7801a9f7a3c5b736d38e8260e294baff497d8663",
+        "size_bytes": 79303,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/deferred-workstation.png",
@@ -90075,7 +90131,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "99a6b70f66981eb8852e78e4e5b7832ec08d194f",
+        "sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001",
+        "size_bytes": 76954,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-final.log",
@@ -90086,7 +90150,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "17907087b6ba629a880a6793f05aa39ce6b9a787",
+        "sha256": "d46d1b8b8d68a3f06bb80ae421808168b2e27ddc0b721390dadc49dc05692129",
+        "size_bytes": 13246,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-first.log",
@@ -90097,7 +90169,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "61b7e770c1dc56124a5301115c9052f8998b5d44",
+        "sha256": "46e6e988e08f81f69095eae3abad75c71f551009a46732b19a15e85a6dd3caaa",
+        "size_bytes": 2556,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-fourth.log",
@@ -90108,7 +90188,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "3be883a6882b663bb00caac4ab1775b8deb430da",
+        "sha256": "0ec616b29884b2d79bce2a6e2a1920c6373b0914a017f1efd2bf34ff6563916a",
+        "size_bytes": 11094,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-third.log",
@@ -90119,7 +90207,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "3d0d521ee0d45ff17d19d9118bd78c221a0f4b5b",
+        "sha256": "4573f33d14aadbe061d541eb7d4185bc1ff3943ff74f9ad9cad2a8dc48dba3a0",
+        "size_bytes": 9044,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/parameter-guidance-startup.log",
@@ -90130,7 +90226,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "90e0976c77f787ea8b978c7708d62f2422211d21",
+        "sha256": "34983bec6996ccace7a5006540c0fdc8eefd37a6cb546da55311855723e52842",
+        "size_bytes": 2340,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/parameter-refactor.log",
@@ -90141,7 +90245,15 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "64832dccc29824323cd509f5e3be8836393f576a",
+        "sha256": "8f623c78c9ec38e1d394a8425634c0d4e8d770bb885a4488d9fefd927291a8f4",
+        "size_bytes": 3873,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/evidence/deferred-heartbeat-01/rcs-heartbeat.log",
@@ -90152,13 +90264,59 @@
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "626ed045ada80074e80a029f7bca9fa1031e8544",
+        "sha256": "73e074dde15cb34433a8349f5e4fab4858dbcf8206b71195db27037587b1cb10",
+        "size_bytes": 2021,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
     },
     {
       "path": "docs/runtime/validation/deferred-heartbeat-01.md",
-      "sha256": "1590ab6e7bb3875c6f8f026b4a955a83edc64cc51c76f27029720f1c5a888fd5",
-      "size_bytes": 4827,
-      "git_blob": "343e657d0aa9418c1c28e0cf28bddfbb09850e85",
+      "sha256": "961d8144be2019fd755e418939ed08de967448c7a3bcbd37a7546ab074456014",
+      "size_bytes": 5472,
+      "git_blob": "93f429b1eaf74433fef77042fe3bb27d7260586a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "343e657d0aa9418c1c28e0cf28bddfbb09850e85",
+        "sha256": "1590ab6e7bb3875c6f8f026b4a955a83edc64cc51c76f27029720f1c5a888fd5",
+        "size_bytes": 4827,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
+      "sha256": "b4caf09e814503b4fe979d12de903a865215b0a99f999d3ed942009a4deb531d",
+      "size_bytes": 17370,
+      "git_blob": "fa92fdba637a1a25f4334d4a1f74831719666d0b",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "fa92fdba637a1a25f4334d4a1f74831719666d0b",
+        "sha256": "b4caf09e814503b4fe979d12de903a865215b0a99f999d3ed942009a4deb531d",
+        "size_bytes": 17370,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/DELIVERY.json",
+      "sha256": "4a8e6df94fe5efb7ea1143d8ba03a9ed45de4a8bcf7d5ccac01c1d7fa95283a1",
+      "size_bytes": 468,
+      "git_blob": "77f360d2d812a2790773b333a3922df0e14901ab",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -90166,10 +90324,54 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
-      "sha256": "b4caf09e814503b4fe979d12de903a865215b0a99f999d3ed942009a4deb531d",
-      "size_bytes": 17370,
-      "git_blob": "fa92fdba637a1a25f4334d4a1f74831719666d0b",
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PARAMETERS-RESULT.json",
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059",
+      "size_bytes": 3287,
+      "git_blob": "95b58699c5cbe72b6d6963ea15666db2efd18820",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PARAMETERS-WPF.log",
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+      "size_bytes": 8024,
+      "git_blob": "6e94abd5e23bd801fa6f1588b2b37e990712d59a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PUBLISHED-DESKTOP-STARTUP.json",
+      "sha256": "e15e2cc71ae4875f5ddb48084f30c4f39c478c251208df7861acab21c2252853",
+      "size_bytes": 194,
+      "git_blob": "61a7eea3ae428df1302c90ff60591b939b4ebd0c",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/STARTUP-RESULT.json",
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059",
+      "size_bytes": 3287,
+      "git_blob": "95b58699c5cbe72b6d6963ea15666db2efd18820",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/STARTUP-WPF.log",
+      "sha256": "ea675cd00b540f8b4d26cc438594d9371cb49dc51e2f4b304d69babeab436712",
+      "size_bytes": 14880,
+      "git_blob": "f6c1a9fceb40485f94039601587d669ba6107f72",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",

@@ -12,7 +12,7 @@
 
 预算是协作取消，不是操作系统强杀。单次阻塞文件I/O、Flush、SQLite忙等待（原5秒）及必要回滚/句柄关闭可能在截止后结束；不会提前释放owner或以进程失控换“严格两小时退出”。维护前独立inspect、人工核对、恢复演练和业务接管不计入expire命令，分别计时。`parcel_retention_runs`的Completed仍表示明细退役核心完成，不能单独证明后检查/压缩/CLI成功。
 
-版本为Sportmaster1.12.2、DirectPlc/WcsToPlc1.6.2，避开并行PR104的1.12.1/1.6.1；这不表示PR104已合入或其功能属于本分支。Application.Contracts1.17.0及DB9不变。新的公共平台程序集字节需整套同源交付，不能替换旧签名扩展的精确宿主依赖。旧未决请求仍按原实现/合同/目标处理，不因版本提升重发。
+整合后版本为Sportmaster1.12.2、DirectPlc/WcsToPlc1.6.2；原分支为避开并行PR104的1.12.1/1.6.1预留，本次main已包含PR104/105，原分支证据仍按形成时身份阅读。Application.Contracts1.17.0及DB9不变。新的公共平台程序集字节需整套同源交付，不能替换旧签名扩展的精确宿主依赖。旧未决请求仍按原实现/合同/目标处理，不因版本提升重发。
 
 复现：先在Windows执行 `. ./scripts/project-environment.ps1`；`dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true`，CLI用 `dotnet build src/Ipc.Assembly -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true`。必须显式选择Sportmaster，默认Supply不包含Parcel维护入口；脚本在创建受保护目录前实际执行`business-identity`核对，不能只凭输出目录残留的业务DLL。`dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress --large` 执行组件查询、实际分批删除及取消/恢复边界；去掉`--large`为CI1千/1万档。
 

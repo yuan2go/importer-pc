@@ -1,0 +1,425 @@
+{
+  "Status": "PARTIAL_WITH_RECORDED_GAPS",
+  "StartedUtc": "2026-10-25T06:42:03.2703722+00:00",
+  "ProtectedRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b",
+  "ElevatedAdministrator": true,
+  "SourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "ProductSha256": "379560D5C546393B503BE8E748183DA138BC936CD17CFD729B895B273FFE2ADE",
+  "FixtureSha256": "F4B29860D22D3AA991CBBA75D9F4C8C7D1891D9B099AA215F6944852AC590BC5",
+  "Qualification": "Isolated protected Windows CLI and synthetic full-custody scale only; no installed production application, real SDK/RCS, target IPC or 24h/72h",
+  "Cases": [
+    {
+      "Count": 1000,
+      "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000",
+      "OriginalBytes": 16007168,
+      "OriginalHash": "096E7F5B2A5A1598A5ED679E08E7E7063EA00349883FB142D8BF74CCFFCFF6F9",
+      "Status": "PASS_PROTECTED_CLI_SYNTHETIC",
+      "Action": "expire-history",
+      "ExpireSeconds": 6.7795169,
+      "BackupBytes": 16007168,
+      "PostBytes": 16007168,
+      "BackupHash": "096E7F5B2A5A1598A5ED679E08E7E7063EA00349883FB142D8BF74CCFFCFF6F9",
+      "IsolatedRestoreSeconds": 0.5494182
+    },
+    {
+      "Count": 10000,
+      "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000",
+      "OriginalBytes": 156348416,
+      "OriginalHash": "D809E8FA00E591561D60AE2D83A34D5299F3E1FEDB56917F0A71DE1D746F8F7B",
+      "Status": "PASS_PROTECTED_CLI_SYNTHETIC",
+      "Action": "expire-history-compact",
+      "ExpireSeconds": 50.9725806,
+      "BackupBytes": 156348416,
+      "PostBytes": 9089024,
+      "BackupHash": "D809E8FA00E591561D60AE2D83A34D5299F3E1FEDB56917F0A71DE1D746F8F7B"
+    },
+    {
+      "Count": 604800,
+      "CaseRoot": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800",
+      "OriginalBytes": 9464315904,
+      "OriginalHash": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+      "Status": "PASS_PROTECTED_CLI_SYNTHETIC",
+      "Action": "expire-history",
+      "ExpireSeconds": 4721.3243221,
+      "BackupBytes": 9464315904,
+      "PostBytes": 9464315904,
+      "BackupHash": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF"
+    },
+    {
+      "Count": 2592000,
+      "Status": "NOT_RUN_DISK_CAPACITY",
+      "RequiredEstimateBytes": 97794680422,
+      "AvailableBytes": 10432905216
+    }
+  ],
+  "Runs": [
+    {
+      "Name": "reuse-restore-1000",
+      "StartedUtc": "2026-10-25T06:42:03.9702611+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-1000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.8898789,
+      "EndedUtc": "2026-10-25T06:42:04.8824262+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "inspect-1000",
+      "StartedUtc": "2026-10-25T06:42:05.0362061+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 50155520,
+      "PeakWalBytes": 0,
+      "Seconds": 1.6043723,
+      "EndedUtc": "2026-10-25T06:42:06.6407872+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "wrong-hash",
+      "StartedUtc": "2026-10-25T06:42:06.6536180+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\wrong-hash.db"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.4098529,
+      "EndedUtc": "2026-10-25T06:42:07.0638206+00:00",
+      "ExitCode": -532462766,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "expire-1000",
+      "StartedUtc": "2026-10-25T06:42:07.1296843+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "096E7F5B2A5A1598A5ED679E08E7E7063EA00349883FB142D8BF74CCFFCFF6F9",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\complete-before-expiry.db"
+      ],
+      "PeakWorkingSet": 61341696,
+      "PeakWalBytes": 4255992,
+      "Seconds": 6.7795169,
+      "EndedUtc": "2026-10-25T06:42:13.9093263+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "verify-1000",
+      "StartedUtc": "2026-10-25T06:42:13.9562292+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "verify",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.3558218,
+      "EndedUtc": "2026-10-25T06:42:14.3121302+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "restore-plan-1000",
+      "StartedUtc": "2026-10-25T06:42:14.3360201+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "recovery-plan",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.3843983,
+      "EndedUtc": "2026-10-25T06:42:14.7205142+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "restore-isolated-1000",
+      "StartedUtc": "2026-10-25T06:42:14.7256006+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.5494182,
+      "EndedUtc": "2026-10-25T06:42:15.2750867+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "inspect-restored-1000",
+      "StartedUtc": "2026-10-25T06:42:15.2814499+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\restored\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 50933760,
+      "PeakWalBytes": 0,
+      "Seconds": 1.1144344,
+      "EndedUtc": "2026-10-25T06:42:16.3959511+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "repeat-expiry",
+      "StartedUtc": "2026-10-25T06:42:16.4514329+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "38564B5FA86F59803C05E4FAF575F6A3FC0847605A169DEEC6B8EB33859537A4",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-1000\\complete-second-maintenance.db"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.793135,
+      "EndedUtc": "2026-10-25T06:42:17.2446883+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "reuse-restore-10000",
+      "StartedUtc": "2026-10-25T06:42:17.2744901+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-10000\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": 38477824,
+      "PeakWalBytes": 0,
+      "Seconds": 1.1295375,
+      "EndedUtc": "2026-10-25T06:42:18.4040848+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "inspect-10000",
+      "StartedUtc": "2026-10-25T06:42:18.7602792+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 57278464,
+      "PeakWalBytes": 0,
+      "Seconds": 6.5118071,
+      "EndedUtc": "2026-10-25T06:42:25.2721642+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "expire-10000",
+      "StartedUtc": "2026-10-25T06:42:25.2772535+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history-compact",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "D809E8FA00E591561D60AE2D83A34D5299F3E1FEDB56917F0A71DE1D746F8F7B",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000\\complete-before-expiry.db"
+      ],
+      "PeakWorkingSet": 65572864,
+      "PeakWalBytes": 9142312,
+      "Seconds": 50.9725806,
+      "EndedUtc": "2026-10-25T06:43:16.2498981+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "verify-10000",
+      "StartedUtc": "2026-10-25T06:43:16.5749531+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "verify",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-10000"
+      ],
+      "PeakWorkingSet": null,
+      "PeakWalBytes": 0,
+      "Seconds": 0.4669932,
+      "EndedUtc": "2026-10-25T06:43:17.0420208+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "NOT_OBSERVED; child exited before one-second sample"
+    },
+    {
+      "Name": "reuse-restore-604800",
+      "StartedUtc": "2026-10-25T06:43:17.0726541+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800\\data\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "PeakWorkingSet": 43458560,
+      "PeakWalBytes": 0,
+      "Seconds": 81.609583,
+      "EndedUtc": "2026-10-25T06:44:38.6823102+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "inspect-604800",
+      "StartedUtc": "2026-10-25T06:44:57.2438876+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "PeakWorkingSet": 58109952,
+      "PeakWalBytes": 0,
+      "Seconds": 451.080615,
+      "EndedUtc": "2026-10-25T06:52:28.3246015+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "expire-604800",
+      "StartedUtc": "2026-10-25T06:52:28.3295995+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "expire-history",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800\\data\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db",
+        "--sha256",
+        "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800\\complete-before-expiry.db"
+      ],
+      "PeakWorkingSet": 60436480,
+      "PeakWalBytes": 4532032,
+      "Seconds": 4721.3243221,
+      "EndedUtc": "2026-10-25T08:11:09.6541015+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    },
+    {
+      "Name": "verify-604800",
+      "StartedUtc": "2026-10-25T08:11:30.7055531+00:00",
+      "Executable": "D:\\tools\\dotnet\\dotnet.exe",
+      "Arguments": [
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\fixture\\Ipc.Application.Verification.dll",
+        "D:\\projects\\importer-pc-retention-verification",
+        "--retention-qualification",
+        "verify",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-94f8bd49d7cd4f768117480983e66d2b\\case-604800"
+      ],
+      "PeakWorkingSet": 42516480,
+      "PeakWalBytes": 0,
+      "Seconds": 43.5848887,
+      "EndedUtc": "2026-10-25T08:12:14.2996359+00:00",
+      "ExitCode": 0,
+      "PeakObservation": "Kernel peak observed while alive; one-second sampling"
+    }
+  ],
+  "MaintenanceBudgetScope": "Two hours from CLI command entry through original hashing, repository initialization, complete backup, expiry, validation, optional compact and cleanup. Cooperative cancellation; rollback and uninterruptible OS I/O may finish after the deadline. Inspection, fixture import, restore drill and business takeover are separate.",
+  "ReusedRun": {
+    "Path": "D:\\projects\\ipc-retention-full-scale-corrected-20261024\\PROTECTED-RESULT.json",
+    "Sha256": "51C7A6869D93021956AA9E5D27B752FA5C60C719FF234D7F98CF639ED1C59AC8",
+    "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+    "OriginalStatus": "FAIL"
+  },
+  "CapacityChecks": [
+    {
+      "Count": 1000,
+      "SourceBytes": 16007168,
+      "CopyFactor": 4.15,
+      "ReserveBytes": 8589934592,
+      "RequiredEstimateBytes": 8656364339,
+      "AvailableBytes": 29627645952,
+      "Basis": "Actual completed backup bytes; restore still verifies the entire manifest"
+    },
+    {
+      "Count": 10000,
+      "SourceBytes": 156348416,
+      "CopyFactor": 2.15,
+      "ReserveBytes": 8589934592,
+      "RequiredEstimateBytes": 8926083686,
+      "AvailableBytes": 29563518976,
+      "Basis": "Actual completed backup bytes; restore still verifies the entire manifest"
+    },
+    {
+      "Count": 604800,
+      "SourceBytes": 9464315904,
+      "CopyFactor": 2.15,
+      "ReserveBytes": 8589934592,
+      "RequiredEstimateBytes": 28938213786,
+      "AvailableBytes": 29398007808,
+      "Basis": "Actual completed backup bytes; restore still verifies the entire manifest"
+    },
+    {
+      "Count": 2592000,
+      "SourceBytes": 41490579456.0,
+      "CopyFactor": 2.15,
+      "ReserveBytes": 8589934592,
+      "RequiredEstimateBytes": 97794680422,
+      "AvailableBytes": 10432905216,
+      "Basis": "Previous completed fixture extrapolation"
+    }
+  ],
+  "EndedUtc": "2026-10-25T08:12:14.4052528+00:00"
+}

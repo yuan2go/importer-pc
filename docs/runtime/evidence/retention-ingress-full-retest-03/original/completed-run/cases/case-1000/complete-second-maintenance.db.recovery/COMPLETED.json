@@ -1,0 +1,10 @@
+{
+  "Application": "sportmaster",
+  "Database": "complete-second-maintenance.db",
+  "DatabaseHash": "2B045A96960CECC8A14055727100A229609124249B35D7F61AD3B0C86A21428F",
+  "Files": {
+    "configuration.json": "CC12ABF7871DF2FCFC55188511BC31821F598BE5089FF02C4EE17FB3F9DA4E05"
+  },
+  "At": "2026-10-25T06:42:17.1731316+00:00",
+  "Recovery": "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges"
+}

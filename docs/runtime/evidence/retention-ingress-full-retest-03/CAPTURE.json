@@ -1,8 +1,11 @@
 {
   "ProductSourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
   "Root": "D:\\projects\\ipc-retention-ingress-full-retest-20261025",
-  "Files": 39,
-  "CaptureScope": "Closed preliminary outputs only; active protected run outputs excluded until terminal state",
+  "Files": 125,
+  "CaptureScope": "42 earlier closed originals plus terminal protected run, independent reconciliation and passive observations; append only",
   "OriginalFailureSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
-  "DatabasesOrBinariesCopied": false
+  "DatabasesOrBinariesCopied": false,
+  "TerminalStatus": "PARTIAL_WITH_RECORDED_GAPS",
+  "EndedUtc": "2026-10-25T08:12:14.4052528+00:00",
+  "CapturedUtc": "2026-10-25T08:18:54.601852+00:00"
 }

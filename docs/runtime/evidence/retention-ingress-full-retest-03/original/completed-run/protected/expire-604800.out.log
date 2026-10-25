@@ -1,0 +1,9 @@
+{
+  "Run": "914003189e4a4af9b2acda27e81d70f3",
+  "Days": 7,
+  "Cutoff": "2026-10-18T07:16:43.7479267+00:00",
+  "Operations": 604800,
+  "Inputs": 604800,
+  "BackupHash": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "ReusableBytes": 8908759040
+}

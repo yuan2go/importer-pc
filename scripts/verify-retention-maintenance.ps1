@@ -122,8 +122,8 @@ try {
    $created=Invoke-Observed ('reuse-restore-'+$count) $cliExe @('--action','restore','--file',$sourceBackup,'--destination',$reuseTarget)
    if($created.ExitCode -ne 0){throw "Full original backup restore failed: $count"}
    $reusedDatabase=Join-Path $reuseTarget 'sportmaster.db'
-   $sourceFixture | Add-Member -NotePropertyName ReusedFromBackup -NotePropertyValue $sourceBackup
-   $sourceFixture | Add-Member -NotePropertyName PriorFixtureSha256 -NotePropertyValue (Get-FileHash -LiteralPath (Join-Path $priorCase 'FIXTURE.json')).Hash
+   $sourceFixture | Add-Member -NotePropertyName ReusedFromBackup -NotePropertyValue $sourceBackup -Force
+   $sourceFixture | Add-Member -NotePropertyName PriorFixtureSha256 -NotePropertyValue (Get-FileHash -LiteralPath (Join-Path $priorCase 'FIXTURE.json')).Hash -Force
    $sourceFixture.Database=$reusedDatabase
    $sourceFixture.DatabaseSha256=(Get-FileHash -LiteralPath $reusedDatabase).Hash
    $sourceFixture.DatabaseBytes=(Get-Item -LiteralPath $reusedDatabase).Length

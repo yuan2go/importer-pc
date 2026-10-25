@@ -1,0 +1,89 @@
+{
+  "Head": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "RunId": 40169796169,
+  "Scope": "Intermediate integration CI only; capacity-helper/archive follow-up and terminal protected scale results require final HEAD checks",
+  "IdentityLines": [
+    "2026-10-25T06:38:43.3306296Z HEAD is now at 96cb528 Merge b83998f18c56df2dd965630b25908feedc00a56f into 404e85523550203bf02dd90e666fa0305b1d5ed0",
+    "2026-10-25T06:39:36.1287428Z \u001b[36;1mif ($release.SourceCommit -ne '96cb5289da688f27d0a54868538a36883aadaf35') { throw 'Frozen PR release differs from the checked merge commit' }\u001b[0m",
+    "2026-10-25T06:45:49.8498960Z \u001b[36;1mif ($receipt.SourceCommit -ne '96cb5289da688f27d0a54868538a36883aadaf35' -or $receipt.Payload.SourceCommit -ne '96cb5289da688f27d0a54868538a36883aadaf35') { throw 'Installer source differs from checked medium' }\u001b[0m",
+    "2026-10-25T06:46:44.5252682Z {\"Installer\": \"C:\\\\scd-installer\\\\CainiaoSupplyStation_SM_Setup_v1.12.2_win-x64.exe\", \"Sha256\": \"155ad895f883d70ac21bc00ae48010523a6395606240949f9055478db343a31d\", \"SourceCommit\": \"96cb5289da688f27d0a54868538a36883aadaf35\", \"Payload\": {\"ApplicationId\": \"sportmaster\", \"SourceCommit\": \"96cb5289da688f27d0a54868538a36883aadaf35\", \"SourceBranch\": \"codex/ci-sportmaster-40169796169\", \"BusinessModuleShortName\": \"SM\", \"BusinessVersion\": \"1.12.2\", \"Sha256\": \"5ac6982d31a4db052697d486a5dcad54e9f58fe9faf9289f88345ed78057e967\", \"ZipBytes\": 134324632, \"UnpackedBytes\": 276468916, \"FileCount\": 752}, \"DeliveryFiles\": 1, \"Authenticode\": \"NOT_SIGNED\", \"ActualWindowsInstallation\": \"NOT_RUN\"}"
+  ],
+  "Installer": {
+    "Installer": "C:\\scd-installer\\CainiaoSupplyStation_SM_Setup_v1.12.2_win-x64.exe",
+    "Sha256": "155ad895f883d70ac21bc00ae48010523a6395606240949f9055478db343a31d",
+    "SourceCommit": "96cb5289da688f27d0a54868538a36883aadaf35",
+    "Payload": {
+      "ApplicationId": "sportmaster",
+      "SourceCommit": "96cb5289da688f27d0a54868538a36883aadaf35",
+      "SourceBranch": "codex/ci-sportmaster-40169796169",
+      "BusinessModuleShortName": "SM",
+      "BusinessVersion": "1.12.2",
+      "Sha256": "5ac6982d31a4db052697d486a5dcad54e9f58fe9faf9289f88345ed78057e967",
+      "ZipBytes": 134324632,
+      "UnpackedBytes": 276468916,
+      "FileCount": 752
+    },
+    "DeliveryFiles": 1,
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "Artifacts": [
+    {
+      "id": 12589524001,
+      "name": "aqa01-boundaries-96cb5289da688f27d0a54868538a36883aadaf35",
+      "size_in_bytes": 11489,
+      "url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589524001",
+      "archive_download_url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589524001/zip",
+      "expired": false,
+      "created_at": "2026-10-25T06:40:14Z",
+      "expires_at": "2026-11-24T06:40:13Z",
+      "updated_at": "2026-10-25T06:40:14Z",
+      "digest": "sha256:964b8fae52d6feb391b9b48b41936c05b797954d60bede52ba0897bbf99591ed",
+      "workflow_run": {
+        "id": 40169796169,
+        "repository_id": 1421087986,
+        "head_repository_id": 1421087986,
+        "head_branch": "codex/retention-ingress-pagination-02",
+        "head_sha": "b83998f18c56df2dd965630b25908feedc00a56f"
+      }
+    },
+    {
+      "id": 12589388064,
+      "name": "sportmaster-installable-96cb5289da688f27d0a54868538a36883aadaf35",
+      "size_in_bytes": 373181014,
+      "url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589388064",
+      "archive_download_url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589388064/zip",
+      "expired": false,
+      "created_at": "2026-10-25T06:46:47Z",
+      "expires_at": "2026-11-24T06:46:44Z",
+      "updated_at": "2026-10-25T06:46:47Z",
+      "digest": "sha256:c96ed39746fc9b3b515318182c736714784c307dd691d237b7ef8ca7571d5efa",
+      "workflow_run": {
+        "id": 40169796169,
+        "repository_id": 1421087986,
+        "head_repository_id": 1421087986,
+        "head_branch": "codex/retention-ingress-pagination-02",
+        "head_sha": "b83998f18c56df2dd965630b25908feedc00a56f"
+      }
+    },
+    {
+      "id": 12589088520,
+      "name": "sportmaster-evidence-96cb5289da688f27d0a54868538a36883aadaf35",
+      "size_in_bytes": 48207098,
+      "url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589088520",
+      "archive_download_url": "https://api.github.com/repos/yuan2go/importer-pc/actions/artifacts/12589088520/zip",
+      "expired": false,
+      "created_at": "2026-10-25T06:46:51Z",
+      "expires_at": "2026-11-24T06:46:48Z",
+      "updated_at": "2026-10-25T06:46:51Z",
+      "digest": "sha256:0dfe031c03f66648fa911e0773a2c09c5b8c383820f15a655c7367e7eab7c890",
+      "workflow_run": {
+        "id": 40169796169,
+        "repository_id": 1421087986,
+        "head_repository_id": 1421087986,
+        "head_branch": "codex/retention-ingress-pagination-02",
+        "head_sha": "b83998f18c56df2dd965630b25908feedc00a56f"
+      }
+    }
+  ]
+}

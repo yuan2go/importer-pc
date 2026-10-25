@@ -1,0 +1,14 @@
+{
+  "Status": "FAIL_RETAINED_PRIVATELY",
+  "OriginalSha256": "8ae3c99a9862aeac7e8fcf5fb2b0c235b173b58acb2bb006498b9218aadcb39a",
+  "OriginalBytes": 5611,
+  "Facts": [
+    "Initial local preference save failed because the protected installation had no personal preference parent directory",
+    "The first fixture cleanup attempted to delete a nonexistent file path and masked the initial failure"
+  ],
+  "Resolution": [
+    "Installation provisions the separate personal preference parent without granting write access to program or machine configuration directories",
+    "Native fixture cleanup checks file existence; frozen native verification uses an internal isolated preference root"
+  ],
+  "DisclosureBoundary": "Raw development log contains a local Windows account-directory identifier and is retained on drive D outside the repository; the current public tree retains these generic synthetic reproduction facts only"
+}

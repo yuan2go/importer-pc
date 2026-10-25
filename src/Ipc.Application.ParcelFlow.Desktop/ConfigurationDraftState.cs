@@ -18,7 +18,7 @@ public partial class ParcelViewModel
     });
     static object DraftSignature(CapabilityDraft draft) => new
     {
-        draft.Kind, draft.Role, draft.Provider, draft.Enabled, draft.Bound, draft.InstanceId, draft.Target, draft.Contract,
+        draft.Kind, draft.Role, draft.Provider, draft.Enabled, draft.Bound, draft.ConfigureLater, draft.InstanceId, draft.Target, draft.Contract,
         Parameters = draft.Parameters.Select(x => new { x.Field.Key, x.Value })
     };
     public bool HasUnsavedConfiguration => configurationAuthority switch

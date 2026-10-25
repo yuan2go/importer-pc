@@ -80,7 +80,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         var frozen = request.IntegrationRequest ?? throw new InvalidDataException("Persist the RCS wire intent before delivery");
         if (frozen.RequestId <= options.RequestIdBase || frozen.ContentType != "application/json" ||
             Wire.Hash(frozen.Body) != frozen.BodyHash || Encoding.UTF8.GetByteCount(frozen.Body) > 65536 ||
-            PrepareRequest(request, frozen.RequestId - options.RequestIdBase) != frozen)
+            (PrepareRequest(request, frozen.RequestId - options.RequestIdBase) != frozen &&
+             (options.LegacyQuantity is null || RcsDestinationProtocol.Prepare(options, request, frozen.RequestId - options.RequestIdBase, verifyLegacyIntent: true) != frozen)))
             throw new InvalidDataException("RCS frozen wire intent differs from original payload/configuration");
         lock (lifecycle)
         {

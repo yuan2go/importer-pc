@@ -113,7 +113,7 @@ static partial class Program
         Check(vm.ParameterEditor.Issues.Any(i => i.Path == "QueueCapacity"), "complete validation retains the real invalid queue field");
         control.ShowReview();
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("输入队列容量") && !text.Text.Contains("QueueCapacity"));
+        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("扫码消息缓冲上限") && !text.Text.Contains("QueueCapacity"));
         Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");

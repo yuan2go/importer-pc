@@ -1,3 +1,5 @@
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+
 ﻿> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
 
 > 2026-10-21 后续纠偏：[STARTUP-UX-03](../design/startup-experience-03.md)替代上一轮折叠式安装/首配操作；[实施及边界](../runtime/startup-experience-03.md)。用户确认所有Windows用户共享供包台、TCP客户端按换行收码。新证据不倒写PS-00～05、D/RV或旧SourceCommit。

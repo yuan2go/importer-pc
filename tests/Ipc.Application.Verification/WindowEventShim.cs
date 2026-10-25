@@ -91,6 +91,9 @@ namespace System.Windows.Threading
 }
 namespace Ipc.Application.ParcelFlow.Desktop
 {
+    // This cross-platform fixture tests close ownership only. Window modes are
+    // exercised against real HWNDs by Ipc.Desktop.UiVerification --parameter-guidance-startup.
+    public static class WindowOpeningPreference { public static void Attach(System.Windows.Window window, string application, Action<string> report) { } }
     public static class ConfigurationCloseGuard
     {
         public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page) => vm.HasUnsavedConfiguration;

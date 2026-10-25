@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": 1,
+  "Product": "CainiaoSupplyStation",
+  "ApplicationId": "sportmaster",
+  "BusinessModuleShortName": "SM",
+  "BusinessVersion": "1.12.3",
+  "Target": "win-x64",
+  "SourceBranch": "codex/parameter-guidance-startup-01",
+  "SourceCommit": "7d7487a571353f57aeaf01f14425760a737330b0",
+  "SourceBranchVerified": true,
+  "SourceCommitUtc": "2026-10-25T10:17:27+00:00",
+  "PackagedUtc": "2026-10-25T10:17:30+00:00",
+  "SourceRepository": "https://github.com/yuan2go/importer-pc",
+  "FrozenGitExport": true
+}

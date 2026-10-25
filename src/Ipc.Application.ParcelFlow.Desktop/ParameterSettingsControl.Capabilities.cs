@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -56,6 +57,12 @@ public sealed partial class ParameterSettingsControl
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
+        if (Model?.ApplicationId == "sportmaster" && (draft.Kind == "observation" || ParameterOwnership.IsRcs(draft)))
+        {
+            var deferred = new CheckBox { Content = "稍后配置此连接", MinHeight = 40 };
+            deferred.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(CapabilityDraft.ConfigureLater)) { Source = draft, Mode = BindingMode.TwoWay });
+            Field(Form(page), "配置状态", deferred, "勾选后可先进入软件；此连接不启动，相关作业保持阻断。填写完成后取消勾选，保存并重启以启用连接。", draft.InstanceId + "/ConfigureLater", page);
+        }
         RuntimeSummary(page, draft);
         if (draft.Role == "default-scale")
         {
@@ -93,6 +100,7 @@ public sealed partial class ParameterSettingsControl
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
+            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line" && p.Field.Key == "entity.mode") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "code.encoding" || p.Field.Key == "entity.mode" && draft.Provider.Implementation != "tcp-line")) advanced.Add(p);
@@ -100,6 +108,8 @@ public sealed partial class ParameterSettingsControl
         }
         if (draft.Kind == "observation")
         {
+            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line")
+                page.Body.Children.Add(Text("正常作业时，相机扫描一个包裹得到一个条码，软件据此向RCS获取分拣信息。无需选择包裹关联方式。保存时将按此流程核对旧的仅观察设置。"));
             var codes = draft.Parameters.Where(p => p.Field.Key == "bcr-code").ToArray();
             var mappings = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == draft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).ToArray();
             if (codes.Length + mappings.Length > 0)
@@ -120,7 +130,7 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "区域标识", "project-id" => "项目标识", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "quantity" => "每次请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
+        "zone-id" => "仓ID", "project-id" => "生产线ID", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "specified-chute" => "指定格口", "chute-code" => "格口编号",
         "left-bcr-code" or "right-bcr-code" => "取格口相机编码", "bcr-code" => "心跳相机编码", "heartbeat-interval-seconds" => "心跳间隔",
         "request-id-base" => "编号起点（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
         "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
@@ -129,17 +139,26 @@ public sealed partial class ParameterSettingsControl
     {
         "subjects" => "模拟认证允许的账号；不会创建 Windows 账号。现场使用实际安装的认证服务。",
         "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
-        "zone-id" or "project-id" => "填写上游分配的正整数标识。", "quantity" => "1～2147483647；与上游响应数量分别保留。",
+        "zone-id" => "填写RCS分配给当前仓库的ID，用于确定格口请求所属仓库。",
+        "project-id" => "填写RCS分配给当前生产线的ID，用于确定格口请求所属生产线。",
         "bcr-code" => "心跳上报使用，左右相机不得重复。", "left-bcr-code" or "right-bcr-code" => "本位取格口请求使用；与心跳编码分别配置。",
         "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "填写时同时核对网络地址和序列号。",
-        "entity.mode" => "仅观察不创建作业；触发关联仍需真实部署资格。", "queue.capacity" => "1～1024；溢出后需检查并显式重连。",
-        "heartbeat-interval-seconds" => "1～3600 秒；重启后应用。", "specified-chute" => "指定时须填写格口编码。", "chute-code" => "仅指定格口时使用。",
-        "request-id-base" => "大于或等于 0；保留原持久编号责任。", "request-id-count" => "大于或等于 1；与起点合计不能溢出。",
+        "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
+        "entity.mode" => "仅观察只显示扫码信息，不创建作业；确认相机报文与包裹一一对应后，才可使用关联模式。", "queue.capacity" => "相机读码消息的缓冲上限；溢出后停止接收，须检查并显式重连。",
+        "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
+        "heartbeat-interval-seconds" => "向RCS报告供包台及相机在线状态的间隔；范围1～3600秒，保存并重启后生效。",
+        "specified-chute" => "不指定时由RCS分配格口；只有现场业务要求固定格口时才选择指定，并填写格口编号。",
+        "chute-code" => "请求RCS使用的目标格口编号；仅选择指定格口时发送，最终结果仍以RCS回包为准。",
+        "source" => "RCS约定的请求来源标记；用于识别调用方，不是服务地址或供包台编号。",
+        "locale" => "RCS协议约定的语言标记；填写接口合同要求的值，不改变本软件界面语言。",
+        "request-id-base" => "RCS分配给本供包台的请求编号起点（不含）；新请求从下一编号开始，不能与其他供包台区间重叠。",
+        "request-id-count" => "本供包台可使用的请求编号数量；用尽后阻止新请求，须分配新区间，不能重置旧编号重复使用。",
         _ => p.EditorHelp.Length > 100 ? "完整规则见下方参数说明。" : p.EditorHelp
     };
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
+        if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
         var required = p.Field.Required || p.Field.Key == "bcr-code" && Model!.Components.Any(ParameterOwnership.IsRcs) || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
         var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
@@ -168,8 +187,11 @@ public sealed partial class ParameterSettingsControl
             var box = Input(form, label, p, "Value", path, page, help, p.IsList); box.MaxLength = p.EditorMaximumLength; box.IsReadOnly = p.Field.ReadOnly; if (p.Field.Type == "integer") box.MaxWidth = 240;
         }
         locations[path] = locations[path] with { Help = p.EditorHelp + " " + help };
+        var accessibleHelp = help == p.EditorHelp ? help : help + "\n填写限制：" + p.EditorHelp;
+        AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
+        locations[path].Control.ToolTip = accessibleHelp;
         locations[path].Control.IsEnabled = !p.Field.ReadOnly && ParameterOwnership.Applicable(draft, p.Field.Key);
-        Technical(page, ParameterLabel(p), path, p.EditorHelp);
+        Technical(page, ParameterLabel(p), path, help + "\n填写限制：" + p.EditorHelp);
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code")
         {
             var field = locations[path].Control;

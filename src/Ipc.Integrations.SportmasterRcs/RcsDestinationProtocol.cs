@@ -9,7 +9,7 @@ internal static class RcsDestinationProtocol
     internal const string Command = "sorter.task.dest_request";
     internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-    internal static PreparedIntegrationRequest Prepare(RcsTaskOptions options, FrozenRequest request, long sequence)
+    internal static PreparedIntegrationRequest Prepare(RcsTaskOptions options, FrozenRequest request, long sequence, bool verifyLegacyIntent = false)
     {
         options.ValidateOriginal(request);
         if (sequence <= 0 || sequence > options.RequestIdCount) throw new InvalidDataException("RCS request-id range exhausted; allocate a new disjoint range through controlled configuration");
@@ -22,7 +22,7 @@ internal static class RcsDestinationProtocol
             data = new[] { new { index = 1, command = Command, @params = new {
                 zoneId = options.ZoneId, projectId = options.ProjectId, loadCode = payload.ParcelCode,
                 stationCode = position.Station, bcrCode = position.Bcr, specifiedChute = options.SpecifiedChute,
-                chuteCode = options.ChuteCode, quantity = options.Quantity
+                chuteCode = options.ChuteCode, quantity = verifyLegacyIntent ? options.LegacyQuantity ?? 1 : 1
             } } }
         }, Json);
         return new(requestId, "application/json", body, Wire.Hash(body));

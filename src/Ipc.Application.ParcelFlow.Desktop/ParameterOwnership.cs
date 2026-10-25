@@ -11,7 +11,7 @@ public static class ParameterOwnership
     public static int Category(CapabilityDraft draft, string key) => IsDriver(draft) ? 2 : !IsRcs(draft) ? 3 : key switch
     {
         "zone-id" or "project-id" or "left-station-code" or "right-station-code" => 0,
-        "quantity" or "specified-chute" or "chute-code" => 1,
+        "specified-chute" or "chute-code" => 1,
         "left-bcr-code" or "right-bcr-code" => 2,
         _ => 3
     };
@@ -27,25 +27,27 @@ public static class ParameterOwnership
 public sealed class CommonStationParameter : INotifyPropertyChanged, IDisposable
 {
     readonly CapabilityParameter left, right;
+    readonly ConfigurationPolicyDraft? policy;
     bool editing;
-    public CommonStationParameter(CapabilityParameter left, CapabilityParameter right)
+    public CommonStationParameter(CapabilityParameter left, CapabilityParameter right, ConfigurationPolicyDraft? policy = null)
     {
-        this.left = left; this.right = right;
-        OriginalValues = "读取时左站码：" + left.Value + "；右站码：" + right.Value;
+        this.left = left; this.right = right; this.policy = policy;
+        OriginalValues = "读取时左取格口编号：" + left.Value + "；右取格口编号：" + right.Value + (policy is null ? "" : "；心跳编号：" + policy.StationCode);
         left.PropertyChanged += UnderlyingChanged; right.PropertyChanged += UnderlyingChanged;
+        if (policy is not null) policy.PropertyChanged += UnderlyingChanged;
     }
     public event PropertyChangedEventHandler? PropertyChanged;
     public string OriginalValues { get; }
     void UnderlyingChanged(object? sender, PropertyChangedEventArgs e)
-    { if (!editing && e.PropertyName == nameof(CapabilityParameter.Value)) PropertyChanged?.Invoke(this, new(nameof(Value))); }
-    public void Dispose() { left.PropertyChanged -= UnderlyingChanged; right.PropertyChanged -= UnderlyingChanged; }
+    { if (!editing && e.PropertyName is nameof(CapabilityParameter.Value) or nameof(ConfigurationPolicyDraft.StationCode)) PropertyChanged?.Invoke(this, new(nameof(Value))); }
+    public void Dispose() { left.PropertyChanged -= UnderlyingChanged; right.PropertyChanged -= UnderlyingChanged; if (policy is not null) policy.PropertyChanged -= UnderlyingChanged; }
     public string Value
     {
-        get => left.Value == right.Value ? left.Value : "";
+        get => left.Value == right.Value && (policy is null || left.Value == policy.StationCode) ? left.Value : "";
         set
         {
             editing = true;
-            try { left.Value = value; right.Value = value; }
+            try { left.Value = value; right.Value = value; if (policy is not null) policy.StationCode = value; }
             finally { editing = false; }
             PropertyChanged?.Invoke(this, new(nameof(Value)));
         }

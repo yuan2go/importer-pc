@@ -11,9 +11,9 @@ public static class ChineseInterfaceText
     {
         "BarcodePattern" or "BarcodeFilter.Pattern" => "条码筛选规则", "BarcodeExclusionPattern" or "BarcodeFilter.ExclusionPattern" => "条码排除规则",
         "decision" => "模拟业务结果", "reply-mode" => "模拟回执方式", "complete-on-query" => "查询时报告完成",
-        "queue" or "QueueCapacity" => "输入队列容量", "timeout" or "TimeoutMs" => "调用超时", "operations" or "MaximumOperations" => "作业容量",
+        "queue" or "QueueCapacity" => "扫码消息缓冲上限", "timeout" or "TimeoutMs" => "外部服务等待时间", "operations" or "MaximumOperations" => "待处理作业上限",
         "resident" or "ResidentHistory" => "常驻记录条数", "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
-        "StationCode" => "心跳供包台编码", "DiagnosticLogDays" => "诊断日志保留天数", "HistoryDays" => "已结历史保留天数", "SessionLifetimeMs" => "登录会话时长",
+        "StationCode" => "供包台编号", "DiagnosticLogDays" => "诊断日志保留天数", "HistoryDays" => "已结数据保留天数", "SessionLifetimeMs" => "登录会话时长",
         "WeightRange.MinimumWeight" or "MinimumWeight" => "包裹重量下限", "WeightRange.MaximumWeight" or "MaximumWeight" => "包裹重量上限",
         "DisplayNameDraft" => "站点显示名称", "TargetEfficiencyDraft" => "目标效率",
         "MaximumAgeMs" => "测量新鲜度", "WaitTimeoutMs" => "测量等待期限", "Precision" => "重量精度",
@@ -22,8 +22,8 @@ public static class ChineseInterfaceText
         "BackupEnabled" => "自动备份", "BackupDirectory" => "备份目录", "BackupIntervalMinutes" => "备份间隔", "BackupMaximumSets" => "备份保留份数",
         "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "entity.mode" => "实体关联方式", "queue.capacity" => "驱动队列容量",
         "quantity" => "请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码",
-        "zone-id" => "区域编号", "project-id" => "项目编号", "request-id-base" => "请求编号起点", "request-id-count" => "请求编号数量",
-        "left-station-code" or "right-station-code" => "取格口供包台编码", "left-bcr-code" or "right-bcr-code" => "取格口相机编码", "bcr-code" => "心跳相机编码",
+        "zone-id" => "仓ID", "project-id" => "生产线ID", "request-id-base" => "请求编号起点", "request-id-count" => "请求编号数量",
+        "left-station-code" or "right-station-code" => "供包台编号", "left-bcr-code" or "right-bcr-code" => "取格口相机编码", "bcr-code" => "心跳相机编码",
         "source" => "协议来源", "locale" => "协议语言", "endpoint" => "服务地址", "subjects" => "允许登录的账号", "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
     };

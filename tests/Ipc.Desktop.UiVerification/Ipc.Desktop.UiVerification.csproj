@@ -4,6 +4,7 @@
  <ItemGroup><Compile Include="../Ipc.Application.Verification/CommercialProductization.cs" Link="CommercialProductization.cs"/><Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="DesktopLaunchOptions.cs"/></ItemGroup>
  <ItemGroup><Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/><Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/></ItemGroup>
 <ItemGroup>
+ <Compile Include="../../src/Ipc.Assembly/DeferredConnectionPorts.cs" Link="DeferredConnectionPorts.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs" Link="BuiltInRcs/SportmasterRcsTaskService.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>

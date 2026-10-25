@@ -1,0 +1,20 @@
+{
+  "SourceCommit": "7d7487a571353f57aeaf01f14425760a737330b0",
+  "BusinessVersion": "1.12.3",
+  "ApplicationContractsVersion": "1.18.0",
+  "Package": "media.zip",
+  "Bytes": 134218886,
+  "Sha256": "c3d742bc178d79ee00ca750f132fa80ab8477a486741d7d184c1046c939db1e8",
+  "LocalPackage": "D:/projects/importer-pc/.artifacts/parameter-guidance-startup-01/media.zip",
+  "InventoryVerified": true,
+  "FrozenNativeResult": "PASS",
+  "FixtureMatchesMedium": true,
+  "PublishedDesktopEnvironmentStartupExitCode": 0,
+  "Scope": "Reference win-x64 publication; actual HWND with explicitly deferred synthetic connections; not installed production or equipment acceptance",
+  "NotRun": [
+    "local protected installation/UAC",
+    "actual system DPI 100%",
+    "target IPC/touch",
+    "real SDK/RCS and field acceptance"
+  ]
+}

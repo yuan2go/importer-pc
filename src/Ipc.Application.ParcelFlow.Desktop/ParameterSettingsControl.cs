@@ -35,6 +35,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         public StackPanel Body { get; } = body;
         public ScrollViewer Scroll { get; } = scroll;
         public StackPanel Technical { get; } = technical;
+        public Expander? Details { get; set; }
         public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string GroupTitle => Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category);
@@ -211,6 +212,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         }
         var error = Text(""); error.Foreground = Brush("#B42318"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; value.Children.Add(error);
         form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "", Row: field);
+        var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
+        if (draft is not null && path != draft.InstanceId + "/ConfigureLater" && !path.EndsWith("-station-code", StringComparison.Ordinal))
+        {
+            void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
+            PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.ConfigureLater)) RefreshRequirement(); };
+            draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
+        }
         field.SizeChanged += (_, _) =>
         {
             var compact = field.ActualWidth < 500;
@@ -229,6 +237,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (control is TextBox text) text.TextChanged += (_, _) => Edited();
         else if (control is PasswordBox password) password.PasswordChanged += (_, _) => Edited();
         else if (control is ComboBox choice) choice.SelectionChanged += (_, _) => Edited();
+        else if (control is CheckBox toggle) { toggle.Checked += (_, _) => Edited(); toggle.Unchecked += (_, _) => Edited(); }
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {
@@ -254,7 +263,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Technical(ObjectPage page, string label, string path, string? detail = null)
     {
-        var text = new TextBox { IsReadOnly = true, Text = label + " · " + path + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
+        var text = new TextBox { IsReadOnly = true, Text = label + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
             TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Margin = new(0, 0, 0, 10), Padding = new(0), MinHeight = 28, FontSize = UiTypography.Label };
         page.Technical.Children.Add(text);
         if (!locations.ContainsKey(path))
@@ -279,7 +288,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var page in pages)
         {
             page.Technical.Children.Add(page.Diagnostic);
-            if (page.Technical.Children.Count > 0) page.Body.Children.Add(new Expander { Header = "参数说明与诊断详情", Content = page.Technical, Margin = new(0, 16, 0, 0), Padding = new(0, 8, 0, 0) });
+            page.Details = new Expander { Header = "参数说明与诊断详情", Content = page.Technical, Margin = new(0, 16, 0, 0), Padding = new(0, 8, 0, 0) };
+            page.Body.Children.Add(page.Details);
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
         foreach (var draft in m.Readers.Concat(m.Components))
@@ -319,6 +329,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         }
         foreach (var page in pages)
         {
+            if (page.Details is not null) page.Details.Visibility = page.Technical.Children.Count > 1 || page.Diagnostic.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
             var count = (Model?.Issues ?? []).Count(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
             page.Summary.Text = page.Category == 4 ? errors.Children.Count == 0 ? "当前没有字段错误；正式保存仍需核对完整配置。" : "有 " + errors.Children.Count + " 项需要修改" : "有 " + count + " 项需要修改";
             page.Summary.Visibility = count > 0 || page.Category == 4 && errors.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;

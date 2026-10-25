@@ -45,14 +45,14 @@ static partial class Program
         rightIp.Value = "0.0.0.0"; await Flush();
         Check(model.Issues.Single(i => i.Path == right.InstanceId + "/device.ip").Rule == "ipv4-address", "syntactically valid unspecified address has a distinct business-address rule");
         rightIp.Value = savedRight; await Flush();
-        var quantity = Value(rcs, "quantity"); var specified = Value(rcs, "specified-chute"); var chute = Value(rcs, "chute-code");
-        var oldQuantity = quantity.Value; var oldSpecified = specified.Value; var oldChute = chute.Value;
-        quantity.Value = ""; specified.Value = ""; await Flush();
+        var specified = Value(rcs, "specified-chute"); var chute = Value(rcs, "chute-code");
+        var oldSpecified = specified.Value; var oldChute = chute.Value;
+        specified.Value = ""; await Flush();
         editor.ShowPage(1, "格口请求"); await Flush();
-        Check(model.Issues.Any(i => i.Path == rcs.InstanceId + "/quantity") && model.Issues.Any(i => i.Path == rcs.InstanceId + "/specified-chute"), "unknown specified-chute remains different from explicit false");
+        Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && model.Issues.Any(i => i.Path == rcs.InstanceId + "/specified-chute"), "quantity is fixed policy while unknown specified-chute remains different from explicit false");
         Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains(": required") || t.Text.Contains(": invalid value"))), "field errors expose Chinese rather than schema diagnostics");
         Capture("refine-chute-errors");
-        quantity.Value = oldQuantity; specified.Value = "true"; chute.Value = "SYNTHETIC-CHUTE"; await Flush();
+        specified.Value = "true"; chute.Value = "SYNTHETIC-CHUTE"; await Flush();
         Check(Box(rcs.InstanceId + "/chute-code").IsVisible, "specified chute reveals its real conditional field");
         specified.Value = "false"; await Flush();
         Check(!Box(rcs.InstanceId + "/chute-code").IsVisible && !editor.NavigateTo(rcs.InstanceId + "/chute-code") && chute.Value == "SYNTHETIC-CHUTE" && model.Issues.All(i => i.Path != rcs.InstanceId + "/chute-code"), "disabling specified chute retains process input without validating or navigating to an inapplicable field");
@@ -68,7 +68,7 @@ static partial class Program
         rightAction.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
         Check(Box(right.InstanceId + "/device.ip").IsKeyboardFocused && editor.SelectedCategory == 2, "review action focuses the right camera, never the left instance");
         zone.Value = savedZone; rightIp.Value = savedRight; rcs.Target = savedTarget; model.Policy.QueueCapacity = "64"; model.ValidateFields();
-        foreach (var (category, title, filename) in new[] { (1, "条码筛选", "barcode"), (1, "处理参数", "processing"), (0, "供包台标识", "station"), (0, "数据与记录", "data"), (3, "RCS 服务", "rcs") })
+        foreach (var (category, title, filename) in new[] { (1, "条码筛选", "barcode"), (1, "接收与等待限制", "processing"), (0, "供包台标识", "station"), (0, "数据与记录", "data"), (3, "RCS 服务", "rcs") })
         {
             Check(editor.ShowPage(category, title), "shared directory exposes " + title); await Flush(); Capture("refine-" + filename);
             var mainScrolls = Descendants(editor).OfType<ScrollViewer>().Where(s => s.IsVisible && s.Content is StackPanel && s.HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled).ToArray();

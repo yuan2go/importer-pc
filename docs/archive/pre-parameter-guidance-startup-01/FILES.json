@@ -1,0 +1,18 @@
+[
+  {
+    "path": "AGENTS.md",
+    "sha256": "8fc7b54de56425fa090c820f004292fb05b09c30fe30e64d2860d6defe60c73a"
+  },
+  {
+    "path": "docs/design/parameter-settings-experience-02.md",
+    "sha256": "0ddd574daf219ab7f583c368d5b0f6e7f73954e1b9c2804763775de52c40e46b"
+  },
+  {
+    "path": "docs/runtime/parameter-ui-refine-01.md",
+    "sha256": "2eddc716a27a55b47cd9840816658827717307fe903278a7f397d80619f17302"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md",
+    "sha256": "d20ced99bcd5f10eb76c30713d1d164588931ad993ad81fde772c615deaaf9c0"
+  }
+]

@@ -1,0 +1,70 @@
+PASS READER-CATALOG startup and runtime resolve the installed built-in TCP version 1.0.1
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for left
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for right
+PASS READER-CATALOG startup and runtime resolve the installed built-in TCP version 1.0.1
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for left
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for right
+PASS READER-CATALOG startup and runtime resolve the installed built-in TCP version 9.8.7
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for left
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for right
+PASS READER-CATALOG startup and runtime resolve the installed built-in TCP version 9.8.7
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for left
+PASS READER-CATALOG device, position, endpoint and observation-only mode survive catalog resolution for right
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible TCP provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG manual readers retain their field-free contract
+PASS READER-CATALOG extension readers resolve their exact pinned package
+PASS READER-CATALOG another extension version cannot replace the pinned reader
+PASS READER-CATALOG model construction never mutates original configuration bytes
+PASS STARTUP02 equivalent numeric TCP ports with different reader names cannot acquire separate physical leases
+PASS STARTUP02 physical TCP endpoint can be acquired only after the original lease releases
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP framing preserves split UTF8, CRLF and multiple coalesced lines
+PASS STARTUP02 same-code lines retain separate entities and the application-registered epoch
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP disconnection faults the source without automatic reconnect or replay
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 observe-only TCP cannot invent an entity admission boundary
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP overflow is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP invalid-utf8 is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 first configuration has one shared directory without an outer tab bar
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+FAIL System.InvalidOperationException: identical missing-IP errors retain both camera instances
+   at Program.<>c__DisplayClass20_0.<VerifyParameterUiRefinement>g__Check|0(Boolean ok, String reason) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterUiRefinement.cs:line 18
+   at Program.VerifyParameterUiRefinement(Window window, ParameterSettingsControl editor, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterUiRefinement.cs:line 36
+   at Program.VerifyStartupExperience(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\StartupExperience.cs:line 32
+   at Program.<>c__DisplayClass22_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 51

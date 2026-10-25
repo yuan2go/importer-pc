@@ -31,6 +31,9 @@ def main():
         raise ValueError('Use an explicit schema3 Sportmaster configuration')
     if not isinstance(parameters, dict) or any(not isinstance(v, str) for v in parameters.values()):
         raise ValueError('Provider parameter values must be strings; installed schema preflight is still required')
+    # Old installed schemas may require this key; it is never a user quantity choice.
+    if 'quantity' in parameters:
+        parameters['quantity'] = '1'
     base['Wcs'] = dict(Kind='integration', Implementation='extension:' + package['Id'] + '/sportmaster-rcs-task',
                        Version=package['Version'], InstanceId=base['Wcs']['InstanceId'], Target=args.target,
                        Contract='SPORTMASTER-RCS-SORTER-v1', Parameters=parameters, Package=package, Module='sportmaster-rcs-task', Enabled=True)

@@ -48,7 +48,11 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelBackupSchedule? BackupSchedule = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? StationCode = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterPolicy? BarcodeFilter = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelWeightRange? WeightRange = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelWeightRange? WeightRange = null)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string[]? DeferredConnections { get; init; }
+}
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);

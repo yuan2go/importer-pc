@@ -6,6 +6,7 @@
  <Compile Include="../../src/Ipc.Assembly/DeploymentComponentReview.cs" Link="DeploymentComponentReview.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
+ <Compile Include="../../src/Ipc.Assembly/DeferredConnectionPorts.cs" Link="DeferredConnectionPorts.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DispatcherProgressMonitor.cs" Link="Client/DispatcherProgressMonitor.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>

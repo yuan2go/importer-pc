@@ -1,3 +1,5 @@
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+
 > TYPOGRAPHY-01：现行字体与字号以 [字体规范](docs/design/typography-01.md) 为准。用户授权离线交付官方 OFL Noto Sans CJK SC Regular/Medium；只替代此前系统字体/不交付字体限制，其他受限资产不变。
 
 > 2026-10-22用户纠偏优先：管理能力改为[管理模式](docs/runtime/management-mode-01.md)，不是管理员账号；本轮见[MANAGEMENT-MODE-01](docs/work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。旧账号说明及SM1.10.2证据保留历史适用范围。

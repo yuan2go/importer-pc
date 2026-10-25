@@ -38,6 +38,8 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup 2>&1 | tee parameter-guidance-startup.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --sportmaster-rcs 2>&1 | tee confirmed-camera-rcs.log
       - name: Exercise process death, monotonic time, storage and ownership
         shell: bash
         run: |
@@ -58,6 +60,8 @@ jobs:
             retention-ingress.log
             stability-collector.log
             dual-camera-boundaries.log
+            parameter-guidance-startup.log
+            confirmed-camera-rcs.log
           if-no-files-found: warn
           retention-days: 30
   frozen-sportmaster:
@@ -126,6 +130,8 @@ jobs:
           $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
           ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-startup-experience -StartupExperience
           if (-not $?) { throw 'Frozen first-configuration regression failed' }
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-guidance -ParameterGuidanceStartup
+          if (-not $?) { throw 'Frozen parameter guidance and deferred-startup regression failed' }
           ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-shell -ParameterShellPolish
           if (-not $?) { throw 'Frozen parameter-shell regression failed' }
           ./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-task-hierarchy -TaskHierarchy
@@ -216,6 +222,10 @@ jobs:
         with:
           name: sportmaster-evidence-${{ github.sha }}
           path: |
+            C:/scd-parameter-guidance/RESULT.json
+            C:/scd-parameter-guidance/RUN.log
+            C:/scd-parameter-guidance/WINDOWS-WPF.log
+            C:/scd-parameter-guidance/*.png
             C:/scd-startup-experience/RESULT.json
             C:/scd-startup-experience/RUN.log
             C:/scd-startup-experience/WINDOWS-WPF.log

@@ -22,6 +22,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         get
         {
             if (!Fresh || Snapshot is not { } snapshot) return "RCS 服务：状态未知";
+            if (snapshot.Configuration.Effective.Wcs is { } pending && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, pending.InstanceId)) return "RCS 服务：待配置";
             if (snapshot.Configuration.Effective.Mode == RunMode.Simulation) return "RCS 服务：模拟";
             if (snapshot.Configuration.Effective.Wcs is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding) return "RCS 服务：未配置";
             var health = snapshot.Health.SingleOrDefault(h => h.InstanceId == binding.InstanceId);
@@ -255,7 +256,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DeviceStatus = !fresh ? "设备旧状态已失效" : device is null ? "设备状态未取得" : device.IsValid(now) ?
+        DeviceStatus = !fresh ? "设备旧状态已失效" : snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? "待配置 · 请到参数设置填写连接" : device is null ? "设备状态未取得" : device.IsValid(now) ?
             (device.Source.StartsWith("TCP:client-LF:", StringComparison.Ordinal) ? "TCP 已连接 · " : "设备已确认 · ") + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · 请查看本相机诊断";
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
         CanAdmit = !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;

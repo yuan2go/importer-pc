@@ -175,10 +175,24 @@ static partial class Program
         Check(Math.Abs(open.TransformToAncestor(installer).Transform(new Point()).Y - finish.TransformToAncestor(installer).Transform(new Point()).Y) < 20, "open-after-install sits beside the finish button in the bottom row");
         Check(Descendants(installer).OfType<TextBlock>().All(x => !x.Text.Contains("releases/") && !x.Text.Contains("releases\\")), "completion has no hashed release directory or technical identity dump");
         Capture("installer-complete", installer); installer.Close();
+        var removalType = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!;
+        foreach (var restart in new[] { false, true })
+        {
+            var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), [], restart);
+            var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
+            removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
+            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "关闭" }) &&
+                !Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible), "retired product exposes only its result and close action, with no repeated repair or authentication entry");
+            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("已卸载") && (restart ? t.Text.Contains("重新启动 Windows") : t.Text.Contains("卸载操作已完成"))) &&
+                !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
+            Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
+        }
         lines.Add("Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.");
 
         static void FillInitial(ParameterEditorModel model)
         {
+            foreach (var connection in model.Readers.Concat(model.Components.Where(ParameterOwnership.IsRcs))) connection.ConfigureLater = false;
+            model.Policy.StationCode = "SYNTHETIC";
             foreach (var (r, i) in model.Readers.Select((r, i) => (r, i)))
                 foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", "bcr-code" => "HB" + i, _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))

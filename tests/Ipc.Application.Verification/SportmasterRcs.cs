@@ -19,7 +19,7 @@ static partial class SportmasterRcs
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
     static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.1.1", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
-        ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
+        ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
         ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER"
     });
@@ -105,10 +105,62 @@ static partial class SportmasterRcs
             Check(rightWire.RequestId != service.PrepareRequest(Request(binding), 7).RequestId && rightWire.Body.Contains("TEST-RIGHT-READER", StringComparison.Ordinal), "durable entity sequence allocates distinct numeric request IDs and right mapping");
             var before = peer.Requests.Count; Check(await service.QueryAsync(right, CancellationToken.None) is null && peer.Requests.Count == before, "unsupported original query sends no request and never resubmits");
         }
+        await ConfirmedScanFlow(workspace, root, peer);
         await RuntimeChecks(workspace, root, peer);
         MigrationChecks(workspace, root);
         await NumericIdentityHistoryChecks(workspace,root,peer);
         Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and SQL6 custody transitions");
+    }
+    static async Task ConfirmedScanFlow(string workspace, string root, Peer peer)
+    {
+        peer.Mode = "assigned";
+        foreach (var legacy in new[] { false, true })
+        {
+            var binding = Binding(peer.Endpoint); binding.Parameters.Remove("quantity");
+            if (legacy) binding.Parameters["quantity"] = "7";
+            await using var service = new SportmasterRcsTaskService(binding);
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding)); await service.StartAsync(default);
+            var request = Request(binding); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
+            using var body = JsonDocument.Parse(request.IntegrationRequest.Body);
+            Check(body.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1 &&
+                (await service.RequestDestinationAsync(request, default)).BusinessAccepted == true,
+                "new parcel requests always send quantity 1, including legacy configured quantity 7");
+            if (legacy)
+            {
+                var oldBody = request.IntegrationRequest.Body.Replace("\"quantity\":1", "\"quantity\":7", StringComparison.Ordinal);
+                var old = request with { IntegrationRequest = request.IntegrationRequest with { Body = oldBody, BodyHash = Wire.Hash(oldBody) } };
+                var frozen = Wire.Encode(old);
+                Check((await service.RequestDestinationAsync(old, default)).BusinessAccepted == true && Wire.Encode(old) == frozen && peer.Requests.Last().Body == oldBody,
+                    "existing frozen legacy intent is validated and delivered byte-for-byte without regenerating its quantity");
+            }
+        }
+        using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
+        var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
+        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["bcr-code"] = "TEST-LEFT-READER" } }).ToArray();
+        c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers }, DeferredConnections = null };
+        var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
+        ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
+        var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
+        await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
+        using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
+        await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
+        var before = peer.Requests.Count;
+        foreach (var barcode in new[] { "000123", "000123", "000456" })
+        {
+            var count = (await app.SnapshotAsync()).Operations.Length;
+            await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(barcode[..3]));
+            await Task.Delay(20);
+            Check(peer.Requests.Count == before + count, "a partial TCP frame creates no parcel or RCS request");
+            await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(barcode[3..] + "\n"));
+            await Wait(app, s => s.Operations.Length == count + 1 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
+        }
+        var snapshot = await app.SnapshotAsync(); var posts = peer.Requests.Skip(before).ToArray();
+        Check(snapshot.Operations.Length == 3 && snapshot.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3 && posts.Length == 3 &&
+            posts.Select(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString()).SequenceEqual(new[] { "000123", "000123", "000456" }) &&
+            posts.All(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1),
+            "three completed camera scans create exactly three RCS requests with their original barcodes, fixed quantity 1, and no merge by barcode");
     }
     static async Task NumericIdentityHistoryChecks(string workspace,string root,Peer peer)
     {

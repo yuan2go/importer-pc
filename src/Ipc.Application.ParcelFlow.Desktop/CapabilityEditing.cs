@@ -40,9 +40,13 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     }
 
     readonly CapabilityBinding? originalBinding;
-    public sealed record Saved(string Kind, string Role, CapabilityBinding? Original, string ProviderIdentity, string Instance, string Target, string Contract, bool Enabled, bool Bound, Dictionary<string, string> Parameters);
+    public sealed record Saved(string Kind, string Role, CapabilityBinding? Original, string ProviderIdentity, string Instance, string Target, string Contract, bool Enabled, bool Bound, Dictionary<string, string> Parameters)
+    {
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        public bool ConfigureLater { get; init; }
+    }
     static string Identity(CapabilityDescriptor? p) => p is null ? "" : Wire.Encode(new { p.Kind, p.Implementation, p.Version, p.Contract, p.Package, p.Module });
-    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value));
+    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value)) { ConfigureLater = ConfigureLater };
     public static CapabilityDraft RestoreRaw(Saved state, CapabilityDescriptor[] providers)
     {
         var draft = new CapabilityDraft(state.Kind, providers, state.Original, state.Bound, state.Role);
@@ -53,6 +57,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         }
         else draft.Provider = null;
         draft.InstanceId = state.Instance; draft.Target = state.Target; draft.Contract = state.Contract; draft.Enabled = state.Enabled;
+        draft.ConfigureLater = state.ConfigureLater;
         foreach (var p in draft.Parameters) p.Value = state.Parameters.GetValueOrDefault(p.Field.Key, p.Value);
         return draft;
     }
@@ -61,7 +66,8 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public CapabilityDescriptor[] Providers { get; }
     public string Kind { get; }
     public string Role { get; }
-    bool enabled, bound;
+    bool enabled, bound, configureLater;
+    public bool ConfigureLater { get => configureLater; set { configureLater = value; Notify(); } }
     string instanceId = "", target = "", contract = "";
     public bool Enabled { get => enabled; set { enabled = value; Notify(); } }
     public bool Bound { get => bound; set { bound = value; Notify(); } }
@@ -106,17 +112,27 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         // Keep original insertion order and explicitly omitted defaults. Reordering
         // unrelated parameter bytes would change the frozen configuration hash.
         var parameters = new Dictionary<string, string>(originalParameters);
+        if (ParameterOwnership.IsRcs(this)) parameters.Remove("quantity");
         foreach (var item in Parameters)
         {
+            if (ParameterOwnership.IsRcs(this) && item.Field.Key == "quantity") { parameters["quantity"] = "1"; continue; }
             if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
         }
-        if (ParameterOwnership.StationConflict(this))
-            throw new InvalidOperationException("左右取格口供包台编码不一致；请在系统配置明确填写共同取格口站码，原值保留供核对");
-        var errors = ExtensionSchema.Validate(p.Parameters, parameters);
+        if (!ConfigureLater && ParameterOwnership.StationConflict(this))
+            throw new InvalidOperationException("供包台编号不一致；请在系统配置核对原值并填写共同编号");
+        var errors = ConfigureLater ? [] : ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);
+    }
+    public CapabilityBinding BuildReader(string applicationId)
+    {
+        var binding = Build();
+        // The confirmed Sportmaster flow is one camera scan per parcel. Generic
+        // observation providers retain their own diagnostic/association policies.
+        return applicationId == "sportmaster" && binding.Implementation == "tcp-line"
+            ? binding with { Parameters = new(binding.Parameters) { ["entity.mode"] = "line" } } : binding;
     }
 }
 

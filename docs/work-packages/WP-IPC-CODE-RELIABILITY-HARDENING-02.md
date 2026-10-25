@@ -1,5 +1,7 @@
 # CODE-RELIABILITY-HARDENING-02
 
+2026-10-25集成续做：用户授权基于最新main同步PR104，在必要验证、最终HEAD CI和代码审查通过后合入main。本轮main固定`c425435c6f980ca537a29e4e8353d12be341df61`，已包含PR103；采用合并提交保留原分叉历史，不rebase或强推。处置与后续回执见[PR104集成记录](../runtime/validation/pr104-main-integration-01.md)。下文“PR103开放/不合并”是本包最初开工时的范围，不覆盖本轮明确授权；PR103的原始维护FAIL/NOT_RUN不改变，PR105继续独立。
+
 2026-10-25 开工：远端 main `1dfb676a2970f80e80d635303d84dcec75676cf5`；D盘独立工作树 `D:/w/ipc-reliability-02`，分支 `codex/code-reliability-hardening-02`。原工作树及四个未跟踪附件不修改。唯一开放 PR103 为清理规模/受保护CLI资格，不并入本包或代其验收。
 
 用户授权实际代码修复、必要工具/原始证据、文档、推送及main PR；不合并、不操作生产设备。沿四层、单实例多页、唯一配置/业务账；DB9 SQL1～9/checksum、REQ/BR/CAPI/D/RV、原请求及Unknown责任保持。现场条件未知不阻止代码级工作，真实SDK/RCS、物理断电、目标机24h/72h分别待验。

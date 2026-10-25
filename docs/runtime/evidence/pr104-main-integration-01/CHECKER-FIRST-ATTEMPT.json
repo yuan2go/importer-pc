@@ -1,0 +1,6 @@
+{
+  "EvidenceModified": false,
+  "Status": "READ_ONLY_CHECKER_INTERRUPTED",
+  "ProductTests": "Unaffected",
+  "Reason": "Per-blob git process startup overhead; switching the same assertions to one git cat-file batch process"
+}

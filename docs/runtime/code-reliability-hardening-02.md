@@ -1,5 +1,7 @@
 # 代码可靠性02 · 运行与维护
 
+2026-10-25与PR103/main的同步见[集成及验证身份](validation/pr104-main-integration-01.md)。本次保留1.12.1/1.6.1可靠性源码和全部历史证据；60.48万完整维护FAIL、259.2万未运行和60.48万恢复UAC取消继续有效。输入分页与命令预算修复在独立PR105，本次合并不包含或验收该修复。
+
 [工作包](../work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md) · [设计](../design/code-reliability-hardening-02.md) · [验证与身份](validation/code-reliability-hardening-02.md)。本增量继承稳定性01/DB9；Sportmaster 1.12.1、DirectPlc/WcsToPlc 1.6.1、Application.Contracts 1.17.0，SQL1～9及checksum未改。发布介质以其独立SourceCommit和文件清单为准。
 
 ## 所有权与恢复

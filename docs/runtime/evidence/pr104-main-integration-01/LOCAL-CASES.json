@@ -1,0 +1,72 @@
+[
+  {
+    "Name": "reliability-02",
+    "Arguments": [
+      ".",
+      "--reliability-02"
+    ],
+    "ExitCode": 0,
+    "Seconds": 29.3526825,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\reliability-02.log"
+  },
+  {
+    "Name": "h02-crashes",
+    "Arguments": [
+      ".",
+      "--h02-crashes"
+    ],
+    "ExitCode": 0,
+    "Seconds": 16.5160829,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\h02-crashes.log"
+  },
+  {
+    "Name": "retention-seed",
+    "Arguments": [
+      ".",
+      "--retention-qualification",
+      "seed",
+      "D:\\projects\\ipc-pr104-integration-20261025\\retention-seed"
+    ],
+    "ExitCode": 0,
+    "Seconds": 1.1467833,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\retention-seed.log"
+  },
+  {
+    "Name": "retention-create-1000",
+    "Arguments": [
+      ".",
+      "--retention-qualification",
+      "create",
+      "D:\\projects\\ipc-pr104-integration-20261025\\retention-1000",
+      "D:\\projects\\ipc-pr104-integration-20261025\\retention-seed",
+      "1000"
+    ],
+    "ExitCode": 0,
+    "Seconds": 2.3368328,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\retention-create-1000.log"
+  },
+  {
+    "Name": "retention-simulated-1000",
+    "Arguments": [
+      ".",
+      "--retention-qualification",
+      "exercise-simulated-authority",
+      "D:\\projects\\ipc-pr104-integration-20261025\\retention-1000"
+    ],
+    "ExitCode": 0,
+    "Seconds": 7.5858278,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\retention-simulated-1000.log"
+  },
+  {
+    "Name": "retention-verify-1000",
+    "Arguments": [
+      ".",
+      "--retention-qualification",
+      "verify",
+      "D:\\projects\\ipc-pr104-integration-20261025\\retention-1000"
+    ],
+    "ExitCode": 0,
+    "Seconds": 0.3354671,
+    "Log": "D:\\projects\\ipc-pr104-integration-20261025\\retention-verify-1000.log"
+  }
+]

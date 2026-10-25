@@ -1,0 +1,34 @@
+{
+  "Scope": "Pending merge worktree snapshot, not final committed binary",
+  "PreviousPrHead": "168c713d4fe2c332c9ee2964e7cfaa69de3e4b97",
+  "MergingMain": "c425435c6f980ca537a29e4e8353d12be341df61",
+  "ProductSourceTree": "aad9e7661dc89ba95ff85d3fe43fc77991531657",
+  "ConfigurationTree": "5b15ba6bf187d4c3cfc160b9cd030766bdd40881",
+  "ProductMatchesOriginalPrHead": true,
+  "BuildLog": "build-integration.log",
+  "Windows": true,
+  "FixtureProgramWorktreeSha256": "0C3F4955BFE8618BCC9CB97557FE8EB17DC891F8F96BB6A118F6888ACD4E270B",
+  "Assemblies": [
+    {
+      "Sha256": "4BADD5E2728F08B970990481D5BC630D527B836314C3B5B96B1A87711429D10D",
+      "Path": "D:\\w\\ipc-reliability-02\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll",
+      "Bytes": 2042368
+    },
+    {
+      "Sha256": "FE11AECCCB554D0A747BCDC6ECCFF0A21394F717F651A97F5DEFA2F4DFA7B7C7",
+      "Path": "D:\\w\\ipc-reliability-02\\src\\Ipc.Application.ParcelFlow\\bin\\Release\\net10.0\\Ipc.Application.ParcelFlow.dll",
+      "Bytes": 618496
+    },
+    {
+      "Sha256": "4F8AC1BE4AE0EE54395AED1A2422ED21B011750D2B7BEEA052130DAA0ECD45BB",
+      "Path": "D:\\w\\ipc-reliability-02\\src\\Ipc.Platform\\bin\\Release\\net10.0\\Ipc.Platform.dll",
+      "Bytes": 457216
+    },
+    {
+      "Sha256": "3B6B8F630A55D5004B19B6D9879303728661CBA439BCEC30C432A38632C07909",
+      "Path": "D:\\w\\ipc-reliability-02\\src\\Ipc.Application.Sportmaster\\bin\\Release\\net10.0\\Ipc.Application.Sportmaster.dll",
+      "Bytes": 23552
+    }
+  ],
+  "Qualification": "Synthetic only; no protected maintenance, large-scale rerun, installation or field qualification"
+}

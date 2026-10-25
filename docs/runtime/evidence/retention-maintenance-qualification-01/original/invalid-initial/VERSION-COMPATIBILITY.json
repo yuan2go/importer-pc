@@ -1,0 +1,8 @@
+{
+  "Case": "version-compatibility",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "StartedUtc": "2026-10-24T14:16:31.4365224Z",
+  "EndedUtc": "2026-10-24T14:16:36.0094769Z",
+  "ExitCode": 0,
+  "FixtureIsolation": "Existing fixture already generates unique reader IDs; uses canonical workspace for version/declaration source checks"
+}

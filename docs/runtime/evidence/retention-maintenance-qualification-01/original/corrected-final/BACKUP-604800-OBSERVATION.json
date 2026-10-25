@@ -1,0 +1,8 @@
+{
+  "CapturedUtc": "2026-10-24T15:48:27.6124765+00:00",
+  "MarkerLastWriteUtc": "2026-10-24T15:46:09.5160629Z",
+  "MarkerSha256": "5A8D3DA6AFF93580F64ECDE07BFFBF7966C1861E04618FEB7AAB0456339DEC45",
+  "BackupBytes": 9464315904,
+  "BackupHashInMarker": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "Meaning": "Complete pre-retention backup marker observed; no completed-retirement or restore claim"
+}

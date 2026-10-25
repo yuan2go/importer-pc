@@ -1,0 +1,48 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-c0110aeac1b543de8071a8118ac4064a
+PASS STABILITY01: first delivery accepted durably
+PASS STABILITY01: second delivery accepted before first T3 fails
+PASS STABILITY01: both successful handoffs already have persistent receipts
+PASS STABILITY01: healthy waiter and failed worker are separately visible; aggregate active work is not health
+PASS STABILITY01: failed current input stays Pending, queued input becomes Interrupted, no invented second entity
+PASS STABILITY01: terminal failure reported after actual safe resource release
+PASS STABILITY01: restart reconciles original raw locally, retains both input responsibilities, never resends or replays queued input
+PASS STABILITY01: management inspection records actor/reason against exact input receipt
+PASS STABILITY01: management inspection records actor/reason against exact input receipt
+PASS STABILITY01: inspection clears input barrier while preserving original request/attempt/entity ledger
+PASS STABILITY01: slow-marker first left input
+PASS STABILITY01: left queue overflow rejects delivery explicitly
+PASS STABILITY01: marker owner reached injected slow durable I/O
+PASS STABILITY01: other position handoff does not acquire marker lock
+PASS STABILITY01: right business reaches actual accepted raw/T3 while left marker storage is still blocked
+PASS STABILITY01: diagnostic worker delayed independently
+PASS STABILITY01: diagnostic overload remains bounded and counted
+PASS STABILITY01: successful recovery probe restores diagnostics; historical failure and loss counter retained
+PASS STABILITY01: healthy idle diagnostics rotate and expire on their timer without a new entry or recovery probe
+PASS STABILITY01: fifth concurrent query rejected without queuing an unbounded task
+PASS STABILITY01: stop cancels and drains every actual reader before disposal
+PASS STABILITY01: cancelled SQLite read never establishes a retained transaction
+PASS STABILITY01: active SQLite engine work interrupted by the owned reader progress handler, not just cancelled wait
+PASS STABILITY01: 32 overlapping management observers share one actual read, not command slots or queued tasks
+PASS STABILITY01: management observation ownership is independently visible and bounded to one
+PASS STABILITY01: revocation command completes while the independent observation is blocked
+PASS STABILITY01: all observers receive the actual revoked authority result
+PASS STABILITY01: completed status is never cached across the next authority change
+PASS STABILITY01: stop cancels and drains the coalesced authority observation
+PASS STABILITY01: 7-day retention round trips through shared parameter/first-configuration model
+PASS STABILITY01: 30-day site choice retained
+PASS STABILITY01: retention below seven days rejected
+PASS STABILITY01: retention fixture uses actual accepted ingress 0
+PASS STABILITY01: retention fixture uses actual accepted ingress 1
+PASS STABILITY01: retention fixture uses actual accepted ingress 2
+PASS STABILITY01: retention fixture uses actual accepted ingress 3
+PASS STABILITY01: retention fixture uses actual accepted ingress 4
+PASS STABILITY01: retention precommit interruption retains original details and permanent identities
+PASS STABILITY01: postcommit interruption preserves durable retirement; no resurrection
+PASS STABILITY01: unknown, unacknowledged conflict, pending command and interrupted input all prevent expiry
+PASS STABILITY01: expired details disappear from history while all five permanent admission identities remain
+PASS STABILITY01: permanent original reply fingerprint survives detail expiry
+PASS STABILITY01: repository independently rejects retired identity recreation
+PASS STABILITY01: each maintenance rebuilds pending-command owners from current facts; settling one command never clears another responsibility
+PASS STABILITY01: old admission delivery remains durably accounted
+PASS STABILITY01: actual restarted runtime blocks expired entity before new intent or numeric ID
+PASS STABILITY01 COMPLETE; synthetic fault verification, not a 24h qualification

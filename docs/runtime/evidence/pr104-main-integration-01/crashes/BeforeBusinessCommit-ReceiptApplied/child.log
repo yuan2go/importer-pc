@@ -1,0 +1,4 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-1ca996e9ec214c0089dbec24dfc8ea96
+PASS H02: right control durable handoff
+HANDOFF left=True
+CUT BeforeBusinessCommit:ReceiptApplied

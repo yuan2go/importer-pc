@@ -1,0 +1,11 @@
+{
+  "Status": "PASS_OWNED_DELTA_AND_ARCHIVE_IDENTITY",
+  "AtUtc": "2026-10-24T16:30:02.163588+00:00",
+  "Head": "69fe77c28415c95674267be9cf1d9bf28442041f",
+  "Base": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+  "OwnedManifestRows": 91,
+  "OriginalTextFiles": 77,
+  "UnrelatedHistoricalManifestRowsAndMetadataUnchanged": true,
+  "ProductAndConfigChanges": false,
+  "Scope": "Canonical committed Git bytes only; not current uncommitted edits, whole historical archive verification, full-scale CLI completion or field acceptance"
+}

@@ -1,4 +1,4 @@
-> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。继承 main `1dfb676a` 的 DB9、生命周期及清理成果；进程强杀、并发、日志、争用与时间边界单独计证，不扩张既有现场资格。
+> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。原开工main为`1dfb676a`，2026-10-25与已合并PR103/main `c425435`的[同步、证据保全及最终集成检查](runtime/validation/pr104-main-integration-01.md)另列；进程强杀、并发、日志、争用与时间边界单独计证，不关闭下述大规模维护FAIL或扩张现场资格。
 
 > 本轮并行成果整合：[工作包与固定来源](work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)、[处置、冲突及验证报告](runtime/parallel-task-integration-01.md)。起始远端main `016976c6`已包含PR97/98；旧分支与历史证据身份保留，稳定性资格另计。
 
@@ -34,6 +34,8 @@
 > 当前安装与首配入口 UI 实施：[INSTALLER-FIRST-RUN-UI-02](work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[UI规范与预览](ui/installer-first-run-ui-02/README.md)。后续已按用户要求降低密码最低长度至5个字符（允许纯数字）并隐藏安装使用范围，见[增量原生证据](runtime/evidence/installer-first-run-ui-02/followup-password-scope/README.md)。本包替代冲突的旧安装布局与授权提示；下述介质及验证保留各自来源，不代表新 UI 已验收。
 
 # 文档索引 · 作业、管理模式与日志
+
+2026-10-24～25长稳维护补证：[本轮工作包](work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[完整原件规模/受保护CLI结果和剩余缺口](runtime/validation/retention-maintenance-qualification-01.md)、[210份文本原件/hash](runtime/evidence/retention-maintenance-qualification-01/FILES.json)。固定运行产品`5bb032d`并继承main/PR102；1千/1万完整维护和隔离恢复通过，60.48万清理超预算FAIL，新增输入分页热点未改业务代码；259.2万未运行，60.48万恢复UAC取消。原查询微基准、CI和失败各守原身份，不替代目标工控机、真实设备或24h/72h验收。
 
 2026-10-24历史清理查询独立复核：[报告和验证边界](runtime/validation/retention-performance-review-01.md)、[原件/hash与仓库复现](runtime/evidence/retention-performance-review-01/README.md)。固定复核main `12a7cbd`；PR100已包含性能修复。本次仅归档，不重改业务代码，不将短测、CI或安装器构建扩张为24h/72h或现场验收。
 

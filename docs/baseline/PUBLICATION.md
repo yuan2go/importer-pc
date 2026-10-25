@@ -2,6 +2,10 @@
 
 本轮用户明确授权上传并随应用离线交付 `NotoSansCJKsc-Regular.otf` 与 `NotoSansCJKsc-Medium.otf`，仅限官方 Sans2.004 的未修改静态桌面字库，连同原始 OFL 和[来源/哈希清单](../../src/Ipc.Presentation.Wpf/Fonts/NOTICE.json)。允许本轮合成原生截图与验证记录；不包含客户原稿、未授权衍生资产、私链、凭据、生产数据、其他字体或 SDK。以下各历史条款仍限于其原任务/发布范围。
 
+# 2026-10-24 完整历史与受保护维护补证
+
+本轮用户要求基于最新main补齐本机可执行的完整历史清理规模、维护耗时和受保护CLI端到端验证，并明确目标机、真实设备及24h/72h待验项。增量为[工作包](../work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[报告和剩余缺口](../runtime/validation/retention-maintenance-qualification-01.md)、通用验证夹具/脚本及合成文本证据。固定产品源码`5bb032d`，失败与修正轮分别保存身份；不重复修改业务代码，不上传大型合成DB、二进制、SDK、客户原稿、私链、凭据或生产数据，不把本机合成结果扩张为目标工控机、长稳或现场通过。原公开范围和历史原件继续有效。
+
 # 2026-10-24 历史清理查询独立复核归档
 
 RECHECK-02增量授权：本轮用户要求核查PR99查询/规模风险、必要性能/完整性/恢复验证并安全合入main。允许本轮通用测试夹具竞态修复、CI升级专项、再核查报告和合成日志/hash；生产查询修复已在PR100，不重复改写。新证据位于`docs/runtime/evidence/retention-performance-review-01/recheck-02/`，首次失败与原样重跑/修复后结果分开保留；不包含DLL、SDK、字体、安装包、数据库、凭据或真实业务资料，不扩大任何现场资格。

@@ -59270,9 +59270,9 @@
     {
       "path": "tests/Ipc.Application.Verification/InstallerOptions.cs",
       "storage_scope": "public_repository",
-      "sha256": "62e9c5b4d22f31ae152c8eee0e2cd81e7e43b4e59d51102840986ddc114afcc5",
-      "size_bytes": 6559,
-      "git_blob": "6c316cf7e71447a822ac23e60e66d3eb3de49726",
+      "sha256": "ecf1f27a599f3aa60929853f641ae336ebe822058b6e08e710ae474cb3bd7810",
+      "size_bytes": 7106,
+      "git_blob": "44d95ba9328977069dd401ce3a3602115844325e",
       "version": "installer-single-window-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Single installation window, one guarded consent and exact native verification",
@@ -59705,9 +59705,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "63b3f0cf334a04480a8963318bcb09eae113a3b8f2de6c4fc01c459a1771b440",
-      "size_bytes": 2492,
-      "git_blob": "025677a1fa6727e064469a33c9408726ffae9a86",
+      "sha256": "546c466f4443a36186b61883b5db06374dd46b3eb3cb5d0d6087fe052533fc61",
+      "size_bytes": 2593,
+      "git_blob": "5290489f69a695e732298dfc63b8becf130529f8",
       "previous_git_blob": "139f525c5eed7ee03180fbd289d9b9346f1835c2",
       "pre_publication_no_test_git_blob": "c1053073bd16f1fe4a61692851bdcc8a8fb919a0"
     },
@@ -59760,9 +59760,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "f2f4b8584fe9c7a39aa55412d59abbf609761afde5f982c7030b9769f4576981",
-      "size_bytes": 21086,
-      "git_blob": "ef3305fcef957c15f595feabd21852ecdaf937ca",
+      "sha256": "8c4a1db99f88b550c690a2b05aeb80ca17e6cf60c683ca604445fdaeed884e70",
+      "size_bytes": 21112,
+      "git_blob": "0411f6008960785ba0aef0bfa186fbadefd75cfd",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -70502,9 +70502,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/DualCameraCommunication.cs",
-      "sha256": "2aeb85704861d650a54996c9d5c756f972cb90a4596be7908d0262a3529e5a79",
-      "size_bytes": 28272,
-      "git_blob": "62cc01b67b16d117ebeb83cc21662d7b06dab75d",
+      "sha256": "85803fe2a63426b8e5a8c2b249fe8412aa057b812994b86fbf7e0dfbebe22d9c",
+      "size_bytes": 28594,
+      "git_blob": "11bca3ced60f22f5e7e0e963fb53fe4bde6edeb9",
       "version": "parallel-task-integration-01",
       "status": "current_source_or_preserved_integration_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "89f2f894042b2d3bf8a6a85551b4f2ccb8feea83bcb45eb6a54ddb763c175374",
-      "size_bytes": 14687,
-      "git_blob": "2858fe28293dedda00c569b1a0de07102f05edb5"
+      "sha256": "00cfe0fc2c7a9a215f30446082bf0cb7498c266a1143d64f7ae37c26f9987e43",
+      "size_bytes": 15885,
+      "git_blob": "f4a5e7d55084f814cf6253555a4fcbcb107026d4"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
@@ -90451,9 +90451,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "e27d03eeb460b79d11c3215568e5ab24afa3a5dd9c3db80980cf5c6dcef1da42",
-      "size_bytes": 3290,
-      "git_blob": "fb62f45c6bb42c6f4eb582435b7a7abde9476b16"
+      "sha256": "5e884bf3a38ecb804e729fba30c483c84654dff658729a8890a5438a4b34fe31",
+      "size_bytes": 3561,
+      "git_blob": "580e2d8dfe9e1302a09192788108462a3bd13012"
     },
     {
       "path": "tests/Ipc.Application.Verification/P0SimulationFactory.cs",
@@ -90704,9 +90704,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "7c2a347a573dcc4c7284c7c52c17bd2a47ac3fc8eb49cefd5c6870007ab10ebd",
-      "size_bytes": 2203,
-      "git_blob": "1acdfd914cb45eff5bfb331a5050ae35286773bb"
+      "sha256": "967be1e6b6307f354b2906f729c7e325e4f2fbd46fa7a5244e1dba786f92f220",
+      "size_bytes": 2229,
+      "git_blob": "9cd641b68509a886938c2f0ca09d6f3fd579cc22"
     },
     {
       "path": "docs/runtime/evidence/p0-stability-01/integration-a8-after.json",
@@ -90718,6 +90718,17 @@
       "sha256": "4cd66a7d22ed5bd9825cf9d7a7ce92b6df01c5d4a27dbdbcadde39187f0cae75",
       "size_bytes": 7699,
       "git_blob": "c1b41f763001b4dd7ddbec7ade1c3c14277c3f8b"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/ci-69df-followup.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fb46edc80c037845c85f627402b8776c1828f90f6227b05c0da71f776e037f21",
+      "size_bytes": 1702,
+      "git_blob": "71bdace29b8d7b2334778a9401d6927ae7c203ae"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

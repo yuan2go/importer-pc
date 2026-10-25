@@ -1,3 +1,4 @@
+#if P0_CRASH_HOOKS
 using System.Diagnostics;
 using Ipc.Platform;
 
@@ -36,3 +37,4 @@ static class P0Dispatcher
         return 0;
     }
 }
+#endif

@@ -9,6 +9,8 @@ public partial class HistoryPage : UserControl
         SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
+        ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
+        HistoryDetailExpander.SizeChanged += (_, _) => FitQueryViewport();
     }
     void FitQueryViewport()
     {
@@ -19,7 +21,9 @@ public partial class HistoryPage : UserControl
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom +
             HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom +
-            ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight;
+            ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
+            (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
+                ? HistoryDetailExpander.ActualHeight + HistoryDetailExpander.Margin.Top + HistoryDetailExpander.Margin.Bottom : 0);
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
         var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;

@@ -1,0 +1,68 @@
+PASS PGS01-WPF local preference and evidence remain on drive D
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 条码筛选
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 格口请求
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 接收与等待限制
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 供包台标识
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 数据与记录
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 自动备份
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 显示偏好
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 左相机
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 右相机
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: RCS 服务
+PASS PGS01-WPF first-run page can advance with explicitly deferred camera/RCS fields: 检查与完成
+PASS PGS01-WPF incomplete connections do not block the first-run completion page
+PASS PGS01-WPF existing shared directory contains 格口请求
+PASS PGS01-WPF parameter help describes purpose without an internal configuration path
+CAPTURE pgs-格口请求-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 接收与等待限制
+CAPTURE pgs-接收与等待限制-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 供包台标识
+CAPTURE pgs-供包台标识-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 数据与记录
+CAPTURE pgs-数据与记录-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 显示偏好
+CAPTURE pgs-显示偏好-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 左相机
+CAPTURE pgs-左相机-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains RCS 服务
+CAPTURE pgs-RCS 服务-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 格口请求
+PASS PGS01-WPF parameter help describes purpose without an internal configuration path
+CAPTURE pgs-格口请求-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 接收与等待限制
+CAPTURE pgs-接收与等待限制-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 供包台标识
+CAPTURE pgs-供包台标识-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 数据与记录
+CAPTURE pgs-数据与记录-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 显示偏好
+CAPTURE pgs-显示偏好-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 左相机
+CAPTURE pgs-左相机-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains RCS 服务
+CAPTURE pgs-RCS 服务-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 格口请求
+PASS PGS01-WPF parameter help describes purpose without an internal configuration path
+CAPTURE pgs-格口请求-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 接收与等待限制
+CAPTURE pgs-接收与等待限制-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 供包台标识
+CAPTURE pgs-供包台标识-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 数据与记录
+CAPTURE pgs-数据与记录-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 显示偏好
+CAPTURE pgs-显示偏好-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains 左相机
+CAPTURE pgs-左相机-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF existing shared directory contains RCS 服务
+CAPTURE pgs-RCS 服务-800: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS PGS01-WPF one real WPF input updates request and heartbeat station identities
+PASS PGS01-WPF no second heartbeat station editor remains
+PASS PGS01-WPF first-run retention editors contain seven days
+PASS PGS01-WPF turning off deferred mode exposes required camera errors
+PASS PGS01-WPF reselecting deferred mode preserves inputs and removes inapplicable connection errors
+FAIL System.InvalidOperationException: the visible first-run mode control persists the full-screen preference
+   at Program.<VerifyParameterGuidanceStartup>g__Check|17_0(Boolean ok, String reason, <>c__DisplayClass17_0&) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterGuidanceStartup.cs:line 18
+   at Program.VerifyParameterGuidanceStartup(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterGuidanceStartup.cs:line 70
+   at Program.VerifyParameterGuidanceStartup(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ParameterGuidanceStartup.cs:line 89
+   at Program.<>c__DisplayClass22_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

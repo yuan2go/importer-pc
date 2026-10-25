@@ -558,7 +558,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         var policyStart = Body.Children.Count; var deviceStart = policyStart; var reviewStart = policyStart;
         ParameterSettingsControl? sharedEditor = null;
-        if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog) : null;
+        if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog, initialConfiguration && !document.ExistingConfiguration) : null;
         if (draft is not null)
         {
             var c = document!.Candidate!;

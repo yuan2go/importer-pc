@@ -38,6 +38,7 @@ public partial class ShellWindow : Window
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
+        WindowOpeningPreference.Attach(this, vm.PresentationId, message => vm.Message = message);
         maintenance.DataContext = vm; history.DataContext = vm; work.DataContext = vm;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         vm.PropertyChanged += (_, e) =>

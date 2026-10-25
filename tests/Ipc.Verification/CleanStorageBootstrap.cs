@@ -27,7 +27,8 @@ static class CleanStorageBootstrap
             return;
         }
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        var parent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ImporterPc.CleanStorage-" + Wire.Id());
+        var fixtureRoot = WindowsStoragePaths.ProtectedAnchor ?? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+        var parent = Path.Combine(fixtureRoot, "ImporterPc.CleanStorage-" + Wire.Id());
         var account = WindowsIdentity.GetCurrent().User!;
         try
         {
@@ -40,6 +41,23 @@ static class CleanStorageBootstrap
             var original = new DirectoryInfo(leaf).GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.All);
             WindowsStoragePaths.PrepareProtectedDirectory(leaf, account);
             Check(new DirectoryInfo(leaf).GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.All) == original, "existing protected directory is retained without ACL rewriting");
+            var userData = Path.Combine(Path.GetDirectoryName(leaf)!, "UserData");
+            WindowsStoragePaths.PrepareUserDataDirectory(userData);
+            var userAcl = new DirectoryInfo(userData).GetAccessControl();
+            bool userCreates = false, creatorWrites = false;
+            foreach (FileSystemAccessRule rule in userAcl.GetAccessRules(true, true, typeof(SecurityIdentifier)))
+            {
+                var sid = ((SecurityIdentifier)rule.IdentityReference).Value;
+                userCreates |= sid == "S-1-5-32-545" && rule.InheritanceFlags == InheritanceFlags.None && (rule.FileSystemRights & FileSystemRights.CreateDirectories) != 0;
+                creatorWrites |= sid == "S-1-3-0" && rule.PropagationFlags == PropagationFlags.InheritOnly && rule.FileSystemRights == FileSystemRights.FullControl;
+            }
+            Check(userCreates && creatorWrites,
+                "personal preference parent permits own-folder creation with creator-only inherited write access");
+            var userBefore = userAcl.GetSecurityDescriptorSddlForm(AccessControlSections.All);
+            WindowsStoragePaths.PrepareUserDataDirectory(userData);
+            Check(new DirectoryInfo(userData).GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.All) == userBefore &&
+                new DirectoryInfo(leaf).GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.All) == original,
+                "personal preference provisioning is idempotent and never changes protected program ACLs");
             var file = Path.Combine(parent, "file"); File.WriteAllText(file, "original");
             Deny(() => WindowsStoragePaths.RequireExistingProtectedAncestors(Path.Combine(file, "child")), "same-name file cannot become an installation directory");
             Check(File.ReadAllText(file) == "original", "refused path retains original file bytes");
@@ -56,7 +74,7 @@ static class CleanStorageBootstrap
         }
         finally
         {
-            if (!parent.StartsWith(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ImporterPc.CleanStorage-"), StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Fixture cleanup boundary differs");
+            if (!parent.StartsWith(Path.Combine(fixtureRoot, "ImporterPc.CleanStorage-"), StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Fixture cleanup boundary differs");
             if (Directory.Exists(parent)) Directory.Delete(parent, true);
         }
     }

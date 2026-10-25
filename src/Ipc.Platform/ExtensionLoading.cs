@@ -88,6 +88,8 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
 public static class ExtensionDeployment
 {
     public static string[] Validate(DeploymentExtensions? deployment, DeviceBinding[] bindings, ExtensionStore? store, Action<VerifiedExtension>? validatePrerequisites = null)
+        => Validate(deployment, bindings, store, validatePrerequisites, null);
+    public static string[] Validate(DeploymentExtensions? deployment, DeviceBinding[] bindings, ExtensionStore? store, Action<VerifiedExtension>? validatePrerequisites, IReadOnlySet<string>? deferredDevices)
     {
         List<string> errors = [];
         var used = bindings.Where(x => x.Driver.StartsWith("extension:", StringComparison.Ordinal)).ToArray();
@@ -127,7 +129,8 @@ public static class ExtensionDeployment
                 !packages.TryGetValue(i.PackageId, out var p)) { errors.Add("Invalid instance identity/package: " + i.Id); continue; }
             var module = p.Manifest.Modules.SingleOrDefault(x => x.Id == i.ModuleId);
             if (module is null || module.Kind != "observation") { errors.Add("Unknown observation instance module: " + i.Id); continue; }
-            errors.AddRange(ExtensionSchema.Validate(module.Parameters, i.Parameters).Select(x => i.Id + ": " + x));
+            if (deferredDevices?.Contains(i.DeviceId) != true)
+                errors.AddRange(ExtensionSchema.Validate(module.Parameters, i.Parameters).Select(x => i.Id + ": " + x));
             if (deployment.Instances.Count(x => x.PackageId == i.PackageId && x.ModuleId == i.ModuleId) > module.MaximumInstances) errors.Add("Module instance quota: " + i.ModuleId);
         }
         if (deployment.Instances.Where(x => x.Enabled).Select(x => x.DeviceId).Distinct().Count() != deployment.Instances.Count(x => x.Enabled)) errors.Add("Duplicate enabled device resources");

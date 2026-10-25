@@ -27,6 +27,7 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
+        WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;

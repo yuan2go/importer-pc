@@ -72,6 +72,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public void ValidateStructure(ParcelConfiguration c) => _ = ValidateDeployment(c, false);
     DeploymentQualification? ValidateDeployment(ParcelConfiguration c, bool requireQualification = true)
     {
+        var setupErrors = ParcelConnectionSetup.Validate(c);
+        if (setupErrors.Length != 0) throw new InvalidDataException(string.Join("; ", setupErrors));
+        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c);
         var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
         if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
@@ -83,14 +86,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
             throw new InvalidDataException("Malformed application extension deployment");
         DeploymentQualification? candidateQualification = null;
-        if (requireQualification && (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true))
+        if (requiresActiveQualification && (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true))
         {
             _ = Store();
             var hash = Wire.Hash(Wire.Encode(c));
             candidateQualification = DeploymentQualifications.Read(Path.Combine(Path.GetDirectoryName(trustFile!)!, "deployment-qualification." + hash + ".json"), trustPolicy!, mode, hash, Wire.FileHash(typeof(IParcelApplication).Assembly.Location));
         }
 #if !DIRECTPLC
-        if (c.Wcs?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
+        if (c.Wcs?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract && !ParcelConnectionSetup.IsDeferred(c, c.Wcs.InstanceId))
         {
             _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(c.Wcs);
             _ = Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.HeartbeatMapping(c);
@@ -105,7 +108,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
         foreach (var r in ParcelBindings.Readers(c))
             if (r.Driver is not ("manual" or "tcp-line") && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
-        var tcpReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line").ToArray();
+        var tcpReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
         foreach (var tcp in tcpReaders) Ipc.Drivers.TcpLineObservationSource.Validate(tcp);
         if (tcpReaders.GroupBy(r => Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)).Any(g => g.Count() > 1))
             throw new InvalidDataException("device.ip: 左右相机不能连接同一个 IP 和端口");
@@ -120,12 +123,22 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             // their own typed bindings below, never counterfeit observation DeviceIds.
             var observationInstances = c.Extensions.Instances.Where(x => readerBindings.Any(r => r.Driver == "extension:" + x.Id)).ToArray();
             var observationDeployment = c.Extensions with { Instances = observationInstances };
-            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); });
+            var deferredDevices = (c.DeferredConnections ?? []).ToHashSet(StringComparer.Ordinal);
+            var activePackages = new HashSet<string>(StringComparer.Ordinal);
+            void IncludeActive(string id)
+            {
+                if (!activePackages.Add(id)) return;
+                foreach (var dependency in Store().VerifyInstalled(c.Extensions.Packages.Single(p => p.Id == id)).Manifest.Dependencies) IncludeActive(dependency.Id);
+            }
+            foreach (var id in observationInstances.Where(i => !deferredDevices.Contains(i.DeviceId)).Select(i => i.PackageId)
+                .Concat(bindings.Where(b => b.Package is not null && !deferredDevices.Contains(b.InstanceId)).Select(b => b.Package!.Id))) IncludeActive(id);
+            bool ActivePackage(string id) => activePackages.Contains(id);
+            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requiresActiveQualification && ActivePackage(p.Manifest.Id)) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); }, deferredDevices);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
-            if (observationInstances.Where(x => x.PackageId == "hikrobot.idmvs-reader").GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
+            if (observationInstances.Where(x => x.PackageId == "hikrobot.idmvs-reader" && !deferredDevices.Contains(x.DeviceId)).GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
                 throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
-            foreach (var instance in observationInstances)
+            foreach (var instance in observationInstances.Where(i => !deferredDevices.Contains(i.DeviceId)))
             {
                 if (instance.PackageId == "hikrobot.idmvs-reader" && instance.Parameters.TryGetValue("device.ip", out var ip) &&
                     (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
@@ -134,9 +147,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             foreach (var package in c.Extensions.Packages)
             {
                 var verified = Store().VerifyInstalled(package);
-                if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, verified);
+                if (requiresActiveQualification && ActivePackage(package.Id)) DeploymentQualifications.RequirePrerequisites(candidateQualification, verified);
                 if (requireQualification && c.Mode == RunMode.Production)
-                    foreach (var instance in observationInstances.Where(x => x.PackageId == package.Id))
+                    foreach (var instance in observationInstances.Where(x => x.PackageId == package.Id && !deferredDevices.Contains(x.DeviceId)))
                         RequireReal(verified.Manifest.Modules.Single(x => x.Id == instance.ModuleId), candidateQualification);
             }
             foreach (var package in c.Extensions.Packages)
@@ -162,6 +175,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
         foreach (var b in bindings.DistinctBy(x => x.InstanceId))
         {
+            if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
+            {
+                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version != "1.3.2" || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
+                    throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
+                continue;
+            }
 #if !DIRECTPLC
             if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == "1.3.2" && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
@@ -373,9 +392,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
                 if (!string.Equals(DeploymentQualifications.FileHash(evidence.Path), evidence.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
             }
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
-        var deviceIds = ParcelBindings.Readers(c).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
+        var deviceIds = ParcelBindings.Readers(c).Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
             .Concat(ParcelBindings.Bound(c).Where(x => x.Kind is "weight" or "plc" or "camera").SelectMany(x => new[] { "device:" + x.Target, x.Kind + ":" + x.Target })).Distinct();
-        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line").Select(r => "reader:tcp:" + Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)));
+        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).Select(r => "reader:tcp:" + Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)));
         devices = new(resourceRoot, deviceIds);
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {
@@ -386,7 +405,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         foreach (var binding in ParcelBindings.Readers(c))
         {
             IControlledObservationSource source;
-            if (binding.Driver == "tcp-line") source = new Ipc.Drivers.TcpLineObservationSource(binding);
+            if (ParcelConnectionSetup.IsDeferred(c, binding.DeviceId)) source = new DeferredObservationSource(binding.DeviceId);
+            else if (binding.Driver == "tcp-line") source = new Ipc.Drivers.TcpLineObservationSource(binding);
             else if (binding.Driver == "manual") source = new ManualObservationSource(binding.DeviceId);
             else
             {
@@ -419,7 +439,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         #if DIRECTPLC
         IWcsPort? wcs = null;
         #else
-        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => w.Implementation == "sportmaster-rcs" ? new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w) : new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
+        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => ParcelConnectionSetup.IsDeferred(c, w.InstanceId) ? new DeferredWcsPort(w.InstanceId) : w.Implementation == "sportmaster-rcs" ? new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w) : new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
         if (wcs is IWcsRuntimeConfiguration configuredWcs) configuredWcs.ConfigureRuntime(c);
         #endif
         var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;

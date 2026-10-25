@@ -39,9 +39,11 @@ public static partial class ParcelConfigurationRules
             return [.. errors, "Invalid exact capability deployment closure"];
         foreach (var binding in roles.Concat(inventory ?? []))
         {
+            var deferredRcs = configuration.ApplicationId == "sportmaster" && binding.InstanceId == configuration.Wcs?.InstanceId &&
+                binding.Contract == "SPORTMASTER-RCS-SORTER-v1" && ParcelConnectionSetup.IsDeferred(configuration, binding.InstanceId);
             if (!ExtensionSchema.IsId(binding.InstanceId) || !ExtensionSchema.IsVersion(binding.Version) ||
                 binding.Kind is not ("weight" or "plc" or "integration" or "login" or "camera" or "upload") ||
-                string.IsNullOrWhiteSpace(binding.Target) || string.IsNullOrWhiteSpace(binding.Contract) ||
+                string.IsNullOrWhiteSpace(binding.Target) && !deferredRcs || string.IsNullOrWhiteSpace(binding.Contract) ||
                 string.IsNullOrWhiteSpace(binding.Implementation) || binding.Parameters is null)
             { errors.Add("Incomplete or unknown capability inventory identity"); continue; }
             if (binding.Package is { } package

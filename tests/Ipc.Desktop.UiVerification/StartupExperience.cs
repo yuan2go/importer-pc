@@ -179,6 +179,8 @@ static partial class Program
 
         static void FillInitial(ParameterEditorModel model)
         {
+            foreach (var connection in model.Readers.Concat(model.Components.Where(ParameterOwnership.IsRcs))) connection.ConfigureLater = false;
+            model.Policy.StationCode = "SYNTHETIC";
             foreach (var (r, i) in model.Readers.Select((r, i) => (r, i)))
                 foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", "bcr-code" => "HB" + i, _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))

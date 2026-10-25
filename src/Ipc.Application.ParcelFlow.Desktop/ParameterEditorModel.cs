@@ -93,7 +93,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
-            Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
+            Issue("系统", nameof(Policy.StationCode), "供包台编号须为1～256个非控制字符");
         if (Policy.BackupEnabled)
         {
             Number(nameof(Policy.BackupIntervalMinutes), Policy.BackupIntervalMinutes, 15, 10080);
@@ -111,6 +111,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         {
             var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
+            if (draft.ConfigureLater) continue;
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
                 Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
@@ -125,7 +126,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                     Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "此地址不能用于相机连接，请填写具体相机地址。", "ipv4-address"));
             }
             if (ParameterOwnership.StationConflict(draft))
-                Issue("系统", draft.InstanceId + "/left-station-code", "左右取格口站码不一致；请核对原值并明确填写共同站码。");
+                Issue("系统", draft.InstanceId + "/left-station-code", "供包台编号不一致；请核对原值后填写本站共同使用的编号。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
                 Issue("业务模块", draft.InstanceId + "/chute-code", "启用指定格口时须填写格口编码。");
             if (ParameterOwnership.IsRcs(draft))
@@ -138,8 +139,11 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                     Issue("组件", draft.InstanceId + "/request-id-count", "请求编号起点与数量合计超出协议整数范围。");
             }
         }
-        if (Components.Any(c => c.Bound && ParameterOwnership.IsRcs(c)))
-            foreach (var duplicate in Readers.Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
+        foreach (var rcs in Components.Where(ParameterOwnership.IsRcs))
+            if (rcs.Parameters.Where(p => p.Field.Key is "left-station-code" or "right-station-code").Any(p => p.Value != Policy.StationCode))
+                Issue("系统", "StationCode", "取格口和心跳的供包台编号尚未统一；请核对原值后填写同一个供包台编号。");
+        if (Components.Any(c => c.Bound && !c.ConfigureLater && ParameterOwnership.IsRcs(c)))
+            foreach (var duplicate in Readers.Where(d => !d.ConfigureLater).Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
                 .Where(x => !string.IsNullOrWhiteSpace(x.Code)).GroupBy(x => x.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
                 Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
         if (category is not null)

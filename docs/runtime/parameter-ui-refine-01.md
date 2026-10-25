@@ -1,3 +1,5 @@
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+
 > 2026-10-23 续做的内部页面风格与参数逐页校验以 [INTERNAL-PAGES-UI-REFINE-01](internal-pages-ui-refine-01.md) 为准；本页保留上一轮实现和验收身份。
 
 > 2026-10-23后续授权：用户现要求不测试，将已提交代码、报告和文档推送并创建PR、合并全部开放PR。下文“仅本地/不推送”等保留原任务形成时范围，最新发布状态见[本轮合并记录](publication-parameter-ui-20261023.md)；原验证与安装/现场边界不变。

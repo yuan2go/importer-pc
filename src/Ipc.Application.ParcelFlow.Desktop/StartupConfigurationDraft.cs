@@ -9,6 +9,7 @@ public sealed class StartupConfigurationDraft
     readonly ParcelConfiguration original;
     readonly Dictionary<string, CapabilityBinding> bindings;
     readonly CapabilityCatalog catalog;
+    readonly bool initializeDefaults;
     public CapabilityDraft[] Readers { get; }
     public string ResidentHistory { get => Policy.ResidentHistory; set => Policy.ResidentHistory = value; }
     public string MinimumFreeMiB { get => Policy.MinimumFreeMiB; set => Policy.MinimumFreeMiB = value; }
@@ -17,9 +18,16 @@ public sealed class StartupConfigurationDraft
     public string QueueCapacity { get => Policy.QueueCapacity; set => Policy.QueueCapacity = value; }
     public string TimeoutMs { get => Policy.TimeoutMs; set => Policy.TimeoutMs = value; }
     public string MaximumOperations { get => Policy.MaximumOperations; set => Policy.MaximumOperations = value; }
-    public StartupConfigurationDraft(ParcelConfiguration configuration, CapabilityCatalog catalog)
+    public StartupConfigurationDraft(ParcelConfiguration configuration, CapabilityCatalog catalog) : this(configuration, catalog, false) { }
+    public StartupConfigurationDraft(ParcelConfiguration configuration, CapabilityCatalog catalog, bool initializeDefaults)
     {
+        this.initializeDefaults = initializeDefaults;
         original = configuration; this.catalog = catalog; Policy = ConfigurationPolicyDraft.From(configuration);
+        if (initializeDefaults)
+        {
+            if (configuration.Retention?.DiagnosticLogDays is null) Policy.DiagnosticLogDays = SystemParameterDefaults.DiagnosticLogDays.ToString();
+            if (configuration.Retention?.HistoryDays is null) Policy.HistoryDays = SystemParameterDefaults.HistoryDays.ToString();
+        }
         var c = configuration;
         var all = (c.CapabilityInstances ?? []).Concat(new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>());
         var readers = c.Extensions?.Instances.Select(instance =>
@@ -40,6 +48,8 @@ public sealed class StartupConfigurationDraft
                 CapabilityDraft.BuiltInReaderBinding(reader, "reader." + index, catalog);
             return new CapabilityDraft("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id);
         }).ToArray();
+        foreach (var item in Readers.Concat(Capabilities)) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId) ||
+            initializeDefaults && c.ApplicationId == "sportmaster" && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
@@ -60,6 +70,7 @@ public sealed class StartupConfigurationDraft
         var extensions = c.Extensions is null && packages.Length == 0 ? null : new DeploymentExtensions(packages, instances, c.Extensions?.Services, c.Extensions?.Ports);
         return Policy.ApplyParameters(c) with
         {
+            DeferredConnections = DeferredConnectionIds(Readers, Capabilities),
             Reader = devices[0], Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
             Weight = Policy.BuildWeight(), WeightValidity = c.SchemaVersion >= 2 ? Policy.Validity : null,
             QueueCapacity = ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
@@ -73,6 +84,11 @@ public sealed class StartupConfigurationDraft
             Extensions = extensions
         };
     }
+    internal static string[]? DeferredConnectionIds(IEnumerable<CapabilityDraft> readers, IEnumerable<CapabilityDraft> components)
+    {
+        var ids = readers.Concat(components).Where(d => d.ConfigureLater).Select(d => d.Kind == "observation" ? d.Target : d.InstanceId).Distinct(StringComparer.Ordinal).ToArray();
+        return ids.Length == 0 ? null : ids;
+    }
     public StartupEditorState Capture()
     {
         Dictionary<string, string> values = new() { ["queue"] = QueueCapacity, ["timeout"] = TimeoutMs, ["operations"] = MaximumOperations, ["resident"] = ResidentHistory, ["reserveMiB"] = MinimumFreeMiB };
@@ -82,6 +98,7 @@ public sealed class StartupConfigurationDraft
             var prefix = "cap." + index + ".";
             values[prefix + "provider"] = draft.Provider is null ? "" : ProviderKey(draft.Provider);
             values[prefix + "target"] = draft.Target; values[prefix + "enabled"] = draft.Enabled.ToString(); values[prefix + "bound"] = draft.Bound.ToString();
+            values[prefix + "configureLater"] = draft.ConfigureLater.ToString();
             foreach (var parameter in draft.Parameters) values[prefix + "parameter." + parameter.Field.Key] = parameter.Value;
         }
         return new(values);
@@ -105,12 +122,13 @@ public sealed class StartupConfigurationDraft
             draft.Target = v.GetValueOrDefault(prefix + "target", draft.Target);
             if (v.TryGetValue(prefix + "enabled", out var enabled)) draft.Enabled = bool.Parse(enabled);
             if (v.TryGetValue(prefix + "bound", out var bound)) draft.Bound = bool.Parse(bound);
+            if (v.TryGetValue(prefix + "configureLater", out var configureLater)) draft.ConfigureLater = bool.Parse(configureLater);
             foreach (var parameter in draft.Parameters) parameter.Value = v.GetValueOrDefault(prefix + "parameter." + parameter.Field.Key, parameter.Value);
         }
     }
     public StartupConfigurationDraft WithRestored(StartupEditorState state)
     {
-        var replacement = new StartupConfigurationDraft(original, catalog);
+        var replacement = new StartupConfigurationDraft(original, catalog, initializeDefaults);
         replacement.Restore(Capture());
         replacement.Restore(state);
         return replacement;

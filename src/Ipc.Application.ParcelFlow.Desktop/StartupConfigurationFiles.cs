@@ -61,6 +61,7 @@ public static class StartupConfigurationFiles
             if (left.Target != right.Target) rows.Add("• " + owner + "：连接目标\n  原值：" + left.Target + "\n  新值：" + right.Target);
             if (left.Bound != right.Bound) rows.Add("• " + owner + (right.Bound ? "：启用绑定" : "：取消绑定"));
             if (left.Enabled != right.Enabled) rows.Add("• " + owner + (right.Enabled ? "：启用" : "：关闭"));
+            if (left.ConfigureLater != right.ConfigureLater) rows.Add("• " + owner + (right.ConfigureLater ? "：稍后配置，相关业务阻断" : "：完成配置，重启时检查连接资格"));
             if (left.Provider != right.Provider) rows.Add("• " + owner + "：驱动或组件版本");
             foreach (var p in right.Parameters.Where(p => left.Parameters.FirstOrDefault(x => x.Field.Key == p.Field.Key)?.Value != p.Value))
             {

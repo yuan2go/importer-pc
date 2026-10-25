@@ -19,6 +19,8 @@ public partial class ParcelViewModel
         if (!Fresh) return new("运行状态未知", "", ReadStatus, "编辑值不表示已连接；恢复状态读取后核对。", "warning");
         var current = snapshot.Configuration;
         var effective = current.Effective;
+        if (ParcelConnectionSetup.IsDeferred(effective, target.DeviceId ?? target.InstanceId))
+            return new("连接待配置", "", "当前运行配置明确延后此连接；未创建设备或服务会话。", "填写连接参数并取消“稍后配置此连接”，保存后受控重启。重连不会启用待配置连接。", "warning");
         var now = DateTimeOffset.UtcNow;
         string identity, address, status, evidence = "", notice = ""; bool ready;
         if (target.DeviceId is { } device)

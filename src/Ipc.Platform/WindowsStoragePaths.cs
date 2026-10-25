@@ -72,6 +72,44 @@ public static class WindowsStoragePaths
         if (ProtectedAnchor is not { } root) return;
         PrepareProtectedDirectory(root, new SecurityIdentifier(runtimeSid));
         PrepareProtectedDirectory(Path.Combine(root, "Programs"), new SecurityIdentifier(runtimeSid));
+        PrepareUserDataDirectory(Path.Combine(root, "UserData"));
+    }
+    [SupportedOSPlatform("windows")]
+    internal static void PrepareUserDataDirectory(string path)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        TrustedProgramRoots.RequireAncestors(Path.GetDirectoryName(path)!);
+        var admin = new SecurityIdentifier("S-1-5-32-544"); var system = new SecurityIdentifier("S-1-5-18");
+        var users = new SecurityIdentifier("S-1-5-32-545"); var creator = new SecurityIdentifier("S-1-3-0");
+        var inherit = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+        var directory = new DirectoryInfo(path);
+        if (!directory.Exists)
+        {
+            var acl = new DirectorySecurity(); acl.SetOwner(admin); acl.SetAccessRuleProtection(true, false);
+            acl.AddAccessRule(new(system, FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
+            acl.AddAccessRule(new(admin, FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
+            // Users may create their own SID folder, but cannot edit siblings or
+            // the protected anchor. Only its creator inherits write access.
+            acl.AddAccessRule(new(users, FileSystemRights.ReadAndExecute | FileSystemRights.CreateDirectories, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow));
+            acl.AddAccessRule(new(creator, FileSystemRights.FullControl, inherit, PropagationFlags.InheritOnly, AccessControlType.Allow));
+            directory.Create(acl);
+        }
+        var current = directory.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+        if (((SecurityIdentifier)current.GetOwner(typeof(SecurityIdentifier))!).Value is not ("S-1-5-18" or "S-1-5-32-544"))
+            throw new UnauthorizedAccessException("个人偏好父目录须由安装管理员持有；保留原目录。");
+        bool canCreate = false, creatorOwns = false;
+        foreach (FileSystemAccessRule rule in current.GetAccessRules(true, true, typeof(SecurityIdentifier)))
+        {
+            var sid = ((SecurityIdentifier)rule.IdentityReference).Value;
+            if (sid == users.Value) canCreate = true;
+            if (sid == creator.Value) creatorOwns = true;
+            if (rule.AccessControlType != AccessControlType.Allow || sid is not ("S-1-5-18" or "S-1-5-32-544") &&
+                !(sid == users.Value && rule.FileSystemRights == (FileSystemRights.ReadAndExecute | FileSystemRights.CreateDirectories | FileSystemRights.Synchronize) && rule.InheritanceFlags == InheritanceFlags.None) &&
+                !(sid == creator.Value && rule.FileSystemRights == FileSystemRights.FullControl && rule.InheritanceFlags == inherit && rule.PropagationFlags == PropagationFlags.InheritOnly))
+                throw new UnauthorizedAccessException("个人偏好父目录权限不符合按用户隔离要求；保留原ACL，由安装修复核对。");
+        }
+        if (!canCreate || !creatorOwns) throw new UnauthorizedAccessException("个人偏好父目录缺少按用户创建权限；保留原ACL，由安装修复核对。");
     }
     [SupportedOSPlatform("windows")]
     internal static void PrepareProtectedDirectory(string path, SecurityIdentifier account)

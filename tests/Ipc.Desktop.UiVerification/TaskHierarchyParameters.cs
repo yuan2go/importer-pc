@@ -11,7 +11,7 @@ static partial class Program
     static async Task VerifyHierarchyParameters(string root, string evidence, List<string> lines, bool baseline, bool interactive = false)
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS HIERARCHY-PARAMETERS " + reason); }
-        var initial = new SportmasterFlow().InitialConfiguration();
+        var initial = new SportmasterFlow().InitialConfiguration() with { DeferredConnections = null };
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new BusinessLaunch(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null)).Catalog();
         var draft = new StartupConfigurationDraft(initial, catalog);
         var model = draft.CreateParameterEditor((policy, codes) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(policy, codes)));
@@ -23,7 +23,7 @@ static partial class Program
             foreach (var p in component.Parameters) p.Value = p.Field.Key switch
             { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "TASK-STATION", "left-bcr-code" => "TASK-LEFT", "right-bcr-code" => "TASK-RIGHT", "specified-chute" => "false", _ => p.Value };
         }
-        model.Policy.StationCode = "HEARTBEAT-STATION";
+        model.Policy.StationCode = "TASK-STATION";
         var editor = new ParameterSettingsControl { Model = model };
         var client = new Grid(); client.Children.Add(editor);
         var window = new Window { Content = client, Title = "合成参数候选 · 共用日常表单", Width = 1100, Height = 760 };
@@ -52,7 +52,7 @@ static partial class Program
             await Flush();
             Check(input.Text == "111" && model.Issues.Any(i => i.Path == right.InstanceId + "/device.ip"), "invalid input stays intact with its exact field issue");
             Check(model.Readers[0].Parameters.Single(p => p.Field.Key == "bcr-code").Value == "HEARTBEAT-0" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "task and heartbeat camera codes remain independent in the shared candidate");
-            Check(model.Policy.StationCode == "HEARTBEAT-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-station-code").Value == "TASK-STATION", "task and heartbeat station codes remain independent");
+            Check(model.Policy.StationCode == "TASK-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-station-code").Value == "TASK-STATION", "task and heartbeat station identifiers use the same confirmed value");
         }
         if (interactive)
         {

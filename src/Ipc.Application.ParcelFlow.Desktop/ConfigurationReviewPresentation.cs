@@ -96,7 +96,7 @@ public partial class ParcelViewModel
                 owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 服务" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? ParameterOwnership.ObjectCategory(draft) : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
-                { label = p.EditorLabel; fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
+                { label = ChineseInterfaceText.ParameterName(parameter, p.EditorLabel); fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = instance + "/Target"; showValues = true; }
                 else { label = path; fieldPath = ""; }
                 if (category == "系统") owner = "供包台标识";
@@ -107,14 +107,15 @@ public partial class ParcelViewModel
             {
                 var policy = path switch
                 {
-                    "StationCode" => ("系统", "供包台标识", "工位编码（心跳）", "StationCode"),
-                    "QueueCapacity" => ("业务模块", "处理参数", "输入队列容量", "QueueCapacity"),
-                    "TimeoutMs" => ("业务模块", "处理参数", "调用时限（毫秒）", "TimeoutMs"),
-                    "MaximumOperations" => ("业务模块", "处理参数", "未清偿作业容量", "MaximumOperations"),
+                    "StationCode" => ("系统", "供包台标识", "供包台编号", "StationCode"),
+                    "QueueCapacity" => ("业务模块", "接收与等待限制", "扫码消息缓冲上限", "QueueCapacity"),
+                    "TimeoutMs" => ("业务模块", "接收与等待限制", "外部服务等待时间（毫秒）", "TimeoutMs"),
+                    "MaximumOperations" => ("业务模块", "接收与等待限制", "待处理作业上限", "MaximumOperations"),
+                    "DeferredConnections" => ("系统", "连接配置状态", "稍后配置的连接", ""),
                     "SessionLifetimeMs" => ("业务模块", "作业登录", "操作员会话时长（毫秒）", "SessionLifetimeMs"),
                     "Login" => ("业务模块", "作业登录", "操作员登录绑定", "OperatorLogin"),
                     "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "诊断日志保留天数", "DiagnosticLogDays"),
-                    "Retention.HistoryDays" => ("系统", "数据与记录", "已结历史保留天数", "HistoryDays"),
+                    "Retention.HistoryDays" => ("系统", "数据与记录", "已结数据保留天数", "HistoryDays"),
                     "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻历史条数", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),
@@ -144,6 +145,7 @@ public partial class ParcelViewModel
         }
         void Compare(JsonElement left, JsonElement right, string path, string? instance = null, string? parameter = null)
         {
+            if (path == "DeferredConnections") { if (Read(left) != Read(right)) Add(left, right, path, null, null); return; }
             if (left.ValueKind == right.ValueKind && (left.ValueKind == JsonValueKind.Undefined || left.GetRawText() == right.GetRawText())) return;
             if (left.ValueKind == JsonValueKind.Object || right.ValueKind == JsonValueKind.Object)
             {

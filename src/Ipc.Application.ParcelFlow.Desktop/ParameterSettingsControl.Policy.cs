@@ -10,35 +10,34 @@ public sealed partial class ParameterSettingsControl
 {
     void BuildSystem(ParameterEditorModel m)
     {
-        var station = Page(0, "供包台标识", "取格口与心跳编码分别维护。");
+        var station = Page(0, "供包台标识", "填写本供包台在RCS中的身份；取格口请求和心跳使用同一个供包台编号。");
         var hasRcs = m.Components.Any(ParameterOwnership.IsRcs);
-        var form = Form(station, hasRcs ? "取格口身份" : null);
+        var form = Form(station);
         foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
         {
             foreach (var p in rcs.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) Parameter(form, station, rcs, p);
             var left = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "right-station-code");
             if (left is not null && right is not null)
             {
-                var pair = new CommonStationParameter(left, right); unsubscribe.Add(pair.Dispose);
-                if (ParameterOwnership.StationConflict(rcs))
+                var pair = new CommonStationParameter(left, right, m.Policy); unsubscribe.Add(pair.Dispose);
+                if (ParameterOwnership.StationConflict(rcs) || left.Value != m.Policy.StationCode)
                 {
-                    var conflict = Text("需要核对旧设置：左右取格口站码不同。" + pair.OriginalValues + "。请填写本站共同使用的编码。");
+                    var conflict = Text("请确认统一供包台编号。" + pair.OriginalValues + "。在下方填写后，会同时用于新取格口请求和心跳；旧请求保留原编号。");
                     conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
                 }
-                Input(Form(station), "供包台编码 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "左右相机的格口请求共同使用此编码。");
+                Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "填写RCS分配给本站的编号；左右相机请求格口及供包台心跳共同使用。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
-                Technical(station, "供包台编码", rcs.InstanceId + "/left-station-code / right-station-code", pair.OriginalValues + "。明确填写共同值才统一两个候选；原请求保持原值。");
+                locations["StationCode"] = locations[rcs.InstanceId + "/left-station-code"];
+                Technical(station, "供包台编号", rcs.InstanceId + "/left-station-code / right-station-code", "用于RCS识别当前供包台。填写后同时更新当前候选中的取格口和心跳编号；保存并受控重启后用于新请求。" + pair.OriginalValues);
             }
         }
-        form = Form(station, hasRcs ? "心跳身份" : null);
-        Input(form, "心跳供包台编码 *", m.Policy, "StationCode", "StationCode", station, "用于周期心跳；与上方取格口编码分别配置。");
+        if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
-        Technical(station, "心跳供包台编码", "StationCode", "不自动替换取格口供包台编码；长度1～256，不含控制字符。");
         var data = Page(0, "数据与记录", ""); form = Form(data);
         Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000");
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "空间不足时停止新入场。");
-        Input(form, "日志保留", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "仅诊断日志；留空按容量轮转。");
-        Input(form, "已结历史保留", m.Policy, "HistoryDays", "HistoryDays", data, "7～30天；到期在维护窗口删除已结明细。留空保持原历史。");
+        Input(form, "日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "新供包台默认7天。仅清理诊断日志；留空按容量轮转，不删除业务审计。");
+        Input(form, "已结数据保留天数", m.Policy, "HistoryDays", "HistoryDays", data, "新供包台默认7天，可设置7～30天。到期在维护窗口清理已结明细；未决作业和防重记录继续保留。留空不清理。");
         Technical(data, "历史到期维护", "HistoryDays", "保存并重启后生效。先暂停和退出软件，再用本发布的expire-history命令备份、核验并删除到期已结明细；未决责任、防重及编号索引永久保留。正常运行期间不执行批量删除。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
@@ -76,6 +75,26 @@ public sealed partial class ParameterSettingsControl
         }
         display.Body.Children.Add(Text("简体中文 · 浅色"));
         display.Body.Children.Add(Text("窗口布局", true));
+        var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, DisplayMemberPath = "Label", SelectedValuePath = "Mode", MinHeight = 40 };
+        var modeStatus = Text("");
+        bool modeReadable = true;
+        try { opening.SelectedValue = Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId); }
+        catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
+        { modeReadable = false; modeStatus.Text = "窗口模式未读取，原文件保留：" + error.Message; }
+        Field(Form(display), "默认打开方式", opening, "最大化（全屏）隐藏标题栏并铺满屏幕；F11切换，Esc返回窗口。仅影响作业窗口，不改变设备状态。", "WindowOpeningMode", display);
+        var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
+        saveMode.Click += (_, _) =>
+        {
+            if (RuntimeContext is { IsManagementMode: false }) { modeStatus.Text = "请先进入管理模式；选择保留。"; return; }
+            try
+            {
+                if (opening.SelectedValue is not Ipc.Platform.PresentationPreferences.WindowOpeningMode mode) throw new InvalidOperationException("请选择默认打开方式。");
+                Ipc.Platform.PresentationPreferences.SaveWindowMode(m.ApplicationId, mode); modeStatus.Text = "已保存，下次打开作业窗口生效。";
+            }
+            catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
+            { modeStatus.Text = "打开方式未保存，选择保留：" + error.Message; }
+        };
+        display.Body.Children.Add(saveMode); display.Body.Children.Add(modeStatus);
         display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
         {
@@ -85,6 +104,7 @@ public sealed partial class ParameterSettingsControl
         else display.Body.Children.Add(Text("完成首次配置后，可在作业窗口调整本机布局。"));
         Technical(display, "本机显示", "PresentationPreferences", "按当前 Windows 用户保存，不进入业务配置修订；工作台保留本地标识。目标效率不改变输送速度、节拍或实际产量；不会启动设备或恢复新入场。");
     }
+    sealed record WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode Mode, string Label);
     void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)
     {
         const string path = "SessionLifetimeMs";
@@ -143,7 +163,7 @@ public sealed partial class ParameterSettingsControl
             Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "完整匹配后排除；留空不排除。", true);
             Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；仍须唯一有效码；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
-            var rules = Page(1, "格口请求", "设置每次请求数量，以及是否向上游请求指定格口。新设置仅影响新作业。"); form = Form(rules);
+            var rules = Page(1, "格口请求", "相机扫描得到有效条码后，软件向RCS申请该包裹的分拣格口。这里设置请求携带的数量和是否指定目标格口；最终分配结果以RCS回包为准。修改只用于新作业。选择稍后配置RCS时，可先保留这些空项。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }
@@ -165,10 +185,10 @@ public sealed partial class ParameterSettingsControl
                 foreach (var f in new[] { ("单件图像最大字节", "ImageBytes"), ("图像缓存总字节", "TotalBytes"), ("图像待处理件数", "MaximumPending") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             }
         }
-        var budget = Page(1, "处理参数", "设置业务队列、外呼时限和未清偿作业上限。"); form = Form(budget);
-        Input(form, "输入队列容量", m.Policy, "QueueCapacity", "QueueCapacity", budget, "1～4096；队列满时拒收新输入。");
-        Input(form, "调用超时", m.Policy, "TimeoutMs", "TimeoutMs", budget, "100～30000");
-        Input(form, "未清偿作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "1～100000");
+        var budget = Page(1, "接收与等待限制", "控制扫码消息积压、等待外部服务的时长和未完成作业数量。通常保留默认值；积压或超时应先检查相机与RCS连接。"); form = Form(budget);
+        Input(form, "扫码消息缓冲上限", m.Policy, "QueueCapacity", "QueueCapacity", budget, "等待业务处理的消息最多可缓冲多少条。范围1～4096；满时拒收新输入，检查原因后重新扫码。");
+        Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "一次外部调用最多等待多少毫秒，范围100～30000。超时不代表对方未处理；结果不明时须核对原请求，不能直接重发。");
+        Input(form, "待处理作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "尚未结束或仍有结果待核对的作业最多可保留多少个。范围1～100000；达到上限后停止接收新包裹，不删除旧作业。");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)
     {

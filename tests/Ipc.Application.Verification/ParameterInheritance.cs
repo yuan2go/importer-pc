@@ -16,6 +16,14 @@ static class ParameterInheritance
     }
     public static async Task Run(string workspace, string root)
     {
+        var priorPreferences = PresentationPreferences.UserRootForVerification;
+        PresentationPreferences.UserRootForVerification = () => Path.Combine(root, "user-preferences");
+        try { await RunIsolated(workspace, root); }
+        finally { PresentationPreferences.UserRootForVerification = priorPreferences; }
+    }
+    static async Task RunIsolated(string workspace, string root)
+    {
+
         var legacy = new BarcodeFilterPolicy("OK[0-9]+");
         Check(Wire.Encode(legacy) == Wire.Encode(new { Pattern = "OK[0-9]+" }), "old single-pattern bytes and fingerprint remain unchanged");
         var rule = legacy with { ExclusionPattern = "OK00[12]" };

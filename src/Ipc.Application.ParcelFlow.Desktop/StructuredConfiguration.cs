@@ -233,6 +233,7 @@ public partial class ParcelViewModel
             LocalRole("上游格口", "integration", c.Wcs), LocalRole("PLC", "plc", c.Plc), LocalRole("默认相机", "camera", c.Images?.Camera), LocalRole("图片上传", "upload", c.Images?.Uploader)];
         var positions = ParcelBindings.Positions(c).Select(position => new PositionConfigurationDraft(position, LocalChoices("weight", "沿用默认秤"), LocalChoices("camera", "沿用默认相机"))).ToArray();
         var policy = ConfigurationPolicyDraft.From(c);
+        foreach (var item in drafts.Concat(readers.Select(r => r.Capability))) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId);
         structuredBase = c; configurationReviewBaseline = c; reviewedConfigurationSignature = null; configurationAuthority = "结构化表单"; validationState = "尚未校验";
         CapabilityDrafts.Clear(); ReaderDrafts.Clear(); PositionDrafts.Clear(); ConfigurationRoles.Clear();
         foreach (var draft in drafts) { draft.PropertyChanged += (_, _) => EditorChanged(); CapabilityDrafts.Add(draft); }
@@ -305,6 +306,7 @@ public partial class ParcelViewModel
         var inventory = bindings.Where(x => originalInventory.Contains(x.InstanceId) || !originalAll.Contains(x.InstanceId) || !roleIds.Contains(x.InstanceId)).ToArray();
         return policy.ApplyParameters(c) with
         {
+            DeferredConnections = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts),
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId), Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
             CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), MaintenanceLogin = Role("维护认证"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
             Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions

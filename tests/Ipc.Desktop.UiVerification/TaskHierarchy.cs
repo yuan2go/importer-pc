@@ -111,7 +111,7 @@ static partial class Program
             Check(string.Join("|", vm.Operations.Select(o => o.Id)) == originalOperations, ui + " navigation retains original operations without creating another parcel");
             Navigate("参数设置"); await vm.EnsureMaintenanceLoadedAsync();
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-            var editor = Descendants(host).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(1, "处理参数");
+            var editor = Descendants(host).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(1, "接收与等待限制");
             window.UpdateLayout();
             vm.StructuredPolicy!.TimeoutMs = "28000"; var draft = vm.StructuredPolicy;
             var input = Descendants(editor).OfType<TextBox>().Single(b => System.Windows.Automation.AutomationProperties.GetName(b) == "TimeoutMs");

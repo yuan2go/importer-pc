@@ -1,3 +1,5 @@
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+
 > TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
 
 > 2026-10-23 经典窗口与参数文案增量见 [PARAMETER-SHELL-POLISH-02](../work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)，仅细化原生分区、常用文案和按需说明，保留四类目录、同一候选及保存/授权机制。

@@ -68,7 +68,7 @@ static partial class Program
         rightAction.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
         Check(Box(right.InstanceId + "/device.ip").IsKeyboardFocused && editor.SelectedCategory == 2, "review action focuses the right camera, never the left instance");
         zone.Value = savedZone; rightIp.Value = savedRight; rcs.Target = savedTarget; model.Policy.QueueCapacity = "64"; model.ValidateFields();
-        foreach (var (category, title, filename) in new[] { (1, "条码筛选", "barcode"), (1, "处理参数", "processing"), (0, "供包台标识", "station"), (0, "数据与记录", "data"), (3, "RCS 服务", "rcs") })
+        foreach (var (category, title, filename) in new[] { (1, "条码筛选", "barcode"), (1, "接收与等待限制", "processing"), (0, "供包台标识", "station"), (0, "数据与记录", "data"), (3, "RCS 服务", "rcs") })
         {
             Check(editor.ShowPage(category, title), "shared directory exposes " + title); await Flush(); Capture("refine-" + filename);
             var mainScrolls = Descendants(editor).OfType<ScrollViewer>().Where(s => s.IsVisible && s.Content is StackPanel && s.HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled).ToArray();

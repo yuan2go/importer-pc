@@ -24,7 +24,7 @@ public partial class ParcelViewModel
     static object? StageRevision(StageFact? stage) => stage is null ? null :
         (stage.Request.Id, stage.Request.PayloadHash, stage.State, stage.Attempts, stage.Failure, stage.Replies.Length, stage.Replies.LastOrDefault()?.Id);
     object? DetailsRevision(ParcelOperation? op) => op is null ? null :
-        (op.Id, op.ConfigurationHash, op.State, op.Reason, op.Slot, op.RecoveryRequired, op.ImageReleased, op.Weight, op.Operator, op.Image,
+        (selectionGeneration, op.Id, op.ConfigurationHash, op.State, op.Reason, op.Slot, op.RecoveryRequired, op.ImageReleased, op.Weight, op.Operator, op.Image,
          StageRevision(op.Wcs), StageRevision(op.Plc), StageRevision(op.Capture), StageRevision(op.Upload), IsManagementMode);
     internal void SetDetailsVisibility(bool structured, bool raw)
     {

@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for case in latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks; do
+          for case in latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks audit03-snapshots ux-commercial-presentation; do
             dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
           done
       - name: Retain the actual boundary result including failures
@@ -72,6 +72,8 @@ jobs:
             deferred-connections.log
             confirmed-camera-rcs.log
             latency-*-checks.log
+            audit03-snapshots.log
+            ux-commercial-presentation.log
           if-no-files-found: warn
           retention-days: 30
   frozen-sportmaster:

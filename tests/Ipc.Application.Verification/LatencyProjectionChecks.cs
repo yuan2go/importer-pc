@@ -49,13 +49,23 @@ static class LatencyProjectionChecks
         using var release = new ManualResetEventSlim();
         runtime.Boundary = p => { if (p == "SnapshotGateAcquired") { entered.TrySetResult(); release.Wait(); } };
         var authority = new ManagementModeStatus(true, true, DateTimeOffset.UtcNow.AddMinutes(1));
-        var shared1 = SharedSnapshotRead.Read(runtime, authority);
+        var shared1 = SharedSnapshotRead.Read(runtime, authority, new object());
         await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var shared2 = SharedSnapshotRead.Read(runtime, authority);
+        var shared2 = SharedSnapshotRead.Read(runtime, authority, new object());
         Check(ReferenceEquals(shared1, shared2), "concurrent windows share one in-flight detached projection");
-        var differentAuthority = SharedSnapshotRead.Read(runtime, authority with { Active = false });
+        var differentAuthority = SharedSnapshotRead.Read(runtime, authority with { Active = false }, new object());
         Check(!ReferenceEquals(shared1, differentAuthority), "a different authority generation cannot join the earlier privileged read");
         release.Set(); await Task.WhenAll(shared1, shared2, differentAuthority);
         runtime.Boundary = null;
+        var probe = new SportmasterUi.SnapshotProbe(runtime);
+        var vm = new ParcelViewModel(probe, "classic", "sportmaster"); await vm.RefreshAsync();
+        var delayed = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var current = vm.Snapshot!;
+        probe.Read = () => delayed.Task; var older = vm.RefreshAsync();
+        await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(5));
+        probe.Read = () => Task.FromResult(current); var newer = vm.RefreshAsync();
+        var winner = await Task.WhenAny(newer, Task.Delay(1000));
+        delayed.TrySetResult(current); await Task.WhenAll(older, newer); await vm.DrainAsync();
+        Check(winner == newer, "a newer read in the same window cannot join its own pending older read");
     }
 }

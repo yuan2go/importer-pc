@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "5a1b2c74d0b78da62b2db5193896f66d2d90dc097791fd4547d8121e3ebbe402",
-      "size_bytes": 15293,
-      "git_blob": "c7adc58aa5852b678c4e42cd8bfc26d8bab93123",
+      "sha256": "2f9df4084bcc584cc8b8ac2d1488d2ecc953d3585a18dc0eb8ef44b3f55a5a33",
+      "size_bytes": 15415,
+      "git_blob": "4c1bd52c6e3021fccbc06c80b6276b5704a67b0d",
       "version": "latency-capacity-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Measured latency/capacity work package",
@@ -54554,9 +54554,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "ccbb9bbdb2eb27f25065073b7f24e425ec560146b70b73bc757f057c3448f1ad",
-      "size_bytes": 23527,
-      "git_blob": "d2dc2f42df04735ba3719b3fc3ba91c53d35a2f3",
+      "sha256": "06733a3c295563f16228ea42d0361118f6ade6bb487e7aaa1001b18e09d2de5a",
+      "size_bytes": 23533,
+      "git_blob": "89f29ae4b11a43fb53d970419830a51d0b8c023b",
       "previous_git_blob": "8eda7cecd2205bc94d688fad21d3753ee145892c",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "2868ba71f19888691845269e00ce2ec7c58bcc03",
@@ -59812,14 +59812,22 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterRcsPresentation.cs",
-      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "version": "latency-capacity-01",
       "status": "current_source_or_synthetic_evidence",
-      "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
-      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "5704c0d4e3754bd2ba8fc68b57e89894837fa19b6e84d88529a63e5db4aebd70",
-      "size_bytes": 3260,
-      "git_blob": "8d4979d260d85486c8ec8497a64e4a90774ad989"
+      "sha256": "d03c7f3129aa5802478fdd91c769375999e60720492cd6128b111d980b048ec8",
+      "size_bytes": 3462,
+      "git_blob": "75c393d55cce97fa0ada37ce5c568c3dce66608a",
+      "pre_latency_capacity_01_identity": {
+        "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+        "status": "current_source_or_synthetic_evidence",
+        "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
+        "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+        "sha256": "5704c0d4e3754bd2ba8fc68b57e89894837fa19b6e84d88529a63e5db4aebd70",
+        "git_blob": "8d4979d260d85486c8ec8497a64e4a90774ad989"
+      }
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterUi.cs",
@@ -59879,15 +59887,23 @@
       "pre_publication_no_test_git_blob": "86bee2e03b7cfef408dd9c8d37eb5be9c230da6a"
     },
     {
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
-      "sha256": "1217eb78fd79fd60f40d57ae3447dca1f97eb0bf31c303321da609ea193c2452",
-      "size_bytes": 25792,
-      "git_blob": "578a95a97f86b4ae970f46f448cf643e3b72568c"
+      "sha256": "e2fbf05b99cf25c1fdc1703f35e9a0b1213fa72b94895eece035edeb5ef3b31b",
+      "size_bytes": 25952,
+      "git_blob": "834305c358f5b03d3b08eae53914f2babee845a2",
+      "pre_latency_capacity_01_identity": {
+        "version": "MANAGEMENT-MODE-01",
+        "status": "current_source_or_separately_scoped_evidence",
+        "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
+        "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+        "sha256": "1217eb78fd79fd60f40d57ae3447dca1f97eb0bf31c303321da609ea193c2452",
+        "git_blob": "578a95a97f86b4ae970f46f448cf643e3b72568c"
+      }
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
@@ -90773,9 +90789,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "b95103011de12651894ad422775412086f2eb1d9e2b4bcfe13165779e51c59a8",
-      "size_bytes": 6254,
-      "git_blob": "d8e940c6eca16d9bd3ea11da84abd76f72e11420"
+      "sha256": "adf04fe7e039913efb6e673368a80ed55694d722c7e5460bd3ed22350e93a04d",
+      "size_bytes": 6461,
+      "git_blob": "af59457710dd694ad9b75ca101b0c45c3f9309a5"
     },
     {
       "path": "docs/runtime/validation/latency-capacity-01.md",
@@ -90784,9 +90800,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "eef188787d23252784a9c2a3d297bfd75541510465d8292a1acc95e80bd7c5a0",
-      "size_bytes": 5186,
-      "git_blob": "97327cf7dafddf461fae365015f3ac24e7bf7bd1"
+      "sha256": "56f5d75c563cf917425155731b74d7ea69eee3c92c3b8fa68d6503b6a4294402",
+      "size_bytes": 5754,
+      "git_blob": "88a5b7527054163ca837f6c107739420d05e4a41"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelDetailsProjection.cs",
@@ -90795,9 +90811,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "823840bd9aeff39508ac578681871f5659c3a417b81f36ed27349b205cdb023a",
-      "size_bytes": 6269,
-      "git_blob": "bf0ef6fcfde3064a15b8ed23b9a5f95181bebe61"
+      "sha256": "4c914cce25ea43b11356185b1e61cd61f963ef1ba5944651f425f6174efcfbc4",
+      "size_bytes": 6290,
+      "git_blob": "362afe1e8f640ada316d09bad04fd02e8623fae7"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/SharedSnapshotRead.cs",
@@ -90806,9 +90822,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "aa0fb904553771a753f167cdae78157ac54436492eb0805d9071b9fff15bbdde",
-      "size_bytes": 1027,
-      "git_blob": "d82e882801d6b7fb09ab97dd399e099b93a76c8a"
+      "sha256": "47749696ff1d5ff404b892c813cb2b730ed0d4705f5201b7d3b1300773b48daf",
+      "size_bytes": 1469,
+      "git_blob": "415bdc8a4f0f2c2cf750b95b1a2e3008f43b1cae"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelSnapshotCache.cs",
@@ -90839,9 +90855,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "f91bf9741494f40674fe1a75cf394540ecd95255a4522472cf51a2ff29fd16c9",
-      "size_bytes": 5248,
-      "git_blob": "1105b4fec064d0e722c216e893601d1c00d5f016"
+      "sha256": "10ef0403f79b1892f85a393d24720d7095b0dd01851cc65c7f6c53ddb654f221",
+      "size_bytes": 6089,
+      "git_blob": "e85175a3b0e8caf7232feed1c5593be762caeeac"
     },
     {
       "path": "tests/Ipc.Application.Verification/LatencyProjectionChecks.cs",
@@ -90850,9 +90866,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "6a1e636df7976c7234aad88133e1ad70752c78bc8c0d5432d64c652d8abf1765",
-      "size_bytes": 4575,
-      "git_blob": "5be89d13b9ab3d2819b70c351ab9dd3757a87390"
+      "sha256": "d02c7106a40bf0ef50e48e5222d9d5308ab925721e9318eb664f63f841b1de6b",
+      "size_bytes": 5419,
+      "git_blob": "503edabb55c78ccdabb96b9f151b3c873e4d6147"
     },
     {
       "path": "tests/Ipc.Application.Verification/LatencyStorageChecks.cs",

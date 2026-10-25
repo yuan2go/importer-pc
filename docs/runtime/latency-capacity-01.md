@@ -37,3 +37,5 @@ PR106的604800约9.46GB是完整合成档案，不是现场、真实RCS或真实
 PASSIVE不强制等待所有读者；busy=0不等于全部完成，须比较log与checkpointed帧。读者结束后完成检查点表示WAL可复用，不承诺物理文件立即变小；绝不手删活动WAL。同一业务实例最多一个历史导出，第二个明确拒绝，原10万行/64MiB/2分钟预算和完整筛选/回执保留，未重构导出。
 
 技术依据：[SQLite PASSIVE及三列结果](https://www.sqlite.org/pragma.html#pragma_wal_checkpoint)、[分步在线备份](https://www.sqlite.org/backup.html)、[dotnet-counters采集](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters)。本地实测、夹具和目标现场资格分别记录，不以资料声明替代实测。
+
+同一窗口的新刷新不加入自己的旧请求；消费者用弱身份登记，不持有已关闭窗口。详情缓存还包括显式选择generation，普通500ms快照替换不增加该generation。

@@ -46,6 +46,14 @@ static class LatencyDetailsChecks
         for (var i = 0; i < 5; i++) await vm.RefreshAsync();
         await vm.DrainAsync();
         Check(getters == 0 && formats == warmFormats, "unchanged job refresh neither evaluates Details nor formats it again");
+        // An explicit replacement selection is a new read owner even when its
+        // synthetic projection preserves the durable request/reply identities.
+        var selectedReply = new StageReply(Wire.Id(), request.Id, request.PayloadHash, false, null, null, null, null, "synthetic-projection-one", DateTimeOffset.UtcNow);
+        var selectedProjection = older with { Wcs = older.Wcs! with { Replies = [selectedReply] } };
+        vm.Selected = selectedProjection; await vm.DrainAsync();
+        vm.Selected = selectedProjection with { Wcs = selectedProjection.Wcs! with { Replies = [selectedReply with { Evidence = "synthetic-projection-two" }] } };
+        await vm.DrainAsync();
+        Check(vm.StructuredDetails.Contains("synthetic-projection-two"), "explicit replacement selection cannot retain an earlier same-ID projection");
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         vm.BeforeDetailsFormatForVerification = () => { entered.TrySetResult(); return release.Task; };

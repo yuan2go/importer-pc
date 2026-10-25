@@ -124,7 +124,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public bool Busy { get; private set; }
     long refreshGeneration;
     long snapshotReadId;
-    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => Own(SharedSnapshotRead.Read(application, ManagementStatus));
+    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => Own(SharedSnapshotRead.Read(application, ManagementStatus, this));
     protected virtual void ReportCommandFailure(Exception error,string prefix)
     { if (!ReferenceEquals(error, lastReadError)) Message=prefix+error.Message; }
     async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()

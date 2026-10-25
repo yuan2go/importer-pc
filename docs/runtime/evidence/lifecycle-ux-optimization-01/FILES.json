@@ -1,5 +1,5 @@
 {
-  "scope": "synthetic evidence; 36fb420e superseded after backup binding defect; ordinary machine CLI startup blocked",
+  "scope": "original phase evidence; 36fb420e/48e6da29 superseded; final candidate recorded separately",
   "files": [
     {
       "path": "backup-binding-fix/before-fix-RESULT.json",
@@ -75,6 +75,91 @@
       "path": "directed-wal-read-failure.log",
       "bytes": 13921,
       "sha256": "77679959e4ffa9e911da3e88fa0dff53f3c9c81c4605c1e6182d1fa1c9d03f99"
+    },
+    {
+      "path": "final-layout-regressions/CI-first-run.json",
+      "bytes": 826,
+      "sha256": "9d32b82fb95353f4771ae80b821846a1c92bb81e930398b020a9970c72c3ef28"
+    },
+    {
+      "path": "final-layout-regressions/classic-minimum-after.png",
+      "bytes": 80962,
+      "sha256": "f1f42ef1e62681eb1e825adce2674167a0072416f2cf053a2cbb77c911dcc077"
+    },
+    {
+      "path": "final-layout-regressions/hierarchy-after.log",
+      "bytes": 26051,
+      "sha256": "27b32e1e158512deb826130fc44cb36a8f5e84bc6cbcab755a3db50e33ab795c"
+    },
+    {
+      "path": "final-layout-regressions/history-after.log",
+      "bytes": 13069,
+      "sha256": "2b5b38e5e403c877c84b315713cdb0ab4ac978d52e1d5b6c7cbf348f917224d9"
+    },
+    {
+      "path": "final-layout-regressions/history-before-RESULT.json",
+      "bytes": 3288,
+      "sha256": "f3f8a54d28936f5bf324b1a038a36ac58d300db50da461cecc33ba2332af01bf"
+    },
+    {
+      "path": "final-layout-regressions/history-before-WINDOWS-WPF.log",
+      "bytes": 4294,
+      "sha256": "6e8efefbc500aeab526d0eedcc048b77148b9d5647ec846a7552480354e673a8"
+    },
+    {
+      "path": "final-layout-regressions/history-minimum-after.png",
+      "bytes": 84198,
+      "sha256": "9eda0f8c40f1c519c88ddf44adc1da2f2be2dc6a93d905ffe9ae2ecdaa013601"
+    },
+    {
+      "path": "final-layout-regressions/management-RESULT.json",
+      "bytes": 3288,
+      "sha256": "a86623f08954c512a770644bcce21b2a93a245d258bd179a0731c5bf8fa3fd27"
+    },
+    {
+      "path": "final-layout-regressions/management-WINDOWS-WPF.log",
+      "bytes": 5830,
+      "sha256": "1a2e61ad48e9d834f75eafd8b6e53e99f1ee49a18084f9afa8a786d26ea11bb5"
+    },
+    {
+      "path": "final-layout-regressions/parameter-RESULT.json",
+      "bytes": 3288,
+      "sha256": "916941b7913b07d385021b9dd2d8e7353754fc3ad10e226ca81f38629333cc04"
+    },
+    {
+      "path": "final-layout-regressions/parameter-shell-RESULT.json",
+      "bytes": 3288,
+      "sha256": "93965e5e2336559ca4725cc58c16535ad9ad8940d1eb6ef30f8c1080a46fdc3a"
+    },
+    {
+      "path": "final-layout-regressions/parameter-shell-WINDOWS-WPF.log",
+      "bytes": 3588,
+      "sha256": "4a16adc568504ef10b83d03ccc19a1ed32513e8ce11e611d923fa83e5e02fd46"
+    },
+    {
+      "path": "final-layout-regressions/parameter-WINDOWS-WPF.log",
+      "bytes": 27522,
+      "sha256": "a78a22bab7340f80b4f4ff1b6c9e965ae56675b90ccfa696ee5f499495c1c94d"
+    },
+    {
+      "path": "final-layout-regressions/stability-RESULT.json",
+      "bytes": 3288,
+      "sha256": "a86623f08954c512a770644bcce21b2a93a245d258bd179a0731c5bf8fa3fd27"
+    },
+    {
+      "path": "final-layout-regressions/stability-WINDOWS-WPF.log",
+      "bytes": 1296,
+      "sha256": "6763cfd313ae228f2a9f6370b911de0601fd484ca00c9cf874a74c3a59da4822"
+    },
+    {
+      "path": "final-layout-regressions/startup-RESULT.json",
+      "bytes": 3288,
+      "sha256": "916941b7913b07d385021b9dd2d8e7353754fc3ad10e226ca81f38629333cc04"
+    },
+    {
+      "path": "final-layout-regressions/startup-WINDOWS-WPF.log",
+      "bytes": 14932,
+      "sha256": "f932d8d10bc76e8e6d41c20c34f96a5c8c771ae268091bf16d64a5185d252260"
     },
     {
       "path": "first-password-layout-failure.log",

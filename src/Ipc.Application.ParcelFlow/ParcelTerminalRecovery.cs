@@ -83,6 +83,7 @@ public sealed partial class ParcelRepository
             string after="";
             while(true)
             {
+                maintenanceCancellation.ThrowIfCancellationRequested();
                 string id,body;
                 using(var read=db.CreateCommand())
                 {

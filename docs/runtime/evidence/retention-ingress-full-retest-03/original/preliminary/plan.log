@@ -1,0 +1,23 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-4e76097ac5f449d3b558e82181413190
+{
+  "Optimized": false,
+  "Plan": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ]
+}
+{
+  "Optimized": true,
+  "Plan": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ]
+}
+PASS RETENTION-INGRESS: rowid seek, no sort, indexed retained-owner protection

@@ -1,0 +1,32 @@
+[
+  {
+    "Case": "retention-ingress",
+    "ExitCode": -532462766,
+    "Seconds": 7.7057881,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\retention-ingress-a192b7f.log"
+  },
+  {
+    "Case": "win11-stability",
+    "ExitCode": -532462766,
+    "Seconds": 7.100387,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\win11-stability-a192b7f.log"
+  },
+  {
+    "Case": "audit03-maintenance",
+    "ExitCode": -532462766,
+    "Seconds": 7.0149572,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\audit03-maintenance-a192b7f.log"
+  },
+  {
+    "Case": "version-compatibility",
+    "ExitCode": -532462766,
+    "Seconds": 6.8026837,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\version-compatibility-a192b7f.log"
+  },
+  {
+    "Case": "upgrade-conflict-closure",
+    "ExitCode": -532462766,
+    "Seconds": 6.7345199,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\upgrade-conflict-closure-a192b7f.log"
+  }
+]

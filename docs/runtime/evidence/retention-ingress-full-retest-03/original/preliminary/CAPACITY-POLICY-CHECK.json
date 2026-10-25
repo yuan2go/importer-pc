@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_CAPACITY_POLICY_COMPONENT_ONLY",
+  "AtUtc": "2026-10-25T06:41:04.5937407+00:00",
+  "HelperSha256": "232A7C51D99C5DD3D8A5F5D6E62BFDCF0AF793C6259F208FC3881928EF315FD2",
+  "MeasuredFreeBytes": 29708189696,
+  "NegativeAvailableBytes": 0,
+  "NegativeFreeSpaceIsStubbed": true,
+  "ElevatedOrProtectedCliExecuted": false,
+  "Checks": [
+    "First case accounts source, complete backup, restore and repeated-maintenance backup plus unchanged reserve",
+    "Full case uses exact existing backup bytes and unchanged copy factor/reserve, not small-fixture extrapolation",
+    "Controlled insufficient-space input refuses before any restore; no actual disk is filled"
+  ]
+}

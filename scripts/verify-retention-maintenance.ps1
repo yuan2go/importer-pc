@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$Evidence,[Parameter(Mandatory)][string]$Seed,[int[]]$Counts=@(1000,10000,604800,2592000),[switch]$RestoreAll)
+param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$Evidence,[Parameter(Mandatory)][string]$Seed,[int[]]$Counts=@(1000,10000,604800,2592000),[switch]$RestoreAll,[string]$ReuseCompletedRun)
 $ErrorActionPreference='Stop'
 . (Join-Path $Workspace 'scripts/project-environment.ps1')
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -17,9 +17,23 @@ if($LASTEXITCODE -ne 0){throw 'Commit or restore product inputs before fixed-sou
 $sourceHead=(& git -C $Workspace rev-parse HEAD).Trim()
 $productVersion=[Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0/Ipc.Application.Sportmaster.dll')).ProductVersion
 if(-not $productVersion.EndsWith($sourceHead,[StringComparison]::OrdinalIgnoreCase)){throw 'Build the actual CLI from this exact source HEAD before qualification'}
+$cliIdentityText=& (Join-Path $env:DOTNET_ROOT 'dotnet.exe') (Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll') --action business-identity
+if($LASTEXITCODE -ne 0){throw 'Build the CLI with -p:BusinessModule=Sportmaster; a stale business DLL does not identify the selected executable'}
+$cliIdentity=($cliIdentityText -join [Environment]::NewLine) | ConvertFrom-Json
+if($cliIdentity.ApplicationId -ne 'sportmaster' -or $cliIdentity.BusinessVersion -ne $productVersion.Split('+')[0]){throw 'Selected CLI and exact business build identity differ'}
 if($Counts.Count -eq 0 -or @($Counts|Sort-Object -Unique).Count -ne $Counts.Count -or ($Counts|Where-Object{$_ -lt 1 -or $_ -gt 2592000})){throw 'Provide nonempty unique counts within the documented synthetic 30-day upper bound'}
 $anchor=(Get-ItemProperty -LiteralPath HKLM:/SOFTWARE/ImporterPc/Storage).Root
 if([IO.Path]::GetPathRoot($anchor) -ne 'D:\'){throw 'Use the administrator-configured D: storage anchor'}
+$priorRun=$null
+if($ReuseCompletedRun){
+ $ReuseCompletedRun=[IO.Path]::GetFullPath($ReuseCompletedRun)
+ if([IO.Path]::GetPathRoot($ReuseCompletedRun) -ne 'D:\'){throw 'Reuse evidence must be on D:'}
+ $priorRun=Get-Content -LiteralPath $ReuseCompletedRun -Raw | ConvertFrom-Json
+ $priorRoot=[IO.Path]::GetFullPath($priorRun.ProtectedRoot)
+ $qualificationPrefix=[IO.Path]::GetFullPath((Join-Path $anchor 'Qualification'))+[IO.Path]::DirectorySeparatorChar
+ if(-not $priorRoot.StartsWith($qualificationPrefix,[StringComparison]::OrdinalIgnoreCase)){throw 'Only prior protected synthetic qualification backups may be reused'}
+ for($parent=Get-Item -LiteralPath $priorRoot;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked prior qualification ancestor refused'}}
+}
 for($parent=Get-Item -LiteralPath $anchor;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked protected ancestor refused'}}
 $runId='retention-'+[Guid]::NewGuid().ToString('N')
 $protectedRoot=Join-Path $anchor ('Qualification/'+$runId)
@@ -42,6 +56,8 @@ Copy-Item -LiteralPath (Join-Path $Workspace 'tests/Ipc.Application.Verification
 $cliExe=Join-Path $cli 'Ipc.Assembly.exe';$fixtureDll=Join-Path $fixtureHost 'Ipc.Application.Verification.dll'
 $result=[ordered]@{Status='InProgress';StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');ProtectedRoot=$protectedRoot;ElevatedAdministrator=$true;SourceCommit=(& git -C $Workspace rev-parse HEAD);ProductSha256=(Get-FileHash -LiteralPath (Join-Path $cli 'Ipc.Application.ParcelFlow.dll')).Hash;FixtureSha256=(Get-FileHash -LiteralPath $fixtureDll).Hash;Qualification='Isolated protected Windows CLI and synthetic full-custody scale only; no installed production application, real SDK/RCS, target IPC or 24h/72h';Cases=@();Runs=@()}
 function Save-Result { $result | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $Evidence 'PROTECTED-RESULT.json') -Encoding utf8NoBOM }
+$result.MaintenanceBudgetScope='Two hours from CLI command entry through original hashing, repository initialization, complete backup, expiry, validation, optional compact and cleanup. Cooperative cancellation; rollback and uninterruptible OS I/O may finish after the deadline. Inspection, fixture import, restore drill and business takeover are separate.'
+if($priorRun){$result.ReusedRun=[ordered]@{Path=$ReuseCompletedRun;Sha256=(Get-FileHash -LiteralPath $ReuseCompletedRun).Hash;SourceCommit=$priorRun.SourceCommit;OriginalStatus=$priorRun.Status}}
 function Invoke-Observed([string]$Name,[string]$Executable,[string[]]$Arguments,[string]$Database='') {
  $entry=[ordered]@{Name=$Name;StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');Executable=$Executable;Arguments=$Arguments;PeakWorkingSet=0L;PeakWalBytes=0L}
  $start=[Diagnostics.ProcessStartInfo]::new($Executable);$start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.WindowStyle='Hidden';$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
@@ -67,9 +83,55 @@ try {
  foreach($count in $Counts){
   $case=Join-Path $protectedRoot ('case-'+$count)
   # Local disk preflight is additional fixture protection, not a changed production reserve/budget.
-  if($result.Cases.Count -gt 0){$sample=$result.Cases[0];$copies=if($RestoreAll){3.15}else{2.15};$estimate=[long]($sample.OriginalBytes/$sample.Count*$count*$copies+8GB);if((Get-PSDrive D).Free -lt $estimate){$result.Cases+=,[ordered]@{Count=$count;Status='NOT_RUN_DISK_CAPACITY';RequiredEstimateBytes=$estimate;AvailableBytes=(Get-PSDrive D).Free};Save-Result;continue}}
-  $created=Invoke-Observed ('create-'+$count) (Join-Path $env:DOTNET_ROOT 'dotnet.exe') @($fixtureDll,$Workspace,'--retention-qualification','create',$case,$Seed,"$count")
-  if($created.ExitCode -ne 0){throw "Fixture creation failed: $count"}
+  $sourceBytes=$null;$capacityBasis='Previous completed fixture extrapolation'
+  if($priorRun){
+   $sizedCases=@($priorRun.Cases|Where-Object Count -eq $count)
+   if($sizedCases.Count -eq 1){
+    $sizedCase=[IO.Path]::GetFullPath($sizedCases[0].CaseRoot)
+    if($sizedCase -ne (Join-Path $priorRoot ('case-'+$count))){throw 'Capacity source must belong to the recorded synthetic root'}
+    for($parent=Get-Item -LiteralPath $sizedCase;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked capacity source ancestor refused'}}
+    $sizedBackup=Join-Path $sizedCase 'complete-before-expiry.db'
+    if(Test-Path -LiteralPath ($sizedBackup+'.recovery/COMPLETED.json')){
+     $sizedFile=Get-Item -LiteralPath $sizedBackup
+     if($sizedFile.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked capacity source refused'}
+     $sourceBytes=$sizedFile.Length;$capacityBasis='Actual completed backup bytes; restore still verifies the entire manifest'
+    }
+   }
+  }
+  if($null -eq $sourceBytes -and $result.Cases.Count -gt 0){$sample=$result.Cases[0];$sourceBytes=$sample.OriginalBytes/$sample.Count*$count}
+  if($null -ne $sourceBytes){
+   # First case also creates a restored copy and a second-maintenance backup.
+   $copies=if($result.Cases.Count -eq 0){4.15}elseif($RestoreAll){3.15}else{2.15}
+   $estimate=[long]($sourceBytes*$copies+8GB);$available=(Get-PSDrive D).Free
+   $capacity=[ordered]@{Count=$count;SourceBytes=$sourceBytes;CopyFactor=$copies;ReserveBytes=8GB;RequiredEstimateBytes=$estimate;AvailableBytes=$available;Basis=$capacityBasis}
+   if(-not $result.Contains('CapacityChecks')){$result.CapacityChecks=@()};$result.CapacityChecks+=,$capacity;Save-Result
+   if($available -lt $estimate){$result.Cases+=,[ordered]@{Count=$count;Status='NOT_RUN_DISK_CAPACITY';RequiredEstimateBytes=$estimate;AvailableBytes=$available};Save-Result;continue}
+  }
+  if($priorRun){
+   $priorCases=@($priorRun.Cases | Where-Object Count -eq $count)
+   if($priorCases.Count -ne 1){throw "No unique prior full fixture for $count"}
+   $priorCase=[IO.Path]::GetFullPath($priorCases[0].CaseRoot)
+   if($priorCase -ne (Join-Path $priorRoot ('case-'+$count))){throw 'Prior case must belong to the recorded synthetic root'}
+   for($parent=Get-Item -LiteralPath $priorCase;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked prior fixture ancestor refused'}}
+   $sourceBackup=Join-Path $priorCase 'complete-before-expiry.db'
+   $sourceFixture=Get-Content -LiteralPath (Join-Path $priorCase 'FIXTURE.json') -Raw | ConvertFrom-Json
+   if($sourceFixture.Eligible -ne $count -or $sourceFixture.Status -ne 'CREATED_FULL_SYNTHETIC_CUSTODY'){throw 'Prior fixture is not complete synthetic custody'}
+   $reuseTarget=Join-Path $case 'data/Simulation/retention-qualification/sportmaster'
+   # Actual restore verifies every custody hash and requires a new ordinary target.
+   # The old failed source and its complete backup remain byte-for-byte unchanged.
+   $created=Invoke-Observed ('reuse-restore-'+$count) $cliExe @('--action','restore','--file',$sourceBackup,'--destination',$reuseTarget)
+   if($created.ExitCode -ne 0){throw "Full original backup restore failed: $count"}
+   $reusedDatabase=Join-Path $reuseTarget 'sportmaster.db'
+   $sourceFixture | Add-Member -NotePropertyName ReusedFromBackup -NotePropertyValue $sourceBackup
+   $sourceFixture | Add-Member -NotePropertyName PriorFixtureSha256 -NotePropertyValue (Get-FileHash -LiteralPath (Join-Path $priorCase 'FIXTURE.json')).Hash
+   $sourceFixture.Database=$reusedDatabase
+   $sourceFixture.DatabaseSha256=(Get-FileHash -LiteralPath $reusedDatabase).Hash
+   $sourceFixture.DatabaseBytes=(Get-Item -LiteralPath $reusedDatabase).Length
+   $sourceFixture | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $case 'FIXTURE.json') -Encoding utf8NoBOM
+  } else {
+   $created=Invoke-Observed ('create-'+$count) (Join-Path $env:DOTNET_ROOT 'dotnet.exe') @($fixtureDll,$Workspace,'--retention-qualification','create',$case,$Seed,"$count")
+   if($created.ExitCode -ne 0){throw "Fixture creation failed: $count"}
+  }
   $fixture=Get-Content -LiteralPath (Join-Path $case 'FIXTURE.json') -Raw | ConvertFrom-Json;$database=$fixture.Database
   Copy-Item -LiteralPath (Join-Path $case 'FIXTURE.json') -Destination (Join-Path $Evidence ('fixture-'+$count+'.json'))
   $item=[ordered]@{Count=$count;CaseRoot=$case;OriginalBytes=$fixture.DatabaseBytes;OriginalHash=$fixture.DatabaseSha256;Status='Created'};$result.Cases+=,$item;Save-Result

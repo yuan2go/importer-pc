@@ -16,6 +16,9 @@ Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--h02-crash-child")) { var i = Array.IndexOf(args, "--h02-crash-child"); await ReliabilityHardening.CrashChild(workspace, args[i + 1], args[i + 2], args[i + 3]); return; }
 if (args.Contains("--h02-crashes")) { await ReliabilityHardening.Crashes(workspace, root); return; }
 if (args.Contains("--reliability-02")) { await ReliabilityHardening.Run(workspace, root); return; }
+if (args.Contains("--retention-ingress-plan")) { var i = Array.IndexOf(args, "--retention-ingress-plan"); RetentionIngress.ExplainClosedBackup(args[i + 1], args[i + 2]); return; }
+if (args.Contains("--retention-ingress-crash-child")) { var i = Array.IndexOf(args, "--retention-ingress-crash-child"); RetentionIngress.CrashChild(args[i + 1], args[i + 2]); return; }
+if (args.Contains("--retention-ingress")) { RetentionIngress.Run(workspace, root, args.Contains("--large")); return; }
 if (args.Contains("--retention-qualification")) { var i = Array.IndexOf(args, "--retention-qualification"); await RetentionQualification.Run(workspace, args[(i + 1)..]); return; }
 if (args.Contains("--win11-stability")) { await StabilityRemediation.Run(workspace, root); return; }
 if (args.Contains("--stability-history-scale")) { StabilityHistoryScale.Run(root); return; }

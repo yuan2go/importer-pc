@@ -1,0 +1,52 @@
+{
+  "Scope": "Query/transaction component and cancellation; not full custody CLI or field qualification",
+  "Samples": [
+    {
+      "Count": 1000,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 40000,
+      "AfterVm": 9000,
+      "SelectSeconds": 0.0048982,
+      "DeleteSeconds": 0.1135818,
+      "Commits": 4
+    },
+    {
+      "Count": 10000,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 391000,
+      "AfterVm": 9000,
+      "SelectSeconds": 0.0330002,
+      "DeleteSeconds": 0.5548996,
+      "Commits": 40
+    }
+  ],
+  "ProductSha256": "C9CDACF9431BD23B173AB49C25081C6176EBC87C4FBB4176E25CBC3FFB2529B2"
+}

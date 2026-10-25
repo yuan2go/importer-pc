@@ -16,11 +16,19 @@ public static class Wire
     public static string Encode<T>(T value) => JsonSerializer.Serialize(value, Json);
     public static T Decode<T>(string json) => JsonSerializer.Deserialize<T>(json, Json) ?? throw new InvalidDataException("Null document");
     public static string Hash(string value) => Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value)));
-    public static string FileHash(string path)
+    public static string FileHash(string path) => FileHash(path, CancellationToken.None);
+    public static string FileHash(string path, CancellationToken cancellationToken)
     {
         // Preserve strict sharing for immutable custody, without allocating the whole DB/raw/package.
+        cancellationToken.ThrowIfCancellationRequested();
         using var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, FileOptions.SequentialScan);
-        return Convert.ToHexString(SHA256.HashData(input));
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = new byte[65536];
+        int count;
+        while ((count = input.Read(buffer)) != 0)
+        { cancellationToken.ThrowIfCancellationRequested(); hash.AppendData(buffer, 0, count); }
+        cancellationToken.ThrowIfCancellationRequested();
+        return Convert.ToHexString(hash.GetHashAndReset());
     }
     public static string Id() => Guid.NewGuid().ToString("N");
 }

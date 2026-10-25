@@ -1,0 +1,1 @@
+PASS: Windows writer sharing refusal, nonempty-WAL refusal, post-lock WAL recheck, changed-original-hash refusal; original fixtures untouched

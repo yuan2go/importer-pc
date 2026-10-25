@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 D:\w\ipc-retention-ingress-02\src\Ipc.Product\Ipc.Product.csproj (用时 516 毫秒)。
+  已还原 D:\w\ipc-retention-ingress-02\src\Ipc.Adapters\Ipc.Adapters.csproj (用时 516 毫秒)。
+  已还原 D:\w\ipc-retention-ingress-02\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 410 毫秒)。
+  9 个项目(共 12 个)是最新的，无法还原。
+  Ipc.Platform -> D:\w\ipc-retention-ingress-02\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\w\ipc-retention-ingress-02\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Contracts -> D:\w\ipc-retention-ingress-02\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> D:\w\ipc-retention-ingress-02\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\w\ipc-retention-ingress-02\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Reference.Protocol -> D:\w\ipc-retention-ingress-02\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Application.ParcelFlow -> D:\w\ipc-retention-ingress-02\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Drivers -> D:\w\ipc-retention-ingress-02\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\w\ipc-retention-ingress-02\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Adapters -> D:\w\ipc-retention-ingress-02\src\Ipc.Adapters\bin\Release\net10.0\Ipc.Adapters.dll
+  Ipc.Product -> D:\w\ipc-retention-ingress-02\src\Ipc.Product\bin\Release\net10.0\Ipc.Product.dll
+  Ipc.Assembly -> D:\w\ipc-retention-ingress-02\src\Ipc.Assembly\bin\Release\net10.0\Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.77

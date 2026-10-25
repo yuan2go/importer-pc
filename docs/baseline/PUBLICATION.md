@@ -2,6 +2,10 @@
 
 本轮用户明确授权上传并随应用离线交付 `NotoSansCJKsc-Regular.otf` 与 `NotoSansCJKsc-Medium.otf`，仅限官方 Sans2.004 的未修改静态桌面字库，连同原始 OFL 和[来源/哈希清单](../../src/Ipc.Presentation.Wpf/Fonts/NOTICE.json)。允许本轮合成原生截图与验证记录；不包含客户原稿、未授权衍生资产、私链、凭据、生产数据、其他字体或 SDK。以下各历史条款仍限于其原任务/发布范围。
 
+# 2026-10-25 输入分页与维护预算整改
+
+本轮用户授权以PR103后最新main实施工业级历史维护性能整改、必要CI和可复核证据并评估main集成。公开增量为[工作包](../work-packages/WP-IPC-RETENTION-INGRESS-02.md)、通用代码/测试、[运行说明](../runtime/retention-ingress-02.md)、[验证](../runtime/validation/retention-ingress-02.md)及合成文本/hash。大库、DLL、SDK、安装数据、账号/现场数据和未授权附件继续只留D盘。原PR103失败/备份及其他历史证据不改写；未完成的大规模受保护验证和真实工控机资格明确保留。该授权替代原包“仅补证”对本轮新整改范围的限制，不扩大资产公开范围。
+
 # 2026-10-24 完整历史与受保护维护补证
 
 本轮用户要求基于最新main补齐本机可执行的完整历史清理规模、维护耗时和受保护CLI端到端验证，并明确目标机、真实设备及24h/72h待验项。增量为[工作包](../work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[报告和剩余缺口](../runtime/validation/retention-maintenance-qualification-01.md)、通用验证夹具/脚本及合成文本证据。固定产品源码`5bb032d`，失败与修正轮分别保存身份；不重复修改业务代码，不上传大型合成DB、二进制、SDK、客户原稿、私链、凭据或生产数据，不把本机合成结果扩张为目标工控机、长稳或现场通过。原公开范围和历史原件继续有效。

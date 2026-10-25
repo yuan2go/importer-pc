@@ -35,6 +35,10 @@
 
 # 文档索引 · 作业、管理模式与日志
 
+2026-10-25获授权续做：[PR105输入分页与完整预算整合/受保护重验](runtime/validation/retention-ingress-full-retest-03.md)。继承PR104/main `404e8552`及既有PR105，原FAIL/NOT_RUN身份保留，新结果按实际回执登记。
+
+2026-10-25 当前历史维护整改：[RETENTION-INGRESS-02](work-packages/WP-IPC-RETENTION-INGRESS-02.md)、[实现/预算与复现](runtime/retention-ingress-02.md)、[实际计划、规模与故障恢复结果](runtime/validation/retention-ingress-02.md)。基于 PR103 合并后的 main 修复新增输入分页与完整命令预算，继承 PR102；下述历史失败及候选组件证据保留原身份，新结果独立记录。大规模受保护CLI启动UAC取消，未取得完整规模维护或长期运行资格。
+
 2026-10-24～25长稳维护补证：[本轮工作包](work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[完整原件规模/受保护CLI结果和剩余缺口](runtime/validation/retention-maintenance-qualification-01.md)、[210份文本原件/hash](runtime/evidence/retention-maintenance-qualification-01/FILES.json)。固定运行产品`5bb032d`并继承main/PR102；1千/1万完整维护和隔离恢复通过，60.48万清理超预算FAIL，新增输入分页热点未改业务代码；259.2万未运行，60.48万恢复UAC取消。原查询微基准、CI和失败各守原身份，不替代目标工控机、真实设备或24h/72h验收。
 
 2026-10-24历史清理查询独立复核：[报告和验证边界](runtime/validation/retention-performance-review-01.md)、[原件/hash与仓库复现](runtime/evidence/retention-performance-review-01/README.md)。固定复核main `12a7cbd`；PR100已包含性能修复。本次仅归档，不重改业务代码，不将短测、CI或安装器构建扩张为24h/72h或现场验收。

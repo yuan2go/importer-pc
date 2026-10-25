@@ -1,0 +1,9 @@
+{
+  "RequestedUtc": "2026-10-25T06:24:56.4225312+00:00",
+  "HelperPid": 70888,
+  "Script": "D:\\projects\\ipc-retention-ingress-full-retest-20261025\\baseline-recovery\\RESTORE-BASELINE.ps1",
+  "ScriptSha256": "FA58A73B084C6F99DAAA681F58259F56D64D432A687EEFE078F49C8224CF32F2",
+  "StandardWindowsUac": true,
+  "Authorization": "User explicitly approved retry of this isolated synthetic restore",
+  "OriginalSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5"
+}

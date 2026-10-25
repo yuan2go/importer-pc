@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_COMMITTED_INTEGRATION_AND_ORIGINAL_IDENTITY",
+  "AtUtc": "2026-10-25T06:40:33.613485+00:00",
+  "Head": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "Main": "404e85523550203bf02dd90e666fa0305b1d5ed0",
+  "OriginalPr105": "10ad5d264b7e3f1b581dcf3fd044163fda02dcef",
+  "OwnedManifestRows": 94,
+  "MainEvidenceFilesUnchanged": 5776,
+  "OriginalPr105EvidenceFilesUnchanged": 67,
+  "MainUnrelatedManifestRowsAndRootMetadataUnchanged": true,
+  "Sql1To9Unchanged": true,
+  "MainRuntimeCommandEpochJournalChangesRetained": true,
+  "Scope": "Committed bytes only. Does not grant pending full protected maintenance, target IPC, real SDK/RCS, 24h/72h or field acceptance."
+}

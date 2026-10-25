@@ -1,0 +1,5 @@
+Unhandled exception. System.UnauthorizedAccessException: Extension writes require a separate elevated installer; ordinary runtime is read-only
+   at Ipc.Platform.MachineRuntimePolicy.RequireExtensionInstallerAuthority() in D:\projects\importer-pc-retention-verification\src\Ipc.Platform\MachineRuntimePolicy.cs:line 40
+   at Ipc.Assembly.ParcelCli.Management(String[] args) in D:\projects\importer-pc-retention-verification\src\Ipc.Assembly\ParcelCli.cs:line 68
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-retention-verification\src\Ipc.Assembly\Program.cs:line 10
+   at Program.<Main>(String[] args)

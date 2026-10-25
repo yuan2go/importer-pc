@@ -10,6 +10,7 @@ public sealed partial class ParcelRepository : IDisposable
     internal Action<string>? Boundary { get; set; }
     readonly SqliteConnection db;
     readonly string rawRoot;
+    readonly CancellationToken maintenanceCancellation;
     public int StorageVersion { get; private set; }
     static readonly DatabaseMigration[] migrations = [new(1, """
         CREATE TABLE parcel_meta(id INTEGER PRIMARY KEY CHECK(id=1),revision INTEGER NOT NULL,paused INTEGER NOT NULL);
@@ -95,7 +96,11 @@ public sealed partial class ParcelRepository : IDisposable
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
     public ParcelRepository(string directory, string application, int storageVersion = 9, bool allowCustodyUpgrade = false)
+        : this(directory, application, storageVersion, allowCustodyUpgrade, CancellationToken.None) { }
+    internal ParcelRepository(string directory, string application, int storageVersion, bool allowCustodyUpgrade, CancellationToken maintenanceCancellation)
     {
+        this.maintenanceCancellation = maintenanceCancellation;
+        maintenanceCancellation.ThrowIfCancellationRequested();
         if (storageVersion is not (2 or 3 or 4 or 5 or 6 or 7 or 8 or 9)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         var database = Path.Combine(directory, application + ".db");
@@ -107,6 +112,8 @@ public sealed partial class ParcelRepository : IDisposable
             try
             {
                 db.Open();
+                if (maintenanceCancellation.CanBeCanceled)
+                    SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => maintenanceCancellation.IsCancellationRequested ? 1 : 0, null);
                 StorageVersion = ReadStorageVersion(database, application);
                 if (StorageVersion > storageVersion) throw new InvalidDataException("Future reader required; retain original database and use its matching release");
                 RequireLegacySettlement(application, storageVersion, allowCustodyUpgrade);
@@ -114,7 +121,7 @@ public sealed partial class ParcelRepository : IDisposable
             }
             finally { db.Dispose(); }
         }
-        db = Database.Open(database);
+        db = Database.Open(database, true, maintenanceCancellation);
         try
         {
             using (var version = db.CreateCommand())
@@ -131,6 +138,7 @@ public sealed partial class ParcelRepository : IDisposable
             { if (!r.Read()) throw new InvalidDataException("Missing parcel metadata"); Revision = r.GetInt64(0); Paused = r.GetBoolean(1); }
             RepairTerminalRecoveryFlags(application);
             InitializeIntegrationRequestHistory();
+            maintenanceCancellation.ThrowIfCancellationRequested();
         }
         catch { db.Dispose(); throw; }
     }
@@ -160,6 +168,7 @@ public sealed partial class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader();
         while (r.Read())
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             var body = r.GetString(0);
             if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
             yield return Wire.Decode<ParcelOperation>(body);
@@ -344,16 +353,18 @@ public sealed partial class ParcelRepository : IDisposable
         // Streaming inventory: history growth cannot allocate a dictionary of every receipt.
         foreach (var file in Directory.EnumerateFiles(rawRoot))
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             var id = Path.GetFileNameWithoutExtension(file);
             if (Path.GetExtension(file) != ".json" || !Guid.TryParseExact(id, "N", out _)) throw new InvalidDataException("Unknown/interrupted original raw custody file");
             using var c = db.CreateCommand(); c.CommandText = "SELECT raw_hash FROM parcel_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
             using var r = c.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Unknown original receipt file");
-            if (!r.IsDBNull(0) && Wire.FileHash(file) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
+            if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
         }
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable')";
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
+            maintenanceCancellation.ThrowIfCancellationRequested();
             var id = reader.GetString(0); if (File.Exists(Path.Combine(rawRoot, id + ".json"))) continue;
             if (!HasArchivedRaw(id, reader.GetString(1))) throw new InvalidDataException("Durable original raw receipt is missing");
         }

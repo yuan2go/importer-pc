@@ -8,6 +8,15 @@ namespace Ipc.Application.ParcelFlow;
 public sealed record ParcelRetentionResult(string Run, int Days, DateTimeOffset Cutoff, long Operations, long Inputs, string BackupHash, long ReusableBytes);
 public sealed partial class ParcelRepository
 {
+    public static TimeSpan RetentionMaintenanceBudget => TimeSpan.FromHours(2);
+    // NOT INDEXED applies only to the outer input table: rowid remains indexed,
+    // and owner/retirement probes still use their unique indexes. The exclusive
+    // offline lease excludes inserts/VACUUM while this nonpersistent cursor runs.
+    internal const string ExpiredInputPageSql = """
+        SELECT rowid,id FROM parcel_ingress i NOT INDEXED WHERE rowid>$cursor AND state IN ('Processed','Inspected') AND julianday(completed_at)<julianday($cutoff)
+        AND NOT EXISTS(SELECT 1 FROM parcel_history_index h WHERE h.admission=coalesce(json_extract(i.body,'$.Observation.AdmissionId'),json_extract(i.body,'$.Measurement.AdmissionId'))
+            AND NOT EXISTS(SELECT 1 FROM parcel_retired_operations t WHERE t.id=h.id)) ORDER BY rowid LIMIT 256
+        """;
     internal (string Id, string Admission, string Observation, string Position)? RetiredIdentity(string admission, string observation)
     {
         if (StorageVersion < 9) return null;
@@ -64,49 +73,75 @@ public sealed partial class ParcelRepository
     // original inspection, complete backup, bounded deletion transactions and verification.
     public static ParcelRetentionResult ExpireHistory(string database, string expectedHash, string backup, FlowDefinition flow,
         Action<string, ParcelConfiguration> registerBackup, bool compact = false)
+        => ExpireHistory(database, expectedHash, backup, flow, registerBackup, compact, CancellationToken.None);
+    public static ParcelRetentionResult ExpireHistory(string database, string expectedHash, string backup, FlowDefinition flow,
+        Action<string, ParcelConfiguration> registerBackup, bool compact, CancellationToken cancellationToken)
     {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        return ExpireHistoryAuthorized(database, expectedHash, backup, flow, registerBackup, compact, MachineRuntimePolicy.RequireExtensionInstallerAuthority);
+        return ExpireHistoryAuthorized(database, expectedHash, backup, flow, registerBackup, compact, MachineRuntimePolicy.RequireExtensionInstallerAuthority, cancellationToken);
     }
     internal static ParcelRetentionResult ExpireHistoryAuthorized(string database, string expectedHash, string backup, FlowDefinition flow,
-        Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority)
+        Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority, CancellationToken cancellationToken = default,
+        Action<string>? phase = null)
+    {
+        // Starts before hash, lease and repository initialization, and is never reset
+        // by a phase. Cancellation cannot abandon rollback/handle/lease cleanup.
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        budget.CancelAfter(RetentionMaintenanceBudget);
+        void Check() { budget.Token.ThrowIfCancellationRequested(); authority(); budget.Token.ThrowIfCancellationRequested(); }
+        void Phase(string name) { phase?.Invoke(name); Check(); }
+        try
+        {
+            Phase("InspectOriginal");
+            var result = ExpireHistoryWithinBudget(database, expectedHash, backup, flow, registerBackup, compact, Check, budget.Token, Phase);
+            Phase("Disposed");
+            return result;
+        }
+        catch (SqliteException ex) when (ex.SqliteErrorCode == 9 && budget.IsCancellationRequested)
+        { throw new OperationCanceledException("History maintenance budget exhausted; preserve complete backup and committed retirement facts", ex, budget.Token); }
+    }
+    static ParcelRetentionResult ExpireHistoryWithinBudget(string database, string expectedHash, string backup, FlowDefinition flow,
+        Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority, CancellationToken cancellationToken, Action<string> phase)
     {
         database = Path.GetFullPath(database); RecoveryFiles.RequireOrdinaryAncestors(database);
         var directory = Path.GetDirectoryName(database)!; using var lease = new ResourceLease(directory, ["application-owner"]);
-        authority(); if (Wire.FileHash(database) != expectedHash) throw new InvalidDataException("Original database hash changed; inspect again");
+        authority(); if (Wire.FileHash(database, cancellationToken) != expectedHash) throw new InvalidDataException("Original database hash changed; inspect again");
         if (File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length != 0) throw new InvalidOperationException("Nonempty WAL requires orderly matching-release shutdown before retention");
         var envelope = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
         if (ReadStorageVersion(database, flow.Id) != 9) throw new InvalidDataException("Use the matching DB9 release; retention never performs a schema upgrade");
-        using var repository = new ParcelRepository(directory, flow.Id);
+        phase("InitializeRepository");
+        using var repository = new ParcelRepository(directory, flow.Id, 9, false, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
-        using var timeBudget = new CancellationTokenSource(TimeSpan.FromHours(2));
-        SQLitePCL.raw.sqlite3_progress_handler(repository.db.Handle, 1000, _ => timeBudget.IsCancellationRequested ? 1 : 0, null);
+        phase("ValidateOriginal");
         using (var integrity = repository.db.CreateCommand())
         { integrity.CommandText = "PRAGMA integrity_check"; if (integrity.ExecuteScalar() as string != "ok") throw new InvalidDataException("Original database integrity failed; no retention deletion"); }
-        var originalAuthority = authority;
-        authority = () => { timeBudget.Token.ThrowIfCancellationRequested(); originalAuthority(); };
         repository.ValidateRawInventory();
         repository.PrepareRetentionCommandOwners();
         var now = DateTimeOffset.UtcNow; var days = envelope.Effective.Retention.HistoryDays.Value; var cutoff = now.AddDays(-days);
         var resident = repository.Load().Where(op => repository.RetentionSettled(op, flow) && repository.RetentionClear(op.Id, cutoff)).Select(op => op.Id).ToArray();
-        foreach (var batch in resident.Chunk(128)) repository.Archive(batch, "Confirmed retention maintenance; originals archived before complete backup");
-        ParcelRecovery.CreateBackup(directory, backup, envelope.Effective, envelope.Pending, repository.StorageBytes, repository.Backup, registerBackup, authority);
+        foreach (var batch in resident.Chunk(128))
+        { authority(); repository.Archive(batch, "Confirmed retention maintenance; originals archived before complete backup"); }
+        phase("CompleteBackup");
+        ParcelRecovery.CreateBackup(directory, backup, envelope.Effective, envelope.Pending, repository.StorageBytes,
+            destination => Database.Backup(repository.db, destination, cancellationToken), registerBackup, authority, cancellationToken);
         var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(backup + ".recovery", "COMPLETED.json")));
+        phase("ExpireDetails");
         var result = repository.ExpireHistoryCore(flow, days, now, manifest.DatabaseHash, authority);
+        phase("ValidateResult");
         repository.ValidateRawInventory();
         using var c = repository.db.CreateCommand(); c.CommandText = "PRAGMA integrity_check";
         if (c.ExecuteScalar() as string != "ok") throw new InvalidDataException("Post-retention integrity check failed; preserve original and complete backup");
         if (compact)
         {
-            authority();
+            phase("Compact");
             if (!ParcelStorageVolume.Plan(directory, checked(repository.StorageBytes * 2), envelope.Effective.Retention.MinimumFreeBytes).Fits)
                 throw new IOException("Retention committed; VACUUM requires two database sizes plus reserve; retained free pages remain reusable");
             c.CommandText = "PRAGMA wal_checkpoint(TRUNCATE)"; c.ExecuteNonQuery();
             c.CommandText = "VACUUM"; c.ExecuteNonQuery();
             c.CommandText = "PRAGMA integrity_check"; if (c.ExecuteScalar() as string != "ok") throw new InvalidDataException("Compacted database integrity failed");
         }
+        authority();
         return result;
     }
     internal ParcelRetentionResult ExpireHistoryCore(FlowDefinition flow, int days, DateTimeOffset now, string backupHash, Action authority)
@@ -176,25 +211,26 @@ public sealed partial class ParcelRepository
             authority(); List<(long Row, string Id)> expired = [];
             using (var select = db.CreateCommand())
             {
-                select.CommandText = """
-                    SELECT rowid,id FROM parcel_ingress i WHERE rowid>$cursor AND state IN ('Processed','Inspected') AND julianday(completed_at)<julianday($cutoff)
-                    AND NOT EXISTS(SELECT 1 FROM parcel_history_index h WHERE h.admission=coalesce(json_extract(i.body,'$.Observation.AdmissionId'),json_extract(i.body,'$.Measurement.AdmissionId'))
-                        AND NOT EXISTS(SELECT 1 FROM parcel_retired_operations t WHERE t.id=h.id)) ORDER BY rowid LIMIT 256
-                    """;
+                select.CommandText = ExpiredInputPageSql;
                 select.Parameters.AddWithValue("$cursor", inputCursor); select.Parameters.AddWithValue("$cutoff", cutoff.ToString("O"));
                 using var r = select.ExecuteReader(); while (r.Read()) expired.Add((r.GetInt64(0), r.GetString(1)));
             }
             if (expired.Count == 0) break;
             using var tx = db.BeginTransaction();
+            using var delete = db.CreateCommand(); delete.Transaction = tx;
+            delete.CommandText = "INSERT INTO parcel_retired_inputs SELECT id,body_hash,state,$at FROM parcel_ingress WHERE id=$id; DELETE FROM parcel_audit WHERE seq IN (SELECT seq FROM parcel_ingress_audits WHERE input=$id); DELETE FROM parcel_ingress_audits WHERE input=$id; DELETE FROM parcel_ingress WHERE id=$id";
+            delete.Parameters.AddWithValue("$at", now.ToString("O")); var idParameter = delete.Parameters.Add("$id", SqliteType.Text);
+            delete.Prepare();
             foreach (var input in expired)
             {
-                using var c = db.CreateCommand(); c.Transaction = tx;
-                c.CommandText = "INSERT INTO parcel_retired_inputs SELECT id,body_hash,state,$at FROM parcel_ingress WHERE id=$id; DELETE FROM parcel_audit WHERE seq IN (SELECT seq FROM parcel_ingress_audits WHERE input=$id); DELETE FROM parcel_ingress_audits WHERE input=$id; DELETE FROM parcel_ingress WHERE id=$id";
-                c.Parameters.AddWithValue("$at", now.ToString("O")); c.Parameters.AddWithValue("$id", input.Id); c.ExecuteNonQuery();
-                inputCursor = input.Row; inputs++;
+                authority(); idParameter.Value = input.Id; delete.ExecuteNonQuery();
+                Boundary?.Invoke("AfterRetentionInputDelete");
             }
-            tx.Commit();
+            Boundary?.Invoke("BeforeRetentionInputCommit"); authority(); tx.Commit();
+            inputCursor = expired[^1].Row; inputs += expired.Count;
+            Boundary?.Invoke("AfterRetentionInputCommit");
         }
+        authority();
         using var finish = db.CreateCommand(); finish.CommandText = "UPDATE parcel_retention_runs SET summary=$summary WHERE id=$id";
         finish.Parameters.AddWithValue("$id", run); finish.Parameters.AddWithValue("$summary", Wire.Encode(new { Status = "Completed", Operations = removed, Inputs = inputs, Policy = "Permanent identity/reply/measurement/numeric ownership retained; no replay" })); finish.ExecuteNonQuery();
         finish.CommandText = "PRAGMA freelist_count"; var pages = (long)finish.ExecuteScalar()!; finish.CommandText = "PRAGMA page_size";

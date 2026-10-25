@@ -1,0 +1,98 @@
+{
+  "Scope": "Query/transaction component and cancellation; not full custody CLI or field qualification",
+  "Samples": [
+    {
+      "Count": 1000,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 40000,
+      "AfterVm": 9000,
+      "SelectSeconds": 0.0079888,
+      "DeleteSeconds": 0.1071053,
+      "Commits": 4
+    },
+    {
+      "Count": 10000,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 391000,
+      "AfterVm": 9000,
+      "SelectSeconds": 0.0369398,
+      "DeleteSeconds": 0.5513309,
+      "Commits": 40
+    },
+    {
+      "Count": 100000,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 3901000,
+      "AfterVm": 9000,
+      "SelectSeconds": 0.2324592,
+      "DeleteSeconds": 4.2653777,
+      "Commits": 391
+    },
+    {
+      "Count": 604800,
+      "OriginalPlan": [
+        "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "Plan": [
+        "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+        "CORRELATED SCALAR SUBQUERY 2",
+        "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+      ],
+      "BeforeVm": 23589000,
+      "AfterVm": 9000,
+      "SelectSeconds": 1.5452499,
+      "DeleteSeconds": 22.6086203,
+      "Commits": 2363
+    }
+  ],
+  "ProductSha256": "A0F1F6F9A2F2111F4165EDE98CD96AAC4D773F6A8ED2D61BF1AA868F8E4447E3"
+}

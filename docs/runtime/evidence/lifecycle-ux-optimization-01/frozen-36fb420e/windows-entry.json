@@ -1,0 +1,7 @@
+{
+  "ExitCode": 0,
+  "Stdout": "{\n  \"OsVersion\": \"10.0.22631.0\",\n  \"Edition\": \"CoreCountrySpecific\",\n  \"DisplayVersion\": \"23H2\",\n  \"OsArchitecture\": \"X64\",\n  \"ProcessArchitecture\": \"X64\",\n  \"CpuModel\": \"AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx\",\n  \"LogicalProcessors\": 8,\n  \"Runtime\": \".NET 10.0.13\",\n  \"RuntimeSse2Enabled\": true,\n  \"RuntimeAvxEnabled\": true,\n  \"RuntimeAvx2Enabled\": true,\n  \"Assessment\": {\n    \"CanStart\": true,\n    \"PrimaryTarget\": true,\n    \"Target\": \"Windows 11 x64\",\n    \"Reason\": \"\\u5C5E\\u4E8E\\u672C\\u8F6E\\u529F\\u80FD\\u517C\\u5BB9\\u76EE\\u6807\\uFF1B\\u5B9E\\u673A\\u9A8C\\u8BC1\\u3001\\u5FAE\\u8F6F\\u652F\\u6301\\u5468\\u671F\\u53CA\\u8BBE\\u5907SDK\\u8D44\\u683C\\u53E6\\u884C\\u6838\\u5BF9\\u3002\"\n  },\n  \"InventoryDiagnostic\": null\n}\n",
+  "Stderr": "",
+  "ExecutableSha256": "ee75bb12d5fd585cbb6bb26cdb63cc575db8224fddf379eee2eef9aa94646ec5",
+  "Scope": "actual frozen WinExe read-only environment-report; no installer or business start"
+}

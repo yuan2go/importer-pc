@@ -1,5 +1,5 @@
 {
-  "scope": "synthetic local directed validation, original bytes; later candidate has separate SourceCommit",
+  "scope": "synthetic local directed and frozen-candidate evidence; normal machine CLI startup blocked, not PASS",
   "files": [
     {
       "path": "build-DirectPlc.log",
@@ -55,6 +55,121 @@
       "path": "first-run-expired.png",
       "bytes": 45799,
       "sha256": "47b4f03b6e538ed88a4d5aa1d68fcc87d18cf6ef64f6f46c343053294f5d5024"
+    },
+    {
+      "path": "frozen-36fb420e/CANDIDATES.json",
+      "bytes": 1112,
+      "sha256": "401bf2e152928b90d3abffd1a556ce58103cd482628cf24e660adb39c198fffc"
+    },
+    {
+      "path": "frozen-36fb420e/commercial-delivery-tests.log",
+      "bytes": 108,
+      "sha256": "cb0904c3c9a23ade1c0b887a3874367ce5b69002d8a1c3f4720cbe39e4c9d0fc"
+    },
+    {
+      "path": "frozen-36fb420e/lia-classic-minimum.png",
+      "bytes": 85359,
+      "sha256": "e2ccf9d580879c1a2095a957da1b4221a21e637fbb6859d397076387e8d7ec70"
+    },
+    {
+      "path": "frozen-36fb420e/lia-history-edited-minimum.png",
+      "bytes": 89811,
+      "sha256": "d32bb0b51863235fe9e93322d73939395acd15006118321bab69c2ed37b76f06"
+    },
+    {
+      "path": "frozen-36fb420e/lia-history-edited-standard.png",
+      "bytes": 128222,
+      "sha256": "1d1e4c0022d6d854b59fa29e61de487f9272a6a08fcbf94305741b8e0c9b2039"
+    },
+    {
+      "path": "frozen-36fb420e/lia-mode-expired.png",
+      "bytes": 94785,
+      "sha256": "f0cbc276a93d690c1c2884cac1d3b7f9aa1fca270c3e9fc30a27140c9aad5639"
+    },
+    {
+      "path": "frozen-36fb420e/lia-removal-RemovedWithRetainedFiles.png",
+      "bytes": 46998,
+      "sha256": "c81c4f853b38f99ba2534c6de245c3878d116f21fb73bd00dc7fa12b01ae9df1"
+    },
+    {
+      "path": "frozen-36fb420e/lia-removal-RestartRequired.png",
+      "bytes": 48781,
+      "sha256": "d1d301c768066be77d5ab11868463922ff9b256c80e2c77adead54e8bcd474fa"
+    },
+    {
+      "path": "frozen-36fb420e/lia-removal-RetiredCleanupPending.png",
+      "bytes": 45398,
+      "sha256": "405e0386ff46a4fbe8288a60b756afeed12cd563df148e4897cfd3381f90257e"
+    },
+    {
+      "path": "frozen-36fb420e/LIFECYCLE-NATIVE-RESULT.json",
+      "bytes": 3574,
+      "sha256": "306ab434645eb20d24dae9ee5b10d8e3a9915da2191791cb412783245b3d8bb2"
+    },
+    {
+      "path": "frozen-36fb420e/lifecycle-native.log",
+      "bytes": 2522,
+      "sha256": "3dcd51206500c0e4e795a328269f9a6a1199f0565a29682cf2b6971962b66df5"
+    },
+    {
+      "path": "frozen-36fb420e/lifecycle-portable-smoke.json.events.jsonl",
+      "bytes": 2899,
+      "sha256": "7d4965a4cc1568729873e35a95c37df87263cdd2db3254ef63ba45dcfa1d9c52"
+    },
+    {
+      "path": "frozen-36fb420e/logs-bounded-context.png",
+      "bytes": 110637,
+      "sha256": "53f64480ed6fef7ddcb207c1bce69d3bb96055d0d67b953c3f465e696fbb368c"
+    },
+    {
+      "path": "frozen-36fb420e/LOGS-NATIVE-RESULT.json",
+      "bytes": 3287,
+      "sha256": "e978efee209d433c82c8265db1cd5e382d7c1cf652bc610b28c72fc7ea15125b"
+    },
+    {
+      "path": "frozen-36fb420e/logs-native.log",
+      "bytes": 581,
+      "sha256": "7656d2a222e1092c31762df14ccf767d0098beb8ede1c487c15ce52ef4a12d44"
+    },
+    {
+      "path": "frozen-36fb420e/package-portable.log",
+      "bytes": 4440,
+      "sha256": "2a7ee4be0f5c254e0a3922cdf5bc6cf0c4a413788fa530a12b1da5823d35eee0"
+    },
+    {
+      "path": "frozen-36fb420e/package-win-x64.log",
+      "bytes": 7901,
+      "sha256": "938ef0eca303aaf8319e4f693351cc213de0b83bc86860f430018e505854be01"
+    },
+    {
+      "path": "frozen-36fb420e/portable-smoke-failed.json",
+      "bytes": 4015,
+      "sha256": "942630673ec32470d0acfda83ab8b60387375d291d0adfc1c945d2aac176a41c"
+    },
+    {
+      "path": "frozen-36fb420e/portable-smoke-failed.json.events.jsonl",
+      "bytes": 2899,
+      "sha256": "7d4965a4cc1568729873e35a95c37df87263cdd2db3254ef63ba45dcfa1d9c52"
+    },
+    {
+      "path": "frozen-36fb420e/portable-smoke-failed.log",
+      "bytes": 529,
+      "sha256": "45b35fa2966e4a22ccf13ecc39da51a51fbb0b76d01d9697c60f383d9edb46dd"
+    },
+    {
+      "path": "frozen-36fb420e/release-build-tests.log",
+      "bytes": 103,
+      "sha256": "8071a0a5344a9e43fe9d6b35320044b1af659dce7ce82737f213cd470fb036c3"
+    },
+    {
+      "path": "frozen-36fb420e/runtime-policy-readonly.json",
+      "bytes": 269,
+      "sha256": "d97adcbae64769ca2366398d57838116eafed5330a34a0baffd07d46e85e03eb"
+    },
+    {
+      "path": "frozen-36fb420e/windows-entry.json",
+      "bytes": 1060,
+      "sha256": "fc8d5f5af6e8b0acc8813a471ac63deb7358e68702e3eda83b5845813dd55859"
     },
     {
       "path": "guides.log",
@@ -133,8 +248,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 1274,
-      "sha256": "c843747e34d7135db427b36f7f10ccabcd1c142d868f71409ea73192f53a7c89"
+      "bytes": 1953,
+      "sha256": "f394465a79e43553be9c4670f651c8bdcc284215d2293722d37bd18ab514114a"
     },
     {
       "path": "reliability-logs.log",

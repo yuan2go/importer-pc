@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc\scripts\smoke-application.py", line 222, in <module>
+    run(evidence)
+    ~~~^^^^^^^^^^
+  File "D:\projects\importer-pc\scripts\smoke-application.py", line 137, in run
+    process, messages = start()
+                        ~~~~~^^
+  File "D:\projects\importer-pc\scripts\smoke-application.py", line 105, in start
+    value = messages.get(timeout=20)
+  File "C:\Scoop\apps\python\current\Lib\queue.py", line 209, in get
+    raise Empty
+_queue.Empty

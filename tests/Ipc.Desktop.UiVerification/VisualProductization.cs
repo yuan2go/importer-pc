@@ -29,7 +29,7 @@ static partial class Program
         var factory = new VisualFactory(launch, !baseline);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
-        var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
+        var application = DispatchProxy.Create<IHistoryProjectionFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = (SupplyStationWindow)Presentation.Create(application, null, "standard");
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -151,6 +151,7 @@ static partial class Program
             Check(code.IsKeyboardFocused && code.SelectedText == text && details.IsExpanded && scroll.VerticalOffset == offsetBefore && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection");
             Click(window, "作业记录"); await Task.Delay(250);
             await vm.OpenHistoryAsync();
+            Check(vm.CanExportHistory && vm.AppliedHistoryRange.Contains("固定序号"), "native visual history uses the complete real fixed-range contract rather than the snapshot fallback");
             var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
             var filter = (Expander)history.FindName("HistoryFilters"); filter.IsExpanded = true; window.UpdateLayout();
             var filterRows = (DataGrid)history.FindName("HistoryRows"); filterRows.SelectedItem = vm.HistoryItems.FirstOrDefault();
@@ -361,3 +362,4 @@ static partial class Program
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
 }
+public interface IHistoryProjectionFixture : IManagementParcelFixture, IParcelHistorySessionApplication { }

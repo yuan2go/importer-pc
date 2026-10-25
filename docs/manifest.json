@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "3ab31cfa8f258f92a1fae3a780b22d61d0be80975ee417f204ef66d835b6098d",
-      "size_bytes": 16952,
-      "git_blob": "96fc93143db92d3bdaf61dbe0672d17f6bf72ace",
+      "sha256": "c3c329a33ea9a368712ccb0457798bc3f3ceeb40fd8d6395bd0e2067f4af5335",
+      "size_bytes": 17513,
+      "git_blob": "e1e22f034f2201c095ef8bd19e1dbb5f43c2b3dd",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -62680,9 +62680,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "a5665883ce8b1286dccb88ee69fe7468c1a48b7434028239285a78c3b59ad830",
-      "size_bytes": 28558,
-      "git_blob": "1db5c04772d5be6c4ede1f29fb7cdf0a6425cb52",
+      "sha256": "ea6f42137c1346fcc0d03d3441b63770b699da274deed6ca18cc52cd44b27b4c",
+      "size_bytes": 28925,
+      "git_blob": "0083eb0800b8862ae4e1121e9979d9b2c8814e86",
       "previous_git_blob": "dcc38bdffa244f0f5f6bcfd084e0df2437c52956"
     },
     {
@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "00cfe0fc2c7a9a215f30446082bf0cb7498c266a1143d64f7ae37c26f9987e43",
-      "size_bytes": 15885,
-      "git_blob": "f4a5e7d55084f814cf6253555a4fcbcb107026d4"
+      "sha256": "d394ef435105bc463b2d8ca35e7fc0bce6cb2ec4e22b36d969d01eeaed494a0f",
+      "size_bytes": 17123,
+      "git_blob": "3c08e7844c46b0ac2a23c1b50b9bd98c4f8bf37a"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
@@ -90729,6 +90729,17 @@
       "sha256": "fb46edc80c037845c85f627402b8776c1828f90f6227b05c0da71f776e037f21",
       "size_bytes": 1702,
       "git_blob": "71bdace29b8d7b2334778a9401d6927ae7c203ae"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/ci-ba3-followup.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f1a2ee2aaf812a9c4014b81b2c577afa31bd1c4488d8a5bc070b634ce7a5092d",
+      "size_bytes": 1720,
+      "git_blob": "f178fe9be9842781581ba425c7e7413fbf650eb9"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

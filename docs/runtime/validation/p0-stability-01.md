@@ -70,13 +70,17 @@ NOT_RUN：本机未UAC安装/卸载、未创建任务/HKLM项、未改变SCM或�
 
 Windows WPF四产品及安装器构建结果见摘要。安装器首次直接build因依赖未统一self-contained出现NETSDK1150；按发行方式传入-r win-x64 --self-contained true及BusinessModule=Sportmaster后成功，不以更改项目去掩盖该命令差异。完整受保护RCS启动原测试仍受本机缺maintainer-installed runtime policy限制，NOT_RUN；新增Simulation装配不是其资格替代。
 
-## 隔离Windows VM验收步骤（尚未执行）
-
-### CI后续（原69df6bef不改写）
+## CI后续（原69df6bef不改写）
 
 PR110首次run 40220770606未全绿：Linux旧诊断断言仍要求LocalTransportOnly字样，改为同时核对原观察时间、有限确认时间/期限以及“TCP keepalive不是应用心跳、业务准入分开”的实际证据；不删业务、Epoch或防重断言。Windows隔离快捷方式夹具在COM Save失败，先补齐实际安装本来已存在的release/working目录和不可执行合成目标，保留全部COM回读/所有权断言，Server结果待新CI。冻结WPF失败为新独立钩子夹具partial App与已引用冻结App冲突及缺构造器；将该独立夹具限定在专用编译符号，独立P0 job仍执行原生产构造器/Dispatcher测试，所有冻结原生界面旅程继续原样编译执行。修正仅测试/夹具，无产品源码变化；四工程提交之后追加验证修正，因已推送/冻结不强推。
 
 69df6bef同源SM1.14.0 Windows介质发布、环境报告与业务身份入口启动通过；单EXE打包通过且未签名、实际安装NOT_RUN。准确介质/安装器hash和失败CI原件摘要见ci-69df-followup.json；不把这些PASS改记后续验证提交，也不将失败CI计PASS。
+
+ba3d8b08/run40222113898：Linux完整既有边界PASS；冻结WPF混编已解决，本机以69df介质+ba3独立固定夹具重跑参数/延后/全屏旅程PASS，FixtureMatchesMedium=false，明确两种来源。冻结CI其余失败在StartupExperience.cs:58用显示名称Single选择RCS，兼容目录保留两个版本使假设失效；改为唯一精确的当前版本descriptor选择，原真实字段/身份断言保留并加强版本检查。首次Windows目录前置修正未解决COM失败，此假设已否证，不算修复。
+
+补充确认原有快捷方式问题：DeploymentShortcuts.cs:45在main与本批字节相同；本机相同Platform DLL、全新目录且目标/中文父目录确实存在，探针只改变本进程manifest，ACP1252仍失败且COM路径变问号，ACP936/65001均PASS。没有改变系统区域设置，未将CI改为中文/UTF8来取代该失败；按用户不混无关改动规则另包待授权。本包CI保留失败门禁，将原COM测试独立列为最后一个always步骤，使P0 Dispatcher与安装守卫也得到实际执行，不删、不跳COM断言。该缺陷对非CJK代码页Windows安装投影仍是风险，不能因P0完成宣布安装链条通过。见ci-ba3-followup.json。
+
+## 隔离Windows VM验收步骤（尚未执行）
 
 1. 使用可回滚的Win11 26100+ VM、指定普通交互账号和全新D盘Simulation根；保留安装前任务、HKLM64 LocalDumps、服务及卸载登记清单。检查空间后用同源SM1.14.0候选安装，确认只有原一次UAC，启动普通权限，不连设备或真实RCS。
 2. 核对计划任务SID、InteractiveToken/LeastPrivilege、固定程序路径、默认30秒/3次客户端预算与至少60秒的任务自身重试；注销/登录确认自启动。未登录场景应无交互工作窗口，不用自动登录绕过验收。

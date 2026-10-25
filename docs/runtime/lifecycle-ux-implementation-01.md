@@ -50,3 +50,5 @@
 开发运行：PowerShell先`. ./scripts/project-environment.ps1`；`dotnet run --project src/Ipc.Desktop -p:Application=Sportmaster -- --config D:/projects/importer-pc/config/sportmaster --data-root D:/DevCache/importer-pc/lifecycle-manual`。这只使用参考Simulation配置，仍沿现有Windows机器策略/身份预检；缺少合法部署资格时使用诊断/启动修复，不绕过真实守卫。普通已安装入口、独立`Maintenance.cmd`及系统产品维护按当前指南使用。同源候选是本地审查产物，不代表授权安装或正式发行。
 
 G01/G02继续BLOCKED_EXTERNAL；真实系统登记往返/UAC/重启、目标IPC、SDK/RCS、24h/72h及现场均未验。旧D/RV和历史FAIL/PASS不倒写。原删除内核及其大库资格不因小规模本批通过而升级。
+
+补充：备份正式状态使用显式单向WPF绑定，防止只读计算投影被TextBox默认双向模式写回。既有恢复到参数的原生旅程发现并验证此修正，见验证报告；不以早先未经过该入口的PASS覆盖该缺陷。当前候选以随包ASSEMBLY/BUILD-INFO/SHA256SUMS核对，不用版本号或后续文档头替代身份。

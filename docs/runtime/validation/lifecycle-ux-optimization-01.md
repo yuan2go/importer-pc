@@ -1,6 +1,6 @@
 # 生命周期优化 · 验证与交付边界
 
-开工 main `3a5b1d13`，规划原件提交 `4c42f567`。本批测试使用 D 盘独立合成数据，真实 Application、SQLite、Windows WPF/HWND/Dispatcher；设备、身份预检和外部服务按夹具明确模拟。工程提交`8488b1ce`；启动说明同步提交/冻结源`36fb420e8ca9b0f85bb6020418298ceb22328f39`。最终证据见下表及[evidence清单](../evidence/lifecycle-ux-optimization-01/FILES.json)。最终报告提交与冻结产物分别计证。
+开工 main `3a5b1d13`，规划原件提交 `4c42f567`。本批测试使用 D 盘独立合成数据，真实 Application、SQLite、Windows WPF/HWND/Dispatcher；设备、身份预检和外部服务按夹具明确模拟。工程提交`8488b1ce`；启动说明同步提交`36fb420e`；只读备份绑定修正`9fa0e80f`。实际候选的SourceCommit以其ASSEMBLY.json/BUILD-INFO.json为准，后续报告提交另列。最终证据见下表及[evidence清单](../evidence/lifecycle-ux-optimization-01/FILES.json)。最终报告提交与冻结产物分别计证。
 
 ## 必要验证
 
@@ -29,16 +29,16 @@ G01：RCS 原合同没有权威结果 Query/获批准人工裁决、去重和实
 
 本批只执行受影响定向验证及三产品装配构建、同源候选/启动冒烟；不会因旧测试列表存在而全量重跑大库和长期测试。源码冻结和候选之后无新源变化时不重复已通过的全量套件。
 
-## 冻结、实际候选与启动
+## 前轮候选与启动（36fb420e，已被备份绑定修正替代）
 
 |对象|身份/结果|
 |---|---|
 |前置清理/原规划提交|`4c42f567`，业务编码前保存原件/过期指引处置|
 |独立工程提交|`8488b1ce005439ba5473685ec09125b6b86779e9`|
-|最终冻结源|`36fb420e8ca9b0f85bb6020418298ceb22328f39`，仅同步生成启动说明/增加随包引用断言；未改前述已验证业务代码|
+|前轮冻结源|`36fb420e8ca9b0f85bb6020418298ceb22328f39`，仅同步生成启动说明/增加随包引用断言；未改前述已验证业务代码|
 |portable ZIP|18756068 bytes；SHA256 `e987560c5aa8958c1f000dbdfae4e8210cfffa31c0e203fe8a19675287ff93e0`；110库存文件|
 |Windows x64 ZIP|134213218 bytes；SHA256 `fbf1a6b965f1e49931cc702bed15cb6811adf8d6c84fd94150c6809abc54f127`；741库存文件|
-|最终版本|SM1.13.0 / Contracts1.19.0 / DB9；DirectPlc及WcsToPlc1.7.0仅受影响装配构建，不声称制作了其新介质|
+|版本|SM1.13.0 / Contracts1.19.0 / DB9；DirectPlc及WcsToPlc1.7.0仅受影响装配构建，不声称制作了其新介质|
 |库存/当前指南|两个目标所有SHA256逐一通过；当前入口存在；生成启动说明不再引用已移出的旧UI手册；编译合同/组合/依赖一致|
 |实际Windows EXE入口|`Ipc.Desktop.exe --environment-report` exit0，.NET10.0.13、Win11 x64；只读环境入口，不创建业务实例|
 |冻结发布DLL原生日志|`verify-commercial-wpf.ps1 -ReliabilityLogs` PASS；SourceCommit=FixtureSourceCommit，二进制散列在RESULT；真实HWND/Dispatcher/SQLite，明确合成身份/端口|
@@ -47,7 +47,7 @@ G01：RCS 原合同没有权威结果 Query/获批准人工裁决、去重和实
 
 产物仅在本机`D:/deliveries/lifecycle-ux-20261025-36fb420e/`，未上传ZIP/安装器，不是公开发行或现场交付。`8488b1ce`先前portable仅保留其原源身份，不混入最终候选。最终文档与PR头可后续提交，不能倒写两个候选的SourceCommit/manifest。
 
-实际命令先加载`. ./scripts/project-environment.ps1`：
+前轮实际命令先加载`. ./scripts/project-environment.ps1`：
 
 ```powershell
 python scripts/package-application.py --application sportmaster --target portable --output D:/deliveries/lifecycle-ux-20261025-36fb420e/sportmaster-portable
@@ -60,3 +60,11 @@ dotnet D:/DevCache/importer-pc/lifecycle-frozen-native-36fb420e/bin/Debug/net10.
 普通CLI collector失败命令及配置原件记录在失败JSON/事件中；本机策略不足时不再次调用可能进入首次运行维护的普通入口。只读策略诊断是观察结果，不证明collector失败的更细分进程原因。正常非提权业务启动、系统往返和目标资格须具备获授权安装环境后单独完成。其他独立工程已完成，G01/G02继续BLOCKED_EXTERNAL。
 
 应用层定向/管理/安装守卫、原生首配/参数/日志、三产品构建、三个指南测试、17兼容测试、5商业交付测试与1发布构建测试均通过；全部保留原命令/日志。没有全量、大库或长期重跑。原始证据及失败均有单独哈希，不改写旧介质和历史D/RV。
+
+## 只读备份状态绑定增量
+
+`488c9561`补充既有原生稳定性夹具的明确根退出影响审阅，没有跳过停止/资源断言。该旅程实际进入运行上下文的自动备份页时，发现新状态TextBox默认TwoWay绑定只读计算属性BackupStatusText，触发WPF异常。36fb420e的原两项PASS覆盖不到此入口，保持其原范围；该候选被此已知缺陷替代，不用于最终交付。
+
+`9fa0e80f`将正式状态投影明确设为OneWay；增强同一真实恢复→参数→备份→退出旅程，读取实际正式备份状态，保留原责任/七天设置/Dispatcher卡顿与释放断言。草稿恢复改为恢复实际原值，兼容已有显式默认。修正前失败原件和修正后定向证据分别保留。最终候选重新从含此修正的冻结源构建，manifest仍保留原身份；不再次尝试已知策略不足的普通CLI入口。
+
+修正后本机`--win11-stability`通过原责任恢复、七天编辑、正式备份状态读取、独立Dispatcher卡顿/恢复、根退出影响审阅、异步关闭和计时器注销；DirectPlc/WcsToPlc公共控件构建零警告/错误。此为短程原生回归，不是长期稳定性资格。当前main PR为[#108](https://github.com/yuan2go/importer-pc/pull/108)，补充验证期间保持draft，最终同源候选验证后恢复待审；不合并。

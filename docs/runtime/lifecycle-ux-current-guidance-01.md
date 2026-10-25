@@ -1,6 +1,6 @@
 # 生命周期操作 · 当前候选指南
 
-适用于生命周期优化候选 Sportmaster1.13.0、DirectPlc/WcsToPlc1.7.0、Contracts1.19.0、DB9。开工 main `3a5b1d13`；实际冻结源码、候选库存和验证边界见[验证报告](validation/lifecycle-ux-optimization-01.md)。[实现记录](lifecycle-ux-implementation-01.md)和[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)保留每项来源。版本号不替代 SourceCommit/哈希，也不表示现场已升级。
+适用于生命周期优化候选 Sportmaster1.13.0、DirectPlc/WcsToPlc1.7.0、Contracts1.19.0、DB9。开工 main `3a5b1d13`；实际冻结源码/版本/库存以本包ASSEMBLY.json、BUILD-INFO.json和SHA256SUMS为准；形成过程和验证边界见[验证报告](validation/lifecycle-ux-optimization-01.md)。[实现记录](lifecycle-ux-implementation-01.md)和[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)保留每项来源。版本号不替代 SourceCommit/哈希，也不表示现场已升级。
 
 ## 原件、介质和权限
 

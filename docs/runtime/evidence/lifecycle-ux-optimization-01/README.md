@@ -13,3 +13,7 @@ Windows 11 Home 10.0.22631，.NET10，Windows DPI1.25。HWND/Dispatcher/SQLite/�
 `frozen-36fb420e/`为同源portable及Windows候选、实际WinExe只读环境入口、冻结发布DLL原生两套夹具及最终截图。NativeMedia工程由同commit源码和候选DLL生成；复用该工程运行--lifecycle-ux，没有改业务/SDK守卫。
 
 普通portable CLI冒烟没有取得Started，20秒后collector记录FAIL/exit1/空stderr；随后只读RequireRuntimeIdentity确认本机缺维护安装的运行策略。原FAIL/事件保留，不改成PASS；未为测试安装/改策略或继续正常业务启动。冻结DLL夹具的明确合成身份资格不替代该门槛。失败JSON的Checks是计划检查，不表示各项通过。
+
+## 后续发现的备份绑定缺陷
+
+`backup-binding-fix/`保留同一冻结36fb420e DLL在恢复→参数旅程的真实FAIL，以及显式OneWay修正后的本机原生PASS/两产品公共控件构建。该FAIL不覆盖原两套局部PASS，36fb420e候选被替代；最终候选另存新的SourceCommit。原删除/后端/权限内核没有因修正改变。

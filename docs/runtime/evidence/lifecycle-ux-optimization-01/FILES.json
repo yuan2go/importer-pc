@@ -1,6 +1,36 @@
 {
-  "scope": "synthetic local directed and frozen-candidate evidence; normal machine CLI startup blocked, not PASS",
+  "scope": "synthetic evidence; 36fb420e superseded after backup binding defect; ordinary machine CLI startup blocked",
   "files": [
+    {
+      "path": "backup-binding-fix/before-fix-RESULT.json",
+      "bytes": 3288,
+      "sha256": "607604a2646bf58a4bf04db93b433c53480f62064f3b824eda1ec9914454a17c"
+    },
+    {
+      "path": "backup-binding-fix/before-fix-WINDOWS-WPF.log",
+      "bytes": 5218,
+      "sha256": "eeaf2683193a6cf3b8fcf8b7f0c1023244a9f4ab552f93b7fa060eafbbf94119"
+    },
+    {
+      "path": "backup-binding-fix/build-DirectPlc.log",
+      "bytes": 3697,
+      "sha256": "790b6b694f4449cc9cbc0262feeb9c244f9b631ba3639a3f38ffd1beda13cdf1"
+    },
+    {
+      "path": "backup-binding-fix/build-ui.log",
+      "bytes": 3737,
+      "sha256": "debc1d0b02af289a360225b133843664c0a8b509fd44d93ea7c6c19ae9b82bdc"
+    },
+    {
+      "path": "backup-binding-fix/build-WcsToPlc.log",
+      "bytes": 3899,
+      "sha256": "2366520c8d6a04826c00f1368f2ce7af0606177073be86c30f53e01ef04290e3"
+    },
+    {
+      "path": "backup-binding-fix/stability.log",
+      "bytes": 1296,
+      "sha256": "6763cfd313ae228f2a9f6370b911de0601fd484ca00c9cf874a74c3a59da4822"
+    },
     {
       "path": "build-DirectPlc.log",
       "bytes": 2351,
@@ -248,8 +278,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 1953,
-      "sha256": "f394465a79e43553be9c4670f651c8bdcc284215d2293722d37bd18ab514114a"
+      "bytes": 2321,
+      "sha256": "a31dee493ed247fde7cf38732aea2857f0902609afdf45227dc245a48863e198"
     },
     {
       "path": "reliability-logs.log",
@@ -269,7 +299,7 @@
     {
       "path": "SOURCE-FILES.json",
       "bytes": 124378,
-      "sha256": "4a60ec859bad09cd6bd58039ae38abc3feaa9a04b23f89324e9d7b8639c9e3b7"
+      "sha256": "df408ef6a07247c086a81a38c529d6075d3047b44fed56e9e5a58913bdef5fc3"
     }
   ]
 }

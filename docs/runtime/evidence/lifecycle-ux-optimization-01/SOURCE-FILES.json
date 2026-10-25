@@ -653,7 +653,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
-      "sha256": "7fbbf01b25a384987e992aa7e9fa9aa35763dae35a0555680a24795b18bb3dc1"
+      "sha256": "04364ac9a4f25aa1a814b8f9780911b11902c39865b9963dc03f7ac12aabcba1"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Runtime.cs",
@@ -2757,7 +2757,7 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/StabilityNative.cs",
-      "sha256": "d3d5c80df631db3de7dccc1ac69f42dbc2dfc62e6df6b8477803f86251588e3f"
+      "sha256": "9f435ad535d35f282480cbe44abd46c2616e86b4c2e1725e018faf519437840a"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",

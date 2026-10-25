@@ -65,11 +65,13 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     {
         get
         {
+            DetailMeasurement?.Invoke();
             if (Selected is null) return "选择一条作业查看原阶段、目标、报文和回执。";
             var summary = DestinationSummary(Selected);
             return (summary.Length == 0 ? "" : summary + "\n\n原作业、请求与回执完整快照：\n") + Wire.Encode(Selected);
         }
     }
+    internal Action? DetailMeasurement { get; set; }
     public static string DestinationSummary(ParcelOperation operation)
     {
         var reply = operation.Wcs?.Replies.LastOrDefault(r => r.Destination is not null);

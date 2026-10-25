@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "work_package": "WP-IPC-LATENCY-CAPACITY-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -54442,9 +54442,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "20889e025209311d4bd254809c4c5d3486c434099d6107c3c0a11b107b45e000",
-      "size_bytes": 23098,
-      "git_blob": "d328278c29c5d3c2c30fa6bdd530c592d429d419",
+      "sha256": "27876aa7b8f7eb7cb5f06edfe835d999966a86bd65b81e63befe5ef5e5459534",
+      "size_bytes": 23192,
+      "git_blob": "f54d473f59b229772b2a7533ee16ebb987c7f686",
       "previous_git_blob": "8eda7cecd2205bc94d688fad21d3753ee145892c",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "2868ba71f19888691845269e00ce2ec7c58bcc03",
@@ -54740,9 +54740,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
-      "sha256": "a6f168f458e4c84a721bfff5de1c641f9e1aab6682ff69f6d915264b9512fed9",
-      "size_bytes": 29434,
-      "git_blob": "22ee34079861b6a992a785300eca9e1ee16f6861",
+      "sha256": "d64c5b5e1e3a044a723ed52f7e1190f698c717743fe32fa9ac7f8f7f7ea1d264",
+      "size_bytes": 29581,
+      "git_blob": "4ec739dfde298023d103ad2b3ccc358f1b20b5a5",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -59705,9 +59705,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "3f3d0286e42eecf5253bb30ba9b77f32aa7b2c597a9b833df822dad6657c9b7e",
-      "size_bytes": 2376,
-      "git_blob": "ae7994873734da75ba4a560b9459e2b44a6e46a2",
+      "sha256": "326e3d7d47135388b88aaa8d4907b9b6bb0c7b0442bf235490fb21f091f98628",
+      "size_bytes": 2482,
+      "git_blob": "0e49d90ef9d31f58c7b788efeb370c0c6ea5ede7",
       "previous_git_blob": "139f525c5eed7ee03180fbd289d9b9346f1835c2",
       "pre_publication_no_test_git_blob": "c1053073bd16f1fe4a61692851bdcc8a8fb919a0"
     },
@@ -59760,9 +59760,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "86c161f37350edfc65b0f824045ac19a0efa1abf693f645013777931536974eb",
-      "size_bytes": 20911,
-      "git_blob": "7f41fcc57e795078498fb3db5fc4b4188f649fde",
+      "sha256": "1a47ce79b47736a18e8c8ed7c2d26d1a01bf40e37dc96849cd6e042f47ad2688",
+      "size_bytes": 21080,
+      "git_blob": "06ab4c65ccbba4cee6d6c9dacd883a2fae50c9df",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -90377,6 +90377,28 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-LATENCY-CAPACITY-01.md",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f5efdf34adb116d12341d0da732b0383c8dee81cf8535a369024d3dada424619",
+      "size_bytes": 2115,
+      "git_blob": "f7138e54eb1d89cda237d093f0ca633f7a20d8c7"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/LatencyCapacity.cs",
+      "version": "latency-capacity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Measured latency/capacity work package",
+      "source": "WP-IPC-LATENCY-CAPACITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "eab8a2cc82fb8869f909c056cf0a99d59cda360116ac977009f2d635c7354db9",
+      "size_bytes": 13198,
+      "git_blob": "6567122912031658d0686bc01e61ddbbd0d638d5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -90456,7 +90478,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-LATENCY-CAPACITY-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -93204,5 +93226,15 @@
       "RepeatedAuthentication": false,
       "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/active-entry/RESULT.json"
     }
+  },
+  "prior_current_pointers_before_latency_capacity_01": {
+    "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+    "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02"
+  },
+  "latency_capacity_01": {
+    "baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "branch": "codex/latency-capacity-01",
+    "database": "DB9; SQL1-9 unchanged",
+    "measurement": "Isolated synthetic before/after; old PASS and SourceCommit preserved"
   }
 }

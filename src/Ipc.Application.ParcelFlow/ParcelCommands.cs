@@ -11,6 +11,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
+            Boundary?.Invoke("SnapshotGateAcquired");
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             ObjectDisposedException.ThrowIf(disposed, this);
             // Single consistent read per projection; this scope never releases the business gate.
@@ -54,9 +55,10 @@ public sealed partial class ParcelRuntime
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray());
+            Boundary?.Invoke("SnapshotEncoding");
             encoded = Wire.Encode(OperatorSnapshot(projection));
         }
-        finally { projectedCapacity = null; repository?.EndReceiptProjection(); gate.Release(); }
+        finally { projectedCapacity = null; repository?.EndReceiptProjection(); Boundary?.Invoke("SnapshotGateReleasing"); gate.Release(); }
         // Deserialize the detached UI copy after releasing the business gate.
         return Wire.Decode<ParcelSnapshot>(encoded);
     }

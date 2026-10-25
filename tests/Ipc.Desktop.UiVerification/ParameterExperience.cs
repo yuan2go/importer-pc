@@ -39,7 +39,7 @@ static partial class Program
         var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
+            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
             ["left-station-code"] = "SYNTHETIC-COMMON", ["right-station-code"] = "SYNTHETIC-COMMON", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
         });
@@ -74,8 +74,8 @@ static partial class Program
                 {
                     var source = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/source");
                     Check(!Descendants(control).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "最多 64 个字符") &&
-                        AutomationProperties.GetHelpText(source).Contains("64") && Equals(source.ToolTip, "最多 64 个字符"),
-                        "routine character limits leave the form body but remain accessible as field help");
+                        AutomationProperties.GetHelpText(source).Contains("64") && source.ToolTip is string tooltip && tooltip.Contains("64") && tooltip.Contains("RCS"),
+                        "usage and character limits remain accessible together without a separate routine limit line in the form");
                     var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
                     var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
                     control.NavigateTo("rcs.one/heartbeat-interval-seconds"); window.UpdateLayout();

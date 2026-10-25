@@ -1819,9 +1819,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "e065ba03508b42e52f4d5e300f43d0aedcd3a77c67a73d69d03033ed08f2b737",
-      "size_bytes": 14453,
-      "git_blob": "3d941b295115a8ab50513fc033abf90903f73a7b",
+      "sha256": "c73bd1f5825f9815a76b1bfe56f14483fe434b934336afac308aaee7cd1da786",
+      "size_bytes": 14651,
+      "git_blob": "6b735d0e46b1e6cad672f14d971b32325dace3a8",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2166,9 +2166,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "83144cf3b84457c6c7adaf0721ef43a23549f375f84bdc52712329fd1ef7ce19",
-      "size_bytes": 409,
-      "git_blob": "6895ff6add14f48da1d3bf9cec36cf4503671480"
+      "sha256": "23797f58292f3f361d9912f619012023fccf751ee4a27332e5e24f685783f71d",
+      "size_bytes": 390,
+      "git_blob": "2fa1eea57754de8336d94d6f0488d0519913c23f"
     },
     {
       "path": "config/station.simulation.json",
@@ -52932,9 +52932,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ed8b92f505f9e85252a7d10dd830eb0859c869f0e08a09665de9816287fd8f9e",
-      "size_bytes": 3074,
-      "git_blob": "d996841d597169a2ceb7d9963a1fc1c5cf38234d"
+      "sha256": "9226d682c5b8b7e4e4c3639f50d24fe1dab150a583285c9640d61426da1cf9a0",
+      "size_bytes": 3230,
+      "git_blob": "b5027d41d4a6dc05426c1b5269d2cd35d2b68dae"
     },
     {
       "path": "scripts/extension_build.py",
@@ -53934,9 +53934,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "b786173e5a793b5a7d789012f146883d84632ec3bd9d7ab08e660d27f5c54fcc",
-      "size_bytes": 18891,
-      "git_blob": "665b9f7f5bae5887d726e6b329c7c4632f294abc",
+      "sha256": "a0e1679a91390e86d629964c86e3c90c902b6c8e8d59568bdd6bf872cd863763",
+      "size_bytes": 19554,
+      "git_blob": "f5eac2a9cb5516906a80655d4e8ac3699146fbd3",
       "previous_git_blob": "3fd312d6479f348757c4ec86b5ddf3ae9b028380",
       "pre_publication_no_test_git_blob": "1f563a8fba116221538a58d03b06a5e1fd1a7d0f"
     },
@@ -54200,9 +54200,9 @@
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "sha256": "881ed1451e743281e476ccb83d3d48b0ef58fcc92ea9101b17b54d180ed0b909",
-      "size_bytes": 3452,
-      "git_blob": "242d8eb38a3c502c518e2b6923cc48507ab58f88",
+      "sha256": "a9e2b53238293a9cce037ba51d0c375c03980cfbd4994ba1cf76a254b5fd4fed",
+      "size_bytes": 3438,
+      "git_blob": "6aaa3eb0945b1f1ba7720d3dfe12d8bd7a218e79",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "previous_git_blob": "80fdbc44c6bf2bc9e2b95e29a2b559bcf11bdde0"
     },
@@ -54230,9 +54230,9 @@
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "sha256": "bb27f5444a42f581887a15d75ff9bd746553b770c496ebb47b13c87dc1289cf0",
-      "size_bytes": 18275,
-      "git_blob": "a745ab8a316cc607948d59737220d0b20995ca80",
+      "sha256": "b5f58f6f8722ef1afb636711e1e2a48e8d6f3a46dd6aff435743175d9113af11",
+      "size_bytes": 18924,
+      "git_blob": "8e4ce0dd4705ed28a8645402935570b817aed306",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -54256,9 +54256,9 @@
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "sha256": "bfc35775a4125b6d28f4c59f07598e9c5757e9e15c7bccddc949243de10e9204",
-      "size_bytes": 21418,
-      "git_blob": "4b4cf2902aed566dec60c99d22d2477b16d501cc",
+      "sha256": "003d02506bf5346255788ff98f356308e600f3d53787bae7837ac685d43fb98e",
+      "size_bytes": 21413,
+      "git_blob": "754b71c37d618a8e68eb185e08918a8809121c91",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "b01d4c6b46c216bd69d371f42282a8223fcec526",
         "sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2",
@@ -54483,9 +54483,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "8d40d70117ae17726d29556992fdf213765b8adce8993c423f891d7e443de1ab",
-      "size_bytes": 12837,
-      "git_blob": "3aff69167c4d75da6197c730dcaa581bc48e5259",
+      "sha256": "c89fb0b229b793f05c96e178d8db66ea4b03b4bc78cb2f82b4399184a86a45df",
+      "size_bytes": 12858,
+      "git_blob": "eed9ba7009991048e3f832c476d50dc4a2f889ce",
       "previous_git_blob": "7154ef80b87189dbb186e73a037691e4a0185c3e",
       "pre_publication_merge_git_blob": "ef9bc6b87866a290082f5fecd42c135526396137",
       "pre_publication_no_test_git_blob": "ce3ec2b39c5696747e0261219f5745b97de44bd1"
@@ -54508,9 +54508,9 @@
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
-      "sha256": "a8ed923aab654daf9292ad2d8df4c858bc68b6b72e5bceb5b9ee7d924540f7bb",
-      "size_bytes": 40379,
-      "git_blob": "47e073d33eceeab35d4bf5600fff7f666580d3a3",
+      "sha256": "0b7f8bbe7e7e8fc815c09a8395bc1569536d814e27cec80adc576d6f4c628533",
+      "size_bytes": 41080,
+      "git_blob": "344f64e0ba3a12a33a74bf63145cc85708170be5",
       "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695",
       "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe",
       "pre_parameter_settings_v3_source_identity": {
@@ -55539,9 +55539,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "9b49ca5b94b02f5201371b12114cb666efb9cefe80a411d031aebcb9c1a26626",
-      "size_bytes": 4495,
-      "git_blob": "f84e857cf755a554ca02c2da6359bdf329e684aa",
+      "sha256": "e42619ad54526e7509698eee17e32f41e61eb852e1a5cc0b6706007c66a39936",
+      "size_bytes": 4553,
+      "git_blob": "94dd316e2c536f212ebfd9b81f2ae532f49942f4",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4",
       "pre_publication_no_test_git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e"
     },
@@ -56603,9 +56603,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "b84158052f48683b6142b0153a5c9491d023fe7e12c5e32ba9b7091b166977a4",
-      "size_bytes": 42402,
-      "git_blob": "720e51f351f2a3f528b1ef545c1dee9b14f86219",
+      "sha256": "09c99a6d59646062fd114aebcbd7b981a19125d3cb002a74717017075375c110",
+      "size_bytes": 42803,
+      "git_blob": "aa27646819a106ca6dfcfa651b85395566b9d9d9",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -57681,9 +57681,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "3a1f976f162f0d452308cc3edaafcff771541168e26e8aa7170fb1a892cc09ff",
-      "size_bytes": 6387,
-      "git_blob": "e42da6f07c94c6fd52465bbd3b39deeab94a4c7a"
+      "sha256": "aa8735bf790da9ec80d72aeb64be99c63faa0e818e05ccc85489eea8f908dfb9",
+      "size_bytes": 6456,
+      "git_blob": "9e51ed800d840f5899ec0dcb0bdd85fdbadb6bc7"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs",
@@ -57704,9 +57704,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "523ccface6af694dc48a7349c52a84feb81f7bda9e147a4348cf6855ca9b8d50",
-      "size_bytes": 4650,
-      "git_blob": "234180cf35b6f4d203fb2e73c55a20e29d770ded",
+      "sha256": "0dbc82fc0d9c7947654ba95d2c68279f2a6c21c42a88e70d526b4a9a219fd9d3",
+      "size_bytes": 4792,
+      "git_blob": "9df03c64193f19d8e5efc4fdc561df9581430cbc",
       "pre_publication_no_test_git_blob": "bb48333d31eb52a88cf13306fb6251e1e4a2bbf3"
     },
     {
@@ -57716,9 +57716,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8570d1c2cb40ad511d030ac1afdc2b72e1baae55daebf0e07963ba13d2b92831",
-      "size_bytes": 8803,
-      "git_blob": "75f31c068cecbaecbe716695b5ca430d6a66efde",
+      "sha256": "5dc04ce7f2294ec2266b9f03a3a0bf803af1af4f2b765907e1669d7a444931af",
+      "size_bytes": 8984,
+      "git_blob": "edae68c1d6c1ff80bca0f25bd307d6fe007572d0",
       "pre_publication_no_test_git_blob": "b884d885c13397f8023aa436f3b219b3556d9932"
     },
     {
@@ -57784,9 +57784,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8771599b019ce7613664a49f583569e671e1b6556dcd32e424147bc4ecb0b2f8",
-      "size_bytes": 3066,
-      "git_blob": "032d97086096bc2ad2eb7074d2c59aca8ea0f21a"
+      "sha256": "ca5e6457db9710d28009d333b3ad87b979e967e6880e0286fb40b7c422326ac8",
+      "size_bytes": 2837,
+      "git_blob": "7ebb756f6766774623078fd23389ded212db7858"
     },
     {
       "path": "src/Ipc.Integrations/Ipc.Integrations.csproj",
@@ -59412,9 +59412,9 @@
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "39411fc14b48c71aac7827dc015b561e03e232511db2552354ead597f671882d",
-      "size_bytes": 51780,
-      "git_blob": "1cd3542ac902ec18329bec7622ee0ef586aa3550",
+      "sha256": "eeeb0663e334bd83d00546be93ae2c40e2ddd59e0a4e4ff533573ca1352baaca",
+      "size_bytes": 56305,
+      "git_blob": "3665e7e8a7d2eaf0ac0bc1c1399a65e74141e47d",
       "previous_git_blob": "8591062e5ee995041f3d0fff24633d180ae18409"
     },
     {
@@ -59679,9 +59679,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "a8c149490d77aa210eade9bcb1e511137e93391d1ea4388ead1d8d2e7e3e9b1d",
-      "size_bytes": 20317,
-      "git_blob": "1bc52663557b74f96ec410a882322d2c3f8e6e07",
+      "sha256": "86c161f37350edfc65b0f824045ac19a0efa1abf693f645013777931536974eb",
+      "size_bytes": 20911,
+      "git_blob": "7f41fcc57e795078498fb3db5fc4b4188f649fde",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -59694,9 +59694,9 @@
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "sha256": "45198b53aac00f858269c2e9657051a0c09b33e25fd5938b75fd181a88f9f873",
-      "size_bytes": 33786,
-      "git_blob": "65c4fd2119aa46cbfe3c6a848f04a858b96c25f2",
+      "sha256": "11331a8e8527481ea11ad514a83d7a13bc5169dfd41d3e978e0fed99b9c0c8e4",
+      "size_bytes": 33880,
+      "git_blob": "2726e6f3ee4dabc1a643b541d5fc2ab074f86816",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d",
         "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
@@ -60613,9 +60613,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterExperience.cs",
-      "sha256": "bc4e233f91ebe5649058ccd5c280291cbc8a3cc3252411785afb1fb9403dc90b",
-      "size_bytes": 15484,
-      "git_blob": "15d17bcab3c280552439e770804df3ed864168c3",
+      "sha256": "ad5613965898b96075c8ba6ec250cb4313f617c92b8f708f75887e6ceb858a60",
+      "size_bytes": 15527,
+      "git_blob": "e9c48902853d148df264d553b5cbba5b76f2e72e",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",
@@ -69178,9 +69178,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterUiRefinement.cs",
-      "sha256": "2b6b5ba933fbd44cfb78746a29ee0ad7fef0a89a4f012714cbb26e4ff5ca7fac",
-      "size_bytes": 10301,
-      "git_blob": "800f82933b0544a704fd64c792d73fb2e7e9b24f",
+      "sha256": "782b16b4eb9cbf98b85058e49d2843cd33b61472199df233857df2cc580b7861",
+      "size_bytes": 10198,
+      "git_blob": "338f82da777ac1ce1ee963366a9132616d3475b5",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -69684,9 +69684,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/InternalPages.cs",
-      "sha256": "8c6a8a7cf4650375b2df6b2ed19730470db81093a7917633a360f2cff4a70fb2",
-      "size_bytes": 23505,
-      "git_blob": "f5937e371d68475f9ef88468f09deb3d08f8082e",
+      "sha256": "d1924f8218f249d8301e10c4772e389fc3dc0c51e51cb901b3cd2af7c4e79bbc",
+      "size_bytes": 23447,
+      "git_blob": "1a9e6d1080077b2970b3477e7c3ea7271d61800b",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -89650,9 +89650,9 @@
     },
     {
       "path": "docs/runtime/parameter-guidance-startup-01.md",
-      "sha256": "ffdcf8fb664dc91499565096fdc045032770da9a58aaeef78520739253c0a4eb",
-      "size_bytes": 5694,
-      "git_blob": "22ad90b169578713f23be3102530d2abded12ecc",
+      "sha256": "a61dd6aa396d25c2f0717a866b6d24b19eb31e82a8b4892162fd8ed3c880598d",
+      "size_bytes": 7998,
+      "git_blob": "39e27cd13c23a887c40afc8806bb81580e40679e",
       "version": "parameter-guidance-startup-01-frozen",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
@@ -89661,9 +89661,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md",
-      "sha256": "c9aa96bea8864655a9b90f47e0f14526a8505bf187531be814029d2f99a94088",
-      "size_bytes": 2050,
-      "git_blob": "8407396b53108c86ff09e66e67f0cc031f128413",
+      "sha256": "f3d9f98700fd675bd3894d4eee1f9bf82307bf30ce80df697b8351211efcc6d9",
+      "size_bytes": 2393,
+      "git_blob": "b444ce0076f9d91b44e4fe65e5cba727b9bdf7af",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -89705,9 +89705,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
-      "sha256": "66dc0d0f35e77fcd1d37b7bb39aa4d3ef5abd6d1df7bd46a19090a56e53f9b15",
-      "size_bytes": 8310,
-      "git_blob": "307806a9e58275cb4a5ff390af137fb4540b49c5",
+      "sha256": "6755e8ccc4ff6266ebf2b593c563150bb90c9000b3290f663de5a010cab527e9",
+      "size_bytes": 10132,
+      "git_blob": "8277d19296679b3b7a4521b2d6257f53cfb0ab87",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -89716,9 +89716,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
-      "sha256": "93a8123c48b9b866de6460acd3e4ab43d6691d72565afb6a88cf2d53b33d68db",
-      "size_bytes": 8629,
-      "git_blob": "468c0559bf71f28eb73c72a5466f5e391517ce35",
+      "sha256": "de666deec214e30341ba36280cd03afbf42985c8c5dfde03468535135b0c93e8",
+      "size_bytes": 9016,
+      "git_blob": "190ecc7a409779d400c560cbe5b584342d67951e",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -89856,6 +89856,15 @@
       "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/confirmed-scan-flow/RESULT.json",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; synthetic follow-up verification",
+      "storage_scope": "public_repository",
+      "purpose": "User-confirmed one parcel per scan and fixed request quantity verification",
+      "sha256": "eb2278d18d682c7c808a1919cd2a5e08511608b9a6bdbd3c0eb4b26f63d414b1",
+      "size_bytes": 2882,
+      "git_blob": "11db6604f3044331a64d24caedefd394ed176fcf"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -92668,6 +92677,13 @@
       "FrozenNative": "PASS",
       "PublishedDesktopEnvironmentStartupExitCode": 0,
       "NotInstallationOrFieldAcceptance": true
+    },
+    "confirmed_scan_flow": {
+      "RequestQuantity": 1,
+      "QuantityEditor": false,
+      "OneCompleteBarcodeFramePerScan": true,
+      "LegacyPolicy": "Explicit reviewed Pending candidate; original frozen wire retained",
+      "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/confirmed-scan-flow/RESULT.json"
     }
   }
 }

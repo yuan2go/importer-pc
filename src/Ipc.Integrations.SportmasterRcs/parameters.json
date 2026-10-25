@@ -36,16 +36,6 @@
     "Maximum": 9223372036854775807
   },
   {
-    "Key": "quantity",
-    "Group": "RCS 分拣任务",
-    "Label": "每次实体准入的明确数量",
-    "Type": "integer",
-    "Required": true,
-    "MaximumLength": 10,
-    "Minimum": 1,
-    "Maximum": 2147483647
-  },
-  {
     "Key": "request-id-base",
     "Group": "RCS 分拣任务",
     "Label": "独占请求编号区间起点（不含）",

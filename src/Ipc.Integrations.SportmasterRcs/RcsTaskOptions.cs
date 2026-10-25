@@ -10,11 +10,12 @@ internal sealed class RcsTaskOptions
     internal readonly Uri Endpoint;
     internal readonly string Source, Locale;
     internal readonly long ZoneId, ProjectId, RequestIdBase, RequestIdCount;
-    internal readonly int Quantity;
+    // Read legacy configuration only to verify already frozen wire intents.
+    internal readonly int? LegacyQuantity;
     internal readonly bool SpecifiedChute;
     internal readonly string? ChuteCode;
     internal readonly int HeartbeatIntervalSeconds;
-    internal static readonly string[] RequiredKeys = ["source", "locale", "zone-id", "project-id", "quantity", "specified-chute",
+    internal static readonly string[] RequiredKeys = ["source", "locale", "zone-id", "project-id", "specified-chute",
         "request-id-base", "request-id-count", "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code"];
 
     internal RcsTaskOptions(CapabilityBinding binding)
@@ -26,12 +27,12 @@ internal sealed class RcsTaskOptions
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");
         Endpoint = endpoint;
-        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(["chute-code", "heartbeat-interval-seconds"]), StringComparer.Ordinal).Any())
+        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(["quantity", "chute-code", "heartbeat-interval-seconds"]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
         foreach (var key in RequiredKeys) _ = Text(key, key is "source" or "locale" ? 64 : 256);
         Source = Text("source", 64); Locale = Text("locale", 64);
         ZoneId = Number("zone-id", 1, long.MaxValue); ProjectId = Number("project-id", 1, long.MaxValue);
-        Quantity = checked((int)Number("quantity", 1, int.MaxValue));
+        LegacyQuantity = Binding.Parameters.ContainsKey("quantity") ? checked((int)Number("quantity", 1, int.MaxValue)) : null;
         RequestIdBase = Number("request-id-base", 0, long.MaxValue - 1);
         RequestIdCount = Number("request-id-count", 1, long.MaxValue - RequestIdBase);
         HeartbeatIntervalSeconds = Binding.Parameters.ContainsKey("heartbeat-interval-seconds")

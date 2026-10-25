@@ -47,6 +47,7 @@ static partial class Program
                     await Flush(); window.UpdateLayout();
                     if (title == "格口请求")
                     {
+                        Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity")), "no configurable quantity editor remains");
                         var help = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明与诊断详情")); help.IsExpanded = true; await Flush();
                         Check(!Descendants(help).OfType<TextBox>().Any(t => t.Text.Contains("sportmaster.integration/quantity")), "parameter help describes purpose without an internal configuration path");
                     }
@@ -60,6 +61,7 @@ static partial class Program
             Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "StationCode"), "no second heartbeat station editor remains");
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
+            Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode")), "normal camera configuration needs no parcel association choice");
             var deferred = Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater");
             deferred.IsChecked = false; await Flush();
             Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "turning off deferred mode exposes required camera errors");

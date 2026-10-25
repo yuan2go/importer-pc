@@ -112,8 +112,10 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         // Keep original insertion order and explicitly omitted defaults. Reordering
         // unrelated parameter bytes would change the frozen configuration hash.
         var parameters = new Dictionary<string, string>(originalParameters);
+        if (ParameterOwnership.IsRcs(this)) parameters.Remove("quantity");
         foreach (var item in Parameters)
         {
+            if (ParameterOwnership.IsRcs(this) && item.Field.Key == "quantity") { parameters["quantity"] = "1"; continue; }
             if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
@@ -123,6 +125,14 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         var errors = ConfigureLater ? [] : ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);
+    }
+    public CapabilityBinding BuildReader(string applicationId)
+    {
+        var binding = Build();
+        // The confirmed Sportmaster flow is one camera scan per parcel. Generic
+        // observation providers retain their own diagnostic/association policies.
+        return applicationId == "sportmaster" && binding.Implementation == "tcp-line"
+            ? binding with { Parameters = new(binding.Parameters) { ["entity.mode"] = "line" } } : binding;
     }
 }
 

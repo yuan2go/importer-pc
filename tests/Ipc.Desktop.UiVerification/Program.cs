@@ -23,6 +23,11 @@ static partial class Program
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
             : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
+        // UI persistence is verified in this run's isolated user directory.
+        // The installed machine's protected ACL is covered by its own fixture.
+        var preferenceRoot = typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+        var previousPreferenceRoot = preferenceRoot.GetValue(null);
+        preferenceRoot.SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
         var lines = new List<string>();
         var desktop = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
         desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
@@ -65,7 +70,8 @@ static partial class Program
             catch (Exception ex) { lines.Add("FAIL " + ex); desktop.Shutdown(1); }
             finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
         };
-        return desktop.Run();
+        try { return desktop.Run(); }
+        finally { preferenceRoot.SetValue(null, previousPreferenceRoot); }
     }
     static async Task Verify(string root, string evidence, List<string> lines, bool syntheticIdentity = false)
     {

@@ -163,7 +163,7 @@ public sealed partial class ParameterSettingsControl
             Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "完整匹配后排除；留空不排除。", true);
             Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；仍须唯一有效码；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
-            var rules = Page(1, "格口请求", "相机扫描得到有效条码后，软件向RCS申请该包裹的分拣格口。这里设置请求携带的数量和是否指定目标格口；最终分配结果以RCS回包为准。修改只用于新作业。选择稍后配置RCS时，可先保留这些空项。"); form = Form(rules);
+            var rules = Page(1, "格口请求", "相机扫描一个包裹，取得一个有效条码后，软件将该条码发给RCS获取分拣信息。每包请求数量固定为1，无需配置。这里仅设置是否指定目标格口；最终分配结果以RCS回包为准。修改只用于新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }

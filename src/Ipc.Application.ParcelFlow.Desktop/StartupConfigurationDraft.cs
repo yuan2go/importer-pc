@@ -60,7 +60,7 @@ public sealed class StartupConfigurationDraft
         var replacements = Capabilities.Where(d => bindings.ContainsKey(d.InstanceId) || d.Bound).ToDictionary(d => d.InstanceId, d => d.Provider is null ? bindings[d.InstanceId] : d.Build());
         CapabilityBinding? Map(CapabilityBinding? b) => b is null ? null : replacements[b.InstanceId];
         var c = original;
-        var readerBindings = Readers.Select(d => d.Build()).ToArray();
+        var readerBindings = Readers.Select(d => d.BuildReader(c.ApplicationId)).ToArray();
         var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
             Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
             Parameters = readerBindings[i].Implementation == "tcp-line" ? readerBindings[i].Parameters : null }).ToArray();

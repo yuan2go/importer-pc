@@ -31,6 +31,13 @@ static class ParameterGuidanceStartup
         Check(editor.ValidateFields() && Wire.Encode(draft.Build()) == Wire.Encode(initial),
             "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
+        Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
+            ParcelBindings.Readers(draft.Build()).All(r => r.Parameters!["entity.mode"] == "line"),
+            "one scan per parcel is the Sportmaster candidate policy; quantity is absent from its editors and new configuration");
+        var oldReader = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode"); oldReader.Value = "observe-only";
+        Check(draft.Build().Reader.Parameters!["entity.mode"] == "line" && initial.Reader.Parameters!["entity.mode"] == "line",
+            "saving a Sportmaster candidate replaces the obsolete observe-only choice without editing the original configuration");
+        oldReader.Value = "line";
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
         using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";
@@ -57,6 +64,8 @@ static class ParameterGuidanceStartup
         try { factory.ValidateStructure(initial with { DeferredConnections = null }); throw new Exception("unexpected valid active configuration"); }
         catch (InvalidDataException) { Check(true, "removing deferred state restores real adapter configuration validation"); }
         var c = draft.Build() with { Mode = RunMode.Simulation, StationId = "deferred-" + Wire.Id() };
+        var oldReaders = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Parameters = new(r.Parameters!) { ["entity.mode"] = "observe-only" } }).ToArray();
+        c = c with { Reader = oldReaders[0], Topology = c.Topology with { Readers = oldReaders }, Wcs = c.Wcs! with { Parameters = new(c.Wcs!.Parameters) { ["quantity"] = "7" } } };
         Directory.CreateDirectory(launch.ConfigurationDirectory); ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), c);
         await using (var app = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
@@ -71,6 +80,11 @@ static class ParameterGuidanceStartup
             await vm.RefreshAsync();
             await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await ManagementModeFixture.Authorize(app); await vm.LoadCapabilitiesAsync();
+            var scanCandidate = vm.BuildStructuredConfiguration();
+            var policySnapshot = await app.SnapshotAsync();
+            Check(vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "line" &&
+                scanCandidate.Wcs?.Parameters.ContainsKey("quantity") == false && policySnapshot.Configuration.Effective.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" && policySnapshot.Configuration.Effective.Wcs?.Parameters.GetValueOrDefault("quantity") == "7",
+                "legacy scan policy is an explicit saveable reviewed candidate, while Effective retains its original observe-only mode and quantity");
             foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.port" => "9000", _ => p.Value };
             vm.ReaderDrafts[0].Capability.ConfigureLater = false;
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");

@@ -243,7 +243,17 @@ public partial class ParcelViewModel
         StructuredPolicy = policy; StructuredPolicy.PropertyChanged += (_, _) => EditorChanged();
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
-        AcceptEditorBaseline(); if (c.StationCode is null) { savedEditorSignature = ""; validationState = "系统缺省值已补入候选，待明确保存；原账未修改"; } RebuildParameterEditor(); NotifyConfigurationEditorState();
+        var scanPolicyChanged = c.ApplicationId == "sportmaster" &&
+            (ParcelBindings.Readers(c).Any(r => r.Driver == "tcp-line" && r.Parameters?.GetValueOrDefault("entity.mode", "observe-only") != "line") ||
+             c.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1" } wcs && wcs.Parameters.TryGetValue("quantity", out var quantity) &&
+             (quantity != "1" || !drafts.Single(d => d.InstanceId == wcs.InstanceId).Parameters.Any(p => p.Field.Key == "quantity")));
+        AcceptEditorBaseline();
+        if (c.StationCode is null || scanPolicyChanged)
+        {
+            savedEditorSignature = "";
+            validationState = scanPolicyChanged ? "已准备每次扫码一个包裹的候选，请核对并保存；原配置和旧请求保留" : "系统缺省值已补入候选，待明确保存；原账未修改";
+        }
+        RebuildParameterEditor(); NotifyConfigurationEditorState();
     }
     CapabilityChoice[] Choices(string kind, string empty = "不绑定") => [new(empty, null), .. CapabilityDrafts.Where(x => x.Kind == kind).Select(x => new CapabilityChoice(x.InstanceId, x))];
     void AddRole(string role, string kind, CapabilityBinding? binding)
@@ -278,7 +288,7 @@ public partial class ParcelViewModel
         var bindings = CapabilityDrafts.Select(x => x.Build()).ToArray();
         if (bindings.Select(x => x.InstanceId).Distinct().Count() != bindings.Length) throw new InvalidOperationException("能力实例身份不能重复");
         CapabilityBinding? Role(string name) => ConfigurationRoles.Single(x => x.Role == name).Selection.Capability is { } draft ? bindings.Single(x => x.InstanceId == draft.InstanceId) : null;
-        var readerBindings = ReaderDrafts.Select(x => x.Capability.Build()).ToArray();
+        var readerBindings = ReaderDrafts.Select(x => x.Capability.BuildReader(c.ApplicationId)).ToArray();
         var readers = ReaderDrafts.Select((x, i) =>
         {
             var b = readerBindings[i];

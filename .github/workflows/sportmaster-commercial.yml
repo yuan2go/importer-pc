@@ -39,6 +39,7 @@ jobs:
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup 2>&1 | tee parameter-guidance-startup.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --sportmaster-rcs 2>&1 | tee confirmed-camera-rcs.log
       - name: Exercise process death, monotonic time, storage and ownership
         shell: bash
         run: |
@@ -60,6 +61,7 @@ jobs:
             stability-collector.log
             dual-camera-boundaries.log
             parameter-guidance-startup.log
+            confirmed-camera-rcs.log
           if-no-files-found: warn
           retention-days: 30
   frozen-sportmaster:

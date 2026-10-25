@@ -43,6 +43,7 @@ static partial class Program
         vm.MarkReadFailure("synthetic RCS snapshot failure");
         Check(vm.Left.RcsServiceStatus == "RCS 服务：状态未知", "stale RCS snapshot cannot retain an online indicator");
         probe.Project = null; await vm.RefreshAsync();
+        await Until(() => vm.CanUseWorkspace && vm.Left.CanAdmit && vm.Right.CanAdmit);
         await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
         await Until(() => vm.Right.Operation?.State == ParcelState.SlotResolved);
         Check(vm.Left.Operation?.State == ParcelState.ResolvingWcs && vm.Left.TaskId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—", "left processing suppresses the entire task while right completes");
@@ -138,7 +139,7 @@ static partial class Program
         Check(ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED", "page navigation retains the same editor and unsaved draft");
         Capture("parameters-system", client);
         var search = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "搜索参数");
-        search.Text = "队列"; window.UpdateLayout();
+        search.Text = "扫码消息"; window.UpdateLayout();
         Capture("parameters-search", client);
         var results = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "参数搜索结果");
         Check(results.IsVisible && results.Items.Count > 0 && search.Focus(), "parameter search presents matches and accepts native keyboard input");

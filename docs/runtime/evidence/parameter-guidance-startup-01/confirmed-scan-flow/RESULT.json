@@ -1,0 +1,66 @@
+{
+  "Status": "PASS",
+  "Date": "2026-10-25",
+  "BaseCommit": "0d99028517e12cd462659dcd950ecbd2451106cd",
+  "WorkingSourcePatchSha256": "212743d9b5ddd0ebca699fbe5c285a3b451a1f693fd72ff363876c3ca2c01ef5",
+  "FrozenPublication": false,
+  "Scope": "Actual loopback TCP/HTTP and native Windows WPF with synthetic identities; no field devices or real RCS",
+  "Assertions": [
+    "PASS RCS20: new parcel requests always send quantity 1, including legacy configured quantity 7",
+    "PASS RCS20: new parcel requests always send quantity 1, including legacy configured quantity 7",
+    "PASS RCS20: existing frozen legacy intent is validated and delivered byte-for-byte without regenerating its quantity",
+    "PASS RCS20: a partial TCP frame creates no parcel or RCS request",
+    "PASS RCS20: a partial TCP frame creates no parcel or RCS request",
+    "PASS RCS20: a partial TCP frame creates no parcel or RCS request",
+    "PASS RCS20: three completed camera scans create exactly three RCS requests with their original barcodes, fixed quantity 1, and no merge by barcode"
+  ],
+  "Tests": [
+    {
+      "Test": "sportmaster-rcs",
+      "Status": "PASS",
+      "RawSha256": "0933a1df7d7b1f556c3e2a14c3935270eac832ddfee19b91c9076045c56dc61d",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "parameter-guidance-startup",
+      "Status": "PASS",
+      "RawSha256": "1c0cdbcbb5d1d732af9939f7e610d41bcc4ee564f456aff32b1d09d6ede1127d",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "parameter-refactor",
+      "Status": "PASS",
+      "RawSha256": "211928296c5c11e5a021e9fb38b3a7a50a1936f4c3c8f8765058d77b01d70d23",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "dual-camera-communication",
+      "Status": "PASS",
+      "RawSha256": "4dfef2f5b2b1f13b2dc16803f9e195b6a3befbab3a9a36899deef8d4d505d437",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "WPF-parameter-guidance-startup",
+      "Status": "PASS",
+      "RawSha256": "61d98e7ebc93871bcc5627d43f14d1239042d77e1f7a3c0efb55401ab971b836",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "WPF-parameter-v3",
+      "Status": "PASS",
+      "RawSha256": "c071582dbdba7b98baef388ff95ec730e49e21f3ff263d1a24b178f46e947234",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    },
+    {
+      "Test": "WPF-startup-experience",
+      "Status": "PASS",
+      "RawSha256": "f8cc4e3fe545cca14415089dff0e6a2bc409b9a817b4ab3175161dbd6b3c6dac",
+      "RawLocation": "private D-drive development evidence; not uploaded"
+    }
+  ],
+  "NotRun": [
+    "real camera/RCS contract integration",
+    "target IPC/physical 100% DPI/touch",
+    "field acceptance"
+  ]
+}

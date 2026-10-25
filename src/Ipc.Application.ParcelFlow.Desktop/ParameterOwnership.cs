@@ -11,7 +11,7 @@ public static class ParameterOwnership
     public static int Category(CapabilityDraft draft, string key) => IsDriver(draft) ? 2 : !IsRcs(draft) ? 3 : key switch
     {
         "zone-id" or "project-id" or "left-station-code" or "right-station-code" => 0,
-        "quantity" or "specified-chute" or "chute-code" => 1,
+        "specified-chute" or "chute-code" => 1,
         "left-bcr-code" or "right-bcr-code" => 2,
         _ => 3
     };

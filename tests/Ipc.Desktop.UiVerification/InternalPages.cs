@@ -60,12 +60,12 @@ static partial class Program
         Check(await model.ValidatePageAsync(new HashSet<string> { "BarcodePattern", "BarcodeExclusionPattern" }), "whitespace-only optional rules retain the existing absent-filter semantics");
         model.Policy.BarcodePattern = model.Policy.BarcodeExclusionPattern = "";
         var rcs = model.Components.Single(ParameterOwnership.IsRcs);
-        var quantity = rcs.Parameters.Single(p => p.Field.Key == "quantity"); var originalQuantity = quantity.Value;
-        quantity.Value = ""; await Flush();
+        var specified = rcs.Parameters.Single(p => p.Field.Key == "specified-chute"); var originalSpecified = specified.Value;
+        specified.Value = ""; await Flush();
         directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "RCS 服务"); await Settled();
-        Check(editor.CurrentPageTitle == "格口请求" && model.Issues.Any(i => i.Path == rcs.InstanceId + "/quantity"), "forward directory jump cannot skip a missing value on the current leaf");
-        quantity.Value = originalQuantity;
-        var specified = rcs.Parameters.Single(p => p.Field.Key == "specified-chute"); var chute = rcs.Parameters.Single(p => p.Field.Key == "chute-code");
+        Check(editor.CurrentPageTitle == "格口请求" && model.Issues.Any(i => i.Path == rcs.InstanceId + "/specified-chute"), "forward directory jump cannot skip a missing value on the current leaf");
+        specified.Value = originalSpecified;
+        var chute = rcs.Parameters.Single(p => p.Field.Key == "chute-code");
         var oldSpecified = specified.Value; var oldChute = chute.Value; specified.Value = "true"; chute.Value = ""; await Flush();
         Check(!await editor.MoveNextAsync() && model.Issues.Any(i => i.Path.EndsWith("/chute-code")), "conditional specified chute remains required on its own page");
         specified.Value = "false"; await Flush();

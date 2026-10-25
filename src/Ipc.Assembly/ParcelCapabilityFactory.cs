@@ -28,8 +28,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;
-    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
-        ? "Production NotReady: exact deployment qualification missing/expired" : null;
+    public string? AdmissionFailure(ParcelConfiguration c) => c.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1", Package: not null } old &&
+        old.Parameters.TryGetValue("quantity", out var quantity) && quantity != "1"
+        ? "RCS旧配置的每包数量不是1，请核对并保存每次扫码一个包裹的候选后受控重启。"
+        : c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+            ? "Production NotReady: exact deployment qualification missing/expired" : null;
     public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
     ExtensionStore Store()
@@ -391,11 +394,15 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
                 prerequisiteHolds.Add(new FileStream(evidence.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
                 if (!string.Equals(DeploymentQualifications.FileHash(evidence.Path), evidence.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
             }
-        var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         var deviceIds = ParcelBindings.Readers(c).Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
             .Concat(ParcelBindings.Bound(c).Where(x => x.Kind is "weight" or "plc" or "camera").SelectMany(x => new[] { "device:" + x.Target, x.Kind + ":" + x.Target })).Distinct();
         deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).Select(r => "reader:tcp:" + Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)));
-        devices = new(resourceRoot, deviceIds);
+        var resources = deviceIds.ToArray();
+        if (resources.Length > 0)
+        {
+            var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
+            devices = new(resourceRoot, resources);
+        }
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {
             Store().RegisterConsumer(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db"));

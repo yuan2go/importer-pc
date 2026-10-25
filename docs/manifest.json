@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "0ed68963118886712d8a061f88f65a236cc48a5e8317f53cbbed96a0dbf53ea2",
-      "size_bytes": 9595,
-      "git_blob": "8cc5c024ec44d54457264a167d75df1838e46cbf",
+      "sha256": "cc699b23568eaed4b81a69b3a01deadf1f88fae2d9c8521f25687522d883daab",
+      "size_bytes": 9782,
+      "git_blob": "b80cc35ad607f322d4d96abd4c0e189a5cb36dfe",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -1816,13 +1816,13 @@
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       },
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "4e14afde6caac93033dc21ad0f1098a57b5160d5297831c5ae76b1bf02138456",
-      "size_bytes": 15491,
-      "git_blob": "054c047ef2c5030db1885e537de0e0fa2a494d97",
+      "sha256": "11f4dfe608e74c999253cb82a13093fd5293c4521e09760384a547fe710ac5b8",
+      "size_bytes": 15694,
+      "git_blob": "37c336ff27d2039a02e850ec8647d7447c837862",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -1846,7 +1846,7 @@
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       },
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": ".github/workflows/unified-windows-release.yml",
@@ -1950,9 +1950,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "b5dc7964b263ceb59d0cd899f91729f151bc8ae6ac0648dfb4d3d9c74a2e568a",
-      "size_bytes": 6367,
-      "git_blob": "defba7dac33830073d5d1e07b073d2a3e2298863",
+      "sha256": "78e28cbf069c3d36872952cf7f59b623409346adbab5a183b5c46f581eab1ebf",
+      "size_bytes": 6395,
+      "git_blob": "b870931885e0bacfcbf14a8292fe7a73e3d5eaad",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -1992,7 +1992,7 @@
         "status": "parameter_v3_design_or_current_guidance",
         "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
       },
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "config/compatibility/direct-plc.json",
@@ -2199,9 +2199,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "41e979e47b1c722fa0809c6b074535fd6b2e8e5539eb43d6f46f6e4492970234",
-      "size_bytes": 14690,
-      "git_blob": "96b127d0423410d1f5235ba4f6b22274929eca41",
+      "sha256": "6178b2b79518e7b8199774a1fdc398048f863459146241f032e4e12429fbfb06",
+      "size_bytes": 15015,
+      "git_blob": "1fc2d4af5d7f7a3a9349c4c80f6a2ab64137a14f",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2415,7 +2415,7 @@
         "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
         "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained"
       },
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/archive/parallel-reconciliation-20261020-inflight-ui/README.md",
@@ -46255,14 +46255,22 @@
     },
     {
       "path": "docs/runtime/rcs-heartbeat-01.md",
-      "sha256": "388270aaacb697f1fa9936ff2bf00bdbe429a73a43b3ac81c4945b60473352f0",
-      "size_bytes": 9141,
-      "git_blob": "8e6f6f6fc36971836a46c773cfc9ca7a542b96cd",
-      "version": "rcs-heartbeat-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized RCS station heartbeat implementation, synthetic verification and configuration/deployment guidance",
-      "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets",
-      "storage_scope": "public_repository"
+      "sha256": "ba14a3a934b0bde63385c8e3fc7ce55acc48d4e0cc1c48fa284a9d73f970cecb",
+      "size_bytes": 9463,
+      "git_blob": "5e7315c5e6ad2542023e9ede6f807d25d51d22cb",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "8e6f6f6fc36971836a46c773cfc9ca7a542b96cd",
+        "sha256": "388270aaacb697f1fa9936ff2bf00bdbe429a73a43b3ac81c4945b60473352f0",
+        "size_bytes": 9141,
+        "version": "rcs-heartbeat-01",
+        "status": "current_navigation_or_verification",
+        "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets"
+      }
     },
     {
       "path": "docs/runtime/reference-validation-09-checks.json",
@@ -54801,16 +54809,24 @@
       "previous_git_blob": "4c52b0954c3951861a7f5eb2db07aeb21dd7784f"
     },
     {
-      "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
-      "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs",
-      "sha256": "6571bbc1ee6e5be8f2a991cf66b61fd09f780f6b02d249c462e81c39a82e8afd",
-      "size_bytes": 8136,
-      "git_blob": "e3672bef7c2904a6618e7170c77b1e891c3c1c62",
-      "previous_git_blob": "de4a01e8abb2d36a37fb8f2adf1f51b97bc68784"
+      "sha256": "cb7f799404f393480f3ff2cd62bc74b9a7dfe20cb519fb1520dbf5e33b327864",
+      "size_bytes": 9311,
+      "git_blob": "4b49b89718c13dff8ec54415662beb388d7b8612",
+      "previous_git_blob": "de4a01e8abb2d36a37fb8f2adf1f51b97bc68784",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "e3672bef7c2904a6618e7170c77b1e891c3c1c62",
+        "sha256": "6571bbc1ee6e5be8f2a991cf66b61fd09f780f6b02d249c462e81c39a82e8afd",
+        "size_bytes": 8136,
+        "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelEditorDrafts.cs",
@@ -54938,14 +54954,22 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
-      "version": "audit03-delivery-1.2.8",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation or synthetic delivery evidence",
-      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "4f8010ebeb1a1948167520e50a2b5a86d3cdb4abdca9d5dc24e12d49fd928b98",
-      "size_bytes": 6906,
-      "git_blob": "f932bdeeb12be2db9d05cab2eeb19dc5cc407e7f"
+      "sha256": "d7e1e5f70e1f4a51d7484b3ea57da0c308b7639081e362d2154db3c8ae026a57",
+      "size_bytes": 7251,
+      "git_blob": "eab38f04143687c6e6f5a38aae5d67cdb6f836e4",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "f932bdeeb12be2db9d05cab2eeb19dc5cc407e7f",
+        "sha256": "4f8010ebeb1a1948167520e50a2b5a86d3cdb4abdca9d5dc24e12d49fd928b98",
+        "size_bytes": 6906,
+        "version": "audit03-delivery-1.2.8",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-A03-00..06 explicit implementation and publication authorization"
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
@@ -57723,12 +57747,21 @@
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs",
       "storage_scope": "public_repository",
-      "version": "PUBLICATION-NO-TEST-20261020",
-      "status": "source_or_delivery_custody",
-      "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "a70c4c20e3d575d5ed0145591c009cdcf916d3269c1822087394dfe8019ab4ee",
-      "size_bytes": 2175,
-      "git_blob": "796ee98ba9889ca3dfe686f4b7f022c0cac8ea29"
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "sha256": "4b32e1645eee2a84581faec66e9e7ecdbf8f7542268f0199a3764da7e84b1647",
+      "size_bytes": 2507,
+      "git_blob": "45f9b1c9635167ca9bb6cc1b4511a8a50ed83dec",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "796ee98ba9889ca3dfe686f4b7f022c0cac8ea29",
+        "sha256": "a70c4c20e3d575d5ed0145591c009cdcf916d3269c1822087394dfe8019ab4ee",
+        "size_bytes": 2175,
+        "version": "PUBLICATION-NO-TEST-20261020",
+        "status": "source_or_delivery_custody",
+        "source": "User-authorized source and existing artifact publication; no tests or builds run"
+      },
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
@@ -57743,15 +57776,23 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs",
-      "sha256": "51f96c2a1a47305ab3625281415538fe3d761b592206de8d85eac1781c4997b6",
-      "size_bytes": 5037,
-      "git_blob": "e35fe74229b0f92db1db9c97212ffe9254d7e39a",
-      "version": "rcs-heartbeat-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized RCS station heartbeat implementation, synthetic verification and configuration/deployment guidance",
-      "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets",
+      "sha256": "e82d367dea824f726d8e4f48881604829c2bbbb5bd8d61e563699f6928c72631",
+      "size_bytes": 5177,
+      "git_blob": "bd2865662e19aaf3ca8d404d058f607443cf5930",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "pre_publication_no_test_git_blob": "d6639995000ad2461160eb8bcfe2b4daa66b3b62"
+      "pre_publication_no_test_git_blob": "d6639995000ad2461160eb8bcfe2b4daa66b3b62",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "e35fe74229b0f92db1db9c97212ffe9254d7e39a",
+        "sha256": "51f96c2a1a47305ab3625281415538fe3d761b592206de8d85eac1781c4997b6",
+        "size_bytes": 5037,
+        "version": "rcs-heartbeat-01",
+        "status": "current_navigation_or_verification",
+        "source": "2026-10-20 user-authorized RCS heartbeat increment; synthetic identifiers only; no restricted customer originals or SDK assets"
+      }
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs",
@@ -57767,15 +57808,23 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
-      "version": "audit03-delivery-1.2.8",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "5dc04ce7f2294ec2266b9f03a3a0bf803af1af4f2b765907e1669d7a444931af",
-      "size_bytes": 8984,
-      "git_blob": "edae68c1d6c1ff80bca0f25bd307d6fe007572d0",
-      "pre_publication_no_test_git_blob": "b884d885c13397f8023aa436f3b219b3556d9932"
+      "sha256": "ad4da58bd1a3f5cb95dc5d88489b3b666b2cd79ff235358c2c08f4f74e6725a3",
+      "size_bytes": 9400,
+      "git_blob": "6b340433bf66713598894830f8704361cb2a27f5",
+      "pre_publication_no_test_git_blob": "b884d885c13397f8023aa436f3b219b3556d9932",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "edae68c1d6c1ff80bca0f25bd307d6fe007572d0",
+        "sha256": "5dc04ce7f2294ec2266b9f03a3a0bf803af1af4f2b765907e1669d7a444931af",
+        "size_bytes": 8984,
+        "version": "audit03-delivery-1.2.8",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
+      }
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/extension.build.json",
@@ -59319,9 +59368,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "575454c031a8cae8aa6f0e58870c3702ccda92b12aba686b348cd9c6dd71d6e3",
-      "size_bytes": 22060,
-      "git_blob": "790c7ae88b543c0ff02a864c8b81038b78d4bda1",
+      "sha256": "dae584bdf35b1dabe58f623ccf8c4d6d7f43b0b6c314dfc76c55fec07e7b781f",
+      "size_bytes": 22181,
+      "git_blob": "3737486785c60e318b2d86b089da70f6d2ea4f7d",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59384,7 +59433,7 @@
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       },
-      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01; original hashes retained in archived manifest"
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "tests/Ipc.Application.Verification/QualificationVerification.cs",
@@ -89736,25 +89785,41 @@
     },
     {
       "path": "docs/runtime/parameter-guidance-startup-01.md",
-      "sha256": "b90514be3ea74b0aa22824b59e8c4db1cfb0dcf052a926a3f4c04fe40c1f5ff7",
-      "size_bytes": 9261,
-      "git_blob": "d23dd80002e915ac5d15e315da62cb5f8f195a6f",
-      "version": "parameter-guidance-startup-01-frozen",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld",
-      "storage_scope": "public_repository"
+      "sha256": "6cd826f6c9bdbe42c51d612bdd897f5e438f103d374421118846408c0fbace44",
+      "size_bytes": 9518,
+      "git_blob": "4820e23e13e5bc834a65ec1dcc032f8018c50099",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "d23dd80002e915ac5d15e315da62cb5f8f195a6f",
+        "sha256": "b90514be3ea74b0aa22824b59e8c4db1cfb0dcf052a926a3f4c04fe40c1f5ff7",
+        "size_bytes": 9261,
+        "version": "parameter-guidance-startup-01-frozen",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; frozen code 7d7487a5; local raw development identity withheld"
+      }
     },
     {
       "path": "docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md",
-      "sha256": "686dc8949b20b3bcf3dd00cc0b9c3f0df4f6cb3235c8caf80c81a92354767844",
-      "size_bytes": 2736,
-      "git_blob": "3ea00bd12ff7f2859259e1478781665e07f120d4",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "storage_scope": "public_repository"
+      "sha256": "52a2f7c3deb4244cc76868726531217121e920ec5434c582bc929e8202fe4336",
+      "size_bytes": 3855,
+      "git_blob": "e8c18e8f0f034cbe7d107994e6f59f434d397c54",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "3ea00bd12ff7f2859259e1478781665e07f120d4",
+        "sha256": "686dc8949b20b3bcf3dd00cc0b9c3f0df4f6cb3235c8caf80c81a92354767844",
+        "size_bytes": 2736,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      }
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelConnectionSetup.cs",
@@ -89802,14 +89867,22 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
-      "sha256": "de666deec214e30341ba36280cd03afbf42985c8c5dfde03468535135b0c93e8",
-      "size_bytes": 9016,
-      "git_blob": "190ecc7a409779d400c560cbe5b584342d67951e",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "storage_scope": "public_repository"
+      "sha256": "41fc8e4737ba602d6cd11c53747e38f90dd4cd5d1ad0cc99ee22710cdeab4be6",
+      "size_bytes": 13103,
+      "git_blob": "9bc6ff0bae67508d970c5b5af9bae5f5897283ed",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "190ecc7a409779d400c560cbe5b584342d67951e",
+        "sha256": "de666deec214e30341ba36280cd03afbf42985c8c5dfde03468535135b0c93e8",
+        "size_bytes": 9016,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      }
     },
     {
       "path": "docs/runtime/evidence/parameter-guidance-startup-01/PRIVATE-FAILURE-FACTS.json",
@@ -89969,6 +90042,395 @@
       "sha256": "cbc7fffbe7c46760edbd0868746b77b778e5443bc60ca4d5230d2a1def22dc56",
       "size_bytes": 1028,
       "git_blob": "5b8e2b4d931cc173d958f573ecf72f6232b39370"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/FILES.json",
+      "sha256": "7259e30feb746a150159e169789453e00cd09e3b21a5cd183e3e5a0366cd18ee",
+      "size_bytes": 3745,
+      "git_blob": "03020a34dcb0b9b8d382d5d434eb087a6c07c8b9",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "0314f210d6d74eb37bde965d798b0e5b20fb38eb",
+        "sha256": "a20d0eb6b3d81d8bafd24933da7039b95e016fba4a793b2b8d759c7527402b3b",
+        "size_bytes": 2594,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/README.md",
+      "sha256": "ed5bf84cdf3ab4b9654b08a771b2a1601724cd523b86b89464749eb01190fbd6",
+      "size_bytes": 3660,
+      "git_blob": "8b7b67a81a3bff5d412fc0d56898b1b31a22ee1d",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "abb6696f9cddd3a5ba1a03a62051768c3e9d1a09",
+        "sha256": "76e9e0b295920e34e063be7ac057f1d85fc9d0cf7db6ab0531d7b527ff08b342",
+        "size_bytes": 2689,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/WINDOWS-WPF.log",
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+      "size_bytes": 8024,
+      "git_blob": "6e94abd5e23bd801fa6f1588b2b37e990712d59a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "6e94abd5e23bd801fa6f1588b2b37e990712d59a",
+        "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+        "size_bytes": 8024,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/before-fix.log",
+      "sha256": "e597259cd20bed6a7dc249a5eca06dec20f3dcb05300f59f51a458e03948bce5",
+      "size_bytes": 1325,
+      "git_blob": "0b42398289c68bf7ae470bd45f0d6c7404ca0576",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "0b42398289c68bf7ae470bd45f0d6c7404ca0576",
+        "sha256": "e597259cd20bed6a7dc249a5eca06dec20f3dcb05300f59f51a458e03948bce5",
+        "size_bytes": 1325,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/build-final.log",
+      "sha256": "c7cda1f183862a477e9fe8827e17dee396f68b9da4a2a3ef39277570c7dbf453",
+      "size_bytes": 2143,
+      "git_blob": "99ce6da6919a2173c05378db3681475f0cadf6c1",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "99ce6da6919a2173c05378db3681475f0cadf6c1",
+        "sha256": "c7cda1f183862a477e9fe8827e17dee396f68b9da4a2a3ef39277570c7dbf453",
+        "size_bytes": 2143,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/build-wpf-accepted.log",
+      "sha256": "f45159a7d044ee38d2e7387f98ed362edd58e5891848dc1397f29e451c03f474",
+      "size_bytes": 2196,
+      "git_blob": "40d7dae92123711e9782684857d9c09857629440",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "40d7dae92123711e9782684857d9c09857629440",
+        "sha256": "f45159a7d044ee38d2e7387f98ed362edd58e5891848dc1397f29e451c03f474",
+        "size_bytes": 2196,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/deferred-left-active-rcs.png",
+      "sha256": "557f1139138f2a463b3e946f7801a9f7a3c5b736d38e8260e294baff497d8663",
+      "size_bytes": 79303,
+      "git_blob": "afb74741b33086c66d414e54a61022a992b786b6",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "afb74741b33086c66d414e54a61022a992b786b6",
+        "sha256": "557f1139138f2a463b3e946f7801a9f7a3c5b736d38e8260e294baff497d8663",
+        "size_bytes": 79303,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/deferred-workstation.png",
+      "sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001",
+      "size_bytes": 76954,
+      "git_blob": "99a6b70f66981eb8852e78e4e5b7832ec08d194f",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "99a6b70f66981eb8852e78e4e5b7832ec08d194f",
+        "sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001",
+        "size_bytes": 76954,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-final.log",
+      "sha256": "d46d1b8b8d68a3f06bb80ae421808168b2e27ddc0b721390dadc49dc05692129",
+      "size_bytes": 13246,
+      "git_blob": "17907087b6ba629a880a6793f05aa39ce6b9a787",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "17907087b6ba629a880a6793f05aa39ce6b9a787",
+        "sha256": "d46d1b8b8d68a3f06bb80ae421808168b2e27ddc0b721390dadc49dc05692129",
+        "size_bytes": 13246,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-first.log",
+      "sha256": "46e6e988e08f81f69095eae3abad75c71f551009a46732b19a15e85a6dd3caaa",
+      "size_bytes": 2556,
+      "git_blob": "61b7e770c1dc56124a5301115c9052f8998b5d44",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "61b7e770c1dc56124a5301115c9052f8998b5d44",
+        "sha256": "46e6e988e08f81f69095eae3abad75c71f551009a46732b19a15e85a6dd3caaa",
+        "size_bytes": 2556,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-fourth.log",
+      "sha256": "0ec616b29884b2d79bce2a6e2a1920c6373b0914a017f1efd2bf34ff6563916a",
+      "size_bytes": 11094,
+      "git_blob": "3be883a6882b663bb00caac4ab1775b8deb430da",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "3be883a6882b663bb00caac4ab1775b8deb430da",
+        "sha256": "0ec616b29884b2d79bce2a6e2a1920c6373b0914a017f1efd2bf34ff6563916a",
+        "size_bytes": 11094,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/matrix-third.log",
+      "sha256": "4573f33d14aadbe061d541eb7d4185bc1ff3943ff74f9ad9cad2a8dc48dba3a0",
+      "size_bytes": 9044,
+      "git_blob": "3d0d521ee0d45ff17d19d9118bd78c221a0f4b5b",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "3d0d521ee0d45ff17d19d9118bd78c221a0f4b5b",
+        "sha256": "4573f33d14aadbe061d541eb7d4185bc1ff3943ff74f9ad9cad2a8dc48dba3a0",
+        "size_bytes": 9044,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/parameter-guidance-startup.log",
+      "sha256": "34983bec6996ccace7a5006540c0fdc8eefd37a6cb546da55311855723e52842",
+      "size_bytes": 2340,
+      "git_blob": "90e0976c77f787ea8b978c7708d62f2422211d21",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "90e0976c77f787ea8b978c7708d62f2422211d21",
+        "sha256": "34983bec6996ccace7a5006540c0fdc8eefd37a6cb546da55311855723e52842",
+        "size_bytes": 2340,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/parameter-refactor.log",
+      "sha256": "8f623c78c9ec38e1d394a8425634c0d4e8d770bb885a4488d9fefd927291a8f4",
+      "size_bytes": 3873,
+      "git_blob": "64832dccc29824323cd509f5e3be8836393f576a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "64832dccc29824323cd509f5e3be8836393f576a",
+        "sha256": "8f623c78c9ec38e1d394a8425634c0d4e8d770bb885a4488d9fefd927291a8f4",
+        "size_bytes": 3873,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/rcs-heartbeat.log",
+      "sha256": "73e074dde15cb34433a8349f5e4fab4858dbcf8206b71195db27037587b1cb10",
+      "size_bytes": 2021,
+      "git_blob": "626ed045ada80074e80a029f7bca9fa1031e8544",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "626ed045ada80074e80a029f7bca9fa1031e8544",
+        "sha256": "73e074dde15cb34433a8349f5e4fab4858dbcf8206b71195db27037587b1cb10",
+        "size_bytes": 2021,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/validation/deferred-heartbeat-01.md",
+      "sha256": "961d8144be2019fd755e418939ed08de967448c7a3bcbd37a7546ab074456014",
+      "size_bytes": 5472,
+      "git_blob": "93f429b1eaf74433fef77042fe3bb27d7260586a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "343e657d0aa9418c1c28e0cf28bddfbb09850e85",
+        "sha256": "1590ab6e7bb3875c6f8f026b4a955a83edc64cc51c76f27029720f1c5a888fd5",
+        "size_bytes": 4827,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
+      "sha256": "b4caf09e814503b4fe979d12de903a865215b0a99f999d3ed942009a4deb531d",
+      "size_bytes": 17370,
+      "git_blob": "fa92fdba637a1a25f4334d4a1f74831719666d0b",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_deferred_heartbeat_01_identity": {
+        "git_blob": "fa92fdba637a1a25f4334d4a1f74831719666d0b",
+        "sha256": "b4caf09e814503b4fe979d12de903a865215b0a99f999d3ed942009a4deb531d",
+        "size_bytes": 17370,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/DELIVERY.json",
+      "sha256": "4a8e6df94fe5efb7ea1143d8ba03a9ed45de4a8bcf7d5ccac01c1d7fa95283a1",
+      "size_bytes": 468,
+      "git_blob": "77f360d2d812a2790773b333a3922df0e14901ab",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PARAMETERS-RESULT.json",
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059",
+      "size_bytes": 3287,
+      "git_blob": "95b58699c5cbe72b6d6963ea15666db2efd18820",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PARAMETERS-WPF.log",
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+      "size_bytes": 8024,
+      "git_blob": "6e94abd5e23bd801fa6f1588b2b37e990712d59a",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/PUBLISHED-DESKTOP-STARTUP.json",
+      "sha256": "e15e2cc71ae4875f5ddb48084f30c4f39c478c251208df7861acab21c2252853",
+      "size_bytes": 194,
+      "git_blob": "61a7eea3ae428df1302c90ff60591b939b4ebd0c",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/STARTUP-RESULT.json",
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059",
+      "size_bytes": 3287,
+      "git_blob": "95b58699c5cbe72b6d6963ea15666db2efd18820",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/deferred-heartbeat-01/frozen-2d02ea30/STARTUP-WPF.log",
+      "sha256": "ea675cd00b540f8b4d26cc438594d9371cb49dc51e2f4b304d69babeab436712",
+      "size_bytes": 14880,
+      "git_blob": "f6c1a9fceb40485f94039601587d669ba6107f72",
+      "version": "deferred-heartbeat-01",
+      "status": "scoped_implementation_or_separately_identified_evidence",
+      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
+      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/archive/lifecycle-ux-planning-01/FILES.json",
@@ -90824,9 +91286,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "9bb56ff61ea48258c89e82ab9de75bb48cfaf4656b2a3654060f781a73110b68",
-      "size_bytes": 14217,
-      "git_blob": "425b3de4f1811b09d4638c11ddc6d4a247f83714"
+      "sha256": "1bfca85c75a6b5f54c7f39c9c7c0f831bbd628407badf9a40ee617426d06af0f",
+      "size_bytes": 14245,
+      "git_blob": "197a98448c351b57ffab66a1c697bc5bef4e1c28",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/reviews/pr92-independent-quality-review.md",
@@ -92155,9 +92618,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "bdd683548196c08561bdd2241de69e85d5ac561db523c428305921936759f393",
-      "size_bytes": 25448,
-      "git_blob": "0da485e00b9acaa94696e4c70c8c3c7be3b88233"
+      "sha256": "5e16d22235719ea3b97800f3cb9b4d00c5dc94aae8ad740f4b3eb89e7458e1d2",
+      "size_bytes": 25633,
+      "git_blob": "d9ae83c2d4dc3d299ce723efc2c7a353da995279",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/README.md",
@@ -96555,9 +97019,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "9436a74cec265e603ef87ae5ba36d5efb9772d1c6a6655afb528eb92edcc4b46",
-      "size_bytes": 8497,
-      "git_blob": "e3c2a1033a2c5cad2aca20c4189a94ac0dac1980"
+      "sha256": "2313e4c14837d98787809de3cd49fd6521292de55708351b792efd7d9ac9bcd3",
+      "size_bytes": 8525,
+      "git_blob": "eaa20fb16459932a9a07385c47f023a3e483ad84",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/runtime/validation/architecture-quality-remediation-01.md",
@@ -96577,9 +97042,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "aa20a53cfe5dd4fd14ccb45595f93ebeaeb03e3b9fa01831b70a5c6cd91a432e",
-      "size_bytes": 8380,
-      "git_blob": "ae313ff79d81b9f5b5aafa907de98c4507b1d342"
+      "sha256": "571dcc0b69acff721bc868907a3918227be2a8a4f475d70df346500934ba25b9",
+      "size_bytes": 9122,
+      "git_blob": "32da5dc5cbe2168b0accf1340294144da2f3fea2",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/runtime/validation/lifecycle-ux-optimization-01.md",
@@ -96588,9 +97054,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "3771040894fa249c0600f50200249a191f3aeb78d441e957fe0a422a83a675e4",
-      "size_bytes": 15247,
-      "git_blob": "156cd020689d6a5128db53211d164a81ff7d0bdd"
+      "sha256": "788e30d017f21ab4bee6a103f7fd013c1b69f51826a1151b0e9c3dd6b719499b",
+      "size_bytes": 15275,
+      "git_blob": "d1c292a3c750932b4a373fd183149408e977ae81",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "docs/work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md",
@@ -96621,9 +97088,10 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "6431116d8b51d9e395b6e6b1e9c230e4a5d35270f22459d2071191cf1e3c1ad2",
-      "size_bytes": 21152,
-      "git_blob": "127ae8b2e1640e087f2c9587bec6a0ae3abb4a21"
+      "sha256": "baad96e367c9749c5fdb32acc881a175cfcdfe364f6e98eb677468bc5866d840",
+      "size_bytes": 21180,
+      "git_blob": "dc91a270b8ef800dc878b529661963be94994bc6",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivation.cs",
@@ -96833,6 +97301,17 @@
       "sha256": "2ae33fb8b58d2ba6a12778c8480e905b8445639292178e092497227a7a18fdc5",
       "size_bytes": 13698,
       "git_blob": "eac4fa8716ce4064e841f29cf6febd7be2e09613"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/MAIN-INTEGRATION.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "12e865792b6266d38daba7194e5a6d554ea0c08de2738c62cb9fbd55acd22c92",
+      "size_bytes": 742,
+      "git_blob": "21925a1cf1b1729769bfb12d493c91aaab4cf875"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -99673,18 +100152,19 @@
       "path": "docs/archive/pre-lifecycle-batch-preflight-01/snapshots/docs/manifest.json",
       "sha256": "bcfdc6b110e570a1ede42afd41a17abd730901372892c846a0b8235e5404a80a"
     },
-    "batch_preflight": "VERIFIED_LOCAL_FROZEN_SOURCE_720af857_CI_PENDING",
+    "batch_preflight": "SOURCE720af857_INTERMEDIATE_PASS_NEW_MAIN_FREEZE_PENDING",
     "windows_product_installation": "NOT_RUN",
     "equipment_and_field": "NOT_RUN",
     "G01": "BLOCKED_EXTERNAL",
     "G02": "BLOCKED_EXTERNAL",
     "removed_current_records": [],
-    "parallel_pr_109": "Not included; main integration owns shared index/manifest/workflow/test dispatch",
+    "parallel_pr_109": "Merged by main as a8cd4314; inherited here without claiming its evidence as LIA verification",
     "qualification": "No merge, publication, normal deployment success or field acceptance",
     "catalog_reconciliation": {
       "existing_record_order": "preserved",
       "inherited_missing_records": 291,
       "meaning": "Metadata coverage of existing main does not credit that work or its acceptance to LIA"
-    }
+    },
+    "integrated_baseline_main": "a8cd431456f73e83040f75a0c5e3cc1423440d1b"
   }
 }

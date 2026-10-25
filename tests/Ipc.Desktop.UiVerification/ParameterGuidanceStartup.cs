@@ -67,6 +67,7 @@ static partial class Program
             Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "turning off deferred mode exposes required camera errors");
             deferred.IsChecked = true; await Flush();
             Check(model.ValidateFields(), "reselecting deferred mode preserves inputs and removes inapplicable connection errors");
+            await VerifyIndependentDeferredPreflight(evidence, window, editor, draft, model, lines);
             editor.ShowPage(0, "显示偏好"); await Flush();
             var modes = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode");
             modes.SelectedValue = PresentationPreferences.WindowOpeningMode.FullScreen;
@@ -97,5 +98,58 @@ static partial class Program
             if (previous is null) { if (File.Exists(preference)) File.Delete(preference); } else File.WriteAllBytes(preference, previous);
             overrideRoot.SetValue(null, oldOverride);
         }
+    }
+
+    static async Task VerifyIndependentDeferredPreflight(string evidence, Window window, ParameterSettingsControl editor,
+        StartupConfigurationDraft draft, ParameterEditorModel model, List<string> lines)
+    {
+        void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS DEFERRED-WPF " + reason); }
+        var original = draft.Capture();
+        var launch = new BusinessLaunch(Path.Combine(evidence, "deferred-preflight-config"), Path.Combine(evidence, "deferred-preflight-data"), null, null);
+        var offline = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new ParcelCapabilityFactory(launch), () => { });
+        try
+        {
+            for (var mask = 1; mask <= 7; mask++)
+            {
+                for (var i = 0; i < 2; i++)
+                {
+                    foreach (var p in draft.Readers[i].Parameters)
+                        p.Value = p.Field.Key switch
+                        {
+                            "device.ip" => "127.0.0.1", "device.port" => (24990 + i).ToString(),
+                            "bcr-code" => (mask & (1 << i)) != 0 ? "" : "SYNTH-BCR-" + i, _ => p.Value
+                        };
+                    Check(editor.ShowPage(2, i == 0 ? "左相机" : "右相机"), "camera page is reachable");
+                    await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                    Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[i].InstanceId + "/ConfigureLater").IsChecked = (mask & (1 << i)) != 0;
+                }
+                var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
+                rcs.Target = "http://127.0.0.1:24999/rcs/sorter/api";
+                foreach (var p in rcs.Parameters)
+                    p.Value = p.Field.Key switch
+                    {
+                        "zone-id" => (mask & 4) != 0 ? "" : "71", "project-id" => "83",
+                        "source" => "SYNTH_READER", "locale" => "zh_CN", "specified-chute" => "false", "heartbeat-interval-seconds" => "5",
+                        "left-bcr-code" => "SYNTH-LEFT", "right-bcr-code" => "SYNTH-RIGHT",
+                        "request-id-base" => "810000000", "request-id-count" => "100000", _ => p.Value
+                    };
+                Check(editor.ShowPage(3, "RCS 服务"), "RCS page is reachable");
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/ConfigureLater").IsChecked = (mask & 4) != 0;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Check(model.ValidateFields(), "mask " + mask + " native checkbox changes pass shared field validation: " + string.Join("; ", model.Issues.Select(i => i.Path + " " + i.Message)));
+                var report = await offline.CheckAsync(draft.Build());
+                Check(report.Checks.All(c => c.Status != "FAIL"), "mask " + mask + " native candidate passes actual offline preflight with independent deferrals");
+                if (mask == 1) CaptureInternal(evidence, "deferred-left-active-rcs", editor, lines);
+            }
+            var activeRcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
+            activeRcs.ConfigureLater = false;
+            activeRcs.Parameters.Single(p => p.Field.Key == "zone-id").Value = "71";
+            draft.Readers[0].ConfigureLater = false;
+            var incomplete = await offline.CheckAsync(draft.Build());
+            Check(incomplete.Checks.Any(c => c.Status == "FAIL" && c.Reason.Contains("bcr-code", StringComparison.Ordinal)),
+                "restoring a camera requires its real identity at preflight; stale deferred blank is refused");
+        }
+        finally { draft.Restore(original); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); }
     }
 }

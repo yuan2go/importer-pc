@@ -1,10 +1,10 @@
 # 批量部署预检回归 · 2026-10-26 续报
 
-修复源码及本机冻结介质已通过本次定向检查，最新 CI 仍待核对；不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
+原基线修复源720af857已通过本次定向检查；main随后合入PR109为a8cd4314，已整合到开发分支，需按新基线重新冻结并核对最新CI；不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
 
 ## 原失败与原因
 
-- PR #108 头 `2a13b11c067841a0c88b0669fc43d03dc77adcc3`；main `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开工核查时无其他开放 PR、无已跟踪并行修改。收口前发现新增 PR #109（头75ae3417），生产源码无文件交集；共享属性/CI、文档索引/目录及测试调度由主线整合时处理。本分支未搬入109源码或证据，main仍未变化。
+- PR #108 头 `2a13b11c067841a0c88b0669fc43d03dc77adcc3`；main `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开工核查时无其他开放 PR、无已跟踪并行修改。收口前发现新增 PR #109（头75ae3417），生产源码无文件交集。其后主线已将109合入为a8cd4314；本次将最新main整合进开发分支，保留其源码/证据及共享入口。INDEX同时保留两条现行入口，canonical目录保留双方元数据并重算实际Git记录；不把109证据算作本包新验证。
 - [Actions 40210140349](https://github.com/yuan2go/importer-pc/actions/runs/40210140349)：Linux 成功，Windows 冻结工程门失败。原介质/夹具均为实际 merge 源 `8408a38a2440097acee19d5101a528e738d413b8`，core `Frozen media batch preflight failed`，不是 head SHA 的另一名称。原始 core RUN/RESULT、acceptance 和 run/artifact 身份保存在 [original-ci-40210140349](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/original-ci-40210140349/RUN-IDENTITY.json)。
 - 本机用未改变的 `0a3d4152` 冻结 Windows DLL 及同提交夹具复现相同失败；原回执 InvalidDataException/退出2，库存未改变。原 [FAIL](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/baseline-0a3d4152/RESULT.json) 保留，不改标 PASS。
 - 批量入口以 `Review` 重新观察输入时生成新 OperationId，完整请求比较正确拒绝了不同身份。修复分开新建审阅与 `RevalidateDeployment`：重新观察全部输入、保留原 ID、继续完整 JSON 比较，验证后返回原冻结请求，避免字典枚举顺序改变原线性化哈希。
@@ -56,3 +56,7 @@ Set-Location D:/projects/importer-pc
 ```
 
 当前#108保持草稿，待最新CI后更新实际结论。不合并、不发布、不安装本机软件；不存在正常部署成功或现场放行的声明。
+
+## main前进后的整合
+
+main于本次推进中合入PR109（a8cd4314），导致首轮文档头与main的INDEX/manifest冲突，GitHub未生成该冲突头的CI运行；这不是新的CI通过或失败。现已保留双方内容并解冲突，生产源码无重叠。720af857与原CLI/core PASS降为整合前中间候选，原文件/哈希不改；后续仅按新增基线风险再做受影响的冻结core/只读CLI与最新CI，不重跑其他本机历史/大库/长期测试。不将开发分支整合误记为合并108到main。

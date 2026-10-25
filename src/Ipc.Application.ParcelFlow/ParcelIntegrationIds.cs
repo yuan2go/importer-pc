@@ -44,7 +44,11 @@ public sealed partial class ParcelRepository
         if (StorageVersion < 7) throw new InvalidDataException("Numeric range retirement requires the current database reader");
         // Include old resident and archived bindings: a restored backup must never
         // reuse the unobserved tail that the lost source might already have sent.
-        var bindings = configurations.Select(c => c.Wcs).OfType<CapabilityBinding>().ToList();
+        // A deferred configuration is an unfinished candidate, not an allocated
+        // request range. Its missing parameters must not block later activation.
+        // Durable ranges and every resident/archived original below remain intact.
+        var bindings = configurations.Where(c => c.Wcs is { } wcs && !ParcelConnectionSetup.IsDeferred(c, wcs.InstanceId))
+            .Select(c => c.Wcs).OfType<CapabilityBinding>().ToList();
         using (var c = db.CreateCommand())
         {
             c.CommandText = "SELECT DISTINCT json_extract(body,'$.Wcs.Request.Binding') FROM parcel_operations WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL UNION SELECT DISTINCT json_extract(body,'$.Wcs.Request.Binding') FROM parcel_archives WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL";

@@ -1,0 +1,114 @@
+{
+  "BaseCommit": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "Files": [
+    {
+      "path": "before-fix.log",
+      "size_bytes": 1325,
+      "sha256": "e597259cd20bed6a7dc249a5eca06dec20f3dcb05300f59f51a458e03948bce5"
+    },
+    {
+      "path": "build-final.log",
+      "size_bytes": 2143,
+      "sha256": "c7cda1f183862a477e9fe8827e17dee396f68b9da4a2a3ef39277570c7dbf453"
+    },
+    {
+      "path": "build-wpf-accepted.log",
+      "size_bytes": 2196,
+      "sha256": "f45159a7d044ee38d2e7387f98ed362edd58e5891848dc1397f29e451c03f474"
+    },
+    {
+      "path": "deferred-left-active-rcs.png",
+      "size_bytes": 79303,
+      "sha256": "557f1139138f2a463b3e946f7801a9f7a3c5b736d38e8260e294baff497d8663"
+    },
+    {
+      "path": "deferred-workstation.png",
+      "size_bytes": 76954,
+      "sha256": "97e158bdb625044da7edfded92ba0cd8d815408beb0e2ed0144a8dae97896001"
+    },
+    {
+      "path": "matrix-final.log",
+      "size_bytes": 13246,
+      "sha256": "d46d1b8b8d68a3f06bb80ae421808168b2e27ddc0b721390dadc49dc05692129"
+    },
+    {
+      "path": "matrix-first.log",
+      "size_bytes": 2556,
+      "sha256": "46e6e988e08f81f69095eae3abad75c71f551009a46732b19a15e85a6dd3caaa"
+    },
+    {
+      "path": "matrix-fourth.log",
+      "size_bytes": 11094,
+      "sha256": "0ec616b29884b2d79bce2a6e2a1920c6373b0914a017f1efd2bf34ff6563916a"
+    },
+    {
+      "path": "matrix-third.log",
+      "size_bytes": 9044,
+      "sha256": "4573f33d14aadbe061d541eb7d4185bc1ff3943ff74f9ad9cad2a8dc48dba3a0"
+    },
+    {
+      "path": "parameter-guidance-startup.log",
+      "size_bytes": 2340,
+      "sha256": "34983bec6996ccace7a5006540c0fdc8eefd37a6cb546da55311855723e52842"
+    },
+    {
+      "path": "parameter-refactor.log",
+      "size_bytes": 3873,
+      "sha256": "8f623c78c9ec38e1d394a8425634c0d4e8d770bb885a4488d9fefd927291a8f4"
+    },
+    {
+      "path": "rcs-heartbeat.log",
+      "size_bytes": 2021,
+      "sha256": "73e074dde15cb34433a8349f5e4fab4858dbcf8206b71195db27037587b1cb10"
+    },
+    {
+      "path": "WINDOWS-WPF.log",
+      "size_bytes": 8024,
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238"
+    },
+    {
+      "path": "frozen-2d02ea30/DELIVERY.json",
+      "size_bytes": 468,
+      "sha256": "4a8e6df94fe5efb7ea1143d8ba03a9ed45de4a8bcf7d5ccac01c1d7fa95283a1"
+    },
+    {
+      "path": "frozen-2d02ea30/PARAMETERS-RESULT.json",
+      "size_bytes": 3287,
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059"
+    },
+    {
+      "path": "frozen-2d02ea30/PARAMETERS-WPF.log",
+      "size_bytes": 8024,
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238"
+    },
+    {
+      "path": "frozen-2d02ea30/PUBLISHED-DESKTOP-STARTUP.json",
+      "size_bytes": 194,
+      "sha256": "e15e2cc71ae4875f5ddb48084f30c4f39c478c251208df7861acab21c2252853"
+    },
+    {
+      "path": "frozen-2d02ea30/STARTUP-RESULT.json",
+      "size_bytes": 3287,
+      "sha256": "05a0b1152793c4f6769efb96645ed05954a8a4ecc2b087982cb5124f05fd5059"
+    },
+    {
+      "path": "frozen-2d02ea30/STARTUP-WPF.log",
+      "size_bytes": 14880,
+      "sha256": "ea675cd00b540f8b4d26cc438594d9371cb49dc51e2f4b304d69babeab436712"
+    }
+  ],
+  "PassLineCounts": {
+    "before-fix.log": 1,
+    "build-final.log": 0,
+    "build-wpf-accepted.log": 0,
+    "matrix-final.log": 130,
+    "matrix-first.log": 4,
+    "matrix-fourth.log": 97,
+    "matrix-third.log": 65,
+    "parameter-guidance-startup.log": 22,
+    "parameter-refactor.log": 21,
+    "rcs-heartbeat.log": 27,
+    "WINDOWS-WPF.log": 88
+  },
+  "FrozenSourceCommit": "2d02ea30fa7fa70c2e7463cbbc86f0fe761ecd7c"
+}

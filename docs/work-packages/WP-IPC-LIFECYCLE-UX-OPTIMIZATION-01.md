@@ -1,4 +1,4 @@
-> 2026-10-26批量部署整改：修复源720af857已通过本机冻结core/14项批量守卫及实际只读CLI；最新CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：整合前720af857通过冻结core/14项批量守卫及只读CLI；最新main a8cd4314已整合，新基线冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
 
 2026-10-26剩余整改以 [批量部署续报](../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21重开，其他正确成果、G01/G02及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
 

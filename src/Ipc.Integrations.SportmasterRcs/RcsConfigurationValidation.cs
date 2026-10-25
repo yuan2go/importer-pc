@@ -22,7 +22,11 @@ internal static class RcsConfigurationValidation
             var code = reader.Driver == "tcp-line" ? reader.Parameters?.GetValueOrDefault("bcr-code") : instance?.Parameters.GetValueOrDefault("bcr-code");
             return ValidCode(code) ? code! : throw new InvalidDataException("RCS heartbeat requires bcr-code in the selected reader driver's configuration: " + reader.DeviceId);
         }
-        var mapping = readers.Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();
+        // Keep topology identity checks above even for deferred readers. Only an
+        // explicitly configured reader participates in the heartbeat contract;
+        // neither a missing code nor a stale draft code advertises a deferred one.
+        var mapping = readers.Where(r => !ParcelConnectionSetup.IsDeferred(configuration, r.DeviceId))
+            .Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();
         if (mapping.Select(p => p.Bcr).Distinct(StringComparer.Ordinal).Count() != mapping.Length)
             throw new InvalidDataException("RCS heartbeat reader bcr-code values must be distinct");
         return mapping;

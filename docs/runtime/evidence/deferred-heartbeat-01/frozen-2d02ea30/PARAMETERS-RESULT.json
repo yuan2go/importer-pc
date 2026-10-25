@@ -1,0 +1,91 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "2d02ea30fa7fa70c2e7463cbbc86f0fe761ecd7c",
+  "FixtureSourceCommit": "2d02ea30fa7fa70c2e7463cbbc86f0fe761ecd7c",
+  "FixtureMatchesMedium": true,
+  "MediumInventorySha256": "70C222370D90835FD4CBD14527E6C6D81DA9D980A6F151722C01E94FDA4D4E67",
+  "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+  "ExitCode": 0,
+  "Binaries": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "415AB89AE7A4AA31F2E444F603E323F833AED8861A96DACCD32992C58B02FBD2"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "236894A0A84822926BC50BB9DB26B03F48A51F0E869B3C5C317AE1A8DFDE26E0"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "187EA6C6C303AF969A068AD7693835343FC5CD85FF13DCF356933D519B252F44"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "CACBFC73406F085ACA134D81579D8ED1F6225BC0862A670FFE27D67713C9C253"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "A71C43FA8859CFE52B013A28F836A227D1F5BC8A8C10C67F87BC5B8EAE7F6002"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "E855A94066F6DB4F8EF6856DF99124942289818E2F53E0D2AD3F507177B1EDB0"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "6E50449D0213B0882661733FEA7082E109736FD2076B19B09DF69DA8655FEBC8"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "15CC02FFDD07FB047C9B6564E6EAEE6685F61C84CD07BBC8F58B3C97958C7BFB"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "45B2C6E8298A1AA8DA1BAF1F5AA6A198A0B35423A3FBC13F478EE69D3A24BC8C"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "1CE03304DC3B3F8DD3C5E866B1FA5EA256C09E55EDD6F9DA3BDB25A6ACE6594F"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "9A444DF5B8CD80A8A6328AC236E7C4B188A84E1AB8E934E911FA2FA4D47B231C"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "00F45BA13D87A828FE49036E078CF219826CE40F840B2B8758189FD5FCBEC4F6"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "E2E519E9E65C910A2AEEF5758478DC3F86A3DA65100F8D99CAAA7DD9193315B0"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "EA8BBB978B083CEEC933CDF36EA8A6D407F3CAB3C38C727B540967A81F9A05B9"
+    },
+    {
+      "File": "Microsoft.Data.Sqlite.dll",
+      "Sha256": "9F1FE804321767B6CC8DB751ECEDD56AB308E5F15492A7F40D7093BB61AB7638"
+    },
+    {
+      "File": "SQLitePCLRaw.batteries_v2.dll",
+      "Sha256": "29C9CF3060789066682BA5FBF81DEA584563E6AB60B5D9861C73BA8B29ED1142"
+    },
+    {
+      "File": "SQLitePCLRaw.core.dll",
+      "Sha256": "E60E22452BA79C306A59ECC01A97C29BAFE69D9FA612F40253852ED450AD27E8"
+    },
+    {
+      "File": "SQLitePCLRaw.provider.e_sqlite3.dll",
+      "Sha256": "82238D46BCA0CA8B2D57C3EC6FD6F0BCBD7A2DC2F7343A5377E0469112DBA474"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "FB04B8A7705ABA1E4CB98391CA9720B6F82261D18A5285BCACA6AFDA1E0997EC"
+    },
+    {
+      "File": "Ipc.Presentation.Wpf.dll",
+      "Sha256": "C48DAB4EC9672E7A456BFE14F1E6B542E85AB395C906894599F6D86E2A3FC958"
+    }
+  ]
+}

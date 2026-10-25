@@ -48,6 +48,15 @@ public sealed partial class ParcelRuntime
             var selectedReaders = readers.Values.Where(r => deviceId is null || r.Source.DeviceId == deviceId).ToArray();
             var selectedPorts = CapabilityPorts().Where(p => deviceId is null || p.InstanceId == deviceId || DeviceKey(p) == deviceId).ToArray();
             if (selectedReaders.Length == 0 && selectedPorts.Length == 0) return new("Rejected", "Unknown device/capability identity", repository.Revision);
+            if (deviceId is not null && (selectedReaders.Any(r => ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)) ||
+                selectedPorts.Any(p => ParcelConnectionSetup.IsDeferred(Effective, p.InstanceId) || ParcelConnectionSetup.IsDeferred(Effective, DeviceKey(p)))))
+                return new("Rejected", "连接尚未配置；请完成参数并保存，受控重启后生效，重连不能启用待配置连接。", repository.Revision);
+            // Reconnect all operates on the existing configured sessions only.
+            // Pending never changes this selection or creates a deferred session.
+            selectedReaders = selectedReaders.Where(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)).ToArray();
+            selectedPorts = selectedPorts.Where(p => !ParcelConnectionSetup.IsDeferred(Effective, p.InstanceId) && !ParcelConnectionSetup.IsDeferred(Effective, DeviceKey(p))).ToArray();
+            if (selectedReaders.Length == 0 && selectedPorts.Length == 0)
+                return new("Rejected", "没有已配置的连接可重连；请完成参数并保存，受控重启后生效。", repository.Revision);
             resources = selectedReaders.Select(r => r.Source.DeviceId).Concat(selectedPorts.Select(DeviceKey)).Distinct().ToArray();
             if (resources.Any(maintainedResources.ContainsKey)) return new("Rejected", "Selected physical device/service is already under maintenance", repository.Revision);
             if (selectedPorts.Any(p => DeviceKey(p).StartsWith("service:", StringComparison.Ordinal) && resourceCalls.GetValueOrDefault(DeviceKey(p)) != 0))

@@ -59,7 +59,7 @@
     {
       "path": "guides.log",
       "bytes": 106,
-      "sha256": "65824089091094116d0b3ee09d941f6ca7f440bd4bd1cb1ecf6a42f49a84f4ca"
+      "sha256": "6e1df9cb05c03776c1f97a0cae8c8afe410d05ffedaa8c2a7cbe8e485fba1645"
     },
     {
       "path": "installer-change-guards.log",
@@ -154,7 +154,7 @@
     {
       "path": "SOURCE-FILES.json",
       "bytes": 124378,
-      "sha256": "2803cc5e6c8d5dc0482d67454f865041e8789a610c510ddbfc6d27602a2d15ee"
+      "sha256": "4a60ec859bad09cd6bd58039ae38abc3feaa9a04b23f89324e9d7b8639c9e3b7"
     }
   ]
 }

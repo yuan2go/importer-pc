@@ -1,5 +1,6 @@
 """Standalone candidate guide links and fail-closed source identity."""
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -19,6 +20,9 @@ class ReleaseDocumentTests(unittest.TestCase):
                 self.assertTrue(rendered.strip(), source)
                 for obsolete in ['进入帮助与支持', '打开帮助与支持', '点击帮助与支持', '在帮助与支持页', '全屏帮助与支持']:
                     self.assertNotIn(obsolete, rendered, source)
+        generated = (root / 'scripts/package-application.py').read_text(encoding='utf-8')
+        referenced = set(re.findall(r'\b[A-Z][A-Z0-9-]+\.md\b', generated))
+        self.assertLessEqual(referenced, set(docs.SPORTMASTER_GUIDES.values()), 'Generated launch instructions must reference shipped current guides')
 
     def test_current_links_standalone_and_evidence_links_immutable(self):
         with tempfile.TemporaryDirectory() as temporary:

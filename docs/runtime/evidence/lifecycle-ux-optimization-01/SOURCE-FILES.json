@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/package-application.py",
-      "sha256": "bcd64fb5dad06fe868505275dd73a3e4d4e8c0b7c8f3c827e2125bb1302d1c31"
+      "sha256": "0e6b006844db3d90e176b0fbcb86c7d81290d68334f4218ef9b80856abd1125a"
     },
     {
       "path": "scripts/package-business.py",
@@ -281,7 +281,7 @@
     },
     {
       "path": "scripts/test_release_documents.py",
-      "sha256": "939de42af60d5c583a7d71df0b9299311cccb32aa929edf15b62075bc5938959"
+      "sha256": "5f57872d7e4869528770437cc1d1e1869e053168b26190e812830d9756cbb6f0"
     },
     {
       "path": "scripts/test_release_provenance.py",

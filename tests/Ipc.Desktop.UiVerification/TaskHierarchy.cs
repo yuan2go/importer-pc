@@ -22,7 +22,7 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
-        var app = DispatchProxy.Create<IManagementParcelFixture, HierarchyProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
+        var app = DispatchProxy.Create<IHistoryProjectionFixture, HierarchyProjectionProbe>(); var probe = (ProjectionProbe)(object)app; probe.Inner = runtime;
         foreach (var ui in new[] { "classic", "supply-station" })
         {
             var window = Presentation.Create(app, null, "standard", ui);

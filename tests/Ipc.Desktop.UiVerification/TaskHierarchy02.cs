@@ -136,7 +136,7 @@ static partial class Program
         await SetClient(window, 800, 420); await Flush();
         var range = Descendants(host).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "日志当前查询范围");
         var advanced = Descendants(host).OfType<Expander>().Single(e => Equals(e.Header, "时间、更多筛选、上下文与导出"));
-        Check(range.IsVisible && range.Text.StartsWith("当前查询（本地）") && Inside(range, client) && Inside(advanced, client), "collapsed advanced filters retain actual query range and reachable entry at minimum size");
+        Check(range.IsVisible && range.Text.StartsWith("已应用范围") && range.Text.Contains(DateTimeOffset.Now.ToString("zzz")) && Inside(range, client) && Inside(advanced, client), "collapsed advanced filters retain actual applied query range, explicit offset and reachable entry at minimum size");
         var converted = (DateTimeOffset)new LocalTimestampConverter().Convert(new DateTimeOffset(2026, 10, 24, 8, 0, 0, TimeSpan.FromHours(-4)), typeof(DateTimeOffset), null!, System.Globalization.CultureInfo.InvariantCulture);
         Check(converted == new DateTimeOffset(2026, 10, 24, 12, 0, 0, TimeSpan.Zero) && converted.Offset == TimeZoneInfo.Local.GetUtcOffset(converted), "list conversion preserves instant and uses local offset for nonlocal records");
         CaptureInternal(evidence, "supply-station-log-range-800", client, lines);

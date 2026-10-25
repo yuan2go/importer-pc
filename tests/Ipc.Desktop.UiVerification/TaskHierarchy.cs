@@ -88,6 +88,11 @@ static partial class Program
                                 key + " production Chinese glyphs keep bundled font after resize, including compact navigation");
                         }
                         Check(Inside(host, client) && host.ActualHeight >= (size.Item1 == 800 ? 200 : size.Item2 * .60), key + " preserves usable task content");
+                        if (window is ShellWindow)
+                        {
+                            var admissionActions = Descendants(window).OfType<Button>().Where(b => b.IsVisible && b.Content is "暂停新入场" or "恢复新入场").ToArray();
+                            Check(admissionActions.Length > 0 && admissionActions.All(b => b.ActualHeight >= 44), key + " retains full 44-DIP admission controls while preserving task space");
+                        }
                         if (page != "工作台" && window is ShellWindow)
                             Check(!((PasswordBox)window.FindName("LoginProof")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "核对原请求")).IsVisible, key + " does not expose unrelated login or current-position recovery");
                         if (page == "工作台" && window is ShellWindow)

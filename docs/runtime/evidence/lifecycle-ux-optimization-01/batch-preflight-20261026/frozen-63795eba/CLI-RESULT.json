@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "63795eba20550718562cd770bf28f4c43ffa909a",
+  "ExitCode": 0,
+  "Scope": "Actual published Ipc.Assembly.exe readonly --preflight after maintenance review",
+  "WindowsInstallation": "NOT_RUN",
+  "BusinessOrDeviceStarted": false,
+  "PlanSha256": "DBA99DA4E76FB8042E1CA7E20A5C8F279E661662589A3934D3F912AEED151E21",
+  "OperationId": "86068fb13ebb481f8d17c9381f97f09f",
+  "ReceiptSha256": "751926C8CF31FDDBFA2FAB311880644FD89153CF72E9AF19860341F7F9806004"
+}

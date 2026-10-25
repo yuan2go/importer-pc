@@ -1,0 +1,14 @@
+{
+  "Status": "PASS",
+  "RunId": 40220858550,
+  "PrHead": "63795eba20550718562cd770bf28f4c43ffa909a",
+  "ActualMergeSource": "3e2fbb7e5336f4c52a094a131d52649a12f062a2",
+  "EvidenceArtifactId": 12608794913,
+  "EvidenceArtifactSha256": "2c03312a4105795f91eb0b4b14b02c8d5201d00245119791be47fd7058df2a32",
+  "InstallableArtifactId": 12609079548,
+  "InstallableArtifactSha256": "64bcbeaaffe1e8d8c56ac5369bb8c561f23d84e3effa86c36e02e96bba905c74",
+  "Scope": "Both jobs and real artifacts succeeded; published DLL management-operation lifetime/full-backup review checks and15 batch cases",
+  "ManagementSessionPolicy": "Original15Minutes_UNCHANGED",
+  "WindowsProductInstallation": "NOT_RUN",
+  "BigDatabaseOrLongRun": "NOT_RUN"
+}

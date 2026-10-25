@@ -1,6 +1,4 @@
-> 后续审查P1/P2待整改：长期维护入场委托与持续授权、完整恢复集核对。已通过的批量15项/CI保留原范围，不能作为这两项通过证据。
-
-> 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
+> 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
 
 2026-10-26剩余整改以 [批量部署续报](../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21已按最终工程源及CI更新为VERIFIED_LOCAL + CI_PASS；其他正确成果、G01/G02、真实系统/现场门槛及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
 

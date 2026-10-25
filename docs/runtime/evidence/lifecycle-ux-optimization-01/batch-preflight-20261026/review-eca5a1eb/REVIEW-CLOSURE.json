@@ -1,0 +1,17 @@
+{
+  "Status": "IMPLEMENTED_AND_VERIFIED",
+  "ReviewSource": "eca5a1eb94469fcd23bdf6b6374bee8864fe66cc",
+  "FixedSource": "63795eba20550718562cd770bf28f4c43ffa909a",
+  "FrozenSource": "63795eba20550718562cd770bf28f4c43ffa909a",
+  "CiRun": 40220858550,
+  "CiMergeSource": "3e2fbb7e5336f4c52a094a131d52649a12f062a2",
+  "P1": "PASS controllable clock, ordinary admission deadline/replay/request/budget/session expiry/revoke/password guards and actual Windows service RPC",
+  "P2": "PASS full original recovery verifier for all custody categories, missing/extra files, revoke, restore original bytes and reinspect",
+  "OriginalThreadsResolved": true,
+  "ManagementSessionPolicy": "Original15Minutes_UNCHANGED",
+  "KernelDeletionAlgorithm": "UNCHANGED",
+  "RealProductInstallation": "NOT_RUN",
+  "BigDatabaseOrLongRun": "NOT_RUN",
+  "Note": "Original REVIEW-TRACKING pending receipt and source log retained unchanged; author resolution is not human approval; fresh automatic review tracked independently on PR",
+  "FreshReview63795eba": "COMPLETED_NO_FINDINGS"
+}

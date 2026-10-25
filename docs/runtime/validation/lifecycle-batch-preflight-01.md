@@ -1,8 +1,6 @@
-> 新返回的维护P1/P2正在核实整改；本报告的批量PASS仍限其原范围，不提前声明维护审查通过。
-
 # 批量部署生命周期整改 · 最终工程验证续报
 
-本次剩余批量部署整改已在工程源 `eca5a1eb94469fcd23bdf6b6374bee8864fe66cc` 完成源码、冻结介质和CI验证。CI [40218628397](https://github.com/yuan2go/importer-pc/actions/runs/40218628397) 的Linux、Windows、安装器打包及交付/证据归档全部SUCCESS。真实产品安装/卸载/重启、设备和现场仍NOT_RUN；G01/G02继续BLOCKED_EXTERNAL。不能将本结论扩张为现场资格或把上一轮“全部完成”直接沿用。
+本次剩余批量部署及维护P1/P2整改已在工程源 `63795eba20550718562cd770bf28f4c43ffa909a` 完成源码、冻结介质和CI验证。CI [40220858550](https://github.com/yuan2go/importer-pc/actions/runs/40220858550) 的Linux、Windows、安装器打包及交付/证据归档全部SUCCESS。真实产品安装/卸载/重启、设备和现场仍NOT_RUN；G01/G02继续BLOCKED_EXTERNAL。不能将本结论扩张为现场资格或把上一轮“全部完成”直接沿用。
 
 总包：[LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)；[U/G总账](../../reviews/lifecycle-ux-reconciliation-01.md)。PR [#108](https://github.com/yuan2go/importer-pc/pull/108) 已恢复可审查，不合并、不发布。当前main为 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`；原开工main为3a5b1d13。主线自行合入PR109后，183f9fac将其整合进本开发分支，保留双方源码、CI、目录及证据；不是把108合入main。
 
@@ -29,17 +27,18 @@
 |三产品Release构建|Sportmaster、DirectPlc、WcsToPlc PASS；后两者显式组合、串行、RestoreLockedMode，0警告/错误|本批当前源码；无新外部依赖版本。|
 |既有受影响守卫|--lifecycle-ux PASS|安装结果投影、日志资源、完整备份/到期内核及Unknown保留；合成身份/端口、私有SQLite。|
 |指南/冻结构建/目录边界|指南3项、独立工作区DLL一致性1项、精确生成目录边界1项PASS|没有本机历史全套、大库或24h/72h扩测。|
-|最终工程源CI|40218628397 SUCCESS，Linux与Windows均SUCCESS，交付和证据真实留存|实际测试合并源4224e7458a43c3fc8cd7502ad9de9ae45422217c，与PR头eca5a1eb及本机冻结源各守原身份。|
+|维护P1/P2|PASS，可控时钟越过2分钟的原操作继续授权、普通/未核销/重放/请求漂移拒绝；原15分钟/撤权/改密码仍拒绝；各备份保管类损坏、缺失、额外文件、撤权及恢复原字节核对|本机实际发布DLL；CI另通过真实Windows服务RPC核销/重放/撤权。无真实长期/大库。|
+|最终工程源CI|40220858550 SUCCESS，Linux与Windows均SUCCESS，交付和证据真实留存|实际测试合并源3e2fbb7e5336f4c52a094a131d52649a12f062a2，与PR头63795eba及本机冻结源各守原身份。|
 
-最终CI [身份/产物摘要](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/RUN-IDENTITY.json)、[core](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/CORE-RESULT.json)、[15项](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/BATCH-RESULT.json)、[工程门](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/engineering-gate.json)、[生产拒绝](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/production-gate.json)、[安装器回执](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40218628397/INSTALLER.json)保留原字节。已核对下载artifact摘要、SourceCommit=FixtureCommit、15项及两个运行DLL哈希匹配该CI原库存。打包安装器ActualWindowsInstallation=NOT_RUN，不把打包当安装成功。
+最终CI [身份/产物摘要](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/RUN-IDENTITY.json)、[core](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/CORE-RESULT.json)、[15项](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/BATCH-RESULT.json)、[工程门](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/engineering-gate.json)、[生产拒绝](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/production-gate.json)、[安装器回执](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/INSTALLER.json)保留原字节。已核对下载artifact摘要、SourceCommit=FixtureCommit、15项及两个运行DLL哈希匹配该CI原库存。打包安装器ActualWindowsInstallation=NOT_RUN，不把打包当安装成功。
 
 本报告提交仅归档文档和证据。产品、配置、脚本、测试、工作流、工具及随包指南输入按最终DELIVERY的Git对象逐项保持不变；该提交本身的最新检查以 [PR实际checks](https://github.com/yuan2go/importer-pc/pull/108/checks) 和PR正文的实际运行号为准，不把工程源的PASS倒写成尚未执行的新头PASS。
 
 ## 当前本机介质与运行
 
-- 当前冻结目录：`D:/deliveries/lifecycle-batch-20261026-eca5a1eb/sportmaster-win-x64`。ZIP 134218106 bytes，SHA256 `f58e5015102bf7338d68f482ca512526b30c7d9172caace064af0ad7f700e7aa`。
-- 库存741文件；SHA256SUMS哈希 `64f43cb03e71e329b6ac85987fa5f494e26800169b4cdb1d297148290af4e9e1`。源码/夹具均eca5a1eb；CLI后库存及实际运行副本DLL逐项匹配。
-- [交付与输入Git对象](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-eca5a1eb/DELIVERY.json)、[冻结core](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-eca5a1eb/RESULT.json)、[批量15项](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-eca5a1eb/BATCH-RESULT.json)、[真实CLI](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-eca5a1eb/CLI-RESULT.json)为当前本机证据。720af857和183f9fac是被替代的中间候选；旧0a3d4152及其原PASS/FAIL不改变。
+- 当前冻结目录：`D:/deliveries/lifecycle-batch-20261026-63795eba/sportmaster-win-x64`。ZIP 134220860 bytes，SHA256 `c98e9351b4b7a9c0c7d0ad396b8019f2e2371c90883caf31df53b8faca08d981`。
+- 库存741文件；SHA256SUMS哈希 `451094ce107a17af1fa276cd474974450e89625f508269a6f08af0f43b8cfe6a`。源码/夹具均63795eba；CLI后库存及实际运行副本DLL逐项匹配。
+- [交付与输入Git对象](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/DELIVERY.json)、[冻结core](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/RESULT.json)、[批量15项](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/BATCH-RESULT.json)、[真实CLI](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/CLI-RESULT.json)为当前本机证据。720af857、183f9fac和eca5a1eb是被替代的中间候选；旧0a3d4152及其原PASS/FAIL不改变。
 - SM1.13.0 / DirectPlc及WcsToPlc1.7.0 / Contracts1.19.0 / DB9。仍是未发布候选；本机ZIP未上传，CI安装介质仅沿既有PR artifact留存，未创建Release。
 
 PowerShell复核（新证据目录/回执；仅只读预检）：
@@ -47,8 +46,8 @@ PowerShell复核（新证据目录/回执；仅只读预检）：
 ```powershell
 Set-Location D:/projects/importer-pc
 . ./scripts/project-environment.ps1
-./scripts/verify-commercial-media.ps1 -Media D:/deliveries/lifecycle-batch-20261026-eca5a1eb/sportmaster-win-x64 -Output D:/DevCache/importer-pc/lifecycle-batch-new-evidence
-& D:/deliveries/lifecycle-batch-20261026-eca5a1eb/sportmaster-win-x64/app/Ipc.Assembly.exe --deployment-plan D:/delivery/site-plan.json --receipt D:/delivery/new-preflight.json --preflight
+./scripts/verify-commercial-media.ps1 -Media D:/deliveries/lifecycle-batch-20261026-63795eba/sportmaster-win-x64 -Output D:/DevCache/importer-pc/lifecycle-batch-new-evidence
+& D:/deliveries/lifecycle-batch-20261026-63795eba/sportmaster-win-x64/app/Ipc.Assembly.exe --deployment-plan D:/delivery/site-plan.json --receipt D:/delivery/new-preflight.json --preflight
 ```
 
 高级集成用现有DeploymentBatch.Freeze固化Review结果；普通向导没有导出计划按钮。正常安装/运行步骤和退出状态以 [当前生命周期指南](../lifecycle-ux-current-guidance-01.md) 与 [高级部署说明](../commercial-productization-01-operations.md) 为准，只有可信同源完整介质及授权环境才能执行。源码夹具明确用 `-p:BusinessModule=Sportmaster` 统一还原/构建组合，串行构建后锁定验证；不能让隐式Supply还原图与Sportmaster构建混用。
@@ -58,7 +57,7 @@ Set-Location D:/projects/importer-pc
 1. 开工头2a13b11c，原 [CI40210140349](https://github.com/yuan2go/importer-pc/actions/runs/40210140349) 的实际merge源8408a38a，core报Frozen media batch preflight failed；本机0a3d4152实际DLL复现退出2/InvalidDataException，库存不变。原FAIL保留。
 2. 编码前ea4333f4归档相关现行说明并撤回完成结论；[十份原件/哈希](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)及原manifest/checksum保留。720af857修复身份/防重复，183f9fac整合最新main。INDEX同时保留LIA和PR109入口，canonical目录保留双方记录与来源；既有缺录的main文件只作继承目录补齐，不计作LIA新实现/验收。
 3. [CI40216393477原FAIL](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40216393477/RESULT.json)：工程、原生及打包SUCCESS，但D盘顶层兄弟目录共同根导致两个上传FAIL。原JOB日志保留，失败轮没有Windows artifact，不补造。5c11a2a4改D:/scd/共同父目录后，[CI40217369663](https://github.com/yuan2go/importer-pc/actions/runs/40217369663)双绿且真实留存；该轮仍是14项旧源，不扩张到新增重入守卫。
-4. eca5a1eb复用InstalledReceipt守卫补成功重入目标漂移拒绝，加入第15项；本机冻结与CI40218628397均通过。既有项目引用元数据同步到当前Contracts1.19，源码夹具锁定显式组合，无外部包升级。
+4. eca5a1eb复用InstalledReceipt守卫补成功重入目标漂移拒绝，加入第15项；其本机冻结与CI40218628397均通过，属于维护审查前的原范围。既有项目引用元数据同步到当前Contracts1.19，源码夹具锁定显式组合，无外部包升级。
 5. 源码阶段的GUID旧语法拒绝、测试GUID字面量33位误写、共享obj写锁及隐式还原图锁不符均保留原FAIL；修正输入/显式组合后通过，未删断言、吞异常或关闭锁定校验。各源码阶段与冻结介质证据分开。
 
 原阶段证据及本次续报的完整字节清单见 [FILES.json](../evidence/lifecycle-ux-optimization-01/FILES.json)。原规划、D/RV编号、字体/视觉基线、历史验收及旧介质身份不倒写。
@@ -75,4 +74,4 @@ P1分开两分钟一次性入场与已核销原请求的持续授权：服务端
 
 P2从原RestoreCore提取同一只读VerifyBackup，恢复及丢回执核对复用；完整检查原数据库、原始清单重复/别名/配额、全部Files哈希和完整集合，逐文件重查授权。原删除内核、数据库及原请求责任不变。
 
-源码 --lifecycle-ux 通过：可控时钟越过2分钟仍可继续已核销操作；普通/未核销票据拒绝；请求绑定、重放、预算、15分钟到期、退出和改密码均拒绝；完整备份每类损坏、配置缺失、额外图片、撤权及还原原字节后重新核对通过。初次源码小集合逐文件矩阵原日志保留，冻结夹具按保管类别取代表，避免无意义平方级重复哈希。真实长期/大库未运行。新增实际Windows服务RPC/撤权定向用例及同源冻结核心旅程将验证此补充，当前尚待冻结/CI。
+源码 --lifecycle-ux 通过：可控时钟越过2分钟仍可继续已核销操作；普通/未核销票据拒绝；请求绑定、重放、预算、15分钟到期、退出和改密码均拒绝；完整备份每类损坏、配置缺失、额外图片、撤权及还原原字节后重新核对通过。初次源码小集合逐文件矩阵原日志保留，冻结夹具按保管类别取代表，避免无意义平方级重复哈希。真实长期/大库未运行。63795eba的同源冻结发布DLL core及CI40220858550均PASS，包含该补充；CI还通过真实Windows服务RPC核销/重放/撤权定向用例。两条原审查线程已按实现及证据解决，63795eba的自动复审已完成且无新发现，见[原摘要](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/review-eca5a1eb/REVIEW-RESULT-63795eba.json)；不把作者解决线程或自动审查当作人工批准。见[整改闭环](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/review-eca5a1eb/REVIEW-CLOSURE.json)、[CI实际服务旅程](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/BROKER-RUN.log)。

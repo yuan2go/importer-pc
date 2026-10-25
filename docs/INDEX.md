@@ -1,6 +1,4 @@
-> 后续审查P1/P2待整改：长期维护入场委托与持续授权、完整恢复集核对。已通过的批量15项/CI保留原范围，不能作为这两项通过证据。
-
-> 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
+> 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
 
 > 2026-10-25生命周期优化：[七包范围](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[U/G总账](reviews/lifecycle-ux-reconciliation-01.md)、[现行操作](runtime/lifecycle-ux-current-guidance-01.md)、[实际实现](runtime/lifecycle-ux-implementation-01.md)、[定向验证与同源身份](runtime/validation/lifecycle-ux-optimization-01.md)。独立工程已实现；原规划原件、编号与哈希见[规划归档](archive/lifecycle-ux-planning-01/README.md)。G01/G02、系统生命周期和现场门槛独立。
 

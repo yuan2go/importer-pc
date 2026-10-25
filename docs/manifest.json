@@ -1950,9 +1950,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "92ac52c284ccc3742d91e90ec4498d835d684a06710f750c76432a54aa360700",
-      "size_bytes": 6552,
-      "git_blob": "83068e2143ab2f07d4778c1da5767c56f4fe755d",
+      "sha256": "6b115219774bf9671722c8d9b694af948c9b80e8889c5721d9660c2c70e676fc",
+      "size_bytes": 6448,
+      "git_blob": "959dcba1dd7c861d532c0052b165b3db74ccd5ee",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2199,9 +2199,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "f00c4bd86531fae6eb659bbc845e5fcb9c7eb6170217b46f5fc67f64e8bee507",
-      "size_bytes": 15172,
-      "git_blob": "00445dc84c82235e61769d54ac2277fc73eef12a",
+      "sha256": "119dd39c551d673a4d9b5b0377355dbc777a994fea14f7ffbafc5576034ee108",
+      "size_bytes": 15068,
+      "git_blob": "09f79d714243fddd89d51325f077efe939a11319",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -91297,9 +91297,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "6d5024849e70fe7b116aeae9f3127d19688bb64fce60fbab4eef81cc00956b58",
-      "size_bytes": 14446,
-      "git_blob": "7e22b2c999e26afec14fbad354f9e1816644c24d",
+      "sha256": "867e468772d8c36caec2c1ec86620b187c7ed0804a0a06ea4d8794c19f3b9b30",
+      "size_bytes": 14383,
+      "git_blob": "48d7dc09281920bb8af92cb8e15eab4d1e86fc23",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -92629,9 +92629,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "099bded1456df5209ca0a00a8743fa3deeb514dc4d2e33682a3b04e617f5824e",
-      "size_bytes": 34695,
-      "git_blob": "becf457d313f8860a8e0d445bcebaea39dd69317",
+      "sha256": "45bd9df74639e4b4a244fabc60e9a971f3cc0687ae3e346eec69b505af4b48a9",
+      "size_bytes": 39197,
+      "git_blob": "23f03009a36ec8dbb304399c66feb0b50e844195",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97031,9 +97031,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "49c87fcb7dc31ac66352f186366a07cf6f7abe532b2978a67fef334d495dcf64",
-      "size_bytes": 8815,
-      "git_blob": "7284e8436ee778b43e82fedf0baac5a9e4255cc4",
+      "sha256": "80cc378cf6a0be5f10e450217ae189ef9946fe94cc0169c7fc8845f39ae1915e",
+      "size_bytes": 8711,
+      "git_blob": "ccd10870d29d39a74d2275871005337b8b1cafe9",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97054,9 +97054,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "ed192318bada7b710a269d102c571d40e187bead5b045481319e02c85958d9c3",
-      "size_bytes": 12507,
-      "git_blob": "5a36ea6b2b2832dae412626207659d31908aaf85",
+      "sha256": "d99763ecb5a72cff0a53ead73a0f1685963168ef9a211bb356fe7ba136cf8322",
+      "size_bytes": 13354,
+      "git_blob": "9ebba155dbe919eca53ca3eeb64d6000bf3de16e",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97066,9 +97066,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "7c76cde0e64061e26638d4df593283a15d79f165194de7bc87ba1d00460adad2",
-      "size_bytes": 15432,
-      "git_blob": "d5b3e03097c7c73d1060067bb013db1ff2cf81fc",
+      "sha256": "4519dd7ef46129fbbd5819eb6fca2ef773acc426e7d9c3ae32bdda11d3fd1e5b",
+      "size_bytes": 15328,
+      "git_blob": "7f231b769a6859b954b12e5ccb7572fa8a513cbc",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97100,9 +97100,9 @@
       "purpose": "Lifecycle engineering source, guidance or bounded synthetic evidence",
       "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
       "storage_scope": "public_repository",
-      "sha256": "1b4555417ddb93f62e4f25e6d3dd69caf529bf6035a325c4a931ee66216f3485",
-      "size_bytes": 21418,
-      "git_blob": "6b342182233ee9b6e37b40655afa98b2ef88f13b",
+      "sha256": "17174df7e33d8237eda8fce21605227269aef274caa7dcb8df3d18e3d9d7aa5b",
+      "size_bytes": 21314,
+      "git_blob": "7ed6ad0e72f5cc91d3d0876c2be9d8c467b5ab2e",
       "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
     },
     {
@@ -97879,6 +97879,260 @@
       "sha256": "85e8232f30afcbceb2ef82d333c91bc31d04314f9a6bafc4b35e142f8a02bc0f",
       "size_bytes": 32369,
       "git_blob": "58a4ada298cab8a70d12e3debd4bf524a07430bb"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/BATCH-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "8bec7f9ffff449cbaa82574c4e1da6c458f6c8b999878ae87903b4eb82b007ee",
+      "size_bytes": 1568,
+      "git_blob": "7c586467d722c2ad7d7430a1842f0cf2ab640241"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/BROKER-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "3d46aa4a609b6ba7ca963bc7bc2d40997dd01739dd8a7cb1cb2aa5586187d097",
+      "size_bytes": 451,
+      "git_blob": "dd1e941d50ea8a67fa0b5bf379a10a84cebd81d2"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/BROKER-RUN.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "1d3b57aff322bcdc73b0a5cc6c23a481759648cd7d1d7ba603fb983ea76e57bb",
+      "size_bytes": 4732,
+      "git_blob": "8a09e27ca43d19afa43af3b6e5015d91e7ec2066"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/CORE-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "37b5b6498f513857a7709efd7693236fbf1fa0a5a787c459abebbf1ae3d4e3db",
+      "size_bytes": 2278,
+      "git_blob": "076fed92cbe6d571fb7b308dd531b6c2f068797b"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/CORE-RUN.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "b9e00f998cba49a70150a25ef539e05718c6ae93d25d0b8b6e29c6d723ef300f",
+      "size_bytes": 27648,
+      "git_blob": "a422b7a94b15aa95e550afe2defa162c2e991c97"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/INSTALLER.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "87b4cc711981320f699268b7eaf89e387b4ef9420f4204d0bb9b4c7a9503285c",
+      "size_bytes": 756,
+      "git_blob": "e2d4dafd189d2e309760c6bed9573dd1ee4d8f34"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/JOBS.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "8175cf8fe28f302b28e54ea044ecc2e30d8d90e5dd4fab70cf1a46d3caf70828",
+      "size_bytes": 5735,
+      "git_blob": "56c1933f35c7364c8497a699b530e026f4900166"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/RUN-IDENTITY.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "6453ac23310c6d0dfa38de4580229d97d557c64f3189bef441f81a9b70181370",
+      "size_bytes": 738,
+      "git_blob": "ff8214db297a57053296b4ad50386b9fbda0479e"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/engineering-gate.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "606cca81d2e22da89829ecba9a4ecb70f0bf78b7957ae5dac10d690ae77d9ec5",
+      "size_bytes": 489,
+      "git_blob": "99cd25126bd506185ad09261c58126b7ee5cec8e"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/ci-40220858550/production-gate.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "b4962615ce0f838f8405069b6f774dd03013d7d3c2e4a454673c2f10c7f185fb",
+      "size_bytes": 2054,
+      "git_blob": "a47db1b4d3f4872918a1b4f78cae94bd833fce57"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/BATCH-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "ed3dcbbc1826c0b1c86ec764642ac44543355f1f1d54a6cdc4fd5bc09f1164ba",
+      "size_bytes": 1568,
+      "git_blob": "4e1dc8ec2648bdf5064df9aa212b27fa7c4ee3ac"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/BUILD-INFO.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "1cdc865933c53505e786f22d525dc37973c004cffa5e02b9d4ef284fbd691ba1",
+      "size_bytes": 522,
+      "git_blob": "bfa60191d2f1d10d684e32dbb29cb75f503d3e80"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/CLI-RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "8790547a1bcb4962cd5bc228b487860093b829a1ded4b0887a4d812cb6f7823a",
+      "size_bytes": 503,
+      "git_blob": "f8b76387a4a7cd2d684a79d2ee01ad5526fc9827"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/CLI-preflight.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "751926c8cf31fddbfa2fab311880644fd89153cf72e9af19860341f7f9806004",
+      "size_bytes": 330,
+      "git_blob": "943f9d63a72796d1a178d2e5fcb2c4704bc2a0f1"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/CLI-preflight.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/DELIVERY.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "91077ec866e177c208c3f2b20bfc83a1ac3fdf54ab5bd00c3d8fbe9473bbfbb7",
+      "size_bytes": 4061,
+      "git_blob": "d1bd7f194967efb624b37dcf97f5506a7e4a8c55"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/RESULT.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "fb104c1ee95327fb6ec36b8e6345ee6d4fcdd9377f8aa87f814a3f52ef1b4330",
+      "size_bytes": 2278,
+      "git_blob": "607a1f2985f7540d39e60dbec547416e7c180461"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/RUN.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "5a641f049e0ee171fb0e25dcaf4c2ac38aecb2b56435cdf884327ebffdb7469c",
+      "size_bytes": 27648,
+      "git_blob": "da95a38cdf6132d1af928043d1488cd89517e8c4"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/SHA256SUMS",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "451094ce107a17af1fa276cd474974450e89625f508269a6f08af0f43b8cfe6a",
+      "size_bytes": 76800,
+      "git_blob": "4cd49f68d28ffebbc4e66223c5abf180ae3a5972"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/build-direct.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "ff8b5e807674096fd85172f22f1a521dd0e2f77a937cf7eab54c8f56bc742133",
+      "size_bytes": 1586,
+      "git_blob": "df3d09788b9e21c950b33f0b859c7c7fe8be5484"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-63795eba/build-wcs.log",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "3ce6d21c80249bc72a1746994a31b7a6018dd582853c7bb11188a835b8a7583a",
+      "size_bytes": 1692,
+      "git_blob": "2edb358551ef8b83cbaf077632ef2d90efc6aae7"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/review-eca5a1eb/REVIEW-CLOSURE.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "4abd3f383cd86f35b6a036d7f783d8146906612dbd8b26780568492a9de88da1",
+      "size_bytes": 1074,
+      "git_blob": "18c7c8762fdcae1174765e578f08da0ae311dfa7",
+      "updated_by": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01"
+    },
+    {
+      "path": "docs/runtime/evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/review-eca5a1eb/REVIEW-RESULT-63795eba.json",
+      "version": "lifecycle-ux-optimization-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Lifecycle source, guidance or bounded synthetic evidence",
+      "source": "WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "0bbb047d51e277ad4f3ab19fb8279722aacb4d9c3e5a5bafe44fa5e29a2ff87a",
+      "size_bytes": 3825,
+      "git_blob": "763b5d223f7e4005b15ea562c7b2c6c7a5b37e0e"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -100709,7 +100963,7 @@
   },
   "lifecycle_ux_optimization_01": {
     "baseline_main": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
-    "source_commit": "eca5a1eb94469fcd23bdf6b6374bee8864fe66cc",
+    "source_commit": "63795eba20550718562cd770bf28f4c43ffa909a",
     "entry": "docs/runtime/lifecycle-ux-current-guidance-01.md",
     "followup": "docs/runtime/validation/lifecycle-batch-preflight-01.md",
     "work_package": "docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md",
@@ -100719,7 +100973,7 @@
       "path": "docs/archive/pre-lifecycle-batch-preflight-01/snapshots/docs/manifest.json",
       "sha256": "bcfdc6b110e570a1ede42afd41a17abd730901372892c846a0b8235e5404a80a"
     },
-    "batch_preflight": "ECA15_AND_CI_PRESERVED_NO_EXPANSION_TO_NEW_MAINTENANCE_REVIEW",
+    "batch_preflight": "PASS_FROZEN_15_AND_CI_40220858550",
     "windows_product_installation": "NOT_RUN",
     "equipment_and_field": "NOT_RUN",
     "G01": "BLOCKED_EXTERNAL",
@@ -100733,11 +100987,11 @@
       "meaning": "Metadata coverage of existing main does not credit that work or its acceptance to LIA"
     },
     "integrated_baseline_main": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
-    "current_ci_run": 40218628397,
+    "current_ci_run": 40220858550,
     "ci_artifact_retention": "PASS_COMMON_D:/scd_ROOT",
     "new_guard": "Committed reentry uses original installed receipt target guard; verified in frozen 15-case fixture",
-    "ci_actual_merge_source": "4224e7458a43c3fc8cd7502ad9de9ae45422217c",
+    "ci_actual_merge_source": "3e2fbb7e5336f4c52a094a131d52649a12f062a2",
     "report_head_ci": "See actual PR108 checks; no unexecuted head is predeclared PASS",
-    "maintenance_review": "P1_P2_SOURCE_PASS_FROZEN_CI_PENDING"
+    "maintenance_review": "P1_P2_SOURCE_FROZEN_CI_PASS_ORIGINAL_THREADS_RESOLVED_SEPARATE_FRESH_REVIEW"
   }
 }

@@ -127,6 +127,56 @@
       "sha256": "b5c83d22807f9553f104c974c85dc49f349fd79296a4b23c0893dd784305a6b9"
     },
     {
+      "path": "batch-preflight-20261026/ci-40220858550/BATCH-RESULT.json",
+      "bytes": 1568,
+      "sha256": "8bec7f9ffff449cbaa82574c4e1da6c458f6c8b999878ae87903b4eb82b007ee"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/BROKER-RESULT.json",
+      "bytes": 451,
+      "sha256": "3d46aa4a609b6ba7ca963bc7bc2d40997dd01739dd8a7cb1cb2aa5586187d097"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/BROKER-RUN.log",
+      "bytes": 4732,
+      "sha256": "1d3b57aff322bcdc73b0a5cc6c23a481759648cd7d1d7ba603fb983ea76e57bb"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/CORE-RESULT.json",
+      "bytes": 2278,
+      "sha256": "37b5b6498f513857a7709efd7693236fbf1fa0a5a787c459abebbf1ae3d4e3db"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/CORE-RUN.log",
+      "bytes": 27648,
+      "sha256": "b9e00f998cba49a70150a25ef539e05718c6ae93d25d0b8b6e29c6d723ef300f"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/engineering-gate.json",
+      "bytes": 489,
+      "sha256": "606cca81d2e22da89829ecba9a4ecb70f0bf78b7957ae5dac10d690ae77d9ec5"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/INSTALLER.json",
+      "bytes": 756,
+      "sha256": "87b4cc711981320f699268b7eaf89e387b4ef9420f4204d0bb9b4c7a9503285c"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/JOBS.json",
+      "bytes": 5735,
+      "sha256": "8175cf8fe28f302b28e54ea044ecc2e30d8d90e5dd4fab70cf1a46d3caf70828"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/production-gate.json",
+      "bytes": 2054,
+      "sha256": "b4962615ce0f838f8405069b6f774dd03013d7d3c2e4a454673c2f10c7f185fb"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40220858550/RUN-IDENTITY.json",
+      "bytes": 738,
+      "sha256": "6453ac23310c6d0dfa38de4580229d97d557c64f3189bef441f81a9b70181370"
+    },
+    {
       "path": "batch-preflight-20261026/frozen-183f9fac/BATCH-RESULT.json",
       "bytes": 1476,
       "sha256": "d72893f9994a080166db432d87fffbfb60c3888fac7e600d1d24648a85f6287b"
@@ -180,6 +230,61 @@
       "path": "batch-preflight-20261026/frozen-183f9fac/SHA256SUMS",
       "bytes": 76800,
       "sha256": "eac2ec5b254051d4b4a72161a822bf2a14d5ffa984b7175c46f1a604b93d0810"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/BATCH-RESULT.json",
+      "bytes": 1568,
+      "sha256": "ed3dcbbc1826c0b1c86ec764642ac44543355f1f1d54a6cdc4fd5bc09f1164ba"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/build-direct.log",
+      "bytes": 1586,
+      "sha256": "ff8b5e807674096fd85172f22f1a521dd0e2f77a937cf7eab54c8f56bc742133"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/BUILD-INFO.json",
+      "bytes": 522,
+      "sha256": "1cdc865933c53505e786f22d525dc37973c004cffa5e02b9d4ef284fbd691ba1"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/build-wcs.log",
+      "bytes": 1692,
+      "sha256": "3ce6d21c80249bc72a1746994a31b7a6018dd582853c7bb11188a835b8a7583a"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/CLI-preflight.json",
+      "bytes": 330,
+      "sha256": "751926c8cf31fddbfa2fab311880644fd89153cf72e9af19860341f7f9806004"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/CLI-preflight.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/CLI-RESULT.json",
+      "bytes": 503,
+      "sha256": "8790547a1bcb4962cd5bc228b487860093b829a1ded4b0887a4d812cb6f7823a"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/DELIVERY.json",
+      "bytes": 4061,
+      "sha256": "91077ec866e177c208c3f2b20bfc83a1ac3fdf54ab5bd00c3d8fbe9473bbfbb7"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/RESULT.json",
+      "bytes": 2278,
+      "sha256": "fb104c1ee95327fb6ec36b8e6345ee6d4fcdd9377f8aa87f814a3f52ef1b4330"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/RUN.log",
+      "bytes": 27648,
+      "sha256": "5a641f049e0ee171fb0e25dcaf4c2ac38aecb2b56435cdf884327ebffdb7469c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-63795eba/SHA256SUMS",
+      "bytes": 76800,
+      "sha256": "451094ce107a17af1fa276cd474974450e89625f508269a6f08af0f43b8cfe6a"
     },
     {
       "path": "batch-preflight-20261026/frozen-720af857/BATCH-RESULT.json",
@@ -300,6 +405,16 @@
       "path": "batch-preflight-20261026/original-ci-40210140349/RUN.log",
       "bytes": 12789,
       "sha256": "d8af2d252f29ccb555c13a620bd63527503fc77e330505e36e83baa5ad161a0b"
+    },
+    {
+      "path": "batch-preflight-20261026/review-eca5a1eb/REVIEW-CLOSURE.json",
+      "bytes": 1074,
+      "sha256": "4abd3f383cd86f35b6a036d7f783d8146906612dbd8b26780568492a9de88da1"
+    },
+    {
+      "path": "batch-preflight-20261026/review-eca5a1eb/REVIEW-RESULT-63795eba.json",
+      "bytes": 3825,
+      "sha256": "0bbb047d51e277ad4f3ab19fb8279722aacb4d9c3e5a5bafe44fa5e29a2ff87a"
     },
     {
       "path": "batch-preflight-20261026/review-eca5a1eb/REVIEW-TRACKING.json",

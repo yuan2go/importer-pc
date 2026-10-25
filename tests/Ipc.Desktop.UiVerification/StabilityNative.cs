@@ -27,7 +27,14 @@ static partial class Program
         { await interrupted.StartAsync(default); Check(!interrupted.EmitReferenceAt("left", "native-input", "000001", "native-event"), "failed handoff does not claim source delivery success"); }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new VisualFactory(launch, false)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime);
-        var window = new SupplyStationWindow(runtime, null, null, () => Task.CompletedTask);
+        var window = new SupplyStationWindow(runtime, null, null, () => Task.CompletedTask)
+        {
+            ConfirmOwnerExit = impact =>
+            {
+                Check(impact.Contains("停止") && impact.Contains("原责任"), "root close explicitly reviews original responsibility impact before draining");
+                return true;
+            }
+        };
         window.Show();
         try
         {

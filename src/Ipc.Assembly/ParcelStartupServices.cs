@@ -399,7 +399,12 @@ public static class ParcelStartupServices
         using var server = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
         var path = Path.Combine(Path.GetTempPath(), "ipc-maintenance-" + Wire.Id() + ".bin");
         request = request with { Pipe = pipeName };
-        if (RequiresManagementMode(request.Action)) request = request with { ManagementGrant = LocalManagementMode.ForRoot(request.Launch!.DataRoot).Delegate(ManagementRequestHash(request)) };
+        if (RequiresManagementMode(request.Action))
+        {
+            var mode = LocalManagementMode.ForRoot(request.Launch!.DataRoot); var identity = ManagementRequestHash(request);
+            request = request with { ManagementGrant = request.Action == "ExpireHistory"
+                ? mode.DelegateOperation(identity, ParcelRepository.RetentionMaintenanceBudget) : mode.Delegate(identity) };
+        }
         ProtectedDraftPayload.Write(path, Wire.Encode(request), false);
         var retainRequest = false;
         try

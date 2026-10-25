@@ -64,10 +64,8 @@ public sealed partial class ParcelStartupMaintenance : IStartupRetentionMaintena
         if (result.Identity != plan.Identity) throw new InvalidDataException("原维护回执身份不同");
         if (File.Exists(plan.BackupDestination) && File.Exists(plan.BackupDestination + ".recovery/COMPLETED.json"))
         {
-            var backupHash = Wire.FileHash(plan.BackupDestination);
-            var manifestPath = plan.BackupDestination + ".recovery/COMPLETED.json"; RecoveryFiles.RequireOrdinaryAncestors(manifestPath);
-            if (new FileInfo(manifestPath).Length > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("原备份清单超出预算");
-            var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(manifestPath));
+            var manifest = ParcelRecovery.VerifyBackup(plan.BackupDestination, Authorize);
+            var backupHash = manifest.DatabaseHash;
             var evidenceName = Path.GetRelativePath(state.Directory, file).Replace('\\', '/');
             if (manifest.Application != definition.Id || manifest.DatabaseHash != backupHash || !manifest.Files.TryGetValue(evidenceName, out var evidenceHash)) throw new InvalidDataException("备份与原维护身份不匹配");
             var evidence = RecoveryFiles.Resolve(plan.BackupDestination + ".recovery", evidenceName);

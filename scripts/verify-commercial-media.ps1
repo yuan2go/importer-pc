@@ -31,6 +31,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is una
 $batch = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Deployment.Verification/DeploymentBatchVerification.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen deployment batch fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'DeploymentBatchVerification.cs'), [string[]]$batch)
+$lifecycle = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/LifecycleOptimization.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Frozen lifecycle review fixture source is unavailable' }
+[IO.File]::WriteAllLines((Join-Path $Output 'LifecycleOptimization.cs'), [string[]]$lifecycle)
 $entry = @'
 using Ipc.Platform;
 using Ipc.Assembly;
@@ -39,6 +42,8 @@ var inventory = DeploymentMedia.Inspect(media, "sportmaster");
 Directory.CreateDirectory(evidence);
 await OperatorAdministration.Run(root, Path.Combine(evidence, "operator-admin"));
 await CommercialProductization.Run(root, evidence);
+var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directory.CreateDirectory(lifecycleEvidence);
+await LifecycleOptimization.Run(root, lifecycleEvidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
 var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false);

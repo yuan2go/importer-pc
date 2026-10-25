@@ -1,3 +1,5 @@
+> 后续审查P1/P2待整改：长期维护入场委托与持续授权、完整恢复集核对。已通过的批量15项/CI保留原范围，不能作为这两项通过证据。
+
 > 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
 
 # 生命周期交互审查整合与问题处置
@@ -41,7 +43,7 @@ A/C的原聊天不是Git文档；下表保留原编号与必要结论，关键�
 |U15|UX-09|日志日期选择、快捷范围与固定导出范围一致|`SoftwareLogPage.cs`、`DateTimeInput.cs`|LIA-06日志子项；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U16|UX-10|开始菜单入口易辨认，保留版本/原归属保护|`src/Ipc.Platform/DeploymentShortcuts.cs`|LIA-06；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U17|UX-12、LC08|登录/审阅/查询的焦点、Esc、差异定位可用键盘完成|`SupplyStationWindow.Diagnostics.cs`、`ConfigurationSaveReviewWindow.cs`|LIA-06；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
-|U18|LC07|明确保留天数不等于自动清理，提供既有受控维护旅程|`ParameterSettingsControl.Policy.cs`、`ParcelHistoryRetention.cs`、到期维护CLI|LIA-07；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
+|U18|LC07|明确保留天数不等于自动清理，提供既有受控维护旅程|`ParameterSettingsControl.Policy.cs`、`ParcelHistoryRetention.cs`、到期维护CLI|LIA-07；REOPENED_REVIEW_P1_P2，定向本机证据见下表；系统/现场限制保留|
 |U19|LC10|备份计划可见最近真实结果、等待原因及到限停止|`ParameterSettingsControl.Policy.cs`、`ParcelScheduledBackup.cs`|LIA-07；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U20|LC12|首配显示当前位置、剩余必需项、延后连接和保存状态|`StartupWorkflows.cs`、`ParameterSettingsControl.Navigation.cs`|LIA-06；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U21|UX-01/11、LC01、F09|唯一当前操作入口、同版随包指南和交付身份|README、INDEX、两份operations、startup-deployment、`scripts/release_documents.py`|LIA-04；VERIFIED_LOCAL + CI_PASS（eca5a1eb/40218628397；非现场），定向本机证据见下表；系统/现场限制保留|

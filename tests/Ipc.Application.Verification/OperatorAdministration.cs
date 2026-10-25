@@ -201,6 +201,38 @@ static class OperatorAdministration
         Check(unsupported.Sends == 1 && afterUnknown.State == ParcelState.WcsUnknown && Wire.Encode(afterUnknown.Wcs!.Request) == Wire.Encode(original), "unsupported authoritative query and repeated input never resend or replace the frozen original request");
         await unknown.StopAsync(default);
     }
+    internal static async Task DelegatedOperationLifetime(string root)
+    {
+        var now = DateTimeOffset.UtcNow; var originalNow = now;
+        var mode = new LocalManagementMode(root) { Clock = () => now };
+        var helper = new LocalManagementMode(root) { Clock = () => now };
+        var password = "Synthetic-" + Wire.Id(); mode.ConfigurePassword(password); Check(mode.Enter(password), "operation lifetime uses the real mode credential and controllable clock");
+        var hash = new string('D', 64);
+        var operation = mode.DelegateOperation(hash, TimeSpan.FromMinutes(10));
+        var ordinary = mode.Delegate(hash); var notAdmitted = mode.DelegateOperation(hash, TimeSpan.FromMinutes(10));
+        helper.ValidateDelegation(operation, hash, true); helper.ValidateDelegation(ordinary, hash, true);
+        now = now.AddMinutes(3); helper.ValidateDelegation(operation, hash, false);
+        Check(true, "consumed operation reauthorizes beyond two-minute admission while the original session remains live");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(ordinary, hash, false)), "ordinary delegation keeps its original two-minute limit");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(notAdmitted, hash, true)), "expired admission cannot start a long operation");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(operation, new string('E', 64), false)), "long operation cannot switch its fixed request");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(operation, hash, true)), "consumed long operation cannot start a second helper");
+        now = now.AddMinutes(8);
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(operation, hash, false)), "operation absolute budget expires before a still-live session");
+        var sessionBound = mode.DelegateOperation(hash, TimeSpan.FromHours(2)); helper.ValidateDelegation(sessionBound, hash, true);
+        now = now.AddMinutes(5);
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(sessionBound, hash, false)), "two-hour operation budget never extends the original fifteen-minute session");
+        now = originalNow; Check(mode.Enter(password), "fresh explicit mode authentication is required after expiry");
+        var exited = mode.DelegateOperation(hash, TimeSpan.FromHours(2)); helper.ValidateDelegation(exited, hash, true); mode.Exit();
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(exited, hash, false)), "explicit mode exit revokes an admitted long operation");
+        Check(mode.Enter(password), "mode can be explicitly reentered after operation revocation");
+        var replaced = mode.DelegateOperation(hash, TimeSpan.FromHours(2)); helper.ValidateDelegation(replaced, hash, true); mode.ChangePassword(password + "-new");
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => helper.ValidateDelegation(replaced, hash, false)), "password replacement revokes operation continuation");
+        Check(mode.Enter(password + "-new"), "only current password can issue subsequent operation authorization");
+        foreach (var invalid in new[] { TimeSpan.Zero, TimeSpan.FromMilliseconds(1), TimeSpan.FromHours(3) })
+            await Reject<InvalidDataException>(() => Task.Run(() => mode.DelegateOperation(hash, invalid)), "invalid or excessive continuation budget rejected");
+        mode.Exit();
+    }
     sealed class NoQueryFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
         readonly CommercialProductization.SyntheticFactory inner = new(launch);

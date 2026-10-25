@@ -13,6 +13,7 @@ static class LifecycleOptimization
     { try { await action(); throw new Exception("Expected " + typeof(T).Name + ": " + reason); } catch (T) { Check(true, reason); } }
     public static async Task Run(string workspace, string root)
     {
+        await OperatorAdministration.DelegatedOperationLifetime(Path.Combine(root, "operation-lifetime"));
         Installation(root);
         await LogLifetime(root);
         var backupRoot = Path.Combine(root, "scheduled-backups"); Directory.CreateDirectory(backupRoot);
@@ -102,6 +103,31 @@ static class LifecycleOptimization
         var originalReceipt = Path.Combine(directory, "startup-maintenance", plan.Identity[..32].ToLowerInvariant(), "retention-result.json");
         ExtensionStore.AtomicWrite(originalReceipt, new StartupRetentionOutcome("Started", plan.Identity, "Synthetic lost terminal projection after actual completion"));
         Check((await service.InspectRetentionAsync(plan)).Status == "Completed" && (await service.InspectRetentionAsync(plan)).Run == result.Run, "two read-only checks resolve a lost terminal from the same original run, complete backup and integrity facts");
+        var recovery = plan.BackupDestination + ".recovery";
+        var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(recovery, "COMPLETED.json")));
+        // One actual file per custody class avoids an O(n²) rehash matrix while
+        // preserving configuration, receipt/image and maintenance-file coverage.
+        foreach (var name in manifest.Files.Keys.GroupBy(n => n.Split('/')[0], StringComparer.Ordinal).Select(g => g.First()))
+        {
+            var path = RecoveryFiles.Resolve(recovery, name); var original = File.ReadAllBytes(path);
+            try
+            {
+                File.AppendAllText(path, "synthetic-corruption");
+                await Reject<InvalidDataException>(() => service.InspectRetentionAsync(plan), "lost-terminal inspection refuses changed backup custody: " + name);
+            }
+            finally { File.WriteAllBytes(path, original); }
+        }
+        var configuration = Path.Combine(recovery, "configuration.json"); var heldConfiguration = Path.Combine(root, "held-backup-configuration.json");
+        File.Move(configuration, heldConfiguration);
+        try { await Reject<InvalidDataException>(() => service.InspectRetentionAsync(plan), "missing backed-up configuration cannot be reported as verified complete"); }
+        finally { File.Move(heldConfiguration, configuration); }
+        var extra = Path.Combine(recovery, "images", "unlisted-synthetic.bin"); Directory.CreateDirectory(Path.GetDirectoryName(extra)!); File.WriteAllText(extra, "synthetic");
+        try { await Reject<InvalidDataException>(() => service.InspectRetentionAsync(plan), "unlisted backup image is rejected by the full recovery inventory"); }
+        finally { File.Delete(extra); }
+        var checks = 0;
+        await Reject<UnauthorizedAccessException>(() => Task.Run(() => ParcelRecovery.VerifyBackup(plan.BackupDestination,
+            () => { if (++checks == 3) throw new UnauthorizedAccessException("Synthetic inspection revocation"); })), "complete backup verification rechecks authorization between custody files");
+        Check((await service.InspectRetentionAsync(plan)).Status == "Completed", "restored original backup verifies again after corruption/refusal and releases inspection ownership");
         await Reject<IOException>(() => service.ExecuteRetentionAsync(plan), "same completed destination cannot be submitted again");
         Console.WriteLine("BOUNDARY synthetic identity/ports and isolated real SQLite/files only; protected UAC/system removal/reboot/SDK/RCS/field NOT_RUN; G01/G02 BLOCKED_EXTERNAL");
     }

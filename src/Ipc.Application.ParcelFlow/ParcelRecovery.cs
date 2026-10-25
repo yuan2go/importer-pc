@@ -11,10 +11,11 @@ public static partial class ParcelRecovery
     public static void Restore(string databaseBackup, string newApplicationDirectory) => RestoreCore(databaseBackup, newApplicationDirectory, false);
     public static ParcelRecoveryCapacity PlanRestore(string databaseBackup, string newApplicationDirectory) => RestoreCore(databaseBackup, newApplicationDirectory, true);
     internal static void RestoreAuthorized(string backup, string target, Action authority) => RestoreCore(backup, target, false, authority);
-    static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly, Action? authority = null)
+    // One custody verifier for restore and original-maintenance inspection.
+    // Read-only: no target directory or cleanup intent is created here.
+    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null)
     {
-        var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
-        if (Directory.Exists(target) || File.Exists(target)) throw new IOException("Restore requires a new isolated application directory");
+        source = Path.GetFullPath(source); authority?.Invoke();
         if (File.GetAttributes(source).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked database backup is unsafe");
         var recovery = source + ".recovery";
         var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");
@@ -31,10 +32,22 @@ public static partial class ParcelRecovery
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
         foreach (var file in manifest.Files)
+        {
+            authority?.Invoke();
             if (!ExtensionSchema.IsHash(file.Value) || !File.Exists(RecoveryFiles.Resolve(recovery, file.Key)) || Wire.FileHash(RecoveryFiles.Resolve(recovery, file.Key)) != file.Value)
                 throw new InvalidDataException("Recovery custody file missing/changed/unsafe: " + file.Key);
+        }
         var actual = RecoveryFiles.Inventory(recovery);
         if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
+        authority?.Invoke(); return manifest;
+    }
+    static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly, Action? authority = null)
+    {
+        var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
+        if (Directory.Exists(target) || File.Exists(target)) throw new IOException("Restore requires a new isolated application directory");
+        var manifest = VerifyBackup(source, authority);
+        var recovery = source + ".recovery";
+        var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");
         var config = Wire.Decode<ConfigurationRevision<Ipc.Application.Contracts.ParcelConfiguration>>(File.ReadAllText(RecoveryFiles.Resolve(recovery, "configuration.json")));
         if (config.Effective.ApplicationId != manifest.Application || Path.GetFileName(target) != manifest.Application || !Enum.IsDefined(config.Effective.Mode) ||
             Directory.GetParent(target)?.Name != config.Effective.StationId ||

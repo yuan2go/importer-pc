@@ -302,6 +302,21 @@
       "sha256": "d8af2d252f29ccb555c13a620bd63527503fc77e330505e36e83baa5ad161a0b"
     },
     {
+      "path": "batch-preflight-20261026/review-eca5a1eb/REVIEW-TRACKING.json",
+      "bytes": 802,
+      "sha256": "99f9daea9d7d8568f22c4f515cf52605c6dab4e43ffee2426594dfd564635e6b"
+    },
+    {
+      "path": "batch-preflight-20261026/review-eca5a1eb/SOURCE-BUILD.log",
+      "bytes": 2339,
+      "sha256": "0ce6ba88814c728122125be66bcf4203468e3e45e45fbc004faa296f04bffb8f"
+    },
+    {
+      "path": "batch-preflight-20261026/review-eca5a1eb/SOURCE-RUN.log",
+      "bytes": 32369,
+      "sha256": "85e8232f30afcbceb2ef82d333c91bc31d04314f9a6bafc4b35e142f8a02bc0f"
+    },
+    {
       "path": "batch-preflight-20261026/source-initial-fail/lifecycle-batch-20261026-source-r2.log",
       "bytes": 575,
       "sha256": "af6e3865ced68c10b51f5be7c614da30bf6d7b2a9dbc4f1b7f3eb505f6748c5b"

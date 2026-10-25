@@ -1,0 +1,677 @@
+{
+  "Cut": "AfterBusinessCommit:Dispatching",
+  "SourceCommit": "1.0.0\u002B51ad8500753c005e3bf98d5baf5c9699297d184c",
+  "ProcessId": 67632,
+  "ExitCode": -1,
+  "Milliseconds": 1880.0471,
+  "ExternalCallsOnRecovery": 0,
+  "Snapshot": {
+    "RuntimeId": "7236c152-e0bd-4596-9228-f088f5c26554",
+    "ApplicationId": "sportmaster",
+    "Revision": 11,
+    "State": "Blocked",
+    "Paused": true,
+    "BlockingReasons": [
+      "IngressInterrupted:left; pause, enter management mode and inspect original input responsibilities",
+      "Software admission paused; this is not an emergency stop",
+      "Original stage outcome or receipt responsibility is unresolved"
+    ],
+    "Operations": [
+      {
+        "Id": "f2799eff7dcb4d65af5d47f5e67ebae9",
+        "AdmissionId": "left-original",
+        "ParcelCode": "001",
+        "ObservationId": "D20E7A3B0AFED108DF6D2A3A06B7837AC72430C7C0D70CB01179BFE46954E5F8",
+        "ObservedAt": "2026-10-24T16:57:38.8962311+00:00",
+        "ConfigurationHash": "B8DAB06DFF80A2E17FE1ECAED92AEEFEA17E6B0A8B772007401CEFBBE2CC69EC",
+        "FrozenConfiguration": {
+          "SchemaVersion": 3,
+          "ApplicationId": "sportmaster",
+          "StationId": "reference-17",
+          "Mode": "Simulation",
+          "Weight": {
+            "Source": "Disabled",
+            "Unit": "Kg",
+            "Precision": 3,
+            "ConfiguredValue": null,
+            "MaximumAgeMs": 3000,
+            "WaitTimeoutMs": 15000
+          },
+          "Reader": {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.left",
+            "Revision": "1",
+            "ReplayFile": null
+          },
+          "Scale": null,
+          "Wcs": {
+            "Kind": "integration",
+            "Implementation": "reference-integration",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "reference://integration/sportmaster",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "slot": "REFERENCE-07",
+              "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-Dispatching\\data\\Simulation\\reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Plc": null,
+          "Extensions": null,
+          "QueueCapacity": 1,
+          "TimeoutMs": 30000,
+          "MaximumOperations": 10000,
+          "SessionLifetimeMs": 28800000,
+          "MaintenanceLogin": {
+            "Kind": "login",
+            "Implementation": "reference-login",
+            "Version": "1.0.0",
+            "InstanceId": "maintenance",
+            "Target": "reference://maintenance",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "subjects": "maintenance"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "WeightValidity": "UntilDispatch",
+          "Topology": {
+            "Readers": [
+              {
+                "Role": "parcel-reader",
+                "Driver": "manual",
+                "DeviceId": "sportmaster.camera.left",
+                "Revision": "1",
+                "ReplayFile": null
+              },
+              {
+                "Role": "parcel-reader",
+                "Driver": "manual",
+                "DeviceId": "sportmaster.camera.right",
+                "Revision": "1",
+                "ReplayFile": null
+              }
+            ],
+            "Positions": [
+              {
+                "Id": "left",
+                "ReaderDeviceId": "sportmaster.camera.left",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              },
+              {
+                "Id": "right",
+                "ReaderDeviceId": "sportmaster.camera.right",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              }
+            ]
+          },
+          "Retention": {
+            "ResidentHistory": 200,
+            "MinimumFreeBytes": 67108864
+          },
+          "StationCode": "SYNTHETIC-STATION"
+        },
+        "ImplementationHashes": {
+          "sportmaster.integration": "BC5DCF3A6322DEE6C2FF07A4F22E6430951A88C739E4EABA57E16A0592662355"
+        },
+        "WeightPolicy": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Weight": null,
+        "State": "WcsUnknown",
+        "Slot": null,
+        "Wcs": {
+          "Request": {
+            "Id": "dae239f9ab7f4b51bb72dc83d05b4352",
+            "ApplicationId": "sportmaster",
+            "OperationId": "f2799eff7dcb4d65af5d47f5e67ebae9",
+            "AdmissionId": "left-original",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "reference-integration",
+              "Version": "1.0.0",
+              "InstanceId": "sportmaster.integration",
+              "Target": "reference://integration/sportmaster",
+              "Contract": "PARCEL-REFERENCE-v1",
+              "Parameters": {
+                "slot": "REFERENCE-07",
+                "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-Dispatching\\data\\Simulation\\reference-peers"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "BC5DCF3A6322DEE6C2FF07A4F22E6430951A88C739E4EABA57E16A0592662355",
+            "ConfigurationHash": "B8DAB06DFF80A2E17FE1ECAED92AEEFEA17E6B0A8B772007401CEFBBE2CC69EC",
+            "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022001\u0022,\r\n  \u0022AdmissionId\u0022: \u0022left-original\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Epoch\u0022: \u0022d84fe6ae5c9a479fb7e8a307ef8b46c7\u0022,\r\n    \u0022SourceEventId\u0022: \u0022left-event\u0022,\r\n    \u0022AdmissionId\u0022: \u0022left-original\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-24T16:57:38.8962311\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022left\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+            "PayloadHash": "07AA39CAC41973A6437A815C2232650B9714E2703D095AF567CCE17BE1160664",
+            "PreparedAt": "2026-10-24T16:57:38.9095067+00:00"
+          },
+          "State": "Unknown",
+          "Attempts": 1,
+          "Replies": [],
+          "Failure": "Interrupted startup: reconcile the original identity"
+        },
+        "Plc": null,
+        "Reason": "Restart does not authorize automatic dispatch or replay",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "d84fe6ae5c9a479fb7e8a307ef8b46c7",
+          "SourceEventId": "left-event",
+          "AdmissionId": "left-original",
+          "ObservedAt": "2026-10-24T16:57:38.8962311+00:00"
+        },
+        "PositionId": "left",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "RecoveryRequired": true,
+        "BarcodeSelection": {
+          "Outcome": "LegacySingleCode",
+          "SelectedCode": "001",
+          "Matches": 1,
+          "RuleHash": null,
+          "Detail": "\u65E7\u7248\u4E25\u683C\u5355\u7801\u517C\u5BB9\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+        }
+      },
+      {
+        "Id": "58147e0d46f446808119e083c8c6d532",
+        "AdmissionId": "right-control",
+        "ParcelCode": "002",
+        "ObservationId": "886CF8789AEF4D5231E1A86BFC053A36DE9E2C5F3E0DFE37513C6883BBA55732",
+        "ObservedAt": "2026-10-24T16:57:38.274082+00:00",
+        "ConfigurationHash": "B8DAB06DFF80A2E17FE1ECAED92AEEFEA17E6B0A8B772007401CEFBBE2CC69EC",
+        "FrozenConfiguration": {
+          "SchemaVersion": 3,
+          "ApplicationId": "sportmaster",
+          "StationId": "reference-17",
+          "Mode": "Simulation",
+          "Weight": {
+            "Source": "Disabled",
+            "Unit": "Kg",
+            "Precision": 3,
+            "ConfiguredValue": null,
+            "MaximumAgeMs": 3000,
+            "WaitTimeoutMs": 15000
+          },
+          "Reader": {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.left",
+            "Revision": "1",
+            "ReplayFile": null
+          },
+          "Scale": null,
+          "Wcs": {
+            "Kind": "integration",
+            "Implementation": "reference-integration",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "reference://integration/sportmaster",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "slot": "REFERENCE-07",
+              "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-Dispatching\\data\\Simulation\\reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Plc": null,
+          "Extensions": null,
+          "QueueCapacity": 1,
+          "TimeoutMs": 30000,
+          "MaximumOperations": 10000,
+          "SessionLifetimeMs": 28800000,
+          "MaintenanceLogin": {
+            "Kind": "login",
+            "Implementation": "reference-login",
+            "Version": "1.0.0",
+            "InstanceId": "maintenance",
+            "Target": "reference://maintenance",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "subjects": "maintenance"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "WeightValidity": "UntilDispatch",
+          "Topology": {
+            "Readers": [
+              {
+                "Role": "parcel-reader",
+                "Driver": "manual",
+                "DeviceId": "sportmaster.camera.left",
+                "Revision": "1",
+                "ReplayFile": null
+              },
+              {
+                "Role": "parcel-reader",
+                "Driver": "manual",
+                "DeviceId": "sportmaster.camera.right",
+                "Revision": "1",
+                "ReplayFile": null
+              }
+            ],
+            "Positions": [
+              {
+                "Id": "left",
+                "ReaderDeviceId": "sportmaster.camera.left",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              },
+              {
+                "Id": "right",
+                "ReaderDeviceId": "sportmaster.camera.right",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              }
+            ]
+          },
+          "Retention": {
+            "ResidentHistory": 200,
+            "MinimumFreeBytes": 67108864
+          },
+          "StationCode": "SYNTHETIC-STATION"
+        },
+        "ImplementationHashes": {
+          "sportmaster.integration": "BC5DCF3A6322DEE6C2FF07A4F22E6430951A88C739E4EABA57E16A0592662355"
+        },
+        "WeightPolicy": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Weight": null,
+        "State": "SlotResolved",
+        "Slot": "SYN-01",
+        "Wcs": {
+          "Request": {
+            "Id": "b2a8f590caad436a9231f8ffe7d6e135",
+            "ApplicationId": "sportmaster",
+            "OperationId": "58147e0d46f446808119e083c8c6d532",
+            "AdmissionId": "right-control",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "reference-integration",
+              "Version": "1.0.0",
+              "InstanceId": "sportmaster.integration",
+              "Target": "reference://integration/sportmaster",
+              "Contract": "PARCEL-REFERENCE-v1",
+              "Parameters": {
+                "slot": "REFERENCE-07",
+                "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-Dispatching\\data\\Simulation\\reference-peers"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "BC5DCF3A6322DEE6C2FF07A4F22E6430951A88C739E4EABA57E16A0592662355",
+            "ConfigurationHash": "B8DAB06DFF80A2E17FE1ECAED92AEEFEA17E6B0A8B772007401CEFBBE2CC69EC",
+            "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022002\u0022,\r\n  \u0022AdmissionId\u0022: \u0022right-control\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.right\u0022,\r\n    \u0022Epoch\u0022: \u0022832b7a00f9d14658948d4eab9f0ffa26\u0022,\r\n    \u0022SourceEventId\u0022: \u0022right-event\u0022,\r\n    \u0022AdmissionId\u0022: \u0022right-control\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-24T16:57:38.274082\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022right\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022manual\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.right\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null\r\n  }\r\n}",
+            "PayloadHash": "82C4C36ED1868350AD44261957D45593610F9D41F90CAE5C22C5377864E32D86",
+            "PreparedAt": "2026-10-24T16:57:38.3988793+00:00"
+          },
+          "State": "Accepted",
+          "Attempts": 1,
+          "Replies": [
+            {
+              "Id": "79fe75834d854f00827d6f38aec6c57c",
+              "RequestId": "b2a8f590caad436a9231f8ffe7d6e135",
+              "PayloadHash": "82C4C36ED1868350AD44261957D45593610F9D41F90CAE5C22C5377864E32D86",
+              "TransportSucceeded": true,
+              "ProtocolAcknowledged": true,
+              "BusinessAccepted": true,
+              "PhysicalCompleted": null,
+              "Slot": "SYN-01",
+              "Evidence": "Controlled loopback server; not RCS qualification",
+              "At": "2026-10-24T16:57:38.8422256+00:00"
+            }
+          ],
+          "Failure": null
+        },
+        "Plc": null,
+        "Reason": null,
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "832b7a00f9d14658948d4eab9f0ffa26",
+          "SourceEventId": "right-event",
+          "AdmissionId": "right-control",
+          "ObservedAt": "2026-10-24T16:57:38.274082+00:00"
+        },
+        "PositionId": "right",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "BarcodeSelection": {
+          "Outcome": "LegacySingleCode",
+          "SelectedCode": "002",
+          "Matches": 1,
+          "RuleHash": null,
+          "Detail": "\u65E7\u7248\u4E25\u683C\u5355\u7801\u517C\u5BB9\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+        }
+      }
+    ],
+    "Health": [
+      {
+        "InstanceId": "sportmaster.integration",
+        "Ready": true,
+        "ConfirmedAt": "2026-10-24T16:57:39.288649+00:00",
+        "ValidUntil": "2026-10-24T16:57:42.288649+00:00",
+        "Detail": "SIMULATION: durable reference peer"
+      },
+      {
+        "InstanceId": "sportmaster.camera.left",
+        "Ready": true,
+        "ConfirmedAt": "2026-10-24T16:57:39.0757513+00:00",
+        "ValidUntil": "2026-10-24T16:57:44.0757513+00:00",
+        "Detail": "SIMULATION:manual"
+      },
+      {
+        "InstanceId": "sportmaster.camera.right",
+        "Ready": true,
+        "ConfirmedAt": "2026-10-24T16:57:39.0760441+00:00",
+        "ValidUntil": "2026-10-24T16:57:44.0760441+00:00",
+        "Detail": "SIMULATION:manual"
+      }
+    ],
+    "Configuration": {
+      "Revision": 3,
+      "Effective": {
+        "SchemaVersion": 3,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "D:\\DevCache\\importer-pc\\temp\\ipc17-verification-f4918596b6a247a7bbad5c9d59086b58\\AfterBusinessCommit-Dispatching\\data\\Simulation\\reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 1,
+        "TimeoutMs": 30000,
+        "MaximumOperations": 10000,
+        "SessionLifetimeMs": 28800000,
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "WeightValidity": "UntilDispatch",
+        "Topology": {
+          "Readers": [
+            {
+              "Role": "parcel-reader",
+              "Driver": "manual",
+              "DeviceId": "sportmaster.camera.left",
+              "Revision": "1",
+              "ReplayFile": null
+            },
+            {
+              "Role": "parcel-reader",
+              "Driver": "manual",
+              "DeviceId": "sportmaster.camera.right",
+              "Revision": "1",
+              "ReplayFile": null
+            }
+          ],
+          "Positions": [
+            {
+              "Id": "left",
+              "ReaderDeviceId": "sportmaster.camera.left",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            },
+            {
+              "Id": "right",
+              "ReaderDeviceId": "sportmaster.camera.right",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            }
+          ]
+        },
+        "Retention": {
+          "ResidentHistory": 200,
+          "MinimumFreeBytes": 67108864
+        },
+        "StationCode": "SYNTHETIC-STATION"
+      },
+      "Pending": null,
+      "Status": "Effective",
+      "Failure": null,
+      "Activation": null,
+      "Confirmation": {
+        "Source": "Seed",
+        "EffectiveHash": "B8DAB06DFF80A2E17FE1ECAED92AEEFEA17E6B0A8B772007401CEFBBE2CC69EC",
+        "Required": false,
+        "State": "Confirmed",
+        "OriginalEnvelopeBase64": null,
+        "OriginalEnvelopeSha256": null,
+        "Attempts": [
+          {
+            "Id": "2925b5d1dce04c578e3eb5536996d7ad",
+            "StartedAt": "2026-10-24T16:57:38.1395353+00:00",
+            "FinishedAt": "2026-10-24T16:57:38.2617634+00:00",
+            "Outcome": "ResourcesStarted",
+            "Failure": null
+          }
+        ],
+        "ConfirmedBy": "initial-resource-startup",
+        "Reason": null,
+        "ConfirmedAt": "2026-10-24T16:57:38.2622706+00:00"
+      },
+      "InitialRepair": null
+    },
+    "CurrentOperator": null,
+    "Availability": {
+      "Admit": false,
+      "Resume": true,
+      "Configure": true,
+      "ContinuePrepared": [],
+      "ContinueUpload": [],
+      "AbandonUnsubmitted": []
+    },
+    "Positions": [
+      {
+        "Id": "left",
+        "ReaderDeviceId": "sportmaster.camera.left",
+        "Admit": false,
+        "CurrentOperation": "f2799eff7dcb4d65af5d47f5e67ebae9",
+        "BlockingReasons": [
+          "Position dependency/health or original responsibility blocked",
+          "Current entity main result is incomplete",
+          "Global software pause"
+        ],
+        "MainResultComplete": false,
+        "BackgroundComplete": false
+      },
+      {
+        "Id": "right",
+        "ReaderDeviceId": "sportmaster.camera.right",
+        "Admit": false,
+        "CurrentOperation": "58147e0d46f446808119e083c8c6d532",
+        "BlockingReasons": [
+          "Global software pause"
+        ],
+        "MainResultComplete": true,
+        "BackgroundComplete": true
+      }
+    ],
+    "Devices": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "b48f0c06f16147a9a181f1883a491bf0",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-24T16:57:39.0757513+00:00",
+        "ConfirmedAt": "2026-10-24T16:57:39.0757513+00:00",
+        "ValidUntil": "2026-10-24T16:57:44.0757513+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "b3e5ea36337143d18b184b1c296feb96",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-24T16:57:39.0760441+00:00",
+        "ConfirmedAt": "2026-10-24T16:57:39.0760441+00:00",
+        "ValidUntil": "2026-10-24T16:57:44.0760441+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    ],
+    "Capacity": {
+      "Unresolved": 1,
+      "Resident": 2,
+      "Archived": 0,
+      "MaximumUnresolved": 10000,
+      "Available": true,
+      "Policy": "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain",
+      "FreeStorageBytes": 42744332288,
+      "MinimumFreeBytes": 67108864
+    },
+    "IdentityConflicts": [],
+    "AuxiliaryReasons": [
+      "Diagnostics:{\r\n  \u0022State\u0022: \u0022Running\u0022,\r\n  \u0022QueueDepth\u0022: 0,\r\n  \u0022Dropped\u0022: 0,\r\n  \u0022Written\u0022: 6,\r\n  \u0022LastFailure\u0022: null,\r\n  \u0022CurrentFailure\u0022: null,\r\n  \u0022LastProgressUtcTicks\u0022: 639284578593467425\r\n}",
+      "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion",
+      "Workers:[\r\n  {\r\n    \u0022Position\u0022: \u0022left\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 0,\r\n    \u0022Processed\u0022: 0,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: null,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  },\r\n  {\r\n    \u0022Position\u0022: \u0022right\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 0,\r\n    \u0022Processed\u0022: 0,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: null,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  }\r\n]"
+    ],
+    "Inputs": [
+      {
+        "PositionId": "left",
+        "Observation": {
+          "Id": "b7ff8b7cd88d4a318bb2dbaed5da5861",
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "d84fe6ae5c9a479fb7e8a307ef8b46c7",
+          "SourceEventId": "left-event",
+          "Sequence": 1,
+          "AdmissionId": "left-original",
+          "Kind": "Read",
+          "Codes": [
+            "001"
+          ],
+          "PackageQuantity": null,
+          "ObservedAt": "2026-10-24T16:57:38.8962311+00:00"
+        },
+        "Outcome": "Admitted",
+        "Reason": "Admitted; external result pending",
+        "OperationId": "f2799eff7dcb4d65af5d47f5e67ebae9",
+        "RecordedAt": "2026-10-24T16:57:38.9046947+00:00",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "BarcodeSelection": {
+          "Outcome": "LegacySingleCode",
+          "SelectedCode": "001",
+          "Matches": 1,
+          "RuleHash": null,
+          "Detail": "\u65E7\u7248\u4E25\u683C\u5355\u7801\u517C\u5BB9\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+        }
+      },
+      {
+        "PositionId": "right",
+        "Observation": {
+          "Id": "6924df17e58d43a789dfa6bb90717ed2",
+          "DeviceId": "sportmaster.camera.right",
+          "Epoch": "832b7a00f9d14658948d4eab9f0ffa26",
+          "SourceEventId": "right-event",
+          "Sequence": 1,
+          "AdmissionId": "right-control",
+          "Kind": "Read",
+          "Codes": [
+            "002"
+          ],
+          "PackageQuantity": null,
+          "ObservedAt": "2026-10-24T16:57:38.274082+00:00"
+        },
+        "Outcome": "Admitted",
+        "Reason": "Admitted; external result pending",
+        "OperationId": "58147e0d46f446808119e083c8c6d532",
+        "RecordedAt": "2026-10-24T16:57:38.312268+00:00",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "BarcodeSelection": {
+          "Outcome": "LegacySingleCode",
+          "SelectedCode": "002",
+          "Matches": 1,
+          "RuleHash": null,
+          "Detail": "\u65E7\u7248\u4E25\u683C\u5355\u7801\u517C\u5BB9\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+        }
+      }
+    ]
+  }
+}

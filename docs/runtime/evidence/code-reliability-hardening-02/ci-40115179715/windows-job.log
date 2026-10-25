@@ -1,0 +1,708 @@
+﻿2026-10-24T17:14:03.6469597Z Current runner version: '2.338.0'
+2026-10-24T17:14:03.6509240Z ##[group]Runner Image Provisioner
+2026-10-24T17:14:03.6510821Z Hosted Compute Agent
+2026-10-24T17:14:03.6511801Z Version: 20261021.618
+2026-10-24T17:14:03.6512748Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-24T17:14:03.6513995Z Build Date: 2026-10-21T00:45:21Z
+2026-10-24T17:14:03.6515194Z Worker ID: {23965789-d4c1-430b-bf33-cb88f1f0e23d}
+2026-10-24T17:14:03.6516452Z Region: eastus
+2026-10-24T17:14:03.6518097Z Cloud: Azure
+2026-10-24T17:14:03.6519023Z ##[endgroup]
+2026-10-24T17:14:03.6522207Z ##[group]Operating System
+2026-10-24T17:14:03.6523408Z Microsoft Windows Server 2025
+2026-10-24T17:14:03.6524402Z 10.0.26100
+2026-10-24T17:14:03.6525320Z Datacenter
+2026-10-24T17:14:03.6526151Z ##[endgroup]
+2026-10-24T17:14:03.6527029Z ##[group]Runner Image
+2026-10-24T17:14:03.6528055Z Image: windows-2025-vs2026
+2026-10-24T17:14:03.6529025Z Version: 20261021.278.1
+2026-10-24T17:14:03.6532217Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md
+2026-10-24T17:14:03.6535321Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261021.278
+2026-10-24T17:14:03.6537075Z ##[endgroup]
+2026-10-24T17:14:03.6538902Z ##[group]GITHUB_TOKEN Permissions
+2026-10-24T17:14:03.6541677Z Contents: read
+2026-10-24T17:14:03.6542595Z Metadata: read
+2026-10-24T17:14:03.6543547Z ##[endgroup]
+2026-10-24T17:14:03.6546329Z Secret source: Actions
+2026-10-24T17:14:03.6547221Z Cache mode: write
+2026-10-24T17:14:03.6547844Z Prepare workflow directory
+2026-10-24T17:14:03.6903896Z Prepare all required actions
+2026-10-24T17:14:03.6953096Z Getting action download info
+2026-10-24T17:14:03.8594382Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-24T17:14:04.0270800Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-24T17:14:04.1952244Z Download action repository 'actions/setup-dotnet@v4' (SHA:67a3573c9a986a3f9c594539f4ab511d57bb3ce9)
+2026-10-24T17:14:04.4576091Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-24T17:14:04.8231991Z Complete job name: frozen-sportmaster
+2026-10-24T17:14:05.0023525Z ##[group]Run git config --global core.longpaths true
+2026-10-24T17:14:05.0024487Z [36;1mgit config --global core.longpaths true[0m
+2026-10-24T17:14:05.0843695Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:14:05.0845175Z ##[endgroup]
+2026-10-24T17:14:06.0882905Z ##[group]Run actions/checkout@v4
+2026-10-24T17:14:06.0884035Z with:
+2026-10-24T17:14:06.0884995Z   fetch-depth: 0
+2026-10-24T17:14:06.0885905Z   persist-credentials: false
+2026-10-24T17:14:06.0886951Z   sparse-checkout-cone-mode: false
+2026-10-24T17:14:06.0889427Z   sparse-checkout: /*
+!/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+!/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+
+2026-10-24T17:14:06.0891970Z   repository: yuan2go/importer-pc
+2026-10-24T17:14:06.0901097Z   token: ***
+2026-10-24T17:14:06.0901896Z   ssh-strict: true
+2026-10-24T17:14:06.0902727Z   ssh-user: git
+2026-10-24T17:14:06.0903541Z   clean: true
+2026-10-24T17:14:06.0904316Z   fetch-tags: false
+2026-10-24T17:14:06.0905316Z   show-progress: true
+2026-10-24T17:14:06.0906187Z   lfs: false
+2026-10-24T17:14:06.0906964Z   submodules: false
+2026-10-24T17:14:06.0907806Z   set-safe-directory: true
+2026-10-24T17:14:06.0908784Z   allow-unsafe-pr-checkout: false
+2026-10-24T17:14:06.0909810Z env:
+2026-10-24T17:14:06.0910543Z   GIT_CONFIG_COUNT: 1
+2026-10-24T17:14:06.0911441Z   GIT_CONFIG_KEY_0: core.protectNTFS
+2026-10-24T17:14:06.0912682Z   GIT_CONFIG_VALUE_0: false
+2026-10-24T17:14:06.0913614Z ##[endgroup]
+2026-10-24T17:14:06.2325645Z Syncing repository: yuan2go/importer-pc
+2026-10-24T17:14:06.2328406Z ##[group]Getting Git version info
+2026-10-24T17:14:06.2330797Z Working directory is 'D:\a\importer-pc\importer-pc'
+2026-10-24T17:14:06.3234252Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-24T17:14:06.3592569Z git version 2.56.0.windows.2
+2026-10-24T17:14:06.3644444Z ##[endgroup]
+2026-10-24T17:14:06.3659303Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\8a9316dc-a35a-4fbc-a3db-a9a8747149cc\.gitconfig'
+2026-10-24T17:14:06.3681264Z Temporarily overriding HOME='D:\a\_temp\8a9316dc-a35a-4fbc-a3db-a9a8747149cc' before making global git config changes
+2026-10-24T17:14:06.3684083Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-24T17:14:06.3692206Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\importer-pc\importer-pc
+2026-10-24T17:14:06.4077798Z Deleting the contents of 'D:\a\importer-pc\importer-pc'
+2026-10-24T17:14:06.4084289Z ##[group]Initializing the repository
+2026-10-24T17:14:06.4093457Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\importer-pc\importer-pc
+2026-10-24T17:14:06.5165606Z Initialized empty Git repository in D:/a/importer-pc/importer-pc/.git/
+2026-10-24T17:14:06.5214150Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/yuan2go/importer-pc
+2026-10-24T17:14:06.5910796Z ##[endgroup]
+2026-10-24T17:14:06.5913273Z ##[group]Disabling automatic garbage collection
+2026-10-24T17:14:06.5922102Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-24T17:14:06.6546497Z ##[endgroup]
+2026-10-24T17:14:06.6547910Z ##[group]Setting up auth
+2026-10-24T17:14:06.6558991Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-24T17:14:06.6950286Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-24T17:14:08.1728059Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-24T17:14:08.2116141Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-24T17:14:08.8020788Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-24T17:14:08.8409527Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-24T17:14:09.3939114Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-24T17:14:09.4326132Z ##[endgroup]
+2026-10-24T17:14:09.4339928Z ##[group]Fetching the repository
+2026-10-24T17:14:09.4341875Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules --filter=blob:none origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +af0c4ade61913f64f2dcc88eb15ed69742282b22:refs/remotes/pull/104/merge
+2026-10-24T17:14:10.4952271Z From https://github.com/yuan2go/importer-pc
+2026-10-24T17:14:10.4953697Z  * [new branch]      codex/acquisition-lifecycle-p2           -> origin/codex/acquisition-lifecycle-p2
+2026-10-24T17:14:10.4954683Z  * [new branch]      codex/add-ui-ux-pro-max-skill            -> origin/codex/add-ui-ux-pro-max-skill
+2026-10-24T17:14:10.4955781Z  * [new branch]      codex/application-architecture-22        -> origin/codex/application-architecture-22
+2026-10-24T17:14:10.4956766Z  * [new branch]      codex/application-capability-closure-19  -> origin/codex/application-capability-closure-19
+2026-10-24T17:14:10.4957498Z  * [new branch]      codex/application-convergence-17         -> origin/codex/application-convergence-17
+2026-10-24T17:14:10.4958163Z  * [new branch]      codex/arch-extension-closure-13          -> origin/codex/arch-extension-closure-13
+2026-10-24T17:14:10.4960895Z  * [new branch]      codex/architecture-quality-02            -> origin/codex/architecture-quality-02
+2026-10-24T17:14:10.4962156Z  * [new branch]      codex/architecture-quality-closure-01    -> origin/codex/architecture-quality-closure-01
+2026-10-24T17:14:10.4963583Z  * [new branch]      codex/architecture-quality-remediation-01 -> origin/codex/architecture-quality-remediation-01
+2026-10-24T17:14:10.4964848Z  * [new branch]      codex/audit03-publication-merge          -> origin/codex/audit03-publication-merge
+2026-10-24T17:14:10.4965970Z  * [new branch]      codex/backup-health-recovery             -> origin/codex/backup-health-recovery
+2026-10-24T17:14:10.4967041Z  * [new branch]      codex/cainiao-product-brand              -> origin/codex/cainiao-product-brand
+2026-10-24T17:14:10.4968234Z  * [new branch]      codex/capability-reliability-closure-20  -> origin/codex/capability-reliability-closure-20
+2026-10-24T17:14:10.4969429Z  * [new branch]      codex/chinese-interface-copy             -> origin/codex/chinese-interface-copy
+2026-10-24T17:14:10.4970687Z  * [new branch]      codex/code-reliability-hardening-02      -> origin/codex/code-reliability-hardening-02
+2026-10-24T17:14:10.4972528Z  * [new branch]      codex/commercial-audit03-delivery        -> origin/codex/commercial-audit03-delivery
+2026-10-24T17:14:10.4973807Z  * [new branch]      codex/commercial-productization-01       -> origin/codex/commercial-productization-01
+2026-10-24T17:14:10.4975021Z  * [new branch]      codex/commercial-quality-fix-03          -> origin/codex/commercial-quality-fix-03
+2026-10-24T17:14:10.4976052Z  * [new branch]      codex/conformance-fix-14                 -> origin/codex/conformance-fix-14
+2026-10-24T17:14:10.4977258Z  * [new branch]      codex/deployment-publication-20261019    -> origin/codex/deployment-publication-20261019
+2026-10-24T17:14:10.4978977Z  * [new branch]      codex/dual-camera-communication-fix-01   -> origin/codex/dual-camera-communication-fix-01
+2026-10-24T17:14:10.4980328Z  * [new branch]      codex/dual-camera-first-config-ci-fix    -> origin/codex/dual-camera-first-config-ci-fix
+2026-10-24T17:14:10.4981596Z  * [new branch]      codex/fix-login-session-lifetime         -> origin/codex/fix-login-session-lifetime
+2026-10-24T17:14:10.4982884Z  * [new branch]      codex/fix-startup-native-verification    -> origin/codex/fix-startup-native-verification
+2026-10-24T17:14:10.4984013Z  * [new branch]      codex/hikrobot-reader-01                 -> origin/codex/hikrobot-reader-01
+2026-10-24T17:14:10.4985989Z  * [new branch]      codex/installer-release-metadata         -> origin/codex/installer-release-metadata
+2026-10-24T17:14:10.4987236Z  * [new branch]      codex/installer-single-window            -> origin/codex/installer-single-window
+2026-10-24T17:14:10.4988283Z  * [new branch]      codex/ipc-readiness-02                   -> origin/codex/ipc-readiness-02
+2026-10-24T17:14:10.4989407Z  * [new branch]      codex/maintenance-publication-20261019   -> origin/codex/maintenance-publication-20261019
+2026-10-24T17:14:10.4990643Z  * [new branch]      codex/management-mode                    -> origin/codex/management-mode
+2026-10-24T17:14:10.4991769Z  * [new branch]      codex/operation-closure-15               -> origin/codex/operation-closure-15
+2026-10-24T17:14:10.4992805Z  * [new branch]      codex/operator-admin-logs                -> origin/codex/operator-admin-logs
+2026-10-24T17:14:10.4993931Z  * [new branch]      codex/parallel-task-integration-01       -> origin/codex/parallel-task-integration-01
+2026-10-24T17:14:10.4995208Z  * [new branch]      codex/parallel-task-reconciliation-01    -> origin/codex/parallel-task-reconciliation-01
+2026-10-24T17:14:10.4996968Z  * [new branch]      codex/parallel-task-reconciliation-20261020 -> origin/codex/parallel-task-reconciliation-20261020
+2026-10-24T17:14:10.4998530Z  * [new branch]      codex/parallel-task-reconciliation-20261020-02 -> origin/codex/parallel-task-reconciliation-20261020-02
+2026-10-24T17:14:10.5000301Z  * [new branch]      codex/parameter-inheritance-delivery     -> origin/codex/parameter-inheritance-delivery
+2026-10-24T17:14:10.5001699Z  * [new branch]      codex/parameter-settings-v3-20261020     -> origin/codex/parameter-settings-v3-20261020
+2026-10-24T17:14:10.5002991Z  * [new branch]      codex/parameter-shell-polish-02          -> origin/codex/parameter-shell-polish-02
+2026-10-24T17:14:10.5004127Z  * [new branch]      codex/parameter-ui-refine-01             -> origin/codex/parameter-ui-refine-01
+2026-10-24T17:14:10.5005309Z  * [new branch]      codex/parameter-v3-experience-audit      -> origin/codex/parameter-v3-experience-audit
+2026-10-24T17:14:10.5006541Z  * [new branch]      codex/parameter-v3-native-delivery       -> origin/codex/parameter-v3-native-delivery
+2026-10-24T17:14:10.5007644Z  * [new branch]      codex/parcel-recovery-p2                 -> origin/codex/parcel-recovery-p2
+2026-10-24T17:14:10.5008662Z  * [new branch]      codex/pr26-recovery-closure              -> origin/codex/pr26-recovery-closure
+2026-10-24T17:14:10.5009716Z  * [new branch]      codex/pr73-startup-recovery              -> origin/codex/pr73-startup-recovery
+2026-10-24T17:14:10.5010743Z  * [new branch]      codex/publication-20261019               -> origin/codex/publication-20261019
+2026-10-24T17:14:10.5011940Z  * [new branch]      codex/publication-ops-1102-20261022      -> origin/codex/publication-ops-1102-20261022
+2026-10-24T17:14:10.5013512Z  * [new branch]      codex/publication-parameter-snapshot-20261020-092825 -> origin/codex/publication-parameter-snapshot-20261020-092825
+2026-10-24T17:14:10.5015141Z  * [new branch]      codex/publication-pr67-artifacts-20261020 -> origin/codex/publication-pr67-artifacts-20261020
+2026-10-24T17:14:10.5017136Z  * [new branch]      codex/publication-pr69-pr71-receipts-20261020 -> origin/codex/publication-pr69-pr71-receipts-20261020
+2026-10-24T17:14:10.5018539Z  * [new branch]      codex/publish-login-session              -> origin/codex/publish-login-session
+2026-10-24T17:14:10.5019353Z  * [new branch]      codex/publish-pr74                       -> origin/codex/publish-pr74
+2026-10-24T17:14:10.5020113Z  * [new branch]      codex/rcs-station-heartbeat              -> origin/codex/rcs-station-heartbeat
+2026-10-24T17:14:10.5021062Z  * [new branch]      codex/retention-full-scale-qualification-01 -> origin/codex/retention-full-scale-qualification-01
+2026-10-24T17:14:10.5022147Z  * [new branch]      codex/retention-performance-verification-01 -> origin/codex/retention-performance-verification-01
+2026-10-24T17:14:10.5023409Z  * [new branch]      codex/retention-query-final-recheck-02   -> origin/codex/retention-query-final-recheck-02
+2026-10-24T17:14:10.5024346Z  * [new branch]      codex/review14-receipt-recovery          -> origin/codex/review14-receipt-recovery
+2026-10-24T17:14:10.5025271Z  * [new branch]      codex/runtime-identity-all-entrypoints   -> origin/codex/runtime-identity-all-entrypoints
+2026-10-24T17:14:10.5026169Z  * [new branch]      codex/runtime-sid-preflight              -> origin/codex/runtime-sid-preflight
+2026-10-24T17:14:10.5026997Z  * [new branch]      codex/simplify-installation-docs         -> origin/codex/simplify-installation-docs
+2026-10-24T17:14:10.5027625Z  * [new branch]      codex/site-capabilities-18               -> origin/codex/site-capabilities-18
+2026-10-24T17:14:10.5028249Z  * [new branch]      codex/sportmaster-alternate-ui           -> origin/codex/sportmaster-alternate-ui
+2026-10-24T17:14:10.5028949Z  * [new branch]      codex/sportmaster-audit-remediation-01   -> origin/codex/sportmaster-audit-remediation-01
+2026-10-24T17:14:10.5029673Z  * [new branch]      codex/sportmaster-clear-workstation      -> origin/codex/sportmaster-clear-workstation
+2026-10-24T17:14:10.5030406Z  * [new branch]      codex/sportmaster-commercial-delivery-01 -> origin/codex/sportmaster-commercial-delivery-01
+2026-10-24T17:14:10.5031158Z  * [new branch]      codex/sportmaster-parameter-refactor     -> origin/codex/sportmaster-parameter-refactor
+2026-10-24T17:14:10.5031927Z  * [new branch]      codex/sportmaster-rcs-task               -> origin/codex/sportmaster-rcs-task
+2026-10-24T17:14:10.5032588Z  * [new branch]      codex/sportmaster-v2-ui                  -> origin/codex/sportmaster-v2-ui
+2026-10-24T17:14:10.5033219Z  * [new branch]      codex/sportmaster-visual-closure-01      -> origin/codex/sportmaster-visual-closure-01
+2026-10-24T17:14:10.5033973Z  * [new branch]      codex/sportmaster-visual-productization-01 -> origin/codex/sportmaster-visual-productization-01
+2026-10-24T17:14:10.5034927Z  * [new branch]      codex/startup-experience                 -> origin/codex/startup-experience
+2026-10-24T17:14:10.5035563Z  * [new branch]      codex/task-content-hierarchy-01          -> origin/codex/task-content-hierarchy-01
+2026-10-24T17:14:10.5036199Z  * [new branch]      codex/task-content-hierarchy-02          -> origin/codex/task-content-hierarchy-02
+2026-10-24T17:14:10.5037022Z  * [new branch]      codex/task-context-ci-fix                -> origin/codex/task-context-ci-fix
+2026-10-24T17:14:10.5037583Z  * [new branch]      codex/typography-01                      -> origin/codex/typography-01
+2026-10-24T17:14:10.5038132Z  * [new branch]      codex/ui-maintainability-16              -> origin/codex/ui-maintainability-16
+2026-10-24T17:14:10.5038755Z  * [new branch]      codex/unified-release-evidence-01        -> origin/codex/unified-release-evidence-01
+2026-10-24T17:14:10.5039442Z  * [new branch]      codex/unified-release-final-55025ce      -> origin/codex/unified-release-final-55025ce
+2026-10-24T17:14:10.5040463Z  * [new branch]      codex/unified-release-media-20261020     -> origin/codex/unified-release-media-20261020
+2026-10-24T17:14:10.5041152Z  * [new branch]      codex/unified-windows-release            -> origin/codex/unified-windows-release
+2026-10-24T17:14:10.5042095Z  * [new branch]      codex/unified-windows-release-01         -> origin/codex/unified-windows-release-01
+2026-10-24T17:14:10.5042796Z  * [new branch]      codex/upload-commercial-20261019-170849  -> origin/codex/upload-commercial-20261019-170849
+2026-10-24T17:14:10.5043541Z  * [new branch]      codex/upload-unified-release-20261019-170849 -> origin/codex/upload-unified-release-20261019-170849
+2026-10-24T17:14:10.5044246Z  * [new branch]      codex/ux-commercial-closure-02           -> origin/codex/ux-commercial-closure-02
+2026-10-24T17:14:10.5044850Z  * [new branch]      codex/ux-commercial-fixes-01             -> origin/codex/ux-commercial-fixes-01
+2026-10-24T17:14:10.5045597Z  * [new branch]      codex/ux-maintenance-p2-04               -> origin/codex/ux-maintenance-p2-04
+2026-10-24T17:14:10.5046215Z  * [new branch]      codex/ux-publication-20261019            -> origin/codex/ux-publication-20261019
+2026-10-24T17:14:10.5046832Z  * [new branch]      codex/version-compatibility              -> origin/codex/version-compatibility
+2026-10-24T17:14:10.5047507Z  * [new branch]      codex/win11-24x7-stability-remediation-01 -> origin/codex/win11-24x7-stability-remediation-01
+2026-10-24T17:14:10.5048158Z  * [new branch]      codex/windows-first-run                  -> origin/codex/windows-first-run
+2026-10-24T17:14:10.5048784Z  * [new branch]      codex/windows-no-test-release-939462b    -> origin/codex/windows-no-test-release-939462b
+2026-10-24T17:14:10.5049449Z  * [new branch]      codex/workstation-information            -> origin/codex/workstation-information
+2026-10-24T17:14:10.5050254Z  * [new branch]      codex/wp-ipc-arch-ui-alignment-01        -> origin/codex/wp-ipc-arch-ui-alignment-01
+2026-10-24T17:14:10.5051559Z  * [new branch]      codex/wp-ipc-audit-reconciliation-01     -> origin/codex/wp-ipc-audit-reconciliation-01
+2026-10-24T17:14:10.5052871Z  * [new branch]      codex/wp-ipc-engineering-closure-07      -> origin/codex/wp-ipc-engineering-closure-07
+2026-10-24T17:14:10.5054225Z  * [new branch]      codex/wp-ipc-extension-windows-delivery-12 -> origin/codex/wp-ipc-extension-windows-delivery-12
+2026-10-24T17:14:10.5056940Z  * [new branch]      codex/wp-ipc-main-review-02              -> origin/codex/wp-ipc-main-review-02
+2026-10-24T17:14:10.5058069Z  * [new branch]      codex/wp-ipc-main-review-03              -> origin/codex/wp-ipc-main-review-03
+2026-10-24T17:14:10.5059248Z  * [new branch]      codex/wp-ipc-review-followup-11          -> origin/codex/wp-ipc-review-followup-11
+2026-10-24T17:14:10.5060395Z  * [new branch]      codex/wp-ipc-runtime-03                  -> origin/codex/wp-ipc-runtime-03
+2026-10-24T17:14:10.5061567Z  * [new branch]      codex/wp-ipc-runtime-hardening-04        -> origin/codex/wp-ipc-runtime-hardening-04
+2026-10-24T17:14:10.5062781Z  * [new branch]      docs/architecture-quality-audit-02       -> origin/docs/architecture-quality-audit-02
+2026-10-24T17:14:10.5063873Z  * [new branch]      docs/final-ui-assets-20261016            -> origin/docs/final-ui-assets-20261016
+2026-10-24T17:14:10.5064905Z  * [new branch]      docs/ui-assets-20261016                  -> origin/docs/ui-assets-20261016
+2026-10-24T17:14:10.5066220Z  * [new branch]      docs/wp-ipc-project-conformance-audit-01-20261017 -> origin/docs/wp-ipc-project-conformance-audit-01-20261017
+2026-10-24T17:14:10.5067411Z  * [new branch]      main                                     -> origin/main
+2026-10-24T17:14:10.5067934Z  * [new tag]         application17-reference-f184a6b          -> application17-reference-f184a6b
+2026-10-24T17:14:10.5068534Z  * [new tag]         architecture22-reference-8981d54         -> architecture22-reference-8981d54
+2026-10-24T17:14:10.5069145Z  * [new tag]         audit02-rereview-reference-e914e75       -> audit02-rereview-reference-e914e75
+2026-10-24T17:14:10.5069717Z  * [new tag]         audit03-reference-1401b7d                -> audit03-reference-1401b7d
+2026-10-24T17:14:10.5070226Z  * [new tag]         audit03-reference-565abcc                -> audit03-reference-565abcc
+2026-10-24T17:14:10.5070765Z  * [new tag]         capability19-reference-c213aad           -> capability19-reference-c213aad
+2026-10-24T17:14:10.5071324Z  * [new tag]         closure13-reference-8cb475b              -> closure13-reference-8cb475b
+2026-10-24T17:14:10.5071844Z  * [new tag]         closure13-reference-dc5b405              -> closure13-reference-dc5b405
+2026-10-24T17:14:10.5072494Z  * [new tag]         commercial-productization-reference-bd86fbb -> commercial-productization-reference-bd86fbb
+2026-10-24T17:14:10.5073170Z  * [new tag]         conformance14-reference-68cdc36          -> conformance14-reference-68cdc36
+2026-10-24T17:14:10.5074395Z  * [new tag]         delivery-12-reference-11f0728            -> delivery-12-reference-11f0728
+2026-10-24T17:14:10.5075308Z  * [new tag]         installer-sm-v1.10.2-c9e482a30d2d        -> installer-sm-v1.10.2-c9e482a30d2d
+2026-10-24T17:14:10.5075908Z  * [new tag]         installer-sm-v1.4.1-27b0d8f6cc02         -> installer-sm-v1.4.1-27b0d8f6cc02
+2026-10-24T17:14:10.5076457Z  * [new tag]         installer-sm-v1.4.1-7c384540393b         -> installer-sm-v1.4.1-7c384540393b
+2026-10-24T17:14:10.5077081Z  * [new tag]         installer-sm-v1.6.0-1878be50d5be         -> installer-sm-v1.6.0-1878be50d5be
+2026-10-24T17:14:10.5077811Z  * [new tag]         installer-sm-v1.6.1-92586bf44cde         -> installer-sm-v1.6.1-92586bf44cde
+2026-10-24T17:14:10.5078369Z  * [new tag]         operation15-reference-013862f            -> operation15-reference-013862f
+2026-10-24T17:14:10.5078946Z  * [new tag]         parameters-sm-v1.5.0-220d35931a6e        -> parameters-sm-v1.5.0-220d35931a6e
+2026-10-24T17:14:10.5079508Z  * [new tag]         pr79-ci-evidence-5d722f8a4eeb            -> pr79-ci-evidence-5d722f8a4eeb
+2026-10-24T17:14:10.5080112Z  * [new tag]         rcs-heartbeat-simulation-3f8a58ba3288    -> rcs-heartbeat-simulation-3f8a58ba3288
+2026-10-24T17:14:10.5080791Z  * [new tag]         reference-reconciliation-20261019-21e6cae -> reference-reconciliation-20261019-21e6cae
+2026-10-24T17:14:10.5081495Z  * [new tag]         runtime-all-entrypoints-reference-16ecb57 -> runtime-all-entrypoints-reference-16ecb57
+2026-10-24T17:14:10.5082308Z  * [new tag]         runtime-sid-reference-f354d3f            -> runtime-sid-reference-f354d3f
+2026-10-24T17:14:10.5082844Z  * [new tag]         site18-reference-08595e9                 -> site18-reference-08595e9
+2026-10-24T17:14:10.5083437Z  * [new tag]         startup-deployment-reference-e79a8bf     -> startup-deployment-reference-e79a8bf
+2026-10-24T17:14:10.5084009Z  * [new tag]         ui16-reference-089fd98                   -> ui16-reference-089fd98
+2026-10-24T17:14:10.5084549Z  * [new tag]         unified-main-reference-55025ce           -> unified-main-reference-55025ce
+2026-10-24T17:14:10.5085117Z  * [new tag]         unified-main-reference-cfe6c0e           -> unified-main-reference-cfe6c0e
+2026-10-24T17:14:10.5085662Z  * [new tag]         ux-reference-6ce1d6d                     -> ux-reference-6ce1d6d
+2026-10-24T17:14:10.5086137Z  * [new tag]         ux-reference-f1a655c                     -> ux-reference-f1a655c
+2026-10-24T17:14:10.5086973Z  * [new tag]         ux-reference-ff31b0e                     -> ux-reference-ff31b0e
+2026-10-24T17:14:10.5088106Z  * [new tag]         windows-main-not-tested-939462bee40c     -> windows-main-not-tested-939462bee40c
+2026-10-24T17:14:10.5089056Z  * [new tag]         wp-ipc-arch-ui-alignment-01-simulation-20261016 -> wp-ipc-arch-ui-alignment-01-simulation-20261016
+2026-10-24T17:14:10.5089948Z  * [new tag]         wp-ipc-audit-reconciliation-01-simulation-20261017 -> wp-ipc-audit-reconciliation-01-simulation-20261017
+2026-10-24T17:14:10.5090787Z  * [new tag]         wp-ipc-review-followup-11-simulation-20261017 -> wp-ipc-review-followup-11-simulation-20261017
+2026-10-24T17:14:10.5091848Z  * [new tag]         wp-ipc-runtime-03-simulation-20261016    -> wp-ipc-runtime-03-simulation-20261016
+2026-10-24T17:14:10.5093206Z  * [new tag]         wp-ipc-runtime-hardening-04-simulation-20261016 -> wp-ipc-runtime-hardening-04-simulation-20261016
+2026-10-24T17:14:10.5094317Z  * [new ref]         af0c4ade61913f64f2dcc88eb15ed69742282b22 -> pull/104/merge
+2026-10-24T17:14:10.5095782Z ##[endgroup]
+2026-10-24T17:14:10.5096133Z ##[group]Determining the checkout info
+2026-10-24T17:14:10.5096497Z ##[endgroup]
+2026-10-24T17:14:10.5096850Z ##[group]Setting up sparse checkout
+2026-10-24T17:14:10.5097294Z [command]"C:\Program Files\Git\bin\git.exe" config core.sparseCheckout true
+2026-10-24T17:14:10.5435827Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse --git-path info/sparse-checkout
+2026-10-24T17:14:10.5821426Z .git/info/sparse-checkout
+2026-10-24T17:14:10.5861968Z ##[endgroup]
+2026-10-24T17:14:10.5862815Z ##[group]Checking out the ref
+2026-10-24T17:14:10.5870964Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/104/merge
+2026-10-24T17:14:16.2724526Z Updating files:   0% (1/7711)
+2026-10-24T17:14:16.3009633Z Updating files:   1% (78/7711)
+2026-10-24T17:14:16.3581830Z Updating files:   2% (155/7711)
+2026-10-24T17:14:16.3886477Z Updating files:   3% (232/7711)
+2026-10-24T17:14:16.4155810Z Updating files:   4% (309/7711)
+2026-10-24T17:14:16.4428054Z Updating files:   5% (386/7711)
+2026-10-24T17:14:16.4801390Z Updating files:   6% (463/7711)
+2026-10-24T17:14:16.5092295Z Updating files:   7% (540/7711)
+2026-10-24T17:14:16.5483964Z Updating files:   8% (617/7711)
+2026-10-24T17:14:16.5969526Z Updating files:   9% (694/7711)
+2026-10-24T17:14:16.6275188Z Updating files:  10% (772/7711)
+2026-10-24T17:14:16.6474650Z Updating files:  11% (849/7711)
+2026-10-24T17:14:16.6683800Z Updating files:  12% (926/7711)
+2026-10-24T17:14:16.6892789Z Updating files:  13% (1003/7711)
+2026-10-24T17:14:16.6939396Z Updating files:  14% (1080/7711)
+2026-10-24T17:14:16.7076417Z Updating files:  14% (1101/7711)
+2026-10-24T17:14:16.7281136Z Updating files:  15% (1157/7711)
+2026-10-24T17:14:16.7487820Z Updating files:  16% (1234/7711)
+2026-10-24T17:14:16.7699125Z Updating files:  17% (1311/7711)
+2026-10-24T17:14:16.7900337Z Updating files:  18% (1388/7711)
+2026-10-24T17:14:16.8095326Z Updating files:  19% (1466/7711)
+2026-10-24T17:14:16.8278481Z Updating files:  20% (1543/7711)
+2026-10-24T17:14:16.8474098Z Updating files:  21% (1620/7711)
+2026-10-24T17:14:16.8666816Z Updating files:  22% (1697/7711)
+2026-10-24T17:14:16.8865458Z Updating files:  23% (1774/7711)
+2026-10-24T17:14:16.9122055Z Updating files:  24% (1851/7711)
+2026-10-24T17:14:16.9333091Z Updating files:  25% (1928/7711)
+2026-10-24T17:14:16.9537125Z Updating files:  26% (2005/7711)
+2026-10-24T17:14:16.9870464Z Updating files:  27% (2082/7711)
+2026-10-24T17:14:17.0135218Z Updating files:  28% (2160/7711)
+2026-10-24T17:14:17.0326808Z Updating files:  29% (2237/7711)
+2026-10-24T17:14:17.0590060Z Updating files:  30% (2314/7711)
+2026-10-24T17:14:17.0810214Z Updating files:  31% (2391/7711)
+2026-10-24T17:14:17.1015058Z Updating files:  32% (2468/7711)
+2026-10-24T17:14:17.1324925Z Updating files:  33% (2545/7711)
+2026-10-24T17:14:17.1535774Z Updating files:  34% (2622/7711)
+2026-10-24T17:14:17.1813867Z Updating files:  35% (2699/7711)
+2026-10-24T17:14:17.2125650Z Updating files:  36% (2776/7711)
+2026-10-24T17:14:17.2394517Z Updating files:  37% (2854/7711)
+2026-10-24T17:14:17.2661610Z Updating files:  38% (2931/7711)
+2026-10-24T17:14:17.2828992Z Updating files:  39% (3008/7711)
+2026-10-24T17:14:17.3261076Z Updating files:  40% (3085/7711)
+2026-10-24T17:14:17.3542447Z Updating files:  41% (3162/7711)
+2026-10-24T17:14:17.3768704Z Updating files:  42% (3239/7711)
+2026-10-24T17:14:17.4044355Z Updating files:  43% (3316/7711)
+2026-10-24T17:14:17.4246923Z Updating files:  44% (3393/7711)
+2026-10-24T17:14:17.4722673Z Updating files:  45% (3470/7711)
+2026-10-24T17:14:17.5085767Z Updating files:  46% (3548/7711)
+2026-10-24T17:14:17.5516775Z Updating files:  47% (3625/7711)
+2026-10-24T17:14:17.5904780Z Updating files:  48% (3702/7711)
+2026-10-24T17:14:17.6360980Z Updating files:  49% (3779/7711)
+2026-10-24T17:14:17.6765752Z Updating files:  50% (3856/7711)
+2026-10-24T17:14:17.7087600Z Updating files:  51% (3933/7711)
+2026-10-24T17:14:17.8994653Z Updating files:  51% (3965/7711)
+2026-10-24T17:14:17.9385996Z Updating files:  52% (4010/7711)
+2026-10-24T17:14:17.9584747Z Updating files:  53% (4087/7711)
+2026-10-24T17:14:17.9792264Z Updating files:  54% (4164/7711)
+2026-10-24T17:14:17.9995460Z Updating files:  55% (4242/7711)
+2026-10-24T17:14:18.0295478Z Updating files:  56% (4319/7711)
+2026-10-24T17:14:18.0509683Z Updating files:  57% (4396/7711)
+2026-10-24T17:14:18.0719204Z Updating files:  58% (4473/7711)
+2026-10-24T17:14:18.0903196Z Updating files:  59% (4550/7711)
+2026-10-24T17:14:18.1087419Z Updating files:  60% (4627/7711)
+2026-10-24T17:14:18.1362513Z Updating files:  61% (4704/7711)
+2026-10-24T17:14:18.1631152Z Updating files:  62% (4781/7711)
+2026-10-24T17:14:18.1838933Z Updating files:  63% (4858/7711)
+2026-10-24T17:14:18.2180281Z Updating files:  64% (4936/7711)
+2026-10-24T17:14:18.2399093Z Updating files:  65% (5013/7711)
+2026-10-24T17:14:18.2655562Z Updating files:  66% (5090/7711)
+2026-10-24T17:14:18.3127841Z Updating files:  67% (5167/7711)
+2026-10-24T17:14:18.3548224Z Updating files:  68% (5244/7711)
+2026-10-24T17:14:18.3891410Z Updating files:  69% (5321/7711)
+2026-10-24T17:14:18.4285746Z Updating files:  70% (5398/7711)
+2026-10-24T17:14:18.4669520Z Updating files:  71% (5475/7711)
+2026-10-24T17:14:18.4991761Z Updating files:  72% (5552/7711)
+2026-10-24T17:14:18.5183791Z Updating files:  73% (5630/7711)
+2026-10-24T17:14:18.5375046Z Updating files:  74% (5707/7711)
+2026-10-24T17:14:18.5703122Z Updating files:  75% (5784/7711)
+2026-10-24T17:14:18.5915711Z Updating files:  76% (5861/7711)
+2026-10-24T17:14:18.6111725Z Updating files:  77% (5938/7711)
+2026-10-24T17:14:18.6292500Z Updating files:  78% (6015/7711)
+2026-10-24T17:14:18.6506940Z Updating files:  79% (6092/7711)
+2026-10-24T17:14:18.6788834Z Updating files:  80% (6169/7711)
+2026-10-24T17:14:18.7018838Z Updating files:  81% (6246/7711)
+2026-10-24T17:14:18.7087745Z Updating files:  82% (6324/7711)
+2026-10-24T17:14:18.7262266Z Updating files:  82% (6343/7711)
+2026-10-24T17:14:18.7464208Z Updating files:  83% (6401/7711)
+2026-10-24T17:14:18.8133506Z Updating files:  84% (6478/7711)
+2026-10-24T17:14:19.3336530Z Updating files:  85% (6555/7711)
+2026-10-24T17:14:19.4674497Z Updating files:  86% (6632/7711)
+2026-10-24T17:14:19.6446138Z Updating files:  87% (6709/7711)
+2026-10-24T17:14:19.7181553Z Updating files:  88% (6786/7711)
+2026-10-24T17:14:19.7202138Z Updating files:  89% (6863/7711)
+2026-10-24T17:14:19.7814539Z Updating files:  89% (6864/7711)
+2026-10-24T17:14:19.8002235Z Updating files:  90% (6940/7711)
+2026-10-24T17:14:19.8190476Z Updating files:  91% (7018/7711)
+2026-10-24T17:14:19.8393401Z Updating files:  92% (7095/7711)
+2026-10-24T17:14:19.8586151Z Updating files:  93% (7172/7711)
+2026-10-24T17:14:19.8789732Z Updating files:  94% (7249/7711)
+2026-10-24T17:14:19.9103293Z Updating files:  95% (7326/7711)
+2026-10-24T17:14:19.9288917Z Updating files:  96% (7403/7711)
+2026-10-24T17:14:20.1285009Z Updating files:  97% (7480/7711)
+2026-10-24T17:14:20.1500200Z Updating files:  98% (7557/7711)
+2026-10-24T17:14:20.1710977Z Updating files:  99% (7634/7711)
+2026-10-24T17:14:20.1711667Z Updating files: 100% (7711/7711)
+2026-10-24T17:14:20.1712119Z Updating files: 100% (7711/7711), done.
+2026-10-24T17:14:20.1915402Z Note: switching to 'refs/remotes/pull/104/merge'.
+2026-10-24T17:14:20.1915815Z 
+2026-10-24T17:14:20.1916168Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-24T17:14:20.1917007Z changes and commit them, and you can discard any commits you make in this
+2026-10-24T17:14:20.1917823Z state without impacting any branches by switching back to a branch.
+2026-10-24T17:14:20.1918334Z 
+2026-10-24T17:14:20.1918666Z If you want to create a new branch to retain commits you create, you may
+2026-10-24T17:14:20.1919403Z do so (now or later) by using -c with the switch command. Example:
+2026-10-24T17:14:20.1919819Z 
+2026-10-24T17:14:20.1919979Z   git switch -c <new-branch-name>
+2026-10-24T17:14:20.1920291Z 
+2026-10-24T17:14:20.1920387Z Or undo this operation with:
+2026-10-24T17:14:20.1920541Z 
+2026-10-24T17:14:20.1920613Z   git switch -
+2026-10-24T17:14:20.1920727Z 
+2026-10-24T17:14:20.1920931Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-24T17:14:20.1921227Z 
+2026-10-24T17:14:20.1921581Z HEAD is now at af0c4ad Merge 8da0ddc8572e9c9c4caf9665f5a6e610fb9ed513 into 1dfb676a2970f80e80d635303d84dcec75676cf5
+2026-10-24T17:14:20.2272829Z ##[endgroup]
+2026-10-24T17:14:20.2810880Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-24T17:14:20.3179946Z af0c4ade61913f64f2dcc88eb15ed69742282b22
+2026-10-24T17:14:20.3233901Z ##[group]Removing auth
+2026-10-24T17:14:20.3247189Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-24T17:14:20.3669245Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-24T17:14:20.9440464Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-24T17:14:20.9772408Z http.https://github.com/.extraheader
+2026-10-24T17:14:20.9816712Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-24T17:14:21.0193295Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-24T17:14:21.5787385Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-24T17:14:21.6161481Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-24T17:14:22.1658511Z ##[endgroup]
+2026-10-24T17:14:22.2048700Z ##[group]Run actions/setup-python@v5
+2026-10-24T17:14:22.2049025Z with:
+2026-10-24T17:14:22.2049207Z   python-version: 3.12
+2026-10-24T17:14:22.2049426Z   check-latest: false
+2026-10-24T17:14:22.2051945Z   token: ***
+2026-10-24T17:14:22.2052139Z   update-environment: true
+2026-10-24T17:14:22.2052359Z   allow-prereleases: false
+2026-10-24T17:14:22.2052563Z   freethreaded: false
+2026-10-24T17:14:22.2052753Z ##[endgroup]
+2026-10-24T17:14:22.3675856Z ##[group]Installed versions
+2026-10-24T17:14:22.3843769Z (node:988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-24T17:14:22.3845314Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-24T17:14:22.3846776Z Successfully set up CPython (3.12.10)
+2026-10-24T17:14:22.3847914Z ##[endgroup]
+2026-10-24T17:14:22.4165531Z ##[group]Run actions/setup-dotnet@v4
+2026-10-24T17:14:22.4165873Z with:
+2026-10-24T17:14:22.4166061Z   global-json-file: global.json
+2026-10-24T17:14:22.4166289Z   cache: false
+2026-10-24T17:14:22.4166455Z env:
+2026-10-24T17:14:22.4166713Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:22.4167192Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:14:22.4167637Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:22.4168046Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:22.4168436Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:22.4168737Z ##[endgroup]
+2026-10-24T17:14:22.5950116Z (node:6992) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-24T17:14:22.5951126Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-24T17:14:22.7327265Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v4\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Runtime dotnet -Channel LTS
+2026-10-24T17:14:23.9768385Z dotnet-install: .NET Core Runtime with version '10.0.13' is already installed.
+2026-10-24T17:14:24.1455587Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v4\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Version 10.0.402
+2026-10-24T17:14:24.8350728Z dotnet-install: .NET Core SDK with version '10.0.402' is already installed.
+2026-10-24T17:14:24.9369886Z ##[group]Run dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated
+2026-10-24T17:14:24.9370838Z [36;1mdotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated[0m
+2026-10-24T17:14:24.9442677Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:14:24.9443028Z env:
+2026-10-24T17:14:24.9443300Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:24.9443761Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:14:24.9444235Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:24.9444670Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:24.9445074Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:14:24.9445411Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:14:24.9445688Z ##[endgroup]
+2026-10-24T17:15:04.5419769Z PASS CLEAN-STORAGE read-only ancestor check accepts absent hierarchy without creating it
+2026-10-24T17:15:04.5493833Z PASS CLEAN-STORAGE each authorized new directory has explicit protected ownership and ACL
+2026-10-24T17:15:04.5520813Z PASS CLEAN-STORAGE existing protected directory is retained without ACL rewriting
+2026-10-24T17:15:04.5578786Z PASS CLEAN-STORAGE same-name file cannot become an installation directory
+2026-10-24T17:15:04.5581540Z PASS CLEAN-STORAGE refused path retains original file bytes
+2026-10-24T17:15:04.5605234Z PASS CLEAN-STORAGE existing writable ancestor is refused before creation
+2026-10-24T17:15:04.5621635Z PASS CLEAN-STORAGE unsafe existing ACL is not repaired or overwritten
+2026-10-24T17:15:04.5635665Z PASS CLEAN-STORAGE linked existing ancestor remains forbidden
+2026-10-24T17:15:04.9948267Z ##[group]Run python -m unittest discover -s scripts -p test_commercial_delivery.py -v
+2026-10-24T17:15:04.9949429Z [36;1mpython -m unittest discover -s scripts -p test_commercial_delivery.py -v[0m
+2026-10-24T17:15:04.9950508Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-24T17:15:04.9951243Z [36;1mpython -m unittest discover -s scripts -p test_release_build.py -v[0m
+2026-10-24T17:15:05.0062081Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:15:05.0062455Z env:
+2026-10-24T17:15:05.0062732Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:05.0063200Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:15:05.0063650Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:05.0064045Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:05.0064494Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:05.0064826Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:15:05.0065064Z ##[endgroup]
+2026-10-24T17:15:07.2717744Z test_engineering_never_promotes_missing_field_acceptance (test_commercial_delivery.DeliveryGate.test_engineering_never_promotes_missing_field_acceptance) ... ok
+2026-10-24T17:15:07.2891742Z test_fail_not_run_blocked_stop_required_scope (test_commercial_delivery.DeliveryGate.test_fail_not_run_blocked_stop_required_scope) ... ok
+2026-10-24T17:15:07.2971757Z test_missing_duplicate_foreign_source_and_missing_evidence (test_commercial_delivery.DeliveryGate.test_missing_duplicate_foreign_source_and_missing_evidence) ... ok
+2026-10-24T17:15:07.3056398Z test_receipt_identity_and_bytes_are_checked (test_commercial_delivery.DeliveryGate.test_receipt_identity_and_bytes_are_checked) ... ok
+2026-10-24T17:15:07.3136795Z test_unsigned_manifest_or_manual_pass_cannot_substitute_signer (test_commercial_delivery.DeliveryGate.test_unsigned_manifest_or_manual_pass_cannot_substitute_signer) ... ok
+2026-10-24T17:15:07.3138180Z 
+2026-10-24T17:15:07.3138549Z ----------------------------------------------------------------------
+2026-10-24T17:15:07.3139154Z Ran 5 tests in 0.082s
+2026-10-24T17:15:07.3139357Z 
+2026-10-24T17:15:07.3139471Z OK
+2026-10-24T17:15:11.7426044Z test_independent_workspaces_produce_identical_dlls (test_release_build.FrozenBuildTests.test_independent_workspaces_produce_identical_dlls) ... ok
+2026-10-24T17:15:11.7427371Z 
+2026-10-24T17:15:11.7427761Z ----------------------------------------------------------------------
+2026-10-24T17:15:11.7428384Z Ran 1 test in 4.253s
+2026-10-24T17:15:11.7428602Z 
+2026-10-24T17:15:11.7428721Z OK
+2026-10-24T17:15:11.9117330Z ##[group]Run # PR checkout is GitHub's exact merge commit, not an ancestor of main.
+2026-10-24T17:15:11.9118420Z [36;1m# PR checkout is GitHub's exact merge commit, not an ancestor of main.[0m
+2026-10-24T17:15:11.9119349Z [36;1m# --source is reserved for main-ancestor historical publication/reuse.[0m
+2026-10-24T17:15:11.9120261Z [36;1m# A local runner branch gives the installer a verifiable source name[0m
+2026-10-24T17:15:11.9121155Z [36;1m# while retaining GitHub's exact checked merge commit; never pushed.[0m
+2026-10-24T17:15:11.9121961Z [36;1mgit switch -c codex/ci-sportmaster-40115179715[0m
+2026-10-24T17:15:11.9122613Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-24T17:15:11.9123460Z [36;1mpython scripts/release-windows.py --profile sportmaster --output C:/scd-release[0m
+2026-10-24T17:15:11.9124708Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-24T17:15:11.9125586Z [36;1m$release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json[0m
+2026-10-24T17:15:11.9127480Z [36;1mif ($release.SourceCommit -ne 'af0c4ade61913f64f2dcc88eb15ed69742282b22') { throw 'Frozen PR release differs from the checked merge commit' }[0m
+2026-10-24T17:15:11.9225263Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:15:11.9225629Z env:
+2026-10-24T17:15:11.9225909Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:11.9226396Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:15:11.9226869Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:11.9227288Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:11.9227722Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:15:11.9228103Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:15:11.9228355Z ##[endgroup]
+2026-10-24T17:15:12.3025640Z Switched to a new branch 'codex/ci-sportmaster-40115179715'
+2026-10-24T17:16:00.2364688Z VERIFIED sportmaster-portable-af0c4ade6191
+2026-10-24T17:17:28.1145227Z VERIFIED sportmaster-win-x64-af0c4ade6191
+2026-10-24T17:17:28.4922922Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-24T17:17:28.4923359Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-24T17:17:28.4923791Z [36;1m$release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json[0m
+2026-10-24T17:17:28.4924477Z [36;1m$package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })[0m
+2026-10-24T17:17:28.4925122Z [36;1mif ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }[0m
+2026-10-24T17:17:28.4925715Z [36;1m$media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))[0m
+2026-10-24T17:17:28.4926400Z [36;1m./scripts/verify-administrator-broker.ps1 -Media $media -Output C:/scd-administrator-broker[0m
+2026-10-24T17:17:28.4927023Z [36;1mif (-not $?) { throw 'Actual Windows administrator boundary verification failed' }[0m
+2026-10-24T17:17:28.5006780Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:17:28.5007198Z env:
+2026-10-24T17:17:28.5007469Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:17:28.5007953Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:17:28.5008427Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:17:28.5008835Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:17:28.5009252Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:17:28.5009603Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:17:28.5009852Z ##[endgroup]
+2026-10-24T17:18:18.5939451Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-24T17:18:18.5940284Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-24T17:18:18.5940790Z [36;1m$release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json[0m
+2026-10-24T17:18:18.5941568Z [36;1m$package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })[0m
+2026-10-24T17:18:18.5942276Z [36;1mif ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }[0m
+2026-10-24T17:18:18.5942914Z [36;1m$media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))[0m
+2026-10-24T17:18:18.5943666Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-startup-experience -StartupExperience[0m
+2026-10-24T17:18:18.5944337Z [36;1mif (-not $?) { throw 'Frozen first-configuration regression failed' }[0m
+2026-10-24T17:18:18.5945105Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-parameter-shell -ParameterShellPolish[0m
+2026-10-24T17:18:18.5946009Z [36;1mif (-not $?) { throw 'Frozen parameter-shell regression failed' }[0m
+2026-10-24T17:18:18.5946635Z [36;1m./scripts/verify-commercial-wpf.ps1 -Media $media -Output C:/scd-task-hierarchy -TaskHierarchy[0m
+2026-10-24T17:18:18.5947252Z [36;1mif (-not $?) { throw 'Frozen task-hierarchy regression failed' }[0m
+2026-10-24T17:18:18.6018749Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:18:18.6019100Z env:
+2026-10-24T17:18:18.6019368Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:18:18.6019851Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:18:18.6020292Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:18:18.6021692Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:18:18.6022094Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:18:18.6022452Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:18:18.6022695Z ##[endgroup]
+2026-10-24T17:19:17.3684542Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-24T17:19:17.3684972Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-24T17:19:17.3685245Z [36;1mtry {[0m
+2026-10-24T17:19:17.3685671Z [36;1m  ./scripts/verify-sportmaster-delivery.ps1 -Release C:/scd-release -Output C:/scd-evidence[0m
+2026-10-24T17:19:17.3686285Z [36;1m  if (-not $?) { throw 'Frozen verification did not return successfully' }[0m
+2026-10-24T17:19:17.3686790Z [36;1m  # The helper validates the actual production FAIL JSON and throws on[0m
+2026-10-24T17:19:17.3687269Z [36;1m  # any engineering failure. Its last native exit=1 is that expected[0m
+2026-10-24T17:19:17.3687688Z [36;1m  # policy refusal, rather than this step's outcome.[0m
+2026-10-24T17:19:17.3687989Z [36;1m  exit 0[0m
+2026-10-24T17:19:17.3688166Z [36;1m} catch {[0m
+2026-10-24T17:19:17.3688369Z [36;1m  [Console]::Error.WriteLine($_)[0m
+2026-10-24T17:19:17.3688633Z [36;1m  exit 1[0m
+2026-10-24T17:19:17.3688839Z [36;1m}[0m
+2026-10-24T17:19:17.3761494Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:19:17.3761840Z env:
+2026-10-24T17:19:17.3762106Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:19:17.3762558Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:19:17.3763008Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:19:17.3763396Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:19:17.3763784Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:19:17.3764117Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:19:17.3764361Z ##[endgroup]
+2026-10-24T17:20:11.8345850Z Engineering journeys PASS; production rejected with individual NOT_RUN/BLOCKED. Follow the shipped lifecycle/support runbook in an authorized disposable environment.
+2026-10-24T17:20:11.8771670Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-24T17:20:11.8772410Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-24T17:20:11.8772920Z [36;1mtry {[0m
+2026-10-24T17:20:11.8773547Z [36;1m  $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json[0m
+2026-10-24T17:20:11.8774803Z [36;1m  $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })[0m
+2026-10-24T17:20:11.8776102Z [36;1m  if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }[0m
+2026-10-24T17:20:11.8777278Z [36;1m  $media = Join-Path C:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))[0m
+2026-10-24T17:20:11.8778396Z [36;1m  # These read-only native processes use separate synthetic workspaces.[0m
+2026-10-24T17:20:11.8779409Z [36;1m  # Retain all independent failures in one run; any failure still blocks packaging.[0m
+2026-10-24T17:20:11.8780301Z [36;1m  $failures = @()[0m
+2026-10-24T17:20:11.8781010Z [36;1m  foreach ($case in @([0m
+2026-10-24T17:20:11.8781628Z [36;1m    @{ Directory = 'visual'; VisualProductization = $true },[0m
+2026-10-24T17:20:11.8782717Z [36;1m    @{ Directory = 'parameters-v3'; ParameterV3 = $true },[0m
+2026-10-24T17:20:11.8783550Z [36;1m    @{ Directory = 'operator-administration'; ManagementMode = $true },[0m
+2026-10-24T17:20:11.8784428Z [36;1m    @{ Directory = 'reliability-logs'; ReliabilityLogs = $true }[0m
+2026-10-24T17:20:11.8785084Z [36;1m  )) {[0m
+2026-10-24T17:20:11.8785511Z [36;1m    $directory = $case.Directory[0m
+2026-10-24T17:20:11.8786029Z [36;1m    $arguments = $case.Clone()[0m
+2026-10-24T17:20:11.8786563Z [36;1m    $arguments.Remove('Directory')[0m
+2026-10-24T17:20:11.8787072Z [36;1m    try {[0m
+2026-10-24T17:20:11.8787887Z [36;1m      ./scripts/verify-commercial-wpf.ps1 -Media $media -Output "C:/scd-evidence/$directory" @arguments[0m
+2026-10-24T17:20:11.8789111Z [36;1m      if (-not $?) { throw "Frozen $directory verification did not return successfully" }[0m
+2026-10-24T17:20:11.8789903Z [36;1m    } catch {[0m
+2026-10-24T17:20:11.8790421Z [36;1m      $failures += "$directory`: $($_.Exception.Message)"[0m
+2026-10-24T17:20:11.8791101Z [36;1m      [Console]::Error.WriteLine($_)[0m
+2026-10-24T17:20:11.8791605Z [36;1m    }[0m
+2026-10-24T17:20:11.8791989Z [36;1m  }[0m
+2026-10-24T17:20:11.8792514Z [36;1m  if ($failures.Count -ne 0) { throw ($failures -join '; ') }[0m
+2026-10-24T17:20:11.8793161Z [36;1m  exit 0[0m
+2026-10-24T17:20:11.8793603Z [36;1m} catch {[0m
+2026-10-24T17:20:11.8794035Z [36;1m  [Console]::Error.WriteLine($_)[0m
+2026-10-24T17:20:11.8794526Z [36;1m  exit 1[0m
+2026-10-24T17:20:11.8794924Z [36;1m}[0m
+2026-10-24T17:20:11.8898234Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-24T17:20:11.8898890Z env:
+2026-10-24T17:20:11.8916183Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:20:11.8917130Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:20:11.8918018Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:20:11.8918814Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:20:11.8919587Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:20:11.8920241Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:20:11.8920736Z ##[endgroup]
+2026-10-24T17:21:31.4920002Z FAIL System.IO.InvalidDataException: Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account
+2026-10-24T17:21:31.4922246Z    at Ipc.Platform.MachineRuntimePolicy.ResolveWindowsLeaseRoot(String requestedRoot, Boolean requireOrdinaryAccount) in /_/src/src/Ipc.Platform/MachineRuntimePolicy.cs:line 99
+2026-10-24T17:21:31.4924369Z    at Ipc.Platform.MachineRuntimePolicy.RequireRuntimeIdentity() in /_/src/src/Ipc.Platform/MachineRuntimePolicy.cs:line 80
+2026-10-24T17:21:31.4927828Z    at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 87
+2026-10-24T17:21:31.4929358Z    at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+2026-10-24T17:21:31.4930489Z    at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in C:\scd-evidence\reliability-logs\ReliabilityLogs.cs:line 22
+2026-10-24T17:21:31.4931519Z    at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in C:\scd-evidence\reliability-logs\ReliabilityLogs.cs:line 62
+2026-10-24T17:21:31.4932402Z    at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in C:\scd-evidence\reliability-logs\Program.cs:line 33
+2026-10-24T17:21:31.9023212Z Frozen native WPF verification failed; original log retained
+2026-10-24T17:21:31.9028604Z reliability-logs: Frozen native WPF verification failed; original log retained
+2026-10-24T17:21:31.9282558Z ##[error]Process completed with exit code 1.
+2026-10-24T17:21:31.9510038Z ##[group]Run actions/upload-artifact@v4
+2026-10-24T17:21:31.9510462Z with:
+2026-10-24T17:21:31.9510844Z   name: sportmaster-evidence-af0c4ade61913f64f2dcc88eb15ed69742282b22
+2026-10-24T17:21:31.9516531Z   path: C:/scd-startup-experience/RESULT.json
+C:/scd-startup-experience/RUN.log
+C:/scd-startup-experience/WINDOWS-WPF.log
+C:/scd-startup-experience/*.png
+C:/scd-parameter-shell/RESULT.json
+C:/scd-parameter-shell/RUN.log
+C:/scd-parameter-shell/WINDOWS-WPF.log
+C:/scd-parameter-shell/*.png
+C:/scd-task-hierarchy/RESULT.json
+C:/scd-task-hierarchy/RUN.log
+C:/scd-task-hierarchy/WINDOWS-WPF.log
+C:/scd-task-hierarchy/*.png
+C:/scd-task-hierarchy/chain-*.json
+C:/scd-evidence/acceptance.json
+C:/scd-evidence/environment.json
+C:/scd-evidence/media.json
+C:/scd-evidence/*-gate.json
+C:/scd-evidence/core/RESULT.json
+C:/scd-evidence/core/RUN.log
+C:/scd-evidence/wpf/RESULT.json
+C:/scd-evidence/wpf/RUN.log
+C:/scd-evidence/wpf/WINDOWS-WPF.log
+C:/scd-evidence/wpf/*.png
+C:/scd-evidence/visual/RESULT.json
+C:/scd-evidence/visual/RUN.log
+C:/scd-evidence/visual/WINDOWS-WPF.log
+C:/scd-evidence/visual/*.png
+C:/scd-evidence/parameters-v3/RESULT.json
+C:/scd-evidence/parameters-v3/RUN.log
+C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
+C:/scd-evidence/parameters-v3/*.png
+C:/scd-evidence/operator-administration/*
+C:/scd-evidence/reliability-logs/RESULT.json
+C:/scd-evidence/reliability-logs/RUN.log
+C:/scd-evidence/reliability-logs/WINDOWS-WPF.log
+C:/scd-evidence/reliability-logs/*.png
+C:/scd-administrator-broker/RESULT.json
+C:/scd-administrator-broker/RUN.log
+C:/scd-evidence/removal/RESULT.json
+C:/scd-evidence/removal/RUN.log
+C:/scd-release/*.json
+C:/scd-release/*.log
+C:/scd-release/SHA256SUMS
+C:/scd-installer-build.log
+C:/scd-installer/INSTALLER.json
+
+2026-10-24T17:21:31.9522316Z   retention-days: 30
+2026-10-24T17:21:31.9522607Z   if-no-files-found: warn
+2026-10-24T17:21:31.9522866Z   compression-level: 6
+2026-10-24T17:21:31.9523110Z   overwrite: false
+2026-10-24T17:21:31.9523342Z   include-hidden-files: false
+2026-10-24T17:21:31.9523575Z env:
+2026-10-24T17:21:31.9523854Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:21:31.9524380Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-24T17:21:31.9525166Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:21:31.9525632Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:21:31.9526089Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-24T17:21:31.9526455Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-24T17:21:31.9526734Z ##[endgroup]
+2026-10-24T17:21:32.1844698Z (node:2624) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-24T17:21:32.1846128Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-24T17:21:32.5462017Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-24T17:21:32.5467864Z The least common ancestor is C:.. This will be the root directory of the artifact
+2026-10-24T17:21:32.5469367Z With the provided path, there will be 337 files uploaded
+2026-10-24T17:21:32.5476030Z Artifact name is valid!
+2026-10-24T17:21:32.5478352Z Root directory input is valid!
+2026-10-24T17:21:32.7647088Z Beginning upload of artifact content to blob storage
+2026-10-24T17:21:33.2961740Z (node:2624) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-24T17:21:33.5528058Z Uploaded bytes 8388608
+2026-10-24T17:21:33.9390358Z Uploaded bytes 16777216
+2026-10-24T17:21:34.2563321Z Uploaded bytes 25165824
+2026-10-24T17:21:34.6955153Z Uploaded bytes 33554432
+2026-10-24T17:21:35.0984635Z Uploaded bytes 41943040
+2026-10-24T17:21:35.4436552Z Uploaded bytes 48080216
+2026-10-24T17:21:35.4622188Z Finished uploading artifact content to blob storage!
+2026-10-24T17:21:35.4623466Z SHA256 digest of uploaded artifact zip is d213a000c9e2277840f16b6cad39a4ec771c22698125e70d43afbf4353462b05
+2026-10-24T17:21:35.4624448Z Finalizing artifact upload
+2026-10-24T17:21:35.8908920Z Artifact sportmaster-evidence-af0c4ade61913f64f2dcc88eb15ed69742282b22.zip successfully finalized. Artifact ID 12567758433
+2026-10-24T17:21:35.8911404Z Artifact sportmaster-evidence-af0c4ade61913f64f2dcc88eb15ed69742282b22 has been successfully uploaded! Final size is 48080216 bytes. Artifact ID is 12567758433
+2026-10-24T17:21:35.8921484Z Artifact download URL: https://github.com/yuan2go/importer-pc/actions/runs/40115179715/artifacts/12567758433
+2026-10-24T17:21:35.9422094Z Post job cleanup.
+2026-10-24T17:21:36.1736399Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-24T17:21:36.2126504Z git version 2.56.0.windows.2
+2026-10-24T17:21:36.2230284Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\5f54e183-7312-4279-8b70-13b63eaa2bb5\.gitconfig'
+2026-10-24T17:21:36.2233886Z Temporarily overriding HOME='D:\a\_temp\5f54e183-7312-4279-8b70-13b63eaa2bb5' before making global git config changes
+2026-10-24T17:21:36.2235239Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-24T17:21:36.2246216Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\importer-pc\importer-pc
+2026-10-24T17:21:36.2717877Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-24T17:21:36.3356017Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-24T17:21:37.0583724Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-24T17:21:37.1073964Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-24T17:21:37.7311664Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-24T17:21:37.7727840Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-24T17:21:38.4723077Z Cleaning up orphan processes
+2026-10-24T17:21:38.4857594Z Terminate orphan process: pid (7992) (dotnet)
+2026-10-24T17:21:38.4933941Z Terminate orphan process: pid (5568) (dotnet)
+2026-10-24T17:21:38.4997269Z Terminate orphan process: pid (1316) (conhost)
+2026-10-24T17:21:38.5187904Z Terminate orphan process: pid (5936) (dotnet)
+2026-10-24T17:21:38.5333415Z Terminate orphan process: pid (6520) (conhost)
+2026-10-24T17:21:38.5540047Z Terminate orphan process: pid (5772) (VBCSCompiler)
+2026-10-24T17:21:38.5692234Z Terminate orphan process: pid (6272) (conhost)
+2026-10-24T17:21:38.6253892Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

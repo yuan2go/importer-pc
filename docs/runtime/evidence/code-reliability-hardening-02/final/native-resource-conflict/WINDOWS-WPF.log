@@ -1,0 +1,14 @@
+FAIL System.IO.IOException: The process cannot access the file 'D:\ImporterPc.Deployment\Machine\leases\EFA3CE7DEA7C1023FC63E0C3A3C9BB94792C5A8BE295CD81D57F625B2B889E34.lease' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at Ipc.Platform.ResourceLease..ctor(String root, IEnumerable`1 resources) in /_/src/src/Ipc.Platform/Lifecycle.cs:line 102
+   at Ipc.Assembly.ParcelCapabilityFactory.Create(ParcelConfiguration c) in /_/src/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 379
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 164
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token)
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\releases\ipc-reliability-02-native-ReliabilityLogs\ReliabilityLogs.cs:line 22
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\releases\ipc-reliability-02-native-ReliabilityLogs\ReliabilityLogs.cs:line 62
+   at Program.<>c__DisplayClass21_0.<<Main>b__0>d.MoveNext() in D:\releases\ipc-reliability-02-native-ReliabilityLogs\Program.cs:line 33

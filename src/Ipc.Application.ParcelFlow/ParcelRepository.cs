@@ -306,7 +306,9 @@ public sealed partial class ParcelRepository : IDisposable
         {
             WriteCommand(tx, command, commandResult ?? new("Persisted", "Application command committed", Revision + 1));
         }
+        Boundary?.Invoke("BeforeBusinessCommit:" + eventName);
         tx.Commit();
+        Boundary?.Invoke("AfterBusinessCommit:" + eventName);
         if(operation?.Wcs?.Request.IntegrationRequest is {} allocated)lastIntegrationRequestId=Math.Max(lastIntegrationRequestId,allocated.RequestId);
         Revision++; if (paused is not null) Paused = paused.Value;
     }

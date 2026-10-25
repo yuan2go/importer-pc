@@ -1,0 +1,7 @@
+{
+  "Baseline": "1dfb676a2970f80e80d635303d84dcec75676cf5",
+  "SourceCommit": "23af6518f55b995e0e59eed011eb600240b75f0e",
+  "Database": 9,
+  "Sql1To9": "UNCHANGED",
+  "MigrationDeclarationSha256": "6c49aca0c172a2167f1ef1871b5983cdf4c49b7d4f092283db261c37b0ad37a9"
+}

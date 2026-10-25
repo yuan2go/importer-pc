@@ -8,26 +8,71 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
 // Read-only snapshots pin the actual file objects across rename/delete rotation. No business lock.
-public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode management, string? securityDiagnostics = null, string? protectedRoot = null) : IDisposable
+public sealed partial class SoftwareLogReader(string diagnostics, LocalManagementMode management, string? securityDiagnostics = null, string? protectedRoot = null) : IDisposable
 {
+    internal long ScannedLines;
+    internal Action? BeforeSourceRead { get; set; }
     sealed record Source(string Id, string Name, FileStream Stream, long Length);
-    sealed record Selection(SoftwareLogQuery Query, Source[] Sources, DateTimeOffset At, CancellationToken Authority) : IDisposable
-    { public CancellationTokenSource Lifetime { get; } = new(TimeSpan.FromMinutes(10));
-      public DateTimeOffset? Earliest { get; set; } public DateTimeOffset? Latest { get; set; }
-      public void Dispose() { Lifetime.Cancel(); foreach (var source in Sources) source.Stream.Dispose(); } }
+    sealed class Selection(SoftwareLogQuery query, Source[] sources, CancellationToken authority)
+    {
+        public SoftwareLogQuery Query { get; } = query;
+        public Source[] Sources { get; } = sources;
+        public CancellationToken Authority { get; } = authority;
+        public CancellationTokenSource Lifetime { get; } = new(TimeSpan.FromMinutes(10));
+        public SemaphoreSlim IndexGate { get; } = new(1, 1);
+        public LogIndex? Index;
+        public int Users;
+        public bool Retired;
+        public DateTimeOffset? Earliest, Latest;
+    }
+    sealed class ReadLease(SoftwareLogReader owner, Selection value) : IDisposable
+    {
+        public Selection Value => value;
+        public void Dispose()
+        {
+            lock (owner.sync)
+            {
+                value.Users--;
+                if (!value.Retired && (value.Authority.IsCancellationRequested || value.Lifetime.IsCancellationRequested))
+                {
+                    foreach (var id in owner.selections.Where(p => ReferenceEquals(p.Value, value)).Select(p => p.Key).ToArray()) owner.selections.Remove(id);
+                    owner.Retire(value);
+                }
+                else if (value.Retired && value.Users == 0) owner.Close(value);
+            }
+        }
+    }
     readonly Dictionary<string, Selection> selections = [];
     readonly object sync = new();
     Timer? cleanup;
-    void Prune() { lock (sync) { foreach (var key in selections.Where(x => x.Value.Authority.IsCancellationRequested || DateTimeOffset.UtcNow - x.Value.At > TimeSpan.FromMinutes(10)).Select(x => x.Key).ToArray()) { selections[key].Dispose(); selections.Remove(key); } } }
+    bool disposed;
+    internal int OpenSources;
+    void Close(Selection s)
+    {
+        foreach (var source in s.Sources) source.Stream.Dispose();
+        Interlocked.Add(ref OpenSources, -s.Sources.Length);
+        s.Index = null; s.IndexGate.Dispose(); s.Lifetime.Dispose();
+    }
+    void Retire(Selection s)
+    {
+        s.Retired = true; s.Lifetime.Cancel();
+        if (s.Users == 0) Close(s);
+    }
+    void PruneLocked()
+    {
+        foreach (var key in selections.Where(x => x.Value.Authority.IsCancellationRequested || x.Value.Lifetime.IsCancellationRequested).Select(x => x.Key).ToArray())
+        { var s = selections[key]; selections.Remove(key); Retire(s); }
+    }
+    void Prune() { lock (sync) PruneLocked(); }
     static string Redact(string text) => DiagnosticText.Protect(text);
-    Selection Get(string id)
+    ReadLease Get(string id)
     {
         management.Require();
         lock (sync)
         {
-            if (!selections.TryGetValue(id, out var s) || s.Authority.IsCancellationRequested || DateTimeOffset.UtcNow - s.At > TimeSpan.FromMinutes(10))
-                throw new InvalidOperationException("查询已过期或权限已撤销，请重新查询。");
-            return s;
+            ObjectDisposedException.ThrowIf(disposed, this); PruneLocked();
+            if (!selections.TryGetValue(id, out var s)) throw new InvalidOperationException("查询已过期或权限已撤销，请重新查询。");
+            s.Users++; return new(this, s);
         }
     }
     string Select(SoftwareLogQuery q)
@@ -35,7 +80,7 @@ public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode ma
         var authority = management.Require();
         if (q.From >= q.ToExclusive || q.ToExclusive - q.From > TimeSpan.FromDays(3660) || q.Keyword.Length > 2048 || q.Level.Length > 32 || q.Source.Length > 128) throw new InvalidDataException("请检查时间范围和检索条件长度。");
         _ = Matcher(q);
-        List<Source> sources = [];
+        List<Source> sources = []; Selection? created = null;
         try
         {
             // Only the four files owned by RuntimeJournal, never user-supplied paths.
@@ -58,16 +103,18 @@ public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode ma
             return true;
             });
             authority.ThrowIfCancellationRequested();
-            var s = new Selection(q, sources.ToArray(), DateTimeOffset.UtcNow, authority); var id = Guid.NewGuid().ToString("N");
+            var id = Guid.NewGuid().ToString("N");
             lock (sync)
             {
-                foreach (var key in selections.Where(x => x.Value.Authority.IsCancellationRequested || DateTimeOffset.UtcNow - x.Value.At > TimeSpan.FromMinutes(10)).Select(x => x.Key).ToArray()) { selections[key].Dispose(); selections.Remove(key); }
-                if (selections.Count >= 4) { var old = selections.MinBy(x => x.Value.At); old.Value.Dispose(); selections.Remove(old.Key); }
-                selections.Add(id, s); cleanup ??= new Timer(_ => Prune(), null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+                ObjectDisposedException.ThrowIf(disposed, this); PruneLocked();
+                if (selections.Count >= 4) { var old = selections.First(); selections.Remove(old.Key); Retire(old.Value); }
+                var s = created = new Selection(q, sources.ToArray(), authority);
+                selections.Add(id, s); Interlocked.Add(ref OpenSources, sources.Count);
+                cleanup ??= new Timer(_ => Prune(), null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
             }
             return id;
         }
-        catch { foreach (var s in sources) s.Stream.Dispose(); throw; }
+        catch { if (created is null) foreach (var s in sources) s.Stream.Dispose(); throw; }
     }
     static Func<string, bool> Matcher(SoftwareLogQuery q)
     {
@@ -79,82 +126,43 @@ public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode ma
     static bool Match(SoftwareLogEntry e, SoftwareLogQuery q, Func<string, bool> match) => InRange(e, q) &&
         (q.Level.Length == 0 || q.Level.Equals(e.Level, StringComparison.OrdinalIgnoreCase)) &&
         (q.Source.Length == 0 || e.Source.Contains(q.Source, StringComparison.OrdinalIgnoreCase)) && match(e.Text);
-    async IAsyncEnumerable<SoftwareLogEntry> Lines(Selection selection, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken token)
-    {
-        byte[] buffer = new byte[16384];
-        foreach (var source in selection.Sources)
-        {
-            token.ThrowIfCancellationRequested();
-            if (RandomAccess.GetLength(source.Stream.SafeFileHandle) < source.Length) throw new IOException("日志被原地截短，范围缺失；请重新查询，不能沿用旧定位。");
-            long offset = 0, number = 0; using var line = new MemoryStream();
-            while (offset < source.Length)
-            {
-                token.ThrowIfCancellationRequested(); management.Require();
-                var count = await RandomAccess.ReadAsync(source.Stream.SafeFileHandle, buffer.AsMemory(0, (int)Math.Min(buffer.Length, source.Length - offset)), offset, token).ConfigureAwait(false);
-                if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
-                offset += count;
-                for (var i = 0; i < count; i++)
-                {
-                    if (buffer[i] != 10) { line.WriteByte(buffer[i]); if (line.Length > 262144) throw new IOException("单条日志超过256KiB，未静默截断；请缩小范围或检查写入器。"); continue; }
-                    token.ThrowIfCancellationRequested(); number++;
-                    var bytes = line.ToArray(); line.SetLength(0);
-                    var raw = new UTF8Encoding(false, true).GetString(bytes).TrimEnd('\r');
-                    DateTimeOffset? at = null; string level = "信息", origin = "运行";
-                    try
-                    {
-                        using var json = JsonDocument.Parse(raw); var root = json.RootElement;
-                        if (root.TryGetProperty("At", out var time) && time.TryGetDateTimeOffset(out var timestamp)) at = timestamp;
-                        if (root.TryGetProperty("Level", out var l)) level = l.GetString() ?? level;
-                        if (root.TryGetProperty("Source", out var o)) origin = o.GetString() ?? origin;
-                        else if (root.TryGetProperty("Application", out var a)) origin = a.GetString() ?? origin;
-                    }
-                    catch (JsonException) { level = "无法解析"; }
-                    // Decode JSON escapes for full exception stacks in the viewer, after redaction.
-                    var text = Redact(raw);
-                    yield return new(new(source.Id, number, Convert.ToHexString(SHA256.HashData(bytes)), source.Name), origin, at, level, text);
-                }
-            }
-            // An incomplete concurrently-written tail is excluded from the frozen query, explicitly stated in notices.
-        }
-    }
-    static string[] Notices(Selection s) => ["现存日志记录时间：" + (s.Earliest?.ToString("O") ?? "未取得") + " ～ " + (s.Latest?.ToString("O") ?? "未取得") + "。早于首条/晚于末条的请求范围无法证明完整；无记录不等于无异常。", "仅查询开始时已保留的日志；历史已清理部分不可补回。轮转文件按原文件对象固定，查询10分钟有效。", "不完整的末行不进入本次快照；无有效时间的记录仅能通过相邻上下文查看。敏感凭据已隐藏。", .. (s.Sources.Length == 0 ? new[] { "所选软件尚无保留日志。" } : Array.Empty<string>())];
+    static string[] Notices(Selection s) => ["现存日志记录时间：" + (s.Earliest?.ToString("O") ?? "未取得") + " ～ " + (s.Latest?.ToString("O") ?? "未取得") + "。早于首条/晚于末条的请求范围无法证明完整；无记录不等于无异常。", "仅查询开始时已保留的日志；历史已清理部分不可补回。轮转文件按原文件对象固定，查询10分钟有效。", "不完整的末行不进入本次快照；无有效时间的记录仅能通过相邻上下文查看。敏感凭据已隐藏。", .. (s.Index?.Streaming == true ? new[] { "记录量超过定位缓存预算，本次采用有界流式读取；翻页需重新扫描，原记录和完整导出均保留。" } : Array.Empty<string>()), .. (s.Sources.Length == 0 ? new[] { "所选软件尚无保留日志。" } : Array.Empty<string>())];
     public async Task<SoftwareLogPage> QueryAsync(SoftwareLogQuery q, string? selection, int skip, CancellationToken token)
     {
         if (skip is < 0 or > 1_000_000) throw new InvalidDataException("分页位置超出限制。");
-        var id = selection ?? Select(q); var s = Get(id); using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
-        List<SoftwareLogEntry> page = []; var matcher = Matcher(s.Query); int index = 0; bool more = false; DateTimeOffset? first = null, last = null;
-        await foreach (var e in Lines(s, budget.Token))
-        {
-            if (e.At is { } at) { first = first is null || at < first ? at : first; last = last is null || at > last ? at : last; }
-            if (!more && Match(e, s.Query, matcher) && index++ >= skip) { if (page.Count == 200) more = true; else page.Add(e); }
-        }
-        s.Earliest = first; s.Latest = last;
-        management.Require(); return new(id, page.ToArray(), more, Notices(s));
+        var id = selection ?? Select(q); using var lease = Get(id); var s = lease.Value;
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
+        var index = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
+        if (index.Streaming) return await StreamQuery(s, id, skip, budget.Token).ConfigureAwait(false);
+        List<SoftwareLogEntry> page = []; var check = AuthorityCheck(budget.Token);
+        foreach (var row in index.Matches.Skip(skip).Take(200)) { check(); page.Add(await ReadRow(s, index.Rows[row], budget.Token).ConfigureAwait(false)); }
+        management.Require(); budget.Token.ThrowIfCancellationRequested();
+        return new(id, page.ToArray(), index.Matches.Length > (long)skip + page.Count, Notices(s));
     }
     public async Task<SoftwareLogContext> ContextAsync(string id, SoftwareLogLocation location, int before, int after, CancellationToken token)
     {
         if (before is < 0 or > 200 || after is < 0 or > 200) throw new InvalidDataException("上下文前后各支持0～200条原始记录。");
-        var s = Get(id); using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
-        var prior = new Queue<SoftwareLogEntry>(); List<SoftwareLogEntry> result = []; bool found = false; string? group = null;
-        await foreach (var e in Lines(s, budget.Token))
-        {
-            var currentGroup = e.Location.File.Split('/')[0];
-            if (group != currentGroup) { if (found) break; prior.Clear(); group = currentGroup; }
-            if (found) { if (after-- <= 0) break; result.Add(e); continue; }
-            if (e.Location.FileId == location.FileId && e.Location.Line == location.Line)
-            {
-                if (e.Location.Hash != location.Hash) throw new IOException("原日志位置内容已变化，不能显示错位上下文。");
-                found = true; result.AddRange(prior); result.Add(e);
-            }
-            else { prior.Enqueue(e); if (prior.Count > before) prior.Dequeue(); }
-        }
-        if (!found) throw new IOException("所选原日志不在保留快照中，请重新查询。");
-        management.Require(); return new(result.ToArray(), [.. Notices(s), .. (prior.Count < before || after > 0 ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
+        using var lease = Get(id); var s = lease.Value;
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
+        var index = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
+        if (index.Streaming) return await StreamContext(s, location, before, after, budget.Token).ConfigureAwait(false);
+        var found = Array.FindIndex(index.Rows, r => s.Sources[r.Source].Id == location.FileId && r.Number == location.Line);
+        if (found < 0) throw new IOException("所选原日志不在保留快照中，请重新查询。");
+        if (index.Rows[found].Hash != location.Hash) throw new IOException("原日志位置内容已变化，不能显示错位上下文。");
+        var group = s.Sources[index.Rows[found].Source].Name.Split('/')[0];
+        var start = found; var end = found;
+        while (start > 0 && found - start < before && s.Sources[index.Rows[start - 1].Source].Name.Split('/')[0] == group) start--;
+        while (end + 1 < index.Rows.Length && end - found < after && s.Sources[index.Rows[end + 1].Source].Name.Split('/')[0] == group) end++;
+        List<SoftwareLogEntry> result = []; var check = AuthorityCheck(budget.Token);
+        for (var i = start; i <= end; i++) { check(); result.Add(await ReadRow(s, index.Rows[i], budget.Token).ConfigureAwait(false)); }
+        management.Require(); budget.Token.ThrowIfCancellationRequested();
+        return new(result.ToArray(), [.. Notices(s), .. (found - start < before || end - found < after ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
     }
     public async Task<long> ExportAsync(string id, string destination, bool range, int context, CancellationToken token)
     {
         if (context is < 0 or > 200) throw new InvalidDataException("导出上下文范围为0～200条。");
-        var s = Get(id); using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromMinutes(5));
+        using var lease = Get(id); var s = lease.Value; using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromMinutes(5));
+        _ = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
         destination = Path.GetFullPath(destination); DeploymentPaths.RequireOrdinaryAncestors(destination);
         // Exports must not overwrite any managed software/credential/business source.
         var relative = Path.GetRelativePath(protectedRoot ?? Path.GetDirectoryName(diagnostics)!, destination);
@@ -188,5 +196,12 @@ public sealed class SoftwareLogReader(string diagnostics, LocalManagementMode ma
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
-    public void Dispose() { cleanup?.Dispose(); lock (sync) { foreach (var s in selections.Values) s.Dispose(); selections.Clear(); } }
+    public void Dispose()
+    {
+        lock (sync)
+        {
+            if (disposed) return; disposed = true; cleanup?.Dispose();
+            foreach (var s in selections.Values) Retire(s); selections.Clear();
+        }
+    }
 }

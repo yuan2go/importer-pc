@@ -1,0 +1,11 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-5404e77265c945e184cd1d15df10dabd
+MEASURE H02 startup-stop wait_ms=223.18; retained=True; stops=1
+PASS H02: cancelled Stop waits for the real startup owner without stopping/disposal underneath it
+PASS H02: startup cancellation followed by disposal releases all application ownership
+MEASURE H02 logs first_ms=1746.38; two_pages_ms=2613.09; first_scanned=3200; additional_scanned=400
+PASS H02: pagination preserves frozen order and original file/line/hash
+PASS H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows
+MEASURE H02 time rollback_hours=12; monotonic_seconds=2; attempts=2; written=1
+PASS H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval
+PASS H02: wall-clock jump cannot bypass the monotonic recovery backoff
+PASS H02: existing health validity rejects future confirmations after rollback and expiry after forward jump

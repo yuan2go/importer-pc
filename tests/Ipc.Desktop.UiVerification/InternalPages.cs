@@ -176,6 +176,9 @@ static partial class Program
         Click(window, "查询"); await Settled(); Click(window, "下一页"); await Settled(); Click(window, "下一页"); await Settled();
         Check(offsets.SequenceEqual(new[] { 0, 200, 200 }) && Button("上一页").IsEnabled && !Button("下一页").IsEnabled, "failed paging does not commit or skip the requested offset on retry");
         var grid = Descendants(control).OfType<DataGrid>().Single(); grid.SelectedIndex = 0; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文")).IsExpanded = true; window.UpdateLayout();
+        // Original formatting now completes in the background; retain the exact
+        // content assertion after a bounded wait for that actual presentation.
+        for (var i = 0; i < 250 && !Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text), "selected row detail preserves the exact original record");
         Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "时间、更多筛选、上下文与导出")).IsExpanded = true; window.UpdateLayout();
         Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
@@ -214,8 +217,10 @@ public class LogUiProbe : DispatchProxy
 {
     public IWorkstationAdministration Inner = null!;
     public Func<SoftwareLogQuery, int, CancellationToken, Task<SoftwareLogPage>>? Query;
+    public Func<Task<SoftwareLogContext>>? Context { get; set; }
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
         => method!.Name == nameof(IWorkstationAdministration.QueryLogsAsync) && Query is not null
             ? Query((SoftwareLogQuery)arguments![0]!, (int)arguments[2]!, (CancellationToken)arguments[3]!)
+            : method.Name == nameof(IWorkstationAdministration.LogContextAsync) && Context is not null ? Context()
             : method.Invoke(Inner, arguments);
 }

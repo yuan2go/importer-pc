@@ -1,0 +1,16 @@
+{
+  "Result": "PASS",
+  "Candidate": ":",
+  "PreviousPrHead": "168c713d4fe2c332c9ee2964e7cfaa69de3e4b97",
+  "BaselineMain": "c425435c6f980ca537a29e4e8353d12be341df61",
+  "ProductAndConfig": "BYTE_IDENTICAL_TO_PR104",
+  "PreservedPr103Paths": 232,
+  "OriginalEvidenceChecks": {
+    "docs/runtime/evidence/code-reliability-hardening-02": 357,
+    "docs/runtime/evidence/retention-maintenance-qualification-01": 210
+  },
+  "UnchangedHistoricalManifestRecords": 7537,
+  "IntegrationManifestChecks": 8,
+  "RetentionQualification": "Original FAIL/NOT_RUN unchanged; PR105 excluded",
+  "FieldQualification": "NOT_RUN/BLOCKED; no 24h/72h or target IPC qualification"
+}

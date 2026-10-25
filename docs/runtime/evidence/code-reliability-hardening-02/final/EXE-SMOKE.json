@@ -1,0 +1,11 @@
+{
+  "SourceCommit": "51ad8500753c005e3bf98d5baf5c9699297d184c",
+  "Command": [
+    "D:\\releases\\ipc-reliability-02\\sportmaster-win-x64-51ad8500753c\\app\\Ipc.Assembly.exe",
+    "--action",
+    "business-identity"
+  ],
+  "ExitCode": 0,
+  "ExeSha256": "a9d7022092ea9955c6b54e9ae9889f9c1d86f60f6e0034129c3a0843653fc13b",
+  "Scope": "Actual published native executable read-only business identity; WPF startup separately verified; no installation"
+}

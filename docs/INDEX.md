@@ -1,6 +1,8 @@
+> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。原开工main为`1dfb676a`，2026-10-25与已合并PR103/main `c425435`的[同步、证据保全及最终集成检查](runtime/validation/pr104-main-integration-01.md)另列；进程强杀、并发、日志、争用与时间边界单独计证，不关闭下述大规模维护FAIL或扩张现场资格。
+
 > 本轮并行成果整合：[工作包与固定来源](work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)、[处置、冲突及验证报告](runtime/parallel-task-integration-01.md)。起始远端main `016976c6`已包含PR97/98；旧分支与历史证据身份保留，稳定性资格另计。
 
-> 当前Windows 11长期稳定性整改：[工作包与风险矩阵](work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[输入、故障与运行设计](design/win11-24x7-stability-remediation-01.md)。原[独立审查及证据](reviews/win11-24x7-stability-audit-01/README.md)固定main `c91559f6`，保留历史身份；整改实施与24h/真实设备资格分别记录。当前[运行与到期删除](runtime/win11-24x7-stability-remediation-01.md)、[R01～R12验证及边界](runtime/validation/win11-24x7-stability-remediation-01.md)。
+> 前阶段Windows 11长期稳定性整改与现场资格：[工作包与风险矩阵](work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[输入、故障与运行设计](design/win11-24x7-stability-remediation-01.md)。原[独立审查及证据](reviews/win11-24x7-stability-audit-01/README.md)固定main `c91559f6`，保留历史身份；整改实施与24h/真实设备资格分别记录。当前[运行与到期删除](runtime/win11-24x7-stability-remediation-01.md)、[R01～R12验证及边界](runtime/validation/win11-24x7-stability-remediation-01.md)。
 
 > TYPOGRAPHY-01追加复核：[三组原生对照、选择依据、实际字体来源与续修](runtime/evidence/typography-01/controlled-review/README.md)。继承PR97 `a43ecb8`；旧截图/测试身份保留。
 

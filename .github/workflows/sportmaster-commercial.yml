@@ -37,12 +37,20 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
+      - name: Exercise process death, monotonic time, storage and ownership
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
       - name: Retain the actual boundary result including failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aqa01-boundaries-${{ github.sha }}
           path: |
+            reliability-02.log
+            reliability-02-crashes.log
             aqa01-boundaries.log
             stability-boundaries.log
             history-upgrade-boundaries.log
@@ -151,7 +159,8 @@ jobs:
             foreach ($case in @(
               @{ Directory = 'visual'; VisualProductization = $true },
               @{ Directory = 'parameters-v3'; ParameterV3 = $true },
-              @{ Directory = 'operator-administration'; ManagementMode = $true }
+              @{ Directory = 'operator-administration'; ManagementMode = $true },
+              @{ Directory = 'reliability-logs'; ReliabilityLogs = $true }
             )) {
               $directory = $case.Directory
               $arguments = $case.Clone()
@@ -237,6 +246,10 @@ jobs:
             C:/scd-evidence/parameters-v3/WINDOWS-WPF.log
             C:/scd-evidence/parameters-v3/*.png
             C:/scd-evidence/operator-administration/*
+            C:/scd-evidence/reliability-logs/RESULT.json
+            C:/scd-evidence/reliability-logs/RUN.log
+            C:/scd-evidence/reliability-logs/WINDOWS-WPF.log
+            C:/scd-evidence/reliability-logs/*.png
             C:/scd-administrator-broker/RESULT.json
             C:/scd-administrator-broker/RUN.log
             C:/scd-evidence/removal/RESULT.json

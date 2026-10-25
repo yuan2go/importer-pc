@@ -1,0 +1,9 @@
+{
+  "Status": "PASS_FULL_SYNTHETIC_RETENTION_COUNTS",
+  "Eligible": 1000,
+  "OriginalDatabaseSha256": "C6D25B2DBEFF6FF47889E05419A6E4BFA21675867C4DC8E0E5B27BA1C018269E",
+  "PostDatabaseSha256": "372CF2501A570E758933673002BB050AB162BB9BD6BC7633E447D655EAFC75BE",
+  "PostBytes": 16519168,
+  "VerifierPeakWorkingSet": 41091072,
+  "Scope": "Synthetic count/custody/permanent identity verification; not protected authorization, real devices or 24h/72h qualification"
+}

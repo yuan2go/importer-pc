@@ -1,0 +1,11 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-ecd3a560b1f14500ab3a79d7b77f224f
+PASS RETENTION-QUAL: exact eligible operation retirement count
+PASS RETENTION-QUAL: exact processed input retirement count
+PASS RETENTION-QUAL: all permanent admission identities retained
+PASS RETENTION-QUAL: all six independent guard cases retained
+PASS RETENTION-QUAL: all original reply fingerprints retained
+PASS RETENTION-QUAL: retained-operation inputs remain
+PASS RETENTION-QUAL: only retained-operation receipts remain
+PASS RETENTION-QUAL: all permanent admission identity bytes unchanged
+PASS RETENTION-QUAL: all original reply identity/hash bytes unchanged
+PASS RETENTION-QUAL: post-retention integrity

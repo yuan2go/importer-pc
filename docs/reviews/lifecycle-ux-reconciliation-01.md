@@ -1,4 +1,4 @@
-> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，D盘归档修复的CI40217369663双绿；新增成功重入目标漂移守卫已通过15项源码验证，新冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
 
 # 生命周期交互审查整合与问题处置
 
@@ -26,7 +26,7 @@ A/C的原聊天不是Git文档；下表保留原编号与必要结论，关键�
 |---|---|---|---|---|
 |U01|UX-05部分、LC04、F01|卸载结果区分正常保留、异常残件、重启和未完成清理|`src/Ipc.Desktop/ProductMaintenanceWindow.cs`、`src/Ipc.Platform/WindowsDeploymentMaintenance.cs`|LIA-01；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U02|UX-05部分、LC03、F02；UX-01交叉引用|同源介质核对并续办原卸载清单|`ParcelStartupServices.ResumeRemovalAsync`、`ProductMaintenanceWindow`、同源介质启动入口|LIA-01；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
-|U03|UX-02、F03|安装结果未知后可核对固定原操作并解释下一步|`src/Ipc.Desktop/StartupSetupWindow.cs`、`src/Ipc.Assembly/DeploymentBatch.cs`、原操作平台核对|LIA-01；VERIFIED_LOCAL（批量回归；CI_PENDING），定向本机证据见下表；系统/现场限制保留|
+|U03|UX-02、F03|安装结果未知后可核对固定原操作并解释下一步|`src/Ipc.Desktop/StartupSetupWindow.cs`、`src/Ipc.Assembly/DeploymentBatch.cs`、原操作平台核对|LIA-01；VERIFIED_LOCAL + CI_PASS（eca5a1eb/40218628397；非现场），定向本机证据见下表；系统/现场限制保留|
 |U04|LC05|维护结果未知不能进入通用“修正后重试”状态|`src/Ipc.Desktop/StartupWorkflows.cs` 的 Run/OperationFailed；`ParcelStartupServices.cs`未知异常|LIA-01；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U05|UX-06|备份目录变化使旧卸载计划失效，确认/提交目标一致|`ProductMaintenanceWindow.cs` 的 backupDirectory/backupFile/Read|LIA-01；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U06|UX-03、LC02、F04|参数保存、停止、重开、生效读回连贯，可稍后应用|`ConfigurationSaveReviewWindow.cs`、`MaintenancePage.xaml`、`ParcelApp.xaml.cs`|LIA-02；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
@@ -44,7 +44,7 @@ A/C的原聊天不是Git文档；下表保留原编号与必要结论，关键�
 |U18|LC07|明确保留天数不等于自动清理，提供既有受控维护旅程|`ParameterSettingsControl.Policy.cs`、`ParcelHistoryRetention.cs`、到期维护CLI|LIA-07；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U19|LC10|备份计划可见最近真实结果、等待原因及到限停止|`ParameterSettingsControl.Policy.cs`、`ParcelScheduledBackup.cs`|LIA-07；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
 |U20|LC12|首配显示当前位置、剩余必需项、延后连接和保存状态|`StartupWorkflows.cs`、`ParameterSettingsControl.Navigation.cs`|LIA-06；IMPLEMENTED，定向本机证据见下表；系统/现场限制保留|
-|U21|UX-01/11、LC01、F09|唯一当前操作入口、同版随包指南和交付身份|README、INDEX、两份operations、startup-deployment、`scripts/release_documents.py`|LIA-04；VERIFIED_LOCAL（批量回归；CI_PENDING），定向本机证据见下表；系统/现场限制保留|
+|U21|UX-01/11、LC01、F09|唯一当前操作入口、同版随包指南和交付身份|README、INDEX、两份operations、startup-deployment、`scripts/release_documents.py`|LIA-04；VERIFIED_LOCAL + CI_PASS（eca5a1eb/40218628397；非现场），定向本机证据见下表；系统/现场限制保留|
 
 未给完整路径的文件位于 `src/Ipc.Application.ParcelFlow.Desktop/`、`src/Ipc.Application.Sportmaster.Desktop/` 或表中已指明的运行入口；实施前用文件名定位并读取上下文，不能把旧行号直接用于新main。
 

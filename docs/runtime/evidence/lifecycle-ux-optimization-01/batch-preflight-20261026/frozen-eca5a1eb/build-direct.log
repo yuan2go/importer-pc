@@ -1,0 +1,20 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 646 毫秒)。
+  10 个项目(共 11 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Assembly -> D:\projects\importer-pc\src\Ipc.Assembly\bin\Release\net10.0\Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:15.88

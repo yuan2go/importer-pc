@@ -1,4 +1,4 @@
-> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，D盘归档修复的CI40217369663双绿；新增成功重入目标漂移守卫已通过15项源码验证，新冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](runtime/validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
 
 > 2026-10-25生命周期优化：[七包范围](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[U/G总账](reviews/lifecycle-ux-reconciliation-01.md)、[现行操作](runtime/lifecycle-ux-current-guidance-01.md)、[实际实现](runtime/lifecycle-ux-implementation-01.md)、[定向验证与同源身份](runtime/validation/lifecycle-ux-optimization-01.md)。独立工程已实现；原规划原件、编号与哈希见[规划归档](archive/lifecycle-ux-planning-01/README.md)。G01/G02、系统生命周期和现场门槛独立。
 

@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "RunId": 40218628397,
+  "PrHead": "eca5a1eb94469fcd23bdf6b6374bee8864fe66cc",
+  "ActualMergeSource": "4224e7458a43c3fc8cd7502ad9de9ae45422217c",
+  "EvidenceArtifactId": 12608805485,
+  "EvidenceArtifactSha256": "7656e3cf792364eaa6db7aa79bf58e071c34c9c9918d1dfc4ae67c4dd1588cc8",
+  "InstallableArtifactId": 12609305082,
+  "InstallableArtifactSha256": "08c7af15cfeaa756f7dfc1b9bfe6aadf333ff919712d8039b891ce01905aeab1",
+  "Scope": "Both jobs and actual delivery/evidence retention succeeded; actual final 15-case frozen DLL fixture",
+  "WindowsProductInstallation": "NOT_RUN"
+}

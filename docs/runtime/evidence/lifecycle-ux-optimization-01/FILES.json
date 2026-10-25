@@ -1,5 +1,5 @@
 {
-  "scope": "Original failures and intermediate evidence retained; current183f9fac frozen/core/readonly CLI verified; CI40216393477 native passes but artifact retention failed, fix pending latest CI; real deployment NOT_RUN",
+  "scope": "Original failures and intermediate evidence preserved; final engineering sourceeca5a1eb frozen15/actual readonly CLI/CI40218628397 verified; real product deployment NOT_RUN; G01/G02 external",
   "files": [
     {
       "path": "backup-binding-fix/before-fix-RESULT.json",
@@ -90,6 +90,41 @@
       "path": "batch-preflight-20261026/ci-40217369663/RUN-IDENTITY.json",
       "bytes": 618,
       "sha256": "fbbf1f28c4caad8982cac1c93b4e64978fff9e1c9c3c360de29d27e53a6dd3a6"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/BATCH-RESULT.json",
+      "bytes": 1568,
+      "sha256": "5727d461b5cc5f71ce79780a53ebb58c3013070cf83cf50c400cae3d238ded93"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/CORE-RESULT.json",
+      "bytes": 2278,
+      "sha256": "14aac8b27cb853df94605a64f36ed6ee462a390e34f08b2ae8d0914ab9551bfb"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/CORE-RUN.log",
+      "bytes": 12844,
+      "sha256": "8eb9bc93d04451ad241dad51fc525abd2199401c5a2b226cf85d8b001de2cb17"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/engineering-gate.json",
+      "bytes": 489,
+      "sha256": "007242068e36c6473847b9207c5ccfe6a190a7bbc625e33665224d12432fff29"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/INSTALLER.json",
+      "bytes": 756,
+      "sha256": "9b73bf292adba362e0b861a16eb931f23398655cef58c99432323db0e7d90cd3"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/production-gate.json",
+      "bytes": 2054,
+      "sha256": "53980571b382360cdcf1422e2aac21a5b290b09257a895bfb3699477deb9e63d"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40218628397/RUN-IDENTITY.json",
+      "bytes": 611,
+      "sha256": "b5c83d22807f9553f104c974c85dc49f349fd79296a4b23c0893dd784305a6b9"
     },
     {
       "path": "batch-preflight-20261026/frozen-183f9fac/BATCH-RESULT.json",
@@ -185,6 +220,61 @@
       "path": "batch-preflight-20261026/frozen-720af857/SHA256SUMS",
       "bytes": 76800,
       "sha256": "9945f7531f677961eaf04d9772c9ad1d91d5932eefcc0fe0c517ba45f87d5ebd"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/BATCH-RESULT.json",
+      "bytes": 1568,
+      "sha256": "a6f79a4acaf4def12d131406dc4eedbb00326d80f9bb49867f544f098a7ba46c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/build-direct.log",
+      "bytes": 1586,
+      "sha256": "01db2d38b04fd1fb85973400cbdcb4a687c97203b0d0f64ff4e491fcdfc937fe"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/BUILD-INFO.json",
+      "bytes": 522,
+      "sha256": "ba9096ca19a3e63544cefeaab0aa6d47eaaaa7bd86a070c06041b7439caa1e0e"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/build-wcs.log",
+      "bytes": 1692,
+      "sha256": "aa58e888d38c3b7077e0425309ed2a295ae2bff8cec5da18426361f7b5f2f1c1"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/CLI-preflight.json",
+      "bytes": 330,
+      "sha256": "9022822ee2346ae940cc09c5027ae226198e8700e8ba6de9aa9b1753b9fc8dc0"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/CLI-preflight.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/CLI-RESULT.json",
+      "bytes": 569,
+      "sha256": "c92785e8c549640aa0a566494cf0191ccc50257ea753ae681a169ec593a20187"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/DELIVERY.json",
+      "bytes": 3970,
+      "sha256": "5f97251f45ad9f8876302a82d9c681937fc8378cf10ee68c96696fe3321b5a26"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/RESULT.json",
+      "bytes": 2278,
+      "sha256": "68d37cf32e55352a15df17ba3b481ae92098848156ebea009fa02c677cb7012c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/RUN.log",
+      "bytes": 12844,
+      "sha256": "8eb9bc93d04451ad241dad51fc525abd2199401c5a2b226cf85d8b001de2cb17"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-eca5a1eb/SHA256SUMS",
+      "bytes": 76800,
+      "sha256": "64f43cb03e71e329b6ac85987fa5f494e26800169b4cdb1d297148290af4e9e1"
     },
     {
       "path": "batch-preflight-20261026/MAIN-INTEGRATION.json",

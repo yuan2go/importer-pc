@@ -1,6 +1,6 @@
-> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，D盘归档修复的CI40217369663双绿；新增成功重入目标漂移守卫已通过15项源码验证，新冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：工程源eca5a1eb的冻结core/15项、实际只读CLI及CI40218628397双绿；当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围，原完成结论不直接沿用；G01/G02、真实产品安装和现场门槛保留。
 
-2026-10-26剩余整改以 [批量部署续报](../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21重开，其他正确成果、G01/G02及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
+2026-10-26剩余整改以 [批量部署续报](../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21已按最终工程源及CI更新为VERIFIED_LOCAL + CI_PASS；其他正确成果、G01/G02、真实系统/现场门槛及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
 
 # WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01
 

@@ -18,6 +18,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
 {
     public const string Contract = RcsConfigurationValidation.Contract;
     public const int MaximumResponseBytes = 262144;
+    internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     readonly RcsTaskOptions options;
     readonly HttpClient client;
     readonly object lifecycle = new();
@@ -109,7 +110,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 var (bytes, complete) = await ReadBoundedAsync(response.Content, token).ConfigureAwait(false);
                 var original = new IntegrationHttpResponse((int)response.StatusCode, Convert.ToBase64String(bytes), Convert.ToHexString(SHA256.HashData(bytes)), complete);
                 StageReply Unknown(string detail) => new(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, detail,
-                    DateTimeOffset.UtcNow, HttpResponse: original);
+                    ReceiptTimeForVerification.GetUtcNow(), HttpResponse: original);
                 if (!complete) return Unknown("RCS response incomplete or exceeds quota; retained bytes are a prefix, outcome unknown");
                 if (!response.IsSuccessStatusCode) return Unknown("RCS HTTP " + (int)response.StatusCode + "; no authoritative business outcome");
                 try
@@ -117,7 +118,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                     var (accepted, slot, destination) = RcsDestinationProtocol.Parse(bytes, frozen);
                     return new(Wire.Id(), request.Id, request.PayloadHash, true, true, accepted, null, slot,
                         accepted ? "RCS destination assigned; physical completion is unconfirmed" : "RCS " + destination.Code + ": " + destination.Message,
-                        DateTimeOffset.UtcNow, Destination: destination, HttpResponse: original);
+                        ReceiptTimeForVerification.GetUtcNow(), Destination: destination, HttpResponse: original);
                 }
                 catch (Exception e) when (e is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
                 { return Unknown("Invalid/unmatched RCS response: " + e.GetType().Name + "; original response retained, outcome unknown"); }

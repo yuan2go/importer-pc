@@ -96,6 +96,7 @@ public sealed partial class ParcelRuntime
         }
         finally { activeStages.Remove(key); }
     }
+    internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     ParcelOperation ApplyReply(ParcelOperation op, ParcelStage kind, StageReply reply)
     {
         var wcs = kind == ParcelStage.Wcs;
@@ -103,7 +104,7 @@ public sealed partial class ParcelRuntime
         var stage = GetStage(op, kind)!;
         var prior = stage.Replies.FirstOrDefault(x => x.Id == reply.Id);
         var inconsistent = repository!.OriginalReplyHash(stage.Request.Id, reply.Id) is { } originalHash && originalHash != Wire.Hash(Wire.Encode(reply)) || reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
-            !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > DateTimeOffset.UtcNow.AddSeconds(1) ||
+            !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > ReceiptTimeForVerification.GetUtcNow().AddSeconds(1) ||
             reply.BusinessAccepted is not null && (!reply.TransportSucceeded || reply.ProtocolAcknowledged != true) ||
             kind == ParcelStage.Plc && factory.Requirements(stage.Request.Binding) is { Query: false, CompletesOnSubmit: true } && reply.BusinessAccepted == true && reply.PhysicalCompleted != true ||
             reply.PhysicalCompleted == true && (reply.BusinessAccepted != true || !factory.Requirements(stage.Request.Binding).PhysicalConfirmation) ||

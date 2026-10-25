@@ -515,7 +515,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding));
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
-            op.ConfigurationHash, payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
+            op.ConfigurationHash, payload, Wire.Hash(payload), ReceiptTimeForVerification.GetUtcNow());
     }
     async Task AdvanceAsync(ParcelOperation op)
     {

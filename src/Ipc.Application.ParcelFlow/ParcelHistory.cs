@@ -165,18 +165,62 @@ public sealed partial class ParcelRepository
         using var r = c.ExecuteReader(); return r.Read() && r.GetString(1) == hash && Convert.ToHexString(SHA256.HashData((byte[])r.GetValue(0))) == hash;
     }
     public string? ArchiveCleanupFailure { get; private set; }
+    internal TimeProvider ArchiveCleanupClock { get; set; } = TimeProvider.System;
+    internal int ArchiveCleanupAttempts { get; private set; }
+    long cleanupAttempted;
+    bool cleanupPending;
+    internal TimeSpan ArchiveCleanupDelay => TimeSpan.FromMilliseconds(Math.Min(30000, 500 * Math.Pow(2, Math.Min(ArchiveCleanupAttempts - 1, 6))));
+    internal void RetryArchiveCleanup()
+    {
+        if (cleanupPending) CleanupArchivedRawFiles();
+    }
+    string? ArchivedReceiptExpectedHash(string id, Microsoft.Data.Sqlite.SqliteTransaction? transaction = null)
+    {
+        if (StorageVersion < 5) return null;
+        using var c = db.CreateCommand(); c.Transaction = transaction;
+        c.CommandText = "SELECT raw_hash FROM parcel_receipts r WHERE id=$id AND state='Committed' AND EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=r.operation)";
+        c.Parameters.AddWithValue("$id", id);
+        var value = c.ExecuteScalar();
+        if (value is DBNull) throw new InvalidDataException("Archived original raw hash is missing: " + id);
+        return value is string hash ? hash : null;
+    }
+    void RequireArchivedReceipt(string id, string hash)
+    {
+        if (!HasArchivedRaw(id, hash)) throw new InvalidDataException("Archived original raw receipt is missing or corrupt: " + id);
+    }
     void CleanupArchivedRawFiles()
     {
-        ArchiveCleanupFailure = null;
+        if (cleanupPending && ArchiveCleanupClock.GetElapsedTime(cleanupAttempted) < ArchiveCleanupDelay) return;
+        var pending = 0; List<string> examples = [];
         // DB custody commits before removing the redundant spool file; interrupted cleanup is idempotent.
         foreach (var path in Directory.EnumerateFiles(rawRoot, "*.json"))
         {
-            var id = Path.GetFileNameWithoutExtension(path); var hash = Wire.FileHash(path, maintenanceCancellation);
-            if (HasArchivedRaw(id, hash))
-                try { File.Delete(path); }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                { ArchiveCleanupFailure = "Archived raw custody committed; redundant spool cleanup pending: " + id + ": " + ex.GetType().Name; }
+            maintenanceCancellation.ThrowIfCancellationRequested();
+            var id = Path.GetFileNameWithoutExtension(path);
+            var expected = ArchivedReceiptExpectedHash(id);
+            if (expected is null) continue; // Active original custody is not redundant cleanup.
+            // Verify the authoritative DB copy before treating any filesystem error
+            // as optional. Missing/corrupt originals must still fence business.
+            RequireArchivedReceipt(id, expected);
+            try
+            {
+                if (Wire.FileHash(path, maintenanceCancellation) != expected)
+                    throw new InvalidDataException("Redundant original raw receipt hash differs: " + id);
+                File.Delete(path);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                pending++;
+                if (examples.Count < 4) examples.Add(id + ":" + ex.GetType().Name);
+            }
         }
+        cleanupPending = pending != 0;
+        if (!cleanupPending) { ArchiveCleanupAttempts = 0; ArchiveCleanupFailure = null; return; }
+        ArchiveCleanupAttempts = Math.Min(32, ArchiveCleanupAttempts + 1);
+        cleanupAttempted = ArchiveCleanupClock.GetTimestamp();
+        ArchiveCleanupFailure = (ArchiveCleanupAttempts >= 5 ? "ArchiveCleanupWarning" : "ArchiveCleanupPending") +
+            ": verified DB originals retained; redundant spool cleanup pending=" + pending + "; attempts=" + ArchiveCleanupAttempts +
+            "; retryMs=" + ArchiveCleanupDelay.TotalMilliseconds + "; " + string.Join(",", examples);
     }
 
 }

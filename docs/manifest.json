@@ -2043,9 +2043,9 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "a7f9437d4870ffa2316fa505855595b790d37d20723326063f03f76fd822d802",
+      "sha256": "5d96061fde30ae70c0f2aaf651a273c9c66495db42774718d23efcf30ada7aef",
       "size_bytes": 7746,
-      "git_blob": "1b516ab716166362174e6bcd959e88c973b09258",
+      "git_blob": "df5d40e9c39dca9ecbb5a09159c0fd87062e3ff6",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -53852,9 +53852,9 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "7b3ee2089b5cbb6e488b7a37e3223f02aacf5cb94c85bf1d4a1a3fec1071c6fa",
+      "sha256": "40e06694ebab97b4e3cbc71ceb4f324525571bafefeace28e29b8dfd1bcdd4cf",
       "size_bytes": 339,
-      "git_blob": "cd1ed31627a894642e3f874e14471e8b53501177",
+      "git_blob": "7e673a365d3cdf909e840b4916bc6e105da57fed",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -54835,9 +54835,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "ddbb6a521417f26ed67f925b8ccd8e28801ce3692b2c445ac964781727826f17",
-      "size_bytes": 8329,
-      "git_blob": "9b52a3b50f96eae60d7c0eeeb45f0a4e2af0bc2b",
+      "sha256": "810224fd7d26d4232b76d1dfc6a7a2e0e6a316bb2086397344d9be37e00de555",
+      "size_bytes": 8364,
+      "git_blob": "6e6c3b630c7396d648ab1ae33fea92ac95ffed63",
       "previous_git_blob": "8f05b8626e457867c9fffe0fd098d1871172f112"
     },
     {
@@ -54854,9 +54854,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
-      "sha256": "9d0def7b3b38ba77d1679c3abed07c61efe0491bbc00c791522d346d4456df44",
-      "size_bytes": 15931,
-      "git_blob": "079a7cdbddea4172a76dc5f30edea5845c6c66ce",
+      "sha256": "2602b931c5d1767296e270c5149d7c38895406bc68445a133bfe09c237077df0",
+      "size_bytes": 18547,
+      "git_blob": "6b54da511ea25f27f34dfdffe25e97e35e59dff8",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
@@ -55098,9 +55098,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReplyIdentities.cs",
-      "sha256": "6d32463e394a599928c0b897d5fafc0de68ef0509f3e42ab1df705d17de9c2c3",
-      "size_bytes": 4054,
-      "git_blob": "b968af0b4fd520e2783d7b02b3889cd4aa790d3c",
+      "sha256": "84dc24cbc3e0c2177c164ab08c0403090fc50320cfcd53323e13cfc05e44bf74",
+      "size_bytes": 4254,
+      "git_blob": "4a761c8ed0c0dd6495d03b0147777514ff86b852",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
@@ -55127,9 +55127,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
-      "sha256": "ecacfa5925492eb31df0fe650830e0f740ddcc5137a3dd8ac12bb9df74cc9edc",
-      "size_bytes": 43659,
-      "git_blob": "6de5e1ad8a35e80c80ddbe67272aa687c85082b0",
+      "sha256": "b9dd72a1848cbdb6b14a30f2d41b9e6a6d6509d653a75294c9d667ed7fef0c85",
+      "size_bytes": 43848,
+      "git_blob": "d791d6d4fe6c781b529edff3df9067b72d23ae7e",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -56501,9 +56501,9 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "6a55b3397ab5453c47dc34054bf6a4bb26a62daffb22939cca78280ecb86929a",
+      "sha256": "eaaba8d37fcde7cb59d2bbfe233a1c1a4554055b1d4b4070b05b8b921f377f49",
       "size_bytes": 339,
-      "git_blob": "263489437613392dd9bbbd9dd3f331a2c955ec38",
+      "git_blob": "619a3c63824694cc5589b47bfb8b26c405a9a3b5",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -59332,9 +59332,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "e6cd9e7871dd819bc4c630c1b8f651e49248ea601c09e54b4eae31c19defaef3",
-      "size_bytes": 22283,
-      "git_blob": "3c1d651bb6ec69a84ee8d4e88649f9344e226fca",
+      "sha256": "49584cba9362b59829d8afb67d6c15f0cc64076d730212e1f15fb89085fed23a",
+      "size_bytes": 22368,
+      "git_blob": "82ccb1898d88ba04de3d2a1c1cd2924802e19e88",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -90429,9 +90429,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "149ee8c86edfe571da9eaa2e0da83b96fec6a70421e17ee860131dbaeb3e37a4",
-      "size_bytes": 1035,
-      "git_blob": "bcca4e886bf969bde52101677aac5395c9d8baef"
+      "sha256": "e855da1b329321c265ff384decd5d1fc386485aa906741183632840023276860",
+      "size_bytes": 2176,
+      "git_blob": "216a9dfec806fd263b895281c5d24c49161eeadd"
     },
     {
       "path": "docs/runtime/validation/p0-stability-01.md",
@@ -90440,9 +90440,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "fd5f1e1d384effac50e8cad766508bb9d5ad9e0a2dc48ad6cb7cf6618b69d7f4",
-      "size_bytes": 1913,
-      "git_blob": "20a052e392abd124b3d12d3706bf9041422b42cf"
+      "sha256": "716962107b0a7cb64809a0f1b5f1f8afb1bf071eb3dfb36b9818ceb4bea7322b",
+      "size_bytes": 3319,
+      "git_blob": "f88733e7e1dcd765d25d44f7067de30f2a83c5ab"
     },
     {
       "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
@@ -90509,6 +90509,39 @@
       "sha256": "b6156565d958d7de0d64b495fa3030ccf5da6b47dab3858aee761648f0b027f9",
       "size_bytes": 840,
       "git_blob": "452439fd777bfd9b09d4e43e8d3e49290908b504"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st02-after.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "9c7d29528d6c9b29e2f6fdd6086809d2f341ac4384fe1212d82c1bbcaa6fa000",
+      "size_bytes": 8924,
+      "git_blob": "682a4cfeddcfeb15a5329f82f9c7388d056f2782"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st02-before.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "20fb3c7548efc43a4d7899ceac4ca21473a997b66de0f8343d89b182a50809fb",
+      "size_bytes": 8559,
+      "git_blob": "a5c6fa100c17a9fa721846219b713d3d414266e8"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/P0Stability.Cleanup.cs",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "e2125a23aa222813c672568cfda85b8565b24e58f0d4af8f80aed0ea975a0abf",
+      "size_bytes": 8658,
+      "git_blob": "97349676f7e1173255a7b24264d91a2761578581"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

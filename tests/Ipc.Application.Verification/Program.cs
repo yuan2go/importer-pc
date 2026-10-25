@@ -15,6 +15,7 @@ Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }
 if (args.Contains("--p0-rcs")) { await SportmasterRcs.P0ScanRegression(workspace, root); return; }
+if (args.Contains("--p0-cleanup")) { await P0Cleanup.Run(workspace, root); return; }
 if (args.Contains("--parameter-guidance-startup")) { await ParameterGuidanceStartup.Run(workspace, root); return; }
 if (args.Contains("--deferred-connections")) { await SportmasterRcs.DeferredConnectionChecks(workspace, root); return; }
 if (args.Contains("--h02-crash-child")) { var i = Array.IndexOf(args, "--h02-crash-child"); await ReliabilityHardening.CrashChild(workspace, args[i + 1], args[i + 2], args[i + 3]); return; }

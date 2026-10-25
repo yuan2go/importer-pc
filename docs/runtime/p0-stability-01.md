@@ -14,3 +14,11 @@ dotnet run --project tests/Ipc.Application.Verification -c Release -- . --p0-def
 ```
 
 八组合夹具使用真实Application/SQLite/TCP/RCS代码和隔离测试装配，只连接127.0.0.1。它不安装机器运行策略，也不能替代受保护正式装配的启动资格。
+
+## ST02 冗余回执清理
+
+只有Committed回执所属作业已归档、且数据库原始BLOB及原hash核验一致，才把spool视为可延后的冗余副本。文件共享冲突、IOException/UnauthorizedAccess进入清理待办，原文件保留；每次删除前仍核对hash。间隔按单调时间从500ms指数增长到最多30秒，持续重试；第五次起在现有容量/维护辅助状态显示ArchiveCleanupWarning。计数封顶32，不积累无界文件字典。解锁后独立维护循环重试，不要求额外扫码或操作员确认。
+
+原始BLOB缺失/损坏、Committed原hash缺失、可读spool的hash矛盾均抛出完整性故障并沿原路径停供。启动原件及回复身份核验优先使用已校验的数据库归档原件，临时不可读的冗余副本不会单独阻止启动；活动/未归档原件的必要校验不放宽。
+
+`dotnet run --project tests/Ipc.Application.Verification -c Release -- . --p0-cleanup`覆盖Windows独占句柄、继续输入、解锁自动清理、三类损坏和单调退避。共享Parcel改动同时进入DirectPlc/WcsToPlc1.8.0，DB9/SQL1–9保持原字节。

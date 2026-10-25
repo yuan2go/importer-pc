@@ -9,6 +9,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // invalid edits replace it with invalid text so queries cannot reuse an old instant.
 public sealed class DateTimeInput : UserControl
 {
+    public string EmptyTimestampHint { get; set; } = "留空表示不限；UTC偏移固定解释该时间。";
     public static readonly DependencyProperty TimestampProperty = DependencyProperty.Register(nameof(Timestamp), typeof(string), typeof(DateTimeInput),
         new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, (o, _) => ((DateTimeInput)o).ReadTimestamp()));
     public string Timestamp { get => (string)GetValue(TimestampProperty); set => SetValue(TimestampProperty, value); }
@@ -57,7 +58,7 @@ public sealed class DateTimeInput : UserControl
         syncing = true;
         try
         {
-            if (Timestamp.Length == 0) { invalidDate = null; date.SelectedDate = null; date.Text = ""; hint.Text = "留空表示不限；UTC偏移固定解释该时间。"; }
+            if (Timestamp.Length == 0) { invalidDate = null; date.SelectedDate = null; date.Text = ""; hint.Text = EmptyTimestampHint; }
             else if (Regex.IsMatch(Timestamp, @"(Z|[+-]\d{2}:\d{2})$") && DateTimeOffset.TryParse(Timestamp, CultureInfo.InvariantCulture, DateTimeStyles.None, out var value))
             { invalidDate = null; date.SelectedDate = value.Date; clock.Text = value.ToString("HH:mm:ss"); offset.Text = value.ToString("zzz"); hint.Text = "已固定UTC偏移；不会隐式按本机时区转换。"; }
             else hint.Text = "时间格式无效，请重新选择日期、时间和UTC偏移。";

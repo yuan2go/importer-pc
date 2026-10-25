@@ -78,7 +78,7 @@ public sealed class SoftwareLogControl : UserControl
         keyword.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && !busy) { e.Handled = true; await Run(Search); } };
         DateTimeInput Calendar(TextBox value)
         {
-            var input = new DateTimeInput(); input.SetBinding(DateTimeInput.TimestampProperty, new Binding(nameof(TextBox.Text)) { Source = value, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); return input;
+            var input = new DateTimeInput { EmptyTimestampHint = "必须选择起止时间；软件日志查询使用固定范围。" }; input.SetBinding(DateTimeInput.TimestampProperty, new Binding(nameof(TextBox.Text)) { Source = value, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); return input;
         }
         var extra = new StackPanel(); var fields = new WrapPanel(); extra.Children.Add(fields);
         fields.Children.Add(Field("开始时间（含）", Calendar(from), 440)); fields.Children.Add(Field("结束时间（不含）", Calendar(to), 440)); fields.Children.Add(Field("来源", source, 160));

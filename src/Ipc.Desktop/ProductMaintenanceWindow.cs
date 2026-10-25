@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Assembly;
 using Ipc.Platform;
 
@@ -44,9 +45,15 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         location = WindowsDeploymentSetup.Current(ParcelStartupServices.ApplicationId) ?? throw new InvalidDataException("未找到原受保护部署登记；使用可信完整介质重新安装，不能猜测原目录");
         registrationHash = Wire.FileHash(WindowsDeploymentSetup.Registration(location.ApplicationId));
         if (location.LifecycleState != "Installed") { ShowRemovalResult(null, location.MaintenanceOperation ?? "", location.DataRoot); return; }
+        var launch = new BusinessLaunch(location.ConfigurationDirectory, location.DataRoot, null, null);
+        var management = ParcelStartupServices.ManagementMode(launch);
+        if (!(await management.ManagementModeStatusAsync()).Authorized)
+            new ManagementModeWindow(management) { Owner = this }.ShowDialog();
+        if (!(await management.ManagementModeStatusAsync()).Authorized)
+        { Message("尚未进入管理模式，卸载没有执行；原配置和数据保留。"); return; }
         Directory.CreateDirectory(backupDirectory.Text);
         backupFile = Path.Combine(Path.GetFullPath(backupDirectory.Text), location.ApplicationId + "-pre-remove-" + Wire.Id() + ".db");
-        var service = ParcelStartupServices.Maintenance(new(location.ConfigurationDirectory, location.DataRoot, null, null));
+        var service = ParcelStartupServices.Maintenance(launch);
         plan = await Task.Run(() => service.PlanChangeAsync("Uninstall", backupFile));
         Message("产品 " + location.ApplicationId + " · 源码 " + location.SourceCommit + "\n程序 " + location.ReleaseRoot + "\n数据 " + location.DataRoot +
             "\n备份 " + backupFile + "\n" + (plan.Allowed ? "原责任检查允许进入维护，执行时再次复核。" : "原责任阻止移除，请使用匹配发布完成核对。") + "\n" + plan.Summary);

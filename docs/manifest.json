@@ -57017,9 +57017,9 @@
     },
     {
       "path": "src/Ipc.Desktop/ProductMaintenanceWindow.cs",
-      "sha256": "8a8f24a387c380e5750ed7f8a313466864e887312b5b1d5a10eaf60acb5bfc7e",
-      "size_bytes": 4771,
-      "git_blob": "b501b579a4eedeb62d85614eabbdb1b61844b9f0",
+      "sha256": "6323ef62ea8df72504ced67c771cc99a626c403d8e3cf27ffdfbb301e7bd71c6",
+      "size_bytes": 5260,
+      "git_blob": "f0bf079d860a9cbfd88c44f1529e88d75fd896eb",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -89650,9 +89650,9 @@
     },
     {
       "path": "docs/runtime/parameter-guidance-startup-01.md",
-      "sha256": "f5c2d8772b1156128c50ab4abab0f7e39f02a9fe4621911b12fa5a1ad58f869b",
-      "size_bytes": 8893,
-      "git_blob": "a609b057b2c70ab6fc325bbe1792d8a3c52ac125",
+      "sha256": "b90514be3ea74b0aa22824b59e8c4db1cfb0dcf052a926a3f4c04fe40c1f5ff7",
+      "size_bytes": 9261,
+      "git_blob": "d23dd80002e915ac5d15e315da62cb5f8f195a6f",
       "version": "parameter-guidance-startup-01-frozen",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Frozen 7d7487a5 native publication and startup evidence; public reproduction facts",
@@ -89874,6 +89874,15 @@
       "sha256": "bead73e4ff5a592186313c8ddba0aa33717fef550d2ca46286673d0d18f6f1d9",
       "size_bytes": 1028,
       "git_blob": "d5ecee488960e06b3b969f48abed715673c9fbb4"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/active-entry/RESULT.json",
+      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; synthetic uninstall result verification",
+      "storage_scope": "public_repository",
+      "purpose": "Terminal removal UI regression",
+      "sha256": "cbc7fffbe7c46760edbd0868746b77b778e5443bc60ca4d5230d2a1def22dc56",
+      "size_bytes": 1028,
+      "git_blob": "5b8e2b4d931cc173d958f573ecf72f6232b39370"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -92699,7 +92708,7 @@
         "Close"
       ],
       "RepeatedAuthentication": false,
-      "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/RESULT.json"
+      "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/active-entry/RESULT.json"
     }
   }
 }

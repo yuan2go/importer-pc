@@ -1,0 +1,16 @@
+{
+  "Status": "PASS",
+  "BaseCommit": "80db6afcf4537a812b1059acee4089ec98e2ecca",
+  "WorkingSourcePatchSha256": "adfb881b3dfc66dc11d086e5a7c548e3a431abb06abbcc5a957acccb9ad37ee7",
+  "FrozenPublication": false,
+  "RawSha256": "ea675cd00b540f8b4d26cc438594d9371cb49dc51e2f4b304d69babeab436712",
+  "Scope": "Actual native WPF result windows with synthetic completed removal receipts, both restart states; no real uninstall performed by this fixture",
+  "Assertions": [
+    "PASS STARTUP02 retired product exposes only its result and close action, with no repeated repair or authentication entry",
+    "PASS STARTUP02 completed removal never opens an unavailable management dialog and explains its actual restart state",
+    "PASS STARTUP02 retired product exposes only its result and close action, with no repeated repair or authentication entry",
+    "PASS STARTUP02 completed removal never opens an unavailable management dialog and explains its actual restart state"
+  ],
+  "SystemDpi": "125%",
+  "FieldAcceptance": "NOT_RUN"
+}

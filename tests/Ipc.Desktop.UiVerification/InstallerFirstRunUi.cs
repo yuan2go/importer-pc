@@ -127,7 +127,7 @@ static partial class Program
         Check(Text(window).Contains("安装结果待确认") && !Text(window).Contains("安装未完成") && Text(window).Contains("未能确认本次安装的最终结果。"), "unknown result has its own neutral title and never claims success or failure");
         Check(!(bool)type.GetField("failed", flags)!.GetValue(window)! && Descendants(window).OfType<TextBlock>().Single(b => b.Text == "3  安装完成").FontWeight == FontWeights.Normal, "unknown outcome is distinct from confirmed failure and does not mark installation complete");
         Check(Descendants(window).OfType<Border>().Any(b => b.Background is SolidColorBrush brush && brush.Color == Color.FromRgb(255, 248, 231)) && Text(window).Contains("确认前，请勿重复安装。"), "unknown result emphasizes the repeat-install warning with the approved pale amber surface");
-        Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "打开安装记录目录", "关闭" }), "unknown result offers only the real records action and close, without retry, rollback or refresh");
+        Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "打开安装记录目录", "只读核对本次安装", "关闭" }), "unknown result offers fixed-operation inspection, original records and close without replay or rollback");
         var unknownDetails = Descendants(window).OfType<Expander>().Single();
         Check(!unknownDetails.IsExpanded && !Descendants(window).OfType<TextBox>().Any(b => b.IsVisible && b.Text.Contains("授权窗口确认")), "historical authorization instructions remain collapsed rather than masquerading as the current stage");
         Capture("installer-unknown", window);
@@ -139,9 +139,14 @@ static partial class Program
         originalMessages.BringIntoView(); window.UpdateLayout();
         Capture("installer-unknown-original-text", window); originalMessages.IsExpanded = false; unknownDetails.IsExpanded = false;
         var records = Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "打开安装记录目录"));
-        Check(records.IsKeyboardFocused, "the completed wait moves keyboard focus to the available records action");
-        records.Focus(); records.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-        Check(Keyboard.FocusedElement is Button close && Equals(close.Content, "关闭") && records.IsDefault, "records is the primary default action and native Tab reaches close");
+        var inspectOriginal = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "只读核对本次安装"));
+        Check(inspectOriginal.IsKeyboardFocused, "the completed wait focuses the read-only original-operation inspection");
+        inspectOriginal.Focus(); inspectOriginal.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        Check(Keyboard.FocusedElement is Button close && Equals(close.Content, "关闭") && inspectOriginal.IsDefault, "only read-only inspection is default and native Tab reaches close");
+        var inspections = 0;
+        type.GetProperty("InspectInstallation", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, InstallationInspection>)(r => { inspections++; if (r != request) throw new Exception("Inspection changed original request"); return new("Unknown", "合成：仍在核对原操作"); }));
+        Click(window, "只读核对本次安装"); await Idle(window); Click(window, "只读核对本次安装"); await Idle(window);
+        Check(inspections == 2 && installCalls == 2 && !(bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)!, "two original inspections never resubmit installation or release unknown preparation");
         foreach (var (width, height, label) in new[] { (800d, 560d, "125-equivalent"), (665d, 460d, "150-equivalent") })
         {
             window.Width = width; window.Height = height; window.UpdateLayout();

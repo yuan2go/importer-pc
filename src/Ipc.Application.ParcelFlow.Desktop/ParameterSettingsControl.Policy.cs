@@ -38,6 +38,13 @@ public sealed partial class ParameterSettingsControl
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "空间不足时停止新入场。");
         Input(form, "日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "新供包台默认7天。仅清理诊断日志；留空按容量轮转，不删除业务审计。");
         Input(form, "已结数据保留天数", m.Policy, "HistoryDays", "HistoryDays", data, "新供包台默认7天，可设置7～30天。到期在维护窗口清理已结明细；未决作业和防重记录继续保留。留空不清理。");
+        data.Body.Children.Add(Text("保留天数保存后仍须受控生效；正常运行不会在线批量删除。已结明细删除与压缩释放磁盘分别处理。"));
+        if (RuntimeContext is { } retentionContext)
+        {
+            var maintain = new Button { Content = "检查并停止、打开到期维护…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            maintain.Click += async (_, _) => { if (retentionContext.RequestRetentionAsync is { } request) await request(); else retentionContext.Message = "此宿主请先暂停并退出，再从原同源启动修复的‘配置工具’进入已结历史到期维护。"; };
+            data.Body.Children.Add(maintain);
+        }
         Technical(data, "历史到期维护", "HistoryDays", "保存并重启后生效。先暂停和退出软件，再用本发布的expire-history命令备份、核验并删除到期已结明细；未决责任、防重及编号索引永久保留。正常运行期间不执行批量删除。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
@@ -45,6 +52,12 @@ public sealed partial class ParameterSettingsControl
         Technical(data, "日志保留", "DiagnosticLogDays", "留空按容量轮转。仅控制诊断日志；业务审计与图片证据按各自规则保留。非空为1～3650天。" );
         Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "当前窗口常驻记录1～10000条，磁盘预留空间1～1048576 MiB（二进制兆字节）。运行内目录只读。同库归档不会释放磁盘；迁移在独立维护中处理原目录、完整备份和原责任。");
         var backup = Page(0, "自动备份", "仅在暂停、管理模式有效且无在途外呼时执行。");
+        if (RuntimeContext is { } backupContext)
+        {
+            var actual = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, MaxHeight = 220, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            actual.SetBinding(TextBox.TextProperty, new Binding(nameof(ParcelViewModel.BackupStatusText)) { Source = backupContext });
+            backup.Body.Children.Add(actual);
+        }
         var enabled = new CheckBox { Content = "启用自动备份", MinHeight = 38 };
         enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay });
         Field(Form(backup), "备份计划", enabled, null, "BackupEnabled", backup);

@@ -35,6 +35,8 @@ public sealed class ManagementModeWindow : Window
         var confirm = new PasswordBox { Name = "ManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 };
         var confirmation = new StackPanel(); confirmation.Children.Add(new Label { Content = "确认密码", Target = confirm, Padding = new(0), Margin = new(0, 12, 0, 4) }); confirmation.Children.Add(confirm); passwordFields.Children.Add(confirmation);
         var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) }; passwordFields.Children.Add(rules);
+        var recoveryPolicy = new Expander { Header = "遗失管理密码 / 恢复政策（G02）", Margin = new(0, 8, 0, 0), Content = new TextBlock { Text = "当前没有获批准的密码恢复政策。请保留原部署和凭据账，由部署负责人确认恢复政策。不能删账重新首设或使用默认密码。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) } };
+        body.Children.Add(recoveryPolicy);
         var changeBody = new StackPanel(); var changeTools = new Expander { Header = "修改管理密码", Content = changeBody, Visibility = Visibility.Collapsed, Margin = new(0, 12, 0, 0) }; body.Children.Add(changeTools);
         var next = new PasswordBox { Name = "NewManagementPassword", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "新管理密码", Target = next, Padding = new(0) }); changeBody.Children.Add(next);
         var nextConfirm = new PasswordBox { Name = "NewManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "再次输入新密码", Target = nextConfirm, Padding = new(0), Margin = new(0, 8, 0, 0) }); changeBody.Children.Add(nextConfirm);
@@ -81,6 +83,7 @@ public sealed class ManagementModeWindow : Window
             body.IsEnabled = true; leave.IsEnabled = current.Available;
             passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available; legacy.IsEnabled = current.Available;
             confirmation.Visibility = !current.Configured ? Visibility.Visible : Visibility.Collapsed; rules.Visibility = confirmation.Visibility;
+            recoveryPolicy.Visibility = current.Configured ? Visibility.Visible : Visibility.Collapsed;
             legacy.Visibility = current.NeedsLegacyConversion ? Visibility.Visible : Visibility.Collapsed;
             proofLabel.Content = current.NeedsLegacyConversion ? "新管理密码" : "管理密码";
             enterButton.Content = current.NeedsLegacyConversion ? "转换并进入管理模式" : current.Configured ? "进入管理模式" : "设置并继续";

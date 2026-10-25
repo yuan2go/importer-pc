@@ -130,7 +130,10 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
     public async Task<SoftwareLogPage> QueryAsync(SoftwareLogQuery q, string? selection, int skip, CancellationToken token)
     {
         if (skip is < 0 or > 1_000_000) throw new InvalidDataException("分页位置超出限制。");
-        var id = selection ?? Select(q); using var lease = Get(id); var s = lease.Value;
+        var id = selection ?? Select(q);
+        try
+        {
+        using var lease = Get(id); var s = lease.Value;
         using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
         var index = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
         if (index.Streaming) return await StreamQuery(s, id, skip, budget.Token).ConfigureAwait(false);
@@ -138,6 +141,12 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         foreach (var row in index.Matches.Skip(skip).Take(200)) { check(); page.Add(await ReadRow(s, index.Rows[row], budget.Token).ConfigureAwait(false)); }
         management.Require(); budget.Token.ThrowIfCancellationRequested();
         return new(id, page.ToArray(), index.Matches.Length > (long)skip + page.Count, Notices(s));
+        }
+        catch { if (selection is null) Release(id); throw; }
+    }
+    public void Release(string id)
+    {
+        lock (sync) { if (selections.Remove(id, out var value)) Retire(value); }
     }
     public async Task<SoftwareLogContext> ContextAsync(string id, SoftwareLogLocation location, int before, int after, CancellationToken token)
     {

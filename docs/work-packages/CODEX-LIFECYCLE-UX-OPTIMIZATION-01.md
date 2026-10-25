@@ -1,6 +1,6 @@
-# 下一阶段 Codex 执行提示
+# 形成时 Codex 执行提示（工程已续做）
 
-以下提示供下一轮直接执行整批实现。详细范围、文件责任和验收已集中在总工作包，避免重复叠加旧提示。当前规划基线是main `3a5b1d13`；这些新文档尚为本地工作区文件，若从远端新建工作区，先确保它们及所引用的审查材料已随授权分支交付，不假定远端main已有。
+以下保留`4c42f567`形成时的整批执行提示。该批独立工程已经续做，当前状态与源身份见[实现](../runtime/lifecycle-ux-implementation-01.md)和[验证](../runtime/validation/lifecycle-ux-optimization-01.md)。后续先读取实际状态，不机械重做七包；G01/G02仍须外部合同/政策。原字节与原FILES见[归档](../archive/lifecycle-ux-planning-01/README.md)。
 
 ```text
 执行 docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md，完成其中LIA-01～07全部可独立实施的工程范围，持续推进到代码、必要验证、文档和main PR齐备。

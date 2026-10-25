@@ -34,6 +34,7 @@ public abstract class StartupWorkflowWindow : Window
         }
     }
     protected bool Busy;
+    protected bool UnknownOutcome;
     protected bool CloseAfterCancellation;
     protected StartupWorkflowWindow(string title, bool installation = false)
     {
@@ -77,10 +78,14 @@ public abstract class StartupWorkflowWindow : Window
         grid.Children.Add(sessionHeader); grid.Children.Add(bodyHost); grid.Children.Add(FooterHost); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
     }
-    protected Button Action(string label, Func<Task> action)
+    protected Button Action(string label, Func<Task> action, bool readOnly = false)
     {
         var button = new Button { Content = label, MinHeight = 44, MinWidth = 100, Margin = new(0, 12, 10, 0), Padding = new(12, 6, 12, 6) };
-        button.Click += async (_, _) => await Run(action); Actions.Children.Add(button); return button;
+        button.Click += async (_, _) =>
+        {
+            if (UnknownOutcome && !readOnly) { Message("原操作结果仍待核对，禁止重复提交。请使用只读核对或关闭并保留记录。"); return; }
+            await Run(action);
+        }; Actions.Children.Add(button); return button;
     }
     protected async Task Run(Func<Task> action)
     {
@@ -91,7 +96,13 @@ public abstract class StartupWorkflowWindow : Window
         finally { Busy = false; FooterHost.IsEnabled = true; SessionActions.IsEnabled = true; Actions.IsEnabled = true; Body.IsEnabled = true; WorkflowBody.IsEnabled = true; OperationCompleted(); }
     }
     protected virtual void OperationCompleted() { }
-    protected virtual void OperationFailed(Exception error) { Status.Text = "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
+    protected virtual void OperationFailed(Exception error)
+    {
+        UnknownOutcome |= error is InstallationOutcomeUnknownException;
+        Status.Text = UnknownOutcome ? "原维护操作结果待核对。请保留原输入和回执，禁止重复提交。\n" + ChineseInterfaceText.ParameterMessage(error.Message)
+            : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据与配置保留。请核对原因后再操作。";
+        Status.Foreground = UnknownOutcome ? Brushes.DarkGoldenrod : Brushes.Firebrick;
+    }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
     protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
@@ -236,6 +247,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (picker.ShowDialog(this) != true) return;
             await Task.Run(() => maintenance.BackupAsync(picker.FileName)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
             Message("完整备份已完成；数据库和同名.recovery目录必须一起保留。可在备份列表重新校验并预检恢复。");
+        });
+        Action("已结历史到期维护…", () =>
+        {
+            if (maintenance is not IStartupRetentionMaintenance retention) throw new NotSupportedException("当前组合未提供独立到期维护");
+            new HistoryRetentionWindow(retention, ManagementMode) { Owner = this }.ShowDialog(); return Task.CompletedTask;
         });
         Action("接管已恢复的原机目录…", async () =>
         {
@@ -433,7 +449,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Add(menu.Items, label);
         menu.Items.Add(new Separator());
         var advanced = new MenuItem { Header = "备份、诊断与修复" };
-        foreach (var label in new[] { "读取所选配置", "分层检查与变更预览", "保存首配待生效…", "按当前首配启动", "导出新站模板…", "创建完整备份…", "受控修复未确认配置…", "接管已恢复的原机目录…", "安装 / 修复程序…" })
+        foreach (var label in new[] { "读取所选配置", "分层检查与变更预览", "保存首配待生效…", "按当前首配启动", "导出新站模板…", "创建完整备份…", "已结历史到期维护…", "受控修复未确认配置…", "接管已恢复的原机目录…", "安装 / 修复程序…" })
             Add(advanced.Items, label);
         var diagnostic = new MenuItem { Header = "查看完整诊断…" };
         diagnostic.Click += (_, _) => new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
@@ -449,11 +465,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
     }
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
-    new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
+    Button Action(string label, Func<Task> action) => base.Action(label, async () =>
     {
         if (label is not ("进入管理模式…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
         await action();
-    });
+    }, readOnly: label is "读取所选配置" or "配置工具…" or "稍后配置");
     async Task RequireMaintenance()
     {
         RequireDirectories();
@@ -640,6 +656,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 WorkflowBody.Content = sharedEditor;
                 sharedEditor.SelectedPageChanged += (_, _) =>
                 {
+                    WorkflowBusinessName.Text = sharedEditor.PageProgress + " · 相机/RCS可明确延后配置";
+                    WorkflowBusinessName.Visibility = Visibility.Visible;
                     selectedTask = sharedEditor.SelectedCategory switch { 1 => 0, 0 => 1, 2 => 2, 3 => 3, _ => 4 };
                     if (selectedTask == 4) refreshReview?.Invoke(); UpdateActions();
                 };

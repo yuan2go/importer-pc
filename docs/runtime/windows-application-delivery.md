@@ -1,4 +1,4 @@
-> 当前源码：Sportmaster1.12.3 / DirectPlc及WcsToPlc1.6.0 / Application.Contracts1.18.0 / Parcel DB9。普通权限、D盘受保护部署和管理模式继续适用；输入接收、停止、保留维护及资格边界见[长稳运行指南](win11-24x7-stability-remediation-01.md)。旧COMM版本与验收保留在原结果及[本次原文归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)。
+> 当前源码：Sportmaster1.13.0 / DirectPlc及WcsToPlc1.7.0 / Application.Contracts1.19.0 / Parcel DB9。普通权限、D盘受保护部署和管理模式继续适用；输入接收、停止、保留维护及资格边界见[长稳运行指南](win11-24x7-stability-remediation-01.md)。旧COMM版本与验收保留在原结果及[本次原文归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)。
 
 > TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](../design/typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
 

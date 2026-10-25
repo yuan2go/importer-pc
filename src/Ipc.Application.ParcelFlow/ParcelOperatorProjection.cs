@@ -32,6 +32,7 @@ public sealed partial class ParcelRuntime
     { Items = page.Items.Select(item => item with { Operation = OperatorOperation(item.Operation) }).ToArray() };
     ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => Management.Status().Authorized ? s : s with
     {
+        BackupScheduleStatus = null,
         Configuration = s.Configuration with
         {
             Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null,

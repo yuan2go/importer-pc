@@ -77,6 +77,13 @@ public sealed class ParcelHistoryReader : IDisposable
         using var c = Command(s, "SELECT count(*),coalesce(sum(p.wcs IS NOT NULL),0),coalesce(sum(p.accepted),0),coalesce(sum(p.unknown),0),coalesce(sum(p.physical),0),coalesce(sum(p.attempts),0)" + Source + Conditions(s));
         using var r = c.ExecuteReader(); r.Read(); return new(r.GetInt64(0), r.GetInt64(1), r.GetInt64(2), r.GetInt64(3), r.GetInt64(4), r.GetInt64(5));
     }
+    public string[] Positions(ParcelHistorySelection selection)
+    {
+        using var c = Command(selection, "SELECT DISTINCT coalesce(h.position,'main') FROM parcel_history_index h WHERE h.seq<=$upper ORDER BY 1 LIMIT 257");
+        using var r = c.ExecuteReader(); List<string> result = [];
+        while (r.Read()) { cancellation.ThrowIfCancellationRequested(); if (result.Count == 256) throw new IOException("历史投递位超过256项，请用精确ID查询"); result.Add(r.GetString(0)); }
+        return result.ToArray();
+    }
     public async Task<ParcelExportReceipt> Export(ParcelHistorySelection selection, string destination, CancellationToken token)
     {
         destination = Path.GetFullPath(destination); RecoveryFiles.RequireOrdinaryAncestors(destination);
@@ -128,21 +135,27 @@ public sealed class ParcelHistoryReader : IDisposable
     public void Dispose() { tx.Dispose(); SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 0, null, null); db.Dispose(); }
 }
 
-public sealed partial class ParcelRuntime : IParcelHistoryApplication
+public sealed partial class ParcelRuntime : IParcelHistorySessionApplication
 {
     public async Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter)
     { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.SelectHistory(filter); } finally { gate.Release(); } }
     public async Task<ParcelHistoryPage> QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence = long.MaxValue, int limit = 50)
-        => OperatorHistory(await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit)).ConfigureAwait(false));
+        => await ReadHistoryPageAsync(selection, beforeSequence, limit, default).ConfigureAwait(false);
+    public async Task<ParcelHistoryPage> ReadHistoryPageAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token)
+        => OperatorHistory(await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit), token).ConfigureAwait(false));
     public async Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection)
-        => await ReadHistoryAsync(reader => reader.Metrics(selection)).ConfigureAwait(false);
-    Task<T> ReadHistoryAsync<T>(Func<ParcelHistoryReader, T> read)
+        => await ReadHistoryMetricsAsync(selection, default).ConfigureAwait(false);
+    public Task<ParcelHistoryMetrics> ReadHistoryMetricsAsync(ParcelHistorySelection selection, CancellationToken token)
+        => ReadHistoryAsync(reader => reader.Metrics(selection), token);
+    public Task<string[]> HistoryPositionIdsAsync(ParcelHistorySelection selection, CancellationToken token)
+        => ReadHistoryAsync(reader => reader.Positions(selection), token);
+    Task<T> ReadHistoryAsync<T>(Func<ParcelHistoryReader, T> read, CancellationToken token = default)
         => OwnedRead(t =>
         {
             using var reader = new ParcelHistoryReader(Path.Combine(directory!, Id + ".db"), t);
             try { var result = read(reader); t.ThrowIfCancellationRequested(); return Task.FromResult(result); }
             catch (SqliteException) when (t.IsCancellationRequested) { throw new OperationCanceledException(t); }
-        });
+        }, token);
     public async Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token)
     {
         try

@@ -11,7 +11,8 @@ public static class DeploymentShortcuts
     public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop)
     {
         var options = location.Shortcuts ?? new(true, false); // Historical installation defaults.
-        var id = location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
+        var business = location.ApplicationId switch { "sportmaster" => "SM供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => location.ApplicationId };
+        var id = "菜鸟供包台 · " + business + " · " + location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
         var target = System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
         var result = new List<DeploymentShortcut>();
         if (options.StartMenu)
@@ -81,7 +82,8 @@ public static class DeploymentShortcuts
         foreach (var name in new[] { "运行", "启动修复", "安装维护" })
         {
             var entry = files.Single(link => System.IO.Path.GetFileName(link.Path).EndsWith(" · " + name + ".lnk", StringComparison.Ordinal));
-            files.Add(entry with { Path = System.IO.Path.Combine(programs, "Importer PC", System.IO.Path.GetFileName(entry.Path)) });
+            foreach (var folder in new[] { "菜鸟供包台", "Importer PC" })
+                files.Add(entry with { Path = System.IO.Path.Combine(programs, folder, legacyId + " · " + name + ".lnk") });
         }
         var type = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException("Windows shortcut service unavailable");
         dynamic shell = Activator.CreateInstance(type)!;

@@ -1,4 +1,5 @@
 using System.Windows;
+using System.IO;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -8,19 +9,28 @@ public partial class ParcelViewModel
     ManagementModeStatus managementMode = new(false, false, null);
     public bool IsManagementMode => managementMode.Authorized;
     public ManagementModeStatus ManagementStatus => managementMode;
+    public string ManagementNotice { get; private set; } = "";
+    public bool HasManagementNotice => ManagementNotice.Length != 0;
     public Visibility ManagementModeVisibility => IsManagementMode ? Visibility.Visible : Visibility.Collapsed;
     public string ManagementModeActionText => IsManagementMode ? "退出管理模式" : "进入管理模式";
-    public string AccountDisplay => Snapshot?.Configuration.Effective.Login is null ? "免登录作业" : Snapshot.CurrentOperator is { } user ? user.DisplayName + " · 操作员" + (user.Simulation ? "（模拟）" : "") : "操作员未登录";
+    public string AccountDisplay => Snapshot?.Configuration.Effective.Login is null ? "免登录作业" : Snapshot.CurrentOperator is { } user ? "操作员" + (user.Simulation ? "（模拟）" : "") + "：" + user.DisplayName : "操作员未登录";
     public Visibility PauseVisibility => Snapshot?.Paused == false ? Visibility.Visible : Visibility.Collapsed;
     public Visibility ResumeVisibility => Snapshot?.Paused == true ? Visibility.Visible : Visibility.Collapsed;
     long managementReadGeneration;
     public async Task RefreshManagementModeAsync()
     {
         var generation = Interlocked.Increment(ref managementReadGeneration);
-        var next = application is IWorkstationAdministration service ? await service.ManagementModeStatusAsync() : new ManagementModeStatus(false, false, null);
+        ManagementModeStatus next;
+        try { next = application is IWorkstationAdministration service ? await service.ManagementModeStatusAsync() : new ManagementModeStatus(false, false, null); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or System.TimeoutException)
+        { next = new(false, false, null, Available: false); }
         if (generation != Volatile.Read(ref managementReadGeneration)) return;
-        var changed = managementMode != next; managementMode = next;
+        var previous = managementMode; var changed = previous != next; managementMode = next;
         if (!changed) return;
+        if (previous.Authorized && !next.Authorized)
+        { ManagementNotice = next.Available ? "管理授权已结束。受限任务已请求取消，未保存输入受保护；重新验证后可返回原页面。" : "管理授权服务不可用。受限任务已请求取消，输入受保护；服务恢复后重新验证。"; Message = ManagementNotice; }
+        else if (next.Authorized) ManagementNotice = "";
+        Changed(nameof(ManagementNotice)); Changed(nameof(HasManagementNotice));
         foreach (var name in new[] { nameof(IsManagementMode), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
     }
     public async Task RequireManagementModeAsync()

@@ -11,6 +11,7 @@ public sealed partial class ParameterSettingsControl
     long navigationGeneration, editRevision;
     ObjectPage[] OrderedPages() => FirstConfiguration ? pages.OrderBy(p => p.Order).ToArray() : pages.ToArray();
     public string CurrentPageTitle => currentPage?.Title ?? "";
+    public string PageProgress => currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle

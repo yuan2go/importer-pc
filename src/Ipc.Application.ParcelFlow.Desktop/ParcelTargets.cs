@@ -35,7 +35,7 @@ public partial class ParcelViewModel
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");
     public bool CanHistoryContinue => !Busy && Fresh && Selected is not null && Snapshot?.Availability?.ContinuePrepared.Contains(Selected.Id) == true;
-    public bool CanHistoryQuery => !Busy && Fresh && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
+    public bool CanHistoryQuery => !Busy && Fresh && !SelectedRcsQueryUnavailable && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
     public string CapacityState => Snapshot?.Capacity is { } c ? $"未结 {c.Unresolved}/{c.MaximumUnresolved} · 工作集 {c.Resident} · 归档 {c.Archived}（原件和去重保留）" : "容量未取得";
     public string AuxiliaryState => string.Join("\n", Snapshot?.AuxiliaryReasons ?? []);
     public string InstalledProviderParameters { get; private set; } = "";
@@ -59,6 +59,8 @@ public partial class ParcelViewModel
         }
     }
     long? nextHistory;
+    readonly List<long> historyCursors = [];
+    int historyPageIndex;
     long historyGeneration;
     bool historyLoading;
     string? historyFailure;
@@ -68,35 +70,57 @@ public partial class ParcelViewModel
         ? "当前页外的原作业详情：" + Selected.Id + "；命令仅针对该原作业"
         : "所选行 / 详情 / 命令目标：" + Selected.Id + "；列表为查询时快照，详情可由应用快照更新";
     public bool HistoryLoading => historyLoading;
-    public bool HasNextHistory => !historyLoading && nextHistory is not null;
-    public string HistoryStatus => historyLoading ? "正在读取作业记录…" : historyFailure is { } failure ? "查询失败 · " + failure + "；之前读取的记录仅供参考，可重试" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业 · 查询完成 " + historyReadAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") + "；列表为查询时快照，详情保留原请求与回执";
+    public bool HasNextHistory => !historyLoading && !HistoryFiltersChanged && nextHistory is not null;
+    public bool HasPreviousHistory => !historyLoading && !HistoryFiltersChanged && historyPageIndex > 0;
+    public string HistoryStatus => (HistoryFiltersChanged ? "条件已改变，尚未应用；当前记录仍属于上方已应用范围，翻页和导出已暂停。\n" : "") +
+        (historyLoading ? "正在读取作业记录，原结果仍属于上次范围…" : historyFailure is { } failure ? "查询未完成 · " + failure + "；之前读取的记录仅供参考" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业 · 查询完成 " + historyReadAt?.ToString("yyyy-MM-dd HH:mm:ss zzz"));
+    public Task PreviousHistoryAsync() => LoadHistoryPageAsync(historyPageIndex - 1, false);
+    public Task FirstHistoryAsync() => LoadHistoryPageAsync(0, false);
     public async Task LoadHistoryAsync(bool next = false)
+        => await LoadHistoryPageAsync(next ? historyPageIndex + 1 : 0, !next);
+    async Task LoadHistoryPageAsync(int targetPage, bool newSelection)
     {
+        if (historyLoading) throw new InvalidOperationException("已有历史查询进行中");
+        if (!newSelection && (HistoryFiltersChanged || historySelection is null || targetPage < 0 || targetPage > historyPageIndex && nextHistory is null))
+            throw new InvalidOperationException("请先查询并固定当前条件；不能翻阅已改变的筛选");
         var generation = Interlocked.Increment(ref historyGeneration);
-        var before = next ? nextHistory ?? long.MaxValue : long.MaxValue;
+        var before = newSelection ? long.MaxValue : targetPage > historyPageIndex ? nextHistory!.Value : historyCursors[targetPage];
         historyLoading = true; historyFailure = null; NotifyHistory();
+        using var cancellation = new CancellationTokenSource(); historyQueryCancellation = cancellation;
         try
         {
             var signature = HistoryFilterSignature();
             ParcelHistoryPage page;
             if (application is IParcelHistoryApplication query)
             {
-                var selection = next ? historySelection : null;
+                var selection = newSelection ? null : historySelection;
                 selection ??= await ServiceAsync(() => query.SelectHistoryAsync(HistoryFilter()));
-                if (next && appliedHistorySignature != signature) throw new InvalidOperationException("筛选已改变，先重新查询；不能续读旧筛选");
-                page = await ServiceAsync(() => query.QueryHistoryAsync(selection, before));
-                var metrics = await ServiceAsync(() => query.HistoryMetricsAsync(selection));
+                if (!newSelection && appliedHistorySignature != signature) throw new InvalidOperationException("筛选已改变，先重新查询；不能续读旧筛选");
+                page = await ServiceAsync(() => query is IParcelHistorySessionApplication session ? session.ReadHistoryPageAsync(selection, before, 50, cancellation.Token) : query.QueryHistoryAsync(selection, before));
+                var metrics = await ServiceAsync(() => query is IParcelHistorySessionApplication session ? session.ReadHistoryMetricsAsync(selection, cancellation.Token) : query.HistoryMetricsAsync(selection));
+                var positionIds = query is IParcelHistorySessionApplication positions ? await ServiceAsync(() => positions.HistoryPositionIdsAsync(selection, cancellation.Token)) : [];
+                cancellation.Token.ThrowIfCancellationRequested();
                 if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
                 HistoryMetricsSummary = $"固定序号 ≤ {selection.UpperSequence} · 实体作业 {metrics.Operations} · WCS请求 {metrics.WcsRequests} · WCS接受 {metrics.WcsAccepted} · 待核对 {metrics.Unknown} · 实体完成 {metrics.PhysicalCompleted} · 发送尝试 {metrics.SendAttempts}（取得格口不等于实体完成）";
                 Changed(nameof(HistoryMetricsSummary)); appliedHistorySignature = signature; historySelection = selection;
+                foreach (var id in positionIds) historicalPositions.Add(id);
             }
-            else page = await ServiceAsync(() => application.HistoryAsync(before));
-            if (generation != Volatile.Read(ref historyGeneration)) return;
+            else
+            {
+                if (!newSelection || HistoryFilter() != new ParcelHistoryFilter()) throw new NotSupportedException("此组合没有完整历史查询能力；不能声称应用了筛选或固定范围");
+                page = await ServiceAsync(() => application.HistoryAsync(before));
+            }
+            if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
             var current = Selected;
             rebindingHistory = true;
             try
             {
                 HistoryItems = page.Items; nextHistory = page.NextBeforeSequence; historyLoaded = true;
+                if (newSelection) { historyCursors.Clear(); historyCursors.Add(long.MaxValue); }
+                else if (targetPage == historyCursors.Count) historyCursors.Add(before);
+                historyPageIndex = targetPage;
+                foreach (var item in page.Items) historicalPositions.Add(item.Operation.PositionId ?? "main");
+                Changed(nameof(HistoryPositionChoices));
                 Changed(nameof(HistoryItems));
                 SetSelection(current, false);
             }
@@ -104,19 +128,22 @@ public partial class ParcelViewModel
             historyReadAt = DateTimeOffset.Now;
             Changed(nameof(HistorySelectionState));
         }
+        catch (OperationCanceledException) { if (generation == Volatile.Read(ref historyGeneration)) historyFailure = "查询已取消或输入已改变，原结果及范围保留"; }
         catch (Exception error)
         { if (generation == Volatile.Read(ref historyGeneration)) historyFailure = error.Message; throw; }
         finally
-        { if (generation == Volatile.Read(ref historyGeneration)) { historyLoading = false; NotifyHistory(); } }
+        { if (ReferenceEquals(historyQueryCancellation, cancellation)) historyQueryCancellation = null; if (generation == Volatile.Read(ref historyGeneration)) { historyLoading = false; NotifyHistory(); } }
     }
     void ResetHistoryForRuntime()
     {
         Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false; historyReadAt = null;
+        CancelHistoryRead();
         HistoryItems = []; nextHistory = null; selectedHistory = null;
         historySelection = null; appliedHistorySignature = null; CancelHistoryExport();
+        historyCursors.Clear(); historyPageIndex = 0; historicalPositions.Clear();
         Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); NotifyHistory();
     }
-    void NotifyHistory() { Changed(nameof(HistoryLoading)); Changed(nameof(HistoryStatus)); Changed(nameof(HasNextHistory)); }
+    void NotifyHistory() { foreach (var name in new[] { nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(CanExportHistory) }) Changed(name); }
     public async Task QuerySelectedAsync()
     {
         RequireFreshSnapshot(); var op = Selected ?? throw new InvalidOperationException("先选择详情中的原作业"); var generation = selectionGeneration;
@@ -225,8 +252,8 @@ public partial class ParcelViewModel
     public bool HistoryLoaded => historyLoaded;
     void NotifyTargets()
     {
-        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(HistorySelectionState), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfigurationHeading), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
-        foreach (var (name, value) in new[] { (nameof(Details), Details), (nameof(StructuredDetails), StructuredDetails), (nameof(EffectiveConfiguration), EffectiveConfiguration), (nameof(PendingConfiguration), PendingConfiguration) })
+        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(HistorySelectionState), nameof(HistoryQueryGuidance), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfigurationHeading), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
+        foreach (var (name, value) in new[] { (nameof(Details), Details), (nameof(StructuredDetails), StructuredDetails), (nameof(RequestHandover), RequestHandover), (nameof(EffectiveConfiguration), EffectiveConfiguration), (nameof(PendingConfiguration), PendingConfiguration) })
         {
             if (publishedText.TryGetValue(name, out var prior) && prior == value) continue;
             publishedText[name] = value; Changed(name);

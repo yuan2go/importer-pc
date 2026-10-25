@@ -1,6 +1,6 @@
 # 生命周期 UI 与操作优化增量设计
 
-适用 [LIFECYCLE-UX-OPTIMIZATION-01](../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，形成基线main `3a5b1d13`。本页定义本批目标与不变边界，不表示尚缺的按钮或流程已经实现。[当前可用路径](../runtime/lifecycle-ux-current-guidance-01.md)另列。
+适用 [LIFECYCLE-UX-OPTIMIZATION-01](../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，形成基线main `3a5b1d13`。本页定义本批目标与不变边界；工程实施和逐项证据见[实现](../runtime/lifecycle-ux-implementation-01.md)及[验证](../runtime/validation/lifecycle-ux-optimization-01.md)，不扩张原生/现场资格。[当前可用路径](../runtime/lifecycle-ux-current-guidance-01.md)另列。
 
 ## 设计继承与过期内容处置
 

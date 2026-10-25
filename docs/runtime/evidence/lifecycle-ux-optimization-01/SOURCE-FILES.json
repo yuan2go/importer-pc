@@ -1,0 +1,2955 @@
+{
+  "baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "planning": "4c42f567",
+  "scope": "actual engineering/test inputs; file bytes checked before frozen candidate, no compiled-commit equivalence asserted",
+  "files": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "963dc63d92a955b4af8af873c9ea404bd8e15508c70c20fb82d3673884445c73"
+    },
+    {
+      "path": "config/compatibility/direct-plc.json",
+      "sha256": "a3fa57a83b0f92dd4ffda1b37bd5ab701c0ea1a95a8ffb50503937d41fe33d39"
+    },
+    {
+      "path": "config/compatibility/sportmaster.json",
+      "sha256": "5061b50e6a88fd3975d586955ce22bc85103bc884571dcaa2b5eafe30d914e19"
+    },
+    {
+      "path": "config/compatibility/wcs-to-plc.json",
+      "sha256": "8920ec42f149a9dbd0a8e4b4350680c69ad6190e3759b6dcf18e04cca5a0db75"
+    },
+    {
+      "path": "config/compositions.json",
+      "sha256": "c143e05c392c9e13b47d2ed8fa4ef64eae0b1bd5f0b03ea1d48b613ba6506b02"
+    },
+    {
+      "path": "config/direct-plc/business.json",
+      "sha256": "fd697129ce854767da07823d649def391a49f34dec0813310ee2dbc2b5238a8d"
+    },
+    {
+      "path": "config/inspection/business.json",
+      "sha256": "722b28b12e5a66f119c5d02158eb36e3fcbbafc386d136e72b151b93b6984e01"
+    },
+    {
+      "path": "config/optional/direct-plc/business.json",
+      "sha256": "2028624cb96c202b9ce37ad5cddf87a974c6bf55c7aacdaf24dcc6fefe951202"
+    },
+    {
+      "path": "config/optional/sportmaster/business.json",
+      "sha256": "a96a6c70c5a4e4ac6d821d05533f39434e30182390c1e2b2c40b53c124b0191e"
+    },
+    {
+      "path": "config/optional/wcs-to-plc/business.json",
+      "sha256": "b16697907f582452d3c6a6c868a7956cf0cad8d97f985174566df908e328f681"
+    },
+    {
+      "path": "config/presentation.json",
+      "sha256": "13bef8193a558bcb2baaef691fc3fefafb1a339cce420af5ea7ee70a9f429c9f"
+    },
+    {
+      "path": "config/product.reference.json",
+      "sha256": "3dd0e665b2ac63afda08658bec592a9e94afa4fbfd1b47820ce831cc3faf8fda"
+    },
+    {
+      "path": "config/replay.jsonl",
+      "sha256": "a05b1681cc7d6406290c8cc6c0d9bbf46c9596fcf035f7e1c4742dabadb23206"
+    },
+    {
+      "path": "config/sportmaster/business.json",
+      "sha256": "99e42fa6394c3ad9e0c9f5ab819a957275d85c6abb68b2c4ca4ff0613c8aaf40"
+    },
+    {
+      "path": "config/sportmaster/rcs.parameters.json",
+      "sha256": "1acac1d7ca18f43bbf8e119cd2f6cf6efa8eac5fabb0bb7530ecd962a49b2e34"
+    },
+    {
+      "path": "config/stability-target-plan.example.json",
+      "sha256": "40265f568dd0d0a5adee6e4bd9438bb7ef841c09d46fb8e5737542d21eb68a5b"
+    },
+    {
+      "path": "config/station.simulation.json",
+      "sha256": "c1a21a6a2aa6a69015e9a6a395fc0cf855f6fa09d36e0961888008c25f209cca"
+    },
+    {
+      "path": "config/wcs-to-plc/business.json",
+      "sha256": "e48cb09fe3bf2d679f763ec3b5f9a302087cbafda3f9edee217b16acf7ce682f"
+    },
+    {
+      "path": "scripts/Maintenance.cmd",
+      "sha256": "174779bd1d9a2087dab51bb0b9691c47a860405a34664f67a808a9103745db33"
+    },
+    {
+      "path": "scripts/Setup.cmd",
+      "sha256": "a2d6b3cbf564794fd09c28e45d2d6ee134f5e16c9d25b3c423f9ad6e252acf93"
+    },
+    {
+      "path": "scripts/application.cmd",
+      "sha256": "c74384031b96076f793aad6912ce30dd593e492a28474c9bd15880297ba47d05"
+    },
+    {
+      "path": "scripts/application.ps1",
+      "sha256": "45696a9a792d3e0897dbbf53bc43c26cbb700994fcc5c8d10d7b66279766eede"
+    },
+    {
+      "path": "scripts/application_bundles.py",
+      "sha256": "1d769ce2f34741ac64d223adfa80dd28a346eac3d61cdca5a0e5a7019674e669"
+    },
+    {
+      "path": "scripts/application_compatibility.py",
+      "sha256": "28a7707ffed9c4004320b0751c3400ddaa3fb849e8ddb1fcbc675cc9c0682c1c"
+    },
+    {
+      "path": "scripts/build-extension.py",
+      "sha256": "d367c61452a91573df36de848043da650183a31c4ae9e095154aa53e58540005"
+    },
+    {
+      "path": "scripts/build.sh",
+      "sha256": "419f78f7cbe0443f04f139616b6cdb538a1c52711a1c6564f8a60d8d971d264e"
+    },
+    {
+      "path": "scripts/build_process.py",
+      "sha256": "edc88e8e042712107326ff211f6509cf3afcd10af8c9bb10d212cadfd33cee1a"
+    },
+    {
+      "path": "scripts/check-commercial-delivery.py",
+      "sha256": "c6e48f5fa125490e370ec74d08e06c61a21fe04f546be7c777078577c18f8543"
+    },
+    {
+      "path": "scripts/check-pr104-integration.py",
+      "sha256": "667803c1ff4f088bb89ff522c81e0666d21786390b9992ee871e3a0c95882416"
+    },
+    {
+      "path": "scripts/check-retention-reconciliation.py",
+      "sha256": "51fb0eafb0a811b6a891bac0463e9fb09e6187c6cde2c769ae57abc238647375"
+    },
+    {
+      "path": "scripts/commercial_delivery.py",
+      "sha256": "7dc96b3c85c7d010450636e739c47f573b89b81839f9a440fb91bf19f52e0d56"
+    },
+    {
+      "path": "scripts/compare-typography.ps1",
+      "sha256": "3faf2b526aded75bf100e95e3f8faf425871ffe7f1f98e01c0bd07ab5792a1f3"
+    },
+    {
+      "path": "scripts/composition.py",
+      "sha256": "2057b09aa5f155d88f463e7e71a4e173f9f1dede549b44b3683f0b7c72956303"
+    },
+    {
+      "path": "scripts/configure-sportmaster-rcs.py",
+      "sha256": "65a4618f7f1b54050f4f4da22623d5b0d3880d5ac4d4f0f29b6270fbbad4e10f"
+    },
+    {
+      "path": "scripts/diagnose-camera-network.ps1",
+      "sha256": "830405bcc845e2b10537670affd111feb8541905b1fa673ee93c59bcc3abcabf"
+    },
+    {
+      "path": "scripts/extension_build.py",
+      "sha256": "3a9550cb1b5750fa9bb298aa3d3c4c13fddde6c5fd2a24f22851b8eb82a87482"
+    },
+    {
+      "path": "scripts/generate-product-icon.py",
+      "sha256": "01fce0b02ce9c574394762a50d70ac006bdac1b9ce3e2447f866a8b8405a4e74"
+    },
+    {
+      "path": "scripts/inspect_typography.py",
+      "sha256": "74a7d07a0d7bfc197ad54a2acb98b9ef89732e8897b2c77c89b75a116ef1c498"
+    },
+    {
+      "path": "scripts/package-application.py",
+      "sha256": "bcd64fb5dad06fe868505275dd73a3e4d4e8c0b7c8f3c827e2125bb1302d1c31"
+    },
+    {
+      "path": "scripts/package-business.py",
+      "sha256": "60f940ecf06a8bc46675e732f81570dd24558a756139d8df262f66c09ca38d88"
+    },
+    {
+      "path": "scripts/package-installer.py",
+      "sha256": "4a6ac06dce8a6afbe47cb162b5465f79ab94a61956b8a96c720bacbd62fdf538"
+    },
+    {
+      "path": "scripts/package-reference.py",
+      "sha256": "3050be03e8be8698d30dd6c925938e3d6f70b3b27eb7f2b9db20c947f02540ce"
+    },
+    {
+      "path": "scripts/project-environment.ps1",
+      "sha256": "ea1bd96e8fe6d9c979838d7a42bcf033fcd8e6a021cd1521f87a563a89dbabc0"
+    },
+    {
+      "path": "scripts/protect-release.ps1",
+      "sha256": "dacca0a6c38eefde63db7a1f10cdc34fb045b302ab14a6de76bb1ace3fdf38f3"
+    },
+    {
+      "path": "scripts/provision-extensions.ps1",
+      "sha256": "aaaaa7030efb0a34de9510267c75b9682a70ffbeee7ff9836647c40eb722e1bc"
+    },
+    {
+      "path": "scripts/provision-runtime.ps1",
+      "sha256": "03593076e3666088f5e3c627ad9e8460623f5d3f653185127a418ec1f181a6f4"
+    },
+    {
+      "path": "scripts/publish.ps1",
+      "sha256": "7bd9cac9088a756ecba1a1cc225500c7c51edef573d816381807a967dc0b3cec"
+    },
+    {
+      "path": "scripts/reconcile-retention-qualification.py",
+      "sha256": "578a8df2c26d5600130b5533f459e31d639ff57606f046bfb87d27dae176e718"
+    },
+    {
+      "path": "scripts/release-windows.py",
+      "sha256": "ec70c4259839a1e35936beaabce2a9d84ca72198f4f23a101e1afa88f7e9c8b1"
+    },
+    {
+      "path": "scripts/release_build.py",
+      "sha256": "d04781435a66bd53dc3703ef1f51e7e7b5bee381ffeaa68e0b9709f7357abc0f"
+    },
+    {
+      "path": "scripts/release_dependencies.py",
+      "sha256": "319f8aa7c2c906ddc771d9f12253976eefbbf4eae11187ae7e275e6c12c83dbb"
+    },
+    {
+      "path": "scripts/release_documents.py",
+      "sha256": "360c431261cc36555036b9254655b30c8e97ad07ae711f50eb8478672f3a7d26"
+    },
+    {
+      "path": "scripts/release_provenance.py",
+      "sha256": "f9f45cdf4a6cb207f43577c0873979062a013b0541a1e077a59f53cf6dea8289"
+    },
+    {
+      "path": "scripts/reproduce-retention-review.py",
+      "sha256": "dddeaff28b475a67cb4549725d28639c6322f1afb03430dadc3829c63eb71d0a"
+    },
+    {
+      "path": "scripts/seal.py",
+      "sha256": "676debc321a79e282dfd4bf1c630802e880cc420438143122bcee5c0bedb0991"
+    },
+    {
+      "path": "scripts/sign-deployment-qualification.py",
+      "sha256": "a7be4203822c7b9ffdf61ed72145fc65cebd5a3b592baca805f48f96d2d3ee13"
+    },
+    {
+      "path": "scripts/smoke-application.py",
+      "sha256": "231e3fa6675be365b821a6046ec878c2ad1c65d0411ccb052f9e72e55cb82689"
+    },
+    {
+      "path": "scripts/smoke-extension.py",
+      "sha256": "3b4b1350528ba6f049d9845b3b4b8d00b8b9761e179a1fee01c1a5707e0e3964"
+    },
+    {
+      "path": "scripts/smoke.py",
+      "sha256": "03eb1c42afda1e496f87da31319f4e69311367cdb7ee3365b4c7c8b558bb6b02"
+    },
+    {
+      "path": "scripts/stability-qualification.py",
+      "sha256": "8b7d9367c2e6cae98fdd93029baeed94d1a28e4ccab6fa3330ce1b07a2a5d8a2"
+    },
+    {
+      "path": "scripts/station.ps1",
+      "sha256": "7b52982bd4a5fe27d04523e8d4e278d69ddeb907eba7fcaff773ae9303e73a45"
+    },
+    {
+      "path": "scripts/test-diagnose-camera-network.ps1",
+      "sha256": "1d7a5ca5fcb60f17bbbdff8691e46ea599c5968425e4470ee831d07eebcddbe2"
+    },
+    {
+      "path": "scripts/test_application_bundles.py",
+      "sha256": "ee8f7cf2bf24f8022cafbe91304266f2b2f3ed31cb4a860bf62e9176f1d25891"
+    },
+    {
+      "path": "scripts/test_application_compatibility.py",
+      "sha256": "819f675e1b798c048e4672cfd5c9cd153ec313a9e9f4f59789b3e5e58ebb0b59"
+    },
+    {
+      "path": "scripts/test_build_process.py",
+      "sha256": "5c413834702312bbfb8b56dd4117aafc523bc864d90639ef40dd303c86ca7bb4"
+    },
+    {
+      "path": "scripts/test_commercial_delivery.py",
+      "sha256": "b33bdd9c0d168b266d442075cb5f9a801cdab1c135befaeec2fb96c91dfb4444"
+    },
+    {
+      "path": "scripts/test_extension_build.py",
+      "sha256": "7be80874a07c213216baf37f1e07c3a61fd4106d390c05b03219c6d32f1c8fbe"
+    },
+    {
+      "path": "scripts/test_installer_package.py",
+      "sha256": "231941c74d158828b5918184296e49db05e426c8deecc09fa9f2f556a1cbd4af"
+    },
+    {
+      "path": "scripts/test_release_build.py",
+      "sha256": "72d776f2663cf6616a99bbe348934b0e750fde24739f4fa6c8713d1a7f748ffe"
+    },
+    {
+      "path": "scripts/test_release_documents.py",
+      "sha256": "939de42af60d5c583a7d71df0b9299311cccb32aa929edf15b62075bc5938959"
+    },
+    {
+      "path": "scripts/test_release_provenance.py",
+      "sha256": "b2543b146ce119cf0edb177e7536e43d70352ead0572facfafe986dd22de7752"
+    },
+    {
+      "path": "scripts/test_runtime_identity.py",
+      "sha256": "8e4dbb3933cc794bf79c8b7bb5c3cece08085cb90c55d3cd4d4103437ad847a9"
+    },
+    {
+      "path": "scripts/test_stability_qualification.py",
+      "sha256": "f70574fba5bd198e86cfe658f201f26545e960530731f87988469c66615ef99d"
+    },
+    {
+      "path": "scripts/test_unified_release.py",
+      "sha256": "4d6a2f00d73ab8488dd561ffbcacca87e1882c71aa63f29a05af603e60232f02"
+    },
+    {
+      "path": "scripts/verify-administrator-broker.ps1",
+      "sha256": "7250e012db745d25e343f6c593ea35af6860a654f3b361616ba333a334b638cc"
+    },
+    {
+      "path": "scripts/verify-commercial-components.ps1",
+      "sha256": "c974289f475430d0b5aa2340a3009f9187ec763720e625674877f1ef6e3f327c"
+    },
+    {
+      "path": "scripts/verify-commercial-media.ps1",
+      "sha256": "695bde4ddbf957e0904994e02c9da50bf1c6b6baeb7497059e48692c4192cb75"
+    },
+    {
+      "path": "scripts/verify-commercial-removal.ps1",
+      "sha256": "3a2d5729ad6a0af5358e0a681299ff5ff5ed1801d894f282c5259a9863a0f345"
+    },
+    {
+      "path": "scripts/verify-commercial-wpf.ps1",
+      "sha256": "3a80c44af84b6b67963fad25238adb989c2f386e10a5e8a3d8a92722eb68a842"
+    },
+    {
+      "path": "scripts/verify-distribution-signature.ps1",
+      "sha256": "7bcf0846d56469ba759f67ef24fa919350ee4d6687d54e04aa7a722921310327"
+    },
+    {
+      "path": "scripts/verify-extension-reproducibility.py",
+      "sha256": "40eea948be41105c6c0706e7715e84a84c2b159ade0058e20a69e254825b9204"
+    },
+    {
+      "path": "scripts/verify-operation-upgrade.py",
+      "sha256": "fb33195ed99e6774e1ae1e4adb7cf407a7fbeb856b619a6e162ec30ca108fa97"
+    },
+    {
+      "path": "scripts/verify-retention-maintenance.ps1",
+      "sha256": "25aee51719c283321f8762673a56f0434d21a3c7ef268c1dcf9d951980a82da4"
+    },
+    {
+      "path": "scripts/verify-sportmaster-delivery.ps1",
+      "sha256": "452139a710780b3b6f1c77a7b678331b8ba38dc35aecfdf51f17441576aa048a"
+    },
+    {
+      "path": "scripts/windows-reference-validation.ps1",
+      "sha256": "aa8a9e667905aacb93cd1c85156e475bf561a7dea29fb1e7428b44ea7a2da737"
+    },
+    {
+      "path": "src/Ipc.Adapters/Compatibility.cs",
+      "sha256": "01485b04452f670eec6bd839d92b9dee86bc2c1708390775fd54df44ff7bb661"
+    },
+    {
+      "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+      "sha256": "391fab433d8cc8627695f7e46ba3679a977018db19b57a671ad455b66025a3a1"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.lock.json",
+      "sha256": "d3275b5474a5d310900eed2e81a978bd4738f59945c343261ee1058e1496ca3c"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.supply.lock.json",
+      "sha256": "d3275b5474a5d310900eed2e81a978bd4738f59945c343261ee1058e1496ca3c"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.win-x64.lock.json",
+      "sha256": "023619d7d478f76e26ca32fa6e291a26edfbca1cf885be5d51829d08d0536772"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/BarcodeFiltering.cs",
+      "sha256": "94f9f3f66f08c481f217eba8c0e5f21fe367caef81af3e4cd09e79696452bced"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ContractForwarders.cs",
+      "sha256": "f2f2454242286c6c0566e115905fa06d224da790cfa91963e4bc03f84ccb0fff"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj",
+      "sha256": "97f299f7c6031fa31a24c54960596a75d9388d3b12011661dc2121249b835997"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/OptionalCapabilities.cs",
+      "sha256": "fc7ade03f1cb3563c711339bb7e7fa1a964bea4a44250835bcc5b0c24a43cc34"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelConfigurationLocations.cs",
+      "sha256": "dddc1975d5e4961be467491c7c749fd3099327eee855a128fe2ba57ba4bb61e7"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelConnectionSetup.cs",
+      "sha256": "2a683fb91bc59444fcbc16c2d94ea26701221a53c57cc9c4d4ab04862b7d7ae2"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "sha256": "3efec831768c759b6ede09453d7dd9615158840af24552f1f18d231ead724e4c"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelInputs.cs",
+      "sha256": "9173ea479f8e564ef6947ebc314c4c5b58bedc96bd4a9716fdd4280786325baf"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelMaintenance.cs",
+      "sha256": "4be4f5b0d002c00a700efa8cf8a098ccdd58b77f10a97766686cf509b43e6050"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelProductServices.cs",
+      "sha256": "f523e4fddb248aee88bac67e40308ab0ccb86cf04f4619b3e5be6d2e12ba8242"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelTopology.cs",
+      "sha256": "3f3885e660fdc233e367da160f48cbd36764b0985246ebe334a5f487c3dba3c7"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/StartupMaintenance.cs",
+      "sha256": "7dcd9e6598bdd2ffc192d1f0d0e0ace469f37a7d1c120eb278eb9dc3480c13cc"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/SystemParameterDefaults.cs",
+      "sha256": "f286f8de92164043fa3e598de259e401c44ec0612bdad664b0111a859be26237"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/WcsDestination.cs",
+      "sha256": "f337c0fed45632904cb761fefe9478d6948c9b848d643ec3b9371736f47b5f8d"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/WcsRuntimeConfiguration.cs",
+      "sha256": "beab4ed1c428f9efd23cd981df3a26a6a68bac1701aec1014566b319240f13ec"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/WorkstationAdministration.cs",
+      "sha256": "b6f625ea9537ef8982cc24a8507a3d95cbbb0f96b9f54ea21419beb60f9446f0"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.direct-plc.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.direct-plc.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.sportmaster.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.sportmaster.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.supply.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.wcs-to-plc.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/packages.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj",
+      "sha256": "d79d2c162b2387d4d7de63c199090dd61a80ddd9181f771227365c1c08379867"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/Presentation.cs",
+      "sha256": "4a98136099471e21d97f6b7e3b66c4701d18f764e1c58817a2966923fb11b616"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/Workstation.xaml",
+      "sha256": "e066178f6871520a37222823b2802043178a4a2acf1b8ed59ca70295f23a1bf8"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/Workstation.xaml.cs",
+      "sha256": "58000a1463af4bca4a4995a0284d05d0ea2547f3723af677ca44bdd187ad0802"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/packages.direct-plc.lock.json",
+      "sha256": "8df5fd761cca9cda9cbf1283ec275dc76176b6bc7a91f435718df84eb73d2a39"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/packages.direct-plc.win-x64.lock.json",
+      "sha256": "b8744925546b75d9b997333e4ef9d0e21f3986c3af3d6f4a2138279fe2995fe8"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/packages.lock.json",
+      "sha256": "dbc1676d39c3bcc53f8cf7bebd3ad4c9a9ef80eed31af11a32264baf40b727b2"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Application.cs",
+      "sha256": "eddd0839edf6ab28fa7b15074d3dc43128c6f3953597e160e04240adb58191e9"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "sha256": "04be8aa3d6439b51f3d5af436fadcfab2940732bcba85fbb5f228e8710853a87"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
+      "sha256": "779994a28570f228a1c99b739c2ec5d671135c71b1435d78b037442de4111e30"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.win-x64.lock.json",
+      "sha256": "6d838da02a0b657d40fa6b5e687392436c617adf3d7be944aae92a9744ed03c4"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
+      "sha256": "94458609f6e3d1443790365be609a6cabeec77d5c33a8489d37a98c5803490a0"
+    },
+    {
+      "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
+      "sha256": "2f5cf28589fd917d8f4bcba93248ccb3a62f69e19d053659e20b1f060122000c"
+    },
+    {
+      "path": "src/Ipc.Application.Inspection/Ipc.Application.Inspection.csproj",
+      "sha256": "60f267fe37390a66b104887034fc225c1c38f36c0d41cdf862350abb19d1bd4b"
+    },
+    {
+      "path": "src/Ipc.Application.Inspection/packages.inspection.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Inspection/packages.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
+      "sha256": "787e13ab6eb9bf518271718d8e27d52792fec46d03d03324327a85b7280e9fb4"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ChineseChoiceTextConverter.cs",
+      "sha256": "9f747934655af615f1f219d4398c2387f95c1c2165d5fe97e688f9020e9e7d33"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs",
+      "sha256": "158cb3a54a8500f3a69678fa8b5e63bffafbd448145c0928c1b0d1aa294c5b94"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivation.cs",
+      "sha256": "b5877b873da75ba24c9a8e7a25b537382de2ba9d45002ac4871b1cda4ab46d0a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationChangeReview.cs",
+      "sha256": "e96cdca364eb6c3f9636af23ef0bda2116978af6dab4e2e12be70e85c748c70c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
+      "sha256": "562b547567332ea60cda06187debff31a8572d54aaf4e7af491addddcdb6e6b0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationDraftState.cs",
+      "sha256": "dc9b1820d0ca0bfd8b676fc8a9647eb0fee1342eb81d319c0a3b35583124829b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs",
+      "sha256": "dd7ccbed307cc33d7cdf047f7cf6dba6e88f97f6f0f03e967c1f58e9731cfb83"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs",
+      "sha256": "b03c35c41e10c73bfbe0183d64acb774a57816c7801e128f74c4bb2632c032da"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs",
+      "sha256": "997103fd64cb8dd68f138c617694f37305b0e12280c28aaa1b0f763c7585bb63"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationTemplates.cs",
+      "sha256": "4012dc11dd239e365e73e155df4770055c202566c1d892378c3e34995eea87d0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/DateTimeInput.cs",
+      "sha256": "6036048b7b5617884feb6779ba5f02433ec8f0547d8592de437a197441f260e0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs",
+      "sha256": "ff4cedc8367e08f1b14fe0a59a029f09f08d40f75048bf149be2f95d7995c11a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/DispatcherProgressMonitor.cs",
+      "sha256": "7d7da622d2abbf6cefbc5755e0eda1a9cb0fec960f2e3f70dc13686d8c6c13e7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs",
+      "sha256": "66d514a73fcc912fed113d8c43c951e979e8031411f19d103a007537d008931c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs",
+      "sha256": "9bbd6abeed16f3b23cc73d2f68cea622f620da92737d2e808bf0ecff0b898a06"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
+      "sha256": "b66e4af39ada7fba0de5766d5322efc84d09a7aee982f874689f18ecedd9501d"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
+      "sha256": "cfb97b0122a6c02cec2d801e8b2ddd387ad2c1e719ef4cf9a5f218fa8dfa83c6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/IngressRecoveryPresentation.cs",
+      "sha256": "02074a14c77e0efc6666ecd8571abc4b5f0a75c713b4e6a435776a7a593102f7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj",
+      "sha256": "dad153f1b13c7d7e17cf2078c2caefed6c563336f433fd982e5612fdd9971f2c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/LocalTimestampConverter.cs",
+      "sha256": "4f145c49d940b02d49873dc85ed018ad8f5f1935822450e19cf96d458cda152c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
+      "sha256": "9582877c2eaed4066bd72d2ed7a329c46ceb5709d83bd43ae5db0caa4bbff057"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
+      "sha256": "f74dfd5ec0e5ae50bcec791707ba3f42c64f35fd02643dda8fd5f36f44552067"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeMenu.cs",
+      "sha256": "2b90e4e5b1398f6b0c2f300f0c7b9b3390e713ec6d4ff4c096aaec8b3a752239"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModePresentation.cs",
+      "sha256": "6a7cd57928e915ea59228b982b9ceb83807a3f99189f9dac9eb658508dbffe70"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs",
+      "sha256": "3cb99571853078c1777b547df9d0b06d2ec5d503148d8991584e8e699db5a5ce"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
+      "sha256": "84c50a3df4e175b9577ec16034d6180b0587cdad87201c216feb56ae2c139773"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterOwnership.cs",
+      "sha256": "aaeb8233b6f3b5d14f0c89203af0431f991eda3d66ecceeb6694da2d2ed57617"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs",
+      "sha256": "dbfed4003ea57ee624ca57fe72c13ca533dbf8c5f7f3733bdcca6735121e5bab"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
+      "sha256": "095e6a0d80db9b8333df615536780e47149077aec25675eec18e8875b37f4927"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Navigation.cs",
+      "sha256": "1b2b4739d95f9125dceebea0f00972f92218ed3d48cbac4a9d12d62489440ac8"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
+      "sha256": "7fbbf01b25a384987e992aa7e9fa9aa35763dae35a0555680a24795b18bb3dc1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Runtime.cs",
+      "sha256": "032eb350ad96abf0e3c293599b437c177539affa27a31e7b5bf8da8dfc692135"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Search.cs",
+      "sha256": "3c9d9fa26c4fd7f61b0b1358733a371ef624aaa9f480f3fc2e2c38049684210c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "sha256": "04ec84b0d1e4443727dff5951931a6b7ad92a7515fe0f1dc89e08acac46a9dc8"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
+      "sha256": "627c82e30f1a464aed3c325386f47e8a1b123e5f99bcf9504359d7c382fcf451"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
+      "sha256": "a26d92232717cf4b4f4dea09f1a46c6c2f987a76a144377f70d798532796b66a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs",
+      "sha256": "39ab576fbc500fb75eebeb3ab283e932bfc7dacb499a0e1b6325d48207b90b46"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelStateTextConverter.cs",
+      "sha256": "5b309b2c7785bbe30144a6f99d5794444dac502fae4621f5f6baecd21c77e112"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
+      "sha256": "633ecb33831d2c93b9ba7eb11c1741b4dfda8549aa6779500c478639e94bcb73"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
+      "sha256": "006559dc774e4023f45f904a67fb56cffac0aeadb926d91b0b3a0dda7e1f5bd3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/PersistentConfigurationDrafts.cs",
+      "sha256": "a50830774e64f132bb64c7bc6b9f00bd36b1ea85a9176d30395d54410e533e52"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ProductBrand.cs",
+      "sha256": "006fbfbf2128d0ff243b4c5c3b23909984cf2f32e5d8618e4f532966cb87fb7b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/QueryWorkspaceTheme.xaml",
+      "sha256": "9d13ae3b446c112d4e6aa1ab3f180eda236e062342f91d4ba7b21454f7841603"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/RequestHandover.cs",
+      "sha256": "b8e20380f674b74b63a268c8e4bff2117f8e7142eb3eaf249d726a57585b9432"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
+      "sha256": "aac3251567e7b7b6d988a9e16d1f449dc60252c1e065a26e9833ad36040cd034"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
+      "sha256": "95cf7853ff1e59a266db8ec0db23f45d3a1aec5ef6d5f8c1864942297e060c69"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs",
+      "sha256": "658ac238fa97bd3756eb86b9b8b95e6fbceeb9997e315b5c06fe058b6565bc62"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogText.cs",
+      "sha256": "236fb6ce0101ecb74c379a1b365d5cb9ef5dfdb5c583d11c972a276db4274119"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.cs",
+      "sha256": "475cb56f94fabc591d31adad0f6ffab68e26ded5db4b1e826049a4eeb26cd0b9"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupAppearance.xaml",
+      "sha256": "0776f61b6a8db26cfea5ac54d06085c5c990667849730884c44929defc6cf4df"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs",
+      "sha256": "0577963b82ce0bc0406cfaee9ee51487e105139682714f751324c429d1a4e753"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationFiles.cs",
+      "sha256": "afe0692b3cb639a5a331eab46d88ce44905b07da1ec2fba881059a37286fcd39"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupSiteTemplates.cs",
+      "sha256": "226fb004f2a3f2e31b4bc6b60bb2a12799a66df344a9ee137bf31a93c729f8c4"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs",
+      "sha256": "158fbda23a4bd18561b57bc53d2e45f950fa319bc2f9dd6c2e3d0df68dc00f62"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "sha256": "ceb7c4d7c6a8585922ac20ec15ecc18093503c5470be72f8f852da44fe3ac0d1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/TaskContextPresentation.cs",
+      "sha256": "7923cfed3f4f260c0eb1df9810809fb986f79863dac2d703aaaf381cd8797fdb"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/WindowOpeningPreference.cs",
+      "sha256": "df182c907e737db0ee3983d2092a3361c82c704205253b71fdfdbf5ebb280176"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.direct-plc.lock.json",
+      "sha256": "3046ccd308a004a636ffeccc8cce44d8d28ec619805f50e0fc5e45df63704b71"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.direct-plc.win-x64.lock.json",
+      "sha256": "ecf54c789a9e1c41b0ac7979cac3220a9f5977e20cf4f64d5b48b224a5ac6ef1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.lock.json",
+      "sha256": "3046ccd308a004a636ffeccc8cce44d8d28ec619805f50e0fc5e45df63704b71"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.sportmaster.lock.json",
+      "sha256": "3046ccd308a004a636ffeccc8cce44d8d28ec619805f50e0fc5e45df63704b71"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.sportmaster.win-x64.lock.json",
+      "sha256": "ecf54c789a9e1c41b0ac7979cac3220a9f5977e20cf4f64d5b48b224a5ac6ef1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.wcs-to-plc.lock.json",
+      "sha256": "3046ccd308a004a636ffeccc8cce44d8d28ec619805f50e0fc5e45df63704b71"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "ecf54c789a9e1c41b0ac7979cac3220a9f5977e20cf4f64d5b48b224a5ac6ef1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/AssemblyInfo.cs",
+      "sha256": "f0064b71285f58878b3125cc8a9de6ecdde09f2df175d8a288a3e5cc8f4d185d"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "sha256": "2314747a07ca21e5693a9333bd9d8639e19d7a04c3a7b5de9e7959a8c7496338"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ConfigurationLocations.cs",
+      "sha256": "cb7a76954dc2a598577b4d01cda2a65c9188c50ea056a8f9a93b5c4719d32ae3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ConfigurationSubmission.cs",
+      "sha256": "3fffb84728bd4133beef10b7a0eb68a12a15ba09c2b9c61b7a15045d686927d6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/FlowDefinition.cs",
+      "sha256": "9a79ee79a5d19d29d4e51ed959f49cf65cc05805076e52fd34defc673bd3576f"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/FlowResults.cs",
+      "sha256": "0f77f2a6a93f9255957559d546d32387dfc76d6f50cd71c591722883191e2ef2"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj",
+      "sha256": "dcf01564453828eab7b6a62efc8ec1ed226b9e5d9ae994e16d85494bdd16e1e0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelAcquisitions.cs",
+      "sha256": "c2a4cd8474538333c4cc4d2b169c90357216436d12fb200c644b815cc0e58739"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelAdministration.cs",
+      "sha256": "546d455b4bc8b9f7b65ca868ad7fd728d413fe028b84975847541f6e48f8c5e5"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCapabilityInventory.cs",
+      "sha256": "6442414c7f27ea1e712f350a581e1e8e7b0928c8b80ff28b6d7661aed2e7ef84"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "sha256": "b7522742ea3ace47caabc4d505355c54a7d47dea1a8fc9478590dcd157a46db3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelConfigurationAudit.cs",
+      "sha256": "1d043ebb1ad5d43da4f3e052d3141d90a074e63735c86beea4235367d74b9cf9"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs",
+      "sha256": "e271b00694f51a4f09e1e8eb28cd31723fa63db48ae0d9a3b8d64127efa99331"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelConflicts.cs",
+      "sha256": "b31108e3f9e016e8178adf7d7efe073d655d63b140267689c6c7a82ffa8154f5"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs",
+      "sha256": "fab39609b60a0b648ac3edd5003678ab9a7c25cd688df52830aa92b3d6e4759c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs",
+      "sha256": "fc79ba0e0757a27f14d5e337c7c36cbdcde594bbad96e51ac2ad1b7430390c17"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelEditorDrafts.cs",
+      "sha256": "25a407afb0500e271937d978104337ee7d40cb747cadcc8a92b1faac0c2cc162"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "sha256": "c00c60d5123b9bdde24df28b11259ae9864af3983a43644e55bd204f019272e0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHealth.cs",
+      "sha256": "103fbfa071ab215d8b92aabc99930fe7e22fcfd3a4c296837471b7620e3a5c9c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
+      "sha256": "ef51873c7692e289ab3a9fa3f668fb482433b9b5a739885b93de7982a17f4d3d"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs",
+      "sha256": "fa15bf21cd3a5fafbe30a8864515a55876ad4f996e306a5f081617cfc062e438"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs",
+      "sha256": "3003f0df48ee31fc9df081766ccac89498c3371fecdebaadc7576e8db2d8e350"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelIdentity.cs",
+      "sha256": "7cbe3c2d6a888a8d20ea87f9b03a843c28a96aefd9e15c708d3e26d0d9334958"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "sha256": "4aa4e5212b916642e9f69e8c05bd260143646cc1451cdfe7d0f5fdeea9fc1b64"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelIngress.cs",
+      "sha256": "0982003b75180c12f7d06b3761854fb42c2772a76b25a2e79682e0e9308951cc"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs",
+      "sha256": "952e6ce46ca97f6827a378473aa8ad345b534149f34da9d2b1363093cd567e80"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInputs.cs",
+      "sha256": "41c257a0ec1d2cf291e3727d64354829aaeb759438a11ca9e0c8c30aab78fc44"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
+      "sha256": "bfcf1cdae0298e526f8f6b24ee4df31109d6072c6e547f2c9cdfa5362c3058e3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
+      "sha256": "6d0a2d4cc7199fd9826f67ba6cc0461dc61d30bb300bd828745997a9b32fe16e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs",
+      "sha256": "5f9a5287c17482c9919d0ac570f888348b4f2a429aa6f7834f30bc7f4a5b223a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs",
+      "sha256": "46b8831e40e5bb43e81c1e69d699b57115f6cdad87f18bbae2e21ce6cec6c5a6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs",
+      "sha256": "92a4e16f9178a4d6776ed1187aafd327417544801b2f9348e71b67cbb933e676"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelManagementMode.cs",
+      "sha256": "7b51e4657452f4983fadd08c769fa44c60e30781cab5fe7cfd5bf3dd7c0278a7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorProjection.cs",
+      "sha256": "5a3f8e048ce2bc53054582212c03de7234442cb0f4af149103dd4d8cc7327da2"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperators.cs",
+      "sha256": "3d46fccacd4fab93338a9209df4ee76187c96358a41f30b92222577859d77a6c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOverload.cs",
+      "sha256": "6895097b988deafef000084e605f91881f897b2802145de4b3440ba50ab41142"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs",
+      "sha256": "ede9ce24042ee46e0dbc2608de54a13843047a6bbba0a36324071b2bf0a19f99"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
+      "sha256": "efc88f650f6f0b84952de32b6011d9b6ccdc1ed50b4eade4eb29c38d2bc78225"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
+      "sha256": "46a579fffde8575788368bd31d27444a483e6cc16c0281370e4a4f1a94ca08e7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptRecovery.cs",
+      "sha256": "b3df89d1d2569d480470ededc116049d6554fd3f7a3d39b8ca4b62e63bb4b4ee"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs",
+      "sha256": "b1c0f6a0c05ae73853c6d0e7821666153a1bf67d58dc639e37f0b5d0cb73b579"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReplyIdentities.cs",
+      "sha256": "589c1487e6bee7beb70401515b55f839f3420286b118406d6dde8fdb1108a321"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+      "sha256": "394e3d54b8d77a4d61c3bf98612a0ebd6b9c6ef20c751b5f40e8de373770c9ae"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs",
+      "sha256": "bd39743dd0218bbddbf843415502e102c6cc8e0e3bb9789263338a2d72e346d7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "sha256": "e5ec31c50dc851d0fcf2b7fd10e56ace22206c2200a39dcc126e108357563fce"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs",
+      "sha256": "2f7cf04fa7bf3990ccaaf6823a5c5d553cec0531059bbaf66e66eaaa4c332ec4"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "sha256": "de0e9225895882f632f5b1d9db49570b5049560c4943c8fe9617835b16dc5c75"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs",
+      "sha256": "4f6c49f38355c064277c15d773572b5534e5419045daf460a6a004153fe13ad9"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStartupRetention.cs",
+      "sha256": "2f3623b942b3de1af1fd4238869ae424d5b66e4ac6f38e098d1d87d4e53c7645"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs",
+      "sha256": "2ae561afe890adf691ce60a03d3e9455ec9f60c5c595a581536b2d61ee6185ac"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStorageRelocation.cs",
+      "sha256": "871bdbd69acc60570f4ede620b66e816a2c857a5685a98630f79b06ce2ba72f9"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelSupervision.cs",
+      "sha256": "c70cda6d95a9932ed152762eb1dcff0c06fbd21a4213542c881d5465b8aaae8c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
+      "sha256": "f517b6bbfbd20ce4fecea19159351d45cba5001dacef4319f80e71de51e18218"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs",
+      "sha256": "2ec48f9646dc98e47dfdef5a02cd7a79e8949d6608888ea71450abe04c0c8075"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/SoftwareLogReader.Index.cs",
+      "sha256": "0be3afca96a01eba79fcecc1a22034826c873fc82df1296d27a89fefc9e00549"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/SoftwareLogReader.Streaming.cs",
+      "sha256": "dec2cfccd7bd7de09a7e330beae0704d76cb4f72ca4972244be3e13f5413b264"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/SoftwareLogReader.cs",
+      "sha256": "cc082e5d31454ed5ddfc9e6e980c41adaf27e038124631da8d2ee734a5a3f318"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.lock.json",
+      "sha256": "b1b893e389baf70eaaf12e89683931ef259201b367221c8e463646467ff9df56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.win-x64.lock.json",
+      "sha256": "70560452516d3f2e7a0f2f0c50274ce4a7972f89aebac1f7efae21b528a84289"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.lock.json",
+      "sha256": "b1b893e389baf70eaaf12e89683931ef259201b367221c8e463646467ff9df56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.lock.json",
+      "sha256": "b1b893e389baf70eaaf12e89683931ef259201b367221c8e463646467ff9df56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.win-x64.lock.json",
+      "sha256": "70560452516d3f2e7a0f2f0c50274ce4a7972f89aebac1f7efae21b528a84289"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.supply.lock.json",
+      "sha256": "b1b893e389baf70eaaf12e89683931ef259201b367221c8e463646467ff9df56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.lock.json",
+      "sha256": "b1b893e389baf70eaaf12e89683931ef259201b367221c8e463646467ff9df56"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "70560452516d3f2e7a0f2f0c50274ce4a7972f89aebac1f7efae21b528a84289"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.win-x64.lock.json",
+      "sha256": "70560452516d3f2e7a0f2f0c50274ce4a7972f89aebac1f7efae21b528a84289"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj",
+      "sha256": "5c3a3ab1662bb7cfafdc40118b4632be7614fbc037df228c5c88a940ca34352c"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Presentation.cs",
+      "sha256": "093b688ecc6f1842e290ec09e11eafe2ae711bd78931a309e33d6d2475cf0655"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "sha256": "f0a01ecbe72795fe9eaa3838a825a2bcf271b7b621cb57bf2bfec9ed6f7cbb5b"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "sha256": "51078be8241e2d781326d088f0769a1243fb869d3ed1be6d5ebbd667baa9540a"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      "sha256": "a92c7965404cd7fed7095dfcebf1b5fcc33b29af2bb4544baaef00ca1b8e8b2e"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "sha256": "19886260991269eb1be72d33b505dd3e9fe8717d2d04adecc8c169cfe768cf40"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Administration.cs",
+      "sha256": "547a4cf3f2dc2b979105ca9341309553386407d8778dba0e404182dc3a30c35a"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
+      "sha256": "986eb62a63bead7575f8b50c7645f504d42a50e0e592b1a8fe846ebc7760ca83"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "sha256": "48590570fabfcea1e9e43bf88e0b072e8bf97d6d2242805cdfece4f22d336103"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "sha256": "53fea3707d863c66cd6d4a991e624aa430590161c51f60ec2c6ea53e1c82790a"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
+      "sha256": "ac5cc41620f002a56de8cf1d9c97be102105da735ae38d4af995ef149552d84f"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml.cs",
+      "sha256": "8c1edb499d89e884809f05b34627322106e861385e6a017316f9240f116d2f49"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/packages.lock.json",
+      "sha256": "8df5fd761cca9cda9cbf1283ec275dc76176b6bc7a91f435718df84eb73d2a39"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/packages.sportmaster.lock.json",
+      "sha256": "8df5fd761cca9cda9cbf1283ec275dc76176b6bc7a91f435718df84eb73d2a39"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/packages.sportmaster.win-x64.lock.json",
+      "sha256": "b8744925546b75d9b997333e4ef9d0e21f3986c3af3d6f4a2138279fe2995fe8"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "sha256": "2ef45457ae55078c9f79af680c31e9958a050510549cceea98f7f3605b637561"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "sha256": "49d4a910d066f1f1f9e04bbe553633f8dced31c2141672fb57e5eca011aa8a69"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
+      "sha256": "1dda408a4ce7920a60d801befbbd93260df413a885a39c0c84f7fa403a695c10"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.lock.json",
+      "sha256": "779994a28570f228a1c99b739c2ec5d671135c71b1435d78b037442de4111e30"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.win-x64.lock.json",
+      "sha256": "6d838da02a0b657d40fa6b5e687392436c617adf3d7be944aae92a9744ed03c4"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/ConfigurationActivation.cs",
+      "sha256": "99490bf0d32432de6fa70d970fc80da0511e38f273899a47a5fbf23f845d7607"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/ContractRegistration.cs",
+      "sha256": "1c3cefb6bfa0b268c35c293ebac5b72bba7f8d54fcd9d156efbfe894ee702868"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/HistoryQueries.cs",
+      "sha256": "b62d25612c0cfec2e30a5132f93ae3a814b3cadaca6b9ade6b71c2c28f00b0f5"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/IntegrationExtensions.cs",
+      "sha256": "afa7b789240b4c2d29c52effdc46f8455f4dc8feeb7411574048dc33c07406e7"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj",
+      "sha256": "7ff366d16c07acc5c4821fa03e2137b8fcfa862123db2da1053942a1097fe706"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/Model.cs",
+      "sha256": "d3bfcecad77f496b52dbb1a081e2d5d946dac7b257fdb04fcf9a03aa90287df5"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/ReceiptResponsibilityRules.cs",
+      "sha256": "f56d99cfbe8e164185759c5210e74f92ac63e111dd20bc5f8205e2d521cf5fe7"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/RequestContract.cs",
+      "sha256": "64e84c95ef01664a7fe21a29e857ab484b768a09caabd4ef101481235989092a"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/StationRuntime.cs",
+      "sha256": "c39061a85da3041f4b4c0598fe5a7c66056108b4ab462917dc844c16fc7b62fc"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/SupplyCommands.cs",
+      "sha256": "48d5ceffdc3f7009abf3cb983f71ba2bafc4f6664fd0f99017a7a00d5679dfa0"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/SupplyReasonCodes.cs",
+      "sha256": "8054eac9212e88ba27fc0e86afdca48405781ec51589d0cc0aaed12e34d8a9fe"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/SupplyViews.cs",
+      "sha256": "1fad09b035400f9262ad9920fa36b5f1a1a9e35e4ea093ff08ad40448d3bd53c"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.direct-plc.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.direct-plc.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.sportmaster.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.sportmaster.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.supply.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.wcs-to-plc.lock.json",
+      "sha256": "4329dc015b6223484687c99c4a9c9f176e48705dff3c7e51047881909861c826"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Contracts/packages.win-x64.lock.json",
+      "sha256": "56d99b2a2d93c36d8a75767c591dcd0e745c6d9e6a3d55b40761f50117ea46eb"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ConfigurationDraft.cs",
+      "sha256": "7c1916c817aff8c9b2b6b6a1e73c631e656ab47f746afcca17f4b4045cb88533"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ConfigurationValidationPresentation.cs",
+      "sha256": "1f87e1c04a7e3dab06fb5cdabf9d6961e29eea232274a3f2665d8ba61754a5d3"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/Confirmation.cs",
+      "sha256": "2d6478938ef5c5ae40e8a3509a03b235bb1eab29489a37a3130a54e2bf283a09"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/DeploymentPresentation.cs",
+      "sha256": "33e8e85f76c538bd861f5a8ff8f0c5080794cf382a0270802ae8473f6b215f9f"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ExtensionDraftEditing.cs",
+      "sha256": "efdbb33ffdbc2f3f25ee19725dbae44c015ade764307030cdc640f67038e9c08"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ExtensionsView.xaml",
+      "sha256": "232f3e100d417eeaa0e1aa01321aee6b33941b51414333d4946c2b6c59c8cde4"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ExtensionsView.xaml.cs",
+      "sha256": "0bba980df6b81d0878f49adbe54f00516c99bc893809df92b6baafefbaf37e65"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/HistoryPresentation.cs",
+      "sha256": "e68eaa549c18b28a47b401d2ac7cff69a9f21e461016a9ce1784218be5452d05"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/HistoryTimeRange.cs",
+      "sha256": "185f618c049f3ccb59a7e5595b4e86bfab03dd54d07acebe8dfe606a95e1323e"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/LaneControl.xaml",
+      "sha256": "fcb4c351a75dbb891fe99ee6422a7623ae258c44ef3258fb64afe2f96e040cf2"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/LaneControl.xaml.cs",
+      "sha256": "f70221673c6df48a1ac32d02bd5230cf5c84eda881fde65369fea69247ffd0d0"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.Alarms.cs",
+      "sha256": "c0d8acc905440f145bb9e36a6c95136f9621857fb108f4620b64532b31cb688b"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.Closure.cs",
+      "sha256": "f7a2670088d6fab11a0a0f46ef8fe7b065455a8d93313f1eba27b5bca9563623"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.Extensions.cs",
+      "sha256": "8a2dcb40debf9fe12bc01a008e84369820bc915795176bf2d64645dc86100fc5"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.HistoryExport.cs",
+      "sha256": "424d18af2e5532b44daee5aaab85f76c4d71f3bacca52b57038c4f06262a9ec0"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.Maintenance.cs",
+      "sha256": "6d7f6fc25194632a812e1e419d0826ca35be67ccdb30f528ca88afceb7074351"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.Presentation.cs",
+      "sha256": "00c0ec0283ff8a876c5b08c0234e583dfc384038ffd60e22d604b2c3c8daeb6f"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.xaml",
+      "sha256": "80a1a4852d8dd344f090cfc66db8cc6b45b0cb98d48e95441280e1f43bd63000"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs",
+      "sha256": "17acdbb701ecef37f90ad6c66225fe4d1b50d5ba12a475e0a56b351629765ada"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/OperatorNotificationPlayer.cs",
+      "sha256": "d6cfe77d1c5b68f8a9a3ae8695078ff8bdb0f3ecc72497af54102a9f47087c09"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/PresentationPolicy.cs",
+      "sha256": "71e46719415bfcc2a4f0ee182c42097ce07cf785f6e69a7a8b97d2d1bc8e8543"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ScanInputDraft.cs",
+      "sha256": "51226cfc219deb9c0b801d873ba7e9d937a14692f77790e5db78bbf67aecb755"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/SelectionLoad.cs",
+      "sha256": "9bf5307a13f723a1d46a747b14acb99b03c6ec917defa13b8f13da95eb456406"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ViewModels.cs",
+      "sha256": "7fe0d0115402be3abfbd31c68a499abdc8d1736163369cdd947f3b48c402c367"
+    },
+    {
+      "path": "src/Ipc.Application.Supply.Desktop/ViewRegistry.cs",
+      "sha256": "99a3725b88cc95a5f46c59124a9d3efb7edc49daa012beb0421195ae1926da42"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/ContractForwarders.cs",
+      "sha256": "686ecfb70ba005481b07d6e8bbfc85548825ef5d8fd0fe39af7ac35ed5a5b44a"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/ExtensionMaintenance.cs",
+      "sha256": "5fdf269cf894129ffb7019c761bd02385ef92bca987b8f27208ec04b105c261d"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/HistoryQueries.cs",
+      "sha256": "9b9edd5885d1009d8db7037a934e587befcd1b5a4080fd1ed73fcdde462c599c"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/IntegrationHealth.cs",
+      "sha256": "ff18ee3a394a31f04a33e9108ae18ee26fc5b200de7ebf2b2af599d70ef8ff65"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Ipc.Application.Supply.csproj",
+      "sha256": "bf5b16a4fb00fa3805706528298ec27e9f141ada91c65f6b6d3505a51bdfbe47"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Maintenance.cs",
+      "sha256": "16c8959a826a48f5bba7b976e2e8fe5d6af301e61f155bf9dd8c20fc980e21a4"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Model.cs",
+      "sha256": "0e5f234db5e8dda5ec53030e235e5c9bd1a760806c0de9019be80a78d0fa3023"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/PresentationProtection.cs",
+      "sha256": "5f09cdcbc6fcf687267ac6a61a98f7c06fedcf4236f5a2625138da0b50b1c85b"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/ResponsePersistence.cs",
+      "sha256": "ca4f1fa1529b58e792fea50bb11b5eb478903d2d1ff9611521d5a59ccb90a658"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/StationApplication.cs",
+      "sha256": "1a89358f9955c18be1040cbe014884a8a8b0f394ae7de88019745705c984b838"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/StationClosure.cs",
+      "sha256": "7560986efab9123921b279ea6558d033b8a1c9c94cf1184374ed28a9c9482232"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Store.cs",
+      "sha256": "494b837e66c78c8b2c3a4c9ef3ef3447f4cba97a906c2f63c7a13fda2a650f2c"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/SupplyConfiguration.cs",
+      "sha256": "885ad9fe50174d8ec67911c40800b55fdcde0dcb7b4cedc7769b795ec0134725"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.direct-plc.lock.json",
+      "sha256": "dc34747cee6840d301cc96dadc91df232dfa6e648a60541432a55d8bf8001a85"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.direct-plc.win-x64.lock.json",
+      "sha256": "465279fc73007e9125e3718e00199aada8f3dbb146a0ba10d6cf6e44cbf61733"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.lock.json",
+      "sha256": "dc34747cee6840d301cc96dadc91df232dfa6e648a60541432a55d8bf8001a85"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.sportmaster.lock.json",
+      "sha256": "dc34747cee6840d301cc96dadc91df232dfa6e648a60541432a55d8bf8001a85"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.sportmaster.win-x64.lock.json",
+      "sha256": "465279fc73007e9125e3718e00199aada8f3dbb146a0ba10d6cf6e44cbf61733"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.supply.lock.json",
+      "sha256": "dc34747cee6840d301cc96dadc91df232dfa6e648a60541432a55d8bf8001a85"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.wcs-to-plc.lock.json",
+      "sha256": "dc34747cee6840d301cc96dadc91df232dfa6e648a60541432a55d8bf8001a85"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "465279fc73007e9125e3718e00199aada8f3dbb146a0ba10d6cf6e44cbf61733"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.win-x64.lock.json",
+      "sha256": "465279fc73007e9125e3718e00199aada8f3dbb146a0ba10d6cf6e44cbf61733"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj",
+      "sha256": "d79d2c162b2387d4d7de63c199090dd61a80ddd9181f771227365c1c08379867"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/Presentation.cs",
+      "sha256": "4a6682b9a28ee5363c72f517c4bb57d218a0dea70baa86c3eda8392b74faad3f"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/Workstation.xaml",
+      "sha256": "0599ffbe1eec5c38d57e4a4eb4438b391df6c5d4ac7aaded5a1d57e6276e8638"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/Workstation.xaml.cs",
+      "sha256": "4d7cbeda2ca5111b4261923580177e3ee21932c1ea9035a74b8b98d0a4d28352"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.lock.json",
+      "sha256": "dbc1676d39c3bcc53f8cf7bebd3ad4c9a9ef80eed31af11a32264baf40b727b2"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.wcs-to-plc.lock.json",
+      "sha256": "8df5fd761cca9cda9cbf1283ec275dc76176b6bc7a91f435718df84eb73d2a39"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "b8744925546b75d9b997333e4ef9d0e21f3986c3af3d6f4a2138279fe2995fe8"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Application.cs",
+      "sha256": "ab65bdd61152c600f8d700163b5c958b023c69801aa29df5ab723c8a513734f4"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "sha256": "92a1ee66eaac6605f5c093e5333fb3f6099bffdfa706372403fa6241de1cdfb3"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
+      "sha256": "94458609f6e3d1443790365be609a6cabeec77d5c33a8489d37a98c5803490a0"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.lock.json",
+      "sha256": "779994a28570f228a1c99b739c2ec5d671135c71b1435d78b037442de4111e30"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "6d838da02a0b657d40fa6b5e687392436c617adf3d7be944aae92a9744ed03c4"
+    },
+    {
+      "path": "src/Ipc.Assembly/DeferredConnectionPorts.cs",
+      "sha256": "7f64244ff58a6aa9523e52bc71e5ae08a8b3df03a22091eb69926fe729ad8281"
+    },
+    {
+      "path": "src/Ipc.Assembly/DeploymentBatch.cs",
+      "sha256": "b48cbffffc97ae5deb931c3590ac19cc6cf46b78bf9e5ccd73c09faefd7d6f3a"
+    },
+    {
+      "path": "src/Ipc.Assembly/DeploymentComponentReview.cs",
+      "sha256": "61bf9a0d9f0df143d17766a77c1ca2adbfac3fa0603cbe1f373548626cf2a7c1"
+    },
+    {
+      "path": "src/Ipc.Assembly/ExtensionConsumerReaders.cs",
+      "sha256": "a8ae643d4b9f5a396f1693779efa2f57ec05ea66b4578f71e7ca4b7758e4aa9d"
+    },
+    {
+      "path": "src/Ipc.Assembly/InspectionAssembly.cs",
+      "sha256": "cfd04e8b0c071203917f6bb784f6b7fe35d5f096df5866f8aefd1f8cc521ac76"
+    },
+    {
+      "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+      "sha256": "8adde40506bbe1128df604aa2959a03bc44701931e5ac12c33478898f1b796fd"
+    },
+    {
+      "path": "src/Ipc.Assembly/OriginalParcelQuery.cs",
+      "sha256": "829c9f5dbb8bab005feda9819e70b9d4ad42a851d3df1988f42e66125a92ec08"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelAssembly.cs",
+      "sha256": "7498f2eba8fc5ab9df20396ab01948ab943ab9b0edc3fa0b27a5899f757be71c"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+      "sha256": "3639a329cf6e3b063c543bbab93647a72e190ac6523d6e50ae7e5a2bfced1e36"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCli.cs",
+      "sha256": "823f63bb967bd41b168e6fd97da424a3f0dda21a8475c08dddf30161a326ae36"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelRuntimeSetup.cs",
+      "sha256": "2fdddbdc61268e408307cc8e1912c6bdfef973da6010fdde005b270c59e84bbb"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "sha256": "d139459b40e717b2bdaf354e5e4f8dd6523751821e75a5cccd3563f9faabae77"
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "sha256": "15254d5bf6af417847d87f2bda27bf4520e2790bebf5be644c254021f611fe24"
+    },
+    {
+      "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+      "sha256": "9d5b8dae12a92ece257e00c80bd7f037876a1005a011fe77c92625eac55627ff"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.direct-plc.lock.json",
+      "sha256": "f3462c0592abcb0ffb50b1154d23989bcb5297a21fce9b25c2e466f8dd1e8f6e"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.direct-plc.win-x64.lock.json",
+      "sha256": "bbe6d927940364ebc9707a541523b41c6ae842d2a4ef3f76dce4269bf2773cda"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.inspection.lock.json",
+      "sha256": "f81574b9c388b176c02a7a63b041fb6518f2be403817f58e7dee8b4be3df3a52"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.lock.json",
+      "sha256": "e7f28d8f7c27524951699dea4c9fd1f10e78fbd1406990499fd7eac4591fae4e"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.sportmaster.lock.json",
+      "sha256": "42ff12796c1244675816fa9b1ee5f47067bd2694a0a8e736907eaff6367f8f05"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.sportmaster.win-x64.lock.json",
+      "sha256": "ac0c2c55ce6a01337b8073135a04094ad267dffb971dfb9cc76ff10c5fad3219"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.supply.lock.json",
+      "sha256": "e7f28d8f7c27524951699dea4c9fd1f10e78fbd1406990499fd7eac4591fae4e"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.wcs-to-plc.lock.json",
+      "sha256": "538507247b3d4a2bc1385c40f9e64acf3920e9ecafa0cd52a2325344f264aef9"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "71759b8570b47f803ffbc1db0413d81bbeafa78b1f832201ae19168c59241cae"
+    },
+    {
+      "path": "src/Ipc.Components/Ipc.Components.csproj",
+      "sha256": "dcf92bab93ef079af04b1233117be4febca250076b29fd4242593e0a5321ffc7"
+    },
+    {
+      "path": "src/Ipc.Components/ReferenceCapabilityCatalog.cs",
+      "sha256": "42533733196180fbeb56e590feae2a3653b37bcf2d3b470f049f4d8ecbc89036"
+    },
+    {
+      "path": "src/Ipc.Components/ReferenceOptionalServices.cs",
+      "sha256": "46a6c500a4f0f027a41f41fd785a3ca30a6083aabda5bf3ff0c5178f2d0a153b"
+    },
+    {
+      "path": "src/Ipc.Components/packages.direct-plc.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Components/packages.direct-plc.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Components/packages.lock.json",
+      "sha256": "2e1284e29d70c1eaa097d2b3485cedfc2e8e20526cadb120d25187eb019dbb79"
+    },
+    {
+      "path": "src/Ipc.Components/packages.sportmaster.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Components/packages.sportmaster.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Components/packages.wcs-to-plc.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Components/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml",
+      "sha256": "d1dcbfd70d8f3d3daa8631158c3c39a28291c1a31ec78cceeb4aab271b9df449"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml.cs",
+      "sha256": "14c99002c1ea9892258b97c7215af64a44e33b81d2b6dddb842b0ba3e826bcfc"
+    },
+    {
+      "path": "src/Ipc.Desktop/Assets/README.md",
+      "sha256": "99637e88ccae5e74f01e092bafe57542d6ff252256b7d2ea885ecf8bbf6ca9e4"
+    },
+    {
+      "path": "src/Ipc.Desktop/Assets/cainiao.png",
+      "sha256": "b12c9b143941ca20cb316e05d89b8cc9d412bd1d25a146e0c46c8a016cad3f87"
+    },
+    {
+      "path": "src/Ipc.Desktop/Assets/importer-pc.ico",
+      "sha256": "65f7d5bb4eed04e56eede791d8479d61107aedbc479138c27a0ee1a6d96c4f81"
+    },
+    {
+      "path": "src/Ipc.Desktop/DesktopLaunchOptions.cs",
+      "sha256": "6c56a2862c5a184235998034d5713067972b3a9c1f7a86b567129d68a5d66274"
+    },
+    {
+      "path": "src/Ipc.Desktop/HistoryRetentionWindow.cs",
+      "sha256": "53affef35b67032983439305ab4a5c0fef94b26b259b3c088b4b3a2c02b0e9fd"
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "sha256": "8b65e912fa86f42a6b5b3ec9ba618ffcb7594a8bbbf6dfed1cb71ba0867fd6a3"
+    },
+    {
+      "path": "src/Ipc.Desktop/ParcelApp.xaml",
+      "sha256": "f9449f5a866c9ef3464c7fb024add1db039bcedde69ae433eaf3ac26a0cebc84"
+    },
+    {
+      "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
+      "sha256": "5ae6daa0d3f5fd901074dfd126d268ffcd8eae8d80115aeee90537bf93063e1b"
+    },
+    {
+      "path": "src/Ipc.Desktop/ProductMaintenanceWindow.cs",
+      "sha256": "6cbf23cd9bebe0f805bbab32b28152490313b1c4ee8b663b7044b39b57872782"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "sha256": "45889b3837b953d5df956c6fc9ec2de874efd091dd881daee76bc82ff365391a"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupWorkflows.cs",
+      "sha256": "05869948031982bc46a3550a68a21b695079ce417d9cee4e4136ae4fe5fd6de2"
+    },
+    {
+      "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+      "sha256": "2596afd41c4e93d2f83eef064cf7cce1df2332bfce1f7ef382d66cce01fc9e56"
+    },
+    {
+      "path": "src/Ipc.Desktop/app.manifest",
+      "sha256": "8513a642ce26ce29a0e7d01fac772fb6f6aef790516e1a80acbb68815606525a"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.direct-plc.lock.json",
+      "sha256": "c067d12b2ad91060b5fa7a8d2b5ee4e414824c26a064511bd8d345b95f3477c8"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.direct-plc.win-x64.lock.json",
+      "sha256": "de35fb1ad27fa776cfc306fd8d9117ae9cc24c6cfa9d8604b2801b6b57e537b6"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.lock.json",
+      "sha256": "7c314515e05012c601a7410bdd975ed668d79d5baf41655e5ede6e3ffb965157"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.sportmaster.lock.json",
+      "sha256": "21ee501ea7de0aa85b9dc62b3e15e0a021cd954a37553d1f3144437ff12da2ce"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.sportmaster.win-x64.lock.json",
+      "sha256": "1e3f7df34d64ff85331bca3b345adc9d3778d0dd4c64f30749ff22ae6ce0b6bf"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.supply.lock.json",
+      "sha256": "7f2dde1765aedd0e32fc85f6ac8187b1d0d607a4ab61a7a718efddda26a0b9bd"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.wcs-to-plc.lock.json",
+      "sha256": "9863eafd4f12166dd5b513b487f18a70ace27da29d337673dc4f521f7bfa40a5"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "9b8eaf4655be64ddeb672f296cfec2e85998756934c3e180e038b700b0d2c964"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.win-x64.lock.json",
+      "sha256": "0a9182685fa188ac1d56111aab02494e6000f6473704ab9bae84216d17b9ff0a"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/HikrobotReader.cs",
+      "sha256": "de4a92800ab681ddd5e557b8c6f21c153994c1c672d0df3ddf168eb5361983be"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
+      "sha256": "9d67cbe6f79159bdc4b54b243f929de75c7cbfb9b141b8848e660884133b37b7"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
+      "sha256": "575af4a6d9c4cf9799b6554d58cbda46464ff1cd260c0e2302c206d0ca34a573"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/extension.build.json",
+      "sha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/extension.build.production.json",
+      "sha256": "84d89cd0d0b5d97fab014ee41bd9e186e56e8121985da7350b3d12946fe1a6b0"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/manifest.production.template.json",
+      "sha256": "9879b2fd40162dc76a23e4430942b126bfbee884ec67030d31da4dcb778d65e1"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/manifest.template.json",
+      "sha256": "47b2150d2e8904e2d258d27ed01022ecd48d226a0101325a628d91f3856d8b5b"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/modules.json",
+      "sha256": "3f4cca2e40d1304c754fb41f39eb5b104bc934b3922dde76707689d7cc702941"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.lock.json",
+      "sha256": "a4364d81a6de2707d66fbced18fbbc926c882ab96e1d1aebbb17e871285b9d75"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.win-x64.lock.json",
+      "sha256": "cd97f644c24bb2cd8c96d92c519036a65133ab22cafc294d07b527626ad20e84"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/parameters.json",
+      "sha256": "7e34df46dfe02370cd8c5929193a5e169b33a9f23bfbfc77224c09d976a369d3"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
+      "sha256": "5a4b9f5d550cc267343e3491df633aca53b2aaa22e7b8a70c5284f3b633f6190"
+    },
+    {
+      "path": "src/Ipc.Drivers/Ipc.Drivers.csproj",
+      "sha256": "dcf92bab93ef079af04b1233117be4febca250076b29fd4242593e0a5321ffc7"
+    },
+    {
+      "path": "src/Ipc.Drivers/ObservationSources.cs",
+      "sha256": "89c61873ee3839f27c68eeedb560d4f63d1cda69fe6f393b58e895b85d4f5f52"
+    },
+    {
+      "path": "src/Ipc.Drivers/ParcelDevices.cs",
+      "sha256": "6a385f484acacfc985fa86a66dd6af45208676bb41c7c7d069c6143f8c43acf8"
+    },
+    {
+      "path": "src/Ipc.Drivers/ReferenceImageCamera.cs",
+      "sha256": "4a7856364f9a60cfb428c79e087decd2841f07c2e35a05e7efae3cb2caa0fdca"
+    },
+    {
+      "path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
+      "sha256": "ad7eb596fd0b04fb6076149500eea6ae7229374854a5c1bb064506106cd18a2d"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.direct-plc.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.direct-plc.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.lock.json",
+      "sha256": "2e1284e29d70c1eaa097d2b3485cedfc2e8e20526cadb120d25187eb019dbb79"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.sportmaster.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.sportmaster.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.supply.lock.json",
+      "sha256": "f0648738270387f091202a345b63c67a10eb3085dd643f336bec261e3489d49a"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.wcs-to-plc.lock.json",
+      "sha256": "3e0bbf94168931a6e5250b11f53c61db3c6068097c742072a4e21f82b4a67730"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "4276f38f18db9a0018dfa05f569de604ed3c12bb46e6e1ca8e45fe8244c303aa"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.win-x64.lock.json",
+      "sha256": "367e2f727c0054862a41b192141e325b1b3d3a395ea674c936b06ecf8a93a4f4"
+    },
+    {
+      "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
+      "sha256": "e483104a8afce7f1ed202f397d248b2d07098e2d3f6306f9b76ffb2972f3fd0b"
+    },
+    {
+      "path": "src/Ipc.Fixture/ParcelPeerEndpoints.cs",
+      "sha256": "d6b257924de73eab01700c7ae716e7355a9cc86a73d4546d6318abc60ee7624e"
+    },
+    {
+      "path": "src/Ipc.Fixture/Program.cs",
+      "sha256": "c958226081052c7afdbf4198fd6fc583da4250d7a871e12cc7eabc375ae87856"
+    },
+    {
+      "path": "src/Ipc.Fixture/Receiver.cs",
+      "sha256": "f32a20b626b9470f4f965b8b4fde8df2d92141307a153e3442183ec17baec879"
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "sha256": "48e597a3a9e08c65b9b0da8cf1838870ba235a69691a849df30201191a292767"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.lock.json",
+      "sha256": "613a324dc3a664cc1940bfd68ca8ce6ed9bcfcd4ff294a1f76c30f9056e35e82"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
+      "sha256": "d473c9eba4eff495a6706c54cb84a80e82d9dd597afc80ff1b81c81a1a2f76f5"
+    },
+    {
+      "path": "src/Ipc.Installer/App.xaml",
+      "sha256": "bc2880187d92557dd97155cee142a4b71feab20823a3c22af21e783600a32237"
+    },
+    {
+      "path": "src/Ipc.Installer/App.xaml.cs",
+      "sha256": "0410c00476e524afa4f7487ef982f78e349b3f8a700ad9a08be80975868fa59b"
+    },
+    {
+      "path": "src/Ipc.Installer/InstallerPayload.cs",
+      "sha256": "025b2d77e5ecb166a49b0e0bbd119290b81baa2379c993b2c396c0d70e66cee3"
+    },
+    {
+      "path": "src/Ipc.Installer/InstallerPreparation.cs",
+      "sha256": "b5e58d39d3d71118398089e8c230415276b7d6a58a1b2ce65f33672d165ee9bc"
+    },
+    {
+      "path": "src/Ipc.Installer/Ipc.Installer.csproj",
+      "sha256": "910de131a102d5c512e5f11547269a0789befb7bc3dc0e6d3f72a9227a761bfd"
+    },
+    {
+      "path": "src/Ipc.Installer/app.manifest",
+      "sha256": "d6d1e43d67f5e25c279ab60ed1d40097d145ab2be007fcbc3e949f7294f7d52d"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.direct-plc.win-x64.lock.json",
+      "sha256": "a6397b4bde73ca22eb179e8bc2b472c3ec502baeb3521ee96d3bbb5085641d96"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.lock.json",
+      "sha256": "d46850b5d3a111989e672441e039da2fae73390babc3da0fd443305d2ef0e957"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.sportmaster.win-x64.lock.json",
+      "sha256": "d160fd571177aea003b1031d40ee64cc8f68675235a80ffc13d8de68d62c621f"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "d19200d1013ec10005f7f1170eea4d10320a204bf4c329edd60628c8a5b15385"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
+      "sha256": "d25844230bb25941ae616e9fde8188741aaa41a76445719d584abcb2afcab749"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs",
+      "sha256": "49224c3f6cbd611bc2540b16724e47cb08f6003413c5b6fce9f1e5feab9c2da2"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
+      "sha256": "90a64fd1f60569cd846d885664ac55824576134abcd3a7541560150a1e9a1f43"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs",
+      "sha256": "dd01b9863e6f8fef0b6f3a09c2f197e6da3b94a2c7ef1dbbbf6b1a5d4936ad53"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs",
+      "sha256": "ff37c045cc32b2913dfcf5620e1db9a5cf276c740e4820b94b53a0e08434abf5"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
+      "sha256": "574ac7cda4706257aadff8d128fe15d3872102596c2a564e2bc9756bd11904b4"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/extension.build.json",
+      "sha256": "85c8161f20f4bf40339e2b30500851bd2e6ef3eca0743c506a57186e91303514"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
+      "sha256": "4d0eef07692c887c39eb6aaf8ad64b8b02473ba96631a8b69b0aed2067c2c74f"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/modules.json",
+      "sha256": "b48c6d5e298500fab96b4e72769ce17ad79c74169201d507d28017459394ffe9"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/packages.extension.lock.json",
+      "sha256": "a4364d81a6de2707d66fbced18fbbc926c882ab96e1d1aebbb17e871285b9d75"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/packages.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/parameters.json",
+      "sha256": "d0812abd6563f0c8d0a94328e4fc251c4fdb6520df905092712bac4ba7e09165"
+    },
+    {
+      "path": "src/Ipc.Integrations/Ipc.Integrations.csproj",
+      "sha256": "17c3af6e79c56263f5b1275a8fc41d3e9c7dd071cb1af440c02a455bbb12c267"
+    },
+    {
+      "path": "src/Ipc.Integrations/LoopbackIntegration.cs",
+      "sha256": "1157c8b5b1c9d322b9ba4e805fcfcba3e1109650453013d371d62536d8a19d52"
+    },
+    {
+      "path": "src/Ipc.Integrations/ParcelWcs.cs",
+      "sha256": "0e2eee151311ae3a753a3b09a0414b430c390401e46e30b418583dd50c4e52d6"
+    },
+    {
+      "path": "src/Ipc.Integrations/SimulationRequestContract.cs",
+      "sha256": "d209f6e0e02f1f03008698532ded3ef81f5720d3b92df23436b480171ef79306"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.lock.json",
+      "sha256": "14ab56ea4c6b8957f2bfa46fda5d778213df0011330304e1cbfa5897531782c2"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.sportmaster.lock.json",
+      "sha256": "1f3f6a0e31298ec2d46ccdc20c6757e7561cc629942cf9b863459359e98edfc3"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.sportmaster.win-x64.lock.json",
+      "sha256": "d6c1ac297d3ec0bc3deaedcb5ce85baf1beb4e12c8fd6df7847960dc56a97993"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.supply.lock.json",
+      "sha256": "06fce3d31ed996dc35f404796f7bc0fd0be37084a74f452ef09d693d109a05bc"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.wcs-to-plc.lock.json",
+      "sha256": "1f3f6a0e31298ec2d46ccdc20c6757e7561cc629942cf9b863459359e98edfc3"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "d6c1ac297d3ec0bc3deaedcb5ce85baf1beb4e12c8fd6df7847960dc56a97993"
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.win-x64.lock.json",
+      "sha256": "c817008b110f81fa55a6e6cdc7b1baa1aadabed7e64602faf34fd708c5856c27"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/Database.cs",
+      "sha256": "024f701dde1dec515da0c7b78514c4fcac90d1c69ab80e14db2e74b9d4dfb144"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj",
+      "sha256": "a6757b51e6752e7bd2812aa18ec3b861ac5ba8e0ef339dfab0bed32a7552f082"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.direct-plc.lock.json",
+      "sha256": "c6741ff6401d987a6e68951871d8fb8122059a15860e1aa20c0fb147ebe26267"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.direct-plc.win-x64.lock.json",
+      "sha256": "c0fd107fac4496bdf27b60164f0dc977f86393dd9cdcaff8800d5fc8381a4f57"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.lock.json",
+      "sha256": "c6741ff6401d987a6e68951871d8fb8122059a15860e1aa20c0fb147ebe26267"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.sportmaster.lock.json",
+      "sha256": "c6741ff6401d987a6e68951871d8fb8122059a15860e1aa20c0fb147ebe26267"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.sportmaster.win-x64.lock.json",
+      "sha256": "c0fd107fac4496bdf27b60164f0dc977f86393dd9cdcaff8800d5fc8381a4f57"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.supply.lock.json",
+      "sha256": "c6741ff6401d987a6e68951871d8fb8122059a15860e1aa20c0fb147ebe26267"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.lock.json",
+      "sha256": "c6741ff6401d987a6e68951871d8fb8122059a15860e1aa20c0fb147ebe26267"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "c0fd107fac4496bdf27b60164f0dc977f86393dd9cdcaff8800d5fc8381a4f57"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.win-x64.lock.json",
+      "sha256": "c0fd107fac4496bdf27b60164f0dc977f86393dd9cdcaff8800d5fc8381a4f57"
+    },
+    {
+      "path": "src/Ipc.Platform/ApplicationRelease.cs",
+      "sha256": "242a0b08f3de1ab51a1b922432c810158b182c276f8e87653165c3a954f98d52"
+    },
+    {
+      "path": "src/Ipc.Platform/AssemblyInfo.cs",
+      "sha256": "eca79a1762a77ca1c4123c37e650400f6ea367ee5cb5e9ec0efd4caeb99c265d"
+    },
+    {
+      "path": "src/Ipc.Platform/BusinessAssembly.cs",
+      "sha256": "367c9dd5d0660f4feab8f5fd283257e7a67ce2d7e8282f1ded9f7b412e065dc8"
+    },
+    {
+      "path": "src/Ipc.Platform/BusinessCompatibility.cs",
+      "sha256": "a59e7d20fc8018f1c8e547734e8c5f1d608bbd8652301f1eb84025048ac154ab"
+    },
+    {
+      "path": "src/Ipc.Platform/CommonCapabilities.cs",
+      "sha256": "f38cf04ad6a6e4fb51b6811561fd47fa421185e1850958501d7df2017fffc8b0"
+    },
+    {
+      "path": "src/Ipc.Platform/Configuration.cs",
+      "sha256": "c2e7367734a6f0bcdf6aae66afed675b51cf90506d0a3ae9d5c655d0e8046326"
+    },
+    {
+      "path": "src/Ipc.Platform/ConfigurationRevisions.cs",
+      "sha256": "1fb2e1addce6076db5e053a03c656670952f0cb2b3dec45cb6e95ecb4ca8bb46"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentMedia.cs",
+      "sha256": "e5048a90a3e8e1edd050801389bbfbd756a84e3cdeb2cec9c46e667fd31b1fb8"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentOperationInspection.cs",
+      "sha256": "4725d064e5305ccda2c1e4e855214607187a632a0d7210d50c668f4a39105a00"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentPaths.cs",
+      "sha256": "c66e7b3957745a6ccc93e1ab7d4082b8769d78b332c43e15fa679f84f5a2183e"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentQualification.cs",
+      "sha256": "93372171f451806e364cff5ecd5d4bee667972c16cd61e04a36d02319a6eed5d"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentShortcuts.cs",
+      "sha256": "87bfb553164fb51576bdb1e2db60ded974d23c6ff13e314af53ddc1a3778151e"
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "sha256": "c579d38f0c451295f33a20915819e1a111675508aebf7afdb7036d70d3c88f65"
+    },
+    {
+      "path": "src/Ipc.Platform/DiagnosticText.cs",
+      "sha256": "699c8deb6026903a001745fc04d5fca9589e4f2ed90cc84c4c9e82faeabee6c7"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionConsumers.cs",
+      "sha256": "7062b9b3491b7e76a5296dd536c795900720bb32f27551846fa131db3c813bde"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContractCompatibility.cs",
+      "sha256": "bc41b3e74dcbbc5a2eb108070774952d46428012c8884e75f8d6f4ba8eb96bda"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContracts.cs",
+      "sha256": "5ea9e89a32d8c20dbec7a3bff205fd668d123ba265c06031ce739366bd7809e3"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionLoading.cs",
+      "sha256": "54629cb25b06bfae9dbef8740dff816af097b48a8a48403c6b744cbdf8d9f21b"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPackages.cs",
+      "sha256": "46b03494243d48a3931eb11e40d3658442212eaa50442186ac17dfd11cbe1489"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPublicContracts.cs",
+      "sha256": "d55ba2c013b83dbdc8f8f0252a474dfc4a053fe9dc1b40738d04802d52ad66e6"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionStore.cs",
+      "sha256": "4717b4746c7aab45667e3961c92743e04eef37c4c45c25d6a8a6a6309c794289"
+    },
+    {
+      "path": "src/Ipc.Platform/IRuntimeProgress.cs",
+      "sha256": "b2f8651c7a5c3648bb09faceda24840845272da2762c88b34400d8d279b530e8"
+    },
+    {
+      "path": "src/Ipc.Platform/Ipc.Platform.csproj",
+      "sha256": "6ea38e18f72c42f7a530902a42f6b3d05a9486c3bb26c46bf0a1ebd48ebf45a0"
+    },
+    {
+      "path": "src/Ipc.Platform/LegacyNamedCapabilities.cs",
+      "sha256": "102918b68b52c6c30740f7b91e62ff047837e6ce5903b95699b42f9057e08b63"
+    },
+    {
+      "path": "src/Ipc.Platform/Lifecycle.cs",
+      "sha256": "3dce1e8411338d3d0f2ca393a21774f8db3455bac5c4d60027bc05711e62a92d"
+    },
+    {
+      "path": "src/Ipc.Platform/LocalManagementMode.cs",
+      "sha256": "1f2e4de60a5c714982fff49fb1b312af53b8089b176dcab937fc19917e65dead"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "sha256": "d07e7d7d6e8656d3d8a6c4215cd1fba804c38c8ba6c0812b08a3c9c273e7ad0a"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimeSetup.cs",
+      "sha256": "9700057b969ac689112d687425085abc988b520088a9159060eaf364e304c538"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagedAssemblyPolicy.cs",
+      "sha256": "b32e23131af98115a774db33c4995b90928663ee1d4830ece673726e18629088"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
+      "sha256": "830d51aeb206d8f3fdec2b207e4d539a0626a5f289620881ff0a51ad6c37d843"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagementModeBroker.Protocol.cs",
+      "sha256": "f0daf6c4a84ea918b3257b15acc702d7593c8f23659caf0f98a968fdc9d1f392"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagementModeBroker.Windows.cs",
+      "sha256": "7f6267770c338733b5b19ba4b84b7a0222382d7e318691c0d3ecc0465a2b64ee"
+    },
+    {
+      "path": "src/Ipc.Platform/NativeSdkBoundary.cs",
+      "sha256": "115be458e211b779bdeb21e31fe64b9c27d20c25710a8bace8a772dc3de0f993"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationConnectionException.cs",
+      "sha256": "790ddc8b5967becaa5593ee9953d24f21bceb6bf4abfd3ec2a439dd99cb23a1a"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationSession.cs",
+      "sha256": "d33c4fe411f99087a31bcfc64d9b2ab8b1fcdfd37d44f442610a149c0f3f4574"
+    },
+    {
+      "path": "src/Ipc.Platform/PackageUseLease.cs",
+      "sha256": "dda3e62f652e650742342850e7c03e1312758f405d5a09076cd66a4f32016e1c"
+    },
+    {
+      "path": "src/Ipc.Platform/PresentationPreferences.cs",
+      "sha256": "8fe52fd2bf06e894d7b22d1a51123c7f53aa0b96d89a8f98ec851f4745a0b0d9"
+    },
+    {
+      "path": "src/Ipc.Platform/ProtectedDraftPayload.cs",
+      "sha256": "2f76511913be049f3f0191d2968e2186102605efcd62f05962cbfc1a0e7afafa"
+    },
+    {
+      "path": "src/Ipc.Platform/RuntimeJournal.cs",
+      "sha256": "07d8dc21f625ac9050ac67e2c0bc0a9f8b618d7e0f26e638eed056a396f5260b"
+    },
+    {
+      "path": "src/Ipc.Platform/StationDispatcher.cs",
+      "sha256": "8899e802f0f6fc4fe4f8a0ec159abd0ad057c0551025f12a497d19451a9ffad5"
+    },
+    {
+      "path": "src/Ipc.Platform/TrustedProgramRoots.cs",
+      "sha256": "87477d956e1da5a1583b40e18f38c6341808cb5772079e7de7c37b5259908b20"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsClientCompatibility.cs",
+      "sha256": "f373e0d880c4ee870c684bec61f13408d893cc03ffea7838555fb094a2b3b97a"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsDeploymentMaintenance.cs",
+      "sha256": "8c86fa110bfcf91e80af63ee9ef96b96e903d7c6eba0c65f63158f33a6dd26c9"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
+      "sha256": "f4e11f2b35e7dab079f4dedbb62108dd4cbae61971fb085f5b3bbd506e29575f"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsInstallationStage.cs",
+      "sha256": "cfdc5148ef5b04a3a9920f86f1a453902d0b1fa6f737fa072ae22086c4ba6ad5"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsStoragePaths.cs",
+      "sha256": "3b92485cb91835ace0660687e47e9f6695fe2a73667748818f029b2784ea6548"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.direct-plc.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.direct-plc.win-x64.lock.json",
+      "sha256": "08000256a49068b29809f3de9287d68a7f106c27a2dd1bf609fb25ec6495708f"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.inspection.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.sportmaster.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.sportmaster.win-x64.lock.json",
+      "sha256": "08000256a49068b29809f3de9287d68a7f106c27a2dd1bf609fb25ec6495708f"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.supply.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.wcs-to-plc.lock.json",
+      "sha256": "549fc4a56a35f3ebdc1d84dde0c6d4210bde02cf4c4b004e7d3b76a525f35278"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "08000256a49068b29809f3de9287d68a7f106c27a2dd1bf609fb25ec6495708f"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.win-x64.lock.json",
+      "sha256": "08000256a49068b29809f3de9287d68a7f106c27a2dd1bf609fb25ec6495708f"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/Fonts/NOTICE.json",
+      "sha256": "debd6a2db8bd01b1285117e2d1256835fd96886437e5cede3f7b51f249a47c78"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Medium.otf",
+      "sha256": "ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/Fonts/NotoSansCJKsc-Regular.otf",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/Fonts/OFL.txt",
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj",
+      "sha256": "7ae63dfc22b3f341f6f2a50c1185d4c936c5a301fca0b44d0c6628e2e87ef924"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/TypographyScale.cs",
+      "sha256": "a7d61720de427ca81e88c506735c64ee43d414c6da7231308b14db8f3d7d52d4"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/UiTypography.cs",
+      "sha256": "2d012db04a5adae548a0d2ac38dc0254be9e2eb348ef8e0742cf9579316a7986"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.direct-plc.lock.json",
+      "sha256": "531d4cf71e5420c1c03da4c06778ba2a212c7058a3882e7a3a873ae2f811511e"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.direct-plc.win-x64.lock.json",
+      "sha256": "0f83acd03bf05aff8b69017cd5247d225fa7dea47c09705da67f24beb2d50a6b"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.lock.json",
+      "sha256": "531d4cf71e5420c1c03da4c06778ba2a212c7058a3882e7a3a873ae2f811511e"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.sportmaster.lock.json",
+      "sha256": "531d4cf71e5420c1c03da4c06778ba2a212c7058a3882e7a3a873ae2f811511e"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.sportmaster.win-x64.lock.json",
+      "sha256": "0f83acd03bf05aff8b69017cd5247d225fa7dea47c09705da67f24beb2d50a6b"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.wcs-to-plc.lock.json",
+      "sha256": "531d4cf71e5420c1c03da4c06778ba2a212c7058a3882e7a3a873ae2f811511e"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "0f83acd03bf05aff8b69017cd5247d225fa7dea47c09705da67f24beb2d50a6b"
+    },
+    {
+      "path": "src/Ipc.Product/AssemblyInfo.cs",
+      "sha256": "b749ce9dff2eecc40299e74a16e4de7620f0a87526027c8c2a97003ec9844a8c"
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionBuildCheck.cs",
+      "sha256": "5578bdce50cd30f44779d2f866600557766346ec0f3a47c465eed46410a9f1c0"
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "sha256": "35ee4f86b634b8415816af8f9e4f3de097023f776fbb8691f71504bff6811a12"
+    },
+    {
+      "path": "src/Ipc.Product/HeadlessNotifications.cs",
+      "sha256": "778dc105770afe11b49757fcc02fb89537d6fcd68d41ea46e28946c21e04dbe0"
+    },
+    {
+      "path": "src/Ipc.Product/IntegrationRuntime.cs",
+      "sha256": "f60b1efd87cdd5e9a6f2174d215092b356b643834c47896c7fdb76399156b811"
+    },
+    {
+      "path": "src/Ipc.Product/Ipc.Product.csproj",
+      "sha256": "6a2c6276db6046ba1321246d8b9ae11bcfdaf1b74f56b8e41b84910530e072be"
+    },
+    {
+      "path": "src/Ipc.Product/ObservationModule.cs",
+      "sha256": "19f6e4c528f4c4048a92f1e69c9afe4872ea66ec1ee1e3000143adaf573867da"
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "sha256": "244918a28a767a37962b16fa7ae6e159adcef6394b066f315562e779f7abaaba"
+    },
+    {
+      "path": "src/Ipc.Product/Program.cs",
+      "sha256": "43a4d0fc364074af44d57200c7084ccacc868b30ad0d30019ee6b6e4bebd2f9c"
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "sha256": "eb49d4ce6f49afdb81ef9030aca9891feff772bb3f46e7f50007125e3f30e532"
+    },
+    {
+      "path": "src/Ipc.Product/SenderModule.cs",
+      "sha256": "88f9c202ad395362e3de884e61ce1c17b3c6dd278e287ce035a8b0ed313e48ae"
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "sha256": "d2f20993ef6f4756291ac3f9f449e02124eb0221e782307634b4be150c527421"
+    },
+    {
+      "path": "src/Ipc.Product/packages.lock.json",
+      "sha256": "807e1b300f15a81fb64470a04efb1cedb6429067324d20628db5ac004cb199e9"
+    },
+    {
+      "path": "src/Ipc.Product/packages.supply.lock.json",
+      "sha256": "807e1b300f15a81fb64470a04efb1cedb6429067324d20628db5ac004cb199e9"
+    },
+    {
+      "path": "src/Ipc.Product/packages.win-x64.lock.json",
+      "sha256": "c2854032e42e5b04155f116fdd46052743fae3b09d9ada0004b0f3a3045f35ff"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj",
+      "sha256": "2b63bb97a065eb6fc709cdf16b822c098ba34641930771df2bd9923331f38740"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/ReferencePeer.cs",
+      "sha256": "b0ffdfafa325f03a3e79e573914ac9f64a45dd769d4b8e51a3a20027ddfb0895"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.direct-plc.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.direct-plc.win-x64.lock.json",
+      "sha256": "cdd67cc462715ab5659fe516af06d901c0d3282e8873299361e8b7a9a034523f"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.sportmaster.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.sportmaster.win-x64.lock.json",
+      "sha256": "cdd67cc462715ab5659fe516af06d901c0d3282e8873299361e8b7a9a034523f"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.supply.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.wcs-to-plc.lock.json",
+      "sha256": "257a0bad6f22ad4259b854b0be5ed1a4665e690eec913eeaa52bd34959102f1e"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.wcs-to-plc.win-x64.lock.json",
+      "sha256": "cdd67cc462715ab5659fe516af06d901c0d3282e8873299361e8b7a9a034523f"
+    },
+    {
+      "path": "src/Ipc.Reference.Protocol/packages.win-x64.lock.json",
+      "sha256": "cdd67cc462715ab5659fe516af06d901c0d3282e8873299361e8b7a9a034523f"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/AcquisitionLifecycle.cs",
+      "sha256": "a424f7b5ce9c5e4f2e141f47fcf25084e7b46bc3fdab012154b030fd5a2c24de"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/AdministratorBoundary.cs",
+      "sha256": "94fc1d0eef266eac552ec6994061b6eefda552d775807ca148a441941192c1a9"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
+      "sha256": "c592f6e0254c0428d9625a4556c585de478f5d291bae4466f572d7d76708a248"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Activation.cs",
+      "sha256": "abf9a173c4032b533caf0cd2458f97afff2e45a882ebf68580af74a31b0c3a1c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.ConfigurationConfirmation.cs",
+      "sha256": "0de1a6e25598edf0d5e39421c800c1310ee6f213046059c09e3d16eac22a24da"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs",
+      "sha256": "3cb83fdd6057a68537d902eb5ba2420d5b30e0f3a6cbe5a959658000c75efb41"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Extensions.cs",
+      "sha256": "814d2c247bfaac725a0658d28cb7d4669226b7fd6639e43da7cbd7ea8a0bc307"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Http.cs",
+      "sha256": "ef773dbbb05d66eb0068d5750932a01361153748a506599568b4b578d45d3afd"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Isolation.cs",
+      "sha256": "30eec930cf8c060f1f6523ab08086d4473b61b822264dd0f7ba6f060fa189c5f"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.LegacyCustody05.cs",
+      "sha256": "625fdd4f9cd34691c1fab2e3c54427ffd14d03b619eb3abfefeee15229ca6b1c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.PriorCustody05.cs",
+      "sha256": "14cb6211040fd004c3d8fc4e491d7f1b24e448779fca14b545f64f2a81e29dd1"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Recovery02.cs",
+      "sha256": "a834d4f5e207b4b6e5c2750896a66b2176cda40b5efce8d9268124375d0f45aa"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.RecoveryP2.cs",
+      "sha256": "c5253892c205e5a977db3bcd3df7e1bb1bd8b3e75acdbf04aac16d53f2712024"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Responsibility.cs",
+      "sha256": "3672dfac27a5f96f109ccaecf0f65c8959e68c6ac1f9adeb039ada9bf70d8b02"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.StartupRouting.cs",
+      "sha256": "cf5b8edd6737da3cff19aa85d9e3f61fe1e331abf196dd0fb094e24aa0728485"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs",
+      "sha256": "8e737c202521795c7a9e548330b87aebc73ab876ccaa2a4bc971ca44a31a0453"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.cs",
+      "sha256": "2ec8b1569c8a072e7fde6c0d2ab2d3bf0638fa7bd33a0cd86f1c5a67fbb6e1a7"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs",
+      "sha256": "e7249a836560d7614ec947399856489f12603c6f40c97550631f91fc11a22289"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs",
+      "sha256": "baae9da3104cd672dd5b991548ac14d30548b47f3a61a2463f97bb4fa74653d5"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Audit03.Inputs.cs",
+      "sha256": "2a92e1e7249c6b2f91358ba6fb329fbb4c36891f8fd3b43c23ac516abb95dff2"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Audit03.Maintenance.cs",
+      "sha256": "7b3df02b15c84afeeb6bd2eac43aafca7dc49c209d6e3b15c724458e461cf5b7"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Audit03.Rcs.cs",
+      "sha256": "5c64ad511188cc91f827adaa8666810ecec66106a44b42548a75837c7f01cf3d"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Audit03.Snapshots.cs",
+      "sha256": "2b338c84674b284215e1b075222055fda7a0919f006f40c5d1dc46d84f291618"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
+      "sha256": "a52e2e3a15e3e4374697d76e6592d6d06aace4aee56f1a617d1969440aca23b9"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
+      "sha256": "173b1b6fce87f15f136ac4a55dae46a488738e51bb5d2677cdba6dd653a7646b"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CommercialComponentReview.cs",
+      "sha256": "96a1fd6f6b4cf26749f9e4004def77f3527abcc8718f4eeb912a202581465fce"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CommercialProductization.cs",
+      "sha256": "af358e056e9e8ad15480da261f45d9c8c3b4c2084dd12941b9b29570b133f64c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CommercialQuality.cs",
+      "sha256": "e8bcabc952b24fca7cbf34a4a7eb66948dbde998d730b070a8545c819ff77836"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/DualCameraCommunication.cs",
+      "sha256": "6feed321e7baec666a4d6ffecb5bb3a78d0153dc38ba6c43402f8f0c54cf9d4d"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/InstallerChangeGuards.cs",
+      "sha256": "adc283e4a52761e15fa409edaba34f715bed610a9d1ac15ab7f74f2684b38e89"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/InstallerOptions.cs",
+      "sha256": "7fbaf873cb70dcddeec32f40fdc1b83906ff04237007470f3580199c5362e0ee"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/InventoryClosure.cs",
+      "sha256": "ca6c7e96635620436bf5cfc23651c78dadfc42f7a3bf92065254c04d9491452f"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
+      "sha256": "cd9346e714d68953077215f3b5260b7237348e75f7b897a4fad0e6103eaaefc6"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/LifecycleOptimization.cs",
+      "sha256": "c8ab5899b454c08699cff80c64a17ea78f7a44cb515c71ce5d0e64754182b929"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/OperatorAdministration.cs",
+      "sha256": "e45010ec0ae327c9f178b7a4120bb9fae20d2fac4965890b7a2001af97290895"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/OptionalCapabilities.cs",
+      "sha256": "71ab17a15e6448ce4df6acfb8995e20720f4f6fa1c72fdd814074fc45275e3cf"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
+      "sha256": "6755e8ccc4ff6266ebf2b593c563150bb90c9000b3290f663de5a010cab527e9"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ParameterInheritance.cs",
+      "sha256": "898c444cf46f69d9190d79fe4dfde2503413aa5f41bc14a971d742894e413c1c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ParameterRefactor.cs",
+      "sha256": "0c6f5dc13735cf5614e07bd12abbaaefb889715d622228c743aba7a281f9d7fa"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "sha256": "5c2c2b7fca83a313012e2e58f79afedb86a650b54cfe7f11e53b74aaa788b03a"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/QualificationVerification.cs",
+      "sha256": "6d4e0627a93abf5513ac6025897cf1f18a1033e5a7ce53e11ca8070ce95dc62c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/RcsHeartbeat.cs",
+      "sha256": "ff84284cf390d2546aaa935c91dd536968cc9ba30d8dc7bc6b7564071ea0635c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityClosure.cs",
+      "sha256": "63f07db4e5913c634dcb790a3550cadee38806de6b573028856732ade73b4163"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.Crashes.cs",
+      "sha256": "f634022a5190835a6b666b6bc701d5e47582544d85f574c69cef955f319fd245"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.Health.cs",
+      "sha256": "19c0497cbe82efe841c59a0585f8f51f0866401c024c31a88619256d626ba574"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs",
+      "sha256": "1a0b1f80c1dd1c4bd1dfde7aa57d00ed08001d524f152dae936a4ef38d0d35d4"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.Resources.cs",
+      "sha256": "1f2dd884339374c9c3cc7c062aaa290a4dd756e6f0675a2de31623b8a7545a61"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.Storage.cs",
+      "sha256": "40914699b32b6cacb4a766512284adf686fbec62616bacc52516eeda4e9140b5"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReliabilityHardening.cs",
+      "sha256": "5958443c5c32844c877eafe86b2d22cea734c5a2a1dfc4a6a784b4a0249ffecd"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ResourceRisks.cs",
+      "sha256": "c8cb3e5253b9b84da6ebc82522c1fe0398563b68b31071018e52b6d43380cb87"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/RetentionIngress.cs",
+      "sha256": "4793ab41b0008b682772b18f9cc24700bd44cae9607810682341c0a1bd232598"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/RetentionQualification.cs",
+      "sha256": "07608f8ceba93e7366a91e3b9b600ac9596a4a9f6a96d519efab9849056dbc33"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReviewClosure.cs",
+      "sha256": "683368fe4d70e10045dda96172437e864bec44f28712f3283b4552050d160cae"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ReviewRegressions.cs",
+      "sha256": "fd09dc20dab246aac60d7da964e3fd50aeae36ad281d5bcdec03c517757ab9fc"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SignedCapabilities.cs",
+      "sha256": "94f1771f36d79b38e64855dbc7c59dd47ae74add280b67a7e87646e2528c8f7d"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
+      "sha256": "ded4c008e6651834618f3949310b3904c9ce21236cbe2a025ce57b4f99fb0b46"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterRcsPresentation.cs",
+      "sha256": "a3e57830af9291a77adcb464e54e7563bb9377247ee8b79d2c042859e28bbf76"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterUi.cs",
+      "sha256": "c387073fdd3860933f94b5af7986a88ace5f9e14e330631288798c7b1a599f5f"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs",
+      "sha256": "e7ca862ddd6dc64edc4d9b15c17a889386ceeb48957bf4b50b08a79cab5e4dc0"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/StabilityHistoryScale.cs",
+      "sha256": "3aacf012e7c0adac89863baacacc00cf44211cb7f3f82c50cb5487df76dec66d"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs",
+      "sha256": "56bbda3a4ef56b9aa87166fffc4a301a1a40ac07b1d28ea6d682ba59bf2f23a0"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/StabilityRemediation.cs",
+      "sha256": "cb083265f06b3c496a4a98dab2e25ec336cb89d1acb95a7bce677ece2c642c5b"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/StartupDeployment.cs",
+      "sha256": "dd0f82d85917b23d6caa55329468f7eb7a48811532baca9627f0d03003346706"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SyntheticPriorStorage.cs",
+      "sha256": "e71bfe7b4f4f721c6882d005f4956834bb652ce4fe67ae15443371a81d7d12e6"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/UxCommercialConfiguration.cs",
+      "sha256": "4f066a76caa0e855ecda68142ff0303ee35034109f7ed59c102688552afccce3"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/UxCommercialInputs.cs",
+      "sha256": "576b10236f750d0f7fe0fc07926d9020888c60002e1141957ce152cc0f8520a5"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
+      "sha256": "331a8977dd528501ad81ed853428d4dd037436dd3c3786e9fcc056f9b1646552"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
+      "sha256": "08f8bfbb8ab618fb9c43fbf95bdd7485054514fef82d29bdef7a5074b9ebf226"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
+      "sha256": "4bf39815795c72fe49b23e66b349950a586ca0fbe98638caa455938bf0f88781"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/WindowEventShim.cs",
+      "sha256": "b347ecfa1f5862fb30062fdf99f0ca03a87819e6f83e0e9fab42cac62d383fce"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/WindowsClientCompatibilityChecks.cs",
+      "sha256": "6f777d9cce62d07433594dac15378d7cbafc78a1515c441b7af0eb64029a009e"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/direct-plc-schema2-optional.json",
+      "sha256": "3e8124dd6a7677baef634a39b415548c03ddc5760dea3a18215dc48e04e1a80c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/sportmaster-schema2-optional.json",
+      "sha256": "ab37085dbd0033458a07685e35fd3bcd8c8f7b78cb15b3702c81be1f9dfd94f3"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/wcs-to-plc-schema2-optional.json",
+      "sha256": "8d0429193babfd1ca0de8324f58d7769456b8f9d38a0b807f825cd053d52f777"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/packages.lock.json",
+      "sha256": "7552fb0f49aceac265dd90b6239c611663648be249f1646f4351b9ae6d9ea5a8"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/AuditPerformance.cs",
+      "sha256": "0f6e97cf1a27f59a3244986d0ad730cae4fb058b326e3a65f2d7f8287a7b1d3f"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CleanInstallBootstrap.cs",
+      "sha256": "8c142a3b6cdcd2743c91dfbddbb1337ce21dab81ef7424d6ba15f2616be1b4e7"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
+      "sha256": "b090d7dd9509bbb38dfbff05ceb9ac5995c701cc8aa41676c8353fbbffbaa1b2"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/DualCameraDiagnostics.cs",
+      "sha256": "c28fa58ac93030849bca49cdad7b7e5663be985d7b4fb4fe5af4729111230e4e"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/FirstConfigurationVerification.cs",
+      "sha256": "be383d739ac40efe9becf112fad79bb630c77aa2378b8dc112011e607a3adb68"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
+      "sha256": "457de4972b4690c71a3e14da3a5e7425aba67ed72fc209f02fcf4a579d2fa916"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/InternalPages.cs",
+      "sha256": "dc108f6bc099815e7449bb3fd6e4d620d5b082515f272881cf3ce0578203e6dd"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "sha256": "e379a47b9442d15aeb922a588c460927389c24317fea4a6d51b97c9866fa5549"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/LifecycleNative.cs",
+      "sha256": "8382bbfd9397316b8ff563fafdb00a915b3f5ae40b75b7d5cc22a5d33748d9a4"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/LoginSession.cs",
+      "sha256": "4407fd6901c2c7accbe138b7451a3e305c3c76b8e962a436f8a6f31821831932"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ManagementMenuInteraction.cs",
+      "sha256": "fb0d544b92c51c71124d8342e43d2b418e0ed7c630086ac0c2bee39810b75302"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs",
+      "sha256": "98d04dacdf6f6fcf8f86af0b03efaa8b30300f17a376c77fdd10d01b090865dc"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterExperience.cs",
+      "sha256": "9da3090873cd624214d82e6f45d99673939764b248e30c5f939a7baee15a189a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
+      "sha256": "dc53f170b889237a1d35e913a70d31a03ad759d202c6eea77527fb0edcd0ea0e"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs",
+      "sha256": "abdecaaf97ac95c9ba308cad11a85a318a33ce4249606fcb174f666aa5b7e6fe"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs",
+      "sha256": "12b01e1770846e82db95bdb16083a93ef1bc896720e6816a79dd4337dff8ea8b"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterUiRefinement.cs",
+      "sha256": "a87b9d9455e11521656d5fffc7504f0527b46e037164bae9ae97245d7f3c1516"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterV3.cs",
+      "sha256": "36b1d5a352136904d38361081e6644c7773aa08264c38852d055355bfe66cad5"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "3553db1150a0a0a0c33d1acf4b5c1d1b7fb53f9d247b2b7925f9411f6b82697f"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ReaderCatalogBindings.cs",
+      "sha256": "c021bf4abf22b0b79bc68071c0a28a94373d65825db7f7c9635103b96f30ed02"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ReliabilityLogs.cs",
+      "sha256": "81c357cbba9a3ffbd775b8661bed103f448b1ed9ef6c8cd73274ece2c8f2379a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/StabilityNative.cs",
+      "sha256": "d3d5c80df631db3de7dccc1ac69f42dbc2dfc62e6df6b8477803f86251588e3f"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
+      "sha256": "37938abb33ac110ba4a5f1e6eb008000f687beb3e009efe0dbec73590fd3a866"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchy.cs",
+      "sha256": "20f92f81a6bdc27630778948009efaf26a613acc8ba53a7b95656efdfc929ece"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchy02.cs",
+      "sha256": "4c05ccef06ed94a42eb81a26c6dd0f118e9fb5c2a4de6cbbc5efcfe52341cf05"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyChain.cs",
+      "sha256": "9e93f8901f0de2d2d088ac4a9617dc2ad5113fd1d99a355b74be0f76b07a7d79"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyParameters.cs",
+      "sha256": "ab81b869a3c06797b1a65452ed0807ce91e378999904cfad43f9086d85c73c9e"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs",
+      "sha256": "55fe29e70ca0afc8154b850721979e52aefb61d45170321f7319cd98250f672a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TcpLineReader.cs",
+      "sha256": "4adc530c4f6b640497796b1e1caf3f11de6c228aca5c0469ee9410d2cee4d2ce"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Typography.cs",
+      "sha256": "7ec619a200705d7a5b15a4bbfe880bcd3a161068ee1654c5989965862cd018f3"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TypographyComparison.cs",
+      "sha256": "cfcaa7c6200e908b02614452c0020563b3aaccfea43a02e846a6c0227da03950"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
+      "sha256": "b7fb0a9d1cb22cd3644368cbba4b88cba8bd9a46f9565644fb01fe07da7c5238"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
+      "sha256": "996b109ba74b1c3243e063d2535167b3b13e5836dfae5f4e7158d3311ee3fbb6"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/packages.sportmaster.lock.json",
+      "sha256": "bb482034d697572f4be25daf01512577a3b280540764dbf486cafb8f9979b00e"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Ipc.Drivers.Hikrobot.Probe.csproj",
+      "sha256": "467434c0ee764a62efa727f6b3b9b4d34f6c048ae87ceb1b681a12fef2ae8fc3"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs",
+      "sha256": "d3231873413865a244de608aa6b772ee6f9d16823972e0771fec9baa57437be5"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
+      "sha256": "704a70eac00cf4b67a80f4da2468c247b430f31ca335d843cd1a2b802aeed210"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
+      "sha256": "d707a6a0e52d1c18c52beae628a592e4812848de74eee436896dbc832078c66d"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json",
+      "sha256": "fdb984a3bcf2014829e7b5ebb78e812aa59488c3ec6960ad4ea478e6792308b5"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/packages.win-x64.lock.json",
+      "sha256": "ab594a77950745b3db8fbc31759ed53dc8624dec9cd5c52ee802bbe333d7922b"
+    },
+    {
+      "path": "tests/Ipc.Installer.Verification/Ipc.Installer.Verification.csproj",
+      "sha256": "f1f6a9741fb6667758157c019139e643e1e8a61d43e95b300e9964257441c8a8"
+    },
+    {
+      "path": "tests/Ipc.Installer.Verification/Program.cs",
+      "sha256": "5a1e33463c0e85e7b95db53511a90a1ac77669dc088c61a39ff7e8448e63b6f6"
+    },
+    {
+      "path": "tests/Ipc.Installer.Verification/packages.lock.json",
+      "sha256": "a4364d81a6de2707d66fbced18fbbc926c882ab96e1d1aebbb17e871285b9d75"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+      "sha256": "d859aef3b5366fe7cbf491b255708bd6392ca85954973dd4f76c56da896d7c1a"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+      "sha256": "488e2d9836aefda410bc0496919f374c432772501b626997ee04f94543e42de5"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+      "sha256": "3bbb1a230d9ffc550a1f4c341a3cec229343aeffbbac256ac11f78130f48f09a"
+    },
+    {
+      "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
+      "sha256": "8a7d089c707dd3e58947d9cefc22ba67f7857d15c910cf3c0e78a85cdde0b3ae"
+    },
+    {
+      "path": "tests/Ipc.Verification/ArchitectureMaintainabilityVerification.cs",
+      "sha256": "0d82b546eeb98f9cda7c5e0f9fbee6b094f10f87b8e3eee338bc20b0d2b48243"
+    },
+    {
+      "path": "tests/Ipc.Verification/CleanStorageBootstrap.cs",
+      "sha256": "4222c795249d2e40c6eb77557b829eb9e05956cec8f719242db359b565bd569b"
+    },
+    {
+      "path": "tests/Ipc.Verification/ClosureVerification.cs",
+      "sha256": "5402ba549b9ffcb5c9e01db77c337194932fb3303b528a76a5b96860ff564cc9"
+    },
+    {
+      "path": "tests/Ipc.Verification/CommercialRemovalVerification.cs",
+      "sha256": "eb8377f40c62d039b99b1e5e633a13e413618b17896c4a22d18bd625e9216dc3"
+    },
+    {
+      "path": "tests/Ipc.Verification/ConformanceVerification.cs",
+      "sha256": "ada48d793cb4ab0cb04da2564d0aceffbea2259ccc9ca013de4046519ad7317e"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+      "sha256": "97de012dcaa063661926d3f1ea318746b4cb07519aadf01992cc622123511888"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+      "sha256": "ba42adf73a2a3759ed91d1998e43dfb026d9292a0ee1744c512acc4745b8614f"
+    },
+    {
+      "path": "tests/Ipc.Verification/FollowupVerification.cs",
+      "sha256": "93f9e1d3f8cbd0ae2b8fb70551d0fa09964b38ab5f35bb2885fd900687605665"
+    },
+    {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "sha256": "54f694ae5a1632aa30adac9cf0d64185472b06f8f4c6abcba365df614006825c"
+    },
+    {
+      "path": "tests/Ipc.Verification/HealthRenewalVerification.cs",
+      "sha256": "ab165cfbd209a25b4da0834c291e1b8769c0d4a5cd47b5672967691336717d59"
+    },
+    {
+      "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
+      "sha256": "312fdbddc141e5ba50c990a89169070602791ff5e54a9b5d8f0eda16b17d6dbc"
+    },
+    {
+      "path": "tests/Ipc.Verification/OperationClosureVerification.cs",
+      "sha256": "6554a5c9ae5c29263230e70142e12c8ce3608b8d547338766be3597b8a097405"
+    },
+    {
+      "path": "tests/Ipc.Verification/PresentationVerification.cs",
+      "sha256": "cc629fe40e91841a72fefda7a13787c84b313aec7ab0c3aa11e7b6de8b55e3d0"
+    },
+    {
+      "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+      "sha256": "348d4e1829a9d7a92613e9a1045722d20274cb372725c703054420f9dace0253"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "sha256": "6e695652172403f7176829a7202cb0f59997aa345084e8c849acd25217e38f5a"
+    },
+    {
+      "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
+      "sha256": "e66f4e6ac1cb61128a3bd27b68bbc431b2df74df2b10a1827bda38d56b1ea7dc"
+    },
+    {
+      "path": "tests/Ipc.Verification/RuntimeIdentityVerification.cs",
+      "sha256": "48dbe59e90e35ed83cbd3877c8d615abf922510c3afbbcf828b68dcbdc0033ab"
+    },
+    {
+      "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+      "sha256": "a32580f9001759cac3720a1302a3ad1b92bfd905f93e3581f11411247bdfad3f"
+    },
+    {
+      "path": "tests/Ipc.Verification/VerificationScopes.cs",
+      "sha256": "6cf1bce3418779f0d1712f9b7cbadcf96ff0f8986954e8db7aad13f56684c039"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+      "sha256": "bf28999fd156dc42e08f57cda128aa7c4b49c911909bc908821168e1f5496028"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+      "sha256": "5be132888da21967bfa5613459f34fac8725ad7f63bf122aa87f8b532d68a48d"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+      "sha256": "d0e1ad34a97a770f74c2a1a38b6f424eb281be924211a4a5e91806836dd1953f"
+    },
+    {
+      "path": "tests/Ipc.Verification/packages.lock.json",
+      "sha256": "e7f28d8f7c27524951699dea4c9fd1f10e78fbd1406990499fd7eac4591fae4e"
+    }
+  ]
+}

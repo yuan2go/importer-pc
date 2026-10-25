@@ -1,8 +1,8 @@
 # WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01
 
-2026-10-25。用户要求规划并落地七个优化工作包及下一阶段Codex提示，覆盖整体UI/操作简化、身份显示、参数权限、软件日志查询导出和帮助与支持完整删除。本次交付是文档规划与当前指引清理；业务实现尚未执行。
+2026-10-25。用户要求规划并落地七个优化工作包及下一阶段Codex提示，覆盖整体UI/操作简化、身份显示、参数权限、软件日志查询导出和帮助与支持完整删除。原规划交付固定于`4c42f567`，原件见[规划归档](../archive/lifecycle-ux-planning-01/README.md)。用户本轮已授权并实施七包独立工程，实际状态见[实现](../runtime/lifecycle-ux-implementation-01.md)及[验证](../runtime/validation/lifecycle-ux-optimization-01.md)；G01/G02继续BLOCKED_EXTERNAL。
 
-基线：远端main和本地HEAD均为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开放PR为0；SM1.12.3 / Contracts1.18.0 / DB9。后续必须重新核对最新main和并行工作。原始三审查、21组归并及G01/G02见[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)。原[F01～09报告](../reviews/lifecycle-interaction-audit-01/findings.md)和[五包建议](../reviews/lifecycle-interaction-audit-01/remediation-work-packages.md)保留；本包为七包实施范围和调度的当前定义。
+开工基线：当时远端main和本地HEAD均为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开放PR为0；SM1.12.3 / Contracts1.18.0 / DB9。后续必须重新核对最新main和并行工作。原始三审查、21组归并及G01/G02见[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)。原[F01～09报告](../reviews/lifecycle-interaction-audit-01/findings.md)和[五包建议](../reviews/lifecycle-interaction-audit-01/remediation-work-packages.md)保留；本包为七包实施范围和调度的当前定义。
 
 ## 1 目标及完成标准
 
@@ -41,7 +41,7 @@
 |DG06 设计适用性|V2参数布局、旧字号、旧独立供包台号、旧数量/连接必填与最新纠偏冲突|索引和增量设计明确替代关系；V2/V3原件、哈希不改|
 |DG07 随包/manifest|源指南正确但打包映射、库存或验证回执未同步|LIA-04更新当前指南映射和交付清单；历史manifest不改成新验收|
 
-本轮不改生产代码或打包脚本。后续LIA-04须检查 `scripts/release_documents.py` 对全部产品的映射，使新当前指南随包可达；先澄清本地入口并不等于已重新发行介质。
+原规划阶段不改生产代码/脚本；本轮工程授权覆盖此历史限制。LIA-04已检查 `scripts/release_documents.py` 对全部产品的映射，使新当前指南随包可达；先澄清本地入口并不等于已重新发行介质。
 
 ## 3 七个包及实施边界
 
@@ -161,4 +161,4 @@
 
 每包更新U/G来源、实现commit/PR、测试实际命令/源SHA/环境/结果、原生图及未验项；不同源PASS不累加为最终版本PASS。完成报告分别列工程已完成、待真实联调、外部受阻和未完成。G01/G02不能静默取消，也不扩大为禁止交付已完成的其余工程。
 
-本轮文档验证清单见 [FILES.json](../reviews/lifecycle-ux-optimization-01/FILES.json)。该清单只记录本批文档字节，不修改旧产品manifest及原验收身份。后续可使用[精简执行提示](CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)启动整批实施。
+原规划文档验证清单见 [FILES.json](../reviews/lifecycle-ux-optimization-01/FILES.json)。该清单只记录原规划文档字节（可在规划归档核对），不修改旧产品manifest及原验收身份。后续可使用[精简执行提示](CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)启动整批实施。

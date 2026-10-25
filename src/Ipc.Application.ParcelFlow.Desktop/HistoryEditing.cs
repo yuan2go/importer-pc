@@ -6,14 +6,26 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public partial class ParcelViewModel
 {
-    public string HistoryBarcode { get; set; } = "";
-    public string HistoryPosition { get; set; } = "";
-    public string HistoryState { get; set; } = "";
+    string historyBarcode = "", historyPosition = "", historyState = "", historyRequest = "";
+    void EditHistory(ref string field, string value, string name)
+    { if (field == value) return; field = value; historyQueryCancellation?.Cancel(); Changed(name); NotifyHistory(); }
+    public string HistoryBarcode { get => historyBarcode; set => EditHistory(ref historyBarcode, value, nameof(HistoryBarcode)); }
+    public string HistoryPosition { get => historyPosition; set => EditHistory(ref historyPosition, value ?? "", nameof(HistoryPosition)); }
+    public string HistoryState { get => historyState; set => EditHistory(ref historyState, value, nameof(HistoryState)); }
     string historyFrom = "";
-    public string HistoryFrom { get => historyFrom; set { if (historyFrom == value) return; historyFrom = value; Changed(); } }
+    public string HistoryFrom { get => historyFrom; set => EditHistory(ref historyFrom, value, nameof(HistoryFrom)); }
     string historyTo = "";
-    public string HistoryToExclusive { get => historyTo; set { if (historyTo == value) return; historyTo = value; Changed(); } }
-    public string HistoryRequest { get; set; } = "";
+    public string HistoryToExclusive { get => historyTo; set => EditHistory(ref historyTo, value, nameof(HistoryToExclusive)); }
+    public string HistoryRequest { get => historyRequest; set => EditHistory(ref historyRequest, value, nameof(HistoryRequest)); }
+    public bool HistoryFiltersChanged => appliedHistorySignature is not null && appliedHistorySignature != HistoryFilterSignature();
+    public bool CanExportHistory => !historyLoading && !HistoryExportRunning && historySelection is not null && !HistoryFiltersChanged;
+    public string AppliedHistoryRange => historySelection is not { } s ? "尚无固定查询范围" :
+        $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {s.Filter.Position ?? "全部"} · 状态 {s.Filter.State?.ToString() ?? "全部"} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页";
+    public sealed record HistoryPositionChoice(string Id, string Label);
+    readonly HashSet<string> historicalPositions = [];
+    public HistoryPositionChoice[] HistoryPositionChoices => [new("", "全部投递位"), .. (Snapshot is { } s ? ParcelBindings.Positions(s.Configuration.Effective) : []).Select(p => new HistoryPositionChoice(p.Id,
+        (p.Id switch { "left" => "左相机", "right" => "右相机", "main" => "主投递位", _ => p.Id }) + " · " + p.Id)),
+        .. historicalPositions.Where(id => Snapshot is null || !ParcelBindings.Positions(Snapshot.Configuration.Effective).Any(p => p.Id == id)).Order().Select(id => new HistoryPositionChoice(id, "历史投递位 · " + id))];
     public void ClearHistoryFilters()
     {
         HistoryBarcode = HistoryPosition = HistoryState = HistoryRequest = "";
@@ -39,6 +51,8 @@ public partial class ParcelViewModel
         return new(Optional(HistoryBarcode), Optional(HistoryPosition), HistoryState.Length == 0 ? null : Enum.Parse<ParcelState>(HistoryState), Time(HistoryFrom), Time(HistoryToExclusive), Optional(HistoryRequest));
     }
     CancellationTokenSource? historyExportCancellation;
+    CancellationTokenSource? historyQueryCancellation;
+    public void CancelHistoryRead() => historyQueryCancellation?.Cancel();
     public bool HistoryExportRunning => historyExportCancellation is not null;
     public void CancelHistoryExport() => historyExportCancellation?.Cancel();
     public async Task ExportHistoryAsync(string destination)

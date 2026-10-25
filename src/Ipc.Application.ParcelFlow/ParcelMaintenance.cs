@@ -24,7 +24,7 @@ public sealed partial class ParcelRepository
         using var owner = new ResourceLease(Path.GetDirectoryName(database)!, ["application-owner"]);
         return InspectMaintenanceCore(database, flow);
     }
-    static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow)
+    internal static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow, CancellationToken token = default)
     {
         if (!File.Exists(database)) throw new FileNotFoundException("Original database is required; no empty runtime is created", database);
         var directory = Path.GetDirectoryName(database)!;
@@ -35,8 +35,10 @@ public sealed partial class ParcelRepository
         var errors = flow.Validate(config.Effective);
         if (errors.Length != 0 || config.Pending is { } candidate && flow.Validate(candidate).Length != 0)
             throw new InvalidDataException("Original Effective/Pending configuration is invalid; retain original release and data");
-        var hash = Wire.FileHash(database); var wal = database + "-wal"; var walHash = File.Exists(wal) ? Wire.FileHash(wal) : null;
+        token.ThrowIfCancellationRequested();
+        var hash = Wire.FileHash(database, token); var wal = database + "-wal"; var walHash = File.Exists(wal) ? Wire.FileHash(wal, token) : null;
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
+        SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
         using var tx = db.BeginTransaction(deferred: true);
         long Scalar(string sql) { using var c = db.CreateCommand(); c.Transaction = tx; c.CommandText = sql; return Convert.ToInt64(c.ExecuteScalar()); }
         var resident = Scalar("SELECT count(*) FROM parcel_operations");
@@ -50,6 +52,7 @@ public sealed partial class ParcelRepository
             using var r = c.ExecuteReader();
             while (r.Read())
             {
+                token.ThrowIfCancellationRequested();
                 var body = r.GetString(0); if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original hash differs");
                 var op = Wire.Decode<ParcelOperation>(body);
                 if (op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration))) throw new InvalidDataException("Original frozen configuration hash differs");
@@ -68,9 +71,10 @@ public sealed partial class ParcelRepository
             using var r = c.ExecuteReader();
             while (r.Read())
             {
+                token.ThrowIfCancellationRequested();
                 var file = RecoveryFiles.Resolve(directory, "receipts/" + r.GetString(0) + ".json");
                 var rawHash = r.IsDBNull(1) ? null : r.GetString(1);
-                if (File.Exists(file)) { RecoveryFiles.RequireOrdinaryAncestors(file); if (Wire.FileHash(file) != rawHash) invalidRaw++; }
+                if (File.Exists(file)) { RecoveryFiles.RequireOrdinaryAncestors(file); if (Wire.FileHash(file, token) != rawHash) invalidRaw++; }
                 else if (r.IsDBNull(2)) invalidRaw++;
                 else { using var bytes = r.GetStream(2); if (Convert.ToHexString(SHA256.HashData(bytes)) != rawHash) invalidRaw++; }
             }

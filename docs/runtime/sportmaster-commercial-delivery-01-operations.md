@@ -1,6 +1,6 @@
 # Sportmaster 交付、故障处理与生命周期手册
 
-> 2026-10-25操作步骤按main 3a5b1d13纠偏；当前版本、介质和已知缺口见[源码操作入口](lifecycle-ux-current-guidance-01.md)。原手册字节及历史资格见[归档](../archive/pre-lifecycle-ux-optimization-01/README.md)，不是本次重新执行安装或现场验收。
+> 2026-10-25操作步骤沿生命周期优化候选更新，开工main 3a5b1d13；当前版本、介质和已知缺口见[源码操作入口](lifecycle-ux-current-guidance-01.md)。原手册字节及历史资格见[归档](../archive/pre-lifecycle-ux-optimization-01/README.md)，不是本次重新执行安装或现场验收。
 
 本手册随同版 Sportmaster 介质交付。先核对 `ASSEMBLY.json` / `composition.lock.json` 的 SourceCommit、业务/契约/DB 及 `SHA256SUMS`；ZIP 与解压目录必须同源完整。当前候选未提供生产签名证书、真实 SDK/合同/实体资格或现场放行，不可投产。
 

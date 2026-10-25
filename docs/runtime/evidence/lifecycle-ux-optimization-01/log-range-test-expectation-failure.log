@@ -1,0 +1,6 @@
+SYNTHETIC ports/runtime identity; real Application/SQLite/WPF. Machine policy and production permissions remain independently guarded.
+FAIL System.InvalidOperationException: Native date edit must invalidate fixed export selection
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 60
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 81
+   at Program.VerifyReliabilityLogs(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\ReliabilityLogs.cs:line 81
+   at Program.<>c__DisplayClass23_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 40

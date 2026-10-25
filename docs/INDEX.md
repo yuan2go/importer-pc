@@ -1,4 +1,4 @@
-> 2026-10-25生命周期优化当前入口：[七包范围、依赖与必要验收](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[三审查问题总账](reviews/lifecycle-ux-reconciliation-01.md)、[增量设计](design/lifecycle-ux-optimization-01.md)、[当前源码操作与交付身份](runtime/lifecycle-ux-current-guidance-01.md)、[Codex执行提示](work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)。基线main `3a5b1d13`；本轮只完成文档规划与指引清理，七包工程待实施。保留管理模式、独立操作员、参数服务层权限、真实日志及帮助模块删除。原件见[归档](archive/pre-lifecycle-ux-optimization-01/README.md)。
+> 2026-10-25生命周期优化：[七包范围](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[U/G总账](reviews/lifecycle-ux-reconciliation-01.md)、[现行操作](runtime/lifecycle-ux-current-guidance-01.md)、[实际实现](runtime/lifecycle-ux-implementation-01.md)、[定向验证与同源身份](runtime/validation/lifecycle-ux-optimization-01.md)。独立工程已实现；原规划原件、编号与哈希见[规划归档](archive/lifecycle-ux-planning-01/README.md)。G01/G02、系统生命周期和现场门槛独立。
 
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。
 

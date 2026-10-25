@@ -98,6 +98,10 @@ public partial class App : System.Windows.Application
 #if !SPORTMASTER
             window.StopOwnerAsync = StopAsync;
 #endif
+            if (window is Ipc.Application.ParcelFlow.Desktop.ShellWindow shell) { shell.ReopenOwnerAsync = ReopenStopped; shell.OpenRetentionOwnerAsync = OpenRetentionStopped; }
+#if SPORTMASTER
+            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; }
+#endif
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
         catch (Exception ex) { await Failed(ex); }
@@ -142,6 +146,25 @@ public partial class App : System.Windows.Application
         else { MainWindow = startup; startup.Show(); }
     }
     Task? ownedShutdown;
+    Task ReopenStopped()
+    {
+        if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能重开");
+        ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
+        Dispatcher.BeginInvoke(new Action(async () => await StartSelected()));
+        return Task.CompletedTask;
+    }
+    Task OpenRetentionStopped()
+    {
+        if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能进入离线维护");
+        ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            var service = (IStartupRetentionMaintenance)ParcelStartupServices.Maintenance(selected!.Business);
+            new HistoryRetentionWindow(service, ParcelStartupServices.ManagementMode(selected.Business)).ShowDialog();
+            startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show();
+        }));
+        return Task.CompletedTask;
+    }
     async Task StopAsync()
     {
         if (runtime is null) return;

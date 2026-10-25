@@ -2,7 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed partial class ParcelRuntime : IWorkstationAdministration
+public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwareLogSelectionLifetime
 {
     LocalManagementMode Management => LocalManagementMode.ForRoot(launch.DataRoot);
     SoftwareLogReader? logReader;
@@ -48,6 +48,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration
         => OwnedRead(t => Logs.QueryAsync(query, selection, offset, t), token);
     public Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token)
         => OwnedRead(t => Logs.ContextAsync(selection, location, before, after, t), token);
+    public void ReleaseLogSelection(string selection) => logReader?.Release(selection);
     public async Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token)
     { var count = await OwnedRead(t => Logs.ExportAsync(selection, destination, allInRange, context, t), token).ConfigureAwait(false); Diagnostic("日志", "日志导出完成", detail: "Records=" + count); return count; }
 }

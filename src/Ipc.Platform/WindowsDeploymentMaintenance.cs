@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace Ipc.Platform;
 
-public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired);
+public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired, string[]? RemainingFiles = null, string? ReleaseRoot = null);
 public static partial class WindowsDeploymentSetup
 {
     sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false);
@@ -42,7 +42,7 @@ public static partial class WindowsDeploymentSetup
     static extern bool MoveFileEx(string path, string? target, int flags);
     [SupportedOSPlatform("windows")]
     public static WindowsRemovalReceipt Remove(string application, string expectedHash, Action<DeploymentLocation> requireResponsibilitiesAndBackup,
-        Action<DeploymentLocation> removeShortcuts)
+        Action<DeploymentLocation> removeShortcuts, string[]? originalMediaFiles = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
@@ -64,7 +64,9 @@ public static partial class WindowsDeploymentSetup
             MachineRuntimePolicy.RequireProtectedEvidence(operation);
             if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), operation) || new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("Unsafe removal journal");
             plan = Wire.Decode<RemovalState>(File.ReadAllText(operation));
-            if (plan.Location.ReleaseRoot != location.ReleaseRoot || plan.Location.SourceCommit != location.SourceCommit || plan.Files.Length > 16384) throw new InvalidDataException("Removal journal differs from authoritative registration");
+            ValidateRemovalState(plan, location);
+            if (originalMediaFiles is null || !plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
+                throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
         var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
         if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
@@ -74,7 +76,7 @@ public static partial class WindowsDeploymentSetup
         var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
         var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
         WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);
-        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory, .. cleanup.Remaining], cleanup.RestartRequired);
+        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot);
     }
     internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
     {

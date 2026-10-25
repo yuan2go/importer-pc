@@ -35,7 +35,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
+                if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
+                else if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
                 else if (args.Contains("--reliability-logs")) await VerifyReliabilityLogs(root, evidence, lines);
                 else if (args.Contains("--win11-stability")) await VerifyStabilityNative(root, evidence, lines);
                 else if (args.Contains("--typography-comparison")) await VerifyTypographyComparison(root, evidence, lines, args);

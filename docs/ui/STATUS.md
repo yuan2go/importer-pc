@@ -1,3 +1,5 @@
+> 当前生命周期优化：LIA-01～07独立工程已实施，[当前操作](../runtime/lifecycle-ux-current-guidance-01.md)、[原生与应用验证](../runtime/validation/lifecycle-ux-optimization-01.md)分别记录源身份及G01/G02/系统和现场边界。下述历史截图/验收保持原身份。
+
 > 2026-10-25最新核查为main `3a5b1d13`。当前能力见[操作入口](../runtime/lifecycle-ux-current-guidance-01.md)；下一批[七包优化](../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)与[增量设计](../design/lifecycle-ux-optimization-01.md)已规划、尚未实施。原生合成、安装、真实接口和现场验收分别记证，下文各版结果保持历史身份。
 
 > SM1.11.1历史安装增量：[独立EXE及真实原生安装选项/确认验证](../runtime/evidence/clean-install-bootstrap-01/README.md)。当时清理后的D根不存在，选项/确认通过且取消未安装；业务页面及其历史证据不扩张为新现场验收。

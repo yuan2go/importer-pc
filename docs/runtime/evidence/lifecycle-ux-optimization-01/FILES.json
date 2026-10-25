@@ -1,0 +1,160 @@
+{
+  "scope": "synthetic local directed validation, original bytes; later candidate has separate SourceCommit",
+  "files": [
+    {
+      "path": "build-DirectPlc.log",
+      "bytes": 2351,
+      "sha256": "c04f15adb01d31cae4ca800534d5c8dc0905dba8c5f2cf0a441e7d5d17a6cee1"
+    },
+    {
+      "path": "build-sm-final.log",
+      "bytes": 2139,
+      "sha256": "1ecb7e5070000014d86b8651e2dc0f45e6fef173486932bf98418621ffada40d"
+    },
+    {
+      "path": "build-ui-final.log",
+      "bytes": 2091,
+      "sha256": "95bd574013ce2787a356343e5549a91c3c65dbeb5fcb88311891ef22f9a3c1bd"
+    },
+    {
+      "path": "build-WcsToPlc.log",
+      "bytes": 2459,
+      "sha256": "5f63d3ff33ba6247413de72b2bd9b566491eaec2d3ff2736a3d34c4005bb6869"
+    },
+    {
+      "path": "commercial-removal.log",
+      "bytes": 648,
+      "sha256": "2f630195c5d6c5dbbecf27427911c72b50ee1ad5401959f05d4981dca7acc58e"
+    },
+    {
+      "path": "compatibility.log",
+      "bytes": 121,
+      "sha256": "4233f7b550bce4507e6ef93875a1df9a3e3c69e41f83771db077f228115fa98a"
+    },
+    {
+      "path": "directed-before-recovery-fix.log",
+      "bytes": 14127,
+      "sha256": "be0f7044be2cd0e8edaa2c7887a02100c1c224b64adfd73b99548b4fc667e0e0"
+    },
+    {
+      "path": "directed-final.log",
+      "bytes": 12988,
+      "sha256": "c59b9d188b84a9b63182db3ac02a1c6c6c96ab5071e2eec523f7099cbb601101"
+    },
+    {
+      "path": "directed-wal-read-failure.log",
+      "bytes": 13921,
+      "sha256": "77679959e4ffa9e911da3e88fa0dff53f3c9c81c4605c1e6182d1fa1c9d03f99"
+    },
+    {
+      "path": "first-password-layout-failure.log",
+      "bytes": 8468,
+      "sha256": "8b17121450587402be688858a978baf7444c3f74dfcbc46ab98c29f94eb4db67"
+    },
+    {
+      "path": "first-run-expired.png",
+      "bytes": 45799,
+      "sha256": "47b4f03b6e538ed88a4d5aa1d68fcc87d18cf6ef64f6f46c343053294f5d5024"
+    },
+    {
+      "path": "guides.log",
+      "bytes": 106,
+      "sha256": "65824089091094116d0b3ee09d941f6ca7f440bd4bd1cb1ecf6a42f49a84f4ca"
+    },
+    {
+      "path": "installer-change-guards.log",
+      "bytes": 806,
+      "sha256": "03cbcf4a217d2ea8b483acb6731affe582bc8eb2cfedd7b96da1205e84c08ef4"
+    },
+    {
+      "path": "installer-first-run-ui.log",
+      "bytes": 11600,
+      "sha256": "0312aae12f4cb2fc8d9fd5ce2dacab56c0ada67a9e2d2084277db3468d7b324a"
+    },
+    {
+      "path": "installer-options.log",
+      "bytes": 1939,
+      "sha256": "073499e4968b8b635caa77bd58ef7156f3eaa7f87b3b7e9a52e97261c405db1d"
+    },
+    {
+      "path": "installer-unknown.png",
+      "bytes": 79888,
+      "sha256": "2f6377ea48f213a3b7a23625daa99d8b4a70c577ed86b73c0ef8ad10e43d3c45"
+    },
+    {
+      "path": "lia-classic-minimum.png",
+      "bytes": 89654,
+      "sha256": "9da47cc07b05044376964ea22560a5c4ba328f917348063342329a4d03f01f4f"
+    },
+    {
+      "path": "lia-history-edited-minimum.png",
+      "bytes": 89871,
+      "sha256": "ff8b18f50aeb87bfc6525f1b5a244c8645253dc51180d123059beb0db53bf121"
+    },
+    {
+      "path": "lia-history-edited-standard.png",
+      "bytes": 129270,
+      "sha256": "5320ccafc9028a5e3dbe449564ccb34fc8c79bb1f6ea64c296dee4db7ba3be2b"
+    },
+    {
+      "path": "lia-mode-expired.png",
+      "bytes": 94807,
+      "sha256": "27c247c0a0b872205a2cc78a50816c6b3d50b20d9263581567942eca059ce95e"
+    },
+    {
+      "path": "log-range-test-expectation-failure.log",
+      "bytes": 877,
+      "sha256": "db17c58ce72daf81ac6f2b1c7295033674c30b8cc93c87fc29e1a0fd211b4e6c"
+    },
+    {
+      "path": "logs-bounded-context.png",
+      "bytes": 111755,
+      "sha256": "6abc67235e7c5186b467024bdc3f03b78970fc45414bffad26cde83326db7543"
+    },
+    {
+      "path": "management.log",
+      "bytes": 6683,
+      "sha256": "0b8037da6a810f65b4cfe7afa35baf9709b60169142e0aef0578cfa501ac08cf"
+    },
+    {
+      "path": "native-final.log",
+      "bytes": 2534,
+      "sha256": "fd1f921fd24eef982ce23dec6f84885321b25f15f0a6f6b19e9fe3c6661f86c7"
+    },
+    {
+      "path": "parameter-guidance-startup.log",
+      "bytes": 5645,
+      "sha256": "61d98e7ebc93871bcc5627d43f14d1239042d77e1f7a3c0efb55401ab971b836"
+    },
+    {
+      "path": "password-first-setup.png",
+      "bytes": 27357,
+      "sha256": "61106b53e6549fb9dd9754a24c68adb36f088eba225f2d3863866a3d7fe48ae0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1274,
+      "sha256": "c843747e34d7135db427b36f7f10ccabcd1c142d868f71409ea73192f53a7c89"
+    },
+    {
+      "path": "reliability-logs.log",
+      "bytes": 581,
+      "sha256": "8547a5823624f01f9e505b71618172ad75a00c8b9f644dd1b8c0112f8ab9011e"
+    },
+    {
+      "path": "restore-portable.log",
+      "bytes": 1387,
+      "sha256": "803bd4042791b68b0624392832e8384df6d0514ed57f90ca3cd851dbb5691e87"
+    },
+    {
+      "path": "restore-win64.log",
+      "bytes": 1879,
+      "sha256": "f1cb9f477e406f818400c1d58c5b680c5143b95c8151933aba33f8d559945989"
+    },
+    {
+      "path": "SOURCE-FILES.json",
+      "bytes": 124378,
+      "sha256": "2803cc5e6c8d5dc0482d67454f865041e8789a610c510ddbfc6d27602a2d15ee"
+    }
+  ]
+}

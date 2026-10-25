@@ -1,4 +1,4 @@
-> 当前源码操作入口：[安装、首配、身份、参数、日志与维护](docs/runtime/lifecycle-ux-current-guidance-01.md)。2026-10-25核查main `3a5b1d13`；本机已有同源SM1.12.3测试EXE，安装未运行，公开旧发行与现场版本分别核对。本批[七包优化与依赖](docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[问题总账](docs/reviews/lifecycle-ux-reconciliation-01.md)、[Codex执行提示](docs/work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md)为下一阶段实施入口；业务修复尚未执行。下述V3形成时状态及历史发布保留原身份。
+> 生命周期优化 LIA-01～07：独立工程已实现，当前候选 SM1.13.0 / DirectPlc及WcsToPlc1.7.0 / Contracts1.19.0 / DB9。[当前操作与运行](docs/runtime/lifecycle-ux-current-guidance-01.md)、[实现与来源](docs/runtime/lifecycle-ux-implementation-01.md)、[实际验证和未验门槛](docs/runtime/validation/lifecycle-ux-optimization-01.md)、[U/G问题状态](docs/reviews/lifecycle-ux-reconciliation-01.md)。G01/G02仍受真实合同/批准政策阻断，历史介质与现场资格分别核对。下述V3形成时状态及历史发布保持原身份。
 
 > 历史安装包：[SM v1.6.1 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76 已合并，固定源 `92586bf44cde`；[发布记录、哈希与边界](docs/runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏，未签名预发布，真实设备/现场待验。
 >

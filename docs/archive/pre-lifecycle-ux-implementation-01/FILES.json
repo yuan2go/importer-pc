@@ -8,5 +8,15 @@
     "source": "docs/runtime/windows-application-delivery.md",
     "archive": "docs__runtime__windows-application-delivery.md.txt",
     "sha256": "6a6c4826381a3781ee3dcc5587cf565f52ce7049b25603cb7c05bae8ba2c1568"
+  },
+  {
+    "source": "docs/runtime/version-compatibility-01.md",
+    "archive": "docs__runtime__version-compatibility-01.md.txt",
+    "sha256": "c559b75609af66817c04cbce19afd2a2351ef88fb21cf2f87aebc936de581aaf"
+  },
+  {
+    "source": "docs/runtime/parameter-inheritance-02.md",
+    "archive": "docs__runtime__parameter-inheritance-02.md.txt",
+    "sha256": "572e21aaa1c03dc504e596086843b3fcd3c911602d5d9ba4fbc11b5c56f5035e"
   }
 ]

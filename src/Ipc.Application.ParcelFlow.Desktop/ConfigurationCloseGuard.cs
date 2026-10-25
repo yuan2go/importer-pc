@@ -6,6 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public static class ConfigurationCloseGuard
 {
+    public static bool ConfirmExit(Window owner, string impact) => MessageBox.Show(owner, impact, "核对整站退出影响", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) == MessageBoxResult.OK;
     public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page)
         => CommitAndFindInvalid(page) is not null || vm.HasUnsavedConfiguration || vm.HasUnsavedDisplayPreferences;
     public static FrameworkElement? CommitAndFindInvalid(DependencyObject root, bool enabledOnly = false)

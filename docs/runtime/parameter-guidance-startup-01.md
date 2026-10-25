@@ -1,3 +1,5 @@
+> 2026-10-26：PR107已合入main；独立延后与心跳映射、重连及补齐配置启动的后续修复见[DEFERRED-HEARTBEAT-01](validation/deferred-heartbeat-01.md)。下文原验证仅覆盖其原提交，不能据此推断单侧延后已通过。
+
 # 参数用途、默认值与延后连接配置 · PARAMETER-GUIDANCE-STARTUP-01
 
 2026-10-25，固定main `0503b967`。工作包见[七项要求与边界](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)，原指引字节见[归档](../archive/pre-parameter-guidance-startup-01/README.md)，原生图与日志见[证据](evidence/parameter-guidance-startup-01/README.md)。业务版本SM 1.12.3，Application.Contracts 1.18.0；原版本、D批准、RV、历史介质和原请求身份不倒写。

@@ -1,0 +1,16 @@
+[
+  {
+    "Count": 1000,
+    "CreateExit": 0,
+    "MaintainExit": 0,
+    "CaseRoot": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-1000",
+    "Scope": "Explicit Simulation authority; not elevated/protected CLI qualification"
+  },
+  {
+    "Count": 10000,
+    "CreateExit": 0,
+    "MaintainExit": 0,
+    "CaseRoot": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\simulated-10000",
+    "Scope": "Explicit Simulation authority; not elevated/protected CLI qualification"
+  }
+]

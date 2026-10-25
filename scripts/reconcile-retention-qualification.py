@@ -47,7 +47,7 @@ def fingerprint(db, sql):
     return h.hexdigest().upper()
 
 
-def reconcile(run_file, output, completed_only=False):
+def reconcile(run_file, output, completed_only=False, simulated_authority=False):
     if output.exists():
         raise ValueError('A new reconciliation output is required')
     run = json.loads(run_file.read_text(encoding='utf-8-sig'))
@@ -61,13 +61,16 @@ def reconcile(run_file, output, completed_only=False):
         checks.append(reason)
 
     cases = []
-    runs = {r['Name']: r for r in run['Runs']}
+    runs = {r['Name']: r for r in run.get('Runs', [])}
     for case in run['Cases']:
-        if case['Status'] != 'PASS_PROTECTED_CLI_SYNTHETIC':
+        expected_status = 'PASS_SIMULATED_AUTHORITY_SYNTHETIC' if simulated_authority else 'PASS_PROTECTED_CLI_SYNTHETIC'
+        if case['Status'] != expected_status:
             continue
         count = case['Count']
         root = Path(case['CaseRoot'])
-        check(root.parent == Path(run['ProtectedRoot']) and root.name == f'case-{count}', f'{count}: isolated synthetic root')
+        parent = run['FixtureRoot'] if simulated_authority else run['ProtectedRoot']
+        name = f'simulated-{count}' if simulated_authority else f'case-{count}'
+        check(root.parent == Path(parent) and root.name == name, f'{count}: isolated synthetic root')
         fixture = json.loads((root / 'FIXTURE.json').read_text(encoding='utf-8-sig'))
         database = Path(fixture['Database'])
         backup = root / 'complete-before-expiry.db'
@@ -143,6 +146,14 @@ def reconcile(run_file, output, completed_only=False):
             if db is not None:
                 db.close()
             sharing.__exit__(None, None, None)
+        if simulated_authority:
+            receipt = json.loads((root / 'SIMULATED-AUTHORITY.json').read_text(encoding='utf-8-sig'))
+            check(receipt['ActualProtectedCli'] is False and receipt['ActualElevatedAuthority'] is False,
+                  f'{count}: explicit simulated authority cannot be reported as protected CLI')
+            cases.append(dict(Count=count, ActualProtectedCli=False, ActualElevatedAuthority=False,
+                              OperationBodyBytes=operation_bytes, OriginalRawBytes=raw_bytes,
+                              SimulatedMaintenanceAndVerifySeconds=receipt['ElapsedSeconds']))
+            continue
         expire = runs[f'expire-{count}']
         marker = Path(str(backup) + '.recovery/COMPLETED.json')
         started = datetime.fromisoformat(expire['StartedUtc']).timestamp()
@@ -168,11 +179,12 @@ def reconcile(run_file, output, completed_only=False):
                           InspectPlusExpirySeconds=runs[f'inspect-{count}']['Seconds'] + expire['Seconds'],
                           IsolatedRestoreSeconds=case.get('IsolatedRestoreSeconds'), RestoredDatabaseSHA256=restore_hash,
                           RestorePlanCopyInspectSeconds=sum(r['Seconds'] for r in restore_runs) if restore_runs else None,
-                          TimingBoundary='Two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.'))
+                          TimingBoundary=run.get('MaintenanceBudgetScope', 'Historical two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.')))
     check(bool(cases), 'at least one completed case reconciled')
     result = dict(Status='PARTIAL_COMPLETED_CASES_VERIFIED' if run['Status'] == 'InProgress' else 'VERIFIED_COMPLETED_SYNTHETIC_CASES',
                   SourceCommit=run['SourceCommit'], ProductSha256=run['ProductSha256'], FixtureSha256=run['FixtureSha256'],
                   AtUtc=datetime.now(timezone.utc).isoformat(), SQLiteReadOnlyReconciler=sqlite3.sqlite_version,
+                  Authority='SIMULATED_ONLY' if simulated_authority else 'PROTECTED_CLI_RECEIPTS',
                   SnapshotProtection='Windows read handles deny existing/new writers and replacement; nonempty WAL refused before immutable reads',
                   Cases=cases, Checks=checks, OriginalRunStatus=run['Status'],
                   Qualification='No production install, real SDK/RCS profile, target 8GiB, 24h/72h or field acceptance')
@@ -185,6 +197,7 @@ if __name__ == '__main__':
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--completed-only', action='store_true')
+    parser.add_argument('--simulated-authority', action='store_true', help='Reconcile explicit Simulation fixtures; never assigns protected CLI or restore timing')
     args = parser.parse_args()
-    value = reconcile(args.run, args.output, args.completed_only)
+    value = reconcile(args.run, args.output, args.completed_only, args.simulated_authority)
     print(json.dumps({'Status': value['Status'], 'Cases': len(value['Cases']), 'Checks': len(value['Checks'])}))

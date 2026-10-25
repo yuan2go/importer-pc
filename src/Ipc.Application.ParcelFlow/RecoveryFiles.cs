@@ -82,13 +82,19 @@ internal static class RecoveryFiles
             }
         }
     }
-    public static void CopyVerified(string source, string destination, string expectedHash)
+    public static void CopyVerified(string source, string destination, string expectedHash, CancellationToken cancellationToken = default)
     {
         // New file only. Flush original custody before a completion marker can be durable.
         using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
         using (var output = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-        { input.CopyTo(output); output.Flush(flushToDisk: true); }
-        if (Wire.FileHash(destination) != expectedHash) throw new InvalidDataException("Recovery copy differs from verified custody; incomplete set retained");
+        {
+            var buffer = new byte[65536]; int count;
+            cancellationToken.ThrowIfCancellationRequested();
+            while ((count = input.Read(buffer)) != 0)
+            { cancellationToken.ThrowIfCancellationRequested(); output.Write(buffer, 0, count); }
+            cancellationToken.ThrowIfCancellationRequested(); output.Flush(flushToDisk: true);
+        }
+        if (Wire.FileHash(destination, cancellationToken) != expectedHash) throw new InvalidDataException("Recovery copy differs from verified custody; incomplete set retained");
     }
     static bool IsMaintenanceEvidence(string name)
     {
@@ -106,10 +112,10 @@ internal static class RecoveryFiles
             yield return name;
         }
     }
-    public static Dictionary<string, string> Inventory(string root)
+    public static Dictionary<string, string> Inventory(string root, CancellationToken cancellationToken = default)
     {
         var names = Enumerate(root).Where(x => x != "COMPLETED.json").ToArray();
         ValidateNames(root, names);
-        return names.ToDictionary(x => x, x => Wire.FileHash(Resolve(root, x)), StringComparer.Ordinal);
+        return names.ToDictionary(x => x, x => Wire.FileHash(Resolve(root, x), cancellationToken), StringComparer.Ordinal);
     }
 }

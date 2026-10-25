@@ -1,0 +1,17 @@
+{
+  "Status": "PASS_TYPED_STRUCTURE_SIMULATED_AUTHORITY_ONLY",
+  "ElapsedSeconds": 46.3548314,
+  "ActualProtectedCli": false,
+  "ActualElevatedAuthority": false,
+  "SimulatedAuthorityChecks": 20254,
+  "Result": {
+    "Run": "f1d8aae2cc8a4cd384c7fe3e021656fe",
+    "Days": 7,
+    "Cutoff": "2026-10-18T01:51:10.2107814+00:00",
+    "Operations": 10000,
+    "Inputs": 10000,
+    "BackupHash": "D0E668956312B3B7854B467F17ED8B0859786C5A8E4D8669D171895FDDDB25B1",
+    "ReusableBytes": 151961600
+  },
+  "Scope": "Explicit Simulation test of full retention/backup logic; cannot close protected CLI, complete-scale RTO or field qualification"
+}

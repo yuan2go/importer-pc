@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "ca6777aaad2f7566300051135baf990a11d4e69dd60540d91767dde473648027",
-      "size_bytes": 8605,
-      "git_blob": "da52d7f47561f761f6f06dbe40e913984110f900",
-      "version": "pr104-main-integration-01",
-      "status": "scoped_integration_or_separately_identified_evidence",
+      "sha256": "9df490c129adc5ad74bdb6d196406c339c739455be1a39427e705cf4dceb439b",
+      "size_bytes": 8706,
+      "git_blob": "62ef43ee6214e295148fe4381f34cd8861934fae",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
-      "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
@@ -1797,18 +1797,54 @@
             "source": "User-authorized PR99 query verification and safe main integration; original failures retained"
           }
         }
+      },
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "da52d7f47561f761f6f06dbe40e913984110f900",
+          "sha256": "ca6777aaad2f7566300051135baf990a11d4e69dd60540d91767dde473648027",
+          "size_bytes": 8605,
+          "version": "pr104-main-integration-01",
+          "status": "scoped_integration_or_separately_identified_evidence",
+          "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained"
+        },
+        "pr105": {
+          "git_blob": "d9a13368f5da849e71411096d1e6ff661b427d35",
+          "sha256": "d313dc93a5f871c0e4ad9837513803b33dfa0aaf1f9bf180c9c5a6a303b13dde",
+          "size_bytes": 8302,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
       }
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "5b1067e2c60d738a546d8e43da8b8ac964f0802fe421b08bb3806bd3e696a842",
-      "size_bytes": 13624,
-      "git_blob": "423e79bca81eb029cd264ccc5b574968c22fd123",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "sha256": "6a3e88f92e7736e93ce828ac4c3c1adb2d8f446ca5abe0c38aaf0eac30768e3c",
+      "size_bytes": 13818,
+      "git_blob": "d780dbbd2b0768f415d3bc6cf4c5284cc397dc01",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "423e79bca81eb029cd264ccc5b574968c22fd123",
+          "sha256": "5b1067e2c60d738a546d8e43da8b8ac964f0802fe421b08bb3806bd3e696a842",
+          "size_bytes": 13624,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "fa696081cccbe548f6562a5512787ac4565cc541",
+          "sha256": "5995a3c3bcd16ddbe053ffdd639a868892c6931f6d153aea2063077d0f64827d",
+          "size_bytes": 13000,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": ".github/workflows/unified-windows-release.yml",
@@ -1991,14 +2027,32 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "d43f7474ab621a121459443b84e8b3d574b9511c4cfdb2e2ae4cfa60a10e3305",
+      "sha256": "c797dc1c7c06ca05070d8d67e648dbfa7909130d2f88b344f283d4581943dd09",
       "size_bytes": 7746,
-      "git_blob": "440c86429ca9700e4450a5371e2a0db452939df5",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "git_blob": "ce720d88e1c3a5fd6dc2bb0563aa9552fa2c6dce",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "440c86429ca9700e4450a5371e2a0db452939df5",
+          "sha256": "d43f7474ab621a121459443b84e8b3d574b9511c4cfdb2e2ae4cfa60a10e3305",
+          "size_bytes": 7746,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "ce720d88e1c3a5fd6dc2bb0563aa9552fa2c6dce",
+          "sha256": "c797dc1c7c06ca05070d8d67e648dbfa7909130d2f88b344f283d4581943dd09",
+          "size_bytes": 7746,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "config/direct-plc/business.json",
@@ -2141,13 +2195,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "f8d79aa9594dd7acb11ed8fe73c57219cd463467e50ac8974bdc0d37b1772b5c",
-      "size_bytes": 12590,
-      "git_blob": "7eb6f0b315b82fead42b9dcdf0a75bf5244efef2",
-      "version": "pr104-main-integration-01",
-      "status": "scoped_integration_or_separately_identified_evidence",
+      "sha256": "ddd6a28f3e217ca570414c7e6cb542b47485ab2b33f26cd98008a690143cbef0",
+      "size_bytes": 13369,
+      "git_blob": "5cf762adf4e625967d7f106d14e32ab7ee859ebc",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
-      "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2329,6 +2383,24 @@
             "status": "scoped_verification_or_evidence",
             "source": "User-authorized PR99 query verification and safe main integration; original failures retained"
           }
+        }
+      },
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "7eb6f0b315b82fead42b9dcdf0a75bf5244efef2",
+          "sha256": "f8d79aa9594dd7acb11ed8fe73c57219cd463467e50ac8974bdc0d37b1772b5c",
+          "size_bytes": 12590,
+          "version": "pr104-main-integration-01",
+          "status": "scoped_integration_or_separately_identified_evidence",
+          "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained"
+        },
+        "pr105": {
+          "git_blob": "9451aa919e4bb77885084fa9eae87e9184ec6e39",
+          "sha256": "97f42566a83081bf2bd519cf4f9664b3c756164ab42c67285f606a6b308a7f44",
+          "size_bytes": 12434,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       }
     },
@@ -6992,56 +7064,31 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "951007ea13de5438d10b1b562c9ec47ca54d8c30",
-      "sha256": "8088d7078f0a55331eef1f17f5f0cf8e8cfc5c1658d13487065835f3c98ac06d",
-      "size_bytes": 13293,
-      "version": "retention-maintenance-qualification-01",
-      "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
-      "purpose": "Full-custody retention evidence including failed large-scale maintenance and explicit acceptance gaps",
-      "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately",
+      "sha256": "00048d944eed50e7017109dacd6b2124ca1828141ad5b100118c2c37c2677383",
+      "size_bytes": 14026,
+      "git_blob": "356305d4b76c2540b52e601967a99ff1aef44153",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge",
-      "previous_git_blob": "6fb2924ba8b056d5dafa8e22b964442e0a6bc8d5",
-      "pre_ui_task_redesign_01_identity": {
-        "git_blob": "467a7dbb5d1523470224bb18fafb7f12943f18af",
-        "sha256": "727668c6b24486f6d4d55d8637d2dbec658e27035909470b84ef8970a673b681",
-        "version": "parallel-reconciliation-20261020-02",
-        "status": "current_source_or_preserved_evidence",
-        "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
-      },
-      "pre_ui_task_redesign_v2_identity": {
-        "git_blob": "a3aaf13da9770f15807a948c530b179d34873e14",
-        "sha256": "27da9e3ca36aad5afb2a97deea6b193582d20fb57372413f8ad76825c23f45b4",
-        "version": "ui-task-redesign-01",
-        "status": "design_publication_and_implementation_plan",
-        "source": "User explicit complete generated UI publication to main request, 2026-10-20"
-      },
-      "pre_retention_performance_review_01_identity": {
-        "git_blob": "5de79525725ee806e4a92ea82909256c8afe8dc1",
-        "sha256": "db61260ec31e2fe3c8ae7457170d4bedaf849bcded27c7b60f299a1112455b38",
-        "size_bytes": 11353,
-        "version": "typography-01",
-        "status": "current_source_or_specification",
-        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
-      },
-      "pre_retention_recheck_02_identity": {
-        "git_blob": "929dc834f2b14984ee278c58e19b811a3ac829d9",
-        "sha256": "00925940056022a461266d100f83ef7661e2941173d61523f29115652bea0ba3",
-        "size_bytes": 11985,
-        "version": "retention-performance-review-01",
-        "status": "scoped_archive_guidance_or_reproduction_tool",
-        "source": "User-authorized archival of 2026-10-24 independent review; original SourceCommit12a7cbd retained"
-      },
-      "pre_retention_maintenance_qualification_01_identity": {
-        "git_blob": "0b874bc4d367a4e350ccd3a7edccd95f8b8800f7",
-        "sha256": "a51e572267769fa88745931f61792dbf94c8e923d84a4533fcaa4da5110fa426",
-        "size_bytes": 12526,
-        "version": "retention-query-recheck-02",
-        "status": "scoped_verification_or_evidence",
-        "source": "User-authorized PR99 query verification and safe main integration; original failures retained"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "951007ea13de5438d10b1b562c9ec47ca54d8c30",
+          "sha256": "8088d7078f0a55331eef1f17f5f0cf8e8cfc5c1658d13487065835f3c98ac06d",
+          "size_bytes": 13293,
+          "version": "retention-maintenance-qualification-01",
+          "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
+          "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately"
+        },
+        "pr105": {
+          "git_blob": "356305d4b76c2540b52e601967a99ff1aef44153",
+          "sha256": "00048d944eed50e7017109dacd6b2124ca1828141ad5b100118c2c37c2677383",
+          "size_bytes": 14026,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
       }
     },
     {
@@ -53764,14 +53811,32 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "702558833b1038cfe57002d266f7071eb82e624d9ec1fd503441dd7b750e73a1",
+      "sha256": "7b3ee2089b5cbb6e488b7a37e3223f02aacf5cb94c85bf1d4a1a3fec1071c6fa",
       "size_bytes": 339,
-      "git_blob": "b46f3b556033f39ecb662923d18fc29c42fb303a",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "git_blob": "cd1ed31627a894642e3f874e14471e8b53501177",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "b46f3b556033f39ecb662923d18fc29c42fb303a",
+          "sha256": "702558833b1038cfe57002d266f7071eb82e624d9ec1fd503441dd7b750e73a1",
+          "size_bytes": 339,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "cd1ed31627a894642e3f874e14471e8b53501177",
+          "sha256": "7b3ee2089b5cbb6e488b7a37e3223f02aacf5cb94c85bf1d4a1a3fec1071c6fa",
+          "size_bytes": 339,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
@@ -54739,16 +54804,33 @@
       "previous_git_blob": "9c31268d751713d976343c40adcfef7de00248fe"
     },
     {
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
-      "sha256": "b17378fb8679d9bb592dcc21c3c67074dc08f828da22af1ecbe4545475046822",
-      "size_bytes": 15770,
-      "git_blob": "1f7abe002251c5bb611e4c1ba2c3349d5789f741",
-      "previous_git_blob": "58711873938c78ab2c33ee76b4618ad986ca2fe3"
+      "sha256": "9d0def7b3b38ba77d1679c3abed07c61efe0491bbc00c791522d346d4456df44",
+      "size_bytes": 15931,
+      "git_blob": "079a7cdbddea4172a76dc5f30edea5845c6c66ce",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "1f7abe002251c5bb611e4c1ba2c3349d5789f741",
+          "sha256": "b17378fb8679d9bb592dcc21c3c67074dc08f828da22af1ecbe4545475046822",
+          "size_bytes": 15770,
+          "version": "MANAGEMENT-MODE-01",
+          "status": "current_source_or_separately_scoped_evidence",
+          "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately"
+        },
+        "pr105": {
+          "git_blob": "079a7cdbddea4172a76dc5f30edea5845c6c66ce",
+          "sha256": "9d0def7b3b38ba77d1679c3abed07c61efe0491bbc00c791522d346d4456df44",
+          "size_bytes": 15931,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs",
@@ -54859,16 +54941,32 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs",
-      "version": "OPS-ADMIN-LOGS-01",
-      "status": "current_source_or_bounded_synthetic_evidence",
-      "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
-      "source": "WP-IPC-OPERATOR-ADMIN-LOGS-01; historical evidence retains original SourceCommit",
+      "sha256": "3e3372341cefc0680042bacd1602fad72a7b572fa836bc550d6e30ca5e75f844",
+      "size_bytes": 14452,
+      "git_blob": "fe5b7deecbfde050da64913607b0c7bc9aade4ed",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "9d4918cca6477fa3c1ca522be901998100dece60b564902d07c6b4cbad11e017",
-      "size_bytes": 14329,
-      "git_blob": "438f3cca1de10792a00ac37f733dd7532436f8dd",
-      "previous_git_blob": "9bb0bb4064f338722cb7e28d025786f06d99b7fc",
-      "pre_publication_merge_git_blob": "0b6040435c17886bf44a872293702982599f343f"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "438f3cca1de10792a00ac37f733dd7532436f8dd",
+          "sha256": "9d4918cca6477fa3c1ca522be901998100dece60b564902d07c6b4cbad11e017",
+          "size_bytes": 14329,
+          "version": "OPS-ADMIN-LOGS-01",
+          "status": "current_source_or_bounded_synthetic_evidence",
+          "source": "WP-IPC-OPERATOR-ADMIN-LOGS-01; historical evidence retains original SourceCommit"
+        },
+        "pr105": {
+          "git_blob": "fe5b7deecbfde050da64913607b0c7bc9aade4ed",
+          "sha256": "3e3372341cefc0680042bacd1602fad72a7b572fa836bc550d6e30ca5e75f844",
+          "size_bytes": 14452,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelOperators.cs",
@@ -54942,27 +55040,62 @@
       "previous_git_blob": "905aea1054561d9f18b36abc3030b37fa1491c89"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
-      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
-      "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelReplyIdentities.cs",
-      "sha256": "a36ca67a35e95656925353095a3cd8a10bd231d3df0370dbfcea6010cba57e53",
-      "size_bytes": 3986,
-      "git_blob": "4222e7475fe12e987bf3a12b473319f788f49b4d",
-      "previous_git_blob": "af211f1c611f29cf1cab9b015e79eac5f6f9de4d"
+      "sha256": "6d32463e394a599928c0b897d5fafc0de68ef0509f3e42ab1df705d17de9c2c3",
+      "size_bytes": 4054,
+      "git_blob": "b968af0b4fd520e2783d7b02b3889cd4aa790d3c",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "4222e7475fe12e987bf3a12b473319f788f49b4d",
+          "sha256": "a36ca67a35e95656925353095a3cd8a10bd231d3df0370dbfcea6010cba57e53",
+          "size_bytes": 3986,
+          "version": "architecture-quality-audit-02-rereview",
+          "status": "current_implementation_or_boundary_record",
+          "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization"
+        },
+        "pr105": {
+          "git_blob": "b968af0b4fd520e2783d7b02b3889cd4aa790d3c",
+          "sha256": "6d32463e394a599928c0b897d5fafc0de68ef0509f3e42ab1df705d17de9c2c3",
+          "size_bytes": 4054,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
-      "sha256": "b986b60984861e8f63d5bc4132bbbdb4718ec277158ca77e21b9b5489a81d84e",
-      "size_bytes": 42682,
-      "git_blob": "96bf40d4c018f080e0e63a8a0fc603c278a7424a",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "sha256": "ecacfa5925492eb31df0fe650830e0f740ddcc5137a3dd8ac12bb9df74cc9edc",
+      "size_bytes": 43659,
+      "git_blob": "6de5e1ad8a35e80c80ddbe67272aa687c85082b0",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "96bf40d4c018f080e0e63a8a0fc603c278a7424a",
+          "sha256": "b986b60984861e8f63d5bc4132bbbdb4718ec277158ca77e21b9b5489a81d84e",
+          "size_bytes": 42682,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "5f92c177a7c82d764a17c9eab78a920165da5456",
+          "sha256": "f7a3f09eb8deb8aa42d75f50b8dde0d6192b92be4fe6f1ea256e128ff1e7a5b2",
+          "size_bytes": 43534,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs",
@@ -55037,27 +55170,61 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
-      "version": "audit03-delivery-1.2.8",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation or synthetic delivery evidence",
-      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "sha256": "74e100c76a78834fe5501053193d3c778e0cf58bdd82b421c92c05e20e9ec459",
+      "size_bytes": 8505,
+      "git_blob": "06cc5130938a8a56b653918f964ceefe2228e6fe",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "072e8a1de00d3517b2e6803673f49629b43553e18ff4fd40b2b31fc1c3203319",
-      "size_bytes": 8433,
-      "git_blob": "68cbca5719c431c44878485c70d92317529e174a"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "68cbca5719c431c44878485c70d92317529e174a",
+          "sha256": "072e8a1de00d3517b2e6803673f49629b43553e18ff4fd40b2b31fc1c3203319",
+          "size_bytes": 8433,
+          "version": "audit03-delivery-1.2.8",
+          "status": "current_implementation_or_boundary_record",
+          "source": "WP-A03-00..06 explicit implementation and publication authorization"
+        },
+        "pr105": {
+          "git_blob": "06cc5130938a8a56b653918f964ceefe2228e6fe",
+          "sha256": "74e100c76a78834fe5501053193d3c778e0cf58bdd82b421c92c05e20e9ec459",
+          "size_bytes": 8505,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
-      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
+      "sha256": "ff7b763be479c6100b5410d4eb5127c470cf3d6158ab49cb645e3be1c2901eb6",
+      "size_bytes": 7670,
+      "git_blob": "5437fc53371c40bce207a510d1f17e8101fd681c",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "31694242d2f59280a40350b2ee8e1fdc00e78d5442a423e4cb7cf54ba254c638",
-      "size_bytes": 7223,
-      "git_blob": "2f75786edfbf3da48dee05e4de9b2bf51cdb0f7f",
-      "previous_git_blob": "f6d69f6f5703b70622beff721539a31186d350a1",
-      "pre_publication_merge_git_blob": "9fe68aa4b527380209f29f86ec0f1a84b593c81f"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "2f75786edfbf3da48dee05e4de9b2bf51cdb0f7f",
+          "sha256": "31694242d2f59280a40350b2ee8e1fdc00e78d5442a423e4cb7cf54ba254c638",
+          "size_bytes": 7223,
+          "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+          "status": "current_implementation_or_boundary_record",
+          "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization"
+        },
+        "pr105": {
+          "git_blob": "5437fc53371c40bce207a510d1f17e8101fd681c",
+          "sha256": "ff7b763be479c6100b5410d4eb5127c470cf3d6158ab49cb645e3be1c2901eb6",
+          "size_bytes": 7670,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.lock.json",
@@ -55371,14 +55538,32 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "0e0823efeecbd145e0397070f07574bc5e4c94ef81ee23b78ed5f6aa1f6c2ceb",
+      "sha256": "cca2e0b2b33616342e8bb9cd3737ee27a1738e6c06172389a2945363ee4c586d",
       "size_bytes": 341,
-      "git_blob": "4aba1a9964edd1cbcb3a8ddf325f596dc7e3f446",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "git_blob": "d140eb9c634da8036710782b221d6658476357aa",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "4aba1a9964edd1cbcb3a8ddf325f596dc7e3f446",
+          "sha256": "0e0823efeecbd145e0397070f07574bc5e4c94ef81ee23b78ed5f6aa1f6c2ceb",
+          "size_bytes": 341,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "d140eb9c634da8036710782b221d6658476357aa",
+          "sha256": "cca2e0b2b33616342e8bb9cd3737ee27a1738e6c06172389a2945363ee4c586d",
+          "size_bytes": 341,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
@@ -56259,14 +56444,32 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "a80b0da256b0ad80f48d2a441bf76091e1e4bbd767dd404147e55f0dc194fd10",
+      "sha256": "6a55b3397ab5453c47dc34054bf6a4bb26a62daffb22939cca78280ecb86929a",
       "size_bytes": 339,
-      "git_blob": "49e26f1cf226e0026e73d91b97f242776c52114b",
-      "version": "code-reliability-hardening-02",
-      "status": "scoped_implementation_or_evidence",
+      "git_blob": "263489437613392dd9bbbd9dd3f331a2c955ec38",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded",
-      "storage_scope": "public_repository"
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "49e26f1cf226e0026e73d91b97f242776c52114b",
+          "sha256": "a80b0da256b0ad80f48d2a441bf76091e1e4bbd767dd404147e55f0dc194fd10",
+          "size_bytes": 339,
+          "version": "code-reliability-hardening-02",
+          "status": "scoped_implementation_or_evidence",
+          "source": "User-authorized WP-IPC-CODE-RELIABILITY-HARDENING-02; historical and final identities separately recorded"
+        },
+        "pr105": {
+          "git_blob": "263489437613392dd9bbbd9dd3f331a2c955ec38",
+          "sha256": "6a55b3397ab5453c47dc34054bf6a4bb26a62daffb22939cca78280ecb86929a",
+          "size_bytes": 339,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
@@ -56399,15 +56602,32 @@
     },
     {
       "path": "src/Ipc.Assembly/ParcelCli.cs",
-      "version": "MANAGEMENT-MODE-01",
-      "status": "current_source_or_separately_scoped_evidence",
-      "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
-      "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
+      "sha256": "0d8340b7cc5cf8ee239b0b6934c55d4fbd96c787d19315bcfc94b2c70b9a1949",
+      "size_bytes": 15462,
+      "git_blob": "1353f9cb26c527a38b3f0ac30e794405603f6d79",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "b895c15169010e0d805fb1dbf51ebfcd4238ea9f59839dcd45d52daf0cf1a2eb",
-      "size_bytes": 14939,
-      "git_blob": "a165758729eaecb8d392c44b7f3a6a15c4a1c088",
-      "previous_git_blob": "423c82458d6b793e8d26515709cd84be1eda095f"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "a165758729eaecb8d392c44b7f3a6a15c4a1c088",
+          "sha256": "b895c15169010e0d805fb1dbf51ebfcd4238ea9f59839dcd45d52daf0cf1a2eb",
+          "size_bytes": 14939,
+          "version": "MANAGEMENT-MODE-01",
+          "status": "current_source_or_separately_scoped_evidence",
+          "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately"
+        },
+        "pr105": {
+          "git_blob": "1353f9cb26c527a38b3f0ac30e794405603f6d79",
+          "sha256": "0d8340b7cc5cf8ee239b0b6934c55d4fbd96c787d19315bcfc94b2c70b9a1949",
+          "size_bytes": 15462,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Assembly/ParcelRuntimeSetup.cs",
@@ -57690,14 +57910,32 @@
     },
     {
       "path": "src/Ipc.Platform.Storage/Database.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "sha256": "2df33f6fbfd3c524276e672c2258cb7ddc86711712a9f90de2351f82cb2a29e7",
+      "size_bytes": 5545,
+      "git_blob": "d82d191be3c6cd5190ea786bb210ec4585389d89",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "3d3eb7df983041d7245843700619981e8d8436d0a2b1ff632c5395e1776538b0",
-      "size_bytes": 3597,
-      "git_blob": "7db9d5fea15c703547fe8a34c4e0a835c57df7ec"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "7db9d5fea15c703547fe8a34c4e0a835c57df7ec",
+          "sha256": "3d3eb7df983041d7245843700619981e8d8436d0a2b1ff632c5395e1776538b0",
+          "size_bytes": 3597,
+          "version": "APPLICATION-CONVERGENCE-17",
+          "status": "current_implementation_or_boundary_record",
+          "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+        },
+        "pr105": {
+          "git_blob": "d82d191be3c6cd5190ea786bb210ec4585389d89",
+          "sha256": "2df33f6fbfd3c524276e672c2258cb7ddc86711712a9f90de2351f82cb2a29e7",
+          "size_bytes": 5545,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj",
@@ -57867,15 +58105,32 @@
     },
     {
       "path": "src/Ipc.Platform/Configuration.cs",
-      "sha256": "5a2fba78e221028e161d1263a9d39fe832bfd2e70324a7c757f87bd43881d362",
-      "size_bytes": 11592,
-      "git_blob": "ea6de3dc34fd354dd36a023a307a0b04453d6ca5",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "sha256": "a5bc4123066d2ec70570e61900dcab4aa6eeb73a0f4163ff6415d91940d09a46",
+      "size_bytes": 12118,
+      "git_blob": "20e839622cc193dc8bb5644a00e1b1d7ab083533",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "previous_git_blob": "7b4ac1413bfe5a0a674bbbd0c06143e2ec29ae4d"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "ea6de3dc34fd354dd36a023a307a0b04453d6ca5",
+          "sha256": "5a2fba78e221028e161d1263a9d39fe832bfd2e70324a7c757f87bd43881d362",
+          "size_bytes": 11592,
+          "version": "APPLICATION-CONVERGENCE-17",
+          "status": "current_implementation_or_boundary_record",
+          "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+        },
+        "pr105": {
+          "git_blob": "20e839622cc193dc8bb5644a00e1b1d7ab083533",
+          "sha256": "a5bc4123066d2ec70570e61900dcab4aa6eeb73a0f4163ff6415d91940d09a46",
+          "size_bytes": 12118,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "src/Ipc.Platform/ConfigurationRevisions.cs",
@@ -58990,14 +59245,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "pr104-main-integration-01",
-      "status": "scoped_integration_or_separately_identified_evidence",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
-      "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "0c3f4955bfe8618bcc9cb97557fe8eb17dc891f8f96bb6a118f6888acd4e270b",
-      "size_bytes": 21361,
-      "git_blob": "46542d6ba9c2789533e69dca4e11f83e7d859bac",
+      "sha256": "bfdc44166ece9669375e108a9a8b3752a0d5a8bd7583e39db1332bc9180f3f1d",
+      "size_bytes": 21845,
+      "git_blob": "d3950aa55a1a286a4f156fddcba5c638c308a0d1",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59040,6 +59295,24 @@
             "status": "current_source_or_synthetic_evidence",
             "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01"
           }
+        }
+      },
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "46542d6ba9c2789533e69dca4e11f83e7d859bac",
+          "sha256": "0c3f4955bfe8618bcc9cb97557fe8eb17dc891f8f96bb6a118f6888acd4e270b",
+          "size_bytes": 21361,
+          "version": "pr104-main-integration-01",
+          "status": "scoped_integration_or_separately_identified_evidence",
+          "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained"
+        },
+        "pr105": {
+          "git_blob": "59b7cbcc7b2d36577681a9fca573effa8a48709d",
+          "sha256": "5b223c2f5967f5ea0eeb573e293ea2cbc3e053f6a210c3a2382c76d3a32dbb1e",
+          "size_bytes": 21453,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       }
     },
@@ -75403,14 +75676,14 @@
     },
     {
       "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
-      "version": "pr104-main-integration-01",
-      "status": "scoped_integration_or_separately_identified_evidence",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
-      "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "58819dc226450ece63ebe8e7f4b1e9846b72c2b2fca1a0798c29ccd0ce3a2bd1",
-      "size_bytes": 14257,
-      "git_blob": "f93c9f747f2dda4162a54e9a7afb3dd29f3c3b23",
+      "sha256": "a0f9a29eeda108ceabbd2cae575388e0aa6628843d32fc0385e887a63b044375",
+      "size_bytes": 14571,
+      "git_blob": "e8cde3054a1dbe7eacded66e89280729f484c7ed",
       "pre_retention_maintenance_qualification_01_identity": {
         "git_blob": "4fff3ebf9af0d92fe3551af09875d3b259f72ce2",
         "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
@@ -75449,6 +75722,24 @@
             "status": "current_source_or_scoped_synthetic_evidence",
             "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
           }
+        }
+      },
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "f93c9f747f2dda4162a54e9a7afb3dd29f3c3b23",
+          "sha256": "58819dc226450ece63ebe8e7f4b1e9846b72c2b2fca1a0798c29ccd0ce3a2bd1",
+          "size_bytes": 14257,
+          "version": "pr104-main-integration-01",
+          "status": "scoped_integration_or_separately_identified_evidence",
+          "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained"
+        },
+        "pr105": {
+          "git_blob": "5db8fcc30b90fbd7c2a4d690d4a41f4560abf7e9",
+          "sha256": "9f31c00dbcc1268d721c45dce22c4e99712dd353ffbee2604d426678c7761483",
+          "size_bytes": 14437,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
       }
     },
@@ -75525,21 +75816,31 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs",
-      "version": "parallel-task-integration-01",
-      "status": "current_source_or_preserved_integration_evidence",
-      "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
-      "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
+      "sha256": "323c0f9b44d9ef82194441fe5ee42a4ed312d01106d3cedb56ecf04a4e20e494",
+      "size_bytes": 19370,
+      "git_blob": "6a602e279c04dd57da335f5337020e92420d903d",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "bcd4e62c85a2dc3473769ac38fbfbe8703c552a1fcdb0f9c5d68ad363245966c",
-      "size_bytes": 16929,
-      "git_blob": "14e2fb8fd3562ffb45d0d76a0b09ded4a54087ae",
-      "pre_parallel_task_integration_01_identity": {
-        "git_blob": "85991afcd3809ca76dedc09cc8447b082470f07b",
-        "sha256": "6ef8df2f152180df733352275c74dc679b4d748ed59484cce71ec456a7bcf628",
-        "size_bytes": 16028,
-        "version": "win11-24x7-stability-remediation-01",
-        "status": "current_source_or_scoped_synthetic_evidence",
-        "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved"
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "14e2fb8fd3562ffb45d0d76a0b09ded4a54087ae",
+          "sha256": "bcd4e62c85a2dc3473769ac38fbfbe8703c552a1fcdb0f9c5d68ad363245966c",
+          "size_bytes": 16929,
+          "version": "parallel-task-integration-01",
+          "status": "current_source_or_preserved_integration_evidence",
+          "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained"
+        },
+        "pr105": {
+          "git_blob": "6a602e279c04dd57da335f5337020e92420d903d",
+          "sha256": "323c0f9b44d9ef82194441fe5ee42a4ed312d01106d3cedb56ecf04a4e20e494",
+          "size_bytes": 19370,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
       }
     },
     {
@@ -84514,25 +84815,61 @@
     },
     {
       "path": "scripts/reconcile-retention-qualification.py",
-      "sha256": "279f4df5a4c22abecb094b9828aa2637db305b721c7b86420d3400c833151c6b",
-      "size_bytes": 14488,
-      "git_blob": "6cd0a33af1fcb79cab43ef3df8d951ae57ae346c",
-      "version": "retention-maintenance-qualification-01",
-      "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
-      "purpose": "Full-custody retention evidence including failed large-scale maintenance and explicit acceptance gaps",
-      "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately",
-      "storage_scope": "public_repository"
+      "sha256": "c327371044c12fc3dc6c385420d4b55add474a82e5da9bd96357c2b9cf7e0b84",
+      "size_bytes": 15751,
+      "git_blob": "854e89818a644beae62b261538e72579e25c3b02",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "6cd0a33af1fcb79cab43ef3df8d951ae57ae346c",
+          "sha256": "279f4df5a4c22abecb094b9828aa2637db305b721c7b86420d3400c833151c6b",
+          "size_bytes": 14488,
+          "version": "retention-maintenance-qualification-01",
+          "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
+          "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately"
+        },
+        "pr105": {
+          "git_blob": "854e89818a644beae62b261538e72579e25c3b02",
+          "sha256": "c327371044c12fc3dc6c385420d4b55add474a82e5da9bd96357c2b9cf7e0b84",
+          "size_bytes": 15751,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "scripts/verify-retention-maintenance.ps1",
-      "sha256": "171e043d90b839258d008a7c6b7b8d093017df38bc5122df193c485ad642def5",
-      "size_bytes": 12871,
-      "git_blob": "cff80f09348170d03b339adc389c6d098c35d4bb",
-      "version": "retention-maintenance-qualification-01",
-      "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
-      "purpose": "Full-custody retention evidence including failed large-scale maintenance and explicit acceptance gaps",
-      "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately",
-      "storage_scope": "public_repository"
+      "sha256": "f6c71f4857b65207ae2ef2b30fcc6a72380e048f1cbf23d48609f60891e8e17a",
+      "size_bytes": 16873,
+      "git_blob": "f359735a73a339b04c44b1e92a01e8af707bf2c6",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "main": {
+          "git_blob": "cff80f09348170d03b339adc389c6d098c35d4bb",
+          "sha256": "171e043d90b839258d008a7c6b7b8d093017df38bc5122df193c485ad642def5",
+          "size_bytes": 12871,
+          "version": "retention-maintenance-qualification-01",
+          "status": "scoped_verification_tool_or_separately_identified_synthetic_evidence",
+          "source": "WP-IPC-RETENTION-QUALIFICATION-01; executed product SourceCommit5bb032d and original failures retained; main1dfb676 inherited separately"
+        },
+        "pr105": {
+          "git_blob": "f359735a73a339b04c44b1e92a01e8af707bf2c6",
+          "sha256": "f6c71f4857b65207ae2ef2b30fcc6a72380e048f1cbf23d48609f60891e8e17a",
+          "size_bytes": 16873,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
     },
     {
       "path": "tests/Ipc.Application.Verification/RetentionQualification.cs",
@@ -86178,6 +86515,1507 @@
         "status": "scoped_integration_or_separately_identified_evidence",
         "source": "User-authorized PR104 integration 2026-10-25; original source and evidence identities retained"
       }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ACTUAL-FULL-BACKUP-PLAN.json",
+      "sha256": "05b8a5575f6bc45ab8bbcfb9d834d7951089bd94b3eb7605b19109957057a846",
+      "size_bytes": 1125,
+      "git_blob": "e5ecc30c9693798d27afd35491375234b51e69f7",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "e5ecc30c9693798d27afd35491375234b51e69f7",
+          "sha256": "05b8a5575f6bc45ab8bbcfb9d834d7951089bd94b3eb7605b19109957057a846",
+          "size_bytes": 1125,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/CAPTURE.json",
+      "sha256": "a77e2002cc8c22c6579ea74d4a4ddf7d2b278ca487b0980257ca743bc2c68639",
+      "size_bytes": 17296,
+      "git_blob": "5abf723fc94ec7b911d13f5247365bd764b016f0",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "5abf723fc94ec7b911d13f5247365bd764b016f0",
+          "sha256": "a77e2002cc8c22c6579ea74d4a4ddf7d2b278ca487b0980257ca743bc2c68639",
+          "size_bytes": 17296,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/FILES.json",
+      "sha256": "711a1eb64029b47e128d4546d3a3724e052d0e74669173dab9fdc8dd4ca0942e",
+      "size_bytes": 10998,
+      "git_blob": "c7e79cad9233f14ddb3149bdaa1407dae2c1c026",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "c7e79cad9233f14ddb3149bdaa1407dae2c1c026",
+          "sha256": "711a1eb64029b47e128d4546d3a3724e052d0e74669173dab9fdc8dd4ca0942e",
+          "size_bytes": 10998,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/FINAL-FIXTURE-IDENTITY.json",
+      "sha256": "004d6e94e1eb8e3672cfb298607ac3a95334767e08839e70407f6be533940f2f",
+      "size_bytes": 429,
+      "git_blob": "17b0dce3bba35d3fc85c55cc1a689ddb580054c1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "17b0dce3bba35d3fc85c55cc1a689ddb580054c1",
+          "sha256": "004d6e94e1eb8e3672cfb298607ac3a95334767e08839e70407f6be533940f2f",
+          "size_bytes": 429,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/MIGRATIONS.json",
+      "sha256": "b6642122d34cc2b87d4e75170ed17aff00108f71c31f58681703d7ce9f69340e",
+      "size_bytes": 112,
+      "git_blob": "e981b7c0061f1348092bb3cac0dc73b02d376164",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "e981b7c0061f1348092bb3cac0dc73b02d376164",
+          "sha256": "b6642122d34cc2b87d4e75170ed17aff00108f71c31f58681703d7ce9f69340e",
+          "size_bytes": 112,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/PARALLEL-MERGE-PROBE.txt",
+      "sha256": "d81463b9220e24fcabf3e23f278a4e24a3a3d9a98de7dea0bf55ee8597e1ad31",
+      "size_bytes": 1757,
+      "git_blob": "409767e2357ca71c997fb93da6828ba78c4fd971",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "409767e2357ca71c997fb93da6828ba78c4fd971",
+          "sha256": "d81463b9220e24fcabf3e23f278a4e24a3a3d9a98de7dea0bf55ee8597e1ad31",
+          "size_bytes": 1757,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/PRODUCT-a192b7f.json",
+      "sha256": "110844ef25e9436eec1c12bbe4042e3b1b4fa146218de17437a336252e21e93f",
+      "size_bytes": 794,
+      "git_blob": "2784d6dcb8d97526ad2e92bf86261a0bcc8ba5a8",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "2784d6dcb8d97526ad2e92bf86261a0bcc8ba5a8",
+          "sha256": "110844ef25e9436eec1c12bbe4042e3b1b4fa146218de17437a336252e21e93f",
+          "size_bytes": 794,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/README.md",
+      "sha256": "c391665b344d39d769180bee9a864e5b98853d3839f49d2d82a1fb96ff6d69b2",
+      "size_bytes": 2373,
+      "git_blob": "1b96868503938e18f01065ec577524597ae8a009",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "1b96868503938e18f01065ec577524597ae8a009",
+          "sha256": "c391665b344d39d769180bee9a864e5b98853d3839f49d2d82a1fb96ff6d69b2",
+          "size_bytes": 2373,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/REGRESSIONS-a192b7f.json",
+      "sha256": "c31bb25330e45da17e5a47e11a4fe1d6c8d278ef0e5ed87950b19452cb0ea6f8",
+      "size_bytes": 1026,
+      "git_blob": "41faf71b8201a334264b720406b840465a611547",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "41faf71b8201a334264b720406b840465a611547",
+          "sha256": "c31bb25330e45da17e5a47e11a4fe1d6c8d278ef0e5ed87950b19452cb0ea6f8",
+          "size_bytes": 1026,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/REGRESSIONS-fixed-a192b7f.json",
+      "sha256": "5acede1b0f10b9a478dd3e1b46944b00e7607ac857ed1ede74a2734b2973ba7a",
+      "size_bytes": 1877,
+      "git_blob": "5c674fe0d4175b7b5593af349d1cfc4fbf16af03",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "5c674fe0d4175b7b5593af349d1cfc4fbf16af03",
+          "sha256": "5acede1b0f10b9a478dd3e1b46944b00e7607ac857ed1ede74a2734b2973ba7a",
+          "size_bytes": 1877,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/SIMULATED-RECONCILE-INPUT.json",
+      "sha256": "791ecb7a9b7437ae7c547ac82c2e463bf25815869022eaa895ba739148ee9000",
+      "size_bytes": 755,
+      "git_blob": "c2834f95fbb96a9376b8543e2db01d8f1d4fde98",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "c2834f95fbb96a9376b8543e2db01d8f1d4fde98",
+          "sha256": "791ecb7a9b7437ae7c547ac82c2e463bf25815869022eaa895ba739148ee9000",
+          "size_bytes": 755,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/SIMULATED-RECONCILED.json",
+      "sha256": "3f3b53b04654e927f6e0b66c27f0464902c1c4dd7d7243a16fee53128c6000ed",
+      "size_bytes": 4564,
+      "git_blob": "ac55bc43057aa5feeab7063613567a1fb5cc12a1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "ac55bc43057aa5feeab7063613567a1fb5cc12a1",
+          "sha256": "3f3b53b04654e927f6e0b66c27f0464902c1c4dd7d7243a16fee53128c6000ed",
+          "size_bytes": 4564,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/SIMULATED-RESULTS.json",
+      "sha256": "eccecb0822c1c8690d2c977b1a02a6d6b0d01c85b6045287eba8d5785ae9d509",
+      "size_bytes": 517,
+      "git_blob": "4c2b168b86690dbba766e0efc329c7c76f43a2d1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "4c2b168b86690dbba766e0efc329c7c76f43a2d1",
+          "sha256": "eccecb0822c1c8690d2c977b1a02a6d6b0d01c85b6045287eba8d5785ae9d509",
+          "size_bytes": 517,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/UAC-START.json",
+      "sha256": "07ff285d0b1ca1cb88ef15049f28246a052649587f99972feaef2d9cd1e8780c",
+      "size_bytes": 533,
+      "git_blob": "9518f6ce6237a9840cd632cff0f3f71927bd133f",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "9518f6ce6237a9840cd632cff0f3f71927bd133f",
+          "sha256": "07ff285d0b1ca1cb88ef15049f28246a052649587f99972feaef2d9cd1e8780c",
+          "size_bytes": 533,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/actual-full-backup-plan.log",
+      "sha256": "325d1ddd634337c77a7309a39fa10c8ac4e070501b65068560c6a20208838026",
+      "size_bytes": 917,
+      "git_blob": "243088ee30642e847f9abf615005e8d8fc825102",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "243088ee30642e847f9abf615005e8d8fc825102",
+          "sha256": "325d1ddd634337c77a7309a39fa10c8ac4e070501b65068560c6a20208838026",
+          "size_bytes": 917,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/audit03-maintenance-a192b7f.log",
+      "sha256": "3d1e27d0ac46f2154ee4ef59c2f6424cbebfc1876a054d2e27d8d7b1a5ef417c",
+      "size_bytes": 2223,
+      "git_blob": "d50501d6ca607c3de43e444a9404242c10435356",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "d50501d6ca607c3de43e444a9404242c10435356",
+          "sha256": "3d1e27d0ac46f2154ee4ef59c2f6424cbebfc1876a054d2e27d8d7b1a5ef417c",
+          "size_bytes": 2223,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/audit03-maintenance-fixed-a192b7f.log",
+      "sha256": "27977b20937b71e794eebac6428f67e8d57b750c22476e74e0317ad746cf6c70",
+      "size_bytes": 824,
+      "git_blob": "1be94874d5ee48c00f09f26b928cd22c18f8a5b1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "1be94874d5ee48c00f09f26b928cd22c18f8a5b1",
+          "sha256": "27977b20937b71e794eebac6428f67e8d57b750c22476e74e0317ad746cf6c70",
+          "size_bytes": 824,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-budget-tests.log",
+      "sha256": "3f0c4456f38a32139ebcca186090f51c3cf68321d23391707f5dab242a766bbf",
+      "size_bytes": 2693,
+      "git_blob": "987e7c1ffd0bc4b2a9d27530797103471028a624",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "987e7c1ffd0bc4b2a9d27530797103471028a624",
+          "sha256": "3f0c4456f38a32139ebcca186090f51c3cf68321d23391707f5dab242a766bbf",
+          "size_bytes": 2693,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-cli-a192b7f.log",
+      "sha256": "ba961db9908067b158d6389620db0172155e05c0539a4181fdd8ddbdab002daf",
+      "size_bytes": 1928,
+      "git_blob": "85057ba621e341a3a33771e15c8b8dbb553056e9",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "85057ba621e341a3a33771e15c8b8dbb553056e9",
+          "sha256": "ba961db9908067b158d6389620db0172155e05c0539a4181fdd8ddbdab002daf",
+          "size_bytes": 1928,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-corrected-tests.log",
+      "sha256": "cf0debc7122d9d9b838f2a9ad2111ae1269ecfeccebfcda6e1a4e55e0bb66ae5",
+      "size_bytes": 2158,
+      "git_blob": "4f238db99ae09e7ab7673630b3ad2f98753a2c81",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "4f238db99ae09e7ab7673630b3ad2f98753a2c81",
+          "sha256": "cf0debc7122d9d9b838f2a9ad2111ae1269ecfeccebfcda6e1a4e55e0bb66ae5",
+          "size_bytes": 2158,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-crash-tests-corrected.log",
+      "sha256": "2753ed21859f03bbe03612acb3b9675b3c7d99c7adf18c726d2bdb52f8a4f509",
+      "size_bytes": 2158,
+      "git_blob": "5bb1e2621f3a1a655ad4a66cc68668680f7572d6",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "5bb1e2621f3a1a655ad4a66cc68668680f7572d6",
+          "sha256": "2753ed21859f03bbe03612acb3b9675b3c7d99c7adf18c726d2bdb52f8a4f509",
+          "size_bytes": 2158,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-crash-tests.log",
+      "sha256": "193980160be57a7d6e3b8b5325108495d5c95a96d11413aa06b2b0e97f3b39f4",
+      "size_bytes": 2496,
+      "git_blob": "61462f5f6832589cd648135affc51fc51fea190b",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "61462f5f6832589cd648135affc51fc51fea190b",
+          "sha256": "193980160be57a7d6e3b8b5325108495d5c95a96d11413aa06b2b0e97f3b39f4",
+          "size_bytes": 2496,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-fixed-a192b7f.log",
+      "sha256": "48e36b5e6aacc40a2b5750970d370eb4e376218e0facc41bca8cd00c5b2921a0",
+      "size_bytes": 2158,
+      "git_blob": "196d2d83fcb5cf36bb470294360e936ca008ecb0",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "196d2d83fcb5cf36bb470294360e936ca008ecb0",
+          "sha256": "48e36b5e6aacc40a2b5750970d370eb4e376218e0facc41bca8cd00c5b2921a0",
+          "size_bytes": 2158,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-initial.log",
+      "sha256": "09748212b5dfd421a5bce42231404878955ddccab99198fa946435ae89d1b009",
+      "size_bytes": 3943,
+      "git_blob": "4545cc61626548d9d2665be20f90a6cf6ff8b5ab",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "4545cc61626548d9d2665be20f90a6cf6ff8b5ab",
+          "sha256": "09748212b5dfd421a5bce42231404878955ddccab99198fa946435ae89d1b009",
+          "size_bytes": 3943,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-plan-final.log",
+      "sha256": "eaa12f5c1d9bde709ca07a608d6801817544ffaa25a9873af76a6991f31757f6",
+      "size_bytes": 2158,
+      "git_blob": "28ada00b16b64c5a260de480b26648bfbb5fdd0a",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "28ada00b16b64c5a260de480b26648bfbb5fdd0a",
+          "sha256": "eaa12f5c1d9bde709ca07a608d6801817544ffaa25a9873af76a6991f31757f6",
+          "size_bytes": 2158,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/build-tests.log",
+      "sha256": "9480090f23438fb99abdeb217f8b85cbd4f0fdaf7ebc8813d0dce289c87b7d78",
+      "size_bytes": 2158,
+      "git_blob": "dd2e7edbd5aa2c019a57698a4b046e2e9daafb29",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "dd2e7edbd5aa2c019a57698a4b046e2e9daafb29",
+          "sha256": "9480090f23438fb99abdeb217f8b85cbd4f0fdaf7ebc8813d0dce289c87b7d78",
+          "size_bytes": 2158,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/development-component/RETENTION-INGRESS.json",
+      "sha256": "717e11da0b618f8bf2ebb2ffe86d7fd2331214776cce1581f0efbbdcef9dc9d1",
+      "size_bytes": 3963,
+      "git_blob": "13a0617ad68b89ba13ad0cc8637f0e7771709dc5",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "13a0617ad68b89ba13ad0cc8637f0e7771709dc5",
+          "sha256": "717e11da0b618f8bf2ebb2ffe86d7fd2331214776cce1581f0efbbdcef9dc9d1",
+          "size_bytes": 3963,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-component/RETENTION-INGRESS.json",
+      "sha256": "da8ac52c4abaa12eba856c0fbdf17c2353247ee6dab1fa5f634ee4c5c7316870",
+      "size_bytes": 2084,
+      "git_blob": "cc726a594045c96526037b248213a5ad5c02aba9",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "cc726a594045c96526037b248213a5ad5c02aba9",
+          "sha256": "da8ac52c4abaa12eba856c0fbdf17c2353247ee6dab1fa5f634ee4c5c7316870",
+          "size_bytes": 2084,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-component/crash-AfterRetentionInputCommit/sportmaster.db.boundary.json",
+      "sha256": "67962e80f27e7a236d68a7496598c7c0278f47c6bc3a1e43442f90c1472ae37e",
+      "size_bytes": 61,
+      "git_blob": "898741a0534b1a6dff85a7caf616823f0dc05569",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "898741a0534b1a6dff85a7caf616823f0dc05569",
+          "sha256": "67962e80f27e7a236d68a7496598c7c0278f47c6bc3a1e43442f90c1472ae37e",
+          "size_bytes": 61,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-component/crash-AfterRetentionInputCommit/sportmaster.db.process.json",
+      "sha256": "b7afab0143d3e6d6ee88d0faef9342c287521d16c89b7791811436dbcb500159",
+      "size_bytes": 214,
+      "git_blob": "73f6b8ab36db15ba83c495dc27deac7b3e05f383",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "73f6b8ab36db15ba83c495dc27deac7b3e05f383",
+          "sha256": "b7afab0143d3e6d6ee88d0faef9342c287521d16c89b7791811436dbcb500159",
+          "size_bytes": 214,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-component/crash-AfterRetentionInputDelete/sportmaster.db.boundary.json",
+      "sha256": "78d7fb63796b8bb0d8f7fb2346cc9445749adb3e038c4aa491b98ec0f20047ec",
+      "size_bytes": 61,
+      "git_blob": "a2dbc0c03c9491907caf33b32ee329bc00803293",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "a2dbc0c03c9491907caf33b32ee329bc00803293",
+          "sha256": "78d7fb63796b8bb0d8f7fb2346cc9445749adb3e038c4aa491b98ec0f20047ec",
+          "size_bytes": 61,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-component/crash-AfterRetentionInputDelete/sportmaster.db.process.json",
+      "sha256": "b861a5914810b8189bd806ac474ea2b2fc39279ee32630ec18db1b4acb8df0d0",
+      "size_bytes": 214,
+      "git_blob": "eb2b325a94503994e0acfb05ce6d768e2ad07eed",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "eb2b325a94503994e0acfb05ce6d768e2ad07eed",
+          "sha256": "b861a5914810b8189bd806ac474ea2b2fc39279ee32630ec18db1b4acb8df0d0",
+          "size_bytes": 214,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-source/RetentionIngress.cs.txt",
+      "sha256": "bb06f93b0f76c4510594f507633fa412e767c290cf2e223a66a2bdf174bc3351",
+      "size_bytes": 22161,
+      "git_blob": "1599c3037aa8f796d3a5670947ab9b2248f061c6",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "1599c3037aa8f796d3a5670947ab9b2248f061c6",
+          "sha256": "bb06f93b0f76c4510594f507633fa412e767c290cf2e223a66a2bdf174bc3351",
+          "size_bytes": 22161,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-source/RetentionQualification.cs.txt",
+      "sha256": "07608f8ceba93e7366a91e3b9b600ac9596a4a9f6a96d519efab9849056dbc33",
+      "size_bytes": 21999,
+      "git_blob": "1f13eff060fb7e69da361b82e478ee4e88b0851f",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "1f13eff060fb7e69da361b82e478ee4e88b0851f",
+          "sha256": "07608f8ceba93e7366a91e3b9b600ac9596a4a9f6a96d519efab9849056dbc33",
+          "size_bytes": 21999,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-source/reconcile-retention-qualification.py.txt",
+      "sha256": "578a8df2c26d5600130b5533f459e31d639ff57606f046bfb87d27dae176e718",
+      "size_bytes": 15954,
+      "git_blob": "72b4147e5333b5e6efa7a17f096dc93e1cc1fff8",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "72b4147e5333b5e6efa7a17f096dc93e1cc1fff8",
+          "sha256": "578a8df2c26d5600130b5533f459e31d639ff57606f046bfb87d27dae176e718",
+          "size_bytes": 15954,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt",
+      "sha256": "2dc5a5ef11bbf5758a1eb161dc54035f5705bfb9a17b715b18be3173662f4b1b",
+      "size_bytes": 16450,
+      "git_blob": "82696595f19f31a9b7bd84711daa85e38751ff8e",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "82696595f19f31a9b7bd84711daa85e38751ff8e",
+          "sha256": "2dc5a5ef11bbf5758a1eb161dc54035f5705bfb9a17b715b18be3173662f4b1b",
+          "size_bytes": 16450,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/fixed-component/RETENTION-INGRESS.json",
+      "sha256": "2d66e0f31ecdc4f2e40878d2ab5d325fa19ab58f5479519afa815964ad9ccc4f",
+      "size_bytes": 3962,
+      "git_blob": "d20bd1ccdcbaee657f977f07f523ec1d5c6d7245",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "d20bd1ccdcbaee657f977f07f523ec1d5c6d7245",
+          "sha256": "2d66e0f31ecdc4f2e40878d2ab5d325fa19ab58f5479519afa815964ad9ccc4f",
+          "size_bytes": 3962,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ingress-budget.log",
+      "sha256": "701d09c03786fa91804b101ac46a089fb32ecf287af5d1d3791e4d1d771f274a",
+      "size_bytes": 6187,
+      "git_blob": "479d3139d6636d4739d13990a6817aa799242843",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "479d3139d6636d4739d13990a6817aa799242843",
+          "sha256": "701d09c03786fa91804b101ac46a089fb32ecf287af5d1d3791e4d1d771f274a",
+          "size_bytes": 6187,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ingress-crash-tests.log",
+      "sha256": "84e924853424878d47d0cfe25f4786a6b2b2ece4fd0d8efee206652c7acba641",
+      "size_bytes": 6769,
+      "git_blob": "6496b39a14d556eae15ab34c34f69c00eb5c2ff4",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "6496b39a14d556eae15ab34c34f69c00eb5c2ff4",
+          "sha256": "84e924853424878d47d0cfe25f4786a6b2b2ece4fd0d8efee206652c7acba641",
+          "size_bytes": 6769,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ingress-final.log",
+      "sha256": "74d0a61b67e2f966ac03493f877a36ccaf8e94dbe212d565c1d081511f253fbb",
+      "size_bytes": 6769,
+      "git_blob": "f5f33567f712bfd68ab54438f99bae2db3a6607b",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "f5f33567f712bfd68ab54438f99bae2db3a6607b",
+          "sha256": "74d0a61b67e2f966ac03493f877a36ccaf8e94dbe212d565c1d081511f253fbb",
+          "size_bytes": 6769,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ingress-initial.log",
+      "sha256": "f4ac792eb0351d863581e159c9227fa583b7d47fcaa9a580555039bb1d0974f9",
+      "size_bytes": 870,
+      "git_blob": "6eeb8d6ea8b2dc167abd1c19028b38ac82d7e1e8",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "6eeb8d6ea8b2dc167abd1c19028b38ac82d7e1e8",
+          "sha256": "f4ac792eb0351d863581e159c9227fa583b7d47fcaa9a580555039bb1d0974f9",
+          "size_bytes": 870,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/ingress-large.log",
+      "sha256": "0411d2639763f708e22c240650d48d70f3f30f4de78aa4ad423d1c71dbffefff",
+      "size_bytes": 9666,
+      "git_blob": "a180c74799729f40fc3a006f97a5371bf6af64e3",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "a180c74799729f40fc3a006f97a5371bf6af64e3",
+          "sha256": "0411d2639763f708e22c240650d48d70f3f30f4de78aa4ad423d1c71dbffefff",
+          "size_bytes": 9666,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/reconciler-negative.log",
+      "sha256": "bb5fd943f9af331be9d40c63b7778780f4879e9f9be310b8d33ba4cb7821197e",
+      "size_bytes": 143,
+      "git_blob": "3894d29b8f389d45b832ae58853a250422f309da",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "3894d29b8f389d45b832ae58853a250422f309da",
+          "sha256": "bb5fd943f9af331be9d40c63b7778780f4879e9f9be310b8d33ba4cb7821197e",
+          "size_bytes": 143,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/retention-ingress-a192b7f.log",
+      "sha256": "b94b847cf8fa0a1d09e61e8c2f0aef7f06f912b8a87069eb5dff60e61ee8c499",
+      "size_bytes": 2223,
+      "git_blob": "2bcaaaa870e1adf61d53f45a074701fecbffd977",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "2bcaaaa870e1adf61d53f45a074701fecbffd977",
+          "sha256": "b94b847cf8fa0a1d09e61e8c2f0aef7f06f912b8a87069eb5dff60e61ee8c499",
+          "size_bytes": 2223,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/retention-ingress-fixed-a192b7f.log",
+      "sha256": "c0a92cf12059a40eb8fc8e5707194bad1f55b68c4535985c6f60508a9db2730f",
+      "size_bytes": 9261,
+      "git_blob": "0241c0f2dc0a2458356f65ec1bebcdd9ba9ae9a7",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "0241c0f2dc0a2458356f65ec1bebcdd9ba9ae9a7",
+          "sha256": "c0a92cf12059a40eb8fc8e5707194bad1f55b68c4535985c6f60508a9db2730f",
+          "size_bytes": 9261,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/run-protected.ps1",
+      "sha256": "61f394ffeba46976a04eaa6c6668cc94c92a3cb7d70c4d287d80db0e1e9e4b4f",
+      "size_bytes": 893,
+      "git_blob": "2f451993ef93c8f87825123b3b13fe3d4528d4c5",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "2f451993ef93c8f87825123b3b13fe3d4528d4c5",
+          "sha256": "61f394ffeba46976a04eaa6c6668cc94c92a3cb7d70c4d287d80db0e1e9e4b4f",
+          "size_bytes": 893,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-1000/FIXTURE.json",
+      "sha256": "def68e3e6fd4e59cff70121aac7c3bb98a6dc0029902d7b8797318f536794ee0",
+      "size_bytes": 1261,
+      "git_blob": "627910241585db260e41178ba6e0e6df0973eb26",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "627910241585db260e41178ba6e0e6df0973eb26",
+          "sha256": "def68e3e6fd4e59cff70121aac7c3bb98a6dc0029902d7b8797318f536794ee0",
+          "size_bytes": 1261,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-1000/SIMULATED-AUTHORITY.json",
+      "sha256": "3c830902bbbc12b709d4da57db25c725e30035e03e2d9e2a29920babad42594a",
+      "size_bytes": 645,
+      "git_blob": "ff514b5884a3268a9fbdbd571c3d16b98be33bfa",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "ff514b5884a3268a9fbdbd571c3d16b98be33bfa",
+          "sha256": "3c830902bbbc12b709d4da57db25c725e30035e03e2d9e2a29920babad42594a",
+          "size_bytes": 645,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-1000/VERIFIED.json",
+      "sha256": "f24a3780e31f344a4425281589dd4980b1e656fdaf22430c28448baa1b6f58e4",
+      "size_bytes": 471,
+      "git_blob": "6fcc772a43626821befc52554f5b5eefb63d9c5d",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "6fcc772a43626821befc52554f5b5eefb63d9c5d",
+          "sha256": "f24a3780e31f344a4425281589dd4980b1e656fdaf22430c28448baa1b6f58e4",
+          "size_bytes": 471,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-10000/FIXTURE.json",
+      "sha256": "a1e982f5bdc881f9fa72bfcd9248838e678a6c0820fa7a2f6bba282179b44d8c",
+      "size_bytes": 1270,
+      "git_blob": "4a9d38130a5e4ca1fd6a9e571ec2558beeb7f3f5",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "4a9d38130a5e4ca1fd6a9e571ec2558beeb7f3f5",
+          "sha256": "a1e982f5bdc881f9fa72bfcd9248838e678a6c0820fa7a2f6bba282179b44d8c",
+          "size_bytes": 1270,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-10000/SIMULATED-AUTHORITY.json",
+      "sha256": "7224a748f814d0c5e3efac40572b794d971bca9cab4c40833b60d5a4a6fbc7cf",
+      "size_bytes": 651,
+      "git_blob": "51eb2f1c3e0c1c95904bd1c9618d6a3c37b2fe1d",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "51eb2f1c3e0c1c95904bd1c9618d6a3c37b2fe1d",
+          "sha256": "7224a748f814d0c5e3efac40572b794d971bca9cab4c40833b60d5a4a6fbc7cf",
+          "size_bytes": 651,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-10000/VERIFIED.json",
+      "sha256": "2970189ee65f082c961c7a22342b1befcb7aa35f0f8f63ac1c2fe08a220fee68",
+      "size_bytes": 473,
+      "git_blob": "026040fc37a3de249a1c79fc6cb09b55637d4443",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "026040fc37a3de249a1c79fc6cb09b55637d4443",
+          "sha256": "2970189ee65f082c961c7a22342b1befcb7aa35f0f8f63ac1c2fe08a220fee68",
+          "size_bytes": 473,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-create-1000.log",
+      "sha256": "a2e1a57c8508dc9c5e3a19d27d96c677487278def3723cfd445f426e6d20ce30",
+      "size_bytes": 422,
+      "git_blob": "09182f28f7d00d913ad0689bf3ae86d06e8ef7d6",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "09182f28f7d00d913ad0689bf3ae86d06e8ef7d6",
+          "sha256": "a2e1a57c8508dc9c5e3a19d27d96c677487278def3723cfd445f426e6d20ce30",
+          "size_bytes": 422,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-create-10000.log",
+      "sha256": "3c8f07fa8b8facc2488289666ad3da9445900f1a81704c484dad6810d665bdd1",
+      "size_bytes": 723,
+      "git_blob": "c41e99e66605b681fca5dddf4bee0dd3b424e806",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "c41e99e66605b681fca5dddf4bee0dd3b424e806",
+          "sha256": "3c8f07fa8b8facc2488289666ad3da9445900f1a81704c484dad6810d665bdd1",
+          "size_bytes": 723,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-maintain-1000.log",
+      "sha256": "5552fa4663852e3694eb499fc116a4cb31d481eca192a900bed6a0bbcfbc7c45",
+      "size_bytes": 718,
+      "git_blob": "2c6ccbb31dd1639c780f30900b846c5aa63fd599",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "2c6ccbb31dd1639c780f30900b846c5aa63fd599",
+          "sha256": "5552fa4663852e3694eb499fc116a4cb31d481eca192a900bed6a0bbcfbc7c45",
+          "size_bytes": 718,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/simulated-maintain-10000.log",
+      "sha256": "1a300943be5a8a810e2b79c451ce56b8bba372e6101880a25bd3fd1e32035224",
+      "size_bytes": 718,
+      "git_blob": "3132492c2b9c10a6895e67866e75088fc54faee1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "3132492c2b9c10a6895e67866e75088fc54faee1",
+          "sha256": "1a300943be5a8a810e2b79c451ce56b8bba372e6101880a25bd3fd1e32035224",
+          "size_bytes": 718,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/upgrade-conflict-closure-a192b7f.log",
+      "sha256": "ceda18c8c291f978b24d1110c3660cd59ab619919d0c242c3a13f320f397ff53",
+      "size_bytes": 2223,
+      "git_blob": "b651f564911e1bb87032717326204dfefc51f122",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "b651f564911e1bb87032717326204dfefc51f122",
+          "sha256": "ceda18c8c291f978b24d1110c3660cd59ab619919d0c242c3a13f320f397ff53",
+          "size_bytes": 2223,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/upgrade-conflict-closure-fixed-a192b7f.log",
+      "sha256": "5e33c346efb57832445289f48f13007b808df8333eb35d904c8ef81723fd486c",
+      "size_bytes": 5616,
+      "git_blob": "ff9bb63c0affdcab48b12670525c3d4264f9b795",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "ff9bb63c0affdcab48b12670525c3d4264f9b795",
+          "sha256": "5e33c346efb57832445289f48f13007b808df8333eb35d904c8ef81723fd486c",
+          "size_bytes": 5616,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/version-compatibility-a192b7f.log",
+      "sha256": "efd249398c41a48506ff3e5e556edaaa1296fdad8219a173ce0859480e1f60a0",
+      "size_bytes": 2223,
+      "git_blob": "216459126fda57e805b6e164398336c31d03f40a",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "216459126fda57e805b6e164398336c31d03f40a",
+          "sha256": "efd249398c41a48506ff3e5e556edaaa1296fdad8219a173ce0859480e1f60a0",
+          "size_bytes": 2223,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/version-compatibility-fixed-a192b7f.log",
+      "sha256": "e6f1f67bdfa4c508fc27edb95ec620b08ab99cdd5073894e77e628dd34da8de8",
+      "size_bytes": 3984,
+      "git_blob": "18d1d6c11bb809ebf335da2fb2d9c53e06aee58c",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "18d1d6c11bb809ebf335da2fb2d9c53e06aee58c",
+          "sha256": "e6f1f67bdfa4c508fc27edb95ec620b08ab99cdd5073894e77e628dd34da8de8",
+          "size_bytes": 3984,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/win11-stability-a192b7f.log",
+      "sha256": "a10b9c81393c9ddaebb0182962f0f4d8d4441fc9123780a89ce2f1531ff19a89",
+      "size_bytes": 2223,
+      "git_blob": "caaa4dbebc72e058811a5e451c414aaaa7191356",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "caaa4dbebc72e058811a5e451c414aaaa7191356",
+          "sha256": "a10b9c81393c9ddaebb0182962f0f4d8d4441fc9123780a89ce2f1531ff19a89",
+          "size_bytes": 2223,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/win11-stability-fixed-a192b7f.log",
+      "sha256": "b1c6b8052382c2c2b0d9589c19e2a2faeda79abef48f10a1ebf655b3bc49eebc",
+      "size_bytes": 4142,
+      "git_blob": "e6a3ad069305a87b21fb6fe60442fac6292dfadf",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "e6a3ad069305a87b21fb6fe60442fac6292dfadf",
+          "sha256": "b1c6b8052382c2c2b0d9589c19e2a2faeda79abef48f10a1ebf655b3bc49eebc",
+          "size_bytes": 4142,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/retention-ingress-02.md",
+      "sha256": "b29f342d67ac45c413851abea52eb8e2a3297bdd6c69735dd9b7b23b81a01624",
+      "size_bytes": 4870,
+      "git_blob": "e0e53a8c6d7571ba0a64db0bdd5a2518456581c1",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "c70720af85cb1c0a6f4b601fa0df304d2506cbaf",
+          "sha256": "c7911037de467a1a5823565e23dd4d327d9171142b82a1dd0119739b739662ae",
+          "size_bytes": 4643,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/validation/retention-ingress-02.md",
+      "sha256": "7b2eed94ca7c08bfd4061ee17672c7d79da64a0dc7b3f0fa46a86cad4761e23a",
+      "size_bytes": 9019,
+      "git_blob": "606447dcfa9f837959c2340fe36b3e07cecf0485",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "606447dcfa9f837959c2340fe36b3e07cecf0485",
+          "sha256": "7b2eed94ca7c08bfd4061ee17672c7d79da64a0dc7b3f0fa46a86cad4761e23a",
+          "size_bytes": 9019,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RETENTION-INGRESS-02.md",
+      "sha256": "d777d03112e36ae2f06859dea20320a38c7a5cd5cb41f7d05cee12a074fe6045",
+      "size_bytes": 2268,
+      "git_blob": "f16bd4a64129d09c33455f156e045e63010e5c08",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "4671207c6ff23edd1a9b0ad1fddb98002eed00c3",
+          "sha256": "00399ddf41f2347e6e76e6085fe0db05b6a07202e4190bac28bbafa473878715",
+          "size_bytes": 1798,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/RetentionIngress.cs",
+      "sha256": "bb06f93b0f76c4510594f507633fa412e767c290cf2e223a66a2bdf174bc3351",
+      "size_bytes": 22161,
+      "git_blob": "1599c3037aa8f796d3a5670947ab9b2248f061c6",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "1599c3037aa8f796d3a5670947ab9b2248f061c6",
+          "sha256": "bb06f93b0f76c4510594f507633fa412e767c290cf2e223a66a2bdf174bc3351",
+          "size_bytes": 22161,
+          "version": "retention-ingress-02",
+          "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
+          "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/followup-cli/CLI-IDENTITY-SPORTMASTER.json",
+      "sha256": "c3df2fd3ae567d41d069329f06af9383e2bf0f856ff314a4ee6eb58c7876578b",
+      "size_bytes": 13399,
+      "git_blob": "bc05ae67b4da41b79bae1af860ee25551ad2cfa8",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Actual selected Sportmaster CLI and separate source/hash; no elevated full-scale qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "bc05ae67b4da41b79bae1af860ee25551ad2cfa8",
+          "sha256": "c3df2fd3ae567d41d069329f06af9383e2bf0f856ff314a4ee6eb58c7876578b",
+          "size_bytes": 13399,
+          "version": "retention-ingress-02",
+          "status": "scoped_cli_selection_and_ordinary_refusal_evidence",
+          "source": "RETENTION-INGRESS-02 followup on70858da; product src/config matchesa192b7f"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/followup-cli/CLI-SELECTION-CHECK.json",
+      "sha256": "022b420ce418ce948ff1da5a83d358b1cacf82d0a47b4c9d457328de81123c2f",
+      "size_bytes": 791,
+      "git_blob": "26d01cfaeb9ddfc3d8a1be5144000c2f1fd8896d",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Actual selected Sportmaster CLI and separate source/hash; no elevated full-scale qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "26d01cfaeb9ddfc3d8a1be5144000c2f1fd8896d",
+          "sha256": "022b420ce418ce948ff1da5a83d358b1cacf82d0a47b4c9d457328de81123c2f",
+          "size_bytes": 791,
+          "version": "retention-ingress-02",
+          "status": "scoped_cli_selection_and_ordinary_refusal_evidence",
+          "source": "RETENTION-INGRESS-02 followup on70858da; product src/config matchesa192b7f"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/followup-cli/build-cli-sportmaster-70858da.log",
+      "sha256": "0f81f3fd2457aa1a3db95d0af221276307b651d4056af9068f862c88c48e8f53",
+      "size_bytes": 1779,
+      "git_blob": "e3765eb380b0d0dbc59876685a72bf9b20470c99",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Actual selected Sportmaster CLI and separate source/hash; no elevated full-scale qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "e3765eb380b0d0dbc59876685a72bf9b20470c99",
+          "sha256": "0f81f3fd2457aa1a3db95d0af221276307b651d4056af9068f862c88c48e8f53",
+          "size_bytes": 1779,
+          "version": "retention-ingress-02",
+          "status": "scoped_cli_selection_and_ordinary_refusal_evidence",
+          "source": "RETENTION-INGRESS-02 followup on70858da; product src/config matchesa192b7f"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/followup-cli/ordinary-cli-refusal.log",
+      "sha256": "c75f198f80e5f8956f2f8c8702ab535d9d4e02bfff3151641608f016be879f49",
+      "size_bytes": 575,
+      "git_blob": "5f16905f3fa9a8422c8e7cb1774112be232eb102",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Actual selected Sportmaster CLI and separate source/hash; no elevated full-scale qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "5f16905f3fa9a8422c8e7cb1774112be232eb102",
+          "sha256": "c75f198f80e5f8956f2f8c8702ab535d9d4e02bfff3151641608f016be879f49",
+          "size_bytes": 575,
+          "version": "retention-ingress-02",
+          "status": "scoped_cli_selection_and_ordinary_refusal_evidence",
+          "source": "RETENTION-INGRESS-02 followup on70858da; product src/config matchesa192b7f"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt",
+      "sha256": "35576b13eafe583cdf22bc96d7c6e9003260cf0d9b55c736e11f80ecea8082f6",
+      "size_bytes": 17026,
+      "git_blob": "c0d9538f230bd76e482a4410d45c3b0f7c492886",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "purpose": "Actual selected Sportmaster CLI and separate source/hash; no elevated full-scale qualification",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_retention_ingress_main_integration_03_identities": {
+        "pr105": {
+          "git_blob": "c0d9538f230bd76e482a4410d45c3b0f7c492886",
+          "sha256": "35576b13eafe583cdf22bc96d7c6e9003260cf0d9b55c736e11f80ecea8082f6",
+          "size_bytes": 17026,
+          "version": "retention-ingress-02",
+          "status": "scoped_cli_selection_and_ordinary_refusal_evidence",
+          "source": "RETENTION-INGRESS-02 followup on70858da; product src/config matchesa192b7f"
+        }
+      }
+    },
+    {
+      "path": "docs/runtime/validation/retention-ingress-full-retest-03.md",
+      "sha256": "fe1e715a7689b2e9f4c1c88b0d26861bdba457968ec42ef1b2b72723da5ae1de",
+      "size_bytes": 2827,
+      "git_blob": "d9f8caa41836d6a28d50cd6ac084b18122b2ad44",
+      "version": "retention-ingress-full-retest-03",
+      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+      "storage_scope": "public_repository",
+      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -88927,5 +90765,29 @@
     "retention_defect": "604800 full maintenance FAIL, 2592000 NOT_RUN and 604800 restore cancellation retained; PR105 remains separate",
     "qualification": "Final head CI/review/release receipts required; target IPC, actual SDK/RCS, 24h/72h and field acceptance remain unverified",
     "report": "docs/runtime/validation/pr104-main-integration-01.md"
+  },
+  "retention_ingress_02": {
+    "work_package": "docs/work-packages/WP-IPC-RETENTION-INGRESS-02.md",
+    "report": "docs/runtime/validation/retention-ingress-02.md",
+    "evidence": "docs/runtime/evidence/retention-ingress-02/README.md",
+    "inventory": "docs/runtime/evidence/retention-ingress-02/FILES.json",
+    "base_main": "c425435c6f980ca537a29e4e8353d12be341df61",
+    "product_source": "a192b7fe18b2f904fd7db9943e79b0173d0f8b28",
+    "product_src_tree": "6326499b6a9ecd87ae84e40b8be20a8eb28c3cfe",
+    "database": 9,
+    "sql_1_to_9": "UNCHANGED",
+    "result": "Component up to604800 and1000/10000 complete synthetic simulated-authority maintenance PASS; real protected full-scale launch NOT_RUN_UAC_CANCELLED",
+    "qualification": "No604800 full-custody CLI/restore,2592000,targetIPC,realSDK/RCS,24h/72h or field acceptance",
+    "pr": 105,
+    "inventory_scope": "Owned staged Git delta only; unrelated historical records and metadata retained; final head CI checked separately"
+  },
+  "retention_ingress_full_retest_03": {
+    "main": "404e85523550203bf02dd90e666fa0305b1d5ed0",
+    "original_pr105_head": "10ad5d264b7e3f1b581dcf3fd044163fda02dcef",
+    "report": "docs/runtime/validation/retention-ingress-full-retest-03.md",
+    "phase": "INTEGRATED_CODE_PENDING_FIXED_SOURCE_BUILD_AND_FULL_SCALE_CLI",
+    "original_evidence_identity": "PR103 FAIL/NOT_RUN and PR105 component/simulated results unchanged",
+    "qualification": "No target IPC, real SDK/RCS, 24h/72h or field acceptance",
+    "inventory_scope": "Canonical staged bytes for owned delta only; union of main and PR105 identities; no unrelated historical refresh"
   }
 }

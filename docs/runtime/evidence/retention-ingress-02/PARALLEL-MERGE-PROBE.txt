@@ -1,0 +1,32 @@
+581048978e69373145016150f7c1afc09ed5b4b9
+.gitattributes
+config/compositions.json
+docs/manifest.json
+docs/manifest.sha256
+docs/runtime/win11-24x7-stability-remediation-01.md
+src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj
+src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj
+src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj
+tests/Ipc.Application.Verification/Program.cs
+
+Auto-merging .gitattributes
+CONFLICT (content): Merge conflict in .gitattributes
+Auto-merging .github/workflows/sportmaster-commercial.yml
+Auto-merging config/compositions.json
+CONFLICT (content): Merge conflict in config/compositions.json
+Auto-merging docs/INDEX.md
+Auto-merging docs/manifest.json
+CONFLICT (content): Merge conflict in docs/manifest.json
+Auto-merging docs/manifest.sha256
+CONFLICT (content): Merge conflict in docs/manifest.sha256
+Auto-merging docs/runtime/win11-24x7-stability-remediation-01.md
+CONFLICT (content): Merge conflict in docs/runtime/win11-24x7-stability-remediation-01.md
+Auto-merging src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj
+CONFLICT (content): Merge conflict in src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj
+Auto-merging src/Ipc.Application.ParcelFlow/ParcelRepository.cs
+Auto-merging src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj
+CONFLICT (content): Merge conflict in src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj
+Auto-merging src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj
+CONFLICT (content): Merge conflict in src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj
+Auto-merging tests/Ipc.Application.Verification/Program.cs
+CONFLICT (content): Merge conflict in tests/Ipc.Application.Verification/Program.cs

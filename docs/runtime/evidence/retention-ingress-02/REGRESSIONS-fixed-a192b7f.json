@@ -1,0 +1,58 @@
+[
+  {
+    "Case": "retention-ingress",
+    "Arguments": [
+      "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--retention-ingress",
+      "--large"
+    ],
+    "ExitCode": 0,
+    "Seconds": 54.8429202,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\retention-ingress-fixed-a192b7f.log"
+  },
+  {
+    "Case": "win11-stability",
+    "Arguments": [
+      "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--win11-stability"
+    ],
+    "ExitCode": 0,
+    "Seconds": 6.7614422,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\win11-stability-fixed-a192b7f.log"
+  },
+  {
+    "Case": "audit03-maintenance",
+    "Arguments": [
+      "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--audit03-maintenance"
+    ],
+    "ExitCode": 0,
+    "Seconds": 1.1977158,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\audit03-maintenance-fixed-a192b7f.log"
+  },
+  {
+    "Case": "version-compatibility",
+    "Arguments": [
+      "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--version-compatibility"
+    ],
+    "ExitCode": 0,
+    "Seconds": 2.507395,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\version-compatibility-fixed-a192b7f.log"
+  },
+  {
+    "Case": "upgrade-conflict-closure",
+    "Arguments": [
+      "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--upgrade-conflict-closure"
+    ],
+    "ExitCode": 0,
+    "Seconds": 11.6925139,
+    "Log": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\upgrade-conflict-closure-fixed-a192b7f.log"
+  }
+]

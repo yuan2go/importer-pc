@@ -1,0 +1,62 @@
+{
+  "Status": "PASS_SEPARATE_ISOLATED_RECOVERY_DRILL_ONLY",
+  "StartedUtc": "2026-10-25T06:24:59.5273138+00:00",
+  "ActualOriginalMaintenanceStatus": "FAIL",
+  "SourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "ProductSha256": "E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA",
+  "ElevatedAdministrator": true,
+  "BackupHash": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "Destination": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\restored\\Simulation\\retention-qualification\\sportmaster",
+  "Runs": [
+    {
+      "Name": "post-budget-plan-604800",
+      "StartedUtc": "2026-10-25T06:24:59.5880553+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "recovery-plan",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "ExitCode": 0,
+      "Seconds": 11.8673908,
+      "EndedUtc": "2026-10-25T06:25:11.4868912+00:00"
+    },
+    {
+      "Name": "post-budget-restore-604800",
+      "StartedUtc": "2026-10-25T06:25:11.5229517+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "restore",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\complete-before-expiry.db",
+        "--destination",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\restored\\Simulation\\retention-qualification\\sportmaster"
+      ],
+      "ExitCode": 0,
+      "Seconds": 59.5815665,
+      "EndedUtc": "2026-10-25T06:26:11.1046879+00:00"
+    },
+    {
+      "Name": "post-budget-inspect-604800",
+      "StartedUtc": "2026-10-25T06:26:11.1091849+00:00",
+      "Executable": "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\cli\\Ipc.Assembly.exe",
+      "Arguments": [
+        "--action",
+        "maintenance-inspect",
+        "--file",
+        "D:\\ImporterPc.Deployment\\Qualification\\retention-3690d26d3ae8427fba5a1558bffb2385\\case-604800\\restored\\Simulation\\retention-qualification\\sportmaster\\sportmaster.db"
+      ],
+      "ExitCode": 0,
+      "Seconds": 471.9312593,
+      "EndedUtc": "2026-10-25T06:34:03.0405517+00:00"
+    }
+  ],
+  "Scope": "Separate actual CLI restore of complete pre-retention originals after the baseline terminal state. Does not turn failed maintenance into PASS, resume business or replay requests.",
+  "RestoredDatabaseSha256": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "RestorePlanCopyInspectSeconds": null,
+  "EndedUtc": "2026-10-25T06:34:21.9795153+00:00"
+}

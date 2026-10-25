@@ -1,0 +1,13 @@
+{
+  "Status": "PASS_ACTUAL_ORDINARY_TOKEN_REFUSAL",
+  "AtUtc": "2026-10-25T06:45:26.8524316+00:00",
+  "SourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "ProductSha256": "379560D5C546393B503BE8E748183DA138BC936CD17CFD729B895B273FFE2ADE",
+  "OrdinaryToken": true,
+  "ExitCode": -532462766,
+  "AuthorityGuardInStack": true,
+  "DatabaseBefore": "A2E6A944B5D7A885645878DDC9E648DFBBE16ADEFF2963640F99FBFFD3B269A9",
+  "DatabaseAfter": "A2E6A944B5D7A885645878DDC9E648DFBBE16ADEFF2963640F99FBFFD3B269A9",
+  "BackupOrRecoveryCreated": false,
+  "Scope": "Closed completed 1000-case only; no active large database was read or modified"
+}

@@ -83,7 +83,30 @@ try {
  foreach($count in $Counts){
   $case=Join-Path $protectedRoot ('case-'+$count)
   # Local disk preflight is additional fixture protection, not a changed production reserve/budget.
-  if($result.Cases.Count -gt 0){$sample=$result.Cases[0];$copies=if($RestoreAll){3.15}else{2.15};$estimate=[long]($sample.OriginalBytes/$sample.Count*$count*$copies+8GB);if((Get-PSDrive D).Free -lt $estimate){$result.Cases+=,[ordered]@{Count=$count;Status='NOT_RUN_DISK_CAPACITY';RequiredEstimateBytes=$estimate;AvailableBytes=(Get-PSDrive D).Free};Save-Result;continue}}
+  $sourceBytes=$null;$capacityBasis='Previous completed fixture extrapolation'
+  if($priorRun){
+   $sizedCases=@($priorRun.Cases|Where-Object Count -eq $count)
+   if($sizedCases.Count -eq 1){
+    $sizedCase=[IO.Path]::GetFullPath($sizedCases[0].CaseRoot)
+    if($sizedCase -ne (Join-Path $priorRoot ('case-'+$count))){throw 'Capacity source must belong to the recorded synthetic root'}
+    for($parent=Get-Item -LiteralPath $sizedCase;$null -ne $parent;$parent=$parent.Parent){if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked capacity source ancestor refused'}}
+    $sizedBackup=Join-Path $sizedCase 'complete-before-expiry.db'
+    if(Test-Path -LiteralPath ($sizedBackup+'.recovery/COMPLETED.json')){
+     $sizedFile=Get-Item -LiteralPath $sizedBackup
+     if($sizedFile.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Linked capacity source refused'}
+     $sourceBytes=$sizedFile.Length;$capacityBasis='Actual completed backup bytes; restore still verifies the entire manifest'
+    }
+   }
+  }
+  if($null -eq $sourceBytes -and $result.Cases.Count -gt 0){$sample=$result.Cases[0];$sourceBytes=$sample.OriginalBytes/$sample.Count*$count}
+  if($null -ne $sourceBytes){
+   # First case also creates a restored copy and a second-maintenance backup.
+   $copies=if($result.Cases.Count -eq 0){4.15}elseif($RestoreAll){3.15}else{2.15}
+   $estimate=[long]($sourceBytes*$copies+8GB);$available=(Get-PSDrive D).Free
+   $capacity=[ordered]@{Count=$count;SourceBytes=$sourceBytes;CopyFactor=$copies;ReserveBytes=8GB;RequiredEstimateBytes=$estimate;AvailableBytes=$available;Basis=$capacityBasis}
+   if(-not $result.Contains('CapacityChecks')){$result.CapacityChecks=@()};$result.CapacityChecks+=,$capacity;Save-Result
+   if($available -lt $estimate){$result.Cases+=,[ordered]@{Count=$count;Status='NOT_RUN_DISK_CAPACITY';RequiredEstimateBytes=$estimate;AvailableBytes=$available};Save-Result;continue}
+  }
   if($priorRun){
    $priorCases=@($priorRun.Cases | Where-Object Count -eq $count)
    if($priorCases.Count -ne 1){throw "No unique prior full fixture for $count"}

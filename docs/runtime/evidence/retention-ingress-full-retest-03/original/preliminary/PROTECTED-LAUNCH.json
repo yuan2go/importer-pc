@@ -1,0 +1,12 @@
+{
+  "StartedUtc": "2026-10-25T06:41:58.3538302+00:00",
+  "HelperPid": 86544,
+  "StandardWindowsUac": true,
+  "SourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
+  "LauncherSha256": "9CC280AB1514DE5D8AF706D588990AFE1D35A1CF574E3F52194F8833DB738676",
+  "ExecutedHelperSha256": "232A7C51D99C5DD3D8A5F5D6E62BFDCF0AF793C6259F208FC3881928EF315FD2",
+  "ProductSha256": "379560D5C546393B503BE8E748183DA138BC936CD17CFD729B895B273FFE2ADE",
+  "ReserveBytes": 8589934592,
+  "RestoreAll": false,
+  "Scope": "New protected synthetic scale run, preserving baseline failure/backup/recovery and original identities"
+}

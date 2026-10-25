@@ -1,0 +1,199 @@
+{
+  "Files": [
+    {
+      "path": "original/preliminary/CAPACITY-POLICY-CHECK.json",
+      "bytes": 696,
+      "sha256": "0318b6bad49e97b9362e38fb327f56f91532d0d29053ec5a380e9aa04e0347ca"
+    },
+    {
+      "path": "original/preliminary/EXECUTED-HELPER.ps1",
+      "bytes": 18609,
+      "sha256": "232a7c51d99c5dd3d8a5f5d6e62bfdcf0af793c6259f208fc3881928ef315fd2"
+    },
+    {
+      "path": "original/preliminary/FIXED-SOURCE.json",
+      "bytes": 512,
+      "sha256": "a408ffafc606431997e4c205dddc6fee682670c5a66c0cf509a856f1face1b9c"
+    },
+    {
+      "path": "original/preliminary/FULL-BACKUP-PLAN.json",
+      "bytes": 1125,
+      "sha256": "8fce606c90267f749931b66a498832eda45261dd63c2c7ea6ff85d7a9e4ca366"
+    },
+    {
+      "path": "original/preliminary/INTEGRATION-b83998f1.json",
+      "bytes": 697,
+      "sha256": "fdce5dd287c6196782f1c92dbe1e263fdf352739ff5e7bcb9f6b1a8d47714049"
+    },
+    {
+      "path": "original/preliminary/LOCAL-SUITES.json",
+      "bytes": 921,
+      "sha256": "8be5d22adf12a3b53a2e78aedf6f125655878b70024fa86c070cea196399ccbb"
+    },
+    {
+      "path": "original/preliminary/ORDINARY-AUTHORITY.json",
+      "bytes": 651,
+      "sha256": "81a37a6c0c297ba8c4e30380c10bec4c760e501be24d7217f91e40f757403c1c"
+    },
+    {
+      "path": "original/preliminary/PROTECTED-LAUNCH.json",
+      "bytes": 621,
+      "sha256": "9afe23688d533a9eec65a77b322a1802a4d46b88f3a0f60bec16a1ac55f49803"
+    },
+    {
+      "path": "original/preliminary/RECONCILIATION-small-in-progress.json",
+      "bytes": 7071,
+      "sha256": "35cba85e0804d314c48464e78e0398b0a9e02486784bb36773e5c47b31a08074"
+    },
+    {
+      "path": "original/preliminary/RETENTION-INGRESS.json",
+      "bytes": 3963,
+      "sha256": "b0407219c1b5b3ca72b5b00cd4d2e61c0cc719aa1946c032ca5243807f8d994f"
+    },
+    {
+      "path": "original/preliminary/START-PROTECTED-RETEST.ps1",
+      "bytes": 1275,
+      "sha256": "9cc280ab1514de5d8af706d588990afe1d35a1cf574e3f52194f8833db738676"
+    },
+    {
+      "path": "original/preliminary/audit03-maintenance.log",
+      "bytes": 824,
+      "sha256": "50491492bc8b5e1a0dd5fb2fa5e33aa3bf01233011f77f1e83c8b930fdb88326"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/DERIVED-TIMING.json",
+      "bytes": 689,
+      "sha256": "570b463f8dde34488248ecc8e9ec6af87c8c3a2bde210825ffe9fe6ed7dbc9a4"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/LAUNCH.json",
+      "bytes": 476,
+      "sha256": "d68aec9c182a7166fe72c49783918572f5a148246323e7af534e275a871068d9"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/POST-BUDGET-RECOVERY.json",
+      "bytes": 3228,
+      "sha256": "d5f0b69fded30b6d68bc630ca347940746d97f2e9f0b87de66ccdd0feac117df"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/RECOVERY-LIVE.json",
+      "bytes": 140,
+      "sha256": "9857566bb938da1b472aef6a732ad6c3e6e91360dd08a6e473c3db75e8458712"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1",
+      "bytes": 5606,
+      "sha256": "fa58a73b084c6f99daaa681f58259f56d64d432a687eefe078f49c8224cf32f2"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-inspect-604800.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-inspect-604800.out.log",
+      "bytes": 1903,
+      "sha256": "8e9bf7afbfcde49a91220effa4385daecacfc0eba6c59d277b85daeddbe32f99"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-plan-604800.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-plan-604800.out.log",
+      "bytes": 157,
+      "sha256": "4462a355c3542cb4a27cc6ee42fa6ab000944f0c2810a9dc58a1e12045d4742c"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-restore-604800.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original/preliminary/baseline-recovery/post-budget-restore-604800.out.log",
+      "bytes": 106,
+      "sha256": "9a2d883890142617105a689eccda5c9b6975993d27a9524378b2a5141c661cc9"
+    },
+    {
+      "path": "original/preliminary/build-sportmaster.log",
+      "bytes": 1998,
+      "sha256": "6db1a83521d5aed64edc9e254bc86ad321f5fb55c577e854df9ec1f0a90fc23d"
+    },
+    {
+      "path": "original/preliminary/build-verification.log",
+      "bytes": 3008,
+      "sha256": "900c92f8e53982b55ca24e9c0c57eec962092c552a41422c399765d8e778e068"
+    },
+    {
+      "path": "original/preliminary/business-identity.json",
+      "bytes": 13399,
+      "sha256": "c3df2fd3ae567d41d069329f06af9383e2bf0f856ff314a4ee6eb58c7876578b"
+    },
+    {
+      "path": "original/preliminary/check-capacity-policy.ps1",
+      "bytes": 2633,
+      "sha256": "72b88b26c20dc13e6736999770e0c5f8cd6020149a47eb323d8d8b9d3ad5e611"
+    },
+    {
+      "path": "original/preliminary/check-integration.py",
+      "bytes": 3691,
+      "sha256": "aa344ed168095ef8ef1ba8b7034fb7dd1306c27be5afe7d9357eda3d77d17ce3"
+    },
+    {
+      "path": "original/preliminary/check-ordinary-authority.ps1",
+      "bytes": 3072,
+      "sha256": "bb16fd4f2f18eb9b9239b7456f4f5e59dd7745330c709d9aae2477d6078cb0bb"
+    },
+    {
+      "path": "original/preliminary/h02-crashes.log",
+      "bytes": 13242,
+      "sha256": "0dc109d0efb9b4cc9db43aa9adbb05d9af6b9b3150fc7d53e7867343aac5e459"
+    },
+    {
+      "path": "original/preliminary/merge-refresh-manifest.py",
+      "bytes": 4127,
+      "sha256": "35908a8090a3cb8328909419e48912b5e9535f5ec6311282aa5660895ee482c5"
+    },
+    {
+      "path": "original/preliminary/ordinary-authority.err.log",
+      "bytes": 626,
+      "sha256": "85f272a5de7b9990197e450d2380e09b6c442cb4960288f2139c82f689160876"
+    },
+    {
+      "path": "original/preliminary/ordinary-authority.out.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original/preliminary/plan.log",
+      "bytes": 917,
+      "sha256": "67d7fe9cd1a58de093688b20f10ed65bfcf7a27ae0d8f8d28bd6812673223c82"
+    },
+    {
+      "path": "original/preliminary/reliability-02.log",
+      "bytes": 8100,
+      "sha256": "5c00bc7e21588b22cf6446ed1c2534a75c465f9d3fadb4d345c196ce30c03865"
+    },
+    {
+      "path": "original/preliminary/retention-ingress.log",
+      "bytes": 9843,
+      "sha256": "5e261d0ed688ce88b7d5bd4a562c57ca163ef5cc698f2fb43a635aeac22586e5"
+    },
+    {
+      "path": "original/preliminary/upgrade-conflict-closure.log",
+      "bytes": 5616,
+      "sha256": "44aae9429b24869908fe04c0f32afe653944a96e78180284dcf6bae8e32c662a"
+    },
+    {
+      "path": "original/preliminary/version-compatibility.log",
+      "bytes": 3984,
+      "sha256": "80b642cf34b731bc563d2761bfc932c1b9d6c698fb529d46fdb12178f58c3c43"
+    },
+    {
+      "path": "original/preliminary/win11-stability.log",
+      "bytes": 4142,
+      "sha256": "9a31c1a5a715a61b31e4096a8040a147d19234984ce2451419f1092948ca812e"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-c64fa6feaeb64a0e9ceb8409f8112ca7
+{
+  "Optimized": false,
+  "Plan": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ]
+}
+{
+  "Optimized": true,
+  "Plan": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ]
+}
+PASS RETENTION-INGRESS: rowid seek, no sort, indexed retained-owner protection
+PASS RETENTION-INGRESS: 1000: exact oracle at cursor 0
+PASS RETENTION-INGRESS: 1000: exact oracle at cursor 1500
+PASS RETENTION-INGRESS: 1000: exact oracle at cursor 2700
+PASS RETENTION-INGRESS: 1000: exact oracle at cursor 3000
+PASS RETENTION-INGRESS: first page VM work stays bounded independently of eligible tail
+PASS RETENTION-INGRESS: all pages visit each eligible input once across rowid gaps; protected tail retained
+PASS RETENTION-INGRESS: bounded 256-input transactions commit exact count
+PASS RETENTION-INGRESS: inputs and only their associated audits are retired atomically
+PASS RETENTION-INGRESS: every retired input hash retained
+PASS RETENTION-INGRESS: post-delete integrity
+{
+  "Optimized": false,
+  "Plan": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ]
+}
+{
+  "Optimized": true,
+  "Plan": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ]
+}
+PASS RETENTION-INGRESS: rowid seek, no sort, indexed retained-owner protection
+PASS RETENTION-INGRESS: 10000: exact oracle at cursor 0
+PASS RETENTION-INGRESS: 10000: exact oracle at cursor 15000
+PASS RETENTION-INGRESS: 10000: exact oracle at cursor 29700
+PASS RETENTION-INGRESS: 10000: exact oracle at cursor 30000
+PASS RETENTION-INGRESS: first page VM work stays bounded independently of eligible tail
+PASS RETENTION-INGRESS: all pages visit each eligible input once across rowid gaps; protected tail retained
+PASS RETENTION-INGRESS: bounded 256-input transactions commit exact count
+PASS RETENTION-INGRESS: inputs and only their associated audits are retired atomically
+PASS RETENTION-INGRESS: every retired input hash retained
+PASS RETENTION-INGRESS: post-delete integrity
+{
+  "Optimized": false,
+  "Plan": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ]
+}
+{
+  "Optimized": true,
+  "Plan": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ]
+}
+PASS RETENTION-INGRESS: rowid seek, no sort, indexed retained-owner protection
+PASS RETENTION-INGRESS: 100000: exact oracle at cursor 0
+PASS RETENTION-INGRESS: 100000: exact oracle at cursor 150000
+PASS RETENTION-INGRESS: 100000: exact oracle at cursor 299700
+PASS RETENTION-INGRESS: 100000: exact oracle at cursor 300000
+PASS RETENTION-INGRESS: first page VM work stays bounded independently of eligible tail
+PASS RETENTION-INGRESS: all pages visit each eligible input once across rowid gaps; protected tail retained
+PASS RETENTION-INGRESS: bounded 256-input transactions commit exact count
+PASS RETENTION-INGRESS: inputs and only their associated audits are retired atomically
+PASS RETENTION-INGRESS: every retired input hash retained
+PASS RETENTION-INGRESS: post-delete integrity
+{
+  "Optimized": false,
+  "Plan": [
+    "SEARCH i USING INDEX parcel_ingress_pending (state=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ]
+}
+{
+  "Optimized": true,
+  "Plan": [
+    "SEARCH i USING INTEGER PRIMARY KEY (rowid\u003E?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH h USING INDEX sqlite_autoindex_parcel_history_index_2 (admission=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH t USING COVERING INDEX sqlite_autoindex_parcel_retired_operations_1 (id=?)"
+  ]
+}
+PASS RETENTION-INGRESS: rowid seek, no sort, indexed retained-owner protection
+PASS RETENTION-INGRESS: 604800: exact oracle at cursor 0
+PASS RETENTION-INGRESS: 604800: exact oracle at cursor 907200
+PASS RETENTION-INGRESS: 604800: exact oracle at cursor 1814100
+PASS RETENTION-INGRESS: 604800: exact oracle at cursor 1814400
+PASS RETENTION-INGRESS: first page VM work stays bounded independently of eligible tail
+PASS RETENTION-INGRESS: all pages visit each eligible input once across rowid gaps; protected tail retained
+PASS RETENTION-INGRESS: bounded 256-input transactions commit exact count
+PASS RETENTION-INGRESS: inputs and only their associated audits are retired atomically
+PASS RETENTION-INGRESS: every retired input hash retained
+PASS RETENTION-INGRESS: post-delete integrity
+PASS RETENTION-INGRESS: AfterRetentionInputDelete: reopen preserves exact committed prefix and rolls back the whole unfinished page
+PASS RETENTION-INGRESS: retained/retired identities never overlap
+PASS RETENTION-INGRESS: resume scans fresh rowids without resurrecting/repeating retired inputs
+PASS RETENTION-INGRESS: BeforeRetentionInputCommit: reopen preserves exact committed prefix and rolls back the whole unfinished page
+PASS RETENTION-INGRESS: retained/retired identities never overlap
+PASS RETENTION-INGRESS: resume scans fresh rowids without resurrecting/repeating retired inputs
+PASS RETENTION-INGRESS: AfterRetentionInputCommit: reopen preserves exact committed prefix and rolls back the whole unfinished page
+PASS RETENTION-INGRESS: retained/retired identities never overlap
+PASS RETENTION-INGRESS: resume scans fresh rowids without resurrecting/repeating retired inputs
+PASS RETENTION-INGRESS: actual process kill at AfterRetentionInputDelete preserves committed page and rolls back unfinished page
+PASS RETENTION-INGRESS: crash recovery partitions exact original input identities
+PASS RETENTION-INGRESS: resume retires only remaining 344 eligible originals
+PASS RETENTION-INGRESS: actual process kill at AfterRetentionInputCommit preserves committed page and rolls back unfinished page
+PASS RETENTION-INGRESS: crash recovery partitions exact original input identities
+PASS RETENTION-INGRESS: resume retires only remaining 344 eligible originals
+PASS RETENTION-INGRESS: production maintenance budget remains two hours
+PASS RETENTION-INGRESS: pre-initialization cancellation leaves original bytes unchanged: InspectOriginal
+PASS RETENTION-INGRESS: no backup before prerequisite phase: InspectOriginal
+PASS RETENTION-INGRESS: cancellation at InspectOriginal returns failure only after owner lease is released
+PASS RETENTION-INGRESS: pre-initialization cancellation leaves original bytes unchanged: InitializeRepository
+PASS RETENTION-INGRESS: no backup before prerequisite phase: InitializeRepository
+PASS RETENTION-INGRESS: cancellation at InitializeRepository returns failure only after owner lease is released
+PASS RETENTION-INGRESS: no backup before prerequisite phase: ValidateOriginal
+PASS RETENTION-INGRESS: cancellation at ValidateOriginal returns failure only after owner lease is released
+PASS RETENTION-INGRESS: no backup before prerequisite phase: CompleteBackup
+PASS RETENTION-INGRESS: cancellation at CompleteBackup returns failure only after owner lease is released
+PASS RETENTION-INGRESS: complete backup survives later cancellation: ExpireDetails
+PASS RETENTION-INGRESS: cancellation at ExpireDetails returns failure only after owner lease is released
+PASS RETENTION-INGRESS: complete backup survives later cancellation: ValidateResult
+PASS RETENTION-INGRESS: cancellation at ValidateResult returns failure only after owner lease is released
+PASS RETENTION-INGRESS: complete backup survives later cancellation: Compact
+PASS RETENTION-INGRESS: cancellation at Compact returns failure only after owner lease is released
+PASS RETENTION-INGRESS: complete backup survives later cancellation: Disposed
+PASS RETENTION-INGRESS: cancellation at Disposed returns failure only after owner lease is released
+PASS RETENTION-INGRESS: hash observes cancellation
+PASS RETENTION-INGRESS: cancelled backup creates no target
+PASS RETENTION-INGRESS: connection progress handler interrupts an executing query
+PASS RETENTION-INGRESS: paged backup cancels after copying begins
+PASS RETENTION-INGRESS: interrupted backup preserves source bytes and cannot publish complete custody

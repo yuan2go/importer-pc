@@ -1,0 +1,10 @@
+{
+  "Status": "DERIVED_FROM_ORIGINAL_STEP_STOPWATCHES",
+  "ReceiptSha256": "d5f0b69fded30b6d68bc630ca347940746d97f2e9f0b87de66ccdd0feac117df",
+  "OriginalAggregateField": null,
+  "PlanCopyInspectSeconds": 543.3802166,
+  "RestoreOnlySeconds": 59.5815665,
+  "Method": "Sum original step Seconds; aggregate in original PowerShell ordered-dictionary Measure-Object receipt is null, not zero. Original file unchanged.",
+  "OriginalSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
+  "Scope": "Separate actual CLI restore of complete pre-retention originals after the baseline terminal state. Does not turn failed maintenance into PASS, resume business or replay requests."
+}

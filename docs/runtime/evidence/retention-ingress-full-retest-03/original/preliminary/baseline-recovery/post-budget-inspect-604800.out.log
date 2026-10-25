@@ -1,0 +1,48 @@
+{
+  "Application": "sportmaster",
+  "Station": "retention-qualification",
+  "Mode": "Simulation",
+  "DatabaseVersion": 9,
+  "Revision": 4,
+  "Paused": true,
+  "Resident": 0,
+  "Archived": 604806,
+  "Unsettled": 1,
+  "PendingReceipts": 1,
+  "IdentityConflicts": 1,
+  "DatabaseBytes": 9464315904,
+  "CustodyBytes": 3477,
+  "DatabaseSha256": "94F39CEC2C59E1BB9143761158059668DD0D86848A666A88578F07DA33F7C8DF",
+  "WalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "ConfigurationSha256": "CC12ABF7871DF2FCFC55188511BC31821F598BE5089FF02C4EE17FB3F9DA4E05",
+  "OrdinaryUpgradeAllowed": false,
+  "Reasons": [
+    "Original input custody requires matching-release inspection; never replay accepted source input",
+    "Original business/image/recovery responsibilities require matching-release settlement",
+    "Original receipt custody is unsettled; Query is not the missing original raw",
+    "Persistent identity conflicts require authorized inspection"
+  ],
+  "At": "2026-10-25T06:33:53.0442385+00:00",
+  "BusinessVersion": "1.12.0",
+  "SourceIdentity": "1.12.0\u002B5bb032d7354ef619064a015484a5001204edfff5",
+  "ApplicationContractSha256": "E238D6FFC283CB20381A848A3405E10484C9C6C8124C098C5C43FA690CA12320",
+  "ConfigurationSchema": 3,
+  "Providers": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "TargetSha256": "CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5",
+      "PackageSha256": null
+    },
+    {
+      "InstanceId": "maintenance",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "TargetSha256": "28C52C39DB1B968ED558A80E582B2CFD1017064E2B6AFE08B53B29FA7D5B77B6",
+      "PackageSha256": null
+    }
+  ]
+}

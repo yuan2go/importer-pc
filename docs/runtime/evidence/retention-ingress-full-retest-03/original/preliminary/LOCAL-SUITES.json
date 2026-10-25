@@ -1,0 +1,44 @@
+[
+  {
+    "Mode": "--retention-ingress",
+    "ExitCode": 0,
+    "Seconds": 66.3053288,
+    "Log": "retention-ingress.log"
+  },
+  {
+    "Mode": "--reliability-02",
+    "ExitCode": 0,
+    "Seconds": 32.31615,
+    "Log": "reliability-02.log"
+  },
+  {
+    "Mode": "--h02-crashes",
+    "ExitCode": 0,
+    "Seconds": 18.5597866,
+    "Log": "h02-crashes.log"
+  },
+  {
+    "Mode": "--win11-stability",
+    "ExitCode": 0,
+    "Seconds": 7.0611207,
+    "Log": "win11-stability.log"
+  },
+  {
+    "Mode": "--audit03-maintenance",
+    "ExitCode": 0,
+    "Seconds": 1.3971346,
+    "Log": "audit03-maintenance.log"
+  },
+  {
+    "Mode": "--version-compatibility",
+    "ExitCode": 0,
+    "Seconds": 2.8278272,
+    "Log": "version-compatibility.log"
+  },
+  {
+    "Mode": "--upgrade-conflict-closure",
+    "ExitCode": 0,
+    "Seconds": 14.0609745,
+    "Log": "upgrade-conflict-closure.log"
+  }
+]

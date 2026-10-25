@@ -1,5 +1,5 @@
 {
-  "scope": "Original phase/0a3d4152 evidence and 2026-10-26 batch follow-up; frozen720af857 readonly verified; latest CI pending, real deployment NOT_RUN, G01/G02 external",
+  "scope": "Original failures and intermediate evidence retained; current183f9fac frozen/core/readonly CLI verified; CI40216393477 native passes but artifact retention failed, fix pending latest CI; real deployment NOT_RUN",
   "files": [
     {
       "path": "backup-binding-fix/before-fix-RESULT.json",
@@ -45,6 +45,71 @@
       "path": "batch-preflight-20261026/baseline-0a3d4152/RUN.log",
       "bytes": 12826,
       "sha256": "f2011dd1322aa779a299baebb8ce4ad87c70f5b5d8b2f37f4c94aa5e2e1c6055"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40216393477/JOB.log",
+      "bytes": 77108,
+      "sha256": "5ef8cdd4bed8f85b647aae6d91bc5e6b76c32bc9089e0967a3f624379573112c"
+    },
+    {
+      "path": "batch-preflight-20261026/ci-40216393477/RESULT.json",
+      "bytes": 657,
+      "sha256": "f4e1bb05495820f0016d5c1037c2bfdab5f77e696a63509d57b7c8e7f7c9692f"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/BATCH-RESULT.json",
+      "bytes": 1476,
+      "sha256": "d72893f9994a080166db432d87fffbfb60c3888fac7e600d1d24648a85f6287b"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/build-direct.log",
+      "bytes": 1586,
+      "sha256": "da81bf078d1d0f7cd66ae68bbda37e05a662d2dbed938bb9196f558bfbfba08c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/BUILD-INFO.json",
+      "bytes": 522,
+      "sha256": "bf0306f1c2c01646c055af94dca60f8365d7eb3e604d2ff7d435096a3363ba4c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/build-wcs.log",
+      "bytes": 1692,
+      "sha256": "6ef5fd07430c301f8cb36ee5ba8b2250f083afc7357cfbb2dd3a56fc12c23a67"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/CLI-preflight.json",
+      "bytes": 330,
+      "sha256": "613f30b0bea511f56c09e660c05682d04c119079051b57bfb786a7ec1f0ef037"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/CLI-preflight.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/CLI-RESULT.json",
+      "bytes": 569,
+      "sha256": "7b870e95e9686c001d9f05cb7414715606499badbc32e42d4ba6f86c482a0b65"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/DELIVERY.json",
+      "bytes": 3820,
+      "sha256": "9383f060bd4ffc1559578b8660c7f73f1354a1b52da834a9d3ee9611a9201eee"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/RESULT.json",
+      "bytes": 2278,
+      "sha256": "0688ba8cf66e80f409f04343642cdc3f06d4b6f3294b8b3a2edf587cdc1bd27c"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/RUN.log",
+      "bytes": 12844,
+      "sha256": "17d8453f90080189f6ca6cffc9279d4a1c08e9acda82a53368d33c4a1ba44924"
+    },
+    {
+      "path": "batch-preflight-20261026/frozen-183f9fac/SHA256SUMS",
+      "bytes": 76800,
+      "sha256": "eac2ec5b254051d4b4a72161a822bf2a14d5ffa984b7175c46f1a604b93d0810"
     },
     {
       "path": "batch-preflight-20261026/frozen-720af857/BATCH-RESULT.json",

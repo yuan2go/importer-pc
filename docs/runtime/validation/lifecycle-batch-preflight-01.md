@@ -1,6 +1,6 @@
 # 批量部署预检回归 · 2026-10-26 续报
 
-原基线修复源720af857已通过本次定向检查；main随后合入PR109为a8cd4314，已整合到开发分支，需按新基线重新冻结并核对最新CI；不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
+原基线修复源720af857已通过本次定向检查；main随后合入PR109为a8cd4314，已整合到开发分支，新基线183f9fac的冻结core/14项与实际只读CLI已通过，CI40216393477的工程/原生/打包通过，但归档失败，当前修复D盘共同归档根后重新核对CI；不能沿用上一轮“全部完成”结论。总包为 [LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，U03/U21 本次重新打开；其余已正确成果不重写。历史 [0a3d4152 报告](lifecycle-ux-optimization-01.md) 保持原范围，归档前现行说明的原字节和哈希见 [FILES](../../archive/pre-lifecycle-batch-preflight-01/FILES.json)。
 
 ## 原失败与原因
 
@@ -37,7 +37,7 @@ Windows CI 的开发命令加载项目环境，SDK/缓存、发布介质、验�
 
 本机实际安装/卸载/重启、系统登记提交往返、真实SDK/设备/现场均 NOT_RUN；预检/原DLL夹具不构成正常部署成功。G01真实RCS核对合同、G02管理密码恢复政策继续 BLOCKED_EXTERNAL，不增加查询、重发或密码恢复后门。管理模式与操作员分离、参数服务权限、真实日志查询/导出及帮助与支持删除成果不变；历史D/RV及原PASS/FAIL不改写。本PR不合并、不发布。
 
-## 本次实际冻结与交付清单
+## 整合前720af857冻结与交付（保留）
 
 修复提交 `720af857421f6c1b0bb67a5159691cff93c0ed29`；前置归档/撤回完成结论提交 `ea4333f4`。本机仅冻结受影响的Sportmaster Windows介质，未重复生成portable或运行其他历史/大库/长期套件。SM1.13.0 / DirectPlc及WcsToPlc1.7.0 / Contracts1.19.0 / DB9保持未发布候选版本；新增两个既有装配的精确NuGet锁文件，不升级依赖。
 
@@ -60,3 +60,28 @@ Set-Location D:/projects/importer-pc
 ## main前进后的整合
 
 main于本次推进中合入PR109（a8cd4314），导致首轮文档头与main的INDEX/manifest冲突，GitHub未生成该冲突头的CI运行；这不是新的CI通过或失败。现已保留双方内容并解冲突，生产源码无重叠。720af857与原CLI/core PASS降为整合前中间候选，原文件/哈希不改；后续仅按新增基线风险再做受影响的冻结core/只读CLI与最新CI，不重跑其他本机历史/大库/长期测试。不将开发分支整合误记为合并108到main。
+
+## 最新main上的当前冻结候选
+
+当前源码/夹具：`183f9facd100c56a126fc72a111ae2490e7833dc`，包含main `a8cd4314`。实际发布DLL的core与14项批量守卫PASS，真实同源 `Ipc.Assembly.exe --preflight` 退出0，未创建安装数据；CLI后741文件库存完整，实际运行副本两个DLL匹配发布哈希。新基线三产品装配Release构建通过（DirectPlc/WcsToPlc锁依赖，0警告/错误），没有本机安装或设备启动。
+
+- 介质：`D:/deliveries/lifecycle-batch-20261026-183f9fac/sportmaster-win-x64`，ZIP 134218114 bytes，SHA256 `8be952838489d5b3cacf3e037089c64008c7c78c3a632412f62e29c5ccb7a2a2`。SHA256SUMS哈希 `eac2ec5b254051d4b4a72161a822bf2a14d5ffa984b7175c46f1a604b93d0810`。720af857保留为被替代的中间候选。
+- 当前 [交付/输入Git对象](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-183f9fac/DELIVERY.json)、[core](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-183f9fac/RESULT.json)、[14项](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-183f9fac/BATCH-RESULT.json)、[实际只读CLI](../evidence/lifecycle-ux-optimization-01/batch-preflight-20261026/frozen-183f9fac/CLI-RESULT.json)各有原始身份，不能与旧候选互换。
+- CI [40216393477](https://github.com/yuan2go/importer-pc/actions/runs/40216393477) 已启动，Linux SUCCESS；Windows已通过D盘受保护根准备、原生权限、首配/参数、core/生产拒绝及视觉旅程，安装器打包也SUCCESS，但两个artifact上传步骤FAIL；完整CI不计PASS。错误为D盘顶层目录共同根被解析成仓库工作目录，上传文件不是该目录子项。现统一到D:/scd/共同父目录，保留原FAIL并重新核对CI。旧自动审查只覆盖2a13b11c，不扩张到新头；当前读取未发现未解决审查线程。
+
+当前源码的复核运行（每次使用新证据目录/回执）：
+
+```powershell
+Set-Location D:/projects/importer-pc
+. ./scripts/project-environment.ps1
+./scripts/verify-commercial-media.ps1 -Media D:/deliveries/lifecycle-batch-20261026-183f9fac/sportmaster-win-x64 -Output D:/DevCache/importer-pc/lifecycle-batch-new-main-evidence
+& D:/deliveries/lifecycle-batch-20261026-183f9fac/sportmaster-win-x64/app/Ipc.Assembly.exe --deployment-plan D:/delivery/site-plan.json --receipt D:/delivery/new-main-preflight.json --preflight
+```
+
+后续报告头不改变产品、配置、脚本、测试或随包指南输入；CI归档共同根变化单独记录并由CI验证；按DELIVERY的Git对象逐项核对，不把文档头当作本机冻结介质SourceCommit。真实安装/卸载/重启、现场与G01/G02门槛继续保留。
+
+## CI归档失败与定向修正
+
+运行40216393477的Linux SUCCESS；Windows的保护目录/权限、冻结、首配/参数、core/14项/生产拒绝、视觉及安装器打包全部SUCCESS，两个上传步骤FAIL，故整体FAIL。原错误：`The rootDirectory: D:\a\importer-pc\importer-pc is not a parent directory of the file: D:\scd-installer\...exe`。D盘多个顶层兄弟目录的共同根在artifact动作中退化为驱动器相对路径。
+
+仅将CI发布/证据输出统一为 `D:/scd/release`、`D:/scd/evidence`、`D:/scd/installer` 等，共同父目录明确为 `D:/scd/`；SDK/缓存和受保护HKLM存储不变。未删除上传、降低工程门或修改产品代码。两个上传都失败，不能伪造该轮Windows artifact；保留GitHub原job日志和实际步骤状态，后续以新运行真实留存结果为准。本机冻结183f9fac及其产品/配置/脚本/测试/随包指南输入不变，无须再次重复本机旅程；工作流目录变化单独记录并由最新CI验证。

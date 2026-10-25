@@ -120,37 +120,37 @@ jobs:
           # while retaining GitHub's exact checked merge commit; never pushed.
           git switch -c codex/ci-sportmaster-${{ github.run_id }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python scripts/release-windows.py --profile sportmaster --output D:/scd-release
+          python scripts/release-windows.py --profile sportmaster --output D:/scd/release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $release = Get-Content D:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
           if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen PR release differs from the checked merge commit' }
       - name: Protected local administrator boundary on Windows
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           $ErrorActionPreference = 'Stop'
-          $release = Get-Content D:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
           $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
           if ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }
-          $media = Join-Path D:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
-          ./scripts/verify-administrator-broker.ps1 -Media $media -Output D:/scd-administrator-broker
+          $media = Join-Path D:/scd/release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+          ./scripts/verify-administrator-broker.ps1 -Media $media -Output D:/scd/administrator-broker
           if (-not $?) { throw 'Actual Windows administrator boundary verification failed' }
       - name: Native first-configuration and parameter-shell regression
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           $ErrorActionPreference = 'Stop'
-          $release = Get-Content D:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
           $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
           if ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }
-          $media = Join-Path D:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
-          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd-startup-experience -StartupExperience
+          $media = Join-Path D:/scd/release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd/startup-experience -StartupExperience
           if (-not $?) { throw 'Frozen first-configuration regression failed' }
-          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd-parameter-guidance -ParameterGuidanceStartup
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd/parameter-guidance -ParameterGuidanceStartup
           if (-not $?) { throw 'Frozen parameter guidance and deferred-startup regression failed' }
-          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd-parameter-shell -ParameterShellPolish
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd/parameter-shell -ParameterShellPolish
           if (-not $?) { throw 'Frozen parameter-shell regression failed' }
-          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd-task-hierarchy -TaskHierarchy
+          ./scripts/verify-commercial-wpf.ps1 -Media $media -Output D:/scd/task-hierarchy -TaskHierarchy
           if (-not $?) { throw 'Frozen task-hierarchy regression failed' }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
@@ -158,7 +158,7 @@ jobs:
           . ./scripts/project-environment.ps1
           $ErrorActionPreference = 'Stop'
           try {
-            ./scripts/verify-sportmaster-delivery.ps1 -Release D:/scd-release -Output D:/scd-evidence
+            ./scripts/verify-sportmaster-delivery.ps1 -Release D:/scd/release -Output D:/scd/evidence
             if (-not $?) { throw 'Frozen verification did not return successfully' }
             # The helper validates the actual production FAIL JSON and throws on
             # any engineering failure. Its last native exit=1 is that expected
@@ -175,10 +175,10 @@ jobs:
           . ./scripts/project-environment.ps1
           $ErrorActionPreference = 'Stop'
           try {
-            $release = Get-Content D:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+            $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
             $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
             if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }
-            $media = Join-Path D:/scd-release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+            $media = Join-Path D:/scd/release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
             # These read-only native processes use separate synthetic workspaces.
             # Retain all independent failures in one run; any failure still blocks packaging.
             $failures = @()
@@ -192,7 +192,7 @@ jobs:
               $arguments = $case.Clone()
               $arguments.Remove('Directory')
               try {
-                ./scripts/verify-commercial-wpf.ps1 -Media $media -Output "D:/scd-evidence/$directory" @arguments
+                ./scripts/verify-commercial-wpf.ps1 -Media $media -Output "D:/scd/evidence/$directory" @arguments
                 if (-not $?) { throw "Frozen $directory verification did not return successfully" }
               } catch {
                 $failures += "$directory`: $($_.Exception.Message)"
@@ -210,28 +210,28 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           $ErrorActionPreference = 'Stop'
-          $release = Get-Content D:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
+          $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
           $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
           if ($package.Count -ne 1) { throw 'Expected one verified Windows package' }
-          $media = Join-Path D:/scd-release $package[0].File
-          python scripts/package-installer.py --media $media --output D:/scd-installer *> D:/scd-installer-build.log
+          $media = Join-Path D:/scd/release $package[0].File
+          python scripts/package-installer.py --media $media --output D:/scd/installer *> D:/scd/installer-build.log
           $result = $LASTEXITCODE
-          Get-Content D:/scd-installer-build.log -Tail 12
+          Get-Content D:/scd/installer-build.log -Tail 12
           if ($result -ne 0) { throw 'Same-source installer packaging failed' }
-          $receipt = Get-Content D:/scd-installer-build.log -Tail 1 | ConvertFrom-Json
+          $receipt = Get-Content D:/scd/installer-build.log -Tail 1 | ConvertFrom-Json
           if ($receipt.SourceCommit -ne '${{ github.sha }}' -or $receipt.Payload.SourceCommit -ne '${{ github.sha }}') { throw 'Installer source differs from checked medium' }
-          $receipt | ConvertTo-Json -Depth 8 | Set-Content D:/scd-installer/INSTALLER.json -Encoding utf8NoBOM
+          $receipt | ConvertTo-Json -Depth 8 | Set-Content D:/scd/installer/INSTALLER.json -Encoding utf8NoBOM
       - name: Retain installable same-source delivery
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: sportmaster-installable-${{ github.sha }}
           path: |
-            D:/scd-installer/*.exe
-            D:/scd-installer/INSTALLER.json
-            D:/scd-release/sportmaster-win-x64-*.zip
-            D:/scd-release/RELEASE.json
-            D:/scd-release/SHA256SUMS
+            D:/scd/installer/*.exe
+            D:/scd/installer/INSTALLER.json
+            D:/scd/release/sportmaster-win-x64-*.zip
+            D:/scd/release/RELEASE.json
+            D:/scd/release/SHA256SUMS
           compression-level: 0
           retention-days: 30
           if-no-files-found: error
@@ -241,55 +241,55 @@ jobs:
         with:
           name: sportmaster-evidence-${{ github.sha }}
           path: |
-            D:/scd-parameter-guidance/RESULT.json
-            D:/scd-parameter-guidance/RUN.log
-            D:/scd-parameter-guidance/WINDOWS-WPF.log
-            D:/scd-parameter-guidance/*.png
-            D:/scd-startup-experience/RESULT.json
-            D:/scd-startup-experience/RUN.log
-            D:/scd-startup-experience/WINDOWS-WPF.log
-            D:/scd-startup-experience/*.png
-            D:/scd-parameter-shell/RESULT.json
-            D:/scd-parameter-shell/RUN.log
-            D:/scd-parameter-shell/WINDOWS-WPF.log
-            D:/scd-parameter-shell/*.png
-            D:/scd-task-hierarchy/RESULT.json
-            D:/scd-task-hierarchy/RUN.log
-            D:/scd-task-hierarchy/WINDOWS-WPF.log
-            D:/scd-task-hierarchy/*.png
-            D:/scd-task-hierarchy/chain-*.json
-            D:/scd-evidence/acceptance.json
-            D:/scd-evidence/environment.json
-            D:/scd-evidence/media.json
-            D:/scd-evidence/*-gate.json
-            D:/scd-evidence/core/RESULT.json
-            D:/scd-evidence/core/RUN.log
-            D:/scd-evidence/core/synthetic-data/batch-regressions/BATCH-RESULT.json
-            D:/scd-evidence/wpf/RESULT.json
-            D:/scd-evidence/wpf/RUN.log
-            D:/scd-evidence/wpf/WINDOWS-WPF.log
-            D:/scd-evidence/wpf/*.png
-            D:/scd-evidence/visual/RESULT.json
-            D:/scd-evidence/visual/RUN.log
-            D:/scd-evidence/visual/WINDOWS-WPF.log
-            D:/scd-evidence/visual/*.png
-            D:/scd-evidence/parameters-v3/RESULT.json
-            D:/scd-evidence/parameters-v3/RUN.log
-            D:/scd-evidence/parameters-v3/WINDOWS-WPF.log
-            D:/scd-evidence/parameters-v3/*.png
-            D:/scd-evidence/operator-administration/*
-            D:/scd-evidence/reliability-logs/RESULT.json
-            D:/scd-evidence/reliability-logs/RUN.log
-            D:/scd-evidence/reliability-logs/WINDOWS-WPF.log
-            D:/scd-evidence/reliability-logs/*.png
-            D:/scd-administrator-broker/RESULT.json
-            D:/scd-administrator-broker/RUN.log
-            D:/scd-evidence/removal/RESULT.json
-            D:/scd-evidence/removal/RUN.log
-            D:/scd-release/*.json
-            D:/scd-release/*.log
-            D:/scd-release/SHA256SUMS
-            D:/scd-installer-build.log
-            D:/scd-installer/INSTALLER.json
+            D:/scd/parameter-guidance/RESULT.json
+            D:/scd/parameter-guidance/RUN.log
+            D:/scd/parameter-guidance/WINDOWS-WPF.log
+            D:/scd/parameter-guidance/*.png
+            D:/scd/startup-experience/RESULT.json
+            D:/scd/startup-experience/RUN.log
+            D:/scd/startup-experience/WINDOWS-WPF.log
+            D:/scd/startup-experience/*.png
+            D:/scd/parameter-shell/RESULT.json
+            D:/scd/parameter-shell/RUN.log
+            D:/scd/parameter-shell/WINDOWS-WPF.log
+            D:/scd/parameter-shell/*.png
+            D:/scd/task-hierarchy/RESULT.json
+            D:/scd/task-hierarchy/RUN.log
+            D:/scd/task-hierarchy/WINDOWS-WPF.log
+            D:/scd/task-hierarchy/*.png
+            D:/scd/task-hierarchy/chain-*.json
+            D:/scd/evidence/acceptance.json
+            D:/scd/evidence/environment.json
+            D:/scd/evidence/media.json
+            D:/scd/evidence/*-gate.json
+            D:/scd/evidence/core/RESULT.json
+            D:/scd/evidence/core/RUN.log
+            D:/scd/evidence/core/synthetic-data/batch-regressions/BATCH-RESULT.json
+            D:/scd/evidence/wpf/RESULT.json
+            D:/scd/evidence/wpf/RUN.log
+            D:/scd/evidence/wpf/WINDOWS-WPF.log
+            D:/scd/evidence/wpf/*.png
+            D:/scd/evidence/visual/RESULT.json
+            D:/scd/evidence/visual/RUN.log
+            D:/scd/evidence/visual/WINDOWS-WPF.log
+            D:/scd/evidence/visual/*.png
+            D:/scd/evidence/parameters-v3/RESULT.json
+            D:/scd/evidence/parameters-v3/RUN.log
+            D:/scd/evidence/parameters-v3/WINDOWS-WPF.log
+            D:/scd/evidence/parameters-v3/*.png
+            D:/scd/evidence/operator-administration/*
+            D:/scd/evidence/reliability-logs/RESULT.json
+            D:/scd/evidence/reliability-logs/RUN.log
+            D:/scd/evidence/reliability-logs/WINDOWS-WPF.log
+            D:/scd/evidence/reliability-logs/*.png
+            D:/scd/administrator-broker/RESULT.json
+            D:/scd/administrator-broker/RUN.log
+            D:/scd/evidence/removal/RESULT.json
+            D:/scd/evidence/removal/RUN.log
+            D:/scd/release/*.json
+            D:/scd/release/*.log
+            D:/scd/release/SHA256SUMS
+            D:/scd/installer-build.log
+            D:/scd/installer/INSTALLER.json
           retention-days: 30
           if-no-files-found: warn

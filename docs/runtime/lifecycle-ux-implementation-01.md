@@ -1,4 +1,4 @@
-> 2026-10-26批量部署整改：整合前720af857通过冻结core/14项批量守卫及只读CLI；最新main a8cd4314已整合，新基线冻结及CI待核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](validation/lifecycle-batch-preflight-01.md)。
+> 2026-10-26批量部署整改：最新main a8cd4314已整合；冻结源183f9fac的core/14项与实际只读CLI通过，CI40216393477工程/原生/打包通过但归档失败，共同D盘归档根已修正，完整CI待新运行核对。旧run40210140349的FAIL和0a3d4152原PASS均保留原范围，上一轮完成结论不能作为本次验收。当前状态见[续报](validation/lifecycle-batch-preflight-01.md)。
 
 本次批量整改：[续报](validation/lifecycle-batch-preflight-01.md)。新建 `Review` 与原计划 `RevalidateDeployment` 分开；后者保留原身份并重读全部输入/登记，完整比较后返回原冻结请求。`DeploymentBatch` 在执行前拒绝任何已存在原操作记录；原安装租约内仍再次防重复。无ID旧计划仅只读兼容/原提交核对，未提交执行要求显式重新审阅。规范GUID的独立校验不改变扩展ID或授权。既有管理模式、日志、历史、业务守卫及UI保留。
 

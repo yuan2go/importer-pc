@@ -194,6 +194,21 @@
       "path": "original/preliminary/win11-stability.log",
       "bytes": 4142,
       "sha256": "9a31c1a5a715a61b31e4096a8040a147d19234984ce2451419f1092948ca812e"
+    },
+    {
+      "path": "original/reuse-metadata-fix/FIXED-HELPER.ps1",
+      "bytes": 18623,
+      "sha256": "25aee51719c283321f8762673a56f0434d21a3c7ef268c1dcf9d951980a82da4"
+    },
+    {
+      "path": "original/reuse-metadata-fix/REUSE-METADATA-CHECK.json",
+      "bytes": 929,
+      "sha256": "12848d100b42c8b02ce3364a32c30e70f549fbf9bd01ed8f9e05ff711ca55d34"
+    },
+    {
+      "path": "original/reuse-metadata-fix/check-reuse-metadata.ps1",
+      "bytes": 3351,
+      "sha256": "718cd1a5fd429da2c5415ceec90bf49dbd5432f0ff3f1a876cc45f4190a124a5"
     }
   ]
 }

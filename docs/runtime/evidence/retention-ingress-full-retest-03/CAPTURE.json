@@ -1,8 +1,8 @@
 {
   "ProductSourceCommit": "b83998f18c56df2dd965630b25908feedc00a56f",
   "Root": "D:\\projects\\ipc-retention-ingress-full-retest-20261025",
-  "Files": 39,
-  "CaptureScope": "Closed preliminary outputs only; active protected run outputs excluded until terminal state",
+  "Files": 42,
+  "CaptureScope": "39 closed preliminary outputs plus 3 repeated-reuse metadata regression sources/results; active large run excluded",
   "OriginalFailureSourceCommit": "5bb032d7354ef619064a015484a5001204edfff5",
   "DatabasesOrBinariesCopied": false
 }

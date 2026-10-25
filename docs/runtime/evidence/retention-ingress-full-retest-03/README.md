@@ -2,7 +2,7 @@
 
 本轮固定产品源码`b83998f18c56df2dd965630b25908feedc00a56f`，继承main/PR104 `404e8552`及PR105 `10ad5d2`。报告见[续验记录](../../validation/retention-ingress-full-retest-03.md)。原PR103、PR104及PR105既有原件不改写。
 
-[FILES.json](FILES.json)当前仅登记39份已结束输出的字节数/SHA256；[CAPTURE.json](CAPTURE.json)说明捕获范围。原始文本位于`original/preliminary/`，禁用Git换行转换。运行中的新受保护维护结果尚未加入终态清单。数据库、程序集、SDK、安装包及现场资料不入Git。
+[FILES.json](FILES.json)当前登记42份闭合文本的字节数/SHA256：39份前期输出及3份连续复用回归。前期原字节未变；[CAPTURE.json](CAPTURE.json)说明范围，`original/**`禁用Git换行转换。运行中的新受保护维护结果尚未加入终态清单。数据库、程序集、SDK、安装包及现场资料不入Git。
 
 - `baseline-recovery/`：标准UAC重试原5bb032d介质的9.46GB完整备份隔离恢复。原回执聚合耗时字段为null，三项实际Stopwatch都有值；`DERIVED-TIMING.json`保留原文件hash并从三项相加得到543.3802166秒，未倒写原字段。
 - `FIXED-SOURCE.json`：产品和夹具DLL身份及构建时脚本hash。之后容量预检脚本单独补强，实际执行版本以`EXECUTED-HELPER.ps1`、`PROTECTED-LAUNCH.json`和`CAPACITY-POLICY-CHECK.json`的hash为准，不冒用构建时旧脚本hash。
@@ -11,6 +11,8 @@
 - `RETENTION-INGRESS.json`：短JSON/稀疏rowid磁盘输入组件的精确oracle、VM数和分页/删除时间，不是完整作业维护RTO。
 - `ORDINARY-AUTHORITY.json`：同一新产品真实普通token被安装者守卫拒绝，关闭的1000-case DB hash不变、无备份/恢复目录创建；未访问活动大库。
 - `RECONCILIATION-small-in-progress.json`：只核对已完成1000/10000 case，63项断言。大case仍在进行，不能据此标PASS。另有Windows写入共享、非空WAL、加锁后WAL和篡改退役hash拒绝检查。
+
+预审P2 [r4369996878](https://github.com/yuan2go/importer-pc/pull/105#discussion_r4369996878)指出：已经复用的夹具再次复用时，已有两个来源属性令Add-Member抛错。`original/reuse-metadata-fix/`保存原语句失败及实际新AST语句回归：首轮/连续/序列化复用通过，父夹具文件hash未变。新脚本仅在新元数据副本上用`-Force`更新最近父备份及其夹具hash，旧父文件和祖先来源链不改写。本轮活动大库是首次复用原夹具，因此仍使用已冻结的232A…脚本；后续修复脚本25AE…不冒用为本轮执行版本。
 
 复现先在Windows执行`. ./scripts/project-environment.ps1`，构建验证工程，再显式`dotnet build src/Ipc.Assembly -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true`。`--action business-identity`必须为sportmaster/1.12.2；旧DLL残留不能证明根入口身份。七组命令、实际参数和执行脚本均见原件/源码。
 

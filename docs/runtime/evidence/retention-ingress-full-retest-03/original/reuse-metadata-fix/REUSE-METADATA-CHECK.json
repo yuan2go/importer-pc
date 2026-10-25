@@ -1,0 +1,15 @@
+{
+  "Status": "PASS_REUSE_METADATA_STATEMENTS_ONLY",
+  "AtUtc": "2026-10-25T07:23:27.4252510+00:00",
+  "OldFailureReproduced": true,
+  "OldFailure": "Cannot add a member with the name \"ReusedFromBackup\" because a member with that name already exists. To overwrite the member anyway, add the Force parameter to your command.",
+  "OldScriptSha256": "232A7C51D99C5DD3D8A5F5D6E62BFDCF0AF793C6259F208FC3881928EF315FD2",
+  "FixedScriptSha256": "25AEE51719C283321F8762673A56F0434D21A3C7EF268C1DCF9D951980A82DA4",
+  "OriginalFixtureSha256": "4245750CA67B4FE2EC720C8AF0EF7EB0B49FB23E6682DD4D3A461B108B8E8D31",
+  "OriginalFixtureUnchanged": true,
+  "FirstReuse": true,
+  "RepeatedReuse": true,
+  "SerializedRepeatedReuse": true,
+  "DatabaseOrElevatedCliExecuted": false,
+  "Scope": "Actual helper AST metadata statements on an in-memory copy of closed reused fixture; no extra database restore or runtime qualification"
+}

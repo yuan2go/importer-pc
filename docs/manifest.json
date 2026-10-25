@@ -89484,17 +89484,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/evidence/parameter-guidance-startup-01/ipc-sportmaster-wpf-a03eb487e45949f887ddf61c4e754687.FAIL.log",
-      "sha256": "8ae3c99a9862aeac7e8fcf5fb2b0c235b173b58acb2bb006498b9218aadcb39a",
-      "size_bytes": 5611,
-      "git_blob": "83a5c7402e173864055edbf8365642b16b787a2b",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/runtime/evidence/parameter-guidance-startup-01/native.log",
       "sha256": "84aa63245b2b21974907af2001b4b08f37f83c144524e9c9fa1b11d63ac1b2bf",
       "size_bytes": 5398,

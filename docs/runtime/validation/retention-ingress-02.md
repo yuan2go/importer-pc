@@ -41,6 +41,8 @@ VM每1000条指令采样；计时不带VM回调。该组件使用真实DB9表/�
 
 保留的非PASS：首次计划断言误要求admission索引covering，实际唯一索引可正确探测，已改为检查真实seek与无临时排序；一次PowerShell参数拼接把定向参数拆开，误入历史默认AC17流程后因管理模式拒绝，五份原日志保留，不计定向执行；强杀夹具首次编译可空性错误已修。原断言/权限/产品异常均未吞掉换PASS。UAC取消独立保留，未再次提权或绕过保护目录执行同一大规模命令。
 
+最终交付复核发现默认`Ipc.Assembly`构建是Supply，直接传Parcel的`business-identity`被拒；它不影响上述Parcel库测试，但不能充当Sportmaster CLI冒烟。现行复现显式加`-p:BusinessModule=Sportmaster`，实际新CLI正确自报sportmaster/1.12.2；脚本在新保护目录创建前核对实际可执行入口与业务DLL身份。该构建固定70858da（src/config与a192b7f相同），不能替换原产品DLL/hash。manifest自hash亦按Git规范化blob重新计算，避免Windows换行字节与Git字节混淆。
+
 ## 集成判断和剩余门槛
 
 PR105针对明确新瓶颈交付局部产品修复，可进入工程审查；当前不自动合并main、不发布或安装。安全集成需最终head Linux/Windows CI通过、代码审查无未决问题、与PR104的Repository/测试入口/workflow/版本/manifest冲突审查；保持原事务、完整备份、权限与原请求责任。main若前进，必须检查合并树并重跑受影响检查，不能强推或借旧CI。

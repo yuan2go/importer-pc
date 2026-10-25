@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_ORDINARY_CLI_REFUSAL",
+  "SourceCommit": "70858dac385df48ebde2055790544b03f60c0262",
+  "ProductSha256": "6F0DBAAC6B7F2C5530B55584BDD07CC9276F000C6589B110143280B602F44B4B",
+  "CliSha256": "3DE600F275F5B1218027A5F76E823028E55F82EDEE4D9239F231FEA59259861C",
+  "ExitCode": -532462766,
+  "OriginalHash": "4C0323EB373EB7E66D987A2BCA1BC04CA0B9D459B41A245DF92DE148337ADD54",
+  "AfterHash": "4C0323EB373EB7E66D987A2BCA1BC04CA0B9D459B41A245DF92DE148337ADD54",
+  "BackupCreated": false,
+  "ElevatedHelperStarted": false,
+  "PriorDefaultSelection": "Supply; business-identity refused as Unknown assembly option",
+  "CorrectedSelection": "Sportmaster 1.12.2 verified using actual CLI",
+  "Scope": "Ordinary-token refusal only; no elevated full maintenance or restore"
+}

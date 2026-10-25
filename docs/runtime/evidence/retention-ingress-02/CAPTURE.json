@@ -348,6 +348,36 @@
       "path": "final-source/reconcile-retention-qualification.py.txt",
       "sha256": "578a8df2c26d5600130b5533f459e31d639ff57606f046bfb87d27dae176e718",
       "bytes": 15954
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\build-cli-sportmaster-70858da.log",
+      "path": "followup-cli/build-cli-sportmaster-70858da.log",
+      "sha256": "0f81f3fd2457aa1a3db95d0af221276307b651d4056af9068f862c88c48e8f53",
+      "bytes": 1779
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\CLI-IDENTITY-SPORTMASTER.json",
+      "path": "followup-cli/CLI-IDENTITY-SPORTMASTER.json",
+      "sha256": "c3df2fd3ae567d41d069329f06af9383e2bf0f856ff314a4ee6eb58c7876578b",
+      "bytes": 13399
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\CLI-SELECTION-CHECK.json",
+      "path": "followup-cli/CLI-SELECTION-CHECK.json",
+      "sha256": "022b420ce418ce948ff1da5a83d358b1cacf82d0a47b4c9d457328de81123c2f",
+      "bytes": 791
+    },
+    {
+      "source": "D:\\projects\\ipc-retention-ingress-evidence-20261025\\ordinary-cli-refusal.log",
+      "path": "followup-cli/ordinary-cli-refusal.log",
+      "sha256": "c75f198f80e5f8956f2f8c8702ab535d9d4e02bfff3151641608f016be879f49",
+      "bytes": 575
+    },
+    {
+      "source": "scripts\\verify-retention-maintenance.ps1",
+      "path": "followup-cli/verify-retention-maintenance.ps1.txt",
+      "sha256": "35576b13eafe583cdf22bc96d7c6e9003260cf0d9b55c736e11f80ecea8082f6",
+      "bytes": 17026
     }
   ],
   "Scope": "Synthetic text only; original full-scale files unchanged; final tests identified separately"

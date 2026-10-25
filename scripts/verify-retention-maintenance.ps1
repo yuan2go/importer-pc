@@ -17,6 +17,10 @@ if($LASTEXITCODE -ne 0){throw 'Commit or restore product inputs before fixed-sou
 $sourceHead=(& git -C $Workspace rev-parse HEAD).Trim()
 $productVersion=[Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0/Ipc.Application.Sportmaster.dll')).ProductVersion
 if(-not $productVersion.EndsWith($sourceHead,[StringComparison]::OrdinalIgnoreCase)){throw 'Build the actual CLI from this exact source HEAD before qualification'}
+$cliIdentityText=& (Join-Path $env:DOTNET_ROOT 'dotnet.exe') (Join-Path $Workspace 'src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll') --action business-identity
+if($LASTEXITCODE -ne 0){throw 'Build the CLI with -p:BusinessModule=Sportmaster; a stale business DLL does not identify the selected executable'}
+$cliIdentity=($cliIdentityText -join [Environment]::NewLine) | ConvertFrom-Json
+if($cliIdentity.ApplicationId -ne 'sportmaster' -or $cliIdentity.BusinessVersion -ne $productVersion.Split('+')[0]){throw 'Selected CLI and exact business build identity differ'}
 if($Counts.Count -eq 0 -or @($Counts|Sort-Object -Unique).Count -ne $Counts.Count -or ($Counts|Where-Object{$_ -lt 1 -or $_ -gt 2592000})){throw 'Provide nonempty unique counts within the documented synthetic 30-day upper bound'}
 $anchor=(Get-ItemProperty -LiteralPath HKLM:/SOFTWARE/ImporterPc/Storage).Root
 if([IO.Path]::GetPathRoot($anchor) -ne 'D:\'){throw 'Use the administrator-configured D: storage anchor'}

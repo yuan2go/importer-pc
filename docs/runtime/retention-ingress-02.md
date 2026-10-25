@@ -12,7 +12,7 @@
 
 版本为Sportmaster1.12.2、DirectPlc/WcsToPlc1.6.2，避开并行PR104的1.12.1/1.6.1；这不表示PR104已合入或其功能属于本分支。Application.Contracts1.17.0及DB9不变。新的公共平台程序集字节需整套同源交付，不能替换旧签名扩展的精确宿主依赖。旧未决请求仍按原实现/合同/目标处理，不因版本提升重发。
 
-复现：先在Windows执行 `. ./scripts/project-environment.ps1`，构建 `tests/Ipc.Application.Verification` 和 `src/Ipc.Assembly` 的Release（`-p:RestoreLockedMode=true`）。`dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress --large` 执行组件查询、实际分批删除及取消/恢复边界；去掉`--large`为CI1千/1万档。
+复现：先在Windows执行 `. ./scripts/project-environment.ps1`；`dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true`，CLI用 `dotnet build src/Ipc.Assembly -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true`。必须显式选择Sportmaster，默认Supply不包含Parcel维护入口；脚本在创建受保护目录前实际执行`business-identity`核对，不能只凭输出目录残留的业务DLL。`dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress --large` 执行组件查询、实际分批删除及取消/恢复边界；去掉`--large`为CI1千/1万档。
 
 完整受保护CLI继续用 `scripts/verify-retention-maintenance.ps1`，须真实安装者权限、管理员HKLM配置的D盘根及新Evidence目录。可用`-ReuseCompletedRun <先前PROTECTED-RESULT.json>`从已完成备份恢复完整合成原件到新目录；旧失败库、原备份和FIXTURE字节不变，新FIXTURE记录来源和原hash。仅接受该存储根Qualification下的合成夹具，actual restore仍校验整个备份manifest。`-RestoreAll`另做清理前完整备份的隔离恢复；对账仍用`reconcile-retention-qualification.py`。新预算说明写入回执，旧回执缺字段时沿用历史时点说明。
 

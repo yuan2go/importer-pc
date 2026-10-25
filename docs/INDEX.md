@@ -1,3 +1,5 @@
+> P0-STABILITY-01：四项修复、当前基线与独立证据见[工作包](work-packages/WP-IPC-P0-STABILITY-01.md)和[问题卡](runtime/validation/p0-stability-01.md)。已同步PR109后的main a8cd4314，不继承旧介质资格。
+
 > 2026-10-26 PR107合并后独立延后修复：[DEFERRED-HEARTBEAT-01校验、恢复与验证边界](runtime/validation/deferred-heartbeat-01.md)。当前心跳只映射已配置相机；全部相机延后时停止心跳，恢复配置仍走Pending/受控重启，原请求和编号账保留。
 
 > 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。

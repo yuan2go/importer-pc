@@ -1,0 +1,118 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "Phase": "after",
+  "Environment": "Windows isolated Simulation, loopback only; production policy not installed",
+  "Matrix": [
+    {
+      "Mask": 0,
+      "Deferred": [],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS",
+        "Heartbeat": "PASS"
+      }
+    },
+    {
+      "Mask": 1,
+      "Deferred": [
+        "sportmaster.reader.left"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS",
+        "Heartbeat": "PASS"
+      }
+    },
+    {
+      "Mask": 2,
+      "Deferred": [
+        "sportmaster.reader.right"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS",
+        "Heartbeat": "PASS"
+      }
+    },
+    {
+      "Mask": 3,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.reader.right"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS",
+        "Heartbeat": "PASS"
+      }
+    },
+    {
+      "Mask": 4,
+      "Deferred": [
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 5,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 6,
+      "Deferred": [
+        "sportmaster.reader.right",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 7,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.reader.right",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    }
+  ]
+}

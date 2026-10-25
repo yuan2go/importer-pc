@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "work_package": "WP-IPC-P0-STABILITY-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -2025,9 +2025,9 @@
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "eba4d2b92145afec25dbdf52260c8f36de2c1483d6c6e01db61c2a046acdb06f",
-      "size_bytes": 11935,
-      "git_blob": "cdd235806453478b41f86e941f6bba18f29a93d6",
+      "sha256": "4721b1457c6e5496ee878a92e1f54ecbd77e74b60e5c61185ce0e077513e1358",
+      "size_bytes": 13021,
+      "git_blob": "94abb2b3d97d5f8352a446b4a9b152bfef1f4104",
       "pre_publication_no_test_git_blob": "4f07f412a822614aee06f52834b5f89d894b6124"
     },
     {
@@ -2043,9 +2043,9 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "471c037475abada86e05ed8ec6f71239664b8751b49b01b8052b8b03c2674d0d",
+      "sha256": "a7f9437d4870ffa2316fa505855595b790d37d20723326063f03f76fd822d802",
       "size_bytes": 7746,
-      "git_blob": "7a9da9b4bead32169238787a118c3cca3b33c3b2",
+      "git_blob": "1b516ab716166362174e6bcd959e88c973b09258",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5553713f3a5baf1c9a92ff08b1310cb691769eafe0f46900e4b8d7b56071439f",
-      "size_bytes": 14183,
-      "git_blob": "dae8b1f835d16723ffba4fba1be6ce222309a528",
+      "sha256": "791207684ea214f34b793908b71cc2ea48af5a44743c516bcda3f389a1318f78",
+      "size_bytes": 14421,
+      "git_blob": "c9629cbe47f95ba6b58b036d5d7af9e653322d38",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -55587,17 +55587,17 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "e42619ad54526e7509698eee17e32f41e61eb852e1a5cc0b6706007c66a39936",
+      "sha256": "56690fd85f9a51b5c90030c5eec56f15efb26468300bc5e9bde677ff33b62cea",
       "size_bytes": 4553,
-      "git_blob": "94dd316e2c536f212ebfd9b81f2ae532f49942f4",
+      "git_blob": "c499ef6b61fcd95e109dd06ea852cddf8c7952e9",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4",
       "pre_publication_no_test_git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "3e299fc3eaa206d243d8857751c6809fccf78fd9835368793d5db9da89bd2ad3",
+      "sha256": "dd5f12c4ee98f5f148e2be1f4aa593b1e40eef51d54830b9521b3ebaa8df37b3",
       "size_bytes": 341,
-      "git_blob": "b86404a1b18a49394b2929a7ebf6f71abc949578",
+      "git_blob": "5cd643e0fe074965fd6df9360be2dfaf13fb1ae3",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -56651,9 +56651,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "09c99a6d59646062fd114aebcbd7b981a19125d3cb002a74717017075375c110",
-      "size_bytes": 42803,
-      "git_blob": "aa27646819a106ca6dfcfa651b85395566b9d9d9",
+      "sha256": "ec8bcd56567782b416385cf1f79769514240832e95beed3d66f303c0465dce8c",
+      "size_bytes": 43039,
+      "git_blob": "4fe811546d89fba14dc8d246e2d59f73fdec8cec",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -57707,9 +57707,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "1d266a9321f3d3cbf038895550ed05de566864ec1403660afe6a52f407bd8691",
+      "sha256": "414c974896e332febae592cf691adf3d9b472404f9d1848007efee279d4639c0",
       "size_bytes": 755,
-      "git_blob": "1b900760a63c2930a683d2ef13cd7fbcf38fda32",
+      "git_blob": "8c161e5db5292196804506c9e503593bc328d977",
       "pre_publication_no_test_git_blob": "a9526eb443e8ec767a85cc891b82e381f4200717"
     },
     {
@@ -57718,9 +57718,9 @@
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
-      "sha256": "4b32e1645eee2a84581faec66e9e7ecdbf8f7542268f0199a3764da7e84b1647",
-      "size_bytes": 2507,
-      "git_blob": "45f9b1c9635167ca9bb6cc1b4511a8a50ed83dec",
+      "sha256": "d5133eaaed3eb8565882d3cb17aa18698ef64692a09a4bc053634fdbeb3e6de6",
+      "size_bytes": 2751,
+      "git_blob": "990299f11739332739828d0bfcb98095329a6293",
       "pre_deferred_heartbeat_01_identity": {
         "git_blob": "796ee98ba9889ca3dfe686f4b7f022c0cac8ea29",
         "sha256": "a70c4c20e3d575d5ed0145591c009cdcf916d3269c1822087394dfe8019ab4ee",
@@ -57812,9 +57812,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "421fcc89d882a778a70fc8f4a60c761a50c603e019a68f69459044c7461dc948",
+      "sha256": "8532910845d35cc8f36473d6066c34ef791b2745d0233956712e7bfb8108bcc6",
       "size_bytes": 210,
-      "git_blob": "5b76f9ff91c6bc8d1c429fcccd23d28dae64685b",
+      "git_blob": "b8bd84edc9f42638f7bc374c769e346b2a230e05",
       "pre_publication_no_test_git_blob": "b44152bdae4cf90f81d6c132f803c4b5050442e8"
     },
     {
@@ -59332,9 +59332,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "cecc54d8575289e397e6cda392834006e309692ba3f024dee9faf066b904d492",
-      "size_bytes": 22082,
-      "git_blob": "264af777c50a6da5215a3e1e481e73c04b8eec3a",
+      "sha256": "e6cd9e7871dd819bc4c630c1b8f651e49248ea601c09e54b4eae31c19defaef3",
+      "size_bytes": 22283,
+      "git_blob": "3c1d651bb6ec69a84ee8d4e88649f9344e226fca",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -90377,6 +90377,138 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-after.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "11f2a10c896c1ec107245d48fb74d32a493c335575f51a379e7cb1179420ef46",
+      "size_bytes": 2393,
+      "git_blob": "79ac0a8439177006aa99a98ad7aa68dad9272955"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-before.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "dad11d6cc340293d0ed5004a9a8826246705d83dbbe8dec62e0f03b9d7182c65",
+      "size_bytes": 8024,
+      "git_blob": "b2b2acf16449154993004c57e2bfa22c643bcab0"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-main-a8-after.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "05985abf3c30d7097f112f7887fde6c1c773234116e6ce7e2f506ee9e7c87061",
+      "size_bytes": 499,
+      "git_blob": "842bf07f23a019f20b85d67404145b9685f26cc9"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-main-a8-before.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "ac6ea33e1c7bb583b25291ebf8c28611dc1004fbfbfb54df8dd1c5709183a505",
+      "size_bytes": 469,
+      "git_blob": "72e16011755887817d64710d133b1ac7fb33095c"
+    },
+    {
+      "path": "docs/runtime/p0-stability-01.md",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "149ee8c86edfe571da9eaa2e0da83b96fec6a70421e17ee860131dbaeb3e37a4",
+      "size_bytes": 1035,
+      "git_blob": "bcca4e886bf969bde52101677aac5395c9d8baef"
+    },
+    {
+      "path": "docs/runtime/validation/p0-stability-01.md",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fd5f1e1d384effac50e8cad766508bb9d5ad9e0a2dc48ad6cb7cf6618b69d7f4",
+      "size_bytes": 1913,
+      "git_blob": "20a052e392abd124b3d12d3706bf9041422b42cf"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fa8c57dc8c430868de817ac61942bbcdfcfd88ae2fc931fada3bc54c2f988c97",
+      "size_bytes": 1777,
+      "git_blob": "f255cc0be6a7b46b5c901999769b640417636717"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/P0SimulationFactory.cs",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "072771de3edb03c242d9c49c0bc87400751e6a1cbe1d021d29b64948ee25e27a",
+      "size_bytes": 2116,
+      "git_blob": "cf9a63467b2f2f8893ea90a076d48ccd6650e887"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/P0Stability.Deferred.cs",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "bc7d8279a53f98ac56642676ae2b37ecde45cd4ce372d2899363f60db0692a12",
+      "size_bytes": 11808,
+      "git_blob": "c5d3d7cdd3155fc8ab4c2be49c96453963489524"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/P0Stability.Scans.cs",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "7263d1e6d9bf453aa929d1068dc5560d62cd0ba6b0427e7b3f645a0c8fbcc082",
+      "size_bytes": 4565,
+      "git_blob": "41bc65491f4a34b21853c91256fcef487cff5d23"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-activation-after.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "4e3221906c92cd8570490f75eb23c04f9a9b42c43cf50844a147017ac857816a",
+      "size_bytes": 735,
+      "git_blob": "a894045bfecff200de0a33cadd6965cfa42e9c13"
+    },
+    {
+      "path": "docs/runtime/evidence/p0-stability-01/st01-activation-before.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "b6156565d958d7de0d64b495fa3030ccf5da6b47dab3858aee761648f0b027f9",
+      "size_bytes": 840,
+      "git_blob": "452439fd777bfd9b09d4e43e8d3e49290908b504"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -90456,7 +90588,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -93204,5 +93336,16 @@
       "RepeatedAuthentication": false,
       "Receipt": "docs/runtime/evidence/parameter-guidance-startup-01/uninstall-result/active-entry/RESULT.json"
     }
+  },
+  "prior_current_pointers_before_p0_stability_01": {
+    "work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02",
+    "current_implementation_work_package": "WP-IPC-CODE-RELIABILITY-HARDENING-02"
+  },
+  "p0_stability_01": {
+    "baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+    "branch": "codex/p0-stability-01",
+    "receipt": "docs/runtime/validation/p0-stability-01.md",
+    "database": "DB9; SQL1-9 unchanged",
+    "historical_evidence": "Original SourceCommit and PASS unchanged"
   }
 }

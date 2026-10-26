@@ -79,14 +79,21 @@ static class ShortcutLifecycle
             var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
             DeploymentShortcuts.Create(location, menu, desktop);
             var plan = DeploymentShortcuts.Plan(location, menu, desktop);
-            var oldMenu = Directory.CreateDirectory(Path.Combine(menu, "Importer PC")).FullName;
-            var historical = plan.Take(3).Select(entry => entry with { Path = Path.Combine(oldMenu, Path.GetFileName(entry.Path)) }).ToArray();
+            // Freeze the actual pre-LIA naming contract independently of current Plan.
+            var legacyId = "sportmaster · aaaaaaaa · 12345678";
+            var historical = (from folder in new[] { "菜鸟供包台", "Importer PC" }
+                              from item in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") }
+                              select new DeploymentShortcut(Path.Combine(menu, folder, legacyId + " · " + item.Name + ".lnk"), plan[0].Target, item.Args, location.ReleaseRoot)).ToArray();
+            foreach (var folder in historical.Select(entry => Path.GetDirectoryName(entry.Path)!).Distinct()) Directory.CreateDirectory(folder);
+            var customName = plan[0] with { Path = Path.Combine(menu, "Importer PC", Path.GetFileName(plan[0].Path)) };
+            Write(customName); var customHash = Wire.FileHash(customName.Path);
             foreach (var entry in historical) Write(entry);
             var oldDesktop = plan[^1] with { Path = Path.Combine(desktop, "菜鸟供包台 · sportmaster · aaaaaaaa · 12345678.lnk") };
             Write(oldDesktop);
             File.Delete(plan[0].Target);
             DeploymentShortcuts.Remove(location, menu, desktop);
             Check(plan.Concat(historical).Append(oldDesktop).All(entry => !File.Exists(entry.Path)), "uninstall removes all exact historical entries even when the stored target is missing; no Resolve");
+            Check(Wire.FileHash(customName.Path) == customHash, "uninstall preserves an unregistered custom-name placement instead of scanning matching targets");
         });
         Scenario("preserve-conflicts", directory =>
         {

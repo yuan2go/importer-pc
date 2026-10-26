@@ -1,0 +1,26 @@
+{
+  "portable": {
+    "SourceCommit": "36fb420e8ca9b0f85bb6020418298ceb22328f39",
+    "BusinessVersion": "1.13.0",
+    "ApplicationContractVersion": "1.19.0",
+    "DatabaseFormat": 9,
+    "Zip": "D:\\deliveries\\lifecycle-ux-20261025-36fb420e\\sportmaster-portable.zip",
+    "Bytes": 18756068,
+    "Sha256": "e987560c5aa8958c1f000dbdfae4e8210cfffa31c0e203fe8a19675287ff93e0",
+    "InventoryFiles": 110,
+    "InventorySha256": "5fe862ac0c19e47cbd7a5285243114d090a1060a1474d43fe326b3a6bcac16e9",
+    "Status": "PASS_STATIC_INVENTORY_GUIDES"
+  },
+  "win-x64": {
+    "SourceCommit": "36fb420e8ca9b0f85bb6020418298ceb22328f39",
+    "BusinessVersion": "1.13.0",
+    "ApplicationContractVersion": "1.19.0",
+    "DatabaseFormat": 9,
+    "Zip": "D:\\deliveries\\lifecycle-ux-20261025-36fb420e\\sportmaster-win-x64.zip",
+    "Bytes": 134213218,
+    "Sha256": "fbf1a6b965f1e49931cc702bed15cb6811adf8d6c84fd94150c6809abc54f127",
+    "InventoryFiles": 741,
+    "InventorySha256": "9ff988233356c3db702beadda6133cb85fb842a8d2eee5b9acf801972d212575",
+    "Status": "PASS_STATIC_INVENTORY_GUIDES"
+  }
+}

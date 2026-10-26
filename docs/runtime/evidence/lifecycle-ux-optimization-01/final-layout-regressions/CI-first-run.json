@@ -1,0 +1,14 @@
+{
+  "Head": "ed925459d89eca80fcd0e1ce6d59d4b4dbd6289a",
+  "Run": "https://github.com/yuan2go/importer-pc/actions/runs/40206011424",
+  "Linux": "success",
+  "Windows": "failure",
+  "Failures": [
+    "retired result now has original inspection and read-only inventory, not only close",
+    "history action set now includes first/previous and query cancellation",
+    "parameter search failed in partial settings rebuild after read-only backup binding exception",
+    "management password test selected a single Expander but recovery policy added a second"
+  ],
+  "OriginalEvidence": "original CI run/artifact; no original result rewritten",
+  "Disposition": "OneWay production fix plus precise current-control assertions; minimum-history and classic viewport subsequently found/fixed by local native regression"
+}

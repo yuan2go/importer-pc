@@ -1,0 +1,10 @@
+{
+  "Scope": "Working source checks and original frozen failures; not a repaired frozen medium PASS",
+  "SeedMediaSourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "SourceR3Cases": 13,
+  "SourceR4Cases": 14,
+  "LegacyResultSourceCommitField": "Seed medium only, not the tested working assembly source",
+  "RealInstallation": "NOT_RUN",
+  "RealDeploymentRegistrationMutation": "NOT_RUN",
+  "CiStorageInitializer": "Compiled only locally; execution permitted only in disposable hosted Windows job"
+}

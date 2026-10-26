@@ -12,7 +12,7 @@ namespace Ipc.Assembly;
 public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? Launch = null, string? ExpectedHash = null,
     ParcelConfiguration? Candidate = null, string? Reason = null, string? Backup = null, string? Destination = null,
     WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null, ManagementModeDelegation? ManagementGrant = null,
-    string? ManagementPassword = null);
+    string? ManagementPassword = null, StartupRetentionPlan? RetentionPlan = null);
 
 // Composition entry points for installation and offline maintenance; never creates IBusinessRuntime.
 public static class ParcelStartupServices
@@ -21,7 +21,7 @@ public static class ParcelStartupServices
         async password => { _ = await ElevateAsync(new("ConfigureManagementPassword", Launch: launch, ManagementPassword: password)); });
     static readonly AsyncLocal<Action?> delegatedAuthority = new();
     static readonly AsyncLocal<string?> delegatedPrincipal = new();
-    static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore";
+    static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore" or "ExpireHistory";
     static string ManagementRequestHash(StartupMaintenanceRequest r) => Wire.Hash(Wire.Encode(r with { ManagementGrant = null }));
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool GetNamedPipeClientProcessId(Microsoft.Win32.SafeHandles.SafePipeHandle pipe, out uint processId);
@@ -59,8 +59,27 @@ public static class ParcelStartupServices
     }
     public static WindowsDeploymentRequest Review(DeploymentMedia media, string account, string dataRoot, string configurationSource,
         string? trustFile, string[] packages, bool repairSeed, string? programRoot = null)
+        => ReviewCore(media, account, dataRoot, configurationSource, trustFile, packages, repairSeed, programRoot, Wire.Id());
+
+    internal static WindowsDeploymentRequest RevalidateDeployment(DeploymentMedia media, WindowsDeploymentRequest original)
+    {
+        // Re-observe every reviewed input; the original operation is an identity,
+        // not a new action. Legacy null identities stay null, including on the wire.
+        var reviewed = ReviewCore(media, original.RuntimeAccountSid, original.DataRoot, original.ConfigurationSource,
+            original.TrustFile, original.Packages.Keys.ToArray(), original.RepairSeed, original.ProgramRoot, original.OperationId)
+            with { ChangePlanIdentity = original.ChangePlanIdentity, BackupDestination = original.BackupDestination, Shortcuts = original.Shortcuts, Recovery = original.Recovery };
+        if (!System.Text.Json.Nodes.JsonNode.DeepEquals(System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(reviewed)), System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(original))))
+            throw new InvalidDataException("计划输入/原登记已变化；重新预检并审阅逐站差异");
+        // Preserve the frozen wire identity too: JSON object key order is not
+        // a changed input, and filesystem enumeration must not rehash a plan.
+        return original;
+    }
+
+    static WindowsDeploymentRequest ReviewCore(DeploymentMedia media, string account, string dataRoot, string configurationSource,
+        string? trustFile, string[] packages, bool repairSeed, string? programRoot, string? operationId)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+        if (operationId is not null && !WindowsDeploymentSetup.IsInstallationOperationId(operationId)) throw new InvalidDataException("Invalid installation operation identity");
         account = account.Trim();
         var sid = account.StartsWith("S-1-", StringComparison.Ordinal) ? new SecurityIdentifier(account) : (SecurityIdentifier)new NTAccount(account).Translate(typeof(SecurityIdentifier));
         _ = sid.Translate(typeof(NTAccount));
@@ -79,7 +98,7 @@ public static class ParcelStartupServices
         var request = new WindowsDeploymentRequest(media.Root, ApplicationId, media.SourceCommit, sid.Value, data, source, seed.Mode, trust,
             trust is null ? null : Wire.FileHash(trust), packages.ToDictionary(p => p, Wire.FileHash), repairSeed,
             files.ToDictionary(p => Path.GetFileName(p), Wire.FileHash), TrustedProgramRoots.Normalize(programRoot ?? TrustedProgramRoots.Default, data),
-            File.Exists(WindowsDeploymentSetup.Registration(ApplicationId)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) : null);
+            File.Exists(WindowsDeploymentSetup.Registration(ApplicationId)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) : null, OperationId: operationId);
         ValidateSeed(request);
         TrustedProgramRoots.Preview(request.ProgramRoot!, request.DataRoot);
         WindowsDeploymentSetup.PreviewDataAccess(request.DataRoot, request.RuntimeAccountSid);
@@ -115,21 +134,33 @@ public static class ParcelStartupServices
     public static async Task<DeploymentLocation> InstallWithPreflightAsync(WindowsDeploymentRequest request, IProgress<WindowsInstallationStage>? progress = null)
     {
         if (request.ChangePlanIdentity is not null) throw new InvalidDataException("交互安装由同一次授权检查原责任，不能传入旧计划");
-        var identity = await ElevateAsync(new("InstallWithPreflight", Deployment: request), progress);
+        string? identity;
+        try { identity = await ElevateAsync(new("InstallWithPreflight", Deployment: request), progress); }
+        catch (IOException error) when (error is not InstallationOutcomeUnknownException && request.OperationId is not null && File.Exists(WindowsDeploymentSetup.InstallationOperationFile(request)))
+        {
+            var original = InspectInstallation(request);
+            if (original.Status is "Completed" or "CommittedNeedsSystemRepair" or "Unknown") throw new InstallationOutcomeUnknownException("原安装可能已提交；先只读核对固定操作及原系统入口，不重复安装。", error);
+            throw;
+        }
         if (identity is not null && !ExtensionSchema.IsHash(identity)) throw new InstallationOutcomeUnknownException("原部署计划回执无效，请先核对安装记录。");
         progress?.Report(WindowsInstallationStage.VerifyingReceipt);
         try { return InstalledReceipt(request with { ChangePlanIdentity = identity }); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         { throw new InstallationOutcomeUnknownException("安装进程已返回，但安装登记未核对成功。请检查安装记录，勿直接重复安装。", error); }
     }
+    public static InstallationInspection InspectInstallation(WindowsDeploymentRequest request) => WindowsDeploymentSetup.InspectInstallation(request);
     static DeploymentLocation InstalledReceipt(WindowsDeploymentRequest request)
     {
         var location = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new InvalidDataException("No installed deployment receipt");
-        if (location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
-            location.Shortcuts != request.Shortcuts || location.Recovery != (request.Recovery ?? new DesktopRecoveryOptions()) || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
+        RequireMatchingInstalledReceipt(request, location);
+        return location;
+    }
+    internal static void RequireMatchingInstalledReceipt(WindowsDeploymentRequest request, DeploymentLocation location)
+    {
+        if (location.ApplicationId != request.ApplicationId || location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
+            location.Shortcuts != request.Shortcuts || (location.Recovery ?? new DesktopRecoveryOptions()) != (request.Recovery ?? new DesktopRecoveryOptions()) || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
             !string.Equals(Path.GetFullPath(location.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Installation receipt differs from the selected deployment");
-        return location;
     }
     public static bool Handle(string[] args)
     {
@@ -171,6 +202,7 @@ public static class ParcelStartupServices
     {
         switch (request.Action)
         {
+            case "ExpireHistory": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteRetentionAsync(request.RetentionPlan ?? throw new InvalidDataException("缺少固定原维护计划")));
             case "ConfigureManagementPassword":
                 LocalManagementMode.ForRoot(request.Launch?.DataRoot ?? throw new InvalidDataException("管理模式数据目录缺失。")).ConfigurePassword(request.ManagementPassword ?? "");
                 break;
@@ -237,9 +269,9 @@ public static class ParcelStartupServices
             case "ResumeRemoval":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var cleanupMedia = request.Deployment ?? throw new InvalidDataException("需要同一完整介质");
-                RequireMatchingMedia(cleanupMedia); _ = DeploymentMedia.Inspect(cleanupMedia.MediaRoot, ApplicationId);
+                RequireMatchingMedia(cleanupMedia); var originalMedia = DeploymentMedia.Inspect(cleanupMedia.MediaRoot, ApplicationId);
                 if (WindowsDeploymentSetup.Current(ApplicationId) is not { LifecycleState: "RemovedDataRetained" } cleaning || cleaning.SourceCommit != cleanupMedia.SourceCommit) throw new InvalidOperationException("只能用原介质继续已退役程序的固定清理清单");
-                return Wire.Encode(WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => throw new InvalidOperationException("退役清理不能重新执行卸载提交"), RemoveShortcuts));
+                return Wire.Encode(WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => throw new InvalidOperationException("退役清理不能重新执行卸载提交"), RemoveShortcuts, originalMedia.Files.Keys.ToArray()));
             case "Restore": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RestoreAsync(request.Backup!, request.Destination!, request.ExpectedHash!); break;
             case "Install":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
@@ -367,7 +399,12 @@ public static class ParcelStartupServices
         using var server = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
         var path = Path.Combine(Path.GetTempPath(), "ipc-maintenance-" + Wire.Id() + ".bin");
         request = request with { Pipe = pipeName };
-        if (RequiresManagementMode(request.Action)) request = request with { ManagementGrant = LocalManagementMode.ForRoot(request.Launch!.DataRoot).Delegate(ManagementRequestHash(request)) };
+        if (RequiresManagementMode(request.Action))
+        {
+            var mode = LocalManagementMode.ForRoot(request.Launch!.DataRoot); var identity = ManagementRequestHash(request);
+            request = request with { ManagementGrant = request.Action == "ExpireHistory"
+                ? mode.DelegateOperation(identity, ParcelRepository.RetentionMaintenanceBudget) : mode.Delegate(identity) };
+        }
         ProtectedDraftPayload.Write(path, Wire.Encode(request), false);
         var retainRequest = false;
         try
@@ -375,8 +412,9 @@ public static class ParcelStartupServices
             using var pinned = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var start = new ProcessStartInfo(helper) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = Path.GetDirectoryName(helper)! };
             foreach (var arg in new[] { "--startup-command", path, Wire.FileHash(path) }) start.ArgumentList.Add(arg);
-            using var budget = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            using var budget = new CancellationTokenSource(request.Action == "ExpireHistory" ? ParcelRepository.RetentionMaintenanceBudget : TimeSpan.FromMinutes(10));
             var connection = server.WaitForConnectionAsync(budget.Token);
+            _ = connection.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             progress?.Report(WindowsInstallationStage.WaitingForAuthorization);
             using var process = Process.Start(start) ?? throw new IOException("Windows did not start maintenance");
             async Task<string?> ReadResponse()
@@ -387,6 +425,7 @@ public static class ParcelStartupServices
                 return await ReadMaintenanceResponse(input, stage => progress?.Report(stage), budget.Token);
             }
             var responseRead = ReadResponse(); // Drain while the child writes, before waiting for its exit.
+            _ = responseRead.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             try { await process.WaitForExitAsync(budget.Token); }
             catch (OperationCanceledException)
             { throw new InstallationOutcomeUnknownException("维护等待超时；授权进程可能仍在完成持久提交，未自动终止。保留窗口/原数据，核对受保护操作回执后再继续。"); }
@@ -462,9 +501,17 @@ public static class ParcelStartupServices
         MachineRuntimePolicy.RequireProtectedApplicationInstaller(directory, release.Files.Keys.Append("application-release.json").ToArray());
         ApplicationReleaseValidation.ValidateIfPublished(directory, ParcelAssembly.Definition().Id, new(release.Views, release.Layouts), ParcelAssembly.Definition().GetType().Assembly);
     }
-    sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance
+    sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance, IStartupRetentionMaintenance
     {
         readonly ParcelStartupMaintenance core = Core(launch);
+        public Task<StartupRetentionPlan> PlanRetentionAsync(string destination, CancellationToken token = default) => core.PlanRetentionAsync(destination, token);
+        public Task<StartupRetentionOutcome> InspectRetentionAsync(StartupRetentionPlan plan) => core.InspectRetentionAsync(plan);
+        public async Task<StartupRetentionOutcome> ExecuteRetentionAsync(StartupRetentionPlan plan)
+        {
+            RequireManagementMode();
+            if (!OperatingSystem.IsWindows()) return await core.ExecuteRetentionAsync(plan);
+            return Wire.Decode<StartupRetentionOutcome>(await ElevateAsync(new("ExpireHistory", launch, RetentionPlan: plan)) ?? throw new InstallationOutcomeUnknownException("原到期维护结果缺失，请核对原回执"));
+        }
         void RequireManagementMode() => LocalManagementMode.ForRoot(launch.DataRoot).Require();
         public Task<StartupClassification> ClassifyAsync() => core.ClassifyAsync();
         public Task<StartupMaintenanceDocument> ReadAsync() => core.ReadAsync();

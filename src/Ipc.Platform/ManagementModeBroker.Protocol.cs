@@ -5,7 +5,8 @@ using System.Text.Json;
 namespace Ipc.Platform;
 
 public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? LegacyAccount = null, string? Password = null,
-    string? NewPassword = null, string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false);
+    string? NewPassword = null, string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null);
 public sealed record ManagementModeRpcReply(JsonElement Value, string? Error = null, string? Code = null);
 public sealed record ManagementModeSessionGrant(string SessionId, string Token, DateTimeOffset ExpiresAt);
 
@@ -132,6 +133,7 @@ public sealed partial class LocalManagementMode
         {
             case "ChangePassword": ChangePassword(request.Password ?? ""); return true;
             case "Delegate": return Delegate(request.RequestHash ?? "");
+            case "DelegateOperation": return DelegateOperation(request.RequestHash ?? "", TimeSpan.FromSeconds(request.OperationSeconds ?? 0));
             default: throw new InvalidDataException("不支持的管理模式操作。");
         }
     }

@@ -96,6 +96,7 @@ namespace Ipc.Application.ParcelFlow.Desktop
     public static class WindowOpeningPreference { public static void Attach(System.Windows.Window window, string application, Action<string> report) { } }
     public static class ConfigurationCloseGuard
     {
+        public static bool ConfirmExit(System.Windows.Window owner, string impact) => true;
         public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page) => vm.HasUnsavedConfiguration;
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);

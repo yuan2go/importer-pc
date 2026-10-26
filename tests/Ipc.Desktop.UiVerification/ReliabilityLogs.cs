@@ -46,6 +46,20 @@ static partial class Program
         });
         try
         {
+            var advanced = (Expander)typeof(SoftwareLogControl).GetField("advancedFilters", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
+            advanced.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            var dates = Descendants(control).OfType<DateTimeInput>().ToArray();
+            if (dates.Length != 2 || Descendants(control).OfType<DatePicker>().Count() != 2) throw new InvalidOperationException("Log dates must be native calendar/time controls");
+            Click(window, "最近7天"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            if (!DateTimeOffset.TryParse(dates[0].Timestamp, out var start) || !DateTimeOffset.TryParse(dates[1].Timestamp, out var end) || (end - start).TotalDays is < 6.99 or > 7.01) throw new InvalidOperationException("Quick log range did not update both bound native inputs");
+            Click(window, "查询"); await Settle();
+            var applied = (TextBox)typeof(SoftwareLogControl).GetField("effectiveRange", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
+            if (!applied.Text.Contains("已应用范围") || !applied.Text.Contains(start.ToString("zzz"))) throw new InvalidOperationException("Applied log range omitted actual offset");
+            Descendants(dates[0]).OfType<DatePicker>().Single().SelectedDate = DateTime.Today.AddDays(-2);
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            if (Button("导出全部匹配…").IsEnabled || Button("导出时间范围…").IsEnabled || !applied.Text.Contains("尚无有效查询快照")) throw new InvalidOperationException("Native date edit must invalidate fixed export selection");
+            Click(window, "最近24小时"); advanced.IsExpanded = false;
+            lines.Add("PASS LIA-LOG native calendars, quick ranges and offset bind to actual query; editing date invalidates both fixed export actions");
             Click(window, "查询"); await Settle();
             Descendants(control).OfType<DataGrid>().Single().SelectedIndex = 0;
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

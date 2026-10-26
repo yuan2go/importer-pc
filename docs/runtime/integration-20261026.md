@@ -177,3 +177,69 @@ PR111源564fab6b复测时计划备份夹具实际失败，首轮COMPLETED计数0
 |pr111-final-wpf-Sportmaster|PASS|`98e6dc93d774f18e2f08e76d8a8f491951c93c1562e4fc8639193fa48af72566`|
 |pr111-final-wpf-WcsToPlc|PASS|`607004cee52f59a937c46d1e869e28016056b6368c8960094bb4ce0bf972bb07`|
 |pr111-schedule-committed-build|PASS|`b1cf8cc1ca4d0e41dd12e612db64753f517eb911626089bcd197e49441bc3bed`|
+
+## PR111合入与PR108语义整合
+
+PR111头735391a5的CI40278220404三job success、无未解决评审，合入cc304049b7a561a9df34c817e7798ca2eb8b719f。该干净main重新构建及14组容量/投影/详情/备份/时间存储/P0/部署守卫全部PASS；6358份既有冻结文件、SQL1–9、字体及WAL/FULL不变。记录只属于实际main，不继承分支PASS。
+
+PR108合并时同时保留：OperationId与Recovery的冻结计划；卸载剩余文件/发布根与恢复任务、WER/SCM/转储清理；缓存快照中的Pending及最近备份状态；后台备份所有权和最近成功；详情可见性缓存与管理权限。六组原生窗口流程覆盖生命周期、安装首配、参数启动、日志、管理模式和原请求链；800×420历史/经典壳实图已检查。
+
+实际新增负对照：6b6c1bed直接调用完整详情方法在撤权后未拒绝（7147ed99…）；显式恢复配置的计划复核被错误判为变化（c69a737c…）。9b34ee19修正前后授权核对及原Recovery保留；详情绿，计划随后到达旧回执兼容用例并暴露null与默认Disabled的错误不等（cfd3f0cf…）。ae5ef217归一化两侧缺省，显式Enabled差异仍拒绝。8aa3d3f1同步新main后的16项真实只读部署预检全PASS，使用历史63795eba介质仅作输入；执行代码是当前DLL，不把这项写成新介质测试。未安装/修改HKLM/任务/服务。
+
+一次组合构建引用不存在clock字段失败，改回既有UTC元数据来源；第一次原生生命周期调用漏设IPC_FROZEN_DESKTOP，在卸载页面前退出，实际WINDOWS-WPF.log保留。补齐当前同源Desktop路径并记录DLL哈希后六套全部通过，未改断言。8aa3d3f1的三产品锁定WPF构建也全部通过。当前头6362份此前冻结文件/SQL1–9/字体/WAL-FULL核对通过。
+
+|执行|实际源|结果|日志SHA256|
+|---|---|---|---|
+|pr108-app-build-red-source|`6b6c1bed`|PASS|`41d32262b822cf1587972c5c10a2209b4928bb99fb9c05ca4eb4138a7e251017`|
+|pr108-authority-green-build|`9b34ee19`|PASS|`54eb0b2a417882e42b2fca27481f69c6ca2df1ee8d9d5d2a598d883f890eaec4`|
+|pr108-combined-latency-capacity-checks|`9b34ee19`|PASS|`01ffa2fe9f1346ac95fd8fa97dcb4609cfdd119eec1aa640babfc808162c2400`|
+|pr108-combined-latency-details-checks|`9b34ee19`|PASS|`3b9376077ad8915dd8ccecfb1dbea917fa251e88da6f1aa87a4407effa43ea73`|
+|pr108-combined-latency-storage-checks|`9b34ee19`|PASS|`42615990ccc5b164a54275742a7fe056e2c7fdf7bd27e6ebfc444f8668678f54`|
+|pr108-combined-lifecycle-ux|`9b34ee19`|PASS|`8fa0c127cb85f287f582a79ba5778a6afc9f96c90a0aa70562fa904b22642683`|
+|pr108-combined-time-storage-fault-checks|`9b34ee19`|PASS|`21e3a82a599bb9118302895e16362a8558a5d90a2fc8968ead14821a845d5d14`|
+|pr108-deployment-build-red-source|`6b6c1bed`|PASS|`543897fbf76fc23c1822a476d60789f726d2f37725d3e00d77cd97ef9522af08`|
+|pr108-final-deployment-build|`8aa3d3f1`|PASS|`10eca3a8b5114c8708a5dbdabcc54b4aed488cf4321ee880dceca518f0dd25b8`|
+|pr108-final-deployment-cases|`8aa3d3f1`|PASS|`3eca2b6d216cc9fe8e0a933836a4b4fdd120b1df0ed57c0d8b8552354fbc421a`|
+|pr108-final-native-build|`8aa3d3f1`|PASS|`d2a010890cfa78038daa3b909df8eb31dcfb1afd9fe0b13d15910a078ddb6234`|
+|pr108-final-native-lifecycle-ux|`8aa3d3f1`|FAIL|`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`|
+|pr108-final-wpf-DirectPlc|`8aa3d3f1`|PASS|`9f049f3af383cf31649a624f23de39a4c73a42c3dafe63f9706b09deb5a8cd3f`|
+|pr108-final-wpf-Sportmaster|`8aa3d3f1`|PASS|`f1c5981a322ddbf24d509239f09a26ffe55ff73d765664a2844b6bffefd909de`|
+|pr108-final-wpf-WcsToPlc|`8aa3d3f1`|PASS|`d8704961264975e461f92f32fe9f30007584e8565a5bd7f2b4d7c131fd5bd89f`|
+|pr108-full-copy-red|`6b6c1bed`|FAIL|`7147ed9915e9c508efee3d5922d69e46f43beb60d00a7f31d27cccc09a299c37`|
+|pr108-merged-app-build|`41a3a064`|FAIL|`93335d9e1897d56ffef2399741397ce632e502a13cdb346cf73dbdced2191ac6`|
+|pr108-native-desktop-identity-build|`8aa3d3f1`|PASS|`e6726ad258889bced74af7044f384c78cd71d7d0014e429dab322b56ce13438f`|
+|pr108-native-fixture-identity-build|`8aa3d3f1`|PASS|`55c3acb1780997bf1ea24d154a46208b69a7280257e0ae7376dfcfff4f0484da`|
+|pr108-native-qualified-installer-first-run-ui|`8aa3d3f1`|PASS|`82fd5d97377084ce4c5bd5e8106905b45a1026caad62f2ffd6d011545efc8a21`|
+|pr108-native-qualified-lifecycle-ux|`8aa3d3f1`|PASS|`b772762b2a3f4186ae0f8587a01a378888451b39bbd8b7b01f1bda3c4e6ce086`|
+|pr108-native-qualified-management-mode|`8aa3d3f1`|PASS|`16c6c5ad1915b5cbe3d816be72a5bd79dfb07250908e9097244d8cb704288b5a`|
+|pr108-native-qualified-parameter-guidance-startup|`8aa3d3f1`|PASS|`859555497d30c454cd08525eea3ce4e4f5abd7137433f04e7d236d421fd6068b`|
+|pr108-native-qualified-reliability-logs|`8aa3d3f1`|PASS|`c228676ca862eea6ac458c8f6b795db584b310ed1ff3690b17dbf0f4281b7397`|
+|pr108-native-qualified-task-hierarchy-chain|`8aa3d3f1`|PASS|`bf8afaa1b7d32f2fee54eab5abf18fa2997172cfc1ff2fa5b435c26008d7d112`|
+|pr108-recovery-green-build|`9b34ee19`|PASS|`7ad6fd4161017d29a6e7c3bd080e64c73b9c5ce1264da5f2c91521bb64a55c85`|
+|pr108-recovery-green-legacy-red|`9b34ee19`|FAIL|`cfd3f0cf349f5ea9d3121993739c142be30b03e751082c9053157f03c4137e4c`|
+|pr108-recovery-plan-red|`6b6c1bed`|FAIL|`c69a737c11ace53b9832dd29d0ff3711977c996ead2550501851afe360a94f1d`|
+|pr108-restore-app|`665f43a9`|PASS|`8b4b076f1042c6c54346285657cb20285d2d108a17fd3e9d82d1f23900cf74cd`|
+
+## PR108 CI 发现后的契约补查
+
+26d66697 的 CI 40280624399：frozen-sportmaster PASS；aqa01-boundaries、p0-stability-boundaries FAIL。历史页旧夹具仍允许重叠查询，快捷方式旧夹具从新友好名称动态生成“历史入口”，两者已与 LIA 的当前合同不符。保留单查询所有权和旧结果不得覆盖的意图，增加取消后真实排空的回归；独立固定旧快捷方式名称，在两个真实历史目录验证删除，并保留未经登记的自定义放置。
+
+0b7b815b 的新回归实际失败：旧 HistoryAsync 端口不能取消底层 I/O，但取消后仍发布迟到页面。9169546f 在实际排空后、投影前补取消栅栏；当前会话式查询、旧接口、完整详情权限同时通过。Windows 展示夹具限定隔离 Simulation 与合成端口/身份，Linux 仍使用原工厂，生产运行身份与权限没有放宽。快捷方式在同一源上以 ACP1252/936/65001 实际运行通过。
+
+过程失败全部保留：dee5c56c 的首次展示执行被本机未安装身份策略挡住，隔离后取得上述真实红灯；一次脚本匹配未成功导致在0b7b815b重复运行红灯；一次误写 `--latency-details` 落入默认套件并被安装身份策略拒绝，不是详情套件结果。以正确 `--latency-details-checks` 在9169546f运行通过。下表按实际源记录，不把新PASS回填旧源。
+
+|实际执行|源|结果|日志SHA256|
+|---|---|---|---|
+|pr108-ci-regressions-build|`dee5c56c`|PASS|`330e4e8e8727fcd141083a0efb0082b073cfe37f2bbc394e57d8ba9cb5a68cfd`|
+|pr108-ci-repair-build|`0b7b815b`|PASS|`dbfd988591c323be93f477f2b7f75a2eb668a2597ff093057e833d15f6dace58`|
+|pr108-ci-repair-ux-commercial-presentation|`0b7b815b`|FAIL|`2d5de450cbb5def06d3bf75bf3d890906335620aaff320868f56467621d148ea`|
+|pr108-history-fix-build|`9169546f`|PASS|`6d8d6633782dcd95a4e9b9b04ea052fd2a4aee21aae666e6cf73e0aa73bc6a40`|
+|pr108-history-fix-codepages|`9169546f`|PASS|`47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9`|
+|pr108-history-fix-latency-details-checks|`9169546f`|PASS|`58a7039eb8409607689424c3084789fb6c09bf57cdc8cb3a1cf9c9b7d98552eb`|
+|pr108-history-fix-latency-details|`9169546f`|FAIL|`566076b56b0ea1504bf16d5eb021457cc24f669ab98a4d1501a170807b57e571`|
+|pr108-history-fix-lifecycle-ux|`9169546f`|PASS|`05252f61b1f2e1244c2071022e22c8c302436a0184f4efe7207950e45adb300d`|
+|pr108-history-fix-ux-commercial-presentation|`9169546f`|PASS|`2193ebe97aaec6da7ad9162bb5d10b1ae8d2da9612ea538b7c9171963e9b440e`|
+|pr108-history-isolated-build|`0b7b815b`|PASS|`b8022c46774a86a201fa56ccfb61d8df9abf8e2b7480a36cf8aa9d15bd56ab4e`|
+|pr108-legacy-history-cancel-red-isolated|`0b7b815b`|FAIL|`6b13fc9a370324280b80c5eeb151d09eb028d6a6717e42b7be116656eb256340`|
+|pr108-legacy-history-cancel-red|`dee5c56c`|FAIL|`d5a60c8fbd14752d14620813926a0e634a01461a3eb61fffb93af6aca3dfab9b`|
+|pr108-shortcut-history-green|`dee5c56c`|PASS|`6739209afd13a1443884f59690498ccb3da32e82fa685111867e6f7c0fff215c`|

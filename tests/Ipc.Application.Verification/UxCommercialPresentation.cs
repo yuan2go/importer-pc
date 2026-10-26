@@ -23,7 +23,14 @@ static class UxCommercialPresentation
         var directory = Path.Combine(root, "ux-presentation"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        if (config.Mode != RunMode.Simulation) throw new InvalidOperationException("Presentation fixture requires an isolated Simulation candidate");
+        IParcelCapabilityFactory factory = OperatingSystem.IsWindows() ? new CommercialProductization.SyntheticFactory(launch) : new ParcelCapabilityFactory(launch);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        if (OperatingSystem.IsWindows())
+        {
+            app.RuntimeIdentityPreflight = () => { };
+            Console.WriteLine("BOUNDARY Windows presentation fixture uses isolated synthetic ports/identity; production policy and real factory remain unchanged");
+        }
         await app.StartAsync(CancellationToken.None);
         await ManagementModeFixture.Authorize(app);
         Check(app.EmitReferenceAt("left", "presentation-a", "00000123", "event-a"), "reference observation A enters left position");
@@ -136,15 +143,19 @@ static class UxCommercialPresentation
         var entered = new SemaphoreSlim(0); var calls = 0;
         probe.History = _ => { var n = Interlocked.Increment(ref calls); entered.Release(); return n == 1 ? first.Task : second.Task; };
         var older = vm.LoadHistoryAsync(); await entered.WaitAsync(TimeSpan.FromSeconds(2));
+        var overlapRefused = false;
+        try { await vm.LoadHistoryAsync(); } catch (InvalidOperationException) { overlapRefused = true; }
+        Check(overlapRefused && calls == 1 && vm.HistoryLoading && vm.HistoryStatus.Contains("读取"), "history retains one real in-flight owner and rejects overlapping reads");
+        vm.CancelHistoryRead(); first.SetResult(new([new(1, false, a)], null)); await older;
+        Check(vm.HistoryItems.Length == 0 && !vm.HistoryLoading, "cancelled legacy history read cannot publish its late page after real drain");
         var newer = vm.LoadHistoryAsync(); await entered.WaitAsync(TimeSpan.FromSeconds(2));
-        Check(vm.HistoryLoading && vm.HistoryStatus.Contains("读取"), "history exposes loading before service completion");
-        second.SetResult(new([new(2, false, b)], null)); await newer; first.SetResult(new([new(1, false, a)], null)); await older;
+        second.SetResult(new([new(2, false, b)], null)); await newer;
         Check(vm.HistoryItems.Single().Operation.Id == b.Id && !vm.HistoryLoading, "late history result cannot replace newer page or busy state");
         vm.SelectedHistory = vm.HistoryItems.Single(); probe.History = _ => Task.FromResult(new ParcelHistoryPage([new(2, false, b)], null)); await vm.LoadHistoryAsync();
         Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id, "history refresh retains original selection and detail identity");
         probe.History = _ => Task.FromException<ParcelHistoryPage>(new IOException("SYNTHETIC history read failure"));
         try { await vm.LoadHistoryAsync(); throw new Exception("Expected history read failure"); } catch (IOException) { }
-        Check(vm.HistoryStatus.Contains("查询失败") && vm.HistoryItems.Single().Operation.Id == b.Id && !vm.HistoryLoading, "history read failure keeps prior page and is not misreported as empty");
+        Check(vm.HistoryStatus.Contains("查询未完成") && vm.HistoryItems.Single().Operation.Id == b.Id && !vm.HistoryLoading, "history read failure keeps prior page and is not misreported as empty");
         probe.History = _ => Task.FromResult(new ParcelHistoryPage([], null)); await vm.LoadHistoryAsync();
         Check(vm.HistoryStatus.Contains("没有作业记录") && !vm.HasNextHistory, "empty history has an explicit completed empty state");
         vm.Selected = a;

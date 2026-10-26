@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><BusinessModule Condition="'$(BusinessModule)' == ''">Supply</BusinessModule><NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$([System.String]::Copy('$(BusinessModule)').ToLowerInvariant()).lock.json</NuGetLockFilePath><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
  <ItemGroup><Compile Include="Program.cs"/><ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/></ItemGroup>
+ <ItemGroup><InternalsVisibleTo Include="Ipc.Application.Verification"/></ItemGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Supply'"><Compile Include="SupplyAssembly.cs"/><ProjectReference Include="../Ipc.Product/Ipc.Product.csproj"/></ItemGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Inspection'"><Compile Include="InspectionAssembly.cs"/><ProjectReference Include="../Ipc.Application.Inspection/Ipc.Application.Inspection.csproj"/></ItemGroup>
  <PropertyGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'"><DefineConstants>$(DefineConstants);PARCEL</DefineConstants></PropertyGroup>

@@ -1,0 +1,28 @@
+{
+  "Status": "PASS",
+  "MediaSourceCommit": "d745fadf4fc5d9cb02cd4e99903b5dd10fedb3af",
+  "BatchBinarySha256": "1AF00F0D828C5F9775B982E6807E36CFECE8A1FAC6F10CFB4BDCFA68C259396E",
+  "PlatformBinarySha256": "53F4B77D1A2271689A95D0FCB0182A0B2E80E1CA432C52516F9178270383A908",
+  "OperationId": "260fd6fd719f43b487dc2f2ca69a1a23",
+  "PlanSha256": "6DD6949BCF092A741F745819681694727929711619F9B18FFF6B22F0C79C5448",
+  "Cases": [
+    "same-plan-three-reviews-and-preflights-stable",
+    "full-semantic-comparison-preserves-frozen-dictionary-order-and-wire-hash",
+    "explicit-new-review-has-new-identity",
+    "canonical-guid-all-sixteen-leading-digits-and-old-safe-name-compatible",
+    "duplicate-receipt-refused-with-original-bytes",
+    "interrupted-reviewing-receipt-retained",
+    "changed-seed-bytes-refused-with-valid-json",
+    "stale-registration-cas-refused-without-changing-machine-registration",
+    "changed-mode-refused-by-complete-request-comparison",
+    "invalid-operation-identity-refused",
+    "tampered-plan-hash-refused",
+    "legacy-null-identity-preserved-readonly-and-new-submit-refused",
+    "original-prepared-ready-unknown-failed-completed-journals-all-fence-retries",
+    "restored-inputs-repreflight-with-original-identity"
+  ],
+  "Installation": "NOT_RUN",
+  "MachineRegistrationMutation": "NOT_RUN",
+  "Equipment": "NOT_RUN",
+  "Scope": "Readonly actual batch entry and synthetic journal fence; not a deployment success"
+}

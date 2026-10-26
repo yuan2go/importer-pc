@@ -1,0 +1,35 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS native diagnostics initially folds both position identities and shared evidence
+PASS native read-only diagnostics open and bind both positions and shared facts without writing read-only properties
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused=True, busy=False, receipt=Persisted · Application command committed, feedback=操作已提交；请核对当前应用状态。
+PASS first configuration finishes asynchronous loading with one visible, enabled shared editor
+PASS first configuration starts at the first business page; actual=作业登录
+PASS first configuration uses the shared directory without duplicate outer task tabs
+PASS one directory exposes business, system, drivers, components and the completion review in order
+PASS completion review offers guarded save; completion requires confirmed persistence and startup remains separate
+PASS first configuration has no configuration tool menu
+PASS offline first configuration never starts the Application or creates a business database
+PASS first-configuration business budget locates the actual shared timeout field
+PASS first-configuration native form becomes enabled and accepts keyboard focus after the read completes
+PASS first-configuration step navigation retains the same native unsaved form controls
+PASS integrated first-configuration guard refuses to discard an unsaved native draft
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner; left=ResolvingWcs, right=SlotResolved, paused=False, resolves=2
+PASS left and right resolve independent operations on the shared live Application
+PASS classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand
+PASS classic and default share the friendly receipt projection while preserving the complete technical receipt
+PASS partial readiness is translated without changing the authoritative state or permissions
+PASS active blockers and optional operator login remain visible while technical diagnostics are collapsed
+PASS simplified workstation keeps all active blockers and required operator login visible
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS active native window grants initial keyboard focus before the refresh retention experiment
+PASS repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection
+PASS fixed history query actions include first/previous pages; each cancellation is visible only for its active operation
+FAIL System.InvalidOperationException: expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows=60/True, row=40, rowBottom=76.80000000000001, scroll=514.4, detail=False; buttons=查询:44/True/86.39999999999999|清除筛选:44/True/86.39999999999999|首屏:44/True/86.39999999999999|上一页:44/True/86.39999999999999|下一页:44/True/86.39999999999999|导出表格…:44/True/86.39999999999999
+   at Program.<>c__DisplayClass56_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in D:\DevCache\importer-pc\lifecycle-ci-visual-48e6\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\DevCache\importer-pc\lifecycle-ci-visual-48e6\VisualProductization.cs:line 171
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\DevCache\importer-pc\lifecycle-ci-visual-48e6\VisualProductization.cs:line 299
+   at Program.<>c__DisplayClass23_0.<<Main>b__1>d.MoveNext() in D:\DevCache\importer-pc\lifecycle-ci-visual-48e6\Program.cs:line 66

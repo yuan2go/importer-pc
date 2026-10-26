@@ -33,6 +33,7 @@ public sealed partial class ParcelRuntime
     ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => OperatorSnapshot(s, Management.Status().Authorized);
     static ParcelSnapshot OperatorSnapshot(ParcelSnapshot s, bool authorized) => authorized ? s : s with
     {
+        BackupScheduleStatus = null,
         Configuration = s.Configuration with
         {
             Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null,

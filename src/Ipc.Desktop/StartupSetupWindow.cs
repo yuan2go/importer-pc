@@ -17,6 +17,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
+    internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
@@ -43,7 +44,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     bool selectedStartMenu = true, selectedDesktop = true;
     int step;
     double optionsHeight = 560;
-    readonly Button next, back, records, cancel;
+    readonly Button next, back, records, cancel, inspect, resumeRemoval, repairCommitted;
+    InstallationInspection? originalInspection;
     public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
     {
         this.prepareMedia = prepareMedia;
@@ -51,8 +53,18 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
         records = Action("打开安装记录目录", OpenRecordDirectory);
+        inspect = Action("只读核对本次安装", InspectOriginal, readOnly: true);
+        repairCommitted = Action("修复原安装的系统入口…", async () =>
+        {
+            if (reviewed is null || originalInspection?.Status != "CommittedNeedsSystemRepair") return;
+            var current = await Task.Run(() => InspectInstallation(reviewed));
+            if (current.Status != "CommittedNeedsSystemRepair" || current.Location is null) throw new InvalidOperationException("原登记已变化，先只读核对");
+            await Task.Run(() => ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(reviewed.ApplicationId))));
+            installed = current.Location; outcomeUnknown = false; step = 3; Render();
+        }, readOnly: true);
+        resumeRemoval = Action("核对并继续原卸载清理…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
         cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
-        next.IsDefault = true; cancel.IsCancel = true;
+        next.IsDefault = false; cancel.IsCancel = true;
         AutomationProperties.SetLiveSetting(recordFeedback, AutomationLiveSetting.Polite);
         cancel.Click += (_, _) =>
         {
@@ -112,15 +124,20 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         cancel.Content = failed || outcomeUnknown ? "关闭" : "取消";
         next.Visibility = installing || outcomeUnknown ? Visibility.Collapsed : Visibility.Visible;
         records.Visibility = outcomeUnknown || failed && Directory.Exists(installationRecordDirectory) ? Visibility.Visible : Visibility.Collapsed;
-        records.SetResourceReference(StyleProperty, outcomeUnknown ? "StartupPrimary" : typeof(Button));
-        records.IsDefault = outcomeUnknown; next.IsDefault = !outcomeUnknown;
+        records.SetResourceReference(StyleProperty, typeof(Button));
+        inspect.SetResourceReference(StyleProperty, "StartupPrimary");
+        records.IsDefault = false; next.IsDefault = step < 2 && !outcomeUnknown;
+        inspect.Visibility = outcomeUnknown ? Visibility.Visible : Visibility.Collapsed;
+        repairCommitted.Visibility = outcomeUnknown && originalInspection?.Status == "CommittedNeedsSystemRepair" ? Visibility.Visible : Visibility.Collapsed;
+        inspect.IsDefault = outcomeUnknown;
+        resumeRemoval.Visibility = step == 1 && CurrentInstallation(ApplicationId) is { LifecycleState: not "Installed" } ? Visibility.Visible : Visibility.Collapsed;
         recordFeedback.Text = "";
         recordFeedback.ToolTip = null;
         if (outcomeUnknown)
         {
             Height = Math.Min(520, MaxHeight);
             Message("未能确认本次安装的最终结果。");
-            Note("请先查看本次安装记录，再决定后续操作。");
+            Note("先只读核对本次固定操作。核对不会重新安装；记录不可读或仍在执行时继续保留原身份。");
             var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(121, 85, 27)) };
             AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
             Body.Children.Add(new Border { Background = new SolidColorBrush(Color.FromRgb(255, 248, 231)), CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution });
@@ -255,7 +272,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     }
     protected override void OperationCompleted()
     {
-        if (outcomeUnknown && IsVisible) records.Focus();
+        if (outcomeUnknown && IsVisible) inspect.Focus();
     }
     async Task Next()
     {
@@ -311,6 +328,16 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             }
             Busy = false; Close();
         }
+    }
+    async Task InspectOriginal()
+    {
+        if (!outcomeUnknown || reviewed is null) return;
+        var result = await Task.Run(() => InspectInstallation(reviewed));
+        originalInspection = result;
+        if (result.Status == "Completed" && result.Location is { } location)
+        { installed = location; outcomeUnknown = false; installing = false; step = 3; Render(); }
+        else if (result.Status is "Failed" or "NotCommitted") { failureMessage = result.Detail; failed = true; outcomeUnknown = false; Render(); }
+        else { Render(); Message(result.Detail + "\n原操作：" + reviewed.OperationId); }
     }
     void StageOnDispatcher(WindowsInstallationStage value) => Dispatcher.BeginInvoke(() => Stage(value));
 }

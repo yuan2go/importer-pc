@@ -14,6 +14,8 @@ public partial class HistoryPage : UserControl
         SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
+        ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
+        HistoryDetailExpander.SizeChanged += (_, _) => FitQueryViewport();
     }
     void UpdateDetailsVisibility()
     { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsText.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
@@ -26,7 +28,9 @@ public partial class HistoryPage : UserControl
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom +
             HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom +
-            HistoryStatusLine.ActualHeight + HistoryStatusLine.Margin.Top + HistoryStatusLine.Margin.Bottom;
+            ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
+            (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
+                ? HistoryDetailExpander.ActualHeight + HistoryDetailExpander.Margin.Top + HistoryDetailExpander.Margin.Bottom : 0);
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
         var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;
@@ -40,16 +44,28 @@ public partial class HistoryPage : UserControl
         if (DataContext is not ParcelViewModel vm) return;
         vm.ClearHistoryFilters();
     }
+    void PositionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is ParcelViewModel vm && e.AddedItems.OfType<ParcelViewModel.HistoryPositionChoice>().FirstOrDefault() is { } choice) vm.HistoryPosition = choice.Id;
+    }
     void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = day.AddDays(1).ToString("O"); } }
     void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeOffset.Now; vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
     void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }
     async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        try { Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
+        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
+    void CopyHandover_Click(object s, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || vm.Selected is null) return;
+        try { Clipboard.SetText(vm.RequestHandover); vm.Message = "已复制所选原作业的必要交接信息；未发出查询或重发。"; }
+        catch (Exception error) { vm.Message = "复制未完成，可选择交接文本复制：" + error.Message; }
+    }
     async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取最新50条"); }
+    async void First_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.FirstHistoryAsync, "同一范围首屏"); }
+    async void Previous_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.PreviousHistoryAsync, "上一页"); }
     async void Next_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(true), "下一页"); }
     async void Export_Click(object s, RoutedEventArgs e)
     {
@@ -58,6 +74,7 @@ public partial class HistoryPage : UserControl
         if (picker.ShowDialog(Window.GetWindow(this)) == true) await vm.RunAsync(() => vm.ExportHistoryAsync(picker.FileName), "导出当前筛选");
     }
     void CancelExport_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryExport(); }
+    void CancelQuery_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryRead(); }
     async void Query_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.QuerySelectedAsync, "核对所选原请求"); }
     async void Continue_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueSelectedAsync, "继续所选未尝试阶段"); }
 }

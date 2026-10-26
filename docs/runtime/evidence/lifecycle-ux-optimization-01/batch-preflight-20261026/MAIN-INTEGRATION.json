@@ -1,0 +1,18 @@
+{
+  "MainCommit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "InheritedPr": 109,
+  "MainManifestGitBlob": "e1762615b8db767908585bfc40a5135940a5f90b",
+  "MainManifestSha256": "651ac8272b9a1fb30982ec5b5ed641ba58fca072cd521da05675af42097bb2db",
+  "ResolvedConflicts": [
+    "docs/INDEX.md",
+    "docs/manifest.json",
+    "docs/manifest.sha256"
+  ],
+  "AutomaticSharedMerges": [
+    ".gitattributes",
+    ".github/workflows/sportmaster-commercial.yml",
+    "tests/Ipc.Application.Verification/Program.cs"
+  ],
+  "IntermediateLocalFrozenSource": "720af857421f6c1b0bb67a5159691cff93c0ed29",
+  "Scope": "Main integrated into development branch only; source720 local PASS retained without expansion; new freeze and CI pending"
+}

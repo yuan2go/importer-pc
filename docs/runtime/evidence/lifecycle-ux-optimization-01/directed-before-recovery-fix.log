@@ -1,0 +1,190 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-87499daf947345ad822c767cf1657f72
+PASS LIA late completed original receipt plus matching registration resolves installation Unknown
+PASS LIA committed registration without final projection receipt does not invite reinstall
+PASS LIA exclusive original inspection identifies an interrupted pre-commit operation
+PASS LIA different reviewed identity cannot borrow original installation success
+PASS LIA different authoritative registration cannot become installation success
+PASS LIA actual ingress admitted distinct same-code entity 0
+PASS LIA actual ingress admitted distinct same-code entity 1
+PASS LIA actual ingress admitted distinct same-code entity 2
+PASS LIA actual ingress admitted distinct same-code entity 3
+PASS LIA actual ingress admitted distinct same-code entity 4
+PASS LIA actual ingress admitted distinct same-code entity 5
+PASS LIA actual ingress admitted distinct same-code entity 6
+PASS LIA actual ingress admitted distinct same-code entity 7
+PASS LIA actual ingress admitted distinct same-code entity 8
+PASS LIA actual ingress admitted distinct same-code entity 9
+PASS LIA actual ingress admitted distinct same-code entity 10
+PASS LIA actual ingress admitted distinct same-code entity 11
+PASS LIA actual ingress admitted distinct same-code entity 12
+PASS LIA actual ingress admitted distinct same-code entity 13
+PASS LIA actual ingress admitted distinct same-code entity 14
+PASS LIA actual ingress admitted distinct same-code entity 15
+PASS LIA actual ingress admitted distinct same-code entity 16
+PASS LIA actual ingress admitted distinct same-code entity 17
+PASS LIA actual ingress admitted distinct same-code entity 18
+PASS LIA actual ingress admitted distinct same-code entity 19
+PASS LIA actual ingress admitted distinct same-code entity 20
+PASS LIA actual ingress admitted distinct same-code entity 21
+PASS LIA actual ingress admitted distinct same-code entity 22
+PASS LIA actual ingress admitted distinct same-code entity 23
+PASS LIA actual ingress admitted distinct same-code entity 24
+PASS LIA actual ingress admitted distinct same-code entity 25
+PASS LIA actual ingress admitted distinct same-code entity 26
+PASS LIA actual ingress admitted distinct same-code entity 27
+PASS LIA actual ingress admitted distinct same-code entity 28
+PASS LIA actual ingress admitted distinct same-code entity 29
+PASS LIA actual ingress admitted distinct same-code entity 30
+PASS LIA actual ingress admitted distinct same-code entity 31
+PASS LIA actual ingress admitted distinct same-code entity 32
+PASS LIA actual ingress admitted distinct same-code entity 33
+PASS LIA actual ingress admitted distinct same-code entity 34
+PASS LIA actual ingress admitted distinct same-code entity 35
+PASS LIA actual ingress admitted distinct same-code entity 36
+PASS LIA actual ingress admitted distinct same-code entity 37
+PASS LIA actual ingress admitted distinct same-code entity 38
+PASS LIA actual ingress admitted distinct same-code entity 39
+PASS LIA actual ingress admitted distinct same-code entity 40
+PASS LIA actual ingress admitted distinct same-code entity 41
+PASS LIA actual ingress admitted distinct same-code entity 42
+PASS LIA actual ingress admitted distinct same-code entity 43
+PASS LIA actual ingress admitted distinct same-code entity 44
+PASS LIA actual ingress admitted distinct same-code entity 45
+PASS LIA actual ingress admitted distinct same-code entity 46
+PASS LIA actual ingress admitted distinct same-code entity 47
+PASS LIA actual ingress admitted distinct same-code entity 48
+PASS LIA actual ingress admitted distinct same-code entity 49
+PASS LIA actual ingress admitted distinct same-code entity 50
+PASS LIA actual ingress admitted distinct same-code entity 51
+PASS LIA actual ingress admitted distinct same-code entity 52
+PASS LIA actual ingress admitted distinct same-code entity 53
+PASS LIA actual ingress admitted distinct same-code entity 54
+PASS LIA actual ingress admitted distinct same-code entity 55
+PASS LIA actual ingress admitted distinct same-code entity 56
+PASS LIA actual ingress admitted distinct same-code entity 57
+PASS LIA actual ingress admitted distinct same-code entity 58
+PASS LIA actual ingress admitted distinct same-code entity 59
+PASS LIA actual ingress admitted distinct same-code entity 60
+PASS LIA actual ingress admitted distinct same-code entity 61
+PASS LIA actual ingress admitted distinct same-code entity 62
+PASS LIA actual ingress admitted distinct same-code entity 63
+PASS LIA actual ingress admitted distinct same-code entity 64
+PASS LIA actual ingress admitted distinct same-code entity 65
+PASS LIA actual ingress admitted distinct same-code entity 66
+PASS LIA actual ingress admitted distinct same-code entity 67
+PASS LIA actual ingress admitted distinct same-code entity 68
+PASS LIA actual ingress admitted distinct same-code entity 69
+PASS LIA actual ingress admitted distinct same-code entity 70
+PASS LIA actual ingress admitted distinct same-code entity 71
+PASS LIA actual ingress admitted distinct same-code entity 72
+PASS LIA actual ingress admitted distinct same-code entity 73
+PASS LIA actual ingress admitted distinct same-code entity 74
+PASS LIA actual ingress admitted distinct same-code entity 75
+PASS LIA actual ingress admitted distinct same-code entity 76
+PASS LIA actual ingress admitted distinct same-code entity 77
+PASS LIA actual ingress admitted distinct same-code entity 78
+PASS LIA actual ingress admitted distinct same-code entity 79
+PASS LIA actual ingress admitted distinct same-code entity 80
+PASS LIA actual ingress admitted distinct same-code entity 81
+PASS LIA actual ingress admitted distinct same-code entity 82
+PASS LIA actual ingress admitted distinct same-code entity 83
+PASS LIA actual ingress admitted distinct same-code entity 84
+PASS LIA actual ingress admitted distinct same-code entity 85
+PASS LIA actual ingress admitted distinct same-code entity 86
+PASS LIA actual ingress admitted distinct same-code entity 87
+PASS LIA actual ingress admitted distinct same-code entity 88
+PASS LIA actual ingress admitted distinct same-code entity 89
+PASS LIA actual ingress admitted distinct same-code entity 90
+PASS LIA actual ingress admitted distinct same-code entity 91
+PASS LIA actual ingress admitted distinct same-code entity 92
+PASS LIA actual ingress admitted distinct same-code entity 93
+PASS LIA actual ingress admitted distinct same-code entity 94
+PASS LIA actual ingress admitted distinct same-code entity 95
+PASS LIA actual ingress admitted distinct same-code entity 96
+PASS LIA actual ingress admitted distinct same-code entity 97
+PASS LIA actual ingress admitted distinct same-code entity 98
+PASS LIA actual ingress admitted distinct same-code entity 99
+PASS LIA actual ingress admitted distinct same-code entity 100
+PASS LIA actual ingress admitted distinct same-code entity 101
+PASS LIA actual ingress admitted distinct same-code entity 102
+PASS LIA actual ingress admitted distinct same-code entity 103
+PASS LIA actual ingress admitted distinct same-code entity 104
+PASS LIA actual ingress admitted distinct same-code entity 105
+PASS LIA actual ingress admitted distinct same-code entity 106
+PASS LIA actual ingress admitted distinct same-code entity 107
+PASS LIA actual ingress admitted distinct same-code entity 108
+PASS LIA actual ingress admitted distinct same-code entity 109
+PASS LIA actual ingress admitted distinct same-code entity 110
+PASS LIA actual ingress admitted distinct same-code entity 111
+PASS LIA actual ingress admitted distinct same-code entity 112
+PASS LIA actual ingress admitted distinct same-code entity 113
+PASS LIA actual ingress admitted distinct same-code entity 114
+PASS LIA actual ingress admitted distinct same-code entity 115
+PASS LIA actual ingress admitted distinct same-code entity 116
+PASS LIA actual ingress admitted distinct same-code entity 117
+PASS LIA actual ingress admitted distinct same-code entity 118
+PASS LIA actual ingress admitted distinct same-code entity 119
+PASS LIA actual ingress admitted distinct same-code entity 120
+PASS LIA actual ingress admitted distinct same-code entity 121
+PASS LIA actual ingress admitted distinct same-code entity 122
+PASS LIA actual ingress admitted distinct same-code entity 123
+PASS LIA actual ingress admitted distinct same-code entity 124
+PASS LIA actual ingress admitted distinct same-code entity 125
+PASS LIA actual ingress admitted distinct same-code entity 126
+PASS LIA actual ingress admitted distinct same-code entity 127
+PASS LIA actual ingress admitted distinct same-code entity 128
+PASS LIA actual ingress admitted distinct same-code entity 129
+PASS LIA actual ingress admitted distinct same-code entity 130
+PASS LIA actual ingress admitted distinct same-code entity 131
+PASS LIA actual ingress admitted distinct same-code entity 132
+PASS LIA actual ingress admitted distinct same-code entity 133
+PASS LIA actual ingress admitted distinct same-code entity 134
+PASS LIA actual ingress admitted distinct same-code entity 135
+PASS LIA actual ingress admitted distinct same-code entity 136
+PASS LIA actual ingress admitted distinct same-code entity 137
+PASS LIA actual ingress admitted distinct same-code entity 138
+PASS LIA actual ingress admitted distinct same-code entity 139
+PASS LIA actual ingress admitted distinct same-code entity 140
+PASS LIA actual ingress admitted distinct same-code entity 141
+PASS LIA actual ingress admitted distinct same-code entity 142
+PASS LIA actual ingress admitted distinct same-code entity 143
+PASS LIA actual ingress admitted distinct same-code entity 144
+PASS LIA actual ingress admitted distinct same-code entity 145
+PASS LIA actual ingress admitted distinct same-code entity 146
+PASS LIA actual ingress admitted distinct same-code entity 147
+PASS LIA actual ingress admitted distinct same-code entity 148
+PASS LIA actual ingress admitted distinct same-code entity 149
+PASS LIA actual ingress admitted distinct same-code entity 150
+PASS LIA actual ingress admitted distinct same-code entity 151
+PASS LIA actual ingress admitted distinct same-code entity 152
+PASS LIA complete real query contract publishes the first bounded page and explicit fixed upper limit
+PASS LIA four pages share the original 153-entity boundary despite newer admitted input
+PASS LIA cross-page detail and command owner remain the originally selected entity
+PASS LIA previous page reuses its original cursor
+PASS LIA first screen reuses the same selection instead of including newer records
+PASS LIA editing immediately marks old results and disables pagination without changing applied range
+PASS LIA changed conditions cannot advance the original query
+PASS LIA changed conditions cannot export under a misleading filter
+PASS LIA real fixed-selection export preserves exact leading-zero barcode bytes separately from spreadsheet text
+PASS LIA editing during a real cancellable query retains previous results and releases the read
+PASS LIA business label selection maps to the actual stable position ID
+PASS LIA cancelled real query does not retain SQLite resources
+PASS LIA handover names exact original entity/request while excluding payload and causing no external call
+PASS LIA successful schedule projection corresponds to a real complete recovery set
+PASS LIA capacity failure preserves the last success and all original recovery sets
+PASS LIA ordinary snapshot hides restricted backup paths and state
+PASS LIA direct parameter catalog read rejects revoked authority
+PASS LIA direct candidate validation rejects revoked authority
+PASS LIA changing destination invalidates the fixed offline plan before backup or deletion
+PASS LIA offline service refuses execution after withdrawal
+Unhandled exception. System.IO.InvalidDataException: Unrecognized private maintenance evidence; preserve and inspect: startup-maintenance/retention-55164EF92D535B4A25FFA63644C68D77F137ED24E794EA62EEBEAC57E32B9256/result.json
+   at Ipc.Application.ParcelFlow.RecoveryFiles.MaintenanceEvidence(String root)+MoveNext() in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\RecoveryFiles.cs:line 111
+   at System.Collections.Generic.List`1.AddRange(IEnumerable`1 collection)
+   at Ipc.Application.ParcelFlow.ParcelRecovery.CreateBackup(String directory, String destination, ParcelConfiguration effective, ParcelConfiguration pending, Int64 databaseBytes, Action`1 backupDatabase, Action`2 registerBackup, Action requireAuthority, CancellationToken cancellationToken) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelMaintenance.cs:line 145
+   at Ipc.Application.ParcelFlow.ParcelRepository.ExpireHistoryWithinBudget(String database, String expectedHash, String backup, FlowDefinition flow, Action`2 registerBackup, Boolean compact, Action authority, CancellationToken cancellationToken, Action`1 phase) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelHistoryRetention.cs:line 126
+   at Ipc.Application.ParcelFlow.ParcelRepository.ExpireHistoryAuthorized(String database, String expectedHash, String backup, FlowDefinition flow, Action`2 registerBackup, Boolean compact, Action authority, CancellationToken cancellationToken, Action`1 phase) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelHistoryRetention.cs:line 95
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.ExecuteRetentionAsync(StartupRetentionPlan plan) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelStartupRetention.cs:line 39
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.ExecuteRetentionAsync(StartupRetentionPlan plan) in D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\ParcelStartupRetention.cs:line 42
+   at LifecycleOptimization.Run(String workspace, String root) in D:\projects\importer-pc\tests\Ipc.Application.Verification\LifecycleOptimization.cs:line 90
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

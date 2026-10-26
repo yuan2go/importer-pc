@@ -1,0 +1,8 @@
+test_all_parcel_products_ship_only_current_operation_entry (test_release_documents.ReleaseDocumentTests.test_all_parcel_products_ship_only_current_operation_entry) ... ok
+test_current_links_standalone_and_evidence_links_immutable (test_release_documents.ReleaseDocumentTests.test_current_links_standalone_and_evidence_links_immutable) ... ok
+test_missing_and_escaping_links_stop_publication (test_release_documents.ReleaseDocumentTests.test_missing_and_escaping_links_stop_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.732s
+
+OK

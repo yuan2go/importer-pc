@@ -91,6 +91,11 @@ static class AdministratorBoundary
             Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), true), "protected helper authorization cannot be replayed");
             Deny(() => helper.ValidateDelegation(delegation with { RequestHash = new string('B', 64) }, new string('B', 64), true), "protected helper ticket cannot change its request");
             client.Exit(); Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), false), "logout revokes an already-consumed helper authorization");
+            Check(client.Enter(password), "protected mode explicitly reentered for operation-scoped delegation");
+            var operation = client.DelegateOperation(new string('B', 64), TimeSpan.FromHours(2));
+            helper.ValidateDelegation(operation, new string('B', 64), true); helper.ValidateDelegation(operation, new string('B', 64), false);
+            Deny(() => helper.ValidateDelegation(operation, new string('B', 64), true), "protected operation admission cannot replay");
+            client.Exit(); Deny(() => helper.ValidateDelegation(operation, new string('B', 64), false), "service-owned operation authorization still observes explicit revocation");
             var held = protectedCredentials + ".verification-held"; File.Move(protectedCredentials, held);
             try
             {

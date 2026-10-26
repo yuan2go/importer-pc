@@ -38,7 +38,12 @@ public partial class SupplyStationWindow
         actions.Children.Add(login); actions.Children.Add(logout); body.Children.Add(actions);
         var status = new TextBlock(); status.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.Session))); body.Children.Add(status);
         var feedback = new TextBlock(); feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.OperatorFeedback))); body.Children.Add(feedback);
-        new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, DataContext = ViewModel, Title = "操作员身份", Width = 520, Height = 400, WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = body }.Show();
+        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, DataContext = ViewModel, Title = "操作员身份", Width = 520, Height = 440, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var close = new Button { Content = "关闭", IsCancel = true, MinHeight = 44 }; close.Click += (_, _) => dialog.Close(); actions.Children.Add(close);
+        subject.MinHeight = proof.MinHeight = 44;
+        var visibleFeedback = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; dialog.Content = visibleFeedback;
+        dialog.Loaded += (_, _) => { if (string.IsNullOrEmpty(subject.Text)) subject.Focus(); else proof.Focus(); };
+        dialog.Closed += (_, _) => proof.Clear(); dialog.Show();
     }
     void Diagnostics_Click(object sender, RoutedEventArgs e)
         => SetPage("diagnostics");

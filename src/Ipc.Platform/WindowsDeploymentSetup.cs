@@ -10,7 +10,8 @@ public sealed record WindowsDeploymentRequest(string MediaRoot, string Applicati
     string? TrustFile, string? TrustSha256, Dictionary<string, string> Packages, bool RepairSeed = false,
     Dictionary<string, string>? ConfigurationHashes = null, string? ProgramRoot = null, string? ExpectedRegistrationHash = null,
     string? ChangePlanIdentity = null, string? BackupDestination = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null)
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? OperationId = null)
 {
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public DesktopRecoveryOptions? Recovery { get; init; }
@@ -88,6 +89,7 @@ public static partial class WindowsDeploymentSetup
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (request.OperationId is not null && !IsInstallationOperationId(request.OperationId)) throw new InvalidDataException("Invalid installation operation identity");
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
@@ -120,11 +122,12 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidDataException("升级保留原账户和数据根；位置/账户迁移须走完整恢复流程");
         var requiredBytes = checked(media.Files.Keys.Sum(n => new FileInfo(Path.Combine(media.Root, n)).Length) + 67108864);
         if (new DriveInfo(Path.GetPathRoot(vendor)!).AvailableFreeSpace < requiredBytes) throw new IOException("程序目标卷空间不足");
-        var operation = Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".setup-" + Wire.Id() + ".json");
+        var operation = request.OperationId is null ? Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".setup-" + Wire.Id() + ".json") : InstallationOperationFile(request);
+        if (File.Exists(operation)) throw new InvalidOperationException("原安装操作已存在；只能核对原回执，不能重复提交");
         var releaseRoot = Path.Combine(vendor, "releases", request.ApplicationId + "-" + media.SourceCommit[..12] + "-" + Wire.Id());
         try
         {
-            WriteProtected(operation, new { Status = "Prepared", request.SourceCommit, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data }, sid);
+            WriteProtected(operation, new { Status = "Prepared", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, request.SourceCommit, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data }, sid);
             progress?.Invoke(WindowsInstallationStage.CopyingFiles);
             media.CopyTo(releaseRoot, root => ProtectedDirectory(root, sid), file => new FileInfo(file).SetAccessControl(MachineRuntimeSetup.FileAcl(sid, FileSystemRights.ReadAndExecute)));
             progress?.Invoke(WindowsInstallationStage.PreparingConfiguration);
@@ -156,7 +159,7 @@ public static partial class WindowsDeploymentSetup
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
             if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"));
-            WriteProtected(operation, new { Status = "ReadyToCommit", Location = location, Previous = before, BusinessStarted = false }, sid);
+            WriteProtected(operation, new { Status = "ReadyToCommit", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, Previous = before, BusinessStarted = false }, sid);
             progress?.Invoke(WindowsInstallationStage.CommittingInstallation);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
             // Stable desktop entry is a repairable projection of the committed deployment.
@@ -167,13 +170,13 @@ public static partial class WindowsDeploymentSetup
             // registration, never by choosing a registry value as a second authority.
             progress?.Invoke(WindowsInstallationStage.RegisteringApplication);
             ProjectInstalledApplication(location);
-            WriteProtected(operation, new { Status = "Completed", Location = location, BusinessStarted = false }, sid);
+            WriteProtected(operation, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, BusinessStarted = false }, sid);
             return location;
         }
         catch (Exception error)
         {
             var committed = Current(request.ApplicationId)?.ReleaseRoot == releaseRoot;
-            WriteProtected(operation, new { Status = committed ? "CommittedNeedsSystemRepair" : "Failed", ErrorCode = error.GetType().Name, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data,
+            WriteProtected(operation, new { Status = committed ? "CommittedNeedsSystemRepair" : "Failed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, ErrorCode = error.GetType().Name, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data,
                 Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release" }, sid);
             throw;
         }

@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "RunId": 40217369663,
+  "PrHead": "5c11a2a451acb55cf0b856a7a357a0c8844dc595",
+  "ActualMergeSource": "d745fadf4fc5d9cb02cd4e99903b5dd10fedb3af",
+  "EvidenceArtifactId": 12607993806,
+  "EvidenceArtifactSha256": "5e2e95acbc46c8e436339461da8bb7df2a425deacb3a094f15919fae54a09df2",
+  "InstallableArtifactId": 12607879064,
+  "InstallableArtifactSha256": "40217b3167a2d024830a2de4a2934b9a9bb817b3d00dd02cf901f80cf2eb03be",
+  "Scope": "Both jobs and actual delivery/evidence retention succeeded; 14-case source before reentry-target extension",
+  "WindowsProductInstallation": "NOT_RUN"
+}

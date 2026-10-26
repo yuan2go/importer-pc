@@ -15,6 +15,14 @@ public sealed record StartupChangePreview(string Identity, string Purpose, bool 
 public sealed record StartupSiteTemplate(int SchemaVersion, string Application, string SourceIdentity, StartupEditorState Defaults);
 public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, string TargetDirectory, string BackupIdentity,
     string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At);
+public sealed record StartupRetentionPlan(string Identity, string ConfigurationHash, string DatabaseHash, string BackupDestination, int Days, string Summary);
+public sealed record StartupRetentionOutcome(string Status, string Identity, string Detail, string? Run = null, string? BackupHash = null);
+public interface IStartupRetentionMaintenance
+{
+    Task<StartupRetentionPlan> PlanRetentionAsync(string destination, CancellationToken token = default);
+    Task<StartupRetentionOutcome> ExecuteRetentionAsync(StartupRetentionPlan plan);
+    Task<StartupRetentionOutcome> InspectRetentionAsync(StartupRetentionPlan plan);
+}
 
 // Independent of IBusinessRuntime: no device/session is required to inspect or repair startup.
 public interface IStartupMaintenance

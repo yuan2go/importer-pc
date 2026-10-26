@@ -22,6 +22,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly Expander authentication = new() { Header = "需要时认证维护权限", Margin = new(0, 0, 0, 12) };
     readonly Button save = new() { Name = "ConfirmSaveChanges", Content = "确认保存", MinWidth = 112 };
     readonly Button inspect = new() { Content = "核对保存结果", MinWidth = 112 };
+    readonly Button activate = new() { Content = "检查并停止、重新打开…", MinHeight = 44 };
     readonly TextBox reason = new() { Name = "ChangeReason", AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 72, MaxLength = 1024, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly TextBlock reasonError = new() { Foreground = Brushes.Firebrick, TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed };
     string? localFailure;
@@ -41,7 +42,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
         save.Style = (Style)Resources["ParameterPrimaryAction"]; inspect.Style = (Style)Resources["ParameterPrimaryAction"];
         save.Click += SaveAsync; inspect.Click += async (_, _) => await vm.RunAsync(vm.InspectLastSaveAsync, "核对原配置保存结果");
         DockPanel.SetDock(save, Dock.Right); DockPanel.SetDock(inspect, Dock.Right); DockPanel.SetDock(back, Dock.Right);
-        footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(back);
+        DockPanel.SetDock(activate, Dock.Right); footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(activate); footer.Children.Add(back);
+        activate.Click += async (_, _) => { if (vm.RequestActivationAsync is { } request) { Close(); await request(); } };
+        back.IsCancel = true;
         var footerChrome = new Border { BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 1, 0, 0), Child = footer };
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
@@ -58,6 +61,11 @@ public sealed class ConfigurationSaveReviewWindow : Window
                 Close(); NavigateRequested?.Invoke(this, item.Path);
             };
             body.Children.Add(changes);
+            changes.PreviewKeyDown += (_, e) =>
+            {
+                if (e.Key != System.Windows.Input.Key.Enter || vm.Busy || changes.SelectedItem is not ConfigurationChangeItem { Path.Length: > 0 } item) return;
+                e.Handled = true; Close(); NavigateRequested?.Invoke(this, item.Path);
+            };
             if (vm.ReviewedConfigurationChanges.Length == 0) body.Children.Add(Note("当前完整候选与读取基线没有字段差异。"));
             body.Children.Add(Note(vm.ReviewedConfigurationChanges.Any(c => c.Path.Length > 0) ? "双击设置可返回修改；敏感内容已隐藏。" : "技术路径见行提示；敏感内容已隐藏。"));
         }
@@ -116,6 +124,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
         inspect.Visibility = !authorizationOnly && vm.HasUnconfirmedConfigurationSubmission ? Visibility.Visible : Visibility.Collapsed; inspect.IsEnabled = !vm.Busy;
         save.Visibility = authorizationOnly || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
         save.IsEnabled = vm.CanSubmitReviewedConfiguration;
+        activate.Visibility = !authorizationOnly && vm.Snapshot?.Configuration.Pending is not null ? Visibility.Visible : Visibility.Collapsed;
+        activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
             "PendingRestart" => "更改已保存，等待受控重启。保存成功不表示新设置正在运行。",

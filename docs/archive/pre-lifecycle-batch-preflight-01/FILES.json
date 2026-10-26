@@ -1,0 +1,68 @@
+{
+  "SourceCommit": "2a13b11c067841a0c88b0669fc43d03dc77adcc3",
+  "Reason": "2026-10-26 batch preflight regression correction; original assertions and evidence retained",
+  "Files": [
+    {
+      "Path": "README.md",
+      "Archive": "snapshots/README.md",
+      "Bytes": 6076,
+      "Sha256": "8D1D66BDE370C3391B6999FF007AFA0F2420F73D3B1D8389EC492344BE3607DD"
+    },
+    {
+      "Path": "docs/INDEX.md",
+      "Archive": "snapshots/docs/INDEX.md",
+      "Bytes": 14442,
+      "Sha256": "27465BE254830E6D2DDC7AB5D663E560A33813ECF7F2008CD88556C9D1BB52BA"
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "Archive": "snapshots/docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "Bytes": 20731,
+      "Sha256": "E3A0EBCB7E6E713E47C088D183E6C6C70023BAD681F2AC10E2E353B419AB7CAB"
+    },
+    {
+      "Path": "docs/reviews/lifecycle-ux-reconciliation-01.md",
+      "Archive": "snapshots/docs/reviews/lifecycle-ux-reconciliation-01.md",
+      "Bytes": 13851,
+      "Sha256": "C7FE53BCF11D36AF45C4AB96DB7E95AEF001F292B501E95A550EAA4240534360"
+    },
+    {
+      "Path": "docs/runtime/lifecycle-ux-implementation-01.md",
+      "Archive": "snapshots/docs/runtime/lifecycle-ux-implementation-01.md",
+      "Bytes": 7689,
+      "Sha256": "585704E7832671C15AB4F624BC5C96E07BA76CFF22EE896B5E20A2C8EE2EE1C4"
+    },
+    {
+      "Path": "docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "Archive": "snapshots/docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "Bytes": 9270,
+      "Sha256": "020440AAD7B4065D09C3D361D7599B5BB7BAC28D49C14FB176B1133372BD7BAE"
+    },
+    {
+      "Path": "docs/runtime/validation/lifecycle-ux-optimization-01.md",
+      "Archive": "snapshots/docs/runtime/validation/lifecycle-ux-optimization-01.md",
+      "Bytes": 14820,
+      "Sha256": "654C0126436E0AAA1189B05A58F24C93C4C41FE2AC92EC12B9B0E07B9FDF5EA8"
+    },
+    {
+      "Path": "docs/runtime/commercial-productization-01-operations.md",
+      "Archive": "snapshots/docs/runtime/commercial-productization-01-operations.md",
+      "Bytes": 16011,
+      "Sha256": "3C34951B0058D248A4A44E3B489F9A53E1C4557656BB0A554222E2CB6324CF56"
+    },
+    {
+      "Path": "docs/manifest.json",
+      "Archive": "snapshots/docs/manifest.json",
+      "Bytes": 5533897,
+      "Sha256": "BCFDC6B110E570A1EDE42AFD41A17ABD730901372892C846A0B8235E5404A80A",
+      "SourceKind": "original Git blob"
+    },
+    {
+      "Path": "docs/manifest.sha256",
+      "Archive": "snapshots/docs/manifest.sha256",
+      "Bytes": 80,
+      "Sha256": "345373B3D46D894DB2536B349131E977C7CDA6E6F9A9CE37D9577AACFE80028F",
+      "SourceKind": "original Git blob"
+    }
+  ]
+}

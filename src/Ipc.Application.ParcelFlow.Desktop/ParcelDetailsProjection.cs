@@ -87,11 +87,11 @@ public partial class ParcelViewModel
     public async Task<string> FullDetailsAsync()
     {
         var owner = Selected?.Id ?? throw new InvalidOperationException("先选择原作业"); var generation = selectionGeneration;
-        await RefreshManagementModeAsync(); var authority = ManagementStatus;
+        await RequireManagementModeAsync(); var authority = ManagementStatus;
         // Local custody is re-read through current authority; no upstream Query.
         var operation = await ServiceAsync(() => application.OperationAsync(owner)) ?? throw new InvalidOperationException("原作业未读取，保留选择后重试");
         var full = await ServiceAsync(() => Task.FromResult(Wire.Encode(operation)));
-        await RefreshManagementModeAsync();
+        await RequireManagementModeAsync();
         if (generation != selectionGeneration || Selected?.Id != owner || ManagementStatus != authority) throw new InvalidOperationException("选择或管理授权已变化；未复制旧详情");
         return full;
     }

@@ -9,6 +9,7 @@ public partial class ShellWindow : Window
     static readonly DependencyPropertyKey SelectedWorkspacePropertyKey = DependencyProperty.RegisterReadOnly(nameof(SelectedWorkspace), typeof(string), typeof(ShellWindow), new PropertyMetadata("work"));
     public static readonly DependencyProperty SelectedWorkspaceProperty = SelectedWorkspacePropertyKey.DependencyProperty;
     public string SelectedWorkspace => (string)GetValue(SelectedWorkspaceProperty);
+    (UserControl Page, string Workspace)? restrictedReturn;
     public static readonly DependencyProperty ShowWorkspaceFeedbackProperty = DependencyProperty.Register(nameof(ShowWorkspaceFeedback), typeof(bool), typeof(ShellWindow), new PropertyMetadata(false));
     public bool ShowWorkspaceFeedback { get => (bool)GetValue(ShowWorkspaceFeedbackProperty); private set => SetValue(ShowWorkspaceFeedbackProperty, value); }
     void SelectWorkspace(UserControl content, string workspace)
@@ -19,7 +20,9 @@ public partial class ShellWindow : Window
     }
     void CloseRestrictedWorkspace()
     {
+        if (vm.IsManagementMode && restrictedReturn is { } previous) { restrictedReturn = null; SelectWorkspace(previous.Page, previous.Workspace); }
         if (vm.IsManagementMode || !ReferenceEquals(PageHost.Content, maintenance) && PageHost.Content is not SoftwareLogControl) return;
+        restrictedReturn = ((UserControl)PageHost.Content, SelectedWorkspace);
         (PageHost.Content as SoftwareLogControl)?.Revoke(); SelectWorkspace(work, "work");
     }
     readonly ParcelViewModel vm;
@@ -35,6 +38,21 @@ public partial class ShellWindow : Window
     bool compact, closing, closeReady, closed, pendingMaintenanceLoad;
     long closeGeneration;
     public Func<Task>? StopOwnerAsync { get; set; }
+    public Func<Task>? ReopenOwnerAsync { get; set; }
+    public Func<Task>? OpenRetentionOwnerAsync { get; set; }
+    bool retentionRequested;
+    async Task RequestRetention()
+    {
+        try { await vm.RequireManagementModeAsync(); await vm.PauseAsync(); await vm.RefreshAsync(); if (!vm.Fresh || vm.Snapshot?.Paused != true) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
+        catch (Exception error) { vm.Message = "尚未进入到期维护：" + error.Message; }
+    }
+    public Func<string, bool>? ConfirmOwnerExit { get; set; }
+    bool activationRequested;
+    async Task RequestActivation()
+    {
+        try { if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("此宿主没有受控重开入口；可稍后从原合法入口打开。"); await vm.CheckActivationAsync(); root.activationRequested = true; root.Close(); }
+        catch (Exception error) { vm.Message = "尚未进入配置生效流程：" + error.Message; }
+    }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
@@ -49,6 +67,8 @@ public partial class ShellWindow : Window
                 Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
         };
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
+        vm.RequestActivationAsync = RequestActivation;
+        vm.RequestRetentionAsync = RequestRetention;
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
         SelectWorkspace(initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work, initialPage);
@@ -82,7 +102,7 @@ public partial class ShellWindow : Window
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => vm.DismissGlobalOperationFeedback();
     void Workstation_Click(object s, RoutedEventArgs e) => SelectWorkspace(work, "work");
-    async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { await vm.RefreshManagementModeAsync(); if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); } catch(Exception error) { vm.Message=error.Message; } }
+    async void ManagementMode_Click(object s, RoutedEventArgs e) { if (vm.Application is not Ipc.Application.Contracts.IWorkstationAdministration mode) return; try { await vm.RefreshManagementModeAsync(); if(vm.IsManagementMode) await mode.ExitManagementModeAsync(); else new ManagementModeWindow(mode) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); if (vm.IsManagementMode && restrictedReturn is { } previous) { restrictedReturn = null; SelectWorkspace(previous.Page, previous.Workspace); } } catch(Exception error) { vm.Message=error.Message; } }
     void Logs_Click(object s, RoutedEventArgs e) { if (vm.IsManagementMode && vm.Application is Ipc.Application.Contracts.IWorkstationAdministration admin) SelectWorkspace(new SoftwareLogControl(admin), "logs"); }
     async void History_Click(object s, RoutedEventArgs e) { SelectWorkspace(history, "history"); await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object s, RoutedEventArgs e)
@@ -123,13 +143,17 @@ public partial class ShellWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.vm.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
-            var dirty = affected.Count(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.vm, x.maintenance));
-            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? ConfigurationCloseGuard.ConfirmDiscard(this, dirty)))
+            if (StopOwnerAsync is not null && !(ConfirmOwnerExit?.Invoke(vm.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, vm.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
+            var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.vm, x.maintenance)).ToArray(); var dirty = dirtyWindows.Length;
+            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty, dirty == 1 ? dirtyWindows[0].vm.SaveIncompleteEditorAsync : null, "关闭")))
             {
                 vm.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;
             }
+            if (activationRequested || retentionRequested) await vm.RequireManagementModeAsync();
             if (StopOwnerAsync is not null) await StopOwnerAsync();
+            if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
+            if (retentionRequested && OpenRetentionOwnerAsync is not null) await OpenRetentionOwnerAsync();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
             Close();
@@ -142,6 +166,8 @@ public partial class ShellWindow : Window
         }
         void RestoreAfterClose()
         {
+            activationRequested = false;
+            retentionRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
             { window.closing = false; window.IsEnabled = true; window.timer.Start(); }

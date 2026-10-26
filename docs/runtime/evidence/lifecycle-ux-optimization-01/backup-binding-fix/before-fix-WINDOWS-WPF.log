@@ -1,0 +1,39 @@
+PASS STABILITY-WPF: failed handoff does not claim source delivery success
+PASS STABILITY-WPF: initial native snapshot and management observation are applied before guarded recovery
+PASS STABILITY-WPF: native recovery view reads exact interrupted receipt from current application
+PASS STABILITY-WPF: native recovery action commits exact input inspection through application guards
+PASS STABILITY-WPF: root close explicitly reviews original responsibility impact before draining
+PASS STABILITY-WPF: native window async close drains lifecycle
+FAIL System.InvalidOperationException: 无法对“Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel”类型的只读属性“BackupStatusText”进行 TwoWay 或 OneWayToSource 绑定。
+   at MS.Internal.Data.PropertyPathWorker.CheckReadOnly(Object item, Object info)
+   at MS.Internal.Data.PropertyPathWorker.ReplaceItem(Int32 k, Object newO, Object parent)
+   at MS.Internal.Data.PropertyPathWorker.UpdateSourceValueState(Int32 k, ICollectionView collectionView, Object newValue, Boolean isASubPropertyChange)
+   at MS.Internal.Data.ClrBindingWorker.AttachDataItem()
+   at System.Windows.Data.BindingExpression.Activate(Object item)
+   at System.Windows.Data.BindingExpression.AttachToContext(AttachAttempt attempt)
+   at System.Windows.Data.BindingExpression.AttachOverride(DependencyObject target, DependencyProperty dp)
+   at System.Windows.Data.BindingExpressionBase.Attach(DependencyObject target, DependencyProperty dp)
+   at System.Windows.DependencyObject.SetValueCommon(DependencyProperty dp, Object value, PropertyMetadata metadata, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType, Boolean isInternal)
+   at System.Windows.DependencyObject.SetValue(DependencyProperty dp, Object value)
+   at System.Windows.Data.BindingOperations.SetBinding(DependencyObject target, DependencyProperty dp, BindingBase binding)
+   at Ipc.Application.ParcelFlow.Desktop.ParameterSettingsControl.BuildSystem(ParameterEditorModel m) in /_/src/src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs:line 58
+   at Ipc.Application.ParcelFlow.Desktop.ParameterSettingsControl.Render() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs:line 287
+   at Ipc.Application.ParcelFlow.Desktop.ParameterSettingsControl.ModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) in /_/src/src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs:line 140
+   at System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+   at System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs args)
+   at System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex entryIndex, DependencyProperty dp, PropertyMetadata metadata, EffectiveValueEntry oldEntry, EffectiveValueEntry& newEntry, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType)
+   at System.Windows.DependencyObject.InvalidateProperty(DependencyProperty dp, Boolean preserveCurrentValue)
+   at System.Windows.Data.BindingExpression.TransferValue(Object newValue, Boolean isASubPropertyChange)
+   at MS.Internal.Data.PropertyPathWorker.UpdateSourceValueState(Int32 k, ICollectionView collectionView, Object newValue, Boolean isASubPropertyChange)
+   at MS.Internal.Data.ClrBindingWorker.OnSourcePropertyChanged(Object o, String propName)
+   at System.Windows.WeakEventManager.ListenerList`1.DeliverEvent(Object sender, EventArgs e, Type managerType)
+   at System.ComponentModel.PropertyChangedEventManager.OnPropertyChanged(Object sender, PropertyChangedEventArgs args)
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.Changed(String name) in /_/src/src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs:line 281
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.RebuildParameterEditor() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs:line 139
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog) in /_/src/src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs:line 256
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.LoadCapabilitiesAsync() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs:line 174
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.EnsureMaintenanceLoadedAsync() in /_/src/src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs:line 143
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\lifecycle-binding-before-fix\StabilityNative.cs:line 63
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\lifecycle-binding-before-fix\StabilityNative.cs:line 101
+   at Program.VerifyStabilityNative(String root, String evidence, List`1 lines) in D:\DevCache\importer-pc\lifecycle-binding-before-fix\StabilityNative.cs:line 104
+   at Program.<>c__DisplayClass23_0.<<Main>b__1>d.MoveNext() in D:\DevCache\importer-pc\lifecycle-binding-before-fix\Program.cs:line 41

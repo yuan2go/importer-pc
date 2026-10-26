@@ -1,0 +1,26 @@
+{
+  "Status": "PASS_DIRECTED_FROZEN_ENGINEERING",
+  "RecordedAt": "2026-10-25T16:05:39.328231+00:00",
+  "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureSourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureMatchesMedium": true,
+  "CaseCount": 8,
+  "Cases": [
+    "lifecycle-ux-result.json",
+    "management-mode-result.json",
+    "parameter-v3-result.json",
+    "reliability-logs-result.json",
+    "startup-experience-result.json",
+    "task-hierarchy-result.json",
+    "visual-productization-result.json",
+    "win11-stability-result.json"
+  ],
+  "DllCopiesMatchFrozenMedium": true,
+  "MediumFilesUnchangedAfterAllCases": 741,
+  "G01": "BLOCKED_EXTERNAL",
+  "G02": "BLOCKED_EXTERNAL",
+  "NormalMachineStartup": "BLOCKED_ENVIRONMENT; not retried after read-only policy check",
+  "RealEquipment": "NOT_RUN",
+  "ProtectedInstallRemoveReboot": "NOT_RUN",
+  "LongTermAndField": "NOT_RUN"
+}

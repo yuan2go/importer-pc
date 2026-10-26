@@ -29,7 +29,7 @@ static partial class Program
         var factory = new VisualFactory(launch, !baseline);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
-        var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
+        var application = DispatchProxy.Create<IHistoryProjectionFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = (SupplyStationWindow)Presentation.Create(application, null, "standard");
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -151,6 +151,7 @@ static partial class Program
             Check(code.IsKeyboardFocused && code.SelectedText == text && details.IsExpanded && scroll.VerticalOffset == offsetBefore && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection");
             Click(window, "作业记录"); await Task.Delay(250);
             await vm.OpenHistoryAsync();
+            Check(vm.CanExportHistory && vm.AppliedHistoryRange.Contains("固定序号"), "native visual history uses the complete real fixed-range contract rather than the snapshot fallback");
             var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
             var filter = (Expander)history.FindName("HistoryFilters"); filter.IsExpanded = true; window.UpdateLayout();
             var filterRows = (DataGrid)history.FindName("HistoryRows"); filterRows.SelectedItem = vm.HistoryItems.FirstOrDefault();
@@ -162,10 +163,11 @@ static partial class Program
             var columnHeaders = Descendants(filterRows).OfType<System.Windows.Controls.Primitives.DataGridColumnHeadersPresenter>().Single();
             var headerBounds = columnHeaders.TransformToAncestor(filterRows).TransformBounds(new Rect(columnHeaders.RenderSize));
             var rowBounds = firstResult.TransformToAncestor(filterRows).TransformBounds(new Rect(firstResult.RenderSize));
-            var queryButtons = Descendants(queryActions).OfType<Button>().Where(b => !Equals(b.Content, "取消导出")).ToArray();
-            Check(queryButtons.Select(b => b.Content).SequenceEqual(new[] { "查询", "清除筛选", "下一页", "导出表格…" }) &&
-                Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).IsVisible == vm.HistoryExportRunning,
-                "fixed history query actions remain complete; cancellation is visible only while an export is running");
+            var queryButtons = Descendants(queryActions).OfType<Button>().Where(b => b.Content is not ("取消导出" or "取消查询")).ToArray();
+            Check(queryButtons.Select(b => b.Content).SequenceEqual(new[] { "查询", "清除筛选", "首屏", "上一页", "下一页", "导出表格…" }) &&
+                Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).IsVisible == vm.HistoryExportRunning &&
+                Descendants(queryActions).OfType<Button>().Single(b => Equals(b.Content, "取消查询")).IsVisible == vm.HistoryLoading,
+                "fixed history query actions include first/previous pages; each cancellation is visible only for its active operation");
             Capture("history-filters-minimum");
             Check(filterRows.IsVisible && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
                 columnHeaders.IsVisible && columnHeaders.ActualHeight >= 32 && headerBounds.Top >= 0 && headerBounds.Bottom <= filterRows.ActualHeight &&
@@ -360,3 +362,4 @@ static partial class Program
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
 }
+public interface IHistoryProjectionFixture : IManagementParcelFixture, IParcelHistorySessionApplication { }

@@ -32,7 +32,8 @@ public sealed partial class LocalManagementMode
     const int Iterations = 600_000;
     sealed record Credential(string Salt, string Hash);
     sealed record Audit(DateTimeOffset At, string Action, string? ModeSession, string? Detail, string? WindowsSid = null);
-    sealed record Delegation(string Id, string TokenHash, string RequestHash, string SessionId, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false);
+    sealed record Delegation(string Id, string TokenHash, string RequestHash, string SessionId, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false,
+        DateTimeOffset? OperationUntil = null);
     sealed record Store(int SchemaVersion, Credential? Credential, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
         string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null);
     sealed record LegacyCredential(string Name, string Salt, string Hash, bool Enabled);
@@ -201,17 +202,29 @@ public sealed partial class LocalManagementMode
             MarkConfigured(); Save(s with { Credential = replacement, Failures = 0, LockedUntil = default, SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "LegacyManagementCredentialsConverted", name); Revoke(); return true;
         }
     }
-    public ManagementModeDelegation Delegate(string requestHash)
+    public ManagementModeDelegation Delegate(string requestHash) => IssueDelegation(requestHash, null);
+    // The two-minute ticket is only admission. Once consumed, this exact
+    // operation re-authorizes against the live original session on every check.
+    // Neither this lease nor its caller can extend the session or grant replay.
+    public ManagementModeDelegation DelegateOperation(string requestHash, TimeSpan lifetime)
+    {
+        if (lifetime <= TimeSpan.Zero || lifetime > TimeSpan.FromHours(2) || lifetime.Ticks % TimeSpan.TicksPerSecond != 0)
+            throw new InvalidDataException("维护持续授权预算须为1秒～2小时；不延长原管理会话。");
+        return IssueDelegation(requestHash, lifetime);
+    }
+    ManagementModeDelegation IssueDelegation(string requestHash, TimeSpan? operationLifetime)
     {
         if (!ExtensionSchema.IsHash(requestHash)) throw new InvalidDataException("维护请求必须使用完整SHA-256身份。");
-        if (Remote) return Rpc<ManagementModeDelegation>(new("Delegate", RequestHash: requestHash));
+        if (Remote) return Rpc<ManagementModeDelegation>(new(operationLifetime is null ? "Delegate" : "DelegateOperation", RequestHash: requestHash,
+            OperationSeconds: operationLifetime is null ? null : checked((int)operationLifetime.Value.TotalSeconds)));
         Require();
         lock (sync)
         {
             using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期。"); }
             if (s.Delegations?.Length >= 1024) throw new UnauthorizedAccessException("本次管理模式的维护授权次数已到上限，请重新进入。");
             var grant = new ManagementModeDelegation(Convert.ToHexString(RandomNumberGenerator.GetBytes(32)), sessionId, requestHash, expires < Now.AddMinutes(2) ? expires : Now.AddMinutes(2), Guid.NewGuid().ToString("N"));
-            var record = new Delegation(grant.Id, ProofHash(grant.Token), requestHash, sessionId, grant.ExpiresAt, s.SessionHash!);
+            var operationUntil = operationLifetime is { } duration ? (DateTimeOffset?)(expires < Now + duration ? expires : Now + duration) : null;
+            var record = new Delegation(grant.Id, ProofHash(grant.Token), requestHash, sessionId, grant.ExpiresAt, s.SessionHash!, OperationUntil: operationUntil);
             Save(s with { Delegations = (s.Delegations ?? []).Append(record).ToArray() }, "ManagementModeDelegationIssued"); return grant;
         }
     }
@@ -221,7 +234,8 @@ public sealed partial class LocalManagementMode
         lock (sync)
         {
             using var held = LockStore(); var s = Read(); var record = s.Delegations?.SingleOrDefault(d => d.Id == grant.Id);
-            if (grant.RequestHash != requestHash || grant.ExpiresAt <= Now || s.Credential is null || s.SessionExpires is not { } sessionExpiry || sessionExpiry <= Now || s.SessionHash is null ||
+            var validUntil = !consume && record is { Consumed: true, OperationUntil: { } until } ? until : grant.ExpiresAt;
+            if (grant.RequestHash != requestHash || validUntil <= Now || s.Credential is null || s.SessionExpires is not { } sessionExpiry || sessionExpiry <= Now || s.SessionHash is null ||
                 record is null || record.RequestHash != requestHash || record.ExpiresAt != grant.ExpiresAt || record.SessionId != grant.SessionId || record.SessionHash != s.SessionHash || grant.Token.Length != 64 || s.SessionId != grant.SessionId ||
                 !CryptographicOperations.FixedTimeEquals(Encoding.ASCII.GetBytes(record.TokenHash), Encoding.ASCII.GetBytes(ProofHash(grant.Token)))) throw new UnauthorizedAccessException("管理模式授权已失效或与本次维护请求不匹配。");
             if (consume) { if (record.Consumed) throw new UnauthorizedAccessException("维护授权已使用，不能重放。"); Save(s with { Delegations = s.Delegations!.Select(d => d.Id == grant.Id ? d with { Consumed = true } : d).ToArray() }, "ManagementModeDelegationConsumed"); }

@@ -27,6 +27,8 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
+        ViewModel.RequestActivationAsync = RequestActivation;
+        ViewModel.RequestRetentionAsync = RequestRetention;
         WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
@@ -35,6 +37,7 @@ public partial class SupplyStationWindow : Window
         maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
         ViewModel.PropertyChanged += (_, e) =>
         {
+            if (e.PropertyName == nameof(ViewModel.IsManagementMode)) EnforceManagementModeView();
             if (e.PropertyName == nameof(ViewModel.Busy) && !ViewModel.Busy && pendingMaintenanceLoad)
                 Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
         };
@@ -127,6 +130,25 @@ public partial class SupplyStationWindow : Window
         if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复新入场");
     }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
+    public Func<string, bool>? ConfirmOwnerExit { get; set; }
+    public Func<Task>? ReopenOwnerAsync { get; set; }
+    public Func<Task>? OpenRetentionOwnerAsync { get; set; }
+    bool retentionRequested;
+    async Task RequestRetention()
+    {
+        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync(); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
+        catch (Exception error) { ViewModel.Message = "尚未进入到期维护：" + error.Message; }
+    }
+    bool activationRequested;
+    async Task RequestActivation()
+    {
+        try
+        {
+            if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("此宿主没有受控重开入口；可稍后从原合法入口打开。");
+            await ViewModel.CheckActivationAsync(); root.activationRequested = true; root.Close();
+        }
+        catch (Exception error) { ViewModel.Message = "尚未进入配置生效流程：" + error.Message; }
+    }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;
@@ -143,6 +165,7 @@ public partial class SupplyStationWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
+            if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty,
@@ -151,7 +174,10 @@ public partial class SupplyStationWindow : Window
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;
             }
+            if (activationRequested || retentionRequested) await ViewModel.RequireManagementModeAsync();
             if (stopOwner is not null) await stopOwner();
+            if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
+            if (retentionRequested && OpenRetentionOwnerAsync is not null) await OpenRetentionOwnerAsync();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
             Close();
@@ -166,6 +192,8 @@ public partial class SupplyStationWindow : Window
         }
         void RestoreAfterClose()
         {
+            activationRequested = false;
+            retentionRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
             { window.closing = false; window.IsEnabled = true; window.timer.Start(); }

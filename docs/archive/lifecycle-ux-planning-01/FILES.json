@@ -1,0 +1,71 @@
+{
+  "frozen_document_commit": "4c42f567",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 6111,
+      "sha256": "7a47f6fd72d34600bede8a0ba96d64d314086853ea632bd7828dd4c26f067081",
+      "archive": "README.md.txt"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "bytes": 14590,
+      "sha256": "14b87f821900a199657386e8917f5f68ab3510d3bb7143e2a5f059e4310366a3",
+      "archive": "docs__INDEX.md.txt"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "bytes": 3055,
+      "sha256": "a9d80bfc4a72ade946ca598070a308e2b420d8d8c9cb4c8ee5a1e9fa7fabd6ce",
+      "archive": "docs__ui__STATUS.md.txt"
+    },
+    {
+      "path": "docs/runtime/commercial-productization-01-operations.md",
+      "bytes": 15906,
+      "sha256": "0b0499ee418677ffc4d7d19405e156ff7bb0d49e3a6a3b8f9f0ffa1ec733461d",
+      "archive": "docs__runtime__commercial-productization-01-operations.md.txt"
+    },
+    {
+      "path": "docs/runtime/sportmaster-commercial-delivery-01-operations.md",
+      "bytes": 8781,
+      "sha256": "7becc30ca4008cef8967454aa6e0db9425c6134d86fae795d9229ae34f1ec084",
+      "archive": "docs__runtime__sportmaster-commercial-delivery-01-operations.md.txt"
+    },
+    {
+      "path": "docs/runtime/startup-deployment-02.md",
+      "bytes": 7467,
+      "sha256": "a81ab3346a50b620e761107104a385491888c7321beeca27b162a199a355b90a",
+      "archive": "docs__runtime__startup-deployment-02.md.txt"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "bytes": 19461,
+      "sha256": "1d57732c8e00b5c7fdf969473fe5d893f08958743d9874dd40866473501eee49",
+      "archive": "docs__work-packages__WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md.txt"
+    },
+    {
+      "path": "docs/work-packages/CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md",
+      "bytes": 3066,
+      "sha256": "f3ce0bb52c0240afbb55528a300a037792ecd3b7cfabe368bc465aa658b870da",
+      "archive": "docs__work-packages__CODEX-LIFECYCLE-UX-OPTIMIZATION-01.md.txt"
+    },
+    {
+      "path": "docs/reviews/lifecycle-ux-reconciliation-01.md",
+      "bytes": 10354,
+      "sha256": "01da5795cef2ee2b56c71067d3a3308f66f70f62024f63921ed701b1a5eb9fb4",
+      "archive": "docs__reviews__lifecycle-ux-reconciliation-01.md.txt"
+    },
+    {
+      "path": "docs/design/lifecycle-ux-optimization-01.md",
+      "bytes": 7015,
+      "sha256": "eba66c8437e77fbe8ff3240f169a56233a40d5d47e359fb36216f3dc5483617a",
+      "archive": "docs__design__lifecycle-ux-optimization-01.md.txt"
+    },
+    {
+      "path": "docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "bytes": 6518,
+      "sha256": "898e021cc507a67600261c6b04340e0416ed3bf360ab1000d6a3d4c709f6f40b",
+      "archive": "docs__runtime__lifecycle-ux-current-guidance-01.md.txt"
+    }
+  ]
+}

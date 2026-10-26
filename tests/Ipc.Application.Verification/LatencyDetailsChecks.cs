@@ -67,5 +67,8 @@ static class LatencyDetailsChecks
         vm.BeforeDetailsFormatForVerification = null; release.TrySetResult(); await vm.DrainAsync();
         Check(vm.Selected?.Id == older.Id && vm.Selected.Wcs!.Request.Payload == "" && !vm.StructuredDetails.Contains(c.Wcs!.Target) && !vm.Details.Contains("synthetic-secret-payload"),
             "revoked authority re-reads a historical selection and fences earlier privileged formatting");
+        var copyRefused = false;
+        try { _ = await vm.FullDetailsAsync(); } catch (UnauthorizedAccessException) { copyRefused = true; }
+        Check(copyRefused, "full local original copy requires current management authority even when invoked directly");
     }
 }

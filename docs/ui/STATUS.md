@@ -1,4 +1,8 @@
-> SM1.11.1安装增量：[独立EXE及真实原生安装选项/确认验证](../runtime/evidence/clean-install-bootstrap-01/README.md)。实际清理后的D根不存在，选项/确认通过且取消未安装；业务页面及其历史证据不扩张为新现场验收。
+> 当前生命周期优化：LIA-01～07独立工程已实施，[当前操作](../runtime/lifecycle-ux-current-guidance-01.md)、[原生与应用验证](../runtime/validation/lifecycle-ux-optimization-01.md)分别记录源身份及G01/G02/系统和现场边界。下述历史截图/验收保持原身份。
+
+> 2026-10-25最新核查为main `3a5b1d13`。当前能力见[操作入口](../runtime/lifecycle-ux-current-guidance-01.md)；下一批[七包优化](../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)与[增量设计](../design/lifecycle-ux-optimization-01.md)已规划、尚未实施。原生合成、安装、真实接口和现场验收分别记证，下文各版结果保持历史身份。
+
+> SM1.11.1历史安装增量：[独立EXE及真实原生安装选项/确认验证](../runtime/evidence/clean-install-bootstrap-01/README.md)。当时清理后的D根不存在，选项/确认通过且取消未安装；业务页面及其历史证据不扩张为新现场验收。
 >
 > 当前用户纠偏：[MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。管理能力改为密码进入的模式，取消正常管理员用户名/账号维护；操作员账号独立。新原生证据单独验证，旧截图保持1.10.2身份。
 
@@ -6,10 +10,10 @@
 
 当前呈现增量以 [TASK-CONTENT-HIERARCHY-02](../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md) 为准：默认供包台任务优先、当前全局回执跨页、参数分组与查询范围。新原生结果单独绑定源码；以下SM1.11.0及1.10.2是历史时点，不代表最新main或本包验收。下文“当前实现/本轮”均属对应历史交付。
 
-当前SM1.11.0采用单密码进入/退出管理模式，操作员账号与在途身份独立；没有正常管理员用户名、账号列表或账号维护。普通导航为作业/作业记录，模式开放参数/日志。最终本地源码 `0204fcf` 的实际WPF页面通过26项、首配通过93项（125% DPI），[截图与独立回执](../runtime/evidence/management-mode-01/README.md) 不与1.10.2或早期候选混用。本机此前安装及原仿真账起停见[原安装记录](../runtime/evidence/management-mode-01/installed-d-20261022/README.md)；随后已按用户要求卸载并清空旧运行状态，保留海康，等待用户重新全流程测试，见[当前清理状态](../runtime/evidence/management-mode-01/clean-reset-20261022/README.md)。
+历史SM1.11.0采用单密码进入/退出管理模式，操作员账号与在途身份独立；没有正常管理员用户名、账号列表或账号维护。该语义由后续版本继承。普通导航为作业/作业记录，模式开放参数/日志。最终本地源码 `0204fcf` 的实际WPF页面通过26项、首配通过93项（125% DPI），[截图与独立回执](../runtime/evidence/management-mode-01/README.md)不与1.10.2或最新main混用。本机[当时安装](../runtime/evidence/management-mode-01/installed-d-20261022/README.md)及[当时清理](../runtime/evidence/management-mode-01/clean-reset-20261022/README.md)不推定当前机器状态。
 
 历史实现工作包为 [OPS-ADMIN-LOGS-01](../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)：普通导航仅作业、作业记录；管理员增加参数设置、日志查询。账号与角色固定右上显示，免登录作业和管理员授权独立。诊断与恢复按对象进入；帮助与支持的入口、专页与摘要服务完整删除。
 
 参数继续复用 PARAM-UX-02/V3 四类目录、同一完整候选及统一保存；作业保留固定左右相机、扫码与同件任务字段；首配继续五步独立流程。新权限和操作简化替代原 V2/V3 的冲突导航，不改变协议或实体资格。
 
-[当前实现和操作](../runtime/operator-administrator-logs-01.md)、[本轮原生截图及验证](../runtime/validation/operator-administrator-logs-01.md)是本次交付入口。V2的67图、V3的27图及以往WPF/发行继续保留原版本；旧PASS不扩张到本轮。清理前入口见[原字节](../archive/pre-operator-admin-logs/docs__ui__STATUS.md.txt)。
+[SM1.10.2历史实现](../runtime/operator-administrator-logs-01.md)、[对应原生截图及验证](../runtime/validation/operator-administrator-logs-01.md)保留账号版形成时身份。V2的67图、V3的27图及以往WPF/发行继续保留原版本；旧PASS不扩张到最新main。清理前入口见[原字节](../archive/pre-operator-admin-logs/docs__ui__STATUS.md.txt)。

@@ -1,0 +1,24 @@
+  正在确定要还原的项目…
+  已还原 D:\w\la01-r2\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj (用时 975 毫秒)。
+  14 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> D:\w\la01-r2\src\Ipc.Platform\bin\Debug\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\w\la01-r2\src\Ipc.Application.Supply.Contracts\bin\Debug\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Contracts -> D:\w\la01-r2\src\Ipc.Application.Contracts\bin\Debug\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> D:\w\la01-r2\src\Ipc.Reference.Protocol\bin\Debug\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Presentation.Wpf -> D:\w\la01-r2\src\Ipc.Presentation.Wpf\bin\Debug\net10.0-windows\Ipc.Presentation.Wpf.dll
+  Ipc.Platform.Storage -> D:\w\la01-r2\src\Ipc.Platform.Storage\bin\Debug\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Components -> D:\w\la01-r2\src\Ipc.Components\bin\Debug\net10.0\Ipc.Components.dll
+  Ipc.Integrations -> D:\w\la01-r2\src\Ipc.Integrations\bin\Debug\net10.0\Ipc.Integrations.dll
+  Ipc.Drivers -> D:\w\la01-r2\src\Ipc.Drivers\bin\Debug\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply -> D:\w\la01-r2\src\Ipc.Application.Supply\bin\Debug\net10.0\Ipc.Supply.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\w\la01-r2\src\Ipc.Application.ParcelFlow.Desktop\bin\Debug\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.ParcelFlow -> D:\w\la01-r2\src\Ipc.Application.ParcelFlow\bin\Debug\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\w\la01-r2\src\Ipc.Application.Sportmaster\bin\Debug\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\w\la01-r2\src\Ipc.Application.Sportmaster.Desktop\bin\Debug\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> D:\w\la01-r2\tests\Ipc.Desktop.UiVerification\bin\Debug\net10.0-windows\Ipc.Desktop.UiVerification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:25.29

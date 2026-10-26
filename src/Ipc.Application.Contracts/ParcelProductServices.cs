@@ -13,6 +13,12 @@ public interface IParcelHistoryApplication
     Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection);
     Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token);
 }
+public interface IParcelHistorySessionApplication : IParcelHistoryApplication
+{
+    Task<ParcelHistoryPage> ReadHistoryPageAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token);
+    Task<ParcelHistoryMetrics> ReadHistoryMetricsAsync(ParcelHistorySelection selection, CancellationToken token);
+    Task<string[]> HistoryPositionIdsAsync(ParcelHistorySelection selection, CancellationToken token);
+}
 public interface IParcelConfigurationDraftApplication
 {
     Task<string> ConfigurationEditorHashAsync(long expectedRevision);

@@ -1,0 +1,29 @@
+{
+  "Status": "PASS",
+  "MediaSourceCommit": "eca5a1eb94469fcd23bdf6b6374bee8864fe66cc",
+  "BatchBinarySha256": "F1D0627716F8C39977A0E3E4214E8A2EA6BEEA356A7586378C5C87DCA85EB07F",
+  "PlatformBinarySha256": "FE7ADCB1799780F652C99FEE15AD46406A29C7E6CDACAC3F41EFA9D2A58F7694",
+  "OperationId": "d0f03425bc894e57942262cf99d43c8d",
+  "PlanSha256": "DECF4C6FF63E149B9D12F30EEA5388DA53E3538E61EE80DAF2118D0B60DC41C6",
+  "Cases": [
+    "same-plan-three-reviews-and-preflights-stable",
+    "full-semantic-comparison-preserves-frozen-dictionary-order-and-wire-hash",
+    "explicit-new-review-has-new-identity",
+    "canonical-guid-all-sixteen-leading-digits-and-old-safe-name-compatible",
+    "duplicate-receipt-refused-with-original-bytes",
+    "interrupted-reviewing-receipt-retained",
+    "changed-seed-bytes-refused-with-valid-json",
+    "stale-registration-cas-refused-without-changing-machine-registration",
+    "changed-mode-refused-by-complete-request-comparison",
+    "invalid-operation-identity-refused",
+    "tampered-plan-hash-refused",
+    "legacy-null-identity-preserved-readonly-and-new-submit-refused",
+    "committed-reentry-refuses-registration-target-drift-with-unchanged-plan-fingerprint",
+    "original-prepared-ready-unknown-failed-completed-journals-all-fence-retries",
+    "restored-inputs-repreflight-with-original-identity"
+  ],
+  "Installation": "NOT_RUN",
+  "MachineRegistrationMutation": "NOT_RUN",
+  "Equipment": "NOT_RUN",
+  "Scope": "Readonly actual batch entry and synthetic journal fence; not a deployment success"
+}

@@ -14,7 +14,7 @@ Windows安装、普通账户、启动/快捷方式、升级中断/回退修复�
 
 ## 三个Application
 
-Windows用户核对完整媒介后双击`Setup.cmd`，或首次双击`application.cmd`进入原生安装向导。选择运行账户、原数据根和配置来源，可选独立信任/离线扩展包；检查摘要后允许Windows授权。软件完成程序并排部署、机级策略、权限、新目录和快捷方式；无需手工JSON、hash或PowerShell。安装后使用开始菜单运行入口，既有数据/政策不覆盖。失败页和`Maintenance.cmd`可进入不启动设备的离线维护，表单保存Pending或从完整备份恢复到新目录，再重试正常启动。流程、种子修复和严格准入边界见[安装与启动修复指南](startup-deployment-02.md)。
+Windows普通安装、首次配置和当前版本按[当前操作入口](lifecycle-ux-current-guidance-01.md)。普通向导核对程序目录、数据目录与快捷方式，提交时申请Windows授权。高级部署的账户、模式和信任策略沿原受保护机制；不在普通向导寻找旧选择器。安装后使用开始菜单运行入口，既有数据/政策不覆盖。启动失败可从原入口进入离线维护，保留原责任、配置账与完整恢复集。
 
 固定SDK10.0.402；源码构建与发布入口见[Application运行指南](application-architecture-22.md)。发布ZIP解压到新目录，先核对SHA256SUMS与ASSEMBLY.json的SourceCommit和ApplicationId。portable需要.NET10运行时；win-x64含实际WPF但仍需Windows验收。
 

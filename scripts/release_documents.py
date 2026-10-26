@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
+    'docs/runtime/lifecycle-ux-current-guidance-01.md': 'LIFECYCLE-OPERATIONS.md',
     'docs/runtime/time-storage-fault-01.md': 'TIME-AND-STORAGE-FAULTS.md',
     'docs/runtime/p0-stability-01.md': 'P0-STABILITY.md',
     'docs/runtime/code-reliability-hardening-02.md': 'CODE-RELIABILITY.md',
@@ -18,8 +19,6 @@ PARCEL_GUIDES = {
     'docs/runtime/windows-application-delivery.md': 'WINDOWS-APPLICATION.md',
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',
-    'docs/runtime/architecture-quality-closure-01.md': 'QUALITY-CLOSURE-01.md',
-    'docs/runtime/validation/architecture-quality-closure-01-windows.md': 'QUALITY-WINDOWS-ACCEPTANCE.md',
     'docs/runtime/application-architecture-22.md': 'APPLICATIONS.md',
     'docs/design/application-architecture-22.md': 'ARCHITECTURE-22.md',
     'docs/extensions/developer-guide.md': 'EXTENSIONS.md',
@@ -30,20 +29,18 @@ GUIDES = {
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
-SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/design/typography-01.md': 'TYPOGRAPHY.md', 'docs/runtime/parameter-ui-refine-01.md': 'PARAMETER-UI-REFINE.md', 'docs/runtime/parameter-guidance-startup-01.md': 'PARAMETER-GUIDANCE-STARTUP.md', 'docs/runtime/startup-experience-03.md': 'FIRST-CONFIGURATION.md', 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
+# Current operation guides and real interface prerequisites only. Historical UI,
+# old account and support-page evidence remains in Git with its original identity.
+SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
+    'docs/design/typography-01.md': 'TYPOGRAPHY.md',
+    'docs/runtime/parameter-guidance-startup-01.md': 'PARAMETER-GUIDANCE-STARTUP.md',
+    'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/dual-camera-communication-fix-01.md': 'CAMERA-COMMUNICATION.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
-    'docs/runtime/parameter-settings-v3-native-01.md': 'PARAMETERS.md',
-    'docs/runtime/parameter-refactor-01.md': 'PARAMETERS-HISTORY.md',
-    'docs/runtime/ui-task-redesign-01.md': 'SPORTMASTER-V2.md',
-    'docs/runtime/login-session-lifetime-fix-01.md': 'LOGIN-SESSION-FIX.md',
-    'docs/runtime/installer-release-info-01.md': 'INSTALLATION-REQUIREMENTS.md',
-    'docs/runtime/installer-single-window-01.md': 'INSTALLATION-EXPERIENCE.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
     'docs/runtime/hikrobot-reader-01.md': 'HIKROBOT-READER.md',
-    'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md',
-    'docs/runtime/sportmaster-visual-productization-01.md': 'SPORTMASTER-UI.md',
-    'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md'}
+    'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md'}
+
 ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 
 ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/licenses/MIT.txt', 'docs/licenses/Apache-2.0.txt']

@@ -1,0 +1,12 @@
+{
+  "ReviewSource": "eca5a1eb94469fcd23bdf6b6374bee8864fe66cc",
+  "P1": "https://github.com/yuan2go/importer-pc/pull/108#discussion_r4371803810",
+  "P2": "https://github.com/yuan2go/importer-pc/pull/108#discussion_r4371803812",
+  "SourceChecks": "PASS working source --lifecycle-ux; controllable clock and small synthetic full backup",
+  "FrozenAndCi": "PENDING",
+  "ManagementSessionPolicy": "Original15Minutes_UNCHANGED",
+  "KernelDeletionAlgorithm": "UNCHANGED",
+  "RealProductInstallation": "NOT_RUN",
+  "BigDatabaseOrLongRun": "NOT_RUN",
+  "Note": "Initial source mutation matrix covered every actual small custody file; committed frozen fixture selects one per custody class to avoid O(n squared) repeated hashing, retains missing/config/extra-image/revocation/recovery assertions"
+}

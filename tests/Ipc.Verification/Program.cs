@@ -10,6 +10,11 @@ using Ipc.Supply;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
+if (args.FirstOrDefault() == "--initialize-isolated-ci-storage")
+{
+    CleanStorageBootstrap.InitializeIsolatedCiStorage(); return;
+}
+
 if (args.FirstOrDefault() is "--clean-storage-bootstrap" or "--clean-storage-bootstrap-elevated")
 {
     CleanStorageBootstrap.Run(args[0].EndsWith("-elevated", StringComparison.Ordinal)); return;

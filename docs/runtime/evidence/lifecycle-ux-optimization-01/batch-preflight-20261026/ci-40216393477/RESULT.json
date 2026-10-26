@@ -1,0 +1,15 @@
+{
+  "Status": "FAIL",
+  "RunId": 40216393477,
+  "PrHead": "183f9facd100c56a126fc72a111ae2490e7833dc",
+  "ActualMergeSource": "ff1c310c36cd59f25ea7ae12cfa9a30a75277c98",
+  "Linux": "SUCCESS",
+  "WindowsEngineeringAndNativeJourneys": "SUCCESS",
+  "WindowsInstallerPackaging": "SUCCESS",
+  "ArtifactRetention": "FAIL",
+  "WindowsArtifact": "NOT_RETAINED_BY_FAILED_UPLOAD",
+  "Error": "D-drive root interpreted as workspace, not a parent of D:/scd-* siblings",
+  "Fix": "Use explicit shared parent D:/scd for all artifact inputs",
+  "WindowsProductInstallation": "NOT_RUN",
+  "Qualification": "No normal deployment success or field acceptance"
+}

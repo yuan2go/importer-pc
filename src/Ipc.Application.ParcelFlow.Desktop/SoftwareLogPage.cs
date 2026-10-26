@@ -10,7 +10,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed class SoftwareLogControl : UserControl
 {
     readonly IWorkstationAdministration service;
-    readonly TextBox from = Input(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm")), to = Input(DateTime.Now.AddMinutes(1).ToString("yyyy-MM-dd HH:mm")), keyword = Input(""), source = Input(""), context = Input("10");
+    readonly TextBox from = Input(DateTimeOffset.Now.AddDays(-1).ToString("O")), to = Input(DateTimeOffset.Now.AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "使用正则表达式（有执行时限）", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
@@ -19,7 +19,8 @@ public sealed class SoftwareLogControl : UserControl
     readonly StackPanel filters = new();
     readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Padding = new(0), MinHeight = 0, Background = System.Windows.Media.Brushes.Transparent, FontSize = UiTypography.Label, MaxHeight = 44, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Expander advancedFilters;
-    readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel;
+    readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel, locateExport;
+    string? exportedFile;
     readonly Expander detailPanel, diagnostics;
     readonly TextBox diagnosticText = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
     readonly TextBlock empty = new() { Text = "填写条件后查询日志", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = System.Windows.Media.Brushes.SlateGray };
@@ -75,9 +76,19 @@ public sealed class SoftwareLogControl : UserControl
         search.Children.Add(Field("关键词", keyword, 260)); search.Children.Add(Field("级别", level, 120));
         keyword.ToolTip = "普通关键词；高级筛选可启用正则表达式";
         keyword.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && !busy) { e.Handled = true; await Run(Search); } };
-        from.ToolTip = to.ToolTip = "本地时间，格式：年-月-日 时:分";
+        DateTimeInput Calendar(TextBox value)
+        {
+            var input = new DateTimeInput { EmptyTimestampHint = "必须选择起止时间；软件日志查询使用固定范围。" }; input.SetBinding(DateTimeInput.TimestampProperty, new Binding(nameof(TextBox.Text)) { Source = value, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); return input;
+        }
         var extra = new StackPanel(); var fields = new WrapPanel(); extra.Children.Add(fields);
-        fields.Children.Add(Field("开始时间（本地）", from, 200)); fields.Children.Add(Field("结束时间（不含）", to, 200)); fields.Children.Add(Field("来源", source, 140));
+        fields.Children.Add(Field("开始时间（含）", Calendar(from), 440)); fields.Children.Add(Field("结束时间（不含）", Calendar(to), 440)); fields.Children.Add(Field("来源", source, 160));
+        var quick = new WrapPanel(); extra.Children.Add(quick);
+        foreach (var label in new[] { "今天", "最近24小时", "最近7天" })
+        {
+            var button = new Button { Content = label, Margin = new(0, 0, 8, 8) };
+            button.Click += (_, _) => { var now = DateTimeOffset.Now; from.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today) : now.AddDays(label == "最近7天" ? -7 : -1)).ToString("O"); to.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today).AddDays(1) : now).ToString("O"); };
+            quick.Children.Add(button);
+        }
         extra.Children.Add(regex); var contextFields = new WrapPanel(); contextFields.Children.Add(Field("前后上下文条数", context, 140)); extra.Children.Add(contextFields);
         advancedFilters = new Expander { Header = "时间、更多筛选、上下文与导出", Content = new ScrollViewer { Content = extra, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
         advancedFilters.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
@@ -87,6 +98,12 @@ public sealed class SoftwareLogControl : UserControl
         var extraActions = new WrapPanel(); extra.Children.Add(extraActions);
         contextButton = Action("查看原始上下文", LoadContext); exportButton = Action("导出全部匹配…", () => Export(false)); rangeButton = Action("导出时间范围…", () => Export(true));
         foreach (var button in new[] { contextButton, exportButton, rangeButton }) { actions.Children.Remove(button); extraActions.Children.Add(button); }
+        locateExport = Action("定位导出文件", () =>
+        {
+            if (exportedFile is not null) { var start = new System.Diagnostics.ProcessStartInfo("explorer.exe") { UseShellExecute = true }; start.ArgumentList.Add("/select," + exportedFile); System.Diagnostics.Process.Start(start); }
+            return Task.CompletedTask;
+        });
+        actions.Children.Remove(locateExport); extraActions.Children.Add(locateExport);
         var footer = new StackPanel { Margin = new(0, 6, 0, 0) }; DockPanel.SetDock(footer, Dock.Bottom); root.Children.Insert(0, footer);
         status.Style = (Style)FindResource("QueryHint"); status.MaxHeight = 48; status.TextTrimming = TextTrimming.CharacterEllipsis; status.SetBinding(ToolTipProperty, new Binding(nameof(TextBlock.Text)) { Source = status }); footer.Children.Add(status);
         System.Windows.Automation.AutomationProperties.SetLiveSetting(status, System.Windows.Automation.AutomationLiveSetting.Polite);
@@ -137,13 +154,14 @@ public sealed class SoftwareLogControl : UserControl
     {
         filters.IsEnabled = !busy; advancedFilters.IsEnabled = !busy; searchButton.IsEnabled = !busy;
         effectiveRange.Text = selection is not null && query is not null
-            ? "当前查询（本地） " + query.From.ToLocalTime().ToString("yyyy-MM-dd HH:mm") + " 至 " + query.ToExclusive.ToLocalTime().ToString("yyyy-MM-dd HH:mm") + "（不含）" +
+            ? "已应用范围 " + query.From.ToString("yyyy-MM-dd HH:mm:ss zzz") + " 至 " + query.ToExclusive.ToString("yyyy-MM-dd HH:mm:ss zzz") + "（不含）" +
                 " · " + (string.IsNullOrEmpty(query.Level) ? "全部级别" : query.Level) + " · " + (string.IsNullOrEmpty(query.Source) ? "全部来源" : query.Source) +
                 (string.IsNullOrEmpty(query.Keyword) ? "" : " · " + (query.Regex ? "正则：" : "关键词：") + query.Keyword)
             : "待查询（本地） " + from.Text + " 至 " + to.Text + "（不含）；尚无有效查询快照";
         previousButton.IsEnabled = !busy && selection is not null && offset > 0; nextButton.IsEnabled = !busy && selection is not null && more;
         contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
         exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
+        locateExport.IsEnabled = !busy && exportedFile is not null;
         cancel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
         UpdateEmpty();
     }
@@ -151,6 +169,7 @@ public sealed class SoftwareLogControl : UserControl
     void UpdateEmpty() => empty.Visibility = results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
     {
+        if (selection is { } original && service is ISoftwareLogSelectionLifetime lifetime) lifetime.ReleaseLogSelection(original);
         viewVersion++; pending?.Cancel(); summary.Values = new Dictionary<string, string>(); selection = null; more = false; offset = 0; results.ItemsSource = null; ClearDetail();
         status.Text = "筛选已改变，请重新查询。"; empty.Text = "填写条件后查询日志"; UpdateActions();
     }
@@ -165,18 +184,22 @@ public sealed class SoftwareLogControl : UserControl
     public void Revoke()
     {
         InvalidateSelection(); status.Text = "查询已关闭。进入本页后请重新查询。";
+        exportedFile = null; query = null; UpdateActions();
         diagnosticText.Clear(); diagnostics.IsExpanded = false; diagnostics.Visibility = Visibility.Collapsed;
     }
     static TextBox Input(string text) => new() { Text = text, MinHeight = 44, VerticalContentAlignment = VerticalAlignment.Center };
     async Task Search()
     {
-        var candidate = ReadQuery(); query = candidate; selection = null; more = false; offset = 0;
+        var candidate = ReadQuery();
+        if (selection is { } original && service is ISoftwareLogSelectionLifetime lifetime) lifetime.ReleaseLogSelection(original);
+        query = candidate; selection = null; more = false; offset = 0;
         results.ItemsSource = null; ClearDetail(); UpdateActions();
         await Load(0);
     }
     SoftwareLogQuery ReadQuery()
     {
-        if (!DateTimeOffset.TryParse(from.Text, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var start) || !DateTimeOffset.TryParse(to.Text, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var end)) throw new InvalidOperationException("请按 年-月-日 时:分 填写本地时间。");
+        static bool Parse(string value, out DateTimeOffset at) => DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out at) && System.Text.RegularExpressions.Regex.IsMatch(value, @"(Z|[+-]\d{2}:\d{2})$");
+        if (!Parse(from.Text, out var start) || !Parse(to.Text, out var end) || start >= end) throw new InvalidOperationException("请选择有效的开始、结束和UTC偏移；结束不含且须晚于开始。");
         return new(start, end, keyword.Text, regex.IsChecked == true, level.SelectedIndex == 0 ? "" : level.Text, source.Text);
     }
     int ContextSize() => int.TryParse(context.Text, out var value) && value is >= 0 and <= 200 ? value : throw new InvalidOperationException("上下文条数须为0～200。");
@@ -198,7 +221,7 @@ public sealed class SoftwareLogControl : UserControl
         catch (Exception error)
         {
             status.Text = error is UnauthorizedAccessException ? "管理权限已失效，请重新进入管理模式。"
-                : error.Message is "请按 年-月-日 时:分 填写本地时间。" or "上下文条数须为0～200。" ? error.Message
+                : error.Message is "请选择有效的开始、结束和UTC偏移；结束不含且须晚于开始。" or "上下文条数须为0～200。" ? error.Message
                 : "操作未完成，请核对筛选条件或查看诊断详情。";
             diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible;
         }
@@ -257,7 +280,11 @@ public sealed class SoftwareLogControl : UserControl
         if (selection is null) throw new InvalidOperationException("请先查询以固定本次日志范围。");
         var picker = new SaveFileDialog { FileName = "software-logs-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jsonl", Filter = "软件日志|*.jsonl" };
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
-        var count = await service.ExportLogsAsync(selection, picker.FileName, range, ContextSize(), pending!.Token); pending.Token.ThrowIfCancellationRequested(); status.Text = "已导出" + count + "条原始记录（含所选上下文）。";
+        var originalSelection = selection;
+        if (MessageBox.Show(Window.GetWindow(this), (range ? "导出固定时间范围内全部原始记录，包括不匹配关键词/级别/来源的记录。" : "导出固定选择中全部匹配记录及所选相邻上下文。") + "\n" + effectiveRange.Text + "\n目标：" + picker.FileName, "核对日志导出范围", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
+        var count = await service.ExportLogsAsync(originalSelection, picker.FileName, range, ContextSize(), pending!.Token); pending.Token.ThrowIfCancellationRequested();
+        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        exportedFile = picker.FileName; status.Text = "已完整导出" + count + "条原始记录：" + exportedFile + "。可定位文件；已有文件未覆盖。";
     }
 }
 

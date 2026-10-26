@@ -1,0 +1,65 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "3e2fbb7e5336f4c52a094a131d52649a12f062a2",
+  "FixtureCommit": "3e2fbb7e5336f4c52a094a131d52649a12f062a2",
+  "MediumInventorySha256": "8B7EDFD26C46E8F76074CFEC3B2BE3239575A1710AB73934FB8EBD6A565F89E8",
+  "UnchangedMedium": true,
+  "Binaries": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "43BE5308A92482CF3513D6B87B37C5046B9AE29412D4E2F7ACA0C5A0A2CE3B69"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "1E61DA40B35916B56A348DADF0CF6A8672EDD0D4F66118F218A391F86E1B63B2"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "591C96517879C0EE91656F411C7DD4D72D4B4BDB5504C22AF4BCEE8159B83898"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "8DA6DB8052FAA0BA1FD8F96B65E856BF1C2928ED3AF6160482E0A90FC84405C0"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "3E11832780BE4EA6122613B37B0BB92A7CF90F7EC6D0CC20F1F0E834F4BF4EAC"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "D5AC5F6369130151E465CBB72945F11B38FDDCA6B2C2F5F7B76D29AD138B0BB4"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "ACA3945FEF8494F6DEAC23FDE95B9FFC17BB5F1F045F08943FE45189104F12B3"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "36A2E1752A173019A39DE09F0ED05DA18469E8391A4E6484B8777571CFF6F88A"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "E3C3BE5C54452993846D5B374AFD5B73B4DD53414C20E0ABFA360402D6B794AA"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "B99D50C673702BE6652FBF93744B2D2E9DDBFD068A2C967EE310014192321BE2"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "BD630A030414350C394B484F66435BC2ACDA4626057C37E15E5BB1D54C018E26"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "7F590D90E269F9DF019A29D117C768E57E3F423FE815DDEB30A67BE22C7E1561"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "8B1ACA30487318D9FFC8B29C395B70B5FD2D75B440DF9771CDB39A3314590FBB"
+    }
+  ],
+  "Scope": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS",
+  "WindowsInstallation": "NOT_RUN",
+  "Equipment": "BLOCKED",
+  "ExitCode": 0
+}

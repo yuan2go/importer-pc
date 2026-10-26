@@ -1,9 +1,38 @@
 using System.Security.AccessControl;
 using System.Security.Principal;
 using Ipc.Platform;
+using Microsoft.Win32;
 
 static class CleanStorageBootstrap
 {
+    // Infrastructure for the disposable hosted Windows job only. This is not a
+    // product installer or a runtime environment override of the HKLM authority.
+    public static void InitializeIsolatedCiStorage()
+    {
+        if (!OperatingSystem.IsWindows() || Environment.GetEnvironmentVariable("GITHUB_ACTIONS") != "true" ||
+            Environment.GetEnvironmentVariable("RUNNER_ENVIRONMENT") != "github-hosted" || Environment.GetEnvironmentVariable("RUNNER_OS") != "Windows")
+            throw new InvalidOperationException("Only the explicitly authorised disposable GitHub Windows runner may initialise this fixture");
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var run = Environment.GetEnvironmentVariable("GITHUB_RUN_ID");
+        if (string.IsNullOrEmpty(run) || run.Length > 32 || !run.All(char.IsAsciiDigit)) throw new InvalidDataException("Expected a fixed CI run identity");
+        using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+        using (var existing = machine.OpenSubKey(@"SOFTWARE\ImporterPc\Storage"))
+            if (existing is not null) throw new InvalidOperationException("Retain the existing storage authority; this fixture requires a clean machine");
+        var root = @"D:\ImporterPc.CI-" + run;
+        if (Directory.Exists(root) || File.Exists(root)) throw new IOException("Retain the existing fixture root");
+        using var runtime = WindowsIdentity.GetCurrent();
+        WindowsStoragePaths.PrepareProtectedDirectory(root, runtime.User!);
+        var admin = new SecurityIdentifier("S-1-5-32-544");
+        var acl = new RegistrySecurity(); acl.SetOwner(admin); acl.SetAccessRuleProtection(true, false);
+        foreach (var sid in new[] { "S-1-5-18", "S-1-5-32-544" })
+            acl.AddAccessRule(new RegistryAccessRule(new SecurityIdentifier(sid), RegistryRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+        acl.AddAccessRule(new RegistryAccessRule(new SecurityIdentifier("S-1-5-32-545"), RegistryRights.ReadKey, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+        using var key = machine.CreateSubKey(@"SOFTWARE\ImporterPc\Storage", true);
+        key.SetAccessControl(acl); key.SetValue("Root", root, RegistryValueKind.String); key.Flush();
+        if (WindowsStoragePaths.ProtectedAnchor != root) throw new InvalidOperationException("Protected HKLM storage identity did not round-trip");
+        Console.WriteLine("PASS CI protected HKLM storage uses D; no runtime policy, deployment or device startup created");
+    }
+
     public static void Run(bool elevated)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Actual Windows filesystem/ACL verification required");

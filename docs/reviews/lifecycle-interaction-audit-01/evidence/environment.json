@@ -1,0 +1,70 @@
+{
+  "Audit": "WP-IPC-LIFECYCLE-INTERACTION-AUDIT-01",
+  "CapturedAt": "2026-10-25T21:07:07.3369795+08:00",
+  "SourceCommit": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "RemoteMain": "3a5b1d13ec5969213db35ed43d72a5aecd437777\trefs/heads/main",
+  "Worktree": "D:/w/la01-r2",
+  "BusinessVersion": "1.12.3",
+  "ContractsVersion": "1.18.0",
+  "OS": "Microsoft Windows 11 家庭中文版",
+  "OSVersion": "10.0.22631",
+  "Architecture": "64 位",
+  "ActualDpiScale": 1.25,
+  "DotnetSdk": "10.0.402",
+  "DotnetRuntime": "10.0.13",
+  "BuildConfiguration": "Debug",
+  "NativeScope": "Synthetic isolated WPF fixtures only; no installation, UAC, live data, real SDK or equipment",
+  "PgSourceEvidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-cd5cafadd96e4380b240724336138f9e",
+  "ChainSourceEvidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-fed9eead07ae4c8db22c94dad4ad9002",
+  "NativeResults": [
+    {
+      "Id": "N01",
+      "ExitCode": 0,
+      "Pass": 52,
+      "Fail": 0
+    },
+    {
+      "Id": "N02",
+      "ExitCode": 0,
+      "Pass": 48,
+      "Fail": 0
+    }
+  ],
+  "BinaryHashes": [
+    {
+      "Path": "D:\\w\\la01-r2\\src\\Ipc.Desktop\\bin\\Debug\\net10.0-windows\\Ipc.Desktop.dll",
+      "Bytes": 1405952,
+      "Sha256": "2d23910a82123f3a43e650b59f8563405cca21abdb6c3d6cdc5f94c85ff6ac32"
+    },
+    {
+      "Path": "D:\\w\\la01-r2\\src\\Ipc.Desktop\\bin\\Debug\\net10.0-windows\\Ipc.Application.Sportmaster.dll",
+      "Bytes": 24064,
+      "Sha256": "bf460b0f4f7bdfd1bd0ef06273b6a2e73914d2ed93b5756bb773e2d4df4278aa"
+    },
+    {
+      "Path": "D:\\w\\la01-r2\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Desktop.UiVerification.dll",
+      "Bytes": 967168,
+      "Sha256": "52cb8e0cab473317c8d67d685b7c46b807bbf87c5de4ef2422d5a1127f540aea"
+    }
+  ],
+  "CurrentFieldVersion": null,
+  "BinaryVersions": [
+    {
+      "Path": "D:\\w\\la01-r2\\src\\Ipc.Desktop\\bin\\Debug\\net10.0-windows\\Ipc.Desktop.dll",
+      "FileVersion": "1.0.0.0",
+      "ProductVersion": "1.0.0+3a5b1d13ec5969213db35ed43d72a5aecd437777"
+    },
+    {
+      "Path": "D:\\w\\la01-r2\\src\\Ipc.Desktop\\bin\\Debug\\net10.0-windows\\Ipc.Application.Sportmaster.dll",
+      "FileVersion": "1.12.3.0",
+      "ProductVersion": "1.12.3+3a5b1d13ec5969213db35ed43d72a5aecd437777"
+    },
+    {
+      "Path": "D:\\w\\la01-r2\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Desktop.UiVerification.dll",
+      "FileVersion": "1.0.0.0",
+      "ProductVersion": "1.0.0+3a5b1d13ec5969213db35ed43d72a5aecd437777"
+    }
+  ],
+  "DeliveryReportRoot": "D:/projects/importer-pc/docs/reviews/lifecycle-interaction-audit-01",
+  "DeliveryCapturedAt": "2026-10-25T21:09:18.4716300+08:00"
+}

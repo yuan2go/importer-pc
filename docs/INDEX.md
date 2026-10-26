@@ -22,7 +22,7 @@
 
 ## 本轮来源与状态
 
-[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113已合入main；PR108、PR111、PR112继续逐项整合。实际源及验证见本轮工作包，不将分支PASS转记main。
+[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113、PR112、PR111已合入main；PR108继续整合。实际源及验证见本轮工作包，不将分支PASS转记main。
 
 ## 历史证据与发布
 
@@ -44,3 +44,5 @@ P0基座已合入main：[运行说明](runtime/p0-stability-01.md)、[历史问�
 - [时间与存储故障分级](runtime/time-storage-fault-01.md)：单调节拍、原请求回拨证据、本地事务分级及恢复先暂停；[UTC清单](runtime/time-storage-fault-01-utc-inventory.md)和[原独立证据](runtime/validation/time-storage-fault-01.md)各守原身份。
 
 - [卡顿、容量及WAL维护](runtime/latency-capacity-01.md)：共享投影、后台详情、可取消备份与分级预警；[原测量与反向样本](runtime/validation/latency-capacity-01.md)不转记组合PASS。
+
+生命周期当前入口：[操作指南](runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](runtime/lifecycle-ux-implementation-01.md)、[工作包](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)。原独立验证见[历史报告](runtime/validation/lifecycle-ux-optimization-01.md)及[批量预检历史](runtime/validation/lifecycle-batch-preflight-01.md)，不转记组合源。

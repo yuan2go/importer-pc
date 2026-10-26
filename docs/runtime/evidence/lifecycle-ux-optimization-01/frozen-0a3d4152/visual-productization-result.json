@@ -1,0 +1,9 @@
+{
+  "Case": "visual-productization",
+  "ExitCode": 0,
+  "Evidence": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-ced56c7eca10476c8dabc6c4e6fd4639",
+  "SourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureSourceCommit": "0a3d41526babeb290f9c4ddfbfcdab4a977b8bc8",
+  "FixtureMatchesMedium": true,
+  "Scope": "frozen published DLLs; serial WPF/SQLite with explicit synthetic identity/ports"
+}

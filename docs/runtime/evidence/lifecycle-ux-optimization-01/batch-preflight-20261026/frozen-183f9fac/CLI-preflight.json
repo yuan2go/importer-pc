@@ -1,0 +1,9 @@
+{
+  "Status": "PreflightPassed",
+  "PlanSha256": "D63EA105CEA42C11C79AF2CD71A23C68BFC98ED5A4BD713D8CA3085567712B67",
+  "OperationId": "39f4a8571ef34389b3a16562032235c8",
+  "ApplicationId": "sportmaster",
+  "SourceCommit": "183f9facd100c56a126fc72a111ae2490e7833dc",
+  "Components": [],
+  "DeviceOrBusinessStarted": false
+}

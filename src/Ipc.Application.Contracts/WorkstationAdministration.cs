@@ -22,6 +22,11 @@ public interface IWorkstationAdministration
     Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token);
     Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token);
 }
+// Releasing a pinned read discloses no data and remains legal after revocation.
+public interface ISoftwareLogSelectionLifetime
+{
+    void ReleaseLogSelection(string selection);
+}
 public sealed record SoftwareLogQuery(DateTimeOffset From, DateTimeOffset ToExclusive, string Keyword = "", bool Regex = false, string Level = "", string Source = "");
 public sealed record SoftwareLogLocation(string FileId, long Line, string Hash, string File = "");
 public sealed record SoftwareLogEntry(SoftwareLogLocation Location, string Source, DateTimeOffset? At, string Level, string Text);

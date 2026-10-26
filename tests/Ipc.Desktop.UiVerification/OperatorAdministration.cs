@@ -132,7 +132,8 @@ static partial class Program
         for(int i=0;i<100 && !(await setupMode.ManagementModeStatusAsync()).Authorized;i++) await Task.Delay(30);
         await Task.Delay(100); Check((await setupMode.ManagementModeStatusAsync()).Authorized && !setup.IsVisible, "password-only first setup enters management mode and returns to the original work window");
         var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await WaitModeReady(editPassword, "退出管理模式");
-        Descendants(editPassword).OfType<Expander>().Single().IsExpanded = true; editPassword.UpdateLayout(); Capture("management-mode-password-change", editPassword);
+        Check(Descendants(editPassword).OfType<Expander>().Any(e => Equals(e.Header, "遗失管理密码 / 恢复政策（G02）")), "existing-password deployment exposes the unresolved recovery-policy decision");
+        Descendants(editPassword).OfType<Expander>().Single(e => Equals(e.Header, "修改管理密码")).IsExpanded = true; editPassword.UpdateLayout(); Capture("management-mode-password-change", editPassword);
         var replacement = "22222";
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPassword").Password = replacement;
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPasswordConfirmation").Password = replacement;

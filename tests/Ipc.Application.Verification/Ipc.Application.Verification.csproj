@@ -13,6 +13,8 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DispatcherProgressMonitor.cs" Link="Client/DispatcherProgressMonitor.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/IngressRecoveryPresentation.cs" Link="Client/IngressRecoveryPresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/RequestHandover.cs" Link="Client/RequestHandover.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivation.cs" Link="Client/ConfigurationActivation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ManagementModePresentation.cs" Link="Client/ManagementModePresentation.cs"/>

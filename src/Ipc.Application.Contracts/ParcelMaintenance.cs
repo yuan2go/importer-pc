@@ -12,6 +12,8 @@ public sealed record ParcelRetentionPolicy(int ResidentHistory = SystemParameter
 }
 public sealed record ParcelWeightRange(decimal Minimum, decimal Maximum);
 public sealed record ParcelBackupSchedule(string Directory, int IntervalMinutes, int MaximumSets);
+public sealed record ParcelBackupScheduleStatus(bool Enabled, string Outcome, string? Detail, DateTimeOffset? CheckedAt, DateTimeOffset? NextDue,
+    DateTimeOffset? LastSuccessfulAt, string? LastSuccessfulBackup, int? MaximumSets, string? Directory);
 public sealed record ParcelCapacity(int Unresolved, int Resident, long Archived, int MaximumUnresolved, bool Available, string Policy, long FreeStorageBytes = 0, long MinimumFreeBytes = 0);
 public sealed record ParcelHistoryItem(long Sequence, bool Archived, ParcelOperation Operation);
 public sealed record ParcelHistoryPage(ParcelHistoryItem[] Items, long? NextBeforeSequence);

@@ -1,0 +1,368 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-d53d3e6089dc4aeb9627decdb3a7d474
+PASS OPS: operation lifetime uses the real mode credential and controllable clock
+PASS OPS: consumed operation reauthorizes beyond two-minute admission while the original session remains live
+PASS OPS: ordinary delegation keeps its original two-minute limit
+PASS OPS: expired admission cannot start a long operation
+PASS OPS: long operation cannot switch its fixed request
+PASS OPS: consumed long operation cannot start a second helper
+PASS OPS: operation absolute budget expires before a still-live session
+PASS OPS: two-hour operation budget never extends the original fifteen-minute session
+PASS OPS: fresh explicit mode authentication is required after expiry
+PASS OPS: explicit mode exit revokes an admitted long operation
+PASS OPS: mode can be explicitly reentered after operation revocation
+PASS OPS: password replacement revokes operation continuation
+PASS OPS: only current password can issue subsequent operation authorization
+PASS OPS: invalid or excessive continuation budget rejected
+PASS OPS: invalid or excessive continuation budget rejected
+PASS OPS: invalid or excessive continuation budget rejected
+PASS LIA late completed original receipt plus matching registration resolves installation Unknown
+PASS LIA committed registration without final projection receipt does not invite reinstall
+PASS LIA exclusive original inspection identifies an interrupted pre-commit operation
+PASS LIA different reviewed identity cannot borrow original installation success
+PASS LIA different authoritative registration cannot become installation success
+PASS LIA real software-log selection pins its actual source file
+PASS LIA leaving/replacing a log selection releases pinned source handles idempotently
+PASS LIA new-query source failure remains observable
+PASS LIA failed new query retires its unpublished selection and all source handles
+PASS LIA actual ingress admitted distinct same-code entity 0
+PASS LIA actual ingress admitted distinct same-code entity 1
+PASS LIA actual ingress admitted distinct same-code entity 2
+PASS LIA actual ingress admitted distinct same-code entity 3
+PASS LIA actual ingress admitted distinct same-code entity 4
+PASS LIA actual ingress admitted distinct same-code entity 5
+PASS LIA actual ingress admitted distinct same-code entity 6
+PASS LIA actual ingress admitted distinct same-code entity 7
+PASS LIA actual ingress admitted distinct same-code entity 8
+PASS LIA actual ingress admitted distinct same-code entity 9
+PASS LIA actual ingress admitted distinct same-code entity 10
+PASS LIA actual ingress admitted distinct same-code entity 11
+PASS LIA actual ingress admitted distinct same-code entity 12
+PASS LIA actual ingress admitted distinct same-code entity 13
+PASS LIA actual ingress admitted distinct same-code entity 14
+PASS LIA actual ingress admitted distinct same-code entity 15
+PASS LIA actual ingress admitted distinct same-code entity 16
+PASS LIA actual ingress admitted distinct same-code entity 17
+PASS LIA actual ingress admitted distinct same-code entity 18
+PASS LIA actual ingress admitted distinct same-code entity 19
+PASS LIA actual ingress admitted distinct same-code entity 20
+PASS LIA actual ingress admitted distinct same-code entity 21
+PASS LIA actual ingress admitted distinct same-code entity 22
+PASS LIA actual ingress admitted distinct same-code entity 23
+PASS LIA actual ingress admitted distinct same-code entity 24
+PASS LIA actual ingress admitted distinct same-code entity 25
+PASS LIA actual ingress admitted distinct same-code entity 26
+PASS LIA actual ingress admitted distinct same-code entity 27
+PASS LIA actual ingress admitted distinct same-code entity 28
+PASS LIA actual ingress admitted distinct same-code entity 29
+PASS LIA actual ingress admitted distinct same-code entity 30
+PASS LIA actual ingress admitted distinct same-code entity 31
+PASS LIA actual ingress admitted distinct same-code entity 32
+PASS LIA actual ingress admitted distinct same-code entity 33
+PASS LIA actual ingress admitted distinct same-code entity 34
+PASS LIA actual ingress admitted distinct same-code entity 35
+PASS LIA actual ingress admitted distinct same-code entity 36
+PASS LIA actual ingress admitted distinct same-code entity 37
+PASS LIA actual ingress admitted distinct same-code entity 38
+PASS LIA actual ingress admitted distinct same-code entity 39
+PASS LIA actual ingress admitted distinct same-code entity 40
+PASS LIA actual ingress admitted distinct same-code entity 41
+PASS LIA actual ingress admitted distinct same-code entity 42
+PASS LIA actual ingress admitted distinct same-code entity 43
+PASS LIA actual ingress admitted distinct same-code entity 44
+PASS LIA actual ingress admitted distinct same-code entity 45
+PASS LIA actual ingress admitted distinct same-code entity 46
+PASS LIA actual ingress admitted distinct same-code entity 47
+PASS LIA actual ingress admitted distinct same-code entity 48
+PASS LIA actual ingress admitted distinct same-code entity 49
+PASS LIA actual ingress admitted distinct same-code entity 50
+PASS LIA actual ingress admitted distinct same-code entity 51
+PASS LIA actual ingress admitted distinct same-code entity 52
+PASS LIA actual ingress admitted distinct same-code entity 53
+PASS LIA actual ingress admitted distinct same-code entity 54
+PASS LIA actual ingress admitted distinct same-code entity 55
+PASS LIA actual ingress admitted distinct same-code entity 56
+PASS LIA actual ingress admitted distinct same-code entity 57
+PASS LIA actual ingress admitted distinct same-code entity 58
+PASS LIA actual ingress admitted distinct same-code entity 59
+PASS LIA actual ingress admitted distinct same-code entity 60
+PASS LIA actual ingress admitted distinct same-code entity 61
+PASS LIA actual ingress admitted distinct same-code entity 62
+PASS LIA actual ingress admitted distinct same-code entity 63
+PASS LIA actual ingress admitted distinct same-code entity 64
+PASS LIA actual ingress admitted distinct same-code entity 65
+PASS LIA actual ingress admitted distinct same-code entity 66
+PASS LIA actual ingress admitted distinct same-code entity 67
+PASS LIA actual ingress admitted distinct same-code entity 68
+PASS LIA actual ingress admitted distinct same-code entity 69
+PASS LIA actual ingress admitted distinct same-code entity 70
+PASS LIA actual ingress admitted distinct same-code entity 71
+PASS LIA actual ingress admitted distinct same-code entity 72
+PASS LIA actual ingress admitted distinct same-code entity 73
+PASS LIA actual ingress admitted distinct same-code entity 74
+PASS LIA actual ingress admitted distinct same-code entity 75
+PASS LIA actual ingress admitted distinct same-code entity 76
+PASS LIA actual ingress admitted distinct same-code entity 77
+PASS LIA actual ingress admitted distinct same-code entity 78
+PASS LIA actual ingress admitted distinct same-code entity 79
+PASS LIA actual ingress admitted distinct same-code entity 80
+PASS LIA actual ingress admitted distinct same-code entity 81
+PASS LIA actual ingress admitted distinct same-code entity 82
+PASS LIA actual ingress admitted distinct same-code entity 83
+PASS LIA actual ingress admitted distinct same-code entity 84
+PASS LIA actual ingress admitted distinct same-code entity 85
+PASS LIA actual ingress admitted distinct same-code entity 86
+PASS LIA actual ingress admitted distinct same-code entity 87
+PASS LIA actual ingress admitted distinct same-code entity 88
+PASS LIA actual ingress admitted distinct same-code entity 89
+PASS LIA actual ingress admitted distinct same-code entity 90
+PASS LIA actual ingress admitted distinct same-code entity 91
+PASS LIA actual ingress admitted distinct same-code entity 92
+PASS LIA actual ingress admitted distinct same-code entity 93
+PASS LIA actual ingress admitted distinct same-code entity 94
+PASS LIA actual ingress admitted distinct same-code entity 95
+PASS LIA actual ingress admitted distinct same-code entity 96
+PASS LIA actual ingress admitted distinct same-code entity 97
+PASS LIA actual ingress admitted distinct same-code entity 98
+PASS LIA actual ingress admitted distinct same-code entity 99
+PASS LIA actual ingress admitted distinct same-code entity 100
+PASS LIA actual ingress admitted distinct same-code entity 101
+PASS LIA actual ingress admitted distinct same-code entity 102
+PASS LIA actual ingress admitted distinct same-code entity 103
+PASS LIA actual ingress admitted distinct same-code entity 104
+PASS LIA actual ingress admitted distinct same-code entity 105
+PASS LIA actual ingress admitted distinct same-code entity 106
+PASS LIA actual ingress admitted distinct same-code entity 107
+PASS LIA actual ingress admitted distinct same-code entity 108
+PASS LIA actual ingress admitted distinct same-code entity 109
+PASS LIA actual ingress admitted distinct same-code entity 110
+PASS LIA actual ingress admitted distinct same-code entity 111
+PASS LIA actual ingress admitted distinct same-code entity 112
+PASS LIA actual ingress admitted distinct same-code entity 113
+PASS LIA actual ingress admitted distinct same-code entity 114
+PASS LIA actual ingress admitted distinct same-code entity 115
+PASS LIA actual ingress admitted distinct same-code entity 116
+PASS LIA actual ingress admitted distinct same-code entity 117
+PASS LIA actual ingress admitted distinct same-code entity 118
+PASS LIA actual ingress admitted distinct same-code entity 119
+PASS LIA actual ingress admitted distinct same-code entity 120
+PASS LIA actual ingress admitted distinct same-code entity 121
+PASS LIA actual ingress admitted distinct same-code entity 122
+PASS LIA actual ingress admitted distinct same-code entity 123
+PASS LIA actual ingress admitted distinct same-code entity 124
+PASS LIA actual ingress admitted distinct same-code entity 125
+PASS LIA actual ingress admitted distinct same-code entity 126
+PASS LIA actual ingress admitted distinct same-code entity 127
+PASS LIA actual ingress admitted distinct same-code entity 128
+PASS LIA actual ingress admitted distinct same-code entity 129
+PASS LIA actual ingress admitted distinct same-code entity 130
+PASS LIA actual ingress admitted distinct same-code entity 131
+PASS LIA actual ingress admitted distinct same-code entity 132
+PASS LIA actual ingress admitted distinct same-code entity 133
+PASS LIA actual ingress admitted distinct same-code entity 134
+PASS LIA actual ingress admitted distinct same-code entity 135
+PASS LIA actual ingress admitted distinct same-code entity 136
+PASS LIA actual ingress admitted distinct same-code entity 137
+PASS LIA actual ingress admitted distinct same-code entity 138
+PASS LIA actual ingress admitted distinct same-code entity 139
+PASS LIA actual ingress admitted distinct same-code entity 140
+PASS LIA actual ingress admitted distinct same-code entity 141
+PASS LIA actual ingress admitted distinct same-code entity 142
+PASS LIA actual ingress admitted distinct same-code entity 143
+PASS LIA actual ingress admitted distinct same-code entity 144
+PASS LIA actual ingress admitted distinct same-code entity 145
+PASS LIA actual ingress admitted distinct same-code entity 146
+PASS LIA actual ingress admitted distinct same-code entity 147
+PASS LIA actual ingress admitted distinct same-code entity 148
+PASS LIA actual ingress admitted distinct same-code entity 149
+PASS LIA actual ingress admitted distinct same-code entity 150
+PASS LIA actual ingress admitted distinct same-code entity 151
+PASS LIA actual ingress admitted distinct same-code entity 152
+PASS LIA complete real query contract publishes the first bounded page and explicit fixed upper limit
+PASS LIA four pages share the original 153-entity boundary despite newer admitted input
+PASS LIA cross-page detail and command owner remain the originally selected entity
+PASS LIA previous page reuses its original cursor
+PASS LIA first screen reuses the same selection instead of including newer records
+PASS LIA editing immediately marks old results and disables pagination without changing applied range
+PASS LIA changed conditions cannot advance the original query
+PASS LIA changed conditions cannot export under a misleading filter
+PASS LIA real fixed-selection export preserves exact leading-zero barcode bytes separately from spreadsheet text
+PASS LIA editing during a real cancellable query retains previous results and releases the read
+PASS LIA business label selection maps to the actual stable position ID
+PASS LIA cancelled real query does not retain SQLite resources
+PASS LIA handover names exact original entity/request while excluding payload and causing no external call
+PASS LIA successful schedule projection corresponds to a real complete recovery set
+PASS LIA capacity failure preserves the last success and all original recovery sets
+PASS LIA ordinary snapshot hides restricted backup paths and state
+PASS LIA direct parameter catalog read rejects revoked authority
+PASS LIA direct candidate validation rejects revoked authority
+PASS LIA cancelled offline preflight releases ownership without a backup or mutation
+PASS LIA changing destination invalidates the fixed offline plan before backup or deletion
+PASS LIA offline service refuses execution after withdrawal
+PASS LIA interruption after full backup retains the original operation and records a non-success terminal
+PASS LIA original interrupted receipt and complete backup remain inspectable without rerunning deletion
+PASS LIA offline UI contract creates a complete backup and returns the same durable maintenance receipt
+PASS LIA existing kernel expires eligible settled details but preserves permanent identity and Unknown original
+PASS LIA two read-only checks resolve a lost terminal from the same original run, complete backup and integrity facts
+PASS LIA lost-terminal inspection refuses changed backup custody: configuration.json
+PASS LIA lost-terminal inspection refuses changed backup custody: machine-origin.bin
+PASS LIA lost-terminal inspection refuses changed backup custody: startup-maintenance/fb6a91674eba031ef381af48123bf5d9/retention-result.json
+PASS LIA lost-terminal inspection refuses changed backup custody: startup-maintenance/2eb031407ee181454c48a778d29cec8a/retention-result.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/006b6f73394d44ed8b1147fe26586a57.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/00ba327aa5c14e7abdae1f8b622fc3e5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/00d40919f4824e33b2cca620e4a9331a.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/05686a3067264f5cb110417ecdf4b58c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/08c24a7c47b7463fb813063ed3e2f0e2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/0b310cbc66ec4bfeb1b45f1bcd2976c2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/0c960307dd4840f185c551e735382346.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/0d34930e1fdf4cdfbaea1c1c0bf8c74c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/0f2ee5de74a849c7954518ee0cb59d0a.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/112057020fff40ebaec2fed05b9ea57c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/1277955b9d1d45d1b4fca504472b09a5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/145f0fa0579d4fe7a25d0edfb599b8c9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/16da57a11c564a91a55ba15610ace51e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/18c5135fcf5a418cb6775bd65d35fbe5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/1bfb0d2cd0c84fb3897ec523c5cba4ff.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/1c22549479f84f12b6cddf9a0840a09c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/200fd9cfcbd34e9fb282cd38ff3cdefe.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/24990076b20b42479608952ab1bfa30a.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/271989990e674d9e929fdc3a9d7a44b7.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/27b3627a1b43482eb30d73b3e5d83ae9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/29a8d6c530e54d72ad02f4c061c5f6fe.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/2a5ed80c3d924abbac445109a72f55f5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/2d2ff06e89264522ae32be987ccb7549.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/2e4cf06cb66644ca841313eab0c495b0.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/2f5a6b2b64be41bbb42490e423cae60a.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/30af37f1cb86444fadb496cbcf890835.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3193aea349784084820286ca5c7653e6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3239bb1a68fd4ad08e2d75bc25350ac5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/32ff6a1ee13f4cf8becd4040500d77b8.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3659360233c84e72aec241aea0d1fe79.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/37f0feb4ec9a40c694826d3363faa60d.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/399ec97b1aea49a6a53f70bf7f720e17.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3a4cec0f8bde4620bced14ab929d90cc.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3ac3ac48b9cc4a7897466dd2585653ba.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3b3dae231b9d41a7ae242553fd1f1c82.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3c1dc08218d441b9a72f190bdb64d9a7.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3cb47ff7d5684d2996cdfef31314b6b0.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3d583127eb654923a51c9f7615fac8ee.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/3e17b8a74e604bc1afafb354d5ef2df6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4476c6a7607143978e5cb49fe335d3f7.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/44af95d14102473e9fdf8203b473664c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/488d9de2ef4c43f8b296d6441a9ad97c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/490b661aa8e7437baba1a82a43f20e4c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4b6537d5e3474b3db30e56936d5215c4.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4c870b9215374b068b88ed642561ee39.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4e499e88697345408b78df22cca64b5e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4e5cea912e9445d18fd753d8bcbe5ba4.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/4ef80aec49b4453b9ddffa2fc37b6eaa.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/51f6366185c04c4b99db2db71583d3e6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/5396be2eaa1e42359d3543560f4b488e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/557cbc452d9548ce9805c1bd1bdb8dbe.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/581daae326ca47c1bbcf615012d954b1.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/58ec3782063a4ae8a294cd9bfec94b76.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/59d7c357939b42c0977d7d1b0105b431.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/5ad0d4f64e9a45ce819ad20d8a7a43ae.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/5af14ad4599a4539b5b1c8a37e064871.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/5d0262a865784714aed83ddcf7f01dcf.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/5f83ca482fe243e6a3718513182508e5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/60c0b1fb467547cdb67e17bbcb9b9506.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/61b48b3a6b394b628f14ded596461f4b.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/67321ab46f7542f7aa54f62a84b800f1.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/696154f261ba4d589e6c398d56bd1aea.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/6a2149f7471646e38ba0c91f5ec182c6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/6a242916ca5f444d8253cdab12a528fc.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/6d24f327bae34e8087c411ab90e240ec.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/740daefafa0047ad9e034297cf9d1343.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/749edffedd2d4e05836d3d2d95c9f095.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/75f3d81261c245858305622a57d4016f.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/76c0f482db5f443e9999ac3809414af9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/7883e802181e476a989fd2a7aeff0297.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/7bb3cb737e364344aecb05340290e6b4.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/7ed4463bfba54fea8d3e2bdd71c30728.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/800c34168af1421c8136a495e4d5501e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/817bf8b34851454b8abef3445ea843e9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/81d250b349eb4767ba6ed8dba5550873.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/846f8b058325450a8aacf211e288c26f.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/847d45a1bf4e427191b02abc30f00e65.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/8549e7020aee4a18998e8fc025b7e3a7.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/86e9a34db5dc415bbfbca8eed70d2374.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/89c5421820dd462282282ccd01e5119d.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/8f8d6584b4c146f182271b6912d472da.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/92fe4abb189342f8bfa616e73b0ca8b5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/9624446323c04fb8af926eb7d81811f6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/96eeff64b229489a97b60e3d8116ba86.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/9797891441914a5bb7965da8cc8a6c62.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/98321e6c972741e2a172e5e84667e678.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/986ac7c3f5334b5f96833958d1045793.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/9ac4c7999b5a494caf6abbcb41a75554.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/9ee58cf67e7141518af776ff1e0e9505.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a06936c674b345bb80a4b0b78542b1c2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a0f18a20fcf648d99b5c3ec25bb8dfb2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a22189b3726d406c99a09d2179ab7f02.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a229ee9ca5824ef2910885a281641064.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a24ab955d4ca41fcb2a9aa32b382ee82.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a4e741f84df54eeb9214e286c38969c9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a548c1cae1e94d86bcc32a54023d8011.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a722b2352b7d4f6bb5f47940238cb158.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a7486415fff8448bb7bedf1c36c9d798.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a81c1ff90c08439da8bd24773be322da.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/a842f210325e4f56ad265d8dcf35f14f.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/aa9f2d19f41b4b458647fed3ca3605c7.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/aade2c6a9136422592259cf41738385c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ad61cb63335e4a3aa196a2ac8cf22f6a.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/adc7dbbf881543f58bb77775ebdc067e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b3dec2a9b2c643b19e1105f14287ed08.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b55df11f7d0749f597b16b70e65657f2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b5f21fa73dd2481eb411d535e626a468.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b69279074b8c47c89181a4ca8c42f5dd.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b6afd379e2ce4814b2d4ec8dc4ee4d8e.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/b8638e9bfd9f427a9c0ea3c6c977b595.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/bab862242f874a798650e49b710e8b5c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/bbe6e35e91484adf8fe5cd65f174c5bc.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/be8020f072054306b815043b8fe4ec65.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/beb2dfb36e814dda8217eea5424a0de4.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/bf094bc4d1b649e8803060ff9bda2b35.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c0691cfa61d04607b80f373033844f39.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c1895c90cbbb44e09d0fcd70215ca90c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c2b22c6cc5e145ec9e2d1d8c475561b4.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c39c059856f84b8ebd1f773f103ba5d5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c7cef8d7b79a4a1ca1d6a6517b52f2e0.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c87f5af808ff480e942e20892942bd2b.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c963ef6e3c56491e94160f91da071040.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/c96a1820fd4849788ec07d77259dbdf9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ca22746a09be48349a02aca131421c86.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/cd45e964deb647e7b874cbafdbd926f5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/cdf61e1cf64c4ddda82e7991ca95dbc8.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d058ec1e6b054d83a5b7a0aa374609e5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d0e8b188b0514616b103f37141ebaffe.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d12b8c3d4a8148f09483758d6aed68f2.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d1eea2bfd0f746598626bb5f088e3f20.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d48da7bcd47b4140968a9e18132d95c8.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/d5c1b2d8fa414fdc840b55bd8529cd0b.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/dd251b8a34c24c029b37ed83281a6ac5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/defc14dbc3ac426796cd47c350c875b6.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/df3e1612e2cb483c8d6a9d9cb2734b6d.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/e2b1884dac4d4f7385512879eb590d92.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/e53d8f999eb84bd58a0c87f8878eea70.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ea2378a8dde24c11aa08a2c1d5e08fcc.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/eaa6f4ee92174d19b86ed9694eb08b83.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ed3b9dd04c504841bc69e77b04c16369.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/edb27a1280894a95b08c656105258c78.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ef4344e6cc0c484dbf6705298038d6a9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f037b8ec34864d9390d0bd616a6bdc82.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f04f2fb22dfe49adb554b5892e6ebfa1.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f0832f5dc730477fab929c6111c6a9bc.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f352a69b10264775b7abcf22a83625c5.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f746665e1bc84ac7bda15ac17c1df3b9.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f79718a8f05e44e98cdd371589babf2c.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f7c53e9ff3ce43ffbe1ed494cff0ff35.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f92237e8b5734f3d8191ddab1553f926.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/f981e9e8db894f459d03793cd15e6567.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/fde96d926b5a437c85874802e2502399.json
+PASS LIA lost-terminal inspection refuses changed backup custody: receipts/ff0c5494cee14095843d7a9d3a1657eb.json
+PASS LIA missing backed-up configuration cannot be reported as verified complete
+PASS LIA unlisted backup image is rejected by the full recovery inventory
+PASS LIA complete backup verification rechecks authorization between custody files
+PASS LIA restored original backup verifies again after corruption/refusal and releases inspection ownership
+PASS LIA same completed destination cannot be submitted again
+BOUNDARY synthetic identity/ports and isolated real SQLite/files only; protected UAC/system removal/reboot/SDK/RCS/field NOT_RUN; G01/G02 BLOCKED_EXTERNAL

@@ -164,14 +164,17 @@ public sealed partial class ParcelRepository : IDisposable
     IEnumerable<ParcelOperation> UpgradeOperations()
     {
         using var cmd = db.CreateCommand();
-        cmd.CommandText = StorageVersion >= 4 ? "SELECT body,NULL FROM parcel_operations UNION ALL SELECT body,body_hash FROM parcel_archives" : "SELECT body,NULL FROM parcel_operations";
+        cmd.CommandText = StorageVersion >= 4 ? "SELECT body,NULL,id,admission,observation FROM parcel_operations UNION ALL SELECT body,body_hash,id,admission,observation FROM parcel_archives" : "SELECT body,NULL,id,admission,observation FROM parcel_operations";
         using var r = cmd.ExecuteReader();
         while (r.Read())
         {
             maintenanceCancellation.ThrowIfCancellationRequested();
             var body = r.GetString(0);
             if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
-            yield return Wire.Decode<ParcelOperation>(body);
+            var operation = Wire.Decode<ParcelOperation>(body);
+            if (operation.Id != r.GetString(2) || operation.AdmissionId != r.GetString(3) || operation.ObservationId != r.GetString(4))
+                throw new InvalidDataException("Original operation identity differs from its stored owner; preserve original database");
+            yield return operation;
         }
     }
     public ParcelOperation[] Load()

@@ -81,6 +81,8 @@ public sealed partial class ParcelRepository
     {
         if (StorageVersion < 7 || operation.Wcs?.Request.IntegrationRequest is not { } numeric) return;
         var request = operation.Wcs.Request;
+        if (numeric.RequestId <= 0 || string.IsNullOrWhiteSpace(request.Id))
+            throw new InvalidDataException("Invalid original numeric request ID or request owner; retain original intent");
         using var c = db.CreateCommand(); c.Transaction = transaction;
         c.CommandText = "SELECT operation,request,request_hash FROM parcel_integration_id_owners WHERE id=$id"; c.Parameters.AddWithValue("$id", numeric.RequestId);
         using (var r = c.ExecuteReader())
@@ -99,8 +101,14 @@ public sealed partial class ParcelRepository
     {
         if (StorageVersion < 7) return;
         using var tx = db.BeginTransaction();
-        // SQL uniqueness remains permanent, including archived original owners.
-        foreach (var operation in UpgradeOperations()) RegisterIntegrationRequestOwner(operation, tx);
+        // A late invalid original rolls back every owner backfilled in this pass.
+        long maximum = 0;
+        foreach (var operation in UpgradeOperations())
+        {
+            RegisterIntegrationRequestOwner(operation, tx);
+            if (operation.Wcs?.Request.IntegrationRequest is { } numeric) maximum = Math.Max(maximum, numeric.RequestId);
+        }
         tx.Commit();
+        lastIntegrationRequestId = maximum;
     }
 }

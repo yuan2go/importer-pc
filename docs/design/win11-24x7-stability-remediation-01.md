@@ -1,5 +1,7 @@
 # 输入、故障与24×7运行责任
 
+当前补修见[STABILITY-AUDIT-FIXES-02](stability-audit-fixes-02.md)：原种子安装资格与业务运行资格分离、预检详情可达、启动历史完整校验合并。原SDK、外部合同和24h资格边界保持；本轮新源结果单独记录。
+
 本设计用于[稳定性整改工作包](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)，替代AQA01“接收时间仅在运行队列”的当前范围限制及旧部署脚本build26100门禁。既有四层、三个独立Application、唯一配置/业务账、原请求及原件保护保持。被替代的当前文字原字节见[归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)。
 
 ## 接收边界

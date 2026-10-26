@@ -38,6 +38,9 @@ public sealed partial class ParcelStartupMaintenance
         if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup")) throw new InvalidDataException("不支持的产品维护目的");
         if (copy is null)
         {
+            if (new[] { definition.Id + ".db-wal", definition.Id + ".db-shm", "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }
+                .Any(n => File.Exists(Path.Combine(state.Directory, n))))
+                throw new InvalidDataException("无数据库却存在日志或恢复/过载责任标记；保留原根并核对原发布，不能按未使用部署升级");
             if (Directory.Exists(state.Directory) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(state.Directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(state.Directory, n)).Any()))
                 throw new InvalidDataException("无数据库却存在原件；保留原根并核对原发布");
             return new(Wire.Hash(state.Hash + purpose + destination), purpose, true, "尚未创建业务库；保留原配置和数据根，未启动设备。", state.Hash, destination);

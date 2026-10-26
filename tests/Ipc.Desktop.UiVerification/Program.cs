@@ -42,7 +42,10 @@ static partial class Program
 #if LATENCY_MEASUREMENT
                 if (args.Contains("--latency-capacity")) { await VerifyLatencyCapacity(root, lines, args); desktop.Shutdown(0); return; }
 #endif
-                if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
+                if (args.Contains("--stability-seed-upgrade"))
+                    VerifyPreservedSeedUpgrade(Path.GetDirectoryName(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"))!, evidence,
+                        (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
+                else if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
                 else if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
                 else if (args.Contains("--reliability-logs")) await VerifyReliabilityLogs(root, evidence, lines);
                 else if (args.Contains("--win11-stability")) await VerifyStabilityNative(root, evidence, lines);

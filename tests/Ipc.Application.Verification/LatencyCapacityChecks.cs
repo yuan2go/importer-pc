@@ -52,16 +52,37 @@ static class LatencyCapacityChecks
         var observer = typeof(Database).GetProperty("BackupCopyBytesForVerification", BindingFlags.Static | BindingFlags.NonPublic)!;
         observer.SetValue(null, (Action<long>)(bytes => { delayCalls.Add(bytes); copying.TrySetResult(); Thread.Sleep(TimeSpan.FromSeconds(bytes / (8d * 1024 * 1024))); }));
         var backupPath = Path.Combine(root, "cancelled-backup.db");
-        var backup = runtime.BackupAsync(backupPath);
-        await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        var reading = Task.Run(runtime.SnapshotAsync);
-        await Task.Delay(100);
-        var readCompletedDuringIo = reading.IsCompleted;
-        factory.Release.Set();
-        await copying.Task.WaitAsync(TimeSpan.FromSeconds(15));
-        var stopClock = Stopwatch.StartNew(); var stop = runtime.StopAsync(default);
-        try { try { await backup; } catch (OperationCanceledException) { } await reading; await stop; }
-        finally { observer.SetValue(null, null); }
+        bool readCompletedDuringIo = false;
+        var stopClock = new Stopwatch();
+        try
+        {
+            Task<BusinessReceipt> backup;
+            var admissionWait = Stopwatch.StartNew();
+            while (true)
+            {
+                backup = runtime.BackupAsync(backupPath);
+                var firstOutcome = await Task.WhenAny(factory.Entered.Task, backup).WaitAsync(TimeSpan.FromSeconds(10));
+                if (ReferenceEquals(firstOutcome, factory.Entered.Task)) break;
+                var receipt = await backup; // A fault is immediately observed, never retried.
+                if (receipt.Status != "Rejected" || File.Exists(backupPath) || Directory.Exists(backupPath + ".recovery"))
+                    throw new InvalidOperationException("Unexpected pre-copy backup outcome: " + Wire.Encode(receipt));
+                // Background health work can legitimately still own the maintenance gate.
+                // Retry only a confirmed no-effect rejection, never an unknown/partial copy.
+                Console.WriteLine("OBSERVED no-effect backup rejection before pacing: " + receipt.Status);
+                if (admissionWait.Elapsed > TimeSpan.FromSeconds(5))
+                    throw new TimeoutException("Backup maintenance preconditions did not settle: " + Wire.Encode(receipt));
+                await Task.Delay(25);
+            }
+            var reading = Task.Run(runtime.SnapshotAsync);
+            await Task.Delay(100);
+            readCompletedDuringIo = reading.IsCompleted;
+            factory.Release.Set();
+            await copying.Task.WaitAsync(TimeSpan.FromSeconds(15));
+            stopClock.Start(); var stop = runtime.StopAsync(default);
+            try { await backup; } catch (OperationCanceledException) { }
+            await reading; await stop;
+        }
+        finally { factory.Release.Set(); observer.SetValue(null, null); }
         Check(readCompletedDuringIo, "ST03 snapshot gate is released across backup storage work", new { SnapshotCompletedBeforeBarrierRelease = readCompletedDuringIo });
         var partialBytes = File.Exists(backupPath) ? new FileInfo(backupPath).Length : 0;
         Check(partialBytes < sourceBytes, "ST03 stop cancellation interrupts the copying budget", new { SourceBytes = sourceBytes, PartialBytes = partialBytes, StopMs = stopClock.Elapsed.TotalMilliseconds, ThrottledBytesPerSecond = 8 * 1024 * 1024, DelayCalls = delayCalls, Scope = "Controlled managed storage pacing; not a physical slow-volume test", CompletedMarker = File.Exists(backupPath + ".recovery/COMPLETED.json") });

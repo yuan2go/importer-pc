@@ -195,7 +195,7 @@ static class ShortcutLifecycle
                     {
                         link.TargetPath = target;
                         var saveFailed = false;
-                        try { link.Save(Path.Combine(directory, "missing", "fail.lnk")); } catch (COMException) { saveFailed = true; }
+                        try { link.Save(Path.Combine(directory, "missing", "fail.lnk")); } catch (Exception error) when (error is COMException or DirectoryNotFoundException) { saveFailed = true; }
                         if (!saveFailed) throw new Exception("Missing parent unexpectedly saved");
                         link.Save(path);
                     }

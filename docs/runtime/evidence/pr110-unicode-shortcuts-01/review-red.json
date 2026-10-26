@@ -1,0 +1,22 @@
+{
+  "SourceParent": "980a1383e4589717c9a147746b6fd6271ef69088",
+  "P1": "FAIL on unmodified HEAD SelectedProviders with corrected fixture: selected single distinct TCP version1.0.1; actual descriptor1.1.0",
+  "P2": "FAIL exact healthy-reset restart budget=0",
+  "FirstSupervisorAttempt": "STOPPED_OWNED_PROBE: accelerated clock also classified later short crashing children as healthy; corrected fixture rate transition preserves monotonic continuity. Original log retained.",
+  "Logs": {
+    "pr110-review-red-p0-provider-identity.log": "2c6b9882bbe0aa88f28fc8662e61badf5133140f0d356fb07203de6ee74406e7",
+    "pr110-review-red-p0-supervisor.log": "b0493604b52dca0e7b0e6632bba4cf5eca80cb0b8e623b74c857655144668949",
+    "pr110-review-red2-supervisor.log": "bc571058354f77ba227173a0e63d0a4be855971c9b75a7d650fcce1862ffef2d",
+    "pr110-review-provider-red2.log": "b5c68a9e93f5ab78f69792627f7b581ff46ce12f395014c05c0b54c4a8eabc47",
+    "pr110-review-green-p0-provider-identity.log": "b5026efb7de398f3fae20e77f027f90936ebcec4b3d1724ed803ddf70894f44e",
+    "pr110-review-green2-p0-provider-identity.log": "32958c893eb8a17fba24d6c46983b79bbc407f8f7279a9f2c87e248867ea1a61",
+    "pr110-review-green3-p0-provider-identity.log": "a21a280cfe1f65b9e5eed335ae9f409a72a6d788bc1d90c7fc1e2a9c76b0ea1d",
+    "pr110-review-green3-p0-supervisor.log": "8b6ccb99a158eac917cc6d6d3328a06d01d31d4803b006f3fb889d08f190ffa2"
+  },
+  "FixtureCorrection": "SelectedProviders intentionally Distinct()s provider identities; two physical readers map to one descriptor. Initial assertion incorrectly required two selected provider rows, corrected before rerunning unchanged production source. First green attempt reused old incremental output because Copy-Item retained source timestamp; touch+rebuild obtained actual corrected DLL, no assertion bypass.",
+  "CorrectedWorktreeResults": {
+    "ProviderDeclaration": "PASS",
+    "HealthyBudget0": "PASS",
+    "HealthyBudget2": "PASS"
+  }
+}

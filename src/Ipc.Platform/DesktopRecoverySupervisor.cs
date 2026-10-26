@@ -175,7 +175,7 @@ public static class DesktopRecoverySupervisor
                             cancellationToken.ThrowIfCancellationRequested();
                             if (!Installed()) return 0; // Installer owns business-stop prerequisites; never kill/replay here.
                             if (!healthyReset && clock.GetElapsedTime(started) >= TimeSpan.FromSeconds(policy.HealthyResetSeconds))
-                            { state = state with { Launches = 0 }; Save(location, state); healthyReset = true; }
+                            { state = state with { Launches = 1 }; Save(location, state); healthyReset = true; }
                         }
                         await exited.ConfigureAwait(false);
                         var exit = child.ExitCode;

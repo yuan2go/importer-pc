@@ -95,15 +95,24 @@ static class P0Supervisor
         Check(result == 77, "unacknowledged process creation fails closed without a duplicate launch");
         var refused = false; try { DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(location); } catch (InvalidOperationException) { refused = true; }
         Check(refused && DesktopRecoverySupervisor.IsBlocked(location), "ordinary system repair cannot clear an uncertain original launch");
-        location = Location("healthy", new(RestartDelaySeconds: 1, MaximumRestarts: 0, HealthyResetSeconds: 60)); launches = 0;
-        result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start => { launches++; var process = Launch(launches == 1 ? "--sleep" : "--normal");
-            if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process; }, clock: new AcceleratedClock());
-        Check(result == 0 && launches == 2, "healthy interval resets restart budget using monotonic time despite wall-clock jumps");
+        foreach (var allowedRestarts in new[] { 0, 2 })
+        {
+            location = Location("healthy-" + allowedRestarts, new(RestartDelaySeconds: 1, MaximumRestarts: allowedRestarts, HealthyResetSeconds: 60)); launches = 0;
+            var healthyClock = new AcceleratedClock();
+            result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start => { launches++; if (launches > 1) healthyClock.SlowDown(); var process = Launch(launches == 1 ? "--sleep" : "--fail");
+                if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process; }, clock: healthyClock);
+            Check(result == 77 && launches == allowedRestarts + 1, "healthy interval preserves current child and exact restart budget=" + allowedRestarts);
+        }
     }
     sealed class AcceleratedClock : TimeProvider
     {
-        readonly long origin = Stopwatch.GetTimestamp();
-        public override long GetTimestamp() => (Stopwatch.GetTimestamp() - origin) * 120;
+        readonly object sync = new();
+        long prior = Stopwatch.GetTimestamp(), elapsed; int speed = 120;
+        public void SlowDown() { lock (sync) { _ = GetTimestamp(); speed = 1; } }
+        public override long GetTimestamp()
+        {
+            lock (sync) { var now = Stopwatch.GetTimestamp(); elapsed += (now - prior) * speed; prior = now; return elapsed; }
+        }
         public override DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow.AddYears(DateTime.UtcNow.Second % 2 == 0 ? 5 : -5);
     }
 }

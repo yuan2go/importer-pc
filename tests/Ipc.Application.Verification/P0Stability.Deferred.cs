@@ -10,6 +10,19 @@ using Ipc.Platform;
 
 static partial class SportmasterRcs
 {
+    public static async Task ProviderIdentity(string root)
+    {
+        var assembly = typeof(SportmasterFlow).Assembly;
+        var declaration = BusinessCompatibility.Read(assembly);
+        var launch = new BusinessLaunch(Path.Combine(root, "config"), Path.Combine(root, "data"), null, null);
+        await using var factory = new ParcelCapabilityFactory(launch, declaration, assembly);
+        var candidate = new SportmasterFlow().InitialConfiguration() with { Mode = RunMode.Simulation };
+        var selected = factory.SelectedProviders(candidate).Where(x => x.Implementation == "tcp-line").ToArray();
+        Console.WriteLine("ProviderIdentity=" + Wire.Encode(new { Selected = selected, DescriptorVersion = Ipc.Drivers.TcpLineObservationSource.Descriptor.Version }));
+        Check(ParcelBindings.Readers(candidate).Count() == 2 && selected.Length == 1 && selected.All(x => x.Version == Ipc.Drivers.TcpLineObservationSource.Descriptor.Version), "normal selected TCP identity equals shipped descriptor");
+        factory.ValidateStructure(candidate);
+        Check(true, "normal business compatibility accepts deferred TCP startup candidate without bypassing declaration");
+    }
     public static async Task DeferredMatrix(string workspace, string root)
     {
         var failures = new List<string>();

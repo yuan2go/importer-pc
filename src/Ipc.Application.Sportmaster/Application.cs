@@ -12,7 +12,7 @@ public sealed class SportmasterFlow : FlowDefinition
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
-            new("integration", "sportmaster-rcs", "1.3.3", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
+            new("integration", "sportmaster-rcs", "1.3.4", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
             MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
@@ -25,8 +25,24 @@ public sealed class SportmasterFlow : FlowDefinition
     public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>
-        op.Wcs?.State == StageState.Unknown ? [ParcelStage.Wcs] : [];
+        op.Wcs?.State == StageState.Unknown && !AllowsNextAdmissionAfter(op) ? [ParcelStage.Wcs] : [];
     public override bool MainSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.WcsRejected;
+    public override bool AllowsNextAdmissionAfter(ParcelOperation op) => op.State == ParcelState.WcsUnknown &&
+        op.Plc is null && (op.Capture is null or { State: StageState.Accepted }) &&
+        (op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached || op.Upload is null or { State: StageState.Accepted or StageState.Rejected or StageState.Cancelled }) &&
+        op.Wcs is { State: StageState.Unknown, Attempts: 1, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
+        stage.Replies.All(r => r.BusinessAccepted is null) &&
+        (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
+         stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true);
+    public override int RequestTimeoutMs(ParcelOperation op, ParcelStage stage)
+    {
+        if (stage != ParcelStage.Wcs || op.Wcs?.Request.Binding is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding)
+            return base.RequestTimeoutMs(op, stage);
+        if (binding.Parameters.TryGetValue("request-timeout-ms", out var value) &&
+            int.TryParse(value, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var timeout) && timeout is >= 100 and <= 30000)
+            return timeout;
+        return binding.Version == "1.3.4" ? 5000 : base.RequestTimeoutMs(op, stage);
+    }
     public override ParcelOperation RestoreMainProjection(ParcelOperation op)
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;

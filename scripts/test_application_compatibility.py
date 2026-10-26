@@ -43,7 +43,7 @@ class CompatibilityTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
         versions = {'reference.parcel-capabilities': ('2.2.8', '2.2.7'),
                     'reference.barcode': ('1.3.6', '1.3.5'),
-                    'sportmaster.rcs-task': ('1.3.3', '1.3.2'),
+                    'sportmaster.rcs-task': ('1.3.4', '1.3.3'),
                     'hikrobot.idmvs-reader': ('1.0.4', '1.0.3')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())

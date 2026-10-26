@@ -1,0 +1,48 @@
+{
+  "BaselineCommit": "f395f46dd9afed31a58a92ce4d96a909197b52aa",
+  "Scope": "2026-10-26 authorized timeout rescan policy; local Windows isolated Simulation with TCP and loopback HTTP; no real RCS or installation. Final working-tree product sources were built and checked before the follow-up commit.",
+  "Files": [
+    {
+      "Path": "rcs-timeout-errors.log",
+      "Sha256": "d85e07002ebf36fd71d152e30068d3cc0e8bb336c4e953e2c2a429d2f7bd7bc4"
+    },
+    {
+      "Path": "p0-rcs.log",
+      "Sha256": "8f95af6ae9f0d041f58cb2927997416153bf9fb800aa09a1a60b444c0f6c7951"
+    },
+    {
+      "Path": "p0-unknown-restart.log",
+      "Sha256": "eb08d61e167dbbb457f5481f018882f41f2ef1a47082c63d7ac1647c9527a81f"
+    },
+    {
+      "Path": "p0-deferred.log",
+      "Sha256": "442de67dad962feac10342ea781f9fa4448f18b78c5b13b90054c65cb88db780"
+    },
+    {
+      "Path": "time-storage-fault-checks.log",
+      "Sha256": "e795466a42d12d486d75e0b55f6801f5651d9c0568300e56f76d9265ee32d6dd"
+    },
+    {
+      "Path": "build-core.log",
+      "Sha256": "ea19f5593f9ef7ceb66566472c54f67130dda13579f5b7283ff3512046e4c0c2"
+    },
+    {
+      "Path": "build-wpf.log",
+      "Sha256": "593e33c33e8af43e1e9d3c466262d4805b2023e53af29172d5aa82029eb6b2f5"
+    }
+  ],
+  "BuiltAssemblies": [
+    {
+      "Path": "src/Ipc.Application.Sportmaster/bin/Release/net10.0/Ipc.Application.Sportmaster.dll",
+      "Sha256": "8ec67a483aefa9751c665840e02f399fa7889b54905b1f052fd4df4a6e93c14b"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll",
+      "Sha256": "54d85ecac1ec8560614d8c8a72bd92ee720e9d33b31fe52ccdac8d4fc5f7f7a3"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll",
+      "Sha256": "77576ad491bc1a106994453db7796e425a6160c25527f6f6280d7965e49fe4dc"
+    }
+  ]
+}

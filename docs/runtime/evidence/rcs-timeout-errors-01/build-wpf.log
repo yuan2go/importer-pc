@@ -1,0 +1,39 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Platform\Ipc.Platform.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Components\Ipc.Components.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 805 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 798 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 816 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 16 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Presentation.Wpf\Ipc.Presentation.Wpf.csproj (用时 5 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 18 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 16 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 42 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 50 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 52 毫秒)。
+  已还原 D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 51 毫秒)。
+  Ipc.Platform -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Presentation.Wpf -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Presentation.Wpf\bin\Release\net10.0-windows\Ipc.Presentation.Wpf.dll
+  Ipc.Application.Contracts -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Reference.Protocol -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Application.ParcelFlow -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Drivers -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Components -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Application.Supply -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Integrations -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.Sportmaster -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Assembly -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Assembly\bin\Release\net10.0\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> D:\projects\worktrees\rcs-timeout-errors-01\src\Ipc.Desktop\bin\Release\net10.0-windows\Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:14.54

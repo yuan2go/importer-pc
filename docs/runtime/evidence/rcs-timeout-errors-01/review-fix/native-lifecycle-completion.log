@@ -1,0 +1,16 @@
+PASS LIA-NATIVE native history uses the full real Application query contract and exposes previous-page navigation
+PASS LIA-NATIVE native business label maps to stable ID and refresh cannot erase edited conditions
+CAPTURE lia-history-edited-standard: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE minimum native history viewport retains a full result row with applied-range feedback
+CAPTURE lia-history-edited-minimum: 800x420 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE expired real grant hides parameter content with an explanation and protects the same draft
+CAPTURE lia-mode-expired: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE reauthorization returns to the same native editor and context
+PASS LIA-NATIVE candidate B is saved into the existing pending ledger
+FAIL System.TimeoutException: LIA native close did not complete; stopCalls=0; reopen=0; message=尚未进入配置生效流程：先核对原保存结果，只有已保存候选可进入生效流程。
+   at Program.<>c__DisplayClass14_1.<<VerifyLifecycleNative>g__CloseCompleted|4>d.MoveNext() in D:\w\pr116-release-20261026\tests\Ipc.Desktop.UiVerification\LifecycleNative.cs:line 94
+--- End of stack trace from previous location ---
+   at Program.VerifyLifecycleNative(String root, String evidence, List`1 lines) in D:\w\pr116-release-20261026\tests\Ipc.Desktop.UiVerification\LifecycleNative.cs:line 68
+   at Program.VerifyLifecycleNative(String root, String evidence, List`1 lines) in D:\w\pr116-release-20261026\tests\Ipc.Desktop.UiVerification\LifecycleNative.cs:line 85
+   at Program.VerifyLifecycleNative(String root, String evidence, List`1 lines) in D:\w\pr116-release-20261026\tests\Ipc.Desktop.UiVerification\LifecycleNative.cs:line 88
+   at Program.<>c__DisplayClass25_0.<<Main>b__1>d.MoveNext() in D:\w\pr116-release-20261026\tests\Ipc.Desktop.UiVerification\Program.cs:line 48

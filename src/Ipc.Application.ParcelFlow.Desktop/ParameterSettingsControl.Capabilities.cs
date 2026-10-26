@@ -147,6 +147,7 @@ public sealed partial class ParameterSettingsControl
         "entity.mode" => "仅观察只显示扫码信息，不创建作业；确认相机报文与包裹一一对应后，才可使用关联模式。", "queue.capacity" => "相机读码消息的缓冲上限；溢出后停止接收，须检查并显式重连。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
         "heartbeat-interval-seconds" => "向RCS报告供包台及相机在线状态的间隔；范围1～3600秒，保存并重启后生效。",
+        "request-timeout-ms" => "单次取格口请求的总时限，包含连接和响应读取；默认5000毫秒，范围100～30000毫秒，保存并重启后生效。超时后提示重新扫描。",
         "specified-chute" => "不指定时由RCS分配格口；只有现场业务要求固定格口时才选择指定，并填写格口编号。",
         "chute-code" => "请求RCS使用的目标格口编号；仅选择指定格口时发送，最终结果仍以RCS回包为准。",
         "source" => "RCS约定的请求来源标记；用于识别调用方，不是服务地址或供包台编号。",

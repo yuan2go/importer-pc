@@ -1,0 +1,47 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-3f2b58451f22414298edae85b9c48665
+PASS RCS20: request timeout schema has units, default and bounds
+PASS RCS20: invalid component timeout refused: 0
+PASS RCS20: invalid component timeout refused: 99
+PASS RCS20: invalid component timeout refused: 30001
+PASS RCS20: invalid component timeout refused: 1.5
+PASS RCS20: invalid component timeout refused: -1
+PASS RCS20: invalid component timeout refused: bad
+PASS RCS20: component times out without a caller deadline and sends only once
+PASS RCS20: caller cancellation is not mistaken for component timeout
+PASS RCS20: body-read timeout retains the original prefix and no assigned chute
+PASS RCS20: configured RCS deadline overrides the shorter generic service budget and retains one attempt
+PASS RCS20: omitted new-component timeout matches its displayed default while predecessor bindings keep their original budget
+PASS RCS20: timeout guidance is visible in the work area with no stale chute
+PASS RCS20: timeout does not repeat the POST and a late server response cannot assign a chute
+PASS RCS20: valid assignment still displays its exact chute
+PASS RCS20: a rejected next parcel replaces the previous successful chute with its own message
+PASS RCS20: unpack never displays an assignment
+PASS RCS20: unpack shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: unpack does not use the timeout-only rescan exception
+PASS RCS20: reject never displays an assignment
+PASS RCS20: reject shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: missing-chute never displays an assignment
+PASS RCS20: missing-chute shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: missing-chute does not use the timeout-only rescan exception
+PASS RCS20: blank-chute never displays an assignment
+PASS RCS20: blank-chute shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: blank-chute does not use the timeout-only rescan exception
+PASS RCS20: malformed never displays an assignment
+PASS RCS20: malformed shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: malformed does not use the timeout-only rescan exception
+PASS RCS20: wrong-id never displays an assignment
+PASS RCS20: wrong-id shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: wrong-id does not use the timeout-only rescan exception
+PASS RCS20: application/component deadline race preserves the response prefix and still shows rescan guidance
+PASS RCS20: other position accepts an independent scan while the first request is waiting
+PASS RCS20: a confirmed timeout releases admission without declaring the old request successful or settled
+PASS RCS20: operator can rescan immediately while the timed-out record still has no chute
+PASS RCS20: receipt conflicts and other applications do not inherit the RCS timeout exception
+PASS RCS20: same-barcode rescan creates a fresh durable identity and request ID, leaving the old request and one send untouched
+PASS RCS20: new-scan audit links the retained timed-out operation without rewriting its original request
+PASS RCS20: late first response cannot overwrite the new scan's chute or update its retained timeout record
+PASS RCS20: history retains the timeout and subsequent success as separate requests
+PASS RCS20: restart retains both requests and normal startup pause without replaying the timeout
+PASS RCS20: explicit resume accepts the retained timeout without clearing it
+PASS RCS20: new scans after restart advance the durable request ID while the original timeout remains unchanged
+PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE

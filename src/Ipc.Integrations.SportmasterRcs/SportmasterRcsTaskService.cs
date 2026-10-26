@@ -96,6 +96,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         }
         try
         {
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
+            if (options.RequestTimeoutMs is { } timeoutMs) deadline.CancelAfter(timeoutMs);
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
                 Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,
@@ -103,14 +105,17 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage response;
-            try { response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false); }
+            try { response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, deadline.Token).ConfigureAwait(false); }
+            catch (OperationCanceledException e) when (!token.IsCancellationRequested)
+            { throw new TimeoutException("RCS请求超时，请重新扫描。", e); }
             catch (HttpRequestException e) { throw new IOException("RCS HTTP delivery/outcome is unknown", e); }
             using (response)
             {
-                var (bytes, complete) = await ReadBoundedAsync(response.Content, token).ConfigureAwait(false);
+                var (bytes, complete) = await ReadBoundedAsync(response.Content, deadline.Token).ConfigureAwait(false);
                 var original = new IntegrationHttpResponse((int)response.StatusCode, Convert.ToBase64String(bytes), Convert.ToHexString(SHA256.HashData(bytes)), complete);
                 StageReply Unknown(string detail) => new(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, detail,
                     ReceiptTimeForVerification.GetUtcNow(), HttpResponse: original);
+                if (deadline.IsCancellationRequested && !token.IsCancellationRequested) return Unknown("RCS_REQUEST_TIMEOUT: RCS请求超时，请重新扫描。");
                 if (!complete) return Unknown("RCS response incomplete or exceeds quota; retained bytes are a prefix, outcome unknown");
                 if (!response.IsSuccessStatusCode) return Unknown("RCS HTTP " + (int)response.StatusCode + "; no authoritative business outcome");
                 try
@@ -120,6 +125,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                         accepted ? "RCS destination assigned; physical completion is unconfirmed" : "RCS " + destination.Code + ": " + destination.Message,
                         ReceiptTimeForVerification.GetUtcNow(), Destination: destination, HttpResponse: original);
                 }
+                catch (RcsResponseException e) { return Unknown("RCS_RESPONSE_ERROR: " + e.Message); }
                 catch (Exception e) when (e is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
                 { return Unknown("Invalid/unmatched RCS response: " + e.GetType().Name + "; original response retained, outcome unknown"); }
             }

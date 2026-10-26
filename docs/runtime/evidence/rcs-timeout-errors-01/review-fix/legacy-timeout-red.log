@@ -1,0 +1,29 @@
+EvidenceRoot=D:\deliveries\pr116-merge-20261026\test-temp\ipc17-verification-0874ae0572e04bf196ca72a32bf64efe
+PASS RCS20: request timeout schema has units, default and bounds
+Unhandled exception. System.TimeoutException: RCS请求超时，请重新扫描。
+ ---> System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+ ---> System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+ ---> System.IO.IOException: Unable to read data from the transport connection: 由于线程退出或应用程序请求，已中止 I/O 操作。.
+ ---> System.Net.Sockets.SocketException (995): 由于线程退出或应用程序请求，已中止 I/O 操作。
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+   at System.Net.Http.HttpConnection.InitialFillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|118_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService.RequestDestinationAsync(FrozenRequest request, CancellationToken token) in D:\w\pr116-release-20261026\src\Ipc.Integrations.SportmasterRcs\SportmasterRcsTaskService.cs:line 108
+   --- End of inner exception stack trace ---
+   at Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService.RequestDestinationAsync(FrozenRequest request, CancellationToken token) in D:\w\pr116-release-20261026\src\Ipc.Integrations.SportmasterRcs\SportmasterRcsTaskService.cs:line 110
+   at SportmasterRcs.LegacyRequestTimeoutChecks(String workspace) in D:\w\pr116-release-20261026\tests\Ipc.Application.Verification\RcsTimeoutErrors.cs:line 145
+   at SportmasterRcs.LegacyRequestTimeoutChecks(String workspace) in D:\w\pr116-release-20261026\tests\Ipc.Application.Verification\RcsTimeoutErrors.cs:line 146
+   at SportmasterRcs.LegacyRequestTimeoutChecks(String workspace)
+   at SportmasterRcs.TimeoutErrorChecks(String workspace, String root) in D:\w\pr116-release-20261026\tests\Ipc.Application.Verification\RcsTimeoutErrors.cs:line 20
+   at Program.<Main>$(String[] args) in D:\w\pr116-release-20261026\tests\Ipc.Application.Verification\Program.cs:line 85
+   at Program.<Main>(String[] args)

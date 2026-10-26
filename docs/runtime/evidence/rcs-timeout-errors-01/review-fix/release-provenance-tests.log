@@ -1,0 +1,10 @@
+test_actual_branch_and_complete_commit_recorded (test_release_provenance.ReleaseProvenanceTests.test_actual_branch_and_complete_commit_recorded) ... ok
+test_detached_never_mislabeled_as_main (test_release_provenance.ReleaseProvenanceTests.test_detached_never_mislabeled_as_main) ... ok
+test_english_filename_contains_version_without_commit (test_release_provenance.ReleaseProvenanceTests.test_english_filename_contains_version_without_commit) ... ok
+test_records_are_identical_at_installed_entry_points (test_release_provenance.ReleaseProvenanceTests.test_records_are_identical_at_installed_entry_points) ... ok
+test_wrong_branch_and_source_refused (test_release_provenance.ReleaseProvenanceTests.test_wrong_branch_and_source_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 10.853s
+
+OK

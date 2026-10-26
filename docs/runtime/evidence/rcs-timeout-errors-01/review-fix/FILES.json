@@ -1,0 +1,127 @@
+{
+  "At": "2026-10-26T21:44:34.1271834+08:00",
+  "BaselinePRHead": "d8079bd747a6dda737997722f38b30489ad38c86",
+  "TestedSourceFiles": [
+    {
+      "Path": "src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs",
+      "SHA256": "b8ae24eeeed2cc217aad7c309869cc1ddc13531643e3f51172165925eca96a31"
+    },
+    {
+      "Path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
+      "SHA256": "253870c0832e357e7ad513076fd987fe5f2f41844881a1bfddfa6423265af71f"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/RcsTimeoutErrors.cs",
+      "SHA256": "e0be1d12868451ebba48bfcd51d10fd2d8c39a285e7c8e8306dba54090f348ec"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
+      "SHA256": "e515f4491fe0f847844df35b4112dcde7953de03e3a3881d0deb1481b21c0ba1"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/TaskHierarchyChain.cs",
+      "SHA256": "a169e1c69d72b94c5b9f0da16c601e90549e118cb516a073c70c48c5064b2cc6"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/LifecycleNative.cs",
+      "SHA256": "35f2f90c7a0ffcc0a61764b4dad9c5f3a596df3b31066043171714d21df54550"
+    }
+  ],
+  "PassLines": {
+    "rcs-timeout-errors": 48,
+    "rcs-heartbeat": 27,
+    "p0-rcs": 7,
+    "p0-unknown-restart": 3,
+    "lifecycle-ux": 213,
+    "native-task-hierarchy": 239,
+    "native-lifecycle-final-1": 18,
+    "native-lifecycle-final-2": 18
+  },
+  "ExpectedFailureEvidence": {
+    "native-lifecycle-completion.log": "REPRODUCED_TEST_PRECONDITION_RACE_STOP_CALLS_ZERO",
+    "legacy-timeout-red.log": "REPRODUCED_BEFORE_ADAPTER_FIX"
+  },
+  "Scope": "Isolated synthetic identity/ports, loopback HTTP, SQLite and actual WPF windows; no installation, protected machine policy provisioning, SDK/device or field acceptance",
+  "Files": [
+    {
+      "Path": "legacy-timeout-red.log",
+      "Bytes": 3772,
+      "SHA256": "1abeca7476e290d891e7bb159b5adefe21561fd605bc449f0fc812227cb70dfc"
+    },
+    {
+      "Path": "native-lifecycle-completion.log",
+      "Bytes": 1889,
+      "SHA256": "f4a549668e15de0301513ca440ccd6d18a2e774ec6cc8d0ed1d6efb3bfde06b4"
+    },
+    {
+      "Path": "rcs-timeout-errors.log",
+      "Bytes": 4131,
+      "SHA256": "39fa648d1c4b4cd54db13ba6fb2007163461faff4f0b63983d760e5c00cc5f1b"
+    },
+    {
+      "Path": "rcs-heartbeat.log",
+      "Bytes": 2037,
+      "SHA256": "a6fa8c34b99a0ee8b6526b999331231a29937afc402e3725fa3037201769d8a6"
+    },
+    {
+      "Path": "p0-rcs.log",
+      "Bytes": 563,
+      "SHA256": "b35e0bc1baa08930e099c03029944c59bb4c6d84e139dda727a37ee64318061f"
+    },
+    {
+      "Path": "p0-unknown-restart.log",
+      "Bytes": 355,
+      "SHA256": "ded16f26fc23b9512711e523db0d6867b635d124067520a6c9b8e328fbdf8dee"
+    },
+    {
+      "Path": "lifecycle-ux.log",
+      "Bytes": 14915,
+      "SHA256": "1dc8790bc96279855b7b6db365713993214b69867036277b4981ddce155c58d1"
+    },
+    {
+      "Path": "compatibility-python.log",
+      "Bytes": 3138,
+      "SHA256": "f84fc1970b543ce9704e32f02a8b290af2cc8a90515e1ddf48b60adc510efb84"
+    },
+    {
+      "Path": "core-green-build.log",
+      "Bytes": 2128,
+      "SHA256": "3d632e3854f77a538815f0799839a0728bbf136a47394a8824ef3abd05dc3907"
+    },
+    {
+      "Path": "desktop-build.log",
+      "Bytes": 2853,
+      "SHA256": "3ce8e0a4efc0b11090831e3ff20e572ed146edbdc2af74145a731a3f63e4c769"
+    },
+    {
+      "Path": "native-build.log",
+      "Bytes": 2181,
+      "SHA256": "06cf16d063573d45e31d7b4f4619faae77c98eb88c6582278004f32eceeb6268"
+    },
+    {
+      "Path": "native-task-hierarchy.log",
+      "Bytes": 26083,
+      "SHA256": "8d79265b19ac9ff404b4fd17fab404d80a130d81499466e9f0356f3a0907338c"
+    },
+    {
+      "Path": "native-lifecycle-final-1.log",
+      "Bytes": 2728,
+      "SHA256": "0a981cc4d118b615c5da62cd433e1a0419e93f233a7b02d8390b8481d6b312f5"
+    },
+    {
+      "Path": "native-lifecycle-final-2.log",
+      "Bytes": 2728,
+      "SHA256": "0a981cc4d118b615c5da62cd433e1a0419e93f233a7b02d8390b8481d6b312f5"
+    },
+    {
+      "Path": "installer-package-tests.log",
+      "Bytes": 1066,
+      "SHA256": "6d261ead60eade80532aa02da23f4565e87b91e219b25be32a6f1d4a69baf955"
+    },
+    {
+      "Path": "release-provenance-tests.log",
+      "Bytes": 851,
+      "SHA256": "3d620451123c2555a8cd702425fbfa2ce3d71ea3c9132fe32b8d090a4c1620fa"
+    }
+  ]
+}

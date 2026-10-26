@@ -180,12 +180,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         {
             if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
             {
-                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version is not ("1.3.2" or "1.3.3") || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
+                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version is not ("1.3.2" or "1.3.3" or "1.3.4") || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
                     throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
                 continue;
             }
 #if !DIRECTPLC
-            if (b.Package is null && b.Implementation == "sportmaster-rcs" && (b.Version is "1.3.2" or "1.3.3") && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
+            if (b.Package is null && b.Implementation == "sportmaster-rcs" && (b.Version is "1.3.2" or "1.3.3" or "1.3.4") && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
                 _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
                 if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null) throw new InvalidDataException("RCS生产部署资格尚未完成");
@@ -301,8 +301,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         using var stream = typeof(ParcelCapabilityFactory).Assembly.GetManifestResourceStream("Ipc.BuiltInRcs.Parameters.json") ?? throw new InvalidDataException("内置RCS参数描述缺失");
         using var reader = new StreamReader(stream);
         var rcsParameters = Wire.Decode<ParameterField[]>(reader.ReadToEnd());
-        // Existing effective candidates keep their binding identity; new candidates use 1.3.3.
-        providers = providers.Concat(new[] { "1.3.3", "1.3.2" }.Select(version => new CapabilityDescriptor("integration", "sportmaster-rcs", version, "SPORTMASTER-RCS-SORTER-v1", rcsParameters, new(Query: false))));
+        // Existing effective candidates keep their binding identity; new candidates use 1.3.4.
+        providers = providers.Concat(new[] { "1.3.4", "1.3.3", "1.3.2" }.Select(version => new CapabilityDescriptor("integration", "sportmaster-rcs", version, "SPORTMASTER-RCS-SORTER-v1", version == "1.3.4" ? rcsParameters : rcsParameters.Where(p => p.Key != "request-timeout-ms").ToArray(), new(Query: false))));
 #endif
         return providers.ToArray();
     }

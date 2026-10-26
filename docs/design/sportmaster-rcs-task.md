@@ -1,3 +1,5 @@
+> 2026-10-26当前超时与异常展示增量见[工作包](../work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)：1.3.4增加组件请求超时、拆包/message提示。用户已确认明确超时后立即允许新扫码申请；原Unknown请求及记录保留，其他未知结果守卫保持。下文旧版本及测试范围保持历史身份。
+
 > 2026-10-20心跳增量：用户新增 `sorter.task.station_heartbeat`，默认5秒、组件参数可改；系统 `StationCode` 与Reader驱动 `bcr-code` 为心跳编码来源。实现/配置/验证边界见[心跳说明](../runtime/rcs-heartbeat-01.md)。下文“首项只实现取格口”保留01形成时范围，不限制本次新增命令；Query仍为false，旧请求原件不改。
 
 # Sportmaster RCS 分拣任务服务 · 01

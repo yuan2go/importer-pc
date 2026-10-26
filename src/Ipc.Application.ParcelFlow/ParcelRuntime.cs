@@ -449,7 +449,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
-        Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity", input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+        var preceding = DisplayedOperation(position);
+        var admissionDetail = preceding is not null && ReleasedForNextAdmission(preceding)
+            ? Wire.Encode(new { Policy = "New scan after retained original request; original is not replayed", PriorOperation = preceding.Id })
+            : "One admitted parcel; code is not entity identity";
+        Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await CaptureOriginalAsync(op).ConfigureAwait(false);

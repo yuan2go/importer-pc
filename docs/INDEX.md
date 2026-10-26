@@ -1,3 +1,5 @@
+> 2026-10-26 RCS组件超时与异常展示：新增1.3.4、组件请求时限及拆包/message投影；明确超时后立即允许新扫码申请，原请求Unknown及记录保留。见[工作包](work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)与[运行及验证](runtime/rcs-timeout-errors-01.md)。历史接口及验收身份保留。
+
 # 文档索引
 
 本索引区分当前规则、进行中的整合和历史证据。2026-10-26 起点 main 为 `a8cd4314`；最新整合状态只在[本轮工作包](work-packages/WP-IPC-INTEGRATION-20261026.md)记录，旧 PASS 不随合并迁移。

@@ -7,8 +7,9 @@ using Ipc.Assembly;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
+if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-var root = (args.Contains("--management-mode") || args.Contains("--operator-administration")) ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
@@ -56,7 +57,7 @@ if (args.Contains("--parameter-inheritance")) { await ParameterInheritance.Run(w
 if (args.Contains("--aqa01-crash-child")) { var i = Array.IndexOf(args, "--aqa01-crash-child"); await ArchitectureQualityRemediation.CrashChild(workspace, args[i + 1], args[i + 2]); return; }
 if (args.Contains("--architecture-quality-remediation")) { await ArchitectureQualityRemediation.Run(workspace, root); return; }
 if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); AdministratorBoundary.Run(args[Array.IndexOf(args, "--administrator-broker-boundary") + 1], root); return; }
-if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) { await OperatorAdministration.Run(workspace, root); return; }
+if (args.Contains("--management-mode")) { await OperatorAdministration.Run(workspace, root); return; }
 if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); InstallerOptions.Run(root); return; }
 if (args.Contains("--shortcut-lifecycle")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); ShortcutLifecycle.Run(root); return; }
@@ -95,6 +96,8 @@ if(args.Contains("--legacy-cut-child")){var i=Array.IndexOf(args,"--legacy-cut-c
 if(args.Contains("--legacy-custody-upgrade")){var i=Array.IndexOf(args,"--legacy-custody-upgrade");await ArchitectureQuality.LegacyCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]),Path.GetFullPath(args[i+2]));return;}
 if (args.Contains("--raw-custody-child")) { var i=Array.IndexOf(args,"--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace,args[i+1]); return; }
 if (args.Contains("--parcel-recovery-p2")) { await ArchitectureQuality.RecoveryP2Checks(workspace,root); return; }
+if (args.Contains("--history-session-contract")) { await HistorySessionContractChecks.Run(); return; }
+if (args.Contains("--current-offline-recovery-child")) { var i = Array.IndexOf(args, "--current-offline-recovery-child"); await ArchitectureQuality.CurrentOfflineRecoveryChild(args[i+1], args[i+2], args[i+3], args[i+4]); return; }
 if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace,root); return; }
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
@@ -112,7 +115,7 @@ if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
-ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json"))) with { SchemaVersion = 2, Topology = null };
+ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
 async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
 {

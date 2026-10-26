@@ -13,13 +13,13 @@ static partial class ArchitectureQuality
         await using (var app = await Open(Config("sportmaster"), "health-identity", f => faults = new(f) { WrongHealth = true }))
         {
             var s = await app.SnapshotAsync(); var vm = new ParcelViewModel(app, "Quality", "Sportmaster"); await vm.RefreshAsync();
-            Check(s.Health.Single(h => h.InstanceId == s.Configuration.Effective.Wcs!.InstanceId).Ready == false && s.Positions!.All(p => !p.Admit) && vm.Health.Contains(s.Configuration.Effective.Wcs!.InstanceId + " 未就绪"), "AQ06 wrong health instance cannot assert readiness for configured WCS");
+            Check(s.Health.Single(h => h.InstanceId == s.Configuration.Effective.Wcs!.InstanceId).Ready == false && s.Positions!.All(p => !p.Admit) && vm.Health.Contains(s.Configuration.Effective.Wcs!.InstanceId + " · 未就绪或确认已过期"), "AQ06 wrong health instance cannot assert readiness for configured WCS");
         }
         await using (var app = await Open(Config("sportmaster"), "health-expiry", f => new FaultFactory(f) { ExpireHealth = true }))
         {
             await Task.Delay(160); var s = await app.SnapshotAsync(); var h = s.Health.Single(x => x.InstanceId == s.Configuration.Effective.Wcs!.InstanceId);
             var vm = new ParcelViewModel(app, "Quality", "Sportmaster"); await vm.RefreshAsync();
-            Check(!h.Ready && h.ValidUntil <= DateTimeOffset.UtcNow && vm.Health.Contains(h.InstanceId + " 未就绪"), "AQ06 expired source confirmation keeps timestamps but projects unavailable in actual ViewModel");
+            Check(!h.Ready && h.ValidUntil <= DateTimeOffset.UtcNow && vm.Health.Contains(h.InstanceId + " · 未就绪或确认已过期"), "AQ06 expired source confirmation keeps timestamps but projects unavailable in actual ViewModel");
         }
         await using (var app = await Open(Config("sportmaster"), "ui-target"))
         {

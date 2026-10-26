@@ -27,14 +27,17 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     TaskCompletionSource? drained;
     public string InstanceId => options.Binding.InstanceId;
 
-    public SportmasterRcsTaskService(CapabilityBinding binding)
+    public SportmasterRcsTaskService(CapabilityBinding binding) : this(binding, null) { }
+    internal SportmasterRcsTaskService(CapabilityBinding binding,
+        Func<SocketsHttpConnectionContext, CancellationToken, ValueTask<Stream>>? connect)
     {
         options = new(binding);
         client = new(new SocketsHttpHandler
         {
             AllowAutoRedirect = false, UseCookies = false, UseProxy = false,
             AutomaticDecompression = DecompressionMethods.None, MaxConnectionsPerServer = 8,
-            ConnectTimeout = TimeSpan.FromSeconds(10), PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+            // Destination and heartbeat each supply one finite cancellation budget, including connect.
+            ConnectTimeout = Timeout.InfiniteTimeSpan, ConnectCallback = connect, PooledConnectionLifetime = TimeSpan.FromMinutes(5)
         }) { Timeout = Timeout.InfiniteTimeSpan };
     }
     public Task StartAsync(CancellationToken token)
@@ -86,8 +89,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         var frozen = request.IntegrationRequest ?? throw new InvalidDataException("Persist the RCS wire intent before delivery");
         if (frozen.RequestId <= options.RequestIdBase || frozen.ContentType != "application/json" ||
             Wire.Hash(frozen.Body) != frozen.BodyHash || Encoding.UTF8.GetByteCount(frozen.Body) > 65536 ||
-            (PrepareRequest(request, frozen.RequestId - options.RequestIdBase) != frozen &&
-             (options.LegacyQuantity is null || RcsDestinationProtocol.Prepare(options, request, frozen.RequestId - options.RequestIdBase, verifyLegacyIntent: true) != frozen)))
+            PrepareRequest(request, frozen.RequestId - options.RequestIdBase) != frozen)
             throw new InvalidDataException("RCS frozen wire intent differs from original payload/configuration");
         lock (lifecycle)
         {
@@ -97,7 +99,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         try
         {
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
-            if (options.RequestTimeoutMs is { } timeoutMs) deadline.CancelAfter(timeoutMs);
+            deadline.CancelAfter(options.RequestTimeoutMs);
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
                 Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,

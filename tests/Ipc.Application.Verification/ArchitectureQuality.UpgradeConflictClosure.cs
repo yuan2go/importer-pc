@@ -29,11 +29,11 @@ static partial class ArchitectureQuality
         try { await using var unexpected=await Open(c,name); }
         catch(InvalidDataException ex) { refusal=ex.Message; }
         Console.WriteLine($"DB{storageVersion} preflight: "+Wire.Encode(new {name,refusal,Version=ParcelRepository.ReadStorageVersion(file,c.ApplicationId),Changed=files.Where(p=>!File.Exists(p.Key)||Wire.FileHash(p.Key)!=p.Value).Select(p=>Path.GetRelativePath(DirectoryFor(name,c),p.Key)).ToArray()}));
-        Check(refusal?.Contains("LegacyUnsettled")==true && ParcelRepository.ReadStorageVersion(file,c.ApplicationId)==storageVersion,
+        Check(refusal?.Contains("不受支持")==true && ParcelRepository.ReadStorageVersion(file,c.ApplicationId)==storageVersion,
             $"{name}: unresolved DB{storageVersion} refuses BEFORE future reader marker, not after provider construction");
         Check(files.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),name+": refusal preserves original DB/config/raw/image bytes");
-        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId,storageVersion); Check(old.StorageVersion==storageVersion,name+": matching DB4 reader remains usable"); }
-        catch(InvalidDataException ex) { Check(false,name+": old reader stranded: "+ex.Message); }
+        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId,storageVersion); Check(false,name+": historical writer must refuse"); }
+        catch(InvalidDataException) { Check(files.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),name+": historical writer rejects without changing custody"); }
     }
     static async Task UpgradePreflightChecks()
     {
@@ -74,13 +74,14 @@ static partial class ArchitectureQuality
             writer.Open();using var q=writer.CreateCommand();q.CommandText="PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; UPDATE parcel_meta SET revision=revision+1";q.ExecuteNonQuery();
             var dbHash=StableOpenFixtureHash(walDb);var walHash=StableOpenFixtureHash(walDb+"-wal");var configHash=Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"));
             try {await using var unexpected=await Open(changed,walName);Check(false,"nonempty WAL unresolved upgrade must refuse");}
-            catch(InvalidDataException ex){Check(ex.Message.Contains("LegacyUnsettled")&&StableOpenFixtureHash(walDb)==dbHash&&StableOpenFixtureHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
+            catch(InvalidDataException ex){Check(ex.Message.Contains("不受支持")&&StableOpenFixtureHash(walDb)==dbHash&&StableOpenFixtureHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
         }
         var settled=Config("sportmaster");var terminal="db4-terminal";
         await using(var app=await Open(settled,terminal)) {app.EmitReference("settled-upgrade","00082","settled-upgrade-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved);}
         var database=UpgradeDatabase(terminal,settled);SyntheticDb4(database);
-        using(var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId))
-            Check(repo.StorageVersion==9&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades to DB9 without changing original send attempts");
+        var settledHash = Wire.FileHash(database);
+        try { using var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId); Check(false,"settled historical storage must refuse too"); }
+        catch (InvalidDataException) { Check(Wire.FileHash(database)==settledHash && ParcelRepository.ReadStorageVersion(database,settled.ApplicationId)==4,"settled DB4 remains unchanged; settlement does not authorize format conversion"); }
     }
     static async Task<BusinessReceipt> LegacyMaintenanceAction(ParcelRuntime app, Func<ParcelSnapshot, Task<BusinessReceipt>> action)
     {
@@ -101,56 +102,49 @@ static partial class ArchitectureQuality
         }
         throw new TimeoutException("Legacy maintenance guard did not settle; no successful receipt inferred");
     }
-    static async Task LegacyActualPositionChecks(int schema,bool previouslyRecovered)
+    static async Task LegacyActualPositionChecks(int schema, bool previouslyRecovered)
     {
-        var c=Config("sportmaster") with{SchemaVersion=schema,Topology=null}; if(schema==1)c=c with{WeightValidity=null};
-        var name=$"schema{schema}-legacy-"+previouslyRecovered;
-        await using(var app=await Open(c,name)) { }
-        string? originalBody=null;string? conflictId=null;
-        using(var repo=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId))
+        var c = Config("sportmaster"); var name = $"unsupported-conflict-{schema}-{previouslyRecovered}";
+        await using (var initial = await Open(c, name)) { }
+        using (var repo = new ParcelRepository(DirectoryFor(name,c), c.ApplicationId))
         {
-            repo.Commit(null,"IdentityConflict","Synthetic legacy identity conflict; original scope absent");
-            if(previouslyRecovered){repo.RecoverLegacyConflicts(["left","right"]);var fact=repo.LoadConflicts().Single();originalBody=Wire.Encode(fact);conflictId=fact.Id;}
+            if (previouslyRecovered)
+            {
+                var old = new IdentityConflict(Wire.Id(), "original", ["main"], "Historical invented scope", DateTimeOffset.UtcNow);
+                repo.Commit(null, "IdentityConflict", Wire.Encode(old), identityConflict: old);
+            }
+            else repo.Commit(null, "IdentityConflict", "Original unscoped audit; no identity may be invented");
         }
-        await using(var app=await Open(c,name))
+        var originals = CustodyFiles(name,c); var constructed = 0;
+        try { await using var unexpected = await Open(c,name,f => { f.Boundary = _ => constructed++; return f; }); Check(false,"unsupported conflict must refuse"); }
+        catch (InvalidDataException)
         {
-            var s=await app.SnapshotAsync();var fact=s.IdentityConflicts!.Single();
-            var resume=await Command(app,"Resume");s=await app.SnapshotAsync();
-            Check(fact.Positions.Contains("main")&&s.Positions!.Single().Id=="main"&&!s.Positions!.Single().Admit&&s.Paused&&resume.Status=="Rejected",
-                name+": actual main remains blocked until explicit conflict acknowledgement");
-            if(previouslyRecovered)Check(fact.Id==conflictId,"scope repair preserves original responsibility identity");
-            await Maintenance(app);await Wait(app,x=>x.Availability?.Configure==true);
-            var ack=await LegacyMaintenanceAction(app, snapshot => app.CommandAsync(new(Wire.Id(), snapshot.Revision,
-                "AcknowledgeIdentityConflict", fact.Id, "Original legacy conflict and current main position inspected")));
-            Check(ack.Status=="Persisted",name+": authorized original conflict acknowledgement commits");
-            await Command(app,"Resume");Check((await app.SnapshotAsync()).Positions!.Single().Admit,name+": inspected main can resume");
-        }
-        await using(var app=await Open(c,name))Check((await app.SnapshotAsync()).IdentityConflicts!.Length==0,name+": acknowledged identity stays cleared across restart");
-        if(originalBody is not null)
-        {
-            using var db=new SqliteConnection("Data Source="+UpgradeDatabase(name,c));db.Open();using var q=db.CreateCommand();q.CommandText="SELECT detail FROM parcel_audit WHERE event='LegacyIdentityConflictScopeExpanded'";
-            var detail=q.ExecuteScalar() as string;
-            using var audit=System.Text.Json.JsonDocument.Parse(detail??"{}");
-            Check(audit.RootElement.TryGetProperty("OriginalBody",out var original)&&original.GetString()==originalBody,name+": exact old incorrect scope body retained in append-only audit");
+            Check(constructed == 0 && originals.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),
+                name + ": read-only refusal preserves original conflict, scope, DB and configuration before resources start");
         }
     }
     static async Task LegacyPendingTopologyChecks()
     {
-        var c=Config("sportmaster") with{SchemaVersion=2,Topology=null};var name="legacy-pending-topology";var candidate=Config("sportmaster");
-        await using(var app=await Open(c,name))
-        { await Maintenance(app);Check((await LegacyMaintenanceAction(app, s => app.StageConfigurationAsync(s.Configuration.Revision,candidate,"Controlled main to independent positions transition"))).Status=="PendingRestart","schema2 to schema3 candidate saved before legacy conflict appears"); }
-        using(var repo=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId))repo.Commit(null,"IdentityConflict","Unscoped old conflict must not disappear on topology activation");
-        await using(var app=await Open(c,name))
+        foreach (var schema in new[]{1,2})
         {
-            var s=await app.SnapshotAsync();Check(s.Configuration.Effective.SchemaVersion==2&&s.Configuration.Pending?.SchemaVersion==3&&s.Configuration.Status=="ActivationFailed"&&s.Positions!.Single().Id=="main"&&!s.Positions!.Single().Admit,"unacknowledged legacy conflict blocks Pending topology activation and retains actual main");
-            await Maintenance(app);var conflict = s.IdentityConflicts!.Single().Id;
-            var ack = await LegacyMaintenanceAction(app, snapshot => app.CommandAsync(new(Wire.Id(), snapshot.Revision,
-                "AcknowledgeIdentityConflict", conflict, "Main position and legacy original inspected before topology transition")));
-            Check(ack.Status == "Persisted" && !(await app.SnapshotAsync()).IdentityConflicts!.Any(fact => fact.Id == conflict),
-                "topology restage requires a persisted acknowledgement of the original conflict");
-            Check((await LegacyMaintenanceAction(app, snapshot => app.StageConfigurationAsync(snapshot.Configuration.Revision,candidate,"Restage only after original conflict acknowledgement"))).Status=="PendingRestart","topology transition requires explicit restage after acknowledgement");
+            var c = Config("sportmaster") with { SchemaVersion=schema, Topology=null };
+            var name = "unsupported-topology-" + schema; var path = Path.Combine(root,name);
+            Directory.CreateDirectory(path); var seed = Path.Combine(path,"business.json"); ExtensionStore.AtomicWrite(seed,c);
+            var original=Wire.FileHash(seed); var constructed=0;
+            try { await using var unexpected=await Open(c,name,f=>{f.Boundary=_=>constructed++;return f;});Check(false,"old topology must refuse"); }
+            catch(InvalidDataException) { Check(constructed==0 && Wire.FileHash(seed)==original && !File.Exists(UpgradeDatabase(name,c)),"old schema refuses before DB/resources; no main/left mapping or candidate upgrade"); }
         }
-        await using(var app=await Open(c,name)){var s=await app.SnapshotAsync();Check(s.Configuration.Effective.SchemaVersion==3&&s.Positions!.Select(p=>p.Id).Order().SequenceEqual(new[]{"left","right"}),"acknowledged conflict permits controlled schema3 activation on later startup");}
+        var current = Config("sportmaster"); const string currentName = "current-conflict-restart";
+        await using(var app=await Open(current,currentName)) { }
+        var fact=new IdentityConflict(Wire.Id(),"retired-original",["left"],"Current scoped original",DateTimeOffset.UtcNow);
+        using(var repo=new ParcelRepository(DirectoryFor(currentName,current),current.ApplicationId)) repo.Commit(null,"IdentityConflict",Wire.Encode(fact),identityConflict:fact);
+        await using(var reopened=await Open(current,currentName))
+        {
+            Check(Wire.Encode((await reopened.SnapshotAsync()).IdentityConflicts!.Single())==Wire.Encode(fact),"current scoped conflict restarts without rewriting original identity");
+            await Maintenance(reopened);
+            var receipt=await LegacyMaintenanceAction(reopened,s=>reopened.CommandAsync(new(Wire.Id(),s.Revision,"AcknowledgeIdentityConflict",fact.Id,"Inspected synthetic original")));
+            Check(receipt.Status=="Persisted" && !(await reopened.SnapshotAsync()).IdentityConflicts!.Any(),"current explicit authorized acknowledgement retains its business guard");
+        }
     }
     public static async Task HistoricalDb4UpgradeChecks(string source,string evidence,string fixture)
     {

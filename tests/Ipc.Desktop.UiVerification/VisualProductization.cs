@@ -33,8 +33,11 @@ static partial class Program
         var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
         var window = (SupplyStationWindow)Presentation.Create(application, null, "standard");
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        Check(Ipc.Desktop.DesktopLaunchOptions.Parse([], "sportmaster").Ui == "supply-station" && Ipc.Desktop.DesktopLaunchOptions.Parse(["--ui", "classic"], "sportmaster").Ui == "classic" &&
-            Ipc.Desktop.DesktopLaunchOptions.Parse([], "direct-plc").Ui == "classic" && Ipc.Desktop.DesktopLaunchOptions.Parse([], "wcs-to-plc").Ui == "classic", "actual desktop parser and presentation default use product-specific routing with explicit classic compatibility");
+        var refusedProfile = false;
+        try { Ipc.Desktop.DesktopLaunchOptions.Parse(["--ui", "classic"], "sportmaster"); }
+        catch (ArgumentException) { refusedProfile = true; }
+        Check(refusedProfile && Ipc.Desktop.DesktopLaunchOptions.Parse([], "sportmaster").Ui == "supply-station" &&
+            Ipc.Desktop.DesktopLaunchOptions.Parse([], "direct-plc").Ui == "classic" && Ipc.Desktop.DesktopLaunchOptions.Parse([], "wcs-to-plc").Ui == "classic", "actual desktop parser and presentation default use product-specific routing while rejecting the removed Sportmaster profile");
         window.Show(); await Task.Delay(650); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel;
         Click(window, "站位与设备诊断"); await Task.Delay(100);
@@ -99,7 +102,7 @@ static partial class Program
         for (var i = 0; i < 100; i++) { await vm.RefreshAsync(); if (vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.State == ParcelState.SlotResolved) break; await Task.Delay(40); }
         Check(vm.Left.Operation?.Id != vm.Right.Operation?.Id && vm.Left.Slot != "未取得" && vm.Right.Slot != "未取得", "left and right resolve independent operations on the shared live Application");
         Capture("normal-1366");
-        var classic = (ShellWindow)Presentation.Create(application, null, "standard", "classic");
+        var classic = CreateSharedShellForVerification(application);
         classic.Show(); await Task.Delay(250);
         var classicVm = (ParcelViewModel)classic.DataContext; await classicVm.RefreshAsync();
         Check(!((Expander)classic.FindName("StationDiagnostics")).IsExpanded &&

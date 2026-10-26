@@ -301,7 +301,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.6.0, )"
+          "Ipc.Application.Contracts": "[2.0.0, )"
         }
       }
     },

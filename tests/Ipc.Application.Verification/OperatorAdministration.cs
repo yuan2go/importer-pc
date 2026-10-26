@@ -49,7 +49,7 @@ static class OperatorAdministration
         Check(!File.ReadAllText(Path.Combine(data, "security/management-mode.json")).Contains(password), "credential file contains salted hashes rather than passwords");
         var missingRoot = Path.Combine(root, "missing-account-store"); var missing = new LocalManagementMode(missingRoot); missing.ConfigurePassword(password);
         var missingFile = Path.Combine(missingRoot, "security/management-mode.json"); File.Move(missingFile, missingFile + ".retained");
-        await Reject<InvalidDataException>(() => Task.Run(() => new LocalManagementMode(missingRoot).Status()), "configured-mode marker prevents a missing credential file from reopening setup");
+        Check(new LocalManagementMode(missingRoot).Status() is { Configured: false, Authorized: false, Available: false, HasUnsupportedCredentials: true }, "configured-mode marker exposes unavailable status and prevents setup");
         await Reject<InvalidDataException>(() => Task.Run(() => new LocalManagementMode(missingRoot).ConfigurePassword(password)), "missing configured mode credentials cannot be silently replaced");
         for (var i = 0; i < 5; i++) Check(!admin.Enter("wrong"), "invalid credential grants no session " + i);
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => new LocalManagementMode(data).Enter(password)), "persisted login lockout survives a new authenticator");
@@ -73,14 +73,16 @@ static class OperatorAdministration
         var oldFile = Path.Combine(legacyDirectory, "administrators.json");
         File.WriteAllText(oldFile, JsonSerializer.Serialize(new { Accounts = new[] { new { Name = "old-maintainer", Salt = Convert.ToBase64String(salt), Hash = Convert.ToBase64String(Rfc2898DeriveBytes.Pbkdf2(oldPassword, salt, 600000, HashAlgorithmName.SHA256, 32)), Enabled = true } }, Failures = 0, LockedUntil = DateTimeOffset.MinValue }));
         var legacyHash = Wire.FileHash(oldFile); var legacyMode = new LocalManagementMode(legacyRoot);
-        Check(legacyMode.Status().NeedsLegacyConversion && !legacyMode.Status().Authorized, "old configured account ledger opens no mode and explicitly requires conversion");
-        await Reject<UnauthorizedAccessException>(() => Task.Run(() => legacyMode.ConfigurePassword(password)), "first mode setup cannot overwrite old software credentials");
-        Check(!legacyMode.ConvertLegacyCredentials("old-maintainer", "wrong", password) && Wire.FileHash(oldFile) == legacyHash, "failed legacy conversion preserves original credential bytes");
-        Check(legacyMode.ConvertLegacyCredentials("old-maintainer", oldPassword, password) && !legacyMode.Status().Authorized && legacyMode.Enter(password), "verified old credentials convert once into a new independent station mode password");
-        Check(Wire.FileHash(oldFile) == legacyHash && !File.ReadAllText(Path.Combine(legacyDirectory, "management-mode.json")).Contains("Accounts"), "conversion retains old bytes and stores a single credential rather than a hidden account");
-        await Reject<UnauthorizedAccessException>(() => Task.Run(() => legacyMode.ConvertLegacyCredentials("old-maintainer", oldPassword, password + "-3")), "legacy conversion cannot replace an already-configured mode password");
-        var converted = Path.Combine(legacyDirectory, "management-mode.json"); File.Move(converted, converted + ".retained");
-        await Reject<InvalidDataException>(() => Task.Run(() => legacyMode.Status()), "missing new mode credentials fail closed instead of falling back to retained old accounts");
+        Check(legacyMode.Status() is { HasUnsupportedCredentials: true, Available: false, Authorized: false }, "old account ledger is unavailable and cannot grant management mode");
+        await Reject<InvalidDataException>(() => Task.Run(() => legacyMode.ConfigurePassword(password)), "first setup refuses old credentials without replacement");
+        await Reject<InvalidDataException>(() => Task.Run(() => legacyMode.Enter(oldPassword)), "old password is never interpreted as a current management password");
+        Check(Wire.FileHash(oldFile) == legacyHash && !File.Exists(Path.Combine(legacyDirectory, "management-mode.json")), "rejection preserves old bytes and creates no replacement credential");
+        Check(typeof(IManagementMode).GetMethods().All(m => !m.Name.Contains("ConvertLegacy")), "current management API has no old account conversion entry");
+        var missingCurrentRoot = Path.Combine(root, "missing-current-mode"); var missingMode = new LocalManagementMode(missingCurrentRoot);
+        missingMode.ConfigurePassword(password);
+        var currentFile = Path.Combine(missingCurrentRoot, "security", "management-mode.json"); File.Move(currentFile, currentFile + ".retained");
+        Check(!missingMode.Status().Available && !missingMode.Status().Authorized, "missing current credential with a configured marker fails closed");
+        await Reject<InvalidDataException>(() => Task.Run(() => missingMode.ConfigurePassword(password)), "configured marker prevents first-setup bypass after current credential removal");
         var expiry = new LocalManagementMode(Path.Combine(root, "expiry")); expiry.ConfigurePassword(password); expiry.Enter(password);
         var expiryGrant = expiry.Require(); expiry.Clock = () => DateTimeOffset.UtcNow.AddMinutes(16);
         Check(!expiry.Status().Authorized && expiryGrant.IsCancellationRequested, "session expiry revokes authorization and pending task tokens");
@@ -92,7 +94,7 @@ static class OperatorAdministration
         var factory = new CommercialProductization.SyntheticFactory(launch);
         await using (var realCatalog = new ParcelCapabilityFactory(launch))
         {
-            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.3.2", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
+            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.3.5", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
             await Reject<InvalidOperationException>(() => Task.Run(() => realCatalog.Validate(seed with { Mode = RunMode.Production })), "unprotected local mode state cannot satisfy production authentication capability");
         }
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
@@ -180,7 +182,7 @@ static class OperatorAdministration
         }
         await app.StopAsync(default);
         var unknownConfig = Path.Combine(root, "unknown-config"); Directory.CreateDirectory(unknownConfig);
-        var uncertain = seed with { StationId = "unknown-" + Wire.Id(), Login = seed.MaintenanceLogin! with { InstanceId = "operator-login", Target = "reference://operator", Parameters = new() { ["subjects"] = "operator-a" } }, Wcs = seed.Wcs! with { Parameters = new(seed.Wcs!.Parameters) { ["reply-mode"] = "lose-after-commit" } } };
+        var uncertain = seed with { StationId = "unknown-" + Wire.Id(), Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "operator-login", Target = "reference://operator", Parameters = new() { ["subjects"] = "operator-a" } }, Wcs = seed.Wcs! with { Parameters = new(seed.Wcs!.Parameters) { ["reply-mode"] = "lose-after-commit" } } };
         ExtensionStore.AtomicWrite(Path.Combine(unknownConfig, "business.json"), uncertain);
         var unknownLaunch = new BusinessLaunch(unknownConfig, Path.Combine(root, "unknown-data"), null, null);
         var unsupported = new NoQueryFactory(unknownLaunch);

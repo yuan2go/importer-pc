@@ -1,3 +1,5 @@
+> 2026-10-27 当前精确合同与退出策略见[当前合同收口说明](current-contract-cleanup-01.md)：Parcel公共合同和业务为2.0.0，RCS为1.3.5；旧ABI白名单、桥接构造与Adapters转发程序集已退出，当前版本/签名/闭包检查仍强制执行。下文历史版本及转换记录不授予当前兼容能力。
+
 > 当前业务版本读取各业务 csproj 与 config/compositions.json，公共契约版本读取 Ipc.Application.Contracts.csproj；两者须同源一致。整合候选与实测身份见[本轮工作包](../work-packages/WP-IPC-INTEGRATION-20261026.md)。DB9/SQL1–9保持。下文版本和候选为历史语境，公共DLL字节变化仍需新的不可变扩展包。
 
 > 历史UX阶段增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。

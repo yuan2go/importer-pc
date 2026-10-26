@@ -107,6 +107,7 @@ try
     if (full || selector == "--operation-closure") await OperationClosureVerification.Run(root, url, workspace);
     if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
+    if (selector == "--current-contracts") await CurrentContractVerification.Run(root, url);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
     if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);
@@ -559,7 +560,7 @@ sealed class Rig : IAsyncDisposable
         var h = new Rig { Store = store, App = app, ConfigValue = config, Port = new LoopbackIntegration(config), Clock = clock ?? TimeProvider.System };
         // Child crash injection is armed only after startup/identity setup, at the business window.
         var crash = faults?.CrashAt; if (faults is not null) faults.CrashAt = null;
-        foreach (var d in config.Devices) await app.SetDeviceAsync(d.DeviceId, h.Epochs[d.Role], DeviceHealth.Ready);
+        foreach (var d in config.Devices) await app.SetDeviceAsync(d.DeviceId, h.Epochs[d.Role], DeviceHealth.Ready, h.Clock);
         await h.Command("Login", value: "maintenance"); if (faults is not null) faults.CrashAt = crash;
         return h;
     }

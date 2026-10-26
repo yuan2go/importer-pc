@@ -204,6 +204,7 @@ static class ConformanceVerification
         File.WriteAllText(Path.Combine(cfg,"product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(cfg,"station.json"), Wire.Encode(config)); File.WriteAllText(Path.Combine(cfg,"presentation.json"),Wire.Encode(new PresentationSettings()));
         var boot = new BootOptions(Path.Combine(cfg,"product.json"),Path.Combine(cfg,"station.json"),Path.Combine(cfg,"presentation.json"),Path.Combine(area,"data"),install,Path.Combine(area,"leases"));
         var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance); await runtime.StartAsync(CancellationToken.None);
+        Assert(runtime.Application is not null && runtime.Diagnostics.Count == 0, "headless runtime startup: " + string.Join("; ", runtime.Diagnostics));
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         runtime.StartHeadlessNotifications(async (_, _) => { entered.TrySetResult(); await release.Task; });
         async Task Command(string kind, string? owner = null, string? value = null)

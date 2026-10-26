@@ -13,9 +13,6 @@ public sealed record ParcelExtensionStoreConfiguration(string Root, string Trust
 public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility = null,
     System.Reflection.Assembly? businessAssembly = null, bool installer = false) : IParcelCapabilityFactory
 {
-    // Preserve the existing host constructor for already compiled callers.
-    public ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility, System.Reflection.Assembly? businessAssembly)
-        : this(launch, compatibility, businessAssembly, false) { }
     ExtensionStore? store;
     ExtensionLoading? loading;
     PackageUseLease? use;
@@ -28,10 +25,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;
-    public string? AdmissionFailure(ParcelConfiguration c) => c.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1", Package: not null } old &&
-        old.Parameters.TryGetValue("quantity", out var quantity) && quantity != "1"
-        ? "RCS旧配置的每包数量不是1，请核对并保存每次扫码一个包裹的候选后受控重启。"
-        : c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
             ? "Production NotReady: exact deployment qualification missing/expired" : null;
     public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
@@ -102,8 +96,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             _ = Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.HeartbeatMapping(c);
         }
 #endif
-        var bound = ParcelBindings.Bound(c).Where(b => b.InstanceId != c.MaintenanceLogin?.InstanceId).ToArray();
-        var bindings = bound.Concat((c.CapabilityInstances ?? []).Where(b => b.InstanceId != c.MaintenanceLogin?.InstanceId)).DistinctBy(x => x.InstanceId).ToArray();
+        var bound = ParcelBindings.Bound(c).ToArray();
+        var bindings = bound.Concat((c.CapabilityInstances ?? [])).DistinctBy(x => x.InstanceId).ToArray();
         if (compatibility is not null)
         {
             if (compatibility.ApplicationId != c.ApplicationId) throw new InvalidDataException("Business compatibility belongs to another Application");
@@ -180,12 +174,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         {
             if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
             {
-                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version is not ("1.3.2" or "1.3.3" or "1.3.4") || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
+                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version != RcsRequestPolicy.ComponentVersion || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
                     throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
+                _ = RcsRequestPolicy.TimeoutMs(b);
                 continue;
             }
 #if !DIRECTPLC
-            if (b.Package is null && b.Implementation == "sportmaster-rcs" && (b.Version is "1.3.2" or "1.3.3" or "1.3.4") && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
+            if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == RcsRequestPolicy.ComponentVersion && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
                 _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
                 if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null) throw new InvalidDataException("RCS生产部署资格尚未完成");
@@ -246,7 +241,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public ProviderVersion[] SelectedProviders(ParcelConfiguration c)
     {
-        var selected = ParcelBindings.All(c).Where(b => b.Enabled && b.InstanceId != c.MaintenanceLogin?.InstanceId).Select(b => new ProviderVersion(b.Kind, b.Implementation, b.Version, b.Contract)).ToList();
+        var selected = ParcelBindings.All(c).Where(b => b.Enabled).Select(b => new ProviderVersion(b.Kind, b.Implementation, b.Version, b.Contract)).ToList();
         foreach (var reader in ParcelBindings.Readers(c))
         {
             if (reader.Driver == "tcp-line") { var descriptor = TcpLineObservationSource.Descriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
@@ -301,8 +296,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         using var stream = typeof(ParcelCapabilityFactory).Assembly.GetManifestResourceStream("Ipc.BuiltInRcs.Parameters.json") ?? throw new InvalidDataException("内置RCS参数描述缺失");
         using var reader = new StreamReader(stream);
         var rcsParameters = Wire.Decode<ParameterField[]>(reader.ReadToEnd());
-        // Existing effective candidates keep their binding identity; new candidates use 1.3.4.
-        providers = providers.Concat(new[] { "1.3.4", "1.3.3", "1.3.2" }.Select(version => new CapabilityDescriptor("integration", "sportmaster-rcs", version, "SPORTMASTER-RCS-SORTER-v1", version == "1.3.4" ? rcsParameters : rcsParameters.Where(p => p.Key != "request-timeout-ms").ToArray(), new(Query: false))));
+        // Only the current component contract is selectable; old bindings are rejected.
+        providers = providers.Concat(new[] { new CapabilityDescriptor("integration", "sportmaster-rcs", RcsRequestPolicy.ComponentVersion, RcsRequestPolicy.Contract, rcsParameters, new(Query: false)) });
 #endif
         return providers.ToArray();
     }
@@ -464,10 +459,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
         var camera = c.Images is null ? null : (IImageCamera)devicePorts[c.Images.Camera.InstanceId];
         var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => new ReferenceImageUploader(u, u.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
-        // Legacy MaintenanceLogin remains in the original configuration for byte/identity history.
         // Software administration has its own credential store and never falls back to this port.
-        IOperatorAuthenticator? maintenance = null;
-        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, maintenance, readers, devicePorts);
+        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, readers, devicePorts);
     }
     static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider
         ? provider.BindCapture(binding, directory) : throw new InvalidDataException("Reader does not expose controlled original-acquisition capture; a second connection is forbidden");

@@ -24,7 +24,6 @@ public sealed partial class ParameterSettingsControl
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用此连接，保存后待受控应用。" :
                 ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
-            page.Applicable = () => !m.IsLegacyMaintenanceOnly(component);
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {

@@ -19,14 +19,12 @@ public sealed partial class ParcelRepository
         """;
     internal (string Id, string Admission, string Observation, string Position)? RetiredIdentity(string admission, string observation)
     {
-        if (StorageVersion < 9) return null;
         using var c = db.CreateCommand(); c.CommandText = "SELECT h.id,h.admission,h.observation,h.position FROM parcel_history_index h JOIN parcel_retired_operations t ON t.id=h.id WHERE h.admission=$a OR h.observation=$o LIMIT 1";
         c.Parameters.AddWithValue("$a", admission); c.Parameters.AddWithValue("$o", observation); using var r = c.ExecuteReader();
         return r.Read() ? (r.GetString(0), r.GetString(1), r.GetString(2), r.GetString(3)) : null;
     }
     internal (string Id, string Position, bool Same)? RetiredMeasurement(WeightMeasurement measurement)
     {
-        if (StorageVersion < 9) return null;
         using var c = db.CreateCommand(); c.CommandText = "SELECT h.id,h.position,m.body_hash FROM parcel_retired_measurements m JOIN parcel_history_index h ON h.admission=m.admission WHERE m.id=$id";
         c.Parameters.AddWithValue("$id", measurement.Id); using var r = c.ExecuteReader();
         return r.Read() ? (r.GetString(0), r.GetString(1), r.GetString(2) == Wire.Hash(Wire.Encode(measurement))) : null;

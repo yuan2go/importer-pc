@@ -53,7 +53,7 @@ public sealed partial class ParcelRuntime
             if (retainedTimeouts > 0) auxiliaryReasons.Add("RetainedRequestTimeouts:" + retainedTimeouts + "; outcomes unknown; new scans may create separate requests; originals are never replayed");
             foreach (var op in operations.Values.Where(x => !ReleasedForNextAdmission(x) && (x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x))))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
-            List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId).Select(h =>
+            List<CapabilityHealth> health = [.. capabilityHealth.Values.Select(h =>
                 h with { Ready = h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt })];
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
             foreach (var h in health.Where(x => !x.Ready && !ParcelConnectionSetup.IsDeferred(Effective, x.InstanceId)))

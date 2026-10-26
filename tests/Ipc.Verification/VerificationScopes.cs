@@ -15,6 +15,7 @@ internal static class VerificationScopes
         new("--review-followup", "E11 presentation policies + Product composite ownership", true),
         new("--extensions", "E12 controlled packages, install/recovery and actual Product deployment", true),
         new("--architecture", "E13 permanent identity, managed AssemblyRef/dependency closure, typed integration, frozen requests, Stop ownership and selected business assemblies", false),
+        new("--current-contracts", "Current receipt preflight refuses old fences/unreserved raw before writes; missing frozen implementation never borrows a current route", false),
         new("--conformance", "AC14 A01-A04/R01-R03; per-service health, configuration CAS and failure retention", true),
         new("--operation-closure", "AC15 independent receipt responsibility Q1/Q2, T3 recovery, current result/input and maintenance/history", true),
         new("--maintainability", "AC16 health renewal, UI operation policies, command/ownership and maintenance risks", false),

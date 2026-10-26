@@ -119,7 +119,7 @@ static partial class ArchitectureQuality
         // The right position must still finish and the lifecycle timeout cannot clear
         // an occupied left resource just because its provider ignores cancellation.
         var seed=Config("sportmaster");var left=B("camera") with {InstanceId="review.left.camera",Target="reference://camera/review-left"};var right=left with {InstanceId="review.right.camera",Target="reference://camera/review-right"};
-        var c=seed with {Images=new(left,null),CapabilityInstances=[seed.Wcs!,seed.MaintenanceLogin!,left,right],TimeoutMs=500,
+        var c=seed with {Images=new(left,null),CapabilityInstances=[seed.Wcs!,left,right],TimeoutMs=500,
             Topology=seed.Topology! with {Positions=seed.Topology.Positions.Select(p=>p with {CameraInstanceId=p.Id=="left"?left.InstanceId:right.InstanceId}).ToArray()}};
         ReviewFactory? f=null;
         await using var app=await Open(c,"review-independent-maintenance",inner=>f=new(inner){HoldCamera=left.InstanceId,HoldWcs=true});

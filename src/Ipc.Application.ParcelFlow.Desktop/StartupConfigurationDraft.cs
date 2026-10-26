@@ -29,7 +29,7 @@ public sealed class StartupConfigurationDraft
             if (configuration.Retention?.HistoryDays is null) Policy.HistoryDays = SystemParameterDefaults.HistoryDays.ToString();
         }
         var c = configuration;
-        var all = (c.CapabilityInstances ?? []).Concat(new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>());
+        var all = (c.CapabilityInstances ?? []).Concat(new[] { c.Login, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>());
         var readers = c.Extensions?.Instances.Select(instance =>
         {
             var package = c.Extensions.Packages.Single(p => p.Id == instance.PackageId);
@@ -38,7 +38,7 @@ public sealed class StartupConfigurationDraft
         }) ?? [];
         bindings = all.DistinctBy(b => b.InstanceId).ToDictionary(b => b.InstanceId);
         var capabilities = bindings.Values.Select(b => new CapabilityDraft(b.Kind, catalog.Providers, b, true,
-            b.InstanceId == c.Login?.InstanceId ? "operator-login" : b.InstanceId == c.MaintenanceLogin?.InstanceId ? "maintenance-auth" : b.InstanceId == c.Scale?.InstanceId ? "default-scale" : b.Kind)).ToList();
+            b.InstanceId == c.Login?.InstanceId ? "operator-login" : b.InstanceId == c.Scale?.InstanceId ? "default-scale" : b.Kind)).ToList();
         if (c.Login is null) capabilities.Add(new("login", catalog.Providers, null, false, "operator-login") { InstanceId = "operator.login", Enabled = true });
         if (c.Scale is null) capabilities.Add(new("weight", catalog.Providers, null, false, "default-scale") { InstanceId = "default.scale", Enabled = true });
         Capabilities = capabilities.ToArray();
@@ -78,7 +78,7 @@ public sealed class StartupConfigurationDraft
             MaximumOperations = ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),
             Login = Capabilities.Single(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
             Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.Single(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
-            MaintenanceLogin = Map(c.MaintenanceLogin), Wcs = Map(c.Wcs), Plc = Map(c.Plc),
+            Wcs = Map(c.Wcs), Plc = Map(c.Plc),
             CapabilityInstances = c.CapabilityInstances?.Select(b => Map(b)!).ToArray(),
             Images = c.Images is { } image ? image with { Camera = Map(image.Camera)!, Uploader = Map(image.Uploader)! } : null,
             Extensions = extensions

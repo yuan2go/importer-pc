@@ -40,7 +40,7 @@ public static partial class ManagementModeBroker
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var status = IsManaged(root) ? Call<ManagementModeStatus>(root, new("Status")) : null;
-        if (status is null || status.Configured || status.NeedsLegacyConversion)
+        if (status is null || status.Configured || status.HasUnsupportedCredentials)
             throw new UnauthorizedAccessException("此旧模拟目录迁移仅允许安装维护在首次设置管理密码前执行；已配置管理密码的部署使用原授权完整恢复流程。");
     }
     [SupportedOSPlatform("windows")]
@@ -115,7 +115,7 @@ public static partial class ManagementModeBroker
                 var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
                 bool installer = false; string? windowsSid = null;
                 pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); windowsSid = client.User?.Value; if(request.Action == "ConfigurePassword") installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
-                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "ConvertLegacy";
+                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword";
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
                 try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid), budget.Token).ConfigureAwait(false); }
                 finally { if (expensive) passwordWork.Release(); }

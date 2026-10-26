@@ -73,7 +73,6 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public bool Bound { get => bound; set { bound = value; Notify(); } }
     public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
-    public bool LegacyBindingEditable { get; set; } = true;
     public string TargetBoundary => IsTargetReadOnly ? "稳定读码设备标识只读；更换须清偿原件并受控迁移部署" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后待受控重启" : "组件拥有的外部服务目标；保存后待受控重启";
     public string Target { get => target; set { target = value; Notify(); } }
     public string Contract { get => contract; set { contract = value; Notify(); } }
@@ -112,10 +111,8 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         // Keep original insertion order and explicitly omitted defaults. Reordering
         // unrelated parameter bytes would change the frozen configuration hash.
         var parameters = new Dictionary<string, string>(originalParameters);
-        if (ParameterOwnership.IsRcs(this)) parameters.Remove("quantity");
         foreach (var item in Parameters)
         {
-            if (ParameterOwnership.IsRcs(this) && item.Field.Key == "quantity") { parameters["quantity"] = "1"; continue; }
             if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
@@ -140,21 +137,6 @@ public partial class ParcelViewModel
 {
     public ObservableCollection<CapabilityDraft> CapabilityDrafts { get; } = [];
     public string InstalledPackages { get; private set; } = "尚未读取安装清单";
-    public WeightSource[] WeightSources => Enum.GetValues<WeightSource>();
-    public WeightUnit[] WeightUnits => Enum.GetValues<WeightUnit>();
-    public WeightValidity[] WeightValidities => Enum.GetValues<WeightValidity>();
-    public WeightValidity DraftWeightValidity { get; set; }
-    public UploadStrategy[] UploadStrategies => Enum.GetValues<UploadStrategy>();
-    public WeightSource DraftWeightSource { get; set; }
-    public WeightUnit DraftUnit { get; set; }
-    public int DraftPrecision { get; set; }
-    public decimal? DraftConfiguredWeight { get; set; }
-    public int DraftWaitMs { get; set; }
-    public int DraftFreshMs { get; set; }
-    public UploadStrategy DraftUploadStrategy { get; set; }
-    public int DraftImageBytes { get; set; }
-    public long DraftTotalBytes { get; set; }
-    public int DraftPending { get; set; }
     public string PackagePath { get; set; } = "";
     public string PackageSha256 { get; set; } = "";
     public string InspectionReason { get; set; } = "";
@@ -169,72 +151,15 @@ public partial class ParcelViewModel
         SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
         ApplyInstalledCatalog(catalog);
         CapabilityDrafts.Clear();
-        if (c.SchemaVersion >= 3 || c.Topology is not null)
-        {
-            LoadStructuredConfiguration(c, catalog);
-            Message = "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。";
-            return;
-        }
-        StartLegacyConfiguration(c);
-        var bound = new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
-        var instances = c.CapabilityInstances ?? bound;
-        CapabilityBinding readerBinding;
-        var observation = c.Extensions?.Instances.SingleOrDefault(x => c.Reader.Driver == "extension:" + x.Id);
-        if (observation is not null)
-        {
-            var package = c.Extensions!.Packages.Single(x => x.Id == observation.PackageId);
-            readerBinding = new("observation", "extension:" + package.Id + "/" + observation.ModuleId, package.Version, observation.Id, c.Reader.DeviceId, "CONTROLLED-OBSERVATION-v1", observation.Parameters, package, observation.ModuleId, observation.Enabled);
-        }
-        else readerBinding = new("observation", "manual", "1.0.0", "parcel.reader", c.Reader.DeviceId, "CONTROLLED-OBSERVATION-v1", []);
-        CapabilityDrafts.Add(new("observation", catalog.Providers, readerBinding, true));
-        foreach (var b in instances) CapabilityDrafts.Add(new(b.Kind, catalog.Providers, b, bound.Any(x => x.InstanceId == b.InstanceId), b.InstanceId == c.MaintenanceLogin?.InstanceId ? "maintenance-auth" : b.Kind));
-        foreach (var kind in new[] { "login", "weight", "camera", "upload", "integration", "plc" }.Where(k => !CapabilityDrafts.Any(x => x.Role == k))) CapabilityDrafts.Add(new(kind, catalog.Providers, null, false));
-        DraftWeightValidity = c.WeightValidity ?? WeightValidity.UntilDispatch; Changed(nameof(DraftWeightValidity));
-        DraftWeightSource = c.Weight.Source; DraftUnit = c.Weight.Unit; DraftPrecision = c.Weight.Precision;
-        DraftConfiguredWeight = c.Weight.ConfiguredValue; DraftWaitMs = c.Weight.WaitTimeoutMs; DraftFreshMs = c.Weight.MaximumAgeMs;
-        DraftUploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain; DraftImageBytes = c.Images?.MaximumBytes ?? 4194304;
-        DraftTotalBytes = c.Images?.TotalBytes ?? 33554432; DraftPending = c.Images?.MaximumPending ?? 32;
-        foreach (var name in new[] { nameof(DraftWeightSource), nameof(DraftUnit), nameof(DraftPrecision), nameof(DraftConfiguredWeight), nameof(DraftWaitMs), nameof(DraftFreshMs), nameof(DraftUploadStrategy), nameof(DraftImageBytes), nameof(DraftTotalBytes), nameof(DraftPending) }) Changed(name);
-        AcceptEditorBaseline();
+        if (c.SchemaVersion != 3 || c.Topology is null || c.MaintenanceLogin is not null)
+            throw new InvalidOperationException("配置格式不受支持，保留原件；请使用当前完整拓扑配置。");
+        LoadStructuredConfiguration(c, catalog);
+        Message = "已读取完整拓扑与能力库存；保存后待受控重启生效。";
     }
     public async Task SaveCapabilitiesAsync()
     {
-        RequireFreshSnapshot();
-        RequireFormConfigurationAuthority();
-        if (Snapshot is null) return;
-        if (Snapshot.Configuration.Effective.SchemaVersion >= 3 || Snapshot.Configuration.Pending?.SchemaVersion >= 3 || Snapshot.Configuration.Effective.Topology is not null)
-        {
-            await SaveStructuredConfigurationAsync();
-            return;
-        }
-        var c = BuildLegacyConfiguration(); var submittedSignature = ConfigurationEditSignature();
-        var expected = RequireDraftRevision();
-        var reason = ConfigurationReason;
-        var receipt = await SubmitConfigurationAsync(expected, c);
-        if (receipt.Status == "PendingRestart") { savedEditorSignature = submittedSignature; savedCandidate = Wire.Encode(c); }
-        Message = receipt.Status + " · " + receipt.Reason;
-    }
-    ParcelConfiguration BuildLegacyConfiguration()
-    {
-        var loaded = Wire.Decode<ParcelConfiguration>(savedCandidate);
-        var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
-        CapabilityBinding? Selected(string kind) => CapabilityDrafts.Where(x => x.Role == kind && x.Bound).Select(x => x.Build()).SingleOrDefault();
-        var reader = Selected("observation") ?? throw new InvalidOperationException("读码来源必须绑定");
-        if (reader.Target != loaded.Reader.DeviceId) throw new InvalidOperationException("稳定读码设备标识不属于普通参数修改；清偿原件后使用受控迁移部署");
-        if (!reader.Enabled) throw new InvalidOperationException("读码来源必须启用");
-        var camera = Selected("camera"); var upload = Selected("upload");
-        if ((camera is null) != (upload is null)) throw new InvalidOperationException("采图和上传须同时绑定");
-        return loaded with
-        {
-            SchemaVersion = 2, WeightValidity = DraftWeightValidity,
-            Login = Selected("login"), MaintenanceLogin = Selected("maintenance-auth"), Scale = Selected("weight"), Wcs = Selected("integration"), Plc = Selected("plc"),
-            Weight = new(DraftWeightSource, DraftUnit, DraftPrecision, DraftWeightSource == WeightSource.Configured ? DraftConfiguredWeight : null, DraftFreshMs, DraftWaitMs),
-            Images = camera is null ? null : new(camera, upload!, DraftImageBytes, DraftUploadStrategy, DraftTotalBytes, DraftPending),
-            Reader = loaded.Reader with { Driver = reader.Package is null ? "manual" : "extension:" + reader.InstanceId },
-            CapabilityInstances = instances,
-            Extensions = instances.Append(reader).Any(x => x.Package is not null) ? new(instances.Append(reader).Where(x => x.Package is not null).Select(x => x.Package!).Distinct().ToArray(),
-                reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, loaded.Reader.DeviceId, true, reader.Parameters)]) : null
-        };
+        RequireFreshSnapshot(); RequireFormConfigurationAuthority();
+        if (Snapshot is not null) await SaveStructuredConfigurationAsync();
     }
     public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var r = await ServiceAsync(() => application.AuthorizeMaintenanceAsync(proof)); Message = r.Status + " · " + r.Reason; }
     public async Task InstallAsync()

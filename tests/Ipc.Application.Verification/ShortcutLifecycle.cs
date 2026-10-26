@@ -92,7 +92,7 @@ static class ShortcutLifecycle
             Write(oldDesktop);
             File.Delete(plan[0].Target);
             DeploymentShortcuts.Remove(location, menu, desktop);
-            Check(plan.Concat(historical).Append(oldDesktop).All(entry => !File.Exists(entry.Path)), "uninstall removes all exact historical entries even when the stored target is missing; no Resolve");
+            Check(plan.All(entry => !File.Exists(entry.Path)) && historical.Append(oldDesktop).All(entry => File.Exists(entry.Path)), "uninstall removes current owned links and preserves unregistered historical names when target is missing");
             Check(Wire.FileHash(customName.Path) == customHash, "uninstall preserves an unregistered custom-name placement instead of scanning matching targets");
         });
         Scenario("preserve-conflicts", directory =>

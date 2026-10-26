@@ -8,9 +8,7 @@ public static class Presentation
 {
     public static Window Create(IParcelApplication application, string? view, string? layout, string ui = "supply-station", Func<Task>? stopOwner = null)
     {
-        if (ui == "supply-station") return new SupplyStationWindow(application, view, layout, stopOwner);
-        if (ui != "classic") throw new ArgumentException("未知 Sportmaster UI：" + ui);
-        ParcelViewModel NewWindow() => new SportmasterViewModel(application);
-        return new ShellWindow(NewWindow(), NewWindow, () => new Workstation(), view, layout) { StopOwnerAsync = stopOwner };
+        if (ui != "supply-station") throw new ArgumentException("此供包业务仅支持当前作业界面：" + ui);
+        return new SupplyStationWindow(application, view, layout, stopOwner);
     }
 }

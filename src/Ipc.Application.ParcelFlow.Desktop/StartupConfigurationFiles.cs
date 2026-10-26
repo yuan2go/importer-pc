@@ -57,7 +57,7 @@ public static class StartupConfigurationFiles
         }
         foreach (var (left, right) in before.Readers.Concat(before.Capabilities).Zip(after.Readers.Concat(after.Capabilities)))
         {
-            var owner = right.Role switch { "left" => "左相机", "right" => "右相机", "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(right.Kind) };
+            var owner = right.Role switch { "left" => "左相机", "right" => "右相机", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(right.Kind) };
             if (left.Target != right.Target) rows.Add("• " + owner + "：连接目标\n  原值：" + left.Target + "\n  新值：" + right.Target);
             if (left.Bound != right.Bound) rows.Add("• " + owner + (right.Bound ? "：启用绑定" : "：取消绑定"));
             if (left.Enabled != right.Enabled) rows.Add("• " + owner + (right.Enabled ? "：启用" : "：关闭"));

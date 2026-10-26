@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
+    'docs/runtime/current-contract-cleanup-01.md': 'CURRENT-CONTRACTS.md',
     'docs/runtime/lifecycle-ux-current-guidance-01.md': 'LIFECYCLE-OPERATIONS.md',
     'docs/runtime/time-storage-fault-01.md': 'TIME-AND-STORAGE-FAULTS.md',
     'docs/runtime/p0-stability-01.md': 'P0-STABILITY.md',
@@ -24,6 +25,7 @@ PARCEL_GUIDES = {
     'docs/extensions/developer-guide.md': 'EXTENSIONS.md',
 }
 GUIDES = {
+    'docs/runtime/current-contract-cleanup-01.md': 'CURRENT-CONTRACTS.md',
     'docs/runtime/supply-getting-started.md': 'GETTING-STARTED.md',
     'docs/runtime/operations.md': 'OPERATIONS.md',
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',

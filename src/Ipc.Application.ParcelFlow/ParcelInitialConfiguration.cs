@@ -8,8 +8,7 @@ public sealed partial class ParcelRepository
     internal bool InitialRepairResponsibilitiesClear(FlowDefinition flow)
     {
         ValidateRawInventory();
-        if (StorageVersion >= 9)
-        {
+                {
             using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')";
             if ((long)pending.ExecuteScalar()! != 0) return false;
         }

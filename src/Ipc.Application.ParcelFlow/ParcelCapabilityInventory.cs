@@ -9,12 +9,12 @@ public static partial class ParcelConfigurationRules
     // readers; it never loads providers or requires a package to remain installed.
     public static string[] ValidateCapabilityInventory(ParcelConfiguration configuration)
     {
-        if (configuration.SchemaVersion is not (1 or 2 or 3)) return ["Unsupported capability inventory schema"];
+        if (configuration.SchemaVersion != 3 || configuration.MaintenanceLogin is not null) return ["Unsupported capability inventory schema"];
         var inventory = configuration.CapabilityInstances;
         if (inventory is { Length: > 64 } || inventory?.Any(b => b is null) == true)
             return ["Invalid bounded capability instance inventory"];
         var roles = new[] { configuration.Scale, configuration.Wcs, configuration.Plc, configuration.Login,
-            configuration.MaintenanceLogin, configuration.Images?.Camera, configuration.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
+            configuration.Images?.Camera, configuration.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         List<string> errors = [];
         if (roles.Select(b => b.InstanceId).Distinct(StringComparer.Ordinal).Count() != roles.Length)
             errors.Add("Capability roles cannot reuse the same instance identity");

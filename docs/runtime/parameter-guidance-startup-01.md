@@ -1,3 +1,5 @@
+> 2026-10-27：开发阶段只支持当前契约，旧配置、凭据和数据库不再转换；保留原件并明确拒绝。当前单码规则、可选保留策略、操作员身份和管理权限守卫不变。实施与验证见 [统一契约工作包](../work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md)；下文兼容转换说明保留历史适用范围。
+
 > 2026-10-26：PR107已合入main；独立延后与心跳映射、重连及补齐配置启动的后续修复见[DEFERRED-HEARTBEAT-01](validation/deferred-heartbeat-01.md)。下文原验证仅覆盖其原提交，不能据此推断单侧延后已通过。
 
 # 参数用途、默认值与延后连接配置 · PARAMETER-GUIDANCE-STARTUP-01

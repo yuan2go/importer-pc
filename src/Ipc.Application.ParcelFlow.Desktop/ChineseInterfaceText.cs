@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -52,7 +52,7 @@ public static class ChineseInterfaceText
         "NotSaved" => "未保存", "Selected" => "已选中唯一条码", "NoMatchingCode" => "没有匹配条码",
         "AmbiguousCodes" => "多个条码匹配", "IncompleteCandidates" => "候选不完整", "FilterTimeout" => "筛选超时",
         "InvalidPattern" => "筛选规则无效", "NoCode" => "未识别条码", "MultipleCodes" => "存在多个条码",
-        "ExcludedCodes" => "命中排除规则", "InvalidCode" => "条码无效", "LegacySingleCode" => "旧版严格单码兼容",
+        "ExcludedCodes" => "命中排除规则", "InvalidCode" => "条码无效", "StrictSingleCode" => "旧版严格单码兼容",
         "WaitingWeight" => "等待有效重量", "ResolvingWcs" => "正在请求格口", "WcsUnknown" => "上游结果待核对", "WcsRejected" => "上游明确拒绝", "SlotResolved" => "格口已取得",
         "SubmittingPlc" => "控制器请求处理中", "PlcUnknown" => "控制器结果待核对", "PlcRejected" => "控制器明确拒绝", "PlcAccepted" => "控制器已接受", "PhysicalCompleted" => "已报告物理完成",
         "Blocked" => "作业阻断", "CapturingImage" => "正在采集图像", "UploadingImage" => "正在上传原图", "ImageUnknown" => "图像阶段待核对", "ImageRejected" => "图像阶段拒绝",

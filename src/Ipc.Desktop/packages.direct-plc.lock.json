@@ -346,23 +346,23 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.19.0, )",
+          "Ipc.Application.Contracts": "[2.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.19.0, )",
+          "Ipc.Application.Contracts": "[2.0.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.assembly": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.DirectPlc": "[1.7.0, )",
+          "Ipc.Application.DirectPlc": "[2.0.0, )",
           "Ipc.Components": "[1.0.0, )",
-          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Drivers": "[1.1.0, )",
           "Ipc.Platform": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
@@ -399,7 +399,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.19.0, )"
+          "Ipc.Application.Contracts": "[2.0.0, )"
         }
       },
       "Ipc.Supply": {

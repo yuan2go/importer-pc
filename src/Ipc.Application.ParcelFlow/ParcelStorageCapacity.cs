@@ -45,7 +45,7 @@ public sealed partial class ParcelRuntime
                     BytesPerJob = bytesPerJob, RemainingDays = remainingDays, Basis = "Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee" });
                 Diagnostic("StorageCapacity", "Forecast", "信息", storageCapacityEstimate);
             }
-            if (repository?.StorageVersion >= 9 && (retentionChecked == default || StorageTimeForVerification.GetElapsedTime(retentionCheckedTimestamp, timestamp) >= TimeSpan.FromMinutes(1)))
+            if (repository is not null && (retentionChecked == default || StorageTimeForVerification.GetElapsedTime(retentionCheckedTimestamp, timestamp) >= TimeSpan.FromMinutes(1)))
             {
                 retentionWarning = Retention.HistoryDays is not { } days ? "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion" :
                     repository.RetentionDue(days, StorageTimeForVerification.GetUtcNow()) ? "HistoryRetentionMaintenanceDue: aged history exists; pause, stop and run matching-release expire-history; unresolved originals are retained" : null;

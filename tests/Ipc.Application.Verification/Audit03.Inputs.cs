@@ -87,7 +87,7 @@ static partial class Audit03
     static async Task Measurements()
     {
         var left = Scale("left.audit.scale"); var right = Scale("right.audit.scale"); var standard = Config("sportmaster");
-        var c = standard with { Scale = left, CapabilityInstances = [left, right, standard.Wcs!, standard.MaintenanceLogin!],
+        var c = standard with { Scale = left, CapabilityInstances = [left, right, standard.Wcs!],
             Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 60000, WaitTimeoutMs: 300000), WeightValidity = WeightValidity.AtAssociation,
             Topology = standard.Topology! with { Positions = [standard.Topology.Positions[0] with { ScaleInstanceId = left.InstanceId }, standard.Topology.Positions[1] with { ScaleInstanceId = right.InstanceId }] } };
         var app = await Open(c, "measurement");

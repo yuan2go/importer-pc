@@ -91,27 +91,22 @@ public partial class ParcelViewModel
         {
             var signature = HistoryFilterSignature();
             ParcelHistoryPage page;
-            if (application is IParcelHistoryApplication query)
+            if (application is IParcelHistorySessionApplication query)
             {
                 var selection = newSelection ? null : historySelection;
                 selection ??= await ServiceAsync(() => query.SelectHistoryAsync(HistoryFilter()));
                 if (!newSelection && appliedHistorySignature != signature) throw new InvalidOperationException("筛选已改变，先重新查询；不能续读旧筛选");
-                page = await ServiceAsync(() => query is IParcelHistorySessionApplication session ? session.ReadHistoryPageAsync(selection, before, 50, cancellation.Token) : query.QueryHistoryAsync(selection, before));
-                var metrics = await ServiceAsync(() => query is IParcelHistorySessionApplication session ? session.ReadHistoryMetricsAsync(selection, cancellation.Token) : query.HistoryMetricsAsync(selection));
-                var positionIds = query is IParcelHistorySessionApplication positions ? await ServiceAsync(() => positions.HistoryPositionIdsAsync(selection, cancellation.Token)) : [];
+                page = await ServiceAsync(() => query.ReadHistoryPageAsync(selection, before, 50, cancellation.Token));
+                var metrics = await ServiceAsync(() => query.ReadHistoryMetricsAsync(selection, cancellation.Token));
+                var positionIds = await ServiceAsync(() => query.HistoryPositionIdsAsync(selection, cancellation.Token));
                 cancellation.Token.ThrowIfCancellationRequested();
                 if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
                 HistoryMetricsSummary = $"固定序号 ≤ {selection.UpperSequence} · 实体作业 {metrics.Operations} · WCS请求 {metrics.WcsRequests} · WCS接受 {metrics.WcsAccepted} · 待核对 {metrics.Unknown} · 实体完成 {metrics.PhysicalCompleted} · 发送尝试 {metrics.SendAttempts}（取得格口不等于实体完成）";
                 Changed(nameof(HistoryMetricsSummary)); appliedHistorySignature = signature; historySelection = selection;
                 foreach (var id in positionIds) historicalPositions.Add(id);
             }
-            else
-            {
-                if (!newSelection || HistoryFilter() != new ParcelHistoryFilter()) throw new NotSupportedException("此组合没有完整历史查询能力；不能声称应用了筛选或固定范围");
-                page = await ServiceAsync(() => application.HistoryAsync(before));
-            }
-            // Legacy ports cannot cancel their I/O. Retain ownership until drain, then
-            // fence the cancelled result before it can replace any visible page.
+            else throw new NotSupportedException("当前组件缺少可取消的历史查询契约；请使用完整的同版组件。");
+            // Keep ownership until drain; fence cancelled or superseded results before replacing any visible page.
             cancellation.Token.ThrowIfCancellationRequested();
             if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
             var current = Selected;

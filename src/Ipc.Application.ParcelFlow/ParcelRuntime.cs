@@ -122,7 +122,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // or confirmation/recovery writes can make the original release unusable.
         try
         {
-            repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
+            repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray()) { Boundary = point => Boundary?.Invoke(point) };
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
@@ -134,7 +134,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
         logReader = new(Path.Combine(directory, "diagnostics"), Management, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
-        repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
+        repository.ValidateConflictHistory(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
         RecoverOverloadAcknowledgement();
@@ -255,7 +255,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
     }
     IEnumerable<IControlledObservationSource> ReaderPorts() => ports?.Readers?.Values ?? (ports is null ? [] : [ports.Reader]);
-    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader, ports?.Maintenance }
+    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader }
         .OfType<ICapabilityPort>().Concat(ports?.Devices?.Values ?? []).DistinctBy(p => p.InstanceId);
     ICapabilityPort Capability(string instance) => CapabilityPorts().Single(p => p.InstanceId == instance);
     async Task RegisterScaleAsync(IWeightSource scale, CancellationToken token)

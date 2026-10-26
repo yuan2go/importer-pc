@@ -112,49 +112,25 @@ public sealed partial class StationApplication
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
         finally { gate.Release(); }
     }
-    // Compatibility for old synthetic callers only. New runtime adapters must register
-    // their epoch explicitly and provide source confirmation, never borrow projection time.
-    public async Task SetDeviceAsync(string deviceId, string epoch, DeviceHealth health)
-    {
-        Require(config.Mode == RunMode.Simulation, "Legacy device health is SIMULATION only");
-        await owner.Invoke(async () =>
-        {
-            var binding = config.Devices.Single(x => x.DeviceId == deviceId);
-            if (state.Devices[binding.Role].Epoch == "not-connected")
-                await RegisterDeviceEpochCore(deviceId, "not-connected", epoch, "SIMULATION:legacy-health");
-            await SetDeviceHealthCore(new(deviceId, epoch, health, Now, Now.AddSeconds(5), "SIMULATION:legacy-health"));
-        }, waitForCapacity: true);
-    }
     public Task SetWcsHealthAsync(bool available) => owner.Invoke(() => SetWcsHealthCore(available), waitForCapacity: true);
     async Task SetWcsHealthCore(bool available)
     {
         await gate.WaitAsync();
         try
         {
-            var next = Clone(state); var previous = state.IntegrationHealth; var service = state.IntegrationServiceHealth;
-            var typed = config.Extensions?.Ports?.Any(x => x.Port == "requests") == true;
-            var wasValid = typed ? service?.IsValid(Now) == true : previous?.IsValid(Now) == true;
-            if (typed)
-            {
-                var status = available ? ServiceStatus.Ready : ServiceStatus.Unavailable;
-                if (service is not null && service.Status == status && service.ConfirmedAt > Now.AddSeconds(-1) && wasValid == available) return;
-                next.IntegrationHealth = null;
-                next.IntegrationServiceHealth = new(config.Integration.Id, config.Integration.Revision, status, Now, Now.AddMilliseconds(config.TimeoutMs + 3000), "integration:" + config.Integration.Id);
-            }
-            else
-            {
-                var health = available ? DeviceHealth.Ready : DeviceHealth.Disconnected;
-                if (previous is not null && previous.Health == health && previous.ConfirmedAt > Now.AddSeconds(-1) && wasValid == available) return;
-                next.IntegrationServiceHealth = null;
-                next.IntegrationHealth = new(config.Integration.Id, config.Integration.Revision, 0, health,
-                    previous is not null && previous.Health == health ? previous.UpdatedAt : Now, Now, Now.AddMilliseconds(config.TimeoutMs + 3000), "SIMULATION:loopback-health");
-            }
+            var next = Clone(state); var service = state.IntegrationServiceHealth;
+            var wasValid = service?.IsValid(Now) == true;
+            var status = available ? ServiceStatus.Ready : ServiceStatus.Unavailable;
+            if (service is not null && service.Status == status && service.ConfirmedAt > Now.AddSeconds(-1) && wasValid == available) return;
+            next.IntegrationHealth = null;
+            next.IntegrationServiceHealth = new(config.Integration.Id, config.Integration.Revision, status, Now,
+                Now.AddMilliseconds(config.TimeoutMs + 3000), "integration:" + config.Integration.Id);
             var had = next.Blocks.Any(x => x.Code == "WcsUnavailable" && x.Source == "transport");
             next.Blocks.RemoveAll(x => x.Code == "WcsUnavailable" && x.Source == "transport");
             if (!available) SetBlock(next, "WcsUnavailable", "station", "transport", config.Integration.Revision, "transport-health");
             if (had == available || wasValid != available) next.Revision++;
             var transition = had == available || wasValid != available ||
-                (typed ? service?.Status != next.IntegrationServiceHealth?.Status : previous?.Health != next.IntegrationHealth?.Health);
+                service?.Status != next.IntegrationServiceHealth?.Status;
             if (transition) store.Commit(next, "IntegrationHealth", config.StationId, "transport", available.ToString());
             Adopt(next); SyncAlarms();
         }

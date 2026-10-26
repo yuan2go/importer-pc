@@ -7,7 +7,7 @@ public static class ParcelConnectionSetup
 {
     public static bool IsDeferred(ParcelConfiguration c, string identity) => c.DeferredConnections?.Contains(identity, StringComparer.Ordinal) == true;
     public static bool HasActiveConnections(ParcelConfiguration c) => ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId)) ||
-        ParcelBindings.Bound(c).Any(b => b.InstanceId != c.MaintenanceLogin?.InstanceId && !IsDeferred(c, b.InstanceId));
+        ParcelBindings.Bound(c).Any(b => !IsDeferred(c, b.InstanceId));
     public static string[] Validate(ParcelConfiguration c)
     {
         if (c.DeferredConnections is not { Length: > 0 } pending) return [];

@@ -3,6 +3,7 @@ using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Assembly;
 using Ipc.Platform;
+using Ipc.Integrations.SportmasterRcs;
 using Microsoft.Data.Sqlite;
 
 static partial class SportmasterRcs
@@ -25,7 +26,7 @@ static partial class SportmasterRcs
             if (signed is not null) binding = binding with { Implementation = "extension:" + signed.Id + "/sportmaster-rcs-task", Version = signed.Version, Package = signed, Module = "sportmaster-rcs-task" };
             CapabilityBinding Camera(string p) => new("camera", "reference-camera", "1.0.0", "audit.camera." + p, standard.Topology!.Positions.Single(x => x.Id == p).ReaderDeviceId, "PARCEL-REFERENCE-v1", []);
             var leftCamera = Camera("left"); var rightCamera = Camera("right");
-            var c = standard with { Wcs = binding, Extensions = signed is null ? null : new([signed], []), TimeoutMs = 5000, Images = new(leftCamera, null), CapabilityInstances = [binding, standard.MaintenanceLogin!, leftCamera, rightCamera],
+            var c = standard with { Wcs = binding, Extensions = signed is null ? null : new([signed], []), TimeoutMs = 5000, Images = new(leftCamera, null), CapabilityInstances = [binding, leftCamera, rightCamera],
                 Topology = standard.Topology! with { Positions = [standard.Topology.Positions[0], standard.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
             var run = Path.Combine(root, "rcs-t1-" + delayedPosition); Directory.CreateDirectory(run); ExtensionStore.AtomicWrite(Path.Combine(run, "business.json"), c);
             if (signed is not null) ExtensionStore.AtomicWrite(Path.Combine(run, "extension-store.json"), new ParcelExtensionStoreConfiguration(store!.Root, trustFile!));
@@ -76,7 +77,9 @@ static partial class SportmasterRcs
                     await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); await Wait(app, s => s.Availability!.Configure);
                     await Wait(app, x => x.Operations.All(o => o.ImageReleased));
                     Check((await Command(app, "ArchiveHistory", value: "Synthetic T1 owner archival")).Status == "Persisted", "A03 explicit archival command receipt confirmed before restart assertions");
-                    Check((await app.BackupAsync(backup)).Status == "BackupCreated", "A03 actual backup retains owner ledger, ranges and archived originals");
+                    await Wait(app, s => s.Availability!.Configure);
+                    var backupReceipt = await app.BackupAsync(backup);
+                    Check(backupReceipt.Status == "BackupCreated", "A03 actual backup retains owner ledger, ranges and archived originals: " + Wire.Encode(backupReceipt));
                 }
                 finally { hold.Release.TrySetResult(); }
             }
@@ -94,60 +97,70 @@ static partial class SportmasterRcs
             ParcelRecovery.Restore(backup, directory);
             await using (var app = await Open(restored))
             {
-                await Command(app, "Resume"); app.EmitReferenceAt("left", "restore-old-range", "SYNTH-0001", "restore-old-event");
-                var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "restore-old-range" && o.State == ParcelState.Blocked));
-                Check(peer.Requests.Count == posts && s.Operations.Single(o => o.AdmissionId == "restore-old-range").Wcs is null, "A03 restored backup retires entire source range including IDs used after backup");
-                await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
-                Check((await Command(app, "AbandonUnsubmitted", s.Operations.Single(o => o.AdmissionId == "restore-old-range").Id, "Synthetic entity inspected; source root stopped")).Status == "Persisted", "A03 exhausted unsent entity can be inspected and disposed");
-                await Wait(app, x => x.Availability!.Configure); s = await app.SnapshotAsync();
-                var nextBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "820000000" } };
-                var next = s.Configuration.Effective with { Wcs = nextBinding, CapabilityInstances = s.Configuration.Effective.CapabilityInstances!.Select(b => b.InstanceId == binding.InstanceId ? nextBinding : b).ToArray() };
-                Check((await app.StageConfigurationAsync(s.Configuration.Revision, next, "Synthetic externally allocated disjoint range; old source retired")).Status == "PendingRestart", "A03 new disjoint range uses original configuration CAS and controlled restart");
+                var denied = await Command(app, "Resume"); app.EmitReferenceAt("left", "restore-old-range", "SYNTH-0001", "restore-old-event");
+                var isolated = await Wait(app, x => x.Inputs?.Any(i => i.Observation.AdmissionId == "restore-old-range") == true);
+                Check(denied.Status == "Rejected" && isolated.Paused && !isolated.Operations.Any(o => o.AdmissionId == "restore-old-range") && peer.Requests.Count == posts,
+                    "A03 stale restored backup stays isolated before protected handoff; no entity, request or POST is invented");
+                using var repository = new ParcelRepository(directory, "sportmaster");
+                await using var preparer = new SportmasterRcsTaskService(binding);
+                var range = preparer.GetRequestIdRange(binding)!; var budget = repository.IntegrationBudget(range);
+                Check(budget.Remaining == 0 && budget.PermanentHighWater >= range.Last,
+                    "A03 restored backup permanently retires the whole source range including IDs used after the backup");
             }
-            await using (var app = await Open(restored))
+            // An isolated stale backup may not retire its newer source. Verify the
+            // current range change on that authoritative source, without bypassing handoff.
+            await using (var app = await Open(data))
             {
-                await Command(app, "Resume"); app.EmitReferenceAt("right", "restored-new-range", "SYNTH-0001", "new-range-event");
-                var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "restored-new-range" && o.State == ParcelState.SlotResolved));
-                Check(s.Operations.Single(o => o.AdmissionId == "restored-new-range").Wcs!.Request.IntegrationRequest!.RequestId == 820000001 && peer.Requests.Count == posts + 1,
-                    "A03 restored root runs with new range; old retirement never retires newly staged range on restart");
+                await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); await Wait(app, x => x.Availability!.Configure);
+                var snapshot = await app.SnapshotAsync(); var nextBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "820000000" } };
+                var next = snapshot.Configuration.Effective with { Wcs = nextBinding, CapabilityInstances = snapshot.Configuration.Effective.CapabilityInstances!.Select(b => b.InstanceId == binding.InstanceId ? nextBinding : b).ToArray() };
+                Check((await app.StageConfigurationAsync(snapshot.Configuration.Revision, next, "Synthetic disjoint range on the authoritative current source")).Status == "PendingRestart",
+                    "A03 new disjoint range uses original configuration CAS and controlled restart");
             }
-            using var db = new SqliteConnection("Data Source=" + Path.Combine(directory, "sportmaster.db")); db.Open(); using var q = db.CreateCommand();
-            q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
-            Check((long)q.ExecuteScalar()! == 3, "A03 persistent SQL unique owners include archived and post-restore T1 allocations");
+            await using (var app = await Open(data))
+            {
+                await Command(app, "Resume"); app.EmitReferenceAt("right", "current-new-range", "SYNTH-0001", "new-range-event");
+                var snapshot = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "current-new-range" && o.State == ParcelState.SlotResolved));
+                Check(snapshot.Operations.Single(o => o.AdmissionId == "current-new-range").Wcs!.Request.IntegrationRequest!.RequestId == 820000001 && peer.Requests.Count == posts + 1,
+                    "A03 current root uses the newly allocated range exactly once after controlled restart");
+            }
+            using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+            { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
+              Check((long)q.ExecuteScalar()! == 4, "A03 persistent SQL unique owners include archived, post-backup and new-range original allocations"); }
             NumericMigrationChecks(Path.Combine(data, "Simulation", c.StationId, c.ApplicationId), Path.Combine(root, "migration-" + delayedPosition));
         }
         Console.WriteLine(signed is null ? "PASS A03 RCS COMPLETE" : "PASS A03 SIGNED RCS COMPLETE");
     }
     static void NumericMigrationChecks(string source, string root)
     {
-        void CloneSix(string target, bool conflict)
+        void Clone(string target, string mutation)
         {
             Directory.CreateDirectory(target);
-            using (var original = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(source, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
-            using (var copy = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(target, "sportmaster.db"), Pooling = false }.ToString()))
-            {
-                original.Open(); copy.Open(); original.BackupDatabase(copy);
-                using var q = copy.CreateCommand(); q.CommandText = SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version>=7"; q.ExecuteNonQuery();
-                if (conflict)
-                {
-                    q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId',(SELECT json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') FROM parcel_archives LIMIT 1))"; q.ExecuteNonQuery();
-                }
-            }
-            var receipts = Path.Combine(source, "receipts"); Directory.CreateDirectory(Path.Combine(target, "receipts"));
-            foreach (var file in Directory.EnumerateFiles(receipts)) File.Copy(file, Path.Combine(target, "receipts", Path.GetFileName(file)));
+            using var original = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(source, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+            using var copy = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(target, "sportmaster.db"), Pooling = false }.ToString());
+            original.Open(); copy.Open(); original.BackupDatabase(copy);
+            if (mutation.Length != 0) { using var q = copy.CreateCommand(); q.CommandText = mutation; q.ExecuteNonQuery(); }
         }
-        var valid = Path.Combine(root, "valid"); CloneSix(valid, false);
+        var valid = Path.Combine(root, "current"); Clone(valid, "");
         string[] before;
-        using (var old = new ParcelRepository(valid, "sportmaster", 6)) before = old.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
-        using (var current = new ParcelRepository(valid, "sportmaster"))
-            Check(current.StorageVersion == 9 && current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
-                "A03 explicit synthetic SQL6 resident/archive numeric migration preserves every original ID and exact frozen request");
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(valid, "sportmaster.db")))
-        { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners"; Check((long)q.ExecuteScalar()! == 3, "A03 SQL7 backfills all immutable numeric owners from SQL6 resident and archived originals"); }
-        var ambiguous = Path.Combine(root, "ambiguous"); CloneSix(ambiguous, true); var database = Path.Combine(ambiguous, "sportmaster.db"); var hash = Wire.FileHash(database);
-        try { using var refused = new ParcelRepository(ambiguous, "sportmaster"); throw new Exception("Ambiguous SQL6 request IDs migrated"); }
-        catch (InvalidDataException e) { Check(e.Message.Contains("Ambiguous") && Wire.FileHash(database) == hash && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 6,
-            "A03 ambiguous old numeric owners refuse in read-only preflight before SQL7 or database byte changes"); }
+        using (var current = new ParcelRepository(valid, "sportmaster")) before = current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
+        using (var reopened = new ParcelRepository(valid, "sportmaster"))
+            Check(reopened.StorageVersion == 9 && reopened.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
+                "A03 current resident/archive restart preserves every original numeric ID and frozen request");
+        foreach (var (name, mutation, version) in new[]
+        {
+            ("old-six", SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version>=7", 6),
+            ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", 9),
+            ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", 9)
+        })
+        {
+            var target = Path.Combine(root, name); Clone(target, mutation); var database = Path.Combine(target, "sportmaster.db"); var hash = Wire.FileHash(database);
+            var refused = false;
+            try { using var denied = new ParcelRepository(target, "sportmaster"); }
+            catch (InvalidDataException) { refused = true; }
+            Check(refused && Wire.FileHash(database) == hash && ParcelRepository.ReadStorageVersion(database, "sportmaster") == version && !Directory.Exists(Path.Combine(target, "receipts")),
+                "A03 " + name + " refuses before writes, owner backfill, receipt creation or format conversion");
+        }
     }
     sealed class HoldFactory(string position) : IParcelCapabilityFactory
     {

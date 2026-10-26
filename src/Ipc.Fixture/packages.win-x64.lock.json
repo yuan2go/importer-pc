@@ -49,13 +49,6 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
-      "ipc.adapters": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Drivers": "[1.0.0, )",
-          "Ipc.Integrations": "[1.0.0, )"
-        }
-      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -81,7 +74,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.0.0, )"
+          "Ipc.Application.Contracts": "[2.0.0, )"
         }
       },
       "Ipc.Supply.Contracts": {

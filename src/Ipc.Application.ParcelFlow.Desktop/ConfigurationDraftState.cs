@@ -12,9 +12,7 @@ public partial class ParcelViewModel
         Readers = ReaderDrafts.Select(x => DraftSignature(x.Capability)),
         Roles = ConfigurationRoles.Select(x => new { x.Role, Instance = x.Selection.Capability?.InstanceId }),
         Positions = PositionDrafts.Select(x => new { x.Id, Scale = x.Scale.Capability?.InstanceId, Camera = x.Camera.Capability?.InstanceId }),
-        StructuredPolicy,
-        DraftWeightValidity, DraftWeightSource, DraftUnit, DraftPrecision, DraftConfiguredWeight,
-        DraftWaitMs, DraftFreshMs, DraftUploadStrategy, DraftImageBytes, DraftTotalBytes, DraftPending
+        StructuredPolicy
     });
     static object DraftSignature(CapabilityDraft draft) => new
     {

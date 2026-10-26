@@ -50,17 +50,6 @@
   "MaximumOperations": 10000,
   "Login": null,
   "Images": null,
-  "MaintenanceLogin": {
-    "Kind": "login",
-    "Implementation": "reference-login",
-    "Version": "1.0.0",
-    "InstanceId": "maintenance",
-    "Target": "reference://maintenance",
-    "Contract": "PARCEL-REFERENCE-v1",
-    "Parameters": {
-      "subjects": "maintenance"
-    }
-  },
   "WeightValidity": "UntilDispatch",
   "Topology": {
     "Readers": [

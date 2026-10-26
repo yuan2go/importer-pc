@@ -16,7 +16,7 @@ public static class BarcodeFiltering
     }
     public static string? Validate(BarcodeFilterPolicy? policy)
     {
-        if (policy is null) return null; // explicit legacy single-code compatibility, never match-all
+        if (policy is null) return null; // current strict single-candidate policy, never match-all
         try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) _ = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.Pattern: " + ex.Message; }
         try { if (policy.ExclusionPattern is not null) _ = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
@@ -32,8 +32,8 @@ public static class BarcodeFiltering
         if (issue is not null || candidates.Length > MaximumCandidates || candidates.Any(x => x is null || x.Length > MaximumRawLength))
             return Result("IncompleteCandidates", null, 0, issue ?? "候选超出完整性配额，禁止按截断集合准入");
         if (policy is null)
-            return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "旧配置未设置筛选规则：仅接受一个原始码") :
-                !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("LegacySingleCode", candidates[0], 1, "旧版严格单码兼容；未应用筛选规则");
+            return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "未设置筛选规则：仅接受一个原始码") :
+                !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；未应用筛选规则");
         if (Validate(policy) is { } invalid) return Result("InvalidPattern", null, 0, invalid);
         var timer = Stopwatch.StartNew();
         try

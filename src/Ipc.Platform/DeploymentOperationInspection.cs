@@ -6,6 +6,11 @@ public sealed record InstallationInspection(string Status, string Detail, Deploy
 
 public static partial class WindowsDeploymentSetup
 {
+    public static void RequireCurrentInstallationRequest(WindowsDeploymentRequest request)
+    {
+        if (!IsInstallationOperationId(request.OperationId) || request.Shortcuts is null)
+            throw new InvalidDataException("部署计划必须包含原操作标识和明确的快捷方式选择。");
+    }
     // Wire.Id is a canonical GUID and may start with a digit; extension IDs
     // have a different grammar. Retain previously accepted safe named IDs.
     public static bool IsInstallationOperationId(string? value) => value is not null &&

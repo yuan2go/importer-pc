@@ -18,9 +18,8 @@ static partial class Program
         async Task Flush(Window window) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        // Packaged clean seeds omit historical MaintenanceLogin. Exercise its
-        // role migration with an explicit synthetic legacy binding in both hosts.
-        config = config with { MaintenanceLogin = new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }) };
+        var operatorBinding = new CapabilityBinding("login", "reference-login", "1.0.0", "operator", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
+        config = config with { CapabilityInstances = ParcelBindings.All(config).Append(operatorBinding).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -68,6 +67,7 @@ static partial class Program
             Check(state switch { "online" => vm.RcsPresentation.Foreground == "#147450", "offline" => vm.RcsPresentation.Foreground == "#B52F38" && vm.Right.DevicePresentation.Text == "相机：在线", "deferred" => vm.RcsPresentation.Text.Contains("待配置"), "local" => !vm.RcsPresentation.Text.Contains("在线"), _ => !vm.Left.DevicePresentation.Text.Contains("在线") }, "connection evidence distinguishes " + state + " and keeps sides independent");
             CaptureInternal(evidence, "connection-" + state, client, lines);
         }
+        probe.Project = _ => throw new IOException("合成状态读取中断");
         vm.MarkReadFailure("合成状态读取中断"); await Flush(window);
         Check(!vm.Left.DevicePresentation.Text.Contains("在线") && !vm.RcsPresentation.Text.Contains("在线"), "stale snapshot revokes camera and RCS online claims");
         probe.Project = null; await RefreshUntil(() => vm.Fresh);
@@ -77,11 +77,12 @@ static partial class Program
         await vm.EnsureMaintenanceLoadedAsync(); await Flush(window);
         var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
         Check(!editor.ShowPage(3, "维护认证") && !editor.ShowPage(3, "身份认证"), "daily role-based legacy maintenance-only component is absent from the real directory");
-        var model = editor.Model!; var legacy = model.Components.Single(model.IsLegacyMaintenanceOnly);
-        var loginRole = model.ComponentRoles.Single(r => r.Role == "登录"); var beforeLogin = loginRole.Selection;
-        loginRole.Selection = loginRole.Choices.Single(c => ReferenceEquals(c.Capability, legacy));
-        Check(!model.IsLegacyMaintenanceOnly(legacy) && model.ComponentLabel(legacy) == "操作员登录", "a shared legacy component keeps its actual operator-login purpose and Chinese label");
-        loginRole.Selection = beforeLogin;
+        var model = editor.Model!; var login = model.Components.Single(c => c.Provider?.Implementation == "reference-login");
+        var loginRole = model.ComponentRoles.Single(r => r.Role == "登录"); var originalLogin = loginRole.Selection;
+        loginRole.Selection = loginRole.Choices.Single(c => ReferenceEquals(c.Capability, login));
+        Check(model.ComponentLabel(login) == "操作员登录" && !model.ComponentRoles.Any(r => r.Role == "维护认证"),
+            "current operator authentication retains its own purpose and Chinese label without an obsolete management role");
+        loginRole.Selection = originalLogin;
         var draft = vm.StructuredPolicy!; draft.TimeoutMs = "29000";
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync(); await Flush(window);
         Check(vm.SelectedPage == "workstation" && ReferenceEquals(draft, vm.StructuredPolicy) && draft.TimeoutMs == "29000" && !vm.HasManagementNotice && !vm.Message.Contains("管理授权已结束"), "mode exit protects the exact draft and removes the routine banner");
@@ -89,7 +90,7 @@ static partial class Program
         Check(vm.HistoryPositionChoices.Where(x => x.Id is "left" or "right").All(x => !x.Label.Contains(x.Id)), "history labels hide internal left/right values");
         foreach (var ui in new[] { "classic", "supply-station" })
         {
-            var guarded = Presentation.Create(runtime, "sportmaster-maintenance", "standard", ui); guarded.Show(); await Task.Delay(200);
+            Window guarded = ui == "classic" ? CreateSharedShellForVerification(runtime, "sportmaster-maintenance") : Presentation.Create(runtime, "sportmaster-maintenance", "standard", ui); guarded.Show(); await Task.Delay(200);
             Check(ui == "classic" ? ((ShellWindow)guarded).SelectedWorkspace == "work" : ((SupplyStationWindow)guarded).ViewModel.SelectedPage == "workstation", ui + " initial protected page is fenced");
             guarded.Close(); await Task.Delay(100);
         }

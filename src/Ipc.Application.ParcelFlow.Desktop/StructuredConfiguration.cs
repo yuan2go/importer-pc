@@ -144,8 +144,7 @@ public partial class ParcelViewModel
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
     public async Task EnsureMaintenanceLoadedAsync() { await RequireManagementModeAsync(); if (!HasLoadedConfiguration) await LoadCapabilitiesAsync(); }
-    public bool CanEditLegacyConfiguration => configurationAuthority == "旧版表单";
-    public bool CanEditFormConfiguration => IsManagementMode && configurationAuthority is ("结构化表单" or "旧版表单");
+    public bool CanEditFormConfiguration => IsManagementMode && configurationAuthority == "结构化表单";
     public bool CanEditStructuredConfiguration => configurationAuthority == "结构化表单";
     public bool HasStructuredConfiguration => structuredBase is not null;
     public bool AdvancedConfigurationReadOnly => configurationAuthority != "高级JSON";
@@ -159,7 +158,7 @@ public partial class ParcelViewModel
     bool SupportsNewKind(string kind)
     {
         var id = structuredBase?.ApplicationId ?? Snapshot?.ApplicationId;
-        if (kind == "login") return !CapabilityDrafts.Any(c => c.Kind == kind && c.InstanceId != structuredBase?.MaintenanceLogin?.InstanceId);
+        if (kind == "login") return !CapabilityDrafts.Any(c => c.Kind == kind);
         if (id == "sportmaster" || kind == "observation") return false;
         if (kind is "weight" or "camera") return CapabilityDrafts.Count(c => c.Kind == kind) < (structuredBase?.Topology?.Positions.Length ?? 1) + 1;
         return kind is "plc" or "upload" or "integration" && !(id == "direct-plc" && kind == "integration") && !CapabilityDrafts.Any(c => c.Kind == kind);
@@ -184,7 +183,7 @@ public partial class ParcelViewModel
         get
         {
             var state = "未加载";
-            if (configurationAuthority is "高级JSON" or "旧版表单") state = !HasUnsavedConfiguration ? "已加载/已保存" : "已修改未保存";
+            if (configurationAuthority == "高级JSON") state = !HasUnsavedConfiguration ? "已加载/已保存" : "已修改未保存";
             else if (configurationAuthority == "结构化表单")
                 try { state = Wire.Encode(BuildStructuredConfiguration()) == savedCandidate ? "已加载/已保存" : "已修改未保存"; }
                 catch (InvalidOperationException) { state = "已修改，局部字段未通过"; }
@@ -201,20 +200,14 @@ public partial class ParcelViewModel
         if (SelectedInstalledPackage is null || !InstalledPackageReferences.Contains(SelectedInstalledPackage)) SelectedInstalledPackage = InstalledPackageReferences.FirstOrDefault();
         Changed(nameof(InstalledPackageReferences)); Changed(nameof(SelectedInstalledPackage)); Changed(nameof(NewCapabilityKinds));
     }
-    void StartLegacyConfiguration(ParcelConfiguration c)
-    {
-        structuredBase = null; configurationReviewBaseline = c; configurationAuthority = "旧版表单"; savedCandidate = Wire.Encode(c); validationState = "尚未校验";
-        ReaderDrafts.Clear(); PositionDrafts.Clear(); ConfigurationRoles.Clear(); StructuredPolicy = null;
-        NotifyConfigurationEditorState();
-    }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(LegacyPolicyVisibility)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
         // authority. A malformed JSON draft must remain intact and editable on failure.
         var drafts = (c.CapabilityInstances ?? []).Concat(ParcelBindings.All(c)).DistinctBy(x => x.InstanceId)
-            .Select(b => new CapabilityDraft(b.Kind, catalog.Providers, b, false) { LegacyBindingEditable = false }).ToArray();
+            .Select(b => new CapabilityDraft(b.Kind, catalog.Providers, b, false)).ToArray();
         CapabilityChoice[] LocalChoices(string kind, string empty = "不绑定") => [new(empty, null), .. drafts.Where(x => x.Kind == kind).Select(x => new CapabilityChoice(x.InstanceId, x))];
         CapabilityRoleDraft LocalRole(string role, string kind, CapabilityBinding? binding)
         {
@@ -232,7 +225,7 @@ public partial class ParcelViewModel
                 : new("observation", "extension:" + package!.Id + "/" + instance.ModuleId, package.Version, instance.Id, reader.DeviceId, descriptor?.Contract ?? "CONTROLLED-OBSERVATION-v1", instance.Parameters, package, instance.ModuleId, instance.Enabled);
             readers.Add(new(reader, new("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id)));
         }
-        CapabilityRoleDraft[] roles = [LocalRole("登录", "login", c.Login), LocalRole("维护认证", "login", c.MaintenanceLogin), LocalRole("默认秤", "weight", c.Scale),
+        CapabilityRoleDraft[] roles = [LocalRole("登录", "login", c.Login), LocalRole("默认秤", "weight", c.Scale),
             LocalRole("上游格口", "integration", c.Wcs), LocalRole("PLC", "plc", c.Plc), LocalRole("默认相机", "camera", c.Images?.Camera), LocalRole("图片上传", "upload", c.Images?.Uploader)];
         var positions = ParcelBindings.Positions(c).Select(position => new PositionConfigurationDraft(position, LocalChoices("weight", "沿用默认秤"), LocalChoices("camera", "沿用默认相机"))).ToArray();
         var policy = ConfigurationPolicyDraft.From(c);
@@ -247,9 +240,7 @@ public partial class ParcelViewModel
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
         var scanPolicyChanged = c.ApplicationId == "sportmaster" &&
-            (ParcelBindings.Readers(c).Any(r => r.Driver == "tcp-line" && r.Parameters?.GetValueOrDefault("entity.mode", "observe-only") != "line") ||
-             c.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1" } wcs && wcs.Parameters.TryGetValue("quantity", out var quantity) &&
-             (quantity != "1" || !drafts.Single(d => d.InstanceId == wcs.InstanceId).Parameters.Any(p => p.Field.Key == "quantity")));
+            ParcelBindings.Readers(c).Any(r => r.Driver == "tcp-line" && r.Parameters?.GetValueOrDefault("entity.mode", "observe-only") != "line");
         AcceptEditorBaseline();
         if (c.StationCode is null || scanPolicyChanged)
         {
@@ -321,7 +312,7 @@ public partial class ParcelViewModel
         {
             DeferredConnections = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts),
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId), Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
-            CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), MaintenanceLogin = Role("维护认证"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
+            CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
             Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions
         };
     }
@@ -331,7 +322,7 @@ public partial class ParcelViewModel
         var catalog = installedCatalog ?? throw new InvalidOperationException("先读取安装清单");
         if (!NewCapabilityKinds.Contains(NewCapabilityKind)) throw new InvalidOperationException("选择已安装的能力类型");
         var number = 1; while (CapabilityDrafts.Any(x => x.InstanceId == NewCapabilityKind + "." + number)) number++;
-        var draft = new CapabilityDraft(NewCapabilityKind, catalog.Providers, null, false) { LegacyBindingEditable = false, InstanceId = NewCapabilityKind + "." + number };
+        var draft = new CapabilityDraft(NewCapabilityKind, catalog.Providers, null, false) { InstanceId = NewCapabilityKind + "." + number };
         draft.PropertyChanged += (_, _) => EditorChanged(); CapabilityDrafts.Add(draft); RebuildConfigurationSelections(); RebuildParameterEditor(); EditorChanged();
         Message = "已增加未绑定实例；填写目标与参数，在角色或本位绑定中选择，完整校验后保存。"; return Task.CompletedTask;
     }
@@ -392,7 +383,6 @@ public partial class ParcelViewModel
     public Task SwitchToAdvancedConfigurationAsync()
     {
         if (configurationAuthority == "结构化表单") ConfigurationDraft = Wire.Encode(BuildStructuredConfiguration());
-        else if (configurationAuthority == "旧版表单") ConfigurationDraft = Wire.Encode(BuildLegacyConfiguration());
         else if (configurationAuthority == "未加载") throw new InvalidOperationException("先读取当前配置，再切换编辑来源");
         configurationAuthority = "高级JSON"; Changed(nameof(ConfigurationDraft)); NotifyConfigurationEditorState(); Message = "高级JSON为当前编辑来源；表单保存已停用。返回表单须显式加载此JSON。"; return Task.CompletedTask;
     }

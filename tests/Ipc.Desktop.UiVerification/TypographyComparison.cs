@@ -25,7 +25,7 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS COMPARE " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        var config = seed with { Login = seed.MaintenanceLogin! with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
+        var config = seed with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -36,7 +36,7 @@ static partial class Program
         var reports = new List<object>();
         foreach (var ui in new[] { "supply-station", "classic" })
         {
-            var window = Presentation.Create(app, null, "standard", ui);
+            Window window = ui == "classic" ? CreateSharedShellForVerification(app) : Presentation.Create(app, null, "standard", ui);
             if (window is ShellWindow shell) shell.ConfirmDiscardDrafts = _ => true;
             else ((SupplyStationWindow)window).ConfirmDiscardDrafts = _ => true;
             window.Show(); await Task.Delay(300);

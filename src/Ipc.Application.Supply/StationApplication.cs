@@ -35,6 +35,9 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null, Func<StationConfig, IDisposable?>? configurationLeaseFactory = null)
     {
         this.configurationValidator = configurationValidator; this.configurationLeaseFactory = configurationLeaseFactory; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
+        // Refuse every unsupported receipt input before any recovery/startup commit.
+        // A later invalid file must not leave earlier files partially replayed.
+        ValidateReceiptInputs();
         if (File.Exists(OverloadMarker)) runtimeFaults[SupplyReasonCodes.Overload] = "Unacknowledged overflow; inspect source/entity evidence";
         state.Actor = null; state.Stopping = false; state.IntegrationHealth = null; state.IntegrationServiceHealth = null; state.ServiceHealth.Clear();
         state.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.WindowArea && x.ClearAuthority == "presentation-owner");
@@ -47,7 +50,6 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             store.Commit(state, "RecoveryUnknown", request.OwnerId, "recovery", request.Id, request: unknown, attempt: interrupted);
         }
         foreach (var binding in config.Devices) state.Devices[binding.Role] = new(binding.DeviceId, "not-connected", 0, DeviceHealth.Unknown, Now);
-        RecoverReceiptFence();
         RecoverReceiptIngress();
         state.Revision++; store.Commit(state, "Startup", state.Session?.Id ?? config.StationId, "runtime", "Identity reset; devices must reconnect");
         if (state.Quarantined || File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine")))
@@ -578,8 +580,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         if (s.Quarantined) yield return SupplyReasonCodes.RestoreQuarantine;
         if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return SupplyReasonCodes.IdentityUnavailable;
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
-        var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
-            s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
+        var integrationReason = s.IntegrationServiceHealth?.ValidityReason(Now) ?? (s.IntegrationServiceHealth is null ? "Unconfirmed" : null);
         if (integrationReason is not null) yield return SupplyReasonCodes.WcsHealth + ":" + integrationReason;
         // A live Dispatching intake is not an unknown outcome. It still participates in
         // pending/close/activation barriers; receipt failure latches storage and restart

@@ -32,6 +32,7 @@ static partial class Program
             check(Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包"))).IsEnabled,
                 "native Pause remains enabled outside the busy maintenance scope");
             await vm.PauseAsync();
+            for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
             check(vm.Busy && vm.Snapshot!.Paused, "real Application Pause completes independently while native maintenance is held");
         }
         finally { pending.TrySetResult(); await busy; }
@@ -96,7 +97,7 @@ static partial class Program
 
     static async Task VerifyParameterForms(MaintenancePage page, ParcelViewModel vm, Action<bool, string> check)
     {
-        var reader = vm.ReaderDrafts[0].Capability; var inventory = vm.CapabilityDrafts.First();
+        var reader = vm.ReaderDrafts[0].Capability; var inventory = vm.CapabilityDrafts.First(c => c.Kind == "login");
         var readerProvider = reader.Provider!; var inventoryProvider = inventory.Provider!;
         var control = (ParameterSettingsControl)page.FindName("MainParameterEditor");
         var field = new ParameterField("input.labels", "输入", "来源标签（每行一项）", "string-list", Default: "[]", MaximumLength: 256, MaximumItems: 16);
@@ -130,64 +131,52 @@ static partial class Program
         }
     }
 
-    static async Task VerifyLegacyDraftClose(string evidence, ParcelConfiguration config, Action<bool, string> check, bool syntheticIdentity)
+    static async Task VerifyCurrentDraftClose(string evidence, ParcelConfiguration config, Action<bool, string> check, bool syntheticIdentity)
     {
-        foreach (var ui in new[] { "classic", "supply-station" })
+        var configRoot = Path.Combine(evidence, "current-draft-close", "config"); Directory.CreateDirectory(configRoot);
+        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
+        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "current-draft-close", "data"), null, null);
+        await using var runtime = syntheticIdentity
+            ? new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } }
+            : (Ipc.Application.ParcelFlow.ParcelRuntime)SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
+        await runtime.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
+        var refusedClassic = false;
+        try { Presentation.Create(runtime, null, null, "classic"); }
+        catch (ArgumentException) { refusedClassic = true; }
+        check(refusedClassic, "removed Sportmaster profile refuses instead of creating another UI path");
+        var stops = 0; var decisions = 0;
+        var window = (SupplyStationWindow)Presentation.Create(runtime, "sportmaster-maintenance", null,
+            stopOwner: async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
+        void Decision(bool discard) => window.ConfirmDiscardDrafts = _ => { decisions++; return discard; };
+        window.Show();
+        try
         {
-            var configRoot = Path.Combine(evidence, "legacy-" + ui, "config"); Directory.CreateDirectory(configRoot);
-            var legacy = config with { SchemaVersion = 2, Topology = null, StationId = "native-legacy-" + ui };
-            ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), legacy);
-            var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "legacy-" + ui, "data"), null, null);
-            await using var runtime = syntheticIdentity
-                ? new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } }
-                : (Ipc.Application.ParcelFlow.ParcelRuntime)SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
-            await runtime.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
-            var stops = 0; var decisions = 0;
-            var window = Presentation.Create((IParcelApplication)runtime.Application, "sportmaster-maintenance", null, ui,
-                async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
-            void Decision(bool discard)
-            {
-                if (window is ShellWindow shell) shell.ConfirmDiscardDrafts = _ => { decisions++; return discard; };
-                else ((SupplyStationWindow)window).ConfirmDiscardDrafts = _ => { decisions++; return discard; };
-            }
-            window.Show();
-            try
-            {
-                var vm = (ParcelViewModel)window.DataContext;
-                for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
-                var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
-                page.ShowTechnicalMaintenance(); page.UpdateLayout();
-                var tools = (TabControl)page.FindName("TechnicalTabs");
-                var tab = tools.Items.OfType<TabItem>().Single(x => Equals(x.Header, "旧schema1/2策略"));
-                page.ShowTechnicalTool(tools.Items.IndexOf(tab)); window.UpdateLayout(); await Dispatcher.Yield();
-                var editor = Descendants(page).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(vm.DraftPrecision));
-                var before = vm.DraftPrecision; var revision = vm.DraftRevisionState;
-                editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
-                check(Validation.GetHasError(editor) && vm.DraftPrecision == before && !vm.HasUnsavedConfiguration,
-                    ui + " native legacy conversion failure leaves the model unchanged but retains invalid editor text");
-                Decision(false); window.Close();
-                for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-                check(decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && Validation.GetHasError(editor) &&
-                    editor.Text == "SYNTHETIC invalid integer" && vm.DraftRevisionState == revision,
-                    ui + " native close detects conversion errors independently of model dirty state and cancellation preserves raw input and CAS");
-                editor.Text = (before + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                // This legacy binding normally updates on LostFocus. Close must flush it before testing the draft.
-                window.Close();
-                for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-                check(decisions == 2 && stops == 0 && window.IsVisible && vm.DraftPrecision == before + 1 && vm.HasUnsavedConfiguration,
-                    ui + " native close commits pending text before deciding whether to discard and still defaults to preserving it");
-                Decision(true); window.Close();
-                for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
-                check(!window.IsVisible && stops == 1, ui + " explicit discard exits native Closing before closing and stops the actual Application once");
-            }
-            finally
-            {
-                if (window.IsVisible)
-                {
-                    Decision(true); window.Close();
-                    for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
-                }
-            }
+            var vm = window.ViewModel;
+            for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
+            var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+            var settings = Descendants(page).OfType<ParameterSettingsControl>().Single();
+            check(settings.ShowPage(1, "接收与等待限制"), "current business limits page is reachable");
+            window.UpdateLayout(); await Dispatcher.Yield();
+            var editor = Descendants(settings).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == "TimeoutMs");
+            var policy = vm.StructuredPolicy!; var before = policy.TimeoutMs;
+            editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+            check(policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration && !vm.ParameterEditor!.ValidateFields() && vm.ParameterEditor.Issues.Any(x => x.Path == "TimeoutMs"),
+                "current validation rejects invalid numeric input while retaining the exact unsaved text");
+            Decision(false); window.Close();
+            for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
+            check(decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.TimeoutMs && vm.HasUnsavedConfiguration,
+                "canceled close preserves invalid input and the live owner without discarding the draft");
+            editor.Text = (int.Parse(before) + 1).ToString(); window.Close();
+            for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
+            check(decisions == 2 && stops == 0 && window.IsVisible && policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
+                "native close commits pending current text before the discard decision and preserves it by default");
+            Decision(true); window.Close();
+            for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
+            check(!window.IsVisible && stops == 1, "explicit discard exits native Closing and stops the actual Application once");
+        }
+        finally
+        {
+            if (window.IsVisible) { Decision(true); window.Close(); for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20); }
         }
     }
 

@@ -17,7 +17,7 @@ static partial class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.1.1", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.3.5", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
@@ -114,26 +114,22 @@ static partial class SportmasterRcs
     static async Task ConfirmedScanFlow(string workspace, string root, Peer peer)
     {
         peer.Mode = "assigned";
-        foreach (var legacy in new[] { false, true })
+        var current = Binding(peer.Endpoint);
+        await using (var service = new SportmasterRcsTaskService(current))
         {
-            var binding = Binding(peer.Endpoint); binding.Parameters.Remove("quantity");
-            if (legacy) binding.Parameters["quantity"] = "7";
-            await using var service = new SportmasterRcsTaskService(binding);
-            service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding)); await service.StartAsync(default);
-            var request = Request(binding); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, current)); await service.StartAsync(default);
+            var request = Request(current); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
             using var body = JsonDocument.Parse(request.IntegrationRequest.Body);
             Check(body.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1 &&
-                (await service.RequestDestinationAsync(request, default)).BusinessAccepted == true,
-                "new parcel requests always send quantity 1, including legacy configured quantity 7");
-            if (legacy)
-            {
-                var oldBody = request.IntegrationRequest.Body.Replace("\"quantity\":1", "\"quantity\":7", StringComparison.Ordinal);
-                var old = request with { IntegrationRequest = request.IntegrationRequest with { Body = oldBody, BodyHash = Wire.Hash(oldBody) } };
-                var frozen = Wire.Encode(old);
-                Check((await service.RequestDestinationAsync(old, default)).BusinessAccepted == true && Wire.Encode(old) == frozen && peer.Requests.Last().Body == oldBody,
-                    "existing frozen legacy intent is validated and delivered byte-for-byte without regenerating its quantity");
-            }
+                (await service.RequestDestinationAsync(request, default)).BusinessAccepted == true, "current parcel request sends exactly quantity one");
+            var oldBody = request.IntegrationRequest.Body.Replace("\"quantity\":1", "\"quantity\":7", StringComparison.Ordinal);
+            var old = request with { IntegrationRequest = request.IntegrationRequest with { Body = oldBody, BodyHash = Wire.Hash(oldBody) } };
+            var frozen = Wire.Encode(old); var count = peer.Requests.Count;
+            try { await service.RequestDestinationAsync(old, default); throw new Exception("Old quantity intent delivered"); }
+            catch (InvalidDataException) { Check(Wire.Encode(old) == frozen && peer.Requests.Count == count, "unsupported quantity preserves frozen original and produces no I/O"); }
         }
+        try { await using var unsupported = new SportmasterRcsTaskService(current with { Parameters = new(current.Parameters) { ["quantity"] = "7" } }); throw new Exception("Old quantity option accepted"); }
+        catch (InvalidDataException) { Check(true, "obsolete quantity configuration explicitly rejected"); }
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
         var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
@@ -324,7 +320,8 @@ static partial class SportmasterRcs
     static async Task RuntimeChecks(string workspace, string root, Peer peer)
     {
         var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
-        var config = template with { Wcs = Binding(peer.Endpoint), TimeoutMs = 1500 };
+        var rcs = Binding(peer.Endpoint);
+        var config = template with { Wcs = rcs with { Parameters = new(rcs.Parameters) { ["request-timeout-ms"] = "1000" } }, TimeoutMs = 1500 };
         async Task<ParcelRuntime> Open(string run)
         {
             var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
@@ -382,7 +379,7 @@ static partial class SportmasterRcs
         var leftCamera = Camera("left"); var rightCamera = Camera("right");
         var uploader = new CapabilityBinding("upload", "reference-upload", "1.0.0", "rcs.upload", "reference://upload/rcs-attached", "PARCEL-REFERENCE-v1", []);
         config = config with { Images = new(leftCamera, uploader, Strategy: UploadStrategy.Attached),
-            CapabilityInstances = [config.Wcs!, config.MaintenanceLogin!, leftCamera, rightCamera, uploader], Topology = config.Topology! with { Positions = [config.Topology.Positions[0], config.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
+            CapabilityInstances = [config.Wcs!, leftCamera, rightCamera, uploader], Topology = config.Topology! with { Positions = [config.Topology.Positions[0], config.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
         peer.Mode = "unpack"; ParcelOperation unpackOriginal;
         await using (var app = await Open("rcs-unpack-projection-recovery"))
         {
@@ -431,70 +428,60 @@ static partial class SportmasterRcs
         try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
         catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
     }
-    static void MigrationChecks(string workspace, string root)
+    static void MigrationChecks(string workspace,string root)
     {
-        var directory = Path.Combine(root, "rcs-sql5-custody");
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
-        var request = Request(config.Wcs!); var reply = new StageReply(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, "Synthetic pre-RCS original unknown", DateTimeOffset.UtcNow);
-        var stage = new StageFact(request, StageState.Unknown, 1, [reply], "Synthetic outcome unknown");
-        var operation = new ParcelOperation(request.OperationId, request.AdmissionId, "SYNTH-0001", Wire.Id(), request.PreparedAt, request.ConfigurationHash, config, new() { [config.Wcs!.InstanceId] = request.ImplementationHash }, config.Weight, null,
-            ParcelState.WcsUnknown, null, stage, null, "Synthetic original awaiting reconciliation", PositionId: "left");
-        string durable, awaiting; string frozen;
-        Dictionary<long, string> SqlHistory()
+        var config=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config/sportmaster/business.json")));
+        var request=Request(config.Wcs!);
+        var reply=new StageReply(Wire.Id(),request.Id,request.PayloadHash,true,null,null,null,null,"Synthetic original unknown",DateTimeOffset.UtcNow);
+        var stage=new StageFact(request,StageState.Unknown,1,[reply],"Original outcome unknown");
+        var operation=new ParcelOperation(request.OperationId,request.AdmissionId,"SYNTH-0001",Wire.Id(),request.PreparedAt,request.ConfigurationHash,config,
+            new(){[config.Wcs!.InstanceId]=request.ImplementationHash},config.Weight,null,ParcelState.WcsUnknown,null,stage,null,"Original awaiting reconciliation",PositionId:"left");
+        var current=Path.Combine(root,"current-custody");string durable,awaiting;
+        using(var repo=new ParcelRepository(current,"sportmaster"))
         {
-            using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(directory, "sportmaster.db"), Pooling = false }.ToString()); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT version,sha FROM platform_migrations ORDER BY version";
-            using var r = c.ExecuteReader(); Dictionary<long, string> history = []; while (r.Read()) history.Add(r.GetInt64(0), r.GetString(1)); return history;
+            repo.Commit(operation,"SyntheticOriginal","Current frozen unknown");
+            durable=repo.BeginReceipt(operation,stage,"Submit");repo.StoreRaw(durable,reply);
+            awaiting=repo.BeginReceipt(operation,stage,"Query");
         }
-        using (var original = new ParcelRepository(directory, "sportmaster", 5))
+        var raw=File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json"));
+        using(var reopened=new ParcelRepository(current,"sportmaster"))
+            Check(reopened.StorageVersion==9 && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
+                reopened.PendingReceipts().Length==2 && reopened.ReceiptById(durable) is {State:"RawDurable"} &&
+                reopened.ReceiptById(awaiting) is {State:"Awaiting",RawHash:null} && File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json")).SequenceEqual(raw),
+                "current SQL9 restart retains frozen Unknown, independent custody, raw bytes and one send");
+        // Test-only materialization of immutable historical SQL. No old writer remains in the product.
+        var migrations=(Ipc.Platform.Storage.DatabaseMigration[])typeof(ParcelRepository).GetField("migrations",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static)!.GetValue(null)!;
+        foreach(var version in Enumerable.Range(2,7))
         {
-            original.Commit(operation, "SyntheticLegacyUnknown", "Synthetic valid SQL5 reference original before RCS optional fields");
-            durable = original.BeginReceipt(operation, stage, "Submit"); original.StoreRaw(durable, reply);
-            awaiting = original.BeginReceipt(operation, stage, "Query"); frozen = Wire.Encode(original.Load().Single());
+            var directory=Path.Combine(root,"unsupported-sql"+version);Directory.CreateDirectory(directory);
+            var file=Path.Combine(directory,"sportmaster.db");
+            using(var db=Ipc.Platform.Storage.Database.Open(file,true))
+            {
+                Ipc.Platform.Storage.Database.Migrate(db,"sportmaster",migrations.Take(version).ToArray());
+                using var command=db.CreateCommand();command.CommandText="INSERT INTO parcel_operations VALUES($id,$admission,$observation,$body)";
+                command.Parameters.AddWithValue("$id",operation.Id);command.Parameters.AddWithValue("$admission",operation.AdmissionId);
+                command.Parameters.AddWithValue("$observation",operation.ObservationId);command.Parameters.AddWithValue("$body",Wire.Encode(operation));command.ExecuteNonQuery();
+            }
+            var original=Wire.FileHash(file);var receipt=Path.Combine(directory,"original-receipt.json");File.WriteAllBytes(receipt,raw);
+            try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Historical SQL accepted"); }
+            catch(InvalidDataException)
+            { Check(Wire.FileHash(file)==original && File.ReadAllBytes(receipt).SequenceEqual(raw) && ParcelRepository.ReadStorageVersion(file,"sportmaster")==version && !Directory.Exists(Path.Combine(directory,"receipts")),
+                "SQL"+version+" refuses before writes/receipt directories; original request and raw remain exact"); }
         }
-        var priorHistory = SqlHistory(); var raw = Path.Combine(directory, "receipts", durable + ".json"); var originalBytes = File.ReadAllBytes(raw);
-        var database = Path.Combine(directory,"sportmaster.db"); var databaseHash=Wire.FileHash(database);
-        try { using var refused=new ParcelRepository(directory,"sportmaster"); throw new Exception("Unknown SQL5 original upgraded without matching release"); }
-        catch (InvalidDataException ex)
+        foreach(var damage in new[]{"future","foreign","checksum"})
         {
-            Check(ex.Message.Contains("LegacyUnsettled")&&Wire.FileHash(database)==databaseHash&&SqlHistory().Keys.Max()==5,
-                "SQL5 unknown original refuses before SQL6 marker and preserves matching old reader bytes");
-        }
-        using (var original = new ParcelRepository(directory,"sportmaster",5))
-        {
-            Check(Wire.Encode(original.Load().Single())==frozen&&original.Load().Single().Wcs!.Request.IntegrationRequest is null,
-                "refused SQL5 original retains exact legacy request, stage and absent optional integration fields");
-            Check(original.PendingReceipts().Length==2&&original.ReceiptById(durable) is { State:"RawDurable" }&&original.ReceiptById(awaiting) is { State:"Awaiting",RawHash:null }&&File.ReadAllBytes(raw).SequenceEqual(originalBytes),
-                "refused SQL5 original retains both independent custody occurrences and exact raw bytes");
-        }
-        // A separately explicit synthetic terminal original proves the eligible
-        // migration. It does not claim the unknown fixture was externally settled.
-        var settledDirectory=Path.Combine(root,"rcs-sql5-settled");
-        var terminalReply=reply with { BusinessAccepted=true,ProtocolAcknowledged=true,Slot="SYNTHETIC-09" };
-        var terminal=operation with {State=ParcelState.SlotResolved,Slot=terminalReply.Slot,Wcs=stage with{State=StageState.Accepted,Replies=[terminalReply],Failure=null}};
-        string terminalRaw;
-        using(var original=new ParcelRepository(settledDirectory,"sportmaster",5))
-        {
-            original.Commit(terminal,"SyntheticTerminalOriginal","Separate explicit terminal SQL5 fixture");
-            terminalRaw=original.BeginReceipt(terminal,terminal.Wcs!,"Submit"); original.StoreRaw(terminalRaw,terminalReply);original.Commit(terminal,"SyntheticTerminalCustody","Committed original raw",occurrence:terminalRaw);
-        }
-        using(var upgraded=new ParcelRepository(settledDirectory,"sportmaster"))
-            Check(upgraded.StorageVersion==9&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
-                "settled SQL5 original upgrades to SQL8 preserving exact request/result/committed raw");
-        using(var db=new SqliteConnection("Data Source="+Path.Combine(settledDirectory,"sportmaster.db")))
-        {
-            db.Open();using var q=db.CreateCommand();q.CommandText="SELECT version,sha FROM platform_migrations ORDER BY version";
-            using var r=q.ExecuteReader();Dictionary<long,string> history=[];while(r.Read())history.Add(r.GetInt64(0),r.GetString(1));
-            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==9,"SQL6/7/8/9 append preserves every original SQL1-5 checksum");
-        }
-        try { using var rejected=new ParcelRepository(settledDirectory,"sportmaster",5);throw new Exception("Old reader accepted SQL6"); }
-        catch(InvalidDataException){Check(true,"old SQL5 reader rejects settled future SQL6 without downgrade");}
-        var malformed = Path.Combine(root, "rcs-sql5-malformed"); using (var original = new ParcelRepository(malformed, "sportmaster", 5)) { }
-        var stray = Path.Combine(malformed, "receipts", Wire.Id() + ".json"); File.WriteAllText(stray, Wire.Encode(reply));
-        try { using var rejected = new ParcelRepository(malformed, "sportmaster"); throw new Exception("Malformed SQL5 raw inventory accepted"); }
-        catch (InvalidDataException)
-        {
-            using var db = new SqliteConnection("Data Source=" + Path.Combine(malformed, "sportmaster.db")); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)c.ExecuteScalar()! == 5 && File.Exists(stray), "malformed original receipt inventory blocks before SQL6 marker and preserves the original file for investigation");
+            var directory=Path.Combine(root,"current-db-"+damage);Directory.CreateDirectory(directory);var file=Path.Combine(directory,"sportmaster.db");
+            File.Copy(Path.Combine(current,"sportmaster.db"),file);
+            using(var db=new SqliteConnection("Data Source="+file+";Pooling=False"))
+            {
+                db.Open();using var command=db.CreateCommand();command.CommandText=damage switch{
+                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',10,'future')",
+                    "foreign"=>"UPDATE platform_migrations SET application='another-business'",
+                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=9"};command.ExecuteNonQuery();
+            }
+            var hash=Wire.FileHash(file);
+            try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Damaged identity accepted"); }
+            catch(InvalidDataException){Check(Wire.FileHash(file)==hash,"future/foreign/changed migration identity is refused read-only: "+damage);}
         }
     }
     sealed class Factory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
@@ -560,7 +547,7 @@ static partial class SportmasterRcs
                     await Task.Delay(2500, stop.Token); return;
                 }
                 if (mode == "timeout") await Task.Delay(2500, stop.Token);
-                if (mode == "legacy-delayed-assignment") await Task.Delay(5500, stop.Token);
+                if (mode == "delayed-assignment") await Task.Delay(5500, stop.Token);
                 var bytes = Encoding.UTF8.GetBytes(response); context.Response.StatusCode = status; if (mode == "redirect") context.Response.RedirectLocation = Endpoint + "/synthetic-followed"; context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stop.Token);
             }

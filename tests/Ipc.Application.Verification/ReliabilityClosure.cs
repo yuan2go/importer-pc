@@ -18,7 +18,7 @@ static class ReliabilityClosure
     {
         List<string> failures = [];
         async Task Case(string name, Func<Task> run) { try { await run(); } catch (Exception e) { failures.Add(name + ": " + e.Message); Console.WriteLine("FAIL AC20 " + name + ": " + e.Message); } }
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json"))) with { SchemaVersion = 2, Topology = null };
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
         CapabilityBinding B(string kind, string decision = "accept", string mode = "normal") => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/reliability20", "PARCEL-REFERENCE-v1", kind is "camera" or "upload" ? new() { ["decision"] = decision, ["reply-mode"] = mode } : []);
         async Task<(ParcelRuntime App, TestFactory Factory)> Open(ParcelConfiguration c, string name, bool blockCamera = false, bool blockWcs = false)
         {
@@ -95,7 +95,7 @@ static class ReliabilityClosure
             reader.Target = "changed-device";
             try { await vm.SaveCapabilitiesAsync(); throw new Exception("Reader identity silently accepted"); }
             catch (InvalidOperationException ex) { Check(ex.Message.Contains("DeviceId"), "tampered reader target is explicitly rejected instead of silently discarded: " + ex.Message); }
-            reader.Target = c.Reader.DeviceId; vm.ConfigurationReason = "Synthetic parameter maintenance after original reconciliation"; vm.DraftWaitMs += 1; await vm.SaveCapabilitiesAsync(); await vm.RefreshAsync();
+            reader.Target = c.Reader.DeviceId; vm.ConfigurationReason = "Synthetic parameter maintenance after original reconciliation"; vm.StructuredPolicy!.WaitTimeoutMs = (c.Weight.WaitTimeoutMs + 1).ToString(); await vm.SaveCapabilitiesAsync(); await vm.RefreshAsync();
             Check(vm.Snapshot!.Configuration.Status == "PendingRestart" && vm.Snapshot.Configuration.Effective.Weight.WaitTimeoutMs == c.Weight.WaitTimeoutMs, "actual ViewModel parameter save preserves Effective and creates Pending");
         });
         foreach (var validity in new[] { WeightValidity.UntilDispatch, WeightValidity.AtAssociation })

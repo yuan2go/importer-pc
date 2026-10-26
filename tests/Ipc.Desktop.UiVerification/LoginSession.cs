@@ -17,7 +17,7 @@ static partial class Program
         void Check(bool valid, string reason) { if (!valid) throw new InvalidOperationException(reason); lines.Add("PASS LOGIN-SESSION " + reason); }
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
         var c = seed with { StationCode = "SYNTHETIC-STATION", SessionLifetimeMs = 300000,
-            Login = seed.MaintenanceLogin! with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
+            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         var config = Path.Combine(evidence, "config"); Directory.CreateDirectory(config);
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), c);
         var launch = new BusinessLaunch(config, Path.Combine(evidence, "data"), null, null);

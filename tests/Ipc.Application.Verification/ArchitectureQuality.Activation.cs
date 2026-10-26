@@ -14,8 +14,9 @@ static partial class ArchitectureQuality
             var name = "activation-crash-" + point; var c = Config("sportmaster"); long priorRevision;
             await using (var app = await Open(c, name))
             {
-                await Maintenance(app); var s = await app.SnapshotAsync(); priorRevision = s.Configuration.Revision;
-                Check((await app.StageConfigurationAsync(priorRevision, s.Configuration.Effective with { TimeoutMs = c.TimeoutMs + 17 }, "Synthetic interrupted candidate " + point)).Status == "PendingRestart", "activation crash probe saves complete audited candidate " + point);
+                await Maintenance(app); var s = await Wait(app, x => x.Availability?.Configure == true); priorRevision = s.Configuration.Revision;
+                var saved = await StageAfterCallsDrain(app, priorRevision, s.Configuration.Effective with { TimeoutMs = c.TimeoutMs + 17 }, "Synthetic interrupted candidate " + point);
+                Check(saved.Status == "PendingRestart", "activation crash probe saves complete audited candidate " + point + ": " + saved.Status + "/" + saved.Reason);
             }
             var path = Path.Combine(root, name);
             var psi = new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput = true, RedirectStandardError = true };
@@ -29,11 +30,27 @@ static partial class ArchitectureQuality
             await using var reopened = await Open(c, name); var recovered = (await reopened.SnapshotAsync()).Configuration;
             Check(recovered.Effective.TimeoutMs == c.TimeoutMs && recovered.Pending?.TimeoutMs == c.TimeoutMs + 17 && recovered.Status == "ActivationFailed" && recovered.Failure!.Contains("interrupted", StringComparison.OrdinalIgnoreCase) && recovered.Activation?.Id == interrupted.Activation?.Id && recovered.Activation?.Outcome == "Interrupted", "restart retains interrupted attempt without automatically retrying candidate " + point);
             await Maintenance(reopened);
-            Check((await reopened.StageConfigurationAsync(recovered.Revision, recovered.Pending!, "Explicitly revalidated interrupted candidate " + point)).Status == "PendingRestart", "maintenance can explicitly restage interrupted candidate with current CAS " + point);
+            var restaged = await StageAfterCallsDrain(reopened, recovered.Revision, recovered.Pending!, "Explicitly revalidated interrupted candidate " + point);
+            Check(restaged.Status == "PendingRestart", "maintenance can explicitly restage interrupted candidate with current CAS " + point + ": " + restaged.Status + "/" + restaged.Reason);
             await reopened.DisposeAsync();
             await using var confirmed = await Open(c, name); var final = (await confirmed.SnapshotAsync()).Configuration;
             Check(final.Status == "Effective" && final.Pending is null && final.Effective.TimeoutMs == c.TimeoutMs + 17 && final.Activation is { Outcome: "Activated", FinishedAt: not null } && final.Activation.Id != recovered.Activation?.Id, "explicit restaging creates a new confirmed attempt only after real resource startup " + point);
         }
+    }
+    static async Task<BusinessReceipt> StageAfterCallsDrain(ParcelRuntime app, long expectedRevision, ParcelConfiguration candidate, string reason)
+    {
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            var before = (await Wait(app, x => x.Availability?.Configure == true)).Configuration;
+            var receipt = await app.StageConfigurationAsync(expectedRevision, candidate, reason);
+            if (receipt.Status != "Rejected" || receipt.Reason != "Pause and authenticate maintenance before configuration") return receipt;
+            // A periodic health read may start after the snapshot. Only retry this
+            // pre-write fixture guard, never a submitted candidate or business send.
+            var after = (await app.SnapshotAsync()).Configuration;
+            if (Wire.Encode(before) != Wire.Encode(after)) throw new InvalidDataException("Pre-write guard changed configuration");
+            await Task.Delay(20);
+        }
+        throw new TimeoutException("Configuration fixture never reached a drained interval");
     }
     public static async Task ActivationCrashChild(string path, string point)
     {

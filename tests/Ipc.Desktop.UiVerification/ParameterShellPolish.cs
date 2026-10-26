@@ -31,13 +31,13 @@ static partial class Program
         }
         var directory = Path.Combine(evidence, "config"); Directory.CreateDirectory(directory);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        var config = seed with { Login = seed.MaintenanceLogin! with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
+        var config = seed with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
         var app = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var projection = (ProjectionProbe)(object)app; projection.Inner = runtime;
-        var window = (ShellWindow)Presentation.Create(app, null, "standard", "classic"); window.ConfirmDiscardDrafts = _ => true;
+        var window = CreateSharedShellForVerification(app); window.ConfirmDiscardDrafts = _ => true;
         window.Show(); await Task.Delay(300); var vm = (ParcelViewModel)window.DataContext; await vm.RefreshAsync();
         await SetClient(window, 1366, 768); var client = (Grid)window.FindName("ClientArea"); Capture("ordinary-1366", client);
         Check(!vm.IsManagementMode && vm.AccountDisplay == "操作员未登录", "normal mode is separate from the configured but unauthenticated operator");

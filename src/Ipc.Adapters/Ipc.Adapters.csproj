@@ -1,1 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj"/></ItemGroup></Project>

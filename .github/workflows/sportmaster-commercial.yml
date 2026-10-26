@@ -8,6 +8,40 @@ concurrency:
   group: sportmaster-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 jobs:
+  current-contract-boundaries:
+    # Current contracts only. Historical inputs are exercised as read-only refusals.
+    # Linux uses canonical Git source bytes for the immutable SQL checks.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build current application and Supply verification closures
+        run: |
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1
+          dotnet build tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -m:1
+          dotnet build src/Ipc.Fixture -c Debug -p:RestoreLockedMode=true -m:1
+      - name: Verify current configuration, identity, recovery and ABI boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/current-contract-ci
+          for case in architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode; do
+            dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"
+          done
+          for case in current-contracts architecture conformance operation-closure closure data; do
+            dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"
+          done
+          PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log
+      - name: Retain current contract evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: current-contract-boundaries-${{ github.sha }}
+          path: .artifacts/current-contract-ci/*.log
+          retention-days: 30
   aqa01-boundaries:
     # Portable runtime/SQLite/loopback evidence complements the Windows medium
     # below; it is not vendor-protocol or field acceptance.
@@ -111,7 +145,7 @@ jobs:
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards')) {
+          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','installer-options','shortcut-lifecycle')) {
             dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
             if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
           }

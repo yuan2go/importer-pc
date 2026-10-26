@@ -30,7 +30,7 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
             if (!options.TryAdd(key, args[i + 1])) throw new ArgumentException("启动参数重复：" + key);
         }
         var ui = options.GetValueOrDefault("--ui", DefaultUi(applicationId));
-        if (ui is not ("classic" or "supply-station") || ui == "supply-station" && applicationId != "sportmaster")
+        if (ui != DefaultUi(applicationId))
             throw new ArgumentException("此业务不支持指定UI：" + ui);
         var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
         return new(new(

@@ -26,13 +26,7 @@ public sealed record ExtensionManifest(int SchemaVersion, string Id, string Vers
     string Runtime, string Rid, int ContractMajor, RunMode Mode, string SourceCommit,
     PackageReference[] Dependencies, ExtensionFile[] Files, ExtensionModule[] Modules,
     ExtensionPrerequisite[] Prerequisites, string HostContractSha256 = "",
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] Dictionary<string, string>? PublicContracts = null)
-{
-    public ExtensionManifest(int schemaVersion, string id, string version, string publisher, string runtime, string rid,
-        int contractMajor, RunMode mode, string sourceCommit, PackageReference[] dependencies, ExtensionFile[] files,
-        ExtensionModule[] modules, ExtensionPrerequisite[] prerequisites, string hostContractSha256)
-        : this(schemaVersion, id, version, publisher, runtime, rid, contractMajor, mode, sourceCommit, dependencies, files, modules, prerequisites, hostContractSha256, null) { }
-}
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] Dictionary<string, string>? PublicContracts = null);
 public sealed record PublisherTrust(string Id, string PublicKeyPem, bool TestOnly);
 public sealed record ExtensionTrust(int SchemaVersion, PublisherTrust[] Publishers);
 public sealed record ExtensionInstance(string Id, string PackageId, string ModuleId, string DeviceId,

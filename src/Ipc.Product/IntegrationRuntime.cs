@@ -134,11 +134,7 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
             if (identity.Target != request.Binding) throw new InvalidDataException("OriginalIntegrationUnavailable: target identity changed");
             return Resolve(identity);
         }
-        // Explicit legacy adapter: old SIMULATION-v1 persisted the policy/demand in the
-        // original payload but no implementation field. Never borrow the current target.
-        var payload = Wire.Decode<FixturePayload>(request.Payload);
-        return Resolve(Seal(new("builtin.reference", null, "simulation-v1", "legacy.contract1", "legacy-unrecorded", "",
-            Wire.FileHash(typeof(SimulationRequestContract).Assembly.Location), request.Binding, configuration.TimeoutMs, payload.Policy, payload.InitialDemand, [])));
+        throw new InvalidDataException("OriginalIntegrationUnavailable: frozen implementation identity is missing; original retained");
     }
     public IntegrationImplementation Freeze()
     {

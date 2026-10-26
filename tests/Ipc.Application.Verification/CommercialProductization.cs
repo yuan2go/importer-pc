@@ -30,7 +30,7 @@ static class CommercialProductization
             var readers = ParcelBindings.Readers(c).ToDictionary(r => r.DeviceId, r => (IControlledObservationSource)new ManualObservationSource(r.DeviceId));
             var wcs = new ReferenceWcs(c.Wcs!, Path.Combine(launch.DataRoot, "synthetic-peer"));
             return new(readers.Values.First(), null, new CountedWcs(wcs, this), null, new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-implementation" },
-                Login: c.Login is null ? null : new ReferenceOperatorAuthenticator(c.Login), Maintenance: c.MaintenanceLogin is null ? null : new ReferenceOperatorAuthenticator(c.MaintenanceLogin), Readers: readers);
+                Login: c.Login is null ? null : new ReferenceOperatorAuthenticator(c.Login), Readers: readers);
         }
         public ValueTask DisposeAsync() => validation.DisposeAsync();
     }
@@ -57,15 +57,14 @@ static class CommercialProductization
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
         await InitialConfiguration(seed, root);
-        // Empty DB7 is a real prior format; migration precedes the deliberately
-        // broken first resource startup, so independent initial repair remains usable.
-        using (var prior = new ParcelRepository(directory, seed.ApplicationId, 7)) { }
-        File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, seed, null, "Effective", null)));
+        // Current DB9 and complete unconfirmed metadata precede a deliberately failed first startup.
+        using (var prior = new ParcelRepository(directory, seed.ApplicationId)) { }
+        File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, seed, null, "ConfirmationRequired", null, Confirmed:false)));
         ParcelRuntime Runtime(bool fail = true) => new(launch, new SportmasterFlow(), new SyntheticFactory(launch, fail)) { RuntimeIdentityPreflight = () => { } };
         Console.WriteLine("Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.");
         await using (var broken = Runtime()) await Reject<InvalidOperationException>(() => broken.StartAsync(default), "original unconfirmed configuration fails resource construction");
         var file = Path.Combine(directory, "configuration.json");
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(directory, seed.ApplicationId + ".db"), seed.ApplicationId) == 9, "settled DB7 migrates to DB9 before failed initial resources and retains the repair route");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(directory, seed.ApplicationId + ".db"), seed.ApplicationId) == 9, "current DB9 remains current after failed initial resources and retains the repair route");
         var original = File.ReadAllBytes(file);
         var authority = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
         Check(authority.Confirmation is { Required: true } && authority.Confirmation.Attempts.Last().Outcome == "Failed", "failed startup is durable and does not confirm Effective");
@@ -182,15 +181,12 @@ static class CommercialProductization
         Check(Wire.FileHash(currentDatabase) == beforeOldReader, "refused prior reader preserves original database bytes");
         var legacyLaunch = launch with { DataRoot = Path.Combine(root, "legacy-handoff-data") };
         var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
-        using (var legacy = new ParcelRepository(legacyDirectory, seed.ApplicationId, 7)) { }
-        File.WriteAllText(Path.Combine(legacyDirectory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, seed, null, "Effective", null)));
-        var legacyService = new ParcelStartupMaintenance(legacyLaunch, new SportmasterFlow(), () => new SyntheticFactory(legacyLaunch), () => { })
-        { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "legacy-handoff-scratch-" + Wire.Id())).FullName, HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE" };
-        var legacyBackup = Path.Combine(root, "legacy-handoff.db"); await legacyService.BackupAsync(legacyBackup);
-        var legacyTarget = Path.Combine(root, "legacy-handoff-restore"); var legacyRestore = await legacyService.PlanRestoreAsync(legacyBackup, legacyTarget); await legacyService.RestoreAsync(legacyBackup, legacyRestore.Destination, legacyRestore.BackupSha256);
-        await Reject<InvalidDataException>(() => legacyService.AdoptRestoreOwnedAsync(legacyBackup, legacyTarget, legacyRestore.BackupSha256, _ => Task.CompletedTask), "DB7 restore source cannot retire before old readers are fenced by DB8");
-        Check(!File.Exists(Path.Combine(legacyDirectory, "MIGRATION-SOURCE-FENCED.json")) && ParcelRepository.ReadStorageVersion(Path.Combine(legacyDirectory, seed.ApplicationId + ".db"), seed.ApplicationId) == 7,
-            "refused legacy handoff keeps the original reader and does not commit a false source fence");
+        var legacyDatabase=SyntheticPriorStorage.Create(legacyDirectory,seed.ApplicationId,7);
+        File.WriteAllText(Path.Combine(legacyDirectory,"configuration.json"),Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0,seed,null,"Effective",null)));
+        var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{});
+        var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
+        await Reject<InvalidDataException>(()=>legacyService.BackupAsync(legacyBackup),"old format refuses current writable backup/handoff path");
+        Check(Wire.FileHash(legacyDatabase)==legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")),"old handoff refusal preserves database and creates no source fence or success evidence");
         await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "legacy root without original machine custody cannot be silently certified by copying a policy");
         Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "legacy backup/repair never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
@@ -226,7 +222,7 @@ static class CommercialProductization
             "missing previously-started database preserves original ledger and retained database bytes without creating a new ledger");
         var missing = launch with { DataRoot = Path.Combine(root, "missing-ledger-data") };
         var original = Path.Combine(missing.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
-        using (var prior = new ParcelRepository(original, seed.ApplicationId, 7)) { }
+        using (var prior = new ParcelRepository(original, seed.ApplicationId)) { }
         var database = Path.Combine(original, seed.ApplicationId + ".db"); var hash = Wire.FileHash(database);
         await using (var runtime = new ParcelRuntime(missing, new SportmasterFlow(), new SyntheticFactory(missing)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidDataException>(() => runtime.StartAsync(default), "database without its original configuration ledger cannot start from a replacement seed");
@@ -269,8 +265,8 @@ static class CommercialProductization
         // Reuse the actual lost-after-commit original as a DB7 upgrade fixture.
         var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };
         var oldDirectory = Path.Combine(oldLaunch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId); Directory.CreateDirectory(oldDirectory);
-        File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, c, null, "Effective", null)));
-        using (var old = new ParcelRepository(oldDirectory, c.ApplicationId, 7)) old.Commit(original, "OriginalUnknown", "original frozen request reused without execution");
+        File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, c, null, "Effective", null)));
+        SyntheticPriorStorage.Create(oldDirectory,c.ApplicationId,7,original);
         var oldDatabase = Path.Combine(oldDirectory, c.ApplicationId + ".db"); var oldHash = Wire.FileHash(oldDatabase);
         await using (var blockedUpgrade = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidDataException>(() => blockedUpgrade.StartAsync(default), "DB7 Unknown remains on its original reader before the DB8 migration");
@@ -328,7 +324,8 @@ static class CommercialProductization
 // Synthetic test passwords use the real credential hash/service; never shipped as a product default.
 static class ManagementModeFixture
 {
-    static readonly string Password = "Fixture-" + Guid.NewGuid().ToString("N");
+    static readonly string Password = Environment.GetEnvironmentVariable("IPC_SYNTHETIC_MANAGEMENT_PASSWORD") ?? "Fixture-" + Guid.NewGuid().ToString("N");
+    public static void ShareWith(System.Diagnostics.ProcessStartInfo child) => child.Environment["IPC_SYNTHETIC_MANAGEMENT_PASSWORD"] = Password;
     public static void AuthorizeRoot(string root)
     {
         var authority = LocalManagementMode.ForRoot(root);
@@ -344,7 +341,7 @@ static class ManagementModeFixture
     }
 }
 
-public interface IManagementParcelFixture : IParcelApplication, IWorkstationAdministration { }
+public interface IManagementParcelFixture : IParcelApplication, IWorkstationAdministration, IParcelHistorySessionApplication { }
 public interface IManagementModeFixtureForwarder : IWorkstationAdministration
 {
     IParcelApplication InnerAdministration { get; }
@@ -354,7 +351,6 @@ public interface IManagementModeFixtureForwarder : IWorkstationAdministration
     Task<bool> IWorkstationAdministration.EnterManagementModeAsync(string p) => Service.EnterManagementModeAsync(p);
     Task IWorkstationAdministration.ExitManagementModeAsync() => Service.ExitManagementModeAsync();
     Task IWorkstationAdministration.ChangeManagementPasswordAsync(string p) => Service.ChangeManagementPasswordAsync(p);
-    Task<bool> IWorkstationAdministration.ConvertLegacyManagementCredentialsAsync(string a, string p, string n) => Service.ConvertLegacyManagementCredentialsAsync(a, p, n);
     Task<SoftwareLogPage> IWorkstationAdministration.QueryLogsAsync(SoftwareLogQuery q, string? s, int o, CancellationToken t) => Service.QueryLogsAsync(q, s, o, t);
     Task<SoftwareLogContext> IWorkstationAdministration.LogContextAsync(string s, SoftwareLogLocation l, int b, int a, CancellationToken t) => Service.LogContextAsync(s, l, b, a, t);
     Task<long> IWorkstationAdministration.ExportLogsAsync(string s, string d, bool a, int c, CancellationToken t) => Service.ExportLogsAsync(s, d, a, c, t);

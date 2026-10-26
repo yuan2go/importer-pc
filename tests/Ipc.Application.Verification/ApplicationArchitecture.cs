@@ -248,24 +248,26 @@ static class ApplicationArchitecture
     static async Task VerifyMigration(string root)
     {
         var path = Path.Combine(root, "migration"); Directory.CreateDirectory(path);
-        using (var repo = new ParcelRepository(path, "sportmaster", 2)) { }
+        SyntheticPriorStorage.Create(path,"sportmaster",2);
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "INSERT INTO parcel_receipts VALUES('pending','original','wcs-slot','request','Submit','Awaiting',NULL)"; cmd.ExecuteNonQuery();
         }
         try { using var rejected = new ParcelRepository(path, "sportmaster"); throw new Exception("migration accepted unresolved original"); }
-        catch (InvalidDataException e) { Check(e.Message.Contains("LegacyUnsettled"), "database2 unresolved originals block before migration3"); }
+        catch (InvalidDataException e) { Check(e.Message.Contains("不受支持"), "database2 unresolved originals block before migration3"); }
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
             Check((long)cmd.ExecuteScalar()! == 2, "blocked upgrade preserves SQL2 identity and checksum history");
             cmd.CommandText = "UPDATE parcel_receipts SET state='NoReply'"; cmd.ExecuteNonQuery();
         }
-        using (var repo = new ParcelRepository(path, "sportmaster")) { }
+        var originalHash=Wire.FileHash(Path.Combine(path,"sportmaster.db"));
+        try{using var denied=new ParcelRepository(path,"sportmaster");Check(false,"settled old schema must still refuse");}
+        catch(InvalidDataException){Check(Wire.FileHash(Path.Combine(path,"sportmaster.db"))==originalHash,"settled prior format remains byte-identical");}
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 8, "settled database2 upgrades with unchanged SQL1-5, independent custody SQL5 and appended integration/custody semantics SQL6/7/8");
+            Check((long)cmd.ExecuteScalar()! == 2, "settled database2 retains its exact original SQL identity without a new writer marker");
         }
         await Task.CompletedTask;
     }

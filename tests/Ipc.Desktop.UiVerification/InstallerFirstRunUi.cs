@@ -322,6 +322,5 @@ static partial class Program
         public Task<bool> EnterManagementModeAsync(string _) => Task.FromResult(EnterAllowed);
         public Task ExitManagementModeAsync() => Task.CompletedTask;
         public Task ChangeManagementPasswordAsync(string _) => Task.CompletedTask;
-        public Task<bool> ConvertLegacyManagementCredentialsAsync(string _, string __, string ___) => Task.FromResult(false);
     }
 }

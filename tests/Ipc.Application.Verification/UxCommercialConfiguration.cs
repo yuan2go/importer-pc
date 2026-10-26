@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
 
@@ -98,22 +98,10 @@ static partial class ArchitectureQuality
         }
         foreach (var schema in new[] { 1, 2 })
         {
-            var legacy = Config("sportmaster") with { SchemaVersion = schema, Topology = null, WeightValidity = schema == 1 ? null : WeightValidity.UntilDispatch };
-            await using var app = await Open(legacy, "uxc03-legacy-" + schema); await Maintenance(app);
-            var heldLegacy = new HeldConfigurationApplication(app);
-            var vm = new ParcelViewModel(heldLegacy, "旧版本", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
-            Check(!vm.HasUnsavedConfiguration, "P2 legacy schema" + schema + " initial form is clean");
-            vm.DraftPrecision += 1; Check(vm.HasUnsavedConfiguration, "P2 legacy numeric edits are protected"); vm.DraftPrecision -= 1;
-            Check(!vm.HasUnsavedConfiguration, "P2 reverting legacy edits restores the original baseline");
-            vm.ConfigurationReason = "Synthetic legacy schema compatibility"; vm.DraftWaitMs += 1;
-            var submittedWait = vm.DraftWaitMs; heldLegacy.HoldNextStage = true; var legacySave = vm.SaveCapabilitiesAsync();
-            await heldLegacy.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            vm.DraftWaitMs += 1; heldLegacy.StageRelease.TrySetResult(); await legacySave;
-            Check(vm.HasUnsavedConfiguration && (await app.SnapshotAsync()).Configuration.Pending!.Weight.WaitTimeoutMs == submittedWait,
-                "P2 legacy save freezes submitted fields while newer edits stay protected");
-            vm.DraftWaitMs = submittedWait;
-            Check(!vm.HasUnsavedConfiguration, "P2 legacy successful save accepts only its submitted baseline");
-            Check(vm.CapabilityDrafts.Count > 0 && vm.Message.StartsWith("PendingRestart"), "UXC03 existing schema" + schema + " structured maintenance path remains usable");
+            var unsupported = Config("sportmaster") with { SchemaVersion = schema, Topology = null, WeightValidity = schema == 1 ? null : WeightValidity.UntilDispatch };
+            var original = Wire.Encode(unsupported);
+            try { await using var refused = await Open(unsupported, "uxc03-unsupported-" + schema); throw new Exception("Old form accepted"); }
+            catch (InvalidDataException) { Check(Wire.Encode(unsupported) == original, "schema" + schema + " rejected intact without alternate editor or implicit upgrade"); }
         }
         await using (var app = await Open(c, "p2-structured-save-edit"))
         {

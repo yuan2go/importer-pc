@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[Alias("OperatorAdministration")][switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterGuidanceStartup,[switch]$ParameterShellPolish,[switch]$TaskHierarchy,[switch]$Win11Stability,[switch]$ReliabilityLogs,[switch]$WorkstationStatusLogs,[switch]$DebugLogLive,[switch]$StabilitySeedUpgrade,[switch]$InstallerFirstRunUi,[switch]$LifecycleUx,[string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterGuidanceStartup,[switch]$ParameterShellPolish,[switch]$TaskHierarchy,[switch]$Win11Stability,[switch]$ReliabilityLogs,[switch]$WorkstationStatusLogs,[switch]$DebugLogLive,[switch]$StabilitySeedUpgrade,[switch]$InstallerFirstRunUi,[switch]$LifecycleUx,[string]$FixtureCommit)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -38,8 +38,11 @@ foreach($source in $sources){
  if($LASTEXITCODE -ne 0){throw 'Missing fixed native fixture'}
  [IO.File]::WriteAllLines((Join-Path $Output $source),[string[]]$content)
 }
-$core=& git -C $repo show ($fixtureSource+':tests/Ipc.Application.Verification/CommercialProductization.cs')
-[IO.File]::WriteAllLines((Join-Path $Output 'CommercialProductization.cs'),[string[]]$core)
+foreach ($coreSource in @('CommercialProductization.cs','CurrentConfigurationFixture.cs','SyntheticPriorStorage.cs')) {
+ $core=& git -C $repo show ($fixtureSource+':tests/Ipc.Application.Verification/'+$coreSource)
+ if($LASTEXITCODE -ne 0){throw ('Missing frozen native fixture dependency: '+$coreSource)}
+ [IO.File]::WriteAllLines((Join-Path $Output $coreSource),[string[]]$core)
+}
 New-Item -ItemType Directory -Path (Join-Path $Output 'Themes') | Out-Null
 $theme=& git -C $repo show ($fixtureSource+':src/Ipc.Desktop/Themes/Workstation.xaml')
 [IO.File]::WriteAllLines((Join-Path $Output 'Themes/Workstation.xaml'),[string[]]$theme)

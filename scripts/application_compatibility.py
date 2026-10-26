@@ -226,10 +226,12 @@ class CombinationRun:
         self.save()
 
 
-def verify_record(record_path, root, effective_configuration=None, trusted_record_sha256=None):
+def verify_record(record_path, root, effective_configuration=None, trusted_record_sha256=None, historical_audit=False):
     record_path, root = Path(record_path), Path(root)
     r = json.loads(record_path.read_bytes())
     if r.get('SchemaVersion') not in (1, 2, 3) or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
+    if r['SchemaVersion'] < 3 and not historical_audit:
+        raise ValueError('Current qualification requires schema3; older records are historical audit only')
     if r['SchemaVersion'] < 3 and (not trusted_record_sha256 or sha(record_path) != trusted_record_sha256.upper()):
         raise ValueError('Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required')
     for key, path in [('CandidateFilesSha256', root/'SHA256SUMS'), ('ReleaseSha256', root/'app/application-release.json'),
@@ -263,7 +265,8 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--record', type=Path, required=True); p.add_argument('--package', type=Path, required=True)
     p.add_argument('--configuration', type=Path)
+    p.add_argument('--historical-audit', action='store_true', help='Read-only audit of a trusted historical record; never current qualification')
     p.add_argument('--record-sha256', help='Original legacy record SHA256 from an independently trusted publication/index')
     a = p.parse_args()
-    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None, a.record_sha256)
-    print(json.dumps(dict(Status='PASS', RunId=verified['RunId'], Application=verified['Application'], BusinessVersion=verified['BusinessVersion'])))
+    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None, a.record_sha256, historical_audit=a.historical_audit)
+    print(json.dumps(dict(Status='HISTORICAL_AUDIT' if a.historical_audit else 'PASS', RunId=verified['RunId'], Application=verified['Application'], BusinessVersion=verified['BusinessVersion'])))

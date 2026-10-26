@@ -100,30 +100,30 @@ static partial class Program
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application); var identity = (await runtime.SnapshotAsync()).RuntimeId;
-        var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
-        classic.Show(); alternate.Show(); await Task.Delay(400);
-        Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
-        Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "native shared pages keep one Application instance");
-        await SetClient(classic, 1100, 600); classic.Activate(); Click(classic, "作业记录"); await Task.Delay(250); classic.UpdateLayout();
-        var page = (ContentControl)classic.FindName("PageHost");
-        var filters = Descendants(page).OfType<Expander>().Single(e => e.Name == "HistoryFilters"); filters.IsExpanded = true; classic.UpdateLayout();
+        var primary = (SupplyStationWindow)Presentation.Create(runtime, null, "standard"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
+        primary.Show(); alternate.Show(); await Task.Delay(400);
+        Check(primary.Icon is not null && alternate.Icon is not null, "both current native windows load the repository-owned shared product icon");
+        Check(ReferenceEquals(((ParcelViewModel)primary.DataContext).Application, alternate.ViewModel.Application), "native shared pages keep one Application instance");
+        await SetClient(primary, 1100, 600); primary.Activate(); Click(primary, "作业记录"); await Task.Delay(250); primary.UpdateLayout();
+        var page = (ContentControl)primary.FindName("PageHost");
+        var filters = Descendants(page).OfType<Expander>().Single(e => e.Name == "HistoryFilters"); filters.IsExpanded = true; primary.UpdateLayout();
         var barcode = Descendants(page).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "历史完整条码");
         Check(barcode.Focus() && barcode.IsKeyboardFocused, "native history exact-barcode filter takes keyboard focus and has an automation name");
         barcode.Text = "000000000000000000001"; barcode.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
-        Check(((ParcelViewModel)classic.DataContext).HistoryBarcode == barcode.Text, "native history input preserves long leading-zero text in the view model");
-        filters.IsExpanded = false; classic.UpdateLayout();
+        Check(((ParcelViewModel)primary.DataContext).HistoryBarcode == barcode.Text, "native history input preserves long leading-zero text in the view model");
+        filters.IsExpanded = false; primary.UpdateLayout();
         Check(((HistoryPage)page.Content).ActualHeight > 200, "compact history collapses filters while keeping the fixed-query/export actions and detail area available");
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
-        Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
-        var parameterVm = (ParcelViewModel)classic.DataContext;
+        Screenshot(primary, Path.Combine(evidence, "commercial-history-1100x600.png"));
+        var parameterVm = (ParcelViewModel)primary.DataContext;
         for (var i = 0; i < 100 && parameterVm.Busy; i++) await Task.Delay(50);
         Check(!parameterVm.Busy, "history task completes before the deterministic busy-navigation case");
         var releasePrevious = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var previousTask = parameterVm.RunAsync(() => releasePrevious.Task, "合成：经典布局首开参数前仍有任务");
         try
         {
-            Click(classic, "设备与维护");
-            Check(parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "classic first settings navigation waits for the existing task without replacing it");
+            Click(primary, "设备与维护");
+            Check(parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "primary first settings navigation waits for the existing task without replacing it");
         }
         finally { releasePrevious.TrySetResult(); await previousTask; }
         for (var i = 0; i < 100 && (parameterVm.Busy || !parameterVm.HasLoadedConfiguration); i++) await Task.Delay(50);
@@ -133,24 +133,24 @@ static partial class Program
             .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "加密保存未完成设置")));
         try
         {
-            tools.IsSubmenuOpen = true; classic.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
+            tools.IsSubmenuOpen = true; primary.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
             var actions = tools.Items.OfType<MenuItem>().ToArray();
             Check(actions.Any(i => i.IsVisible && Equals(i.Header, "加密保存未完成设置")) &&
                 actions.Any(i => i.IsVisible && Equals(i.Header, "继续未完成设置")),
                 "native settings tools keep both persistent draft actions reachable outside the save review");
         }
         finally { tools.IsSubmenuOpen = false; }
-        Check(maintenance.NavigateToParameter("StationCode"), "classic parameter directory resolves StationCode in the loaded candidate");
-        await classic.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        classic.UpdateLayout();
+        Check(maintenance.NavigateToParameter("StationCode"), "primary parameter directory resolves StationCode in the loaded candidate");
+        await primary.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        primary.UpdateLayout();
         var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "StationCode");
         var originalStation = stationInput.Text; stationInput.Text = "NATIVE-REVIEW";
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
-        await ObserveSaveReviewAsync(classic, maintenance, dialog =>
+        await ObserveSaveReviewAsync(primary, maintenance, dialog =>
         {
             Check(!parameterVm.Busy && parameterVm.IsManagementMode && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
                 !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
-                "classic review preserves the live software administrator grant and reason without a duplicate password prompt");
+                "primary review preserves the live software administrator grant and reason without a duplicate password prompt");
         });
         Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
             "canceling native save review preserves the edited field and never stages the candidate");
@@ -158,7 +158,7 @@ static partial class Program
 
         Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/account window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");
-        classic.ConfirmDiscardDrafts = _ => true; classic.Close(); alternate.ConfirmDiscardDrafts = _ => true; alternate.Close(); await Task.Delay(100);
+        primary.ConfirmDiscardDrafts = _ => true; primary.Close(); alternate.ConfirmDiscardDrafts = _ => true; alternate.Close(); await Task.Delay(100);
         static void Screenshot(Window window, string path)
         {
             var dpi = VisualTreeHelper.GetDpi(window); var bitmap = new RenderTargetBitmap((int)(window.ActualWidth * dpi.DpiScaleX), (int)(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);

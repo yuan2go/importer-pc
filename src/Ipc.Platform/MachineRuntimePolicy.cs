@@ -53,7 +53,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         return leases;
     }
     public static void RequireProtectedInstaller(string installRoot) => RequireProtectedApplicationInstaller(installRoot,
-        ["Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.Contracts.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll"]);
+        ["Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.Contracts.dll", "Ipc.Supply.dll", "Ipc.Drivers.dll", "Ipc.Integrations.dll"]);
     public static void RequireProtectedApplicationInstaller(string installRoot, IReadOnlyList<string> requiredFiles)
     {
         if (!OperatingSystem.IsWindows()) return;

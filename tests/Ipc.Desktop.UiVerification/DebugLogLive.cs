@@ -79,6 +79,11 @@ static partial class Program
         Check(debug.IsChecked == true, "log-page parameter reads the shared actual runtime setting");
         mode.SelectedIndex = 1; follow.IsChecked = true;
         await Until(() => Task.FromResult(terminal.Text.Contains("原请求响应详情")));
+        Check(captured.Entries.Any(e =>
+        {
+            using var json = JsonDocument.Parse(e.Text);
+            return json.RootElement.TryGetProperty("At", out var at) && terminal.Text.Contains("原始时间：" + at.GetDateTimeOffset().ToString("O"));
+        }), "terminal timestamp uses the source event time rather than the later append-publication time");
         Click(window, "暂停显示"); terminal.Focus(); terminal.Select(0, Math.Min(40, terminal.Text.Length));
         var frozen = terminal.Text; var selection = terminal.SelectedText; var reads = probe.TailReads;
         var right = await Scan("right", "written-while-display-paused", "000139"); await Task.Delay(1250);

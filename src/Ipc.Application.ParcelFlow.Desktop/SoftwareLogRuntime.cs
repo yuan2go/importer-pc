@@ -146,14 +146,16 @@ public sealed partial class SoftwareLogControl
     static SoftwareLogEntry RuntimeEntry(RuntimeDiagnosticEntry entry)
     {
         string source = "运行", level = "信息";
+        var at = entry.WrittenAt;
         try
         {
             using var json = JsonDocument.Parse(entry.Text);
             if (json.RootElement.TryGetProperty("Source", out var s) && s.ValueKind == JsonValueKind.String) source = s.GetString()!;
             if (json.RootElement.TryGetProperty("Level", out var l) && l.ValueKind == JsonValueKind.String) level = l.GetString()!;
+            if (json.RootElement.TryGetProperty("At", out var time) && time.ValueKind == JsonValueKind.String && time.TryGetDateTimeOffset(out var original)) at = original;
         }
         catch (JsonException) { }
-        return new(new("live", entry.Sequence, "", "当前运行日志"), source, entry.WrittenAt, level, entry.Text);
+        return new(new("live", entry.Sequence, "", "当前运行日志"), source, at, level, entry.Text);
     }
     async Task PollLive()
     {

@@ -56,3 +56,16 @@ Linux/Windows CI增加stability-audit-fixes；现有冻结介质CI增加原种�
 |stability-red-native-stability-seed-upgrade|`4ac7f8e1`|FAIL|`7dffc5c50fe92199ff7cbec57a93bdee8de26edde9f9a0cde2bd78a017c7ad0f`|
 
 系统安装/UAC/HKLM/SCM/任务/WER往返、设备/SDK/RCS、目标IPC、24h/72h及物理断电仍需独立证据。本轮运行的是隔离合成数据、真实SQLite/WPF及受控故障，不生成本地交付介质、不安装、不控制设备。TCP自动重连策略、G01权威结果/人工处置、G02密码恢复仍按原外部条件，不引入重发或假恢复。最终main完整验证另记，不把分支结果改记为main。
+
+## PR115 P1 快照断言补回
+
+36b0103d3c1a2f1a9d583f8d2522f639998114b4恢复原ST03断言。负例仅在测试进程内、快照采样窗口临时持有真实runtime gate；未改生产实现。该未提交故障注入的diff SHA为96606035c8f5f323a76c79ee04eda1bc75631e9a61fbec5b94492146435554af，执行后从仓库外原字节恢复；未进入提交。
+
+| 本次执行 | 结果 | 日志SHA256 |
+|---|---|---|
+| stability-p1-negative-build：36b0103d加受控故障 | PASS | 81341c74852df1383cacdbcb82a358f67cfa0a6fabb41ffd22e8832a6e27cc6c |
+| stability-p1-snapshot-gate-negative | FAIL，精确命中ST03快照断言，其余六项PASS | daef5cca17ea2e0c90a756367b1be8e96233c6061bbe7698d34821f7c681eda7 |
+| stability-p1-qualified-build：干净36b0103d重建 | PASS | 310119aeb97d3298b9fea3df2b2039f615826a6f7c39c7ad8fe461a970e45a03 |
+| stability-p1-snapshot-qualified | PASS，七项断言均实际执行 | 9d3761ac240fe1fe74c2f314831f42f08af0d0d67bae21b23770a30e94d579da |
+
+另一次stability-p1-snapshot-negative因命令遗漏工作区参数而DirectoryNotFound失败，不计为缺陷负例。36b0103d后的CI须重新通过，不能沿用8ead21c8的CI成功作为新head检查。

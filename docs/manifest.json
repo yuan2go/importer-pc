@@ -100358,9 +100358,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "7c49679571238b080935b16bf8b3f50ba747f84f90527b2363ccea7ab2a412a0",
-      "size_bytes": 7514,
-      "git_blob": "42239e049b05808dbb0dd209c55e046a3077d4b6"
+      "sha256": "ee88957421d5ffece79308728f83b3e336d60d56d7c08732d4a7a2b59a939af1",
+      "size_bytes": 8707,
+      "git_blob": "020eb00515bea85a79818243f843f7e40ba35a4d"
     },
     {
       "path": "docs/work-packages/WP-IPC-STABILITY-AUDIT-FIXES-02.md",

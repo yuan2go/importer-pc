@@ -9,7 +9,7 @@ static class P0Supervisor
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
         using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-        var location = new DeploymentLocation("sportmaster", new string('a', 40), root, root, root, identity.User!.Value) { Recovery = new() };
+        var location = new DeploymentLocation("sportmaster", new string('a', 40), root, root, root, identity.User!.Value) { Recovery = new(Enabled: true) };
         var plan = DesktopRecoveryInstallation.Plan(location);
         object? service = null, folder = null, result = null;
         try
@@ -24,9 +24,16 @@ static class P0Supervisor
     }
     public static async Task Run(string root)
     {
+        Check(!new DesktopRecoveryOptions().Enabled,
+            "new installations preserve manual startup until recovery is explicitly enabled");
         DeploymentLocation Location(string name, DesktopRecoveryOptions? options = null) => new("sportmaster", new string('a', 40),
             Path.Combine(root, name, "release"), Path.Combine(root, name, "config"), Path.Combine(root, name, "data"), "S-1-5-21-123-456-789-1001")
-            { Recovery = options ?? new(RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+            { Recovery = options ?? new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+        var disabled = Location("disabled", new());
+        var disabledResult = await DesktopRecoverySupervisor.RunAsync(disabled, () => disabled,
+            launch: _ => throw new Exception("Disabled supervision must never create a client"));
+        Check(disabledResult == 0 && !File.Exists(Path.Combine(DesktopRecoverySupervisor.StateDirectory(disabled), "state.json")),
+            "default-disabled recovery neither launches a client nor consumes a launch budget");
         var location = Location("plan"); var plan = DesktopRecoveryInstallation.Plan(location);
         var xml = XDocument.Parse(plan.TaskXml); XNamespace ns = xml.Root!.Name.Namespace;
         Check(xml.Descendants(ns + "LogonType").Single().Value == "InteractiveToken" && xml.Descendants(ns + "RunLevel").Single().Value == "LeastPrivilege" &&
@@ -95,15 +102,24 @@ static class P0Supervisor
         Check(result == 77, "unacknowledged process creation fails closed without a duplicate launch");
         var refused = false; try { DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(location); } catch (InvalidOperationException) { refused = true; }
         Check(refused && DesktopRecoverySupervisor.IsBlocked(location), "ordinary system repair cannot clear an uncertain original launch");
-        location = Location("healthy", new(RestartDelaySeconds: 1, MaximumRestarts: 0, HealthyResetSeconds: 60)); launches = 0;
-        result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start => { launches++; var process = Launch(launches == 1 ? "--sleep" : "--normal");
-            if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process; }, clock: new AcceleratedClock());
-        Check(result == 0 && launches == 2, "healthy interval resets restart budget using monotonic time despite wall-clock jumps");
+        foreach (var allowedRestarts in new[] { 0, 2 })
+        {
+            location = Location("healthy-" + allowedRestarts, new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: allowedRestarts, HealthyResetSeconds: 60)); launches = 0;
+            var healthyClock = new AcceleratedClock();
+            result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start => { launches++; if (launches > 1) healthyClock.SlowDown(); var process = Launch(launches == 1 ? "--sleep" : "--fail");
+                if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process; }, clock: healthyClock);
+            Check(result == 77 && launches == allowedRestarts + 1, "healthy interval preserves current child and exact restart budget=" + allowedRestarts);
+        }
     }
     sealed class AcceleratedClock : TimeProvider
     {
-        readonly long origin = Stopwatch.GetTimestamp();
-        public override long GetTimestamp() => (Stopwatch.GetTimestamp() - origin) * 120;
+        readonly object sync = new();
+        long prior = Stopwatch.GetTimestamp(), elapsed; int speed = 120;
+        public void SlowDown() { lock (sync) { _ = GetTimestamp(); speed = 1; } }
+        public override long GetTimestamp()
+        {
+            lock (sync) { var now = Stopwatch.GetTimestamp(); elapsed += (now - prior) * speed; prior = now; return elapsed; }
+        }
         public override DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow.AddYears(DateTime.UtcNow.Second % 2 == 0 ? 5 : -5);
     }
 }

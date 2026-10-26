@@ -1,3 +1,5 @@
+> 2026-10-26整合：本包继承PR110 5e4b85d5，保留TCP正式提供者身份、健康重启预算和默认监督关闭。版本统一为SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。本轮结果另见[整合执行记录](integration-20261026.md)，下述原分支状态及原验证只代表其形成时刻；本轮不生成新发布介质。
+
 # Unicode 快捷方式的创建、修复和清理
 
 本增量继承 PR110 `980a1383` 的 IShellLinkW/IPersistFile 实现，保留精确中文名、菜单参数、上一部署归属和安装权限。工作范围见[工作包](../work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md)，真实源码、失败及回归见[验证记录](validation/unicode-shortcut-compatibility-01.md)。

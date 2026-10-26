@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 namespace Ipc.Platform;
 
-public sealed record DesktopRecoveryOptions(bool Enabled = true, int RestartDelaySeconds = 30, int MaximumRestarts = 3,
+public sealed record DesktopRecoveryOptions(bool Enabled = false, int RestartDelaySeconds = 30, int MaximumRestarts = 3,
     int HealthyResetSeconds = 900, int DumpCount = 2, int DumpType = 1)
 {
     public void Validate()

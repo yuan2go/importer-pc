@@ -110,6 +110,9 @@ public partial class ParcelViewModel
                 if (!newSelection || HistoryFilter() != new ParcelHistoryFilter()) throw new NotSupportedException("此组合没有完整历史查询能力；不能声称应用了筛选或固定范围");
                 page = await ServiceAsync(() => application.HistoryAsync(before));
             }
+            // Legacy ports cannot cancel their I/O. Retain ownership until drain, then
+            // fence the cancelled result before it can replace any visible page.
+            cancellation.Token.ThrowIfCancellationRequested();
             if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
             var current = Selected;
             rebindingHistory = true;

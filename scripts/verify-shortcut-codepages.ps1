@@ -26,6 +26,24 @@ try {
         # The apphost manifest selects the child ACP; dotnet.exe would ignore it.
         & ./tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.exe . --installer-options --expected-acp $shortcutCase.ACP *> (Join-Path $shortcutOutput "$shortcutName.log")
         if ($LASTEXITCODE) { Get-Content (Join-Path $shortcutOutput "$shortcutName.log"); throw "Shortcut boundary failed: $shortcutName" }
+        & ./tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.exe . --shortcut-lifecycle --expected-acp $shortcutCase.ACP *> (Join-Path $shortcutOutput "$shortcutName-lifecycle.log")
+        if ($LASTEXITCODE) { Get-Content (Join-Path $shortcutOutput "$shortcutName-lifecycle.log"); throw "Shortcut lifecycle failed: $shortcutName" }
+        $shortcutProbe='tests/Ipc.Application.Verification/bin/Release/net10.0'
+        $shortcutLog=Get-Content -LiteralPath (Join-Path $shortcutOutput "$shortcutName-lifecycle.log") -Raw
+        $shortcutActual=[regex]::Match($shortcutLog,'PASS actual process ACP=(\d+)')
+        if (!$shortcutActual.Success -or [int]$shortcutActual.Groups[1].Value -ne $shortcutCase.ACP) { throw "Missing actual ACP proof: $shortcutName" }
+        [ordered]@{
+            SourceCommit=(& git rev-parse HEAD); GitStatus=@(& git status --porcelain)
+            ExpectedACP=$shortcutCase.ACP; ActualACP=[int]$shortcutActual.Groups[1].Value
+            OS=[Environment]::OSVersion.VersionString; Sdk=(& dotnet --version)
+            ManifestSha256=(Get-FileHash -LiteralPath $shortcutManifest -Algorithm SHA256).Hash
+            ApphostSha256=(Get-FileHash -LiteralPath "$shortcutProbe/Ipc.Application.Verification.exe" -Algorithm SHA256).Hash
+            VerificationDllSha256=(Get-FileHash -LiteralPath "$shortcutProbe/Ipc.Application.Verification.dll" -Algorithm SHA256).Hash
+            PlatformDllSha256=(Get-FileHash -LiteralPath "$shortcutProbe/Ipc.Platform.dll" -Algorithm SHA256).Hash
+            InstallerLogSha256=(Get-FileHash -LiteralPath (Join-Path $shortcutOutput "$shortcutName.log") -Algorithm SHA256).Hash
+            LifecycleLogSha256=(Get-FileHash -LiteralPath (Join-Path $shortcutOutput "$shortcutName-lifecycle.log") -Algorithm SHA256).Hash
+            Status='PASS'; Scope='Isolated real COM; no machine installation or policy registration'
+        } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $shortcutOutput "$shortcutName-result.json") -Encoding utf8
         Write-Output "PASS Unicode COM create/read/upgrade/ownership/remove ACP=$($shortcutCase.ACP)"
     }
 }

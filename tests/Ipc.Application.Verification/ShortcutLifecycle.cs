@@ -208,7 +208,7 @@ static class ShortcutLifecycle
             Batch(); var after = process.HandleCount;
             Check(after <= before + 8, $"100 success/load-failure/save-failure loops release files without forced GC; process handles {before}->{after}");
             Exception? failure = null;
-            var thread = new Thread(() => { try { Batch(); } catch (Exception error) { failure = error; } });
+            var thread = new Thread(() => { try { Batch(); } catch (Exception error) { failure = error; } }) { IsBackground = true };
             thread.SetApartmentState(ApartmentState.STA); thread.Start();
             if (!thread.Join(TimeSpan.FromSeconds(20))) throw new Exception("STA shortcut loop exceeded fixture deadline");
             if (failure is not null) throw new Exception("STA shortcut operations failed", failure);

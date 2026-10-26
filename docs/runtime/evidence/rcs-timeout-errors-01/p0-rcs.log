@@ -1,0 +1,8 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-448ff0a4df5e42c6837f70d31951f659
+PASS RCS20: partial frame never sends RCS
+PASS RCS20: partial frame never sends RCS
+PASS RCS20: partial frame never sends RCS
+PASS RCS20: three scans including repeated barcode own three entities and exactly three requests
+PASS RCS20: original barcode bytes/order preserved
+PASS RCS20: durable frozen body equals the actual sole HTTP request; normal UI remains redacted
+PASS RCS20: existing legacy frozen quantity and exact wire bytes unchanged

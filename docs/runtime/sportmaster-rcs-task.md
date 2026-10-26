@@ -1,3 +1,5 @@
+> 2026-10-26新组件1.3.4的超时配置与异常提示见[当前操作及验证](rcs-timeout-errors-01.md)。重扫放行策略尚待选择；原接口、旧发行及历史验收身份不变。
+
 > 当前组件1.3.2、Contracts1.17.0、Sportmaster1.12.0、Parcel DB9。继承心跳、原请求和数值ID永久高水位；增加额度提示与保留维护。用户本轮明确Unknown先保留，未提供权威查询/处置合同，不自动重发；见[长稳指南](win11-24x7-stability-remediation-01.md)。
 
 > 历史2026-10-20裁决：[审查整改](sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。

@@ -12,7 +12,7 @@ public sealed class SportmasterFlow : FlowDefinition
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
-            new("integration", "sportmaster-rcs", "1.3.3", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
+            new("integration", "sportmaster-rcs", "1.3.4", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
             MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
@@ -27,6 +27,15 @@ public sealed class SportmasterFlow : FlowDefinition
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>
         op.Wcs?.State == StageState.Unknown ? [ParcelStage.Wcs] : [];
     public override bool MainSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.WcsRejected;
+    public override int RequestTimeoutMs(ParcelOperation op, ParcelStage stage)
+    {
+        if (stage != ParcelStage.Wcs || op.Wcs?.Request.Binding is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding)
+            return base.RequestTimeoutMs(op, stage);
+        if (binding.Parameters.TryGetValue("request-timeout-ms", out var value) &&
+            int.TryParse(value, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var timeout) && timeout is >= 100 and <= 30000)
+            return timeout;
+        return binding.Version == "1.3.4" ? 5000 : base.RequestTimeoutMs(op, stage);
+    }
     public override ParcelOperation RestoreMainProjection(ParcelOperation op)
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;

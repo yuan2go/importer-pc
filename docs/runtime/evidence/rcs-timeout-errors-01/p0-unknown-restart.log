@@ -1,0 +1,4 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-11cfd6d3815c4bd8ad7b338f31b3b5d6
+PASS RCS20: lost HTTP response produces exactly one original request
+PASS RCS20: process restart preserves Unknown and frozen original bytes
+PASS RCS20: restart, unavailable authoritative query and reconnect neither clear Unknown nor replay

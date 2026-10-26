@@ -529,6 +529,7 @@ static partial class SportmasterRcs
         readonly ConcurrentBag<Task> pending = [];
         public ConcurrentQueue<Exchange> Requests { get; } = new();
         public string Mode = "assigned";
+        public Func<string, string>? ResponseTransform;
         public string Endpoint { get; }
         public Peer()
         {
@@ -545,10 +546,18 @@ static partial class SportmasterRcs
         {
             using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); var mode = Mode;
             if (mode == "by-position") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "unpack" : "assigned"; }
-            var response = Response(body, mode); var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
+            var response = Response(body, mode); response = ResponseTransform?.Invoke(response) ?? response;
+            var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
             Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));
             try
             {
+                if (mode == "body-timeout")
+                {
+                    context.Response.SendChunked = true; context.Response.ContentType = "application/json";
+                    await context.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes("{\"requestId\":"), stop.Token);
+                    await context.Response.OutputStream.FlushAsync(stop.Token);
+                    await Task.Delay(2500, stop.Token); return;
+                }
                 if (mode == "timeout") await Task.Delay(2500, stop.Token);
                 var bytes = Encoding.UTF8.GetBytes(response); context.Response.StatusCode = status; if (mode == "redirect") context.Response.RedirectLocation = Endpoint + "/synthetic-followed"; context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stop.Token);
@@ -556,7 +565,12 @@ static partial class SportmasterRcs
             catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
             catch (HttpListenerException) { } // The timeout fixture intentionally closes the client.
             catch (IOException) { }
-            finally { context.Response.Close(); }
+            finally
+            {
+                try { context.Response.Close(); }
+                catch (HttpListenerException) { } // A timed-out client may already have closed the connection.
+                catch (ObjectDisposedException) when (stop.IsCancellationRequested) { }
+            }
         }
         public async ValueTask DisposeAsync()
         { stop.Cancel(); listener.Close(); await loop; await Task.WhenAll(pending); stop.Dispose(); }

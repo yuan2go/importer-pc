@@ -41,6 +41,7 @@ jobs:
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup 2>&1 | tee parameter-guidance-startup.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --deferred-connections 2>&1 | tee deferred-connections.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --sportmaster-rcs 2>&1 | tee confirmed-camera-rcs.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --rcs-timeout-errors 2>&1 | tee rcs-timeout-errors.log
       - name: Exercise process death, monotonic time, storage and ownership
         shell: bash
         run: |
@@ -74,6 +75,7 @@ jobs:
             parameter-guidance-startup.log
             deferred-connections.log
             confirmed-camera-rcs.log
+            rcs-timeout-errors.log
             stability-audit-fixes.log
             lifecycle-ux.log
             latency-*-checks.log
@@ -109,7 +111,7 @@ jobs:
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
+          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
             dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
             if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
           }

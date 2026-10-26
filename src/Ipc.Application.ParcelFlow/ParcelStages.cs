@@ -42,7 +42,7 @@ public sealed partial class ParcelRuntime
             op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
         }
         using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, query ? Management.Require() : CancellationToken.None);
-        budget.CancelAfter(Effective.TimeoutMs);
+        budget.CancelAfter(definition.RequestTimeoutMs(op, kind));
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
         var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
         var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
@@ -67,7 +67,9 @@ public sealed partial class ParcelRuntime
             // A failed confirmation query supplies no contrary evidence about an
             // already accepted/rejected command. Keep that fact and its original reply.
             var knownOutcome = stage.State is StageState.Accepted or StageState.Rejected;
-            stage = stage with { State = knownOutcome ? stage.State : StageState.Unknown, Failure = ex.GetType().Name + ": " + ex.Message };
+            var timedOut = !query && budget.IsCancellationRequested && !stopping.IsCancellationRequested;
+            stage = stage with { State = knownOutcome ? stage.State : StageState.Unknown,
+                Failure = timedOut ? "TimeoutException: Request deadline expired" : ex.GetType().Name + ": " + ex.Message };
             op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
                 Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
             Save(op, "OutcomeUnknown", stage.Failure!); return op;
@@ -83,10 +85,14 @@ public sealed partial class ParcelRuntime
         // If persistence fails here, the Awaiting occurrence remains independently visible.
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
         reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
-            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), Effective.TimeoutMs, repository.ReadOriginalReply(stage.Request, reply.Id));
+            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), definition.RequestTimeoutMs(op, kind), repository.ReadOriginalReply(stage.Request, reply.Id));
         repository.StoreRaw(occurrence, reply);
         Boundary?.Invoke("AfterRawDurable");
         op = ApplyReply(op, kind, reply);
+        // Some adapters retain a partial response on cancellation. Preserve that raw
+        // receipt while recording the caller's expired request deadline separately.
+        if (!query && reply.BusinessAccepted is null && budget.IsCancellationRequested && !stopping.IsCancellationRequested && GetStage(op, kind) is { State: StageState.Unknown } timedOutStage)
+            op = SetStage(op, kind, timedOutStage with { Failure = "TimeoutException: Request deadline expired" });
         if (missingOccurrence is not null && repository.Paused && MaintenanceAuthorized &&
             GetStage(op, kind) is { State: StageState.Accepted or StageState.Rejected, Failure: null } resolved &&
             resolved.Replies.Any(r => r.Id == reply.Id && r.BusinessAccepted is not null) && repository.MissingAwaitingRaw(missingOccurrence))

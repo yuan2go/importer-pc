@@ -1,0 +1,31 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-bb83ef6fcd6e41b1bbbd4146ddad50d8
+PASS RCS20: request timeout schema has units, default and bounds
+PASS RCS20: invalid component timeout refused: 0
+PASS RCS20: invalid component timeout refused: 99
+PASS RCS20: invalid component timeout refused: 30001
+PASS RCS20: invalid component timeout refused: 1.5
+PASS RCS20: invalid component timeout refused: -1
+PASS RCS20: invalid component timeout refused: bad
+PASS RCS20: component times out without a caller deadline and sends only once
+PASS RCS20: caller cancellation is not mistaken for component timeout
+PASS RCS20: body-read timeout retains the original prefix and no assigned chute
+PASS RCS20: configured RCS deadline overrides the shorter generic service budget and retains one attempt
+PASS RCS20: omitted new-component timeout matches its displayed default while predecessor bindings keep their original budget
+PASS RCS20: timeout guidance is visible in the work area with no stale chute
+PASS RCS20: timeout does not repeat the POST and a late server response cannot assign a chute
+PASS RCS20: valid assignment still displays its exact chute
+PASS RCS20: a rejected next parcel replaces the previous successful chute with its own message
+PASS RCS20: unpack never displays an assignment
+PASS RCS20: unpack shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: reject never displays an assignment
+PASS RCS20: reject shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: missing-chute never displays an assignment
+PASS RCS20: missing-chute shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: blank-chute never displays an assignment
+PASS RCS20: blank-chute shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: malformed never displays an assignment
+PASS RCS20: malformed shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: wrong-id never displays an assignment
+PASS RCS20: wrong-id shows the matched exception/message with safe fallback for invalid or unmatched replies
+PASS RCS20: application/component deadline race preserves the response prefix and still shows rescan guidance
+PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE

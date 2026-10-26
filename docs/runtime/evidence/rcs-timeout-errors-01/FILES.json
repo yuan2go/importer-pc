@@ -1,0 +1,34 @@
+{
+  "BaseCommit": "77d2db61",
+  "Scope": "Local Windows isolated Simulation and loopback HTTP; version compatibility interrupted by missing machine policy; no real RCS, device, installation or native visual acceptance",
+  "Files": [
+    {
+      "Path": "rcs-timeout-errors-final.log",
+      "Sha256": "d38aa58e92f9b390b242655975b3a39fcc9abb051b0785e233a363161dcad0a4"
+    },
+    {
+      "Path": "rcs-heartbeat.log",
+      "Sha256": "6bcf9235bd3b66c608e7b6fd3f86708f42ed7bde17e30abb5ab4d9879a09a93f"
+    },
+    {
+      "Path": "p0-rcs.log",
+      "Sha256": "9e529a211edc77dea96e55e524ab0582490011b20467b83bb17b1fd6f0928d20"
+    },
+    {
+      "Path": "p0-unknown-restart.log",
+      "Sha256": "1195dcdbb9b0c4602cbca93c10a565374facfebcd09bdafa626de8479decb866"
+    },
+    {
+      "Path": "time-storage.log",
+      "Sha256": "7f1eb868d121bdb2f6c1033b259ac1ac2fc190240a581a90f7b82b222d6e72d3"
+    },
+    {
+      "Path": "version-compatibility.log",
+      "Sha256": "4dde84000275032b5fab8bbb6203cb2beac41c544436f032bf86f0f0f3670a88"
+    },
+    {
+      "Path": "build-wpf.log",
+      "Sha256": "0a8c7eca42da2153b1d6116040e6497933ffccd86e1a6ea0fe055a4201db2312"
+    }
+  ]
+}

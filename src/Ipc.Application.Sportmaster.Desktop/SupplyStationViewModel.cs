@@ -152,7 +152,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ParcelPresentation.InputReason(Input!) +
         (Input!.Outcome == ParcelInputOutcome.Blocked && BlockingReasons.Length > 0 ? " 当前：" +
             (HasUncertainOriginal ? "原作业结果待核对。" : BlockingReasons) : "") :
-        Operation is { } op && !CurrentTaskAvailable ? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
+        Operation is { } op && !CurrentTaskAvailable ? ParcelPresentation.RcsException(op) ?? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
     public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);
     WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
         ? Operation!.Wcs!.Replies.LastOrDefault(r => r.BusinessAccepted == true && r.RequestId == Operation.Wcs.Request.Id &&
@@ -177,8 +177,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次输入及准入条件，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
         Operation?.State switch
         {
+            ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时，请重新扫描。",
             ParcelState.WcsUnknown => "请勿重复放货，请联系维护人员核对。",
-            ParcelState.WcsRejected => "查看详情，核对拒绝原因。",
+            ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? "查看详情，核对拒绝原因。",
             ParcelState.UnpackRequired => "本位等待检查处置；查看原回执，不重复放货。",
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
             _ => BlockingReasons.Length > 0 ? BlockingReasons : CanContinue ? "展开详情填写检查说明，再继续原阶段。" : ""
@@ -194,6 +195,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     {
         ParcelState.SlotResolved => "格口已取得",
         ParcelState.ResolvingWcs => "正在取格口",
+        ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时",
         ParcelState.WcsUnknown => "结果待核对",
         ParcelState.WcsRejected => "业务拒绝",
         _ => Presentation.Text
@@ -209,6 +211,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         SlotAvailable ? "按本次格口投递；下一包信息自动更新。" :
         CurrentTaskAvailable ? "回执未包含格口；查看详情并核对原回执。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待本次回应，无需重复提交。" :
+        ParcelPresentation.RcsTimedOut(Operation) ? "RCS请求超时，请重新扫描。" :
         HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
         BlockingReasons.Length > 0 ? "暂不能供包，请联系维护人员检查。" : "读码后自动获取任务，无需逐包确认。";

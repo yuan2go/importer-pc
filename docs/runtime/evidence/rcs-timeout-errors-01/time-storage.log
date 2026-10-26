@@ -1,0 +1,18 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-ef69ce7ea7244479ac7230ca603b10c6
+PASS ST12 capacity throttle survives UTC rollback
+PASS ST12 UTC forward jump does not bypass interval
+PASS ST12 retention notification interval also survives rollback
+PASS ST13 synthetic handoff is durable
+PASS ST13 in-flight UTC rollback does not manufacture Conflict
+PASS ST13 rollback has request-bound durable local evidence
+PASS ST13 earlier reply without witnessed rollback remains invalid
+PASS ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps
+PASS ST13 identical provider query preserves first clock evidence and immutable reply identity
+PASS ST13 repeated rollback resolves original evidence from durable custody without redispatch
+PASS ST13 original evidence reuse cannot hide changed provider fields
+PASS ST13 provider-supplied local proof remains forbidden during duplicate observation
+PASS ST13 an existing Conflict is never automatically cleared
+PASS ST13 restart validates original rollback evidence without redispatch
+PASS UTC inventory: operator maximum lifetime cannot be extended by rollback
+PASS UTC inventory: management status respects its monotonic expiry token
+PASS ST08 bounded pre-write I/O jitter recovers without disabling ingress

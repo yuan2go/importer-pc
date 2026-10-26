@@ -13,10 +13,29 @@ public static class ParcelPresentation
     public static ParcelStatusPresentation Rejected(string text) => new(text, "!", "#B52F38", "#FDF0F0", "#E7B0B4");
     public static ParcelStatusPresentation Unknown(string text) => new(text, "?", "#895509", "#FFF5DF", "#E6C889");
     public static ParcelStatusPresentation Stale() => new("旧状态已失效 · 等待有效快照", "⌛", "#536577", "#EDF0F3", "#9CAAB8");
+    public static bool RcsTimedOut(ParcelOperation? op) => op?.State == ParcelState.WcsUnknown &&
+        op.Wcs is { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
+        (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
+         stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true);
+    public static string? RcsException(ParcelOperation? op)
+    {
+        if (op?.Wcs is not { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage || stage.State == StageState.Conflict) return null;
+        if (RcsTimedOut(op)) return "RCS请求超时，请重新扫描。";
+        if (op.State == ParcelState.UnpackRequired) return "需要拆包，请查看拆包明细。";
+        var reply = stage.Replies.LastOrDefault();
+        if (op.State == ParcelState.WcsRejected && reply?.Destination is { } destination)
+            return destination.Message ?? destination.Code ?? "RCS未返回有效格口。";
+        const string prefix = "RCS_RESPONSE_ERROR: ";
+        if (op.State == ParcelState.WcsUnknown && reply?.Evidence.StartsWith(prefix, StringComparison.Ordinal) == true)
+            return reply.Evidence[prefix.Length..];
+        return op.State == ParcelState.WcsUnknown ? "RCS未返回有效格口，请核对异常信息。" : null;
+    }
     public static ParcelStatusPresentation Operation(ParcelOperation? op, bool fresh)
     {
         if (!fresh) return Stale();
         if (op is null) return Neutral("等待包裹入场");
+        if (RcsTimedOut(op)) return Unknown("RCS请求超时，请重新扫描。");
+        if (op.State == ParcelState.WcsRejected && RcsException(op) is { } message) return Rejected(message);
         return op.State switch
         {
             ParcelState.SlotResolved => Accepted("上游格口已取得"),

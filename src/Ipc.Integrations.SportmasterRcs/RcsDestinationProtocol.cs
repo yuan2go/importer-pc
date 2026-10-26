@@ -40,28 +40,33 @@ internal static class RcsDestinationProtocol
         var accepted = result.GetProperty("success").GetBoolean();
         var code = OptionalText(result, "code", 256); var message = OptionalText(result, "message", 4096);
         var args = result.TryGetProperty("args", out var a) && a.ValueKind != JsonValueKind.Null ? a.GetRawText() : null;
-        var data = result.GetProperty("data");
-        if (accepted)
+        try
         {
-            if (code is not null) throw new InvalidDataException("RCS success contradicts its error code");
-            var slot = Text(data, "chuteCode", 64);
-            return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
-                Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
-                AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
+            var data = result.GetProperty("data");
+            if (accepted)
+            {
+                if (code is not null) throw new InvalidDataException("RCS success contradicts its error code");
+                var slot = Text(data, "chuteCode", 64);
+                return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
+                    Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
+                    AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
+            }
+            if (string.IsNullOrWhiteSpace(code)) throw new InvalidDataException("RCS rejection requires an error code");
+            if (code == "NEED_UNPACK")
+            {
+                var chutes = data.GetProperty("chutes");
+                if (chutes.ValueKind != JsonValueKind.Array || chutes.GetArrayLength() > 256) throw new InvalidDataException("RCS unpack chute quota exceeded or invalid");
+                var items = chutes.EnumerateArray().Select(c => new WcsUnpackChute(Text(c, "chuteNo", 64), Text(c, "orderNo", 256), Nonnegative(c, "remaining"), Text(c, "phase", 128))).ToArray();
+                var unpack = new WcsUnpackDetails(Text(data, "barcode", 512), Text(data, "skuId", 256), Nonnegative(data, "scanQty"), items);
+                using var sent = JsonDocument.Parse(original.Body);
+                if (unpack.Barcode != sent.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString())
+                    throw new InvalidDataException("RCS unpack barcode does not match original loadCode");
+                return (false, null, new(WcsDestinationOutcome.UnpackRequired, code, message, args, null, unpack.SkuId, null, null, null, null, unpack));
+            }
+            return (false, null, new(WcsDestinationOutcome.Rejected, code, message, args, null, null, null, null, null, null, null));
         }
-        if (string.IsNullOrWhiteSpace(code)) throw new InvalidDataException("RCS rejection requires an error code");
-        if (code == "NEED_UNPACK")
-        {
-            var chutes = data.GetProperty("chutes");
-            if (chutes.ValueKind != JsonValueKind.Array || chutes.GetArrayLength() > 256) throw new InvalidDataException("RCS unpack chute quota exceeded or invalid");
-            var items = chutes.EnumerateArray().Select(c => new WcsUnpackChute(Text(c, "chuteNo", 64), Text(c, "orderNo", 256), Nonnegative(c, "remaining"), Text(c, "phase", 128))).ToArray();
-            var unpack = new WcsUnpackDetails(Text(data, "barcode", 512), Text(data, "skuId", 256), Nonnegative(data, "scanQty"), items);
-            using var sent = JsonDocument.Parse(original.Body);
-            if (unpack.Barcode != sent.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString())
-                throw new InvalidDataException("RCS unpack barcode does not match original loadCode");
-            return (false, null, new(WcsDestinationOutcome.UnpackRequired, code, message, args, null, unpack.SkuId, null, null, null, null, unpack));
-        }
-        return (false, null, new(WcsDestinationOutcome.Rejected, code, message, args, null, null, null, null, null, null, null));
+        catch (Exception e) when (e is InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
+        { throw new RcsResponseException(message ?? "RCS未返回有效格口，请核对异常信息。", e); }
     }
     static int Nonnegative(JsonElement e, string name) => e.GetProperty(name).GetInt32() is var n && n >= 0 ? n : throw new InvalidDataException("RCS negative quantity");
     static decimal? Measurement(JsonElement e, string name)
@@ -90,3 +95,6 @@ internal static class RcsDestinationProtocol
         else if (e.ValueKind == JsonValueKind.Array) foreach (var item in e.EnumerateArray()) UniqueObjects(item);
     }
 }
+
+// Created only after the original requestId/index/command have been matched.
+internal sealed class RcsResponseException(string message, Exception inner) : Exception(message, inner);

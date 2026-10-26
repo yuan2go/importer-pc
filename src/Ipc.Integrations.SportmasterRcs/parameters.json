@@ -108,6 +108,18 @@
     "RequiredWhenEquals": "true"
   },
   {
+    "Key": "request-timeout-ms",
+    "Group": "RCS 分拣任务",
+    "Label": "取格口请求超时",
+    "Type": "integer",
+    "Default": "5000",
+    "Minimum": 100,
+    "Maximum": 30000,
+    "MaximumLength": 5,
+    "Unit": "毫秒",
+    "Description": "单次取格口请求的总时限，包含连接及响应读取；默认5000毫秒，保存并受控重启后生效。超时提示操作员重新扫描。"
+  },
+  {
     "Key": "heartbeat-interval-seconds",
     "Group": "RCS 心跳",
     "Label": "心跳请求间隔",

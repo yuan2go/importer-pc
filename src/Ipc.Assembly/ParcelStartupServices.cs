@@ -67,7 +67,7 @@ public static class ParcelStartupServices
         // not a new action. Legacy null identities stay null, including on the wire.
         var reviewed = ReviewCore(media, original.RuntimeAccountSid, original.DataRoot, original.ConfigurationSource,
             original.TrustFile, original.Packages.Keys.ToArray(), original.RepairSeed, original.ProgramRoot, original.OperationId)
-            with { ChangePlanIdentity = original.ChangePlanIdentity, BackupDestination = original.BackupDestination, Shortcuts = original.Shortcuts };
+            with { ChangePlanIdentity = original.ChangePlanIdentity, BackupDestination = original.BackupDestination, Shortcuts = original.Shortcuts, Recovery = original.Recovery };
         if (!System.Text.Json.Nodes.JsonNode.DeepEquals(System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(reviewed)), System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(original))))
             throw new InvalidDataException("计划输入/原登记已变化；重新预检并审阅逐站差异");
         // Preserve the frozen wire identity too: JSON object key order is not

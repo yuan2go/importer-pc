@@ -46,3 +46,5 @@ P0基座已合入main：[运行说明](runtime/p0-stability-01.md)、[历史问�
 - [卡顿、容量及WAL维护](runtime/latency-capacity-01.md)：共享投影、后台详情、可取消备份与分级预警；[原测量与反向样本](runtime/validation/latency-capacity-01.md)不转记组合PASS。
 
 生命周期当前入口：[操作指南](runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](runtime/lifecycle-ux-implementation-01.md)、[工作包](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)。原独立验证见[历史报告](runtime/validation/lifecycle-ux-optimization-01.md)及[批量预检历史](runtime/validation/lifecycle-batch-preflight-01.md)，不转记组合源。
+
+原本地稳定性补修当前承接：[F01～F03工作包](work-packages/WP-IPC-STABILITY-AUDIT-FIXES-02.md)、[设计](design/stability-audit-fixes-02.md)、[当前源与验证](runtime/stability-audit-integration-20261026.md)。原未公开回执保持本地历史身份。

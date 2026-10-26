@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "dde648770533064b07048c2040a8d50e1a40406b7b2c9c2079b591a749c6da04",
-      "size_bytes": 6058,
-      "git_blob": "f32bd53f98894545d8dc0784b90a150af683eabe",
+      "sha256": "8d958c8c732a96c1e53c5a6f32e06dd0c098f63518e04f82e1ef26cad02cb7d7",
+      "size_bytes": 6336,
+      "git_blob": "ff5e44d9cf9e0469fb78e336a4c894b130565372",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -100339,6 +100339,39 @@
       "sha256": "d5f91957f7b1208b249567f2250c62be36d0a00e8daa790db9d820f228bbaff1",
       "size_bytes": 10888,
       "git_blob": "8cfeb847885c798e038fda9a59fdbba7b957db82"
+    },
+    {
+      "path": "docs/design/stability-audit-fixes-02.md",
+      "storage_scope": "public_repository",
+      "version": "integration-20261026",
+      "status": "tracked_source_or_preserved_artifact",
+      "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
+      "purpose": "Canonical inventory, no validation claim",
+      "sha256": "3e989015df7d479ca49726a10e05cd7d46d11f865d9c726867bd58a2cf058b86",
+      "size_bytes": 4213,
+      "git_blob": "0aa2596638426ee50e27a10bb02d2d83e8beb7ad"
+    },
+    {
+      "path": "docs/runtime/stability-audit-integration-20261026.md",
+      "storage_scope": "public_repository",
+      "version": "integration-20261026",
+      "status": "tracked_source_or_preserved_artifact",
+      "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
+      "purpose": "Canonical inventory, no validation claim",
+      "sha256": "9f088cc5c91c8778099007c347fdbdcdf7554bf9ff7e94e25c2773d40cdcc2c9",
+      "size_bytes": 779,
+      "git_blob": "9fe2f76c9d9209ed808ada038d5483ae9ab59431"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-STABILITY-AUDIT-FIXES-02.md",
+      "storage_scope": "public_repository",
+      "version": "integration-20261026",
+      "status": "tracked_source_or_preserved_artifact",
+      "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
+      "purpose": "Canonical inventory, no validation claim",
+      "sha256": "13cb6d462b543fdc8f205b9e3b410281953ae5b471d3bc9c7dde6dfba857c669",
+      "size_bytes": 1706,
+      "git_blob": "3f7c2d74e506f065c60c2c04965b17cc0b00a6b0"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -24,6 +24,8 @@ static class P0Supervisor
     }
     public static async Task Run(string root)
     {
+        Check(!new DesktopRecoveryOptions().Enabled,
+            "new installations preserve manual startup until recovery is explicitly enabled");
         DeploymentLocation Location(string name, DesktopRecoveryOptions? options = null) => new("sportmaster", new string('a', 40),
             Path.Combine(root, name, "release"), Path.Combine(root, name, "config"), Path.Combine(root, name, "data"), "S-1-5-21-123-456-789-1001")
             { Recovery = options ?? new(RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };

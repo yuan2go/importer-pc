@@ -18,6 +18,9 @@ static partial class Program
         async Task Flush(Window window) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        // Packaged clean seeds omit historical MaintenanceLogin. Exercise its
+        // role migration with an explicit synthetic legacy binding in both hosts.
+        config = config with { MaintenanceLogin = new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }) };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };

@@ -33,6 +33,17 @@ public sealed partial class ParcelRuntime
     {
         repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
         latestInputs[input.PositionId] = input;
+        LogInput(input);
+    }
+    void LogInput(ParcelInputSnapshot input)
+    {
+        Diagnostic("扫码与准入", "输入处理完成", input.Outcome is ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected ? "警告" : "信息",
+            Wire.Encode(new { input.PositionId, input.Outcome, input.OperationId, input.Observation.AdmissionId, input.Observation.SourceEventId, input.Reason }));
+        DebugDiagnostic("扫码与准入", "扫码原始候选与筛选结果", () => new { input.PositionId, input.Outcome, input.OperationId,
+            input.Observation.DeviceId, input.Observation.Epoch, input.Observation.SourceEventId, input.Observation.Sequence,
+            input.Observation.AdmissionId, input.Observation.ObservedAt, input.RecordedAt,
+            CandidateCount = input.Observation.Codes.Length, Candidates = input.Observation.Codes.Take(16).Select(c => DiagnosticFragment(c, 256)).ToArray(),
+            CandidatesOmitted = Math.Max(0, input.Observation.Codes.Length - 16), Selection = input.BarcodeSelection, Reason = DiagnosticFragment(input.Reason) });
     }
     // A failed latest observation must not borrow a previous terminal result.
     // Unresolved original responsibility remains visible and guarded independently.

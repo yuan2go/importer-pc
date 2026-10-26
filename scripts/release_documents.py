@@ -33,6 +33,7 @@ GUIDES = {
 # old account and support-page evidence remains in Git with its original identity.
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
     'docs/runtime/workstation-status-logs-01.md': 'WORKSTATION-AND-LOGS.md',
+    'docs/runtime/debug-log-live-01.md': 'DEBUG-LOG-LIVE.md',
     'docs/design/typography-01.md': 'TYPOGRAPHY.md',
     'docs/runtime/parameter-guidance-startup-01.md': 'PARAMETER-GUIDANCE-STARTUP.md',
     'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',

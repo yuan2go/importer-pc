@@ -392,6 +392,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
     {
+        DebugDiagnostic("相机输入", "开始处理扫码消息", () => new { Position = position, Device = DiagnosticFragment(o.DeviceId, 256),
+            Epoch = DiagnosticFragment(o.Epoch, 256), EventId = DiagnosticFragment(o.SourceEventId, 256), o.Sequence, o.ObservedAt, ReceivedAt = receivedAt,
+            QueueAgeMs = (DateTimeOffset.UtcNow - receivedAt).TotalMilliseconds, CandidateCount = o.Codes.Length });
         if (!readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
@@ -518,8 +521,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
         operations[op.Id] = op;
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
-        if (input is not null) latestInputs[input.PositionId] = input;
-        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
+        if (input is not null) { latestInputs[input.PositionId] = input; LogInput(input); }
+        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Source = "作业", Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, op.PositionId, op.AdmissionId, op.ParcelCode, State = op.State, Revision = repository.Revision, Detail = DiagnosticFragment(detail) });
+        DebugDiagnostic("作业", "作业阶段详情", () => new { Event = eventName, Operation = op.Id, op.PositionId, op.State, op.Slot,
+            Wcs = op.Wcs is { } w ? new { Request = w.Request.Id, w.State, w.Attempts, Failure = DiagnosticFragment(w.Failure) } : null,
+            Plc = op.Plc is { } p ? new { Request = p.Request.Id, p.State, p.Attempts, Failure = DiagnosticFragment(p.Failure) } : null,
+            Detail = DiagnosticFragment(detail) });
     }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
         op.Capture?.State is StageState.Unknown or StageState.Conflict ||

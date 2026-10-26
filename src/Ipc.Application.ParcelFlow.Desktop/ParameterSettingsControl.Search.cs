@@ -44,7 +44,7 @@ public sealed partial class ParameterSettingsControl
         searchCount.Text = ""; searchCount.Visibility = query.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         if (query.Length == 0) { searchResults.ItemsSource = null; return; }
         var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var hits = locations.Where(x => (categoryScope is null || x.Value.Page.Category == categoryScope) && x.Value.Applicable?.Invoke() != false)
+        var hits = locations.Where(x => x.Value.Page.Available && (categoryScope is null || x.Value.Page.Category == categoryScope) && x.Value.Applicable?.Invoke() != false)
             .GroupBy(x => x.Value.Control).Select(g => new { First = g.First(), Keys = string.Join(" ", g.Select(x => x.Key)) })
             .Where(x => terms.All(term => (x.First.Value.Label + " " + x.Keys + " " + x.First.Value.Page.Title + " " + ParameterOwnership.CategoryName(x.First.Value.Page.Category) + " " + x.First.Value.Help).Contains(term, StringComparison.OrdinalIgnoreCase)))
             .Select(x => new SearchHit(x.First.Key, x.First.Value.Label, ParameterOwnership.CategoryName(x.First.Value.Page.Category) + " / " + x.First.Value.Page.Title)).ToArray();

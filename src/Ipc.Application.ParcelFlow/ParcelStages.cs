@@ -46,6 +46,10 @@ public sealed partial class ParcelRuntime
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
         var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
         var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
+        DebugDiagnostic("外部通信", "原请求发送开始", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
+            Request = stage.Request.Id, stage.Request.PayloadHash, stage.Request.ConfigurationHash, stage.Request.ImplementationHash,
+            Target = stage.Request.Binding.Target, Contract = stage.Request.Binding.Contract, stage.Attempts,
+            TimeoutMs = definition.RequestTimeoutMs(op, kind), Payload = DiagnosticFragment(stage.Request.IntegrationRequest?.Body ?? stage.Request.Payload) });
         StageReply? reply;
         try
         {
@@ -61,6 +65,9 @@ public sealed partial class ParcelRuntime
         }
         catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
         {
+            DebugDiagnostic("外部通信", "原请求发送异常详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
+                Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
+                DeadlineCancelled = budget.IsCancellationRequested, Stopping = stopping.IsCancellationRequested, Exception = DiagnosticFragment(ex.ToString()) });
             Diagnostic("通信", query ? "原请求核对异常" : "业务请求异常", "错误", ex.ToString());
             repository.NoReply(occurrence);
             op = operations[op.Id];
@@ -74,6 +81,10 @@ public sealed partial class ParcelRuntime
                 Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
             Save(op, "OutcomeUnknown", stage.Failure!); return op;
         }
+        DebugDiagnostic("外部通信", "原请求响应详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
+            Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
+            Reply = reply is null ? null : new { reply.Id, reply.RequestId, reply.PayloadHash, reply.TransportSucceeded, reply.ProtocolAcknowledged,
+                reply.BusinessAccepted, reply.PhysicalCompleted, reply.Slot, Evidence = DiagnosticFragment(reply.Evidence), Response = DiagnosticResponse(reply.HttpResponse) } });
         if (reply is null)
         {
             repository.NoReply(occurrence);

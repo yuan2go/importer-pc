@@ -35,6 +35,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         public StackPanel Body { get; } = body;
         public ScrollViewer Scroll { get; } = scroll;
         public StackPanel Technical { get; } = technical;
+        public Func<bool>? Applicable { get; set; }
+        public bool Available => Applicable?.Invoke() != false;
         public Expander? Details { get; set; }
         public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
@@ -78,7 +80,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public void SelectCategory(int category)
     {
         search.Clear(); categoryScope = null; directoryView?.Refresh();
-        SelectPageCore(pages.FirstOrDefault(p => p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Category == category));
+        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Available && p.Category == category));
         if (directory.SelectedItem is { } item) directory.ScrollIntoView(item);
     }
     public void SetReviewContent(FrameworkElement content)
@@ -104,15 +106,15 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Filtering a WPF collection can automatically select its first item.
         // Resolve the remembered destination before Refresh changes selection.
         var selected = directory.SelectedItem as ObjectPage;
-        var destination = selected is not null && (index is null || selected.Category == index) ? selected :
-            pages.FirstOrDefault(p => p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => index is null || p.Category == index);
+        var destination = selected is not null && selected.Available && (index is null || selected.Category == index) ? selected :
+            pages.FirstOrDefault(p => p.Available && p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => p.Available && (index is null || p.Category == index));
         categoryScope = index; directoryView?.Refresh();
         SelectPageCore(destination);
         RefreshSearch();
     }
     public bool ShowPage(int category, string title)
     {
-        var page = pages.FirstOrDefault(p => p.Category == category && p.Title == title);
+        var page = pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == title);
         if (page is null) return false;
         search.Clear();
         if (categoryScope is not null && categoryScope != category) ShowCategory(category);
@@ -126,7 +128,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     public bool NavigateTo(string path)
     {
-        if (!locations.TryGetValue(path, out var location) || location.Applicable?.Invoke() == false) return false;
+        if (!locations.TryGetValue(path, out var location) || !location.Page.Available || location.Applicable?.Invoke() == false) return false;
         ShowPage(location.Page.Category, location.Page.Title);
         for (DependencyObject? parent = location.Control; parent is not null; parent = LogicalTreeHelper.GetParent(parent) ?? (parent is Visual ? VisualTreeHelper.GetParent(parent) : null))
             if (parent is Expander details) details.IsExpanded = true;
@@ -301,9 +303,9 @@ public sealed partial class ParameterSettingsControl : UserControl
         directoryView = new ListCollectionView(pages);
         if (FirstConfiguration) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.Order), ListSortDirection.Ascending));
         directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
-        directoryView.Filter = value => value is ObjectPage p && (categoryScope is null || p.Category == categoryScope);
+        directoryView.Filter = value => value is ObjectPage p && p.Available && (categoryScope is null || p.Category == categoryScope);
         directory.ItemsSource = directoryView;
-        SelectPageCore(pages.FirstOrDefault(p => p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? (FirstConfiguration ? OrderedPages() : pages.ToArray()).FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
+        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
         ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)

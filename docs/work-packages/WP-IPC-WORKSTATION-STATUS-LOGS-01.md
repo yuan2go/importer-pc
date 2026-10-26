@@ -1,5 +1,7 @@
 # WORKSTATION-STATUS-LOGS-01
 
+用户追加的日志详细度、热开关和实时暂停见[DEBUG-LOG-LIVE-01](WP-IPC-DEBUG-LOG-LIVE-01.md)，接续本包同一PR，旧源验证保持原身份。
+
 2026-10-27用户七项纠偏，起始main `e70b8ece`。开放PR117仅安装任务查询/恢复；本分支不修改其路径。四份未跟踪本地原稿与本次用户截图不入库。
 
 当前裁决优先于TASK-CONTENT-HIERARCHY-02中冲突的折叠与空态布局；TYPOGRAPHY-01字体、格口优先、真实状态和业务守卫继承。V2/V3、58项原字段/状态及39项动作、D/RV和历史证据保持原身份。

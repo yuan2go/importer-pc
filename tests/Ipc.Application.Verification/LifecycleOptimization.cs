@@ -57,7 +57,7 @@ static class LifecycleOptimization
             var reading = delayed.LoadHistoryAsync(); await probe.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3)); delayed.HistoryPosition = "right"; probe.Hold.SetResult(); await reading;
             Check(ReferenceEquals(prior, delayed.HistoryItems) && delayed.HistoryStatus.Contains("取消") && delayed.HistoryFiltersChanged, "editing during a real cancellable query retains previous results and releases the read");
             probe.Hold = null; await delayed.LoadHistoryAsync();
-            Check(delayed.HistoryItems.All(x => x.Operation.PositionId == "right") && delayed.HistoryPositionChoices.Any(p => p.Id == "right" && p.Label.Contains("右相机")), "business label selection maps to the actual stable position ID");
+            Check(delayed.HistoryItems.All(x => x.Operation.PositionId == "right") && delayed.HistoryPositionChoices.Any(p => p.Id == "right" && p.Label == "右投递位"), "Chinese business label selection maps to the actual stable position ID without appending its internal English value");
             using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
             var selection = await app.SelectHistoryAsync(new()); await Reject<OperationCanceledException>(() => app.ReadHistoryPageAsync(selection, long.MaxValue, 50, cancelled.Token), "cancelled real query does not retain SQLite resources");
             oldest = (await app.QueryHistoryAsync(selection, long.MaxValue, 200)).Items.Last().Operation;

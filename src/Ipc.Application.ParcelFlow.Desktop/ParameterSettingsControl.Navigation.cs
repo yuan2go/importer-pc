@@ -9,7 +9,7 @@ public sealed partial class ParameterSettingsControl
     ObjectPage? currentPage;
     bool selectingPage, navigating;
     long navigationGeneration, editRevision;
-    ObjectPage[] OrderedPages() => FirstConfiguration ? pages.OrderBy(p => p.Order).ToArray() : pages.ToArray();
+    ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     public string CurrentPageTitle => currentPage?.Title ?? "";
     public string PageProgress => currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
@@ -22,11 +22,27 @@ public sealed partial class ParameterSettingsControl
     public event EventHandler? PageValidationFailed;
     void SelectPageCore(ObjectPage? page)
     {
-        if (page is null) return;
+        if (page is null || !page.Available) return;
         selectingPage = true;
         try { directory.SelectedItem = page; currentPage = page; lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
         finally { selectingPage = false; }
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
+    }
+    void RefreshAvailablePages()
+    {
+        // Role reassignment can expose a formerly maintenance-only component.
+        // Keep its editor and drafts, while excluding it from every navigation
+        // path again when its last actual business role is removed.
+        selectingPage = true;
+        try { directoryView?.Refresh(); if (currentPage?.Available == true) directory.SelectedItem = currentPage; }
+        finally { selectingPage = false; }
+        if (currentPage?.Available != true)
+        {
+            var destination = OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope);
+            if (destination is not null) SelectPageCore(destination);
+            else { currentPage = null; pageHost.Content = null; }
+        }
+        RefreshSearch(); SelectedPageChanged?.Invoke(this, EventArgs.Empty);
     }
     async void DirectorySelectionChanged(object sender, SelectionChangedEventArgs e)
     {

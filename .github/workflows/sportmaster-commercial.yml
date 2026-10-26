@@ -268,6 +268,7 @@ jobs:
               @{ Directory = 'operator-administration'; ManagementMode = $true },
               @{ Directory = 'reliability-logs'; ReliabilityLogs = $true },
               @{ Directory = 'workstation-status-logs'; WorkstationStatusLogs = $true },
+              @{ Directory = 'debug-log-live'; DebugLogLive = $true },
               @{ Directory = 'stability-seed'; StabilitySeedUpgrade = $true },
               @{ Directory = 'installer-first-run'; InstallerFirstRunUi = $true },
               @{ Directory = 'lifecycle'; LifecycleUx = $true }
@@ -367,6 +368,7 @@ jobs:
             D:/scd/evidence/reliability-logs/WINDOWS-WPF.log
             D:/scd/evidence/reliability-logs/*.png
             D:/scd/evidence/workstation-status-logs/*
+            D:/scd/evidence/debug-log-live/*
             D:/scd/administrator-broker/RESULT.json
             D:/scd/administrator-broker/RUN.log
             D:/scd/evidence/removal/RESULT.json

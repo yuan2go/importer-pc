@@ -3,13 +3,13 @@ using System.Threading.Channels;
 namespace Ipc.Platform;
 
 // Diagnostic metadata only; authoritative business facts remain in the transactional store.
-public sealed class RuntimeJournal : IAsyncDisposable
+public sealed partial class RuntimeJournal : IAsyncDisposable
 {
     long dropped, written;
     string? lastFailure, currentFailure;
     long progressTicks;
     public object Status => new { State = worker.IsCompleted ? "Stopped" : Volatile.Read(ref currentFailure) is null ? "Running" : "Degraded",
-        QueueDepth = queue.Reader.Count, Dropped = Interlocked.Read(ref dropped), Written = Interlocked.Read(ref written),
+        QueueDepth = queue.Reader.Count, Dropped = Interlocked.Read(ref dropped), DebugDropped = Interlocked.Read(ref debugDropped), Written = Interlocked.Read(ref written),
         LastFailure = Volatile.Read(ref lastFailure), CurrentFailure = Volatile.Read(ref currentFailure), LastProgressUtcTicks = Interlocked.Read(ref progressTicks) };
     void Report(string detail)
     {
@@ -40,7 +40,7 @@ public sealed class RuntimeJournal : IAsyncDisposable
                 void Maintain() => MaintainFiles(directory, Volatile.Read(ref retention).Days);
                 void TryMaintain() { try { Maintain(); } catch (Exception ex) { Report("Diagnostic maintenance failure: " + ex.GetType().Name); } }
                 TryMaintain();
-                long? failedAt = null;
+                long? failedAt = null; long reportedDebugDrops = 0;
                 bool ProbeDue() => failedAt is not { } stamp || clock.GetElapsedTime(stamp) >= TimeSpan.FromSeconds(1);
                 using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
                 var available = queue.Reader.WaitToReadAsync().AsTask();
@@ -54,6 +54,8 @@ public sealed class RuntimeJournal : IAsyncDisposable
                         // Retention/daily rotation also advance while healthy and idle.
                         // Maintenance alone cannot clear an append failure; a real probe must write.
                         TryMaintain();
+                        var lostDebug = Interlocked.Read(ref debugDropped);
+                        if (lostDebug != reportedDebugDrops && queue.Writer.TryWrite(new { At = clock.GetUtcNow(), Source = "诊断日志", Level = "警告", Event = "详细日志写入繁忙", DroppedDebugRecords = lostDebug })) reportedDebugDrops = lostDebug;
                         if (Volatile.Read(ref currentFailure) is not null && ProbeDue())
                             queue.Writer.TryWrite(new { At = clock.GetUtcNow(), Event = "DiagnosticRecoveryProbe" });
                         tick = timer.WaitForNextTickAsync().AsTask();
@@ -68,7 +70,9 @@ public sealed class RuntimeJournal : IAsyncDisposable
                             BeforeAppend?.Invoke();
                             Maintain();
                             var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
-                            await File.AppendAllTextAsync(path, DiagnosticText.Protect(line) + Environment.NewLine);
+                            var protectedLine = DiagnosticText.Protect(line);
+                            await File.AppendAllTextAsync(path, protectedLine + Environment.NewLine);
+                            PublishTail(protectedLine, clock.GetUtcNow());
                             Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);
                             Volatile.Write(ref currentFailure, null);
                             failedAt = null;

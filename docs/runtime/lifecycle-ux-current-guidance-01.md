@@ -1,3 +1,5 @@
+> 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](integration-20261026.md)。G01/G02及现场门槛保留。
+
 > 批量部署回归整改以本次实际 SourceCommit、下述旧计划边界和[定向验证报告](validation/lifecycle-ux-optimization-01.md)为准。0a3d4152 及此前介质不作为本次修复证据；原 FAIL/PASS 保留原范围。
 
 # 生命周期操作 · 当前候选指南

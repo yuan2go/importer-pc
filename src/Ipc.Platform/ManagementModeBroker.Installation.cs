@@ -86,6 +86,7 @@ public static partial class ManagementModeBroker
         {
             Stop(service);
             if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            ConfigureRecovery(service);
             Start(service); _ = Call<ManagementModeStatus>(dataRoot, new("Status"));
         }
         catch
@@ -123,8 +124,8 @@ public static partial class ManagementModeBroker
     [SupportedOSPlatform("windows")]
     static void Wait(ServiceHandle service, uint state)
     {
-        var until = DateTime.UtcNow.AddSeconds(15);
-        while (DateTime.UtcNow < until)
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
+        while (System.Diagnostics.Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(15))
         {
             if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
             if (status.CurrentState == state) return;

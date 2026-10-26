@@ -35,7 +35,9 @@ public sealed partial class ParcelRepository
         {
             maintenanceCancellation.ThrowIfCancellationRequested();
             var id = reader.GetString(0); var path = Path.Combine(rawRoot, id + ".json"); byte[] bytes;
-            if (File.Exists(path)) bytes = File.ReadAllBytes(path);
+            // A committed archive is the authoritative original; an optional
+            // redundant spool may be locked while cleanup is backing off.
+            if (ArchivedReceiptExpectedHash(id, tx) is null && File.Exists(path)) bytes = File.ReadAllBytes(path);
             else
             {
                 using var archived = db.CreateCommand(); archived.Transaction = tx;

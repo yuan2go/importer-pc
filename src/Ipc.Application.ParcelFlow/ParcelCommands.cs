@@ -8,9 +8,16 @@ public sealed partial class ParcelRuntime
     public async Task<ParcelSnapshot> SnapshotAsync()
     {
         string encoded;
-        await gate.WaitAsync().ConfigureAwait(false);
+        while (true)
+        {
+            await RefreshArchiveCountAsync().ConfigureAwait(false);
+            await gate.WaitAsync().ConfigureAwait(false);
+            if (archiveCount?.Revision == repository?.ArchiveRevision) break;
+            gate.Release(); // Archive changed while the independent count was read.
+        }
         try
         {
+            Boundary?.Invoke("SnapshotGateAcquired");
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             ObjectDisposedException.ThrowIf(disposed, this);
             // Single consistent read per projection; this scope never releases the business gate.
@@ -22,10 +29,13 @@ public sealed partial class ParcelRuntime
                 reasons.Add("连接待配置：" + string.Join("、", deferred.Select(id => Effective.Wcs?.InstanceId == id ? "RCS" : ParcelBindings.Positions(Effective).Single(p => p.ReaderDeviceId == id).Id == "left" ? "左相机" : "右相机")) + "。可进入参数设置；完成连接后保存并受控重启，当前不接收新包裹。");
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);
+            if (backupInProgress) reasons.Add("Consistent backup in progress; original custody and configuration mutations are fenced");
             foreach (var position in interruptedPositions.Keys) reasons.Add("IngressInterrupted:" + position + "; pause, enter management mode and inspect original input responsibilities");
             if (journal is not null) auxiliaryReasons.Add("Diagnostics:" + Wire.Encode(journal.Status));
             if (integrationBudget is not null) auxiliaryReasons.Add("IntegrationIdBudget:" + Wire.Encode(integrationBudget));
             if (storageCapacityWarning is not null) auxiliaryReasons.Add(storageCapacityWarning);
+            if (storageCapacityEstimate is not null) auxiliaryReasons.Add(storageCapacityEstimate);
+            if (Volatile.Read(ref walObservation) is { } wal) auxiliaryReasons.Add(wal);
             if (retentionWarning is not null) auxiliaryReasons.Add(retentionWarning);
             auxiliaryReasons.Add("Workers:" + Wire.Encode(WorkerProgress()));
             if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required");
@@ -54,9 +64,14 @@ public sealed partial class ParcelRuntime
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray(), BackupStatus(), configuration.Current.Pending is not null);
-            encoded = Wire.Encode(OperatorSnapshot(projection));
+            encoded = EncodeSnapshot(projection);
         }
-        finally { projectedCapacity = null; repository?.EndReceiptProjection(); gate.Release(); }
+        finally
+        {
+            projectedCapacity = null;
+            try { repository?.EndReceiptProjection(); Boundary?.Invoke("SnapshotGateReleasing"); }
+            finally { gate.Release(); }
+        }
         // Deserialize the detached UI copy after releasing the business gate.
         return Wire.Decode<ParcelSnapshot>(encoded);
     }
@@ -74,6 +89,8 @@ public sealed partial class ParcelRuntime
             if (stopped || repository is null) return new("NotReady", "Application stopped", repository?.Revision ?? 0);
             if (!Guid.TryParseExact(command.Id, "N", out _)) return new("Rejected", "Stable command identity is required", repository.Revision);
             if (repository.PriorCommand(command) is { } prior) return prior;
+            if (backupInProgress && command.Kind is not ("RuntimeProgress" or "InspectRestore" or "ReceiptResponsibilities" or "IngressResponsibilities"))
+                return new("Rejected", "Consistent backup is in progress; original responsibility and configuration remain fenced", repository.Revision);
             if (command.ExpectedRevision != repository.Revision) return new("Conflict", "Refresh the current application projection", repository.Revision);
             switch (command.Kind)
             {
@@ -145,6 +162,7 @@ public sealed partial class ParcelRuntime
             }
             return repository.PriorCommand(command) ?? throw new InvalidDataException("Accepted command lacks a durable receipt");
         }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "CommandCommit"); throw; }
         finally { gate.Release(); }
     }
     static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
@@ -189,6 +207,7 @@ public sealed partial class ParcelRuntime
             repository.Commit(null, "ConfigurationPendingRestart", Wire.Encode(audit), configurationAudit: audit);
             return new("PendingRestart", "Saved; Effective unchanged until controlled restart and application barriers", repository.Revision);
         }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "ConfigurationCommit"); throw; }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         {
             if (audit is not null)
@@ -203,18 +222,32 @@ public sealed partial class ParcelRuntime
     public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
     public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);
     public Task<BusinessReceipt> BackupAsync(string destination) => OwnedRead(token => BackupCoreAsync(destination, token));
+    bool backupInProgress;
     async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
+        ParcelRepository original; ParcelConfiguration effective; ParcelConfiguration? pending; ParcelOperation[] images; long bytes;
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
-            foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
-            ParcelRecovery.CreateBackup(directory!, destination, Effective, configuration!.Current.Pending, repository.StorageBytes,
-                repository.Backup, factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); });
-            return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
+            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress)
+                return new("Rejected", "Pause and drain external work before consistent maintenance backup", repository?.Revision ?? 0);
+            original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
+            images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
+            backupInProgress = true;
         }
         finally { gate.Release(); }
+        try
+        {
+            foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token);
+            ParcelRecovery.CreateBackup(directory!, destination, effective, pending, bytes,
+                path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token);
+            return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", original.Revision);
+        }
+        finally
+        {
+            await gate.WaitAsync().ConfigureAwait(false);
+            try { backupInProgress = false; } finally { gate.Release(); }
+        }
     }
     readonly object stopOwnership = new();
     Task? stopOperation;

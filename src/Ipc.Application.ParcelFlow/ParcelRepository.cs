@@ -358,7 +358,9 @@ public sealed partial class ParcelRepository : IDisposable
             if (Path.GetExtension(file) != ".json" || !Guid.TryParseExact(id, "N", out _)) throw new InvalidDataException("Unknown/interrupted original raw custody file");
             using var c = db.CreateCommand(); c.CommandText = "SELECT raw_hash FROM parcel_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
             using var r = c.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Unknown original receipt file");
-            if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
+            if (ArchivedReceiptExpectedHash(id) is { } archivedHash)
+                RequireArchivedReceipt(id, archivedHash); // Optional redundant spool is checked by cleanup below.
+            else if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
         }
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable')";
         using var reader = cmd.ExecuteReader();
@@ -463,5 +465,15 @@ public sealed partial class ParcelRepository : IDisposable
         }
     }
     public void Backup(string destination) => Database.Backup(db, destination);
+    public void Backup(string destination, CancellationToken token)
+    {
+        using var source = new SqliteConnection(new SqliteConnectionStringBuilder
+        { DataSource = db.DataSource, Mode = SqliteOpenMode.ReadOnly, Pooling = false, DefaultTimeout = 5 }.ToString());
+        token.ThrowIfCancellationRequested(); source.Open();
+        using var snapshot = source.BeginTransaction(deferred: true);
+        using (var establish = source.CreateCommand())
+        { establish.Transaction = snapshot; establish.CommandText = "SELECT revision FROM parcel_meta WHERE id=1"; _ = establish.ExecuteScalar(); }
+        Database.Backup(source, destination, token);
+    }
     public void Dispose() => db.Dispose();
 }

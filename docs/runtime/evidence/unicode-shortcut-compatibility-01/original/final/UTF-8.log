@@ -1,0 +1,30 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-ae45980552ec4b6cb0f974e42e235257
+PASS actual process ACP=65001
+PASS legacy requests and registrations omit absent option without changing stored plan hashes
+PASS legacy request wire bytes round trip unchanged
+PASS historical registration retains three Start Menu entries and no desktop entry
+PASS request binds explicit menu=False desktop=False in reviewed identity
+PASS registered menu=False desktop=False targets installed release
+PASS request binds explicit menu=False desktop=True in reviewed identity
+PASS registered menu=False desktop=True targets installed release
+PASS request binds explicit menu=True desktop=False in reviewed identity
+PASS registered menu=True desktop=False targets installed release
+PASS request binds explicit menu=True desktop=True in reviewed identity
+PASS registered menu=True desktop=True targets installed release
+PASS unchecked choices create neither folder nor link
+PASS desktop name is exactly the product name without module, commit or deployment suffix
+PASS actual Unicode COM shortcut readback: sportmaster · aaaaaaaa · 12345678 · 运行.lnk
+PASS actual Unicode COM shortcut readback: sportmaster · aaaaaaaa · 12345678 · 启动修复.lnk
+PASS actual Unicode COM shortcut readback: sportmaster · aaaaaaaa · 12345678 · 安装维护.lnk
+PASS actual Unicode COM shortcut readback: 菜鸟供包台.lnk
+PASS upgrade refuses previous deployment with different account/data/application
+PASS upgrade refuses previous deployment with different account/data/application
+PASS upgrade refuses previous deployment with different account/data/application
+PASS upgrade updates stable desktop target and old uninstall preserves the new entry
+PASS legacy suffixed entry is removed by exact ownership without deleting current stable entry
+PASS different-target shortcut is preserved and reported
+PASS removal deletes owned links and preserves a retargeted desktop link and unrelated files
+PASS same-target different-arguments link refuses replacement
+PASS uninstall preserves different-arguments link
+PASS invalid link read fails visibly and preserves original bytes
+NOT_RUN machine-wide installation, UAC, devices and field acceptance; shortcut COM operations used isolated temporary roots only.

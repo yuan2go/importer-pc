@@ -5,13 +5,17 @@ from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
     'docs/runtime/lifecycle-ux-current-guidance-01.md': 'LIFECYCLE-OPERATIONS.md',
+    'docs/runtime/time-storage-fault-01.md': 'TIME-AND-STORAGE-FAULTS.md',
+    'docs/runtime/p0-stability-01.md': 'P0-STABILITY.md',
     'docs/runtime/code-reliability-hardening-02.md': 'CODE-RELIABILITY.md',
+    'docs/runtime/latency-capacity-01.md': 'LATENCY-AND-CAPACITY.md',
     'docs/runtime/win11-24x7-stability-remediation-01.md': 'STABILITY-AND-RETENTION.md',
     'docs/runtime/architecture-quality-remediation-01.md': 'ARCHITECTURE-QUALITY-REMEDIATION-01.md',
     'docs/runtime/management-mode-01.md': 'MANAGEMENT-MODE.md',
     'docs/runtime/parameter-inheritance-02.md': 'PARAMETER-INHERITANCE.md',
     'docs/runtime/commercial-productization-01-operations.md': 'PRODUCT-OPERATIONS.md',
     'docs/runtime/startup-deployment-02.md': 'STARTUP-DEPLOYMENT.md',
+    'docs/runtime/unicode-shortcut-compatibility-01.md': 'UNICODE-SHORTCUTS.md',
     'docs/runtime/windows-application-delivery.md': 'WINDOWS-APPLICATION.md',
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',

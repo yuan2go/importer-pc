@@ -1,0 +1,9 @@
+{
+  "Baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "Phase": "after",
+  "HarnessContext": "ST01 replay; new version alias/test harness, main mapping retained for before; no machine deployment",
+  "CoreDeferredMatrix": "Eight combinations already pass on PR109 main",
+  "DisabledReader": "Excluded; enabling restores bcr validation",
+  "Outcome": "PASS eight cases and disabled/enabled edge",
+  "OriginalLocalLogSha256": "448ad2be6b3e18c39f795f96d13aaa76fca9fe48a0088fdc8e21f2fccd81555a"
+}

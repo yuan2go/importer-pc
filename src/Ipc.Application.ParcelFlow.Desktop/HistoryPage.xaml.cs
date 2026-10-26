@@ -6,12 +6,19 @@ public partial class HistoryPage : UserControl
     public HistoryPage()
     {
         InitializeComponent();
+        Loaded += (_, _) => UpdateDetailsVisibility();
+        Unloaded += (_, _) => { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false); };
+        DataContextChanged += (_, e) => { if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
+        StructuredDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
+        RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
         ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
         HistoryDetailExpander.SizeChanged += (_, _) => FitQueryViewport();
     }
+    void UpdateDetailsVisibility()
+    { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsText.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
     void FitQueryViewport()
     {
         var shortPage = ActualHeight < 500;
@@ -47,7 +54,7 @@ public partial class HistoryPage : UserControl
     async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(vm.Details); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
+        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
     void CopyHandover_Click(object s, RoutedEventArgs e)

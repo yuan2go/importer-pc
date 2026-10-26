@@ -44,8 +44,14 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
@@ -139,8 +145,14 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
@@ -186,18 +198,24 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "1.3.2",
+          "Version": "1.3.3",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
           "Version": "1.3.2",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
@@ -269,18 +287,24 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "1.3.2",
+          "Version": "1.3.3",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
           "Version": "1.3.2",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
@@ -334,8 +358,14 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
@@ -387,18 +417,24 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.0.1",
+          "Version": "1.1.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "1.3.2",
+          "Version": "1.3.3",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.3.3",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
           "Version": "1.3.2",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }

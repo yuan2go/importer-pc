@@ -50,6 +50,13 @@ public static class DeploymentBatchVerification
         Check(Wire.Hash(Wire.Encode(ParcelStartupServices.RevalidateDeployment(media, ordered))) == orderedHash, "Re-review rehashed dictionary ordering");
         Check(Invoke("ordered-preflight", Save("ordered", ordered), 0)["PlanSha256"]!.GetValue<string>() == orderedHash, "Dictionary ordering changed the frozen plan");
         cases.Add("full-semantic-comparison-preserves-frozen-dictionary-order-and-wire-hash");
+        var recoverable = original with { Recovery = new DesktopRecoveryOptions { Enabled = true } };
+        var recoveryHash = Wire.Hash(Wire.Encode(recoverable));
+        Check(Wire.Hash(Wire.Encode(ParcelStartupServices.RevalidateDeployment(media, recoverable))) == recoveryHash,
+            "Revalidation lost explicitly reviewed recovery policy");
+        Check(Invoke("recovery-preflight", Save("recovery", recoverable), 0)["PlanSha256"]!.GetValue<string>() == recoveryHash,
+            "Recovery configuration changed the frozen plan");
+        cases.Add("explicit-recovery-policy-and-operation-identity-retained-during-revalidation");
         var fresh = ParcelStartupServices.Review(media, runtimeSid, data, seed, null, [], false);
         Check(fresh.OperationId is not null && fresh.OperationId != original.OperationId, "New review reused original operation"); cases.Add("explicit-new-review-has-new-identity");
         foreach (var prefix in "0123456789abcdef")
@@ -115,6 +122,7 @@ public static class DeploymentBatchVerification
             committed with { RuntimeAccountSid = "S-1-5-21-synthetic-changed" },
             committed with { SourceCommit = new string('b', 40) },
             committed with { Shortcuts = new(true, false) },
+            committed with { Recovery = new DesktopRecoveryOptions { Enabled = true } },
             committed with { DeploymentPlanIdentity = new string('c', 64) },
             committed with { LifecycleState = "RemovedDataRetained" },
             committed with { ApplicationId = "different-application" }

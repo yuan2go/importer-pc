@@ -60,6 +60,39 @@ public sealed partial class ParcelRepository
         using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id";
         c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string;
     }
+    internal StageReply? ReadOriginalReply(FrozenRequest request, string replyId)
+    {
+        maintenanceCancellation.ThrowIfCancellationRequested();
+        var hash = OriginalReplyHash(request.Id, replyId);
+        if (hash is null) return null;
+        // Use the operation index and first authoritative hash. The bounded reply
+        // projection is not custody, and no historical bytes/indexes are rewritten.
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$operation AND request=$request AND raw_hash=$hash ORDER BY rowid LIMIT 1";
+        c.Parameters.AddWithValue("$operation", request.OperationId); c.Parameters.AddWithValue("$request", request.Id); c.Parameters.AddWithValue("$hash", hash);
+        var id = c.ExecuteScalar() as string ?? throw new InvalidDataException("Original reply custody is missing");
+        byte[]? bytes = null;
+        if (StorageVersion >= 4)
+        {
+            using var archived = db.CreateCommand(); archived.CommandText = "SELECT body,raw_hash FROM parcel_archived_receipts WHERE id=$id";
+            archived.Parameters.AddWithValue("$id", id); using var row = archived.ExecuteReader();
+            if (row.Read())
+            {
+                if (row.GetString(1) != hash || row.GetValue(0) is not byte[] body) throw new InvalidDataException("Original archived reply identity changed");
+                bytes = body;
+            }
+        }
+        if (bytes is null)
+        {
+            if (ArchivedReceiptExpectedHash(id) is not null) throw new InvalidDataException("Original archived reply is missing");
+            maintenanceCancellation.ThrowIfCancellationRequested(); bytes = File.ReadAllBytes(Path.Combine(rawRoot, id + ".json"));
+        }
+        if (Convert.ToHexString(SHA256.HashData(bytes)) != hash) throw new InvalidDataException("Original reply bytes changed");
+        var original = Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
+        if (original.Id != replyId || original.RequestId != request.Id || Wire.Hash(Wire.Encode(original)) != hash)
+            throw new InvalidDataException("Original reply identity changed");
+        return original;
+    }
     string? LegacyOriginalReplyHash(string request, string reply)
     {
         // Old readers have no index. Read their existing occurrence authority in
@@ -80,6 +113,18 @@ public sealed partial class ParcelRepository
     }
     public long ArchivedCount
     { get { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_archives"; return (long)c.ExecuteScalar()!; } }
+    long archiveRevision;
+    internal long ArchiveRevision => Interlocked.Read(ref archiveRevision);
+    internal long ReadArchivedCount(CancellationToken token)
+    {
+        Boundary?.Invoke("ArchiveCountReading");
+        using var reader = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
+        { DataSource = db.DataSource, Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false, DefaultTimeout = 5 }.ToString());
+        token.ThrowIfCancellationRequested(); reader.Open();
+        SQLitePCL.raw.sqlite3_progress_handler(reader.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
+        using var command = reader.CreateCommand(); command.CommandText = "SELECT count(*) FROM parcel_archives";
+        var count = (long)command.ExecuteScalar()!; token.ThrowIfCancellationRequested(); return count;
+    }
     public bool HasOverloadAcknowledgement(string identity)
     { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_overload_ack WHERE identity=$id"; c.Parameters.AddWithValue("$id", identity); return (long)c.ExecuteScalar()! == 1; }
     public ParcelOperation[] FindIdentities(string admission, string observation)
@@ -136,7 +181,7 @@ public sealed partial class ParcelRepository
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'HistoryArchived','runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
         audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Archive retains terminal originals in the same database; expiry deletion requires separate authorized retention maintenance" })); audit.ExecuteNonQuery();
         if (command is not null) WriteCommand(tx, command, new("Persisted", "Application command committed", Revision + 1));
-        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
+        Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Interlocked.Increment(ref archiveRevision); Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
     }
     void ArchiveRaw(string operation, Microsoft.Data.Sqlite.SqliteTransaction tx)
     {
@@ -165,18 +210,62 @@ public sealed partial class ParcelRepository
         using var r = c.ExecuteReader(); return r.Read() && r.GetString(1) == hash && Convert.ToHexString(SHA256.HashData((byte[])r.GetValue(0))) == hash;
     }
     public string? ArchiveCleanupFailure { get; private set; }
+    internal TimeProvider ArchiveCleanupClock { get; set; } = TimeProvider.System;
+    internal int ArchiveCleanupAttempts { get; private set; }
+    long cleanupAttempted;
+    bool cleanupPending;
+    internal TimeSpan ArchiveCleanupDelay => TimeSpan.FromMilliseconds(Math.Min(30000, 500 * Math.Pow(2, Math.Min(ArchiveCleanupAttempts - 1, 6))));
+    internal void RetryArchiveCleanup()
+    {
+        if (cleanupPending) CleanupArchivedRawFiles();
+    }
+    string? ArchivedReceiptExpectedHash(string id, Microsoft.Data.Sqlite.SqliteTransaction? transaction = null)
+    {
+        if (StorageVersion < 5) return null;
+        using var c = db.CreateCommand(); c.Transaction = transaction;
+        c.CommandText = "SELECT raw_hash FROM parcel_receipts r WHERE id=$id AND state='Committed' AND EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=r.operation)";
+        c.Parameters.AddWithValue("$id", id);
+        var value = c.ExecuteScalar();
+        if (value is DBNull) throw new InvalidDataException("Archived original raw hash is missing: " + id);
+        return value is string hash ? hash : null;
+    }
+    void RequireArchivedReceipt(string id, string hash)
+    {
+        if (!HasArchivedRaw(id, hash)) throw new InvalidDataException("Archived original raw receipt is missing or corrupt: " + id);
+    }
     void CleanupArchivedRawFiles()
     {
-        ArchiveCleanupFailure = null;
+        if (cleanupPending && ArchiveCleanupClock.GetElapsedTime(cleanupAttempted) < ArchiveCleanupDelay) return;
+        var pending = 0; List<string> examples = [];
         // DB custody commits before removing the redundant spool file; interrupted cleanup is idempotent.
         foreach (var path in Directory.EnumerateFiles(rawRoot, "*.json"))
         {
-            var id = Path.GetFileNameWithoutExtension(path); var hash = Wire.FileHash(path, maintenanceCancellation);
-            if (HasArchivedRaw(id, hash))
-                try { File.Delete(path); }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                { ArchiveCleanupFailure = "Archived raw custody committed; redundant spool cleanup pending: " + id + ": " + ex.GetType().Name; }
+            maintenanceCancellation.ThrowIfCancellationRequested();
+            var id = Path.GetFileNameWithoutExtension(path);
+            var expected = ArchivedReceiptExpectedHash(id);
+            if (expected is null) continue; // Active original custody is not redundant cleanup.
+            // Verify the authoritative DB copy before treating any filesystem error
+            // as optional. Missing/corrupt originals must still fence business.
+            RequireArchivedReceipt(id, expected);
+            try
+            {
+                if (Wire.FileHash(path, maintenanceCancellation) != expected)
+                    throw new InvalidDataException("Redundant original raw receipt hash differs: " + id);
+                File.Delete(path);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                pending++;
+                if (examples.Count < 4) examples.Add(id + ":" + ex.GetType().Name);
+            }
         }
+        cleanupPending = pending != 0;
+        if (!cleanupPending) { ArchiveCleanupAttempts = 0; ArchiveCleanupFailure = null; return; }
+        ArchiveCleanupAttempts = Math.Min(32, ArchiveCleanupAttempts + 1);
+        cleanupAttempted = ArchiveCleanupClock.GetTimestamp();
+        ArchiveCleanupFailure = (ArchiveCleanupAttempts >= 5 ? "ArchiveCleanupWarning" : "ArchiveCleanupPending") +
+            ": verified DB originals retained; redundant spool cleanup pending=" + pending + "; attempts=" + ArchiveCleanupAttempts +
+            "; retryMs=" + ArchiveCleanupDelay.TotalMilliseconds + "; " + string.Join(",", examples);
     }
 
 }
@@ -188,7 +277,7 @@ public sealed partial class ParcelRuntime
     int? projectedCapacity;
     int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
     bool CapacityAvailable => storageCapacityFailure is null && UnresolvedCapacity < Effective.MaximumOperations;
-    ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, repository!.ArchivedCount,
+    ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, archiveCount?.Count ?? 0,
         Effective.MaximumOperations, CapacityAvailable, "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain", freeStorageBytes, Retention.MinimumFreeBytes);
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
@@ -196,6 +285,8 @@ public sealed partial class ParcelRuntime
         var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
         if (candidates.Length == 0 && command is null) return;
         repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);
+        if (archiveCount is { } count && count.Revision + 1 == repository.ArchiveRevision)
+            Volatile.Write(ref archiveCount, new(repository.ArchiveRevision, count.Count + candidates.Length));
         foreach (var id in candidates) { admissionPositions.TryRemove(operations[id].AdmissionId, out _); operations.Remove(id); }
     }
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)

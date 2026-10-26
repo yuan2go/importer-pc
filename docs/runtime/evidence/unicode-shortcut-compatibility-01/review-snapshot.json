@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "UNICODE-SHORTCUT-COMPATIBILITY-01",
+  "snapshotUtc": "2026-10-26T03:12:46Z",
+  "finalStateRecheckUtc": "2026-10-26T03:17:54Z",
+  "scope": "Independent source and remote CI review; local work-package authoring only",
+  "repository": "yuan2go/importer-pc",
+  "main": {
+    "sha": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "deploymentShortcutsBlob": "47bc4d110ce8af87f8efdb390e7ca32a77b12c27",
+    "implementation": "WScript.Shell dynamic automation"
+  },
+  "pr109": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/109",
+    "state": "closed",
+    "merged": true,
+    "mergedAtUtc": "2026-10-25T17:11:46Z",
+    "mergeCommit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b"
+  },
+  "pr110": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/110",
+    "state": "open",
+    "draft": false,
+    "lastObservedGithubUpdatedAtUtc": "2026-10-26T03:14:20Z",
+    "recheckNote": "PR moved from draft to ready for review during this review; source head, base and merge status unchanged",
+    "merged": false,
+    "head": "980a1383e4589717c9a147746b6fd6271ef69088",
+    "base": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "deploymentShortcutsBlob": "380951cee7164b25faee3048c2a160ef2632dd02",
+    "shellLinkFileBlob": "5623e89dceeb2a5f9a0c3bc0bde0a56753ec0a44",
+    "implementation": "IShellLinkW and ComTypes.IPersistFile; Unicode ownership reads and writes"
+  },
+  "priorEvidence": {
+    "sourceCommit": "963165d71aec1e037525fd7f17bc3ed81b560c1a",
+    "path": "docs/runtime/evidence/p0-stability-01/ci-ba3-followup.json",
+    "runIdInFile": 40222113898,
+    "note": "This file's original run identity differs from the user's later failing run; both are preserved.",
+    "unchangedPlatformDllExperiment": {
+      "1252": "FAIL: Unicode path replaced with question marks",
+      "936": "PASS",
+      "65001": "PASS"
+    }
+  },
+  "failingCi": {
+    "url": "https://github.com/yuan2go/importer-pc/actions/runs/40222910122",
+    "jobs": [
+      { "id": 121258155993, "name": "frozen-sportmaster", "conclusion": "success" },
+      { "id": 121258156162, "name": "aqa01-boundaries", "conclusion": "success" },
+      { "id": 121258156258, "name": "p0-stability-boundaries", "conclusion": "failure" }
+    ],
+    "failedStep": "Existing Windows shortcut COM boundary",
+    "observedException": "System.IO.FileNotFoundException: Unable to save shortcut; Chinese path portions rendered as question marks",
+    "observedSource": "DeploymentShortcuts.Create line 45"
+  },
+  "fixedCi": {
+    "url": "https://github.com/yuan2go/importer-pc/actions/runs/40261696276",
+    "conclusion": "success",
+    "actualTestMergeCommitFromJobLog": "95b1f29e4baf9574795b2835c39f2495a2976fff",
+    "mergedHeadFromJobLog": "980a1383e4589717c9a147746b6fd6271ef69088",
+    "mergedBaseFromJobLog": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "jobs": [
+      {
+        "id": 121375256046,
+        "name": "p0-stability-boundaries",
+        "conclusion": "success",
+        "shortcutSteps": [
+          { "name": "Existing Windows shortcut COM boundary", "conclusion": "success" },
+          { "name": "Unicode shortcut COM in isolated process code pages", "conclusion": "success" }
+        ]
+      },
+      { "id": 121375256162, "name": "frozen-sportmaster", "conclusion": "success" },
+      { "id": 121375256195, "name": "aqa01-boundaries", "conclusion": "success" }
+    ],
+    "observedJobLogSummaries": [
+      "PASS Unicode COM create/read/upgrade/ownership/remove ACP=1252",
+      "PASS Unicode COM create/read/upgrade/ownership/remove ACP=936",
+      "PASS Unicode COM create/read/upgrade/ownership/remove ACP=65001"
+    ],
+    "assertionMechanismFromSource": "InstallerOptions.RequireCodePage calls kernel32.GetACP and throws if the actual ACP differs from the expected value before executing COM assertions",
+    "evidenceBoundary": "Remote job status and job logs read; this review did not download artifacts or rerun the probes"
+  },
+  "parallelPrsAtReview": [
+    { "number": 108, "relationship": "Independent deployment/maintenance work; combined tree needs new evidence" },
+    { "number": 111, "relationship": "Independent latency/capacity work; combined tree needs new evidence" },
+    { "number": 112, "relationship": "Explicitly depends on PR110; original parent point 963165d7 predates the Unicode fix" }
+  ],
+  "localActions": {
+    "productionCodeModified": false,
+    "productTestsRerun": false,
+    "installationOrUninstallationPerformed": false,
+    "systemLocaleChanged": false,
+    "registryTaskOrServiceRegistrationPerformed": false,
+    "committed": false,
+    "pushed": false,
+    "merged": false
+  },
+  "remainingBoundaries": {
+    "productionPostSaveReadbackAndFaultWindows": "Needs targeted verification and delta implementation if a gap is confirmed",
+    "integratedPr108Pr110Pr111Pr112Tree": "NOT_RUN by this review",
+    "realWindowsInstallationUpgradeRepairUninstallation": "NOT_RUN",
+    "targetIndustrialPc": "NOT_RUN",
+    "uacTaskSchedulerScmWerAndRebootLifecycle": "NOT_RUN",
+    "realDevicesSdkRcs": "NOT_RUN; relevant external contracts remain separately blocked",
+    "field24h72h": "NOT_RUN"
+  }
+}

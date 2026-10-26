@@ -1,3 +1,5 @@
+> 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](integration-20261026.md)。G01/G02及现场门槛保留。
+
 > 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
 
 本次批量整改：[续报](validation/lifecycle-batch-preflight-01.md)。新建 `Review` 与原计划 `RevalidateDeployment` 分开；后者保留原身份并重读全部输入/登记，完整比较后返回原冻结请求。`DeploymentBatch` 在执行前拒绝任何已存在原操作记录；原安装租约内仍再次防重复。无ID旧计划仅只读兼容/原提交核对，未提交执行要求显式重新审阅。成功重入复用原InstalledReceipt目标守卫，并核对发布根实际SourceCommit；同指纹下登记漂移不能假确认。规范GUID的独立校验不改变扩展ID或授权。既有管理模式、日志、历史、业务守卫及UI保留。

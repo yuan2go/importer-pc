@@ -1,3 +1,5 @@
+> TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
+
 # Sportmaster 双相机通信与现场诊断
 
 > 2026-10-24 PR93已合并后的首次配置CI回归，见[续修与验证身份](validation/dual-camera-first-configuration-ci-01.md)。首配和运行参数现在按当前目录解析无版本字段的内置读取器；扩展包精确身份、配置账和原请求责任不变。下述原包局部PASS不扩张为PR93失败CI的完整交付PASS。

@@ -1,0 +1,270 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "PreviousIssueCommit": "8c5de188",
+  "Phase": "before",
+  "Environment": "Windows isolated Simulation; exclusive file handle; no system installation",
+  "OriginalLocalLogSha256": "ba843e7d987a2e49965d23d70e8b5456fce6df599cab5eeba6a77a63655fbca0",
+  "Cases": {
+    "cleanup-archive-corrupt": {
+      "AcceptingAfterInjection": 1,
+      "Progress": {
+        "At": "2026-10-25T15:36:54.9097399+00:00",
+        "RuntimeId": "1029942d-e489-4695-9108-50c15d2b09ea",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:36:54.5235807+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:54.8131961+00:00",
+            "Detail": "CompletedCycle"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:54.8132621+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285394145276413
+        },
+        "Failure": null,
+        "SupervisionFailure": null
+      },
+      "Result": "TimeoutException: The operation has timed out."
+    },
+    "cleanup-archive-missing": {
+      "AcceptingAfterInjection": 1,
+      "Progress": {
+        "At": "2026-10-25T15:36:46.2860451+00:00",
+        "RuntimeId": "03fea259-4b1a-4f4f-a6ce-c0587a98020d",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:36:45.905283+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:46.2059336+00:00",
+            "Detail": "CompletedCycle"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:46.2058723+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285394059638614
+        },
+        "Failure": null,
+        "SupervisionFailure": null
+      },
+      "Result": "TimeoutException: The operation has timed out."
+    },
+    "cleanup-locked": {
+      "AcceptingAfterInjection": 0,
+      "Progress": {
+        "At": "2026-10-25T15:36:36.6983406+00:00",
+        "RuntimeId": "23485b29-1201-4ce7-98bd-ec256bf6a664",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:36:36.3454109+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "RanToCompletion",
+            "LastProgress": "2026-10-25T15:36:36.3876331+00:00",
+            "Detail": "Faulted:IOException"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:36.6639766+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285393963593780
+        },
+        "Failure": "Maintenance worker failed: The process cannot access the file '<isolated-simulation>\\locked\\data\\Simulation\\reference-17\\sportmaster\\receipts\\db486ff7c73846f7aa0c94f0a2e4a4c1.json' because it is being used by another process.",
+        "SupervisionFailure": null
+      },
+      "Result": "Exception: temporary locked redundant spool does not fence inputs or terminate maintenance"
+    },
+    "cleanup-spool-corrupt": {
+      "AcceptingAfterInjection": 1,
+      "Progress": {
+        "At": "2026-10-25T15:36:37.5514886+00:00",
+        "RuntimeId": "eceb9d77-dc90-49d0-b813-9954bd1d7970",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:36:37.1594167+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:37.4822385+00:00",
+            "Detail": "CompletedCycle"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:36:37.482417+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285393971665887
+        },
+        "Failure": null,
+        "SupervisionFailure": null
+      },
+      "Result": "TimeoutException: The operation has timed out."
+    }
+  },
+  "BackoffChecks": []
+}

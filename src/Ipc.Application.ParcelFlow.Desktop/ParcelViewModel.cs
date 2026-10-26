@@ -59,17 +59,18 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         selected = value;
         if (userIntent) Interlocked.Increment(ref selectionGeneration);
         selectedHistory = value is null ? null : HistoryItems.FirstOrDefault(x => x.Operation.Id == value.Id);
+        RefreshDetailsProjection();
         Changed(nameof(Selected)); Changed(nameof(SelectedHistory)); NotifyTargets();
     }
     public string Details
     {
         get
         {
-            if (Selected is null) return "选择一条作业查看原阶段、目标、报文和回执。";
-            var summary = DestinationSummary(Selected);
-            return (summary.Length == 0 ? "" : summary + "\n\n原作业、请求与回执完整快照：\n") + Wire.Encode(Selected);
+            DetailMeasurement?.Invoke();
+            return detailsText;
         }
     }
+    internal Action? DetailMeasurement { get; set; }
     public static string DestinationSummary(ParcelOperation operation)
     {
         var reply = operation.Wcs?.Replies.LastOrDefault(r => r.Destination is not null);
@@ -123,7 +124,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public bool Busy { get; private set; }
     long refreshGeneration;
     long snapshotReadId;
-    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => ServiceAsync(application.SnapshotAsync);
+    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => Own(SharedSnapshotRead.Read(application, ManagementStatus, this));
     protected virtual void ReportCommandFailure(Exception error,string prefix)
     { if (!ReferenceEquals(error, lastReadError)) Message=prefix+error.Message; }
     async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()
@@ -157,7 +158,19 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         NotifyTargets();
         // Resolve the selection after the await. A slow read must never restore an
         // earlier user intent; refreshing facts for the same owner is not a new intent.
-        if (Selected is { } current) SetSelection(Operations.FirstOrDefault(x => x.Id == current.Id) ?? current, false);
+        if (Selected is { } current)
+        {
+            var replacement = Operations.FirstOrDefault(x => x.Id == current.Id);
+            if (replacement is null && detailsAuthorityPending)
+            {
+                var intent = selectionGeneration;
+                replacement = await ServiceAsync(() => application.OperationAsync(current.Id));
+                if (generation != Volatile.Read(ref refreshGeneration) || intent != selectionGeneration || Selected?.Id != current.Id) return;
+                SetSelection(replacement, false);
+            }
+            else SetSelection(replacement ?? current, false);
+        }
+        DetailsSnapshotApplied();
     }
     long? draftConfigurationRevision;
     Guid? draftRuntimeId;

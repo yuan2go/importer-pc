@@ -1,0 +1,78 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-3edfa23ac7634abbbddb793a4b0cafb3
+OS=Microsoft Windows NT 10.0.22631.0; Apartment=MTA
+FAIL disposed: System.Runtime.InteropServices.InvalidComObjectException: COM object that has been separated from its underlying RCW cannot be used.
+   at Ipc.Platform.ShellLinkFile.get_Link() in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 15
+   at Ipc.Platform.ShellLinkFile.get_TargetPath() in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 22
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__3(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 31
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18
+FAIL directory-conflict: System.Exception: uninstall reports a directory at an exact shortcut path rather than treating it as absent
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Check|0(Boolean value, String name) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 14
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Reject|2(Action action, String name) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 25
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__4(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 39
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 运行.lnk
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 启动修复.lnk
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 安装维护.lnk
+PASS independent native Unicode target read: 菜鸟供包台.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 运行.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 启动修复.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 安装维护.lnk
+PASS repair restores missing entry and owned projection fields: 菜鸟供包台.lnk
+PASS helper Unicode arguments round trip beyond ACP936 repertoire
+PASS owned Unicode entries removed and repeated uninstall is idempotent
+PASS uninstall removes all exact historical entries even when the stored target is missing; no Resolve
+PASS create refuses user-retargeted stable entry
+PASS create and uninstall preserve retargeted link bytes
+PASS arguments comparison preserves trailing whitespace and refuses takeover
+PASS uninstall preserves same-target different-arguments bytes
+PASS repair refuses damaged existing file
+PASS uninstall reports damaged existing file
+PASS damaged link retained byte for byte after repair and uninstall
+Long target UTF16 length=378; rejected=True
+PASS long target either round trips completely or rejects while preserving the original stable entry
+PASS sharing conflict reports failed repair
+PASS failed repair preserves original bytes
+PASS sharing conflict reports failed uninstall
+PASS failed uninstall retains the original shortcut
+PASS repair and removal succeed after sharing owner releases its handle
+PASS repair cannot adopt user-writable deployment descriptor outside a trusted program root
+PASS untrusted descriptor rejection preserves original stable entry
+PASS projection failure is reported after earlier entries were created
+PASS partial projection retains completed entries and original conflicting bytes
+PASS repair reenters the same projection after explicit conflict resolution without deleting the original
+PASS create refuses a reparse ancestor
+PASS uninstall refuses a reparse ancestor
+PASS create refuses a reparse leaf
+PASS uninstall refuses a reparse leaf
+PASS path guards preserve outside inventory
+FAIL resource-and-apartment: System.IO.DirectoryNotFoundException: 系统找不到指定的路径。 (0x80070003)
+   at System.Runtime.InteropServices.ComTypes.IPersistFile.Save(String pszFileName, Boolean fRemember)
+   at Ipc.Platform.ShellLinkFile.Save(String path) in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 28
+   at ShortcutLifecycle.<>c__DisplayClass0_8.<Run>g__Batch|32() in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 198
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__13(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 206
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18
+Shortcut lifecycle: 34 assertions; 3 failed scenarios
+NOT_RUN protected descriptor success/RepairSystem/ResumeRemoval with real machine registration, UAC, installation, devices and field qualification
+Unhandled exception. System.AggregateException: One or more errors occurred. (COM object that has been separated from its underlying RCW cannot be used.) (uninstall reports a directory at an exact shortcut path rather than treating it as absent) (系统找不到指定的路径。 (0x80070003))
+ ---> System.Runtime.InteropServices.InvalidComObjectException: COM object that has been separated from its underlying RCW cannot be used.
+   at Ipc.Platform.ShellLinkFile.get_Link() in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 15
+   at Ipc.Platform.ShellLinkFile.get_TargetPath() in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 22
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__3(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 31
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18
+   --- End of inner exception stack trace ---
+   at ShortcutLifecycle.Run(String root) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 219
+   at Program.<Main>$(String[] args) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\Program.cs:line 46
+   at Program.<Main>(String[] args)
+ ---> (Inner Exception #1) System.Exception: uninstall reports a directory at an exact shortcut path rather than treating it as absent
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Check|0(Boolean value, String name) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 14
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Reject|2(Action action, String name) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 25
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__4(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 39
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18<---
+
+ ---> (Inner Exception #2) System.IO.DirectoryNotFoundException: 系统找不到指定的路径。 (0x80070003)
+   at System.Runtime.InteropServices.ComTypes.IPersistFile.Save(String pszFileName, Boolean fRemember)
+   at Ipc.Platform.ShellLinkFile.Save(String path) in D:\w\ipc-unicode-shortcut-work-package-01\src\Ipc.Platform\ShellLinkFile.cs:line 28
+   at ShortcutLifecycle.<>c__DisplayClass0_8.<Run>g__Batch|32() in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 198
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>b__13(String directory) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 206
+   at ShortcutLifecycle.<>c__DisplayClass0_0.<Run>g__Scenario|1(String name, Action`1 action) in D:\w\ipc-unicode-shortcut-work-package-01\tests\Ipc.Application.Verification\ShortcutLifecycle.cs:line 18<---
+

@@ -31,6 +31,7 @@ public partial class ParcelViewModel
         { ManagementNotice = next.Available ? "管理授权已结束。受限任务已请求取消，未保存输入受保护；重新验证后可返回原页面。" : "管理授权服务不可用。受限任务已请求取消，输入受保护；服务恢复后重新验证。"; Message = ManagementNotice; }
         else if (next.Authorized) ManagementNotice = "";
         Changed(nameof(ManagementNotice)); Changed(nameof(HasManagementNotice));
+        InvalidateDetailsAuthority();
         foreach (var name in new[] { nameof(IsManagementMode), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
     }
     public async Task RequireManagementModeAsync()

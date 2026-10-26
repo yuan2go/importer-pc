@@ -1,0 +1,20 @@
+{
+  "SourceCommit": "255ccd4a0fdc50d974614d20643399a8f7cba791",
+  "Files": [
+    {
+      "path": "docs/INDEX.md",
+      "snapshot": "docs/archive/pre-stability-integration-02/docs__INDEX.md.txt",
+      "sha256": "e4525d4bf0e590a7acd2f73fb29272936bd5f6498be563d3c2a448669aba398a"
+    },
+    {
+      "path": "docs/runtime/time-storage-fault-01.md",
+      "snapshot": "docs/archive/pre-stability-integration-02/docs__runtime__time-storage-fault-01.md.txt",
+      "sha256": "f4e338bd19733f85bbaeae4ed1a8bdc6bef4d901bc4a429a4333e84d1e168d0c"
+    },
+    {
+      "path": "docs/runtime/validation/time-storage-fault-01.md",
+      "snapshot": "docs/archive/pre-stability-integration-02/docs__runtime__validation__time-storage-fault-01.md.txt",
+      "sha256": "7a8c4b83a243ee5406e6dbb397c3f7dfb4b39cf20fd642e730ab7dadc76db54a"
+    }
+  ]
+}

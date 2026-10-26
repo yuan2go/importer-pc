@@ -30,7 +30,8 @@ public sealed partial class ParcelRuntime
     };
     ParcelHistoryPage OperatorHistory(ParcelHistoryPage page) => Management.Status().Authorized ? page : page with
     { Items = page.Items.Select(item => item with { Operation = OperatorOperation(item.Operation) }).ToArray() };
-    ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => Management.Status().Authorized ? s : s with
+    ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => OperatorSnapshot(s, Management.Status().Authorized);
+    static ParcelSnapshot OperatorSnapshot(ParcelSnapshot s, bool authorized) => authorized ? s : s with
     {
         BackupScheduleStatus = null,
         Configuration = s.Configuration with

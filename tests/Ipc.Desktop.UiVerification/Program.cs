@@ -18,6 +18,10 @@ static partial class Program
     [STAThread]
     public static int Main(string[] args)
     {
+#if P0_CRASH_HOOKS
+        if (args.FirstOrDefault() == "--p0-dispatcher-child") return P0Dispatcher.Child(args[1]);
+        if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
+#endif
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
         var evidence = (args.Contains("--task-redesign") || (args.Contains("--management-mode") || args.Contains("--operator-administration")))
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
@@ -35,6 +39,9 @@ static partial class Program
         {
             try
             {
+#if LATENCY_MEASUREMENT
+                if (args.Contains("--latency-capacity")) { await VerifyLatencyCapacity(root, lines, args); desktop.Shutdown(0); return; }
+#endif
                 if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
                 else if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
                 else if (args.Contains("--reliability-logs")) await VerifyReliabilityLogs(root, evidence, lines);

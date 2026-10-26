@@ -1,0 +1,26 @@
+[
+  {
+    "path": "README.md",
+    "source_commit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "snapshot": "README.md.txt",
+    "sha256": "c06f055ac19b9f4b0aa96b1f05a1dc821c3ba8824129eb1d85270beca3423d21"
+  },
+  {
+    "path": "docs/INDEX.md",
+    "source_commit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "snapshot": "docs__INDEX.md.txt",
+    "sha256": "5553713f3a5baf1c9a92ff08b1310cb691769eafe0f46900e4b8d7b56071439f"
+  },
+  {
+    "path": "docs/runtime/version-compatibility-01.md",
+    "source_commit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "snapshot": "docs__runtime__version-compatibility-01.md.txt",
+    "sha256": "8a36ef8ac058db2ce946ee911efe3d050047607c5b117f9002c262a00814df48"
+  },
+  {
+    "path": "docs/runtime/win11-24x7-stability-remediation-01.md",
+    "source_commit": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+    "snapshot": "docs__runtime__win11-24x7-stability-remediation-01.md.txt",
+    "sha256": "a0f9a29eeda108ceabbd2cae575388e0aa6628843d32fc0385e887a63b044375"
+  }
+]

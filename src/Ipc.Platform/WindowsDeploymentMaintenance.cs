@@ -9,11 +9,16 @@ namespace Ipc.Platform;
 public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired, string[]? RemainingFiles = null, string? ReleaseRoot = null);
 public static partial class WindowsDeploymentSetup
 {
-    sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false);
+    sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false)
+    {
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string[]? SystemEntries { get; init; }
+    }
     static string SystemKey(string application) => @"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + application;
     [SupportedOSPlatform("windows")]
     static void ProjectInstalledApplication(DeploymentLocation location)
     {
+        DesktopRecoveryInstallation.Project(location);
         using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
         if (location.LifecycleState != "Installed") { machine.DeleteSubKeyTree(SystemKey(location.ApplicationId), false); return; }
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
@@ -37,6 +42,7 @@ public static partial class WindowsDeploymentSetup
         var location = Current(application) ?? throw new InvalidDataException("No authoritative deployment");
         if (location.LifecycleState == "Installed") _ = DeploymentMedia.Inspect(location.ReleaseRoot, application);
         ProjectInstalledApplication(location);
+        if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(location);
     }
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     static extern bool MoveFileEx(string path, string? target, int flags);
@@ -56,7 +62,8 @@ public static partial class WindowsDeploymentSetup
         {
             var media = DeploymentMedia.Inspect(location.ReleaseRoot, application);
             requireResponsibilitiesAndBackup(location); // Caller holds application-owner until return.
-            plan = new("Prepared", location, media.Files.Keys.Append("deployment-location.json").Append("deployment-retired.json").ToArray());
+            plan = new("Prepared", location, media.Files.Keys.Append("deployment-location.json").Append("deployment-retired.json").ToArray())
+                { SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null };
             WriteProtected(operation, plan, sid);
         }
         else
@@ -76,7 +83,9 @@ public static partial class WindowsDeploymentSetup
         var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
         var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
         WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);
-        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot);
+        var dumpDirectory = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).DumpFolder : null;
+        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory,
+            .. dumpDirectory is not null && Directory.Exists(dumpDirectory) ? new[] { dumpDirectory } : Array.Empty<string>()], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot);
     }
     internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
     {
@@ -146,6 +155,7 @@ public static partial class WindowsDeploymentSetup
         }
         WriteProtected(Path.Combine(current.ReleaseRoot, "deployment-location.json"), next, sid);
         WriteProtected(Registration(application), next, sid);
+        ProjectInstalledApplication(next);
         if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(current.DataRoot);
         WriteProtected(operation, new { Status = "CompletedIsolated", Previous = current, Next = next, HandoffSha256 = handoffHash }, sid);
     }

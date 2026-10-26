@@ -1,81 +1,48 @@
-> 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
+# 文档索引
 
-> 2026-10-25生命周期优化：[七包范围](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)、[U/G总账](reviews/lifecycle-ux-reconciliation-01.md)、[现行操作](runtime/lifecycle-ux-current-guidance-01.md)、[实际实现](runtime/lifecycle-ux-implementation-01.md)、[定向验证与同源身份](runtime/validation/lifecycle-ux-optimization-01.md)。独立工程已实现；原规划原件、编号与哈希见[规划归档](archive/lifecycle-ux-planning-01/README.md)。G01/G02、系统生命周期和现场门槛独立。
+本索引区分当前规则、进行中的整合和历史证据。2026-10-26 起点 main 为 `a8cd4314`；最新整合状态只在[本轮工作包](work-packages/WP-IPC-INTEGRATION-20261026.md)记录，旧 PASS 不随合并迁移。
 
-> 2026-10-26 PR107合并后独立延后修复：[DEFERRED-HEARTBEAT-01校验、恢复与验证边界](runtime/validation/deferred-heartbeat-01.md)。当前心跳只映射已配置相机；全部相机延后时停止心跳，恢复配置仍走Pending/受控重启，原请求和编号账保留。
-
-> 2026-10-25 参数用途、身份合并、7天默认、全屏偏好与连接延后配置：[PARAMETER-GUIDANCE-STARTUP-01](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)。旧图、原合同及历史验证保留身份。
-
-> 当前代码级可靠性深化：[CODE-RELIABILITY-HARDENING-02 风险、证据与必要补测](work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)、[现行增量设计](design/code-reliability-hardening-02.md)、[运行与升级](runtime/code-reliability-hardening-02.md)、[验证与原始证据](runtime/validation/code-reliability-hardening-02.md)。原开工main为`1dfb676a`，2026-10-25与已合并PR103/main `c425435`的[同步、证据保全及最终集成检查](runtime/validation/pr104-main-integration-01.md)另列；进程强杀、并发、日志、争用与时间边界单独计证，不关闭下述大规模维护FAIL或扩张现场资格。
-
-> 本轮并行成果整合：[工作包与固定来源](work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)、[处置、冲突及验证报告](runtime/parallel-task-integration-01.md)。起始远端main `016976c6`已包含PR97/98；旧分支与历史证据身份保留，稳定性资格另计。
-
-> 前阶段Windows 11长期稳定性整改与现场资格：[工作包与风险矩阵](work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[输入、故障与运行设计](design/win11-24x7-stability-remediation-01.md)。原[独立审查及证据](reviews/win11-24x7-stability-audit-01/README.md)固定main `c91559f6`，保留历史身份；整改实施与24h/真实设备资格分别记录。当前[运行与到期删除](runtime/win11-24x7-stability-remediation-01.md)、[R01～R12验证及边界](runtime/validation/win11-24x7-stability-remediation-01.md)。
-
-> TYPOGRAPHY-01追加复核：[三组原生对照、选择依据、实际字体来源与续修](runtime/evidence/typography-01/controlled-review/README.md)。继承PR97 `a43ecb8`；旧截图/测试身份保留。
-
-> 当前字体与排版：[TYPOGRAPHY-01 工作包](work-packages/WP-IPC-TYPOGRAPHY-01.md)、[唯一现行规范](design/typography-01.md)、[实现/复现/边界](runtime/typography-01.md)、[原生前后对照与证据](runtime/evidence/typography-01/README.md)。PR97已合并为 `c310705`，PR98已合并为 `016976c`；依赖已在main。[受控对照与验收](design/typography-comparison-01.md)。保留格口优先、空态、回执、参数帮助与查询空间；旧证据仍对应其原SourceCommit。
-
-> 当前默认供包台、参数与查询呈现：[TASK-CONTENT-HIERARCHY-02](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。PR97已以`c310705`合入main；[深度复核证据表](runtime/evidence/task-content-hierarchy-02/deep-review/README.md)保留其真实Application/原回包链、无效输入指引与原生键鼠身份。01及02上一轮的原图/CI不代表后续整合版本、现场或使用者验收。
-> 2026-10-24 Windows 11 24×7独立审查：[报告、原始证据与复核](reviews/win11-24x7-stability-audit-01/README.md)、[下一阶段Codex修复提示](reviews/win11-24x7-stability-audit-01/Codex-next-phase.md)。原审查固定main `c91559f6`；本次仅发布审查产物，不代表问题已修复或24小时/实机验收通过。
-
-> PR94/95整合后编译与托管验证：[CI续修记录](runtime/validation/task-context-ci-fix-01.md)。原140项本机UI结果保留原身份；整合后的Linux/Windows及介质身份独立核对。
-
-> 当前双相机通信修复：[工作包](work-packages/WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01.md)、[运行与现场只读诊断](runtime/dual-camera-communication-fix-01.md)、[PR93首次配置CI续修](runtime/validation/dual-camera-first-configuration-ci-01.md)。本包替代TCP启动和故障分类操作，历史协议、版本及验收证据保留身份。
-
-> 当前质量整改：[AQA01-F01～F06工作包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。[PR92独立复核、边界与CI](reviews/pr92-independent-quality-review.md)、[实现与命令生命周期](runtime/architecture-quality-remediation-01.md)、[验证记录](runtime/validation/architecture-quality-remediation-01.md)。原审查基线0c5d7d2、旧版本及原验收保持身份；相关过期当前入口原字节见[归档](archive/pre-architecture-quality-remediation-01/README.md)。
-
-> 当前经典窗口与参数文案增量：[PARAMETER-SHELL-POLISH-02](work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)。PR88 已合并；不重建管理身份或参数架构。
-
-> 2026-10-23 内部页面与逐页校验续做见[本轮工作包](work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md)。替代上轮按整类继续及普通错误中的变量名呈现，查询快照与业务/权限责任保持。
-
-> 2026-10-23参数/首次配置现已授权推送与PR合并；范围、原证据与不测试边界见[本轮发布记录](runtime/publication-parameter-ui-20261023.md)。原稿和4个未跟踪附件继续保留本地。
-
-﻿> 2026-10-23 当前参数与首配细化：[实施及源码映射](runtime/parameter-ui-refine-01.md)、[原生验收/截图及边界](runtime/validation/parameter-ui-refine-01.md)。本地同源测试包不推送、不发布、不自动安装；下列历史安装包和清理结论保持原时点。
-
-> 2026-10-22历史重测安装包SM1.11.1：[清理后首次安装修复](runtime/clean-install-bootstrap-01.md)、[实际EXE及原生证据](runtime/evidence/clean-install-bootstrap-01/README.md)。当时修复保存D盘位置但目录不存在时启动报错，验证到确认页并取消；不是本机最新SM1.12.3介质或当前安装状态。
->
-> 2026-10-22历史管理模式交付SM1.11.0：[PR88](https://github.com/yuan2go/importer-pc/pull/88)、[验证和截图](runtime/validation/management-mode-01.md)。最终包0204fcf曾实际安装并核验，随后卸载清空；[当时清理记录](runtime/evidence/management-mode-01/clean-reset-20261022/README.md)、[此前安装证据](runtime/evidence/management-mode-01/installed-d-20261022/README.md)各守时间范围，不推定当前机器状态。
->
-> 历史已发布SM1.10.2（PR82～86已合并）：[单EXE下载](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.10.2-c9e482a30d2d/CainiaoSupplyStation_SM_Setup_v1.10.2_win-x64.exe)，冻结源码`c9e482a30d2d`；[前版不测试合并、完整下载/哈希和边界](runtime/publication-pr82-pr86-20261022.md)。原安装/模拟/CI证据各守原来源，安装器未签名。
-
-> 当前安装与首配入口 UI 实施：[INSTALLER-FIRST-RUN-UI-02](work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[UI规范与预览](ui/installer-first-run-ui-02/README.md)。后续已按用户要求降低密码最低长度至5个字符（允许纯数字）并隐藏安装使用范围，见[增量原生证据](runtime/evidence/installer-first-run-ui-02/followup-password-scope/README.md)。本包替代冲突的旧安装布局与授权提示；下述介质及验证保留各自来源，不代表新 UI 已验收。
-
-# 文档索引 · 作业、管理模式与日志
-
-2026-10-25当前续验：[输入分页与完整预算整合、受保护CLI及剩余验收缺口](runtime/validation/retention-ingress-full-retest-03.md)。PR105已合并main `ed42da81`；[PR106](https://github.com/yuan2go/importer-pc/pull/106)承接连续复用脚本修复及[125份原件/hash](runtime/evidence/retention-ingress-full-retest-03/FILES.json)。固定b83998f1的604800完整维护4721.324秒、三档独立逐笔对账89项通过；2592000实际容量预检拒绝。原FAIL/NOT_RUN身份保留，目标工控机、真实设备和24h/72h/现场仍待验。
-
-2026-10-25历史维护整改：[RETENTION-INGRESS-02](work-packages/WP-IPC-RETENTION-INGRESS-02.md)、[实现/预算与复现](runtime/retention-ingress-02.md)、[原分支计划、规模与故障恢复结果](runtime/validation/retention-ingress-02.md)。基于 PR103 合并后的 main 修复新增输入分页与完整命令预算，继承 PR102；该原分支的UAC取消和候选组件证据保留原身份，后续获授权实际重验见上一条，不据此授予长期运行资格。
-
-2026-10-24～25长稳维护补证：[本轮工作包](work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)、[完整原件规模/受保护CLI结果和剩余缺口](runtime/validation/retention-maintenance-qualification-01.md)、[210份文本原件/hash](runtime/evidence/retention-maintenance-qualification-01/FILES.json)。固定运行产品`5bb032d`并继承main/PR102；1千/1万完整维护和隔离恢复通过，60.48万清理超预算FAIL，新增输入分页热点未改业务代码；259.2万未运行，60.48万恢复UAC取消。原查询微基准、CI和失败各守原身份，不替代目标工控机、真实设备或24h/72h验收。
-
-2026-10-24历史清理查询独立复核：[报告和验证边界](runtime/validation/retention-performance-review-01.md)、[原件/hash与仓库复现](runtime/evidence/retention-performance-review-01/README.md)。固定复核main `12a7cbd`；PR100已包含性能修复。本次仅归档，不重改业务代码，不将短测、CI或安装器构建扩张为24h/72h或现场验收。
-
-同日RECHECK-02从main `5bb032d`再次配对到百万审计，并保留首次升级夹具竞态失败及实际回执修复；详见上述报告的再核查段和[新证据清单](runtime/evidence/retention-performance-review-01/recheck-02/FILES.json)。原归档结论保持形成时身份，未重复修改生产清理实现。
-
-当前参数呈现增量：[PARAMETER-UI-REFINE-01](work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)，替代冲突的首配重复导航、表单/错误和管理入口布局；四类归属、真实字段与保存/授权守卫继承V3。安装与设密修复继续保留。
-
-安装/首配后续实机问题：[窗口比例与首次设密批准修复](runtime/installer-first-run-ui-02-bootstrap-layout.md)。替代此前窗口默认尺寸及首次设密批准调用；原证据不扩张为实际UAC引导验收。
-
-安装与首配UI02新增第9页当前定义见[结果待确认增量](ui/installer-first-run-ui-02/result-unconfirmed-20261022/README.md)，替代未知结果的红色失败呈现；原八页输入、介质及验收保持历史身份。此前五位密码与隐藏使用范围的用户纠偏继续有效。
-
-当前纠偏实施为[MANAGEMENT-MODE-01](work-packages/WP-IPC-MANAGEMENT-MODE-01.md)：管理能力是防误改的管理模式，不是管理员账号。操作员身份独立，普通模式只使用作业/记录，管理模式开放参数和日志。正常读码自动取格口，帮助支持保持删除。旧1.10.2发行链接及证据为历史已交付版本，不代表模式增量已发布。
+## 当前规则与操作
 
 | 阅读目的 | 当前入口 |
 |---|---|
-| 当前模式语义与权限边界 | [管理模式工作包](work-packages/WP-IPC-MANAGEMENT-MODE-01.md)、[操作与实现](runtime/management-mode-01.md) |
-| 1.10.2历史账号/日志实现及纠偏替代关系 | [前版实现](runtime/operator-administrator-logs-01.md) |
-| 管理模式验证、截图及未验边界 | [本轮记录](runtime/validation/management-mode-01.md)；[前版1.10.2](runtime/validation/operator-administrator-logs-01.md) |
-| 本机全部项目文件、安装与数据的D盘迁移 | [D盘存储与运行](runtime/d-drive-storage-20261021.md) |
-| 框架与业务所有权 | [框架](design/framework.md)、[决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
-| 参数字段、完整候选及唯一账 | [参数继承](design/parameter-inheritance-02.md)、[93项迁移](design/parameter-legacy-migration-02.csv)、[PARAM-UX-02](design/parameter-settings-experience-02.md)、[V3基线](ui/parameter-settings-v3-20261020/README.md) |
-| 作业与首配合同 | [V2交接](ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)、[任务裁决](design/sportmaster-task-redesign-01.md)、[首配/TCP增量](runtime/startup-experience-03.md)；导航和权限由本轮替代 |
-| 实际构建与安装 | [运行入门](runtime/getting-started.md)、[Windows交付](runtime/windows-application-delivery.md)、[版本兼容](runtime/version-compatibility-01.md) |
-| 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[海康Reader](runtime/hikrobot-reader-01.md) |
-| 外部批准与历史评审 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
+| 本轮意图台账、时间线与执行顺序 | [INTEGRATION-20261026](work-packages/WP-IPC-INTEGRATION-20261026.md) |
+| 架构与职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
+| 管理模式与操作员权限 | [管理模式](runtime/management-mode-01.md)、[工作包](work-packages/WP-IPC-MANAGEMENT-MODE-01.md) |
+| 参数与首次启动 | [用户纠偏](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[延后映射/恢复](runtime/validation/deferred-heartbeat-01.md)、[参数共模](design/parameter-refactor-01.md) |
+| 参数设计 | [PARAM-UX-02](design/parameter-settings-experience-02.md)、[参数V3](ui/parameter-settings-v3-20261020/README.md)、[字段继承](design/parameter-inheritance-02.md) |
+| 作业与首次启动设计 | [V2交接](ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)、[任务裁决](design/sportmaster-task-redesign-01.md)、[任务层级](work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)、[字体](design/typography-01.md) |
+| 当前可靠性与输入责任 | [可靠性02](runtime/code-reliability-hardening-02.md)、[长稳运行](runtime/win11-24x7-stability-remediation-01.md) |
+| 历史维护 | [输入分页/完整预算](runtime/retention-ingress-02.md)、[完整维护最新证据](runtime/validation/retention-ingress-full-retest-03.md) |
+| 构建、部署与版本 | [运行入门](runtime/getting-started.md)、[Windows交付](runtime/windows-application-delivery.md)、[版本兼容](runtime/version-compatibility-01.md)、[D盘环境](runtime/d-drive-storage-20261021.md) |
+| 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[Reader](runtime/hikrobot-reader-01.md)、[双相机](runtime/dual-camera-communication-fix-01.md) |
+| 外部决定与公开范围 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
 
-本轮管理模式以最新main `0bf86a0a588b75b95aa1963e8fe88dad976ca803` 开工，PR82～87均已合并。[PR88](https://github.com/yuan2go/importer-pc/pull/88) 提交管理模式纠偏；SM1.11.0最终本地介质固定源码 `0204fcf2fdc8b44d5a4d16b6c5080fa1925cab84`，截图、哈希、验证及本机安装后再清空的时点见[独立证据](runtime/evidence/management-mode-01/README.md)。旧OPS包的 `3b883fe` 开工状态及分支整合身份只适用于前版形成阶段。
+参数V3替代V2参数版式，作业/首配合同仍继承V2及后续用户纠偏。管理能力是管理模式，操作员身份独立；帮助与支持页面已删除。仓ID、生产线ID、统一供包台编号、7天新站默认、本机窗口偏好及相机/RCS独立延后按当前纠偏执行。配置保存不等于生效；待配置拒绝业务，Unknown不重发。
 
-[V3设计原件](ui/parameter-settings-v3-20261020/README.md)、[V2设计原件](ui/sportmaster-task-redesign-v2-20261020/README.md)、[V1](ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)与[v1.1](ui/ss-ui-vis-001-v1.1/README.md)保留原字节、数量和历史适用范围。旧支持页、旧导航和原型模拟不是本轮保留要求或生产能力。完整历史入口及发布链接见[本轮清理前索引](archive/pre-operator-admin-logs/docs__INDEX.md.txt)，旧介质始终保留原SourceCommit。
+## 本轮来源与状态
 
-真实SDK/RCS、实体许可、目标工控机、完整安装生命周期和现场分别验收，不以原型、本机合成测试、源码合并或旧介质取代。维护和显示切换不重建业务实例，保存不等于生效，Unknown不重发，软件暂停不是安全急停。
+[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113、PR112已合入main；PR108、PR111继续逐项整合。实际源及验证见本轮工作包，不将分支PASS转记main。
+
+## 历史证据与发布
+
+以下材料保留形成时事实，不能作为当前实现入口或将结果转记到新版本：
+
+- [清理前完整索引与README原字节](archive/pre-integration-20261026/README.md)，其中保存全部既有发布、设计与回执链接。
+- [SM1.11.1重测介质](runtime/clean-install-bootstrap-01.md)、[SM1.11.0管理模式验证](runtime/validation/management-mode-01.md)、[SM1.10.2发布](runtime/publication-pr82-pr86-20261022.md)、[SM1.6.1发布](runtime/publication-login-session-20261020.md)。这些均为历史介质，不代表最新main。
+- [旧软件管理员/日志实现](runtime/operator-administrator-logs-01.md)、[V1](ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)、[v1.1](ui/ss-ui-vis-001-v1.1/README.md)保留原编号、原件与验收范围。
+- [原长稳独立审查](reviews/win11-24x7-stability-audit-01/README.md)、[原维护失败](runtime/validation/retention-maintenance-qualification-01.md)、[原查询性能复核](runtime/validation/retention-performance-review-01.md)、[PR104精确源验证](runtime/validation/pr104-main-integration-01.md)。原FAIL不因后续修复删除。
+
+真实SDK/RCS、目标工控机、系统安装生命周期、24h/72h和现场分别验收。本轮不生成发布介质、不宣布验收通过。
+
+P0基座已合入main：[运行说明](runtime/p0-stability-01.md)、[历史问题卡](runtime/validation/p0-stability-01.md)、[Unicode续修](runtime/validation/pr110-unicode-shortcuts-01.md)。原问题卡不作为本轮合并验证。
+
+- [2026-10-26整合执行记录](runtime/integration-20261026.md)：本轮真实执行与输入哈希，持续更新。
+
+- [Unicode快捷方式生命周期](runtime/unicode-shortcut-compatibility-01.md)：继承PR110组件身份/监督预算修复，补齐一次释放及路径冲突；[原独立证据](runtime/validation/unicode-shortcut-compatibility-01.md)保持原源。
+
+- [时间与存储故障分级](runtime/time-storage-fault-01.md)：单调节拍、原请求回拨证据、本地事务分级及恢复先暂停；[UTC清单](runtime/time-storage-fault-01-utc-inventory.md)和[原独立证据](runtime/validation/time-storage-fault-01.md)各守原身份。
+
+- [卡顿、容量及WAL维护](runtime/latency-capacity-01.md)：共享投影、后台详情、可取消备份与分级预警；[原测量与反向样本](runtime/validation/latency-capacity-01.md)不转记组合PASS。
+
+生命周期当前入口：[操作指南](runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](runtime/lifecycle-ux-implementation-01.md)、[工作包](work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)。原独立验证见[历史报告](runtime/validation/lifecycle-ux-optimization-01.md)及[批量预检历史](runtime/validation/lifecycle-batch-preflight-01.md)，不转记组合源。

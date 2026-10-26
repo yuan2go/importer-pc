@@ -138,3 +138,6 @@ docs/runtime/evidence/parameter-guidance-startup-01/** -text whitespace=cr-at-eo
 
 # Independent deferral regressions retain original failed/passed logs and captures.
 docs/runtime/evidence/deferred-heartbeat-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Byte-preserved shortcut baseline, first failures and fixed code-page receipts.
+docs/runtime/evidence/unicode-shortcut-compatibility-01/original/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

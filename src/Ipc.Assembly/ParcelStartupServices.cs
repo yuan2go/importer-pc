@@ -158,7 +158,7 @@ public static class ParcelStartupServices
     internal static void RequireMatchingInstalledReceipt(WindowsDeploymentRequest request, DeploymentLocation location)
     {
         if (location.ApplicationId != request.ApplicationId || location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
-            location.Shortcuts != request.Shortcuts || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
+            location.Shortcuts != request.Shortcuts || location.Recovery != (request.Recovery ?? new DesktopRecoveryOptions()) || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
             !string.Equals(Path.GetFullPath(location.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Installation receipt differs from the selected deployment");
     }

@@ -90,6 +90,7 @@ static class UxCommercialPresentation
     {
         foreach (var vm in new ParcelViewModel[] { new((IParcelApplication)(object)probe, "classic", "test"), new SupplyStationViewModel((IParcelApplication)(object)probe) })
         {
+            vm.SetDetailsVisibility(true, true);
             probe.Read = () => Task.FromResult(baseline);
             probe.History = _ => Task.FromResult(new ParcelHistoryPage([new(2, false, b), new(1, false, a)], null));
             await vm.RefreshAsync(); await vm.LoadHistoryAsync();
@@ -100,6 +101,7 @@ static class UxCommercialPresentation
             var refresh = vm.RefreshAsync(); await entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
             vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == b.Id);
             pending.SetResult(baseline); await refresh;
+            await vm.DrainAsync();
             Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id && vm.StructuredDetails.Contains(b.Id), "A to B during slow snapshot retains B row, details and command owner in " + vm.Title);
             string? queried = null;
             probe.Read = () => Task.FromResult(baseline);
@@ -128,6 +130,7 @@ static class UxCommercialPresentation
     {
         probe.Read = () => Task.FromResult(baseline);
         var vm = new ParcelViewModel((IParcelApplication)(object)probe, "test", "test"); await vm.RefreshAsync();
+        vm.SetDetailsVisibility(true, true);
         var first = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
         var second = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
         var entered = new SemaphoreSlim(0); var calls = 0;
@@ -145,6 +148,7 @@ static class UxCommercialPresentation
         probe.History = _ => Task.FromResult(new ParcelHistoryPage([], null)); await vm.LoadHistoryAsync();
         Check(vm.HistoryStatus.Contains("没有作业记录") && !vm.HasNextHistory, "empty history has an explicit completed empty state");
         vm.Selected = a;
+        await vm.DrainAsync();
         Check(vm.StructuredDetails.Contains(a.Id) && vm.StructuredDetails.Contains(a.Wcs!.Request.Id) && vm.StructuredDetails.Contains("发送尝试") && vm.Details.Contains(a.Wcs!.Request.PayloadHash), "structured details preserve operation/request/attempt/reply distinctions and full original JSON");
         var reconciliation = new TaskCompletionSource<BusinessReceipt>(TaskCreationOptions.RunContinuationsAsynchronously); var commandEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Reconcile = _ => { commandEntered.SetResult(); return reconciliation.Task; };

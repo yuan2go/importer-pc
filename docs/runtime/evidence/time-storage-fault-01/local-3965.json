@@ -1,0 +1,223 @@
+{
+  "SourceCommit": "3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+  "ProductSourceCommit": "0502f148f7083035d9af39ae9889256540b20fdb",
+  "FixtureCorrection": "3965cea5 acknowledges injected dotnet image before production supervisor freezes child identity; assertions unchanged",
+  "PriorExactAttempt0502": "Process fixture ambiguously returned no image path; production supervisor correctly blocked synthetic nonexistent fallback path. This attempt is not PASS.",
+  "Environment": "Windows 11 Home 22631, isolated synthetic runtime; no machine policy registration",
+  "Scope": "Injected IO/native SQLite lock and page quota, real isolated child processes with production monitor and supervisor; no actual installed task/SCM/WER verification",
+  "Selectors": [
+    {
+      "Selector": "time-storage-fault-checks",
+      "Result": "PASS",
+      "LogSha256": "39e91cadd2945f12811b4062b300dd0575b4d52ce14934e0f0fa553e375992aa",
+      "Assertions": [
+        "PASS ST12 capacity throttle survives UTC rollback",
+        "PASS ST12 UTC forward jump does not bypass interval",
+        "PASS ST12 retention notification interval also survives rollback",
+        "PASS ST13 synthetic handoff is durable",
+        "PASS ST13 in-flight UTC rollback does not manufacture Conflict",
+        "PASS ST13 rollback has request-bound durable local evidence",
+        "PASS ST13 earlier reply without witnessed rollback remains invalid",
+        "PASS ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps",
+        "PASS ST13 an existing Conflict is never automatically cleared",
+        "PASS ST13 restart validates original rollback evidence without redispatch",
+        "PASS UTC inventory: operator maximum lifetime cannot be extended by rollback",
+        "PASS UTC inventory: management status respects its monotonic expiry token",
+        "PASS ST08 bounded pre-write I/O jitter recovers without disabling ingress"
+      ]
+    },
+    {
+      "Selector": "time-storage-atomic-checks",
+      "Result": "PASS",
+      "LogSha256": "a5b41f6276af377235792e410e1f264d45733aaf7746cf157307130228d37cca",
+      "Assertions": [
+        "PASS ST08 a real SQLite writer lock released inside budget yields exactly one durable row",
+        "PASS ST08 failed pre-COMMIT attempts roll back, preserve one identity, and retry successfully",
+        "PASS ST08 an actually committed write with a lost result is not repeated or represented as success",
+        "PASS ST08 SQLITE_FULL is permanent, not a retry loop",
+        "PASS ST08 native SQLite page exhaustion auto-rolls back and retains permanent classification",
+        "PASS ST08 persistent rollback-safe failure exhausts a bounded monotonic budget with no row committed",
+        "PASS ST08 FULL durability is preserved",
+        "PASS ST08 WAL mode is preserved"
+      ]
+    },
+    {
+      "Selector": "time-storage-supervisor-checks",
+      "Result": "PASS",
+      "LogSha256": "acfe16c7fd26bd780ea68452371cf064312918d3d0ee60bf9ae5c984b6cca4d2",
+      "Assertions": [
+        "PASS ST08 permanent storage failure blocks supervision after one launch"
+      ]
+    },
+    {
+      "Selector": "time-storage-process-checks",
+      "Result": "PASS",
+      "LogSha256": "c7c66fbda14f0b5f7d43337ab12a50a160530b7a7244c459bd9d1c08ad0f4a61",
+      "Assertions": [
+        "PASS ST08 process closure budget; launches=2; supervisor=0; elapsedMs=16896",
+        "PASS ST08 process closure ambiguous; launches=2; supervisor=0; elapsedMs=15502",
+        "PASS ST08 process closure permanent; launches=1; supervisor=77; elapsedMs=1636"
+      ]
+    },
+    {
+      "Selector": "p0-cleanup",
+      "Result": "PASS",
+      "LogSha256": "a7b31e8a0b1ca8136db5f21ab429df5dd3edaa288023f4e34dd71470e0492005",
+      "Assertions": [
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 temporary locked redundant spool does not fence inputs or terminate maintenance",
+        "PASS ST02 input continues during cleanup lock",
+        "PASS ST02 pending cleanup is visible through existing snapshot",
+        "PASS ST02 cleanup retries after unlock without another business command",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 all cleanup cases:",
+        "PASS ST02 backoff uses an actual archived receipt",
+        "PASS ST02 startup tolerates only verified redundant lock with initial 500ms delay",
+        "PASS ST02 wall-clock rollback neither bypasses nor freezes monotonic backoff",
+        "PASS ST02 retry occurs exactly at elapsed deadline",
+        "PASS ST02 counter and exponential delay capped; persistent lock produces visible warning",
+        "PASS ST02 successful hash-verified cleanup resets warning/backoff"
+      ]
+    },
+    {
+      "Selector": "p0-supervisor",
+      "Result": "PASS",
+      "LogSha256": "a467be1d7d83e5c6e0aee7a96c25a343dd42019a6ee0eb5346f770d925841f70",
+      "Assertions": [
+        "PASS ST14 task is session-bound, least privilege and password-free",
+        "PASS ST14 task wrapper retry obeys Windows minimum minute and finite count",
+        "PASS ST14 migration keeps one task identity; mini-dump and uninstall targets bounded",
+        "PASS ST14 SCM has daily reset and final NONE instead of infinitely repeating restart",
+        "PASS ST14 old deployment bytes omit absent recovery property",
+        "PASS ST14 uninstall removes only owned WER names and preserves foreign evidence",
+        "PASS ST14 three abnormal exits exhaust two restarts and persist visible guard",
+        "PASS ST14 new watchdog process cannot reset persisted crash-loop budget",
+        "PASS ST14 authorized repair can reset a known exhausted budget after client exit",
+        "PASS ST14 strong-killed synthetic client restarts within configured delay; normal close ends supervision",
+        "PASS ST14 replacement watchdog adopts exact original PID/start/hash without duplicate client",
+        "PASS ST14 retirement detaches watchdog without killing business process",
+        "PASS ST14 unacknowledged process creation fails closed without a duplicate launch",
+        "PASS ST14 ordinary system repair cannot clear an uncertain original launch",
+        "PASS ST14 healthy interval resets restart budget using monotonic time despite wall-clock jumps"
+      ]
+    },
+    {
+      "Selector": "p0-rcs",
+      "Result": "PASS",
+      "LogSha256": "81b64485df48a254ee8e0230d3b2ce7816d9a10a4d638afffb93c956c4defbf5",
+      "Assertions": [
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: three scans including repeated barcode own three entities and exactly three requests",
+        "PASS RCS20: original barcode bytes/order preserved",
+        "PASS RCS20: durable frozen body equals the actual sole HTTP request; normal UI remains redacted",
+        "PASS RCS20: existing legacy frozen quantity and exact wire bytes unchanged"
+      ]
+    },
+    {
+      "Selector": "p0-unknown-restart",
+      "Result": "PASS",
+      "LogSha256": "c0d0eaf4f9bebc4d9aa07a6b26eeab6aec3ecb6403d3eea37ffe88e3bae04847",
+      "Assertions": [
+        "PASS RCS20: lost HTTP response produces exactly one original request",
+        "PASS RCS20: process restart preserves Unknown and frozen original bytes",
+        "PASS RCS20: restart, unavailable authoritative query and reconnect neither clear Unknown nor replay"
+      ]
+    }
+  ],
+  "FatalRecords": [
+    {
+      "Event": "Storage.IngressCustody.RetryBudgetExceeded",
+      "ExitCode": -536870892,
+      "PreventRestart": false,
+      "Version": "synthetic-ST08",
+      "SourceCommit": "1.0.0+3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "RecentState": "Fatal storage failure: IngressCustody; RetryBudgetExceeded; StorageWriteFailure; attempts=28; elapsedMs=5004; original=Input custody persistence failed: StorageWriteFailure"
+    },
+    {
+      "Event": "Storage.IngressCustody.DurableOutcomeUncertain",
+      "ExitCode": -536870892,
+      "PreventRestart": false,
+      "Version": "synthetic-ST08",
+      "SourceCommit": "1.0.0+3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "RecentState": "Fatal storage failure: IngressCustody; DurableOutcomeUncertain; IOException; original=Input custody persistence failed: IOException"
+    },
+    {
+      "Event": "Storage.IngressCustody.Unrecoverable",
+      "ExitCode": 78,
+      "PreventRestart": true,
+      "Version": "synthetic-ST08",
+      "SourceCommit": "1.0.0+3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "RecentState": "Fatal storage failure: IngressCustody; Unrecoverable; StorageWriteFailure; attempts=1; elapsedMs=2; original=Input custody persistence failed: StorageWriteFailure"
+    }
+  ],
+  "Builds": [
+    {
+      "BusinessModule": "Supply",
+      "Result": "BUILD_PASS",
+      "LogSha256": "97d54781c041f75736d7ae5758030355626f233e4997c5f7438c9ce0e1bfcf3f"
+    },
+    {
+      "BusinessModule": "Sportmaster",
+      "Result": "BUILD_PASS",
+      "LogSha256": "0bb93b4bd5b452bf195e542d6ae029140ad31d38c0f3b6019c94eb31825fb9d5"
+    },
+    {
+      "BusinessModule": "DirectPlc",
+      "Result": "BUILD_PASS",
+      "LogSha256": "3a785eaf3d5a76130ae0be51e23898f47668e4e01786c844adb4e33e9ce55a68"
+    },
+    {
+      "BusinessModule": "WcsToPlc",
+      "Result": "BUILD_PASS",
+      "LogSha256": "4c25b8fcc4a94292aa82694976226baf2eec2eee5fc4cefb66114868317c91cc"
+    },
+    {
+      "Target": "Sportmaster self-contained win-x64 installer compile only",
+      "Result": "BUILD_PASS",
+      "Properties": "Application=Sportmaster; SelfContained=true; RuntimeIdentifier=win-x64; NuGetLockFilePath=packages.sportmaster.win-x64.lock.json; RestoreLockedMode=true",
+      "LogSha256": "7f539e934262e76fb8fe1f758b1ece397cf1e1775cc55b0996f4ada3dac23cad"
+    }
+  ],
+  "Binaries": [
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+      "Sha256": "2527e2b7377619f4161b502a126417543d349f3d3ee62fcb496b322c1e484940"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Platform.dll",
+      "Sha256": "bf4f882df6183c945aac66102e92290355600b668497146bf470eda21e03383a"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll",
+      "Sha256": "b8105b17c9dbeb8433e6d898e58ddcb30bdf97ec0edb04307c74a4904c958d51"
+    }
+  ],
+  "EnvironmentBlocked": [
+    "reliability-02 and h02-crashes require existing maintainer-installed Windows designated-account policy; NOT_RUN locally; no policy bypass. Linux CI separately recorded."
+  ],
+  "NotRun": [
+    "physical volume exhaustion/corruption/IO hangs",
+    "real NTP time changes",
+    "installed autostart task/SCM/WER/uninstall",
+    "target Windows client hardware",
+    "24h/72h",
+    "SDK/cameras/RCS",
+    "Production installation",
+    "604800 complete UAC restore",
+    "2592000"
+  ]
+}

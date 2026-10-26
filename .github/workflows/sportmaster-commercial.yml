@@ -1,7 +1,7 @@
 name: Sportmaster commercial engineering
 on:
   pull_request:
-    branches: [main]
+    branches: [main, codex/p0-stability-01]
 permissions:
   contents: read
 concurrency:
@@ -46,14 +46,24 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
+      - name: Exercise latency capacity time and storage boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for case in lifecycle-ux latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks audit03-snapshots ux-commercial-presentation time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
+            dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
+          done
       - name: Retain the actual boundary result including failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aqa01-boundaries-${{ github.sha }}
           path: |
+            time-storage-*.log
             reliability-02.log
+            receipt-custody.log
             reliability-02-crashes.log
             aqa01-boundaries.log
             stability-boundaries.log
@@ -64,7 +74,74 @@ jobs:
             parameter-guidance-startup.log
             deferred-connections.log
             confirmed-camera-rcs.log
+            lifecycle-ux.log
+            latency-*-checks.log
+            audit03-snapshots.log
+            ux-commercial-presentation.log
           if-no-files-found: warn
+          retention-days: 30
+  p0-stability-boundaries:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.longpaths
+          GIT_CONFIG_VALUE_1: 'true'
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Isolated Simulation and owned process crash boundaries
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          foreach ($case in @('time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
+            dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
+            if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
+          }
+      - name: Production Dispatcher fatal boundary
+        if: always()
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet run --project tests/Ipc.Desktop.UiVerification -c Release -- . --p0-crash-hooks *> .artifacts/p0-stability/wpf-crash-hooks.log
+          if ($LASTEXITCODE) { Get-Content .artifacts/p0-stability/wpf-crash-hooks.log; exit $LASTEXITCODE }
+          # No task registration, HKLM writes, SCM changes, installation or devices.
+      - name: Existing Windows shortcut COM boundary
+        if: always()
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . --installer-options *> .artifacts/p0-stability/installer-options.log
+          if ($LASTEXITCODE) { Get-Content .artifacts/p0-stability/installer-options.log; exit $LASTEXITCODE }
+      - name: Unicode shortcut COM in isolated process code pages
+        if: always()
+        shell: pwsh
+        run: ./scripts/verify-shortcut-codepages.ps1 -Output D:/shortcut-codepages
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shortcut-codepages-${{ github.sha }}
+          path: D:/shortcut-codepages
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p0-stability-boundaries-${{ github.sha }}
+          path: .artifacts/p0-stability
           retention-days: 30
   frozen-sportmaster:
     runs-on: windows-2025

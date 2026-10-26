@@ -60,6 +60,39 @@ public sealed partial class ParcelRepository
         using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id";
         c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string;
     }
+    internal StageReply? ReadOriginalReply(FrozenRequest request, string replyId)
+    {
+        maintenanceCancellation.ThrowIfCancellationRequested();
+        var hash = OriginalReplyHash(request.Id, replyId);
+        if (hash is null) return null;
+        // Use the operation index and first authoritative hash. The bounded reply
+        // projection is not custody, and no historical bytes/indexes are rewritten.
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$operation AND request=$request AND raw_hash=$hash ORDER BY rowid LIMIT 1";
+        c.Parameters.AddWithValue("$operation", request.OperationId); c.Parameters.AddWithValue("$request", request.Id); c.Parameters.AddWithValue("$hash", hash);
+        var id = c.ExecuteScalar() as string ?? throw new InvalidDataException("Original reply custody is missing");
+        byte[]? bytes = null;
+        if (StorageVersion >= 4)
+        {
+            using var archived = db.CreateCommand(); archived.CommandText = "SELECT body,raw_hash FROM parcel_archived_receipts WHERE id=$id";
+            archived.Parameters.AddWithValue("$id", id); using var row = archived.ExecuteReader();
+            if (row.Read())
+            {
+                if (row.GetString(1) != hash || row.GetValue(0) is not byte[] body) throw new InvalidDataException("Original archived reply identity changed");
+                bytes = body;
+            }
+        }
+        if (bytes is null)
+        {
+            if (ArchivedReceiptExpectedHash(id) is not null) throw new InvalidDataException("Original archived reply is missing");
+            maintenanceCancellation.ThrowIfCancellationRequested(); bytes = File.ReadAllBytes(Path.Combine(rawRoot, id + ".json"));
+        }
+        if (Convert.ToHexString(SHA256.HashData(bytes)) != hash) throw new InvalidDataException("Original reply bytes changed");
+        var original = Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
+        if (original.Id != replyId || original.RequestId != request.Id || Wire.Hash(Wire.Encode(original)) != hash)
+            throw new InvalidDataException("Original reply identity changed");
+        return original;
+    }
     string? LegacyOriginalReplyHash(string request, string reply)
     {
         // Old readers have no index. Read their existing occurrence authority in

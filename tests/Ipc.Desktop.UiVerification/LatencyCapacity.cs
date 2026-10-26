@@ -182,7 +182,7 @@ static partial class Program
                 throw new InvalidOperationException("Warm revision refreshed full details or serialized once per window");
         }
         ExtensionStore.AtomicWrite(Path.Combine(output, "IDENTITY.json"), new { Scope = "Actual runtime and HistoryPage/ViewModel, synthetic archives and unresolved resident records only; no full custody/retention/site qualification",
-            Main = "a8cd431456f73e83040f75a0c5e3cc1423440d1b", RuntimeSha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location), UiSha256 = Wire.FileHash(typeof(ParcelViewModel).Assembly.Location), FixtureSha256 = Wire.FileHash(typeof(Program).Assembly.Location),
+            HistoricalBaselineMain = "a8cd431456f73e83040f75a0c5e3cc1423440d1b", RuntimeSha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location), UiSha256 = Wire.FileHash(typeof(ParcelViewModel).Assembly.Location), FixtureSha256 = Wire.FileHash(typeof(Program).Assembly.Location),
             OS = Environment.OSVersion.ToString(), Cores = Environment.ProcessorCount, DatabaseBytes = new FileInfo(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db")).Length });
         lines.Add("PASS isolated latency measurements completed; no absolute performance qualification");
         static object Stats(List<double> source)

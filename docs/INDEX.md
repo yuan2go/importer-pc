@@ -1,3 +1,5 @@
+> 当前整合由[STABILITY-INTEGRATION-02](work-packages/WP-IPC-STABILITY-INTEGRATION-02.md)记录；PR110→112及108/111的原证据身份保留，集成验证尚未完成。
+
 > 时间与存储故障分级：[工作包](work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md)、[运行/依赖方案](runtime/time-storage-fault-01.md)、[问题卡与验证边界](runtime/validation/time-storage-fault-01.md)、[全仓UTC清单](runtime/time-storage-fault-01-utc-inventory.md)。ST12/ST13及ST08隔离进程闭环已本机验证；PR112按用户选择叠加PR110，现场/已登记恢复策略另验。
 > 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
 

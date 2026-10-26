@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "6c25ee56594e3773b407b6b07632ae5990ca52299ec003dc89c4584a9a7fbeb2",
-      "size_bytes": 4941,
-      "git_blob": "5b9cfcc9cd1c8c57ff002ed52cf17e32b2075b0a"
+      "sha256": "8e133bbdb331cb8be8689fbd0e220ec339d68538167a25cab691a9f75b87d875",
+      "size_bytes": 6228,
+      "git_blob": "b0dc5f9be4ee18826b7938f601c567186c7a4b2f"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",

@@ -36,3 +36,16 @@
 | pr110-restore-WcsToPlc | PASS (0) | `513ae962bbf2b5ece1472298f8ca92850edb0575c013b6f8c26ccf41b2b0fd00` | `a1d949dd4573d74bba7337237f90a39418a9157a8b39eea193126fff7d46ce04` |
 
 尚未完成：PR110新head CI、后续PR逐项同步和合并、最终干净main完整验证。
+
+## PR113组合预检
+
+在d204bc587478b0f190b3814d7cccec47c132b571干净组合树运行，先继承PR110 5e4b85d5再保留PR113本身差量。冲突仅在索引、版本及锁文件：版本统一不再次提升，锁文件实际restore，清单重算。PR110原回执保持完整原字节，新状态只进索引/本记录。6260份已存在冻结证据、9份迁移SQL、两份字体和WAL/FULL均通过静态身份检查。
+
+| 执行 | 结果 | 源 | 日志SHA256 |
+|---|---|---|---|
+| pr113-codepages | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9` |
+| pr113-p0-provider-identity | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `30b8b380489f4f5175c8e2b50f1c75c59652957104984ef46d0a403fceb4e266` |
+| pr113-p0-supervisor | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `20d2e887fe54256d004402245255fab23a8367d4b21d04cb49dbd040d1886659` |
+| pr113-installer-change-guards | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `e36c2ee0af6a94ebc8de234defa07aedf111f7e401e7d4d8f02a539cd9c3e972` |
+
+三ACP均实际核对GetACP，产品Platform DLL SHA256严格相同；只使用全新D盘夹具根及真实COM，不登记机器安装、HKLM、任务或SCM。此结果尚不等于PR113合并或CI完成。

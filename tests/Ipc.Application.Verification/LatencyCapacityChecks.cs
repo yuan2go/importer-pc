@@ -53,7 +53,12 @@ static class LatencyCapacityChecks
         observer.SetValue(null, (Action<long>)(bytes => { delayCalls.Add(bytes); copying.TrySetResult(); Thread.Sleep(TimeSpan.FromSeconds(bytes / (8d * 1024 * 1024))); }));
         var backupPath = Path.Combine(root, "cancelled-backup.db");
         var backup = runtime.BackupAsync(backupPath);
-        await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        var firstBackupOutcome = await Task.WhenAny(factory.Entered.Task, backup).WaitAsync(TimeSpan.FromSeconds(10));
+        if (ReferenceEquals(firstBackupOutcome, backup))
+        {
+            var receipt = await backup;
+            throw new InvalidOperationException("Backup did not enter the pacing boundary: " + Wire.Encode(receipt));
+        }
         var reading = Task.Run(runtime.SnapshotAsync);
         await Task.Delay(100);
         var readCompletedDuringIo = reading.IsCompleted;

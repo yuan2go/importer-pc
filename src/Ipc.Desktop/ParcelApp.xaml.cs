@@ -114,6 +114,9 @@ public partial class App : System.Windows.Application
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
             startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照。", "启动流程已返回");
             var application = (IParcelApplication)starting.Application;
+            // Setup/repair can authorize the same local authority in this process.
+            // Every new runtime entry returns to ordinary mode, including a controlled reopen.
+            await Ipc.Application.ParcelFlow.Desktop.WorkstationEntry.BeginRuntimeAsync(application);
             var initial = await Task.Run(application.SnapshotAsync);
             crashDiagnostics.SetContext(initial.RuntimeId.ToString(), string.Join(",", initial.Devices?.Select(d => d.DeviceId + ":" + d.Epoch) ?? []), initial.State);
             var effective = initial.Configuration.Effective;

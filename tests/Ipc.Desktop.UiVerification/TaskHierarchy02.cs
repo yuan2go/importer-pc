@@ -93,7 +93,9 @@ static partial class Program
         var controls = Descendants(host).OfType<SupplyStationPosition>().ToArray();
         var left = controls.Single(c => ReferenceEquals(c.DataContext, station.Left));
         var right = controls.Single(c => ReferenceEquals(c.DataContext, station.Right));
-        Check(!((Grid)right.FindName("TaskFields")).IsVisible && !((TextBox)right.FindName("CurrentBarcode")).IsVisible, "idle position has no empty task matrix or duplicate placeholder barcode");
+        Check(!((Grid)right.FindName("TaskFields")).IsVisible && ((Grid)right.FindName("ScanInformation")).IsVisible &&
+            ((TextBox)right.FindName("CurrentBarcode")) is { IsVisible: true, Text: "等待包裹" },
+            "WSL01 idle position retains the fixed scan group with an honest placeholder and no empty task matrix");
         Check(((Grid)left.FindName("TaskFields")).IsVisible && station.Left.WaveNo == "回执未包含", "valid receipt shows missing optional fields explicitly");
         var original = station.Left.Operation!;
         probe.Project = s => s with

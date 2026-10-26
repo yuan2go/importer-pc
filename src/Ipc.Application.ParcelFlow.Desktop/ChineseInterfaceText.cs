@@ -44,6 +44,7 @@ public static class ChineseInterfaceText
     }
     public static string Status(string value) => value switch
     {
+        "Authenticated" => "身份验证成功", "LoggedOut" => "操作员已退出", "Authorized" => "授权通过", "Unavailable" => "服务暂不可用",
         "Prepared" => "已准备", "Dispatching" => "发送中", "Unknown" => "结果待核对",
         "Rejected" => "已拒绝", "Accepted" => "已接受", "Conflict" => "存在冲突", "Cancelled" => "已取消",
         "Effective" => "运行中", "PendingRestart" => "已保存待重启", "ActivationFailed" => "启动未确认",
@@ -52,10 +53,15 @@ public static class ChineseInterfaceText
         "AmbiguousCodes" => "多个条码匹配", "IncompleteCandidates" => "候选不完整", "FilterTimeout" => "筛选超时",
         "InvalidPattern" => "筛选规则无效", "NoCode" => "未识别条码", "MultipleCodes" => "存在多个条码",
         "ExcludedCodes" => "命中排除规则", "InvalidCode" => "条码无效", "LegacySingleCode" => "旧版严格单码兼容",
+        "WaitingWeight" => "等待有效重量", "ResolvingWcs" => "正在请求格口", "WcsUnknown" => "上游结果待核对", "WcsRejected" => "上游明确拒绝", "SlotResolved" => "格口已取得",
+        "SubmittingPlc" => "控制器请求处理中", "PlcUnknown" => "控制器结果待核对", "PlcRejected" => "控制器明确拒绝", "PlcAccepted" => "控制器已接受", "PhysicalCompleted" => "已报告物理完成",
+        "Blocked" => "作业阻断", "CapturingImage" => "正在采集图像", "UploadingImage" => "正在上传原图", "ImageUnknown" => "图像阶段待核对", "ImageRejected" => "图像阶段拒绝",
+        "WeightTimedOut" => "称重超时", "Abandoned" => "未发送意图已处置", "UnpackRequired" => "需拆包检查",
         _ => value
     };
     public static string Notice(string value)
     {
+        if (value.StartsWith("Authentication unavailable:", StringComparison.Ordinal)) return "操作员认证服务暂不可用，请稍后重试或查看诊断。";
         // Translate known application explanations without changing source facts
         // or replacing identifiers supplied by an adapter or remote service.
         foreach (var (source, text) in Notices) value = value.Replace(source, text, StringComparison.Ordinal);
@@ -63,6 +69,20 @@ public static class ChineseInterfaceText
     }
     static readonly (string Source, string Text)[] Notices =
     [
+        ("Global software pause", "供包已暂停"),
+        ("SIMULATION identity; frozen only when a parcel is admitted", "模拟身份已验证，准入时记录到本件作业"),
+        ("Authenticated provider identity; frozen only at admission", "身份已验证，准入时记录到本件作业"),
+        ("Login is disabled or application stopped", "操作员登录未启用或业务已停止"),
+        ("Authentication resource is under maintenance", "操作员认证服务正在维护"),
+        ("Protect original unfinished operations before changing operator", "请先处理原有未完成作业，再更换操作员"),
+        ("Invalid identity input", "操作员账号或口令格式不正确"),
+        ("Authentication rejected; no operator changed", "身份验证未通过，原操作员保持不变"),
+        ("Authentication evidence is invalid", "身份凭据无效，请重新验证"),
+        ("No session or original unfinished operations remain protected", "没有可退出的会话或仍有未完成作业，请先核对原作业"),
+        ("New admission requires authentication; old snapshots retained", "新包裹入场前须重新验证身份，历史记录保留"),
+        ("Production NotReady: exact deployment qualification missing/expired", "生产资格尚未确认或已过期，请由管理人员核对部署资格"),
+        ("Position resource maintenance in progress; original intent retained", "本位设备维护中，原请求保留"),
+        ("Unresolved capacity exhausted", "待处理作业已达上限"),
         ("Software admission paused; this is not an emergency stop", "软件已暂停新入场；这不是安全急停"),
         ("Operator authentication required for new admission", "新入场前需要操作员认证"),
         ("Reader confirmation missing/expired", "读码设备确认缺失或已过期"),
@@ -89,7 +109,7 @@ public static class ChineseInterfaceText
     public static string Message(string value)
     {
         var parts = value.Split(" · ", 2);
-        return Notice(Status(parts[0]) + (parts.Length == 2 ? " · " + parts[1] : ""));
+        return Notice(Status(parts[0])) + (parts.Length == 2 ? " · " + Notice(parts[1]) : "");
     }
     public static string Choice(object? value) => value switch
     {

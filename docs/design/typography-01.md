@@ -1,3 +1,5 @@
+> 2026-10-27 作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](../work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
+
 # 供包台字体与排版 · TYPOGRAPHY-01
 
 2026-10-24 工作包工程规范，适用于 Windows 11 原生 WPF 两套宿主、Sportmaster、参数、查询、管理/登录、保存核对、安装与首次配置。本规范覆盖旧当前指引中冲突的字体、字重及字号；PARAM-UX-02/V3、管理模式和 HIERARCHY-02 的导航、字段归属、空态及业务守卫继续有效。原型和历史截图不重制，清理前字节见[归档](../archive/pre-typography-01/README.md)。

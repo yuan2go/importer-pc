@@ -20,6 +20,7 @@ static partial class Program
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS EXPERIENCE " + message); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationCode = "SYNTHETIC-STATION" };
+        config = config with { MaintenanceLogin = new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }) };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -53,7 +54,9 @@ static partial class Program
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
-        Check(model.ComponentLabel(vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability!) == "维护认证", "daily component directory displays its existing business role");
+        var historicalMaintenance = vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability;
+        Check((historicalMaintenance is null || model.IsLegacyMaintenanceOnly(historicalMaintenance)) && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
+            "daily directory hides historical maintenance-only authentication while retaining the complete candidate");
         window.UpdateLayout();
         Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
             ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
@@ -114,11 +117,14 @@ static partial class Program
         if (!baseline)
         {
             vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync();
-            var role = vm.ConfigurationRoles.Single(r => r.Role == "维护认证");
+            var role = vm.ConfigurationRoles.Single(r => r.Role == "登录");
+            var priorRole = role.Selection;
+            role.Selection = role.Choices.Single(c => c.Capability?.InstanceId == "login.1");
             var original = role.Selection;
-            var replacement = role.Choices.Single(c => c.Capability?.InstanceId == "login.1");
+            var historicalBinding = vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability;
+            var replacement = role.Choices.Single(c => ReferenceEquals(c.Capability, historicalBinding));
             replacement.Capability!.Provider = original.Capability!.Provider;
-            control.ShowPage(3, "维护认证"); window.UpdateLayout();
+            control.ShowPage(3, "操作员登录"); window.UpdateLayout();
             var directory = Descendants(control).OfType<ListBox>().Single(b => b.Name == "ParameterDirectory");
             var selectedPage = directory.SelectedItem;
             var retainedModel = control.Model;
@@ -127,19 +133,19 @@ static partial class Program
             role.Selection = replacement; window.UpdateLayout();
             Check(directory.SelectedItem?.ToString()?.StartsWith("身份认证", StringComparison.Ordinal) == true &&
                 !directory.SelectedItem.ToString()!.Contains(original.Capability.InstanceId, StringComparison.Ordinal) &&
-                directory.Items.Cast<object>().Count(p => p.ToString() == "维护认证") == 1,
+                directory.Items.Cast<object>().Count(p => p.ToString() == "操作员登录") == 1,
                 "role reassignment relabels old and new component directory entries immediately");
             Check(ReferenceEquals(control.Model, retainedModel) && ReferenceEquals(directory.SelectedItem, selectedPage) &&
                 target.IsKeyboardFocused && target.SelectionLength == 5 && target.Text == "reference://synthetic-maintenance-draft",
                 "role relabeling preserves selected object, editor, focus, selection and unsaved draft");
-            Check(control.ShowPage(3, "维护认证") && control.NavigateTo("login.1/Target"), "updated role label navigates to the newly bound instance");
+            Check(control.ShowPage(3, "操作员登录") && control.NavigateTo(replacement.Capability.InstanceId + "/Target"), "updated role label navigates to the newly bound instance");
             var searchBox = Descendants(control).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "ParameterSearch");
-            searchBox.Text = "维护认证"; window.UpdateLayout();
-            Check(Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 维护认证"), "role name is searchable on the newly bound instance");
+            searchBox.Text = "操作员登录"; window.UpdateLayout();
+            Check(Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 操作员登录"), "role name is searchable on the newly bound instance");
             role.Selection = role.Choices.Single(c => c.Capability is null); window.UpdateLayout();
-            Check(!directory.Items.Cast<object>().Any(p => p.ToString() == "维护认证") &&
-                !Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 维护认证"), "unbinding clears stale role names and search results");
-            role.Selection = original; searchBox.Clear(); control.ShowPage(3, "维护认证"); window.UpdateLayout(); Capture("role-labels");
+            Check(!directory.Items.Cast<object>().Any(p => p.ToString() == "操作员登录") &&
+                !Descendants(control).OfType<TextBlock>().Any(t => t.Text == "组件 / 操作员登录"), "unbinding clears stale role names and search results");
+            role.Selection = priorRole; searchBox.Clear(); control.NavigateTo(original.Capability.InstanceId + "/Target"); window.UpdateLayout(); Capture("role-labels");
         }
         if (interactive)
         {

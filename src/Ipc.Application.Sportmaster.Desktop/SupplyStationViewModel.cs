@@ -33,6 +33,14 @@ public sealed class SupplyStationViewModel : ParcelViewModel
             return health.Detail.Contains("RCS heartbeat HTTP ", StringComparison.Ordinal) ? "RCS 服务：在线" : "RCS 服务：等待连接确认";
         }
     }
+    public ParcelStatusPresentation RcsPresentation => RcsServiceStatus switch
+    {
+        "RCS 服务：在线" => ParcelPresentation.Accepted("RCS：在线（心跳已确认）"),
+        "RCS 服务：离线" => ParcelPresentation.Rejected("RCS：离线"),
+        "RCS 服务：模拟" => ParcelPresentation.Neutral("RCS：模拟连接"),
+        "RCS 服务：待配置" or "RCS 服务：未配置" => ParcelPresentation.Unknown("RCS：待配置"),
+        _ => ParcelPresentation.Unknown("RCS：连接状态待确认")
+    };
     public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停新入场" :
         Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有结果待核对" :
         Snapshot?.BlockingReasons.Length > 0 ? "有作业阻断" : Status;
@@ -71,7 +79,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
-        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode)})Changed(name);
+        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode),nameof(RcsServiceStatus),nameof(RcsPresentation)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
@@ -134,6 +142,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
+    public string CameraAddress { get; private set; } = "尚未配置地址";
     public ParcelOperation? Operation { get; private set; }
     public ParcelInputSnapshot? Input { get; private set; }
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
@@ -204,6 +213,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "；下方原请求只属于该原作业，格口不属于本次观察。" : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
+    public ParcelStatusPresentation DevicePresentation { get; private set; } = ParcelPresentation.Unknown("相机：状态待确认");
     public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string NextStep => !owner.Fresh ? "先恢复状态读取，再核对本位。" : InputUnadmitted ?
@@ -247,6 +257,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         var reader = snapshot is null ? null : ParcelBindings.Readers(snapshot.Configuration.Effective).SingleOrDefault(r => r.DeviceId == ReaderId);
         var extension = snapshot?.Configuration.Effective.Extensions?.Instances.SingleOrDefault(x => reader?.Driver == "extension:" + x.Id);
         var address = extension?.Parameters.GetValueOrDefault("device.ip");
+        if (reader?.Driver == "tcp-line") address = reader.Parameters?.GetValueOrDefault("device.ip");
+        CameraAddress = string.IsNullOrWhiteSpace(address) ? "尚未配置地址" : "相机地址：" + address;
         ReaderIdentity = string.IsNullOrWhiteSpace(address) ? ReaderId : address + " · " + ReaderId;
         var recent = snapshot?.Operations.Where(x => (x.PositionId ?? "main") == PositionId)
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
@@ -259,8 +271,14 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DeviceStatus = !fresh ? "设备旧状态已失效" : snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? "待配置 · 请到参数设置填写连接" : device is null ? "设备状态未取得" : device.IsValid(now) ?
-            (device.Source.StartsWith("TCP:client-LF:", StringComparison.Ordinal) ? "TCP 已连接 · " : "设备已确认 · ") + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · 请查看本相机诊断";
+        DevicePresentation = !fresh ? ParcelPresentation.Unknown("相机：状态已失效") :
+            snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") :
+            device is null ? ParcelPresentation.Unknown("相机：状态待确认") :
+            device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation
+                ? ParcelPresentation.Neutral("相机：模拟连接") : ParcelPresentation.Accepted("相机：在线") :
+            device.Health is DeviceHealth.Disconnected or DeviceHealth.Faulted or DeviceHealth.Stopped or DeviceHealth.Stopping
+                ? ParcelPresentation.Rejected("相机：离线") : ParcelPresentation.Unknown("相机：连接状态待确认");
+        DeviceStatus = DevicePresentation.Text + (device?.ConfirmedAt is { } confirmed ? " · 最后确认 " + confirmed.ToLocalTime().ToString("HH:mm:ss") : "");
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
         CanAdmit = !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
@@ -273,7 +291,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity),
+            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),

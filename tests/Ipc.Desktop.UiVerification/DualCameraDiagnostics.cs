@@ -38,7 +38,7 @@ static partial class Program
         try
         {
             window.Show(); await SetClient(window, 1092, 614); await window.ViewModel.RefreshDisplayAsync();
-            Check(window.ViewModel.Right.DeviceLabel == "TCP 已连接" && window.ViewModel.Left.DeviceLabel.Contains("未就绪"), "workstation separates local TCP establishment from failed source");
+            Check(window.ViewModel.Right.DeviceLabel == "相机：模拟连接" && window.ViewModel.Left.DeviceLabel == "相机：离线", "workstation distinguishes confirmed simulated connection from failed source");
             window.ShowPositionDiagnostics(window.ViewModel.Left);
             foreach (var expander in Descendants(window).OfType<Expander>().Where(x => x.Header?.ToString() == "当前对象运行详情")) expander.IsExpanded = true;
             await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();

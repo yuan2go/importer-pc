@@ -1,0 +1,344 @@
+PASS OPS: unused simulation relocation preserves every original row while allowing additional maintenance audit
+PASS OPS: relocation refuses changed original audit instead of silently accepting a fresh ledger
+PASS OPS: even one original operation prevents the unused-simulation relocation exception
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: rejected new passwords leave the original unconfigured state
+PASS OPS: five repeated numeric characters can configure and enter the real management authority
+PASS OPS: changing to fewer than five characters is rejected by the same service policy
+PASS OPS: rejected password replacement preserves the current grant and credential
+PASS OPS: five-digit replacement revokes old authorization and authenticates only the new password
+PASS OPS: numeric passwords are not persisted in plaintext
+PASS OPS: no default management password opens the mode
+PASS OPS: direct service calls reject before management-password setup
+PASS OPS: initial management-password setup cannot overwrite an existing password
+PASS OPS: credential file contains salted hashes rather than passwords
+PASS OPS: configured-mode marker prevents a missing credential file from reopening setup
+PASS OPS: missing configured mode credentials cannot be silently replaced
+PASS OPS: invalid credential grants no session 0
+PASS OPS: invalid credential grants no session 1
+PASS OPS: invalid credential grants no session 2
+PASS OPS: invalid credential grants no session 3
+PASS OPS: invalid credential grants no session 4
+PASS OPS: persisted login lockout survives a new authenticator
+PASS OPS: real password hash authentication succeeds
+PASS OPS: a copied helper ticket cannot change its server-bound request hash
+PASS OPS: a helper ticket cannot extend its server-bound expiry
+PASS OPS: a helper ticket cannot mint another one-use authorization
+PASS OPS: helper proof cannot borrow or forge a different management-mode session
+PASS OPS: elevated helper delegation is single-use rather than Windows-only authorization
+PASS OPS: helper authorization is bound to the exact original maintenance request
+PASS OPS: changing the one mode password immediately revokes pending tasks and the original mode
+PASS OPS: password replacement invalidates already-issued helper delegation
+PASS OPS: old password stops working and the replacement re-enters management mode without a username
+PASS OPS: one management password is changed only from an active mode
+PASS OPS: normal management mode API has one password and no account enumeration or maintenance
+PASS OPS: old configured account ledger opens no mode and explicitly requires conversion
+PASS OPS: first mode setup cannot overwrite old software credentials
+PASS OPS: failed legacy conversion preserves original credential bytes
+PASS OPS: verified old credentials convert once into a new independent station mode password
+PASS OPS: conversion retains old bytes and stores a single credential rather than a hidden account
+PASS OPS: legacy conversion cannot replace an already-configured mode password
+PASS OPS: missing new mode credentials fail closed instead of falling back to retained old accounts
+PASS OPS: session expiry revokes authorization and pending task tokens
+PASS OPS: session expiry is recorded in the actual authentication journal
+PASS OPS: actual package-less RCS requirements reject unsupported authoritative query
+PASS OPS: unprotected local mode state cannot satisfy production authentication capability
+PASS OPS: entering management mode never creates or changes a parcel operator
+PASS OPS: management mode entry and parameter catalog reads do not pause feeding
+PASS OPS: management-authorized configuration save still requires pause and drain
+PASS OPS: optional operator login disabled still protects parameter reads
+PASS OPS: operator snapshot cannot expose the editable provider configuration
+PASS OPS: direct candidate validation rejects inactive management mode
+PASS OPS: direct save cannot reuse a revoked mode grant
+PASS OPS: grep query is bounded to 200 records per page
+PASS OPS: query results redact sensitive values before exposure
+PASS OPS: context uses original adjacent records across rotations, not previous/next matches
+PASS OPS: full original exception stacks survive query and context
+PASS OPS: export traverses every match beyond the current page
+PASS OPS: exports include original source/query range and exclude credentials
+PASS OPS: time-range export includes nonmatching records
+PASS OPS: overlapping original contexts export once without duplicates
+PASS OPS: export cannot write into managed business/log sources
+PASS OPS: existing export files remain protected
+PASS OPS: cancelled exports do not publish partial success
+PASS OPS: failed and cancelled exports clean partial files
+PASS OPS: invalid regex is reported without a shell invocation
+PASS OPS: catastrophic regex terminates under a per-record timeout
+PASS OPS: revoked sessions cannot read previously opened context
+PASS OPS: revoked sessions cannot export an old selection
+PASS OPS: both feeding positions advance correctly while querying logs without the business gate: 
+PASS OPS: streaming complete export and another admitted parcel both finish without sharing the business lock
+PASS OPS: audit setup confirms the actual pause receipt: BusinessReceipt { Status = Persisted, Reason = Application command committed, Revision = 16 }
+PASS OPS: audit setup waits for paused, authorized and drained configuration availability: Software admission paused; this is not an emergency stop
+PASS OPS: management mode preserves the existing unified save and complete-candidate guard for an unchanged revision; receipt=BusinessReceipt { Status = Unchanged, Reason = No configuration changes; Effective and revision retained, Revision = 19 }
+PASS OPS: parameter audit records a separate management-mode grant without inventing an operator account
+PASS OPS: operator authentication remains its own real provider session
+PASS OPS: exiting and re-entering management mode cannot rewrite the operator or an in-flight frozen parcel identity
+PASS OPS: lost reply retains one original unknown request
+PASS OPS: unsupported authoritative query and repeated input never resend or replace the frozen original request
+PASS new-site authoritative discovery offers first configuration without starting a runtime or creating a database
+PASS unavailable saved provider rejects the entire replacement draft
+PASS failed offline resume preserves every current unsaved field
+PASS first configuration uses the existing revision/repair authority and records machine custody before the first business database
+PASS a copied origin file without a fenced handoff cannot certify another source directory
+PASS explicit new-site configuration starts the approved candidate without first starting the reference seed
+PASS previous startup facts refuse a replacement empty database even without receipt or image custody
+PASS missing previously-started database preserves original ledger and retained database bytes without creating a new ledger
+PASS database without its original configuration ledger cannot start from a replacement seed
+PASS missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim
+PASS original custody without a database cannot be replaced by a new empty business ledger
+PASS missing-database rejection preserves raw custody and creates no replacement authority
+Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.
+PASS original unconfirmed configuration fails resource construction
+PASS settled DB7 migrates to DB9 before failed initial resources and retains the repair route
+PASS failed startup is durable and does not confirm Effective
+PASS incomplete draft resumes without becoming Pending or changing Effective
+PASS actual Windows DPAPI output excludes plaintext secret marker
+PASS concurrent stale draft cannot overwrite newer input
+PASS ordinary Pending still cannot bypass unconfirmed original
+PASS failed repair candidate retains the original Effective
+PASS candidate failure does not confirm or erase pending repair evidence
+PASS interrupted repair remains explicit-restage-only with original Effective
+PASS stale initial repair cannot overwrite a newer intent
+PASS repair intent keeps old Effective and confirmation until candidate resources succeed
+PASS correct candidate starts despite permanently broken original and confirms only after resource startup
+PASS original repair bytes and failed attempts remain in authoritative envelope
+PASS history/settings use the same runtime and cannot reconstruct readers
+PASS scheduled backup stays pending without authenticated pause and never pauses production itself
+PASS synthetic maintenance authentication grants the existing backup permission
+PASS actual in-flight health reservation blocks maintenance even after authentication
+PASS live in-flight maintenance guard rejects draft persistence without bypassing authorization
+PASS in-flight refusal preserves both encrypted draft bytes and current invalid editor input
+PASS maintenance becomes available only after the actual external reservation drains
+PASS running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration
+PASS scheduled path actually creates the original complete recovery set engine output
+PASS backup count budget leaves the prior complete set and reports failure without deletion
+PASS backup list verifies the actual scheduled complete set
+PASS scheduled complete backup actually restores to an isolated new root and retains the original root
+PASS complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input
+PASS upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes
+PASS new-site template excludes stable devices, endpoints, secrets, numeric ranges and original backup path
+PASS isolated recovery cannot be cleared through initial repair
+PASS refused repair preserves original envelope bytes
+PASS stable filtered cursor preserves separate same-code entities and excludes later admissions
+PASS history metrics cannot count slot resolution as physical completion
+PASS CSV uses safe explicit text plus exact UTF-8 base64 and the same frozen filter
+PASS export observes cancellation
+PASS cancelled export publishes no partial CSV and keeps an accurate receipt
+PASS export cannot overwrite an existing final result
+PASS lost-after-commit fixture creates one original Unknown request
+PASS initial repair refuses existing Unknown responsibility
+PASS upgrade/uninstall preflight cannot bypass original Unknown responsibility
+PASS same-source repair can back up Unknown originals without changing the configuration or clearing responsibility
+PASS DB7 Unknown remains on its original reader before the DB8 migration
+PASS refused DB7 upgrade preserves original request database and format
+PASS restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown
+PASS full restore preserves the exact machine-bound source ciphertext
+PASS historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised
+PASS matching full backup fences the original Unknown owner before handoff commit and keeps the target isolated
+PASS same-machine source provenance follows the bounded original fenced lineage without issuing a replacement claim
+PASS retired original Unknown root cannot start a second business owner
+PASS DB7 reader refuses the new DB8 semantic floor before writable open
+PASS refused prior reader preserves original database bytes
+PASS DB7 restore source cannot retire before old readers are fenced by DB8
+PASS refused legacy handoff keeps the original reader and does not commit a false source fence
+PASS legacy root without original machine custody cannot be silently certified by copying a policy
+PASS legacy backup/repair never mints a new machine claim or a false source fence
+PASS repair preserves the full later envelope including ordinary stage and failed retry history
+PASS COMM CORE COMPLETE
+PASS OPS: operation lifetime uses the real mode credential and controllable clock
+PASS OPS: consumed operation reauthorizes beyond two-minute admission while the original session remains live
+PASS OPS: ordinary delegation keeps its original two-minute limit
+PASS OPS: expired admission cannot start a long operation
+PASS OPS: long operation cannot switch its fixed request
+PASS OPS: consumed long operation cannot start a second helper
+PASS OPS: operation absolute budget expires before a still-live session
+PASS OPS: two-hour operation budget never extends the original fifteen-minute session
+PASS OPS: fresh explicit mode authentication is required after expiry
+PASS OPS: explicit mode exit revokes an admitted long operation
+PASS OPS: mode can be explicitly reentered after operation revocation
+PASS OPS: password replacement revokes operation continuation
+PASS OPS: only current password can issue subsequent operation authorization
+PASS OPS: invalid or excessive continuation budget rejected
+PASS OPS: invalid or excessive continuation budget rejected
+PASS OPS: invalid or excessive continuation budget rejected
+PASS LIA late completed original receipt plus matching registration resolves installation Unknown
+PASS LIA committed registration without final projection receipt does not invite reinstall
+PASS LIA exclusive original inspection identifies an interrupted pre-commit operation
+PASS LIA different reviewed identity cannot borrow original installation success
+PASS LIA different authoritative registration cannot become installation success
+PASS LIA real software-log selection pins its actual source file
+PASS LIA leaving/replacing a log selection releases pinned source handles idempotently
+PASS LIA new-query source failure remains observable
+PASS LIA failed new query retires its unpublished selection and all source handles
+PASS LIA actual ingress admitted distinct same-code entity 0
+PASS LIA actual ingress admitted distinct same-code entity 1
+PASS LIA actual ingress admitted distinct same-code entity 2
+PASS LIA actual ingress admitted distinct same-code entity 3
+PASS LIA actual ingress admitted distinct same-code entity 4
+PASS LIA actual ingress admitted distinct same-code entity 5
+PASS LIA actual ingress admitted distinct same-code entity 6
+PASS LIA actual ingress admitted distinct same-code entity 7
+PASS LIA actual ingress admitted distinct same-code entity 8
+PASS LIA actual ingress admitted distinct same-code entity 9
+PASS LIA actual ingress admitted distinct same-code entity 10
+PASS LIA actual ingress admitted distinct same-code entity 11
+PASS LIA actual ingress admitted distinct same-code entity 12
+PASS LIA actual ingress admitted distinct same-code entity 13
+PASS LIA actual ingress admitted distinct same-code entity 14
+PASS LIA actual ingress admitted distinct same-code entity 15
+PASS LIA actual ingress admitted distinct same-code entity 16
+PASS LIA actual ingress admitted distinct same-code entity 17
+PASS LIA actual ingress admitted distinct same-code entity 18
+PASS LIA actual ingress admitted distinct same-code entity 19
+PASS LIA actual ingress admitted distinct same-code entity 20
+PASS LIA actual ingress admitted distinct same-code entity 21
+PASS LIA actual ingress admitted distinct same-code entity 22
+PASS LIA actual ingress admitted distinct same-code entity 23
+PASS LIA actual ingress admitted distinct same-code entity 24
+PASS LIA actual ingress admitted distinct same-code entity 25
+PASS LIA actual ingress admitted distinct same-code entity 26
+PASS LIA actual ingress admitted distinct same-code entity 27
+PASS LIA actual ingress admitted distinct same-code entity 28
+PASS LIA actual ingress admitted distinct same-code entity 29
+PASS LIA actual ingress admitted distinct same-code entity 30
+PASS LIA actual ingress admitted distinct same-code entity 31
+PASS LIA actual ingress admitted distinct same-code entity 32
+PASS LIA actual ingress admitted distinct same-code entity 33
+PASS LIA actual ingress admitted distinct same-code entity 34
+PASS LIA actual ingress admitted distinct same-code entity 35
+PASS LIA actual ingress admitted distinct same-code entity 36
+PASS LIA actual ingress admitted distinct same-code entity 37
+PASS LIA actual ingress admitted distinct same-code entity 38
+PASS LIA actual ingress admitted distinct same-code entity 39
+PASS LIA actual ingress admitted distinct same-code entity 40
+PASS LIA actual ingress admitted distinct same-code entity 41
+PASS LIA actual ingress admitted distinct same-code entity 42
+PASS LIA actual ingress admitted distinct same-code entity 43
+PASS LIA actual ingress admitted distinct same-code entity 44
+PASS LIA actual ingress admitted distinct same-code entity 45
+PASS LIA actual ingress admitted distinct same-code entity 46
+PASS LIA actual ingress admitted distinct same-code entity 47
+PASS LIA actual ingress admitted distinct same-code entity 48
+PASS LIA actual ingress admitted distinct same-code entity 49
+PASS LIA actual ingress admitted distinct same-code entity 50
+PASS LIA actual ingress admitted distinct same-code entity 51
+PASS LIA actual ingress admitted distinct same-code entity 52
+PASS LIA actual ingress admitted distinct same-code entity 53
+PASS LIA actual ingress admitted distinct same-code entity 54
+PASS LIA actual ingress admitted distinct same-code entity 55
+PASS LIA actual ingress admitted distinct same-code entity 56
+PASS LIA actual ingress admitted distinct same-code entity 57
+PASS LIA actual ingress admitted distinct same-code entity 58
+PASS LIA actual ingress admitted distinct same-code entity 59
+PASS LIA actual ingress admitted distinct same-code entity 60
+PASS LIA actual ingress admitted distinct same-code entity 61
+PASS LIA actual ingress admitted distinct same-code entity 62
+PASS LIA actual ingress admitted distinct same-code entity 63
+PASS LIA actual ingress admitted distinct same-code entity 64
+PASS LIA actual ingress admitted distinct same-code entity 65
+PASS LIA actual ingress admitted distinct same-code entity 66
+PASS LIA actual ingress admitted distinct same-code entity 67
+PASS LIA actual ingress admitted distinct same-code entity 68
+PASS LIA actual ingress admitted distinct same-code entity 69
+PASS LIA actual ingress admitted distinct same-code entity 70
+PASS LIA actual ingress admitted distinct same-code entity 71
+PASS LIA actual ingress admitted distinct same-code entity 72
+PASS LIA actual ingress admitted distinct same-code entity 73
+PASS LIA actual ingress admitted distinct same-code entity 74
+PASS LIA actual ingress admitted distinct same-code entity 75
+PASS LIA actual ingress admitted distinct same-code entity 76
+PASS LIA actual ingress admitted distinct same-code entity 77
+PASS LIA actual ingress admitted distinct same-code entity 78
+PASS LIA actual ingress admitted distinct same-code entity 79
+PASS LIA actual ingress admitted distinct same-code entity 80
+PASS LIA actual ingress admitted distinct same-code entity 81
+PASS LIA actual ingress admitted distinct same-code entity 82
+PASS LIA actual ingress admitted distinct same-code entity 83
+PASS LIA actual ingress admitted distinct same-code entity 84
+PASS LIA actual ingress admitted distinct same-code entity 85
+PASS LIA actual ingress admitted distinct same-code entity 86
+PASS LIA actual ingress admitted distinct same-code entity 87
+PASS LIA actual ingress admitted distinct same-code entity 88
+PASS LIA actual ingress admitted distinct same-code entity 89
+PASS LIA actual ingress admitted distinct same-code entity 90
+PASS LIA actual ingress admitted distinct same-code entity 91
+PASS LIA actual ingress admitted distinct same-code entity 92
+PASS LIA actual ingress admitted distinct same-code entity 93
+PASS LIA actual ingress admitted distinct same-code entity 94
+PASS LIA actual ingress admitted distinct same-code entity 95
+PASS LIA actual ingress admitted distinct same-code entity 96
+PASS LIA actual ingress admitted distinct same-code entity 97
+PASS LIA actual ingress admitted distinct same-code entity 98
+PASS LIA actual ingress admitted distinct same-code entity 99
+PASS LIA actual ingress admitted distinct same-code entity 100
+PASS LIA actual ingress admitted distinct same-code entity 101
+PASS LIA actual ingress admitted distinct same-code entity 102
+PASS LIA actual ingress admitted distinct same-code entity 103
+PASS LIA actual ingress admitted distinct same-code entity 104
+PASS LIA actual ingress admitted distinct same-code entity 105
+PASS LIA actual ingress admitted distinct same-code entity 106
+PASS LIA actual ingress admitted distinct same-code entity 107
+PASS LIA actual ingress admitted distinct same-code entity 108
+PASS LIA actual ingress admitted distinct same-code entity 109
+PASS LIA actual ingress admitted distinct same-code entity 110
+PASS LIA actual ingress admitted distinct same-code entity 111
+PASS LIA actual ingress admitted distinct same-code entity 112
+PASS LIA actual ingress admitted distinct same-code entity 113
+PASS LIA actual ingress admitted distinct same-code entity 114
+PASS LIA actual ingress admitted distinct same-code entity 115
+PASS LIA actual ingress admitted distinct same-code entity 116
+PASS LIA actual ingress admitted distinct same-code entity 117
+PASS LIA actual ingress admitted distinct same-code entity 118
+PASS LIA actual ingress admitted distinct same-code entity 119
+PASS LIA actual ingress admitted distinct same-code entity 120
+PASS LIA actual ingress admitted distinct same-code entity 121
+PASS LIA actual ingress admitted distinct same-code entity 122
+PASS LIA actual ingress admitted distinct same-code entity 123
+PASS LIA actual ingress admitted distinct same-code entity 124
+PASS LIA actual ingress admitted distinct same-code entity 125
+PASS LIA actual ingress admitted distinct same-code entity 126
+PASS LIA actual ingress admitted distinct same-code entity 127
+PASS LIA actual ingress admitted distinct same-code entity 128
+PASS LIA actual ingress admitted distinct same-code entity 129
+PASS LIA actual ingress admitted distinct same-code entity 130
+PASS LIA actual ingress admitted distinct same-code entity 131
+PASS LIA actual ingress admitted distinct same-code entity 132
+PASS LIA actual ingress admitted distinct same-code entity 133
+PASS LIA actual ingress admitted distinct same-code entity 134
+PASS LIA actual ingress admitted distinct same-code entity 135
+PASS LIA actual ingress admitted distinct same-code entity 136
+PASS LIA actual ingress admitted distinct same-code entity 137
+PASS LIA actual ingress admitted distinct same-code entity 138
+PASS LIA actual ingress admitted distinct same-code entity 139
+PASS LIA actual ingress admitted distinct same-code entity 140
+PASS LIA actual ingress admitted distinct same-code entity 141
+PASS LIA actual ingress admitted distinct same-code entity 142
+PASS LIA actual ingress admitted distinct same-code entity 143
+PASS LIA actual ingress admitted distinct same-code entity 144
+PASS LIA actual ingress admitted distinct same-code entity 145
+PASS LIA actual ingress admitted distinct same-code entity 146
+PASS LIA actual ingress admitted distinct same-code entity 147
+PASS LIA actual ingress admitted distinct same-code entity 148
+PASS LIA actual ingress admitted distinct same-code entity 149
+PASS LIA actual ingress admitted distinct same-code entity 150
+PASS LIA actual ingress admitted distinct same-code entity 151
+PASS LIA actual ingress admitted distinct same-code entity 152
+PASS LIA complete real query contract publishes the first bounded page and explicit fixed upper limit
+PASS LIA four pages share the original 153-entity boundary despite newer admitted input
+PASS LIA cross-page detail and command owner remain the originally selected entity
+PASS LIA previous page reuses its original cursor
+PASS LIA first screen reuses the same selection instead of including newer records
+PASS LIA editing immediately marks old results and disables pagination without changing applied range
+PASS LIA changed conditions cannot advance the original query
+PASS LIA changed conditions cannot export under a misleading filter
+PASS LIA real fixed-selection export preserves exact leading-zero barcode bytes separately from spreadsheet text
+PASS LIA editing during a real cancellable query retains previous results and releases the read
+Unhandled exception. System.InvalidOperationException: business label selection maps to the actual stable position ID
+   at LifecycleOptimization.Check(Boolean value, String reason) in D:\scd\evidence\core\LifecycleOptimization.cs:line 11
+   at LifecycleOptimization.Run(String workspace, String root) in D:\scd\evidence\core\LifecycleOptimization.cs:line 60
+   at LifecycleOptimization.Run(String workspace, String root) in D:\scd\evidence\core\LifecycleOptimization.cs:line 76
+   at Program.<Main>$(String[] args) in D:\scd\evidence\core\Program.cs:line 9
+   at Program.<Main>(String[] args)

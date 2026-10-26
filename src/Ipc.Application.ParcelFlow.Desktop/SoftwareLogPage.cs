@@ -7,13 +7,17 @@ using Microsoft.Win32;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed class SoftwareLogControl : UserControl
+public sealed partial class SoftwareLogControl : UserControl
 {
     readonly IWorkstationAdministration service;
     readonly TextBox from = Input(DateTimeOffset.Now.AddDays(-1).ToString("O")), to = Input(DateTimeOffset.Now.AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "使用正则表达式（有执行时限）", MinHeight = 44 };
-    readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
+    readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
+    readonly ComboBox viewMode = new() { ItemsSource = new[] { "列表视图", "终端视图" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 120, Margin = new(0, 0, 8, 4) };
+    readonly TextBox terminal = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.NoWrap,
+        Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 24, 32)), Foreground = System.Windows.Media.Brushes.WhiteSmoke,
+        Padding = new(12), VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Visibility = Visibility.Collapsed };
     readonly TextBox detail = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
     readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap };
     readonly StackPanel filters = new();
@@ -51,6 +55,12 @@ public sealed class SoftwareLogControl : UserControl
         searchButton.Style = (Style)FindResource("ParameterPrimaryAction");
         previousButton = Action("上一页", () => Load(Math.Max(0, offset - 200)));
         nextButton = Action("下一页", () => Load(offset + 200));
+        actions.Children.Add(viewMode);
+        System.Windows.Automation.AutomationProperties.SetName(viewMode, "日志显示方式");
+        System.Windows.Automation.AutomationProperties.SetName(terminal, "终端日志，可选择复制，当前页最多200条");
+        System.Windows.Automation.AutomationProperties.SetAutomationId(terminal, "TerminalLogView");
+        viewMode.ToolTip = "切换同一查询快照的显示方式；终端显示当前页原文，多行内容展开，可翻页和完整导出。";
+        viewMode.SelectionChanged += (_, _) => { results.Visibility = viewMode.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed; terminal.Visibility = viewMode.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed; RuntimeViewChanged(); UpdateEmpty(); };
         cancel = new Button { Content = "取消当前任务", Margin = new(0, 0, 0, 4) }; cancel.Click += (_, _) => pending?.Cancel(); actions.Children.Add(cancel);
         var headerScroll = new ScrollViewer { Content = filters, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled }; header.Children.Add(headerScroll);
         var search = new WrapPanel(); filters.Children.Add(search);
@@ -116,7 +126,7 @@ public sealed class SoftwareLogControl : UserControl
         results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 130, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 82, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = summary }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = (Style)FindResource("QueryCodeText") });
-        var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(empty); root.Children.Add(panel);
+        var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(terminal); panel.Children.Add(empty); root.Children.Add(panel);
         results.SizeChanged += (_, _) => UpdateEmpty();
         SizeChanged += (_, _) =>
         {
@@ -148,6 +158,7 @@ public sealed class SoftwareLogControl : UserControl
         results.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && results.SelectedItem is SoftwareLogEntry && !busy) { e.Handled = true; await Run(LoadContext); } };
         foreach (var box in new[] { from, to, keyword, source }) box.TextChanged += (_, _) => InvalidateSelection();
         regex.Checked += (_, _) => InvalidateSelection(); regex.Unchecked += (_, _) => InvalidateSelection(); level.SelectionChanged += (_, _) => InvalidateSelection();
+        InitializeRuntimeDiagnostics(actions);
         Unloaded += (_, _) => Revoke(); status.Text = "尚未查询。"; UpdateActions();
     }
     void UpdateActions()
@@ -163,14 +174,16 @@ public sealed class SoftwareLogControl : UserControl
         exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
         locateExport.IsEnabled = !busy && exportedFile is not null;
         cancel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
+        UpdateRuntimeDiagnosticActions();
         UpdateEmpty();
     }
     // At minimum height the status line owns the empty message; never paint it over column headers.
-    void UpdateEmpty() => empty.Visibility = results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
+    void UpdateEmpty() => empty.Visibility = viewMode.SelectedIndex == 0 && results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
     {
+        StopLive(false);
         if (selection is { } original && service is ISoftwareLogSelectionLifetime lifetime) lifetime.ReleaseLogSelection(original);
-        viewVersion++; pending?.Cancel(); summary.Values = new Dictionary<string, string>(); selection = null; more = false; offset = 0; results.ItemsSource = null; ClearDetail();
+        viewVersion++; pending?.Cancel(); summary.Values = new Dictionary<string, string>(); selection = null; more = false; offset = 0; results.ItemsSource = null; historyTerminalText = ""; terminal.Clear(); ClearDetail();
         status.Text = "筛选已改变，请重新查询。"; empty.Text = "填写条件后查询日志"; UpdateActions();
     }
     void ClearDetail()
@@ -183,6 +196,7 @@ public sealed class SoftwareLogControl : UserControl
     }
     public void Revoke()
     {
+        RevokeRuntimeDiagnostics();
         InvalidateSelection(); status.Text = "查询已关闭。进入本页后请重新查询。";
         exportedFile = null; query = null; UpdateActions();
         diagnosticText.Clear(); diagnostics.IsExpanded = false; diagnostics.Visibility = Visibility.Collapsed;
@@ -190,10 +204,11 @@ public sealed class SoftwareLogControl : UserControl
     static TextBox Input(string text) => new() { Text = text, MinHeight = 44, VerticalContentAlignment = VerticalAlignment.Center };
     async Task Search()
     {
+        StopLive(false);
         var candidate = ReadQuery();
         if (selection is { } original && service is ISoftwareLogSelectionLifetime lifetime) lifetime.ReleaseLogSelection(original);
         query = candidate; selection = null; more = false; offset = 0;
-        results.ItemsSource = null; ClearDetail(); UpdateActions();
+        results.ItemsSource = null; historyTerminalText = ""; terminal.Clear(); ClearDetail(); UpdateActions();
         await Load(0);
     }
     SoftwareLogQuery ReadQuery()
@@ -231,15 +246,16 @@ public sealed class SoftwareLogControl : UserControl
     {
         var page = await service.QueryLogsAsync(query ?? throw new InvalidOperationException("请先查询。"), selection, requestedOffset, pending!.Token);
         var token = pending.Token;
-        var summaries = await Task.Run(() =>
+        var formatted = await Task.Run(() =>
         {
             var values = new Dictionary<string, string>();
             foreach (var entry in page.Entries) { token.ThrowIfCancellationRequested(); values.TryAdd(entry.Text, SoftwareLogText.Summary(entry.Text)); }
-            return values;
+            return (Summaries: values, Terminal: SoftwareLogText.Format(page.Entries, token));
         }, token);
         if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
-        summary.Values = summaries; results.SelectedItem = null; results.ItemsSource = page.Entries; ClearDetail();
+        summary.Values = formatted.Summaries; results.SelectedItem = null; results.ItemsSource = page.Entries;
+        terminal.Text = historyTerminalText = page.Entries.Length == 0 ? "当前范围内没有匹配日志。" : formatted.Terminal; terminal.ScrollToHome(); ClearDetail();
         status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 可继续下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices);
     }
     async Task ShowOriginal(SoftwareLogEntry entry)

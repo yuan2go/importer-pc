@@ -4,6 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
+    readonly Dictionary<string, DateTimeOffset> diagnosticHealthWritten = new();
     void ReaderHealthChanged(DeviceHealthConfirmation h) => Diagnostic("相机通信", "相机连接状态变化",
         h.Health == DeviceHealth.Faulted ? "警告" : "信息",
         Wire.Encode(new { Device = h.DeviceId, Position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == h.DeviceId)?.Id,
@@ -27,6 +28,15 @@ public sealed partial class ParcelRuntime
                     {
                         if (!capabilityHealth.TryGetValue(port.InstanceId, out var previous) || previous.Ready != health.Ready)
                             Diagnostic("设备通信", health.Ready ? "设备或服务已就绪" : "设备或服务不可用", health.Ready ? "信息" : "警告", port.InstanceId + ": " + health.Detail);
+                        // A confirmation timestamp changes on every 100ms probe.
+                        // Preserve transitions immediately and periodic detail every
+                        // five seconds, instead of burying requests in healthy noise.
+                        if (Volatile.Read(ref diagnosticSettings).DebugEnabled && (previous is null || previous.Ready != health.Ready || previous.Detail != health.Detail ||
+                            DateTimeOffset.UtcNow - diagnosticHealthWritten.GetValueOrDefault(port.InstanceId) >= TimeSpan.FromSeconds(5)))
+                        {
+                            diagnosticHealthWritten[port.InstanceId] = DateTimeOffset.UtcNow;
+                            DebugDiagnostic("设备通信", "设备或服务确认详情", () => new { port.InstanceId, health.Ready, health.ConfirmedAt, health.ValidUntil, Evidence = DiagnosticFragment(health.Detail) });
+                        }
                         capabilityHealth[port.InstanceId] = health;
                         backgroundProgress["capability:" + port.InstanceId] = (DateTimeOffset.UtcNow, health.Ready ? "Ready" : "Unavailable:" + health.Detail);
                     }

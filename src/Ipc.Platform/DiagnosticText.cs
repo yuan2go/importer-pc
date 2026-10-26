@@ -8,15 +8,22 @@ namespace Ipc.Platform;
 public static class DiagnosticText
 {
     static readonly Regex sensitiveKey = new("password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
-    static readonly Regex sensitiveValue = new("(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential)\\s*[:=]\\s*)(?:\"[^\"]*\"|'[^']*'|[^\\s,;}]+)|(?:Bearer|Basic)\\s+[A-Za-z0-9+/=._-]+|(?<=://)[^/@\\s]+:[^/@\\s]+@", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
+    static readonly Regex sensitiveValue = new("(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential)[\"']?\\s*[:=]\\s*)(?:\"[^\"]*\"|'[^']*'|[^\\s,;}]+)|(?:Bearer|Basic)\\s+[A-Za-z0-9+/=._-]+|(?<=://)[^/@\\s]+:[^/@\\s]+@", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
     static string Text(string value) => sensitiveValue.Replace(value, m => m.Groups[1].Success ? m.Groups[1].Value + "[已隐藏]" : "[已隐藏]");
-    static JsonNode? Clean(JsonNode? node)
+    static JsonNode? Clean(JsonNode? node, int depth = 0)
     {
         if (node is JsonObject obj)
-            foreach (var name in obj.Select(p => p.Key).ToArray()) obj[name] = sensitiveKey.IsMatch(name) ? JsonValue.Create("[已隐藏]") : Clean(obj[name]?.DeepClone());
+            foreach (var name in obj.Select(p => p.Key).ToArray()) obj[name] = sensitiveKey.IsMatch(name) ? JsonValue.Create("[已隐藏]") : Clean(obj[name]?.DeepClone(), depth);
         else if (node is JsonArray array)
-            for (var i = 0; i < array.Count; i++) array[i] = Clean(array[i]?.DeepClone());
-        else if (node is JsonValue value && value.TryGetValue<string>(out var text)) return JsonValue.Create(Text(text));
+            for (var i = 0; i < array.Count; i++) array[i] = Clean(array[i]?.DeepClone(), depth);
+        else if (node is JsonValue value && value.TryGetValue<string>(out var text))
+        {
+            // Debug request/response bodies can themselves be JSON strings. Clean
+            // their keys too, with a bounded nesting/size budget; never rewrite custody.
+            if (depth < 4 && text.Length <= 65536 && text.TrimStart() is { Length: > 0 } trimmed && trimmed[0] is '{' or '[')
+                try { text = Clean(JsonNode.Parse(text), depth + 1)?.ToJsonString() ?? text; } catch (JsonException) { }
+            return JsonValue.Create(Text(text));
+        }
         return node;
     }
     public static string Protect(string line)

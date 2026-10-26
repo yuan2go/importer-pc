@@ -94,7 +94,7 @@ static partial class Program
             await Record(name);
             Check(vm.Left.Status == status && barcode.Text == code && Slot("left").IsVisible == destination, name + " result and barcode agree with independent scenario");
             bool Fits(FrameworkElement element) { var bounds = element.TransformToAncestor(body).TransformBounds(new Rect(element.RenderSize)); return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && bounds.Left >= 0 && bounds.Right <= body.ActualWidth; }
-            Check(Fits(barcode) && Fits((TextBlock)left.FindName("NextStep")), name + " barcode and next action fit the actual position viewport");
+            Check(Fits(barcode) && Inside((TextBlock)left.FindName("NextStep"), client), name + " barcode fits the position viewport and next action stays in the fixed footer");
             Check(Inside((Border)left.FindName("FixedActions"), client), name + " original detail action remains reachable");
         }
 

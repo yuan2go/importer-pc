@@ -1,0 +1,66 @@
+{
+  "Binaries": [
+    {
+      "File": "Ipc.Platform.dll",
+      "PublishedSha256": "DBF6F08BAD20567C4988EAEB922EA9099C94CAE9487D33159C0C35BBEE4C6997",
+      "NativeSha256": "DBF6F08BAD20567C4988EAEB922EA9099C94CAE9487D33159C0C35BBEE4C6997",
+      "InformationalVersion": "1.0.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "PublishedSha256": "4505368AE2BE70DE1642194ED312AB4FCAC91FA5186DD00038842A4E28B6AAD3",
+      "NativeSha256": "4505368AE2BE70DE1642194ED312AB4FCAC91FA5186DD00038842A4E28B6AAD3",
+      "InformationalVersion": "1.21.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "PublishedSha256": "BF7373DC369385695D5E9FF7E767D55336AB6CC9CEE2C59E624B01B30234B2DE",
+      "NativeSha256": "BF7373DC369385695D5E9FF7E767D55336AB6CC9CEE2C59E624B01B30234B2DE",
+      "InformationalVersion": "1.0.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "PublishedSha256": "474255A6234812C8F66C62BF634C0E637515D13848D51886124EFBBFE2C08669",
+      "NativeSha256": "474255A6234812C8F66C62BF634C0E637515D13848D51886124EFBBFE2C08669",
+      "InformationalVersion": "1.0.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "PublishedSha256": "C3068F7970FF09563271D82EF97134116668F6EBCA94B172F665045B689CBB94",
+      "NativeSha256": "C3068F7970FF09563271D82EF97134116668F6EBCA94B172F665045B689CBB94",
+      "InformationalVersion": "1.17.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "PublishedSha256": "161D6408CF53A5E9675C1B1597529485843CE5EAD0F01F02F2BABAC1CFD4163F",
+      "NativeSha256": "161D6408CF53A5E9675C1B1597529485843CE5EAD0F01F02F2BABAC1CFD4163F",
+      "InformationalVersion": "1.0.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    },
+    {
+      "File": "Ipc.Presentation.Wpf.dll",
+      "PublishedSha256": "50B6CD9F885EF80DFD371937CA9710046F76C6A696BA785858FEDE5560F9D035",
+      "NativeSha256": "50B6CD9F885EF80DFD371937CA9710046F76C6A696BA785858FEDE5560F9D035",
+      "InformationalVersion": "1.0.0+2036e559284033201fffba56a488dd15f50904c6",
+      "SameBytes": true
+    }
+  ],
+  "Boundary": "Native HWND/Dispatcher, synthetic inputs/identity and loopback HTTP; no installed product replacement or real devices",
+  "PublishedDesktop": ".artifacts/debug-log-live-01/publish",
+  "PublishedEnvironmentExitCode": 0,
+  "NativeProject": "tests/Ipc.Desktop.UiVerification",
+  "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6",
+  "AdditionalFixture": {
+    "BuildProjectReferences": false,
+    "ApplicationDllsUnchanged": true,
+    "InformationalVersion": "1.0.0+9a1fa5b4538d9647671197c769cb148eb418a9be",
+    "Sha256": "38AF8D9D0A52E7CC88D4DA4572B4FB1DF74ADF43BAA10F8E4974C97B8649CD6F",
+    "SourceCommit": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+    "Mode": "installer-first-run-ui"
+  }
+}

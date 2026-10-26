@@ -20,12 +20,13 @@ public partial class ParcelViewModel
     public bool HistoryFiltersChanged => appliedHistorySignature is not null && appliedHistorySignature != HistoryFilterSignature();
     public bool CanExportHistory => !historyLoading && !HistoryExportRunning && historySelection is not null && !HistoryFiltersChanged;
     public string AppliedHistoryRange => historySelection is not { } s ? "尚无固定查询范围" :
-        $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {s.Filter.Position ?? "全部"} · 状态 {s.Filter.State?.ToString() ?? "全部"} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页";
+        $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {PositionName(s.Filter.Position)} · 状态 {(s.Filter.State is { } state ? ChineseInterfaceText.Status(state.ToString()) : "全部")} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页";
+    public static string PositionName(string? id) => id switch { null or "" => "全部", "left" => "左投递位", "right" => "右投递位", "main" => "主投递位", _ => id };
     public sealed record HistoryPositionChoice(string Id, string Label);
     readonly HashSet<string> historicalPositions = [];
     public HistoryPositionChoice[] HistoryPositionChoices => [new("", "全部投递位"), .. (Snapshot is { } s ? ParcelBindings.Positions(s.Configuration.Effective) : []).Select(p => new HistoryPositionChoice(p.Id,
-        (p.Id switch { "left" => "左相机", "right" => "右相机", "main" => "主投递位", _ => p.Id }) + " · " + p.Id)),
-        .. historicalPositions.Where(id => Snapshot is null || !ParcelBindings.Positions(Snapshot.Configuration.Effective).Any(p => p.Id == id)).Order().Select(id => new HistoryPositionChoice(id, "历史投递位 · " + id))];
+        PositionName(p.Id))),
+        .. historicalPositions.Where(id => Snapshot is null || !ParcelBindings.Positions(Snapshot.Configuration.Effective).Any(p => p.Id == id)).Order().Select(id => new HistoryPositionChoice(id, "历史投递位 · " + PositionName(id)))];
     public void ClearHistoryFilters()
     {
         HistoryBarcode = HistoryPosition = HistoryState = HistoryRequest = "";

@@ -85,8 +85,9 @@ static class DualCameraCommunication
             "management snapshot separates local endpoints, finite confirmation, recent bytes and valid observation evidence");
         var ui = new Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel(app); await ui.RefreshDisplayAsync();
         var diagnostic = ui.ParameterRuntimeSummary(new(rs[1].DeviceId, rs[1].DeviceId, "右相机"));
-        Check(ui.Right.DeviceLabel == "TCP 已连接" && diagnostic.Contains("LastValidObservationAt") && diagnostic.Contains("静默断网"),
-            "workstation labels only TCP establishment; existing management detail exposes separate receive/observation evidence and recovery limits");
+        Check(ui.Right.DeviceLabel == "相机：模拟连接" && reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).IsValid(DateTimeOffset.UtcNow) &&
+            diagnostic.Contains("LastValidObservationAt") && diagnostic.Contains("静默断网"),
+            "synthetic workstation labels the confirmed simulated connection; management detail keeps distinct receive/observation evidence and recovery limits");
         using var nextListener = new TcpListener(IPAddress.Loopback, 0); nextListener.Start();
         var revision = reconnected.Configuration;
         var nextReaders = rs.Select((r, i) => i == 0 ? r : r with { Parameters = new(r.Parameters!) { ["device.port"] = ((IPEndPoint)nextListener.LocalEndpoint).Port.ToString() } }).ToArray();

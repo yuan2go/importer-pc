@@ -1,0 +1,31 @@
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE first live view reads only the latest 200 successfully appended records
+PASS DEBUG-LIVE bounded 512-record cache explicitly reports cursor overrun and catch-up
+PASS DEBUG-LIVE diagnostic append reached the expected bounded test batch
+PASS DEBUG-LIVE nested JSON bodies and partial quoted sensitive fields are redacted in files and live views
+PASS DEBUG-LIVE debug pressure is counted and leaves capacity for ordinary logs without blocking callers
+PASS DEBUG-LIVE ordinary mode cannot enable detailed runtime logging
+PASS DEBUG-LIVE every new runtime starts with detailed logging off
+PASS DEBUG-LIVE synthetic input accepted: debug-off
+PASS DEBUG-LIVE normal mode retains detailed operational summaries without optional debug records
+PASS DEBUG-LIVE debug switch takes effect without restart or a pending configuration revision
+PASS DEBUG-LIVE reapplying the same hot setting creates no extra revision
+PASS DEBUG-LIVE synthetic input accepted: debug-on
+PASS DEBUG-LIVE real Application and loopback RCS trace contains candidates, original request, elapsed time and decoded HTTP response
+PASS DEBUG-LIVE enabling debug does not replay or duplicate a business request
+PASS DEBUG-LIVE synthetic input accepted: debug-invalid-response
+PASS DEBUG-LIVE synthetic input accepted: debug-business-rejected
+FAIL System.TimeoutException: Debug/live scenario did not converge
+   at Program.<VerifyDebugLogLive>g__Until|3_1(Func`1 ready) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\DebugLogLive.cs:line 21
+   at Program.<>c__DisplayClass3_1.<<VerifyDebugLogLive>g__Scan|3>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\DebugLogLive.cs:line 45
+--- End of stack trace from previous location ---
+   at Program.VerifyDebugLogLive(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\DebugLogLive.cs:line 64
+   at Program.VerifyDebugLogLive(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\DebugLogLive.cs:line 122
+   at Program.VerifyDebugLogLive(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\DebugLogLive.cs:line 122
+   at Program.<>c__DisplayClass27_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 48

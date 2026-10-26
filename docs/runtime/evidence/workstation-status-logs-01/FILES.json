@@ -1,0 +1,121 @@
+{
+  "SourceCommit": "298783782223a234a402015d69a66af68d93a79a",
+  "Scope": "isolated synthetic native verification; preliminary failures retain their original run boundaries",
+  "files": [
+    {
+      "path": "build-native-frozen.log",
+      "size_bytes": 84,
+      "sha256": "465ae7053caaf75b8726182c0dacc6845694b9205458b5b5ac61fcbd762ac49f"
+    },
+    {
+      "path": "chain-invalid-after-slot-800.png",
+      "size_bytes": 91684,
+      "sha256": "cd17b3f9b40c464877d6801b5df6a01085566ce0a5c709141e4fadcedaef85f1"
+    },
+    {
+      "path": "connection-deferred.png",
+      "size_bytes": 73613,
+      "sha256": "38cae878cd61b365dc5f53766bec8cba4d632006d413e53b55b16279b4c65845"
+    },
+    {
+      "path": "connection-offline.png",
+      "size_bytes": 76039,
+      "sha256": "a2901df753311d210e1ce9dc56d4e0b9ec67a76834763a1fcfaf78d4471fc928"
+    },
+    {
+      "path": "IDENTITY.json",
+      "size_bytes": 2380,
+      "sha256": "41a5460bb60acc04310469aee748205df1f1031526f94003ea12b81e32d2fec0"
+    },
+    {
+      "path": "initial/compact-next-action-clipped.log",
+      "size_bytes": 23173,
+      "sha256": "bf3d9d0399d0885f1c8107a2ce2d6250fbe375612e692ca39c3f12287be65d89"
+    },
+    {
+      "path": "initial/fixture-client-name.log",
+      "size_bytes": 3674,
+      "sha256": "967adf2e507e0e3e6f9cbb040fbfa073b83ec739210464815129275b4b33c77c"
+    },
+    {
+      "path": "initial/fixture-name-scope.log",
+      "size_bytes": 3307,
+      "sha256": "a6b81484f1a508b9d73d2ab37c1f0b16b3a3e2d4662b6a74e5b675583b927640"
+    },
+    {
+      "path": "initial/legacy-log-selector.log",
+      "size_bytes": 4525,
+      "sha256": "d1dc5dd9aa637370febd6321d1b19fb45435e4a7e9926e3c60d4d2822a5fc8ff"
+    },
+    {
+      "path": "initial/superseded-idle-scan-expectation.log",
+      "size_bytes": 20218,
+      "sha256": "8af931fbdf1a3321869d855d4050b460971d76536cb27cc165580f3a9c478c83"
+    },
+    {
+      "path": "logs-terminal-1000.png",
+      "size_bytes": 95270,
+      "sha256": "b4dfcb7ee8b7ef4574e4f7ee2a5a02a98dc4bb439360db9e3a3e6ff1199805d9"
+    },
+    {
+      "path": "logs-terminal-800.png",
+      "size_bytes": 61777,
+      "sha256": "cfc3ee15718c00682cfcf10013a9b6de87809b6d90f2f9547a6904aad3e95498"
+    },
+    {
+      "path": "management-mode.log",
+      "size_bytes": 5830,
+      "sha256": "1a2e61ad48e9d834f75eafd8b6e53e99f1ee49a18084f9afa8a786d26ea11bb5"
+    },
+    {
+      "path": "publish-environment.json",
+      "size_bytes": 731,
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0"
+    },
+    {
+      "path": "publish.log",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 3262,
+      "sha256": "e6263a3a7746589091936df2de04a46642c66b6b26f606251560473413982df0"
+    },
+    {
+      "path": "release-documents.log",
+      "size_bytes": 106,
+      "sha256": "972c71c01ad148513c51b75e62a1dfc1948bb2ae88e6eef236075c3ef0477099"
+    },
+    {
+      "path": "reliability-logs.log",
+      "size_bytes": 581,
+      "sha256": "077f8d1c7c5f7ccb22ff139aed695e2956df780665ff495bac1936a30e20ba81"
+    },
+    {
+      "path": "task-hierarchy.log",
+      "size_bytes": 26214,
+      "sha256": "8a2617a400702c3375b32a678c7610b18fcecd2661f19321c23ad8a52218dca9"
+    },
+    {
+      "path": "work-empty-800.png",
+      "size_bytes": 55862,
+      "sha256": "be2393e853ba6ea3003bd7d2ad79b7cf7fd19caa96cd8513d716d402ab4ac2a3"
+    },
+    {
+      "path": "work-results-1366.png",
+      "size_bytes": 110157,
+      "sha256": "b66a111cc6e82998b30d63c871d3152d2f8f698a2039c44acd8ddbd5baa1871c"
+    },
+    {
+      "path": "work-results-800.png",
+      "size_bytes": 61757,
+      "sha256": "4fccb2e8f5d48d27aa49c009cdf4cb4a5118a18cae381080650ab3cd802bc992"
+    },
+    {
+      "path": "workstation-status-logs.log",
+      "size_bytes": 3838,
+      "sha256": "4cc773a090f446184f20db2d9510e98e6e5b83dbff86c5c7d9c484107a29a9fc"
+    }
+  ]
+}

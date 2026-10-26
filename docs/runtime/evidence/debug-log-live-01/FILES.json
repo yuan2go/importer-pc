@@ -1,0 +1,201 @@
+{
+  "ApplicationSourceCommit": "2036e559284033201fffba56a488dd15f50904c6",
+  "AdditionalFixtureSourceCommit": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+  "Files": [
+    {
+      "Path": "application-dual-camera-communication.log",
+      "Sha256": "340a54d324a46cdb6ca5406d7fb3d4c43a20a4812ccf89724c75649c7d6d46fb",
+      "Bytes": 6499
+    },
+    {
+      "Path": "application-lifecycle-ux.log",
+      "Sha256": "0d1ce4738f2ad344c70228dd06dd3b22a0c5d85bcc7c9f520bd3865a4009c10f",
+      "Bytes": 14737
+    },
+    {
+      "Path": "application-reliability-02.log",
+      "Sha256": "f391d1f9c94ca9444e991953b8a7264268152fa8f4d8e09b50209333f76553cd",
+      "Bytes": 7925
+    },
+    {
+      "Path": "CI.json",
+      "Sha256": "1849615f3cd7654d914ac7bc8eb754eff115363cb6768037959684b94d63d6ba",
+      "Bytes": 1805
+    },
+    {
+      "Path": "connection-offline.png",
+      "Sha256": "a2901df753311d210e1ce9dc56d4e0b9ec67a76834763a1fcfaf78d4471fc928",
+      "Bytes": 76039
+    },
+    {
+      "Path": "debug-log-live.log",
+      "Sha256": "2cbc7e5d367fe902f19767e2e3a93dd478e413d10b033b285598c771421fa3e1",
+      "Bytes": 3612
+    },
+    {
+      "Path": "dual-camera-diagnostics.log",
+      "Sha256": "65dab04c7c3b38744329c61dd68b9b96d40783579b97f1ad353c54543d698937",
+      "Bytes": 457
+    },
+    {
+      "Path": "environment-report.log",
+      "Sha256": "a226e3e29c94d6f2c61e029261d6871b98b2207b668df820385345131545a065",
+      "Bytes": 711
+    },
+    {
+      "Path": "frozen-application-build.log",
+      "Sha256": "ec05d58ce596da8645fd884c2440f03916e7db83cbdffb1f8b6426dcd8559282",
+      "Bytes": 78
+    },
+    {
+      "Path": "frozen-native-build.log",
+      "Sha256": "2068e4b47aeedd38f20984a9d587ea246a69f4d993ed949ef3e74f67432803b6",
+      "Bytes": 78
+    },
+    {
+      "Path": "IDENTITY.json",
+      "Sha256": "358f93ce866371560f0dbae124ec5f9faa5f2bb1e780eac7a9f3d4dc7dc8f170",
+      "Bytes": 3175
+    },
+    {
+      "Path": "initial/ci-2036-first-run.log",
+      "Sha256": "a0e3cf7ac9b27a2926322e97bdc66f398eda6c4ed5d29d26f8df41df7a956806",
+      "Bytes": 1652
+    },
+    {
+      "Path": "initial/development-01.log",
+      "Sha256": "e5ffdb939ce595180282362621b74906471db99b5d27ad9e174c22c9fc71644a",
+      "Bytes": 2521
+    },
+    {
+      "Path": "initial/development-02.log",
+      "Sha256": "282abbcd932870833f9c0681da2674100d73239507144be072681e5925291222",
+      "Bytes": 4478
+    },
+    {
+      "Path": "initial/development-03.log",
+      "Sha256": "395de7b049ed066d5a9239d5697b382bb959446968fa9abae0866564107914d0",
+      "Bytes": 4420
+    },
+    {
+      "Path": "initial/development-04.log",
+      "Sha256": "953aa56f2f1701799403ce920518913576b90b1701f17d2e2ae2d17b099227b2",
+      "Bytes": 4420
+    },
+    {
+      "Path": "initial/development-05.log",
+      "Sha256": "17c7e6b7700284ce81b3da6005e1015016f8db48809e46be3131bf3759b5ad56",
+      "Bytes": 2880
+    },
+    {
+      "Path": "initial/development-06.log",
+      "Sha256": "db95196e0cc9ecee11b6466cc115cd50a4ae086125161e0b7a438219c035841b",
+      "Bytes": 2324
+    },
+    {
+      "Path": "initial/development-07.log",
+      "Sha256": "edf09c26ea7c1594901dbb0a65850e047e2bfdb681acfef46f21a7582a8b23c4",
+      "Bytes": 2340
+    },
+    {
+      "Path": "initial/DEVELOPMENT.json",
+      "Sha256": "654a5879ed92a3eeb52ac70c5dbacff9f1f80a7067430b43a0bbcab4e04a072a",
+      "Bytes": 1633
+    },
+    {
+      "Path": "initial/prior-ci-core.log",
+      "Sha256": "07f22517a5c71adf232e4649877bd1ecbc45ec98c938025c49bcc23555bf5725",
+      "Bytes": 25257
+    },
+    {
+      "Path": "initial/prior-ci-engineering.json",
+      "Sha256": "46e5050e6d70cc1d573cbaf02cecab6e69de586c364798a8a537a444535f43a7",
+      "Bytes": 630
+    },
+    {
+      "Path": "installer-first-run.log",
+      "Sha256": "64fe5d42ae0f430584cdb2fd3bb9d6f0ae0e14680afae1ec3a36c1c5fcc8dad5",
+      "Bytes": 12815
+    },
+    {
+      "Path": "installer-fixture-build.log",
+      "Sha256": "223a60dd58785088d01774a2d7bb4236c66d41659a812a546bbe6a5d07aef033",
+      "Bytes": 78
+    },
+    {
+      "Path": "lifecycle-ux.log",
+      "Sha256": "1fbabeb65dd760e718dfc6a905c59101d699070e34ca232105330633485544eb",
+      "Bytes": 2717
+    },
+    {
+      "Path": "management-mode.log",
+      "Sha256": "2724e5d089e20f5bc6e3064da8cf43df4f7f848d583fd1669f23e020abd061b2",
+      "Bytes": 5756
+    },
+    {
+      "Path": "parameter-v3.log",
+      "Sha256": "56206a8553f94c5fadc85a113a42a88248f06f56bec678284ade6660f45761a3",
+      "Bytes": 27226
+    },
+    {
+      "Path": "publish.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "README.md",
+      "Sha256": "11ba58f3d65f955b878535c8af89925ebcf8e25a22dc1aa013ae115570d1022b",
+      "Bytes": 4920
+    },
+    {
+      "Path": "release-document-tests.log",
+      "Sha256": "148a8a3d52b0a47ec2348e3f92c5c081e627c7b2415545fc7ccabe3158371e51",
+      "Bytes": 591
+    },
+    {
+      "Path": "reliability-logs.log",
+      "Sha256": "5b332d2dd29c9b560b5b63166d5288c30800e99f145fe4f993b0bda397079007",
+      "Bytes": 576
+    },
+    {
+      "Path": "RESULTS.json",
+      "Sha256": "dd81439dfa15f422a1ca3918ad6b38d433658aea5811b497a0185defc89239ca",
+      "Bytes": 2841
+    },
+    {
+      "Path": "task-hierarchy.log",
+      "Sha256": "5f9c5c3768a1e95f74a8494441668f555beead30f6163774a7365987b1bf014b",
+      "Bytes": 25884
+    },
+    {
+      "Path": "terminal-display-paused.png",
+      "Sha256": "8467ad6150615fec7d9ac6c4fa29b5b4e73d5232b3c272b325b8c35bd801c51a",
+      "Bytes": 117730
+    },
+    {
+      "Path": "terminal-live-800.png",
+      "Sha256": "9cc863b4b584b91c9724b9dd7107c4588ea5dfd657e873815b8a8feb790b14bb",
+      "Bytes": 89974
+    },
+    {
+      "Path": "TEXT-CUSTODY.json",
+      "Sha256": "0ea7527eb8a46f88a23d3aa857168e3728b1e3842e9c36cc8cb9f321ce87ac31",
+      "Bytes": 3211
+    },
+    {
+      "Path": "work-empty-800.png",
+      "Sha256": "be2393e853ba6ea3003bd7d2ad79b7cf7fd19caa96cd8513d716d402ab4ac2a3",
+      "Bytes": 55862
+    },
+    {
+      "Path": "work-results-1366.png",
+      "Sha256": "70640a1ef93e5ca283ae1223cfebfb51d60daf87d41ae8a48238067f26e7f4fa",
+      "Bytes": 110073
+    },
+    {
+      "Path": "workstation-status-logs.log",
+      "Sha256": "abcb8f0ccd099d298870a1d3d00897773e3fe8f96b895914e11d7b724cebc9ca",
+      "Bytes": 3786
+    }
+  ]
+}

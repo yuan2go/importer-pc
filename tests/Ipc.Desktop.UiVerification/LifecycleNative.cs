@@ -53,7 +53,7 @@ static partial class Program
             var clock = typeof(LocalManagementMode).GetProperty("Clock", BindingFlags.Instance | BindingFlags.NonPublic)!;
             clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow.AddHours(1)));
             await Until(() => !vm.IsManagementMode && vm.SelectedPage == "workstation");
-            Check(vm.ManagementNotice.Contains("管理授权已结束") && Descendants(window).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("管理授权已结束")) && !editor.IsVisible && policy.QueueCapacity == "77", "expired real grant hides parameter content with an explanation and protects the same draft");
+            Check(vm.ManagementNotice.Length == 0 && !Descendants(window).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("管理授权已结束")) && !editor.IsVisible && policy.QueueCapacity == "77", "expired real grant hides restricted content, protects the same draft and omits the removed routine banner");
             CaptureInternal(evidence, "lia-mode-expired", (FrameworkElement)window.Content, lines);
             clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow)); await ManagementModeFixture.Authorize(app);
             await Until(() => vm.IsManagementMode && vm.SelectedPage == "maintenance");

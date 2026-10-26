@@ -19,11 +19,12 @@ public sealed partial class ParameterSettingsControl
             var missing = Page(2, "缺少读码实例", "当前候选没有读码实例。请核对原拓扑和已安装驱动。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
-        foreach (var component in m.Components.Where(c => (c.Role != "maintenance-auth" && (!FirstConfiguration || c.Bound)) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
+        foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
                 ParameterOwnership.IsRcs(component) ? "左右相机共用此连接，保存后待受控应用。" :
                 ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后受控重启应用。" : "按已安装组件的实际描述编辑，保存后通过受控重启应用。");
+            page.Applicable = () => !m.IsLegacyMaintenanceOnly(component);
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -33,7 +34,7 @@ public sealed partial class ParameterSettingsControl
                         var previous = page.Title;
                         page.Title = FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component);
                         if (lastPages.GetValueOrDefault(page.Category) == previous) lastPages[page.Category] = page.Title;
-                        RefreshSearch();
+                        RefreshAvailablePages();
                     };
                     role.PropertyChanged += renamed; unsubscribe.Add(() => role.PropertyChanged -= renamed);
                 }

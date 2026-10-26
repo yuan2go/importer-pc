@@ -266,9 +266,14 @@ static partial class Program
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         Check(Descendants(first).OfType<ParameterSettingsControl>().Any(), "editor loads authorized original candidate: " + Text(first));
         var editor = Descendants(first).OfType<ParameterSettingsControl>().Single(); var sameModel = editor.Model; editor.Model!.Policy.QueueCapacity = "77";
+        // Read() can finish before the asynchronous authorization observer has
+        // published its grant. Observe that real transition before expiring it;
+        // otherwise the gate may correctly still describe the manual exit.
+        for (var i = 0; i < 200 && !editor.IsVisible; i++) { await Task.Delay(25); first.UpdateLayout(); }
+        Check(editor.IsVisible && authority.Status().Authorized, "restored grant is observed by the actual editor before expiry is injected");
         var clock = typeof(LocalManagementMode).GetProperty("Clock", flags)!; clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow.AddHours(1)));
-        await Task.Delay(700); first.UpdateLayout();
-        Check(Text(first).Contains("管理权限已到期，请重新验证后继续") && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存配置") || Equals(b.Content, "完成"))), "actual expired grant removes save/apply and presents reauthorization");
+        for (var i = 0; i < 200 && (!Text(first).Contains("管理权限已到期，请重新验证后继续") || editor.IsVisible); i++) { await Task.Delay(25); first.UpdateLayout(); }
+        Check(Text(first).Contains("管理权限已到期，请重新验证后继续") && !editor.IsVisible && !Descendants(first).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存配置") || Equals(b.Content, "完成"))), "actual expired grant removes save/apply and presents reauthorization: " + Text(first));
         var flow = new SportmasterFlow(); var offline = new ParcelStartupMaintenance(launch, flow, () => throw new InvalidOperationException("No devices in UI fixture"));
         foreach (var (label, submit) in new (string, Func<Task>)[] { ("draft persistence", async () => { await offline.SaveDraftAsync("not-a-hash", null, new(new())); }), ("stage configuration", async () => { await offline.StageAsync("not-a-hash", flow.InitialConfiguration(), "synthetic"); }), ("initial configuration repair", async () => { await offline.RepairInitialAsync("not-a-hash", flow.InitialConfiguration(), "synthetic"); }) })
         { bool denied = false; try { await submit(); } catch (UnauthorizedAccessException) { denied = true; } Check(denied, "service rejects direct " + label + " after revocation before touching any configuration"); }

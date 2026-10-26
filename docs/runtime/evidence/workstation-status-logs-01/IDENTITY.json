@@ -1,0 +1,55 @@
+{
+  "SourceCommit": "298783782223a234a402015d69a66af68d93a79a",
+  "NativeChecks": {
+    "workstation-status-logs": 38,
+    "task-hierarchy": 239,
+    "management-mode": 57,
+    "reliability-logs": 2
+  },
+  "NativeCheckTotal": 336,
+  "ReleaseDocumentTests": 3,
+  "NativeScope": "Windows HWND/Dispatcher; 125% actual DPI; synthetic identity/ports and isolated SQLite; real Application/loopback response chain",
+  "PublishedStartupSmoke": "dotnet publish output Ipc.Desktop.dll --environment-report exited 0",
+  "DesktopSha256": "3c943b04c946a5e9a68013df9e0a9a87b7b8fd5e8e7e88528d27fb21bfc7916e",
+  "NativePublishLibraryComparison": [
+    {
+      "file": "Ipc.Platform.dll",
+      "native_sha256": "864e48e6d681855f6e4a0ef0acdea9a378e25ddde2982871fb61577627b8b25c",
+      "publish_sha256": "864e48e6d681855f6e4a0ef0acdea9a378e25ddde2982871fb61577627b8b25c",
+      "same": true
+    },
+    {
+      "file": "Ipc.Application.Contracts.dll",
+      "native_sha256": "709095e19c547fea39b41b6f31ce806581811b28e659200efd0775dc0f4d9e4a",
+      "publish_sha256": "709095e19c547fea39b41b6f31ce806581811b28e659200efd0775dc0f4d9e4a",
+      "same": true
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.dll",
+      "native_sha256": "0aaa690a0611760d9d06285b8f969576d0d55eba96a5b70b1832b6b60bafdb58",
+      "publish_sha256": "0aaa690a0611760d9d06285b8f969576d0d55eba96a5b70b1832b6b60bafdb58",
+      "same": true
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "native_sha256": "cf6d72ebe97576edb56b1fc0f146e2a34df9943388739f11b0030d0495eb8d93",
+      "publish_sha256": "cf6d72ebe97576edb56b1fc0f146e2a34df9943388739f11b0030d0495eb8d93",
+      "same": true
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.dll",
+      "native_sha256": "0afe811226637ac5a96777606fccbad73e1de6dc446312db32f137bfd7edcda2",
+      "publish_sha256": "0afe811226637ac5a96777606fccbad73e1de6dc446312db32f137bfd7edcda2",
+      "same": true
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.Desktop.dll",
+      "native_sha256": "3a566eb5d2e7387fe5a569dd028c1de2f56061ffc1fe7ada2240a393b650c5cd",
+      "publish_sha256": "3a566eb5d2e7387fe5a569dd028c1de2f56061ffc1fe7ada2240a393b650c5cd",
+      "same": true
+    }
+  ],
+  "RealEquipment": "NOT_RUN",
+  "InstalledProductReplacement": "NOT_RUN",
+  "TargetIpcAndSite": "NOT_RUN"
+}

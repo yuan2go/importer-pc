@@ -1,0 +1,41 @@
+PASS WSL01 setup-like authorization exists before runtime entry
+PASS WSL01 the actual desktop runtime-entry helper clears setup authorization
+PASS WSL01 restricted launch view returns to work in ordinary mode
+PASS WSL01 ordinary navigation hides parameter and log entries
+PASS WSL01 shared RCS status stays visible at 1366
+PASS WSL01 camera badge and empty scan group remain available at 1366
+PASS WSL01 camera badge and empty scan group remain available at 1366
+CAPTURE work-empty-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 shared RCS status stays visible at 1092
+PASS WSL01 camera badge and empty scan group remain available at 1092
+PASS WSL01 camera badge and empty scan group remain available at 1092
+CAPTURE work-empty-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS WSL01 shared RCS status stays visible at 800
+PASS WSL01 camera badge and empty scan group remain available at 800
+PASS WSL01 camera badge and empty scan group remain available at 800
+CAPTURE work-empty-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS WSL01 connection evidence distinguishes online and keeps sides independent
+CAPTURE connection-online: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 connection evidence distinguishes offline and keeps sides independent
+CAPTURE connection-offline: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 connection evidence distinguishes expired and keeps sides independent
+CAPTURE connection-expired: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 connection evidence distinguishes deferred and keeps sides independent
+CAPTURE connection-deferred: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 connection evidence distinguishes local and keeps sides independent
+CAPTURE connection-local: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS WSL01 stale snapshot revokes camera and RCS online claims
+PASS WSL01 daily role-based legacy maintenance-only component is absent from the real directory
+PASS WSL01 mode exit protects the exact draft and removes the routine banner
+PASS WSL01 pause and deployment reasons use Chinese display copy
+PASS WSL01 history labels hide internal left/right values
+PASS WSL01 classic initial protected page is fenced
+PASS WSL01 supply-station initial protected page is fenced
+PASS WSL01 real synthetic Application chain preserves independent barcode/task results
+CAPTURE work-results-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+FAIL System.InvalidOperationException: 对于名称为“ClientArea”的 register，找不到 NameScope。
+   at System.Windows.FrameworkElement.RegisterName(String name, Object scopedElement)
+   at Program.VerifyTerminalLogs(IWorkstationAdministration runtime, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\WorkstationStatusLogs.cs:line 110
+   at Program.VerifyWorkstationStatusLogs(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\WorkstationStatusLogs.cs:line 96
+   at Program.VerifyWorkstationStatusLogs(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\WorkstationStatusLogs.cs:line 98
+   at Program.<>c__DisplayClass25_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 48

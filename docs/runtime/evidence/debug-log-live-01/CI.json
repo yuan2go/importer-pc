@@ -1,0 +1,60 @@
+{
+  "CapturedAt": "2026-10-26T17:37:06.866Z",
+  "ApplicationSourceCommit": "2036e559284033201fffba56a488dd15f50904c6",
+  "FixtureSourceCommit": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+  "PriorRun": {
+    "Id": 40367904643,
+    "Result": "failure",
+    "Jobs": [
+      {
+        "id": 121730962947,
+        "head_sha": "2036e559284033201fffba56a488dd15f50904c6",
+        "name": "frozen-sportmaster",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "id": 121730962998,
+        "head_sha": "2036e559284033201fffba56a488dd15f50904c6",
+        "name": "p0-stability-boundaries",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121730963398,
+        "head_sha": "2036e559284033201fffba56a488dd15f50904c6",
+        "name": "aqa01-boundaries",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "CurrentRun": {
+    "Id": 40369773520,
+    "URL": "https://github.com/yuan2go/importer-pc/actions/runs/40369773520",
+    "Jobs": [
+      {
+        "id": 121737063699,
+        "head_sha": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+        "name": "frozen-sportmaster",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 121737064054,
+        "head_sha": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+        "name": "p0-stability-boundaries",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 121737064368,
+        "head_sha": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+        "name": "aqa01-boundaries",
+        "status": "in_progress",
+        "conclusion": null
+      }
+    ]
+  },
+  "Boundary": "Snapshot before evidence-only commit; newer PR head needs its own checks. Local PASS is not transferred to CI."
+}

@@ -1,0 +1,5 @@
+PASS DCC01 WPF workstation distinguishes confirmed simulated connection from failed source
+PASS DCC01 WPF existing management detail contains cause, separate timestamps and guarded next action
+PASS DCC01 WPF technical evidence is rendered inside the existing diagnostic expander
+PASS DCC01 WPF long endpoint evidence scrolls within bounded detail and exposes the recovery instruction
+CAPTURE dual-camera-diagnostics: 1106.4x651.2 DIP, Windows DPI 1.25/1.25

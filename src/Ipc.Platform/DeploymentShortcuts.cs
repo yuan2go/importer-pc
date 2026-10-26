@@ -28,7 +28,7 @@ public static class DeploymentShortcuts
         foreach (var entry in plan)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path); Directory.CreateDirectory(System.IO.Path.GetDirectoryName(entry.Path)!);
-            var exists = File.Exists(entry.Path);
+            var exists = ExistingShortcutFile(entry.Path);
             using var link = new ShellLinkFile(exists ? entry.Path : null);
             if (exists && (!string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) || link.Arguments != entry.Arguments) &&
                 !(entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == "菜鸟供包台.lnk" && link.Arguments == "" &&
@@ -75,12 +75,25 @@ public static class DeploymentShortcuts
         foreach (var entry in files)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path);
-            if (!File.Exists(entry.Path)) continue;
+            if (!ExistingShortcutFile(entry.Path)) continue;
             bool owned;
             using (var link = new ShellLinkFile(entry.Path))
                 owned = string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) && link.Arguments == entry.Arguments;
             // A user-retargeted link no longer belongs to this installation.
             if (owned) File.Delete(entry.Path);
         }
+    }
+
+    static bool ExistingShortcutFile(string path)
+    {
+        FileAttributes attributes;
+        try { attributes = File.GetAttributes(path); }
+        catch (FileNotFoundException) { return false; }
+        catch (DirectoryNotFoundException) { return false; }
+        // File.Exists also returns false for a directory and some access failures.
+        // Only a genuinely missing entry is an idempotent no-op during removal.
+        if ((attributes & (FileAttributes.Directory | FileAttributes.ReparsePoint)) != 0)
+            throw new IOException("保留快捷方式位置的目录或链接冲突：" + path);
+        return true;
     }
 }

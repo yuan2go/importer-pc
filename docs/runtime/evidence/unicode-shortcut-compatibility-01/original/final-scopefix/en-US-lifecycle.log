@@ -1,0 +1,49 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-60ac14cdd989445b97a4786edc2fb969
+PASS actual process ACP=1252
+OS=Microsoft Windows NT 10.0.22631.0; Apartment=MTA
+PASS disposed wrapper rejects access deterministically after repeated Dispose
+PASS create reports a directory at an exact shortcut path
+PASS uninstall reports a directory at an exact shortcut path rather than treating it as absent
+PASS uninstall preserves the conflicting directory
+PASS repair rejects a valid shell-link container with no file target
+PASS uninstall reports an unreadable ownership target instead of silently treating it as foreign
+PASS empty-target link is preserved byte for byte
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 运行.lnk
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 启动修复.lnk
+PASS independent native Unicode target read: sportmaster · aaaaaaaa · 12345678 · 安装维护.lnk
+PASS independent native Unicode target read: 菜鸟供包台.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 运行.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 启动修复.lnk
+PASS repair restores missing entry and owned projection fields: sportmaster · aaaaaaaa · 12345678 · 安装维护.lnk
+PASS repair restores missing entry and owned projection fields: 菜鸟供包台.lnk
+PASS helper Unicode arguments round trip beyond ACP936 repertoire
+PASS owned Unicode entries removed and repeated uninstall is idempotent
+PASS uninstall removes all exact historical entries even when the stored target is missing; no Resolve
+PASS create refuses user-retargeted stable entry
+PASS create and uninstall preserve retargeted link bytes
+PASS arguments comparison preserves trailing whitespace and refuses takeover
+PASS uninstall preserves same-target different-arguments bytes
+PASS repair refuses damaged existing file
+PASS uninstall reports damaged existing file
+PASS damaged link retained byte for byte after repair and uninstall
+Long target UTF16 length=378; rejected=True
+PASS long target either round trips completely or rejects while preserving the original stable entry
+PASS sharing conflict reports failed repair
+PASS failed repair preserves original bytes
+PASS sharing conflict reports failed uninstall
+PASS failed uninstall retains the original shortcut
+PASS repair and removal succeed after sharing owner releases its handle
+PASS repair cannot adopt user-writable deployment descriptor outside a trusted program root
+PASS untrusted descriptor rejection preserves original stable entry
+PASS projection failure is reported after earlier entries were created
+PASS partial projection retains completed entries and original conflicting bytes
+PASS repair reenters the same projection after explicit conflict resolution without deleting the original
+PASS create refuses a reparse ancestor
+PASS uninstall refuses a reparse ancestor
+PASS create refuses a reparse leaf
+PASS uninstall refuses a reparse leaf
+PASS path guards preserve outside inventory
+PASS 100 success/load-failure/save-failure loops release files without forced GC; process handles 406->406
+PASS real COM create/load/save/failure/dispose also runs on one isolated STA thread
+Shortcut lifecycle: 43 assertions; 0 failed scenarios
+NOT_RUN protected descriptor success/RepairSystem/ResumeRemoval with real machine registration, UAC, installation, devices and field qualification

@@ -44,6 +44,7 @@ if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsW
 if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) { await OperatorAdministration.Run(workspace, root); return; }
 if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); InstallerOptions.Run(root); return; }
+if (args.Contains("--shortcut-lifecycle")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); ShortcutLifecycle.Run(root); return; }
 if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--windows-client-compatibility")) { WindowsClientCompatibilityChecks.Run(); return; }
 if (args.Contains("--commercial-components")) { var i = Array.IndexOf(args, "--commercial-components"); CommercialComponentReview.Run(root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }

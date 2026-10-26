@@ -11,22 +11,39 @@ namespace Ipc.Platform;
 [SupportedOSPlatform("windows")]
 internal sealed class ShellLinkFile : IDisposable
 {
-    readonly object instance = Activator.CreateInstance(Type.GetTypeFromCLSID(new("00021401-0000-0000-C000-000000000046"), true)!)!;
-    IShellLinkW Link => (IShellLinkW)instance;
-    IPersistFile File => (IPersistFile)instance;
+    object? instance = Activator.CreateInstance(Type.GetTypeFromCLSID(new("00021401-0000-0000-C000-000000000046"), true)!)!;
+    object Instance => instance ?? throw new ObjectDisposedException(nameof(ShellLinkFile));
+    IShellLinkW Link => (IShellLinkW)Instance;
+    IPersistFile File => (IPersistFile)Instance;
     public ShellLinkFile(string? path = null)
     {
         try { if (path is not null) File.Load(path, 0); }
         catch { Dispose(); throw; }
     }
-    public string TargetPath { get { var b = new StringBuilder(32768); Link.GetPath(b, b.Capacity, IntPtr.Zero, 4); return b.ToString(); } set => Link.SetPath(value); }
+    public string TargetPath
+    {
+        get
+        {
+            const uint rawPath = 4;
+            var buffer = new StringBuilder(32768); Link.GetPath(buffer, buffer.Capacity, IntPtr.Zero, rawPath);
+            // GetPath can return S_FALSE with an empty result. That is unknown
+            // ownership, not a readable shortcut belonging to another program.
+            return buffer.Length == 0 ? throw new InvalidDataException("快捷方式缺少可核验的文件目标") : buffer.ToString();
+        }
+        set => Link.SetPath(value);
+    }
     public string Arguments { get { var b = new StringBuilder(32768); Link.GetArguments(b, b.Capacity); return b.ToString(); } set => Link.SetArguments(value); }
     public string WorkingDirectory { get { var b = new StringBuilder(32768); Link.GetWorkingDirectory(b, b.Capacity); return b.ToString(); } set => Link.SetWorkingDirectory(value); }
     public string Description { get { var b = new StringBuilder(32768); Link.GetDescription(b, b.Capacity); return b.ToString(); } set => Link.SetDescription(value); }
     public string IconLocation { get { var b = new StringBuilder(32768); Link.GetIconLocation(b, b.Capacity, out var index); return b + "," + index; } }
     public void SetIcon(string path, int index) => Link.SetIconLocation(path, index);
     public void Save(string path) => File.Save(path, true);
-    public void Dispose() => Marshal.FinalReleaseComObject(instance);
+    public void Dispose()
+    {
+        // Both interfaces are aliases of this one owned RCW. Release it only once.
+        var owned = Interlocked.Exchange(ref instance, null);
+        if (owned is not null) Marshal.FinalReleaseComObject(owned);
+    }
 
     // Preserve native vtable order; HRESULT failures are translated by COM interop.
     [ComImport, Guid("000214F9-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

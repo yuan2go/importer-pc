@@ -1,0 +1,6 @@
+{
+  "Status": "FAIL",
+  "Reason": "Global ApplicationManifest propagated into product project builds",
+  "DistinctPlatformDllHashes": 3,
+  "Source": "7b968e4ba961529d1fbd1b76ff62f49eb453c7d3"
+}

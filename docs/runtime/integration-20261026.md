@@ -36,3 +36,34 @@
 | pr110-restore-WcsToPlc | PASS (0) | `513ae962bbf2b5ece1472298f8ca92850edb0575c013b6f8c26ccf41b2b0fd00` | `a1d949dd4573d74bba7337237f90a39418a9157a8b39eea193126fff7d46ce04` |
 
 尚未完成：PR110新head CI、后续PR逐项同步和合并、最终干净main完整验证。
+
+## PR113组合预检
+
+在d204bc587478b0f190b3814d7cccec47c132b571干净组合树运行，先继承PR110 5e4b85d5再保留PR113本身差量。冲突仅在索引、版本及锁文件：版本统一不再次提升，锁文件实际restore，清单重算。PR110原回执保持完整原字节，新状态只进索引/本记录。6260份已存在冻结证据、9份迁移SQL、两份字体和WAL/FULL均通过静态身份检查。
+
+| 执行 | 结果 | 源 | 日志SHA256 |
+|---|---|---|---|
+| pr113-codepages | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9` |
+| pr113-p0-provider-identity | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `30b8b380489f4f5175c8e2b50f1c75c59652957104984ef46d0a403fceb4e266` |
+| pr113-p0-supervisor | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `20d2e887fe54256d004402245255fab23a8367d4b21d04cb49dbd040d1886659` |
+| pr113-installer-change-guards | PASS | `d204bc587478b0f190b3814d7cccec47c132b571` | `e36c2ee0af6a94ebc8de234defa07aedf111f7e401e7d4d8f02a539cd9c3e972` |
+
+三ACP均实际核对GetACP，产品Platform DLL SHA256严格相同；只使用全新D盘夹具根及真实COM，不登记机器安装、HKLM、任务或SCM。此结果尚不等于PR113合并或CI完成。
+
+## PR110已合并及合并后回归
+
+PR110在新头5e4b85d5的CI40269650794三个job全部success、未解决评审线程为0后，以c8dd514458bfcf4820ea587d97da7be64b7dca16合入main。新main Git树与被核验头完全一致。随后在干净main重建Application并重新执行8组P0/安装守卫，全部退出0；这批执行的SourceCommit确为c8dd5144，没有沿用父分支PASS。SQL1–9、6241份起点冻结证据、字体、WAL/FULL再次核对不变。既有CI同时覆盖AQA、保留/可靠性、参数首配及原生Windows回归；CI自带测试介质任务保留其来源，不作为本轮本机发布或现场验收。
+
+| 执行 | 结果 | 日志SHA256 |
+|---|---|---|
+| post110-main-build | PASS | `b2f54484e67dc89ad331e084fa2c167eb1e981a486358b0b92a3eff30ec85623` |
+| post110-main-installer-change-guards | PASS | `ebe2a4207d193ea260e1fecca332fdfa83d3823639a1f9771368919e8485ce6f` |
+| post110-main-p0-cleanup | PASS | `f23411fb5efa7e773f9213cf26773c1a5070f2da708ad4aa0a7744f50484f89f` |
+| post110-main-p0-deferred | PASS | `ff6b3f70d15ad9646b0b3299f70ceec8f1c6c88c4468420768ac18081716a1e6` |
+| post110-main-p0-provider-identity | PASS | `4a760923e5a0cd6f917bcbf7b0216e5c1d6367418069a2f3aeacf7d41ecbeb16` |
+| post110-main-p0-rcs | PASS | `97dc60847f593a2371dcfafcf02ba97ef8047037210c7dc2403fc21733c2d2e0` |
+| post110-main-p0-supervisor | PASS | `f68d720f68d40e7fb20eeb7501c69b6efb4e0ccb8aad83f4d97e9584c868d813` |
+| post110-main-p0-tcp | PASS | `09a4046e81064670bb45597ba76dde8582609685b2e45436705bda8ab6f51908` |
+| post110-main-p0-unknown-restart | PASS | `62e95d83aba9ebec5a50dcd96b3d521a0af9b88f118d34ad24cc26ae367c92cf` |
+
+PR113已merge上述新main。此前d204bc58的产品差量与当前组合一致，三ACP及正式TCP/预算回归各自仍只记d204源；PR113新head CI另行执行。

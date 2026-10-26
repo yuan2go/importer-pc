@@ -1,4 +1,6 @@
-> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+> 2026-10-26 Unicode快捷方式生命周期续修：[工作包](work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md)、[实现/失败与回归](runtime/validation/unicode-shortcut-compatibility-01.md)、[运行与PR112依赖](runtime/unicode-shortcut-compatibility-01.md)。继承PR110的980a1383，只补已证实差量；原三ACP及CI40261696276保持原源，新增验证另计，真实安装/卸载与现场未验。
+
+> 2026-10-26前阶段：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[原续修记录](runtime/validation/pr110-unicode-shortcuts-01.md)与原CI失败/PASS保留SourceCommit，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
 
 > P0-STABILITY-01：四项修复、当前基线与独立证据见[工作包](work-packages/WP-IPC-P0-STABILITY-01.md)和[问题卡](runtime/validation/p0-stability-01.md)。已同步PR109后的main a8cd4314，不继承旧介质资格。
 

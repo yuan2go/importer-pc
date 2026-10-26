@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-P0-STABILITY-01",
+  "work_package": "WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,13 +1692,13 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "e5ecb3122ea11af20c0747e318fa8a91cac2eba7cd759f1d2f9b2c60038bd985",
-      "size_bytes": 9301,
-      "git_blob": "4788052f26718cc1fd9cf45a7aa7007d49e85cfb",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "sha256": "eb619cbaa041d36997f1ef577b7e0b52082a17a22e59e354f6599eb5df5554a7",
+      "size_bytes": 9506,
+      "git_blob": "460fccb3efb6d58db21fdddf4b75b77fcdd5e192",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
       "previous_git_blob": "25f1ffddaabdaa43a2c811ddd28666924c118122",
@@ -1823,6 +1823,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "4788052f26718cc1fd9cf45a7aa7007d49e85cfb",
+        "sha256": "e5ecb3122ea11af20c0747e318fa8a91cac2eba7cd759f1d2f9b2c60038bd985",
+        "size_bytes": 9301,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
       }
     },
     {
@@ -1964,13 +1972,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "64c69a57b09741d7940b207bbcfc629d549fdc1d446b5da063079c559bb83c1e",
-      "size_bytes": 6494,
-      "git_blob": "72403b92bd4cdc9bb592aceabdae78511ef7045b",
-      "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
-      "status": "current_guidance_static_review_not_runtime_validation",
-      "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
-      "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21",
+      "sha256": "31291c2fef98a6b7989e4187c08472c88f08432a5334016061f1b27d35cf7d7a",
+      "size_bytes": 6593,
+      "git_blob": "ac69cacb29fa113704b775becac096c11e865e35",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "d5d1118683b400abdfb72c288c4eddc4cd935459",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
@@ -2005,6 +2013,14 @@
         "version": "PARAM-UX-02-20261020",
         "status": "parameter_v3_design_or_current_guidance",
         "source": "User-authorized parameter redesign and generated UI publication; synthetic data and licensed prototype dependencies only"
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "72403b92bd4cdc9bb592aceabdae78511ef7045b",
+        "sha256": "64c69a57b09741d7940b207bbcfc629d549fdc1d446b5da063079c559bb83c1e",
+        "size_bytes": 6494,
+        "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
+        "status": "current_guidance_static_review_not_runtime_validation",
+        "source": "User-authorized full parameter UI artifact publication and latest-code Codex handoff, 2026-10-21"
       }
     },
     {
@@ -2043,13 +2059,13 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "49797fcf415c458dd6db2978486f7dbef5ec00210310756d7a4b7d429939af25",
+      "sha256": "f452aa13ccb8a72e12690e13f03d44a129c4c3155abeaf35947e67c59755594f",
       "size_bytes": 7746,
-      "git_blob": "20f5b1617d2b8192b1e3490fdfa5003741aa9b35",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "git_blob": "23283daa9b809b3c3be9f76f15c45a0b68ccc614",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -2068,6 +2084,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "20f5b1617d2b8192b1e3490fdfa5003741aa9b35",
+        "sha256": "49797fcf415c458dd6db2978486f7dbef5ec00210310756d7a4b7d429939af25",
+        "size_bytes": 7746,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
       }
     },
     {
@@ -2211,13 +2235,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "4b6251b28bd4d44dfafc8f8013a1e0ccafd5a365c34b76e814fc4e63e31448de",
-      "size_bytes": 14778,
-      "git_blob": "8ef5c0dfce10f1c7790ef40a4b7c4b9540eaa9f1",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "sha256": "b76b2b731df8b75b2cfc665ef355cc221a351746d2655aa02a4ba70e943ed9b3",
+      "size_bytes": 15149,
+      "git_blob": "36d799354289c1e78b6f56d5e15de3e5051c8964",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "13efef95e5444597fc02cf4d5183c7f470eacd35",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2434,6 +2458,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "8ef5c0dfce10f1c7790ef40a4b7c4b9540eaa9f1",
+        "sha256": "4b6251b28bd4d44dfafc8f8013a1e0ccafd5a365c34b76e814fc4e63e31448de",
+        "size_bytes": 14778,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
       }
     },
     {
@@ -9050,13 +9082,21 @@
     {
       "path": "docs/runtime/desktop-shortcut-name-01.md",
       "storage_scope": "public_repository",
-      "sha256": "1e4e6bfe4af8f81e7901eef17ca16d031a6943b8045f7a436c4548fc96a33c1b",
-      "size_bytes": 2967,
-      "git_blob": "a6b62f872865a926b9f77bb67e946077a6679740",
-      "version": "installer-single-window-01",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Single installation window, one guarded consent and exact native verification",
-      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+      "sha256": "c7a6cb0f22e44f32821ad673d0abe12215c82758b85339b57afd5b144f2bbfa3",
+      "size_bytes": 3286,
+      "git_blob": "50d7b5cc59b14a20f5f32bbf985283157528ff21",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "a6b62f872865a926b9f77bb67e946077a6679740",
+        "sha256": "1e4e6bfe4af8f81e7901eef17ca16d031a6943b8045f7a436c4548fc96a33c1b",
+        "size_bytes": 2967,
+        "version": "installer-single-window-01",
+        "status": "current_source_or_preserved_evidence",
+        "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+      }
     },
     {
       "path": "docs/runtime/engineering-closure-07-checks.json",
@@ -53125,14 +53165,22 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "sha256": "ee8fd6c05b7ea83aa42e4ac36b858dd7e077b3ad1bdb4cd2a48cc3b5703ca7e8",
-      "size_bytes": 5289,
-      "git_blob": "48cd7d40f889eafbaf79584ba4cda346c8c0ea5a",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
-      "storage_scope": "public_repository"
+      "sha256": "253e16dcbd7918102f95e470a6cc93fb2d2e50b73a6f7748a1f620d26381e729",
+      "size_bytes": 5370,
+      "git_blob": "a4ac5e6105171732509c060d4fd8253b1f163e5b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
+      "storage_scope": "public_repository",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "48cd7d40f889eafbaf79584ba4cda346c8c0ea5a",
+        "sha256": "ee8fd6c05b7ea83aa42e4ac36b858dd7e077b3ad1bdb4cd2a48cc3b5703ca7e8",
+        "size_bytes": 5289,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      }
     },
     {
       "path": "scripts/release_provenance.py",
@@ -53829,14 +53877,22 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc.Desktop/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
-      "size_bytes": 14311,
-      "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      "sha256": "1e7c72573cbffed9b7a71877ea9e782586bbec36e4492597877241e458639ffc",
+      "size_bytes": 14427,
+      "git_blob": "f84335fe66f6808b53b030203882429e3a58349c",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa",
+        "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
+        "size_bytes": 14311,
+        "version": "APPLICATION-CONVERGENCE-17",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+      }
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Application.cs",
@@ -53852,13 +53908,13 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "c91ac9a6703b6d72b43d56c44139c826f4aa63a7eff25a4f8f173330132707b5",
+      "sha256": "0b4b6fb1bf628766ab3b8d36eb4f17c69c0f81ff5befe5015e6b578844ff17ee",
       "size_bytes": 339,
-      "git_blob": "4b6beca0afc50e05dfb05522515015b3276ce384",
-      "version": "retention-ingress-full-retest-03",
-      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
-      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "git_blob": "233e46fe7c73a3de259881787b2ef9b8badb52bb",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -53877,6 +53933,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "4b6beca0afc50e05dfb05522515015b3276ce384",
+        "sha256": "c91ac9a6703b6d72b43d56c44139c826f4aa63a7eff25a4f8f173330132707b5",
+        "size_bytes": 339,
+        "version": "retention-ingress-full-retest-03",
+        "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+        "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained"
       }
     },
     {
@@ -53905,15 +53969,23 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
-      "size_bytes": 16386,
-      "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "065826d270bfefb20765d29bebdcdb5ce9513c400ef2497c115b7cb562af76a7",
+      "size_bytes": 16388,
+      "git_blob": "b315f85b020e7db595667c77d142bad9150d1bf0",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
+        "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
+        "size_bytes": 16386,
+        "version": "architecture-quality-audit-02-rereview",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+      }
     },
     {
       "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
@@ -55595,13 +55667,13 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "a35df1e40b35e39a02af615726040c06f4142184acbb10522cb313e7222f9ca6",
+      "sha256": "42495bddd7ef1839c7b44fc5debdacc543345016686fc1fa523e6ba6a49e8102",
       "size_bytes": 341,
-      "git_blob": "3396950e7cbb5588dfbe1ae623a168a8a82252fa",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "git_blob": "6e69f173aed30fbe44363f572fe0516164b9b32d",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -55620,6 +55692,14 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "3396950e7cbb5588dfbe1ae623a168a8a82252fa",
+        "sha256": "a35df1e40b35e39a02af615726040c06f4142184acbb10522cb313e7222f9ca6",
+        "size_bytes": 341,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
       }
     },
     {
@@ -56454,14 +56534,22 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
-      "size_bytes": 14311,
-      "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
+      "sha256": "1e7c72573cbffed9b7a71877ea9e782586bbec36e4492597877241e458639ffc",
+      "size_bytes": 14427,
+      "git_blob": "f84335fe66f6808b53b030203882429e3a58349c",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa",
+        "sha256": "e727e3226be3a6d072deaa254331257512ed4b5eb5907bc549a8e2b25d349179",
+        "size_bytes": 14311,
+        "version": "APPLICATION-CONVERGENCE-17",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+      }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.wcs-to-plc.lock.json",
@@ -56501,13 +56589,13 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "7d6b99f10125e9a5b5994e7b547aaca08cabd422a9697ac17283252d348b0c73",
+      "sha256": "aecd6402d0caf3ff8cb770f90c0a8b994e20985223a22b6906d696bf49b69024",
       "size_bytes": 339,
-      "git_blob": "295c8623230bb779daa54c6342cd0a46ae85e792",
-      "version": "retention-ingress-full-retest-03",
-      "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
-      "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
-      "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
+      "git_blob": "09ec29cfa4942a086c378168e9ed77f4d81046ac",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
       "pre_retention_ingress_main_integration_03_identities": {
         "main": {
@@ -56526,19 +56614,35 @@
           "status": "scoped_runtime_fix_and_separately_identified_synthetic_verification",
           "source": "WP-IPC-RETENTION-INGRESS-02; product a192b7f, later test fixture identities separate; historical evidence unchanged"
         }
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "295c8623230bb779daa54c6342cd0a46ae85e792",
+        "sha256": "7d6b99f10125e9a5b5994e7b547aaca08cabd422a9697ac17283252d348b0c73",
+        "size_bytes": 339,
+        "version": "retention-ingress-full-retest-03",
+        "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
+        "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained"
       }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
-      "size_bytes": 16386,
-      "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "065826d270bfefb20765d29bebdcdb5ce9513c400ef2497c115b7cb562af76a7",
+      "size_bytes": 16388,
+      "git_blob": "b315f85b020e7db595667c77d142bad9150d1bf0",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "c55940d4e3da7e76df0263fdfaca0dffefd35da1",
+        "sha256": "22659cd9b0323a201d28fad13eb060a5136e8ff9a63cf69c19f486f73ed7580f",
+        "size_bytes": 16386,
+        "version": "architecture-quality-audit-02-rereview",
+        "status": "current_implementation_or_boundary_record",
+        "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained"
+      }
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.lock.json",
@@ -56900,15 +57004,23 @@
     },
     {
       "path": "src/Ipc.Components/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
-      "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7"
+      "sha256": "39cedf4f5dd0bd7c1160380f21a1b2bf9b204ac224003b5759e42595602d398d",
+      "size_bytes": 14290,
+      "git_blob": "da1acff1f257de79ead3fe38f823c2c8ce34b32a",
+      "previous_git_blob": "e268b0a6118e6191f7987327a75a155dfbdaabc7",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
+        "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+        "size_bytes": 14289,
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      }
     },
     {
       "path": "src/Ipc.Components/packages.sportmaster.lock.json",
@@ -57425,15 +57537,23 @@
     },
     {
       "path": "src/Ipc.Drivers/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
-      "size_bytes": 14289,
-      "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "sha256": "39cedf4f5dd0bd7c1160380f21a1b2bf9b204ac224003b5759e42595602d398d",
+      "size_bytes": 14290,
+      "git_blob": "da1acff1f257de79ead3fe38f823c2c8ce34b32a",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "d75c4b345f63589a8a4cfb7cdc1f892f8c6411cb",
+        "sha256": "4e87b93a4bfb603d094d649f33223e1ff5be207eae54bbecc4541d822bed110f",
+        "size_bytes": 14289,
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      }
     },
     {
       "path": "src/Ipc.Drivers/packages.sportmaster.lock.json",
@@ -57908,15 +58028,23 @@
     },
     {
       "path": "src/Ipc.Integrations/packages.lock.json",
-      "version": "typography-01",
-      "status": "current_source_or_specification",
-      "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
-      "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "e5bd4f1d200dbd692078139f50c9f746c4331c4facf2b2516953b815fe0a9ba0",
-      "size_bytes": 14431,
-      "git_blob": "eaa40bc0e2ca53f652a93ad819b8ebe6c2408884",
-      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034"
+      "sha256": "65185f22758d4df7799dae99580599ba54de82a9c0a5ecc21d50ece8d3bd83ba",
+      "size_bytes": 14432,
+      "git_blob": "2b2160fde1417d8c991292bd27e2398ce4e9f792",
+      "previous_git_blob": "232c8e19c717131a8e77d17c17b18b2373a14034",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "eaa40bc0e2ca53f652a93ad819b8ebe6c2408884",
+        "sha256": "e5bd4f1d200dbd692078139f50c9f746c4331c4facf2b2516953b815fe0a9ba0",
+        "size_bytes": 14431,
+        "version": "typography-01",
+        "status": "current_source_or_specification",
+        "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records"
+      }
     },
     {
       "path": "src/Ipc.Integrations/packages.sportmaster.lock.json",
@@ -58263,13 +58391,21 @@
     {
       "path": "src/Ipc.Platform/DeploymentShortcuts.cs",
       "storage_scope": "public_repository",
-      "sha256": "d471bf637c21f6140d7cc11949e6278fb9166b8a48fc42b01e78480991bb28c3",
-      "size_bytes": 5704,
-      "git_blob": "380951cee7164b25faee3048c2a160ef2632dd02",
-      "version": "installer-single-window-01",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Single installation window, one guarded consent and exact native verification",
-      "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+      "sha256": "8b767c92f69e171158aa204ed98909b97a3bc761ba2adf7c0a033a28a523357b",
+      "size_bytes": 6365,
+      "git_blob": "d6e695efa433c82cf4e66770d35660157949e1dd",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "380951cee7164b25faee3048c2a160ef2632dd02",
+        "sha256": "d471bf637c21f6140d7cc11949e6278fb9166b8a48fc42b01e78480991bb28c3",
+        "size_bytes": 5704,
+        "version": "installer-single-window-01",
+        "status": "current_source_or_preserved_evidence",
+        "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
+      }
     },
     {
       "path": "src/Ipc.Platform/DeviceCapabilities.cs",
@@ -59291,16 +59427,24 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
-      "version": "parameter-guidance-startup-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
-      "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "855007ee49d9a1ec6bd0605c07d0e6bf23c2eff4b0493a44ba4e862ca8a30bfd",
-      "size_bytes": 5766,
-      "git_blob": "cdfc4a8b52a3ad28c90f66e817970b05891cefb1",
+      "sha256": "df735d1423220d0f844140968418777907d976d66ef99001240b1588e7eadfc0",
+      "size_bytes": 5878,
+      "git_blob": "ccb7e9adde70dfd08d4628acccdefd52f0e40009",
       "previous_git_blob": "b17fdaf9649a7cb17e1ffbc22d18ac52f66f96da",
-      "pre_publication_no_test_git_blob": "1d7d21f9f677c91845bfe1f23cf50ea87099d528"
+      "pre_publication_no_test_git_blob": "1d7d21f9f677c91845bfe1f23cf50ea87099d528",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "cdfc4a8b52a3ad28c90f66e817970b05891cefb1",
+        "sha256": "855007ee49d9a1ec6bd0605c07d0e6bf23c2eff4b0493a44ba4e862ca8a30bfd",
+        "size_bytes": 5766,
+        "version": "parameter-guidance-startup-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      }
     },
     {
       "path": "tests/Ipc.Application.Verification/OptionalCapabilities.cs",
@@ -59327,14 +59471,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "deferred-heartbeat-01",
-      "status": "scoped_implementation_or_separately_identified_evidence",
-      "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
-      "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "85ad5a96891f4ddca9c720115ee89326b4ded3eef3be75ac60042412fa939fe2",
-      "size_bytes": 23319,
-      "git_blob": "20f0809a6938d272829d9c8ecc970fbac10b6541",
+      "sha256": "9db4eb296bea484ec5243b6f9099c79909f23ce76b7036037d8cfd57408a9fb0",
+      "size_bytes": 23600,
+      "git_blob": "0fea95e26f7426834535768df2c7600cc675c90a",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59404,6 +59548,14 @@
         "version": "parameter-guidance-startup-01",
         "status": "current_source_or_synthetic_evidence",
         "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity"
+      },
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "20f0809a6938d272829d9c8ecc970fbac10b6541",
+        "sha256": "85ad5a96891f4ddca9c720115ee89326b4ded3eef3be75ac60042412fa939fe2",
+        "size_bytes": 23319,
+        "version": "deferred-heartbeat-01",
+        "status": "scoped_implementation_or_separately_identified_evidence",
+        "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained"
       }
     },
     {
@@ -90842,36 +90994,1061 @@
     },
     {
       "path": "docs/runtime/validation/pr110-unicode-shortcuts-01.md",
-      "version": "p0-stability-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "P0 stability implementation and synthetic verification",
-      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "ce03051c68b09cac67bc62afac9efd8ed96cb2fb8608e41f1ac65530553aa9e8",
-      "size_bytes": 2234,
-      "git_blob": "a30372da23967908c7eeeb4915b8d769e2cc8158"
+      "sha256": "34424f0b0ac43eaf1c06cd892f20a1ca33364ce24fb84634bb300e7976604404",
+      "size_bytes": 2652,
+      "git_blob": "b1b21d51e0d03845bc95fa70f2c3d7c9ec0387e4",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "a30372da23967908c7eeeb4915b8d769e2cc8158",
+        "sha256": "ce03051c68b09cac67bc62afac9efd8ed96cb2fb8608e41f1ac65530553aa9e8",
+        "size_bytes": 2234,
+        "version": "p0-stability-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited"
+      }
     },
     {
       "path": "scripts/verify-shortcut-codepages.ps1",
-      "version": "p0-stability-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "P0 stability implementation and synthetic verification",
-      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "5cd61aaa42f531d292a33252e901305b91bf5a7c87c7caa06c386bd0e6d9c6ea",
-      "size_bytes": 2252,
-      "git_blob": "788695cb0fc3b270891867bc1d239c40c9a950e1"
+      "sha256": "88bb102bc758f53baca116e7cc524649160f26ce041bb809307f50eacf94e5fb",
+      "size_bytes": 4755,
+      "git_blob": "29d88abd907e707b6904d3677dca8f25c4ec047f",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "788695cb0fc3b270891867bc1d239c40c9a950e1",
+        "sha256": "5cd61aaa42f531d292a33252e901305b91bf5a7c87c7caa06c386bd0e6d9c6ea",
+        "size_bytes": 2252,
+        "version": "p0-stability-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited"
+      }
     },
     {
       "path": "src/Ipc.Platform/ShellLinkFile.cs",
-      "version": "p0-stability-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "P0 stability implementation and synthetic verification",
-      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "06d220da786c25ea3e0f2a1a5cf5b2fb1b7ee4ba404ed6fbb2443eef91ff8133",
-      "size_bytes": 3471,
-      "git_blob": "5623e89dceeb2a5f9a0c3bc0bde0a56753ec0a44"
+      "sha256": "e8b63ae2c2b0026f4b1cf8ace700f6afda99b34c50b0ddf2c85cf94000daefae",
+      "size_bytes": 4125,
+      "git_blob": "bfb624c08746841db4e5b5048430675c41779041",
+      "pre_unicode_shortcut_compatibility_01_identity": {
+        "git_blob": "5623e89dceeb2a5f9a0c3bc0bde0a56753ec0a44",
+        "sha256": "06d220da786c25ea3e0f2a1a5cf5b2fb1b7ee4ba404ed6fbb2443eef91ff8133",
+        "size_bytes": 3471,
+        "version": "p0-stability-01",
+        "status": "current_source_or_synthetic_evidence",
+        "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited"
+      }
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/execution.json",
+      "sha256": "3e2ad06c00681fea64510d738a1c7ca5fa536a77d204f44a2c241f9f142626f2",
+      "size_bytes": 24981,
+      "git_blob": "415e74f0ea9faceb5480b3a255cd67a8310dd46c",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8-build.log",
+      "sha256": "aacc2a6b195033597d6b102760efed4b6aa25a0b17788dfab9cd151df7ec9060",
+      "size_bytes": 2338,
+      "git_blob": "93c8edbbfa0dd49f5426fe05069a8a512b30145e",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8.log",
+      "sha256": "6b322863fa5298f49f606f63d8b3b5c096c9995501521cc3b5bdc63bd70e8601",
+      "size_bytes": 2318,
+      "git_blob": "2c438408f4a44d6a5bafd80737fe1c8875385a1d",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size_bytes": 433,
+      "git_blob": "4c987b9849731d0a8c4f53d66c8ccb9effd93029",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US-build.log",
+      "sha256": "2debef94e6736bcdf71edcbe2be042d08f037d95e06432130fc38d466da144e5",
+      "size_bytes": 4319,
+      "git_blob": "a902a82cb87fea74cbe0d3be02e5c38be8b0306b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US.log",
+      "sha256": "98f701fee3a0e5fcbe107ab997034893cf6ae06b71fabfac9eacff58838f2048",
+      "size_bytes": 2317,
+      "git_blob": "b8cd5481404bb54b4d57afefd227d65cc1c0320e",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size_bytes": 433,
+      "git_blob": "2ec245ec1a976e617a3babd1de5f0b09f1f50b5a",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN-build.log",
+      "sha256": "0ac9a87fe86237c662b4c1f30287d7e790a9cb230e133d1711d828b9effb530b",
+      "size_bytes": 2338,
+      "git_blob": "ccb527803bd4e713447fad19a8716505b9f2c287",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN.log",
+      "sha256": "e84367b4bdccdadde88fd16fb8374e9570cc86b0b2388aa9b4806c60dd8b5083",
+      "size_bytes": 2316,
+      "git_blob": "f8a27876a9da56469530deecc51a490acac38e71",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size_bytes": 433,
+      "git_blob": "032e3bdf741686c6c5ed89755262a9b67fcfd87b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/empty-red-e182/build.log",
+      "sha256": "176bf080160e3c1aa5c27c5a9f06931577d8d5f8776e595418e490d18f78d06a",
+      "size_bytes": 2338,
+      "git_blob": "7c3649d7bd950e4f67d9f66ffe44dce19bcc2644",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/empty-red-e182/lifecycle.log",
+      "sha256": "fe6ebdaffa7d33bd7866b7cb948749221a540dac9ae403286eee3523fbc90855",
+      "size_bytes": 5761,
+      "git_blob": "5a089941df0c727258ad99b11d9703cd7149c3e7",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-build.log",
+      "sha256": "d55b69149dd0b6de5a3210c1451bbd56aafb9d1bb0a560dfee287bb35957e331",
+      "size_bytes": 2338,
+      "git_blob": "200172101ab1eaad340a181a3991e9c0df07293b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-lifecycle.log",
+      "sha256": "c061e6b9e84d588308400a0c4f58c7cd7b1b2053241a2a5cbc25085b76369f43",
+      "size_bytes": 3577,
+      "git_blob": "c9255f07c146c2fa43ddfe7301c6acc15968fd17",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-result.json",
+      "sha256": "48910c9ca52adc535f5f975bfc8d0375277d551a7ff01c8582036b4e4d0c872f",
+      "size_bytes": 1263,
+      "git_blob": "8470483be39fdef8d523d7aa1f70650d4e856e3b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8.log",
+      "sha256": "fe989371b17085188380ba3e11f02202c804170600d1d3053dca4e73bccca6f5",
+      "size_bytes": 2318,
+      "git_blob": "01ba97b3ce9000f78d430e55b9b66190ea0b0b52",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size_bytes": 433,
+      "git_blob": "4c987b9849731d0a8c4f53d66c8ccb9effd93029",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-build.log",
+      "sha256": "afbf2bf5d05b4f42707df66a816400bf5bec0f0c66db96391149269a1003710d",
+      "size_bytes": 2338,
+      "git_blob": "7b71a137145493e7871a67341d53e73d73315fb1",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-lifecycle.log",
+      "sha256": "d0dabc7cd9db7c00937d57d78b5f1ebbb289232ab497cd2b44e2eb26ff5ebaf2",
+      "size_bytes": 3576,
+      "git_blob": "33c85a44e372e8c6d0194dd39394e060e9a0ade2",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-result.json",
+      "sha256": "4cadaae636bab4daccf59a1526c1f4d009baad6ede56310225bbe1beb9759074",
+      "size_bytes": 1261,
+      "git_blob": "9edf35681927eab7a624f7aa2774e7cf2ec5ccf6",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US.log",
+      "sha256": "a3fc4b53890ad18d73d663d07654a9f591f62b80cec87322c63cbb0720cd7d9c",
+      "size_bytes": 2317,
+      "git_blob": "02354063992302fdaa368be33f5eb746f0cb4d5b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size_bytes": 433,
+      "git_blob": "2ec245ec1a976e617a3babd1de5f0b09f1f50b5a",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-build.log",
+      "sha256": "f0cb217fe98e0dd55743dd29b07185d83b6c6c2570b145997a2910d513dfaad2",
+      "size_bytes": 2338,
+      "git_blob": "021ad1c1c122051dd8f181e7c98ab3953b317044",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-lifecycle.log",
+      "sha256": "d3df61d57d301386f525a20122060f0b0165995f8212afb40731a7338577b285",
+      "size_bytes": 3575,
+      "git_blob": "6b624e650f395527b7a929340f7e99ff90b93ffb",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-result.json",
+      "sha256": "ae221677f2a175c421480956f8467717eb9db50d5d215509126ad7ee5718bfa1",
+      "size_bytes": 1259,
+      "git_blob": "cbe440492c0d7359cb50c0c36867bec6e648f0a1",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN.log",
+      "sha256": "16cd3f308500ef4c849d5a7d9329ad3fa22be52edeffbbe9a04d2e078d957045",
+      "size_bytes": 2316,
+      "git_blob": "70be1e14bf78074e9a732051b29fa6780e0b2c1c",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size_bytes": 433,
+      "git_blob": "032e3bdf741686c6c5ed89755262a9b67fcfd87b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-build.log",
+      "sha256": "e93b892960236fc3c27a24c0459fa6a2e2e5605ea607adc059963173055fddf9",
+      "size_bytes": 2338,
+      "git_blob": "0704f2c0881560e3b92bb2a5d7a1ead8e25426c0",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-lifecycle.log",
+      "sha256": "40ec147e7ba365b72e29ef0931b791ac3ace811d772e226f95f771c3e9c1e26e",
+      "size_bytes": 3577,
+      "git_blob": "e942f19a0785ff673a7be50b8a77ef418f351fd2",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-result.json",
+      "sha256": "572ee6e53ef3d60c0304c91afb0b5af4a5e0627149b03e3acd809c81c1a9d6f0",
+      "size_bytes": 1263,
+      "git_blob": "1e07de3952b28f51b47f0592f2f1831668772277",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8.log",
+      "sha256": "29241c3c2f74f57cbdbed998e48ead010ec5aa3ce9d48ae6ed92de9688d7ec5f",
+      "size_bytes": 2318,
+      "git_blob": "b84edbf5165afc4aad6a586f0bd017502224e75c",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size_bytes": 433,
+      "git_blob": "4c987b9849731d0a8c4f53d66c8ccb9effd93029",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/cross-acp-dll-audit.json",
+      "sha256": "ec662d3f2ce9e19081b3a64de48abf655978378e9717f7b4c047aa8b867fe06e",
+      "size_bytes": 200,
+      "git_blob": "d8c555ae274bcd9ab975e5a6d2e0d9cddf2fdf4b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-build.log",
+      "sha256": "b8802ac9a50903aad6ba7d01dd5779229c7d569fef6297169ba6d8d2c3ea8178",
+      "size_bytes": 2338,
+      "git_blob": "25093d4ce4352c2602491bb001ed9e3a104bfdd5",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-lifecycle.log",
+      "sha256": "768c139a0f1b1d3909ee60471b851870a33f0af2fd32eaf0e8bc4433e73761f4",
+      "size_bytes": 3576,
+      "git_blob": "23ca5b5864ad308f428a27443aa0d6e2368bef58",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-result.json",
+      "sha256": "9097b3d1607f59e823e364d406823621eb10a0b69ce33e9f577db1c7f9e2096f",
+      "size_bytes": 1261,
+      "git_blob": "91b33f86285374b9a12e4b6a2ff59bad30d814b1",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US.log",
+      "sha256": "dcf782550369404f1cbdb67e57702e759d2d226fcb4cb19b3ffcc2885b4faeea",
+      "size_bytes": 2317,
+      "git_blob": "323724366e64c54b11b206705217f67d7e736c42",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size_bytes": 433,
+      "git_blob": "2ec245ec1a976e617a3babd1de5f0b09f1f50b5a",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-build.log",
+      "sha256": "89f5454822dec2b96c8160e48789928b9c0d36fba0812d7b0132241e5cced951",
+      "size_bytes": 2338,
+      "git_blob": "2be19e74a79423d32fe2d0cefd5737776cd41d31",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-lifecycle.log",
+      "sha256": "cf3ab7c63d1bfdb532cf187e7f0c8541dd639db4eb47ef7eb8c6ed52726f2577",
+      "size_bytes": 3575,
+      "git_blob": "51df94dab5b713cf3910a33cc3698c7ef2d495f5",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-result.json",
+      "sha256": "790c7e56095563da49a8d8784e5aa277edc819b6bd7a0f4a43960b36f4e1df8e",
+      "size_bytes": 1259,
+      "git_blob": "ac72f4d0673f21275e1783e3e7b47b4e799210fe",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN.log",
+      "sha256": "bfe7d17208e34f0140f632352cf661d0f252795691fed4a23f666c5cae75e183",
+      "size_bytes": 2316,
+      "git_blob": "fad1594addc453d894734658e69fed7deea9acaf",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size_bytes": 433,
+      "git_blob": "032e3bdf741686c6c5ed89755262a9b67fcfd87b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-build.log",
+      "sha256": "eef16e73a7ca74afe82dbaee0a513e4a34241474e7cdafa0f391ff5142313ad1",
+      "size_bytes": 2338,
+      "git_blob": "e05f4ebe402209cc34442553c3e5974559a72eba",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-lifecycle.log",
+      "sha256": "3d3a124511baa86b71a75168e2ee80eeb6807195c21f3800ae91337a1c0149af",
+      "size_bytes": 3299,
+      "git_blob": "d823cd4db3a31f712fa1cc8f94bec63f5abc3140",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-result.json",
+      "sha256": "7d7d3e47c0400f62db429214381f93d0a4632ec798e63c5f0728c75197c49e93",
+      "size_bytes": 1002,
+      "git_blob": "f973a0c7dc901106c439281fd8f3eca9efee13f0",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8.log",
+      "sha256": "3d822ccbb11eebf36c33b73e1ac1aec68087a82679619e920791d58c5b7d5d67",
+      "size_bytes": 2318,
+      "git_blob": "7540f5cb277b4d8aebf7e3c1230320552153e157",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size_bytes": 433,
+      "git_blob": "4c987b9849731d0a8c4f53d66c8ccb9effd93029",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-build.log",
+      "sha256": "670cdf71d5455af94cc01d984225c70ef841f543066bf759f3bbe3ae7f3c069f",
+      "size_bytes": 2921,
+      "git_blob": "1a659f7113291991438dd72f14c317488320b3f3",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-lifecycle.log",
+      "sha256": "2a23c966d498437d3b404a5aba2d2f32d518ad84bd0548d2fd7a629da7385979",
+      "size_bytes": 3298,
+      "git_blob": "3157e1023fcd3e8ea7818fd01aab6a20e487efdd",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-result.json",
+      "sha256": "3be6d29caffee2d99942c9bc193f7a950a9544f55471ca42cd805025420d8d10",
+      "size_bytes": 1000,
+      "git_blob": "9e73ef756e0580b5f250b92c61cfed1fb0a121b4",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US.log",
+      "sha256": "66d76955127f4cae688717f782fd182eba1e97055fde0f1d5431d993c2cb5f84",
+      "size_bytes": 2317,
+      "git_blob": "d4dd129123578b27b6a6c1933880f5950f4af2cc",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size_bytes": 433,
+      "git_blob": "2ec245ec1a976e617a3babd1de5f0b09f1f50b5a",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-build.log",
+      "sha256": "46d85f44fc8df608b20342c74f009b533e2449048c8978f6dd0dab5412749fa4",
+      "size_bytes": 2338,
+      "git_blob": "62503aa7be5931ae1ceef43661300c2f873da8ca",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-lifecycle.log",
+      "sha256": "2b4fa5476d03d6d475588f83b95fafb3f0829183653f39f9588f7c9520f7327f",
+      "size_bytes": 3297,
+      "git_blob": "b8bd4e14424135c4ed24f842cf2546b8f1352b46",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-result.json",
+      "sha256": "14cafef604401495d4e98850376e6612df9f6fd176f94c89b18e7ad89c88389a",
+      "size_bytes": 998,
+      "git_blob": "a022043168e53d6d0d96b6bf4ea9dc17e27e54aa",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN.log",
+      "sha256": "b66c18c21917f97509da96d76a163dcb36c2a04c0c0c52ae1a927ecdf2a1ed32",
+      "size_bytes": 2316,
+      "git_blob": "0292c4da72d41d42e05ecb428fbf38b2075b1d24",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size_bytes": 433,
+      "git_blob": "032e3bdf741686c6c5ed89755262a9b67fcfd87b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/installer-change-guards.log",
+      "sha256": "f59744073f55edcacf7109d8055f783ec7feddf3ae000cba1ed8637ce03aad9f",
+      "size_bytes": 806,
+      "git_blob": "41d5d2e85d8824c8310370900d4a0540d080a0f4",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/p0-task-validate.log",
+      "sha256": "c13b32dad3ed858f68a9deb6f7993412267a4a88f97d537df528685bedd0f801",
+      "size_bytes": 191,
+      "git_blob": "b0c1e57a01871ef69154412aa290d925916e877d",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-DirectPlc.log",
+      "sha256": "da22e7b12d2de2e1be2075eada038d4f4f93782564b8dc447e027dff295e165b",
+      "size_bytes": 2557,
+      "git_blob": "c9e80a9cf0870bfedf810543c5bec7eff77ac7ef",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-Sportmaster.log",
+      "sha256": "f09af1ce741fa550e7276837aaca1fa89620b05795d0cae6e878c3a9b4e532a4",
+      "size_bytes": 2691,
+      "git_blob": "a488ceb5db1c7d21ec7eb959ac68598b6c4162e6",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-WcsToPlc.log",
+      "sha256": "c9d33b3a4875d43e16ad19cce1b479db26b092c5990ad5509fd13f270d5d6a99",
+      "size_bytes": 2678,
+      "git_blob": "635a24d4e0c858880f74662364f5c00d4ec6942e",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/installer-change-guards.log",
+      "sha256": "01a1126e52f70dc33d85bbeffd0b3419922c53215aac7bf6bfe6f2047db59d3f",
+      "size_bytes": 806,
+      "git_blob": "829f3130823beb91af96ccec6460d63981c95214",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/p0-task-validate.log",
+      "sha256": "cbc75d55c3784118ec45b885ec3fda33d68b8ce576a5878977761a51cd381abc",
+      "size_bytes": 191,
+      "git_blob": "b3c14143c9ae12de7dee8067ea2234ee4212b953",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/wpf-DirectPlc.log",
+      "sha256": "ac637b49ab5f67e7d3ad04124a3b7738f27f7e7e0b798ac4ed76de870e330275",
+      "size_bytes": 2162,
+      "git_blob": "e81d30191a8c27b34c20eab18914fb5c6a8b289b",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/wpf-Sportmaster.log",
+      "sha256": "b5749db2ffab50ea0b835ac071fcbbf87ed54bc30f94281675c73ffc68686088",
+      "size_bytes": 3147,
+      "git_blob": "f5d7e5faf9786d4d8fd65a6f097892133d0a9e60",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-fixture/build.log",
+      "sha256": "de873586754de788ffa50086c4a90e9682650f6142d607d2b874ac6bbe1045f9",
+      "size_bytes": 2338,
+      "git_blob": "829a759d7a267bab45c3fcff989392e99749c9bf",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-fixture/lifecycle.log",
+      "sha256": "0b434ac948cd03b4c7fc8e9e67cfaeedbc1e6610288b543d1f0d0c61900b976d",
+      "size_bytes": 6309,
+      "git_blob": "60ddae96a42d3a866d6a769b2146cc88e6091149",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-DirectPlc.log",
+      "sha256": "685f41d5247d0f467609cd849c20e78201efe8162992a346ca465eb2cf4df2b3",
+      "size_bytes": 2557,
+      "git_blob": "fe2f662f2c64b4a18803733b1efb90825ae9aa74",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-Sportmaster.log",
+      "sha256": "ed3871d14c9326a8a35378055c380305b8f33c1deae738318d2709d45aa3ea7e",
+      "size_bytes": 2696,
+      "git_blob": "02e4d571857005fc9ef398631bebfa3371686329",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-WcsToPlc.log",
+      "sha256": "5d667c03575cd148dbb79345ed5e8c25ee73fd6b8d2f72d5fa8c5739f70655b8",
+      "size_bytes": 2678,
+      "git_blob": "9394295d15c481f030c56ea364bea59f2437cd92",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/lock-audit.json",
+      "sha256": "ca262e4e4910d8ae2532c7a0e8f9ffe4dfcc63c4083044c9fce21ac62871b96f",
+      "size_bytes": 2002,
+      "git_blob": "3874f68e0d9ff53cbcfa701d528a4685e54ad27e",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/restore-DirectPlc.log",
+      "sha256": "eb6ef582c4a03957ee88cc8fa515d6e2038e65a936823b1ec7a1f0780c197985",
+      "size_bytes": 2034,
+      "git_blob": "80c5995958204f15dceb7df0c0182f6c218fdbc4",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/restore-WcsToPlc.log",
+      "sha256": "52218a8957948c21d67407fff8224a6f607b3b575783559a83edf98c253fb871",
+      "size_bytes": 2137,
+      "git_blob": "a5b189a7665b9286f66a2e24cd0a48a7336cda1e",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/wpf-DirectPlc.log",
+      "sha256": "6454e1c49ebea71c289adc96450aecd88f49bbb4fa1cbcb7ca15bdf77e115cbf",
+      "size_bytes": 4268,
+      "git_blob": "e8b475a0956386c8c43a81f0139da0bf69ae6b57",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/wpf-WcsToPlc.log",
+      "sha256": "4c5358ecb37589fc0462bcad45ad994d34aed4869156ae601e78161881779997",
+      "size_bytes": 4507,
+      "git_blob": "3bd560d2295d1290a48f4a02ce00ddb3ccb2774c",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-5a27/build.log",
+      "sha256": "119869ecfc537882c1958ab08c1bdae4a796fed35296bd4854c41a7cbdbc0535",
+      "size_bytes": 2338,
+      "git_blob": "fbb21c907bd72ded5548de48506304351443c597",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-5a27/lifecycle.log",
+      "sha256": "7ac3642b26d0b901356a4391a88717fe41bc90ceac4c115d628f115cf7799340",
+      "size_bytes": 7112,
+      "git_blob": "25cf2abca4fac561479f1c5c3c9f3f280df53cd7",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-dc51/build.log",
+      "sha256": "6229fbaceed42200b9f654b90743c75baac570ff27d0a5f43bcef9c07d72a2f0",
+      "size_bytes": 2338,
+      "git_blob": "64ea3263a745ebfa73be6246bc906e6486d61e17",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-dc51/lifecycle.log",
+      "sha256": "1858800072d013a38b31b6d2f832ade065476a3e79b2f887b1f8d98a82b4bf0a",
+      "size_bytes": 8816,
+      "git_blob": "1c5c2626a9282b773106423035da8ced52949dcd",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/review-snapshot.json",
+      "sha256": "6ffc27ace244b50f19c2a1fac1ff7080d06d0ee761c2e394305d7b6378f56cdb",
+      "size_bytes": 5161,
+      "git_blob": "ba109253d54ad76109d4575b1162accc0245c6b0",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/unicode-shortcut-compatibility-01.md",
+      "sha256": "3c6ac47ec8cd933958ea428f4fea309f5d59be50a608b804c23fd3d1a147a595",
+      "size_bytes": 4243,
+      "git_blob": "c87c32e3221bb79005ef126b9b93dc46c8d2fae2",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/validation/unicode-shortcut-compatibility-01.md",
+      "sha256": "50eaa162a35a8d24cd435842b397263b7edeab9e064812aa28f630cebee56fd6",
+      "size_bytes": 7245,
+      "git_blob": "d503a4aa330134253a1357c9b83518b35f77ca95",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md",
+      "sha256": "4aab8f858bc03dcf3ac9dcaa11fde07db1aed775020740fea1531ed09ff27bf1",
+      "size_bytes": 30981,
+      "git_blob": "abd601c8d1436deec6ec0509c2852b39a57aa495",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.directplc.lock.json",
+      "sha256": "c6a899a211b88a5e0da121587b37c0f329800cc4dbeff83ff0c25cd2a4f8bf7f",
+      "size_bytes": 17324,
+      "git_blob": "fb09996598ca154afcdddcb6a1177a6614acc8ec",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.wcstoplc.lock.json",
+      "sha256": "9dbf710209da62c25622ba91d83ea1545b0515be7cc064e7db68774f644244f0",
+      "size_bytes": 17518,
+      "git_blob": "452da6bde2dedf916d91464289cfb49876717b8d",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.directplc.lock.json",
+      "sha256": "67a773dfa2e833aac7b2026aa3e5d5aa5c88b9bf54053a25ec4a61ba61029758",
+      "size_bytes": 17823,
+      "git_blob": "03619a6d316e65d83bc1d7443802daf57355d963",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.wcstoplc.lock.json",
+      "sha256": "09befa5ea980927f57b2b385cdb109fbf7f72e04facfbdc94d448e9ec8ce63b4",
+      "size_bytes": 18058,
+      "git_blob": "4b16e699333face5e3dd57c6c9304131867253ee",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ShortcutLifecycle.cs",
+      "sha256": "1c7d75291bd06f273dc610add424bef37676725ae59a5206418187ee2745ab65",
+      "size_bytes": 19956,
+      "git_blob": "745c4e039645bea5479d512cbbd5487dbc844004",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/canonical-check.json",
+      "sha256": "2e30fee666d365294c00200743405c768b2ddd262a11f0332c7e4431eab30360",
+      "size_bytes": 296,
+      "git_blob": "479669d7e849bb1ec3c4446833b8c0c16913ac4f",
+      "version": "unicode-shortcut-compatibility-01",
+      "status": "scoped_implementation_and_separately_identified_evidence",
+      "storage_scope": "public_repository",
+      "purpose": "Inherit PR110 Unicode COM; prove and repair lifecycle/path/empty-target gaps, preserve failures and ACP identity",
+      "source": "User-authorized delta implementation and PR 2026-10-26; prior source and evidence identities retained"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -1,0 +1,61 @@
+{
+  "Base": "980a1383",
+  "FixedSource": "7b968e4ba961529d1fbd1b76ff62f49eb453c7d3",
+  "Records": [
+    {
+      "path": "src/Ipc.Application.DirectPlc.Desktop/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc.Desktop/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.directplc.lock.json",
+      "change": "new product-specific root lock",
+      "packageVersionsAndHashes": "existing pinned packages only"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.wcstoplc.lock.json",
+      "change": "new product-specific root lock",
+      "packageVersionsAndHashes": "existing pinned packages only"
+    },
+    {
+      "path": "src/Ipc.Components/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.directplc.lock.json",
+      "change": "new product-specific root lock",
+      "packageVersionsAndHashes": "existing pinned packages only"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.wcstoplc.lock.json",
+      "change": "new product-specific root lock",
+      "packageVersionsAndHashes": "existing pinned packages only"
+    },
+    {
+      "path": "src/Ipc.Drivers/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    },
+    {
+      "path": "src/Ipc.Integrations/packages.lock.json",
+      "change": "Project metadata only",
+      "nugetRecordsUnchanged": true
+    }
+  ]
+}

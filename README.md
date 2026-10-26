@@ -1,7 +1,7 @@
-> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](docs/runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+> 当前Unicode快捷方式增量：[工作包](docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md)、[实际实现和回归](docs/runtime/validation/unicode-shortcut-compatibility-01.md)、[运行及PR112集成依赖](docs/runtime/unicode-shortcut-compatibility-01.md)。继承PR110的980a1383，原CI40261696276三job已通过；本轮仅补先红确认的生命周期/路径/空目标差量，SM1.14.2 / DirectPlc、WcsToPlc1.8.2，Contracts1.18.0 / DB9。当前分支不是投产资格，真实安装/卸载与现场仍未验。
 
-> 当前源码入口：[文档索引](docs/INDEX.md)、[P0稳定性工作包](docs/work-packages/WP-IPC-P0-STABILITY-01.md)、[本次问题卡](docs/runtime/validation/p0-stability-01.md)与[管理模式](docs/runtime/management-mode-01.md)。SM1.14.0工程候选、Contracts1.18.0、DB9；这不是Production运行资格。历史介质及下述V3形成时状态各守原SourceCommit。
-> P0草稿门禁：run40222910122（检查head1c769e10、实际CI源32170b66）Linux与完整冻结job通过，Windows P0独立步骤通过；原有非CJK代码页COM快捷方式断言失败使总CI仍FAIL。确切来源、12项冻结摘要与NOT_RUN见本次问题卡/ci-1c-final.json，后续仅文档提交不继承PASS。
+> P0历史形成入口：[工作包](docs/work-packages/WP-IPC-P0-STABILITY-01.md)、[原问题卡](docs/runtime/validation/p0-stability-01.md)与[管理模式](docs/runtime/management-mode-01.md)。SM1.14.0、Contracts1.18.0、DB9及下述V3/介质保留各自SourceCommit；当前版本与结果以上一段为准。
+> P0原失败门禁：run40222910122（检查head1c769e10、实际CI源32170b66）Linux与完整冻结job通过，Windows P0独立步骤通过；当时非CJK代码页COM断言失败使总CI FAIL。确切来源、12项冻结摘要与NOT_RUN见原问题卡/ci-1c-final.json，不覆盖后续980a1383及其CI。
 
 
 > 历史安装包：[SM v1.6.1 · Windows x64 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.1-92586bf44cde/CainiaoSupplyStation_SM_Setup_v1.6.1_win-x64.exe)。PR76 已合并，固定源 `92586bf44cde`；[发布记录、哈希与边界](docs/runtime/publication-login-session-20261020.md)。已修复日常登录会话时长字段隐藏，未签名预发布，真实设备/现场待验。

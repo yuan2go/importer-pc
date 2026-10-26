@@ -1,5 +1,7 @@
 # PR110 中文快捷方式续修
 
+> 后续状态核对：固定工程源980a1383已取得本机三ACP及CI40261696276三job SUCCESS，实际测试合并源95b1f29e4baf9574795b2835c39f2495a2976fff；PR112当前43382c59也已继承它。当前新增生命周期差量及新源验证见[独立记录](unicode-shortcut-compatibility-01.md)。下述“计划/待固定源复验/PR112待交付”保留本记录形成时身份，不再代表当前状态。
+
 开工main a8cd431456f73e83040f75a0c5e3cc1423440d1b；PR110头963165d71aec1e037525fd7f17bc3ed81b560c1a。隔离分支codex/pr110-unicode-shortcuts-01，不接管既有P0/ST08工作区。PR112最新工程源0502f148仍由原任务交付中，待固定头后继承，不重写ST08。
 
 实际CI40223909128的p0-stability-boundaries失败于DeploymentShortcuts.Create的WScript.Shell保存中文路径；原失败保留。计划直接使用Windows IShellLinkW/IPersistFile的Unicode持久化及读取，保留中文名、精确目标/参数归属、升级和卸载保护，所有COM错误继续抛出。隔离子进程以manifest分别设置ACP1252/936/65001，不改全机区域设置。原COM回读断言保留其语义。

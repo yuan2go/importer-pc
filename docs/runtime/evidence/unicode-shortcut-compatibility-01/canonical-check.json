@@ -1,0 +1,11 @@
+{
+  "CheckedRecords": 8035,
+  "InheritedIdentityFailures": [],
+  "CurrentIdentityFailures": [],
+  "InheritedUnlistedCount": 404,
+  "CurrentUnlistedCount": 404,
+  "NewUnlisted": [],
+  "NewIdentityFailures": [],
+  "ScopedStatus": "PASS",
+  "GlobalStatus": "FAIL inherited archive inventory debt"
+}

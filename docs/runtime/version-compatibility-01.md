@@ -1,4 +1,4 @@
-> 2026-10-24 当前源码基线：Application.Contracts ABI 1.17.0、Parcel DB9；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
+> 当前业务版本读取各业务 csproj 与 config/compositions.json，公共契约版本读取 Ipc.Application.Contracts.csproj；两者须同源一致。整合候选与实测身份见[本轮工作包](../work-packages/WP-IPC-INTEGRATION-20261026.md)。DB9/SQL1–9保持。下文版本和候选为历史语境，公共DLL字节变化仍需新的不可变扩展包。
 
 > 历史UX阶段增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 

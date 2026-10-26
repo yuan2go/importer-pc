@@ -80,12 +80,23 @@ static partial class Program
         var longProgram = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的程序目录-for-path-review", 8));
         var longData = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的数据目录-for-path-review", 8));
         Box("程序目录").Text = longProgram; Box("数据目录").Text = longData;
+        const string preflightFailure = "Invalid Application seed or mode: Incomplete or unknown capability inventory identity";
+        type.GetMethod("OperationFailed", flags)!.Invoke(window, [new InvalidDataException(preflightFailure)]);
+        window.UpdateLayout();
+        var preflightDetails = Descendants(window).OfType<TextBox>().SingleOrDefault(b => AutomationProperties.GetName(b) == "安装预检详情");
+        Check(preflightDetails is { IsVisible: true, IsReadOnly: true, Focusable: true } && preflightDetails.Text == preflightFailure,
+            "preflight failure exposes selectable original diagnostic details in the options page");
+        Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData,
+            "preflight failure preserves both exact path inputs");
+        preflightDetails!.Focus(); Check(preflightDetails.IsKeyboardFocused, "preflight details are keyboard reachable");
+        Capture("installer-preflight-details", window);
         Box("程序目录").Focus(); Box("程序目录").MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         Check(Keyboard.FocusedElement is Button focused && AutomationProperties.GetName(focused) == "浏览程序目录", "native tab traversal follows label/path/browse reading order");
         var shortcuts = Descendants(window).OfType<CheckBox>().ToArray(); shortcuts[0].IsChecked = false; shortcuts[1].IsChecked = true;
         type.GetMethod("CaptureInputs", flags)!.Invoke(window, null);
         var request = new WindowsDeploymentRequest(evidence, "sportmaster", new string('a', 40), "S-1-5-21-1-2-3-1001", longData, launch.ConfigurationDirectory, RunMode.Production, null, null, new(), false, new(), longProgram, null, Shortcuts: new(false, true));
         Set("reviewed", request); Set("step", 2); Render();
+        Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "confirmation does not display stale preflight details");
         Check(!Text(window).Contains("使用范围") && !Text(window).Contains("所有 Windows 用户") && !Text(window).Contains("仅当前 Windows 用户"), "confirmation omits scope details for the retained per-user deployment");
         Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData && Box("开始菜单").Text == "不创建快捷方式" && Box("桌面").Text == "创建快捷方式", "confirmation reads the exact reviewed paths and independent shortcuts");
         Capture("installer-confirm-long", window);
@@ -120,7 +131,8 @@ static partial class Program
         Capture("installer-failure", window); Click(window, "返回安装选项"); await Idle(window);
         Check(Box("数据目录").Text == longData, "failure recovery retains inputs and requires new review");
         pending = new TaskCompletionSource<DeploymentLocation>(); reporter = null;
-        Set("reviewed", request); Set("step", 2); Render(); Click(window, "安装");
+        Set("reviewed", request); Set("step", 2); Render();
+        Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "confirmation does not display stale preflight details"); Click(window, "安装");
         for (var i = 0; i < 100 && reporter is null; i++) await Task.Delay(20);
         reporter!.Report(WindowsInstallationStage.WaitingForAuthorization); await Task.Delay(100);
         pending.SetException(new InstallationOutcomeUnknownException("合成：回执超时")); await Idle(window); window.UpdateLayout();

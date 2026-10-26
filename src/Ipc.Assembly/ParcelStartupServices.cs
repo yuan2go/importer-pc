@@ -312,14 +312,15 @@ public static class ParcelStartupServices
             if (Wire.FileHash(Path.Combine(request.MediaRoot, "app", Path.GetFileName(assembly.Location))) != Wire.FileHash(assembly.Location))
                 throw new InvalidDataException("安装helper/公共契约/业务与所选介质不匹配；使用同一完整介质");
     }
-    static void ValidateSeed(WindowsDeploymentRequest request)
+    static void ValidateSeed(WindowsDeploymentRequest request) => ValidateSeed(request, WindowsDeploymentSetup.Current(request.ApplicationId));
+    internal static void ValidateSeed(WindowsDeploymentRequest request, DeploymentLocation? deployed)
     {
         _ = WindowsDeploymentSetup.ConfigurationFiles(request.ConfigurationSource);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(request.ConfigurationSource, "business.json")));
         var errors = ParcelAssembly.Definition().Validate(c);
-        if ((errors.Length != 0 && !(WindowsDeploymentSetup.Current(request.ApplicationId) is null && IsInitialDraft(c))) || c.Mode != request.Mode || c.ApplicationId != request.ApplicationId)
+        if ((errors.Length != 0 && !(deployed is null && IsInitialDraft(c))) || c.Mode != request.Mode || c.ApplicationId != request.ApplicationId)
             throw new InvalidDataException("Invalid Application seed or mode: " + string.Join("; ", errors));
-        if (WindowsDeploymentSetup.Current(request.ApplicationId) is { } deployed)
+        if (deployed is not null)
         {
             var originalSeed = Path.Combine(deployed.ConfigurationDirectory, "business.json");
             ParcelConfiguration? originalIdentity = null;

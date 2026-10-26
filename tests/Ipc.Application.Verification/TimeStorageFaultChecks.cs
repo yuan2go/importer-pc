@@ -23,6 +23,9 @@ static class TimeStorageFaultChecks
         public readonly TaskCompletionSource Entered = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public readonly TaskCompletionSource Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public int Calls;
+        public int Queries;
+        public StageReply? ProviderReply;
+        public bool RollbackQuery;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public void ValidateStructure(ParcelConfiguration c) => inner.ValidateStructure(c);
@@ -37,12 +40,17 @@ static class TimeStorageFaultChecks
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
-        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
+        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t)
+        {
+            t.ThrowIfCancellationRequested(); Interlocked.Increment(ref owner.Queries);
+            if (owner.RollbackQuery) { clock.Utc = clock.Utc.AddHours(-1); clock.Elapse(TimeSpan.FromMilliseconds(20)); }
+            return Task.FromResult(owner.ProviderReply);
+        }
         public async Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t)
         {
             Interlocked.Increment(ref owner.Calls); owner.Entered.TrySetResult();
             await owner.Release.Task.WaitAsync(t); clock.Utc = clock.Utc.AddHours(-1); clock.Elapse(TimeSpan.FromMilliseconds(20));
-            return (await inner.ResolveSlotAsync(r, t)) with { At = clock.GetUtcNow() };
+            return owner.ProviderReply = (await inner.ResolveSlotAsync(r, t)) with { At = clock.GetUtcNow() };
         }
     }
     static async Task Until(Func<Task<bool>> condition)
@@ -102,10 +110,30 @@ static class TimeStorageFaultChecks
             Check(!ParcelReceiptChronology.Valid(op.Wcs.Request, reply with { Evidence = "tampered evidence" }, receiptClock.GetUtcNow()) &&
                   !ParcelReceiptChronology.Valid(op.Wcs.Request, reply with { At = reply.At.AddYears(-1) }, receiptClock.GetUtcNow()),
                 "ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps", new { NoBlanketTimeWaiver = true });
+            await ManagementModeFixture.Authorize(runtime);
             var gate = (SemaphoreSlim)typeof(ParcelRuntime).GetField("gate", hidden)!.GetValue(runtime)!;
             await gate.WaitAsync();
             try
             {
+                var repo = (ParcelRepository)typeof(ParcelRuntime).GetField("repository", hidden)!.GetValue(runtime)!;
+                var originalHash = repo.OriginalReplyHash(op.Wcs.Request.Id, reply.Id);
+                async Task<ParcelOperation> QueryOriginal(ParcelOperation current) => await (Task<ParcelOperation>)typeof(ParcelRuntime)
+                    .GetMethod("ExecuteStageAsync", hidden)!.Invoke(runtime, [current, ParcelStage.Wcs, true, null, null, null])!;
+                var repeated = await QueryOriginal(op);
+                Check(repeated.Wcs!.State == StageState.Accepted && repeated.Wcs.Replies.Length == 1 &&
+                      Wire.Encode(repeated.Wcs.Replies[0]) == Wire.Encode(reply) && receiptFactory.Calls == 1 && receiptFactory.Queries == 1 &&
+                      repo.OriginalReplyHash(op.Wcs.Request.Id, reply.Id) == originalHash,
+                    "ST13 identical provider query preserves first clock evidence and immutable reply identity", new { repeated.Wcs.State, receiptFactory.Calls, receiptFactory.Queries });
+                // Deliberately remove only the in-memory projection. Durable original
+                // custody must be the authority even when a reply is no longer cached.
+                var residents = (Dictionary<string, ParcelOperation>)typeof(ParcelRuntime).GetField("operations", hidden)!.GetValue(runtime)!;
+                residents[op.Id] = repeated with { Wcs = repeated.Wcs with { Replies = [] } };
+                receiptFactory.RollbackQuery = true;
+                var repeatedRollback = await QueryOriginal(residents[op.Id]);
+                Check(repeatedRollback.Wcs!.State == StageState.Accepted && repeatedRollback.Wcs.Replies.Length == 1 &&
+                      Wire.Encode(repeatedRollback.Wcs.Replies[0]) == Wire.Encode(reply) &&
+                      repo.OriginalReplyHash(op.Wcs.Request.Id, reply.Id) == originalHash && receiptFactory.Calls == 1 && receiptFactory.Queries == 2,
+                    "ST13 repeated rollback resolves original evidence from durable custody without redispatch", new { repeatedRollback.Wcs.State, receiptFactory.Calls, receiptFactory.Queries });
                 var conflict = op with { State = ParcelState.Blocked, Wcs = op.Wcs with { State = StageState.Conflict } };
                 var applied = (ParcelOperation)typeof(ParcelRuntime).GetMethod("ApplyReply", hidden)!.Invoke(runtime, [conflict, ParcelStage.Wcs, reply])!;
                 Check(applied.State == ParcelState.Blocked && applied.Wcs!.State == StageState.Conflict,

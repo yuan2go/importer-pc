@@ -96940,9 +96940,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "592ab740d272481c2ecf92fb92e95d8ebd0552e670e13652e1183f9c58fdfce1",
-      "size_bytes": 11853,
-      "git_blob": "52282de73f712d125a075ad953962a74af63c850"
+      "sha256": "429b854310826739624010552b6e52aa876a5a18fe058cb0935c2d02f3cb7cd7",
+      "size_bytes": 14461,
+      "git_blob": "6a23d16f77573f44f5a17955d7e2778482bf10ad"
     },
     {
       "path": "tests/Ipc.Application.Verification/TimeStorageProcessChecks.cs",

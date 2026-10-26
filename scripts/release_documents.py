@@ -13,6 +13,7 @@ PARCEL_GUIDES = {
     'docs/runtime/parameter-inheritance-02.md': 'PARAMETER-INHERITANCE.md',
     'docs/runtime/commercial-productization-01-operations.md': 'PRODUCT-OPERATIONS.md',
     'docs/runtime/startup-deployment-02.md': 'STARTUP-DEPLOYMENT.md',
+    'docs/runtime/unicode-shortcut-compatibility-01.md': 'UNICODE-SHORTCUTS.md',
     'docs/runtime/windows-application-delivery.md': 'WINDOWS-APPLICATION.md',
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',

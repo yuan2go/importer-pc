@@ -1,3 +1,5 @@
+> 2026-10-26整合：当前组合继承PR110及PR113差量，统一SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。进程监督默认关闭，显式启用后的永久故障Block及恢复先暂停保持；普通手动启动不被改成自动供包。下述旧基线/版本/CI状态保留形成时身份，本轮实际结果见[整合执行记录](integration-20261026.md)。
+
 > 2026-10-26恢复暂停补缺：监督子进程在原Application Paused账写入软件暂停后才接收；没有既有Unknown/输入的首次写前故障重启也不自动恢复供包。仅显式Resume沿原守卫解除暂停，不清Unknown、不重放。续修SM1.16.1、DirectPlc/WcsToPlc1.10.1、Contracts1.20.0，DB9不变；[补缺证据](validation/stability-integration-02.md)。下文1.16.0及原PASS均保留历史来源。
 
 # 时间与存储故障分级 · 运行说明

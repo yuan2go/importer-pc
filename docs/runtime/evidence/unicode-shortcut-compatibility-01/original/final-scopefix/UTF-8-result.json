@@ -1,0 +1,25 @@
+{
+  "SourceCommit": "e808ed4646fc790f9c1aa6132d873a5a9d46758b",
+  "GitStatus": [
+    " M .gitattributes",
+    " M README.md",
+    " M docs/INDEX.md",
+    " M docs/runtime/desktop-shortcut-name-01.md",
+    " M docs/runtime/validation/pr110-unicode-shortcuts-01.md",
+    "?? docs/runtime/evidence/unicode-shortcut-compatibility-01/",
+    "?? docs/runtime/validation/unicode-shortcut-compatibility-01.md",
+    "?? docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md"
+  ],
+  "ExpectedACP": 65001,
+  "ActualACP": 65001,
+  "OS": "Microsoft Windows NT 10.0.22631.0",
+  "Sdk": "10.0.402",
+  "ManifestSha256": "1702919FE38DB1C82C9A17F04D096D5AF7ECA575367BB15F57A7B85665884198",
+  "ApphostSha256": "03B1A8A25C39EF2D229333F46620781E86B7264D70C21BA176A203BC3C4135B0",
+  "VerificationDllSha256": "EB485FE54510C56F28E3DEAF026872A471F4BA46326B8264FE4228E183671F82",
+  "PlatformDllSha256": "920F7886129BB4252963FC1A81E07C7A3C77A9C32E3F45CAAA26ADA611357D46",
+  "InstallerLogSha256": "FE989371B17085188380BA3E11F02202C804170600D1D3053DCA4E73BCCCA6F5",
+  "LifecycleLogSha256": "C061E6B9E84D588308400A0C4F58C7CD7B1B2053241A2A5CBC25085B76369F43",
+  "Status": "PASS",
+  "Scope": "Isolated real COM; no machine installation or policy registration"
+}

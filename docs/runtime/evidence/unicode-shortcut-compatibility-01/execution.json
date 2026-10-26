@@ -1,0 +1,543 @@
+{
+  "workPackage": "UNICODE-SHORTCUT-COMPATIBILITY-01",
+  "mainAtExecution": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "inheritedPr110": "980a1383e4589717c9a147746b6fd6271ef69088",
+  "fixedSourceCommit": "e808ed4646fc790f9c1aa6132d873a5a9d46758b",
+  "productBlobs": {
+    "src/Ipc.Platform/ShellLinkFile.cs": "bfb624c08746841db4e5b5048430675c41779041",
+    "src/Ipc.Platform/DeploymentShortcuts.cs": "d6e695efa433c82cf4e66770d35660157949e1dd",
+    "tests/Ipc.Application.Verification/ShortcutLifecycle.cs": "745c4e039645bea5479d512cbbd5487dbc844004",
+    "scripts/verify-shortcut-codepages.ps1": "29d88abd907e707b6904d3677dca8f25c4ec047f"
+  },
+  "failingSources": [
+    {
+      "commit": "dc51d50f",
+      "result": "Two product gaps plus incorrect fixture expectation for DirectoryNotFoundException"
+    },
+    {
+      "commit": "5a27a098",
+      "result": "36 assertions, two failed scenarios; fixture corrected, no product change"
+    },
+    {
+      "commit": "e18296e6",
+      "result": "41 assertions, one additional failed empty-target scenario"
+    }
+  ],
+  "finalCodePages": [
+    {
+      "SourceCommit": "e808ed4646fc790f9c1aa6132d873a5a9d46758b",
+      "GitStatus": [
+        " M .gitattributes",
+        " M README.md",
+        " M docs/INDEX.md",
+        " M docs/runtime/desktop-shortcut-name-01.md",
+        " M docs/runtime/validation/pr110-unicode-shortcuts-01.md",
+        "?? docs/runtime/evidence/unicode-shortcut-compatibility-01/",
+        "?? docs/runtime/validation/unicode-shortcut-compatibility-01.md",
+        "?? docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md"
+      ],
+      "ExpectedACP": 1252,
+      "ActualACP": 1252,
+      "OS": "Microsoft Windows NT 10.0.22631.0",
+      "Sdk": "10.0.402",
+      "ManifestSha256": "97C5C511CB59FEF5CE319CFE6C184D158D350AF773312660740A0496FDAFC1D9",
+      "ApphostSha256": "88579A690075EF836843D1665D80E6E3C1AF802C29D324EA5F416A8638C8397C",
+      "VerificationDllSha256": "E1240F1E15565BC93B24B5414557DC41DF1DA4527B3017AEBEAB04A5791E2576",
+      "PlatformDllSha256": "920F7886129BB4252963FC1A81E07C7A3C77A9C32E3F45CAAA26ADA611357D46",
+      "InstallerLogSha256": "A3FC4B53890AD18D73D663D07654A9F591F62B80CEC87322C63CBB0720CD7D9C",
+      "LifecycleLogSha256": "D0DABC7CD9DB7C00937D57D78B5F1EBBB289232AB497CD2B44E2EB26FF5EBAF2",
+      "Status": "PASS",
+      "Scope": "Isolated real COM; no machine installation or policy registration"
+    },
+    {
+      "SourceCommit": "e808ed4646fc790f9c1aa6132d873a5a9d46758b",
+      "GitStatus": [
+        " M .gitattributes",
+        " M README.md",
+        " M docs/INDEX.md",
+        " M docs/runtime/desktop-shortcut-name-01.md",
+        " M docs/runtime/validation/pr110-unicode-shortcuts-01.md",
+        "?? docs/runtime/evidence/unicode-shortcut-compatibility-01/",
+        "?? docs/runtime/validation/unicode-shortcut-compatibility-01.md",
+        "?? docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md"
+      ],
+      "ExpectedACP": 936,
+      "ActualACP": 936,
+      "OS": "Microsoft Windows NT 10.0.22631.0",
+      "Sdk": "10.0.402",
+      "ManifestSha256": "FE0ECA2066F945CBBFF872421CCE6F5E6B513FA7D3FAD34FE381716741CEE067",
+      "ApphostSha256": "BC3B3574B6123430D89A0A95334E0D16ED71EAC707231E6753E47BF3ADF614DF",
+      "VerificationDllSha256": "D76500E2C5F164B775AF1F77CCE6104867B0BFAD778A14A42B479966575C991A",
+      "PlatformDllSha256": "920F7886129BB4252963FC1A81E07C7A3C77A9C32E3F45CAAA26ADA611357D46",
+      "InstallerLogSha256": "16CD3F308500EF4C849D5A7D9329AD3FA22BE52EDEFFBBE9A04D2E078D957045",
+      "LifecycleLogSha256": "D3DF61D57D301386F525A20122060F0B0165995F8212AFB40731A7338577B285",
+      "Status": "PASS",
+      "Scope": "Isolated real COM; no machine installation or policy registration"
+    },
+    {
+      "SourceCommit": "e808ed4646fc790f9c1aa6132d873a5a9d46758b",
+      "GitStatus": [
+        " M .gitattributes",
+        " M README.md",
+        " M docs/INDEX.md",
+        " M docs/runtime/desktop-shortcut-name-01.md",
+        " M docs/runtime/validation/pr110-unicode-shortcuts-01.md",
+        "?? docs/runtime/evidence/unicode-shortcut-compatibility-01/",
+        "?? docs/runtime/validation/unicode-shortcut-compatibility-01.md",
+        "?? docs/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md"
+      ],
+      "ExpectedACP": 65001,
+      "ActualACP": 65001,
+      "OS": "Microsoft Windows NT 10.0.22631.0",
+      "Sdk": "10.0.402",
+      "ManifestSha256": "1702919FE38DB1C82C9A17F04D096D5AF7ECA575367BB15F57A7B85665884198",
+      "ApphostSha256": "03B1A8A25C39EF2D229333F46620781E86B7264D70C21BA176A203BC3C4135B0",
+      "VerificationDllSha256": "EB485FE54510C56F28E3DEAF026872A471F4BA46326B8264FE4228E183671F82",
+      "PlatformDllSha256": "920F7886129BB4252963FC1A81E07C7A3C77A9C32E3F45CAAA26ADA611357D46",
+      "InstallerLogSha256": "FE989371B17085188380BA3E11F02202C804170600D1D3053DCA4E73BCCCA6F5",
+      "LifecycleLogSha256": "C061E6B9E84D588308400A0C4F58C7CD7B1B2053241A2A5CBC25085B76369F43",
+      "Status": "PASS",
+      "Scope": "Isolated real COM; no machine installation or policy registration"
+    }
+  ],
+  "finalAssertionCounts": {
+    "en-US": 43,
+    "zh-CN": 43,
+    "UTF-8": 43
+  },
+  "manifestPropagationFailure": {
+    "source": "7b968e4b",
+    "result": "Behavior assertions passed but three distinct Platform DLL hashes invalidated the same-product-binary claim; preserved original/final/cross-acp-dll-audit.json"
+  },
+  "preservedOriginalFiles": [
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US-build.log",
+      "sha256": "2debef94e6736bcdf71edcbe2be042d08f037d95e06432130fc38d466da144e5",
+      "size": 4319
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US.log",
+      "sha256": "98f701fee3a0e5fcbe107ab997034893cf6ae06b71fabfac9eacff58838f2048",
+      "size": 2317
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8-build.log",
+      "sha256": "aacc2a6b195033597d6b102760efed4b6aa25a0b17788dfab9cd151df7ec9060",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8.log",
+      "sha256": "6b322863fa5298f49f606f63d8b3b5c096c9995501521cc3b5bdc63bd70e8601",
+      "size": 2318
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN-build.log",
+      "sha256": "0ac9a87fe86237c662b4c1f30287d7e790a9cb230e133d1711d828b9effb530b",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN.log",
+      "sha256": "e84367b4bdccdadde88fd16fb8374e9570cc86b0b2388aa9b4806c60dd8b5083",
+      "size": 2316
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/baseline-980a/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-fixture/build.log",
+      "sha256": "de873586754de788ffa50086c4a90e9682650f6142d607d2b874ac6bbe1045f9",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-fixture/lifecycle.log",
+      "sha256": "0b434ac948cd03b4c7fc8e9e67cfaeedbc1e6610288b543d1f0d0c61900b976d",
+      "size": 6309
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-dc51/build.log",
+      "sha256": "6229fbaceed42200b9f654b90743c75baac570ff27d0a5f43bcef9c07d72a2f0",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-dc51/lifecycle.log",
+      "sha256": "1858800072d013a38b31b6d2f832ade065476a3e79b2f887b1f8d98a82b4bf0a",
+      "size": 8816
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-5a27/build.log",
+      "sha256": "119869ecfc537882c1958ab08c1bdae4a796fed35296bd4854c41a7cbdbc0535",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/red-5a27/lifecycle.log",
+      "sha256": "7ac3642b26d0b901356a4391a88717fe41bc90ceac4c115d628f115cf7799340",
+      "size": 7112
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-build.log",
+      "sha256": "670cdf71d5455af94cc01d984225c70ef841f543066bf759f3bbe3ae7f3c069f",
+      "size": 2921
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-lifecycle.log",
+      "sha256": "2a23c966d498437d3b404a5aba2d2f32d518ad84bd0548d2fd7a629da7385979",
+      "size": 3298
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US-result.json",
+      "sha256": "3be6d29caffee2d99942c9bc193f7a950a9544f55471ca42cd805025420d8d10",
+      "size": 1000
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US.log",
+      "sha256": "66d76955127f4cae688717f782fd182eba1e97055fde0f1d5431d993c2cb5f84",
+      "size": 2317
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-build.log",
+      "sha256": "eef16e73a7ca74afe82dbaee0a513e4a34241474e7cdafa0f391ff5142313ad1",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-lifecycle.log",
+      "sha256": "3d3a124511baa86b71a75168e2ee80eeb6807195c21f3800ae91337a1c0149af",
+      "size": 3299
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8-result.json",
+      "sha256": "7d7d3e47c0400f62db429214381f93d0a4632ec798e63c5f0728c75197c49e93",
+      "size": 1002
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8.log",
+      "sha256": "3d822ccbb11eebf36c33b73e1ac1aec68087a82679619e920791d58c5b7d5d67",
+      "size": 2318
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-build.log",
+      "sha256": "46d85f44fc8df608b20342c74f009b533e2449048c8978f6dd0dab5412749fa4",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-lifecycle.log",
+      "sha256": "2b4fa5476d03d6d475588f83b95fafb3f0829183653f39f9588f7c9520f7327f",
+      "size": 3297
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN-result.json",
+      "sha256": "14cafef604401495d4e98850376e6612df9f6fd176f94c89b18e7ad89c88389a",
+      "size": 998
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN.log",
+      "sha256": "b66c18c21917f97509da96d76a163dcb36c2a04c0c0c52ae1a927ecdf2a1ed32",
+      "size": 2316
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/first-fixed-f9d5/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/empty-red-e182/build.log",
+      "sha256": "176bf080160e3c1aa5c27c5a9f06931577d8d5f8776e595418e490d18f78d06a",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/empty-red-e182/lifecycle.log",
+      "sha256": "fe6ebdaffa7d33bd7866b7cb948749221a540dac9ae403286eee3523fbc90855",
+      "size": 5761
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/installer-change-guards.log",
+      "sha256": "01a1126e52f70dc33d85bbeffd0b3419922c53215aac7bf6bfe6f2047db59d3f",
+      "size": 806
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/p0-task-validate.log",
+      "sha256": "cbc75d55c3784118ec45b885ec3fda33d68b8ce576a5878977761a51cd381abc",
+      "size": 191
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/wpf-DirectPlc.log",
+      "sha256": "ac637b49ab5f67e7d3ad04124a3b7738f27f7e7e0b798ac4ed76de870e330275",
+      "size": 2162
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/initial-builds/wpf-Sportmaster.log",
+      "sha256": "b5749db2ffab50ea0b835ac071fcbbf87ed54bc30f94281675c73ffc68686088",
+      "size": 3147
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-DirectPlc.log",
+      "sha256": "685f41d5247d0f467609cd849c20e78201efe8162992a346ca465eb2cf4df2b3",
+      "size": 2557
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-Sportmaster.log",
+      "sha256": "ed3871d14c9326a8a35378055c380305b8f33c1deae738318d2709d45aa3ea7e",
+      "size": 2696
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/final-wpf-WcsToPlc.log",
+      "sha256": "5d667c03575cd148dbb79345ed5e8c25ee73fd6b8d2f72d5fa8c5739f70655b8",
+      "size": 2678
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/lock-audit.json",
+      "sha256": "ca262e4e4910d8ae2532c7a0e8f9ffe4dfcc63c4083044c9fce21ac62871b96f",
+      "size": 2002
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/restore-DirectPlc.log",
+      "sha256": "eb6ef582c4a03957ee88cc8fa515d6e2038e65a936823b1ec7a1f0780c197985",
+      "size": 2034
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/restore-WcsToPlc.log",
+      "sha256": "52218a8957948c21d67407fff8224a6f607b3b575783559a83edf98c253fb871",
+      "size": 2137
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/wpf-DirectPlc.log",
+      "sha256": "6454e1c49ebea71c289adc96450aecd88f49bbb4fa1cbcb7ca15bdf77e115cbf",
+      "size": 4268
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/lock-repair/wpf-WcsToPlc.log",
+      "sha256": "4c5358ecb37589fc0462bcad45ad994d34aed4869156ae601e78161881779997",
+      "size": 4507
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/cross-acp-dll-audit.json",
+      "sha256": "ec662d3f2ce9e19081b3a64de48abf655978378e9717f7b4c047aa8b867fe06e",
+      "size": 200
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-build.log",
+      "sha256": "b8802ac9a50903aad6ba7d01dd5779229c7d569fef6297169ba6d8d2c3ea8178",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-lifecycle.log",
+      "sha256": "768c139a0f1b1d3909ee60471b851870a33f0af2fd32eaf0e8bc4433e73761f4",
+      "size": 3576
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US-result.json",
+      "sha256": "9097b3d1607f59e823e364d406823621eb10a0b69ce33e9f577db1c7f9e2096f",
+      "size": 1261
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US.log",
+      "sha256": "dcf782550369404f1cbdb67e57702e759d2d226fcb4cb19b3ffcc2885b4faeea",
+      "size": 2317
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-build.log",
+      "sha256": "e93b892960236fc3c27a24c0459fa6a2e2e5605ea607adc059963173055fddf9",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-lifecycle.log",
+      "sha256": "40ec147e7ba365b72e29ef0931b791ac3ace811d772e226f95f771c3e9c1e26e",
+      "size": 3577
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8-result.json",
+      "sha256": "572ee6e53ef3d60c0304c91afb0b5af4a5e0627149b03e3acd809c81c1a9d6f0",
+      "size": 1263
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8.log",
+      "sha256": "29241c3c2f74f57cbdbed998e48ead010ec5aa3ce9d48ae6ed92de9688d7ec5f",
+      "size": 2318
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-build.log",
+      "sha256": "89f5454822dec2b96c8160e48789928b9c0d36fba0812d7b0132241e5cced951",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-lifecycle.log",
+      "sha256": "cf3ab7c63d1bfdb532cf187e7f0c8541dd639db4eb47ef7eb8c6ed52726f2577",
+      "size": 3575
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN-result.json",
+      "sha256": "790c7e56095563da49a8d8784e5aa277edc819b6bd7a0f4a43960b36f4e1df8e",
+      "size": 1259
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN.log",
+      "sha256": "bfe7d17208e34f0140f632352cf661d0f252795691fed4a23f666c5cae75e183",
+      "size": 2316
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-build.log",
+      "sha256": "afbf2bf5d05b4f42707df66a816400bf5bec0f0c66db96391149269a1003710d",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-lifecycle.log",
+      "sha256": "d0dabc7cd9db7c00937d57d78b5f1ebbb289232ab497cd2b44e2eb26ff5ebaf2",
+      "size": 3576
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US-result.json",
+      "sha256": "4cadaae636bab4daccf59a1526c1f4d009baad6ede56310225bbe1beb9759074",
+      "size": 1261
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US.log",
+      "sha256": "a3fc4b53890ad18d73d663d07654a9f591f62b80cec87322c63cbb0720cd7d9c",
+      "size": 2317
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/en-US.manifest",
+      "sha256": "97c5c511cb59fef5ce319cfe6c184d158d350af773312660740a0496fdafc1d9",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-build.log",
+      "sha256": "d55b69149dd0b6de5a3210c1451bbd56aafb9d1bb0a560dfee287bb35957e331",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-lifecycle.log",
+      "sha256": "c061e6b9e84d588308400a0c4f58c7cd7b1b2053241a2a5cbc25085b76369f43",
+      "size": 3577
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8-result.json",
+      "sha256": "48910c9ca52adc535f5f975bfc8d0375277d551a7ff01c8582036b4e4d0c872f",
+      "size": 1263
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8.log",
+      "sha256": "fe989371b17085188380ba3e11f02202c804170600d1d3053dca4e73bccca6f5",
+      "size": 2318
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/UTF-8.manifest",
+      "sha256": "1702919fe38db1c82c9a17f04d096d5af7eca575367bb15f57a7b85665884198",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-build.log",
+      "sha256": "f0cb217fe98e0dd55743dd29b07185d83b6c6c2570b145997a2910d513dfaad2",
+      "size": 2338
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-lifecycle.log",
+      "sha256": "d3df61d57d301386f525a20122060f0b0165995f8212afb40731a7338577b285",
+      "size": 3575
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN-result.json",
+      "sha256": "ae221677f2a175c421480956f8467717eb9db50d5d215509126ad7ee5718bfa1",
+      "size": 1259
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN.log",
+      "sha256": "16cd3f308500ef4c849d5a7d9329ad3fa22be52edeffbbe9a04d2e078d957045",
+      "size": 2316
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/final-scopefix/zh-CN.manifest",
+      "sha256": "fe0eca2066f945cbbff872421cce6f5e6b513fa7d3fad34fe381716741cee067",
+      "size": 433
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/installer-change-guards.log",
+      "sha256": "f59744073f55edcacf7109d8055f783ec7feddf3ae000cba1ed8637ce03aad9f",
+      "size": 806
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/p0-task-validate.log",
+      "sha256": "c13b32dad3ed858f68a9deb6f7993412267a4a88f97d537df528685bedd0f801",
+      "size": 191
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-DirectPlc.log",
+      "sha256": "da22e7b12d2de2e1be2075eada038d4f4f93782564b8dc447e027dff295e165b",
+      "size": 2557
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-Sportmaster.log",
+      "sha256": "f09af1ce741fa550e7276837aaca1fa89620b05795d0cae6e878c3a9b4e532a4",
+      "size": 2691
+    },
+    {
+      "path": "docs/runtime/evidence/unicode-shortcut-compatibility-01/original/fixed-source-builds/wpf-WcsToPlc.log",
+      "sha256": "c9d33b3a4875d43e16ad19cce1b479db26b092c5990ad5509fd13f270d5d6a99",
+      "size": 2678
+    }
+  ],
+  "regression": {
+    "installerChangeGuards": "PASS",
+    "p0TaskSchema": "PASS",
+    "wpfSportmaster": "PASS locked",
+    "wpfDirectPlc": "PASS locked after Project metadata repair",
+    "wpfWcsToPlc": "PASS locked after Project metadata repair"
+  },
+  "pr112": {
+    "headAtExecution": "43382c59dd9ce1a9ed4895e3eaa4fe06770b2d3c",
+    "alreadyContains980a": true,
+    "containsThisDelta": false,
+    "required": "Inherit this delta and rerun actual combined ACP/P0/ST08/deployment checks"
+  },
+  "notRun": [
+    "Real installation/upgrade/uninstallation/ResumeRemoval",
+    "Protected-descriptor recovery success under HKLM policy",
+    "UAC/Common Desktop ACL/SCM/tasks/WER/reboot",
+    "Physical IO/power-loss/adversarial replacement races",
+    "Target industrial PC 26100+/4 cores/8 GB",
+    "Real SDK/cameras/RCS",
+    "Field 24h/72h"
+  ],
+  "externalBlocked": [
+    "G01 RCS contract and authority",
+    "G02 management password recovery policy",
+    "Automatic reconnect contract"
+  ],
+  "ciEvidence": "New main PR checks and its retained code-page/frozen-medium artifacts identify the exact tested merge source; no older branch PASS is inherited",
+  "boundaries": "All local COM operations used isolated D: roots and synthetic targets; no registry/task/service/real product installation; raw failure bytes preserved"
+}

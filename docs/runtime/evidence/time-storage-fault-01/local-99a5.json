@@ -1,0 +1,193 @@
+{
+  "SourceCommit": "99a593b1ec3840a1545a230d54195024342aa195",
+  "DependencyHead": "980a1383e4589717c9a147746b6fd6271ef69088",
+  "IntegrationCommit": "255ccd4a0fdc50d974614d20643399a8f7cba791",
+  "Scope": "Fresh isolated Simulation/SQLite/production child monitor+supervisor and process-only ACP manifests; no global locale or machine policy changes",
+  "Selectors": [
+    {
+      "Selector": "time-storage-fault-checks",
+      "Result": "PASS",
+      "LogSha256": "7e4f45ad93adeab313e17692986de001ff084a116f63b947db79c8a630b3f9eb",
+      "Assertions": [
+        "PASS ST12 capacity throttle survives UTC rollback",
+        "PASS ST12 UTC forward jump does not bypass interval",
+        "PASS ST12 retention notification interval also survives rollback",
+        "PASS ST13 synthetic handoff is durable",
+        "PASS ST13 in-flight UTC rollback does not manufacture Conflict",
+        "PASS ST13 rollback has request-bound durable local evidence",
+        "PASS ST13 earlier reply without witnessed rollback remains invalid",
+        "PASS ST13 rollback proof cannot waive changed evidence or arbitrary old timestamps",
+        "PASS ST13 an existing Conflict is never automatically cleared",
+        "PASS ST13 restart validates original rollback evidence without redispatch",
+        "PASS UTC inventory: operator maximum lifetime cannot be extended by rollback",
+        "PASS UTC inventory: management status respects its monotonic expiry token",
+        "PASS ST08 bounded pre-write I/O jitter recovers without disabling ingress"
+      ]
+    },
+    {
+      "Selector": "time-storage-atomic-checks",
+      "Result": "PASS",
+      "LogSha256": "e80ca886bec382027b43b66c9576925d1c36818e7dbca9fec79bcd75fbf6a6e4",
+      "Assertions": [
+        "PASS ST08 a real SQLite writer lock released inside budget yields exactly one durable row",
+        "PASS ST08 failed pre-COMMIT attempts roll back, preserve one identity, and retry successfully",
+        "PASS ST08 an actually committed write with a lost result is not repeated or represented as success",
+        "PASS ST08 SQLITE_FULL is permanent, not a retry loop",
+        "PASS ST08 native SQLite page exhaustion auto-rolls back and retains permanent classification",
+        "PASS ST08 persistent rollback-safe failure exhausts a bounded monotonic budget with no row committed",
+        "PASS ST08 FULL durability is preserved",
+        "PASS ST08 WAL mode is preserved"
+      ]
+    },
+    {
+      "Selector": "time-storage-supervisor-checks",
+      "Result": "PASS",
+      "LogSha256": "3197ae1745f31aa08bb7b49163ddc63f694f85d7e68628c73b88dec5c35bb301",
+      "Assertions": [
+        "PASS ST08 permanent storage failure blocks supervision after one launch"
+      ]
+    },
+    {
+      "Selector": "time-storage-process-checks",
+      "Result": "PASS",
+      "LogSha256": "aa421f2a577759d7ad9da2d4409cd1c7775680257cd2a07c69c1460c5a04f18f",
+      "Assertions": [
+        "PASS ST08 process closure budget; launches=2; supervisor=0; elapsedMs=14186",
+        "PASS ST08 process closure ambiguous; launches=2; supervisor=0; elapsedMs=8685",
+        "PASS ST08 process closure permanent; launches=1; supervisor=77; elapsedMs=1226"
+      ]
+    },
+    {
+      "Selector": "p0-cleanup",
+      "Result": "PASS",
+      "LogSha256": "e5c9cdf3425662fd8b996865a7f642d6aba90a9d38505a174bb6a77c28783c53",
+      "Assertions": [
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 temporary locked redundant spool does not fence inputs or terminate maintenance",
+        "PASS ST02 input continues during cleanup lock",
+        "PASS ST02 pending cleanup is visible through existing snapshot",
+        "PASS ST02 cleanup retries after unlock without another business command",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 first durable input accepted",
+        "PASS ST02 independent SQL confirms committed archive before injection",
+        "PASS ST02 integrity damage stops maintenance and fences inputs",
+        "PASS ST02 unverified spool is never deleted",
+        "PASS ST02 all cleanup cases:",
+        "PASS ST02 backoff uses an actual archived receipt",
+        "PASS ST02 startup tolerates only verified redundant lock with initial 500ms delay",
+        "PASS ST02 wall-clock rollback neither bypasses nor freezes monotonic backoff",
+        "PASS ST02 retry occurs exactly at elapsed deadline",
+        "PASS ST02 counter and exponential delay capped; persistent lock produces visible warning",
+        "PASS ST02 successful hash-verified cleanup resets warning/backoff"
+      ]
+    },
+    {
+      "Selector": "p0-rcs",
+      "Result": "PASS",
+      "LogSha256": "ab1b0460365423f441f85a74903880c74276c929607f477b5c63ad97b09bc562",
+      "Assertions": [
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: partial frame never sends RCS",
+        "PASS RCS20: three scans including repeated barcode own three entities and exactly three requests",
+        "PASS RCS20: original barcode bytes/order preserved",
+        "PASS RCS20: durable frozen body equals the actual sole HTTP request; normal UI remains redacted",
+        "PASS RCS20: existing legacy frozen quantity and exact wire bytes unchanged"
+      ]
+    },
+    {
+      "Selector": "p0-unknown-restart",
+      "Result": "PASS",
+      "LogSha256": "418c93b84fff912c80b6f9c98314ef99a235def5836088b07c8a0fbfdc800798",
+      "Assertions": [
+        "PASS RCS20: lost HTTP response produces exactly one original request",
+        "PASS RCS20: process restart preserves Unknown and frozen original bytes",
+        "PASS RCS20: restart, unavailable authoritative query and reconnect neither clear Unknown nor replay"
+      ]
+    },
+    {
+      "Selector": "p0-supervisor",
+      "Result": "PASS",
+      "LogSha256": "6073b7618881a2ba65cca6728ed1012f88c01b8b5b3d5a840aac3a6249ec426f",
+      "Assertions": [
+        "PASS ST14 task is session-bound, least privilege and password-free",
+        "PASS ST14 task wrapper retry obeys Windows minimum minute and finite count",
+        "PASS ST14 migration keeps one task identity; mini-dump and uninstall targets bounded",
+        "PASS ST14 SCM has daily reset and final NONE instead of infinitely repeating restart",
+        "PASS ST14 old deployment bytes omit absent recovery property",
+        "PASS ST14 uninstall removes only owned WER names and preserves foreign evidence",
+        "PASS ST14 three abnormal exits exhaust two restarts and persist visible guard",
+        "PASS ST14 new watchdog process cannot reset persisted crash-loop budget",
+        "PASS ST14 authorized repair can reset a known exhausted budget after client exit",
+        "PASS ST14 strong-killed synthetic client restarts within configured delay; normal close ends supervision",
+        "PASS ST14 replacement watchdog adopts exact original PID/start/hash without duplicate client",
+        "PASS ST14 retirement detaches watchdog without killing business process",
+        "PASS ST14 unacknowledged process creation fails closed without a duplicate launch",
+        "PASS ST14 ordinary system repair cannot clear an uncertain original launch",
+        "PASS ST14 healthy interval resets restart budget using monotonic time despite wall-clock jumps"
+      ]
+    }
+  ],
+  "WpfAndInstallerBuilds": [
+    {
+      "BusinessModule": "Supply",
+      "Result": "BUILD_PASS",
+      "LogSha256": "c1854369648c57c3b3550a2b6ffd7efe7ad0ccf8eb218af497c1c8716532313d"
+    },
+    {
+      "BusinessModule": "Sportmaster",
+      "Result": "BUILD_PASS",
+      "LogSha256": "5cb1e3dcdb845d8465200ef89ccda00d487b6296a206f7a4e7dd3f7d1898ccea"
+    },
+    {
+      "BusinessModule": "DirectPlc",
+      "Result": "BUILD_PASS",
+      "LogSha256": "bf15a5756ac6e9d8c8674ad48cab5240cc28f36ef4c0f2495e8a4a43424fb181"
+    },
+    {
+      "BusinessModule": "WcsToPlc",
+      "Result": "BUILD_PASS",
+      "LogSha256": "dbb873ec58cda7bfd5c168cf267bcdda50e6ca116d386541e92f3e30fed355c9"
+    },
+    {
+      "Target": "Self-contained SM win-x64 installer compile only",
+      "Result": "BUILD_PASS",
+      "LogSha256": "5391722594a1232505f4cae9e3666a636edf5a69da6f975fcc39b9f7b6a52198"
+    }
+  ],
+  "UnicodeShortcuts": [
+    {
+      "ACP": 1252,
+      "Result": "PASS",
+      "LogSha256": "74cf04d1c7682f1842efbd6dc5503b962a5a3a5b557526e608bd2fcdb1eb619f"
+    },
+    {
+      "ACP": 936,
+      "Result": "PASS",
+      "LogSha256": "f7515d0cb04cfcab6f07440d4c25928e58946e141d37a551ad542a2cb1cb63cb"
+    },
+    {
+      "ACP": 65001,
+      "Result": "PASS",
+      "LogSha256": "c128a72fc43a1b426cde2236f73176f9628752ab89815fae71fca753fcae49be"
+    }
+  ],
+  "NotTransferred": "The 3965/72aba CI COM failure remains historical; no PASS transferred to this integration. This record describes only source 99a593b1.",
+  "NotRun": [
+    "physical volume faults or NTP changes",
+    "installed restart task/SCM/WER/uninstall",
+    "Production deployment or real devices/RCS",
+    "target 4-core/8GB Win11 IPC",
+    "24h/72h",
+    "604800 complete UAC restore",
+    "2592000"
+  ]
+}

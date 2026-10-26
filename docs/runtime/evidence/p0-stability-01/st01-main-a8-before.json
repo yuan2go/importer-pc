@@ -1,0 +1,9 @@
+{
+  "Baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "Phase": "before",
+  "HarnessContext": "ST01 replay; new version alias/test harness, main mapping retained for before; no machine deployment",
+  "CoreDeferredMatrix": "Eight combinations already pass on PR109 main",
+  "DisabledReader": "Missing bcr-code throws",
+  "Outcome": "FAIL remaining disabled reader",
+  "OriginalLocalLogSha256": "bcc70ec67574f53d6f14af709acc1b8b41aced52e6dbf87a9a3f03540c1744bb"
+}

@@ -1,5 +1,7 @@
 # 桌面只显示“菜鸟供包台”
 
+> 当前Unicode实现与续修见[运行说明](unicode-shortcut-compatibility-01.md)、[验证/边界](validation/unicode-shortcut-compatibility-01.md)。名称、精确目标/参数和原部署资格继续继承；目录/空目标/损坏冲突保留并报错。下述历史不测试与旧介质结果各守原源。
+
 [工作包](../work-packages/WP-IPC-DESKTOP-NAME-01.md)由2026-10-20用户明确要求。原桌面文件名包含应用/源码/部署后缀，是并排安装时的工程识别名，不符合最终产品命名。本轮固定桌面文件为`菜鸟供包台.lnk`，Windows隐藏快捷方式扩展名后即显示“菜鸟供包台”。模块、完整commit/分支继续在BUILD-INFO和受保护登记；开始菜单版本专用维护入口保持可追溯。
 
 稳定桌面图标只能投影已经提交的部署登记，不能在失败的预提交安装中切换。正常安装传入受原登记hash/责任守卫核验的上一部署；投影失败后的修复只认可可信程序根下受保护且有界的原deployment-location.json。替换须同Application/账户/数据根且原target/arguments准确匹配；用户改指向、其他应用或不同数据归属均不覆盖。新投影建立后清除精确属于上一部署的旧入口。卸载同时认识历史长名称，但仍比较完整target/arguments，旧卸载不会删新图标。

@@ -1,0 +1,57 @@
+{
+  "PR": 112,
+  "PRHead": "99a593b1ec3840a1545a230d54195024342aa195",
+  "ActualCheckoutCommit": "b3606350376cde9231c0523d98c116d6e3dd6186",
+  "DependencyBase": "980a1383e4589717c9a147746b6fd6271ef69088",
+  "RunId": 40262133399,
+  "Overall": "SUCCESS for these exact three jobs / checked source only",
+  "Jobs": [
+    {
+      "id": 121376836336,
+      "head_sha": "99a593b1ec3840a1545a230d54195024342aa195",
+      "name": "aqa01-boundaries",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 121376836219,
+      "head_sha": "99a593b1ec3840a1545a230d54195024342aa195",
+      "name": "p0-stability-boundaries",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 121376836360,
+      "head_sha": "99a593b1ec3840a1545a230d54195024342aa195",
+      "name": "frozen-sportmaster",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "WindowsNewBoundaries": "Time/storage selectors, all inherited P0 boundaries, real Dispatcher fatal hooks, existing installer-options and isolated ACP1252/936/65001 Unicode COM checks passed.",
+  "Installer": {
+    "Name": "CainiaoSupplyStation_SM_Setup_v1.16.0_win-x64.exe",
+    "Sha256": "76a378c2318c2932bf5b8966f8b7d15c2867c71526f5e132ba84dc08efd7311b",
+    "SourceCommit": "b3606350376cde9231c0523d98c116d6e3dd6186",
+    "Payload": {
+      "ApplicationId": "sportmaster",
+      "SourceCommit": "b3606350376cde9231c0523d98c116d6e3dd6186",
+      "SourceBranch": "codex/ci-sportmaster-40262133399",
+      "BusinessModuleShortName": "SM",
+      "BusinessVersion": "1.16.0",
+      "Sha256": "211db4f0b1363c7c0289723ceabd81d0d95eef469700c568f523551565e7dc24",
+      "ZipBytes": 134435218,
+      "UnpackedBytes": 276715500,
+      "FileCount": 755
+    },
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "Qualification": "Synthetic/CI only; no target IPC 24h/72h or installed task/SCM/WER qualification. Original 3965/72aba COM FAIL remains unchanged; it is not retroactively PASS.",
+  "EvidenceUrls": [
+    "https://github.com/yuan2go/importer-pc/actions/runs/40262133399/job/121376836336",
+    "https://github.com/yuan2go/importer-pc/actions/runs/40262133399/job/121376836219",
+    "https://github.com/yuan2go/importer-pc/actions/runs/40262133399/job/121376836360"
+  ],
+  "FinalDocumentationBoundary": "Subsequent documentation/manifest reconciliation is not tested by these jobs; its new CI is separate. No historical proof body or SourceCommit changed."
+}

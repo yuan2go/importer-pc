@@ -53,7 +53,7 @@ public sealed partial class ParcelRepository
         {
             if(reply.RequestId!=request.Id || reply.PayloadHash!=request.PayloadHash || !reply.TransportSucceeded || reply.ProtocolAcknowledged!=true ||
                 (reply.BusinessAccepted==true)!=(stage.State==StageState.Accepted) || !Guid.TryParseExact(reply.Id,"N",out _) ||
-                string.IsNullOrWhiteSpace(reply.Evidence) || reply.At<request.PreparedAt || reply.At>DateTimeOffset.UtcNow.AddSeconds(1))return false;
+                string.IsNullOrWhiteSpace(reply.Evidence) || !ParcelReceiptChronology.Valid(request,reply,DateTimeOffset.UtcNow))return false;
             if(!HasCommittedReplyBytes(op,stage,reply))return false;
         }
         return true;

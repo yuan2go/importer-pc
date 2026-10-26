@@ -26,12 +26,23 @@ public sealed record CapabilityCatalog(CapabilityDescriptor[] Providers, string[
 }
 public sealed class OperatorSession
 {
-    OperatorIdentity? identity;
-    public OperatorIdentity? Identity => Volatile.Read(ref identity);
-    public bool Valid(DateTimeOffset now, int maximumLifetimeMs) => Identity is { } i && i.AuthenticatedAt <= now &&
-        now < i.AuthenticatedAt.AddMilliseconds(maximumLifetimeMs) && (i.ExpiresAt is null || now < i.ExpiresAt);
-    public void Set(OperatorIdentity value) => Volatile.Write(ref identity, value);
-    public void Clear() => Volatile.Write(ref identity, null);
+    internal TimeProvider TimeForVerification { get; set; } = TimeProvider.System;
+    sealed record Grant(OperatorIdentity Identity, long Started, TimeSpan InitialAge, TimeSpan? RemainingProviderLifetime);
+    Grant? grant;
+    public OperatorIdentity? Identity => Volatile.Read(ref grant)?.Identity;
+    public bool Valid(DateTimeOffset now, int maximumLifetimeMs)
+    {
+        if (Volatile.Read(ref grant) is not { } held) return false;
+        var i = held.Identity; var elapsed = TimeForVerification.GetElapsedTime(held.Started);
+        return i.AuthenticatedAt <= now && now < i.AuthenticatedAt.AddMilliseconds(maximumLifetimeMs) && (i.ExpiresAt is null || now < i.ExpiresAt) &&
+            held.InitialAge + elapsed < TimeSpan.FromMilliseconds(maximumLifetimeMs) && (held.RemainingProviderLifetime is null || elapsed < held.RemainingProviderLifetime);
+    }
+    public void Set(OperatorIdentity value)
+    {
+        var now = TimeForVerification.GetUtcNow(); var age = now > value.AuthenticatedAt ? now - value.AuthenticatedAt : TimeSpan.Zero;
+        Volatile.Write(ref grant, new(value, TimeForVerification.GetTimestamp(), age, value.ExpiresAt is { } expiry ? expiry - now : null));
+    }
+    public void Clear() => Volatile.Write(ref grant, null);
 }
 
 public sealed record AcquisitionIdentity(string DeviceId, string Epoch, string SourceEventId, string AdmissionId, DateTimeOffset ObservedAt);

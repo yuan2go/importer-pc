@@ -79,13 +79,13 @@ public sealed partial class ParcelRuntime
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
                 try
                 {
-                    if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); TryScheduledBackup(DateTimeOffset.UtcNow); }
+                    if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
                     RefreshStorageCapacity(); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
                 }
                 finally { gate.Release(); }
             }
         }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
-        catch (Exception ex) { backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); failure = "Maintenance worker failed: " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+        catch (Exception ex) { backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); failure = "Maintenance worker failed: " + ex.Message; Interlocked.Exchange(ref accepting, 0); if (IsStorageError(ex) || ex is InvalidDataException) StorageFailed(ex, "Maintenance"); }
     }
 }

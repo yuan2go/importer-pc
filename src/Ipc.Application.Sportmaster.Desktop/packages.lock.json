@@ -289,7 +289,7 @@
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.19.0, )",
+          "Ipc.Application.Contracts": "[1.20.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },

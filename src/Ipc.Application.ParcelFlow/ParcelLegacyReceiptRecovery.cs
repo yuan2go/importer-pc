@@ -118,7 +118,7 @@ public static class ParcelLegacyReceiptRecovery
         if(repository.OriginalReplyHash(stage.Request.Id,reply.Id) is {} originalHash && originalHash!=Wire.Hash(Wire.Encode(reply))||
             stage.State==StageState.Conflict||reply.RequestId!=stage.Request.Id||reply.PayloadHash!=stage.Request.PayloadHash||
             !Guid.TryParseExact(reply.Id,"N",out _)||!reply.TransportSucceeded||reply.ProtocolAcknowledged!=true||reply.BusinessAccepted is null||
-            reply.PhysicalCompleted==true||string.IsNullOrWhiteSpace(reply.Evidence)||reply.At<stage.Request.PreparedAt||reply.At>DateTimeOffset.UtcNow.AddSeconds(1)||
+            reply.PhysicalCompleted==true||string.IsNullOrWhiteSpace(reply.Evidence)||!ParcelReceiptChronology.Valid(stage.Request,reply,DateTimeOffset.UtcNow)||
             stage.Replies.Any(r=>r.Id==reply.Id&&Wire.Encode(r)!=Wire.Encode(reply))||
             terminal is not null&&(terminal.BusinessAccepted!=reply.BusinessAccepted||terminal.Slot!=reply.Slot||Wire.Encode(terminal.Image)!=Wire.Encode(reply.Image)))return false;
         if(original is not null)

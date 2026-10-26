@@ -1,0 +1,22 @@
+{
+  "SourceParent": "e13f8cf7d1bb6ac00bdcfac2ab6af3e889c36a7f",
+  "Result": "PASS_WORKTREE_NOT_FINAL_COMMIT",
+  "Selectors": [
+    "time-storage-process-checks"
+  ],
+  "Cases": [
+    "budget-empty; global pause; explicit guarded Resume without provider calls",
+    "budget; Unknown retained",
+    "ambiguous; Pending Interrupted and original Unknown retained",
+    "permanent; first exit blocks restart"
+  ],
+  "LogSha256": "18ec2067e70a749bbfff43f461271eb55d4474a4875025ec2590c5b4817d7e33",
+  "ProductAndFixtureFileSha256": {
+    "src/Ipc.Platform/BusinessAssembly.cs": "4538e5f3049e8384002291d0438195650dbccf86bfc368295418dc2f14eda674",
+    "src/Ipc.Desktop/DesktopLaunchOptions.cs": "490bcd6287a301c8eb78300ab92e80c748bc5802089c9f4a00dd4febab0f7599",
+    "src/Ipc.Desktop/ParcelApp.xaml.cs": "9e36d760b38c5b300d9b9f917b8a1446b0ed97d0baebd2f7c40c1c8208072e21",
+    "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs": "85a432211ee3fb8f8095ad70978b0dc8fbb931aa3a9edbc5d6ff9e632fdf603e",
+    "tests/Ipc.Application.Verification/TimeStorageProcessChecks.cs": "8c04792457c145d10f0cfc6e3ee6d04a05835fde737ec11f944d085489691ae3"
+  },
+  "Scope": "Real isolated processes, synthetic local faults and Application; installed task/physical disk NOT_RUN"
+}

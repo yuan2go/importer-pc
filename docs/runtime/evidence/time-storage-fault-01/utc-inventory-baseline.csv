@@ -1,0 +1,513 @@
+Path,Line,Category,Disposition,Reason,Code
+docs/reviews/pr24-independent-rereview-f862c2a/original/probe/Program.cs,13,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,63,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,77,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,106,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,135,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,175,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/reviews/win11-24x7-stability-audit-01/verification/Collect-Win11Stability.ps1,198,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-audit-02-rereview/original-review-592d2bdd/identity-eviction/Program.cs,17,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-audit-02-rereview/original-review-592d2bdd/identity-eviction/Program.cs,33,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-audit-02-rereview/original-review-592d2bdd/initial-probes/Program.cs,25,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-closure-01-r03/input/inventory-probe.original.cs,25,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-closure-01-r03/input/inventory-probe.original.cs,31,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-remediation-01/run.ps1,4,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/architecture-quality-remediation-01/run.ps1,8,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/commercial-audit03-delivery/input-red-source.cs.txt,58,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/commercial-audit03-delivery/input-red-source.cs.txt,97,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/commercial-audit03-delivery/input-red-source.cs.txt,103,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-contradiction/Program.cs,69,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-contradiction/Program.cs,71,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/Program.cs,100,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/Program.cs,103,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/Program.cs,109,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-health/Program.cs,100,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/conformance-fix-14/probes/adapted-health/Program.cs,103,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/operation-closure-15/source-evidence-comparison.json,12,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/pr104-main-integration-01/EXECUTED-Program.cs.txt,145,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/pr92-independent-quality-review/run.ps1,5,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/pr92-independent-quality-review/run.ps1,11,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/project-conformance-audit-01/probes/contradiction/Program.cs,69,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/project-conformance-audit-01/probes/contradiction/Program.cs,71,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/project-conformance-audit-01/probes/health/Program.cs,100,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/project-conformance-audit-01/probes/health/Program.cs,103,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/RetentionQualification.cs.txt,65,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/RetentionQualification.cs.txt,70,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/RetentionQualification.cs.txt,93,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt,53,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt,58,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt,67,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt,69,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/final-source/verify-retention-maintenance.ps1.txt,149,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt,57,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt,62,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt,71,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt,73,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/followup-cli/verify-retention-maintenance.ps1.txt,153,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/run-protected.ps1,6,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-02/run-protected.ps1,8,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/completed-run/OBSERVE-RUN.ps1,14,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/completed-run/OBSERVE-RUN.ps1,26,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/completed-run/OBSERVE-RUN.ps1,30,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/EXECUTED-HELPER.ps1,57,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/EXECUTED-HELPER.ps1,62,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/EXECUTED-HELPER.ps1,71,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/EXECUTED-HELPER.ps1,73,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/EXECUTED-HELPER.ps1,176,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1,26,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1,29,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1,33,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1,34,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/baseline-recovery/RESTORE-BASELINE.ps1,51,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/check-capacity-policy.ps1,32,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/preliminary/check-ordinary-authority.ps1,24,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/FIXED-HELPER.ps1,57,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/FIXED-HELPER.ps1,62,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/FIXED-HELPER.ps1,71,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/FIXED-HELPER.ps1,73,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/FIXED-HELPER.ps1,176,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-ingress-full-retest-03/original/reuse-metadata-fix/check-reuse-metadata.ps1,36,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-FIXTURE.cs,55,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-FIXTURE.cs,60,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-FIXTURE.cs,82,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-HELPER.ps1,38,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-HELPER.ps1,41,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-HELPER.ps1,50,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-HELPER.ps1,52,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/EXECUTED-HELPER.ps1,109,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/OBSERVE-MAINTENANCE.ps1,12,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/OBSERVE-MAINTENANCE.ps1,17,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1,25,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1,28,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1,32,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1,33,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/VERIFY-BUDGET-RECOVERY.ps1,50,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/input-plan-component/Program-before-guards.cs.txt,11,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/input-plan-component/Program-before-guards.cs.txt,25,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/input-plan-component/Program-first.cs.txt,9,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/input-plan-component/Program.cs,11,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/corrected-final/input-plan-component/Program.cs,25,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-FIXTURE.cs,50,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-FIXTURE.cs,55,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-FIXTURE.cs,75,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-HELPER.ps1,31,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-HELPER.ps1,34,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-HELPER.ps1,43,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-HELPER.ps1,45,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/EXECUTED-HELPER.ps1,98,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/INVALID-INPUT-FIXTURE.cs,50,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/INVALID-INPUT-FIXTURE.cs,55,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/INVALID-INPUT-FIXTURE.cs,75,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/original/invalid-initial/STOP-INVALID-FIXTURE.ps1,8,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-FIXTURE.cs,65,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-FIXTURE.cs,70,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-FIXTURE.cs,93,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-HELPER.ps1,43,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-HELPER.ps1,46,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-HELPER.ps1,55,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-HELPER.ps1,57,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/EXECUTED-HELPER.ps1,114,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/retention-maintenance-qualification-01/publication-checks/boundary-final/check-fixture-boundary.ps1,35,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,26,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,28,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,38,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,45,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,48,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,51,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,63,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/fixed-c728754/custody/StabilityRemediation.Retention.cs.txt,64,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,26,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,28,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,38,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,45,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,48,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,51,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,63,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/runtime/evidence/win11-24x7-stability-remediation-01/integrated-ac085f3/custody/StabilityRemediation.Retention.cs.txt,64,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+docs/work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md,17,历史文档/证据,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+examples/BarcodeExtension/BarcodeExtension.cs,51,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+examples/BarcodeExtension/BarcodeExtension.cs,61,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/diagnose-camera-network.ps1,152,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/verify-retention-maintenance.ps1,57,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/verify-retention-maintenance.ps1,62,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/verify-retention-maintenance.ps1,71,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/verify-retention-maintenance.ps1,73,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/verify-retention-maintenance.ps1,176,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+scripts/windows-reference-validation.ps1,19,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+src/Ipc.Application.Inspection/InspectionRuntime.cs,56,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"batches[^1] = active with { Samples = active.Samples.Append(new(command.Id, command.Value, DateTimeOffset.UtcNow)).ToArray() }; break;"
+src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs,24,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs,14,UI快照寿命,已有单调保护,MonotonicFresh并行UTC未来时间拒绝；未改历史UTC字段,public bool Fresh => fresh && MonotonicFresh && lastRead is { } at && DateTimeOffset.UtcNow >= at && DateTimeOffset.UtcNow-at < TimeSpan.FromSeconds(3);
+src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs,26,UI快照寿命,已有单调保护,MonotonicFresh并行UTC未来时间拒绝；未改历史UTC字段,"AdvanceReadId(ref appliedReadId,id); lastRead=DateTimeOffset.UtcNow; lastReadTick=System.Diagnostics.Stopwatch.GetTimestamp(); readFailure=null; lastReadError=null;"
+src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs,49,UI快照寿命,已有单调保护,MonotonicFresh并行UTC未来时间拒绝；未改历史UTC字段,var now=at??DateTimeOffset.UtcNow;
+src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs,35,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"public string Health => !Fresh ? ""设备旧状态已失效 · "" + ReadStatus : string.Join(""\n"", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);"
+src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs,269,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Message = application.EmitReferenceWeight(new(Wire.Id(), op.AdmissionId, scale.Target, value, op.WeightPolicy.Unit, op.WeightPolicy.Precision, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow))"
+src/Ipc.Application.ParcelFlow/ParcelAdministration.cs,10,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"void Diagnostic(string source, string action, string level = ""信息"", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });"
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs,20,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs,39,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add(""Reader confirmation missing/expired"");"
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs,46,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));"
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs,87,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,if (!AdmissionCapabilitiesReady() || readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true))
+src/Ipc.Application.ParcelFlow/ParcelCommands.cs,161,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"audit = new(Wire.Id(), DateTimeOffset.UtcNow, currentOperator, reason, configuration.Current.Revision, configuration.Current.Revision,"
+src/Ipc.Application.ParcelFlow/ParcelConflicts.cs,59,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var fact = new IdentityConflict(Wire.Id(), original, affectedPositions.Distinct(StringComparer.Ordinal).ToArray(), detail, DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelConflicts.cs,66,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var fact = new IdentityConflict(Wire.Id(), original.Id, affectedPositions, detail, DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs,100,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"foreach (var port in selectedPorts) { var now = DateTimeOffset.UtcNow; capabilityHealth[port.InstanceId] = new(port.InstanceId, false, now, now, ""Maintenance incomplete: "" + ex.GetType().Name); }"
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs,12,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs,58,等待重量/新鲜度,风险待专项复现,墙钟回拨可能延长等待/新鲜度；本包未运行可选重量组合回拨，不宣称已修,at >= op.ObservedAt && at <= DateTimeOffset.UtcNow && (op.FrozenConfiguration.WeightValidity == WeightValidity.AtAssociation || DateTimeOffset.UtcNow - at <= TimeSpan.FromMilliseconds(op.WeightPolicy.MaximumAgeMs))
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs,65,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"capabilityHealth.TryGetValue(b.InstanceId, out var h) && h.Ready && h.ConfirmedAt <= DateTimeOffset.UtcNow && h.ValidUntil > DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs,80,维护tick+计划备份传时,混合/间隔风险待专项,主循环Task.Delay单调；TryScheduledBackup的now/NextDue为UTC，回拨延迟备份尚未纳入本包修复,"try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); TryScheduledBackup(DateTimeOffset.UtcNow); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress[""maintenance""] = (DateTimeOffset.UtcNow, ""CompletedCycle""); }"
+src/Ipc.Application.ParcelFlow/ParcelGuards.cs,85,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"catch (Exception ex) { backgroundProgress[""maintenance""] = (DateTimeOffset.UtcNow, ""Faulted:"" + ex.GetType().Name); failure = ""Maintenance worker failed: "" + ex.Message; Interlocked.Exchange(ref accepting, 0); }"
+src/Ipc.Application.ParcelFlow/ParcelHealth.cs,31,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"backgroundProgress[""capability:"" + port.InstanceId] = (DateTimeOffset.UtcNow, health.Ready ? ""Ready"" : ""Unavailable:"" + health.Detail);"
+src/Ipc.Application.ParcelFlow/ParcelHealth.cs,38,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"catch (Exception ex) { backgroundProgress[""capability:"" + port.InstanceId] = (DateTimeOffset.UtcNow, ""Faulted:"" + ex.GetType().Name); Diagnostic(""异常"", ""设备监测异常"", ""错误"", ex.ToString()); failure = ""Capability monitor failed: "" + port.InstanceId + "": "" + ex.Message; Interlocked.Exchange(ref accepting, 0); }"
+src/Ipc.Application.ParcelFlow/ParcelHealth.cs,54,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.ParcelFlow/ParcelHealth.cs,67,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"{ var now = DateTimeOffset.UtcNow; return new(port.InstanceId, false, now, now, reason); }"
+src/Ipc.Application.ParcelFlow/ParcelHistory.cs,133,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"archive.Parameters.AddWithValue(""$id"", id); archive.Parameters.AddWithValue(""$hash"", Wire.Hash(body)); archive.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); archive.ExecuteNonQuery();"
+src/Ipc.Application.ParcelFlow/ParcelHistory.cs,137,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"audit.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); audit.Parameters.AddWithValue(""$detail"", Wire.Encode(new { Ids = ids, Reason = reason, Policy = ""Archive retains terminal originals in the same database; expiry deletion requires separate authorized retention maintenance"" })); audit.ExecuteNonQuery();"
+src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs,121,7～30天日历cutoff,UTC保留,跨重启历史保留与审计年龄，不改为进程寿命,var now = DateTimeOffset.UtcNow; var days = envelope.Effective.Retention.HistoryDays.Value; var cutoff = now.AddDays(-days);
+src/Ipc.Application.ParcelFlow/ParcelIngress.cs,54,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"c.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O""));"
+src/Ipc.Application.ParcelFlow/ParcelIngress.cs,84,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"c.Parameters.AddWithValue(""$id"", id); c.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); c.Parameters.AddWithValue(""$queue"", queueMs);"
+src/Ipc.Application.ParcelFlow/ParcelIngress.cs,91,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"c.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); c.Parameters.AddWithValue(""$ms"", (object?)processingMs ?? DBNull.Value);"
+src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs,52,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"return new(Wire.Hash(Wire.Encode(candidate)), DateTimeOffset.UtcNow, checks.ToArray());"
+src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs,95,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var draft = new StartupSavedDraft(state.Hash, """", DateTimeOffset.UtcNow, editor, false, Wire.FileHash(typeof(ParcelStartupMaintenance).Assembly.Location));"
+src/Ipc.Application.ParcelFlow/ParcelInputs.cs,30,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"new(position, observation, outcome, reason, operation, DateTimeOffset.UtcNow, ReaderBinding(position), selection);"
+src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs,121,回包时间完整性,已修ST13,只有新接收且有本机单调回拨证据可例外；历史无证明/真实冲突守卫保留,reply.PhysicalCompleted==true||string.IsNullOrWhiteSpace(reply.Evidence)||reply.At<stage.Request.PreparedAt||reply.At>DateTimeOffset.UtcNow.AddSeconds(1)||
+src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs,147,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"ExtensionStore.AtomicWrite(Path.Combine(recovery,""COMPLETED.json""),new ParcelRecoveryManifest(envelope.Effective.ApplicationId,Path.GetFileName(backup),Wire.FileHash(backup),hashes,DateTimeOffset.UtcNow,""Before original-release Query and custody-only upgrade; all original bytes retained""));"
+src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs,68,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"ExtensionStore.AtomicWrite(Path.Combine(recovery, ""COMPLETED.json""), new ParcelRecoveryManifest(definition.Id, Path.GetFileName(backup), Wire.FileHash(backup), hashes, DateTimeOffset.UtcNow, ""Before offline main projection repair; original schema and all custody retained""));"
+src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs,91,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length), hash, walHash, Wire.FileHash(configuration), reasons.Count == 0, reasons.ToArray(), DateTimeOffset.UtcNow,"
+src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs,160,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination, cancellationToken), RecoveryFiles.Inventory(recovery, cancellationToken), DateTimeOffset.UtcNow,"
+src/Ipc.Application.ParcelFlow/ParcelOperators.cs,16,操作员会话上限,已补单调硬上限,CommonCapabilities.OperatorSession已先红后改；原UTC真实性/到期检查保留,"if (authenticating || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs) || operations.Values.Any(x => !IsSettled(x) && x.Operator?.Subject != subject) || Volatile.Read(ref pendingObservations) != 0) return new(""Rejected"", ""Protect original unfinished operations before changing operator"", repository.Revision);"
+src/Ipc.Application.ParcelFlow/ParcelOperators.cs,23,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,identity.DisplayName.Any(char.IsControl) || identity.Authority != Effective.Login!.Target || identity.Simulation != factory.SimulationIdentity(Effective.Login!) || identity.ExpiresAt <= DateTimeOffset.UtcNow ||
+src/Ipc.Application.ParcelFlow/ParcelOperators.cs,24,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,"!Guid.TryParseExact(identity.SessionId, ""N"", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - identity.AuthenticatedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))"
+src/Ipc.Application.ParcelFlow/ParcelOverload.cs,21,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var body = Wire.Encode(new { At = DateTimeOffset.UtcNow, Positions = overloadedPositions.Keys.Order().ToArray(), Reason = ""Callback queue full; inspect original entity"" });"
+src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs,43,回包时间完整性,已修ST13,只有新接收且有本机单调回拨证据可例外；历史无证明/真实冲突守卫保留,"!Guid.TryParseExact(reply.Id,""N"",out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At<frozen.PreparedAt || reply.At>DateTimeOffset.UtcNow.AddSeconds(1) ||"
+src/Ipc.Application.ParcelFlow/ParcelRepository.cs,198,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"inspected.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O""));"
+src/Ipc.Application.ParcelFlow/ParcelRepository.cs,274,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"audit.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); audit.Parameters.AddWithValue(""$event"", eventName);"
+src/Ipc.Application.ParcelFlow/ParcelRepository.cs,311,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"basis.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); basis.Parameters.AddWithValue(""$evidence"", detail); basis.ExecuteNonQuery();"
+src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs,48,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Wire.FileHash(isolated), machine, DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelRestoreHandoff.cs,116,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var confirmation = new RestoreConfirmation(proof.Id, ManagementEvidence!.AuditActor, reason, DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,41,操作员会话上限,已补单调硬上限,CommonCapabilities.OperatorSession已先红后改；原UTC真实性/到期检查保留,"bool SessionValid => Effective.Login is null || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs);"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,275,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var at = DateTimeOffset.UtcNow;
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,322,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Interlocked.Exchange(ref lane.ProcessingTicks, DateTimeOffset.UtcNow.UtcTicks);"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,346,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Interlocked.Exchange(ref lane.ProgressTicks, DateTimeOffset.UtcNow.UtcTicks);"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,417,观察新鲜度,风险待专项复现,需连同来源未来时间/epoch/进程内锚点验证，未仅删除UTC守卫,if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,419,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,457,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"!capabilityHealth.TryGetValue(observation.InstanceId, out var sourceHealth) || !sourceHealth.Ready || sourceHealth.ValidUntil <= DateTimeOffset.UtcNow)"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,479,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? """", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,481,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? """", DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,486,等待重量/新鲜度,风险待专项复现,墙钟回拨可能延长等待/新鲜度；本包未运行可选重量组合回拨，不宣称已修,if (WeightPending(op) && op.State != ParcelState.WeightTimedOut && DateTimeOffset.UtcNow <= op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs))
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,492,等待重量/新鲜度,风险待专项复现,墙钟回拨可能延长等待/新鲜度；本包未运行可选重量组合回拨，不宣称已修,DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,504,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? ""警告"" : ""信息"", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });"
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,511,等待重量/新鲜度,风险待专项复现,墙钟回拨可能延长等待/新鲜度；本包未运行可选重量组合回拨，不宣称已修,bool WeightExpired(ParcelOperation op) => WeightPending(op) && DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs);
+src/Ipc.Application.ParcelFlow/ParcelRuntime.cs,518,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"op.ConfigurationHash, payload, Wire.Hash(payload), ReceiptTimeForVerification.GetUtcNow());"
+src/Ipc.Application.ParcelFlow/ParcelStages.cs,31,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
+src/Ipc.Application.ParcelFlow/ParcelStages.cs,107,回包时间完整性,已修ST13,只有新接收且有本机单调回拨证据可例外；历史无证明/真实冲突守卫保留,"!Guid.TryParseExact(reply.Id, ""N"", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > ReceiptTimeForVerification.GetUtcNow().AddSeconds(1) ||"
+src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs,137,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var audit = new { At = DateTimeOffset.UtcNow, Reason = reason, BeforeHash = expectedHash, CandidateHash = Wire.Hash(Wire.Encode(candidate)), Actor = Actor, Status = ""Prepared"" };"
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs,16,节流间隔,已修ST12/其余UTC保留,容量与保留提示轮询改单调；7天到期cutoff仍UTC,if (StorageTimeForVerification.GetUtcNow() - storageChecked < TimeSpan.FromSeconds(1)) return;
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs,23,节流间隔,已修ST12/其余UTC保留,容量与保留提示轮询改单调；7天到期cutoff仍UTC,if (repository?.StorageVersion >= 9 && StorageTimeForVerification.GetUtcNow() - retentionChecked > TimeSpan.FromMinutes(1))
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs,26,审计/日历保留,已修ST12/其余UTC保留,容量与保留提示轮询改单调；7天到期cutoff仍UTC,"repository.RetentionDue(days, StorageTimeForVerification.GetUtcNow()) ? ""HistoryRetentionMaintenanceDue: aged history exists; pause, stop and run matching-release expire-history; unresolved originals are retained"" : null;"
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs,27,审计/日历保留,已修ST12/其余UTC保留,容量与保留提示轮询改单调；7天到期cutoff仍UTC,retentionChecked = StorageTimeForVerification.GetUtcNow();
+src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs,32,审计/日历保留,已修ST12/其余UTC保留,容量与保留提示轮询改单调；7天到期cutoff仍UTC,storageChecked = StorageTimeForVerification.GetUtcNow();
+src/Ipc.Application.ParcelFlow/ParcelStorageRelocation.cs,42,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var proof = File.Exists(proofPath) ? Wire.Decode<UnusedSimulationRelocation>(File.ReadAllText(proofPath)) : new(id, ""Prepared"", original, state.Directory, expectedOriginHash, """", DateTimeOffset.UtcNow);"
+src/Ipc.Application.ParcelFlow/ParcelSupervision.cs,48,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,"
+src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs,56,回包时间完整性,已修ST13,只有新接收且有本机单调回拨证据可例外；历史无证明/真实冲突守卫保留,string.IsNullOrWhiteSpace(reply.Evidence) || reply.At<request.PreparedAt || reply.At>DateTimeOffset.UtcNow.AddSeconds(1))return false;
+src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs,118,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"audit.Parameters.AddWithValue(""$at"",DateTimeOffset.UtcNow.ToString(""O"")); audit.Parameters.AddWithValue(""$id"",id);"
+src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs,29,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Contracts/Model.cs,48,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Contracts/Model.cs,60,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,public DateTimeOffset OpenedAt { get; set; } = DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Desktop/ExtensionsView.xaml.cs,89,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,if (ticket == generation && identity is not null && identity == current && current.ExpiresAt > DateTimeOffset.UtcNow && access)
+src/Ipc.Application.Supply.Desktop/MainWindow.Alarms.cs,52,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"? $""\n当前来源 {device.Key} / {device.Value.DeviceId} · {OperatorText.Health(device.Value.Health.ToString())}\n代次 {device.Value.Epoch} / 顺序 {device.Value.Sequence} · 最后确认 {device.Value.ConfirmedAt:O} · 有效至 {device.Value.ValidUntil:O}\n当前时效：{device.Value.ValidityReason(DateTimeOffset.UtcNow) ?? ""有效""}"""
+src/Ipc.Application.Supply.Desktop/MainWindow.Closure.cs,37,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Desktop/MainWindow.Extensions.cs,30,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"var reviewed = MaintenanceReviewToken.Capture(snapshot!.State.Revision, snapshot.State.Actor, DateTimeOffset.UtcNow);"
+src/Ipc.Application.Supply.Desktop/MainWindow.Extensions.cs,35,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"if (!reviewed.IdentityMatches(snapshot?.State.Actor, DateTimeOffset.UtcNow)) throw new InvalidOperationException(""维护身份在确认期间变化或失效；请重新核对草稿"");"
+src/Ipc.Application.Supply.Desktop/MainWindow.HistoryExport.cs,16,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var dialog=new SaveFileDialog {Filter=""JSON|*.json"",FileName=""ipc-history-""+DateTime.UtcNow.ToString(""yyyyMMddHHmmss"")+"".json""};"
+src/Ipc.Application.Supply.Desktop/MainWindow.HistoryExport.cs,21,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var query=selectedQuery;int? total=null;var started=DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Desktop/MainWindow.HistoryExport.cs,47,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"await File.WriteAllTextAsync(temporary,Wire.Encode(new {Query=selectedQuery,StartedAt=started,CompletedAt=DateTimeOffset.UtcNow,Count=rows.Count,SnapshotSemantics=""Bounded parent identities; current child facts read during export, not an immutable database snapshot"",Items=exported}),lifetime.Token);"
+src/Ipc.Application.Supply.Desktop/MainWindow.Presentation.cs,22,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,bool HasIdentity => Fresh && snapshot?.State.Actor is { } actor && actor.ExpiresAt > DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,66,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"model.Identity = snapshot.State.Actor is { } actor && actor.ExpiresAt > DateTimeOffset.UtcNow ? $""{actor.Id} · 模拟{(actor.Role == SimulationRole.Maintenance ? ""维护员"" : ""操作员"")}"" : ""模拟身份 · 未登录 / 已过期"";"
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,134,旧Supply UI快照寿命,风险待专项原生复现,仅UTC差值缺单调上限；不以SM新快照验证覆盖旧Supply,bool Fresh => ready && snapshot is not null && DateTimeOffset.UtcNow - snapshot.GeneratedAt < TimeSpan.FromSeconds(3);
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,143,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"else if (snapshot!.State.Actor is null || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) reason = ""请取得有效身份"";"
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,157,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var guard = ConfigurationActivation.Evaluate(snapshot.State, activation, Runtime.Configuration!.Version, snapshot.Recovery.Length != 0, DateTimeOffset.UtcNow);"
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,369,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var dialog = new SaveFileDialog { Filter = ""JSON|*.json"", FileName = ""ipc-diagnostics-"" + DateTime.UtcNow.ToString(""yyyyMMddHHmmss"") + "".json"" };"
+src/Ipc.Application.Supply.Desktop/MainWindow.xaml.cs,374,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var dialog = new SaveFileDialog { Filter = ""SQLite|*.db"", FileName = ""ipc-backup-"" + DateTime.UtcNow.ToString(""yyyyMMddHHmmss"") + "".db"" };"
+src/Ipc.Application.Supply.Desktop/ViewModels.cs,116,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var now = DateTimeOffset.UtcNow;
+src/Ipc.Application.Supply/Maintenance.cs,194,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var receipt = new StorageBackupReceipt(Wire.Id(), Wire.FileHash(temporary), DateTimeOffset.UtcNow, inspection, saved);"
+src/Ipc.Application.Supply/Maintenance.cs,205,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"command.Parameters.AddWithValue(""$at"", DateTimeOffset.UtcNow.ToString(""O"")); command.ExecuteNonQuery();"
+src/Ipc.Application.Supply/Maintenance.cs,232,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var receipt = new StorageUpgradeReceipt(Wire.Id(), ""BackupVerifiedAwaitingUpgrade"", DateTimeOffset.UtcNow,"
+src/Ipc.Application.Supply/StationApplication.cs,33,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,DateTimeOffset Now => clock.GetUtcNow();
+src/Ipc.Application.Supply/Store.cs,63,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Exec(""INSERT INTO schema_history VALUES(1,$a,$b)"", tx, Wire.Hash(Schema), DateTimeOffset.UtcNow.ToString(""O""));"
+src/Ipc.Application.Supply/Store.cs,186,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var a = new Audit(Wire.Id(), owner, actor, command?.Id ?? ""system"", kind, evidence, DateTimeOffset.UtcNow);"
+src/Ipc.Application.Supply/Store.cs,244,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var audit = new Audit(Wire.Id(), ""retention"", actor, ""maintenance"", ""PruneClosedSessions"", $""before={before:O}; sessions={string.Join(',', eligible.Select(x => x.Id))}; {evidence}"", DateTimeOffset.UtcNow);"
+src/Ipc.Assembly/DeferredConnectionPorts.cs,15,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"health(new(DeviceId, Epoch, DeviceHealth.Unknown, DateTimeOffset.UtcNow, null, ConfirmationSource));"
+src/Ipc.Assembly/DeferredConnectionPorts.cs,30,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
+src/Ipc.Assembly/OriginalParcelQuery.cs,73,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,var now = DateTimeOffset.UtcNow;
+src/Ipc.Assembly/ParcelCapabilityFactory.cs,34,绝对资格有效期,UTC保留,签发/到期是跨进程绝对证据，不换成进程Stopwatch,: c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+src/Ipc.Components/ReferenceOptionalServices.cs,25,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"{ token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow; return Task.FromResult(new CapabilityHealth(InstanceId, running, now, now.AddSeconds(3), ""SIMULATION identity provider"")); }"
+src/Ipc.Components/ReferenceOptionalServices.cs,31,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"? new(subject, subject, binding.Target, Wire.Id(), DateTimeOffset.UtcNow, true, DateTimeOffset.UtcNow.AddHours(8), subject == ""maintenance"" ? [""maintenance""] : []) : null);"
+src/Ipc.Drivers.Hikrobot/HikrobotReader.cs,128,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"entityMode == ""trigger"" ? frame.Kind : ""UncorrelatedRead"", frame.Codes, null, DateTimeOffset.UtcNow);"
+src/Ipc.Drivers.Hikrobot/HikrobotReader.cs,172,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,var now = DateTimeOffset.UtcNow;
+src/Ipc.Drivers/ObservationSources.cs,56,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,var at = DateTimeOffset.UtcNow;
+src/Ipc.Drivers/ObservationSources.cs,66,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"kind, codes ?? [], quantity, DateTimeOffset.UtcNow);"
+src/Ipc.Drivers/ParcelDevices.cs,36,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,"{ token.ThrowIfCancellationRequested(); lock (gate) { var now = DateTimeOffset.UtcNow; return Task.FromResult(new CapabilityHealth(InstanceId, running, now, now.AddSeconds(3), ""SIMULATION: correlated scale input, no real measurement"")); } }"
+src/Ipc.Drivers/TcpLineObservationSource.cs,107,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,lock (gate) receivedAt = DateTimeOffset.UtcNow;
+src/Ipc.Drivers/TcpLineObservationSource.cs,127,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,validObservationAt = DateTimeOffset.UtcNow;
+src/Ipc.Drivers/TcpLineObservationSource.cs,164,来源健康/观察UTC证据,UTC赋时保留,节拍应使用Task.Delay/单调；UTC用于确认/有效期与未来证据拒绝，不能伪造Ready,var at = DateTimeOffset.UtcNow;
+src/Ipc.Fixture/Receiver.cs,43,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Exec(""INSERT INTO network_calls VALUES($a,$b)"", tx, envelope.RequestId, DateTimeOffset.UtcNow.ToString(""O""));"
+src/Ipc.Fixture/Receiver.cs,83,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,var evidenceId = Wire.Id(); var acquiredAt = DateTimeOffset.UtcNow;
+src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs,48,RCS心跳合同时间戳,UTC保留,Unix毫秒是既有报文字段，调度Task.Delay单调；不重写历史报文,var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs,63,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
+src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs,113,本机回包赋时,UTC保留/接缝可控,适配器没有PreparedAt冲突规则；不改HTTP原字节或At，Application另记证据,"ReceiptTimeForVerification.GetUtcNow(), HttpResponse: original);"
+src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs,121,本机回包赋时,UTC保留/接缝可控,适配器没有PreparedAt冲突规则；不改HTTP原字节或At，Application另记证据,"ReceiptTimeForVerification.GetUtcNow(), Destination: destination, HttpResponse: original);"
+src/Ipc.Platform/ConfigurationRevisions.cs,44,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Wire.Hash(Wire.Encode(Current.Effective)), Wire.Hash(Wire.Encode(candidate)), actor, reason, DateTimeOffset.UtcNow);"
+src/Ipc.Platform/ConfigurationRevisions.cs,60,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = ""Failed"", Failure = failure.GetType().Name + "": "" + failure.Message } : null, Current.Confirmation, Current.InitialRepair);"
+src/Ipc.Platform/ConfigurationRevisions.cs,70,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = ""Interrupted"", Failure = ""Process ended before resource startup confirmation"" };"
+src/Ipc.Platform/ConfigurationRevisions.cs,77,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Activation = Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = ""Interrupted"" } : null };"
+src/Ipc.Platform/ConfigurationRevisions.cs,89,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Activation = new(Wire.Id(), DateTimeOffset.UtcNow) };"
+src/Ipc.Platform/ConfigurationRevisions.cs,103,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Current.Activation with { FinishedAt = DateTimeOffset.UtcNow, Outcome = ""Activated"" },"
+src/Ipc.Platform/ConfigurationRevisions.cs,104,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Current.Confirmation is { } confirmation ? confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = ""Confirmed"", ConfirmedBy = ""resource-startup"", ConfirmedAt = DateTimeOffset.UtcNow } : null, Current.InitialRepair);"
+src/Ipc.Platform/ConfigurationRevisions.cs,139,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Confirmation = confirmation with { State = ""InProgress"", Attempts = [.. confirmation.Attempts, new(Wire.Id(), DateTimeOffset.UtcNow)] } };"
+src/Ipc.Platform/ConfigurationRevisions.cs,146,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = failure is null ? ""ResourcesStarted"" : ""Failed"","
+src/Ipc.Platform/ConfigurationRevisions.cs,152,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"ConfirmedBy = confirmed ? ""initial-resource-startup"" : null, ConfirmedAt = confirmed ? DateTimeOffset.UtcNow : null } };"
+src/Ipc.Platform/ConfigurationRevisions.cs,164,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"Failure = Current.Pending is null ? null : Current.Failure, Confirmation = confirmation with { Required = false, State = ""Confirmed"", ConfirmedBy = identity, Reason = reason, ConfirmedAt = DateTimeOffset.UtcNow } };"
+src/Ipc.Platform/DeploymentQualification.cs,29,绝对资格有效期,UTC保留,签发/到期是跨进程绝对证据，不换成进程Stopwatch,q.ApplicationContractSha256 != applicationContractHash || q.IssuedAt > DateTimeOffset.UtcNow || q.ExpiresAt <= DateTimeOffset.UtcNow || q.ExpiresAt <= q.IssuedAt ||
+src/Ipc.Platform/ExtensionPackages.cs,79,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"return new(m, Convert.ToHexString(SHA256.HashData(manifestBytes)), packageHash, Wire.Hash(Wire.Encode(trust)), DateTimeOffset.UtcNow, publisher.TestOnly);"
+src/Ipc.Platform/ExtensionStore.cs,136,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var operation = new ExtensionInstallOperation(Wire.Id(), plan.PackageSha256, plan.Reference, ""Prepared"", DateTimeOffset.UtcNow, Kind: repair ? ""Repair"" : ""Install"");"
+src/Ipc.Platform/ExtensionStore.cs,206,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"operation.Id, DateTimeOffset.UtcNow, ""Installed"", ""Installed only; not activated. Offline signature/trust checked; no online revocation claim."");"
+src/Ipc.Platform/ExtensionStore.cs,222,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"var operation = new ExtensionInstallOperation(Wire.Id(), installed.PackageSha256, package, ""UninstallPrepared"", DateTimeOffset.UtcNow, Kind: ""Uninstall"");"
+src/Ipc.Platform/ExtensionStore.cs,256,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"AtomicWrite(FilePath(""registrations/"" + package.ManifestSha256 + "".json""), previous with { Status = ""Uninstalled"", Reason = ""Disabled/unbound; files retired for recovery, audit retained"", At = DateTimeOffset.UtcNow });"
+src/Ipc.Platform/LocalManagementMode.cs,9,管理模式/审计入口,混合：已修状态/委托需专项,15分钟CTS本已单调，状态现在检查到期token；Now别名的2分钟持久委托/失败锁定另列，未冒称全覆盖,{ public bool Authorized => Active && ExpiresAt > DateTimeOffset.UtcNow; }
+src/Ipc.Platform/LocalManagementMode.cs,29,管理模式/审计入口,混合：已修状态/委托需专项,15分钟CTS本已单调，状态现在检查到期token；Now别名的2分钟持久委托/失败锁定另列，未冒称全覆盖,internal Func<DateTimeOffset> Clock { get; set; } = () => DateTimeOffset.UtcNow;
+src/Ipc.Platform/LocalManagementMode.cs,94,管理模式/审计入口,混合：已修状态/委托需专项,15分钟CTS本已单调，状态现在检查到期token；Now别名的2分钟持久委托/失败锁定另列，未冒称全覆盖,"s = s with { Audit = s.Audit.Append(new(DateTimeOffset.UtcNow, action, auditSession, detail, callerWindowsSid)).TakeLast(512).ToArray() };"
+src/Ipc.Platform/LocalManagementMode.cs,103,管理模式/审计入口,混合：已修状态/委托需专项,15分钟CTS本已单调，状态现在检查到期token；Now别名的2分钟持久委托/失败锁定另列，未冒称全覆盖,"RuntimeJournal.AppendMetadata(diagnosticDirectory, new { At = DateTimeOffset.UtcNow, Source = ""管理模式"", Level = action.EndsWith(""Failed"", StringComparison.Ordinal) ? ""警告"" : ""信息"", Event = action, ModeSession = auditSession, WindowsSid = callerWindowsSid, Detail = detail });"
+src/Ipc.Platform/ManagementModeBroker.Installation.cs,126,15秒服务等待,已改Stopwatch,仅静态/构建核查；真实SCM+回拨NOT_RUN,var until = DateTime.UtcNow.AddSeconds(15);
+src/Ipc.Platform/ManagementModeBroker.Installation.cs,127,15秒服务等待,已改Stopwatch,仅静态/构建核查；真实SCM+回拨NOT_RUN,while (DateTime.UtcNow < until)
+src/Ipc.Platform/ManagementModeBroker.Windows.cs,90,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"try { RuntimeJournal.AppendMetadata(Path.Combine(root, ""security"", ""diagnostics""), new { At = DateTimeOffset.UtcNow, Source = ""认证"", Level = ""错误"", Event = ""ManagementModeServiceStopped"", Detail = error.ToString() }); } catch (IOException) { }"
+src/Ipc.Platform/NativeSdkBoundary.cs,46,绝对资格有效期,UTC保留,签发/到期是跨进程绝对证据，不换成进程Stopwatch,if (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+src/Ipc.Platform/RuntimeJournal.cs,58,日志审计/日历轮转,UTC保留,退避已用GetTimestamp；GetUtcNow写审计，mtime/跨日保留是日历语义,"queue.Writer.TryWrite(new { At = clock.GetUtcNow(), Event = ""DiagnosticRecoveryProbe"" });"
+src/Ipc.Platform/RuntimeJournal.cs,72,日志审计/日历轮转,UTC保留,退避已用GetTimestamp；GetUtcNow写审计，mtime/跨日保留是日历语义,"Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);"
+src/Ipc.Platform/RuntimeJournal.cs,119,日志审计/日历轮转,UTC保留,退避已用GetTimestamp；GetUtcNow写审计，mtime/跨日保留是日历语义,var now = DateTime.UtcNow;
+src/Ipc.Product/IntegrationRuntime.cs,46,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,"var state = x.CurrentPort is null ? ""HistoricalQuery"" : health is null ? ""Unconfirmed"" : health.ValidUntil <= DateTimeOffset.UtcNow ? ""Expired"" : health.Status.ToString();"
+src/Ipc.Product/IntegrationRuntime.cs,186,旧Product巡检调度,风险待专项复现,ConfirmedAt与UTC差值会受回拨影响；现行Parcel独立巡检Task.Delay不等于旧Product已修,if (entry.Probe is not { IsCompleted: false } && (entry.Health is null || entry.Health.ConfirmedAt < DateTimeOffset.UtcNow.AddSeconds(-1)))
+src/Ipc.Product/IntegrationRuntime.cs,206,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,var now = DateTimeOffset.UtcNow;
+src/Ipc.Product/IntegrationRuntime.cs,217,证据真实性/有效期,UTC守卫保留,绝对证据窗口与本地执行预算分开；此行不直接作为持续时间节流器,"return facts.SingleOrDefault(x => x.Port == ""requests"") is { } primary && primary.Status == ServiceStatus.Ready && primary.ValidUntil > DateTimeOffset.UtcNow;"
+src/Ipc.Product/ProductRuntime.cs,159,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"await application.FinishConfigurationActivationAsync(new(Wire.Id(), selected.Version, selected, ""runtime"", ""Effective"", ""Initial deployment"", DateTimeOffset.UtcNow), true, ""Initial configuration and leased resources initialized"");"
+src/Ipc.Product/ProductRuntime.cs,257,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"if (snap.State.Actor is null || snap.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException(""SIMULATION identity required"");"
+src/Ipc.Product/ProductRuntime.cs,271,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"var snapshot = await application.SnapshotAsync(); if (snapshot.State.Actor is null || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException(""Unexpired identity required"");"
+src/Ipc.Product/ProductRuntime.cs,280,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,if (snapshot.State.Actor?.Role != SimulationRole.Maintenance || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow || snapshot.State.Stopping)
+src/Ipc.Product/ProductRuntime.cs,303,旧Supply身份/实体许可,跨重启UTC及待专项,独立业务历史许可/角色时间需自己的回拨夹具；本包OperatorSession修复不自动覆盖它,"if (snapshot.State.Actor?.Role != SimulationRole.Maintenance || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException(""Maintenance identity required"");"
+src/Ipc.Reference.Protocol/ReferencePeer.cs,28,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
+src/Ipc.Reference.Protocol/ReferencePeer.cs,55,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,token.ThrowIfCancellationRequested(); now = DateTimeOffset.UtcNow;
+src/Ipc.Reference.Protocol/ReferencePeer.cs,99,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"stage == ""plc-submit"" ? false : null, slot, ""SIMULATION reference peer: durable "" + (accepted ? ""acceptance"" : ""rejection"") + ""; physical completion is independent"", DateTimeOffset.UtcNow, image);"
+src/Ipc.Reference.Protocol/ReferencePeer.cs,119,审计/呈现/冻结事实赋时,UTC保留,未发现此命中行独立承担间隔控制；变量别名消费者见正文补充,"entry = entry with { Reply = entry.Reply with { Id = Wire.Id(), PhysicalCompleted = true, At = DateTimeOffset.UtcNow,"
+tests/Ipc.Application.Verification/AcquisitionLifecycle.cs,15,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/AdministratorBoundary.cs,103,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,34,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,41,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,92,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,93,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,152,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,156,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,158,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,230,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,233,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,292,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,353,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ApplicationArchitecture.cs,354,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.ConfigurationConfirmation.cs,134,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs,44,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Extensions.cs,59,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Extensions.cs,67,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Extensions.cs,70,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Http.cs,15,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Isolation.cs,22,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Isolation.cs,118,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.RecoveryP2.cs,45,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.RecoveryP2.cs,144,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Responsibility.cs,86,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.Responsibility.cs,109,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQuality.cs,46,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs,17,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs,18,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs,19,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs,130,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.Boundaries.cs,131,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,31,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,32,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,69,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,99,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,156,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,157,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,166,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,171,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,175,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,179,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,221,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs,307,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/Audit03.Inputs.cs,58,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/Audit03.Inputs.cs,98,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/Audit03.Inputs.cs,104,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/Audit03.Inputs.cs,127,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CapabilityClosure.cs,56,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CapabilityClosure.cs,73,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CapabilityClosure.cs,143,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CapabilityClosure.cs,149,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CapabilityClosure.cs,158,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/CommercialProductization.cs,121,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/DualCameraCommunication.cs,79,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/InventoryClosure.cs,71,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/OperatorAdministration.cs,85,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/OperatorAdministration.cs,114,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/OptionalCapabilities.cs,62,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/OptionalCapabilities.cs,65,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/OptionalCapabilities.cs,71,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,39,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,108,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,112,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,115,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,116,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,121,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ParameterInheritance.cs,130,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/Program.cs,151,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/QualificationVerification.cs,19,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/QualificationVerification.cs,41,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/QualificationVerification.cs,45,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/RcsHeartbeat.cs,43,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityClosure.cs,51,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityClosure.cs,107,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.Crashes.cs,101,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.Health.cs,12,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.Health.cs,30,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,12,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,29,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,59,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,83,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,86,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.LogsTime.cs,110,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReliabilityHardening.Resources.cs,20,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/RetentionQualification.cs,65,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/RetentionQualification.cs,70,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/RetentionQualification.cs,93,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReviewClosure.cs,24,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReviewClosure.cs,170,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReviewClosure.cs,174,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/ReviewClosure.cs,215,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SignedCapabilities.cs,59,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SignedCapabilities.cs,83,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SignedCapabilities.cs,94,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SignedCapabilities.cs,105,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterRcs.cs,29,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterRcs.cs,31,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterRcs.cs,234,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterRcs.cs,438,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterUi.cs,220,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterUi.cs,248,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/SportmasterUi.cs,394,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,26,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,28,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,38,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,46,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,49,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,52,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,60,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,69,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.Retention.cs,70,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.cs,142,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/StabilityRemediation.cs,143,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialInputs.cs,54,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialInputs.cs,87,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialInputs.cs,88,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialPresentation.cs,43,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialPresentation.cs,52,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialPresentation.cs,61,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Application.Verification/UxCommercialPresentation.cs,83,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/AuditPerformance.cs,80,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/CleanInstallBootstrap.cs,44,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/CleanInstallBootstrap.cs,45,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/DualCameraDiagnostics.cs,30,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs,211,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs,218,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/InternalPages.cs,169,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs,37,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs,51,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs,52,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/ParameterExperience.cs,52,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs,117,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/ParameterShellPolish.cs,124,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/ParameterV3.cs,98,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/ReliabilityLogs.cs,29,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/StartupExperience.cs,226,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/TaskRedesign.cs,38,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/VisualProductization.cs,93,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Desktop.UiVerification/VisualProductization.cs,94,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs,54,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs,68,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs,74,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentDataVerification.cs,77,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentDataVerification.cs,80,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentDataVerification.cs,85,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentDataVerification.cs,90,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentDataVerification.cs,94,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/AlignmentRuntimeVerification.cs,48,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ArchitectureClosureVerification.cs,201,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ArchitectureClosureVerification.cs,292,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ArchitectureClosureVerification.cs,296,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ArchitectureMaintainabilityVerification.cs,81,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,56,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,84,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,86,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,88,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,91,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,98,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,100,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,103,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,145,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ClosureVerification.cs,260,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,95,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,96,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,101,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,136,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,137,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,138,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,139,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,214,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,291,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,292,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,304,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,314,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,320,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,322,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,324,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,328,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ConformanceVerification.cs,331,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,215,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,249,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,265,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,277,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,291,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ExtensionVerification.cs,301,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,22,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,24,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,80,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,86,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,90,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/FollowupVerification.cs,148,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HardeningVerification.cs,38,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HardeningVerification.cs,258,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HardeningVerification.cs,259,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,15,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,23,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,36,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,38,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,75,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/HealthRenewalVerification.cs,87,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/OperationClosureVerification.cs,172,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/PresentationVerification.cs,21,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/PresentationVerification.cs,44,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ProductOwnershipVerification.cs,42,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ProductOwnershipVerification.cs,145,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ProductOwnershipVerification.cs,160,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/Program.cs,270,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/Program.cs,392,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/Program.cs,491,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/Program.cs,572,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/Program.cs,594,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ReferenceJourneyVerification.cs,58,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ReferenceJourneyVerification.cs,92,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,
+tests/Ipc.Verification/ReferenceJourneyVerification.cs,110,测试/夹具/工具,非运行入口,按各自产生时点保留；不从历史PASS推断本包,

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><ApplicationManifest Condition="'$(ShortcutProbeManifest)' != ''">$(ShortcutProbeManifest)</ApplicationManifest></PropertyGroup><ItemGroup>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/SharedSnapshotRead.cs" Link="Client/SharedSnapshotRead.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelDetailsProjection.cs" Link="Client/ParcelDetailsProjection.cs"/>
  <ProjectReference Include="../../src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj"/><ProjectReference Include="../../src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj"/><ProjectReference Include="../../src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj"/><ProjectReference Include="../../src/Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../../src/Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../../src/Ipc.Integrations/Ipc.Integrations.csproj"/>

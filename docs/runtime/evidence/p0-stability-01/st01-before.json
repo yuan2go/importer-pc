@@ -1,0 +1,118 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "Phase": "before",
+  "Environment": "Windows isolated Simulation, loopback only; production policy not installed",
+  "Matrix": [
+    {
+      "Mask": 0,
+      "Deferred": [],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS",
+        "Heartbeat": "PASS"
+      }
+    },
+    {
+      "Mask": 1,
+      "Deferred": [
+        "sportmaster.reader.left"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \"CandidateHash\": \"E4944F91C3239EF581CD2CC48ED4B083C2B7BB5AB05A7A855633B69C4F48FB55\",\r\n  \"At\": \"2026-10-25T15:24:37.7241678+00:00\",\r\n  \"Checks\": [\r\n    {\r\n      \"Layer\": \"\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\",\r\n      \"Status\": \"PASS\",\r\n      \"Reason\": \"\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\",\r\n      \"Status\": \"FAIL\",\r\n      \"Reason\": \"RCS heartbeat requires bcr-code in the selected reader driver\\u0027s configuration: sportmaster.reader.left\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\",\r\n      \"Status\": \"BLOCKED\",\r\n      \"Reason\": \"\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\",\r\n      \"Status\": \"NOT_RUN\",\r\n      \"Reason\": \"\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\"\r\n    }\r\n  ]\r\n}",
+        "Save": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Start": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Heartbeat": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left"
+      }
+    },
+    {
+      "Mask": 2,
+      "Deferred": [
+        "sportmaster.reader.right"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.right",
+        "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \"CandidateHash\": \"B7F227A79384B3AFDA0D3085C85022D216A9C2A574C44DE318DC00DF9393D24D\",\r\n  \"At\": \"2026-10-25T15:24:37.8899325+00:00\",\r\n  \"Checks\": [\r\n    {\r\n      \"Layer\": \"\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\",\r\n      \"Status\": \"PASS\",\r\n      \"Reason\": \"\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\",\r\n      \"Status\": \"FAIL\",\r\n      \"Reason\": \"RCS heartbeat requires bcr-code in the selected reader driver\\u0027s configuration: sportmaster.reader.right\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\",\r\n      \"Status\": \"BLOCKED\",\r\n      \"Reason\": \"\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\",\r\n      \"Status\": \"NOT_RUN\",\r\n      \"Reason\": \"\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\"\r\n    }\r\n  ]\r\n}",
+        "Save": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.right",
+        "Start": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.right",
+        "Heartbeat": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.right"
+      }
+    },
+    {
+      "Mask": 3,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.reader.right"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \"CandidateHash\": \"92BBDB3DFBCCC43FD0D81E7BB0BD93DA8866D9A49F11DCD4604101F4105A1536\",\r\n  \"At\": \"2026-10-25T15:24:38.0570974+00:00\",\r\n  \"Checks\": [\r\n    {\r\n      \"Layer\": \"\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\",\r\n      \"Status\": \"PASS\",\r\n      \"Reason\": \"\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\",\r\n      \"Status\": \"FAIL\",\r\n      \"Reason\": \"RCS heartbeat requires bcr-code in the selected reader driver\\u0027s configuration: sportmaster.reader.left\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\",\r\n      \"Status\": \"BLOCKED\",\r\n      \"Reason\": \"\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\"\r\n    },\r\n    {\r\n      \"Layer\": \"\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\",\r\n      \"Status\": \"NOT_RUN\",\r\n      \"Reason\": \"\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\"\r\n    }\r\n  ]\r\n}",
+        "Save": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Start": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left",
+        "Heartbeat": "InvalidDataException: RCS heartbeat requires bcr-code in the selected reader driver's configuration: sportmaster.reader.left"
+      }
+    },
+    {
+      "Mask": 4,
+      "Deferred": [
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 5,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 6,
+      "Deferred": [
+        "sportmaster.reader.right",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    },
+    {
+      "Mask": 7,
+      "Deferred": [
+        "sportmaster.reader.left",
+        "sportmaster.reader.right",
+        "sportmaster.integration"
+      ],
+      "Stages": {
+        "Fields": "PASS",
+        "Joint": "PASS",
+        "Check": "PASS",
+        "Save": "PASS",
+        "Start": "PASS"
+      }
+    }
+  ]
+}

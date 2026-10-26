@@ -1,0 +1,58 @@
+{
+  "PR": 112,
+  "PRHead": "3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+  "ActualCheckoutCommit": "72aba1ce153c434b14097d9f3b35de3c2cbd7b87",
+  "DependencyBase": "963165d71aec1e037525fd7f17bc3ed81b560c1a",
+  "RunId": 40260949436,
+  "Overall": "FAIL: inherited Windows non-CJK shortcut COM boundary; no assertion weakened",
+  "Jobs": [
+    {
+      "id": 121373047065,
+      "head_sha": "3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "name": "aqa01-boundaries",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 121373038435,
+      "head_sha": "3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "name": "p0-stability-boundaries",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 121373038672,
+      "head_sha": "3965cea59ef79ee82f3408721d24d679e9e6cd7e",
+      "name": "frozen-sportmaster",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "WindowsNewBoundaries": "Four time/storage selectors and all P0 boundary selectors completed successfully; production Dispatcher fatal hook step completed. Existing installer-options step failed at DeploymentShortcuts.cs:45.",
+  "UnchangedShortcutBlob": "47bc4d110ce8af87f8efdb390e7ca32a77b12c27",
+  "Installer": {
+    "Name": "CainiaoSupplyStation_SM_Setup_v1.16.0_win-x64.exe",
+    "Sha256": "111133345d59bb259f03147b68ec3266c147b76010ef8d4a2483f53a3c435882",
+    "SourceCommit": "72aba1ce153c434b14097d9f3b35de3c2cbd7b87",
+    "Payload": {
+      "ApplicationId": "sportmaster",
+      "SourceCommit": "72aba1ce153c434b14097d9f3b35de3c2cbd7b87",
+      "SourceBranch": "codex/ci-sportmaster-40260949436",
+      "BusinessModuleShortName": "SM",
+      "BusinessVersion": "1.16.0",
+      "Sha256": "0d496d64db1e5463e1869074a0d32baa43a52951630476dfdeda995ddb389791",
+      "ZipBytes": 134434400,
+      "UnpackedBytes": 276715051,
+      "FileCount": 755
+    },
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "Qualification": "Only exact-source CI/synthetic evidence; not target Windows client hardware or field qualification; full task/SCM/WER/installation NOT_RUN",
+  "EvidenceUrls": [
+    "https://github.com/yuan2go/importer-pc/actions/runs/40260949436/job/121373047065",
+    "https://github.com/yuan2go/importer-pc/actions/runs/40260949436/job/121373038435",
+    "https://github.com/yuan2go/importer-pc/actions/runs/40260949436/job/121373038672"
+  ],
+  "NotTransferred": "b37/red, ec808/local+CI, and PR110 frozen source identities remain unchanged. No PASS transferred to a later docs-only commit."
+}

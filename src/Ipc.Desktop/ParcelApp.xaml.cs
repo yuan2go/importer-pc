@@ -12,6 +12,9 @@ public partial class App : System.Windows.Application
     IBusinessRuntime? runtime;
     ParcelStartupWindow startup = null!;
     DesktopLaunchOptions? selected;
+    bool recoveryChild;
+    CancellationTokenSource? fatalObservationStop;
+    Task? fatalObservation;
 #if SPORTMASTER
     const string ApplicationId = "sportmaster";
 #elif DIRECTPLC
@@ -21,6 +24,14 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+        if (e.Args.FirstOrDefault() == "--supervise-desktop")
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            crashDiagnostics.SetContext("supervisor:" + e.Args.ElementAtOrDefault(1), "no-business-connections", "supervising");
+            await DesktopRecoverySupervisor.HandleAsync(e.Args); Shutdown(Environment.ExitCode); return;
+        }
+        recoveryChild = e.Args.FirstOrDefault() == "--recovery-child";
+        var arguments = recoveryChild ? e.Args[1..] : e.Args;
         if (e.Args.SequenceEqual(new[] { "--environment-report" }))
         {
             Console.WriteLine(Wire.Encode(WindowsClientCompatibility.Capture())); Shutdown(0); return;
@@ -36,9 +47,9 @@ public partial class App : System.Windows.Application
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? e.Args[0] : null;
+            var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? arguments[0] : null;
             if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
-            selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
+            selected = DesktopLaunchOptions.Parse(mode is null ? arguments : arguments[1..], ApplicationId, recoveryChild);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {
@@ -66,6 +77,16 @@ public partial class App : System.Windows.Application
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
+            if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
+                DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
+                Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&
+                Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(installed.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
+            {
+                var presentation = new List<string> { "--ui", options.Ui };
+                if (launch.View is not null) presentation.AddRange(["--view", launch.View]);
+                if (launch.Layout is not null) presentation.AddRange(["--layout", launch.Layout]);
+                if (await Task.Run(() => DesktopRecoverySupervisor.StartForInstalledDesktop(installed, presentation.ToArray()))) { startup.AllowClose = true; Shutdown(0); return; }
+            }
             if (!firstConfigurationReviewed)
             {
                 var maintenance = ParcelStartupServices.Maintenance(launch);
@@ -81,12 +102,22 @@ public partial class App : System.Windows.Application
             startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "启动配置入口已判定");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
+            if (starting is IRuntimeFatalSource fatalSource)
+            {
+                fatalObservationStop = new();
+                fatalObservation = RuntimeFatalMonitor.RunAsync(fatalSource, crashDiagnostics, fatalObservationStop.Token);
+                _ = fatalObservation.ContinueWith(t => crashDiagnostics.Fatal("RuntimeFatalMonitor.Failed", t.Exception!), CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            }
             if (launch.View is not null && !starting.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !starting.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
             startup.Phase("启动所选能力并恢复原请求", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
             startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照。", "启动流程已返回");
             var application = (IParcelApplication)starting.Application;
             var initial = await Task.Run(application.SnapshotAsync);
+            crashDiagnostics.SetContext(initial.RuntimeId.ToString(), string.Join(",", initial.Devices?.Select(d => d.DeviceId + ":" + d.Epoch) ?? []), initial.State);
+            var effective = initial.Configuration.Effective;
+            crashDiagnostics.SetProgressFile(Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "runtime-progress.json"));
             startup.Phase("创建工作窗口", "应用状态：" + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), "已取得运行实例 " + initial.RuntimeId);
 #if SPORTMASTER
             var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, options.Ui, StopAsync);
@@ -151,12 +182,22 @@ public partial class App : System.Windows.Application
             ownedShutdown = Task.Run(async () => await stopping.DisposeAsync());
             _ = ownedShutdown.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
-        try { await ownedShutdown.WaitAsync(TimeSpan.FromSeconds(5)); runtime = null; ownedShutdown = null; }
+        try
+        {
+            await ownedShutdown.WaitAsync(TimeSpan.FromSeconds(5)); runtime = null; ownedShutdown = null;
+            await DetachFatalObservationAsync();
+        }
         catch
         {
-            if (stopping is Ipc.Platform.IRuntimeOwnership { HasUnreleasedResources: false }) { runtime = null; ownedShutdown = null; }
+            if (stopping is Ipc.Platform.IRuntimeOwnership { HasUnreleasedResources: false }) { runtime = null; ownedShutdown = null; await DetachFatalObservationAsync(); }
             throw; // Existing close UI remains usable and explicitly reports retained ownership.
         }
+    }
+    async Task DetachFatalObservationAsync()
+    {
+        fatalObservationStop?.Cancel();
+        if (fatalObservation is not null) await fatalObservation;
+        fatalObservationStop?.Dispose(); fatalObservationStop = null; fatalObservation = null;
     }
 }
 

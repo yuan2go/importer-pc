@@ -12,7 +12,7 @@ public sealed class SportmasterFlow : FlowDefinition
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
-            new("integration", "sportmaster-rcs", "1.3.2", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
+            new("integration", "sportmaster-rcs", "1.3.3", "sportmaster.integration", "", "SPORTMASTER-RCS-SORTER-v1", new() { ["left-station-code"] = SystemParameterDefaults.InitialStationId, ["right-station-code"] = SystemParameterDefaults.InitialStationId }), null,
             MaintenanceLogin: new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }),
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),

@@ -317,8 +317,18 @@ public static class ParcelStartupServices
     {
         _ = WindowsDeploymentSetup.ConfigurationFiles(request.ConfigurationSource);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(request.ConfigurationSource, "business.json")));
+        if (c.SchemaVersion is not (1 or 2 or 3) || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode) ||
+            c.Mode != request.Mode || c.ApplicationId != request.ApplicationId || c.ApplicationId != ApplicationId)
+            throw new InvalidDataException("Invalid Application seed identity/schema/mode; retain the original configuration");
         var errors = ParcelAssembly.Definition().Validate(c);
-        if ((errors.Length != 0 && !(deployed is null && IsInitialDraft(c))) || c.Mode != request.Mode || c.ApplicationId != request.ApplicationId)
+        // Retaining the reviewed original only admits maintenance; runtime admission remains independent.
+        var retainingOriginal = deployed is { LifecycleState: "Installed" } && deployed.ApplicationId == c.ApplicationId && !request.RepairSeed &&
+            string.Equals(Path.GetFullPath(request.ConfigurationSource), Path.GetFullPath(deployed.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(Path.GetFullPath(request.DataRoot), Path.GetFullPath(deployed.DataRoot), StringComparison.OrdinalIgnoreCase) && request.RuntimeAccountSid == deployed.RuntimeAccountSid &&
+            request.ExpectedRegistrationHash is { } registrationHash && ExtensionSchema.IsHash(registrationHash) &&
+            request.ConfigurationHashes?.TryGetValue("business.json", out var originalHash) == true &&
+            Wire.FileHash(Path.Combine(deployed.ConfigurationDirectory, "business.json")) == originalHash;
+        if (errors.Length != 0 && !(deployed is null && IsInitialDraft(c)) && !retainingOriginal)
             throw new InvalidDataException("Invalid Application seed or mode: " + string.Join("; ", errors));
         if (deployed is not null)
         {

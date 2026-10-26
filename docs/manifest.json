@@ -90738,9 +90738,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "dd39a670e27a00beca6dbbd0b8239bd9afb56f9859c08073a205c3c727dbd8fe",
-      "size_bytes": 8770,
-      "git_blob": "68b387f4584553a48bb10c1017e9c14789c791a3"
+      "sha256": "7a8c4b83a243ee5406e6dbb397c3f7dfb4b39cf20fd642e730ab7dadc76db54a",
+      "size_bytes": 10435,
+      "git_blob": "d4ae7d891b6ad3ad67477a29e1075d01c1daf5f7"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptChronology.cs",
@@ -91280,9 +91280,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "3d41a3b6cad1802c2d7187899c3d5c4e79d37d4b11a6b9f4ace6ac80e5e96c49",
-      "size_bytes": 1690,
-      "git_blob": "4fdf371f1a2e9aa7c3519f058fa4518e42c111ef"
+      "sha256": "67b0afce3e9821ce2c4177fbc4cb481e146cba1bfc11800851289f92262281aa",
+      "size_bytes": 2023,
+      "git_blob": "e47543cdaaab39ec067c93c249cf73fe8979a39a"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStorageFailure.cs",
@@ -91359,6 +91359,44 @@
       "sha256": "58e3d9daa689c76e2d01ccba2fae434b57bb725357225029b2e47710d15a09e6",
       "size_bytes": 433,
       "git_blob": "d3027136939aa0d972dff767e20416f2f271dbbe"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/ci-3965.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "fc41d55f53b6625f1d4a76ab0877ffc331aa0bbdb195cd34bb010eea4594fdc3",
+      "size_bytes": 2569,
+      "git_blob": "40512f8515841bfa751c525298d15541eb85ef36"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/local-3965.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "b2cad2d8fe51fa54066268e14ced6a4b199410958b43076aa0730ea4019c4fc6",
+      "size_bytes": 11711,
+      "git_blob": "dee74ad0f6ff7852a97a67af5e95ba68283b070b"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -18,7 +18,7 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 修复：新增可缺省且不改变旧序列化的LocalClockEvidence，只由接收Application为新回包生成，保留原At/HTTP原字节；本机端点回拨、单调经过时间、原请求与原回包hash绑定。实时与恢复共用验证。ID/hash/终态矛盾等原冲突规则保持，已有Conflict不得解除。
 
-验收：在途回拨正常接受；证据可持久恢复且无再次发送；无证明的早到仍拒绝；改证据/任意旧时间不被豁免；已有Conflict仍Blocked，本机通过。残余：不在观测范围的回拨继续保守拒绝。NOT_RUN：真实RCS/系统NTP、跨重启真时钟变化、现场联调；原RCS冻结/单次请求既有完整段需匹配本包CI另计。
+验收：在途回拨正常接受；证据可持久恢复且无再次发送；无证明的早到仍拒绝；改证据/任意旧时间不被豁免；已有Conflict仍Blocked，本机通过。残余：不在观测范围的回拨继续保守拒绝。NOT_RUN：真实RCS/系统NTP、跨重启真时钟变化、现场联调；本包新CI已执行既有冻结/单次请求回归，不能扩大到真实RCS。
 
 ## ST08 问题卡
 
@@ -36,7 +36,7 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 残余风险：5秒为可控重试预算，原生I/O/Flush挂起无法托管硬截止；物理卷写满/权限损坏时诊断与监督账本也可能落盘失败，不能宣称日志/告警必达。NOT_RUN：真实卷故障、已安装计划任务触发/SCM/WER/UAC/卸载、目标硬件长稳；[VM步骤](../time-storage-fault-01.md#windows-vm验收本次not_run)。自动恢复依赖PR110既有一次UAC登记，本机未安装政策。
 
-## 本机已有回归
+## 前阶段本机回归（未含叠加闭环）
 
 新时间/存储夹具、Atomic边界、parameter-guidance-startup、deferred-connections、rcs-heartbeat、默认档retention-ingress均通过；core锁依赖构建、四产品WPF及自包含安装器编译0警告0错误。实际源与日志hash另附，不用这条摘要给后续提交授予PASS。未安装本机产品或政策，未关闭旧完整恢复缺口。
 
@@ -54,10 +54,20 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 改动文件已复筛：没有新增HTTP/RCS重试；新的同步退避仅在原同步持久交接路径，仍由来源回调/原lane所有者保有资源；不在UI刷新getter内睡眠。事务回调只有本地SQL，COMMIT结果不明不重做，异常不会被吞掉变成功。时钟证据与nullable字段不修改旧JSON/null省略语义；原SQL1–9没有变更。长期内存/实际native挂起/现场资格不由这些检查授予。
 
-## CI实际检查身份
+## 前阶段CI身份（ec808）
 
 [Linux job121289396953](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289396953)与[Windows冻结介质job121289397000](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289397000)均SUCCESS，head ec8081f3，实际检出合并ref d062ec8d3d3593c14f57f734488150479cd3db67。[原源/两job/新介质hash](../evidence/time-storage-fault-01/ci-ec808.json)固定身份；不是本机DLL，也不把它记成后续文档提交验证。未签名、实际Windows安装NOT_RUN。ST08缺失进程闭环没有被这次CI授予通过。
 
 ## 叠加后独立验证
 
 四个新选择器（time-storage-fault/atomic/supervisor/process-checks）及父P0 cleanup/rcs/unknown-restart/supervisor已本机通过；后续源提交/日志哈希在新增回执另计。Windows本机reliability-02受既有MachineRuntimePolicy（未安装指定账户政策）阻断，不绕过或登记；其Linux CI另验，不能把环境阻断写成通过。旧P0非CJK快捷方式COM门禁仍由其原CI记录说明，未改断言。
+
+## 叠加源3965的最终回执
+
+[本机逐断言、DLL及log hash](../evidence/time-storage-fault-01/local-3965.json)固定3965cea59ef79ee82f3408721d24d679e9e6cd7e：8个选择器PASS，四BusinessModule WPF构建及Sportmaster自包含win-x64安装器编译PASS。0502的首次精确进程复验遇到注入dotnet的映像尚未确认；生产监督器安全Block并非业务恢复失败，3965仅补夹具启动确认，不削弱断言。两次尝试的身份与结果均保留，0502该次不计PASS。
+
+[CI独立回执](../evidence/time-storage-fault-01/ci-3965.json)固定PR头3965、实际合并检出72aba1ce153c434b14097d9f3b35de3c2cbd7b87（run40260949436）：Linux job121373047065 SUCCESS，覆盖本机受政策阻断的既有可靠性/进程死亡段；Windows新4个时间存储选择器、全部P0边界选择器及真实Dispatcher钩子步骤通过。Windows p0 job121373038435最终FAIL，原因仍为未改动DeploymentShortcuts.cs:45的中文路径COM快捷方式，未删断言/跳过，PR保持草稿。
+
+Windows冻结介质job121373038672 SUCCESS；SM1.16.0单EXE安装器SHA256 `111133345d59bb259f03147b68ec3266c147b76010ef8d4a2483f53a3c435882`，payload `0d496d64db1e5463e1869074a0d32baa43a52951630476dfdeda995ddb389791`。这份介质实际SourceCommit为72aba1ce；未签名，实际安装NOT_RUN，CI Server 2025不等于目标Windows 11工控机长稳资格。
+
+本段后的回执提交只包含文档/manifest/合成证据，不给后续提交转记上述PASS；其自动CI另外计证。父PR110尚未合并，PR112继续叠加其分支，父合并后才转main，不自行合并。

@@ -16,6 +16,7 @@ public sealed record InstallationPreparationProgress(string Stage, string File, 
 public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
+    internal Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
     internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
@@ -36,7 +37,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
     bool installing, failed, outcomeUnknown;
     bool? needsFirstConfiguration;
-    string configurationMessage = "", failureMessage = "";
+    string configurationMessage = "", failureMessage = "", preflightError = "";
     string newStation = "", selectedProgram = "";
     string? enteredData;
     string? installationRecordDirectory;
@@ -179,6 +180,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon); Row("快捷方式", shortcuts);
             if (current is not null) Note("本次升级保留原数据目录；安装前仍须检查原责任并完成完整备份。");
+            if (preflightError.Length != 0)
+            {
+                var detail = new TextBox { Text = preflightError, IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 140, Margin = new(0, 8, 0, 0) };
+                AutomationProperties.SetName(detail, "安装预检详情");
+                Body.Children.Add(new Expander { Header = "本次安装预检详情", IsExpanded = true, Content = detail, Margin = new(0, 12, 0, 0) });
+            }
             next.Content = "下一步";
         }
         else if (step == 2)
@@ -266,6 +274,14 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         }
         else
         {
+            if (step == 1)
+            {
+                CaptureInputs();
+                try { preflightError = DiagnosticText.Protect(error.Message); }
+                catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { preflightError = "预检诊断无法安全显示；请核对路径与配置后重新检查。"; }
+                Render(); Message("安装预检未通过，请查看本次预检详情。"); Status.Foreground = Brushes.Firebrick;
+                return;
+            }
             if (step == 0) { next.Visibility = Visibility.Visible; next.Content = "重试检查"; cancel.Content = "取消"; cancel.IsEnabled = true; }
             Message("未完成：" + ChineseInterfaceText.ParameterMessage(error.Message)); Status.Foreground = Brushes.Firebrick;
         }
@@ -296,12 +312,12 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         }
         else if (step == 1)
         {
-            CaptureInputs(); var current = CurrentInstallation(ApplicationId);
+            CaptureInputs(); preflightError = ""; Render(); var current = CurrentInstallation(ApplicationId);
             var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
             if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
-            reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, enteredData!, configPath, null, selected, false, selectedProgram));
+            reviewed = await Task.Run(() => Review(media!, selectedAccount, enteredData!, configPath, null, selected, false, selectedProgram));
             reviewed = reviewed with { Shortcuts = new(selectedStartMenu, selectedDesktop) }; components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
             if (current is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db"))) reviewed = reviewed with { BackupDestination = Path.Combine(reviewed.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };

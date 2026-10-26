@@ -1,0 +1,11 @@
+EvidenceRoot=D:\deliveries\installer-registration-fix-20261026\test-temp\ipc17-verification-7af425d9bd3e40f38a38457d3b2fa3ad
+PASS TASK-LOOKUP real Task Scheduler maps an absent task to FileNotFoundException/0x80070002; no task created
+Unhandled exception. System.IO.FileNotFoundException: 系统找不到指定的文件。 (0x80070002)
+   at Microsoft.CSharp.RuntimeBinder.ComInterop.ComRuntimeHelpers.CheckThrowException(Int32 hresult, ExcepInfo& excepInfo, UInt32 argErr, String message)
+   at CallSite.Target(Closure, CallSite, ComObject, String)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)
+   at P0TaskLookup.<>c__DisplayClass0_0.<Run>b__1() in D:\w\installer-registration-fix-01\tests\Ipc.Application.Verification\P0Stability.TaskLookup.cs:line 25
+   at Ipc.Platform.DesktopRecoveryInstallation.FindRegisteredTask(Func`1 lookup) in D:\w\installer-registration-fix-01\src\Ipc.Platform\DesktopRecoveryInstallation.cs:line 90
+   at P0TaskLookup.Run(String root) in D:\w\installer-registration-fix-01\tests\Ipc.Application.Verification\P0Stability.TaskLookup.cs:line 25
+   at Program.<Main>$(String[] args) in D:\w\installer-registration-fix-01\tests\Ipc.Application.Verification\Program.cs:line 40
+   at Program.<Main>(String[] args)

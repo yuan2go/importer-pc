@@ -1,0 +1,5 @@
+SYNTHETIC ports/runtime identity; real Application/SQLite/WPF. Machine policy and production permissions remain independently guarded.
+PASS LIA-LOG native calendars, quick ranges and offset bind to actual query; editing date invalidates both fixed export actions
+MEASURE H02 native context_records=401; original_chars=3881973; presented_chars=65536; elapsed_ms=206.81; dispatcher_max_ms=239.64
+CAPTURE logs-bounded-context: 1000x700 DIP, Windows DPI 1.25/1.25
+PASS H02 native bounded background context, explicit full-export notice, late result revoked; layout/font unchanged

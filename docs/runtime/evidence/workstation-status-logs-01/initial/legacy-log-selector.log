@@ -1,0 +1,53 @@
+PASS OPS-NATIVE raw context preserves Windows path escapes while decoding actual multiline exception values separately
+Native WPF HWND/Dispatcher, synthetic ports and data. No real device or RCS calls.
+PASS OPS-NATIVE right-corner identity distinguishes unauthenticated administration and login-free operation
+PASS OPS-NATIVE ordinary navigation has no administrator or support actions
+PASS OPS-NATIVE operator identity remains readable beside the separate management menu
+PASS OPS-NATIVE automatic normal feeding keeps both barcode/destination associations independent
+CAPTURE ordinary-work-1366: 1365.6x768 DIP; Windows scale 1.25/1.25
+CAPTURE ordinary-work-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE identity stays within the minimum native client area
+PASS OPS-NATIVE software administrator appears without changing frozen operator or pausing supply
+CAPTURE management-work-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE administrator opens the existing four-category parameter candidate while supply is running
+CAPTURE management-parameters-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE logout closes restricted workspace and protects the same unsaved draft
+PASS OPS-NATIVE re-authentication resumes the original candidate without reconstructing connections
+PASS OPS-NATIVE administrator log navigation opens the real software-log query control
+PASS OPS-NATIVE log query completes within its native UI time budget
+CAPTURE management-logs-1366: 1366.4x768 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE native log query displays actual runtime/authentication journal entries
+PASS OPS-NATIVE original context read completes within its native UI time budget
+PASS OPS-NATIVE native context retains the selected original log record
+CAPTURE management-log-context: 1366.4x768 DIP; Windows scale 1.25/1.25
+CAPTURE management-logs-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE compact log results remain inside the native viewport
+PASS OPS-NATIVE default compact query and paging actions are visible above results
+PASS OPS-NATIVE expanded compact log context preserves a complete result row and column header
+CAPTURE management-log-context-800: 800x420 DIP; Windows scale 1.25/1.25
+PASS OPS-NATIVE idle single-page query hides cancellation and disables paging without a real next range
+PASS LOG-UI only a real pending task exposes an enabled cancellation action
+CAPTURE logs-pending: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI cancel completes without a fabricated result or commit claim
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI technical query failure stays in collapsed diagnostic detail
+CAPTURE logs-failed: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI empty authoritative result disables paging
+CAPTURE logs-empty: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI failed paging does not commit or skip the requested offset on retry
+PASS LOG-UI selected row detail preserves the exact original record
+PASS LOG-UI changed input invalidates the prior snapshot before export or paging
+PASS LOG-UI log regression uses the actual 800x420 DIP client
+FAIL System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.ThrowHelper.ThrowMoreThanOneElementException()
+   at System.Linq.Enumerable.TryGetSingle[TSource](IEnumerable`1 source, Boolean& found)
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at Program.VerifyLogRecovery(IWorkstationAdministration administration, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\InternalPages.cs:line 190
+   at Program.VerifyOperatorAdministration(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\OperatorAdministration.cs:line 98
+   at Program.VerifyOperatorAdministration(String root, String evidence, List`1 lines) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\OperatorAdministration.cs:line 143
+   at Program.<>c__DisplayClass25_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 67

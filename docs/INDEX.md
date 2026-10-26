@@ -1,3 +1,5 @@
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+
 > P0-STABILITY-01：四项修复、当前基线与独立证据见[工作包](work-packages/WP-IPC-P0-STABILITY-01.md)和[问题卡](runtime/validation/p0-stability-01.md)。已同步PR109后的main a8cd4314，不继承旧介质资格。
 
 > 2026-10-26 PR107合并后独立延后修复：[DEFERRED-HEARTBEAT-01校验、恢复与验证边界](runtime/validation/deferred-heartbeat-01.md)。当前心跳只映射已配置相机；全部相机延后时停止心跳，恢复配置仍走Pending/受控重启，原请求和编号账保留。

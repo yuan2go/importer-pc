@@ -1,3 +1,5 @@
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](../runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+
 # P0-STABILITY-01
 
 F0（2026-10-25）：远端 main 为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`；SM1.12.3、Contracts1.18.0、DB9/SQL1–9。独立分支 `codex/p0-stability-01`。开放 PR108 与安装生命周期交叉，未并入本包。

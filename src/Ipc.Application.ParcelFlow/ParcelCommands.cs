@@ -48,8 +48,10 @@ public sealed partial class ParcelRuntime
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
-            if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
-            foreach (var op in operations.Values.Where(x => x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x)))
+            if (operations.Values.Any(x => NeedsReconciliation(x) && !ReleasedForNextAdmission(x))) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
+            var retainedTimeouts = operations.Values.Count(ReleasedForNextAdmission);
+            if (retainedTimeouts > 0) auxiliaryReasons.Add("RetainedRequestTimeouts:" + retainedTimeouts + "; outcomes unknown; new scans may create separate requests; originals are never replayed");
+            foreach (var op in operations.Values.Where(x => !ReleasedForNextAdmission(x) && (x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x))))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
             List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId).Select(h =>
                 h with { Ready = h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt })];

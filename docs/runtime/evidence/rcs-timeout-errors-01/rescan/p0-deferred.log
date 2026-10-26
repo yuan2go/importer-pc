@@ -1,0 +1,327 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-4762a4db987b47efab5b8fe79f773430
+PASS RCS20: matrix 0 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "1EB93F56721FD32A8ECC2219B9CE9C0A043ED36B093EDB5288673D020490B44F",
+  "At": "2026-10-26T10:40:13.8334019+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 0 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 1 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "DA982FF4B7C0C732BE3C228E197842DDF9AE14D3D7EE398F8B69D5EA94AD56F1",
+  "At": "2026-10-26T10:40:15.6973017+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 1 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 2 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "C56873FF246CE23EA69F120BD6FE3CD2A80141F2688E24C9D9886CA0A777BA03",
+  "At": "2026-10-26T10:40:17.1564707+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 2 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 3 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "7B22F688CD18BBAC477125BC264827FFD779CFEC46B016A8842FCAB502B09443",
+  "At": "2026-10-26T10:40:18.581771+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+MATRIX 3 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 4 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "EA9B5F846793F9426BB25E46860B704053E00FF4060BAD39CB1B0FA8EE6F671F",
+  "At": "2026-10-26T10:40:19.9950393+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+MATRIX 4 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 5 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "9F21E9D81FC798FDBD28F9D9984A62EDF869B1D383B3715DF1FCA95B0A1F1C11",
+  "At": "2026-10-26T10:40:20.1733721+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+MATRIX 5 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 6 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "FEAEBE7F4A148CB112B3A612397CBECEB4A71FF98BDB0808536510C3CBE1A56A",
+  "At": "2026-10-26T10:40:20.3337144+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+MATRIX 6 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 7 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "6641285A4F21A6AD3788779AE81ACBD509975A4B56B438518D975A8490A991C6",
+  "At": "2026-10-26T10:40:20.4991839+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: deferred dependencies never admit or fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: deferred reader remains unavailable
+MATRIX 7 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS"
+}
+PASS RCS20: all eight deferred combinations: 
+PASS RCS20: explicitly disabled extension reader is not a heartbeat participant
+PASS RCS20: enabling the same reader restores mandatory bcr-code validation
+PASS RCS20: postponed RCS completion saved as Pending
+PASS RCS20: save does not apply pending RCS through reconnect
+PASS RCS20: controlled restart activates completed RCS without parsing empty postponed range or admitting deferred readers
+DEFERRED ACTIVATION {
+  "Reconnect/sportmaster.reader.left": "Rejected",
+  "Reconnect/sportmaster.reader.right": "Rejected",
+  "Reconnect/sportmaster.integration": "Rejected",
+  "ReconnectAll": "Rejected",
+  "Save": "PendingRestart",
+  "Restart": "PASS"
+}
+PASS RCS20: deferred lifecycle and completion: 

@@ -7,10 +7,12 @@ public sealed partial class ParcelRuntime
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && Effective.DeferredConnections is not { Length: > 0 } && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && !backupInProgress && (overload == 0 || Effective.SchemaVersion >= 3);
     bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
+    bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
+        !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
-        !operations.Values.Where(x => (x.PositionId ?? "main") == position).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
+        !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
     bool CanContinue(ParcelOperation op) => CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
         (op.RecoveryRequired || op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
@@ -24,7 +26,7 @@ public sealed partial class ParcelRuntime
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress;
     bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
-        !operations.Values.Any(x => (x.PositionId ?? "main") == position && (Effective.SchemaVersion >= 3 ? !MainTerminated(x) :
+        !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && (Effective.SchemaVersion >= 3 ? !MainTerminated(x) :
             WeightPending(x) || !MainTerminated(x) && x.FrozenConfiguration.Images is not null && x.Capture?.State != StageState.Accepted));
     bool CanAdmit() => positions.Keys.Any(CanAdmit);
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
@@ -35,7 +37,7 @@ public sealed partial class ParcelRuntime
         foreach (var conflict in identityConflicts.Values.Where(x => x.Positions.Contains(p.Id)))
             reasons.Add("IdentityConflict:" + conflict.Id + "; original=" + conflict.OriginalOperation + "; pause and authenticate maintenance before inspecting this entity; " + conflict.Detail);
         if (!PositionMaintenanceClear(p.Id)) reasons.Add("Position resource maintenance in progress; original intent retained");
-        if (current is not null && !MainTerminated(current)) reasons.Add("Current entity main result is incomplete");
+        if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
         if (repository!.Paused) reasons.Add("Global software pause");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, CanAdmit(p.Id), current?.Id, reasons.ToArray(), current is null || MainTerminated(current),

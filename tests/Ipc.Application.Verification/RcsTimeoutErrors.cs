@@ -107,6 +107,7 @@ static partial class SportmasterRcs
                     "missing-chute" or "blank-chute" => view.Left.AttentionReason == "请检查当前商品状态" && op.State == ParcelState.WcsUnknown,
                     _ => view.Left.AttentionReason == "RCS未返回有效格口，请核对异常信息。" && op.State == ParcelState.WcsUnknown
                 }, mode + " shows the matched exception/message with safe fallback for invalid or unmatched replies");
+                if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " does not use the timeout-only rescan exception");
             }
         }
         peer.ResponseTransform = null;
@@ -124,6 +125,7 @@ static partial class SportmasterRcs
                 op.Wcs!.Replies.Single().HttpResponse is null,
                 "application/component deadline race preserves the response prefix and still shows rescan guidance");
         }
+        await TimeoutRescanChecks(workspace, root);
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");
     }
 }

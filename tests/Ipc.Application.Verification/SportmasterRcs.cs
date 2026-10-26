@@ -546,6 +546,7 @@ static partial class SportmasterRcs
         {
             using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); var mode = Mode;
             if (mode == "by-position") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "unpack" : "assigned"; }
+            if (mode == "timeout-left") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "timeout" : "assigned"; }
             var response = Response(body, mode); response = ResponseTransform?.Invoke(response) ?? response;
             var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
             Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));

@@ -1,0 +1,96 @@
+{
+  "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6",
+  "NativeChecks": 651,
+  "ApplicationChecks": 359,
+  "ReleaseDocumentChecks": 3,
+  "Publish": "PASS",
+  "PublishedEnvironmentReportExitCode": 0,
+  "Cases": [
+    {
+      "Kind": "NativeWpf",
+      "Mode": "debug-log-live",
+      "Passed": 40,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "workstation-status-logs",
+      "Passed": 38,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "parameter-v3",
+      "Passed": 253,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "lifecycle-ux",
+      "Passed": 18,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "dual-camera-diagnostics",
+      "Passed": 4,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "management-mode",
+      "Passed": 57,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "reliability-logs",
+      "Passed": 2,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "NativeWpf",
+      "Mode": "task-hierarchy",
+      "Passed": 239,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "Application",
+      "Mode": "reliability-02",
+      "Passed": 66,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "Application",
+      "Mode": "dual-camera-communication",
+      "Passed": 80,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    },
+    {
+      "Kind": "Application",
+      "Mode": "lifecycle-ux",
+      "Passed": 213,
+      "ExitCode": 0,
+      "SourceCommit": "2036e559284033201fffba56a488dd15f50904c6"
+    }
+  ],
+  "Boundary": "Actual Windows 11 23H2 x64, .NET 10.0.13, native HWND/Dispatcher, actual 125% DPI; synthetic inputs and loopback RCS. Physical keyboard/touch, target IPC, real SDK/camera/RCS, installation replacement and field NOT_RUN.",
+  "AdditionalInstallerFixture": {
+    "FixtureSourceCommit": "9a1fa5b4538d9647671197c769cb148eb418a9be",
+    "ApplicationSourceCommit": "2036e559284033201fffba56a488dd15f50904c6",
+    "Passed": 102,
+    "ExitCode": 0,
+    "BuildProjectReferences": false,
+    "Boundary": "Fixture-only wait repair against unchanged frozen 2036e559 application DLLs; application sources unchanged."
+  }
+}

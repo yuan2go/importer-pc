@@ -1,0 +1,65 @@
+{
+  "Scope": "Canonical UTF-8/LF text copies. Original local output and prior CI ZIP remain in D-drive artifacts; no historical evidence file is rewritten.",
+  "NormalizedFiles": [
+    {
+      "Path": "IDENTITY.json",
+      "OriginalCopiedSha256": "42dc267489f27b359197aed607b308dfdfb1988b9f156a947d4ba51ad8e1a216",
+      "CanonicalGitTextSha256": "358f93ce866371560f0dbae124ec5f9faa5f2bb1e780eac7a9f3d4dc7dc8f170"
+    },
+    {
+      "Path": "initial/development-01.log",
+      "OriginalCopiedSha256": "7bef1d69c31de5531d146041058b1099af2ab372b2ff8f373b3c838bb6b08dbe",
+      "CanonicalGitTextSha256": "e5ffdb939ce595180282362621b74906471db99b5d27ad9e174c22c9fc71644a"
+    },
+    {
+      "Path": "initial/development-02.log",
+      "OriginalCopiedSha256": "c564e41976d6b7af31a52d3218f2b4d9064284fdb91a82ae6ac378db66fb6a4d",
+      "CanonicalGitTextSha256": "282abbcd932870833f9c0681da2674100d73239507144be072681e5925291222"
+    },
+    {
+      "Path": "initial/development-03.log",
+      "OriginalCopiedSha256": "7114d18b84ef5e3d22d54dbbf25e7be7b911542a461e8ac65cf37d57c46e203c",
+      "CanonicalGitTextSha256": "395de7b049ed066d5a9239d5697b382bb959446968fa9abae0866564107914d0"
+    },
+    {
+      "Path": "initial/development-04.log",
+      "OriginalCopiedSha256": "8c728acd4dea8f449e115572206f8a584d34caac01d1747002f8784537bb67e4",
+      "CanonicalGitTextSha256": "953aa56f2f1701799403ce920518913576b90b1701f17d2e2ae2d17b099227b2"
+    },
+    {
+      "Path": "initial/development-05.log",
+      "OriginalCopiedSha256": "29697d59bbe3f9560fa1bbce7e0055736dc27bfeddbc004a22e699d93d60a628",
+      "CanonicalGitTextSha256": "17c7e6b7700284ce81b3da6005e1015016f8db48809e46be3131bf3759b5ad56"
+    },
+    {
+      "Path": "initial/development-06.log",
+      "OriginalCopiedSha256": "7275796df556ff568fa275451749e2e7de62b17bdabfe8f8422c97bff473849b",
+      "CanonicalGitTextSha256": "db95196e0cc9ecee11b6466cc115cd50a4ae086125161e0b7a438219c035841b"
+    },
+    {
+      "Path": "initial/development-07.log",
+      "OriginalCopiedSha256": "a0bcc6110ce4b5976bc54aab0c5e23805c2d5e887bbac2b1c4247c6e15f51892",
+      "CanonicalGitTextSha256": "edf09c26ea7c1594901dbb0a65850e047e2bfdb681acfef46f21a7582a8b23c4"
+    },
+    {
+      "Path": "initial/DEVELOPMENT.json",
+      "OriginalCopiedSha256": "a9163819f1f963f43bdca8339e8d639d3c572b635becd01a8c57a468bc83e02e",
+      "CanonicalGitTextSha256": "654a5879ed92a3eeb52ac70c5dbacff9f1f80a7067430b43a0bbcab4e04a072a"
+    },
+    {
+      "Path": "initial/prior-ci-core.log",
+      "OriginalCopiedSha256": "f0dfc53b16cbb5dc53d85c742ae0378c4f8225af006ed95b470ada53d5878540",
+      "CanonicalGitTextSha256": "07f22517a5c71adf232e4649877bd1ecbc45ec98c938025c49bcc23555bf5725"
+    },
+    {
+      "Path": "initial/prior-ci-engineering.json",
+      "OriginalCopiedSha256": "63b3f9704bfb2db9b525a82186b92012c68a73eb637f71c71e7ddbce9ae48f86",
+      "CanonicalGitTextSha256": "46e5050e6d70cc1d573cbaf02cecab6e69de586c364798a8a537a444535f43a7"
+    },
+    {
+      "Path": "RESULTS.json",
+      "OriginalCopiedSha256": "8600568bf8c9e033377c032f36a1945ed583f4f129056c04dbae025396d91af4",
+      "CanonicalGitTextSha256": "dd81439dfa15f422a1ca3918ad6b38d433658aea5811b497a0185defc89239ca"
+    }
+  ]
+}

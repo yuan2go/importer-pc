@@ -1,0 +1,19 @@
+2026-10-26T17:30:03.9558286Z 作业登录要求
+2026-10-26T17:30:03.9558766Z 要求操作员登录
+2026-10-26T17:30:03.9559876Z 启用后需在组件中选择已安装的登录服务并设置连接。
+2026-10-26T17:30:03.9560376Z 参数说明与诊断详情
+2026-10-26T17:30:03.9561001Z 保存草稿并退出
+2026-10-26T17:30:03.9562286Z 未保存
+2026-10-26T17:30:03.9562912Z 继续：条码筛选
+2026-10-26T17:30:03.9564556Z FAIL System.InvalidOperationException: actual expired grant removes save/apply and presents reauthorization
+2026-10-26T17:30:03.9565969Z    at Program.<>c__DisplayClass8_0.<VerifyInstallerFirstRunUi>g__Check|0(Boolean ok, String text) in D:\scd\evidence\installer-first-run\InstallerFirstRunUi.cs:line 20
+2026-10-26T17:30:03.9567297Z    at Program.VerifyInstallerFirstRunUi(String root, String evidence, List`1 lines) in D:\scd\evidence\installer-first-run\InstallerFirstRunUi.cs:line 252
+2026-10-26T17:30:03.9568181Z    at Program.<>c__DisplayClass26_0.<<Main>b__1>d.MoveNext() in D:\scd\evidence\installer-first-run\Program.cs:line 66
+2026-10-26T17:30:03.9714679Z Frozen native WPF verification failed; original log retained
+2026-10-26T17:30:16.3401628Z installer-first-run: Frozen native WPF verification failed; original log retained
+2026-10-26T17:30:16.3821217Z ##[error]Process completed with exit code 1.
+2026-10-26T17:30:16.4033838Z ##[group]Run actions/upload-artifact@v4
+2026-10-26T17:30:16.4034308Z with:
+2026-10-26T17:30:16.4034711Z   name: sportmaster-evidence-0e2afba99b989a5e3f41d05d49942535d7305495
+2026-10-26T17:30:16.4040717Z   path: D:/scd/parameter-guidance/RESULT.json
+D:/scd/parameter-guidance/RUN.log

@@ -1,0 +1,26 @@
+PASS LIA-NATIVE native history uses the full real Application query contract and exposes previous-page navigation
+PASS LIA-NATIVE native business label maps to stable ID and refresh cannot erase edited conditions
+CAPTURE lia-history-edited-standard: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE minimum native history viewport retains a full result row with applied-range feedback
+CAPTURE lia-history-edited-minimum: 800x420 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE expired real grant hides restricted content, protects the same draft and omits the removed routine banner
+CAPTURE lia-mode-expired: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE reauthorization returns to the same native editor and context
+PASS LIA-NATIVE candidate B is saved into the existing pending ledger
+PASS LIA-NATIVE native activation is offered only after the saved candidate B is observed
+PASS LIA-NATIVE failed owner stop retains the original native window and prevents reopen; visible=True; reopen=0; message=停止未完成，仍持有资源：合成停止失败；原资源仍归原实例
+PASS LIA-NATIVE successful resource release permits exactly one controlled replacement
+PASS LIA-NATIVE real restart reads back B, stays paused and retains every original request on A
+PASS LIA-NATIVE classic minimum viewport shows independent operator and management identities
+CAPTURE lia-classic-minimum: 800x420 DIP, Windows DPI 1.25/1.25
+BOUNDARY actual WPF/HWND/Dispatcher + real Application/SQLite; explicit synthetic ports and identity. UAC/system install/reboot/real SDK/RCS/target-touch/field NOT_RUN.
+PASS LIA-NATIVE native backup-directory edit invalidates both original removal plan and frozen backup file before submission
+PASS LIA-NATIVE native removal receipt distinguishes RestartRequired from clean removal while retaining original inventory evidence
+PASS LIA-NATIVE retired result offers inspection/close without removed-service authentication or duplicate uninstall
+CAPTURE lia-removal-RestartRequired: 960x760 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE native removal receipt distinguishes RemovedWithRetainedFiles from clean removal while retaining original inventory evidence
+PASS LIA-NATIVE retired result offers inspection/close without removed-service authentication or duplicate uninstall
+CAPTURE lia-removal-RemovedWithRetainedFiles: 960x760 DIP, Windows DPI 1.25/1.25
+PASS LIA-NATIVE native removal receipt distinguishes RetiredCleanupPending from clean removal while retaining original inventory evidence
+PASS LIA-NATIVE retired result offers inspection/close without removed-service authentication or duplicate uninstall
+CAPTURE lia-removal-RetiredCleanupPending: 960x760 DIP, Windows DPI 1.25/1.25

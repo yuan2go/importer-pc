@@ -1,0 +1,46 @@
+{
+  "DevelopmentFailures": [
+    {
+      "File": "development-01.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.ArgumentNullException: Value cannot be null. (Parameter 'assemblyFile')"
+    },
+    {
+      "File": "development-02.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.InvalidOperationException: role reassignment relabels old and new component directory entries immediately"
+    },
+    {
+      "File": "development-03.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.InvalidOperationException: 选择已安装的能力类型"
+    },
+    {
+      "File": "development-04.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.InvalidOperationException: 选择已安装的能力类型"
+    },
+    {
+      "File": "development-05.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.TimeoutException: Debug/live scenario did not converge"
+    },
+    {
+      "File": "development-06.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.ArgumentNullException: Value cannot be null. (Parameter 'assemblyFile')"
+    },
+    {
+      "File": "development-07.log",
+      "FrozenSource": false,
+      "Failure": "FAIL System.ArgumentNullException: Value cannot be null. (Parameter 'assemblyFile')"
+    }
+  ],
+  "PriorCI": {
+    "Run": 40361601194,
+    "HeadRevision": "ab87fe83cdad857185e45411ad46a6eb9912c2c3",
+    "PublishedMergeSource": "827d7541a654e97daf2d92cbe2ab2191cfe04575",
+    "Status": "FAIL",
+    "Scope": "Prior UI work; outdated labels/directory/banner assertions and clean-seed fixture mismatch. Not a debug-feature verification."
+  }
+}

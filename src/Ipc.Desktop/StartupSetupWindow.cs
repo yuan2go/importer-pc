@@ -19,6 +19,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     internal Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
     internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
+    internal Func<WindowsDeploymentRequest, Task> RepairRegistration { get; set; } = request =>
+        ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)));
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
@@ -60,7 +62,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (reviewed is null || originalInspection?.Status != "CommittedNeedsSystemRepair") return;
             var current = await Task.Run(() => InspectInstallation(reviewed));
             if (current.Status != "CommittedNeedsSystemRepair" || current.Location is null) throw new InvalidOperationException("原登记已变化，先只读核对");
-            await Task.Run(() => ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(reviewed.ApplicationId))));
+            await Task.Run(() => RepairRegistration(reviewed));
             installed = current.Location; outcomeUnknown = false; step = 3; Render();
         }, readOnly: true);
         resumeRemoval = Action("核对并继续原卸载清理…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
@@ -137,7 +139,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (outcomeUnknown)
         {
             Height = Math.Min(520, MaxHeight);
-            Message("未能确认本次安装的最终结果。");
+            Message(originalInspection?.Status == "CommittedNeedsSystemRepair"
+                ? "原安装已提交，系统入口修复结果待确认。请先核对原操作。"
+                : "未能确认本次安装的最终结果。");
             Note("先只读核对本次固定操作。核对不会重新安装；记录不可读或仍在执行时继续保留原身份。");
             var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(121, 85, 27)) };
             AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
@@ -269,7 +273,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     {
         if (step == 2 || installing)
         {
-            installing = false; outcomeUnknown = error is InstallationOutcomeUnknownException; failed = !outcomeUnknown;
+            // Only a trusted original-operation inspection can release Unknown.
+            // A failed system-entry repair must never offer another installation.
+            installing = false; outcomeUnknown = outcomeUnknown || error is InstallationOutcomeUnknownException; failed = !outcomeUnknown;
             failureMessage = error.Message; Render();
         }
         else

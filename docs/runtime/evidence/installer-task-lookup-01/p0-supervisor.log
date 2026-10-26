@@ -1,0 +1,19 @@
+EvidenceRoot=D:\deliveries\installer-registration-fix-20261026\test-temp\ipc17-verification-02fc7c58ddb5432b8d7edf4e10634d7e
+PASS ST14 new installations preserve manual startup until recovery is explicitly enabled
+PASS ST14 default-disabled recovery neither launches a client nor consumes a launch budget
+PASS ST14 task is session-bound, least privilege and password-free
+PASS ST14 task wrapper retry obeys Windows minimum minute and finite count
+PASS ST14 migration keeps one task identity; mini-dump and uninstall targets bounded
+PASS ST14 SCM has daily reset and final NONE instead of infinitely repeating restart
+PASS ST14 old deployment bytes omit absent recovery property
+PASS ST14 uninstall removes only owned WER names and preserves foreign evidence
+PASS ST14 three abnormal exits exhaust two restarts and persist visible guard
+PASS ST14 new watchdog process cannot reset persisted crash-loop budget
+PASS ST14 authorized repair can reset a known exhausted budget after client exit
+PASS ST14 strong-killed synthetic client restarts within configured delay; normal close ends supervision
+PASS ST14 replacement watchdog adopts exact original PID/start/hash without duplicate client
+PASS ST14 retirement detaches watchdog without killing business process
+PASS ST14 unacknowledged process creation fails closed without a duplicate launch
+PASS ST14 ordinary system repair cannot clear an uncertain original launch
+PASS ST14 healthy interval preserves current child and exact restart budget=0
+PASS ST14 healthy interval preserves current child and exact restart budget=2

@@ -1,0 +1,14 @@
+EvidenceRoot=D:\deliveries\installer-registration-fix-20261026\test-temp\ipc17-verification-63a5c6db7ef144baa54ccd8d378b8eca
+PASS TASK-LOOKUP known task absence recognized: FileNotFoundException/80070002
+PASS TASK-LOOKUP known task absence recognized: COMException/80070002
+PASS TASK-LOOKUP known task absence recognized: COMException/8004130F
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: UnauthorizedAccessException/80070005
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: COMException/80070005
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: COMException/80041315
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: COMException/80070003
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: IOException/80131620
+PASS TASK-LOOKUP non-absence lookup error propagates unchanged: FileNotFoundException/80070002
+PASS TASK-LOOKUP existing task identity is preserved
+PASS TASK-LOOKUP real Task Scheduler maps an absent task to FileNotFoundException/0x80070002; no task created
+PASS TASK-LOOKUP production lookup recognizes the real native missing task
+PASS TASK-LOOKUP disabled recovery projection is idempotent when no task exists; no task registered or started

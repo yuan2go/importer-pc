@@ -193,6 +193,25 @@ static partial class Program
         Capture("installer-unknown-records-unavailable", window);
         await (Task)type.GetMethod("Next", flags)!.Invoke(window, null)!;
         Check(installCalls == 2 && !(bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)!, "unknown result rejects a stale install command and retains preparation even after the wait has ended");
+        var committed = new InstallationInspection("CommittedNeedsSystemRepair", "合成：原安装登记已提交，系统入口尚需修复。", original);
+        var repairs = 0;
+        type.GetProperty("InspectInstallation", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, InstallationInspection>)(r => r == request ? committed : throw new InvalidOperationException("Inspection changed original request")));
+        type.GetProperty("RepairRegistration", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, Task>)(r =>
+        { repairs++; if (r != request) throw new InvalidOperationException("Repair changed original request"); return Task.FromException(new FileNotFoundException("合成：原系统入口修复失败")); }));
+        Click(window, "只读核对本次安装"); await Idle(window);
+        Click(window, "修复原安装的系统入口…"); await Idle(window); window.UpdateLayout();
+        Check(repairs == 1 && installCalls == 2 && ReferenceEquals(type.GetField("reviewed", flags)!.GetValue(window), request) &&
+            !(bool)type.GetField("failed", flags)!.GetValue(window)! && !(bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)!,
+            "failed repair preserves the same committed operation and its preparation without repeating installation");
+        Check(Text(window).Contains("安装结果待确认") && Text(window).Contains("原安装已提交") &&
+            (string)type.GetField("failureMessage", flags)!.GetValue(window)! == "合成：原系统入口修复失败" &&
+            !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回安装选项")) &&
+            Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "只读核对本次安装")) &&
+            Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "修复原安装的系统入口…")),
+            "failed repair retains inspection and original-system repair actions instead of offering a new installation");
+        await (Task)type.GetMethod("Next", flags)!.Invoke(window, null)!;
+        Check(installCalls == 2 && repairs == 1, "stale install activation cannot replay a failed committed repair");
+        Capture("installer-committed-repair-failure", window);
         window.Width = 880;
         Set("failed", false); Set("outcomeUnknown", false); Set("step", 3);
         Set("installed", new DeploymentLocation("sportmaster", request.SourceCommit, Path.Combine(evidence, "release"), launch.ConfigurationDirectory, launch.DataRoot, MachineRuntimePolicy.SharedUsersSid)); Set("needsFirstConfiguration", true); Render();

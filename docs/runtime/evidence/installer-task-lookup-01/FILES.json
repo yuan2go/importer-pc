@@ -1,0 +1,97 @@
+{
+  "At": "2026-10-26T23:33:26.3403112+08:00",
+  "Baseline": "e70b8ecef3aafb5e11d56624291e4d7dfa9b6185",
+  "TestedSourceFiles": [
+    {
+      "Path": "src/Ipc.Platform/DesktopRecoveryInstallation.cs",
+      "SHA256": "640b67dd95a65a22d572fe70c8910448ab71443c526b068f5ee11783c40db5a5"
+    },
+    {
+      "Path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "SHA256": "53517b59f91d5676d90026902bc7e0027fc81d8beba9cc30b3c72ef58efb4995"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/P0Stability.TaskLookup.cs",
+      "SHA256": "168e1a10192e7198bcd61da1e4e306bf249d625de33b6ab96197df66d9fa7cac"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
+      "SHA256": "bf409150697d6e4284368671f759dda6599595ff7f2fb56703f1e9434537a888"
+    }
+  ],
+  "ExpectedFailures": {
+    "native-red.log": "Failed original-system repair incorrectly releases Unknown before UI fix",
+    "task-lookup-red.log": "Real GetTask FileNotFoundException before missing-task classification fix"
+  },
+  "PassLines": {
+    "lifecycle-ux": 213,
+    "p0-task-validate": 1,
+    "p0-supervisor": 18,
+    "native-green": 106,
+    "p0-task-lookup": 13,
+    "installer-change-guards": 9
+  },
+  "Scope": "Real Windows Task Scheduler read-only lookup; synthetic native installation repair contract; no task registration/start, full installation or device acceptance",
+  "Files": [
+    {
+      "Path": "task-lookup-red.log",
+      "Bytes": 1303,
+      "SHA256": "7df53315d5d99d00d5cdafb99497fe90b1c92a498f66df19215bf3db60ca7c6c"
+    },
+    {
+      "Path": "p0-task-lookup.log",
+      "Bytes": 1246,
+      "SHA256": "04de1272fd895ac63b25777402b498a363e0a03a97a93a8e39cc15a455061009"
+    },
+    {
+      "Path": "p0-task-validate.log",
+      "Bytes": 222,
+      "SHA256": "6b10f778198b558107d8c202410082e6ac66f5e9e46bdc6cde0220742cc3b513"
+    },
+    {
+      "Path": "p0-supervisor.log",
+      "Bytes": 1591,
+      "SHA256": "7e036d0adf2e6f5cb2c54af31b98e482ed862b45d81c4ec8e95d7245c9a1158e"
+    },
+    {
+      "Path": "installer-change-guards.log",
+      "Bytes": 837,
+      "SHA256": "d92fb8d693958bad67193d22df284ff7ae12d0c200ddf1a0cd58c2923bf5aaf6"
+    },
+    {
+      "Path": "lifecycle-ux.log",
+      "Bytes": 14930,
+      "SHA256": "1a101a7c5221d2623a48e6910ce591e0220e9b2ddc8067c9b682f03dec0a6c8c"
+    },
+    {
+      "Path": "native-red.log",
+      "Bytes": 8872,
+      "SHA256": "054e2a6d6bcc8c1fba30e1ea62cb7dac4732c14d19ff96aec110a66ec4bd9b36"
+    },
+    {
+      "Path": "native-green.log",
+      "Bytes": 13075,
+      "SHA256": "20399232c2283cb3ddfecf0c6a3cda793b8bfa38ff789985a66f2ad6947ffc57"
+    },
+    {
+      "Path": "core-build.log",
+      "Bytes": 2233,
+      "SHA256": "7e9ee18c115bba08b0712834537470be91642fab6eeff55cb1bf09b4f54eaeb2"
+    },
+    {
+      "Path": "desktop-build.log",
+      "Bytes": 2347,
+      "SHA256": "f98c6f0893e329f32c2ff54943cdc741e59e7367c7e916c4698f292efea0d560"
+    },
+    {
+      "Path": "native-build.log",
+      "Bytes": 2286,
+      "SHA256": "843609f2e60a81bcbd4dfe714edca35e9649017e55c5e56c50b3f3e5deb4af10"
+    },
+    {
+      "Path": "installer-committed-repair-failure.png",
+      "Bytes": 84498,
+      "SHA256": "704011b7865a0f680b0bd148c4d3ec95dd45a5fb0bdf3f4dd0d9aba1fc5f3032"
+    }
+  ]
+}

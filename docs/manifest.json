@@ -67366,9 +67366,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
-      "sha256": "cd6470a53830cdd6f56e3976d2d594cb2b597ba9d577f28afbace0247c988f04",
-      "size_bytes": 38928,
-      "git_blob": "53e89c2d8a5cd3f61f0b5e1d6ea9f789a1e67d15",
+      "sha256": "95c720e55a9b505c09151a9f988c08ca764c2871f90b413be0789369f2148c6a",
+      "size_bytes": 39584,
+      "git_blob": "2c1b124e435eea197a0226363dcee6d2beda1a0a",
       "version": "PARAMETER-UI-REFINE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Native shared parameter and first-configuration layout, current Chinese validation, management menu and explicit post-save startup",

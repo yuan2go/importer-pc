@@ -94829,9 +94829,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "61d6c13fd522664973048a4128851ba9714fdd0a76208165f4ac9b92d07619c3",
-      "size_bytes": 11857,
-      "git_blob": "24d2a45b23613546562e49beb9543bb0fa1841c4"
+      "sha256": "0b3b18ee8dc407ca48dc61637f7021eb17d2b65b1a8aa5f05f53d2428f23284c",
+      "size_bytes": 12102,
+      "git_blob": "f22f0f8f0dbbebf2f088135f40e653c3d6a400ea"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/LocalTimestampConverter.cs",
@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "8e133bbdb331cb8be8689fbd0e220ec339d68538167a25cab691a9f75b87d875",
-      "size_bytes": 6228,
-      "git_blob": "b0dc5f9be4ee18826b7938f601c567186c7a4b2f"
+      "sha256": "920665b94e49b9ca25da5ef332ffd8904a010c899aa038cb5ba56af72863fda7",
+      "size_bytes": 8048,
+      "git_blob": "05276b9c375ec5dd0ed91929e5a0488b3b8f559d"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",

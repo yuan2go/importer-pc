@@ -1,6 +1,6 @@
 # INTEGRATION-20261026 · 并行任务收口
 
-状态：现场已保全，意图与历史核查中；尚无本轮构建或运行 PASS。用户授权按保护和检查逐项合并全部开放 PR，遇到不能判断的业务/冻结字节/DB结构冲突跳过该项。不得强推、重写已发布历史、删分支/worktree/stash、降低校验，亦不生成本轮发布介质。
+状态：现场已保全；文档PR114及P0 PR110已合入main，当前main c8dd5144。PR110新头CI三job成功，合并后在干净main重新构建并执行8组P0/安装守卫通过；实际源见[整合执行记录](../runtime/integration-20261026.md)。其余包继续逐项处理，尚无最终整合或现场PASS。用户授权按保护和检查逐项合并全部开放 PR，遇到不能判断的业务/冻结字节/DB结构冲突跳过该项。不得强推、重写已发布历史、删分支/worktree/stash、降低校验，亦不生成本轮发布介质。
 
 起点 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`。远端备份标签 `pre-integration-20261026`。全仓工作树状态、暂存/未暂存二进制补丁、未跟踪文件及冲突文件的原字节位于仓库外 D盘 `audits/pre-integration-20261026`，不上传其中附件或机器资料。新工作树为 D盘 `w/ipc-integration-20261026`，分支 `integration/20261026`。原工作树保持不动。
 
@@ -33,7 +33,7 @@
 | ST02 | 已核验DB归档的冗余原件暂时占用仅退避；缺失/损坏/矛盾仍停供 | ParcelArchiveCleanup、ParcelHistory、ParcelIntegrationIds | p0-cleanup，锁定/解锁和三类损坏 |
 | ST03 | 在线/计划备份完整取消，I/O不无界占gate；失败不写COMPLETED，Stop保有真实所有权 | ParcelCommands、ParcelRepository、ParcelScheduledBackup | latency-storage-checks、生命周期备份状态 |
 | ST04 | 大详情仅可见且修订变化时后台生成；完整原文受管理权限与选择代次保护 | ParcelDetailsProjection、ParcelTargets | latency-details-checks、原生选择/撤权/取消 |
-| ST05 | 历史count在gate外按修订缓存，多窗共享同次快照；不丢LIA字段 | ParcelSnapshotProjection、ParcelHistory、ParcelCommands | latency-projection-checks、快照字段断言 |
+| ST05 | 历史count在gate外按修订缓存，多窗共享同次快照；不丢LIA字段 | ParcelSnapshotCache、SharedSnapshotRead、ParcelHistory、ParcelCommands | latency-projection-checks、快照字段断言 |
 | ST06 | TCP keepalive/单调接收活性可观测，原Epoch/资源隔离；不重放 | TcpLineObservationSource、ParcelConnections | p0-tcp、p0-tcp-components；自动重连合同另列 |
 | ST07 / G01 | Unknown保留原请求、目标、报文及责任；交接无外呼；无假Query/清责 | ParcelStages、ParcelGuards、RequestHandover | p0-rcs、p0-unknown-restart、LIA交接；真实处置需合同 |
 | ST08 | 只重试确认未COMMIT且已回滚的本地输入事务；结果不明不重做；永久故障首次阻止拉起 | AtomicStorageWrite、RuntimeFatalMonitor、DesktopRecoverySupervisor | time-storage-atomic/supervisor/process-checks |
@@ -43,7 +43,7 @@
 | ST12 | 容量/保留间隔单调；UTC仅审计/日历；合并不改回墙钟 | ParcelStorageCapacity、ParcelHistory、RuntimeJournal | time-storage-fault-checks、回拨/前跳 |
 | ST13 | 新回包本地回拨证明绑定原请求/hash；实时与恢复同校验；历史原字节不变 | ParcelClockEvidence、ParcelStages、ParcelReplyIdentities | time-storage-fault-checks，无证明/矛盾继续拒绝 |
 | ST14 | 致命退出、有限拉起、健康预算、循环保护；恢复先暂停，不自动供包/重放 | DesktopRecoverySupervisor、CrashDiagnostics、BusinessLaunch | p0-supervisor、time-storage-process-checks、0/2次预算 |
-| 快捷方式 / PR113 | Unicode中文创建/读取/清理；错目标/参数/目录/空目标保原件；COM释放一次 | DeploymentShortcuts、WindowsShellLink | 三ACP同DLL、installer-change-guards、生命周期43断言 |
+| 快捷方式 / PR113 | Unicode中文创建/读取/清理；错目标/参数/目录/空目标保原件；COM释放一次 | DeploymentShortcuts、ShellLinkFile | 三ACP同DLL、installer-change-guards、生命周期43断言 |
 | LIA01 | 部署/卸载原操作核对，计划不换身份，未知不重投，保留系统/文件真实结果 | ParcelStartupServices、DeploymentBatch、DeploymentRemoval | lifecycle-ux、批量计划/Recovery漂移 |
 | LIA02 | 完整候选Pending→受控停止→生效；权限到期/撤销立即有效；多窗退出守卫 | StartupWorkflows、ManagementMode、ConfigurationSubmission | lifecycle-ux、原生权限/草稿/取消 |
 | LIA03 | 固定查询上界、前后页与对象ID，改条件不能沿旧查询导出 | HistoryEditing、ParcelTargets | 原生history-context、固定范围/选择 |

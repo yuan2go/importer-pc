@@ -148,3 +148,32 @@ PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机
 PR112新头000fb311的CI40274393725三个job全success，包含Linux receipt-custody/reliability-02；因此这两套不再笼统标NOT_RUN，区分Linux已执行和本机Windows安装策略入口阻断。重复身份评审线程已凭红绿结果解决，合入main a97d20088c78b55fffc2dde7911a58c11ba199e8。其干净main重新构建及11项时钟/事务/进程/P0/部署/启动参数回归全部通过，树与被检查PR头一致。
 
 PR111源564fab6b复测时计划备份夹具实际失败，首轮COMPLETED计数0，随后一次计划检查完成1份备份。原夹具把到期检查当作当轮维护条件必然满足，未覆盖允许的Pending（在途健康调用等维护守卫）。改为5秒内驱动后续计划时刻并等待实际完成；份数上限检查以成功时刻为基准，还核对原路径和COMPLETED哈希不变，不改生产授权、暂停或在途调用守卫。失败日志SHA256 `bcdb3c8f089a8c1c346b4d00745d4701e66b5512a7731eafcdc7f869952c4f6b`；修正后的实际结果另计。用户要求复核旧NOT_RUN，后续按当前环境逐项判断，不继承旧标记。
+
+## PR111当前组合的实际Windows验证
+
+源5124b196baa00b6b320034307e9b8e22eb7da40f，干净树；计划备份修正夹具、在线取消/停止、P0 Unknown/监督/部署守卫、三个产品WPF及原生验证构建全部通过。60万合成历史预置279.42秒，随后六组各12秒；实际Window共享同一个Application。夹具PASS只断言稳态无重复详情计算/作业序列化，不表示统计不劣或长期资格；本次没有采集新的dotnet-counters LOH序列。原报告反向样本保留。
+
+|驻留|窗口|刷新P50 ms|gate P50 ms|Dispatcher P95 ms|稳态作业序列化/详情次数|
+|---|---|---|---|---|---|
+|200|1|55.7213|27.1678|0.9899|0/0|
+|200|2|62.6675|27.0085|1.0031|0/0|
+|200|4|54.5091|20.3215|1.0584|0/0|
+|800|1|102.3370|38.2865|1.0550|0/0|
+|800|2|96.2622|37.6825|1.1449|0/0|
+|800|4|93.3722|35.6435|0.9901|0/0|
+
+完整MEASUREMENTS/IDENTITY与DLL哈希保存在D盘仓库外审计目录；完整60万count查询五次均8 VM steps，冷查询835.37ms、暖查询74.77–88.59ms，UI稳态不反复执行该count。
+
+|执行|结果|日志SHA256|
+|---|---|---|
+|pr111-committed-installer-change-guards|PASS|`91415d98c6be6ee9586bb03a71343328752c650e179d0352c257ed0c789c2bbd`|
+|pr111-committed-latency-capacity-checks|PASS|`dbddff4ede133ae64d4a9283599020cb5731c04f611ad2830939b62f48c72861`|
+|pr111-committed-latency-storage-checks|PASS|`38fc4ef4896a036496f602af00def77a2c4b2f11dfdcea43675b5060e0b860cf`|
+|pr111-committed-p0-supervisor|PASS|`20a3636cb747a7d82016b08b2a5b55b2c9c554f5839707c38ba9c8e21ddb7e4f`|
+|pr111-committed-p0-unknown-restart|PASS|`97047a0f1e2bf1e8c3cb039c6548302f5477d12b0e87b15d1116f971f384b776`|
+|pr111-final-native-600k|PASS|`c1e98a9fa52955fe4bf26b5713c7f87aafd7805c72e3899ea7796d8844d9cca7`|
+|pr111-final-native-build|PASS|`03f238755d068bbb7f7ebd68331ac4dfd05e13efafa6c19b0745a09fe76b5346`|
+|pr111-final-wpf-DirectPlc|PASS|`519ca71166164b1f4146eeb255812ef2cb1f2517a281856c38c8e641064312c7`|
+|pr111-final-wpf-Sportmaster|PASS|`98e6dc93d774f18e2f08e76d8a8f491951c93c1562e4fc8639193fa48af72566`|
+|pr111-final-wpf-WcsToPlc|PASS|`607004cee52f59a937c46d1e869e28016056b6368c8960094bb4ce0bf972bb07`|
+|pr111-schedule-committed-build|PASS|`b1cf8cc1ca4d0e41dd12e612db64753f517eb911626089bcd197e49441bc3bed`|

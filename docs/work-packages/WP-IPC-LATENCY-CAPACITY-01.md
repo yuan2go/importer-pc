@@ -1,8 +1,8 @@
 # 卡顿与容量批 · LATENCY-CAPACITY-01
 
-F0：2026-10-26远端main为a8cd431456f73e83040f75a0c5e3cc1423440d1b，已包含PR109；指定3a5b1d13是原始线索。独立分支codex/latency-capacity-01，不合入尚未合并的PR108或PR110产品代码。原工作区四个附件和所有冻结介质不改。
+原独立包F0基线为main a8cd431456f73e83040f75a0c5e3cc1423440d1b，已包含PR109；指定3a5b1d13是原始线索。2026-10-26整合授权替代原仅交付草稿、不合入其他PR的执行限制：本PR已merge main a97d2008，继承PR110/113/112，按当前头CI与评审逐项合入。PR108在其后整合；原工作区四个附件和所有冻结介质不改。
 
-范围按ST05、ST04、ST03、ST10、ST11推进；先取得同机隔离基线，再写失败断言和最小修复。DB9/SQL1–9不变，不新增表；Unknown、原请求/回包、配置CAS/Pending/Effective、受控重启和每次扫码一次原条码请求保持。业务身份不足不静默采用Simulation。
+范围按ST05、ST04、ST03、ST10、ST11推进；先取得同机隔离基线，再写失败断言并完成对应根因修复。DB9/SQL1–9不变，不新增表；Unknown、原请求/回包、配置CAS/Pending/Effective、受控重启和每次扫码一次原条码请求保持。业务身份不足不静默采用Simulation。
 
 测量计划：600000条合成历史与200/800驻留，1/2/4个实际WPF窗口，同一真实Application实例；含合成大回包/大量拆包明细。记录快照、业务gate持有、序列化次数、SQLite sqlite3_stmt_status VM steps、Dispatcher探针、dotnet-counters分配/LOH/Gen2。历史预置仅供性能，不冒充完整责任链、真实采集、现场吞吐或30天完整维护。
 
@@ -14,6 +14,8 @@ F0：2026-10-26远端main为a8cd431456f73e83040f75a0c5e3cc1423440d1b，已包含
 
 本机Win11家庭中文版22631、约16GB；不是目标26100+/4核8GB。未执行的目标硬件、真实接口、实际慢存储、24h/72h和物理断电明确NOT_RUN。新验证不扩张旧PASS。
 
-交付同步运行说明、逐问题卡、基线/修复后表和manifest；一个工作包一个PR，不强推、不合并。
+交付同步运行说明、逐问题卡、基线/修复后表和manifest；一个工作包一个PR，不强推；合并和每轮回归遵循[整合工作包](WP-IPC-INTEGRATION-20261026.md)。
 
-交付：草稿PR111，修复源1898ef43，前测ece4a0d6各独立DLL身份。正式对照和五问题卡见runtime/validation/latency-capacity-01.md；P95/LOH反向样本保留，统计不劣/24h不写PASS。ST05/04显式红断言后加的顺序边界如实记录。
+历史独立交付：草稿PR111，修复源1898ef43，前测ece4a0d6各独立DLL身份。正式对照和五问题卡见runtime/validation/latency-capacity-01.md；P95/LOH反向样本保留，统计不劣/24h不写PASS。ST05/04显式红断言后加的顺序边界如实记录。
+
+当前组合5124b196的Windows三产品构建、容量/备份/P0回归和60万历史六组原生WPF测量已执行，实际结果在[整合记录](../runtime/integration-20261026.md)，不转记到后续文档提交或最终main。NOT_RUN按当前可执行条件复核；2592000、目标硬件/真实设备、24h/72h和物理断电仍未执行。

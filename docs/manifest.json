@@ -94829,9 +94829,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "4084e63d5de5bf3a1fd5037fda803e8e737f21122b2703d62ef5f14a9006dc73",
-      "size_bytes": 12118,
-      "git_blob": "0637de30078cc5f59b7af891d997873190f8bc87"
+      "sha256": "0bdc55b8dc672ac21279bb4e8514d8d7d5e8c65ad9436dca7518491386ea3ba9",
+      "size_bytes": 12138,
+      "git_blob": "360bcb0933ef3ef9b7adac07a40d997873fcf300"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/LocalTimestampConverter.cs",
@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "7171ef7f4ea8a6c8f513389d375686c84421b1ddd2f9162d0ba6949466648815",
-      "size_bytes": 17317,
-      "git_blob": "183ac39aa96ba4cdcc618a35f1f3521843a8d13d"
+      "sha256": "80d7546382cc815b9aa7662d2fa295cb802dfb13be65e71b96d08904423a44b5",
+      "size_bytes": 19575,
+      "git_blob": "c27ced3530f1f774eb5586a81bb23c055d3292ea"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",
@@ -96970,9 +96970,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "00b18be95b9f7c9a5ae5d976ad6ea8985b659f85a3c4c82b2efadc32fb86deed",
-      "size_bytes": 2384,
-      "git_blob": "c941e7b9b5da6e62ebbe66e9a4fde8af640451e2"
+      "sha256": "2e2b1beec59454e8e15249fa85098e193bcd8d672cfb6bf3e6a2e73cdf2f0fa5",
+      "size_bytes": 2928,
+      "git_blob": "9c9c3d61d5778b5b6d79970aaf446ea5c61ec102"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/LatencyCapacity.cs",

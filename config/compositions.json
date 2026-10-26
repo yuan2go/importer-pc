@@ -103,7 +103,7 @@
       "delivery": "core"
     },
     "application.direct-plc": {
-      "version": "1.8.0",
+      "version": "1.8.1",
       "contract": 1,
       "dependencies": [
         "platform-storage",
@@ -122,7 +122,7 @@
       "delivery": "core"
     },
     "application.wcs-to-plc": {
-      "version": "1.8.0",
+      "version": "1.8.1",
       "contract": 1,
       "dependencies": [
         "platform-storage",

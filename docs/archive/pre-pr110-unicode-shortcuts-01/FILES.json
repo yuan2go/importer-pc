@@ -1,0 +1,47 @@
+{
+  "SourceCommit": "963165d71aec1e037525fd7f17bc3ed81b560c1a",
+  "Files": [
+    {
+      "path": "docs/INDEX.md",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__INDEX.md.txt",
+      "sha256": "791207684ea214f34b793908b71cc2ea48af5a44743c516bcda3f389a1318f78",
+      "size_bytes": 14421
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-P0-STABILITY-01.md",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__work-packages__WP-IPC-P0-STABILITY-01.md.txt",
+      "sha256": "08e54b5ab7b0fd2cda3811885f4e096b3ffe37b52ff6164ca2afa60466e90ba6",
+      "size_bytes": 3936
+    },
+    {
+      "path": "docs/runtime/p0-stability-01.md",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__runtime__p0-stability-01.md.txt",
+      "sha256": "674ff31f8076e00f8ebd468b13d6336af015768f0474827f0b6ba468411b9bea",
+      "size_bytes": 9990
+    },
+    {
+      "path": "docs/runtime/validation/p0-stability-01.md",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__runtime__validation__p0-stability-01.md.txt",
+      "sha256": "12f404a15eea5073dbb066bc9ed6a7c8148f222627e6a2a69d7c3262c42b7cfb",
+      "size_bytes": 18732
+    },
+    {
+      "path": "README.md",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/README.md.txt",
+      "sha256": "b219ddeda69484df9907ab3da4a5f75a6f1df2201b122b64ce2251eca5f272ba",
+      "size_bytes": 6132
+    },
+    {
+      "path": "docs/manifest.json",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__manifest.json.txt",
+      "sha256": "a2914cb29927f2371e7548130682b94ae6054a3df857b0380f15fa8ebcf44db2",
+      "size_bytes": 5582093
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "snapshot": "docs/archive/pre-pr110-unicode-shortcuts-01/docs__manifest.sha256.txt",
+      "sha256": "3458af2b0c872ff6a7d4ccc230f59f3c8c21d4f61c79c7fd3620747745cedfcd",
+      "size_bytes": 80
+    }
+  ]
+}

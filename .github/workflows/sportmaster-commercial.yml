@@ -121,6 +121,16 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . --installer-options *> .artifacts/p0-stability/installer-options.log
           if ($LASTEXITCODE) { Get-Content .artifacts/p0-stability/installer-options.log; exit $LASTEXITCODE }
+      - name: Unicode shortcut COM in isolated process code pages
+        if: always()
+        shell: pwsh
+        run: ./scripts/verify-shortcut-codepages.ps1 -Output D:/shortcut-codepages
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shortcut-codepages-${{ github.sha }}
+          path: D:/shortcut-codepages
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: always()
         with:

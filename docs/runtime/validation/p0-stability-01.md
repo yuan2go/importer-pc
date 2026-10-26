@@ -1,3 +1,5 @@
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+
 # P0-STABILITY-01 本次验证
 
 交付基线 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`。F0原基线为3a5b1d13；下面历史段落/摘要保留实际当时身份。新main重新核查、再执行本批回归，未执行项保持NOT_RUN，不继承历史PASS。

@@ -1,3 +1,5 @@
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+
 # P0稳定性修复运行说明
 
 交付基线为 main `a8cd431456f73e83040f75a0c5e3cc1423440d1b`（PR109后）；F0原基线3a5b1d13的失败/通过记录各守原身份。范围见[工作包](../work-packages/WP-IPC-P0-STABILITY-01.md)，本次结果见[问题卡](validation/p0-stability-01.md)。

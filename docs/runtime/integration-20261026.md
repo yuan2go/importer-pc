@@ -35,7 +35,7 @@
 | pr110-restore-Supply | PASS (0) | `513ae962bbf2b5ece1472298f8ca92850edb0575c013b6f8c26ccf41b2b0fd00` | `26a91ce3176826e55f1b71c0638c7e43ea1b4089624d2286e5b7021f7b3298ab` |
 | pr110-restore-WcsToPlc | PASS (0) | `513ae962bbf2b5ece1472298f8ca92850edb0575c013b6f8c26ccf41b2b0fd00` | `a1d949dd4573d74bba7337237f90a39418a9157a8b39eea193126fff7d46ce04` |
 
-尚未完成：PR110新head CI、后续PR逐项同步和合并、最终干净main完整验证。
+本节记录PR110同步阶段；合并及后续实际源见下文，最终main完整验证另计。
 
 ## PR113组合预检
 
@@ -71,3 +71,37 @@ PR113已merge上述新main。此前d204bc58的产品差量与当前组合一致�
 ## PR112监督夹具的默认值适配
 
 组合提交fcc1c2d2构建通过，原ST08监督夹具失败（实际启动次数0）。这是本轮Enabled默认false后旧夹具不再进入监督路径，并非永久故障守卫回归。只将两处监督场景显式设Enabled=true，保留首次永久退出仅一次启动、持久Block、恢复暂停及原请求不重放的全部断言；默认关闭断言仍由P0套件验证。原失败日志SHA256 addd05b9d61ed94993d11b718a59c0ab6998f6ac64372ac4edd247632bce92d8，后续结果独立登记。
+
+## PR113已合并及合并后回归
+
+PR113新头d88f6a69的CI40270929013三个job全部success；旧TCP身份P1在正式装配测试确认修复后解决，没有剩余评审线程。以209f31b2212b984ca2339a0a8c7ecf17427dc359合入main。随后在该干净main重新构建并运行三ACP、TCP身份、监督预算、Unknown重启、安装守卫，全部通过。与被检查头的Git树完全一致；相对前一main的6260份冻结证据、SQL1–9、字体及WAL/FULL未变。
+
+| 执行 | 结果 | SourceCommit | 日志SHA256 |
+|---|---|---|---|
+| post113-main-codepages | PASS | `209f31b2212b984ca2339a0a8c7ecf17427dc359` | `47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9` |
+| post113-main-installer-change-guards | PASS | `209f31b2212b984ca2339a0a8c7ecf17427dc359` | `08de91388c340084fa50d8aef8a29c236854a9f4fe8f9ecb2f9cf5f1aed78f95` |
+| post113-main-p0-provider-identity | PASS | `209f31b2212b984ca2339a0a8c7ecf17427dc359` | `bc03e59aec93b5af6418dee21e43ca69e83b7f6ce35337e0d2d33d305fdbc8aa` |
+| post113-main-p0-supervisor | PASS | `209f31b2212b984ca2339a0a8c7ecf17427dc359` | `6085bc8002cb4c7c4a13d92e0db42f961cb51ca0579de25c3d09dfd1a94f97c2` |
+| post113-main-p0-unknown-restart | PASS | `209f31b2212b984ca2339a0a8c7ecf17427dc359` | `a34ff8d0486b7e413dfbdee6c2c106e3c4a667556a4b65135ec784cce291a10b` |
+
+## PR112实际组合验证
+
+678724b76ae0b17b098fad4355bd0033a7ef324b干净组合：时间/原子事务/永久故障监督/真实子进程四组，以及P0正式身份、监督预算、Unknown和部署守卫全部通过。真实子进程证明恢复先暂停，显式Resume不重放；已提交结果不明不再次执行SQL回调。三ACP同DLL及三个Parcel产品WPF锁定构建通过，SQL1–9不变。全是隔离Simulation/合成故障，不能代替物理盘或正式安装资格。
+
+| 执行 | 结果 | 日志SHA256 |
+|---|---|---|
+| pr112-build-green | PASS | `900953f272816a8e8a20ddbc12394ed36e8b1d5111fc283f5eec10ce8a952490` |
+| pr112-codepages | PASS | `47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9` |
+| pr112-installer-change-guards-green | PASS | `3880571c50a87de0d76fa85f34ea944bf3384e1c60e7559f288cbc886bb620c1` |
+| pr112-p0-provider-identity-green | PASS | `22bf82f39443ea3b49399cc1bb843db8e18e7a07896192686693559e0091e3c4` |
+| pr112-p0-supervisor-green | PASS | `ef8f225f1c6ba3b26ea76252f2daf36656120acf09569add37336edea736bff3` |
+| pr112-p0-unknown-restart-green | PASS | `66fb22b95e6d3b0bea44cde6f3515222bc436c84e20e7360693ec9a8157e6733` |
+| pr112-time-storage-atomic-checks-green | PASS | `17cafae0a6b32b72c740b6fa7af33bf3510e84a3fee7444e0e5568c1aef145fc` |
+| pr112-time-storage-fault-checks-green | PASS | `accdd02c97156ec5ac422b76f5ef8dae7e286bde847fd23951c3a7128916fc63` |
+| pr112-time-storage-process-checks-green | PASS | `d3d3c866d18d718e2e273b7889ab4e8699ce6dff6b27cbe70f31fe0255b17384` |
+| pr112-time-storage-supervisor-checks-green | PASS | `e3f6ff1c1b24e8ce1e666250babe8628dead09a212050f2c3b916ee675bbb6d6` |
+| pr112-wpf-DirectPlc | PASS | `d13541ec4b5d4266cca8e92d50ff99a58bb7e933cc687df9d53e1a49cfbc2893` |
+| pr112-wpf-Sportmaster | PASS | `4d3045a0927ebce1ca6dc45e00f4d4b92778e8d5f8bfbc3c5e4b68017de92a04` |
+| pr112-wpf-WcsToPlc | PASS | `199a1c57b6caecb97c979d881ee4c4da5ef8b9433fb8ab70edde9dc6ecae255b` |
+
+PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机结果仍只属于678724b7，不转记新的文档提交。

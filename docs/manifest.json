@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "46c224f6573619f620f221da9218ec3248cd448b67483a26e480dc81a5e6d649",
-      "size_bytes": 5405,
-      "git_blob": "bd7381ff429bbec611072b52dc31b91fae37eb19",
+      "sha256": "369b2fa3735591d361c0bf9728479aa19fd669c335a4a81758cb5f83ac2f7c75",
+      "size_bytes": 5440,
+      "git_blob": "85a14a951b4bd5960608bee7460980d5b6dd78ce",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -94829,9 +94829,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "0b3b18ee8dc407ca48dc61637f7021eb17d2b65b1a8aa5f05f53d2428f23284c",
-      "size_bytes": 12102,
-      "git_blob": "f22f0f8f0dbbebf2f088135f40e653c3d6a400ea"
+      "sha256": "4084e63d5de5bf3a1fd5037fda803e8e737f21122b2703d62ef5f14a9006dc73",
+      "size_bytes": 12118,
+      "git_blob": "0637de30078cc5f59b7af891d997873190f8bc87"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/LocalTimestampConverter.cs",
@@ -94950,9 +94950,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "7af030cd3c39ecafaf76aa9bc4b0b6333432b7d88696bb17308980539ec7eaf6",
-      "size_bytes": 10569,
-      "git_blob": "71e386ddc0c4e795b45231bf456c5fbbd54fb36a"
+      "sha256": "2aa2aed95cf5c3e790de7745474b2f6ad5879b386c0b459715f437f78388ccf7",
+      "size_bytes": 10618,
+      "git_blob": "036c93e791fba9411fefe019a63c69144e16620d"
     },
     {
       "path": "docs/runtime/validation/p0-stability-01.md",
@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "719a2068380402633c2744ef87322df407e64e8bd4dc0978d0b645a6a205e746",
-      "size_bytes": 8592,
-      "git_blob": "ee9767ac391d52e9e3e97315151ba6ef7b5ed363"
+      "sha256": "81e2f2ce7e3a420d562c1a205b774bb442076cf6b72c26ad2bf8684d916eb569",
+      "size_bytes": 12028,
+      "git_blob": "f6b2aca1af508b73bbf3a86d3e10a73917157c5b"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",

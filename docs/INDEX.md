@@ -20,9 +20,9 @@
 
 参数V3替代V2参数版式，作业/首配合同仍继承V2及后续用户纠偏。管理能力是管理模式，操作员身份独立；帮助与支持页面已删除。仓ID、生产线ID、统一供包台编号、7天新站默认、本机窗口偏好及相机/RCS独立延后按当前纠偏执行。配置保存不等于生效；待配置拒绝业务，Unknown不重发。
 
-## 本轮待整合来源
+## 本轮来源与状态
 
-[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。状态以本轮工作包和远端PR为准，不将分支实现称作已在main生效。
+[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113已合入main；PR108、PR111、PR112继续逐项整合。实际源及验证见本轮工作包，不将分支PASS转记main。
 
 ## 历史证据与发布
 
@@ -35,7 +35,7 @@
 
 真实SDK/RCS、目标工控机、系统安装生命周期、24h/72h和现场分别验收。本轮不生成发布介质、不宣布验收通过。
 
-P0基座正在同步本轮文档清理：[运行说明](runtime/p0-stability-01.md)、[历史问题卡](runtime/validation/p0-stability-01.md)、[Unicode续修](runtime/validation/pr110-unicode-shortcuts-01.md)。原问题卡不作为本轮合并验证。
+P0基座已合入main：[运行说明](runtime/p0-stability-01.md)、[历史问题卡](runtime/validation/p0-stability-01.md)、[Unicode续修](runtime/validation/pr110-unicode-shortcuts-01.md)。原问题卡不作为本轮合并验证。
 
 - [2026-10-26整合执行记录](runtime/integration-20261026.md)：本轮真实执行与输入哈希，持续更新。
 

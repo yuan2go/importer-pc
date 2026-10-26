@@ -47,7 +47,7 @@ TCP驱动1.1.0在连接前启用SO_KEEPALIVE；参数`keepalive-time-seconds=60`
 
 ## ST14 崩溃闭环
 
-现行实现覆盖全局异常、外部进程监督及安装系统登记；业务内部观察器仍不重启、不重放、不强制GC。Supply共用全局异常钩子；自启动/监督登记仅覆盖本包三个Parcel产品（SM1.14.0、DirectPlc/WcsToPlc1.8.0），Contracts1.18.0、DB9/SQL1–9不变。
+现行实现覆盖全局异常、外部进程监督及安装系统登记；业务内部观察器仍不重启、不重放、不强制GC。Supply共用全局异常钩子；自启动/监督登记仅覆盖本包三个Parcel产品；本轮组合为SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9/SQL1–9不变，原分支验证仍归其原版本。
 
 桌面构造时注册AppDomain、TaskScheduler及WPF Dispatcher钩子。致命异常记录版本、SourceCommit、进程、实例、连接Epoch、最近状态及有界进度预览，日志同步Flush(true)后调用RaiseFailFastException，退出码0xE0000014；UI异常不继续执行。任务未观察异常只计数、每秒最多一条采样日志，不启动任何业务恢复。日志沿已有轮转；落盘失败不伪造成功，native异常参数标识是否刷盘。诊断目录沿受保护D盘存储锚；目录不可写、磁盘挂起、堆损坏等情形仍可能无法取得托管日志，不能承诺所有native崩溃都有完整上下文。
 

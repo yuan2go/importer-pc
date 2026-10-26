@@ -20,7 +20,18 @@ internal sealed class ShellLinkFile : IDisposable
         try { if (path is not null) File.Load(path, 0); }
         catch { Dispose(); throw; }
     }
-    public string TargetPath { get { var b = new StringBuilder(32768); Link.GetPath(b, b.Capacity, IntPtr.Zero, 4); return b.ToString(); } set => Link.SetPath(value); }
+    public string TargetPath
+    {
+        get
+        {
+            const uint rawPath = 4;
+            var buffer = new StringBuilder(32768); Link.GetPath(buffer, buffer.Capacity, IntPtr.Zero, rawPath);
+            // GetPath can return S_FALSE with an empty result. That is unknown
+            // ownership, not a readable shortcut belonging to another program.
+            return buffer.Length == 0 ? throw new InvalidDataException("快捷方式缺少可核验的文件目标") : buffer.ToString();
+        }
+        set => Link.SetPath(value);
+    }
     public string Arguments { get { var b = new StringBuilder(32768); Link.GetArguments(b, b.Capacity); return b.ToString(); } set => Link.SetArguments(value); }
     public string WorkingDirectory { get { var b = new StringBuilder(32768); Link.GetWorkingDirectory(b, b.Capacity); return b.ToString(); } set => Link.SetWorkingDirectory(value); }
     public string Description { get { var b = new StringBuilder(32768); Link.GetDescription(b, b.Capacity); return b.ToString(); } set => Link.SetDescription(value); }

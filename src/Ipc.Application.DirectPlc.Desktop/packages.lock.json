@@ -295,7 +295,8 @@
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.0.0, )"
+          "Ipc.Application.Contracts": "[1.18.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.platform": {
@@ -303,6 +304,9 @@
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[10.0.13, )"
         }
+      },
+      "ipc.presentation.wpf": {
+        "type": "Project"
       }
     }
   }

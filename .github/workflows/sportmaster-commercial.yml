@@ -111,7 +111,7 @@ jobs:
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
+          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards')) {
             dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
             if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
           }

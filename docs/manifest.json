@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5bc8daa9a9c700363db15d59431daaeaf73cf473f806ac5ec981fac947d14304",
-      "size_bytes": 7108,
-      "git_blob": "9749a3a06bcfc91b4128353c428d3385af60f6fc",
+      "sha256": "93522f4caffbb40a6bfd0c18fee16f450e5c2a826cf136ac305852d9ec604e78",
+      "size_bytes": 7374,
+      "git_blob": "06701bd17bd448e7bd6edb10866caec41e21206e",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",

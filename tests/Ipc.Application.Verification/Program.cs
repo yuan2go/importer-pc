@@ -37,6 +37,7 @@ if (args.Contains("--p0-crash-child")) { var i = Array.IndexOf(args, "--p0-crash
 if (args.Contains("--p0-recovery")) { await P0Recovery.Run(root); return; }
 if (args.Contains("--p0-supervisor")) { await P0Supervisor.Run(root); return; }
 if (args.Contains("--p0-task-validate")) { P0Supervisor.ValidateTaskSchema(root); return; }
+if (args.Contains("--p0-task-lookup")) { P0TaskLookup.Run(root); return; }
 if (args.Contains("--p0-supervised-child")) { await Task.Delay(args.Contains("--sleep") ? 30000 : 400); Environment.Exit(args.Contains("--normal") ? 0 : 12); return; }
 if (args.Contains("--p0-unknown-restart")) { await SportmasterRcs.P0UnknownRestart(workspace, root); return; }
 if (args.Contains("--parameter-guidance-startup")) { await ParameterGuidanceStartup.Run(workspace, root); return; }

@@ -85,6 +85,14 @@ public static partial class DesktopRecoveryInstallation
         }
         if (!Directory.EnumerateFileSystemEntries(directory).Any()) Directory.Delete(directory);
     }
+    internal static object? FindRegisteredTask(Func<object> lookup)
+    {
+        try { return lookup(); }
+        // COM interop maps HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) to
+        // FileNotFoundException. Only absence from this GetTask call is benign.
+        catch (Exception error) when ((error is COMException or FileNotFoundException { FileName: null }) &&
+            (uint)error.HResult is 0x80070002 or 0x8004130F) { return null; }
+    }
     [SupportedOSPlatform("windows")]
     static void Task(DesktopRecoveryPlan plan, DeploymentLocation location, bool remove)
     {
@@ -93,8 +101,7 @@ public static partial class DesktopRecoveryInstallation
         {
             service = Activator.CreateInstance(Type.GetTypeFromProgID("Schedule.Service", true)!)!;
             ((dynamic)service).Connect(); folder = ((dynamic)service).GetFolder("\\");
-            try { registered = ((dynamic)folder).GetTask(plan.TaskName); }
-            catch (COMException error) when ((uint)error.HResult is 0x80070002 or 0x8004130F) { }
+            registered = FindRegisteredTask(() => (object)((dynamic)folder).GetTask(plan.TaskName));
             if (registered is not null)
             {
                 var xml = XDocument.Parse((string)((dynamic)registered).Xml);

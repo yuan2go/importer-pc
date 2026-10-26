@@ -59580,9 +59580,9 @@
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
       "storage_scope": "public_repository",
-      "sha256": "c7380ba6ed6d1edcde91abc7c6b3497401a7514b8f77ce85908394efffbb4cf5",
-      "size_bytes": 24155,
-      "git_blob": "e88be37db93f17dfaef4cadc9b7e54b1b4bb63be",
+      "sha256": "553d6fa651a421220d1e0bb57e7fd59f39cd4bd0762bd60a2c76d3cce865a04f",
+      "size_bytes": 24178,
+      "git_blob": "843b79b9a4a106092cf1a05543d2528adfbd3aa9",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -91337,9 +91337,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "c1ba668f839949e8ed992d9b34ff6a8c08cca47d40d3816ea6f4362de01e7a83",
-      "size_bytes": 9357,
-      "git_blob": "84b00f596713a5146e64a241e2d39a28ef26f545"
+      "sha256": "89b67d6b984674230c1a975b96151be3e9e430bc0da2d47ebc79d91ced49c463",
+      "size_bytes": 9907,
+      "git_blob": "dc2dc7a357583d4cb703bf37631f01ae2e804755"
     },
     {
       "path": "docs/runtime/evidence/time-storage-fault-01/st08-supervisor-before.json",

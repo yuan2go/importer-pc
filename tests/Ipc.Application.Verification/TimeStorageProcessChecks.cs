@@ -7,6 +7,15 @@ using Microsoft.Data.Sqlite;
 
 static class TimeStorageProcessChecks
 {
+    static Process StartChild(ProcessStartInfo start)
+    {
+        var child = Process.Start(start)!; var ready = Stopwatch.GetTimestamp();
+        // Injected launch uses dotnet rather than the installed desktop image.
+        // Acknowledge its actual image before the supervisor freezes identity;
+        // the synthetic installation path deliberately contains no executable.
+        while (!child.HasExited && child.MainModule?.FileName is null && Stopwatch.GetElapsedTime(ready) < TimeSpan.FromSeconds(2)) Thread.Sleep(5);
+        return child;
+    }
     public static async Task Supervisor(string root)
     {
         var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic-account")
@@ -16,7 +25,7 @@ static class TimeStorageProcessChecks
         {
             launches++; var start = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true };
             foreach (var arg in new[] { typeof(TimeStorageProcessChecks).Assembly.Location, root, "--time-storage-exit-child", "78" }) start.ArgumentList.Add(arg);
-            return Process.Start(start)!;
+            return StartChild(start);
         }
         var result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: _ => Launch());
         if (result != 77 || launches != 1) throw new Exception("FAIL ST08 permanent storage exit must block after one launch; actual=" + launches);
@@ -107,7 +116,7 @@ static class TimeStorageProcessChecks
                 var scenario = launches++ == 0 ? mode : "recover";
                 var start = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true };
                 foreach (var arg in new[] { typeof(TimeStorageProcessChecks).Assembly.Location, workspace, "--time-storage-runtime-child", childRoot, scenario }) start.ArgumentList.Add(arg);
-                return Process.Start(start)!;
+                return StartChild(start);
             }
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(30)); var elapsed = Stopwatch.StartNew();
             var result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: _ => Launch(), cancellationToken: deadline.Token);

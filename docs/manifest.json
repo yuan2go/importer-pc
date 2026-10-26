@@ -53157,9 +53157,9 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "sha256": "8926ae67ecaeaecbf5ecfb2a8d93f3da08ac680155357274f8a43e39f25f6077",
-      "size_bytes": 5306,
-      "git_blob": "9acd68344fcbab290981be0a6df2749d36723da2",
+      "sha256": "d1efedd43f2bfe31459175e592963538891ad1018bb773dc0c32fa153b2c8ea4",
+      "size_bytes": 5364,
+      "git_blob": "53169bf2dea8d410f7ca1ff1bfb3759423b21208",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -58013,9 +58013,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "ad4da58bd1a3f5cb95dc5d88489b3b666b2cd79ff235358c2c08f4f74e6725a3",
-      "size_bytes": 9400,
-      "git_blob": "6b340433bf66713598894830f8704361cb2a27f5",
+      "sha256": "bd006528fbe5aac933a308d9308bcd898b5c9c17b24b525c2d3b4d3de4b9265d",
+      "size_bytes": 9524,
+      "git_blob": "f181faeeb9dc3ee6f7772d520077f1bb90227822",
       "pre_publication_no_test_git_blob": "b884d885c13397f8023aa436f3b219b3556d9932",
       "pre_deferred_heartbeat_01_identity": {
         "git_blob": "edae68c1d6c1ff80bca0f25bd307d6fe007572d0",
@@ -65840,9 +65840,9 @@
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
-      "sha256": "d5f4f2b95ef8a964d78bfeaef3f82b3654823c23a4aa27d6a6d3a0bb150dc3fe",
-      "size_bytes": 12223,
-      "git_blob": "f01498b05a4c7a188777da9fa29a49d4235df868",
+      "sha256": "ecb025b9e5e90aec7dd48bd5a00ce19f225149fffec0d3ccb3b774a014fef684",
+      "size_bytes": 12263,
+      "git_blob": "e28f7803c0526db6a6054a0c3f1375a8a4b92113",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -90738,9 +90738,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "7a8c4b83a243ee5406e6dbb397c3f7dfb4b39cf20fd642e730ab7dadc76db54a",
-      "size_bytes": 10435,
-      "git_blob": "d4ae7d891b6ad3ad67477a29e1075d01c1daf5f7"
+      "sha256": "11e4c46d3ad72f24c6051c5dd25e674d73e17783f96894dd5b5a5370c4c1930d",
+      "size_bytes": 11993,
+      "git_blob": "45207a404deac9f1605d4e2b70518ef337f0c99b"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptChronology.cs",
@@ -91280,9 +91280,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "67b0afce3e9821ce2c4177fbc4cb481e146cba1bfc11800851289f92262281aa",
-      "size_bytes": 2023,
-      "git_blob": "e47543cdaaab39ec067c93c249cf73fe8979a39a"
+      "sha256": "7605b819a7dec2581c78b1b0f7f30041a05e4de14e9c058427ee44849758c886",
+      "size_bytes": 2355,
+      "git_blob": "ad98c4bccfcdb0f63b4905d228e0bd7a154e8eed"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStorageFailure.cs",
@@ -91518,6 +91518,54 @@
       "sha256": "06d220da786c25ea3e0f2a1a5cf5b2fb1b7ee4ba404ed6fbb2443eef91ff8133",
       "size_bytes": 3471,
       "git_blob": "5623e89dceeb2a5f9a0c3bc0bde0a56753ec0a44"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/first-red.json",
+      "version": "time-storage-fault-01",
+      "storage_scope": "public_repository",
+      "status": "historical_first_red_fixed_identity",
+      "source": "Original first-red evidence; source identity retained inside document",
+      "sha256": "aacb99d0ffe7959af8c8b1fd950c26a044cef21bb6144f2e84ed03cf51b0937f",
+      "size_bytes": 1537,
+      "git_blob": "d4d9728ca82d933c6fac6e47fb582bf356f4519b"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/ci-99a5.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "3b49a92cf4fcf8b67163a3bbadbeffbd491835b99f79963eecc74356cd3c278a",
+      "size_bytes": 2503,
+      "git_blob": "5a923f7c5d4c4cfac750f1b439f3bb2b5dc24125"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/local-99a5.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "8a265eba3294b83494371c01aa2a59054bbe424ff784adb3b4b72312287950b5",
+      "size_bytes": 9629,
+      "git_blob": "1f4fe7216eecc5939c73fa6133496096e40fefe5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -1,0 +1,18 @@
+{
+  "SourceParent": "f44a4d4427f295725f2fbcc38f319ba90124ecf4",
+  "ProductSource": "255ccd4a",
+  "TestPatch": "TimeStorageProcessChecks recovery pause aggregate, plus budget-empty with no original request",
+  "OriginalUnknownCase": "PASS all original cases already pause through existing recovery; no duplicate implementation",
+  "FirstEmptyAttempt": "FAIL timeout while assertion thrown inside fatal-observed child; preserved, not product root evidence",
+  "FinalEmptyResult": "FAIL global pause absent after budget-empty supervised restart",
+  "Observed": {
+    "Paused": false,
+    "AdmittingPositions": 2
+  },
+  "Logs": {
+    "integration-recovery-red.log": "bc35c98f7151c40f5d2a5dcd6ee356bf6ef76e373b46c978d89a860c70acec16",
+    "integration-recovery-empty-red.log": "a43223a59069b9fef51c44e8afc955f6ef3a7480ebee39a263a2eb86d4ded786",
+    "integration-recovery-empty-red2.log": "6a5f37657afe88c2f32fa1ec68f1c85065d11ee0845b234e037e3f8dada276d4"
+  },
+  "Scope": "Controlled synthetic input IO, existing supervisor and real Application; no physical storage or installed deployment"
+}

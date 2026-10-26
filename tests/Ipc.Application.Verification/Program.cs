@@ -12,6 +12,12 @@ var root = (args.Contains("--management-mode") || args.Contains("--operator-admi
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environment.Exit(int.Parse(args[Array.IndexOf(args,"--time-storage-exit-child")+1])); return; }
+if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
+if (args.Contains("--time-storage-runtime-child")) { var i=Array.IndexOf(args,"--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace,args[i+1],args[i+2]); return; }
+if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Supervisor(root); return; }
+if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
+if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); return; }
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--p0-provider-identity")) { await SportmasterRcs.ProviderIdentity(root); return; }
 if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }

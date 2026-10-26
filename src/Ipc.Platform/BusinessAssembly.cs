@@ -4,7 +4,12 @@ namespace Ipc.Platform;
 public sealed record BusinessCommand(string Id, long ExpectedRevision, string Kind, string? Owner = null, string? Value = null);
 public sealed record BusinessReceipt(string Status, string Reason, long Revision);
 public sealed record BusinessProjection(Guid RuntimeId, long Revision, string State, Dictionary<string, string> Facts);
-public sealed record BusinessLaunch(string ConfigurationDirectory, string DataRoot, string? View, string? Layout);
+public sealed record BusinessLaunch(string ConfigurationDirectory, string DataRoot, string? View, string? Layout)
+{
+    // Process recovery context, never an Effective configuration or permission.
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool RequireRecoveryReview { get; init; }
+}
 public sealed record BusinessPresentation(string[] Views, string[] Layouts);
 public interface IBusinessApplication
 {

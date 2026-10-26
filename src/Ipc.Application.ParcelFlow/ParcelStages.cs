@@ -44,6 +44,8 @@ public sealed partial class ParcelRuntime
         using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, query ? Management.Require() : CancellationToken.None);
         budget.CancelAfter(Effective.TimeoutMs);
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
+        var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
+        var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
         StageReply? reply;
         try
         {
@@ -80,6 +82,8 @@ public sealed partial class ParcelRuntime
         }
         // If persistence fails here, the Awaiting occurrence remains independently visible.
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
+        reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
+            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), Effective.TimeoutMs, repository.ReadOriginalReply(stage.Request, reply.Id));
         repository.StoreRaw(occurrence, reply);
         Boundary?.Invoke("AfterRawDurable");
         op = ApplyReply(op, kind, reply);
@@ -91,11 +95,13 @@ public sealed partial class ParcelRuntime
                 occurrence: occurrence, command: resolutionCommand, reconciledOccurrence: missingOccurrence);
             operations[op.Id] = op;
         }
-        else Save(op, "ReceiptApplied", "T3: original raw reply, stage and downstream intent committed together", occurrence);
+        else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
+            Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
         return op;
         }
         finally { activeStages.Remove(key); }
     }
+    internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     ParcelOperation ApplyReply(ParcelOperation op, ParcelStage kind, StageReply reply)
     {
         var wcs = kind == ParcelStage.Wcs;
@@ -103,7 +109,7 @@ public sealed partial class ParcelRuntime
         var stage = GetStage(op, kind)!;
         var prior = stage.Replies.FirstOrDefault(x => x.Id == reply.Id);
         var inconsistent = repository!.OriginalReplyHash(stage.Request.Id, reply.Id) is { } originalHash && originalHash != Wire.Hash(Wire.Encode(reply)) || reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
-            !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > DateTimeOffset.UtcNow.AddSeconds(1) ||
+            !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || !ParcelReceiptChronology.Valid(stage.Request, reply, ReceiptTimeForVerification.GetUtcNow()) ||
             reply.BusinessAccepted is not null && (!reply.TransportSucceeded || reply.ProtocolAcknowledged != true) ||
             kind == ParcelStage.Plc && factory.Requirements(stage.Request.Binding) is { Query: false, CompletesOnSubmit: true } && reply.BusinessAccepted == true && reply.PhysicalCompleted != true ||
             reply.PhysicalCompleted == true && (reply.BusinessAccepted != true || !factory.Requirements(stage.Request.Binding).PhysicalConfirmation) ||

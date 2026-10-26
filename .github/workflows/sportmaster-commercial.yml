@@ -1,7 +1,7 @@
 name: Sportmaster commercial engineering
 on:
   pull_request:
-    branches: [main]
+    branches: [main, codex/p0-stability-01]
 permissions:
   contents: read
 concurrency:
@@ -46,14 +46,24 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
+      - name: Exercise time rollback and atomic storage boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for case in time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
+            dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
+          done
       - name: Retain the actual boundary result including failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aqa01-boundaries-${{ github.sha }}
           path: |
+            time-storage-*.log
             reliability-02.log
+            receipt-custody.log
             reliability-02-crashes.log
             aqa01-boundaries.log
             stability-boundaries.log
@@ -94,7 +104,7 @@ jobs:
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          foreach ($case in @('p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
+          foreach ($case in @('time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','installer-change-guards')) {
             dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
             if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
           }

@@ -1,0 +1,8 @@
+{
+  "SourceCommit": "93aea521",
+  "Scenario": "Production ST14 supervisor with isolated child exit 78 (permanent storage)",
+  "Expected": "One launch, blocked persisted alert",
+  "Actual": "Three launches; FAIL ST08 permanent storage exit must block after one launch; actual=3",
+  "LogSha256": "c7d817d4a0e12c8daf032cdc5617792f2aa954389e6b3968a31b4b8fea910ec7",
+  "Scope": "Synthetic child only; no task/service/HKLM registration"
+}

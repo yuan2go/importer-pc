@@ -179,6 +179,9 @@ public static class DesktopRecoverySupervisor
                         }
                         await exited.ConfigureAwait(false);
                         var exit = child.ExitCode;
+                        if (exit == CrashDiagnostics.PermanentStorageExitCode)
+                            return Block(location, state with { ChildPid = null, ChildStartedTicks = null },
+                                "Permanent storage fault; repair storage and inspect original responsibilities before authorized reset");
                         RuntimeJournal.AppendMetadata(Path.Combine(directory, "diagnostics"), new { At = DateTimeOffset.UtcNow, Source = "进程监督", Event = "DesktopExited", location.SourceCommit, ChildPid = child.Id, ExitCode = exit, state.Launches });
                         state = exit == 0 ? new(0, "Exited") : state with { Status = "Exited", ChildPid = null, ChildStartedTicks = null }; Save(location, state);
                         if (exit == 0) return 0; // Normal close is deliberate, never a restart request.

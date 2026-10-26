@@ -145,6 +145,7 @@ public sealed partial class ParcelRuntime
             }
             return repository.PriorCommand(command) ?? throw new InvalidDataException("Accepted command lacks a durable receipt");
         }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "CommandCommit"); throw; }
         finally { gate.Release(); }
     }
     static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
@@ -189,6 +190,7 @@ public sealed partial class ParcelRuntime
             repository.Commit(null, "ConfigurationPendingRestart", Wire.Encode(audit), configurationAudit: audit);
             return new("PendingRestart", "Saved; Effective unchanged until controlled restart and application barriers", repository.Revision);
         }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "ConfigurationCommit"); throw; }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         {
             if (audit is not null)

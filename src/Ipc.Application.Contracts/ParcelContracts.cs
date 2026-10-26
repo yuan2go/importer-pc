@@ -18,7 +18,15 @@ public sealed record StageReply(string Id, string RequestId, string PayloadHash,
     bool? ProtocolAcknowledged, bool? BusinessAccepted, bool? PhysicalCompleted, string? Slot, string Evidence, DateTimeOffset At,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] WcsDestinationResult? Destination = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IntegrationHttpResponse? HttpResponse = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IntegrationHttpResponse? HttpResponse = null)
+{
+    // Added only by the receiving Application, never supplied by a provider.
+    // Null omission preserves all pre-existing serialized replies byte-for-byte.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ReceiptClockEvidence? LocalClockEvidence { get; init; }
+}
+public sealed record ReceiptClockEvidence(int Schema, Guid RuntimeId, string RequestId, DateTimeOffset PreparedAt,
+    DateTimeOffset StartedAt, DateTimeOffset CompletedAt, long ElapsedTicks, int BudgetMilliseconds, string ReplySha256);
 public interface IPlcPort : ICapabilityPort
 {
     Task<StageReply> SubmitAsync(FrozenRequest command, CancellationToken token);

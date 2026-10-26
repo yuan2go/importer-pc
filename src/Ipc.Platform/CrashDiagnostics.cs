@@ -8,6 +8,7 @@ namespace Ipc.Platform;
 public sealed class CrashDiagnostics : IDisposable
 {
     public const int FatalExitCode = unchecked((int)0xE0000014);
+    public const int PermanentStorageExitCode = 78;
     readonly string directory, version, sourceCommit;
     sealed record Context(string Instance, string Epochs, string RecentState);
     Context context = new("not-started", "not-started", "startup");
@@ -38,7 +39,7 @@ public sealed class CrashDiagnostics : IDisposable
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return "Progress unavailable: " + ex.GetType().Name; }
     }
-    bool Record(string kind, Exception error, bool isFatal)
+    bool Record(string kind, Exception error, bool isFatal, bool preventRestart = false)
     {
         try
         {
@@ -46,6 +47,7 @@ public sealed class CrashDiagnostics : IDisposable
             RuntimeJournal.AppendMetadata(directory, new { At = DateTimeOffset.UtcNow, Source = "进程", Level = isFatal ? "致命" : "错误", Event = kind,
                 Version = version, SourceCommit = sourceCommit, ProcessId = Environment.ProcessId, current.Instance, current.Epochs, current.RecentState,
                 LatestProgress = LatestProgress(), UnobservedTaskCount = UnobservedCount, FatalExitCode,
+                ExitCode = preventRestart ? PermanentStorageExitCode : FatalExitCode, PreventRestart = preventRestart,
                 Exception = Clip(error.ToString(), 16384), Policy = "Diagnostics only; no replay or in-process recovery" });
             LastWriteFailure = null; return true; // AppendMetadata performs Flush(true).
         }
@@ -63,10 +65,13 @@ public sealed class CrashDiagnostics : IDisposable
         if (Interlocked.CompareExchange(ref lastUnobservedWrite, now, prior) == prior) Record("TaskScheduler.UnobservedTaskException", e.Exception, false);
     }
     [DoesNotReturn]
-    public void Fatal(string kind, Exception error)
+    public void Fatal(string kind, Exception error, bool preventRestart = false)
     {
         if (Interlocked.Exchange(ref fatal, 1) != 0) Environment.FailFast("Recursive fatal exception", error);
-        var flushed = Record(kind, error, true);
+        var flushed = Record(kind, error, true, preventRestart);
+        // A known permanent storage fault is a controlled fatal exit. No dump
+        // write is attempted on a potentially full/corrupt volume.
+        if (preventRestart) Environment.Exit(PermanentStorageExitCode);
         if (OperatingSystem.IsWindows()) FailFastWindows(flushed);
         Environment.FailFast("Fatal desktop exception; diagnostics flushed=" + flushed, error);
     }

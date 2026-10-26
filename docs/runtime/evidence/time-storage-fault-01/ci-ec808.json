@@ -1,0 +1,22 @@
+{
+  "Head": "ec8081f36f89d3068896abfcba77ac13c478cc1d",
+  "ActualCheckedMerge": "d062ec8d3d3593c14f57f734488150479cd3db67",
+  "Run": 40233280329,
+  "Jobs": {
+    "LinuxAqa01": {
+      "Id": 121289396953,
+      "Conclusion": "success"
+    },
+    "WindowsFrozenSportmaster": {
+      "Id": 121289397000,
+      "Conclusion": "success"
+    }
+  },
+  "InstallerSha256": "e0a7fd8025c6a19763084b20ea228d50f02bbf5c5f1fe39d42e24137049c445f",
+  "PayloadSha256": "159b7403feea860aee2d26bc94f82e3fb6bc1c024c3c4fa39d4098a97f080635",
+  "Version": "SM1.16.0",
+  "Authenticode": "NOT_SIGNED",
+  "ActualWindowsInstallation": "NOT_RUN",
+  "ST08FullProcessClosure": "NOT_IMPLEMENTED_PENDING_PR110_DEPENDENCY_CHOICE",
+  "Scope": "Only implemented time/transaction changes and existing regression/frozen checks; no old PASS transfer or ST14 closure qualification"
+}

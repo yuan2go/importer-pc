@@ -1,0 +1,49 @@
+{
+  "Checks": [
+    {
+      "Name": "ST12 capacity throttle survives UTC rollback",
+      "Passed": false,
+      "Data": {
+        "UtcJumpHours": -12,
+        "MonotonicElapsedSeconds": 2,
+        "ProbeRan": false
+      }
+    },
+    {
+      "Name": "ST13 synthetic handoff is durable",
+      "Passed": true,
+      "Data": {
+        "SimulationOnly": true
+      }
+    },
+    {
+      "Name": "ST13 in-flight UTC rollback does not manufacture Conflict",
+      "Passed": false,
+      "Data": {
+        "State": "Blocked",
+        "Stage": "Conflict",
+        "Calls": 1,
+        "Prepared": "2026-10-25T20:30:38.4035667+00:00",
+        "Reply": "2026-10-25T19:30:38.4035667+00:00"
+      }
+    },
+    {
+      "Name": "ST08 bounded pre-write I/O jitter recovers without disabling ingress",
+      "Passed": false,
+      "Data": {
+        "Received": false,
+        "Attempts": 1
+      }
+    }
+  ],
+  "Failed": [
+    "ST12 capacity throttle survives UTC rollback",
+    "ST13 in-flight UTC rollback does not manufacture Conflict",
+    "ST08 bounded pre-write I/O jitter recovers without disabling ingress"
+  ],
+  "Baseline": "a8cd431456f73e83040f75a0c5e3cc1423440d1b",
+  "SourceScope": "Only internal System-default time injection seams and new tests; no algorithm repair",
+  "BeforeLogSha256": "821f5d821ffc61f43426932079bffce470818974786d030ca36485dafc5a20ee",
+  "RuntimeDllSha256": "c9f439ede84900f6e726487890fdd896579a16d557ce8d5774d41f647df5c2f4",
+  "FixtureDllSha256": "3b2e14b2af4e482d20506f91d0877150033e42bd4f224690f01c373c554fc1d9"
+}

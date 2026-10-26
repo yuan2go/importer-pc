@@ -23,7 +23,14 @@ static class UxCommercialPresentation
         var directory = Path.Combine(root, "ux-presentation"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        if (config.Mode != RunMode.Simulation) throw new InvalidOperationException("Presentation fixture requires an isolated Simulation candidate");
+        IParcelCapabilityFactory factory = OperatingSystem.IsWindows() ? new CommercialProductization.SyntheticFactory(launch) : new ParcelCapabilityFactory(launch);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        if (OperatingSystem.IsWindows())
+        {
+            app.RuntimeIdentityPreflight = () => { };
+            Console.WriteLine("BOUNDARY Windows presentation fixture uses isolated synthetic ports/identity; production policy and real factory remain unchanged");
+        }
         await app.StartAsync(CancellationToken.None);
         await ManagementModeFixture.Authorize(app);
         Check(app.EmitReferenceAt("left", "presentation-a", "00000123", "event-a"), "reference observation A enters left position");

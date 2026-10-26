@@ -79,7 +79,10 @@ static class DualCameraCommunication
         Check(!factory.Left!.Previous!(new(Wire.Id(), rs[0].DeviceId, old.Epoch, "late", 999, "late", "Read", ["000999"], null, DateTimeOffset.UtcNow)),
             "old registered callback cannot contaminate reconnected camera");
         Check(reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Source.Contains("LastValidObservationAt") &&
-            reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Source.Contains("LocalTransportOnly"), "management snapshot separates local endpoints, recent bytes and valid observation evidence");
+            reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Source.Contains("LastConfirmedAt") &&
+            reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Source.Contains("LivenessTimeoutSeconds") &&
+            reconnected.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Source.Contains("TCP keepalive is not application heartbeat; business admission is separate"),
+            "management snapshot separates local endpoints, finite confirmation, recent bytes and valid observation evidence");
         var ui = new Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel(app); await ui.RefreshDisplayAsync();
         var diagnostic = ui.ParameterRuntimeSummary(new(rs[1].DeviceId, rs[1].DeviceId, "右相机"));
         Check(ui.Right.DeviceLabel == "TCP 已连接" && diagnostic.Contains("LastValidObservationAt") && diagnostic.Contains("静默断网"),

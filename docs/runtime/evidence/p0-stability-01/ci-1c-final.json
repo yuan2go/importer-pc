@@ -1,0 +1,146 @@
+{
+  "CheckedPRHead": "1c769e109a5b7e2eb2de585f1db4bb0f81c9b07f",
+  "ActualCICheckoutAndFrozenSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+  "RunId": 40222910122,
+  "RunUrl": "https://github.com/yuan2go/importer-pc/actions/runs/40222910122",
+  "Checks": {
+    "aqa01-boundaries": "PASS",
+    "frozen-sportmaster": "PASS",
+    "p0-stability-boundaries": "FAIL only unchanged existing Windows COM shortcut boundary; preceding isolated P0 selectors, installer guards and dedicated Dispatcher step exit 0"
+  },
+  "FrozenEvidenceArtifactId": 12610331720,
+  "InstallableArtifactId": 12610646103,
+  "P0EvidenceArtifactId": 12610645428,
+  "ArtifactSha256": {
+    "p0-ci-1c-frozen-evidence.zip": "0258c6f7e75d6673a9c6cc949b41a89c58775dd679ff4e0c62986d9d86c5128a",
+    "p0-ci-1c-boundaries.zip": "c013521d3f82438750a899671fc4c8d7a18ebdcd79b1ecfdcb35ac45e120b371"
+  },
+  "FrozenResults": {
+    "scd-parameter-guidance/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-startup-experience/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-parameter-shell/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-task-hierarchy/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-evidence/core/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "Scope": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS",
+      "ExitCode": 0
+    },
+    "scd-evidence/operator-administration/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-evidence/parameters-v3/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-evidence/reliability-logs/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-evidence/removal/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "Scope": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+      "ExitCode": 0
+    },
+    "scd-evidence/visual/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-evidence/wpf/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureMatchesMedium": true,
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "ExitCode": 0
+    },
+    "scd-administrator-broker/RESULT.json": {
+      "Status": "PASS",
+      "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "FixtureSourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+      "Scope": "Actual SCM System service, protected credential/anchor ACL, real restricted Windows token, software authentication, lockout, expiry, ticket replay, missing-store and service-outage refusal; no equipment or production qualification",
+      "ExitCode": 0
+    }
+  },
+  "CIInstaller": {
+    "Sha256": "73f1a55834283dc67df0cb06e2f75c039668d13d7290ace693c51439a7c5c64e",
+    "SourceCommit": "32170b665eba672b1c091eb6bcc3a05d15a9d109",
+    "DeliveryFiles": 1,
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "P0LogSha256": {
+    "installer-change-guards.log": "94453c90555799e216fe4c1b386c84d9245748e7e1c9277339e80d750d87a60d",
+    "installer-options.log": "56c4711f8231c38ed3a78990aa0dff8d93b97e1299689868c3ef0a89c137967c",
+    "p0-cleanup.log": "d961998f7c8ce7b751cd6f320ec0cda49b747e881671e5aa6eee5b1f1be12af6",
+    "p0-deferred.log": "06cffcad4314ddfd74a96558f33ff03984798cf7bc11a9605c917bfdc8d9726a",
+    "p0-rcs.log": "fef2fd9019a8cffd9e0e5981d0d70b2444ee890ce2fc04d4b3e4902ded242514",
+    "p0-recovery.log": "2c37a8f0d02ba86b069ab45ad2211344b8546b6f67622532e3341316b726effd",
+    "p0-supervisor.log": "f7d7ea751c3a49220337122c72fab6e0635cbd3c36bec665f96676b80d2b3c67",
+    "p0-task-validate.log": "74cbfbb8a52f91e324b3b4a80d5d80693a8d0d4583318808e3e878cdc0597eec",
+    "p0-tcp-components.log": "3c1462f25e2eed17df9391181c69741519a6abfb79e093b5924a6523740fcd88",
+    "p0-tcp.log": "7d265cfb3f775956426fcf6c35f2c2345af38e990bb5dcb49c21827246292eb6",
+    "p0-unknown-restart.log": "19ed41dba34c76cf948292d5f296e0ed5e5698b95979126505390e555053364f",
+    "wpf-crash-hooks.log": "e5f5d465b507cdc27fff3bc50dcd0f8a91e4c77e9b1804aa39272a35f2f59810"
+  },
+  "NOT_RUN": [
+    "Actual full UAC installation/uninstallation",
+    "Registered desktop task end-to-end relaunch",
+    "WER dump generation/count rotation",
+    "SCM failure-action execution",
+    "Real packet blackhole",
+    "Target 26100+ 4core8GB",
+    "Real SDK/cameras/RCS",
+    "24h/72h and physical power cut",
+    "604800 full recovery UAC and 2592000 maintenance"
+  ],
+  "PriorFrozenSourceUnchanged": "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+  "PostFrozenProductSourceConfigDiff": "NONE",
+  "LaterReceiptCommitPolicy": "Only records these exact sources; does not promote PASS to a later commit"
+}

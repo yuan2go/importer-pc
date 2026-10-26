@@ -1,0 +1,26 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "ObservedLocalParent": "10eb35b9",
+  "Phase": "before",
+  "CandidateIdentity": "Working tree; canonical product source blobs in after summary, final delivery commit in PR; no old qualification inherited",
+  "Environment": "Windows fresh isolated synthetic processes; no registry/task/service mutation",
+  "OriginalLocalLogSha256": "565664954f3de2bdd4a14f6ac9da51f536bfd5247bed3a50e4fc0728b28f618b",
+  "Cases": [
+    {
+      "Scenario": "domain",
+      "ExitCode": -532462766,
+      "ExpectedExitCode": -536870892,
+      "FlushedLogExists": false,
+      "ContextPresent": false,
+      "Lines": 0
+    },
+    {
+      "Scenario": "unobserved",
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "FlushedLogExists": false,
+      "ContextPresent": false,
+      "Lines": 0
+    }
+  ]
+}

@@ -2,7 +2,11 @@ namespace Ipc.Platform;
 
 public sealed record DeploymentLocation(string ApplicationId, string SourceCommit, string ReleaseRoot,
     string ConfigurationDirectory, string DataRoot, string RuntimeAccountSid, string LifecycleState = "Installed", string? MaintenanceOperation = null, string? RestoreHandoffHash = null, string? DeploymentPlanIdentity = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public DesktopRecoveryOptions? Recovery { get; init; }
+}
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {
     // A byte inventory is integrity evidence, not publisher trust. The maintainer selects trusted media.

@@ -1,0 +1,15 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "Context": "Supplement after original ST01 heartbeat fix; observed local parent 10eb35b9 plus uncommitted ST14; final history folds supplement into ST01 without relabeling these observations",
+  "Phase": "after",
+  "Environment": "Fresh isolated Windows Simulation; local HTTP stub; no machine policy installed",
+  "OriginalLocalLogSha256": "f694f459c38ccdc0d94f2bf204917df86cdf0b1529d7961ae03d4e08a55299a0",
+  "Result": {
+    "Reconnect/sportmaster.reader.left": "Rejected",
+    "Reconnect/sportmaster.reader.right": "Rejected",
+    "Reconnect/sportmaster.integration": "Rejected",
+    "ReconnectAll": "Rejected",
+    "Save": "PendingRestart",
+    "Restart": "PASS"
+  }
+}

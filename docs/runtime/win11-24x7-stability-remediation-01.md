@@ -1,3 +1,7 @@
+> TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
+>
+> 崩溃闭环现由[P0-STABILITY-01/ST14](p0-stability-01.md#st14-崩溃闭环)实现全局钩子、受控WER、有限外部重启及SCM恢复；下文“未自动修改WER”描述原包形成时的实现。挂起/现场运维政策继续有效，新系统登记验收仍NOT_RUN，不能继承本页历史PASS。
+
 # 长期稳定性运行、维护及资格
 
 2026-10-25 当前输入分页及命令预算整改见[实现](retention-ingress-02.md)和[新验证](validation/retention-ingress-02.md)。本次业务代码已修改；原 PR103 的“业务未改”和完整规模FAIL仅描述其形成时点。新大规模受保护CLI启动UAC取消，资格缺口未关闭。

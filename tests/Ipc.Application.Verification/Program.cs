@@ -15,6 +15,17 @@ Directory.CreateDirectory(root);
 if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); return; }
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }
+if (args.Contains("--p0-rcs")) { await SportmasterRcs.P0ScanRegression(workspace, root); return; }
+if (args.Contains("--p0-cleanup")) { await P0Cleanup.Run(workspace, root); return; }
+if (args.Contains("--p0-tcp")) { await P0Tcp.Run(root); return; }
+if (args.Contains("--p0-tcp-components")) { await P0Tcp.ExistingComponents(); return; }
+if (args.Contains("--p0-crash-child")) { var i = Array.IndexOf(args, "--p0-crash-child"); await P0Recovery.Child(args[i + 1], args[i + 2]); return; }
+if (args.Contains("--p0-recovery")) { await P0Recovery.Run(root); return; }
+if (args.Contains("--p0-supervisor")) { await P0Supervisor.Run(root); return; }
+if (args.Contains("--p0-task-validate")) { P0Supervisor.ValidateTaskSchema(root); return; }
+if (args.Contains("--p0-supervised-child")) { await Task.Delay(args.Contains("--sleep") ? 30000 : 400); Environment.Exit(args.Contains("--normal") ? 0 : 12); return; }
+if (args.Contains("--p0-unknown-restart")) { await SportmasterRcs.P0UnknownRestart(workspace, root); return; }
 if (args.Contains("--parameter-guidance-startup")) { await ParameterGuidanceStartup.Run(workspace, root); return; }
 if (args.Contains("--deferred-connections")) { await SportmasterRcs.DeferredConnectionChecks(workspace, root); return; }
 if (args.Contains("--h02-crash-child")) { var i = Array.IndexOf(args, "--h02-crash-child"); await ReliabilityHardening.CrashChild(workspace, args[i + 1], args[i + 2], args[i + 3]); return; }

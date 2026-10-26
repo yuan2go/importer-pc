@@ -25,6 +25,14 @@ static class InstallerOptions
         DeploymentShortcuts.Create(location with { Shortcuts = new(false, false) }, programs, desktop);
         Check(!Directory.Exists(programs) && !Directory.Exists(desktop), "unchecked choices create neither folder nor link");
         var chosen = location with { Shortcuts = new(true, true) };
+        // Real installation projects shortcuts only after the release exists.
+        // WSH on Windows Server need not accept an absent working directory.
+        void ReleaseDirectory(DeploymentLocation deployment)
+        {
+            var directory = Path.Combine(deployment.ReleaseRoot, "desktop"); Directory.CreateDirectory(directory);
+            File.WriteAllText(Path.Combine(directory, "Ipc.Desktop.exe"), "synthetic shortcut target; never executed");
+        }
+        ReleaseDirectory(chosen);
         Check(Path.GetFileName(DeploymentShortcuts.Plan(chosen, programs, desktop).Last().Path) == "菜鸟供包台.lnk", "desktop name is exactly the product name without module, commit or deployment suffix");
         DeploymentShortcuts.Create(chosen, programs, desktop); DeploymentShortcuts.Create(chosen, programs, desktop);
         dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!)!;
@@ -37,6 +45,7 @@ static class InstallerOptions
                 finally { Marshal.FinalReleaseComObject(link); }
             }
             var upgraded = chosen with { SourceCommit = new string('b', 40), ReleaseRoot = Path.Combine(root, "release-87654321") };
+            ReleaseDirectory(upgraded);
             DeploymentShortcuts.Create(upgraded, programs, desktop, chosen);
             DeploymentShortcuts.Remove(chosen, programs, desktop);
             var stable = DeploymentShortcuts.Plan(upgraded, programs, desktop).Last();

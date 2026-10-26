@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Diagnostics;
 using Ipc.Platform;
 
 namespace Ipc.Drivers;
@@ -8,12 +9,20 @@ namespace Ipc.Drivers;
 // Explicit client/LF framing requested by the user. No commands or reconnect replay.
 public sealed class TcpLineObservationSource : IControlledObservationSource
 {
-    public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.0.1", "TCP-LINE-OBSERVATION-v1",
+    public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.1.0", "TCP-LINE-OBSERVATION-v1",
     [new("device.ip", "连接", "相机 IP 地址", "string", true, MaximumLength: 15),
      new("device.port", "连接", "相机端口", "integer", true, Minimum: 1, Maximum: 65535),
      new("bcr-code", "相机编码", "相机编码（心跳）", "string", MaximumLength: 256),
+     new("keepalive-time-seconds", "连接存活", "TCP空闲探测时间（秒）", "integer", Default: "60", Minimum: 1, Maximum: 7200),
+     new("keepalive-interval-seconds", "连接存活", "TCP探测间隔（秒）", "integer", Default: "10", Minimum: 1, Maximum: 600),
+     new("keepalive-retry-count", "连接存活", "TCP探测次数", "integer", Default: "3", Minimum: 1, Maximum: 10),
+     new("liveness-timeout-seconds", "连接存活", "最长无入站数据时间（秒）", "integer", Default: "300", Minimum: 1, Maximum: 86400,
+         Description: "超过后关闭连接并告警；无来件也会计时，TCP应答不等于相机业务存活，须与现场确认。"),
      new("entity.mode", "实体关联", "包裹关联方式", "choice", Default: "observe-only", Choices: ["observe-only", "line"], Description: "仅观察不创建作业；每行一个包裹须由现场确认，重复行不会按条码合并。")], new());
     readonly DeviceBinding binding;
+    readonly TimeSpan livenessTimeout;
+    long confirmedTicks;
+    DateTimeOffset confirmedAt;
     readonly SemaphoreSlim lifecycle = new(1, 1);
     readonly object gate = new();
     TcpClient? client;
@@ -33,6 +42,23 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
     {
         Validate(binding);
         this.binding = binding with { Parameters = new(binding.Parameters!) };
+        livenessTimeout = TimeSpan.FromSeconds(Setting("liveness-timeout-seconds", 300));
+    }
+    int Setting(string key, int fallback) => binding.Parameters!.TryGetValue(key, out var value)
+        ? int.Parse(value, System.Globalization.CultureInfo.InvariantCulture) : fallback;
+    void ConfigureKeepalive(Socket socket)
+    {
+        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+        socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, Setting("keepalive-time-seconds", 60));
+        socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, Setting("keepalive-interval-seconds", 10));
+        socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, Setting("keepalive-retry-count", 3));
+    }
+    bool Current(string registration)
+    { lock (gate) return !failed && Epoch == registration && stop?.IsCancellationRequested == false; }
+    void ConfirmAlive()
+    {
+        confirmedAt = DateTimeOffset.UtcNow; confirmedTicks = Stopwatch.GetTimestamp();
+        Confirm(DeviceHealth.Ready);
     }
     public static void Validate(DeviceBinding binding)
     {
@@ -65,16 +91,17 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(token); budget.CancelAfter(TimeSpan.FromSeconds(5));
             try
             {
+                ConfigureKeepalive(client.Client);
                 await client.ConnectAsync(IPAddress.Parse(binding.Parameters!["device.ip"]), int.Parse(binding.Parameters["device.port"], System.Globalization.CultureInfo.InvariantCulture), budget.Token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 lock (gate)
                 {
                     localEndpoint = client.Client.LocalEndPoint?.ToString(); remoteEndpoint = client.Client.RemoteEndPoint?.ToString();
-                    phase = "Receive"; Confirm(DeviceHealth.Ready);
+                    phase = "Receive"; ConfirmAlive();
                 }
                 var stream = client.GetStream(); var receiveToken = stop.Token;
-                reading = Task.Run(() => Read(stream, receive, receiveToken), CancellationToken.None);
-                liveness = Monitor(receiveToken);
+                reading = Task.Run(() => Read(stream, receive, registeredEpoch, receiveToken), CancellationToken.None);
+                liveness = Monitor(registeredEpoch, receiveToken);
             }
             catch (Exception error)
             {
@@ -89,22 +116,27 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
         }
         finally { lifecycle.Release(); }
     }
-    async Task Read(NetworkStream stream, Func<Observation, bool> receive, CancellationToken token)
+    async Task Read(NetworkStream stream, Func<Observation, bool> receive, string registration, CancellationToken token)
     {
         var buffer = new byte[1024]; var line = new List<byte>(4097);
         var category = "ReceiveFailure";
         try
         {
-            while (true)
+            while (Current(registration))
             {
                 category = "ReceiveFailure";
                 var count = await stream.ReadAsync(buffer, token).ConfigureAwait(false);
+                if (!Current(registration)) return;
                 if (count == 0)
                 {
                     category = line.Count == 0 ? "RemoteClosed" : "IncompleteFrame";
                     throw new EndOfStreamException();
                 }
-                lock (gate) receivedAt = DateTimeOffset.UtcNow;
+                lock (gate)
+                {
+                    if (failed || Epoch != registration || token.IsCancellationRequested) return;
+                    receivedAt = DateTimeOffset.UtcNow; ConfirmAlive();
+                }
                 for (var i = 0; i < count; i++)
                 {
                     var b = buffer[i];
@@ -123,66 +155,74 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
                     Observation observation;
                     lock (gate)
                     {
-                        if (failed || token.IsCancellationRequested) return;
+                        if (failed || Epoch != registration || token.IsCancellationRequested) return;
                         validObservationAt = DateTimeOffset.UtcNow;
-                        var n = ++sequence; var source = Epoch + "." + n;
-                        observation = new(Wire.Id(), DeviceId, Epoch, source, n, "tcp." + Wire.Hash(source)[..40].ToLowerInvariant(),
+                        var n = ++sequence; var source = registration + "." + n;
+                        observation = new(Wire.Id(), DeviceId, registration, source, n, "tcp." + Wire.Hash(source)[..40].ToLowerInvariant(),
                             binding.Parameters!.GetValueOrDefault("entity.mode", "observe-only") == "line" ? "Read" : "UncorrelatedRead", [code], null, validObservationAt.Value);
                     }
                     // No driver lock across application code. Stop can fence the
                     // socket and honor cancellation while retaining an in-flight reader.
                     category = "IngressCallbackFailure";
+                    if (!Current(registration)) return;
                     if (!receive(observation)) { category = "IngressRejected"; throw new IOException(); }
-                    lock (gate) { if (!failed && !token.IsCancellationRequested) Confirm(DeviceHealth.Ready); }
+                    lock (gate) { if (!failed && Epoch == registration && !token.IsCancellationRequested) Confirm(DeviceHealth.Ready); }
                 }
             }
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
         catch (ObjectDisposedException) when (token.IsCancellationRequested) { }
         catch (IOException) when (token.IsCancellationRequested) { }
-        catch (Exception error) { Fault(error, category); }
+        catch (Exception error) { Fault(error, category, registration); }
     }
-    async Task Monitor(CancellationToken token)
+    async Task Monitor(string registration, CancellationToken token)
     {
         try
         {
-            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
             while (await timer.WaitForNextTickAsync(token).ConfigureAwait(false))
                 lock (gate)
                 {
-                    if (failed || token.IsCancellationRequested) return;
-                    // Read alone owns EOF/errors. Poll + Available races with Read.
-                    // This renews LOCAL transport evidence, never a remote heartbeat.
-                    Confirm(DeviceHealth.Ready);
+                    if (failed || Epoch != registration || token.IsCancellationRequested) return;
+                    // Only connect/received bytes confirm transport activity. A
+                    // local timer cannot manufacture a new remote confirmation.
+                    if (Stopwatch.GetElapsedTime(confirmedTicks) >= livenessTimeout)
+                    { Fault(new TimeoutException(), "LivenessExpired", registration); return; }
                 }
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        catch (Exception error) { Fault(error, "LocalMonitorFailure"); }
+        catch (Exception error) { Fault(error, "LocalMonitorFailure", registration); }
     }
-    void Confirm(DeviceHealth state)
+    void Confirm(DeviceHealth state, string? publishedEpoch = null)
     {
-        var at = DateTimeOffset.UtcNow;
+        var at = state == DeviceHealth.Ready ? confirmedAt : DateTimeOffset.UtcNow;
         var evidence = ConfirmationSource + "; " + Wire.Encode(new
         {
             Phase = phase, Category = failureCategory, SocketError = socketError, Sequence = sequence,
             ConfiguredRemote = EndpointIdentity(binding), Local = localEndpoint, Remote = remoteEndpoint,
             LastReceivedAt = receivedAt, LastValidObservationAt = validObservationAt,
-            Confirmation = "LocalTransportOnly; no application heartbeat; business admission is separate"
+            LastConfirmedAt = confirmedAt, LivenessTimeoutSeconds = livenessTimeout.TotalSeconds,
+            CurrentConnectionEpoch = Epoch,
+            Confirmation = "Connect/received-byte evidence; TCP keepalive is not application heartbeat; business admission is separate"
         });
-        health?.Invoke(new(DeviceId, Epoch, state, at, state == DeviceHealth.Ready ? at.AddSeconds(3) : null, evidence));
+        health?.Invoke(new(DeviceId, publishedEpoch ?? Epoch, state, at, state == DeviceHealth.Ready ? at.Add(livenessTimeout) : null, evidence));
     }
-    void Fault(Exception error, string category)
+    void Fault(Exception error, string category, string? registration = null)
     {
         lock (gate)
         {
-            if (failed) return;
+            if (failed || registration is not null && Epoch != registration) return;
             failureCategory = category;
             phase = category.StartsWith("Ingress", StringComparison.Ordinal) ? "Ingress" :
                 category is "InvalidUtf8" or "EmptyFrame" or "ControlCharacter" or "FrameTooLong" or "IncompleteFrame" ? "Protocol" : phase;
             socketError = (error as SocketException ?? error.InnerException as SocketException)?.SocketErrorCode.ToString();
             // Do not retain callback messages or raw barcode/protocol bytes.
             LastFailure = category + (socketError is null ? "" : ": " + socketError);
-            failed = true; stop?.Cancel(); client?.Dispose(); Confirm(DeviceHealth.Faulted);
+            var retired = Epoch;
+            failed = true; Epoch = Wire.Id(); stop?.Cancel(); client?.Dispose();
+            // Publish one final fault to the application's original registration,
+            // while retiring every producer tied to this physical connection.
+            Confirm(DeviceHealth.Faulted, retired);
         }
     }
     async Task StopCore(CancellationToken token)

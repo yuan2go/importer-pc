@@ -13,6 +13,7 @@ var root = (args.Contains("--management-mode") || args.Contains("--operator-admi
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--p0-provider-identity")) { await SportmasterRcs.ProviderIdentity(root); return; }
 if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }
 if (args.Contains("--p0-rcs")) { await SportmasterRcs.P0ScanRegression(workspace, root); return; }
 if (args.Contains("--p0-cleanup")) { await P0Cleanup.Run(workspace, root); return; }

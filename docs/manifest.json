@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "4979460b76d0418f47800f4dbfe2f58ced1c5826a5573418ecc986939209cbf6",
-      "size_bytes": 17899,
-      "git_blob": "2fed05aee9ad8528ecf0d470ad7612f45a5efd41",
+      "sha256": "c9618ac066e6feb46c11ddc9924d872a876bb14aea8cc47e64922724b28b5c9d",
+      "size_bytes": 17922,
+      "git_blob": "e6a9189bd562e42fad036d451f6f1bac9eecfe5a",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2043,9 +2043,9 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "49797fcf415c458dd6db2978486f7dbef5ec00210310756d7a4b7d429939af25",
+      "sha256": "f452aa13ccb8a72e12690e13f03d44a129c4c3155abeaf35947e67c59755594f",
       "size_bytes": 7746,
-      "git_blob": "20f5b1617d2b8192b1e3490fdfa5003741aa9b35",
+      "git_blob": "23283daa9b809b3c3be9f76f15c45a0b68ccc614",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -53852,9 +53852,9 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "c91ac9a6703b6d72b43d56c44139c826f4aa63a7eff25a4f8f173330132707b5",
+      "sha256": "0b4b6fb1bf628766ab3b8d36eb4f17c69c0f81ff5befe5015e6b578844ff17ee",
       "size_bytes": 339,
-      "git_blob": "4b6beca0afc50e05dfb05522515015b3276ce384",
+      "git_blob": "233e46fe7c73a3de259881787b2ef9b8badb52bb",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -55595,9 +55595,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "a35df1e40b35e39a02af615726040c06f4142184acbb10522cb313e7222f9ca6",
+      "sha256": "42495bddd7ef1839c7b44fc5debdacc543345016686fc1fa523e6ba6a49e8102",
       "size_bytes": 341,
-      "git_blob": "3396950e7cbb5588dfbe1ae623a168a8a82252fa",
+      "git_blob": "6e69f173aed30fbe44363f572fe0516164b9b32d",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -56501,9 +56501,9 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "7d6b99f10125e9a5b5994e7b547aaca08cabd422a9697ac17283252d348b0c73",
+      "sha256": "aecd6402d0caf3ff8cb770f90c0a8b994e20985223a22b6906d696bf49b69024",
       "size_bytes": 339,
-      "git_blob": "295c8623230bb779daa54c6342cd0a46ae85e792",
+      "git_blob": "09ec29cfa4942a086c378168e9ed77f4d81046ac",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -56651,9 +56651,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "ec8bcd56567782b416385cf1f79769514240832e95beed3d66f303c0465dce8c",
-      "size_bytes": 43039,
-      "git_blob": "4fe811546d89fba14dc8d246e2d59f73fdec8cec",
+      "sha256": "72f5f9a9d49540818ed6336e9f5f2aa20ceb210b2738961cf78a8d4963a8ce52",
+      "size_bytes": 43115,
+      "git_blob": "fa117fba13ceef3dec1b9722183a80142519726b",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -59332,9 +59332,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "85ad5a96891f4ddca9c720115ee89326b4ded3eef3be75ac60042412fa939fe2",
-      "size_bytes": 23319,
-      "git_blob": "20f0809a6938d272829d9c8ecc970fbac10b6541",
+      "sha256": "2af6a5a0819aa8055361312fbbcf62f38428778615514b4072811934ae2bf4e8",
+      "size_bytes": 23421,
+      "git_blob": "aaa9a2d95524fa6bf9fe8ddd9625501de2262d6c",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -90473,9 +90473,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "bc7d8279a53f98ac56642676ae2b37ecde45cd4ce372d2899363f60db0692a12",
-      "size_bytes": 11808,
-      "git_blob": "c5d3d7cdd3155fc8ab4c2be49c96453963489524"
+      "sha256": "d8494f1d80d2a85024b192570c9b7e5957aa9ee7efeaac49bea1c372ac525b82",
+      "size_bytes": 12997,
+      "git_blob": "06d0b529c1042379c5e219ad120fabe9f92239fb"
     },
     {
       "path": "tests/Ipc.Application.Verification/P0Stability.Scans.cs",
@@ -90649,9 +90649,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "ca167dcc21d3f99bb2f3dc4a850db034d3ec479f0ff54f8feb40d2908da3b147",
+      "sha256": "0946bcd3a6ecc4e581175187cda1c49cb25ff678d64c59c9bdc81320710d7130",
       "size_bytes": 14751,
-      "git_blob": "7f2b7244635ec74e12e90152d1cac131e4b6069b"
+      "git_blob": "4fedacdb18347b7ebdf3ec0b56bcd18a18b5f8f8"
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Recovery.cs",
@@ -90682,9 +90682,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "42173ed054d3285ccaa127f7c874188aeb1057dbb5a8456fc94d4929b741ab23",
-      "size_bytes": 10431,
-      "git_blob": "4100d56dcc7b181030535eef30862ea24b6bbe00"
+      "sha256": "ef6cd890ae6b87636b1c5386f0b5f831ab5690028fe88a83e77f74d17d8cbaa4",
+      "size_bytes": 10898,
+      "git_blob": "de3fc0145f105cea09f3e9e18718df83cd1cc3ac"
     },
     {
       "path": "tests/Ipc.Application.Verification/P0Stability.UnknownRestart.cs",
@@ -90847,9 +90847,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "ce03051c68b09cac67bc62afac9efd8ed96cb2fb8608e41f1ac65530553aa9e8",
-      "size_bytes": 2234,
-      "git_blob": "a30372da23967908c7eeeb4915b8d769e2cc8158"
+      "sha256": "302928b4dbc0b5de5064b38d9f13acb4749e28f875ae00afcad787d02e85f3dc",
+      "size_bytes": 3960,
+      "git_blob": "94e5268a0a2e928ec355abcb5d2d8082fa346283"
     },
     {
       "path": "scripts/verify-shortcut-codepages.ps1",
@@ -90872,6 +90872,17 @@
       "sha256": "06d220da786c25ea3e0f2a1a5cf5b2fb1b7ee4ba404ed6fbb2443eef91ff8133",
       "size_bytes": 3471,
       "git_blob": "5623e89dceeb2a5f9a0c3bc0bde0a56753ec0a44"
+    },
+    {
+      "path": "docs/runtime/evidence/pr110-unicode-shortcuts-01/review-red.json",
+      "version": "p0-stability-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "P0 stability implementation and synthetic verification",
+      "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
+      "storage_scope": "public_repository",
+      "sha256": "c13bdcdc09ccd2618ac231b7bc6cabd70f9c69e87bb9e35faa665c8df747ae6c",
+      "size_bytes": 1957,
+      "git_blob": "58656311251810f26b7feb05d0070bfd439a55ad"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

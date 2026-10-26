@@ -17,6 +17,7 @@ static partial class SportmasterRcs
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
         Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(p => p.Key == "request-timeout-ms") is
             { Default: "5000", Minimum: 100, Maximum: 30000, Unit: "毫秒" }, "request timeout schema has units, default and bounds");
+        await LegacyRequestTimeoutChecks(workspace);
         await using var peer = new Peer();
         var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.4", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
         foreach (var invalid in new[] { "0", "99", "30001", "1.5", "-1", "bad" })
@@ -127,5 +128,23 @@ static partial class SportmasterRcs
         }
         await TimeoutRescanChecks(workspace, root);
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");
+    }
+
+    static async Task LegacyRequestTimeoutChecks(string workspace)
+    {
+        foreach (var version in new[] { "1.3.2", "1.3.3" })
+        {
+            await using var peer = new Peer { Mode = "legacy-delayed-assignment" };
+            var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = version };
+            await using var service = new SportmasterRcsTaskService(binding);
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
+            await service.StartAsync(default);
+            var request = Request(binding);
+            request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
+            using var callerBudget = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var response = await service.ResolveSlotAsync(request, callerBudget.Token);
+            Check(response.BusinessAccepted == true && response.Slot == "SYNTH-CHUTE" && peer.Requests.Count == 1,
+                "legacy " + version + " accepts the original delayed assignment beyond five seconds under its caller budget, without resending");
+        }
     }
 }

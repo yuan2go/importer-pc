@@ -20,9 +20,10 @@ static partial class Program
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         ParcelRuntime Make() => new(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await using var app = Make(); await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
-        var failStop = true; var reopen = 0; ParcelRuntime? replacement = null;
+        var failStop = true; var stopCalls = 0; var reopen = 0; ParcelRuntime? replacement = null;
         var window = new SupplyStationWindow(app, null, "standard", async () =>
         {
+            stopCalls++;
             if (failStop) { failStop = false; throw new IOException("合成停止失败；原资源仍归原实例"); }
             await app.DisposeAsync();
         }) { ConfirmOwnerExit = _ => true, ConfirmDiscardDrafts = _ => true };
@@ -63,10 +64,14 @@ static partial class Program
             var b = c with { TimeoutMs = c.TimeoutMs + 1 };
             var staged = await app.StageConfigurationAsync((await app.SnapshotAsync()).Configuration.Revision, b, "LIA native controlled activation");
             Check(staged.Status == "PendingRestart", "candidate B is saved into the existing pending ledger");
-            await vm.RefreshAsync(); await vm.RequestActivationAsync!(); await Task.Delay(250);
-            Check(window.IsVisible && reopen == 0 && vm.Message.Contains("仍持有资源"), "failed owner stop retains the original native window and prevents reopen");
-            await vm.RequestActivationAsync!(); await Task.Delay(300);
-            Check(!window.IsVisible && reopen == 1 && replacement is not null, "successful resource release permits exactly one controlled replacement");
+            await Until(() => vm.CanRequestActivation && vm.Snapshot?.Configuration.Pending?.TimeoutMs == b.TimeoutMs);
+            Check(vm.CanRequestActivation && vm.Snapshot!.Configuration.Pending!.TimeoutMs == b.TimeoutMs, "native activation is offered only after the saved candidate B is observed");
+            await vm.RequestActivationAsync!();
+            await CloseCompleted(() => stopCalls == 1 && window.IsEnabled);
+            Check(window.IsVisible && stopCalls == 1 && reopen == 0 && vm.Message.Contains("仍持有资源"), "failed owner stop retains the original native window and prevents reopen; visible=" + window.IsVisible + "; reopen=" + reopen + "; message=" + vm.Message);
+            await vm.RequestActivationAsync!();
+            await CloseCompleted(() => !window.IsVisible && reopen == 1);
+            Check(!window.IsVisible && stopCalls == 2 && reopen == 1 && replacement is not null, "successful resource release permits exactly one controlled replacement");
             var activated = await replacement!.SnapshotAsync();
             Check(activated.Configuration.Effective.TimeoutMs == b.TimeoutMs && activated.Configuration.Pending is null && activated.Paused && activated.Operations.All(o => o.FrozenConfiguration.TimeoutMs == c.TimeoutMs), "real restart reads back B, stays paused and retains every original request on A");
             await ManagementModeFixture.Authorize(replacement);
@@ -83,6 +88,13 @@ static partial class Program
         }
         lines.Add("BOUNDARY actual WPF/HWND/Dispatcher + real Application/SQLite; explicit synthetic ports and identity. UAC/system install/reboot/real SDK/RCS/target-touch/field NOT_RUN.");
         await VerifyRemovalPresentation();
+        async Task CloseCompleted(Func<bool> done)
+        {
+            // Closing drains service calls asynchronously, with its own five-second
+            // bound. Observe completion instead of assuming a 250/300ms CI schedule.
+            for (var i = 0; i < 320; i++) { if (done()) return; await Task.Delay(25); }
+            throw new TimeoutException("LIA native close did not complete; stopCalls=" + stopCalls + "; reopen=" + reopen + "; message=" + vm.Message);
+        }
         async Task Until(Func<bool> done)
         {
             for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); window.UpdateLayout(); if (done()) return; await Task.Delay(25); }

@@ -1,0 +1,4 @@
+EvidenceRoot=D:\deliveries\pr116-merge-20261026\test-temp\ipc17-verification-a7e4ecd64828401c90f4a8e91f0f1f37
+PASS RCS20: lost HTTP response produces exactly one original request
+PASS RCS20: process restart preserves Unknown and frozen original bytes
+PASS RCS20: restart, unavailable authoritative query and reconnect neither clear Unknown nor replay

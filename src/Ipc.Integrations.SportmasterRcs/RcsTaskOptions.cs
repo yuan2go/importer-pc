@@ -15,7 +15,7 @@ internal sealed class RcsTaskOptions
     internal readonly bool SpecifiedChute;
     internal readonly string? ChuteCode;
     internal readonly int HeartbeatIntervalSeconds;
-    internal readonly int RequestTimeoutMs;
+    internal readonly int? RequestTimeoutMs;
     internal static readonly string[] RequiredKeys = ["source", "locale", "zone-id", "project-id", "specified-chute",
         "request-id-base", "request-id-count", "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code"];
 
@@ -39,7 +39,8 @@ internal sealed class RcsTaskOptions
         HeartbeatIntervalSeconds = Binding.Parameters.ContainsKey("heartbeat-interval-seconds")
             ? checked((int)Number("heartbeat-interval-seconds", 1, 3600)) : 5;
         RequestTimeoutMs = Binding.Parameters.ContainsKey("request-timeout-ms")
-            ? checked((int)Number("request-timeout-ms", 100, 30000)) : 5000;
+            ? checked((int)Number("request-timeout-ms", 100, 30000))
+            : Binding.Version == "1.3.4" ? 5000 : null;
         SpecifiedChute = Text("specified-chute", 5) switch { "true" => true, "false" => false, _ => throw new InvalidDataException("specified-chute must be true or false") };
         ChuteCode = Binding.Parameters.ContainsKey("chute-code") ? Text("chute-code", 64) : null;
         if (SpecifiedChute != (ChuteCode is not null)) throw new InvalidDataException("chute-code is required exactly when specified-chute=true");

@@ -97,7 +97,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         try
         {
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
-            deadline.CancelAfter(options.RequestTimeoutMs);
+            if (options.RequestTimeoutMs is { } timeoutMs) deadline.CancelAfter(timeoutMs);
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
                 Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,

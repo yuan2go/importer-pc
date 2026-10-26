@@ -10,8 +10,10 @@ public sealed partial class ParcelRepository
     // second allocation journal and does not grow memory with historical volume.
     void InitializeIntegrationRequestHistory()
     {
-        ValidateIntegrationRequestHistory();
-        BackfillIntegrationRequestOwners();
+        // Current schemas retain permanent unique owners. Validate their canonical
+        // originals once; older schemas keep the original pre-migration scans.
+        if (StorageVersion < 7) ValidateIntegrationRequestHistory();
+        else BackfillIntegrationRequestOwners();
     }
     void ValidateIntegrationRequestHistory()
     {

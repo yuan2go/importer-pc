@@ -54,6 +54,8 @@ static class StabilityAuditFixes
             ("zero-numeric", "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId',0) WHERE id='op-2'"),
             ("string-numeric", "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId','2') WHERE id='op-2'"),
             ("fraction-numeric", "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId',2.5) WHERE id='op-2'"),
+            ("empty-request", "DELETE FROM parcel_integration_id_owners; UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.Id','') WHERE id='op-2'"),
+            ("whitespace-request", "DELETE FROM parcel_integration_id_owners; UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.Id','   ') WHERE id='op-2'"),
             ("missing-request", "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.Id',NULL) WHERE id='op-2'"),
             ("archive-hash", "UPDATE parcel_archives SET body=body||' ' WHERE id='op-1'"),
             ("row-owner", "UPDATE parcel_operations SET body=json_set(body,'$.Id','op-1') WHERE id='op-2'"),

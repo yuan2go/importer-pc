@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "920665b94e49b9ca25da5ef332ffd8904a010c899aa038cb5ba56af72863fda7",
-      "size_bytes": 8048,
-      "git_blob": "05276b9c375ec5dd0ed91929e5a0488b3b8f559d"
+      "sha256": "719a2068380402633c2744ef87322df407e64e8bd4dc0978d0b645a6a205e746",
+      "size_bytes": 8592,
+      "git_blob": "ee9767ac391d52e9e3e97315151ba6ef7b5ed363"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",
@@ -96959,9 +96959,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "7cd7804d957db9f7fdc96c742a47a1278496a7229a8c6991a378bcef7aa457d3",
-      "size_bytes": 12029,
-      "git_blob": "7cb08b023bd61656626111a4880be50b26fe4933"
+      "sha256": "bae095c4a110a017419aed6be52431ac028cea833e3c7ae83062768d43783a76",
+      "size_bytes": 12059,
+      "git_blob": "92029241b3f91c6233a29b0da0f402d3a6f1bc60"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

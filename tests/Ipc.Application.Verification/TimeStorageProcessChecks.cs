@@ -19,7 +19,7 @@ static class TimeStorageProcessChecks
     public static async Task Supervisor(string root)
     {
         var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic-account")
-        { Recovery = new(RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+        { Recovery = new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
         var launches = 0;
         Process Launch()
         {
@@ -132,7 +132,7 @@ static class TimeStorageProcessChecks
         {
             var childRoot = Path.Combine(root, mode); var launches = 0;
             var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(childRoot, "release"), childRoot, Path.Combine(childRoot, "data"), "synthetic-account")
-            { Recovery = new(RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+            { Recovery = new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
             Process Launch()
             {
                 var scenario = launches++ == 0 ? mode : "recover";

@@ -67,3 +67,7 @@ PR110在新头5e4b85d5的CI40269650794三个job全部success、未解决评审�
 | post110-main-p0-unknown-restart | PASS | `62e95d83aba9ebec5a50dcd96b3d521a0af9b88f118d34ad24cc26ae367c92cf` |
 
 PR113已merge上述新main。此前d204bc58的产品差量与当前组合一致，三ACP及正式TCP/预算回归各自仍只记d204源；PR113新head CI另行执行。
+
+## PR112监督夹具的默认值适配
+
+组合提交fcc1c2d2构建通过，原ST08监督夹具失败（实际启动次数0）。这是本轮Enabled默认false后旧夹具不再进入监督路径，并非永久故障守卫回归。只将两处监督场景显式设Enabled=true，保留首次永久退出仅一次启动、持久Block、恢复暂停及原请求不重放的全部断言；默认关闭断言仍由P0套件验证。原失败日志SHA256 addd05b9d61ed94993d11b718a59c0ab6998f6ac64372ac4edd247632bce92d8，后续结果独立登记。

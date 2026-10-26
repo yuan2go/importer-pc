@@ -9,3 +9,5 @@ ST14来源PR110，用户2026-10-26选择叠加依赖；PR112 base已改codex/p0-
 目标26100+/4核8GB、真实SDK/RCS/设备、物理断电、Production安装、24h/72h、604800完整UAC恢复、2592000均不由本包短测授予资格。未执行项NOT_RUN。一个工作包一分支一PR，按实际源/环境登记验证和manifest，不强推、不合并。
 
 交付源3965（产品最后改动0502、3965仅修夹具映像确认），本机8选择器/4 WPF/安装器编译及Linux/Windows冻结CI独立回执见[问题卡](../runtime/validation/time-storage-fault-01.md)。Windows P0步骤通过，但原非CJK快捷方式COM令job仍FAIL，保持草稿；未放宽断言或转记旧PASS。
+
+当前集成：父980a1383的Unicode修复经255ccd4a继承，99a593b1本机8选择器/三ACP/四WPF/安装器编译重新通过；实际CI合并源b3606350的Linux、Windows P0和冻结安装器三job均SUCCESS。旧3965 COM FAIL保留，最终文档/manifest修订不转记这些PASS。完整边界及源码见最新问题卡。

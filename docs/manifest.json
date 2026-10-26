@@ -68114,6 +68114,25 @@
       "git_blob": "40512f8515841bfa751c525298d15541eb85ef36"
     },
     {
+      "path": "docs/runtime/evidence/time-storage-fault-01/ci-99a5.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "3b49a92cf4fcf8b67163a3bbadbeffbd491835b99f79963eecc74356cd3c278a",
+      "size_bytes": 2503,
+      "git_blob": "5a923f7c5d4c4cfac750f1b439f3bb2b5dc24125"
+    },
+    {
       "path": "docs/runtime/evidence/time-storage-fault-01/ci-ec808.json",
       "storage_scope": "public_repository",
       "pre_time_storage_fault_01_identity": {
@@ -68161,6 +68180,25 @@
       "sha256": "b2cad2d8fe51fa54066268e14ced6a4b199410958b43076aa0730ea4019c4fc6",
       "size_bytes": 11711,
       "git_blob": "dee74ad0f6ff7852a97a67af5e95ba68283b070b"
+    },
+    {
+      "path": "docs/runtime/evidence/time-storage-fault-01/local-99a5.json",
+      "storage_scope": "public_repository",
+      "pre_time_storage_fault_01_identity": {
+        "version": null,
+        "status": null,
+        "source": null,
+        "purpose": null,
+        "sha256": null,
+        "git_blob": null
+      },
+      "version": "time-storage-fault-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
+      "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
+      "sha256": "8a265eba3294b83494371c01aa2a59054bbe424ff784adb3b4b72312287950b5",
+      "size_bytes": 9629,
+      "git_blob": "1f4fe7216eecc5939c73fa6133496096e40fefe5"
     },
     {
       "path": "docs/runtime/evidence/time-storage-fault-01/local-ec808.json",
@@ -80271,9 +80309,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "7a8c4b83a243ee5406e6dbb397c3f7dfb4b39cf20fd642e730ab7dadc76db54a",
-      "size_bytes": 10435,
-      "git_blob": "d4ae7d891b6ad3ad67477a29e1075d01c1daf5f7"
+      "sha256": "11e4c46d3ad72f24c6051c5dd25e674d73e17783f96894dd5b5a5370c4c1930d",
+      "size_bytes": 11993,
+      "git_blob": "45207a404deac9f1605d4e2b70518ef337f0c99b"
     },
     {
       "path": "docs/runtime/validation/ui-maintainability-16-windows.md",
@@ -86185,9 +86223,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "67b0afce3e9821ce2c4177fbc4cb481e146cba1bfc11800851289f92262281aa",
-      "size_bytes": 2023,
-      "git_blob": "e47543cdaaab39ec067c93c249cf73fe8979a39a"
+      "sha256": "7605b819a7dec2581c78b1b0f7f30041a05e4de14e9c058427ee44849758c886",
+      "size_bytes": 2355,
+      "git_blob": "ad98c4bccfcdb0f63b4905d228e0bd7a154e8eed"
     },
     {
       "path": "docs/work-packages/WP-IPC-TYPOGRAPHY-01.md",
@@ -87981,9 +88019,9 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "sha256": "84c62aa6a247bba5b63187bc5c051a299f3fd5a7e7f200ab80ea6f670ab87dc0",
+      "sha256": "16d9ba74b255325299ee97731e9ccd8b27837aa82b1014cb1a79e6ee5a7a7820",
       "size_bytes": 340,
-      "git_blob": "25629a09e3aa3117a70b776536a5ee96638d142f",
+      "git_blob": "da948776f60a79a0b4539ae5495c938ceb6aed03",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -90209,9 +90247,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "sha256": "65e2570744a6d4f27ee2e53069fd21cdf397e49481d40be93eef5323fb24df0b",
+      "sha256": "4fe52f42f9a59dbaae2bad1d655daf1c5a7165e536efafbe592e5ff8402fbe7e",
       "size_bytes": 341,
-      "git_blob": "aafdfbf92b144032083a2fb41426473714b0362c",
+      "git_blob": "df1a46b2a70b4669b102956bdf1dc20ffd97d2df",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -91139,9 +91177,9 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "sha256": "b53dc5677d1f333093ac30d0151950eb420c0b9a3c2ca42b2f98a8006d47ae4e",
+      "sha256": "90995c9ea4de44e5e252f02af49c8a435aaf172bc81c1298219c67a602a5627e",
       "size_bytes": 340,
-      "git_blob": "c12e3d91a9b32dd8d13bbd4bad673ea330ef1868",
+      "git_blob": "90cdf2af7b9170990be828a3844b0e863b9134c2",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -98987,9 +99025,14 @@
   },
   "stability_integration_02_sources": [
     {
-      "commit": "255ccd4a0fdc50d974614d20643399a8f7cba791",
-      "manifest_sha256": "5e4af1664acb07d6195c9f92d15922b1aa5e45ac849fd83c273e38173a5b83c3",
+      "commit": "43382c59dd9ce1a9ed4895e3eaa4fe06770b2d3c",
+      "manifest_sha256": "59ed81f58f17b78e245b97e5d687baca72e14f537aa9ed426e9c18d32319d5ba",
       "work_package": "WP-IPC-TIME-STORAGE-FAULT-01"
+    },
+    {
+      "commit": "2d4110e49b78d46465bced471810117bd0ca37e6",
+      "manifest_sha256": "2ed5b23d2ae689058f352dd2d613e3da6ee53db99db3009f406aeee2926e113b",
+      "work_package": "WP-IPC-STABILITY-INTEGRATION-02"
     }
   ]
 }

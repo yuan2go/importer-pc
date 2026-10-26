@@ -62,7 +62,7 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 四个新选择器（time-storage-fault/atomic/supervisor/process-checks）及父P0 cleanup/rcs/unknown-restart/supervisor已本机通过；后续源提交/日志哈希在新增回执另计。Windows本机reliability-02受既有MachineRuntimePolicy（未安装指定账户政策）阻断，不绕过或登记；其Linux CI另验，不能把环境阻断写成通过。旧P0非CJK快捷方式COM门禁仍由其原CI记录说明，未改断言。
 
-## 叠加源3965的最终回执
+## 阶段3965回执（原COM阻断保留）
 
 [本机逐断言、DLL及log hash](../evidence/time-storage-fault-01/local-3965.json)固定3965cea59ef79ee82f3408721d24d679e9e6cd7e：8个选择器PASS，四BusinessModule WPF构建及Sportmaster自包含win-x64安装器编译PASS。0502的首次精确进程复验遇到注入dotnet的映像尚未确认；生产监督器安全Block并非业务恢复失败，3965仅补夹具启动确认，不削弱断言。两次尝试的身份与结果均保留，0502该次不计PASS。
 
@@ -71,3 +71,13 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 Windows冻结介质job121373038672 SUCCESS；SM1.16.0单EXE安装器SHA256 `111133345d59bb259f03147b68ec3266c147b76010ef8d4a2483f53a3c435882`，payload `0d496d64db1e5463e1869074a0d32baa43a52951630476dfdeda995ddb389791`。这份介质实际SourceCommit为72aba1ce；未签名，实际安装NOT_RUN，CI Server 2025不等于目标Windows 11工控机长稳资格。
 
 本段后的回执提交只包含文档/manifest/合成证据，不给后续提交转记上述PASS；其自动CI另外计证。父PR110尚未合并，PR112继续叠加其分支，父合并后才转main，不自行合并。
+
+## 继承PR110 980a后的当前回执（99a5）
+
+收尾检查发现父分支推进：980a1383继承Unicode Shell Link COM修复；255ccd4a同步双方历史，版本仍SM1.16.0/Contracts1.20.0。没有在子包重写该修复，原3965/72aba的COM FAIL保留。99a593b1为合并后manifest校对源；[本机精确回执](../evidence/time-storage-fault-01/local-99a5.json)重新锁构建，8个新/父P0选择器、三ACP隔离COM、四WPF及自包含安装器编译全部通过。
+
+[新CI独立回执](../evidence/time-storage-fault-01/ci-99a5.json)：run40262133399，PR头99a593b1ec3840a1545a230d54195024342aa195，实际合并源b3606350376cde9231c0523d98c116d6e3dd6186；Linux job121376836336、Windows P0 job121376836219、冻结安装器job121376836360均SUCCESS。原installer-options断言及新增ACP1252/936/65001创建/回读/升级/归属保护/删除都执行，无全机区域修改。当前COM门禁已解除，旧FAIL没有倒写。
+
+新未签名安装器SHA256 `76a378c2318c2932bf5b8966f8b7d15c2867c71526f5e132ba84dc08efd7311b`，payload `211db4f0b1363c7c0289723ceabd81d0d95eef469700c568f523551565e7dc24`，实际SourceCommit为b3606350。实际安装/任务/SCM/WER/卸载、真实时钟/盘故障与目标硬件长稳仍NOT_RUN。
+
+最后只补文档与manifest：核对合并后实际文件Git blob/sha，补首红证据缺项，原证据正文和SourceCommit不变；这个回执头的自动CI独立计证，不转记99a5/b360 PASS。PR112仍叠加父分支并保持草稿；父合并main后再转main，不擅自合并。

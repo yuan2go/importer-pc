@@ -1,0 +1,2 @@
+# Preserve exact captured evidence bytes and their FILES.json hashes.
+*.log -text

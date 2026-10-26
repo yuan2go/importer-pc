@@ -4,19 +4,23 @@
   "TestedSourceFiles": [
     {
       "Path": "src/Ipc.Platform/DesktopRecoveryInstallation.cs",
-      "SHA256": "640b67dd95a65a22d572fe70c8910448ab71443c526b068f5ee11783c40db5a5"
+      "TestedWorkingTreeSha256": "640b67dd95a65a22d572fe70c8910448ab71443c526b068f5ee11783c40db5a5",
+      "CanonicalGitSha256": "8fc6bd065d8941eb716b6ab46f9b0f3179859902c2f8ce9f2c39dabc5776399f"
     },
     {
       "Path": "src/Ipc.Desktop/StartupSetupWindow.cs",
-      "SHA256": "53517b59f91d5676d90026902bc7e0027fc81d8beba9cc30b3c72ef58efb4995"
+      "TestedWorkingTreeSha256": "53517b59f91d5676d90026902bc7e0027fc81d8beba9cc30b3c72ef58efb4995",
+      "CanonicalGitSha256": "6f8bd9757f226a46a437ca6e0601f6ebdf42a9f546872f2a5fab7d28ef4f67ec"
     },
     {
       "Path": "tests/Ipc.Application.Verification/P0Stability.TaskLookup.cs",
-      "SHA256": "168e1a10192e7198bcd61da1e4e306bf249d625de33b6ab96197df66d9fa7cac"
+      "TestedWorkingTreeSha256": "168e1a10192e7198bcd61da1e4e306bf249d625de33b6ab96197df66d9fa7cac",
+      "CanonicalGitSha256": "168e1a10192e7198bcd61da1e4e306bf249d625de33b6ab96197df66d9fa7cac"
     },
     {
       "Path": "tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs",
-      "SHA256": "bf409150697d6e4284368671f759dda6599595ff7f2fb56703f1e9434537a888"
+      "TestedWorkingTreeSha256": "bf409150697d6e4284368671f759dda6599595ff7f2fb56703f1e9434537a888",
+      "CanonicalGitSha256": "a19da7d41d6964bc102d3cffa792198b9c69876460053c6a07e46acd1cb9b2dd"
     }
   ],
   "ExpectedFailures": {

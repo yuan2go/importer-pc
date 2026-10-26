@@ -1,3 +1,5 @@
+> 2026-10-26恢复暂停补缺：监督子进程在原Application Paused账写入软件暂停后才接收；没有既有Unknown/输入的首次写前故障重启也不自动恢复供包。仅显式Resume沿原守卫解除暂停，不清Unknown、不重放。续修SM1.16.1、DirectPlc/WcsToPlc1.10.1、Contracts1.20.0，DB9不变；[补缺证据](validation/stability-integration-02.md)。下文1.16.0及原PASS均保留历史来源。
+
 # 时间与存储故障分级 · 运行说明
 
 本包F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b，原3a5b1d13已前进。SM1.16.0、DirectPlc/WcsToPlc1.10.0、Contracts1.20.0预留以避开并行PR110/111版本；DB9/SQL1–9不变。[工作包](../work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md)、[问题卡/本次证据](validation/time-storage-fault-01.md)、[全仓UTC清单](time-storage-fault-01-utc-inventory.md)分别计证，不移动旧PASS。

@@ -2059,9 +2059,9 @@
     },
     {
       "path": "config/compositions.json",
-      "sha256": "19e50ad594e62e965f0782a739bb92e947e6fbdc948435ec04387f112790f83c",
-      "size_bytes": 7746,
-      "git_blob": "c2f49bb46e22e2d9a5f49b49793238729687b7a4",
+      "sha256": "c94fb9eefaee4fdc522bd91d1033b8db0a6aa1ffc00e106c4c7344b08b6370cd",
+      "size_bytes": 7748,
+      "git_blob": "f7e617507b4d70bddccc96ea446a6224d3252ad2",
       "version": "time-storage-fault-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; process dependency explicitly pending",
@@ -79600,9 +79600,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "UTC review and rollback-safe storage classification; authorized PR110 process closure; exact-source synthetic evidence only",
       "source": "WP-IPC-TIME-STORAGE-FAULT-01; no historical PASS transfer",
-      "sha256": "f4e338bd19733f85bbaeae4ed1a8bdc6bef4d901bc4a429a4333e84d1e168d0c",
-      "size_bytes": 7510,
-      "git_blob": "1e6d60c4c0b0934ab0d20aa4ee42d6b060bb99c2"
+      "sha256": "5a48a0c07c85e609f854f13c7aaa51a73b9c0854f654d14436a553622a27c249",
+      "size_bytes": 7947,
+      "git_blob": "0abdb3599212ab6a61d46330078b06b6321ebb06"
     },
     {
       "path": "docs/runtime/typography-01.md",

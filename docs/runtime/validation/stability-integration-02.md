@@ -11,3 +11,5 @@ PR110快捷方式固定源980a1383三组ACP与安装守卫本机复验通过；�
 原Unknown/已持久输入三场景新增全位暂停断言通过，原实现正确，不重复改写。新增首次输入在提交前持续故障、没有既有未决作业/输入的budget-empty场景，有限重启后Paused=false，仍有位可准入，新增断言明确失败。首次把断言放子进程触发原致命钩子、造成父预算取消的尝试保留原FAIL；最终在子进程落观察、父进程断言，才用于根因。见[原身份及日志hash](../evidence/stability-integration-02/recovery-pause-red.json)。
 
 修复采用既有BusinessLaunch的恢复启动上下文，桌面所有监督子进程启动向Application传递“需恢复核对”；Application在原Paused账写入暂停后才启动接收。没有新配置/新状态账、没有自动Resume。正常显式Resume继续检查权限/健康/原责任，不能清Unknown。部署正常首次监督启动也要求明确开始，不能用登录自启动获得供包授权。
+
+补缺后工作树四场景通过：budget-empty监督重启保留全位暂停，明确Resume后才解除软件暂停且外呼仍为0；原budget/ambiguous的Unknown、冻结请求和Interrupted输入不变；permanent仍只启动一次即Block。新增bool只属于启动上下文，默认不序列化，普通启动原字节保持；没有另建配置或业务账。工作树逐文件/日志hash见[绿回执](../evidence/stability-integration-02/recovery-pause-worktree-green.json)，最终源和CI另计。

@@ -49,7 +49,7 @@ public partial class App : System.Windows.Application
         {
             var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? arguments[0] : null;
             if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
-            selected = DesktopLaunchOptions.Parse(mode is null ? arguments : arguments[1..], ApplicationId);
+            selected = DesktopLaunchOptions.Parse(mode is null ? arguments : arguments[1..], ApplicationId, recoveryChild);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {

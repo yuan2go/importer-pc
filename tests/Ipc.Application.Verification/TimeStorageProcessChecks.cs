@@ -62,7 +62,11 @@ static class TimeStorageProcessChecks
             var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Login = null, BackupSchedule = null };
             ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), source);
         }
-        var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
+        var launch = mode == "recover"
+            ? Ipc.Desktop.DesktopLaunchOptions.Parse(["--config", root, "--data-root", Path.Combine(root, "data")], "sportmaster", recoveryChild: true).Business
+            : new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
+        if (mode == "recover" && !launch.RequireRecoveryReview || mode != "recover" && Wire.Encode(launch).Contains("RequireRecoveryReview"))
+            throw new Exception("Recovery launch context missing or changes ordinary launch wire bytes");
         var factory = new Factory(launch);
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         using var diagnostics = new CrashDiagnostics(Path.Combine(root, "fatal-diagnostics"), "synthetic-ST08", typeof(TimeStorageProcessChecks).Assembly.GetCustomAttributes(false).OfType<System.Reflection.AssemblyInformationalVersionAttribute>().Single().InformationalVersion);
@@ -83,6 +87,17 @@ static class TimeStorageProcessChecks
             {
                 using var query = db.CreateCommand(); query.CommandText = "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'";
                 if (Convert.ToInt64(query.ExecuteScalar()) != 1) throw new Exception("Committed Pending input was not retained as Interrupted");
+            }
+            if (empty)
+            {
+                var ready = Stopwatch.StartNew();
+                while (snapshot.Availability?.Resume != true)
+                {
+                    if (ready.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Explicit recovery Resume readiness");
+                    await Task.Delay(10); snapshot = await app.SnapshotAsync();
+                }
+                _ = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
+                if ((await app.SnapshotAsync()).Paused || factory.Calls != 0) throw new Exception("Explicit Resume failed or replayed provider work");
             }
             stop.Cancel(); await monitor;
             Console.WriteLine("PASS ST08 restarted Unknown/frozen request retained; provider calls=0; committed input not replayed"); return;

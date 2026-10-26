@@ -123,6 +123,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         try
         {
             repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
+            if (launch.RequireRecoveryReview)
+                repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)

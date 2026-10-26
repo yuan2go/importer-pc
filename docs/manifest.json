@@ -54430,9 +54430,9 @@
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
-      "sha256": "62f4a372563e4ee97e097425da4b8d25376644cd732aaee41e46f43d73a13936",
-      "size_bytes": 24110,
-      "git_blob": "f73d30e6c398d394367a8af875e0d0fb92204d0f",
+      "sha256": "884243af3e07e11097b443f996bf4296757ddf9c2a46996d3b51ef0dbaf1a6e6",
+      "size_bytes": 24343,
+      "git_blob": "6a7368c4cc6235e9cb1f2450ec3861a90355c8ca",
       "previous_git_blob": "abe7799d4557985e2e012f7869fa1a370de3e0e3"
     },
     {
@@ -59573,9 +59573,9 @@
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
-      "sha256": "e2fbf05b99cf25c1fdc1703f35e9a0b1213fa72b94895eece035edeb5ef3b31b",
-      "size_bytes": 25952,
-      "git_blob": "834305c358f5b03d3b08eae53914f2babee845a2"
+      "sha256": "b235a74cf84a8c7934b002f6b54bd945d488eecae1488353e121763a7c7870b9",
+      "size_bytes": 26894,
+      "git_blob": "f8c0700d3f2795c92699390d70cd7bbde09817f6"
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "663d67368eddb637974d701bb45b4039419e946ec03c8629ea40fc4d3bde43ea",
-      "size_bytes": 24873,
-      "git_blob": "8bd48664201c22529eafba6555148967c7cf466f"
+      "sha256": "8f9c66808c0e5a85c94dfe7bda80cc0c7b0a7d23749ebc43a6d5986e9388fed0",
+      "size_bytes": 27866,
+      "git_blob": "ffccc8272815dfe90ffd6c74f31bdd53fd64240a"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",
@@ -96397,9 +96397,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ShortcutLifecycle.cs",
-      "sha256": "1c7d75291bd06f273dc610add424bef37676725ae59a5206418187ee2745ab65",
-      "size_bytes": 19956,
-      "git_blob": "745c4e039645bea5479d512cbbd5487dbc844004",
+      "sha256": "863c7b21587963981c60e03461f6582aa48e508b384682659391891b08bba56f",
+      "size_bytes": 20822,
+      "git_blob": "36aa9954a0cad94ce5418e6b313c6c599e7f085b",
       "version": "unicode-shortcut-compatibility-01",
       "status": "scoped_implementation_and_separately_identified_evidence",
       "storage_scope": "public_repository",

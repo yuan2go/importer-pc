@@ -219,3 +219,27 @@ PR108合并时同时保留：OperationId与Recovery的冻结计划；卸载剩�
 |pr108-recovery-green-legacy-red|`9b34ee19`|FAIL|`cfd3f0cf349f5ea9d3121993739c142be30b03e751082c9053157f03c4137e4c`|
 |pr108-recovery-plan-red|`6b6c1bed`|FAIL|`c69a737c11ace53b9832dd29d0ff3711977c996ead2550501851afe360a94f1d`|
 |pr108-restore-app|`665f43a9`|PASS|`8b4b076f1042c6c54346285657cb20285d2d108a17fd3e9d82d1f23900cf74cd`|
+
+## PR108 CI 发现后的契约补查
+
+26d66697 的 CI 40280624399：frozen-sportmaster PASS；aqa01-boundaries、p0-stability-boundaries FAIL。历史页旧夹具仍允许重叠查询，快捷方式旧夹具从新友好名称动态生成“历史入口”，两者已与 LIA 的当前合同不符。保留单查询所有权和旧结果不得覆盖的意图，增加取消后真实排空的回归；独立固定旧快捷方式名称，在两个真实历史目录验证删除，并保留未经登记的自定义放置。
+
+0b7b815b 的新回归实际失败：旧 HistoryAsync 端口不能取消底层 I/O，但取消后仍发布迟到页面。9169546f 在实际排空后、投影前补取消栅栏；当前会话式查询、旧接口、完整详情权限同时通过。Windows 展示夹具限定隔离 Simulation 与合成端口/身份，Linux 仍使用原工厂，生产运行身份与权限没有放宽。快捷方式在同一源上以 ACP1252/936/65001 实际运行通过。
+
+过程失败全部保留：dee5c56c 的首次展示执行被本机未安装身份策略挡住，隔离后取得上述真实红灯；一次脚本匹配未成功导致在0b7b815b重复运行红灯；一次误写 `--latency-details` 落入默认套件并被安装身份策略拒绝，不是详情套件结果。以正确 `--latency-details-checks` 在9169546f运行通过。下表按实际源记录，不把新PASS回填旧源。
+
+|实际执行|源|结果|日志SHA256|
+|---|---|---|---|
+|pr108-ci-regressions-build|`dee5c56c`|PASS|`330e4e8e8727fcd141083a0efb0082b073cfe37f2bbc394e57d8ba9cb5a68cfd`|
+|pr108-ci-repair-build|`0b7b815b`|PASS|`dbfd988591c323be93f477f2b7f75a2eb668a2597ff093057e833d15f6dace58`|
+|pr108-ci-repair-ux-commercial-presentation|`0b7b815b`|FAIL|`2d5de450cbb5def06d3bf75bf3d890906335620aaff320868f56467621d148ea`|
+|pr108-history-fix-build|`9169546f`|PASS|`6d8d6633782dcd95a4e9b9b04ea052fd2a4aee21aae666e6cf73e0aa73bc6a40`|
+|pr108-history-fix-codepages|`9169546f`|PASS|`47cdbcaa2dbd9a864a9234c02dac264731cce984a734d36d554c0bc0b2e2e0e9`|
+|pr108-history-fix-latency-details-checks|`9169546f`|PASS|`58a7039eb8409607689424c3084789fb6c09bf57cdc8cb3a1cf9c9b7d98552eb`|
+|pr108-history-fix-latency-details|`9169546f`|FAIL|`566076b56b0ea1504bf16d5eb021457cc24f669ab98a4d1501a170807b57e571`|
+|pr108-history-fix-lifecycle-ux|`9169546f`|PASS|`05252f61b1f2e1244c2071022e22c8c302436a0184f4efe7207950e45adb300d`|
+|pr108-history-fix-ux-commercial-presentation|`9169546f`|PASS|`2193ebe97aaec6da7ad9162bb5d10b1ae8d2da9612ea538b7c9171963e9b440e`|
+|pr108-history-isolated-build|`0b7b815b`|PASS|`b8022c46774a86a201fa56ccfb61d8df9abf8e2b7480a36cf8aa9d15bd56ab4e`|
+|pr108-legacy-history-cancel-red-isolated|`0b7b815b`|FAIL|`6b13fc9a370324280b80c5eeb151d09eb028d6a6717e42b7be116656eb256340`|
+|pr108-legacy-history-cancel-red|`dee5c56c`|FAIL|`d5a60c8fbd14752d14620813926a0e634a01461a3eb61fffb93af6aca3dfab9b`|
+|pr108-shortcut-history-green|`dee5c56c`|PASS|`6739209afd13a1443884f59690498ccb3da32e82fa685111867e6f7c0fff215c`|

@@ -21,6 +21,15 @@ public static partial class ParcelConfigurationRules
         if (c.Retention is { } retention && (retention.ResidentHistory is < 1 or > 10000 || retention.MinimumFreeBytes is < 1048576 or > 1099511627776)) e.Add("Invalid resident history/storage reserve policy");
         if (c.Retention?.DiagnosticLogDays is < 1 or > 3650) e.Add("Retention.DiagnosticLogDays: 诊断日志保留须为1～3650天，或留空使用原轮转策略");
         if (c.Retention?.HistoryDays is < 7 or > 30) e.Add("Retention.HistoryDays: 已结历史保留须为7～30天；旧配置留空不删除");
+        if (c.Retention is { } capacity)
+        {
+            var critical = capacity.CriticalFreeBytes ?? capacity.MinimumFreeBytes * 2;
+            var warning = capacity.WarningFreeBytes ?? capacity.MinimumFreeBytes * 4;
+            if (critical <= capacity.MinimumFreeBytes || warning <= critical || warning > 4398046511104L)
+                e.Add("Retention capacity thresholds require MinimumFreeBytes < CriticalFreeBytes < WarningFreeBytes <= 4TiB");
+            if (capacity.WalWarningBytes is < 1048576 or > 1099511627776 || capacity.WalCheckpointSeconds is < 1 or > 3600)
+                e.Add("Retention WAL monitoring requires 1MiB..1TiB warning and 1..3600 seconds interval");
+        }
         if (c.WeightRange is { } range)
         {
             if (application == "sportmaster" || c.Weight.Source == WeightSource.Disabled) e.Add("WeightRange: 当前业务未启用称重，不能配置重量范围");

@@ -21,6 +21,7 @@ public partial class ParcelViewModel
         if (generation != Volatile.Read(ref managementReadGeneration)) return;
         var changed = managementMode != next; managementMode = next;
         if (!changed) return;
+        InvalidateDetailsAuthority();
         foreach (var name in new[] { nameof(IsManagementMode), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
     }
     public async Task RequireManagementModeAsync()

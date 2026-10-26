@@ -19,6 +19,10 @@ if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("Evid
 if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); return; }
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--latency-capacity-checks")) { await LatencyCapacityChecks.Run(workspace, root); return; }
+if (args.Contains("--latency-projection-checks")) { await LatencyProjectionChecks.Run(workspace, root); return; }
+if (args.Contains("--latency-details-checks")) { await LatencyDetailsChecks.Run(workspace, root); return; }
+if (args.Contains("--latency-storage-checks")) { await LatencyStorageChecks.Run(workspace, root); return; }
 if (args.Contains("--p0-provider-identity")) { await SportmasterRcs.ProviderIdentity(root); return; }
 if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }
 if (args.Contains("--p0-rcs")) { await SportmasterRcs.P0ScanRegression(workspace, root); return; }

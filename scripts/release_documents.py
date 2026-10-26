@@ -7,6 +7,7 @@ PARCEL_GUIDES = {
     'docs/runtime/time-storage-fault-01.md': 'TIME-AND-STORAGE-FAULTS.md',
     'docs/runtime/p0-stability-01.md': 'P0-STABILITY.md',
     'docs/runtime/code-reliability-hardening-02.md': 'CODE-RELIABILITY.md',
+    'docs/runtime/latency-capacity-01.md': 'LATENCY-AND-CAPACITY.md',
     'docs/runtime/win11-24x7-stability-remediation-01.md': 'STABILITY-AND-RETENTION.md',
     'docs/runtime/architecture-quality-remediation-01.md': 'ARCHITECTURE-QUALITY-REMEDIATION-01.md',
     'docs/runtime/management-mode-01.md': 'MANAGEMENT-MODE.md',

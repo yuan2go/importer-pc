@@ -106,6 +106,28 @@ PR113新头d88f6a69的CI40270929013三个job全部success；旧TCP身份P1在正
 
 PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机结果仍只属于678724b7，不转记新的文档提交。
 
+## PR111合并时恢复ST12单调保留节拍
+
+原容量文件负对照（4da6bf6e加组合暂存差异）实际失败：`ST12 retention notification interval also survives rollback`，日志SHA256 `6f55382939bb3866117fdd43138ae115fca1c70b80b56bce4eba22813586f550`。合并候选4e892a92保持该原文件以定位问题，随后单独恢复retentionCheckedTimestamp/GetElapsedTime，并保留新分级预警/有界预测；首次编辑构建因字段声明遗漏失败，修正后重新构建通过，未放宽测试。维护清理放入备份围栏内，启动计数在gate外且仍受存储故障分类和恢复暂停守卫保护。
+
+下列PASS只属于4e892a92加工程差异 `ee4f0a92b8a0dad37d4aab8bf1070c6ea9a90e4d969d04d4c411785496261a12`，不转记最终main。
+
+|执行|结果|日志SHA256|
+|---|---|---|
+|pr111-combined-installer-change-guards|PASS|`a2d5510bc4a94e2e1fe93c14944444f659eecee335bf8136ecb318960e57a851`|
+|pr111-combined-latency-capacity-checks|PASS|`988ddc0dc574c93666dd40edd25e42b99a62f6cd444f7f0ac386c5d6ff0f131a`|
+|pr111-combined-latency-details-checks|PASS|`e26842327b6b8d480cadfaf30e8dedc360ebc3e20372b68b13f54be6dcaa9ebb`|
+|pr111-combined-latency-projection-checks|PASS|`f6a6b742c2929df645342daec65d1106723433ef58c943852300660790a0004a`|
+|pr111-combined-latency-storage-checks|PASS|`191b48265b983658b0a253811f8c401ef1c1408e8decb872f18ed1f2ffeeff8a`|
+|pr111-combined-p0-cleanup|PASS|`c5f12e5b041509a7dbe7265d59031a230b81770a7d91f06a58b072bbd919bdfb`|
+|pr111-combined-p0-provider-identity|PASS|`b58bac1a131f6dd416946654cf5d386022ab5cf539b0114fbce77090d9efee6f`|
+|pr111-combined-p0-supervisor|PASS|`85da2d5fd04c45c05aa3f0552473f9b15c1657ded0f481af991f7a74782f30c9`|
+|pr111-combined-p0-unknown-restart|PASS|`e3a1e030a6d14067249c183f491dc553057958cb96eae221d046cb7b4e509c45`|
+|pr111-combined-time-storage-atomic-checks|PASS|`f9c2bc8af157927d75d0bf710e31643c13d6fd685df0c2f2ba93c50488d1e4fd`|
+|pr111-combined-time-storage-fault-checks|PASS|`1d2c894bd38492292e984c5f75a018839afe14f75eaf8a0c5ff65e8365d28ee6`|
+|pr111-combined-time-storage-process-checks|PASS|`a7a95606674c3a0283ffc1003abad2594583a95e35b21d90fdf85eb58181721e`|
+|pr111-combined-time-storage-supervisor-checks|PASS|`2dbfe11abd53e7e4d5b8b8f2c79547ecbe9b8eb1de50dc9733066feba7ce8774`|
+
 ## PR112重复回执身份根因修复
 
 评审PRRT_kwDOVLQU8s6wJD82指出LocalClockEvidence随观察变化会破坏重复回执身份。新增测试提交9bfa1b0665e09c7d8d4bc32a264b4cae60e33cd2实际先红：相同回执查询、再次回拨和重启三条失败，日志SHA256 `6c9bbe7de747fd287425eb093ba6828449d18416dc47e24082dce5ed6ad1e76a`。修复从原operation/request/身份hash取得经字节/hash校验的持久原件，相同provider字段复用首次原件；内存投影缺失仍成立，不改首次raw、身份索引、SQL1–9或已有Conflict。不同字段及provider伪造本地证据有拒绝断言。
@@ -120,3 +142,38 @@ PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机
 |pr112-repeat-guards-receipt-custody|FAIL|`a16b1a3fc73c0004ec8e33b8a93171e2ee03bcc40929fb1b28c7ec35ad550ecc`|
 |pr112-repeat-guards-p0-unknown-restart|PASS|`501d00c9dae58952ad60692dbaa9c9011eda4a08869fe86ef72b3cef54ad20a0`|
 |pr112-repeat-guards-reliability-02|FAIL|`0a53bcf3899f047961dc7028764cef660686be55a955c1cff6cece4c0f711d93`|
+
+## PR112合入main及PR111计划备份夹具复核
+
+PR112新头000fb311的CI40274393725三个job全success，包含Linux receipt-custody/reliability-02；因此这两套不再笼统标NOT_RUN，区分Linux已执行和本机Windows安装策略入口阻断。重复身份评审线程已凭红绿结果解决，合入main a97d20088c78b55fffc2dde7911a58c11ba199e8。其干净main重新构建及11项时钟/事务/进程/P0/部署/启动参数回归全部通过，树与被检查PR头一致。
+
+PR111源564fab6b复测时计划备份夹具实际失败，首轮COMPLETED计数0，随后一次计划检查完成1份备份。原夹具把到期检查当作当轮维护条件必然满足，未覆盖允许的Pending（在途健康调用等维护守卫）。改为5秒内驱动后续计划时刻并等待实际完成；份数上限检查以成功时刻为基准，还核对原路径和COMPLETED哈希不变，不改生产授权、暂停或在途调用守卫。失败日志SHA256 `bcdb3c8f089a8c1c346b4d00745d4701e66b5512a7731eafcdc7f869952c4f6b`；修正后的实际结果另计。用户要求复核旧NOT_RUN，后续按当前环境逐项判断，不继承旧标记。
+
+## PR111当前组合的实际Windows验证
+
+源5124b196baa00b6b320034307e9b8e22eb7da40f，干净树；计划备份修正夹具、在线取消/停止、P0 Unknown/监督/部署守卫、三个产品WPF及原生验证构建全部通过。60万合成历史预置279.42秒，随后六组各12秒；实际Window共享同一个Application。夹具PASS只断言稳态无重复详情计算/作业序列化，不表示统计不劣或长期资格；本次没有采集新的dotnet-counters LOH序列。原报告反向样本保留。
+
+|驻留|窗口|刷新P50 ms|gate P50 ms|Dispatcher P95 ms|稳态作业序列化/详情次数|
+|---|---|---|---|---|---|
+|200|1|55.7213|27.1678|0.9899|0/0|
+|200|2|62.6675|27.0085|1.0031|0/0|
+|200|4|54.5091|20.3215|1.0584|0/0|
+|800|1|102.3370|38.2865|1.0550|0/0|
+|800|2|96.2622|37.6825|1.1449|0/0|
+|800|4|93.3722|35.6435|0.9901|0/0|
+
+完整MEASUREMENTS/IDENTITY与DLL哈希保存在D盘仓库外审计目录；完整60万count查询五次均8 VM steps，冷查询835.37ms、暖查询74.77–88.59ms，UI稳态不反复执行该count。
+
+|执行|结果|日志SHA256|
+|---|---|---|
+|pr111-committed-installer-change-guards|PASS|`91415d98c6be6ee9586bb03a71343328752c650e179d0352c257ed0c789c2bbd`|
+|pr111-committed-latency-capacity-checks|PASS|`dbddff4ede133ae64d4a9283599020cb5731c04f611ad2830939b62f48c72861`|
+|pr111-committed-latency-storage-checks|PASS|`38fc4ef4896a036496f602af00def77a2c4b2f11dfdcea43675b5060e0b860cf`|
+|pr111-committed-p0-supervisor|PASS|`20a3636cb747a7d82016b08b2a5b55b2c9c554f5839707c38ba9c8e21ddb7e4f`|
+|pr111-committed-p0-unknown-restart|PASS|`97047a0f1e2bf1e8c3cb039c6548302f5477d12b0e87b15d1116f971f384b776`|
+|pr111-final-native-600k|PASS|`c1e98a9fa52955fe4bf26b5713c7f87aafd7805c72e3899ea7796d8844d9cca7`|
+|pr111-final-native-build|PASS|`03f238755d068bbb7f7ebd68331ac4dfd05e13efafa6c19b0745a09fe76b5346`|
+|pr111-final-wpf-DirectPlc|PASS|`519ca71166164b1f4146eeb255812ef2cb1f2517a281856c38c8e641064312c7`|
+|pr111-final-wpf-Sportmaster|PASS|`98e6dc93d774f18e2f08e76d8a8f491951c93c1562e4fc8639193fa48af72566`|
+|pr111-final-wpf-WcsToPlc|PASS|`607004cee52f59a937c46d1e869e28016056b6368c8960094bb4ce0bf972bb07`|
+|pr111-schedule-committed-build|PASS|`b1cf8cc1ca4d0e41dd12e612db64753f517eb911626089bcd197e49441bc3bed`|

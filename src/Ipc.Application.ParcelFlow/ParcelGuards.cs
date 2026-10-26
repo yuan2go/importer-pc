@@ -5,7 +5,7 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && Effective.DeferredConnections is not { Length: > 0 } && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
-        !stopping.IsCancellationRequested && (overload == 0 || Effective.SchemaVersion >= 3);
+        !stopping.IsCancellationRequested && !backupInProgress && (overload == 0 || Effective.SchemaVersion >= 3);
     bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
     bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
@@ -22,7 +22,7 @@ public sealed partial class ParcelRuntime
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
         (op.Plc is null || op.Plc is { State: StageState.Prepared, Attempts: 0 }) &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
-    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0;
+    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress;
     bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && (Effective.SchemaVersion >= 3 ? !MainTerminated(x) :
             WeightPending(x) || !MainTerminated(x) && x.FrozenConfiguration.Images is not null && x.Capture?.State != StageState.Accepted));
@@ -77,7 +77,11 @@ public sealed partial class ParcelRuntime
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
-                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle"); }
+                try
+                {
+                    if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
+                    RefreshStorageCapacity(); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
+                }
                 finally { gate.Release(); }
             }
         }

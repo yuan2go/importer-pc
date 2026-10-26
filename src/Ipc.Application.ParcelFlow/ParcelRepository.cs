@@ -465,5 +465,15 @@ public sealed partial class ParcelRepository : IDisposable
         }
     }
     public void Backup(string destination) => Database.Backup(db, destination);
+    public void Backup(string destination, CancellationToken token)
+    {
+        using var source = new SqliteConnection(new SqliteConnectionStringBuilder
+        { DataSource = db.DataSource, Mode = SqliteOpenMode.ReadOnly, Pooling = false, DefaultTimeout = 5 }.ToString());
+        token.ThrowIfCancellationRequested(); source.Open();
+        using var snapshot = source.BeginTransaction(deferred: true);
+        using (var establish = source.CreateCommand())
+        { establish.Transaction = snapshot; establish.CommandText = "SELECT revision FROM parcel_meta WHERE id=1"; _ = establish.ExecuteScalar(); }
+        Database.Backup(source, destination, token);
+    }
     public void Dispose() => db.Dispose();
 }

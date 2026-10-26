@@ -71,13 +71,23 @@ public sealed partial class ParcelRuntime
     byte[] ReadImage(ParcelOperation op, ParcelImage image) => ReadOriginalImage(directory!, op, image);
     internal static byte[] ReadOriginalImage(string directory, ParcelOperation op, ParcelImage image)
     {
+        var path = RequireOriginalImagePath(directory, op, image);
+        var bytes = File.ReadAllBytes(path);
+        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) != image.Sha256) throw new InvalidDataException("Original image bytes changed");
+        return bytes;
+    }
+    static void ValidateBackupImage(string directory, ParcelOperation op, ParcelImage image, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested(); var path = RequireOriginalImagePath(directory, op, image);
+        if (Wire.FileHash(path, token) != image.Sha256 || new FileInfo(path).Length != image.Length) throw new InvalidDataException("Original image bytes changed");
+    }
+    static string RequireOriginalImagePath(string directory, ParcelOperation op, ParcelImage image)
+    {
         if (image.AdmissionId != op.AdmissionId || image.CaptureRequestId != op.Capture?.Request.Id || !ValidMediaType(image.MediaType) || !ExtensionSchema.IsHash(image.Sha256) ||
             image.Length is < 1 || image.Length > op.FrozenConfiguration.Images!.MaximumBytes ||
             !image.RelativeFile.StartsWith("images/", StringComparison.Ordinal) || !ProductValidation.IsSafeRelativeFile(directory!, image.RelativeFile, out var path) ||
             new FileInfo(path).Length != image.Length) throw new InvalidDataException("Image identity, path or quota differs from the original capture");
-        var bytes = File.ReadAllBytes(path);
-        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) != image.Sha256) throw new InvalidDataException("Original image bytes changed");
-        return bytes;
+        return path;
     }
     bool ValidImageReply(ParcelOperation op, ParcelStage kind, ParcelImage? image)
     {

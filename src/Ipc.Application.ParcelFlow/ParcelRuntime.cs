@@ -125,6 +125,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
+            await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
             foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)
@@ -229,6 +230,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             ingressStartup.TrySetResult(true);
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
+            backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
             StartSupervision();
         }

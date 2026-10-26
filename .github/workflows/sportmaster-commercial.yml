@@ -48,11 +48,11 @@ jobs:
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
-      - name: Exercise time rollback and atomic storage boundaries
+      - name: Exercise latency capacity time and storage boundaries
         shell: bash
         run: |
           set -euo pipefail
-          for case in time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
+          for case in latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks audit03-snapshots ux-commercial-presentation time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
             dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
           done
       - name: Retain the actual boundary result including failures
@@ -74,6 +74,9 @@ jobs:
             parameter-guidance-startup.log
             deferred-connections.log
             confirmed-camera-rcs.log
+            latency-*-checks.log
+            audit03-snapshots.log
+            ux-commercial-presentation.log
           if-no-files-found: warn
           retention-days: 30
   p0-stability-boundaries:

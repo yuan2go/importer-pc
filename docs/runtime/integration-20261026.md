@@ -142,3 +142,9 @@ PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机
 |pr112-repeat-guards-receipt-custody|FAIL|`a16b1a3fc73c0004ec8e33b8a93171e2ee03bcc40929fb1b28c7ec35ad550ecc`|
 |pr112-repeat-guards-p0-unknown-restart|PASS|`501d00c9dae58952ad60692dbaa9c9011eda4a08869fe86ef72b3cef54ad20a0`|
 |pr112-repeat-guards-reliability-02|FAIL|`0a53bcf3899f047961dc7028764cef660686be55a955c1cff6cece4c0f711d93`|
+
+## PR112合入main及PR111计划备份夹具复核
+
+PR112新头000fb311的CI40274393725三个job全success，包含Linux receipt-custody/reliability-02；因此这两套不再笼统标NOT_RUN，区分Linux已执行和本机Windows安装策略入口阻断。重复身份评审线程已凭红绿结果解决，合入main a97d20088c78b55fffc2dde7911a58c11ba199e8。其干净main重新构建及11项时钟/事务/进程/P0/部署/启动参数回归全部通过，树与被检查PR头一致。
+
+PR111源564fab6b复测时计划备份夹具实际失败，首轮COMPLETED计数0，随后一次计划检查完成1份备份。原夹具把到期检查当作当轮维护条件必然满足，未覆盖允许的Pending（在途健康调用等维护守卫）。改为5秒内驱动后续计划时刻并等待实际完成；份数上限检查以成功时刻为基准，还核对原路径和COMPLETED哈希不变，不改生产授权、暂停或在途调用守卫。失败日志SHA256 `bcdb3c8f089a8c1c346b4d00745d4701e66b5512a7731eafcdc7f869952c4f6b`；修正后的实际结果另计。用户要求复核旧NOT_RUN，后续按当前环境逐项判断，不继承旧标记。

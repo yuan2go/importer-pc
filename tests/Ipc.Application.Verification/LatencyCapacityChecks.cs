@@ -109,12 +109,24 @@ static class LatencyCapacityChecks
         await scheduledRuntime.CommandAsync(new(Wire.Id(), scheduledSnapshot.Revision, "Pause"));
         var scheduleAt = DateTimeOffset.UtcNow;
         await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt);
-        await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt.AddMinutes(61));
-        var complete = Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).ToArray();
-        Check(complete.Length == 1, "ST03 scheduled backup publishes a complete recovery set through the owned cancellable path", new { CompletedSets = complete.Length });
-        await scheduledRuntime.CheckScheduledBackupAsync(scheduleAt.AddMinutes(122));
-        Check(Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).Count() == 1,
-            "ST03 scheduled backup keeps the configured set limit and never deletes an earlier set", new { MaximumSets = 1 });
+        // A due calendar tick may correctly stay Pending while a background health
+        // call is in flight. Drive bounded later ticks until the guarded work can run.
+        var due = scheduleAt.AddMinutes(61); var scheduledWait = Stopwatch.StartNew();
+        string[] complete; var ticks = 0;
+        do
+        {
+            await scheduledRuntime.CheckScheduledBackupAsync(due); ticks++;
+            complete = Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).ToArray();
+            if (complete.Length != 0 || scheduledWait.Elapsed > TimeSpan.FromSeconds(5)) break;
+            due = due.AddMinutes(1); await Task.Delay(50);
+        } while (true);
+        Check(complete.Length == 1, "ST03 scheduled backup publishes a complete recovery set through the owned cancellable path", new { CompletedSets = complete.Length, ScheduledTicks = ticks });
+        var originalSets = complete.ToDictionary(path => path, path => Wire.FileHash(path));
+        await scheduledRuntime.CheckScheduledBackupAsync(due.AddMinutes(61));
+        var afterLimit = Directory.EnumerateFiles(scheduledTarget, "COMPLETED.json", SearchOption.AllDirectories).ToArray();
+        var originalsRetained = originalSets.Count == 1 && afterLimit.All(path => originalSets.TryGetValue(path, out var hash) && Wire.FileHash(path) == hash);
+        Check(afterLimit.Length == 1 && originalsRetained,
+            "ST03 scheduled backup keeps the configured set limit and never deletes an earlier set", new { MaximumSets = 1, OriginalSetBytesRetained = originalsRetained });
         ExtensionStore.AtomicWrite(Path.Combine(root, "LATENCY-CAPACITY-CHECKS.json"), new { Checks = checks, Failed = failed });
         if (failed.Count != 0) throw new InvalidOperationException("Measured latency/capacity regressions: " + string.Join("; ", failed));
     }

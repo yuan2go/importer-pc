@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "96c40ed2a2495eef8acf862820f23e781d2c63803a3e6fd49f8306ba7ac919c1",
-      "size_bytes": 16158,
-      "git_blob": "cda0971feba3b98c7a7c3bcbca975a23a193abb1"
+      "sha256": "7171ef7f4ea8a6c8f513389d375686c84421b1ddd2f9162d0ba6949466648815",
+      "size_bytes": 17317,
+      "git_blob": "183ac39aa96ba4cdcc618a35f1f3521843a8d13d"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",
@@ -97003,9 +97003,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "61453e59723a3cc4858b3098722a9ee7b091e62d758e28be6fefd511d47e8d39",
-      "size_bytes": 9652,
-      "git_blob": "70738896f9398d062019ecd5c0e5b4abb75673dc"
+      "sha256": "8df797e2604d917dadad4e51b3f734c36ecc10d85d716ecbeb5a4b39b7f672c2",
+      "size_bytes": 10526,
+      "git_blob": "8d2ff7244619463f4440a70d3d2df8ba65960467"
     },
     {
       "path": "docs/runtime/latency-capacity-01.md",

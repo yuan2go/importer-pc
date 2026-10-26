@@ -105,3 +105,25 @@ PR113新头d88f6a69的CI40270929013三个job全部success；旧TCP身份P1在正
 | pr112-wpf-WcsToPlc | PASS | `199a1c57b6caecb97c979d881ee4c4da5ef8b9433fb8ab70edde9dc6ecae255b` |
 
 PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机结果仍只属于678724b7，不转记新的文档提交。
+
+## PR111合并时恢复ST12单调保留节拍
+
+原容量文件负对照（4da6bf6e加组合暂存差异）实际失败：`ST12 retention notification interval also survives rollback`，日志SHA256 `6f55382939bb3866117fdd43138ae115fca1c70b80b56bce4eba22813586f550`。合并候选4e892a92保持该原文件以定位问题，随后单独恢复retentionCheckedTimestamp/GetElapsedTime，并保留新分级预警/有界预测；首次编辑构建因字段声明遗漏失败，修正后重新构建通过，未放宽测试。维护清理放入备份围栏内，启动计数在gate外且仍受存储故障分类和恢复暂停守卫保护。
+
+下列PASS只属于4e892a92加工程差异 `ee4f0a92b8a0dad37d4aab8bf1070c6ea9a90e4d969d04d4c411785496261a12`，不转记最终main。
+
+|执行|结果|日志SHA256|
+|---|---|---|
+|pr111-combined-installer-change-guards|PASS|`a2d5510bc4a94e2e1fe93c14944444f659eecee335bf8136ecb318960e57a851`|
+|pr111-combined-latency-capacity-checks|PASS|`988ddc0dc574c93666dd40edd25e42b99a62f6cd444f7f0ac386c5d6ff0f131a`|
+|pr111-combined-latency-details-checks|PASS|`e26842327b6b8d480cadfaf30e8dedc360ebc3e20372b68b13f54be6dcaa9ebb`|
+|pr111-combined-latency-projection-checks|PASS|`f6a6b742c2929df645342daec65d1106723433ef58c943852300660790a0004a`|
+|pr111-combined-latency-storage-checks|PASS|`191b48265b983658b0a253811f8c401ef1c1408e8decb872f18ed1f2ffeeff8a`|
+|pr111-combined-p0-cleanup|PASS|`c5f12e5b041509a7dbe7265d59031a230b81770a7d91f06a58b072bbd919bdfb`|
+|pr111-combined-p0-provider-identity|PASS|`b58bac1a131f6dd416946654cf5d386022ab5cf539b0114fbce77090d9efee6f`|
+|pr111-combined-p0-supervisor|PASS|`85da2d5fd04c45c05aa3f0552473f9b15c1657ded0f481af991f7a74782f30c9`|
+|pr111-combined-p0-unknown-restart|PASS|`e3a1e030a6d14067249c183f491dc553057958cb96eae221d046cb7b4e509c45`|
+|pr111-combined-time-storage-atomic-checks|PASS|`f9c2bc8af157927d75d0bf710e31643c13d6fd685df0c2f2ba93c50488d1e4fd`|
+|pr111-combined-time-storage-fault-checks|PASS|`1d2c894bd38492292e984c5f75a018839afe14f75eaf8a0c5ff65e8365d28ee6`|
+|pr111-combined-time-storage-process-checks|PASS|`a7a95606674c3a0283ffc1003abad2594583a95e35b21d90fdf85eb58181721e`|
+|pr111-combined-time-storage-supervisor-checks|PASS|`2dbfe11abd53e7e4d5b8b8f2c79547ecbe9b8eb1de50dc9733066feba7ce8774`|

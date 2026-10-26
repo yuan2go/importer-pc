@@ -55221,9 +55221,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelStorageCapacity.cs",
-      "sha256": "6c51dbde1dcd2af49185b3add354dff6984997d730e1400af018ccbcb2a42bcb",
-      "size_bytes": 5632,
-      "git_blob": "cce8e0afefd5fc7b7d80e49267b7bf2ec772d69f"
+      "sha256": "68f33d09b1f305c74f2aaae24cf53dc74190813a51fa1b594a51c5636c18ff51",
+      "size_bytes": 5847,
+      "git_blob": "9bbb5e8e33589ac9c49badc837499864bf0eca60"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
@@ -95412,9 +95412,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "81e2f2ce7e3a420d562c1a205b774bb442076cf6b72c26ad2bf8684d916eb569",
-      "size_bytes": 12028,
-      "git_blob": "f6b2aca1af508b73bbf3a86d3e10a73917157c5b"
+      "sha256": "50b169092a7fabd93d2707000218ce49eca9f3096ec356877a98fa1dba749701",
+      "size_bytes": 14299,
+      "git_blob": "bdbccb6e72f202b871368038ddd2cc964c06089c"
     },
     {
       "path": "src/Ipc.Assembly/packages.directplc.lock.json",

@@ -8,6 +8,7 @@ public sealed partial class ParcelRuntime
     string? storageCapacityWarning;
     string? storageCapacityEstimate;
     long storageCheckedTimestamp;
+    long retentionCheckedTimestamp;
     string? lastStorageLevel;
     readonly Queue<(long At, long Sequence, long Bytes)> storageSamples = new();
     internal TimeProvider StorageTimeForVerification { get; set; } = TimeProvider.System;
@@ -44,16 +45,17 @@ public sealed partial class ParcelRuntime
                     BytesPerJob = bytesPerJob, RemainingDays = remainingDays, Basis = "Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee" });
                 Diagnostic("StorageCapacity", "Forecast", "信息", storageCapacityEstimate);
             }
-            if (repository?.StorageVersion >= 9 && DateTimeOffset.UtcNow - retentionChecked > TimeSpan.FromMinutes(1))
+            if (repository?.StorageVersion >= 9 && (retentionChecked == default || StorageTimeForVerification.GetElapsedTime(retentionCheckedTimestamp, timestamp) >= TimeSpan.FromMinutes(1)))
             {
                 retentionWarning = Retention.HistoryDays is not { } days ? "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion" :
-                    repository.RetentionDue(days, DateTimeOffset.UtcNow) ? "HistoryRetentionMaintenanceDue: aged history exists; pause, stop and run matching-release expire-history; unresolved originals are retained" : null;
-                retentionChecked = DateTimeOffset.UtcNow;
+                    repository.RetentionDue(days, StorageTimeForVerification.GetUtcNow()) ? "HistoryRetentionMaintenanceDue: aged history exists; pause, stop and run matching-release expire-history; unresolved originals are retained" : null;
+                retentionChecked = StorageTimeForVerification.GetUtcNow();
+                retentionCheckedTimestamp = timestamp;
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         { storageCapacityFailure = "Storage capacity unavailable: " + ex.GetType().Name; }
-        storageChecked = DateTimeOffset.UtcNow;
+        storageChecked = StorageTimeForVerification.GetUtcNow();
         storageCheckedTimestamp = timestamp;
     }
 }

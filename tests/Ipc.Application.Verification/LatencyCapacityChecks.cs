@@ -83,6 +83,7 @@ static class LatencyCapacityChecks
             await reading; await stop;
         }
         finally { factory.Release.Set(); observer.SetValue(null, null); }
+        Check(readCompletedDuringIo, "ST03 snapshot gate is released across backup storage work", new { SnapshotCompletedBeforeBarrierRelease = readCompletedDuringIo });
         var partialBytes = File.Exists(backupPath) ? new FileInfo(backupPath).Length : 0;
         Check(partialBytes < sourceBytes, "ST03 stop cancellation interrupts the copying budget", new { SourceBytes = sourceBytes, PartialBytes = partialBytes, StopMs = stopClock.Elapsed.TotalMilliseconds, ThrottledBytesPerSecond = 8 * 1024 * 1024, DelayCalls = delayCalls, Scope = "Controlled managed storage pacing; not a physical slow-volume test", CompletedMarker = File.Exists(backupPath + ".recovery/COMPLETED.json") });
 

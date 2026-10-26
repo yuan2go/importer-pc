@@ -97003,9 +97003,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "263a2d0dc490c6c730f61f0d338f2c7b47666aa705e243d447db95c1d9252a78",
-      "size_bytes": 11648,
-      "git_blob": "67f0b7c7d16f6038ca71d0cc138ef6a1ec816202"
+      "sha256": "a029e221904c03523e87461144e58ddba5272ac9aa80d7b2b7683927eefcbd45",
+      "size_bytes": 11818,
+      "git_blob": "ce0d708c296ee7a5bc1c3c297948245477271988"
     },
     {
       "path": "docs/runtime/latency-capacity-01.md",
@@ -100358,9 +100358,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "0f559ce0b3da55cb61fbc2aa88d80ae44de99033c64d7a7c971c5c3f94c0dddd",
-      "size_bytes": 7191,
-      "git_blob": "09e4b7d920191ff62613be2bed084ba7190cd19f"
+      "sha256": "7c49679571238b080935b16bf8b3f50ba747f84f90527b2363ccea7ab2a412a0",
+      "size_bytes": 7514,
+      "git_blob": "42239e049b05808dbb0dd209c55e046a3077d4b6"
     },
     {
       "path": "docs/work-packages/WP-IPC-STABILITY-AUDIT-FIXES-02.md",

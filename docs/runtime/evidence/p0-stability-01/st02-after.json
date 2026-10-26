@@ -1,0 +1,277 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "PreviousIssueCommit": "8c5de188",
+  "Phase": "after",
+  "Environment": "Windows isolated Simulation; exclusive file handle; no system installation",
+  "OriginalLocalLogSha256": "b217ae368320e060795d29ba8e8ab3e65bf3f92378701db621d20a34136eccba",
+  "Cases": {
+    "cleanup-archive-corrupt": {
+      "AcceptingAfterInjection": 0,
+      "Progress": {
+        "At": "2026-10-25T15:43:30.3481706+00:00",
+        "RuntimeId": "2373b7ff-f8c5-4e26-83c4-5da691181395",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:43:29.9754736+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "RanToCompletion",
+            "LastProgress": "2026-10-25T15:43:30.0427647+00:00",
+            "Detail": "Faulted:InvalidDataException"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:43:30.2681485+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285398099773603
+        },
+        "Failure": "Maintenance worker failed: Archived original raw receipt is missing or corrupt: 377c37f1ef9446afb0611d0a67059cd8",
+        "SupervisionFailure": null
+      },
+      "Result": "PASS"
+    },
+    "cleanup-archive-missing": {
+      "AcceptingAfterInjection": 0,
+      "Progress": {
+        "At": "2026-10-25T15:43:29.7765159+00:00",
+        "RuntimeId": "780af8d8-45c1-4c95-a4e3-df82a44bde0e",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:43:29.409667+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "RanToCompletion",
+            "LastProgress": "2026-10-25T15:43:29.4727733+00:00",
+            "Detail": "Faulted:InvalidDataException"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:43:29.697229+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285398094144890
+        },
+        "Failure": "Maintenance worker failed: Archived original raw receipt is missing or corrupt: 297e38dd130b495fa75b6112d2e7f5cb",
+        "SupervisionFailure": null
+      },
+      "Result": "PASS"
+    },
+    "cleanup-locked": {
+      "AcceptingAfterInjection": 1,
+      "Progress": {
+        "At": "2026-10-25T15:43:27.3877366+00:00",
+        "RuntimeId": "fccb5281-c557-4a3f-98da-19cd884aac63",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:43:27.0223612+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:43:27.2991917+00:00",
+            "Detail": "CompletedCycle"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:43:27.2992189+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285398070199910
+        },
+        "Failure": null,
+        "SupervisionFailure": null
+      },
+      "Result": "PASS"
+    },
+    "cleanup-spool-corrupt": {
+      "AcceptingAfterInjection": 0,
+      "Progress": {
+        "At": "2026-10-25T15:43:29.2224871+00:00",
+        "RuntimeId": "23ef7e86-1aa2-4f6f-bc40-f491fea8a8c5",
+        "Stopping": false,
+        "Workers": [
+          {
+            "Position": "left",
+            "State": "Waiting",
+            "Received": 1,
+            "Processed": 1,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": "2026-10-25T15:43:28.8534586+00:00",
+            "Failure": null,
+            "ProcessingSince": null
+          },
+          {
+            "Position": "right",
+            "State": "Waiting",
+            "Received": 0,
+            "Processed": 0,
+            "Interrupted": 0,
+            "QueueDepth": 0,
+            "OldestWaiting": null,
+            "LastProgress": null,
+            "Failure": null,
+            "ProcessingSince": null
+          }
+        ],
+        "Ui": [],
+        "Background": [
+          {
+            "Name": "maintenance",
+            "State": "RanToCompletion",
+            "LastProgress": "2026-10-25T15:43:28.9197876+00:00",
+            "Detail": "Faulted:InvalidDataException"
+          },
+          {
+            "Name": "capability:sportmaster.integration",
+            "State": "WaitingForActivation",
+            "LastProgress": "2026-10-25T15:43:29.1433363+00:00",
+            "Detail": "Ready"
+          }
+        ],
+        "ReadOperations": 0,
+        "AdministrationOperations": 0,
+        "ManagementStatusOperations": 0,
+        "OverloadWrites": 0,
+        "Diagnostics": {
+          "State": "Running",
+          "QueueDepth": 0,
+          "Dropped": 0,
+          "Written": 7,
+          "LastFailure": null,
+          "CurrentFailure": null,
+          "LastProgressUtcTicks": 639285398088555327
+        },
+        "Failure": "Maintenance worker failed: Redundant original raw receipt hash differs: 86e4ba2d30344aebb55ce357cc05c705",
+        "SupervisionFailure": null
+      },
+      "Result": "PASS"
+    }
+  },
+  "BackoffChecks": [
+    "PASS ST02 backoff uses an actual archived receipt",
+    "PASS ST02 startup tolerates only verified redundant lock with initial 500ms delay",
+    "PASS ST02 wall-clock rollback neither bypasses nor freezes monotonic backoff",
+    "PASS ST02 retry occurs exactly at elapsed deadline",
+    "PASS ST02 counter and exponential delay capped; persistent lock produces visible warning",
+    "PASS ST02 successful hash-verified cleanup resets warning/backoff"
+  ]
+}

@@ -358,7 +358,9 @@ public sealed partial class ParcelRepository : IDisposable
             if (Path.GetExtension(file) != ".json" || !Guid.TryParseExact(id, "N", out _)) throw new InvalidDataException("Unknown/interrupted original raw custody file");
             using var c = db.CreateCommand(); c.CommandText = "SELECT raw_hash FROM parcel_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
             using var r = c.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Unknown original receipt file");
-            if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
+            if (ArchivedReceiptExpectedHash(id) is { } archivedHash)
+                RequireArchivedReceipt(id, archivedHash); // Optional redundant spool is checked by cleanup below.
+            else if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
         }
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable')";
         using var reader = cmd.ExecuteReader();

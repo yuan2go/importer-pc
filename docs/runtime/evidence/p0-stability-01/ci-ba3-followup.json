@@ -1,0 +1,31 @@
+{
+  "PreviousHead": "ba3d8b089a70d1fa198e2ec70e30197958bcf5c4",
+  "CIRun": 40222113898,
+  "CI": {
+    "aqa01-boundaries": "PASS",
+    "p0-stability-boundaries": "FAIL existing shortcut COM boundary; first P0 selectors passed; Dispatcher blocked by prior COM failure",
+    "frozen-sportmaster": "FAIL StartupExperience.cs:58 display-label Single assumed one RCS version; pinned fixture correction pending"
+  },
+  "NativeFrozenGuidance": {
+    "MediumSourceCommit": "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+    "FixtureSourceCommit": "ba3d8b089a70d1fa198e2ec70e30197958bcf5c4",
+    "Status": "PASS",
+    "FixtureMatchesMedium": false
+  },
+  "ExistingShortcutFinding": {
+    "Location": "src/Ipc.Platform/DeploymentShortcuts.cs:45",
+    "UnchangedFromMain": true,
+    "Experiment": "Unchanged Platform DLL; fresh synthetic roots; existing target and Unicode parent; manifest changes ACP only in probe process, not system",
+    "ACP1252": "FAIL Unable to save shortcut; Unicode path replaced with question marks",
+    "ACP936": "PASS",
+    "ACP65001": "PASS",
+    "Scope": "Separate work package authorization pending; P0 retains red check, no assertions removed or skipped"
+  },
+  "EvidenceSha256": {
+    "p0-ansi-probe-enUS.log": "3579eff649e8e9ca4ed7ad4dead405f6148c8107c33852655bf50cab448e364f",
+    "p0-ansi-probe-zh-CN.log": "dcfc07a1248a86949f51c2a216105a65ee726ee51fa108eda3f6dbffcf80d323",
+    "p0-ansi-probe-UTF-8.log": "151fd8d5adcd6e42b0d72cd7ef58a2b6198533be1cf1e9ec1152dbb501a3556a",
+    "p0-native-ba3-guidance/RESULT.json": "5e3be86c3f868905b6387d6bac306e85aed7276fed2408c98581360c5a0a0b70",
+    "p0-native-ba3-startup-before.log": "a6e97594091907ae71567c35d38c127892d845af97b49e504989db46e76aaaa1"
+  }
+}

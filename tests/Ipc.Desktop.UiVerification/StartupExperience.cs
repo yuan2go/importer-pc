@@ -55,9 +55,13 @@ static partial class Program
         var legacyWindow = new Window { Content = legacyControl, Width = 960, Height = 680 }; legacyWindow.Show(); legacyControl.ShowCategory(3); legacyWindow.UpdateLayout();
         var legacyService = legacyControl.Model.Components.Single(c => c.Kind == "integration");
         var selector = Descendants(legacyControl).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == legacyService.InstanceId + "/Provider");
-        selector.SelectedIndex = Enumerable.Range(0, selector.Items.Count).Single(i => selector.Items[i]!.ToString()!.Contains("RCS 服务", StringComparison.Ordinal));
+        // The catalog retains frozen legacy bindings alongside the current version.
+        // Select one exact descriptor, rather than assuming display labels are identities.
+        var currentRcs = catalog.Providers.Where(p => p.Implementation == "sportmaster-rcs").MaxBy(p => Version.Parse(p.Version))!;
+        selector.SelectedIndex = Enumerable.Range(0, selector.Items.Count).Single(i =>
+            selector.Items[i]!.GetType().GetProperty("Provider")!.GetValue(selector.Items[i]) is CapabilityDescriptor provider && provider == currentRcs);
         legacyWindow.UpdateLayout();
-        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider?.Implementation == "sportmaster-rcs" && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "old simulation configuration can explicitly select the shipped RCS service and edit its actual address without changing station identity");
+        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "old simulation configuration can explicitly select the current shipped RCS service and edit its actual address without changing station identity");
         legacyWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
         var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);

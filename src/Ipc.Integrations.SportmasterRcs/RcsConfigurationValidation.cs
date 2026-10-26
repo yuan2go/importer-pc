@@ -26,6 +26,8 @@ internal static class RcsConfigurationValidation
         // explicitly configured reader participates in the heartbeat contract;
         // neither a missing code nor a stale draft code advertises a deferred one.
         var mapping = readers.Where(r => !ParcelConnectionSetup.IsDeferred(configuration, r.DeviceId))
+            // A disabled selected extension cannot assert a live reader identity.
+            .Where(r => configuration.Extensions?.Instances.SingleOrDefault(i => "extension:" + i.Id == r.Driver && i.DeviceId == r.DeviceId)?.Enabled != false)
             .Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();
         if (mapping.Select(p => p.Bcr).Distinct(StringComparer.Ordinal).Count() != mapping.Length)
             throw new InvalidDataException("RCS heartbeat reader bcr-code values must be distinct");

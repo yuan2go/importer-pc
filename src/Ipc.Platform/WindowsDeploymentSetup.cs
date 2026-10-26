@@ -10,7 +10,11 @@ public sealed record WindowsDeploymentRequest(string MediaRoot, string Applicati
     string? TrustFile, string? TrustSha256, Dictionary<string, string> Packages, bool RepairSeed = false,
     Dictionary<string, string>? ConfigurationHashes = null, string? ProgramRoot = null, string? ExpectedRegistrationHash = null,
     string? ChangePlanIdentity = null, string? BackupDestination = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] DeploymentShortcutOptions? Shortcuts = null)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public DesktopRecoveryOptions? Recovery { get; init; }
+}
 
 public static partial class WindowsDeploymentSetup
 {
@@ -84,6 +88,7 @@ public static partial class WindowsDeploymentSetup
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
         validateConfiguration(request);
@@ -145,7 +150,8 @@ public static partial class WindowsDeploymentSetup
             progress?.Invoke(WindowsInstallationStage.InstallingComponents);
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
-                RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
+                RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts)
+                { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);

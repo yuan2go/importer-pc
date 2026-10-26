@@ -1,0 +1,113 @@
+{
+  "Baseline": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+  "ObservedLocalParent": "02256e0235d7437aca24a0b61a540ba5f6b57633",
+  "Phase": "after",
+  "CandidateIdentity": "Working tree; canonical product source blobs in after summary, final delivery commit in PR; no old qualification inherited",
+  "Environment": "Windows fresh isolated synthetic processes; no registry/task/service mutation",
+  "OriginalLocalLogSha256": "1960f5c43b837b67c5f8691983d1bf880304de959d87b66a73b4fc3eb882f465",
+  "Cases": [
+    {
+      "Scenario": "domain",
+      "ExitCode": -536870892,
+      "ExpectedExitCode": -536870892,
+      "FlushedLogExists": true,
+      "ContextPresent": true,
+      "Lines": 1
+    },
+    {
+      "Scenario": "unobserved",
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "FlushedLogExists": true,
+      "ContextPresent": true,
+      "Lines": 1
+    }
+  ],
+  "RejectedExploration": {
+    "Status": "NOT_CONFIRMED; not a PASS; experimental held-native-reader test did not match File.ReadAllText lifetime; test and exploratory code withdrawn",
+    "LocalLogSha256": "ed8b9db1c9245a280986c4c222402a48723549777b2d846fc00684995258691a"
+  },
+  "Checks": {
+    "p0-final-p0-supervisor.log": {
+      "LocalLogSha256": "9758aa7d6e1d01d1777ddcce05dd95e5e7ce195452cf97e2afdda4e332143ab2",
+      "PassLines": [
+        "PASS ST14 task is session-bound, least privilege and password-free",
+        "PASS ST14 task wrapper retry obeys Windows minimum minute and finite count",
+        "PASS ST14 migration keeps one task identity; mini-dump and uninstall targets bounded",
+        "PASS ST14 SCM has daily reset and final NONE instead of infinitely repeating restart",
+        "PASS ST14 old deployment bytes omit absent recovery property",
+        "PASS ST14 uninstall removes only owned WER names and preserves foreign evidence",
+        "PASS ST14 three abnormal exits exhaust two restarts and persist visible guard",
+        "PASS ST14 new watchdog process cannot reset persisted crash-loop budget",
+        "PASS ST14 authorized repair can reset a known exhausted budget after client exit",
+        "PASS ST14 strong-killed synthetic client restarts within configured delay; normal close ends supervision",
+        "PASS ST14 replacement watchdog adopts exact original PID/start/hash without duplicate client",
+        "PASS ST14 retirement detaches watchdog without killing business process",
+        "PASS ST14 unacknowledged process creation fails closed without a duplicate launch",
+        "PASS ST14 ordinary system repair cannot clear an uncertain original launch",
+        "PASS ST14 healthy interval resets restart budget using monotonic time despite wall-clock jumps"
+      ]
+    },
+    "p0-final-wpf-crash-hooks.log": {
+      "LocalLogSha256": "e5f5d465b507cdc27fff3bc50dcd0f8a91e4c77e9b1804aa39272a35f2f59810",
+      "PassLines": [
+        "PASS ST14 production WPF dispatcher hook flushes context and fails fast with explicit exit code -536870892"
+      ]
+    },
+    "p0-final-task-schema.log": {
+      "LocalLogSha256": "22d84cf877f2db4c27246ec3d4baf787d83a1df6be60901d97ba3c798c27a20c",
+      "PassLines": [
+        "PASS ST14 Windows Task Scheduler TASK_VALIDATE_ONLY accepted generated XML; no task registered"
+      ]
+    },
+    "p0-final-p0-unknown-restart.log": {
+      "LocalLogSha256": "a3ebf214a6f33885b980c653578bc5d91e3e6c9dba20b5d3fa573c4a9c93ef13",
+      "PassLines": [
+        "PASS RCS20: lost HTTP response produces exactly one original request",
+        "PASS RCS20: process restart preserves Unknown and frozen original bytes",
+        "PASS RCS20: restart, unavailable authoritative query and reconnect neither clear Unknown nor replay"
+      ]
+    },
+    "p0-final-release-documents.log": {
+      "LocalLogSha256": "498d405b3a16c4245d59fb796d657f9be07a373c60ec195aa9a65b87fb6b0888",
+      "PassLines": []
+    }
+  },
+  "NotRun": [
+    "Actual UAC install/uninstall and task launch",
+    "WER generation and count rotation",
+    "SCM failure/recovery",
+    "24h/72h",
+    "26100+ 4-core 8GB IPC",
+    "Real SDK/camera/RCS",
+    "Power loss",
+    "2592000 maintenance"
+  ],
+  "CanonicalProductSourceBlobs": {
+    "src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs": "7e4f74c9177b50e15882041bb21ed0a13b8b2584",
+    "src/Ipc.Application.ParcelFlow/ParcelGuards.cs": "6e6c3b630c7396d648ab1ae33fea92ac95ffed63",
+    "src/Ipc.Application.ParcelFlow/ParcelHistory.cs": "6b54da511ea25f27f34dfdffe25e97e35e59dff8",
+    "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs": "cb01ecf5c39d9d4472b56824c7bd1e050261c362",
+    "src/Ipc.Application.ParcelFlow/ParcelReplyIdentities.cs": "4a761c8ed0c0dd6495d03b0147777514ff86b852",
+    "src/Ipc.Application.ParcelFlow/ParcelRepository.cs": "d791d6d4fe6c781b529edff3df9067b72d23ae7e",
+    "src/Ipc.Application.ParcelFlow/ParcelSupervision.cs": "53187688f1d0d87d2322d5a17bb5514da56c2a64",
+    "src/Ipc.Application.Sportmaster/Application.cs": "c499ef6b61fcd95e109dd06ea852cddf8c7952e9",
+    "src/Ipc.Assembly/ParcelCapabilityFactory.cs": "4fe811546d89fba14dc8d246e2d59f73fdec8cec",
+    "src/Ipc.Assembly/ParcelStartupServices.cs": "0c4402ac39053a82ef055ea70f40790a8456f7ee",
+    "src/Ipc.Desktop/DesktopCrashHooks.cs": "b2b3ca6293e5b841ff538d64429a9341d5a628b0",
+    "src/Ipc.Desktop/ParcelApp.xaml.cs": "f52d3e823ed8b07250ace44a0e2f466bb7d6544b",
+    "src/Ipc.Drivers/TcpLineObservationSource.cs": "bff8bd07de079052fc03407ba170ad5e08c7cbb5",
+    "src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs": "4ee62d268744614d0b9581997d3ed2590253785a",
+    "src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs": "e35fe74229b0f92db1db9c97212ffe9254d7e39a",
+    "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs": "734e43203108c5297402eae998d7835a956c248b",
+    "src/Ipc.Platform/CrashDiagnostics.cs": "9afe463bd351d0402152342c1419c7222849ecbd",
+    "src/Ipc.Platform/DeploymentMedia.cs": "0712c974288b6764f95542736bc3a92be2bc0d01",
+    "src/Ipc.Platform/DesktopRecoveryInstallation.cs": "a2a9a4c878ef85f8403f226c182b652680e0a957",
+    "src/Ipc.Platform/DesktopRecoveryPolicy.cs": "1dd4fb70618dcd108c8538fc228de3dc0e2f3b74",
+    "src/Ipc.Platform/DesktopRecoverySupervisor.cs": "7f2b7244635ec74e12e90152d1cac131e4b6069b",
+    "src/Ipc.Platform/ManagementModeBroker.Installation.cs": "d429f6475e21a9214c5120338c1e3a19c63b69dd",
+    "src/Ipc.Platform/ManagementModeBroker.Recovery.cs": "41215242f987af1e75f0a9ffe0c5be184c4cd9db",
+    "src/Ipc.Platform/WindowsDeploymentMaintenance.cs": "4783b13cf6079fa518a168d388e337bd3209049d",
+    "src/Ipc.Platform/WindowsDeploymentSetup.cs": "c1e71223490c99dd58b4e4b90a1a6eb6265f3ef8"
+  }
+}

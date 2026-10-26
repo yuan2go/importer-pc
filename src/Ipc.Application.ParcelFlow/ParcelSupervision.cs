@@ -46,6 +46,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     {
         int reads, administration, managementStatus; lock (readOwnership) { reads = readOperations.Count; administration = administrationOperations.Count; managementStatus = managementStatusOperations.Count; }
         return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
+            Connections = readers.Values.Select(r => new { r.Source.DeviceId, r.Epoch, Health = r.Health?.Health.ToString() }).ToArray(),
             Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new { Name = p.Key, State = p.Value.Status.ToString(),
                 LastProgress = backgroundProgress.TryGetValue(p.Key, out var seen) ? (DateTimeOffset?)seen.At : null,

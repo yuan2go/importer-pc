@@ -1,0 +1,29 @@
+{
+  "PreviousHead": "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+  "CIRun": 40220770606,
+  "Status": "FAIL at original CI; verifier corrections pending new CI",
+  "Findings": [
+    "Linux existing diagnostic test expected removed LocalTransportOnly wording; replace with finite confirmation fields and explicit no application/business claim",
+    "Windows shortcut fixture had nonexistent release/working directory; fixture preconditions corrected, Server CI confirmation pending",
+    "Frozen WPF compilation mixed standalone partial App test into a project referencing frozen App; isolate standalone test symbol; original frozen journeys unchanged"
+  ],
+  "FrozenMedium": {
+    "SourceCommit": "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+    "Sha256": "796f187c69ca40d715e1acadfe84af2a1673543c8889b01f3ce9d18435a51997",
+    "BusinessVersion": "1.14.0",
+    "NativeEnvironmentAndBusinessIdentity": "PASS; no business startup"
+  },
+  "Installer": {
+    "SourceCommit": "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+    "Sha256": "87ed71520a5934179863755d50fa3061f334cd6edd8e746cc40dd9be44c4805d",
+    "Authenticode": "NOT_SIGNED",
+    "ActualWindowsInstallation": "NOT_RUN"
+  },
+  "LocalEvidenceSha256": {
+    "p0-ci-69df-evidence.zip": "9795dd1c1b8be278ead8c99264186517ee4265d514a6c392b2a7ecc3f4324073",
+    "p0-frozen-smoke.json": "4893280c610e720acea6eee8d4886e17db92e12ee81b6d3aa5c3185699944354",
+    "p0-frozen-publication.log": "20510f54ee210027e91d760b9235e3305ee55d628eb1bd4e4e0ced9170308dd8",
+    "p0-frozen-installer.log": "777a3d350e1ff436fc372b488ced1e06e89776dd87a9d755a9171d2cd3a12d46",
+    "p0-ci-fixture-local.log": "750d2b4320ab23cfa5c3335c2e896e5d46dc599ce1ad7f7c9db6b60110929f88"
+  }
+}

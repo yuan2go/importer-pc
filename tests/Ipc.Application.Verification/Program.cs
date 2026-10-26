@@ -13,6 +13,18 @@ var root = (args.Contains("--management-mode") || args.Contains("--operator-admi
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--p0-provider-identity")) { await SportmasterRcs.ProviderIdentity(root); return; }
+if (args.Contains("--p0-deferred")) { await SportmasterRcs.DeferredMatrix(workspace, root); return; }
+if (args.Contains("--p0-rcs")) { await SportmasterRcs.P0ScanRegression(workspace, root); return; }
+if (args.Contains("--p0-cleanup")) { await P0Cleanup.Run(workspace, root); return; }
+if (args.Contains("--p0-tcp")) { await P0Tcp.Run(root); return; }
+if (args.Contains("--p0-tcp-components")) { await P0Tcp.ExistingComponents(); return; }
+if (args.Contains("--p0-crash-child")) { var i = Array.IndexOf(args, "--p0-crash-child"); await P0Recovery.Child(args[i + 1], args[i + 2]); return; }
+if (args.Contains("--p0-recovery")) { await P0Recovery.Run(root); return; }
+if (args.Contains("--p0-supervisor")) { await P0Supervisor.Run(root); return; }
+if (args.Contains("--p0-task-validate")) { P0Supervisor.ValidateTaskSchema(root); return; }
+if (args.Contains("--p0-supervised-child")) { await Task.Delay(args.Contains("--sleep") ? 30000 : 400); Environment.Exit(args.Contains("--normal") ? 0 : 12); return; }
+if (args.Contains("--p0-unknown-restart")) { await SportmasterRcs.P0UnknownRestart(workspace, root); return; }
 if (args.Contains("--parameter-guidance-startup")) { await ParameterGuidanceStartup.Run(workspace, root); return; }
 if (args.Contains("--deferred-connections")) { await SportmasterRcs.DeferredConnectionChecks(workspace, root); return; }
 if (args.Contains("--h02-crash-child")) { var i = Array.IndexOf(args, "--h02-crash-child"); await ReliabilityHardening.CrashChild(workspace, args[i + 1], args[i + 2], args[i + 3]); return; }
@@ -31,7 +43,7 @@ if (args.Contains("--architecture-quality-remediation")) { await ArchitectureQua
 if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); AdministratorBoundary.Run(args[Array.IndexOf(args, "--administrator-broker-boundary") + 1], root); return; }
 if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) { await OperatorAdministration.Run(workspace, root); return; }
 if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
-if (args.Contains("--installer-options")) { InstallerOptions.Run(root); return; }
+if (args.Contains("--installer-options")) { if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); InstallerOptions.Run(root); return; }
 if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--windows-client-compatibility")) { WindowsClientCompatibilityChecks.Run(); return; }
 if (args.Contains("--commercial-components")) { var i = Array.IndexOf(args, "--commercial-components"); CommercialComponentReview.Run(root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }

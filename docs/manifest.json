@@ -101226,9 +101226,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Hot runtime diagnostic setting, bounded live terminal and synthetic verification",
       "source": "WP-IPC-DEBUG-LOG-LIVE-01; original evidence retains its own SourceCommit",
-      "sha256": "ac002c763cb6748710bfa7ea082651298f4a647b3486ebc9959c67528531e3ca",
+      "sha256": "f80fecee6ca2e34f9c44b4887270787d38bff71c7606866f8f5ea9acb824cd25",
       "size_bytes": 6315,
-      "git_blob": "6e9dad1113c6e096e8983a3a0eb397baf0e0a1a6",
+      "git_blob": "656906e32bdf5392c69e968c4443ed4d1aab461f",
       "storage_scope": "public_repository"
     },
     {

@@ -179,8 +179,8 @@
     },
     {
       "Path": "TEXT-CUSTODY.json",
-      "Sha256": "6f9137587fa5c76699a2c71d003844bafba4e52aa4ae160de0309fc728a7f7af",
-      "Bytes": 3276
+      "Sha256": "0ea7527eb8a46f88a23d3aa857168e3728b1e3842e9c36cc8cb9f321ce87ac31",
+      "Bytes": 3211
     },
     {
       "Path": "work-empty-800.png",

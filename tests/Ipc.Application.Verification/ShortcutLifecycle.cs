@@ -36,8 +36,19 @@ static class ShortcutLifecycle
             var location = Release(directory); var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
             var path = DeploymentShortcuts.Plan(location, menu, desktop).Single().Path;
             Directory.CreateDirectory(path);
+            Reject(() => DeploymentShortcuts.Create(location, menu, desktop), "create reports a directory at an exact shortcut path");
             Reject(() => DeploymentShortcuts.Remove(location, menu, desktop), "uninstall reports a directory at an exact shortcut path rather than treating it as absent");
             Check(Directory.Exists(path), "uninstall preserves the conflicting directory");
+        });
+        Scenario("empty-target", directory =>
+        {
+            var location = Release(directory); var menu = Path.Combine(directory, "菜单"); var desktop = Directory.CreateDirectory(Path.Combine(directory, "桌面")).FullName;
+            var path = DeploymentShortcuts.Plan(location, menu, desktop).Single().Path;
+            using (var empty = new ShellLinkFile()) empty.Save(path);
+            var hash = Wire.FileHash(path);
+            Reject(() => DeploymentShortcuts.Create(location, menu, desktop), "repair rejects a valid shell-link container with no file target");
+            Reject(() => DeploymentShortcuts.Remove(location, menu, desktop), "uninstall reports an unreadable ownership target instead of silently treating it as foreign");
+            Check(Wire.FileHash(path) == hash, "empty-target link is preserved byte for byte");
         });
         Scenario("unicode-and-repair", directory =>
         {

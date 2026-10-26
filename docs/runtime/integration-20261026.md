@@ -105,3 +105,18 @@ PR113新头d88f6a69的CI40270929013三个job全部success；旧TCP身份P1在正
 | pr112-wpf-WcsToPlc | PASS | `199a1c57b6caecb97c979d881ee4c4da5ef8b9433fb8ab70edde9dc6ecae255b` |
 
 PR112已merge新main 209f31b2，准备转main并执行当前头CI；上述本机结果仍只属于678724b7，不转记新的文档提交。
+
+## PR112重复回执身份根因修复
+
+评审PRRT_kwDOVLQU8s6wJD82指出LocalClockEvidence随观察变化会破坏重复回执身份。新增测试提交9bfa1b0665e09c7d8d4bc32a264b4cae60e33cd2实际先红：相同回执查询、再次回拨和重启三条失败，日志SHA256 `6c9bbe7de747fd287425eb093ba6828449d18416dc47e24082dce5ed6ad1e76a`。修复从原operation/request/身份hash取得经字节/hash校验的持久原件，相同provider字段复用首次原件；内存投影缺失仍成立，不改首次raw、身份索引、SQL1–9或已有Conflict。不同字段及provider伪造本地证据有拒绝断言。
+
+新代码构建、时钟/重复身份/重启、RCS Unknown守卫通过（9bfa1b06加工程差异58fe7d78d8527ee3b8e85b758a5f5e76825a57288bfd0704fb9d3439dcff2f0d）。本机receipt-custody和reliability-02尝试均被既有Windows指定账户/已安装机器政策入口阻断，失败日志保留，用例完整结果NOT_RUN；不改机器政策。receipt-custody已加入Linux CI，reliability-02本来就是该门禁；等待新头CI结果后判定。测试补充时一次可空类型构建失败已修正，未删断言。
+
+|执行|实际结果|日志SHA256|
+|---|---|---|
+|pr112-repeat-reply-red-final|FAIL|`6c9bbe7de747fd287425eb093ba6828449d18416dc47e24082dce5ed6ad1e76a`|
+|pr112-repeat-guards-build-2|PASS|`32d543dacc24fbf4993dbd84fb4ab23edc473fac675eba6e53e0e07591d4b787`|
+|pr112-repeat-guards-time-storage-fault-checks|PASS|`0cca8d020b1637f531143573eb9bcc86c79b7da210aad5598ed5a807d4e004f0`|
+|pr112-repeat-guards-receipt-custody|FAIL|`a16b1a3fc73c0004ec8e33b8a93171e2ee03bcc40929fb1b28c7ec35ad550ecc`|
+|pr112-repeat-guards-p0-unknown-restart|PASS|`501d00c9dae58952ad60692dbaa9c9011eda4a08869fe86ef72b3cef54ad20a0`|
+|pr112-repeat-guards-reliability-02|FAIL|`0a53bcf3899f047961dc7028764cef660686be55a955c1cff6cece4c0f711d93`|

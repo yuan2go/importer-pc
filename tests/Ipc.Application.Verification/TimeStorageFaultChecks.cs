@@ -134,6 +134,16 @@ static class TimeStorageFaultChecks
                       Wire.Encode(repeatedRollback.Wcs.Replies[0]) == Wire.Encode(reply) &&
                       repo.OriginalReplyHash(op.Wcs.Request.Id, reply.Id) == originalHash && receiptFactory.Calls == 1 && receiptFactory.Queries == 2,
                     "ST13 repeated rollback resolves original evidence from durable custody without redispatch", new { repeatedRollback.Wcs.State, receiptFactory.Calls, receiptFactory.Queries });
+                var changedProvider = receiptFactory.ProviderReply! with { Evidence = "different provider fact" };
+                var changedObserved = ParcelReceiptChronology.Observe(op.Wcs.Request, changedProvider, Guid.NewGuid(),
+                    receiptClock.GetUtcNow(), receiptClock.GetUtcNow(), TimeSpan.Zero, 1000, reply);
+                var changedResult = (ParcelOperation)typeof(ParcelRuntime).GetMethod("ApplyReply", hidden)!.Invoke(runtime, [op, ParcelStage.Wcs, changedObserved])!;
+                Check(changedObserved.Evidence == changedProvider.Evidence && changedResult.Wcs!.State == StageState.Conflict,
+                    "ST13 original evidence reuse cannot hide changed provider fields", new { State = changedResult.Wcs?.State });
+                var forgedRefused = false;
+                try { ParcelReceiptChronology.Observe(op.Wcs.Request, reply, Guid.NewGuid(), receiptClock.GetUtcNow(), receiptClock.GetUtcNow(), TimeSpan.Zero, 1000, reply); }
+                catch (InvalidDataException) { forgedRefused = true; }
+                Check(forgedRefused, "ST13 provider-supplied local proof remains forbidden during duplicate observation", new { forgedRefused });
                 var conflict = op with { State = ParcelState.Blocked, Wcs = op.Wcs with { State = StageState.Conflict } };
                 var applied = (ParcelOperation)typeof(ParcelRuntime).GetMethod("ApplyReply", hidden)!.Invoke(runtime, [conflict, ParcelStage.Wcs, reply])!;
                 Check(applied.State == ParcelState.Blocked && applied.Wcs!.State == StageState.Conflict,

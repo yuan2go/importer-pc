@@ -20,6 +20,8 @@ RuntimeJournal的故障退避、Parcel UI快照寿命、RCS心跳Task.Delay和�
 
 Application在实际外呼前后捕获UTC端点与单调经过时间。只有观察到完成UTC小于开始UTC，才为本次新回包增加LocalClockEvidence：runtime/request/PreparedAt、两个UTC端点、单调经过ticks、原预算及原回包hash。回包At与IntegrationHttpResponse原字节不改。provider不得自带此字段；证据必须绑定本条原回包，且At接近实际观测端点，不能用一次回拨豁免任意过去/未来时间。
 
+相同provider回执再次查询时，先按原operation/request/首次身份hash读取并校验持久原件。全部provider字段及序列化字节相同，复用首次原件及其本地证据；不因为新一次观察的时钟状态改变回执身份。此依据不依赖64条内存投影，原件缺失/损坏仍拒绝处理。任何provider字段变化仍进入原冲突检查，provider自带本地证据仍拒绝；不改首次raw或身份索引。
+
 证据进入本次raw与原T3审计，恢复共用同一验证器；没有新表/SQL迁移。旧回包字段为空时不序列化，原构造函数ABI及历史字节不改写。历史无证明的异常时序保持原守卫，已有Conflict不会解除，Unknown不清除，不做Query替代或重发。跨重启或回拨发生在观测范围之外，无法证明的情况继续保守拒绝；未宣称监听了所有系统时间变更事件。
 
 ## 已知未提交写入的短故障
@@ -34,7 +36,7 @@ COMMIT开始后的I/O/结果丢失记DurableOutcomeUncertain，不重新执行SQ
 
 ## 已接入PR110的故障闭环
 
-用户2026-10-26明确批准叠加PR：PR112以codex/p0-stability-01为base，PR110来源963165d7保留历史，经93aea521合入。父PR合并main后再转回main；不强推、不改旧证据。原先“等待依赖”的阶段记录仍固定于ec808证据，不能当作当前状态。
+原叠加阶段以codex/p0-stability-01为base，来源963165d7及93aea521保留历史。2026-10-26已继承main上的PR110/113，PR112已转向main；本轮新验证见整合执行记录。旧ec808等待依赖证据及旧CI状态不代表当前状态。
 
 Application先停止准入，发布单次IRuntimeFatalSource通知；RuntimeFatalMonitor由桌面进程所有者在StartAsync前观察，在正常完全释放所有权后取消/释放观察。它把实例、设备Epoch、最近状态/错误阶段与预算交给ST14 CrashDiagnostics，连同版本/commit写运行日志并Flush(true)，随后快速退出。核心库不自行Environment.Exit，不在未知业务状态继续运行。
 

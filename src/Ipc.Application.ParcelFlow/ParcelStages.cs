@@ -83,7 +83,7 @@ public sealed partial class ParcelRuntime
         // If persistence fails here, the Awaiting occurrence remains independently visible.
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
         reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
-            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), Effective.TimeoutMs);
+            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), Effective.TimeoutMs, repository.ReadOriginalReply(stage.Request, reply.Id));
         repository.StoreRaw(occurrence, reply);
         Boundary?.Invoke("AfterRawDurable");
         op = ApplyReply(op, kind, reply);
@@ -96,7 +96,7 @@ public sealed partial class ParcelRuntime
             operations[op.Id] = op;
         }
         else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
-            Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackObserved", reply.LocalClockEvidence }), occurrence);
+            Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
         return op;
         }
         finally { activeStages.Remove(key); }

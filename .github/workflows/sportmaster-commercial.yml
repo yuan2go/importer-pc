@@ -46,6 +46,7 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
       - name: Exercise time rollback and atomic storage boundaries
         shell: bash
@@ -62,6 +63,7 @@ jobs:
           path: |
             time-storage-*.log
             reliability-02.log
+            receipt-custody.log
             reliability-02-crashes.log
             aqa01-boundaries.log
             stability-boundaries.log

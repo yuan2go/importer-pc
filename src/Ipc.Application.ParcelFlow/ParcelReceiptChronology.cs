@@ -7,9 +7,13 @@ namespace Ipc.Application.ParcelFlow;
 internal static class ParcelReceiptChronology
 {
     public static StageReply Observe(FrozenRequest request, StageReply reply, Guid runtimeId,
-        DateTimeOffset started, DateTimeOffset completed, TimeSpan elapsed, int budgetMs)
+        DateTimeOffset started, DateTimeOffset completed, TimeSpan elapsed, int budgetMs, StageReply? original = null)
     {
         if (reply.LocalClockEvidence is not null) throw new InvalidDataException("Provider cannot supply Application clock evidence");
+        // Observation metadata is owned by the first durable receipt. Re-observing
+        // exactly the same provider facts must not invent another reply identity.
+        // A changed provider field still flows to the original conflict guards.
+        if (original is not null && Wire.Encode(original with { LocalClockEvidence = null }) == Wire.Encode(reply)) return original;
         if (completed >= started) return reply;
         var proof = new ReceiptClockEvidence(1, runtimeId, request.Id, request.PreparedAt, started, completed, elapsed.Ticks, budgetMs, Wire.Hash(Wire.Encode(reply)));
         return reply with { LocalClockEvidence = proof };

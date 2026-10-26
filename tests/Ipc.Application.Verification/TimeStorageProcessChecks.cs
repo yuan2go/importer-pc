@@ -71,8 +71,11 @@ static class TimeStorageProcessChecks
         await app.StartAsync(default);
         if (mode == "recover")
         {
-            var snapshot = await app.SnapshotAsync(); var op = snapshot.Operations.Single();
-            if (factory.Calls != 0 || op.State != ParcelState.WcsUnknown || Wire.Encode(op.Wcs!.Request) != File.ReadAllText(Path.Combine(root, "frozen-request.json")))
+            var snapshot = await app.SnapshotAsync();
+            File.WriteAllText(Path.Combine(root, "recovery-admission.json"), Wire.Encode(new { snapshot.Paused, AdmittingPositions = snapshot.Positions!.Count(p => p.Admit) }));
+            var empty = File.Exists(Path.Combine(root, "expect-empty"));
+            var op = snapshot.Operations.SingleOrDefault();
+            if (empty ? op is not null || factory.Calls != 0 : op is null || factory.Calls != 0 || op.State != ParcelState.WcsUnknown || Wire.Encode(op.Wcs!.Request) != File.ReadAllText(Path.Combine(root, "frozen-request.json")))
                 throw new Exception("Recovery changed Unknown/original request or replayed a provider call");
             var c = snapshot.Configuration.Effective;
             using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
@@ -87,17 +90,21 @@ static class TimeStorageProcessChecks
         var wait = Stopwatch.StartNew();
         while (!(await app.SnapshotAsync()).Positions!.Any(p => p.Id == "left" && p.Admit))
         { if (wait.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Synthetic reader readiness"); await Task.Delay(10); }
+        if (mode == "budget-empty") File.WriteAllText(Path.Combine(root, "expect-empty"), "No durable input existed before fault");
+        else
+        {
         app.EmitReferenceAt("left", "synthetic-storage-unknown", "000123", Wire.Id());
         ParcelOperation? original;
         while ((original = (await app.SnapshotAsync()).Operations.SingleOrDefault())?.State != ParcelState.WcsUnknown)
         { if (wait.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Synthetic Unknown"); await Task.Delay(10); }
         File.WriteAllText(Path.Combine(root, "frozen-request.json"), Wire.Encode(original.Wcs!.Request));
         if (factory.Calls != 1) throw new Exception("Expected one original provider call");
+        }
         if (mode == "ambiguous") File.WriteAllText(Path.Combine(root, "expect-interrupted"), "original input must remain");
         app.Boundary = point =>
         {
             if (mode == "permanent" && point == "BeforeIngressDurable") throw new SqliteException("synthetic disk full", 13);
-            if (mode == "budget" && point == "BeforeIngressDurable") throw new IOException("synthetic persistent pre-write I/O");
+            if (mode is "budget" or "budget-empty" && point == "BeforeIngressDurable") throw new IOException("synthetic persistent pre-write I/O");
             if (mode == "ambiguous" && point == "AfterIngressDurable") throw new IOException("synthetic committed acknowledgement lost");
         };
         app.EmitReferenceAt("left", "synthetic-storage-fault-input", "000124", Wire.Id());
@@ -106,7 +113,7 @@ static class TimeStorageProcessChecks
     }
     public static async Task Processes(string workspace, string root)
     {
-        foreach (var mode in new[] { "budget", "ambiguous", "permanent" })
+        foreach (var mode in new[] { "budget-empty", "budget", "ambiguous", "permanent" })
         {
             var childRoot = Path.Combine(root, mode); var launches = 0;
             var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(childRoot, "release"), childRoot, Path.Combine(childRoot, "data"), "synthetic-account")
@@ -120,6 +127,12 @@ static class TimeStorageProcessChecks
             }
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(30)); var elapsed = Stopwatch.StartNew();
             var result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: _ => Launch(), cancellationToken: deadline.Token);
+            if (mode != "permanent")
+            {
+                using var observed = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(childRoot, "recovery-admission.json")));
+                if (!observed.RootElement.GetProperty("Paused").GetBoolean() || observed.RootElement.GetProperty("AdmittingPositions").GetInt32() != 0)
+                    throw new Exception("FAIL supervised recovery must retain global pause before any position can admit; mode=" + mode);
+            }
             if (mode == "permanent" ? result != 77 || launches != 1 : result != 0 || launches != 2)
                 throw new Exception("FAIL ST08 process closure " + mode + "; launches=" + launches + "; supervisor=" + result);
             var text = string.Join("\n", Directory.GetFiles(Path.Combine(childRoot, "fatal-diagnostics"), "*", SearchOption.AllDirectories).Select(File.ReadAllText));

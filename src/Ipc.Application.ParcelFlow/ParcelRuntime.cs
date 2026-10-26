@@ -80,6 +80,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             linked.Token.ThrowIfCancellationRequested();
             await StartCoreAsync(linked.Token).ConfigureAwait(false);
         }
+        catch (Exception error) when (error is Ipc.Platform.Storage.StorageWriteFailure or Microsoft.Data.Sqlite.SqliteException)
+        { StorageFailed(error, "Startup"); throw; }
         finally { startupEnded.TrySetResult(); }
     }
     async Task StartCoreAsync(CancellationToken token)
@@ -118,8 +120,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
-        foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+        try
+        {
+            repository = new(directory, Id, 9) { Boundary = point => Boundary?.Invoke(point) };
+            foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+        }
+        catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)
+        { StorageFailed(error, "RepositoryOpenOrRecovery", error is InvalidDataException or System.Text.Json.JsonException); throw; }
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
@@ -301,6 +308,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             {
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
                 Volatile.Write(ref lane.Failure, failure); Interlocked.Exchange(ref accepting, 0);
+                if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
             }
             return false;
@@ -359,6 +367,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message;
             Interlocked.Exchange(ref accepting, 0); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
+            if (IsStorageError(ex)) StorageFailed(ex, "IngressWorker");
             // Close after the last position handoff; no producer can enqueue behind the drain.
             lock (lane.Sync) positionQueues[position].Writer.TryComplete();
             await gate.WaitAsync().ConfigureAwait(false);
@@ -497,7 +506,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null, BusinessCommand? command = null)
     {
-        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command, ingressIdentity: activeIngress.Value); operations[op.Id] = op;
+        try { repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command, ingressIdentity: activeIngress.Value); }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
+        operations[op.Id] = op;
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) latestInputs[input.PositionId] = input;
         journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });

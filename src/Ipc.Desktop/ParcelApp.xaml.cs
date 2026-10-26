@@ -13,6 +13,8 @@ public partial class App : System.Windows.Application
     ParcelStartupWindow startup = null!;
     DesktopLaunchOptions? selected;
     bool recoveryChild;
+    CancellationTokenSource? fatalObservationStop;
+    Task? fatalObservation;
 #if SPORTMASTER
     const string ApplicationId = "sportmaster";
 #elif DIRECTPLC
@@ -100,6 +102,13 @@ public partial class App : System.Windows.Application
             startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "启动配置入口已判定");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
+            if (starting is IRuntimeFatalSource fatalSource)
+            {
+                fatalObservationStop = new();
+                fatalObservation = RuntimeFatalMonitor.RunAsync(fatalSource, crashDiagnostics, fatalObservationStop.Token);
+                _ = fatalObservation.ContinueWith(t => crashDiagnostics.Fatal("RuntimeFatalMonitor.Failed", t.Exception!), CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            }
             if (launch.View is not null && !starting.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !starting.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
             startup.Phase("启动所选能力并恢复原请求", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
@@ -173,12 +182,22 @@ public partial class App : System.Windows.Application
             ownedShutdown = Task.Run(async () => await stopping.DisposeAsync());
             _ = ownedShutdown.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
-        try { await ownedShutdown.WaitAsync(TimeSpan.FromSeconds(5)); runtime = null; ownedShutdown = null; }
+        try
+        {
+            await ownedShutdown.WaitAsync(TimeSpan.FromSeconds(5)); runtime = null; ownedShutdown = null;
+            await DetachFatalObservationAsync();
+        }
         catch
         {
-            if (stopping is Ipc.Platform.IRuntimeOwnership { HasUnreleasedResources: false }) { runtime = null; ownedShutdown = null; }
+            if (stopping is Ipc.Platform.IRuntimeOwnership { HasUnreleasedResources: false }) { runtime = null; ownedShutdown = null; await DetachFatalObservationAsync(); }
             throw; // Existing close UI remains usable and explicitly reports retained ownership.
         }
+    }
+    async Task DetachFatalObservationAsync()
+    {
+        fatalObservationStop?.Cancel();
+        if (fatalObservation is not null) await fatalObservation;
+        fatalObservationStop?.Dispose(); fatalObservationStop = null; fatalObservation = null;
     }
 }
 

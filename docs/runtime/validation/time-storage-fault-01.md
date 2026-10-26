@@ -1,6 +1,6 @@
 # TIME-STORAGE-FAULT-01 · 问题卡与验证
 
-F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默认接缝提交b37f89ae。PR108/110/111未合并，原工作区/四附件和历史SourceCommit不动。Windows 11家庭中文版22631、约16GB，不是目标26100+/4核8GB。只用新D盘Simulation/本地合成对象，不改系统时间/机器政策、不接真实设备/RCS。
+F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默认接缝提交b37f89ae。开工时PR108/110/111未合并；用户现已授权叠加PR110，PR112 base为其分支（963165d7），整合93aea521。原工作区/四附件和历史SourceCommit不动。Windows 11家庭中文版22631、约16GB，不是目标26100+/4核8GB。只用新D盘Simulation/本地合成对象，不改系统时间/机器政策、不接真实设备/RCS。
 
 [初始红结果与DLL/log hash](../evidence/time-storage-fault-01/first-red.json)。[源码]定位机制、[测试夹具]人为注入/模拟时间与原生SQLite故障边界、[实测]本机时间分别记录。[文档/PR声明]不代替本次运行。
 
@@ -20,7 +20,7 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 验收：在途回拨正常接受；证据可持久恢复且无再次发送；无证明的早到仍拒绝；改证据/任意旧时间不被豁免；已有Conflict仍Blocked，本机通过。残余：不在观测范围的回拨继续保守拒绝。NOT_RUN：真实RCS/系统NTP、跨重启真时钟变化、现场联调；原RCS冻结/单次请求既有完整段需匹配本包CI另计。
 
-## ST08 问题卡（完整闭环尚未完成）
+## ST08 问题卡
 
 确认更正：原Database.Open默认5秒，provider已有BUSY/LOCKED自动重试；不是“所有瞬时失败立刻停供”。本包初始用例在BeforeIngressDurable注入两次写前IOException，第一次即关闭accepting、来源返回false，断言FAIL。
 
@@ -28,7 +28,13 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 已验：两次写前I/O后第三次输入交接成功；真实SQLite写锁约188～194ms释放后只一行；两次写后、提交前注入有真实回滚而只留一行；真实已提交后的结果丢失只执行一次且报Uncertain；注入FULL及原生max_page_count耗尽均永久分类/一尝试/无行；持续I/O约5秒受预算限制；FULL=2/WAL保持。这里只是本地持久化阶段[测试夹具]，没有冒充物理抖动/写满。
 
-未完成：main仍无ST14监督者。Runtime超预算后的致命日志/快速失败、监督拉起、永久故障抑制尚待PR110依赖方案，不能把当前关闭输入写成通过F1。已给出[具体方案](../time-storage-fault-01.md#st14依赖与待接入的闭环)。NOT_RUN/NOT_IMPLEMENTED：这些子进程闭环及真实磁盘故障、实际已登记任务/UAC/SCM/安装。
+闭环确认：合入父PR后又先红后改，[永久故障红测试](../evidence/time-storage-fault-01/st08-supervisor-before.json)在93aea521观察退出码78仍被启动3次，失败测试提交6d1d597e。
+
+闭环修复：已知持久化边界先围栏并发布一次致命故障。桌面在启动前拥有IRuntimeFatalSource观察，正常释放后取消观察；RuntimeFatalMonitor将版本/commit、实例、Epoch、最近状态及预算写ST14致命日志并刷盘，然后退出。超预算/结果不明继承有限拉起；永久类退出78直接持久Block/alert而不反复拉起。原维护故障文案和ST02临时占用重试保持。
+
+闭环验收：[测试夹具/本机实测]真实ParcelRuntime、CrashDiagnostics、RuntimeFatalMonitor、DesktopRecoverySupervisor独立进程串联：持续I/O→围栏快退→一次重启；提交后丢交接结果→快退→一次重启且原Pending保留Interrupted；永久FULL分类→首次退出即Block。两种重启均核对既有Unknown/冻结请求字节不变，provider调用为0；永久退出日志含版本/SourceCommit/实例/Epoch/最近状态，告警存在。测试只有合成IO/FULL注入，实际页配额FULL在独立Atomic夹具验证。
+
+残余风险：5秒为可控重试预算，原生I/O/Flush挂起无法托管硬截止；物理卷写满/权限损坏时诊断与监督账本也可能落盘失败，不能宣称日志/告警必达。NOT_RUN：真实卷故障、已安装计划任务触发/SCM/WER/UAC/卸载、目标硬件长稳；[VM步骤](../time-storage-fault-01.md#windows-vm验收本次not_run)。自动恢复依赖PR110既有一次UAC登记，本机未安装政策。
 
 ## 本机已有回归
 
@@ -38,16 +44,20 @@ F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；初始红测试与System默�
 
 ## 固定源码本机证据
 
-修复源ec8081f36f89d3068896abfcba77ac13c478cc1d重新锁构建后，两新选择器再次通过。[逐断言、预算结果、DLL与原始log hash](../evidence/time-storage-fault-01/local-ec808.json)只归该源；四产品/安装器前述工作树编译不混为这次DLL身份。草稿PR112已创建，ST08进程闭环依赖仍未决定，不能合并后当作该闭环通过。
+修复源ec8081f36f89d3068896abfcba77ac13c478cc1d重新锁构建后，两新选择器再次通过。[逐断言、预算结果、DLL与原始log hash](../evidence/time-storage-fault-01/local-ec808.json)只归该源；四产品/安装器前述工作树编译不混为这次DLL身份。这是依赖获批准前的历史阶段，未验证新增进程闭环；当前叠加实现由后续独立证据另计。
 
 |问题|当前修复源位置|
 |---|---|
 |ST12|ParcelStorageCapacity.cs:15、CommonCapabilities.cs:33、LocalManagementMode.cs:127、ManagementModeBroker.Installation.cs的Wait|
 |ST13|ParcelStages.cs:85/112、ParcelReceiptChronology.cs、ParcelReceiptCustody.cs:43、ParcelTerminalRecovery.cs:56、ParcelLegacyReceiptRecovery.cs:121；Contracts/ParcelContracts.cs可缺省字段|
-|ST08已修阶段|ParcelIngress.cs:45、Ipc.Platform.Storage/AtomicStorageWrite.cs:15；ParcelRuntime的Receive仍待进程级致命处理，未伪称已改|
+|ST08|ParcelIngress.cs、Ipc.Platform.Storage/AtomicStorageWrite.cs、ParcelStorageFailure.cs、ParcelRuntime.cs、ParcelCommands.cs、ParcelGuards.cs、RuntimeFatalFailure.cs、CrashDiagnostics.cs、DesktopRecoverySupervisor.cs、Ipc.Desktop/ParcelApp.xaml.cs|
 
 改动文件已复筛：没有新增HTTP/RCS重试；新的同步退避仅在原同步持久交接路径，仍由来源回调/原lane所有者保有资源；不在UI刷新getter内睡眠。事务回调只有本地SQL，COMMIT结果不明不重做，异常不会被吞掉变成功。时钟证据与nullable字段不修改旧JSON/null省略语义；原SQL1–9没有变更。长期内存/实际native挂起/现场资格不由这些检查授予。
 
 ## CI实际检查身份
 
 [Linux job121289396953](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289396953)与[Windows冻结介质job121289397000](https://github.com/yuan2go/importer-pc/actions/runs/40233280329/job/121289397000)均SUCCESS，head ec8081f3，实际检出合并ref d062ec8d3d3593c14f57f734488150479cd3db67。[原源/两job/新介质hash](../evidence/time-storage-fault-01/ci-ec808.json)固定身份；不是本机DLL，也不把它记成后续文档提交验证。未签名、实际Windows安装NOT_RUN。ST08缺失进程闭环没有被这次CI授予通过。
+
+## 叠加后独立验证
+
+四个新选择器（time-storage-fault/atomic/supervisor/process-checks）及父P0 cleanup/rcs/unknown-restart/supervisor已本机通过；后续源提交/日志哈希在新增回执另计。Windows本机reliability-02受既有MachineRuntimePolicy（未安装指定账户政策）阻断，不绕过或登记；其Linux CI另验，不能把环境阻断写成通过。旧P0非CJK快捷方式COM门禁仍由其原CI记录说明，未改断言。

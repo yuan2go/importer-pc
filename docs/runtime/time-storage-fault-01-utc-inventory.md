@@ -186,3 +186,7 @@
 |src/Ipc.Reference.Protocol/ReferencePeer.cs:55|审计/呈现/冻结事实赋时|UTC保留|未发现此命中行独立承担间隔控制；变量别名消费者见正文补充|
 |src/Ipc.Reference.Protocol/ReferencePeer.cs:99|审计/呈现/冻结事实赋时|UTC保留|未发现此命中行独立承担间隔控制；变量别名消费者见正文补充|
 |src/Ipc.Reference.Protocol/ReferencePeer.cs:119|审计/呈现/冻结事实赋时|UTC保留|未发现此命中行独立承担间隔控制；变量别名消费者见正文补充|
+
+## PR110叠加后的源码补扫
+
+用户2026-10-26批准依赖PR110，合并保留963165d7历史（整合93aea521）。再次扫描全部src，共165个命中行/68个文件，[当前源逐行表](evidence/time-storage-fault-01/utc-inventory-stacked-src.csv)提供补扫行号；上述512行初扫保持原b37身份。新增崩溃/监督UTC是日志和账本展示；重启、健康重置、keepalive判断用单调经过时间。新增存储故障桥接无墙钟定时器。原风险待专项清单继续有效，未把父PR短测扩张到本包或现场。

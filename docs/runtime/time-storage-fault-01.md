@@ -28,8 +28,22 @@ COMMIT开始后的I/O/结果丢失记DurableOutcomeUncertain，不重新执行SQ
 
 依据：[Microsoft.Data.Sqlite BUSY/LOCKED重试](https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/database-errors)、[SQLite错误与自动回滚](https://www.sqlite.org/lang_transaction.html)、[SQLite错误码](https://www.sqlite.org/rescode.html)。实际测试是合成故障/原生SQLite锁及页配额，不是物理盘抖动/写满实测。
 
-## ST14依赖与待接入的闭环
+## 已接入PR110的故障闭环
 
-F0时main没有PR110的CrashDiagnostics、DesktopRecoverySupervisor和已登记自启动。ST08的快速失败→有限拉起→原责任恢复仍需该依赖；当前已完成事务分级与安全重试，不以“接收关闭”冒充完整闭环。依赖交付方式已询问用户，未默默合入另一工作包或写假PASS。
+用户2026-10-26明确批准叠加PR：PR112以codex/p0-stability-01为base，PR110来源963165d7保留历史，经93aea521合入。父PR合并main后再转回main；不强推、不改旧证据。原先“等待依赖”的阶段记录仍固定于ec808证据，不能当作当前状态。
 
-拟接入：超预算/提交结果不明先围栏并同步致命诊断，再走ST14的明确退出码；由唯一监督者按既定持久次数预算拉起。不可恢复类别使用监督可识别的停止标记/退出码，立即持久告警并阻止重复拉起，修复后仍按既有受控维护重置。日志盘写失败不得声称已刷盘；launch/owner不明保持原围栏。新进程仍走原Pending→Interrupted、Prepared显式继续、Dispatching→Unknown规则，无业务重放。依赖合入后需实际合成子进程测超预算退出/拉起、永久错误停止、Unknown/原输入保留；本段是方案，未实现/未验收。
+Application先停止准入，发布单次IRuntimeFatalSource通知；RuntimeFatalMonitor由桌面进程所有者在StartAsync前观察，在正常完全释放所有权后取消/释放观察。它把实例、设备Epoch、最近状态/错误阶段与预算交给ST14 CrashDiagnostics，连同版本/commit写运行日志并Flush(true)，随后快速退出。核心库不自行Environment.Exit，不在未知业务状态继续运行。
+
+RetryBudgetExceeded或DurableOutcomeUncertain走ST14原明确致命退出码及有限监督重启；FULL/损坏/结构不符等Unrecoverable走明确退出码78，监督器先持久Block/alert.json，再停止重启，不耗完普通崩溃重试次数。恢复需要按P0指南由授权维护修复后重置。输入、业务提交、维护及已知仓库打开/恢复边界接入；校验候选参数拒绝仍是原业务结果，不伪称坏库。临时冗余回执占用仍由ST02本地有界退避处理，不发全局致命通知。
+
+新进程沿用Pending→Interrupted、Prepared显式继续、Dispatching→Unknown及原冻结请求核对；任何类别都不触发业务重发/清Unknown。只对确认回滚的输入事务做5秒内重试，其余已持久/外部阶段失败直接退出，避免重新执行外部动作。
+
+### 运维与限制
+
+自动拉起依赖已通过既有一次UAC安装阶段登记的PR110恢复策略，普通运行仍非管理员。不在本包测试机注册任何服务/任务/HKLM；未登记的开发直接启动进程会退出，由开发者手动重启。监督次数/间隔及SCM/WER/卸载路径沿用[P0运行指南](p0-stability-01.md)，本包不新增系统安装条目或数据库表。
+
+受控永久存储退出不再向可能写满的卷追加WER dump；原未知致命崩溃仍走ST14 WER路径。日志/监督账本也可能因物理写满、坏盘或权限损坏写入失败，不声称能保证刷盘/告警落地；相关系统调用不可由托管5秒预算强杀。必须在隔离Windows VM做真实卷容量/权限故障测试。
+
+### Windows VM验收（本次NOT_RUN）
+
+在全新隔离Simulation VM内，通过P0规定的唯一UAC安装候选，记录介质SourceCommit/哈希与注册策略；确认普通运行。用独立合成数据库锁占用/限额盘模拟短锁、超预算及FULL，保存fatal日志、监督state/alert、退出码、拉起时间。短锁释放应一次持久交接；超预算应快退并按登记间隔启动唯一客户端；FULL应首次即Block，修复前不再拉起。对同根既有Unknown与Pending逐条核对原报文/身份、无外部重发；完成授权维护修复再重置。最后按P0卸载验证任务、WER与SCM登记清理。不得在真实工位执行。

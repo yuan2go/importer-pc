@@ -60,7 +60,7 @@ TCP驱动1.1.0在连接前启用SO_KEEPALIVE；参数`keepalive-time-seconds=60`
 - HKLM64的WER LocalDumps/Ipc.Desktop.exe为本机同名客户端共享，默认DumpCount=2、DumpType=1（mini），目录为受保护机器根diagnostics/crash-dumps，指定运行账号可写。保留最少约128MiB容量检查只是安装预检，不是dump字节硬上限；完整dump选项须另作容量评估。不同产品共享该键，最终采用最近一次获授权安装的dump政策；既有外部WER登记不覆盖。
 - 既有LocalSystem管理授权服务设置SCM恢复：5秒重启、30秒重启、最后NONE；重置周期86400秒，同时覆盖服务主动报告非零失败。最后NONE避免SCM无限重复最后一次重启动作。服务删除时恢复动作随SCM条目删除，共用服务在最后消费者卸载时删除。
 
-DesktopRecoveryOptions作为安装请求/部署登记的可选属性提供Enabled、RestartDelaySeconds、MaximumRestarts、HealthyResetSeconds、DumpCount、DumpType及边界校验，不增加日常操作步骤。旧记录缺该属性时保持原行为及原序列化字节；新安装默认开启。选项沿安装计划hash、回执核对和系统修复，不进入业务数据库。
+DesktopRecoveryOptions作为安装请求/部署登记的可选属性提供Enabled、RestartDelaySeconds、MaximumRestarts、HealthyResetSeconds、DumpCount、DumpType及边界校验，不增加日常操作步骤。旧记录缺该属性时保持原行为及原序列化字节；按2026-10-26整合授权，新安装默认关闭（Enabled=false），保持原手动启动行为；显式提供Enabled=true才注册并启用监督。已有冻结回执保持其原政策与身份，不把旧默认开启的测试改写为本次证据。选项沿安装计划hash、回执核对和系统修复，不进入业务数据库。
 
 卸载清单SystemEntries列出任务、WER键、dump目录、原SCM服务和随数据保留的监督账。移除本产品任务；最后消费者卸载时移除本安装器拥有的WER键及命名为Ipc.Desktop.exe.<PID>.dmp的受控dump，最多64项核查，空目录删除；外部登记/未知文件不擅删，保留路径进入回执。其他产品仍使用的共享系统项保留。业务、配置及监督审计账继续遵循既有“RemovedDataRetained”语义。真实登记、强杀重启、dump轮转、SCM及卸载往返尚待VM，不能把XML验证或子进程测试记作系统安装PASS。
 

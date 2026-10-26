@@ -1,3 +1,5 @@
+> 2026-10-27 作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](../work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
+
 # TASK-CONTENT-HIERARCHY-02
 
 当前代码状态：PR97已以`c310705`合入main，字体PR98也已合入；后续组合验证及最小查询空间续修见[整合报告](../runtime/parallel-task-integration-01.md)。下方为深度复核形成时裁决，原材料、版本和验证身份保留。

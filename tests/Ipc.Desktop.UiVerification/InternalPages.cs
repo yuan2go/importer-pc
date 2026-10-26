@@ -187,7 +187,7 @@ static partial class Program
         await Flush();
         Check(Math.Abs(control.ActualWidth - 800) < 1 && Math.Abs(control.ActualHeight - 420) < 1, "log regression uses the actual 800x420 DIP client");
         var keyword = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词");
-        var level = Descendants(control).OfType<ComboBox>().Single();
+        var level = Descendants(control).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == "日志级别");
         var details = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文"));
         async Task ExpandDetail()
         {

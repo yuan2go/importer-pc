@@ -52,6 +52,7 @@ public partial class SupplyStationWindow : Window
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "workstation";
+        if (initialPage == "maintenance" && !ViewModel.IsManagementMode) initialPage = "workstation";
         SetPage(initialPage);
         timer.Tick += (_, _) =>
         {

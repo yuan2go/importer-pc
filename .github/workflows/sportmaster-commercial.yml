@@ -267,6 +267,7 @@ jobs:
               @{ Directory = 'parameters-v3'; ParameterV3 = $true },
               @{ Directory = 'operator-administration'; ManagementMode = $true },
               @{ Directory = 'reliability-logs'; ReliabilityLogs = $true },
+                @{ Directory = 'workstation-status-logs'; WorkstationStatusLogs = $true },
               @{ Directory = 'stability-seed'; StabilitySeedUpgrade = $true },
               @{ Directory = 'installer-first-run'; InstallerFirstRunUi = $true },
               @{ Directory = 'lifecycle'; LifecycleUx = $true }

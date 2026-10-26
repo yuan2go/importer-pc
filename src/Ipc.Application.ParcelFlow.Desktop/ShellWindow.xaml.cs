@@ -14,6 +14,7 @@ public partial class ShellWindow : Window
     public bool ShowWorkspaceFeedback { get => (bool)GetValue(ShowWorkspaceFeedbackProperty); private set => SetValue(ShowWorkspaceFeedbackProperty, value); }
     void SelectWorkspace(UserControl content, string workspace)
     {
+        if (workspace is "maintenance" or "logs" && !vm.IsManagementMode) { content = work; workspace = "work"; }
         if (SelectedWorkspace != workspace) ShowWorkspaceFeedback = false;
         vm.SetFeedbackContext(workspace);
         PageHost.Content = content; SetValue(SelectedWorkspacePropertyKey, workspace);
@@ -71,6 +72,7 @@ public partial class ShellWindow : Window
         vm.RequestRetentionAsync = RequestRetention;
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
+        if (initialPage == "maintenance" && !vm.IsManagementMode) initialPage = "work";
         SelectWorkspace(initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work, initialPage);
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read(vm.PresentationId, "classic") ?? false : layout == "compact"; }
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { vm.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }

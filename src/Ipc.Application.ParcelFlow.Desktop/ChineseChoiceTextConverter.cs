@@ -22,3 +22,9 @@ public sealed class ParameterMessageTextConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => ChineseInterfaceText.ParameterMessage(value as string ?? "");
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
 }
+
+public sealed class PositionNameTextConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => ParcelViewModel.PositionName(value as string ?? "main");
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
+}

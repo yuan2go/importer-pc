@@ -287,7 +287,6 @@ static partial class ArchitectureQualityRemediation
         public void ExpireHealth() { healthExpired = true; health?.Invoke(new(DeviceId, Epoch, DeviceHealth.Faulted, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, ConfirmationSource)); }
         public bool Emit(string admission, string code) => Emit("Read", admission, [code], null, Wire.Id());
         public bool Emit(string kind, string admission, string[] codes, int? quantity, string source) => ((ISyntheticObservationInput)inner).Emit(kind, admission, codes, quantity, source);
-        public Task StartAsync(Func<Observation, bool> r, Action<string, string, DeviceHealth> h, CancellationToken t) => throw new NotSupportedException();
         public Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t)
         { callback = r; health = h; healthExpired = false; return inner.StartControlledAsync(e, r, value => { if (!healthExpired) h(value); }, t); }
         public Task StopAsync(CancellationToken t) { old = callback; return inner.StopAsync(t); }

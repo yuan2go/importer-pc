@@ -203,7 +203,6 @@ static class CommercialQuality
 sealed class TimestampReader(IControlledObservationSource inner,Func<TimeSpan> offset):IControlledObservationSource,ISyntheticObservationInput{
  public string DeviceId=>inner.DeviceId;public string Epoch=>inner.Epoch;public string ConfirmationSource=>inner.ConfirmationSource;
  public Task StartControlledAsync(string e,Func<Observation,bool> f,Action<DeviceHealthConfirmation> h,CancellationToken t)=>inner.StartControlledAsync(e,o=>f(o with{ObservedAt=o.ObservedAt+offset()}),h,t);
- public Task StartAsync(Func<Observation,bool> f,Action<string,string,DeviceHealth> h,CancellationToken t)=>throw new NotSupportedException();
  public bool Emit(string k,string a,string[] c,int? q,string s)=>((ISyntheticObservationInput)inner).Emit(k,a,c,q,s);
  public Task StopAsync(CancellationToken t)=>inner.StopAsync(t);public ValueTask DisposeAsync()=>inner.DisposeAsync();
 }

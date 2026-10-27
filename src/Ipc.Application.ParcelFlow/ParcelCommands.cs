@@ -38,7 +38,7 @@ public sealed partial class ParcelRuntime
             if (Volatile.Read(ref walObservation) is { } wal) auxiliaryReasons.Add(wal);
             if (retentionWarning is not null) auxiliaryReasons.Add(retentionWarning);
             auxiliaryReasons.Add("Workers:" + Wire.Encode(WorkerProgress()));
-            if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required");
+            if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: current resources must start successfully before admission");
             if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
             foreach (var conflict in identityConflicts.Values) reasons.Add("IdentityConflict:" + conflict.Id + "; positions=" + string.Join(",", conflict.Positions));
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
@@ -64,7 +64,7 @@ public sealed partial class ParcelRuntime
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
-            var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
+            var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray(), BackupStatus(), configuration.Current.Pending is not null);
             encoded = EncodeSnapshot(projection);
         }
@@ -102,23 +102,6 @@ public sealed partial class ParcelRuntime
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
-                case "ConfirmConfiguration" when CanConfigure && command.Owner is not null && !string.IsNullOrWhiteSpace(command.Value):
-                    if (!AdmissionCapabilitiesReady() || readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true))
-                        return new("Rejected", "Current resource health must be confirmed before Effective maintenance confirmation", repository.Revision);
-                    // The inspected runtime, configuration CAS and content identity are independent
-                    // of the latest application projection used to submit this command.
-                    var owner = command.Owner.Split(':', 3);
-                    if (owner.Length != 3 || !Guid.TryParseExact(owner[0], "N", out var inspectedRuntime) || !long.TryParse(owner[1], out var configurationRevision))
-                        return new("Rejected", "Owner must be runtimeIdN:configurationRevision:effectiveSha256", repository.Revision);
-                    if (inspectedRuntime != runtimeId) return new("Conflict", "Runtime identity changed; inspect this instance before confirming Effective", repository.Revision);
-                    repository.AdmitCommand(command);
-                    try { configuration!.ConfirmEffective(configurationRevision, owner[2], ManagementEvidence!.AuditActor, command.Value); }
-                    catch (InvalidOperationException ex) { return repository.CompleteCommand(command, new("Conflict", ex.Message, repository.Revision)); }
-                    catch (InvalidDataException ex) { return repository.CompleteCommand(command, new("Rejected", ex.Message, repository.Revision)); }
-                    Boundary?.Invoke("AfterConfigurationConfirmed");
-                    repository.Commit(null, "ConfigurationEffectiveConfirmed", Wire.Encode(new { ConfigurationRevision = configuration!.Current.Revision,
-                        RuntimeId = runtimeId, EffectiveHash = owner[2], Maintenance = ManagementEvidence!.AuditActor, Reason = command.Value }), command: command);
-                    break;
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
@@ -181,7 +164,7 @@ public sealed partial class ParcelRuntime
             audit = new(Wire.Id(), DateTimeOffset.UtcNow, currentOperator, reason, configuration.Current.Revision, configuration.Current.Revision,
                 Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate, Authorization: ManagementEvidence);
             repository!.Commit(null, "ConfigurationChangePrepared", Wire.Encode(audit), configurationAudit: audit);
-            if (Effective.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("Topology schema downgrade/flattening is forbidden");
+            if (candidate.SchemaVersion != 3) throw new InvalidDataException("Topology schema downgrade/flattening is forbidden");
             var errors = definition.Validate(candidate);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             RequireSameIdentity(Effective, candidate); candidate = factory.Normalize(candidate);
@@ -285,11 +268,11 @@ public sealed partial class ParcelRuntime
         if (ports is not null)
         {
             List<Exception> sourceFailures = [];
-            foreach (var source in ReaderPorts().Cast<object>().Concat(CapabilityPorts().OfType<IWeightSource>()))
+            foreach (var source in ReaderPorts().Cast<object>().Concat(CapabilityPorts().OfType<IControlledWeightSource>()))
                 try
                 {
                     if (source is IControlledObservationSource reader) await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false);
-                    else await DeviceCallAsync(DeviceKey((IWeightSource)source), () => ((IWeightSource)source).StopAsync(token), token).ConfigureAwait(false);
+                    else await DeviceCallAsync(DeviceKey((IControlledWeightSource)source), () => ((IControlledWeightSource)source).StopAsync(token), token).ConfigureAwait(false);
                 }
                 catch (Exception ex) { sourceFailures.Add(ex); }
             if (sourceFailures.Count != 0)

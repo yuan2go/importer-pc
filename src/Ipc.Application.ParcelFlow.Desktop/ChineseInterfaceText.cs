@@ -95,7 +95,7 @@ public static class ChineseInterfaceText
         ("Unsupported command or an application guard is closed", "命令不受支持或当前执行条件未满足"),
         ("Unresolved operation capacity exhausted; original responsibilities cannot be archived", "未清偿作业容量已满；原责任不能归档"),
         ("Temporary image capacity/backlog exhausted; existing originals retained", "临时图像空间或待处理容量已满；原件保留"),
-        ("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required", "需要确认配置：检查保留的原配置账；资源启动成功并经认证确认当前修订后才能继续"),
+        ("ConfigurationConfirmationRequired: current resources must start successfully before admission", "资源启动尚未成功，当前配置不能获得业务准入"),
         ("Overload: rejected callback; inspect parcel and acknowledge while paused", "输入过载，已拒收回调；暂停后检查包裹并确认"),
         ("IngressInterrupted:left; pause, enter management mode and inspect original input responsibilities", "左位存在未决输入；暂停并进入管理模式，在原作业与接收责任中逐笔核对"),
         ("IngressInterrupted:right; pause, enter management mode and inspect original input responsibilities", "右位存在未决输入；暂停并进入管理模式，在原作业与接收责任中逐笔核对"),

@@ -222,7 +222,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿基线已变化；先比较当前配置，不自动套用或覆盖。");
-            if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v1") throw new InvalidOperationException("这是运行内统一设置的草稿；在原Application的设备与维护页选择继续未完成设置。当前首配输入与加密原草稿均保留。");
+            if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v2") throw new InvalidOperationException("这是运行内统一设置的草稿；在原Application的设备与维护页选择继续未完成设置。当前首配输入与加密原草稿均保留。");
             draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复未完成输入；参数改变后原检查失效。请重新检查候选。"); return Task.CompletedTask;
         });
         Action("导出新站模板…", () =>
@@ -550,7 +550,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             unavailableDraft = "\n草稿不可用：本机无法解密原DPAPI草稿（" + error.NativeErrorCode + "）。原密文保留、不覆盖；可从当前配置重新填写秘密并受控提交。换机恢复仍隔离，不能代替来源退役与资格核对。";
         }
         Render();
-        var resumed = initialConfiguration && savedDraft is { BaseChanged: false } && draft is not null && savedDraft.Editor.Values.GetValueOrDefault("editor") != "live-v1";
+        var resumed = initialConfiguration && savedDraft is { BaseChanged: false } && draft is not null && savedDraft.Editor.Values.GetValueOrDefault("editor") != "live-v2";
         if (resumed) { draft = draft!.WithRestored(savedDraft!.Editor); Render(false); savedInput = Input(); }
         diagnosticDetails = string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
         Message(initialConfiguration

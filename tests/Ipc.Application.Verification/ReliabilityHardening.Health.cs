@@ -28,7 +28,6 @@ static partial class ReliabilityHardening
         public Func<Observation, bool>? Receive;
         public Task StartControlledAsync(string epoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
         { Receive = receive; Health = health; var now = DateTimeOffset.UtcNow; health(new(DeviceId, epoch, DeviceHealth.Ready, now, now.AddSeconds(10), ConfirmationSource)); return Task.CompletedTask; }
-        public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token) => throw new NotSupportedException();
         public Task StopAsync(CancellationToken token) => Task.CompletedTask;
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }

@@ -21,7 +21,7 @@ public abstract class FlowDefinition
     public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, Id, PositionRoles), .. ValidateBusiness(c)];
 
 }
-public sealed record ParcelPorts(IControlledObservationSource Reader, IWeightSource? Weight, IWcsPort? Wcs, IPlcPort? Plc,
+public sealed record ParcelPorts(IControlledObservationSource Reader, IControlledWeightSource? Weight, IWcsPort? Wcs, IPlcPort? Plc,
     IReadOnlyDictionary<string, string> ImplementationHashes, IOperatorAuthenticator? Login = null, IImageCamera? Camera = null, IImageUploader? Uploader = null,
     IReadOnlyDictionary<string, IControlledObservationSource>? Readers = null, IReadOnlyDictionary<string, ICapabilityPort>? Devices = null);
 public interface IParcelCapabilityFactory : IAsyncDisposable

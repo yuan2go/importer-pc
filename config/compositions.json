@@ -2,13 +2,13 @@
   "schema": 2,
   "components": {
     "platform": {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "contract": 1,
       "dependencies": [],
       "delivery": "core"
     },
     "supply": {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "contract": 1,
       "dependencies": [
         "supply-contracts",
@@ -27,7 +27,7 @@
       "delivery": "core"
     },
     "reference.barcode": {
-      "version": "2.0.1",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -35,7 +35,7 @@
       "delivery": "offline-bundle"
     },
     "supply-contracts": {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -43,7 +43,7 @@
       "delivery": "core"
     },
     "reference.integration": {
-      "version": "2.0.1",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "supply-contracts"
@@ -75,7 +75,7 @@
       "delivery": "core"
     },
     "application.sportmaster": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "platform-storage",
@@ -95,7 +95,7 @@
       "delivery": "core"
     },
     "application.direct-plc": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "platform-storage",
@@ -114,7 +114,7 @@
       "delivery": "core"
     },
     "application.wcs-to-plc": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "platform-storage",
@@ -142,7 +142,7 @@
       "delivery": "core"
     },
     "application-contracts": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "platform"

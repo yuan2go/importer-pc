@@ -95,15 +95,14 @@ public sealed partial class ParcelRepository : IDisposable
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 9, bool allowCustodyUpgrade = false)
-        : this(directory, application, storageVersion, allowCustodyUpgrade, CancellationToken.None) { }
+    public ParcelRepository(string directory, string application)
+        : this(directory, application, CancellationToken.None) { }
     public ParcelRepository(string directory, string application, string[] positions)
-        : this(directory, application, 9, false, CancellationToken.None, positions) { }
-    internal ParcelRepository(string directory, string application, int storageVersion, bool allowCustodyUpgrade, CancellationToken maintenanceCancellation, string[]? positions = null)
+        : this(directory, application, CancellationToken.None, positions) { }
+    internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions = null)
     {
         this.maintenanceCancellation = maintenanceCancellation;
         maintenanceCancellation.ThrowIfCancellationRequested();
-        if (storageVersion != 9 || allowCustodyUpgrade) throw new InvalidDataException("仅支持当前第9版数据库；不转换旧格式，请保留原件。");
         rawRoot = Path.Combine(directory, "receipts");
         var database = Path.Combine(directory, application + ".db");
         if (File.Exists(database))
@@ -130,7 +129,7 @@ public sealed partial class ParcelRepository : IDisposable
         try
         {
             Database.Migrate(db, application, migrations);
-            StorageVersion=storageVersion;
+            StorageVersion=9;
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using (var r = cmd.ExecuteReader())
             { if (!r.Read()) throw new InvalidDataException("Missing parcel metadata"); Revision = r.GetInt64(0); Paused = r.GetBoolean(1); }

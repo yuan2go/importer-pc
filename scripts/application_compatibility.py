@@ -40,7 +40,9 @@ def read_business(root, application, selection):
 
 def selected_providers(configuration):
     """The full configuration hash binds parameters/targets; this lists exact implementations."""
-    bindings = [configuration.get(k) for k in ['Scale', 'Wcs', 'Plc', 'Login', 'MaintenanceLogin']]
+    if configuration.get('SchemaVersion') != 3 or not configuration.get('Topology') or configuration.get('MaintenanceLogin') is not None:
+        raise ValueError('Current schema3 configuration and explicit topology required; use a new data directory')
+    bindings = [configuration.get(k) for k in ['Scale', 'Wcs', 'Plc', 'Login']]
     bindings += [(configuration.get('Images') or {}).get(k) for k in ['Camera', 'Uploader']]
     bindings += configuration.get('CapabilityInstances') or []
     providers = []
@@ -50,7 +52,7 @@ def selected_providers(configuration):
             seen.add(b['InstanceId'])
             providers.append({k: b[k] for k in ['Kind', 'Implementation', 'Version', 'Contract', 'InstanceId', 'Target']})
             if b.get('Package'): providers[-1]['Package'] = b['Package']
-    for reader in (configuration.get('Topology') or {}).get('Readers', [configuration['Reader']]):
+    for reader in configuration['Topology']['Readers']:
         provider = dict(Kind='observation', Implementation='manual', Version='1.0.0', Contract='CONTROLLED-OBSERVATION-v1', DeviceId=reader['DeviceId'], Revision=reader['Revision'])
         if reader['Driver'] != 'manual':
             deployment = configuration['Extensions']
@@ -75,7 +77,7 @@ def utc():
 
 
 def run_input(record):
-    keys = ['Command', 'WorkingDirectory', 'OptionalFeatures', 'AttachedUpload', 'ExternalPeerProcess', 'Windows', 'RealEquipment', 'Assurance', 'Checks', 'OptionalChecks'] if record['SchemaVersion'] >= 3 else []
+    keys = ['Command', 'WorkingDirectory', 'OptionalFeatures', 'AttachedUpload', 'ExternalPeerProcess', 'Windows', 'RealEquipment', 'Assurance', 'Checks', 'OptionalChecks']
     return {key: record[key] for key in ['RunId', 'Application', 'BusinessVersion', 'SourceCommit', 'Target',
         'CandidateFilesSha256', 'ReleaseSha256', 'AssemblyManifestSha256', 'CompatibilitySha256',
         'InputConfiguration', 'InputConfigurationSha256'] + keys}
@@ -118,15 +120,14 @@ def verify_execution(record, events, config):
     else:
         if not endpoints or any(not ep or urlsplit(ep).scheme != 'http' or urlsplit(ep).hostname != '127.0.0.1' for ep in endpoints) or len(set(endpoints)) != 1:
             raise ValueError('External peer process must match every actual reference endpoint')
-        if record['SchemaVersion'] >= 3:
-            if len(peers) != 1:
-                raise ValueError('Actual external peer process start evidence required')
-            peer = peers[0]
-            if type(peer.get('ProcessId')) is not int or peer['ProcessId'] <= 0 or peer.get('Endpoint') != endpoints[0] or peer.get('Health') != 'PARCEL-REFERENCE-v1' or not re.fullmatch('[0-9A-F]{64}', peer.get('FixtureSha256', '')):
-                raise ValueError('External peer process identity/health differs from actual configuration')
-            i = command.index('--peer-fixture')
-            if i + 1 >= len(command) or peer.get('Fixture') != str((Path(record['WorkingDirectory']) / command[i+1]).resolve()) or events.index(peer) >= next(i for i,e in enumerate(events) if e.get('Status') == 'Started'):
-                raise ValueError('External peer command identity/start order differs')
+        if len(peers) != 1:
+            raise ValueError('Actual external peer process start evidence required')
+        peer = peers[0]
+        if type(peer.get('ProcessId')) is not int or peer['ProcessId'] <= 0 or peer.get('Endpoint') != endpoints[0] or peer.get('Health') != 'PARCEL-REFERENCE-v1' or not re.fullmatch('[0-9A-F]{64}', peer.get('FixtureSha256', '')):
+            raise ValueError('External peer process identity/health differs from actual configuration')
+        i = command.index('--peer-fixture')
+        if i + 1 >= len(command) or peer.get('Fixture') != str((Path(record['WorkingDirectory']) / command[i+1]).resolve()) or events.index(peer) >= next(i for i,e in enumerate(events) if e.get('Status') == 'Started'):
+            raise ValueError('External peer command identity/start order differs')
 
 
 def verify_run_events(record, events_path):
@@ -137,11 +138,10 @@ def verify_run_events(record, events_path):
     """
     events = [json.loads(line)['Value'] for line in events_path.read_text().splitlines()]
     inputs = [event for event in events if event.get('Status') == 'CombinationInput']
-    if record['SchemaVersion'] in (2, 3):
-        if not events or len(inputs) != 1 or events[0] != dict(Status='CombinationInput', Binding=run_input(record)):
-            raise ValueError('Recorded input/candidate identity differs from original run input event')
-    elif inputs:
-        raise ValueError('Run input event cannot be bypassed by record schema downgrade')
+    if record.get('SchemaVersion') != 3:
+        raise ValueError('Current qualification requires schema3; historical media are unsupported')
+    if not events or len(inputs) != 1 or events[0] != dict(Status='CombinationInput', Binding=run_input(record)):
+        raise ValueError('Recorded input/candidate identity differs from original run input event')
     snapshots = [event for event in events if isinstance(event.get('Configuration'), dict) and 'Effective' in event['Configuration']]
     if not snapshots:
         raise ValueError('No actual configuration snapshot in original run events')
@@ -226,14 +226,11 @@ class CombinationRun:
         self.save()
 
 
-def verify_record(record_path, root, effective_configuration=None, trusted_record_sha256=None, historical_audit=False):
+def verify_record(record_path, root, effective_configuration=None):
     record_path, root = Path(record_path), Path(root)
     r = json.loads(record_path.read_bytes())
-    if r.get('SchemaVersion') not in (1, 2, 3) or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
-    if r['SchemaVersion'] < 3 and not historical_audit:
-        raise ValueError('Current qualification requires schema3; older records are historical audit only')
-    if r['SchemaVersion'] < 3 and (not trusted_record_sha256 or sha(record_path) != trusted_record_sha256.upper()):
-        raise ValueError('Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required')
+    if r.get('SchemaVersion') != 3: raise ValueError('Current qualification requires schema3; historical media are unsupported')
+    if r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
     for key, path in [('CandidateFilesSha256', root/'SHA256SUMS'), ('ReleaseSha256', root/'app/application-release.json'),
                       ('AssemblyManifestSha256', root/'ASSEMBLY.json'), ('CompatibilitySha256', root/'app/application-compatibility.json')]:
         if r[key] != sha(path): raise ValueError('Record belongs to another/changed candidate: ' + key)
@@ -265,8 +262,6 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--record', type=Path, required=True); p.add_argument('--package', type=Path, required=True)
     p.add_argument('--configuration', type=Path)
-    p.add_argument('--historical-audit', action='store_true', help='Read-only audit of a trusted historical record; never current qualification')
-    p.add_argument('--record-sha256', help='Original legacy record SHA256 from an independently trusted publication/index')
     a = p.parse_args()
-    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None, a.record_sha256, historical_audit=a.historical_audit)
-    print(json.dumps(dict(Status='HISTORICAL_AUDIT' if a.historical_audit else 'PASS', RunId=verified['RunId'], Application=verified['Application'], BusinessVersion=verified['BusinessVersion'])))
+    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None)
+    print(json.dumps(dict(Status='PASS', RunId=verified['RunId'], Application=verified['Application'], BusinessVersion=verified['BusinessVersion'])))

@@ -104,12 +104,12 @@ public sealed partial class ParcelRepository
         var directory = Path.GetDirectoryName(database)!; using var lease = new ResourceLease(directory, ["application-owner"]);
         authority(); if (Wire.FileHash(database, cancellationToken) != expectedHash) throw new InvalidDataException("Original database hash changed; inspect again");
         if (File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length != 0) throw new InvalidOperationException("Nonempty WAL requires orderly matching-release shutdown before retention");
-        var envelope = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory, "configuration.json")));
+        var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
         if (ReadStorageVersion(database, flow.Id) != 9) throw new InvalidDataException("Use the matching DB9 release; retention never performs a schema upgrade");
         phase("InitializeRepository");
-        using var repository = new ParcelRepository(directory, flow.Id, 9, false, cancellationToken);
+        using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
         phase("ValidateOriginal");
         using (var integrity = repository.db.CreateCommand())

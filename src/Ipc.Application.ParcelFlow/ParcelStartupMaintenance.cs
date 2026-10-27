@@ -42,7 +42,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             return (seed, null, directory, file, seedHash);
         }
         var bytes = ReadBytes(file);
-        var envelope = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(Text(bytes));
+        var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(Text(bytes));
         RequireIdentity(seed, envelope.Effective);
         if (envelope.Pending is { } pending) RequireIdentity(seed, pending);
         return (seed, envelope, directory, file, Hash(bytes));
@@ -51,7 +51,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     {
         if (original.ApplicationId != candidate.ApplicationId || original.StationId != candidate.StationId || original.Mode != candidate.Mode)
             throw new InvalidDataException("原Application、站和模式不能由启动修复改变");
-        if (original.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("不得降级或摊平原拓扑");
+        if (candidate.SchemaVersion != 3) throw new InvalidDataException("不得降级或摊平原拓扑");
     }
     public Task<StartupClassification> ClassifyAsync()
     {
@@ -194,7 +194,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     string BackupIdentity(string backup) => Wire.Hash(Wire.FileHash(backup) + Wire.FileHash(Path.Combine(backup + ".recovery", "COMPLETED.json")));
     ParcelConfiguration BackupConfiguration(string backup)
     {
-        var c = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(Text(ReadBytes(Path.Combine(backup + ".recovery", "configuration.json")))).Effective;
+        var c = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(Text(ReadBytes(Path.Combine(backup + ".recovery", "configuration.json")))).Effective;
         if (c.ApplicationId != definition.Id) throw new InvalidDataException("完整备份不属于当前Application");
         var seed = Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed))); RequireIdentity(seed, c);
         var errors = definition.Validate(c); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));

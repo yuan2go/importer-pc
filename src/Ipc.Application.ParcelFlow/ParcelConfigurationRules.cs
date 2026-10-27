@@ -23,7 +23,7 @@ public static partial class ParcelConfigurationRules
             catch (InvalidDataException error) { e.Add(error.Message); }
         }
         e.AddRange(ParcelConnectionSetup.Validate(c));
-        if (c.SchemaVersion != 3 || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
+        if (c.SchemaVersion != 3 || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("应用/站点/模式或格式无效；仅支持当前schema3，请使用全新数据目录");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");
         if (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value)) e.Add("重量有效期必须明确配置。");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");

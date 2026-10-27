@@ -68,8 +68,6 @@ static class AlignmentDataVerification
         var responseText = File.ReadAllText(Path.Combine(fixtures, "simulation-v1-response.json")).TrimEnd();
         var oldResponse = Wire.Decode<IntegrationResponse>(responseText);
         Assert(oldResponse.Context is null && oldResponse.Task is null && Wire.Encode(oldResponse) == responseText, "Old receipt optional fields remain absent and bytes unchanged");
-        var release = new MaintenanceReleaseIdentity(Schema1Checksum, Schema1Checksum, Format2Checksum, new() { ["synthetic-config.json"] = Format2Checksum });
-        var selected = release with { ProgramAssemblySha256 = Format3Checksum };
         string Legacy(string name, int format = 1, bool active = false)
         {
             var path = Path.Combine(root, name + ".db");
@@ -116,16 +114,10 @@ static class AlignmentDataVerification
             var restore = Path.Combine(root, "legacy-format" + format + "-restore", "station.db");
             Throws(()=>SupplyStore.RestoreVerified(backup,restore));
             Assert(!File.Exists(restore) && !Directory.Exists(Path.GetDirectoryName(restore)),"old backup restore refuses before creating destination");
-            var receiptPath=Path.Combine(root,"format"+format+"-upgrade.json");var upgradeBackup=Path.Combine(root,"format"+format+"-pre-upgrade.db");
-            Throws(()=>SupplyStore.UpgradeVerified(source,upgradeBackup,receiptPath,release,selected));
-            Assert(Wire.FileHash(source)==before && !File.Exists(receiptPath) && !File.Exists(upgradeBackup),"old upgrade refuses without source writes, conversion backup or success receipt");
             using(var reader=Open(backup))
             { using var command=reader.CreateCommand();command.CommandText="SELECT json FROM requests WHERE id=$id";command.Parameters.AddWithValue("$id",original.Id);
               Assert((string)command.ExecuteScalar()! == Wire.Encode(original),"read-only original backup retains exact request identity/payload/contract/target"); }
         }
-        var blocked=Legacy("legacy-active",active:true);var blockedHash=Wire.FileHash(blocked);
-        Throws(()=>SupplyStore.UpgradeVerified(blocked,blocked+".backup",blocked+".receipt",release,selected));
-        Assert(Wire.FileHash(blocked)==blockedHash && !File.Exists(blocked+".backup") && !File.Exists(blocked+".receipt"),"unresolved legacy responsibility cannot acquire a conversion or success receipt");
         foreach (var damage in new[] { "future-format", "future-migration", "wrong-checksum" })
         {
             var future = Legacy(damage, 2);

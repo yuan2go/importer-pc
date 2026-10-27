@@ -1,9 +1,10 @@
 namespace Ipc.Platform;
 
 public sealed record ConfigurationActivationAttempt(string Id, DateTimeOffset StartedAt, DateTimeOffset? FinishedAt = null, string? Outcome = null, string? Failure = null);
+[System.Text.Json.Serialization.JsonUnmappedMemberHandling(System.Text.Json.Serialization.JsonUnmappedMemberHandling.Disallow)]
 public sealed record ConfigurationEffectiveConfirmation(string Source, string EffectiveHash, bool Required, string State,
-    string? OriginalEnvelopeBase64, string? OriginalEnvelopeSha256, ConfigurationActivationAttempt[] Attempts,
-    string? ConfirmedBy = null, string? Reason = null, DateTimeOffset? ConfirmedAt = null);
+    ConfigurationActivationAttempt[] Attempts,
+    string? ConfirmedBy = null, DateTimeOffset? ConfirmedAt = null);
 public sealed record ConfigurationInitialRepair(string Id, string OriginalEnvelopeBase64, string OriginalEnvelopeSha256,
     string EffectiveHash, string CandidateHash, string Actor, string Reason, DateTimeOffset At);
 public sealed record ConfigurationRevision<T>(long Revision, T Effective, T? Pending, string Status, string? Failure, ConfigurationActivationAttempt? Activation = null,
@@ -19,11 +20,26 @@ public sealed class ConfigurationRevisions<T> where T : class
     {
         this.path = path; this.validate = validate;
         var loadedEnvelope = File.Exists(path) ? File.ReadAllBytes(path) : null;
-        Current = loadedEnvelope is not null ? Wire.Decode<ConfigurationRevision<T>>(DecodeEnvelope(loadedEnvelope)) : new(0, seed, null, "ConfirmationRequired", null,
-            Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", null, null, []));
+        Current = loadedEnvelope is not null ? ReadCurrentEnvelope(loadedEnvelope) : new(0, seed, null, "ConfirmationRequired", null,
+            Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", []));
         RequireValid(Current.Effective);
         PrepareEffectiveConfirmation();
         if (!File.Exists(path)) ExtensionStore.AtomicWrite(path, Current);
+    }
+    static ConfigurationRevision<T> ReadCurrentEnvelope(byte[] bytes)
+    {
+        try { return ReadCurrentEnvelope(DecodeEnvelope(bytes)); }
+        catch (System.Text.Json.JsonException error) { throw new InvalidDataException("配置账不是当前格式；原文件保留，请使用全新数据目录。", error); }
+    }
+    public static ConfigurationRevision<T> ReadCurrentEnvelope(string json)
+    {
+        try
+        {
+            var current = Wire.Decode<ConfigurationRevision<T>>(json);
+            ValidateEffectiveConfirmation(current);
+            return current;
+        }
+        catch (System.Text.Json.JsonException error) { throw new InvalidDataException("配置账不是当前格式；原文件保留，请使用全新数据目录。", error); }
     }
     static string DecodeEnvelope(byte[] bytes)
     {
@@ -75,7 +91,7 @@ public sealed class ConfigurationRevisions<T> where T : class
             var attempts = confirmation.Attempts.ToArray();
             attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted", Failure = "Process ended before resource startup confirmation" };
             var recovered = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? "ConfirmationRequired" : Current.Status,
-                Failure = "Effective startup interrupted; maintenance confirmation remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
+                Failure = "Effective startup interrupted; successful resource startup remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
             ExtensionStore.AtomicWrite(path, recovered); Current = recovered;
         }
         if (Current.Status != "ActivationInProgress") return;
@@ -111,21 +127,20 @@ public sealed class ConfigurationRevisions<T> where T : class
         ExtensionStore.AtomicWrite(path, next); Current = next;
     }
     // Validation only. Missing evidence on an existing envelope cannot acquire invented startup authority.
-    public void PrepareEffectiveConfirmation()
+    public void PrepareEffectiveConfirmation() => ValidateEffectiveConfirmation(Current);
+    static void ValidateEffectiveConfirmation(ConfigurationRevision<T> current)
     {
-        if (Current.Confirmation is { } existing)
+        if (current.Confirmation is { } existing)
         {
-            if (existing.EffectiveHash != Wire.Hash(Wire.Encode(Current.Effective)) ||
+            if (existing.EffectiveHash != Wire.Hash(Wire.Encode(current.Effective)) ||
                 existing.Source != "Seed" ||
-                existing.State is not ("Required" or "InProgress" or "AwaitingMaintenance" or "Confirmed") ||
+                existing.State is not ("Required" or "InProgress" or "Confirmed") ||
                 existing.Required == (existing.State == "Confirmed") || existing.Attempts is null ||
-                existing.OriginalEnvelopeBase64 is not null || existing.OriginalEnvelopeSha256 is not null ||
-                existing.State == "InProgress" && existing.Attempts.LastOrDefault() is not { FinishedAt: null } ||
-                existing.State == "AwaitingMaintenance" && existing.Attempts.LastOrDefault() is not { Outcome: "ResourcesStarted", FinishedAt: not null })
-                throw new InvalidDataException("Effective confirmation metadata or preserved envelope identity is invalid");
+                existing.State == "InProgress" && existing.Attempts.LastOrDefault() is not { FinishedAt: null })
+                throw new InvalidDataException("配置确认身份不是当前格式；原文件保留，请使用全新数据目录。");
             return;
         }
-        throw new InvalidDataException("配置缺少当前启动确认信息；保留原文件，不能从旧状态推断已生效。");
+        throw new InvalidDataException("配置缺少当前启动确认信息；原文件保留，请使用全新数据目录。");
     }
     public void BeginEffectiveStartup()
     {
@@ -140,23 +155,11 @@ public sealed class ConfigurationRevisions<T> where T : class
         var attempts = confirmation.Attempts.ToArray();
         attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = failure is null ? "ResourcesStarted" : "Failed",
             Failure = failure is null ? null : failure.GetType().Name + ": " + failure.Message };
-        var confirmed = failure is null && confirmation.Source == "Seed";
+        var confirmed = failure is null;
         var next = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? confirmed ? "Effective" : "ConfirmationRequired" : Current.Status,
             Failure = failure is null ? Current.Pending is null ? null : Current.Failure : attempts[^1].Failure,
-            Confirmation = confirmation with { Attempts = attempts, Required = !confirmed, State = confirmed ? "Confirmed" : failure is null ? "AwaitingMaintenance" : "Required",
+            Confirmation = confirmation with { Attempts = attempts, Required = !confirmed, State = confirmed ? "Confirmed" : "Required",
                 ConfirmedBy = confirmed ? "initial-resource-startup" : null, ConfirmedAt = confirmed ? DateTimeOffset.UtcNow : null } };
-        ExtensionStore.AtomicWrite(path, next); Current = next;
-    }
-    public void ConfirmEffective(long expectedRevision, string effectiveHash, string identity, string reason)
-    {
-        if (expectedRevision != Current.Revision) throw new InvalidOperationException("Configuration revision conflict");
-        if (Current.Confirmation is not { Required: true, State: "AwaitingMaintenance" } confirmation ||
-            confirmation.EffectiveHash != effectiveHash || effectiveHash != Wire.Hash(Wire.Encode(Current.Effective)))
-            throw new InvalidOperationException("Current Effective resources must start successfully before maintenance confirmation");
-        if (string.IsNullOrWhiteSpace(identity) || string.IsNullOrWhiteSpace(reason) || reason.Length > 1024)
-            throw new InvalidDataException("Maintenance identity and a confirmation reason of 1..1024 characters are required");
-        var next = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? "Effective" : Current.Status,
-            Failure = Current.Pending is null ? null : Current.Failure, Confirmation = confirmation with { Required = false, State = "Confirmed", ConfirmedBy = identity, Reason = reason, ConfirmedAt = DateTimeOffset.UtcNow } };
         ExtensionStore.AtomicWrite(path, next); Current = next;
     }
     public void Activate(Func<T, bool> applicationBarrier, Action<T> preflight)

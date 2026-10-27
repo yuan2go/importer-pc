@@ -99,8 +99,6 @@ static class ParcelCli
             }
             finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }
-        if (map["--action"] is "recover-legacy-receipt" or "repair-main-projection")
-            throw new InvalidDataException("旧格式迁移命令不受支持；原数据保留，不执行查询、修复或升级。");
         if (map["--action"] == "recovery-plan")
         { Console.WriteLine(Wire.Encode(ParcelRecovery.PlanRestore(map["--file"], map["--destination"]))); return true; }
         if (map["--action"] == "restore")

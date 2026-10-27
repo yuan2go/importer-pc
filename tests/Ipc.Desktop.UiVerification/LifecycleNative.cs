@@ -75,7 +75,7 @@ static partial class Program
             var activated = await replacement!.SnapshotAsync();
             Check(activated.Configuration.Effective.TimeoutMs == b.TimeoutMs && activated.Configuration.Pending is null && activated.Paused && activated.Operations.All(o => o.FrozenConfiguration.TimeoutMs == c.TimeoutMs), "real restart reads back B, stays paused and retains every original request on A");
             await ManagementModeFixture.Authorize(replacement);
-            var classic = new ShellWindow(new ParcelViewModel(replacement, "LIA经典壳", "synthetic", "sportmaster"), () => new ParcelViewModel(replacement, "LIA", "synthetic", "sportmaster"), () => new Workstation()) { ConfirmDiscardDrafts = _ => true };
+            var classic = new ShellWindow(new ParcelViewModel(replacement, "LIA经典壳", "synthetic", "sportmaster"), () => new ParcelViewModel(replacement, "LIA", "synthetic", "sportmaster"), () => new System.Windows.Controls.UserControl()) { ConfirmDiscardDrafts = _ => true };
             classic.Show(); await Task.Delay(250); await SetClient(classic, 800, 420);
             Check(Descendants(classic).OfType<ManagementModeMenu>().Single().Status.Authorized && ((TextBlock)classic.FindName("OperatorIdentity")).Text.Contains("免登录"), "classic minimum viewport shows independent operator and management identities");
             CaptureInternal(evidence, "lia-classic-minimum", (FrameworkElement)classic.Content, lines); classic.Close(); await Task.Delay(100);

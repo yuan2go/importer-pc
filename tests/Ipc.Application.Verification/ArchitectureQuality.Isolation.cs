@@ -194,7 +194,6 @@ static partial class ArchitectureQuality
         public string DeviceId => inner.DeviceId;
         public string Epoch => inner.Epoch;
         public string ConfirmationSource => inner.ConfirmationSource;
-        public Task StartAsync(Func<Observation, bool> r, Action<string, string, DeviceHealth> h, CancellationToken t) => inner.StartAsync(r, h, t);
         public Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t) => inner.StartControlledAsync(e, r, h, t);
         public bool Emit(string k, string a, string[] c, int? n, string s)
         { var accepted = ((ISyntheticObservationInput)inner).Emit(k, a, c, n, s); if (f.MutateObservation && a == "array-original") c[0] = "999"; return accepted; }

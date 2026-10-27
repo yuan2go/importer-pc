@@ -253,8 +253,6 @@ sealed class LifecycleSource(string deviceId) : IControlledObservationSource
     public TaskCompletionSource? StopRelease { get; set; }
     public int StopCount { get; private set; }
     public int DisposeCount { get; private set; }
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token) =>
-        StartControlledAsync(Wire.Id(), receive, x => health(x.DeviceId, x.Epoch, x.Health), token);
     public Task StartControlledAsync(string epoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
     {
         Epoch = epoch; var now = DateTimeOffset.UtcNow;

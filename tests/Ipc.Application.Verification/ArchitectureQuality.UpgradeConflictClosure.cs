@@ -32,7 +32,7 @@ static partial class ArchitectureQuality
         Check(refusal?.Contains("不受支持")==true && ParcelRepository.ReadStorageVersion(file,c.ApplicationId)==storageVersion,
             $"{name}: unresolved DB{storageVersion} refuses BEFORE future reader marker, not after provider construction");
         Check(files.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),name+": refusal preserves original DB/config/raw/image bytes");
-        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId,storageVersion); Check(false,name+": historical writer must refuse"); }
+        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId); Check(false,name+": historical writer must refuse"); }
         catch(InvalidDataException) { Check(files.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),name+": historical writer rejects without changing custody"); }
     }
     static async Task UpgradePreflightChecks()

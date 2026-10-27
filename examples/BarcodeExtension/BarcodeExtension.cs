@@ -23,8 +23,6 @@ sealed class BarcodeSource(ExtensionContext context) : IControlledObservationSou
     public string DeviceId => context.DeviceId;
     public string Epoch { get; private set; } = "not-started";
     public string ConfirmationSource => "SIMULATION:extension:" + context.InstanceId;
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token) =>
-        throw new InvalidOperationException("Controlled epoch registration required");
     public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();

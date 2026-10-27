@@ -60,8 +60,6 @@ public sealed partial class ParcelRepository
     bool ExternalWorkComplete(ParcelOperation op,string application) => (!op.RecoveryRequired || HasTerminalRecoveryBasis(op,application)) &&
         (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application=="sportmaster" && op.State==ParcelState.SlotResolved) &&
         new[]{op.Wcs,op.Plc,op.Capture,op.Upload}.OfType<StageFact>().All(s=>s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
-    public static void UpgradeCustodyOnly(string directory, string application, int targetStorageVersion = 9) =>
-        throw new InvalidDataException("旧格式保管责任迁移不受支持；保留原件。");
 }
 public sealed partial class ParcelRuntime
 {

@@ -30,7 +30,7 @@ static partial class Program
         await using var peer = new HierarchyRcsPeer();
         var configRoot = Path.Combine(evidence, "chain-config"); Directory.CreateDirectory(configRoot);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.3.5", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "2.0.0", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
             ["source"] = "SYNTHETIC-HIERARCHY", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",

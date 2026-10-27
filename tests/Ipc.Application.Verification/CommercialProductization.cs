@@ -176,9 +176,6 @@ static class CommercialProductization
         Check(Wire.FileHash(file) == blockedHash, "refused repair preserves original envelope bytes"); File.Delete(Path.Combine(directory, "RESTORED-ISOLATED.json"));
         await History(seed, root);
         await Unknown(seed, root);
-        var currentDatabase = Path.Combine(directory, seed.ApplicationId + ".db"); var beforeOldReader = Wire.FileHash(currentDatabase);
-        await Reject<InvalidDataException>(() => { using var oldReader = new ParcelRepository(directory, seed.ApplicationId, 7); return Task.CompletedTask; }, "DB7 reader refuses the new DB8 semantic floor before writable open");
-        Check(Wire.FileHash(currentDatabase) == beforeOldReader, "refused prior reader preserves original database bytes");
         var legacyLaunch = launch with { DataRoot = Path.Combine(root, "legacy-handoff-data") };
         var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
         var legacyDatabase=SyntheticPriorStorage.Create(legacyDirectory,seed.ApplicationId,7);

@@ -72,7 +72,7 @@ public sealed class StartupConfigurationDraft
         {
             DeferredConnections = DeferredConnectionIds(Readers, Capabilities),
             Reader = devices[0], Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
-            Weight = Policy.BuildWeight(), WeightValidity = c.SchemaVersion >= 2 ? Policy.Validity : null,
+            Weight = Policy.BuildWeight(), WeightValidity = Policy.Validity,
             QueueCapacity = ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
             TimeoutMs = ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),
             MaximumOperations = ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),

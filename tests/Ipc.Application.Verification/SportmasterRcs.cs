@@ -17,7 +17,7 @@ static partial class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.3.5", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "2.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
@@ -425,8 +425,7 @@ static partial class SportmasterRcs
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
             Check((long)command.ExecuteScalar()! == 9, "actual ParcelRuntime startup retains SQL7 numeric ownership with current SQL9 input custody semantics");
         }
-        try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
-        catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
+
     }
     static void MigrationChecks(string workspace,string root)
     {

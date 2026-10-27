@@ -15,20 +15,6 @@ static class OperatorAdministration
     { try { await action(); throw new Exception("Expected rejection: " + message); } catch (T) { Check(true, message); } }
     public static async Task Run(string workspace, string root)
     {
-        var relocationSource = Path.Combine(root, "relocation-source"); var relocationTarget = Path.Combine(root, "relocation-target");
-        using (var unused = new ParcelRepository(relocationSource, "sportmaster")) { }
-        Directory.CreateDirectory(relocationTarget);
-        var sourceDatabase = Path.Combine(relocationSource, "sportmaster.db"); var targetDatabase = Path.Combine(relocationTarget, "sportmaster.db");
-        void Execute(string file, string sql) { using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Pooling = false }.ToString()); db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = sql; cmd.ExecuteNonQuery(); }
-        Execute(sourceDatabase, "INSERT INTO parcel_audit(at,event,owner,detail) VALUES('synthetic','Original','owner','preserve')");
-        File.Copy(sourceDatabase, targetDatabase);
-        Execute(targetDatabase, "INSERT INTO parcel_audit(at,event,owner,detail) VALUES('synthetic','Maintenance','owner','additional')");
-        ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase);
-        Check(true, "unused simulation relocation preserves every original row while allowing additional maintenance audit");
-        Execute(targetDatabase, "UPDATE parcel_audit SET detail='changed' WHERE event='Original'");
-        await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase)), "relocation refuses changed original audit instead of silently accepting a fresh ledger");
-        Execute(targetDatabase, "UPDATE parcel_audit SET detail='preserve' WHERE event='Original'; INSERT INTO parcel_operations VALUES('synthetic','admission','observation','{}')");
-        await Reject<InvalidOperationException>(() => Task.Run(() => ParcelRepository.RequireUnusedRelocationStatePreserved(sourceDatabase, targetDatabase)), "even one original operation prevents the unused-simulation relocation exception");
         var data = Path.Combine(root, "admin-log-data"); var admin = LocalManagementMode.ForRoot(data);
         var password = "Synthetic-" + Guid.NewGuid().ToString("N");
         var simpleRoot = Path.Combine(root, "five-character-mode"); var simple = new LocalManagementMode(simpleRoot);
@@ -94,7 +80,7 @@ static class OperatorAdministration
         var factory = new CommercialProductization.SyntheticFactory(launch);
         await using (var realCatalog = new ParcelCapabilityFactory(launch))
         {
-            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.3.5", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
+            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "2.0.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
             await Reject<InvalidOperationException>(() => Task.Run(() => realCatalog.Validate(seed with { Mode = RunMode.Production })), "unprotected local mode state cannot satisfy production authentication capability");
         }
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };

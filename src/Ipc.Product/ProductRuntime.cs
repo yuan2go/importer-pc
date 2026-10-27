@@ -13,11 +13,11 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
 {
     readonly BootOptions options;
     readonly ILogger<ProductRuntime> logger;
-    readonly Func<DeviceBinding, string, IObservationSource> sourceFactory;
+    readonly Func<DeviceBinding, string, IControlledObservationSource> sourceFactory;
     public ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger) : this(options, logger, ReferenceProduct.CreateSource) { }
     // Only the existing verification friend assembly can supply controlled sources. All
     // configuration/product validation and lease acquisition still precede this factory.
-    internal ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger, Func<DeviceBinding, string, IObservationSource> sourceFactory)
+    internal ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger, Func<DeviceBinding, string, IControlledObservationSource> sourceFactory)
     { SupplyContractRegistration.Register(); this.options = options; this.logger = logger; this.sourceFactory = sourceFactory; }
     ResourceLease? dataLease, resourceLease;
     ConfigRevision? activating;
@@ -52,8 +52,8 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
     ObservationModule? observationModule;
     Task? startupTask;
     readonly CancellationTokenSource startupStop = new();
-    IObservationSource[] constructionSources = [];
-    readonly Dictionary<IObservationSource, Task> constructionStops = [], constructionDisposals = [];
+    IControlledObservationSource[] constructionSources = [];
+    readonly Dictionary<IControlledObservationSource, Task> constructionStops = [], constructionDisposals = [];
     public Task StartAsync(CancellationToken token)
     {
         if (startupTask is not null) throw new InvalidOperationException("Runtime startup is single-use");
@@ -188,15 +188,15 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
             .Concat(selected.StationId != seed.StationId || selected.Mode != seed.Mode ? ["Config station/mode does not match the owned data root"] : Array.Empty<string>()).ToArray();
     internal static string[] ConfigurationResources(StationConfig selected) =>
         new[] { $"{selected.Mode}:station:{selected.StationId}" }.Concat(selected.Devices.SelectMany(x => new[] { $"{selected.Mode}:device:{x.DeviceId}", $"device:{x.DeviceId}" })).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
-    async Task<IObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
+    async Task<IControlledObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
     {
-        List<IObservationSource> sources = [];
+        List<IControlledObservationSource> sources = [];
         try
         {
             foreach (var binding in selected.Devices)
             {
                 startupStop.Token.ThrowIfCancellationRequested();
-                IObservationSource source;
+                IControlledObservationSource source;
                 if (!binding.Driver.StartsWith("extension:", StringComparison.Ordinal)) source = sourceFactory(binding, directory);
                 else
                 {
@@ -206,7 +206,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
                     source = extensionLoading!.Create(package, module, instance);
                 }
                 sources.Add(source); constructionSources = sources.ToArray();
-                if (source.DeviceId != binding.DeviceId || source is not IControlledObservationSource controlled || string.IsNullOrWhiteSpace(controlled.ConfirmationSource))
+                if (source.DeviceId != binding.DeviceId || string.IsNullOrWhiteSpace(source.ConfirmationSource))
                     throw new InvalidDataException("Source returned incompatible identity/confirmation contract");
             }
             return sources.ToArray();

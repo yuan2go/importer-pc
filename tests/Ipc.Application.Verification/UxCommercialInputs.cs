@@ -164,7 +164,6 @@ static class UxCommercialInputs
         public bool Emit(string kind, string admission, string[] codes, int? quantity, string source) => ((ISyntheticObservationInput)inner).Emit(kind, admission, codes, quantity, source);
         public Task StartControlledAsync(string epoch, Func<Observation, bool> callback, Action<DeviceHealthConfirmation> health, CancellationToken token)
         { receive = callback; return inner.StartControlledAsync(epoch, callback, health, token); }
-        public Task StartAsync(Func<Observation, bool> callback, Action<string, string, DeviceHealth> health, CancellationToken token) => inner.StartAsync(callback, health, token);
         public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

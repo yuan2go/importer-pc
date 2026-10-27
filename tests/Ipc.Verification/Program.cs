@@ -504,9 +504,9 @@ try
         var file = Path.Combine(root, "replay.jsonl"); File.WriteAllText(file, Wire.Encode(new ReplayEvent("Enter", "entity", [], null, "event")).Replace("\n", "") + "\n");
         var accepted = new List<Observation>();
         await using (var replay = new FileReplaySource("replay-device", file))
-        { await replay.StartAsync(x => { accepted.Add(x); return true; }, (_, _, _) => { }, CancellationToken.None); Assert(replay.Advance(), "Replay uses observation capability"); await replay.StopAsync(CancellationToken.None); }
+        { await replay.StartControlledAsync(Wire.Id(), x => { accepted.Add(x); return true; }, _ => { }, CancellationToken.None); Assert(replay.Advance(), "Replay uses observation capability"); await replay.StopAsync(CancellationToken.None); }
         await using (var manual = new ManualObservationSource("manual-device"))
-        { await manual.StartAsync(x => { accepted.Add(x); return false; }, (_, _, _) => { }, CancellationToken.None); Assert(!manual.Emit("Enter", "different-entity"), "Rejected queue admission reported to source"); await manual.StopAsync(CancellationToken.None); await Throws<InvalidOperationException>(() => Task.FromResult(manual.Emit("Read", "entity"))); }
+        { await manual.StartControlledAsync(Wire.Id(), x => { accepted.Add(x); return false; }, _ => { }, CancellationToken.None); Assert(!manual.Emit("Enter", "different-entity"), "Rejected queue admission reported to source"); await manual.StopAsync(CancellationToken.None); await Throws<InvalidOperationException>(() => Task.FromResult(manual.Emit("Read", "entity"))); }
         Assert(accepted.Count == 2 && accepted[0].DeviceId != accepted[1].DeviceId && accepted[0].Epoch != accepted[1].Epoch, "Sources retain independent identities/epochs");
         var bad = Path.Combine(root, "corrupt.db"); File.WriteAllText(bad, "not a database");
         await Throws<SqliteException>(() => { using var store = new SupplyStore(bad); return Task.CompletedTask; }); Assert(File.ReadAllText(bad) == "not a database", "Corrupt database retained, never silently replaced");

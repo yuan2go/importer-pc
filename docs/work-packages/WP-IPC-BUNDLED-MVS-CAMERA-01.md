@@ -19,3 +19,6 @@
 
 
 已完成当前实现：内置MVS复用原实际采集源，首配/日常直接SDK，完整候选保存左右参数、共享相机编码，RCS固定BAR/zh_CN；安装输入强制真实14库/告知文件，包内保护/hash/AMD64与原生命周期不降级。真实内置目录加载、版本、初始化/枚举/结束通过，设备0，未打开/触发相机。应用RCS/心跳、参数、延后/Unknown、P0八组合、SDK硬化及原生SDK/完整参数V3通过，原FAIL分别保留。生产算法/实际帧/条码/RCS现场未验。工程验证细目见[evidence](../runtime/evidence/bundled-mvs-camera-01/verification.json)。
+
+
+首轮f52f825c远端五项构建相关门禁停于同一Application.Verification锁文件缺新增MVS项目引用；原job122206482407/282/002/406/496保留。同步测试默认packages.lock并以locked重建通过；不改测试或放宽locked。原生SDK参数门禁首轮通过。本机f52冻结实际SDK介质与后续仅测试锁修正分开记录。

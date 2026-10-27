@@ -59481,9 +59481,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "eea93f349c184c9f1f61998143a4dc6e814e52de8da17d6c7d17fe4cf774d889",
-      "size_bytes": 18007,
-      "git_blob": "9837ee541a42ffe3dde219f0a57ac7031f6e6139",
+      "sha256": "6a3572775f72449852dcad2cf9b15693819f00946e152e4dd1c2754a9f31db22",
+      "size_bytes": 18152,
+      "git_blob": "ddd9fc0e333007606ad8d4b6083f4eb344d0ec60",
       "previous_git_blob": "3c215db40091c455932498b6feb82be4e7471eaa"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "a7b48a7dbfc30cd82370b4ffb7c34142b145a07047ff784b8a890194f026456c",
-      "size_bytes": 2961,
-      "git_blob": "b20ea76e0be82142e25dbf462eeea9283f8eb65b",
+      "sha256": "30a28d638674ef203227852b119a9fc3a428b1bc5e2678adb4ceae505b294b1b",
+      "size_bytes": 3319,
+      "git_blob": "4f6b1620bceda0390d504b10e1367bb8c94c8321",
       "storage_scope": "public_repository"
     },
     {

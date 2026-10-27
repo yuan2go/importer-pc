@@ -1,0 +1,171 @@
+{
+  "work_package": "QUERY-FILTER-UX-01",
+  "base_main": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+  "parent_work_commit": "c88521f057c3d2dec155537f4f9c34ca8b89bbf3",
+  "native_dpi": "1.25/1.25",
+  "native_sizes": [
+    "1366x768 DIP",
+    "800x420 DIP"
+  ],
+  "runs": [
+    {
+      "mode": "query-filters",
+      "pass_lines": 26,
+      "fail_lines": 0,
+      "log": "query-filters.txt",
+      "sha256": "84eab08c1e9c5fcafc40eafdae961c0f9329083f9184e942b6699d10d2317509"
+    },
+    {
+      "mode": "internal-pages",
+      "pass_lines": 40,
+      "fail_lines": 0,
+      "log": "internal-pages.txt",
+      "sha256": "6b2dd72d0746759fad898b45ca4f0dc51b68425d6a8b24cb0eb005f18c2a8e53"
+    },
+    {
+      "mode": "parameter-v3",
+      "pass_lines": 239,
+      "fail_lines": 0,
+      "log": "parameter-v3.txt",
+      "sha256": "35f2585d19be36626567a9a52f9094e2bd58f3803280f81b3d6ed7597a3d1f1f"
+    },
+    {
+      "mode": "visual-productization",
+      "pass_lines": 117,
+      "fail_lines": 0,
+      "log": "visual-productization.txt",
+      "sha256": "b415ab58554478b7a277f5a08aec1a85c14ac1231f1b92558385c40923c671fb"
+    },
+    {
+      "mode": "reliability-logs",
+      "pass_lines": 2,
+      "fail_lines": 0,
+      "log": "reliability-logs.txt",
+      "sha256": "5c8d5ed3432a020b0828e79f67a4689f9c748e606c7fc8974af568b811da8b32"
+    },
+    {
+      "mode": "debug-log-live",
+      "pass_lines": 40,
+      "fail_lines": 0,
+      "log": "debug-log-live.txt",
+      "sha256": "8a9e16c43e9f3b1b6ed51ea0c3911e0e8e58ebb1900b4e248ab245f19888d25e"
+    },
+    {
+      "mode": "management-mode",
+      "pass_lines": 57,
+      "fail_lines": 0,
+      "log": "management-mode.txt",
+      "sha256": "1a2e61ad48e9d834f75eafd8b6e53e99f1ee49a18084f9afa8a786d26ea11bb5"
+    },
+    {
+      "mode": "history-session-contract",
+      "pass_lines": 1,
+      "fail_lines": 0,
+      "log": "history-session-contract.txt",
+      "sha256": "7d52dba41db09792a7828630cfe43a2abe3510510c6ae860d116ecf206725ca9"
+    },
+    {
+      "mode": "ux-commercial-presentation",
+      "pass_lines": 51,
+      "fail_lines": 0,
+      "log": "ux-commercial-presentation.txt",
+      "sha256": "2e708c8cbd16db4430057dc8de0663e3c227a2b37898d50bbdc21c549f35e556"
+    },
+    {
+      "mode": "stability-audit-history",
+      "pass_lines": 41,
+      "fail_lines": 0,
+      "log": "stability-audit-history.txt",
+      "sha256": "b5b12bf80077615ffe7d2682656c7a7d19408040a72e286cc2c60e2f132da93c"
+    }
+  ],
+  "earlier_failed_attempts": [
+    {
+      "log": "internal-pages-first-failure.txt",
+      "sha256": "c1fb9e2a54952554a740746e61b78adb7b62efe588e639f591992899855a1247",
+      "status": "earlier attempt, not final PASS"
+    },
+    {
+      "log": "internal-pages-layout-failure.txt",
+      "sha256": "29869ea1aabea9f2227779669fc2814d62bba62f1ea58eef1004ca09a85b603a",
+      "status": "earlier attempt, not final PASS"
+    },
+    {
+      "log": "internal-pages-prior.txt",
+      "sha256": "c1fb9e2a54952554a740746e61b78adb7b62efe588e639f591992899855a1247",
+      "status": "earlier attempt, not final PASS"
+    },
+    {
+      "log": "parameter-v3-layout-failure.txt",
+      "sha256": "2d6ae2a50df3762ecbe842ff6f5119205f760654550577c99b10983f3481300e",
+      "status": "earlier attempt, not final PASS"
+    },
+    {
+      "log": "query-filters-first-failure.txt",
+      "sha256": "413359ebd8dca632a44e2c8af06a9ae5d1ea565d902faf0f484534654d8b657a",
+      "status": "earlier attempt, not final PASS"
+    },
+    {
+      "log": "query-filters-prior.txt",
+      "sha256": "c1f616b855848fb9f467a26b1722d9727e5c6e029ab3c9ebf51fd2d29e8c6901",
+      "status": "earlier attempt, not final PASS"
+    }
+  ],
+  "native_screenshots": [
+    {
+      "name": "query-history-1366.png",
+      "sha256": "f94f7bc4122006006b8b7dddaaa571e52950d7fe37a9945d351c12629d006458",
+      "local_path": "D:\\projects\\importer-pc-worktrees\\operator-workstation-01\\.artifacts\\query-filters\\review\\query-history-1366.png"
+    },
+    {
+      "name": "query-history-800.png",
+      "sha256": "70bfa9e81cbbeb2a1560d44cea8ff668527397f03c446235729afccbe7ad2488",
+      "local_path": "D:\\projects\\importer-pc-worktrees\\operator-workstation-01\\.artifacts\\query-filters\\review\\query-history-800.png"
+    },
+    {
+      "name": "query-logs-1366.png",
+      "sha256": "96227d1b188a5906993989ab1f176db7200b53c3eec29899763ea3b154e90b83",
+      "local_path": "D:\\projects\\importer-pc-worktrees\\operator-workstation-01\\.artifacts\\query-filters\\review\\query-logs-1366.png"
+    },
+    {
+      "name": "query-logs-800.png",
+      "sha256": "fc4ae44ce9ac3517f417e602cc04d8e93835979f9c183612db7751d1ef5fda03",
+      "local_path": "D:\\projects\\importer-pc-worktrees\\operator-workstation-01\\.artifacts\\query-filters\\review\\query-logs-800.png"
+    }
+  ],
+  "boundaries": "Windows native HWND, synthetic data/ports, no system timezone change. Real users/devices/site, touch, installation replacement, mixed-monitor DPI NOT_RUN.",
+  "canonical_source_blobs": {
+    ".github/workflows/sportmaster-commercial.yml": "a66d1f0191573e1cf8f2067d1743fd081dbc2fc4",
+    "scripts/verify-commercial-wpf.ps1": "abe0890cfbc72098e8f6021cff30a17943b0934e",
+    "src/Ipc.Application.ParcelFlow.Desktop/DateTimeInput.cs": "0d3f307e0729871bde999146423d97ab621ed274",
+    "src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs": "9cd0e211b4aab37b4961b8281f748a158b67ddad",
+    "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml": "08b2e76deaaabc613e5ccfd2584f0aeaa21ef842",
+    "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs": "e9fa77d9582435eee35d5345de66be196af56272",
+    "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs": "d246172c744d25fab59a83b1519ba1182bd93d16",
+    "src/Ipc.Application.ParcelFlow.Desktop/QueryTime.cs": "9220d9016b1be76ae92622f66df4011de023909a",
+    "src/Ipc.Application.ParcelFlow.Desktop/QueryWorkspaceTheme.xaml": "9f5ea3de4a3ac0e86cad974136c49f5145b55723",
+    "src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogPage.cs": "06ae109d28ee2337751b977fe77922984ce4c311",
+    "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj": "96e83b7115de357621ebfcd8f33ec735b0d696f6",
+    "tests/Ipc.Application.Verification/WindowEventShim.cs": "563b4161df2da9605b9642590d37ef4e77d8dd28",
+    "tests/Ipc.Desktop.UiVerification/InternalPages.cs": "9014ab97c87b306bb42f3e40decbb38fc990d46f",
+    "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs": "2488f891f127121cc5c66d27eb54d24489fca7c5",
+    "tests/Ipc.Desktop.UiVerification/Program.cs": "bb5cc823b6530498a1728c8608d1221d78253a15",
+    "tests/Ipc.Desktop.UiVerification/QueryFilters.cs": "0c628161e0709d1fc8b4c4ce7398c3150e370b93",
+    "tests/Ipc.Desktop.UiVerification/ReliabilityLogs.cs": "1f4589da222ae181ca9abfa594facf8b3f86f3b8",
+    "tests/Ipc.Desktop.UiVerification/TaskHierarchy02.cs": "2bb2e535b4487f5725ff5ab86be730749558a667",
+    "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs": "4dab1ee9eaacd01ccf0d64c95fb85196ef6e3f91",
+    "tests/Ipc.Desktop.UiVerification/VisualProductization.cs": "37922dd30f6531ec5c5119894b696bfb5b972564"
+  },
+  "ui_assemblies": [
+    {
+      "file": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "tested_sha256": "290f5f65c9852ef0cf356fd749b8e0b1de6dfd570cc742ae217123b7d609ab7f",
+      "published_sha256": "290f5f65c9852ef0cf356fd749b8e0b1de6dfd570cc742ae217123b7d609ab7f"
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.Desktop.dll",
+      "tested_sha256": "9c547a270cd361ed4191df8386061b199f43facf5a616856631e2aa8c9c9b01e",
+      "published_sha256": "9c547a270cd361ed4191df8386061b199f43facf5a616856631e2aa8c9c9b01e"
+    }
+  ]
+}

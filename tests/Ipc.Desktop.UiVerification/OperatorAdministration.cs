@@ -1,4 +1,4 @@
-﻿using System.Windows.Media;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,7 +82,7 @@ static partial class Program
         Check(((ContentControl)window.FindName("PageHost")).Content is SoftwareLogControl, "administrator log navigation opens the real software-log query control");
         Click(window, "查询"); await AwaitLogTask("log query"); window.UpdateLayout(); Capture("management-logs-1366", client);
         var grid = Descendants(window).OfType<DataGrid>().Single(); Check(grid.Items.Count > 0, "native log query displays actual runtime/authentication journal entries");
-        var advanced = Descendants(window).OfType<Expander>().Single(x => Equals(x.Header, "时间、更多筛选、上下文与导出")); advanced.IsExpanded = true; window.UpdateLayout();
+        var advanced = Descendants(window).OfType<Expander>().Single(x => Equals(x.Header, "更多筛选与导出")); advanced.IsExpanded = true; window.UpdateLayout();
         grid.SelectedIndex = 0; Click(window, "查看原始上下文"); await AwaitLogTask("original context read"); window.UpdateLayout();
         Check(Descendants(window).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(((SoftwareLogEntry)grid.SelectedItem).Text), "native context retains the selected original log record");
         Capture("management-log-context", client); advanced.IsExpanded = false;

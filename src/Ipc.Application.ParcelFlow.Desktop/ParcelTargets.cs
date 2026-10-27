@@ -73,7 +73,7 @@ public partial class ParcelViewModel
     public bool HasNextHistory => !historyLoading && !HistoryFiltersChanged && nextHistory is not null;
     public bool HasPreviousHistory => !historyLoading && !HistoryFiltersChanged && historyPageIndex > 0;
     public string HistoryStatus => (HistoryFiltersChanged ? "条件已改变，尚未应用；当前记录仍属于上方已应用范围，翻页和导出已暂停。\n" : "") +
-        (historyLoading ? "正在读取作业记录，原结果仍属于上次范围…" : historyFailure is { } failure ? "查询未完成 · " + failure + "；之前读取的记录仅供参考" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业 · 查询完成 " + historyReadAt?.ToString("yyyy-MM-dd HH:mm:ss zzz"));
+        (historyLoading ? "正在读取作业记录，原结果仍属于上次范围…" : historyFailure is { } failure ? "查询未完成 · " + failure + "；之前读取的记录仅供参考" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业 · 查询完成 " + historyReadAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss"));
     public Task PreviousHistoryAsync() => LoadHistoryPageAsync(historyPageIndex - 1, false);
     public Task FirstHistoryAsync() => LoadHistoryPageAsync(0, false);
     public async Task LoadHistoryAsync(bool next = false)
@@ -141,7 +141,7 @@ public partial class ParcelViewModel
         historyCursors.Clear(); historyPageIndex = 0; historicalPositions.Clear();
         Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); NotifyHistory();
     }
-    void NotifyHistory() { foreach (var name in new[] { nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(CanExportHistory) }) Changed(name); }
+    void NotifyHistory() { foreach (var name in new[] { nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(HistoryRangeSummary), nameof(CanExportHistory) }) Changed(name); }
     public async Task QuerySelectedAsync()
     {
         RequireFreshSnapshot(); var op = Selected ?? throw new InvalidOperationException("先选择详情中的原作业"); var generation = selectionGeneration;

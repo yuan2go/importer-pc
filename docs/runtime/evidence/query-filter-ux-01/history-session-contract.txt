@@ -1,0 +1,2 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-2488a141fef84179aba72a96785367a4
+PASS current history contract: missing cancellable session refuses without invoking old history/metrics APIs or leaking read ownership

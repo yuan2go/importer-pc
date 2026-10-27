@@ -24,9 +24,10 @@ public partial class HistoryPage : UserControl
         var shortPage = ActualHeight < 500;
         HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
         HistoryHeading.FontSize = UiTypography.Body;
+        HistoryHeading.Visibility = shortPage ? Visibility.Collapsed : Visibility.Visible;
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
-        var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom +
+        var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
             HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom +
             ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
             (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
@@ -35,9 +36,9 @@ public partial class HistoryPage : UserControl
         // Keep the real header and one full result row; filters retain their own scroll.
         var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;
         var resultHeight = Math.Ceiling((header + row + HistoryRows.BorderThickness.Top + HistoryRows.BorderThickness.Bottom) * dpi) / dpi;
-        // Header/cell borders snap independently at fractional DPI; reserve two pixels.
-        var filterBudget = Math.Max(0, ActualHeight - fixedHeight - resultHeight - 2 / dpi);
-        HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 72 : Math.Min(240, ActualHeight * .35), filterBudget);
+        // Header/cell borders snap independently at fractional DPI; reserve six pixels.
+        var filterBudget = Math.Max(0, ActualHeight - fixedHeight - resultHeight - 6 / dpi);
+        HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 104 : Math.Min(380, ActualHeight * .60), filterBudget);
     }
     void ClearFilters_Click(object sender, RoutedEventArgs e)
     {
@@ -48,8 +49,9 @@ public partial class HistoryPage : UserControl
     {
         if (DataContext is ParcelViewModel vm && e.AddedItems.OfType<ParcelViewModel.HistoryPositionChoice>().FirstOrDefault() is { } choice) vm.HistoryPosition = choice.Id;
     }
-    void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = day.AddDays(1).ToString("O"); } }
-    void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeOffset.Now; vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
+    void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = new DateTimeOffset(DateTime.Today.AddDays(1)).ToString("O"); } }
+    void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
+    void LastWeek_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-7).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
     void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }
     async void Copy_Click(object s, RoutedEventArgs e)
     {

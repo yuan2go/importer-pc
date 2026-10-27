@@ -1,0 +1,18 @@
+Source: https://github.com/yuan2go/importer-pc/actions/runs/40493244928/job/122152151075
+Head: 479f144060460758386b5a6ece72273efae1bb24
+Original failure excerpt; no claim of a complete job log.
+2026-10-27T11:07:59.1770332Z PASS HIERARCHY02 snapshot read fault reaches the real freshness path
+2026-10-27T11:07:59.1771462Z PASS HIERARCHY02 stale snapshot hides actionable destination and preserves command guards
+2026-10-27T11:07:59.1772629Z CAPTURE supply-station-stale-1366: 1366x768 DIP, Windows DPI 1/1
+2026-10-27T11:07:59.1776882Z FAIL System.InvalidOperationException: collapsed advanced filters retain actual applied query range, explicit offset and reachable entry at minimum size
+2026-10-27T11:07:59.1778204Z    at Program.<>c__DisplayClass43_0.<VerifyHierarchy02>g__Check|0(Boolean ok, String reason) in D:\scd\task-hierarchy\TaskHierarchy02.cs:line 34
+2026-10-27T11:07:59.1779759Z    at Program.VerifyHierarchy02(Window window, ParcelViewModel vm, HierarchyProjectionProbe probe, Action`1 navigate, String evidence, List`1 lines) in D:\scd\task-hierarchy\TaskHierarchy02.cs:line 141
+2026-10-27T11:07:59.1781811Z    at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\scd\task-hierarchy\TaskHierarchy.cs:line 169
+2026-10-27T11:07:59.1782876Z    at Program.VerifyTaskHierarchy(String root, String evidence, List`1 lines, Boolean baseline) in D:\scd\task-hierarchy\TaskHierarchy.cs:line 177
+2026-10-27T11:07:59.1783746Z    at Program.<>c__DisplayClass29_0.<<Main>b__1>d.MoveNext() in D:\scd\task-hierarchy\Program.cs:line 69
+2026-10-27T11:07:59.2838529Z [31;1mException: [0mD:\a\importer-pc\importer-pc\scripts\verify-commercial-wpf.ps1:91[0m
+2026-10-27T11:07:59.2839421Z [31;1m[0m[36;1mLine |[0m
+2026-10-27T11:07:59.2840922Z [31;1m[0m[36;1m[36;1m  91 | [0m … ) -Tail 18};[36;1mthrow 'Frozen native WPF verification failed; original lo[0m …[0m
+2026-10-27T11:07:59.2842636Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+2026-10-27T11:07:59.2843894Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mFrozen native WPF verification failed; original log retained[0m
+2026-10-27T11:07:59.3082776Z ##[error]Process completed with exit code 1.

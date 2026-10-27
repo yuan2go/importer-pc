@@ -1,3 +1,5 @@
+> 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
+
 # WORKSTATION-STATUS-LOGS-01
 
 用户追加的日志详细度、热开关和实时暂停见[DEBUG-LOG-LIVE-01](WP-IPC-DEBUG-LOG-LIVE-01.md)，接续本包同一PR，旧源验证保持原身份。

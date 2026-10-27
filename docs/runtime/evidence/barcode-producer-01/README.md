@@ -26,3 +26,5 @@
 未验证：真实相机/SDK、真实读码平台或自研服务、实际触发与完整解码结果、外部进程释放相机、断连期间实物处置、真实 RCS/物理完成、目标 IPC 长稳、安装/签名/生产资格。没有操作设备、安装部署或批准投产。运行合同仍只见[协议](../../../protocols/barcode-producer-v1.md)、[设计](../../../design/barcode-producer-01.md)与[运行说明](../../barcode-producer-01.md)。
 
 裸 Windows CI 的原机级策略缺失失败及仅测试隔离修正见[补充回执](isolated-fixture-verification.json)。真实 ResourceLease 改在各次合成测试根使用；不再依赖开发机部署登记。生产代码/权限策略未改，barcode-producer、p0-deferred、deferred-connections 已在修正夹具上重新通过；原冻结介质仍保持上述 SourceCommit。
+
+整体契约 CI 暴露的旧 AC19 夹具问题及复核见[能力闭环补证](capability-fixture-verification.json)：会话先完成真实准入再等实际过期；检查/保存使用已有探测排空边界；原件保留到物理完成的场景明确选择仅取图，符合[现行图片责任](../../../design/application-architecture-22.md)。原过期拒绝、维护权限、原件保留、上传独立责任等断言均继续执行。原失败日志保留，整组 --capability-closure 已通过；没有修改生产会话或图片释放规则。

@@ -69,7 +69,9 @@ static class CapabilityClosure
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
         foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
         {
-            var c = Config(id) with { Login = B("login"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 3000, WaitTimeoutMs: 5000), Scale = B("weight"), Images = new(B("camera"), B("upload")) };
+            // Capture-only custody is retained to PLC physical completion. With an
+            // uploader, terminal upload owns release independently of that main phase.
+            var c = Config(id) with { Login = B("login"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 3000, WaitTimeoutMs: 5000), Scale = B("weight"), Images = new(B("camera"), id == "sportmaster" ? B("upload") : null) };
             await using var app = await Open(c, "entry-" + id);
             var unauthenticated = await app.SnapshotAsync();
             Pass(app.EmitReference("no-login", "00001", Wire.Id()), id + " controlled source queues evidence without granting admission");
@@ -205,7 +207,7 @@ static class CapabilityClosure
             {
                 foreach (var input in inputs.RootElement.EnumerateArray())
                 {
-                    var inspected = await Command(app, "InspectInterruptedIngress", input.GetProperty("Id").GetString(), "Synthetic original entity and interrupted input inspected; no replay");
+                    var inspected = await LifecycleOptimization.AfterMonitorDrain(app, () => Command(app, "InspectInterruptedIngress", input.GetProperty("Id").GetString(), "Synthetic original entity and interrupted input inspected; no replay"));
                     Pass(inspected.Status == "Persisted", "interrupted input requires explicit inspection before controlled continuation");
                 }
             }
@@ -217,12 +219,13 @@ static class CapabilityClosure
             app.EmitReferenceWeight(sample); await Task.Delay(50);
             Pass((await app.SnapshotAsync()).Operations.Single().Plc!.Attempts == 1 && s.Operations.Single().Weight!.MeasurementId == sample.Id, "original sample survives restart and duplicate sample cannot cause another PLC attempt");
         }
-        var sessionConfig = Config("sportmaster") with { Login = B("login"), SessionLifetimeMs = 200 };
+        // Allow the initial durable admission to finish on a loaded CI runner.
+        // Expiry is then observed from the actual guard, not inferred from a sleep.
+        var sessionConfig = Config("sportmaster") with { Login = B("login"), SessionLifetimeMs = 2000 };
         await using (var app = await Open(sessionConfig, "session-expiry", authorizeManagement: false))
         {
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("session", "007", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var op = s.Operations.Single();
-            await Task.Delay(240);
-            var expired = await app.SnapshotAsync();
+            var expired = await Wait(app, x => !x.Availability!.Admit && x.BlockingReasons.Any(r => r.Contains("Operator authentication required")));
             Pass(app.EmitReference("expired-session", "008", Wire.Id()), "controlled source queues evidence after session expiry");
             var refused = await Wait(app, x => x.Revision > expired.Revision);
             Pass(refused.Operations.Length == 1 && !refused.Availability!.Admit, "expired session refuses admission without inventing an authenticated default");
@@ -230,7 +233,7 @@ static class CapabilityClosure
             Pass((await app.StageConfigurationAsync(before.Revision, before.Effective, "Synthetic directed configuration verification")).Status == "Rejected", "software pause alone grants no maintenance authority");
             Pass((await app.AuthorizeMaintenanceAsync("wrong")).Status == "Rejected" && (await ManagementModeFixture.Authorize(app)).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");
             var authorizedConfiguration = (await app.SnapshotAsync()).Configuration;
-            var staged = await app.StageConfigurationAsync(authorizedConfiguration.Revision, authorizedConfiguration.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification");
+            var staged = await LifecycleOptimization.AfterMonitorDrain(app, () => app.StageConfigurationAsync(authorizedConfiguration.Revision, authorizedConfiguration.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification"));
             Pass(staged.Status == "PendingRestart", "authenticated configuration forms pending revision: " + staged.Status + "/" + staged.Reason);
             var pending = (await app.SnapshotAsync()).Configuration;
             Pass(pending.Pending?.TimeoutMs == 1800 && Wire.Encode(pending.Effective) == Wire.Encode(authorizedConfiguration.Effective) &&

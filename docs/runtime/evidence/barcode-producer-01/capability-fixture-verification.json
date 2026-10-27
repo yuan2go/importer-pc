@@ -1,0 +1,50 @@
+{
+  "RuntimeSourceCommit": "7c9c17d7d79440fae08dd7bd68d491db57588799",
+  "PriorHead": "f9e5f577ccbc4d4d6db6adb3a3b15f2c0f22e689",
+  "FixturePath": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
+  "FixtureGitBlob": "da50351e5619787f00d52a90bebe630ee6294911",
+  "Status": "PASS",
+  "ExitCode": 0,
+  "FinalBuild": "session-fixture-build-03.log",
+  "FinalRun": "capability-closure-verified.log",
+  "Corrections": [
+    "200ms session could expire before durable initial admission on CI; allow 2000ms then wait for the actual expired-session guard. Expired input must still be rejected and original operator remains frozen.",
+    "Use existing BeforeMonitorProbe drain seam for successful inspection/configuration commands; execute once after readiness, do not retry a possibly accepted command.",
+    "The assertion that an image is kept until physical PLC completion belongs to capture-only mode. Select uploader=null for those two scenarios, preserving the full original custody assertion. Terminal-upload and Attached scenarios remain separate and executed."
+  ],
+  "OriginalFailureLogs": [
+    "session-expiry-ci-failure.json",
+    "capability-closure-expiry.log",
+    "capability-closure-expiry-final.log"
+  ],
+  "Files": [
+    {
+      "Path": "session-fixture-build.log",
+      "Sha256": "7976d9ac6f5da2973930631185546db77e4ac2cf6820339431d87302696eb57f"
+    },
+    {
+      "Path": "session-fixture-build-02.log",
+      "Sha256": "cc5702b8697cf1acb751ace333d9a369a21a7baa3fc4bb42fa85adda24ccba99"
+    },
+    {
+      "Path": "session-fixture-build-03.log",
+      "Sha256": "3dcc8cd8f74e402ccbc1c284b93f6a853efb2251afce7028e90fc77a01d5a3e4"
+    },
+    {
+      "Path": "capability-closure-expiry.log",
+      "Sha256": "d130f96cba800b0f16d9e1b3683ddc08f4834082bb2449181564457846c7143b"
+    },
+    {
+      "Path": "capability-closure-expiry-final.log",
+      "Sha256": "b62dfb773d39b7c3298829ad06e02e41d9531e4ef451b8445629ee5804a4ec62"
+    },
+    {
+      "Path": "capability-closure-verified.log",
+      "Sha256": "d597b5e4fee873ffc24dfdd644de5cdcf4ae725f854a7de37ca2fb84027bfb0c"
+    },
+    {
+      "Path": "session-expiry-ci-failure.json",
+      "Sha256": "c846df58d976b0eacc3b1c25d0aa3214ca56f07889b55997febc16a0632c2603"
+    }
+  ]
+}

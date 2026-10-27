@@ -54,6 +54,7 @@ Windows桌面用主屏箱码、双通道来源、固定提交及关闭动作执�
 先用`--help`读取真实覆盖。默认reconciliation包含原AC/进程、H04/A01/E07/E08/E11/E12及AC14/15；architecture、maintainability和health-profile是显式独立范围。
 
 ```sh
+dotnet build tests/Ipc.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --help
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --maintainability
 python3 -m unittest discover -s scripts -p 'test_extension_build.py' -v

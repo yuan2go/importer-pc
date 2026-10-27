@@ -46546,9 +46546,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/supply-getting-started.md",
-      "sha256": "cc3612e28f73ce14506ebfea500eaccd9be376e4051d5b21ddda27ea79e2ad23",
-      "size_bytes": 8586,
-      "git_blob": "585932841752bbb3ec7ab92d3a2a93524546c6de"
+      "sha256": "9c5efc9f17aad24d277727dd0d85a2a5a524e376ac7192ec60b5d5215f1fbd0a",
+      "size_bytes": 8663,
+      "git_blob": "a53ca1436b6a97aa6dd775a3d350473bfb70ef74"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "4a1c12568f7128fab3a34a463791568ca300b42353dc9f29c05012e4ab0cbb40",
+      "sha256": "e7525fe1812c5e8168629aa45c67c4bda86cbad31e5c484b47e19b416c530d9a",
       "size_bytes": 14259,
-      "git_blob": "019bfee082199eb0311e939b5ea5fc30bcc22a9c",
+      "git_blob": "137e35adb4492f1fce0e98492df3be28c5dbdf7d",
       "storage_scope": "public_repository"
     },
     {

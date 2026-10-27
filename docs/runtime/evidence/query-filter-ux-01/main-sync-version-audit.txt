@@ -1,0 +1,4 @@
+PASS 27 owned source projects use explicit or inherited 1.0.0; installer derives selected business version.
+PASS 129 active product/composition/compatibility version declarations are 1.0.0.
+PASS central version rule, AGENTS.md and locked dependency files are unchanged from main fdd24fa5.
+Third-party SDK/protocol/schema versions and historical evidence retain their original identities.

@@ -70,10 +70,10 @@ static partial class Program
             "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
         var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
         Click(leftControl, "本位诊断"); window.UpdateLayout();
-        var objectContext = Descendants((ContentControl)window.FindName("PageHost")).OfType<Expander>().Single(e => Equals(e.Header, "当前对象运行详情"));
+        var objectContext = Descendants((ContentControl)window.FindName("PageHost")).OfType<Expander>().Single(e => Equals(e.Header, "查看扫描内容"));
         Check(objectContext.IsVisible && !objectContext.IsExpanded, "position diagnosis keeps the clicked object's full context available on demand");
         objectContext.IsExpanded = true; window.UpdateLayout();
-        Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text.StartsWith(vm.Left.Heading + "\n")),
+        Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text == vm.Left.Heading),
             "position diagnosis opens read-only context for the clicked reader");
         Click(window, "工作台"); window.UpdateLayout();
         Check(beforeDiagnostics == (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries) &&
@@ -101,17 +101,18 @@ static partial class Program
         await VerifyClientGeometry(window, vm, probe, evidence, "supply-station-v2", Check);
         probe.Project = WithTasks; await vm.RefreshAsync(); await SetClient(window, 1366, 768); Capture("work-assigned-1366", client);
         Click(window, "作业记录");
-        for (var i = 0; i < 300 && (vm.HistoryLoading || vm.Busy); i++) await Task.Delay(20);
+        await Until(() => vm.HistoryLoaded && !vm.HistoryLoading && !vm.Busy);
         Check(!vm.HistoryLoading && !vm.Busy, "initial current history session drains before selecting an original operation");
         await vm.OpenHistoryAsync(vm.Left.Operation!.Id);
         Check(vm.Selected?.Id == vm.Left.Operation.Id && ParcelViewModel.DestinationSummary(WithTasks(vm.Snapshot!).Operations.Single(o => o.Id == vm.Selected.Id)).Contains("0007-left"), "history keeps selected original ownership and exposes added response fields");
         Capture("history", client);
         Click(window, "诊断与恢复"); window.UpdateLayout();
         var diagnostics = (ContentControl)window.FindName("PageHost");
-        var sharedEvidence = Descendants(diagnostics).OfType<Expander>().Single(e => Equals(e.Header, "共享服务诊断详情"));
-        Check(!sharedEvidence.IsExpanded, "shared protocol evidence is disclosed on demand");
-        sharedEvidence.IsExpanded = true; window.UpdateLayout();
-        Check(Descendants(diagnostics).OfType<TextBox>().All(t => t.IsReadOnly) && Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("权威结果查询")), "diagnostics remains read-only and explains the actual RCS query boundary");
+        var scans = Descendants(diagnostics).OfType<Expander>().Single(e => Equals(e.Header, "查看扫描内容"));
+        Check(scans.IsExpanded && Descendants(diagnostics).OfType<Button>().Any(b => Equals(b.Content, "复制诊断信息")), "opened scan details and technical evidence persist across diagnostic navigation");
+        scans.IsExpanded = false; window.UpdateLayout();
+        Check(Descendants(diagnostics).OfType<TextBox>().Where(t => t.IsVisible).All(t => t.IsReadOnly) &&
+            Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("不重发")) && vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "diagnostics preserves original-request guidance and full technical identity without exposing it by default");
         Capture("diagnostics", client);
         await Until(() => !vm.Busy);
         var firstLoadRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

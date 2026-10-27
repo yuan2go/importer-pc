@@ -10,7 +10,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl : UserControl
 {
     readonly IWorkstationAdministration service;
-    readonly TextBox from = Input(DateTimeOffset.Now.AddDays(-1).ToString("O")), to = Input(DateTimeOffset.Now.AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
+    readonly TextBox from = Input(DateTimeInput.SecondNow().AddDays(-1).ToString("O")), to = Input(DateTimeInput.SecondNow().AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "使用正则表达式（有执行时限）", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
@@ -73,7 +73,7 @@ public sealed partial class SoftwareLogControl : UserControl
             group.Children.Add(caption); group.Children.Add(element);
             void ArrangeField()
             {
-                var shortPage = ActualHeight < 500;
+                var shortPage = ActualHeight < 500 && element is not DateTimeInput;
                 group.ColumnDefinitions[0].Width = shortPage ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
                 group.ColumnDefinitions[1].Width = shortPage ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
                 Grid.SetRow(element, shortPage ? 0 : 1); Grid.SetColumn(element, shortPage ? 1 : 0);
@@ -88,22 +88,25 @@ public sealed partial class SoftwareLogControl : UserControl
         keyword.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && !busy) { e.Handled = true; await Run(Search); } };
         DateTimeInput Calendar(TextBox value)
         {
-            var input = new DateTimeInput { EmptyTimestampHint = "必须选择起止时间；软件日志查询使用固定范围。" }; input.SetBinding(DateTimeInput.TimestampProperty, new Binding(nameof(TextBox.Text)) { Source = value, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); return input;
+            var input = new DateTimeInput(); input.SetBinding(DateTimeInput.TimestampProperty, new Binding(nameof(TextBox.Text)) { Source = value, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); return input;
         }
-        var extra = new StackPanel(); var fields = new WrapPanel(); extra.Children.Add(fields);
-        fields.Children.Add(Field("开始时间（含）", Calendar(from), 440)); fields.Children.Add(Field("结束时间（不含）", Calendar(to), 440)); fields.Children.Add(Field("来源", source, 160));
-        var quick = new WrapPanel(); extra.Children.Add(quick);
+        var times = new StackPanel(); var quick = new WrapPanel { Margin = new(0, 6, 0, 8) }; times.Children.Add(quick);
         foreach (var label in new[] { "今天", "最近24小时", "最近7天" })
         {
-            var button = new Button { Content = label, Margin = new(0, 0, 8, 8) };
-            button.Click += (_, _) => { var now = DateTimeOffset.Now; from.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today) : now.AddDays(label == "最近7天" ? -7 : -1)).ToString("O"); to.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today).AddDays(1) : now).ToString("O"); };
+            var button = new Button { Content = label, Margin = new(0, 0, 8, 0), Style = (Style)FindResource("ParameterQuietAction") };
+            button.Click += (_, _) => { var now = DateTimeInput.SecondNow(); from.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today) : now.AddDays(label == "最近7天" ? -7 : -1)).ToString("O"); to.Text = (label == "今天" ? new DateTimeOffset(DateTime.Today.AddDays(1)) : now).ToString("O"); };
             quick.Children.Add(button);
         }
+        var fields = new WrapPanel(); times.Children.Add(fields);
+        fields.Children.Add(Field("开始时间", Calendar(from), 352)); fields.Children.Add(Field("结束时间", Calendar(to), 352));
+        times.Children.Add(new TextBlock { Text = "按本机时间查询，包含开始时刻，不包含结束时刻。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 8) });
+        var timeFilters = new Expander { Header = "时间范围", Content = times, IsExpanded = true, HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader") }; filters.Children.Add(timeFilters);
+        var extra = new StackPanel(); extra.Children.Add(Field("来源", source, 240));
         extra.Children.Add(regex); var contextFields = new WrapPanel(); contextFields.Children.Add(Field("前后上下文条数", context, 140)); extra.Children.Add(contextFields);
-        advancedFilters = new Expander { Header = "时间、更多筛选、上下文与导出", Content = new ScrollViewer { Content = extra, MaxHeight = 110, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
+        advancedFilters = new Expander { Header = "更多筛选与导出", Content = extra };
         advancedFilters.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
-        DockPanel.SetDock(advancedFilters, Dock.Bottom); header.Children.Insert(header.Children.Count - 1, advancedFilters);
-        DockPanel.SetDock(effectiveRange, Dock.Bottom); header.Children.Insert(header.Children.Count - 2, effectiveRange);
+        filters.Children.Add(advancedFilters);
+        DockPanel.SetDock(effectiveRange, Dock.Bottom); header.Children.Insert(header.Children.Count - 1, effectiveRange);
         System.Windows.Automation.AutomationProperties.SetName(effectiveRange, "日志当前查询范围");
         var extraActions = new WrapPanel(); extra.Children.Add(extraActions);
         contextButton = Action("查看原始上下文", LoadContext); exportButton = Action("导出全部匹配…", () => Export(false)); rangeButton = Action("导出时间范围…", () => Export(true));
@@ -131,12 +134,12 @@ public sealed partial class SoftwareLogControl : UserControl
         SizeChanged += (_, _) =>
         {
             var shortPage = ActualHeight < 500;
-            if (shortPage && !compact) detailPanel.IsExpanded = false;
+            if (shortPage && !compact) { detailPanel.IsExpanded = false; timeFilters.IsExpanded = false; }
             compact = shortPage; root.Margin = compact ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
             results.RowHeight = 40; results.ColumnHeaderHeight = 36;
             title.FontSize = UiTypography.Group;
             UpdateDetailLayout();
-            headerScroll.MaxHeight = compact ? 52 : Math.Min(260, ActualHeight * .42);
+            headerScroll.MaxHeight = compact ? 92 : Math.Min(380, ActualHeight * .60);
             footer.Margin = compact ? new(0) : new(0, 6, 0, 0);
             detailPanel.Margin = compact ? new(0, 4, 0, 0) : new(0, 8, 0, 0);
             detail.MaxHeight = compact ? 60 : ActualHeight * .30; status.MaxHeight = compact ? 24 : 48;
@@ -165,10 +168,10 @@ public sealed partial class SoftwareLogControl : UserControl
     {
         filters.IsEnabled = !busy; advancedFilters.IsEnabled = !busy; searchButton.IsEnabled = !busy;
         effectiveRange.Text = selection is not null && query is not null
-            ? "已应用范围 " + query.From.ToString("yyyy-MM-dd HH:mm:ss zzz") + " 至 " + query.ToExclusive.ToString("yyyy-MM-dd HH:mm:ss zzz") + "（不含）" +
+            ? "已应用范围 " + query.From.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + " 至 " + query.ToExclusive.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "（本机时间）" +
                 " · " + (string.IsNullOrEmpty(query.Level) ? "全部级别" : query.Level) + " · " + (string.IsNullOrEmpty(query.Source) ? "全部来源" : query.Source) +
                 (string.IsNullOrEmpty(query.Keyword) ? "" : " · " + (query.Regex ? "正则：" : "关键词：") + query.Keyword)
-            : "待查询（本地） " + from.Text + " 至 " + to.Text + "（不含）；尚无有效查询快照";
+            : "待查询：" + DateTimeInput.Display(from.Text, "请选择开始时间") + " 至 " + DateTimeInput.Display(to.Text, "请选择结束时间") + "（本机时间）";
         previousButton.IsEnabled = !busy && selection is not null && offset > 0; nextButton.IsEnabled = !busy && selection is not null && more;
         contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
         exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
@@ -214,7 +217,7 @@ public sealed partial class SoftwareLogControl : UserControl
     SoftwareLogQuery ReadQuery()
     {
         static bool Parse(string value, out DateTimeOffset at) => DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out at) && System.Text.RegularExpressions.Regex.IsMatch(value, @"(Z|[+-]\d{2}:\d{2})$");
-        if (!Parse(from.Text, out var start) || !Parse(to.Text, out var end) || start >= end) throw new InvalidOperationException("请选择有效的开始、结束和UTC偏移；结束不含且须晚于开始。");
+        if (!Parse(from.Text, out var start) || !Parse(to.Text, out var end) || start >= end) throw new InvalidOperationException("请修正开始和结束时间，结束时间必须晚于开始时间。");
         return new(start, end, keyword.Text, regex.IsChecked == true, level.SelectedIndex == 0 ? "" : level.Text, source.Text);
     }
     int ContextSize() => int.TryParse(context.Text, out var value) && value is >= 0 and <= 200 ? value : throw new InvalidOperationException("上下文条数须为0～200。");
@@ -236,7 +239,7 @@ public sealed partial class SoftwareLogControl : UserControl
         catch (Exception error)
         {
             status.Text = error is UnauthorizedAccessException ? "管理权限已失效，请重新进入管理模式。"
-                : error.Message is "请选择有效的开始、结束和UTC偏移；结束不含且须晚于开始。" or "上下文条数须为0～200。" ? error.Message
+                : error.Message is "请修正开始和结束时间，结束时间必须晚于开始时间。" or "上下文条数须为0～200。" ? error.Message
                 : "操作未完成，请核对筛选条件或查看诊断详情。";
             diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible;
         }
@@ -256,7 +259,7 @@ public sealed partial class SoftwareLogControl : UserControl
         token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
         summary.Values = formatted.Summaries; results.SelectedItem = null; results.ItemsSource = page.Entries;
         terminal.Text = historyTerminalText = page.Entries.Length == 0 ? "当前范围内没有匹配日志。" : formatted.Terminal; terminal.ScrollToHome(); ClearDetail();
-        status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 可继续下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices);
+        status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 可继续下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices.Select(QueryTime.DisplayNotice));
     }
     async Task ShowOriginal(SoftwareLogEntry entry)
     {
@@ -288,7 +291,7 @@ public sealed partial class SoftwareLogControl : UserControl
         if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested();
         if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
-        detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices);
+        detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices.Select(QueryTime.DisplayNotice));
     }
     static string OriginalRecord(SoftwareLogEntry entry) => SoftwareLogText.Original(entry, CancellationToken.None);
     async Task Export(bool range)

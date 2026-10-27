@@ -1,3 +1,5 @@
+> 2026-10-27 查询布局与本地日期时间呈现以 [QUERY-FILTER-UX-01](../work-packages/WP-IPC-QUERY-FILTER-UX-01.md) 为准；旧默认 UTC 输入和长时间摘要保留历史范围，查询合同不变。
+
 # Sportmaster 原生视觉产品化
 
 > main 续核：PR58 的整套视觉实现及 PR57 的发行整合已合入 main `e0beb5d32c6a24a7799ba698731566bca6a6833a`。本轮沿[续核设计](../design/sportmaster-visual-main-closure-01.md)修复共享日历的无效日期恢复路径：错误保持到明确更正/清除，关闭日历不再使用旧日期，记录与支持共用此规则。最终候选的源码与库存以其 `app/application-release.json` / `SHA256SUMS` 为准；下文 dfc2ab6 是先前已验证的历史介质，不代表后继源码身份。续核结果单独记账，目标 Windows 和现场资格仍须独立验收。

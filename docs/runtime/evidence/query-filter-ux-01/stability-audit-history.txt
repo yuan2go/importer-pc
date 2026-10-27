@@ -1,0 +1,42 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-7c34c687b977437281f44cf483065596
+PASS AUDIT-FIX02 duplicate-numeric refuses corrupted original history
+PASS AUDIT-FIX02 duplicate-numeric does not partially publish owner backfill
+PASS AUDIT-FIX02 duplicate-request refuses corrupted original history
+PASS AUDIT-FIX02 duplicate-request does not partially publish owner backfill
+PASS AUDIT-FIX02 backfill-duplicate-numeric refuses corrupted original history
+PASS AUDIT-FIX02 backfill-duplicate-numeric does not partially publish owner backfill
+PASS AUDIT-FIX02 backfill-duplicate-request refuses corrupted original history
+PASS AUDIT-FIX02 backfill-duplicate-request does not partially publish owner backfill
+PASS AUDIT-FIX02 changed-original refuses corrupted original history
+PASS AUDIT-FIX02 changed-original does not partially publish owner backfill
+PASS AUDIT-FIX02 zero-numeric refuses corrupted original history
+PASS AUDIT-FIX02 zero-numeric does not partially publish owner backfill
+PASS AUDIT-FIX02 string-numeric refuses corrupted original history
+PASS AUDIT-FIX02 string-numeric does not partially publish owner backfill
+PASS AUDIT-FIX02 fraction-numeric refuses corrupted original history
+PASS AUDIT-FIX02 fraction-numeric does not partially publish owner backfill
+PASS AUDIT-FIX02 empty-request refuses corrupted original history
+PASS AUDIT-FIX02 empty-request does not partially publish owner backfill
+PASS AUDIT-FIX02 whitespace-request refuses corrupted original history
+PASS AUDIT-FIX02 whitespace-request does not partially publish owner backfill
+PASS AUDIT-FIX02 missing-request refuses corrupted original history
+PASS AUDIT-FIX02 missing-request does not partially publish owner backfill
+PASS AUDIT-FIX02 archive-hash refuses corrupted original history
+PASS AUDIT-FIX02 archive-hash does not partially publish owner backfill
+PASS AUDIT-FIX02 row-owner refuses corrupted original history
+PASS AUDIT-FIX02 row-owner does not partially publish owner backfill
+PASS AUDIT-FIX02 backfill-row-owner refuses corrupted original history
+PASS AUDIT-FIX02 backfill-row-owner does not partially publish owner backfill
+PASS AUDIT-FIX02 backfill-row-admission refuses corrupted original history
+PASS AUDIT-FIX02 backfill-row-admission does not partially publish owner backfill
+PASS AUDIT-FIX02 backfill-row-observation refuses corrupted original history
+PASS AUDIT-FIX02 backfill-row-observation does not partially publish owner backfill
+PASS AUDIT-FIX02 partial-backfill refuses corrupted original history
+PASS AUDIT-FIX02 partial-backfill does not partially publish owner backfill
+PASS AUDIT-FIX02 resident and archived numeric originals retain the allocation floor
+PASS AUDIT-FIX02 current reopen preserves the permanent numeric floor
+PASS AUDIT-FIX02 current preflight preserves original database bytes without owner backfill
+PASS AUDIT-FIX02 current reopen preserves the permanent numeric floor
+PASS AUDIT-FIX02 current preflight preserves original database bytes without owner backfill
+PASS AUDIT-FIX02 current reopen preserves the permanent numeric floor
+PASS AUDIT-FIX02 current preflight preserves original database bytes without owner backfill

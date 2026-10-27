@@ -12,6 +12,7 @@ C#/.NET 10 Windows 工位客户端。Platform 提供机制，Application 拥有�
 | 安装、卸载与生命周期 | [当前操作指南](docs/runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](docs/runtime/lifecycle-ux-implementation-01.md) |
 | 历史维护与恢复 | [维护运行](docs/runtime/retention-ingress-02.md)、[完整维护证据](docs/runtime/validation/retention-ingress-full-retest-03.md) |
 | 架构与扩展 | [框架](docs/design/framework.md)、[决策](docs/design/framework-decisions.md)、[扩展开发](docs/extensions/developer-guide.md) |
+| 供包员主页与维护诊断 | [本轮实现与验证边界](docs/runtime/operator-workstation-01.md) |
 | 界面基线 | [参数V3](docs/ui/parameter-settings-v3-20261020/README.md)、[作业与首配V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)、[字体规范](docs/design/typography-01.md) |
 
 Sportmaster、DirectPlc、WcsToPlc 是独立主流程。Sportmaster 保持左右读码、每次已准入扫码一次原条码 RCS 请求，无 PLC 下发或新增包裹预览。配置使用唯一 CAS/Pending/Effective 账，保存后受控重启，重连只使用 Effective。待配置能力拒绝业务，Unknown 保留原请求与原责任，不盲重发。软件暂停不是安全急停。

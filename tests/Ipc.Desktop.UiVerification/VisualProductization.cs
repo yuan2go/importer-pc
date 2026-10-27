@@ -42,17 +42,13 @@ static partial class Program
         var vm = window.ViewModel;
         Click(window, "站位与设备诊断"); await Task.Delay(100);
         var diagnosticPage = (FrameworkElement)((ContentControl)window.FindName("PageHost")).Content;
-        // Identity evidence is now disclosed on demand. Expand the real groups
-        // before checking all original one-way fields; collapsed templates are lazy.
-        var evidenceGroups = Descendants(diagnosticPage).OfType<Expander>()
-            .Where(e => Equals(e.Header, "原作业与身份详情") || Equals(e.Header, "共享服务诊断详情")).ToArray();
-        Check(evidenceGroups.Length == 3 && evidenceGroups.All(e => !e.IsExpanded), "native diagnostics initially folds both position identities and shared evidence");
-        foreach (var group in evidenceGroups) group.IsExpanded = true;
-        window.UpdateLayout();
-        var diagnosticFields = Descendants(diagnosticPage).OfType<TextBox>().ToArray();
-        Check(vm.SelectedPage == "diagnostics" && diagnosticFields.Length == 24 && diagnosticFields.All(x => x.IsReadOnly &&
-            x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Mode == System.Windows.Data.BindingMode.OneWay) &&
-            diagnosticFields.Any(x => x.Text == vm.Station), "native read-only diagnostics open and bind both positions and shared facts without writing read-only properties");
+        var evidenceGroups = Descendants(diagnosticPage).OfType<Expander>().ToArray();
+        Check(evidenceGroups.Length == 2 && evidenceGroups.All(e => !e.IsExpanded), "native diagnostics initially folds scanning contents and infrequent maintenance tools");
+        var diagnosticFields = Descendants(diagnosticPage).OfType<TextBlock>().Where(t => t.IsVisible).ToArray();
+        Check(vm.SelectedPage == "diagnostics" && diagnosticFields.Any(x => x.Text == vm.LeftConnectionDiagnosis) &&
+            diagnosticFields.Any(x => x.Text == vm.RightConnectionDiagnosis) && diagnosticFields.Any(x => x.Text == vm.RcsConnectionDiagnosis) &&
+            vm.DiagnosticTechnicalSummary.Contains(vm.Station) && vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId) && vm.DiagnosticTechnicalSummary.Contains(vm.Right.ReaderId),
+            "native read-only diagnostics binds both connection explanations while preserving shared facts and identities in support copy");
         Click(window, "工作台");
         if (!baseline)
         {
@@ -127,9 +123,9 @@ static partial class Program
         await RefreshUntil(() => vm.WorkNotice.Contains("authentication required"));
         window.UpdateLayout();
         Check(((TextBlock)window.FindName("ActiveBlockingReasons")).IsVisible &&
-            ((TextBlock)window.FindName("ActiveBlockingReasons")).Text.Contains("maintenance in progress") &&
+            ((TextBlock)window.FindName("ActiveBlockingReasons")).Text.Contains("维护") && vm.WorkNotice.Contains("maintenance in progress") &&
             ((Button)window.FindName("OperatorAccess")).IsVisible,
-            "simplified workstation keeps all active blockers and required operator login visible");
+            "workstation shows actionable human guidance and required login while preserving all original blockers");
         Capture("workstation-blocked-login", window);
         probe.Project = null; await classicVm.RefreshAsync(); Capture("classic-1366", classic); classic.Close();
         await Fit(1100, 650); Capture("normal-1100");
@@ -143,17 +139,19 @@ static partial class Program
             Check(vm.Left.Operation?.Wcs?.Request.Id == originalRequest && vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.Id == rightOwner && factory.Resolves == 4 && factory.Queries == 1, "query reconciles the exact original request once without another send or replacing the right owner");
             var positions = Descendants(window).OfType<SupplyStationPosition>().ToArray();
             var left = positions.Single(p => ReferenceEquals(p.DataContext, vm.Left));
-            var details = Descendants(left).OfType<Expander>().Single(e => Equals(e.Header, "原作业与恢复详情")); details.IsExpanded = true;
+            Check(!Descendants(left).OfType<Expander>().Any(), "technical detail is absent from the daily position");
             var code = (TextBox)left.FindName("CurrentBarcode");
             window.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Input);
             Check(code.Focus() && code.IsKeyboardFocused, "active native window grants initial keyboard focus before the refresh retention experiment");
             code.Select(1, 4); var text = code.SelectedText;
-            var scroll = (ScrollViewer)left.FindName("PositionDetailsScroll"); scroll.ScrollToVerticalOffset(20); await System.Windows.Threading.Dispatcher.Yield(); var offsetBefore = scroll.VerticalOffset;
+            var scroll = (ScrollViewer)left.FindName("PositionBody"); scroll.ScrollToVerticalOffset(20); await System.Windows.Threading.Dispatcher.Yield(); var offsetBefore = scroll.VerticalOffset;
             vm.Left.InspectionReason = "SYNTHETIC unsaved inspection";
             for (var i = 0; i < 8; i++) { await vm.RefreshDisplayAsync(); await Task.Delay(80); }
-            Check(code.IsKeyboardFocused && code.SelectedText == text && details.IsExpanded && scroll.VerticalOffset == offsetBefore && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection");
-            Click(window, "作业记录"); await Task.Delay(250);
-            await vm.OpenHistoryAsync();
+            Check(code.IsKeyboardFocused && code.SelectedText == text && scroll.VerticalOffset == offsetBefore && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "repeated native snapshots retain focus, barcode selection, position scroll and unsaved inspection");
+            // Finish the scroll-retention experiment before the later unscrolled minimum-size measurement.
+            scroll.ScrollToTop(); await System.Windows.Threading.Dispatcher.Yield();
+            Click(window, "作业记录");
+            await RefreshUntil(() => vm.HistoryLoaded && !vm.HistoryLoading && !vm.Busy);
             Check(vm.CanExportHistory && vm.AppliedHistoryRange.Contains("固定序号"), "native visual history uses the complete real fixed-range contract rather than the snapshot fallback");
             var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
             var filter = (Expander)history.FindName("HistoryFilters"); filter.IsExpanded = true; window.UpdateLayout();
@@ -183,8 +181,8 @@ static partial class Program
             await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
-            var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");
-            Check(clock.Text == "08:09:10" && offset.Text == "+05:30", "native calendar editor preserves the original wall time and explicit nonlocal UTC offset");
+            Check(clock.Text == DateTimeOffset.Parse("2026-10-19T08:09:10+05:30").ToLocalTime().ToString("HH:mm:ss") && dateInput.Timestamp == "2026-10-19T08:09:10+05:30",
+                "native calendar shows local time while retaining the original nonlocal instant and offset");
             clock.Text = "25:99:00";
             Check(dateInput.Timestamp.Contains("25:99:00") && vm.HistoryFrom.Contains("25:99:00"), "invalid native time propagates as invalid input instead of retaining an older query time");
             dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
@@ -194,16 +192,16 @@ static partial class Program
                 "rejected native date invalidates the bound history filter and removes the stale calendar selection");
             var invalidTimestamp = dateInput.Timestamp;
             calendarDate.IsDropDownOpen = true; await Task.Delay(80); calendarDate.IsDropDownOpen = false; await Task.Delay(80);
-            clock.Text = "09:10:11"; offset.Text = "+08:00";
+            clock.Text = "09:10:11";
             Check(dateInput.Timestamp == invalidTimestamp && vm.HistoryFrom == invalidTimestamp,
                 "calendar dismissal and clock edits cannot restore a rejected date or broaden the query");
             Capture("history-invalid-date-1100");
             calendarDate.SelectedDate = new DateTime(2026, 10, 19);
-            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+            Check(dateInput.Timestamp == new DateTimeOffset(new DateTime(2026, 10, 19, 9, 10, 11)).ToString("yyyy-MM-dd'T'HH:mm:sszzz") && vm.HistoryFrom == dateInput.Timestamp,
                 "explicitly selecting the original date corrects the error with the current clock and offset");
             calendarDate.Text = "not-a-date";
             calendarDate.Text = "2026-10-19";
-            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+            Check(dateInput.Timestamp == new DateTimeOffset(new DateTime(2026, 10, 19, 9, 10, 11)).ToString("yyyy-MM-dd'T'HH:mm:sszzz") && vm.HistoryFrom == dateInput.Timestamp,
                 "valid typed date corrects the rejected value without reviving an older time or offset");
             Click(history, "不限时间"); Check(vm.HistoryFrom.Length == 0 && vm.HistoryToExclusive.Length == 0, "native clear-time action removes both exact time boundaries");
             Capture("history-filters-1100"); filter.IsExpanded = false;
@@ -235,8 +233,7 @@ static partial class Program
             Click(window, "设备与维护"); await Task.Delay(200); vm.ConfigurationReason = "SYNTHETIC unsaved settings";
             Capture("maintenance-1100");
             Click(window, "工作台"); await Task.Delay(100);
-            Check(details.IsExpanded && vm.ConfigurationReason == "SYNTHETIC unsaved settings" && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "page navigation preserves existing controls and independent drafts");
-            details.IsExpanded = false;
+            Check(ReferenceEquals(left, Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left))) && vm.ConfigurationReason == "SYNTHETIC unsaved settings" && vm.Left.InspectionReason == "SYNTHETIC unsaved inspection", "page navigation preserves existing controls and independent drafts");
             Check(!Descendants(window).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>()).SelectMany(m => m.Items.OfType<MenuItem>()).Any(m => Equals(m.Header, "辅助窗口")), "ordinary more menu has no auxiliary-window action");
             var child = new SupplyStationWindow(application, null, "standard", owner: window); child.Show(); await Task.Delay(350);
             Check(ReferenceEquals(child.ViewModel.Application, vm.Application) && child.ViewModel.Snapshot?.RuntimeId == vm.Snapshot?.RuntimeId, "programmatically attached native view retains the same Application and device lifetime");

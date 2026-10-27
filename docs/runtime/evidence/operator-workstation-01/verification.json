@@ -1,0 +1,86 @@
+{
+  "source_base": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+  "tested_source": "Working tree; canonical Git source blob identities below. No historical SourceCommit extended.",
+  "source_blobs": {
+    ".github/workflows/sportmaster-commercial.yml": "324e30f0f2350716065c3d61aa0367f8b9394f19",
+    "scripts/verify-commercial-wpf.ps1": "178b5c074400e24d367dcc070bf71cc59afd41fe",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml": "7f64401161e8bd6fb291ccb24bc567e5dc37d283",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs": "fd2713ebef27d274a932d79f9d3618a5041cbd96",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs": "a281c3d6c2f45d2cfc1db1d43b4f966bd68ea211",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml": "6683ee55720a6a618f46dfdc96ce3a7684337037",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs": "2dd8cf22b7d849c7f19704f266875ba6cc4a6e1f",
+    "tests/Ipc.Desktop.UiVerification/ParameterV3.cs": "81dbed1527ab2cdc3aebcecd51febfba075a5887",
+    "tests/Ipc.Desktop.UiVerification/Program.cs": "436d580880b173f5fea6dbfc55db3a848278977c",
+    "tests/Ipc.Desktop.UiVerification/VisualProductization.cs": "ff02bdb389b00b9942e550481176ba4a9d3e8b93",
+    "src/Ipc.Application.Sportmaster.Desktop/OperatorWorkspacePresentation.cs": "d26b371e2e82171155393cab14f5164d21fba965",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.OperatorWorkspace.cs": "9c048a20aece00e26239256d71a895a811e26415",
+    "tests/Ipc.Desktop.UiVerification/OperatorWorkspace.cs": "6f19297cec81856676571ace6822690033ff9ee2"
+  },
+  "platform": "Native Windows WPF, actual 125% DPI; synthetic data/ports; loopback RCS in chain suite",
+  "tests": [
+    {
+      "case": "operator-workspace",
+      "path": "docs/runtime/evidence/operator-workstation-01/operator-workspace.txt",
+      "sha256": "46d9a382749117d5223241e20ce536b669bc3ddb54d188260540329ffc8651ba",
+      "passed": 30,
+      "failed": 0
+    },
+    {
+      "case": "task-hierarchy-chain",
+      "path": "docs/runtime/evidence/operator-workstation-01/task-hierarchy-chain.txt",
+      "sha256": "509303876b5045802d0342cb4134c99123996c3f5c3c1bf2803c46ea78f25d56",
+      "passed": 48,
+      "failed": 0
+    },
+    {
+      "case": "parameter-v3",
+      "path": "docs/runtime/evidence/operator-workstation-01/parameter-v3.txt",
+      "sha256": "fa0cb9c493df7b2d9891f3666761e0dc834f05a4825d6636cc1e64622927c649",
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "case": "visual-productization",
+      "path": "docs/runtime/evidence/operator-workstation-01/visual-productization.txt",
+      "sha256": "8d601526030ad70296bf30e431599db19184e9161aff35448b38d4e909c862dc",
+      "passed": 117,
+      "failed": 0
+    },
+    {
+      "case": "workstation-status-logs",
+      "path": "docs/runtime/evidence/operator-workstation-01/workstation-status-logs.txt",
+      "sha256": "932f3945138acba291ac57848a809f2e03b82b301c04b520eb5bf772e7ebe4b4",
+      "passed": 38,
+      "failed": 0
+    },
+    {
+      "case": "management-mode",
+      "path": "docs/runtime/evidence/operator-workstation-01/management-mode.txt",
+      "sha256": "1a2e61ad48e9d834f75eafd8b6e53e99f1ee49a18084f9afa8a786d26ea11bb5",
+      "passed": 57,
+      "failed": 0
+    }
+  ],
+  "total_pass": 316,
+  "total_fail": 0,
+  "not_run": [
+    "Real camera and RCS",
+    "Physical sorting and operator usability",
+    "Installed release qualification",
+    "Mixed-monitor DPI and touch",
+    "Physical 100% DPI"
+  ],
+  "local_review_images": "D:\\projects\\importer-pc-worktrees\\operator-workstation-01\\.artifacts\\operator-workstation\\review",
+  "publish": {
+    "command": "dotnet publish src/Ipc.Desktop/Ipc.Desktop.csproj -c Release --self-contained false -m:1 -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -p:UseSharedCompilation=false -o .artifacts/operator-workstation/publish",
+    "exit": 0,
+    "environment_report_exit": 0,
+    "environment_report_sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+    "scope": "Framework-dependent source publish; entrypoint environment report, not installed release/site startup"
+  },
+  "published_verified_assemblies": {
+    "Ipc.Application.Sportmaster.Desktop.dll": "d26b497e286e4486b0deed61ff4c792d17ba3e0d38ea23789669888ccf8228a5",
+    "Ipc.Application.ParcelFlow.Desktop.dll": "a3a71c4c690f53eb8352c96c60f65b91352bc2988e12f771e05e19b8ccab070d",
+    "Ipc.Application.ParcelFlow.dll": "3e4788008b4c475167a69f822474d1ef37c1c3a8643a63c9a7a14dfb51fc2c02"
+  }
+}

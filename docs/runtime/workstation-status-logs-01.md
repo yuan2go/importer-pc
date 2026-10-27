@@ -1,3 +1,5 @@
+> 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](../work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
+
 # 作业状态、管理入口与日志双视图
 
 历史实施、版本和验收原件见[归档](../archive/pre-fresh-baseline-current-guides-01/README.md)；原PASS只属于原SourceCommit。当前仅支持从零安装、当前格式建库；非当前输入保留原件并拒绝，请使用全新数据目录。

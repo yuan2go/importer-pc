@@ -48,6 +48,7 @@ public partial class SupplyStationWindow : Window
         var left = new SupplyStationPosition { DataContext = ViewModel.Left };
         var right = new SupplyStationPosition { DataContext = ViewModel.Right };
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
+        BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
         ApplyLayout();
@@ -83,7 +84,7 @@ public partial class SupplyStationWindow : Window
         if (page is "maintenance" or "diagnostics" or "logs" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => work };
+        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
     }
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");

@@ -1,0 +1,31 @@
+PASS QUERY01 history still reads its real fixed selection and export boundary
+PASS QUERY01 history has exactly two shared time controls
+PASS QUERY01 nonlocal offset and fractional seconds survive local rendering without query mutation
+PASS QUERY01 date and time fields have the same native 44 DIP height
+PASS QUERY01 calendar button opens the native calendar
+PASS QUERY01 precision input remains reachable with the unchanged offset and fractional value
+PASS QUERY01 invalid time cannot reuse or broaden the previous query/export selection
+PASS QUERY01 correcting the invalid clock restores a valid explicit instant
+PASS QUERY01 invalid typed date cannot revive a previous day through a clock edit
+PASS QUERY01 explicit calendar selection corrects the invalid date
+PASS QUERY01 DST nonexistent and ambiguous wall times require explicit precision input
+PASS QUERY01 local edit resolves the offset for the selected date
+PASS QUERY01 default applied history summary hides engineering boundaries while retaining the technical selection
+PASS QUERY01 today query includes the synthetic observation
+PASS QUERY01 history query actions remain visible at 1366
+CAPTURE query-history-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS QUERY01 history query actions remain visible at 800
+CAPTURE query-history-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS QUERY01 log page reuses the same two local time controls
+PASS QUERY01 pending log range is readable and does not claim a completed query
+PASS QUERY01 log query retains the exact canonical endpoints behind local input
+PASS QUERY01 successful log query replaces pending wording
+PASS QUERY01 log query action remains reachable at 1366
+PASS QUERY01 default query controls do not expose offset jargon
+CAPTURE query-logs-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS QUERY01 log query action remains reachable at 800
+PASS QUERY01 default query controls do not expose offset jargon
+CAPTURE query-logs-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS QUERY01 invalid log endpoint is explained without restoring an earlier instant
+PASS QUERY01 editing log time revokes the old fixed export selection
+Windows native WPF, synthetic records and current local timezone; no system timezone changed. Real field users, touch and site validation NOT_RUN.

@@ -47,6 +47,14 @@ static class StorageBaseline
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
         Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == 10 && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel10/Supply6");
+        var brokenRoot = Path.Combine(root, "missing-index"); Directory.CreateDirectory(brokenRoot);
+        var broken = Path.Combine(brokenRoot, "sportmaster.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), broken);
+        using (var db = new SqliteConnection("Data Source=" + broken + ";Pooling=False"))
+        { db.Open(); using var c = db.CreateCommand(); c.CommandText = "DROP TABLE parcel_reply_identities"; c.ExecuteNonQuery(); }
+        var before = Wire.FileHash(broken);
+        try { using var denied = new ParcelRepository(brokenRoot, "sportmaster"); throw new Exception("Missing identity table accepted"); }
+        catch (InvalidDataException ex) when (ex.Message.Contains("OriginalReplyIdentityMissing"))
+        { Check(Wire.FileHash(broken) == before && !Directory.Exists(Path.Combine(brokenRoot, "receipts")), "missing identity table refuses without database writes or receipt directories"); }
         if (!smoke) return;
         var launch = new BusinessLaunch(Path.Combine(workspace, "config/sportmaster"), Path.Combine(root, "fresh-runtime"), null, null);
         await using (var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })

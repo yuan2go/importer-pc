@@ -24,6 +24,12 @@ public sealed partial class ParcelRepository
     {
         // Current writers atomically persist the identity with durable raw bytes.
         // Missing identity is corruption, never a request to reconstruct history.
+        using (var schema = db.CreateCommand())
+        {
+            schema.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='parcel_reply_identities'";
+            if (Convert.ToInt64(schema.ExecuteScalar()) != 1)
+                throw new InvalidDataException("OriginalReplyIdentityMissing: 当前回包身份索引缺失；原件保留，请使用全新数据目录。");
+        }
         using var tx = db.BeginTransaction(deferred: true);
         using var rows = db.CreateCommand(); rows.Transaction = tx;
         rows.CommandText = "SELECT id,request,operation,stage,state,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable') ORDER BY rowid";

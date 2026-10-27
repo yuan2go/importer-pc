@@ -5,14 +5,14 @@ using Ipc.Platform;
 
 public static class DeploymentBatchVerification
 {
-    public static void Run(DeploymentMedia media, string evidence)
+    public static void Run(DeploymentMedia media, string evidence, string configurationSource)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
         if (Directory.Exists(evidence) || File.Exists(evidence)) throw new IOException("Use a new evidence directory");
         Directory.CreateDirectory(evidence);
         var cases = new List<string>();
         var seed = Path.Combine(evidence, "seed"); Directory.CreateDirectory(seed);
-        foreach (var source in WindowsDeploymentSetup.ConfigurationFiles(Path.Combine(media.Root, "app", "config")))
+        foreach (var source in WindowsDeploymentSetup.ConfigurationFiles(configurationSource))
             File.Copy(source, Path.Combine(seed, Path.GetFileName(source)), false);
         File.WriteAllText(Path.Combine(seed, "review-extra.json"), "{\"Synthetic\":true}");
         using var identity = WindowsIdentity.GetCurrent();

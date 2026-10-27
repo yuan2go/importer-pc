@@ -51,7 +51,9 @@ var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directo
 await LifecycleOptimization.Run(root, lifecycleEvidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false)
+var batchConfiguration = Path.Combine(evidence, "batch-synthetic-config"); Directory.CreateDirectory(batchConfiguration);
+File.Copy(Path.Combine(root, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json"), Path.Combine(batchConfiguration, "business.json"));
+var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), batchConfiguration, null, [], false)
     with { Shortcuts = new(false, false) };
 var planFile = Path.Combine(evidence, "deployment-plan.json"); File.WriteAllText(planFile, Wire.Encode(DeploymentBatch.Freeze(request)));
 var receipt = Path.Combine(evidence, "preflight.json");
@@ -60,7 +62,7 @@ var receiptHash = Wire.FileHash(receipt);
 _ = DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receipt, "--preflight"]);
 if (Environment.ExitCode == 0 || Wire.FileHash(receipt) != receiptHash) throw new Exception("Batch overwrote original receipt");
 Environment.ExitCode = 0;
-DeploymentBatchVerification.Run(inventory, Path.Combine(evidence, "batch-regressions"));
+DeploymentBatchVerification.Run(inventory, Path.Combine(evidence, "batch-regressions"), batchConfiguration);
 Console.WriteLine("PASS frozen native batch preflight and duplicate receipt refusal; no installation/device startup");
 '@
 [IO.File]::WriteAllText((Join-Path $Output 'Program.cs'), $entry)

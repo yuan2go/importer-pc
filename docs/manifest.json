@@ -53353,9 +53353,9 @@
     },
     {
       "path": "scripts/verify-commercial-media.ps1",
-      "sha256": "34089ba7eb21d0a1e91e518459acc1ec599b9bc626df4c347f77813d35d733af",
-      "size_bytes": 8922,
-      "git_blob": "5b9ad9da805c32810ba407d92a794106f348533f",
+      "sha256": "c45fc14c9396895c529130b6b4b886eff7c324aaf8b152ca22f7863044e5857d",
+      "size_bytes": 9199,
+      "git_blob": "c1680ba21d7f916f786631306a31a1dd1110a335",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -100077,9 +100077,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "a6705aefb038ec14487a147e4c57486f4826c7023b7ea1bb5a5d0b04382105da",
-      "size_bytes": 14827,
-      "git_blob": "d69b37b228d66abcc027a3bb0df08bf9b7a42ad6"
+      "sha256": "d4da554e63150477840948cbe08d4ce17b64efcd02b60447a434ffdd26ab01d7",
+      "size_bytes": 14833,
+      "git_blob": "9018c7d07fa917685d7acda7852faffd98bb1bea"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/Ipc.Deployment.Verification.csproj",
@@ -100099,9 +100099,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "089b1afcb4d94ddf4c6e167c52a022bd399bdb6380bffb63a9b19cdc518df3f6",
-      "size_bytes": 405,
-      "git_blob": "3ef2598ad702d717cfd6e7e6fa94061fb0c3d2bb"
+      "sha256": "79e0c0941886a14e481b4b415b31066768c8533134925815a037849f16ee888a",
+      "size_bytes": 467,
+      "git_blob": "4104f5136cf835dda6f70e96e108a276bac3305f"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/packages.lock.json",
@@ -100110,9 +100110,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "9d7bb02ac78d73ac347fbd1332be426fffe0b450b10a66d7f8a0c27c1ba78602",
-      "size_bytes": 17878,
-      "git_blob": "3b39f9e927c0debd643d351219a4d381adba5924"
+      "sha256": "3c224e44e003da703bc6f2e2270cbae07c9d79e043bf9be20dbc80a946a01b9a",
+      "size_bytes": 18074,
+      "git_blob": "20053346d3356d11847ed1a9c2e3c9c6ba93a6e4"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/LifecycleNative.cs",
@@ -101968,9 +101968,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "d15cac75e7bd4a4fcfa5eecee4867570ac62f18e3f7c147dc8f698cf47875950",
-      "size_bytes": 6961,
-      "git_blob": "b30e1e9034e08f148cf871ab222158391207e236",
+      "sha256": "1bc9528b9be83b42c7630bcef75ea5a468b584f9e6e4db3f992e893cb5666b5b",
+      "size_bytes": 7232,
+      "git_blob": "c7a2a4853a0d00af07eaf3395a540134d88cecbf",
       "storage_scope": "public_repository"
     },
     {
@@ -103552,9 +103552,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "5dbcc757772104da3606e15271c9284abee07bca0f002c557e3e70e730d1e2b4",
-      "size_bytes": 14086,
-      "git_blob": "abd7a6412a2366dcdad6984766a429074d8a0624",
+      "sha256": "0eac162604fa463b076ae816e94d2ffd3b229ed6f66d166a5f74adff7d004198",
+      "size_bytes": 15169,
+      "git_blob": "74247aaea5ca976c732c433c30e2aa63e81e8308",
       "storage_scope": "public_repository"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "9d69e5319dbd0a5d60c49a9c549a25188342faca54502ff5f9ea3714cf1cf6e1",
-      "size_bytes": 5075,
-      "git_blob": "43ce4001d335acfd731973e2b47da070a12f03d4",
+      "sha256": "0ed001cbe077b830714cdb2d88777f36c8c24ed61cbd278f44bc8e60466b9ba5",
+      "size_bytes": 5743,
+      "git_blob": "5592308f79ce54a22ffde9c5874adc8ec4fa4ff0",
       "storage_scope": "public_repository"
     },
     {

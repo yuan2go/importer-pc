@@ -133,14 +133,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requiresActiveQualification && ActivePackage(p.Manifest.Id)) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); }, deferredDevices);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
-            if (observationInstances.Where(x => x.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && !deferredDevices.Contains(x.DeviceId)).GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
-                throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
-            foreach (var instance in observationInstances.Where(i => !deferredDevices.Contains(i.DeviceId)))
-            {
-                if (instance.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && instance.Parameters.TryGetValue("device.ip", out var ip) &&
-                    (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
-                    throw new InvalidDataException("驱动/" + instance.Id + "/device.ip: 需要规范的设备IPv4地址");
-            }
+            ValidateHikrobotIdentities(c);
             foreach (var package in c.Extensions.Packages)
             {
                 var verified = Store().VerifyInstalled(package);
@@ -252,6 +245,28 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             selected.Add(new("observation", "extension:" + package.Id + "/" + module.Id, package.Version, module.ContractIdentity ?? "CONTROLLED-OBSERVATION-v1"));
         }
         return selected.Distinct().ToArray();
+    }
+    internal static void ValidateHikrobotIdentities(ParcelConfiguration c)
+    {
+        var bindings = ParcelBindings.Readers(c).Select(r => r.Driver).ToHashSet(StringComparer.Ordinal);
+        var active = (c.Extensions?.Instances ?? []).Where(i => bindings.Contains("extension:" + i.Id) &&
+            i.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && !ParcelConnectionSetup.IsDeferred(c, i.DeviceId)).ToArray();
+        if (active.GroupBy(i => i.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
+            throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
+        foreach (var instance in active)
+        {
+            var ip = instance.Parameters.GetValueOrDefault("device.ip", "");
+            if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
+                throw new InvalidDataException("驱动/" + instance.Id + "/device.ip: 需要规范的设备IPv4地址");
+            var serial = instance.Parameters.GetValueOrDefault("device.serial", "");
+            if (c.Mode == RunMode.Production && string.IsNullOrWhiteSpace(serial))
+                throw new InvalidDataException("驱动/" + instance.Id + "/device.serial: 正式启用必须配置预期物理序列号，不能仅凭IP绑定左右相机");
+            if (serial.Length > 32 || serial.Any(char.IsControl))
+                throw new InvalidDataException("驱动/" + instance.Id + "/device.serial: 需要有效的物理序列号");
+        }
+        if (active.Where(i => !string.IsNullOrWhiteSpace(i.Parameters.GetValueOrDefault("device.serial")))
+            .GroupBy(i => i.Parameters["device.serial"], StringComparer.Ordinal).Any(g => g.Count() > 1))
+            throw new InvalidDataException("驱动/device.serial: 左右读码实例不能绑定同一物理序列号");
     }
     internal static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
     {

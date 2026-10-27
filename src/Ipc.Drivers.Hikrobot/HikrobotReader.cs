@@ -25,7 +25,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
     long bufferedCodeBytes;
     Channel<Observation>? queue;
     CancellationTokenSource? cancel;
-    Task? consumer, heartbeat, stopTask, faultReporter;
+    Task? consumer, heartbeat, stopTask, faultReporter, disposal;
     TaskCompletionSource<bool>? faultSignal;
     readonly object healthPublication = new();
     Action<DeviceHealthConfirmation>? health;
@@ -34,8 +34,9 @@ internal sealed class HikrobotReader : IControlledObservationSource
     readonly Func<string, IDisposable> acquireLease;
     readonly Action<string>? phaseChanged;
     bool created, opened, grabbing, accepting, faulted, disposed;
+    volatile bool disposeRequested;
     long sequence;
-    string? connectedSerial;
+    string? connectedSerial, boundSerial;
     readonly Dictionary<uint, uint> triggers = [];
     public string DeviceId => context.DeviceId;
     public string Epoch { get; private set; } = "not-started";
@@ -70,10 +71,11 @@ internal sealed class HikrobotReader : IControlledObservationSource
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registeredEpoch);
+        ObjectDisposedException.ThrowIf(disposeRequested, this);
         await lifecycle.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            ObjectDisposedException.ThrowIf(disposed, this);
+            ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (created || queue is not null) throw new InvalidOperationException("Previous reader registration still owns resources");
             lock (gate) { if (stopTask is { IsCompleted: false }) throw new InvalidOperationException("Original stop is still running; resources retained"); stopTask = null; }
             lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = 0;
@@ -91,7 +93,10 @@ internal sealed class HikrobotReader : IControlledObservationSource
                     token.ThrowIfCancellationRequested();
                     if (matches.Length == 0) throw new ObservationConnectionException("ConfiguredReaderMissing", new IOException("Configured IP/serial not discovered"));
                     if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial)) throw new InvalidDataException("Configured IP/serial has ambiguous identity");
+                    if (boundSerial is not null && boundSerial != matches[0].Serial)
+                        throw new InvalidDataException("Original reader physical serial changed; revise the approved device binding before replacement");
                     SetPhase("lease"); physicalLease = acquireLease(matches[0].Serial);
+                    boundSerial ??= matches[0].Serial;
                     connectedSerial = matches[0].Serial;
                     created = true; SetPhase("create"); api.Create(matches[0]); token.ThrowIfCancellationRequested(); SetPhase("open"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
                     SetPhase("read-trigger-mode");
@@ -124,7 +129,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
         {
             if (Epoch != registeredEpoch) return; // Old epoch remains outside this registration's accounting.
             FramesReceived++;
-            if (!accepting || faulted) { FramesRejected++; return; }
+            if (!accepting || faulted || disposeRequested) { FramesRejected++; return; }
             if (entityMode == "trigger")
             {
                 if (triggers.TryGetValue(frame.Channel, out var prior) && frame.Trigger < prior)
@@ -195,7 +200,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
             Action<DeviceHealthConfirmation>? target; DeviceHealthConfirmation confirmation;
             lock (gate)
             {
-                if (state == DeviceHealth.Ready && (faulted || !accepting)) return;
+                if (state == DeviceHealth.Ready && (faulted || !accepting || disposeRequested)) return;
                 var now = DateTimeOffset.UtcNow; target = health;
                 confirmation = new(DeviceId, Epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource);
             }
@@ -243,7 +248,13 @@ internal sealed class HikrobotReader : IControlledObservationSource
     async Task StopCore()
     {
         lock (gate) { accepting = false; cancel?.Cancel(); }
-        Confirm(DeviceHealth.Stopping);
+        Exception? reportingFailure = null;
+        void Report(DeviceHealth state)
+        {
+            try { Confirm(state); }
+            catch (Exception ex) { reportingFailure ??= ex; }
+        }
+        Report(DeviceHealth.Stopping);
         if (heartbeat is not null) await heartbeat.ConfigureAwait(false);
         // Callbacks finish their bounded copy before native StopGrabbing returns;
         // delegates remain rooted until DestroyHandle has succeeded.
@@ -262,19 +273,30 @@ internal sealed class HikrobotReader : IControlledObservationSource
         faultSignal?.TrySetResult(false);
         if (faultReporter is not null) await faultReporter.ConfigureAwait(false);
         physicalLease?.Dispose(); physicalLease = null;
-        SetPhase("stopped"); Confirm(DeviceHealth.Stopped);
+        SetPhase("stopped"); Report(DeviceHealth.Stopped);
         lock (gate)
         {
             health = null; receiver = null; queue = null; consumer = null; heartbeat = null; faultReporter = null; faultSignal = null;
             connectedSerial = null;
             cancel?.Dispose(); cancel = null;
         }
+        if (reportingFailure is not null)
+            throw new IOException("Reader native teardown completed; health receiver failed: " + reportingFailure.GetType().Name, reportingFailure);
     }
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
-        await StopAsync(CancellationToken.None).ConfigureAwait(false);
-        await lifecycle.WaitAsync().ConfigureAwait(false);
-        try { await StopCore().ConfigureAwait(false); disposed = true; }
-        finally { lifecycle.Release(); }
+        lock (gate)
+        {
+            disposeRequested = true;
+            if (disposal is null || disposal.IsFaulted || disposal.IsCanceled)
+                disposal = Task.Run(async () =>
+                {
+                    await lifecycle.WaitAsync().ConfigureAwait(false);
+                    try { await StopCore().ConfigureAwait(false); disposed = true; }
+                    catch (Exception ex) { Fault(ex); throw; }
+                    finally { lifecycle.Release(); }
+                });
+            return new(disposal);
+        }
     }
 }

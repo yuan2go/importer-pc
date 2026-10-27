@@ -78,7 +78,7 @@ public sealed partial class ParameterSettingsControl
             Field(providerForm, draft.Kind == "observation" ? "相机连接方式" : draft.Kind == "integration" ? "服务连接方式" : "选择已安装组件", providers, null, draft.InstanceId + "/Provider", page);
             var change = new StackPanel { Margin = new(0, 4, 0, 16) };
             var consequence = draft.Kind == "observation"
-                ? "尚未切换，下方仍是当前方式的参数。确认后将清空本相机的连接参数，并采用新方式的默认值；请重新填写IP及可选序列号。相机编码和另一相机的参数保留。"
+                ? "尚未切换，下方仍是当前方式的参数。确认后将清空本相机的连接参数，并采用新方式的默认值；请重新填写所选方式适用的参数；SDK正式启用须填写预期物理序列号。相机编码和另一相机的参数保留。"
                 : "尚未切换，下方仍是当前方式的参数。确认后将清空本组件的参数，并采用新方式的默认值；服务地址保留，请核对地址并重新填写协议参数。";
             var proposal = Text(""); change.Children.Add(proposal);
             var actions = new WrapPanel { Margin = new(0, 8, 0, 0) };
@@ -193,7 +193,7 @@ public sealed partial class ParameterSettingsControl
         "zone-id" => "填写RCS分配给当前仓库的ID，用于确定格口请求所属仓库。",
         "project-id" => "填写RCS分配给当前生产线的ID，用于确定格口请求所属生产线。",
         "left-bcr-code" or "right-bcr-code" => "本相机取格口请求与心跳共用这一编码，左右相机不得重复。更换连接方式不会清空此编码。",
-        "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "填写时同时核对网络地址和序列号。",
+        "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "正式启用必填，按预期物理序列号核对本位相机；模拟或独立诊断可留空。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
         "entity.mode" => "仅观察不创建作业。触发关联要求设备已开启触发，并已确认一触发一个包裹、同触发多帧及重连后的原包裹处置；本选项不会修改相机触发设置。", "queue.capacity" => "条码观察的条数上限；同时受字节预算限制。溢出后停止接收，须检查并显式重连。",
         "queue.maximum-code-bytes" => "排队及正在处理的条码缓冲预算；默认16777216字节（16MiB），范围1～64MiB，不是原图缓存。超限后故障阻断，须检查并受控恢复。",

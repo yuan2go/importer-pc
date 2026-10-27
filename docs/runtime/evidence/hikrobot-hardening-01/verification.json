@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "implementationSourceCommit": "450bd40dddd953be2ab4d3957ad9431fe77f6f1c",
+  "implementationTree": "a98fa55a600da672ca662544649a99713515fa1d",
+  "baseMain": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+  "environment": {
+    "os": "Windows 11 x64 build 22631",
+    "dotnetSdk": "10.0.402",
+    "physicalDevices": 0
+  },
+  "builds": [
+    {
+      "configuration": "Release/RestoreLockedMode",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": {
+        "name": "build-committed-solution.log",
+        "sha256": "8dc4707e2927e28c54b052a918dd124d4cd42204587a125ccabdfe23ff9cda08"
+      }
+    },
+    {
+      "configuration": "Release/RestoreLockedMode",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": {
+        "name": "build-committed-probe.log",
+        "sha256": "293d7a45e62471eab1e605589db6bfd68a2a058130469bd067a7bf5498e37b11"
+      }
+    },
+    {
+      "configuration": "Release/RestoreLockedMode",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": {
+        "name": "build-committed-native.log",
+        "sha256": "df4bce01c6562f0fe8af39e01672bf713a8a0120e015d475c793fbd7c94d8185"
+      }
+    },
+    {
+      "configuration": "Release/RestoreLockedMode",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": {
+        "name": "build-committed-Ipc.Hikrobot.IndependentReview.log",
+        "sha256": "171be7b0ecdde7a90f833c616ae0948561fe408ed835438dc214417b93065fe2"
+      }
+    },
+    {
+      "configuration": "Release/RestoreLockedMode",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": {
+        "name": "build-committed-Ipc.Hikrobot.LocalSimulation.log",
+        "sha256": "0a95d3762adbaebcb8c274f4023a11747f1e366b2c10771f78a4b90296c6d2a8"
+      }
+    }
+  ],
+  "core": [
+    {
+      "kind": "test cases",
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": {
+        "name": "committed-Ipc.Hikrobot.IndependentReview.log",
+        "sha256": "3b92fbe57823ae425ab5aaea144fe39ecafab6e53a8e7cd6a31fa938c870e144"
+      }
+    },
+    {
+      "kind": "scenario groups",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": {
+        "name": "committed-Ipc.Hikrobot.LocalSimulation.log",
+        "sha256": "adb89d6f1c644d9a454bd9fb24a653be5217d519779e27df26d1f0cf95248e41"
+      }
+    },
+    {
+      "kind": "assertions",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": {
+        "name": "committed-application-hardening.log",
+        "sha256": "82f2a7a3c5dc96f7d529cbe82e3fc30484cf77fd9071e288dae98df303a7d898"
+      }
+    },
+    {
+      "kind": "new driver assertions",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": {
+        "name": "committed-probe.log",
+        "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7"
+      }
+    }
+  ],
+  "existingProbeAssertions": {
+    "reader": 46,
+    "mvs": 26,
+    "nativePolicyGroups": 6
+  },
+  "nativeWpfSynthetic": [
+    {
+      "suite": "--hikrobot-sdk-editing",
+      "passedAssertions": 10,
+      "failed": 0,
+      "evidence": {
+        "name": "committed-native--hikrobot-sdk-editing.log",
+        "sha256": "deaf29709dca67d262760fc4454f7841b896b3077f78608fcdeddf316a2397a1"
+      }
+    },
+    {
+      "suite": "--debug-log-live",
+      "passedAssertions": 40,
+      "failed": 0,
+      "evidence": {
+        "name": "committed-native--debug-log-live.log",
+        "sha256": "8a9e16c43e9f3b1b6ed51ea0c3911e0e8e58ebb1900b4e248ab245f19888d25e"
+      }
+    },
+    {
+      "suite": "--task-hierarchy-chain",
+      "passedAssertions": 48,
+      "failed": 0,
+      "evidence": {
+        "name": "committed-native--task-hierarchy-chain.log",
+        "sha256": "dbdaf0392ec2989c4d5ff6cbde06136eec33807a2faf2e723217e85d6b4c46bd"
+      }
+    }
+  ],
+  "additionalEarlierModuleRuns": [
+    {
+      "suite": "--hikrobot-sdk-editing",
+      "exitCode": 0,
+      "phase": "before implementation commit; retained as its own run",
+      "evidence": {
+        "name": "application--hikrobot-sdk-editing.log",
+        "sha256": "6a512353a0a45d9a3e16791d431ecfe419d071a1ca9e023299033d5ba210c006"
+      }
+    },
+    {
+      "suite": "--parameter-guidance-startup",
+      "exitCode": 0,
+      "phase": "before implementation commit; retained as its own run",
+      "evidence": {
+        "name": "application--parameter-guidance-startup.log",
+        "sha256": "fe2fe51b0d118e1164d7825f64807c086ef25ac836343c36a2c5cf0f697edecc"
+      }
+    },
+    {
+      "suite": "--rcs-timeout-errors",
+      "exitCode": 0,
+      "phase": "before implementation commit; retained as its own run",
+      "evidence": {
+        "name": "application--rcs-timeout-errors.log",
+        "sha256": "f3431256d0938945353a764ea47d58789615de1e519d7bb6d74a2cff3057dbe0"
+      }
+    },
+    {
+      "suite": "--deferred-connections",
+      "exitCode": 0,
+      "phase": "before implementation commit; retained as its own run",
+      "evidence": {
+        "name": "application--deferred-connections.log",
+        "sha256": "4095c6075048e5dd2d5858bd7aa286084f7401f0ac42565e7f0b6ffa9bf6cfe6"
+      }
+    },
+    {
+      "suite": "--p0-tcp",
+      "exitCode": 0,
+      "phase": "before implementation commit; retained as its own run",
+      "evidence": {
+        "name": "application--p0-tcp.log",
+        "sha256": "f679ab151dcdeef29caa7b90cf1acb07bde1bb4c3588fe6cdd13305c2b4d3826"
+      }
+    }
+  ],
+  "pythonCompatibility": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "evidence": {
+      "name": "python-compatibility.log",
+      "sha256": "082e4d8713e4610fc58e6d78e14fe36f2302adffcaef0799ed7e5a3768c4642e"
+    }
+  },
+  "sdkEnumeration": {
+    "exitCode": 0,
+    "deviceCount": 0,
+    "scope": "real installed DLL load/17 exports/initialize/enumerate/finalize; no frames",
+    "evidence": {
+      "name": "committed-mvs-enumeration.log",
+      "sha256": "addfb17c8dfda92030ee0cf99d52efdce58f2b1875dd8b65af6760dc7e232987"
+    }
+  },
+  "preservedAssertions": [
+    {
+      "suite": "Ipc.Hikrobot.IndependentReview",
+      "originalAndCurrentAssertionsByteIdentical": true,
+      "sha256": "439ebc7f3544ee98ebf2f9b5518a9e2d29cf10a13c97768e1b3651f1acd48b6d"
+    },
+    {
+      "suite": "Ipc.Hikrobot.LocalSimulation",
+      "originalAndCurrentAssertionsByteIdentical": true,
+      "sha256": "6d865a68a33d2dd4eb1fb7e5dcde36bb4202701881871e3029810ea8eaf61163"
+    }
+  ],
+  "retainedFailures": [
+    {
+      "status": "FAIL",
+      "phase": "new test fixture preparation",
+      "cause": "legacy fixture used pretty JSON rather than actual single-line JSONL; corrected serialization without changing count/redaction assertions",
+      "evidence": {
+        "name": "application-hardening-initial-fixture-failure.log",
+        "sha256": "61f87689087dc693a4e2f583884d31443a54409deb7bfce113a16748bec238b3"
+      }
+    },
+    {
+      "status": "FAIL",
+      "phase": "new test fixture preparation",
+      "cause": "export fixture targeted the protected data tree; retained refusal assertion and moved permitted export outside that tree",
+      "evidence": {
+        "name": "application-hardening-export-fixture-failure.log",
+        "sha256": "63ee8c0d1934b1725a100796c512a9a956cd1faf70c6cc106ba7c775a7d7b5ac"
+      }
+    }
+  ],
+  "notVerified": [
+    "actual camera frame ownership and throughput",
+    "applicable recognition component/API/license",
+    "physical one-trigger-one-entity qualification",
+    "real RCS and physical chute",
+    "protected Windows installation/runtime policy",
+    "24h/72h stability",
+    "frozen signed deployment packages for this source"
+  ],
+  "publication": "Generic source, synthetic counts and hashes only; raw logs/screenshots/SDK and local credentials stay outside Git"
+}

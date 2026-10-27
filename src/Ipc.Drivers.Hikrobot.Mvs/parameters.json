@@ -11,10 +11,10 @@
   {
     "Key": "device.serial",
     "Group": "设备 / 身份",
-    "Label": "预期序列号（可选）",
+    "Label": "预期序列号（正式必填）",
     "Type": "string",
     "MaximumLength": 32,
-    "Description": "填写时同时验证IP及实际序列号；设备实际型号与固件在独立诊断枚举中核对。"
+    "Description": "正式启用须固定本位物理相机序列号，IP只作连接地址。模拟或独立诊断可留空，同一实例重连不能更换物理序列号；型号与固件另核对。当前仍缺条码识别组件。"
   },
   {
     "Key": "acquisition.trigger",

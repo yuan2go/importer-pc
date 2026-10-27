@@ -1,4 +1,4 @@
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK需IP/可选序列号，不使用TCP端口。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
 
 > 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
 

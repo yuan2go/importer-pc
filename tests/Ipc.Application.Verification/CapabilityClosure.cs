@@ -38,7 +38,7 @@ static class CapabilityClosure
             // anchors below remain the original samples used by these assertions.
             if (c.Topology!.Positions.Length > 1 && (c.Scale is not null || c.Images is not null))
             {
-                List<CapabilityBinding> instances = [.. c.CapabilityInstances ?? []];
+                List<CapabilityBinding> instances = [.. ParcelBindings.All(c)];
                 var positions = c.Topology.Positions.Select((position, index) =>
                 {
                     var scale = c.Scale; var camera = c.Images?.Camera;
@@ -63,7 +63,10 @@ static class CapabilityClosure
         {
             var c = Config(id) with { Login = B("login"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 3000, WaitTimeoutMs: 5000), Scale = B("weight"), Images = new(B("camera"), B("upload")) };
             await using var app = await Open(c, "entry-" + id);
-            Pass(!app.EmitReference("no-login", "00001", Wire.Id()), id + " public entry refuses admission without session");
+            var unauthenticated = await app.SnapshotAsync();
+            Pass(app.EmitReference("no-login", "00001", Wire.Id()), id + " controlled source queues evidence without granting admission");
+            var refused = await Wait(app, x => x.Revision > unauthenticated.Revision);
+            Pass(refused.Operations.Length == 0 && !refused.Availability!.Admit, id + " public entry refuses admission without session");
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("original", "00001", "original-acquisition");
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted); var op = s.Operations.Single();
             Pass(op.State == ParcelState.WaitingWeight && op.Wcs is null && op.Plc is null && op.Image is not null, id + " captures original before waiting for actual weight");
@@ -93,7 +96,7 @@ static class CapabilityClosure
             app.EmitReference("weight-upload", "00002", "original-weighted-upload");
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted);
             Pass(s.Operations.Single().Upload is null && s.Operations.Single().Weight is null, "uploader declaring measured input captures first but cannot prematurely freeze or send weightless upload");
-            var m = new WeightMeasurement(Wire.Id(), "weight-upload", weightedUpload.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
+            var m = new WeightMeasurement(Wire.Id(), s.Operations.Single().AdmissionId, weightedUpload.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
             app.EmitReferenceWeight(m);
             s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted && x.Operations.Single().Upload?.State == StageState.Accepted);
             Pass(Wire.Decode<ParcelPayload>(s.Operations.Single().Upload!.Request.Payload).Weight?.MeasurementId == m.Id, "required measured upload input is frozen only when same-parcel measurement is ready");
@@ -165,7 +168,8 @@ static class CapabilityClosure
             var op = (await app.SnapshotAsync()).Operations.Single();
             app.EmitReferenceWeight(new(Wire.Id(), op.AdmissionId, measured.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
             await Task.Delay(80); Pass((await app.SnapshotAsync()).Operations.Single().Plc is null, "late measurement after same-parcel deadline cannot restore or submit");
-            await Command(app, "Pause"); Pass((await Command(app, "Resume")).Status == "Rejected", "Resume cannot bypass weight deadline");
+            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
+            Pass((await Command(app, "Resume")).Status == "Rejected", "Resume cannot bypass weight deadline");
             Pass((await Command(app, "AbandonUnsubmitted", op.Id, "SIMULATION: parcel inspected and removed")).Status == "Persisted", "explicit inspected disposition only abandons a parcel with no WCS/PLC intent");
             Pass((await Command(app, "Resume")).Status == "Persisted", "next parcel requires explicit reset after disposition");
             app.EmitReference("fresh", "005", Wire.Id()); var s = await Wait(app, x => x.Operations.Length == 2); var next = s.Operations.First();
@@ -178,7 +182,7 @@ static class CapabilityClosure
         WeightMeasurement sample;
         var broken = await Open(crash, "weight-crash"); broken.Boundary = point => { if (point == "AfterMeasurementInsert") throw new IOException("AC19 interrupted after measurement insert, before aggregate/transaction commit"); };
         broken.EmitReference("crash", "006", Wire.Id()); await Wait(broken, x => x.Operations.Length == 1);
-        sample = new(Wire.Id(), "crash", crash.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow); broken.EmitReferenceWeight(sample);
+        sample = new(Wire.Id(), (await broken.SnapshotAsync()).Operations.Single().AdmissionId, crash.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow); broken.EmitReferenceWeight(sample);
         await Wait(broken, x => x.BlockingReasons.Any(r => r.Contains("worker failed")));
         try { await broken.DisposeAsync(); } catch (InvalidOperationException) { }
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(root, "weight-crash/data/Simulation", crash.StationId, "direct-plc/direct-plc.db")))
@@ -187,7 +191,7 @@ static class CapabilityClosure
         {
             app.EmitReferenceWeight(sample); var s = await Wait(app, x => x.Operations.Single().Weight is not null);
             Pass(s.Paused && s.Operations.Single().Plc is null, "recovered original measurement cannot automatically authorize first PLC dispatch");
-            await Command(app, "Resume");
+            await ManagementModeFixture.Authorize(app); await Command(app, "Resume");
             var recovered = s.Operations.Single(); var revision = (await app.SnapshotAsync()).Revision;
             await app.CommandAsync(new(Wire.Id(), revision, "ContinuePrepared", recovered.Id, "Synthetic original parcel inspected after interrupted association"));
             s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted);
@@ -198,7 +202,11 @@ static class CapabilityClosure
         await using (var app = await Open(sessionConfig, "session-expiry"))
         {
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("session", "007", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var op = s.Operations.Single();
-            await Task.Delay(240); Pass(!app.EmitReference("expired-session", "008", Wire.Id()), "expired session refuses admission without inventing an authenticated default");
+            await Task.Delay(240);
+            var expired = await app.SnapshotAsync();
+            Pass(app.EmitReference("expired-session", "008", Wire.Id()), "controlled source queues evidence after session expiry");
+            var refused = await Wait(app, x => x.Revision > expired.Revision);
+            Pass(refused.Operations.Length == 1 && !refused.Availability!.Admit, "expired session refuses admission without inventing an authenticated default");
             await Command(app, "Pause"); var before = (await app.SnapshotAsync()).Configuration;
             Pass((await app.StageConfigurationAsync(before.Revision, before.Effective, "Synthetic directed configuration verification")).Status == "Rejected", "software pause alone grants no maintenance authority");
             Pass((await app.AuthorizeMaintenanceAsync("wrong")).Status == "Rejected" && (await ManagementModeFixture.Authorize(app)).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");

@@ -39,3 +39,4 @@ B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract
 B2第二轮定向CI发现CapabilityClosure合成夹具把同一相机/秤绑定左右两位，违反已保留的位置隔离守卫；已为每位构造独立合成端口，保留原测量、图像与Unknown断言。生产守卫未放宽。
 
 CapabilityClosure同时按当前PLC合同显式查询原请求完成事实后再验证图片释放；提交接受时先断言图片仍保留，生产发送/查询逻辑不变。
+`nB2后续CI核实：ApplicationArchitecture仍启动schema2升级夹具，改为schema1/2/4拒绝且配置字节不变、无建库；CapabilityClosure清单补齐当前角色绑定，使用实际AdmissionId关联测量，并保留未授权/过期会话拒绝业务的断言。受控源排入观察证据不等于实体准入。Windows发布遇CI临时磁盘设备不存在错误，重试验证，不降低发布检查。

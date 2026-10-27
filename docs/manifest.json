@@ -89587,9 +89587,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
-      "sha256": "12b760814422bceae9fe1c930a6f7aa568f4111e71c89c3baa2633b2e3d95d5c",
-      "size_bytes": 10363,
-      "git_blob": "b86562f3b7a80bc3bce157ec8dac536344821d1c",
+      "sha256": "b072ee7ecd01779e14aa6fc9b1a710502587befec896b2aebd690aad55123acb",
+      "size_bytes": 10468,
+      "git_blob": "267d7201eb99c590aceea5c5d20bf4afd82c7d62",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -103552,9 +103552,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "16327947ce535518d86e5b8b499afec3fc42a77d57a1e856bcc57d76232f5a0d",
-      "size_bytes": 11935,
-      "git_blob": "8f128d2c0a092ed747419d114568e5234a04b495",
+      "sha256": "d3d761e2f146dc63a173e8358228d46795792ec83b78bf50e444fb55274030a7",
+      "size_bytes": 12759,
+      "git_blob": "92c0ee65d4731535f0265d25eea7b63388e979aa",
       "storage_scope": "public_repository"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "0813cf07e30dffb2d5292cccec542e576d27fa26b31619c948c3f73b02ca710d",
-      "size_bytes": 4050,
-      "git_blob": "1ce54a8d43dd4fa07d5a498863dca82cc8331ace",
+      "sha256": "554a8749c10bd59b6bfa52cfba7206aefa80a49b2c2f98d404120e0c2468c94e",
+      "size_bytes": 4344,
+      "git_blob": "e02a9190aa73cf83fac0d442085111f7cd34747a",
       "storage_scope": "public_repository"
     },
     {

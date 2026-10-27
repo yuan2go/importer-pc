@@ -8,7 +8,8 @@
     "parameter common model",
     "deferred/Unknown and P0 eight combinations",
     "SDK identity/diagnostic hardening",
-    "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture"
+    "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture",
+    "PGS01 current read-only observation mode, no dirty state on load, deferred Pending/Effective save"
   ],
   "NativeVerified": [
     "SDK first/daily page and single camera code",
@@ -25,7 +26,8 @@
     "API constant old record 0x04080202 refused unchanged current DLL; corrected from direct actual version",
     "generated restore lock RID context corrected with distinct locked inputs",
     "old source/locale UI assertion updated to absence plus remaining heartbeat help",
-    "diagnostic navigation anchor restored for nonselectable built-in provider; same draft assertions retained"
+    "diagnostic navigation anchor restored for nonselectable built-in provider; same draft assertions retained",
+    "AQA CI PGS substep still expected TCP line/automatic policy rewrite; updated current SDK readonly observation expectations, assertions retained"
   ],
   "Logs": [
     {
@@ -317,6 +319,11 @@
       "name": "bundled-mvs-dynamic-fixture-build.log",
       "sha256": "ee316cf19c73e1e6e79ed4c0a5604c79a1352ccecaa7e59073c4116ac264d1d3",
       "bytes": 3331
+    },
+    {
+      "name": "bundled-mvs-pgs-current.log",
+      "sha256": "4dc4b28d5c4ed4d2c11cd742797e8c8769527f38078b0da8fa0b09ace8e2e447",
+      "bytes": 2439
     }
   ],
   "Build": "PASS affected desktop/helper locked build 0 warnings/0 errors",
@@ -326,5 +333,12 @@
     "SourceCommit": "f2cd14284f43d322656083984c8a86ea2ac3aa6f",
     "Sha256": "0ed546805a36e05372e9ad5a09ee80d812176b29734de57c530fc584133416af",
     "Status": "BUILT with actual14 SDK; packaging startup guide correction follows"
+  },
+  "CurrentInstaller": {
+    "SourceCommit": "489eebf2ff9a8c79aa4fb43e2e7f44ea6c17d9a3",
+    "Sha256": "14da4f0fff1902239fdc39b0d0a5c93575d75174a3fd2b5a08a6973aa8c79086",
+    "ActualWindowsInstallation": "NOT_RUN; manual user installation",
+    "VendorRuntime": "actual14 reviewed SDK files bundled",
+    "FrozenNativeParameterV3": "PASS same exact source489eebf2; no provisioning or physical devices"
   }
 }

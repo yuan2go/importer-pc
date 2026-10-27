@@ -32,12 +32,12 @@ static class ParameterGuidanceStartup
             "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
-            ParcelBindings.Readers(draft.Build()).All(r => r.Parameters!["entity.mode"] == "line"),
-            "one scan per parcel is the Sportmaster candidate policy; quantity is absent from its editors and new configuration");
-        var oldReader = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode"); oldReader.Value = "observe-only";
-        Check(draft.Build().Reader.Parameters!["entity.mode"] == "line" && initial.Reader.Parameters!["entity.mode"] == "line",
-            "saving a Sportmaster candidate replaces the obsolete observe-only choice without editing the original configuration");
-        oldReader.Value = "line";
+            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs" && r.Parameters!["entity.mode"] == "observe-only"),
+            "current built-in SDK candidate remains observation-only until a formal decoder and parcel boundary exist; quantity is absent");
+        var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
+        Check(mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only"]) &&
+            draft.Build().Reader.Parameters!["entity.mode"] == "observe-only" && initial.Reader.Parameters!["entity.mode"] == "observe-only",
+            "current SDK mode has only the read-only observation choice and candidate construction never activates parcel admission");
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
         using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";
@@ -84,9 +84,9 @@ static class ParameterGuidanceStartup
             await ManagementModeFixture.Authorize(app); await vm.LoadCapabilitiesAsync();
             var scanCandidate = vm.BuildStructuredConfiguration();
             var policySnapshot = await app.SnapshotAsync();
-            Check(vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "line" &&
+            Check(!vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" &&
                 scanCandidate.Wcs?.Parameters.ContainsKey("quantity") == false && policySnapshot.Configuration.Effective.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" && policySnapshot.Configuration.Effective.Wcs?.Parameters.ContainsKey("quantity") == false,
-                "scan admission policy is an explicit reviewed candidate; original mode remains unchanged and no obsolete quantity is introduced");
+                "loading the current SDK daily editor leaves the observation policy and effective candidate unchanged, without quantity or false dirty state");
             foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.port" => "9000", _ => p.Value };
             vm.ReaderDrafts[0].Capability.ConfigureLater = false;
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");

@@ -159,4 +159,4 @@ docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=c
 # Preserve original synthetic barcode producer verification receipts.
 docs/runtime/evidence/barcode-producer-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 
-docs/runtime/evidence/barcode-reader-service-01/*.log -text
+docs/runtime/evidence/barcode-reader-service-01/*.log -text whitespace=cr-at-eol

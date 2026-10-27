@@ -11,10 +11,11 @@ Windows先由维护安装既有机器策略，日常使用指定未提权账户�
 构建机需要`global.json`锁定的.NET SDK10.0.402、Python3、Git和OpenSSL（签名包时）。macOS/Linux只运行核心；WPF在Windows运行。首次还原需取得NuGet锁中的依赖，无网络/无包缓存时保持明确失败，不改锁绕过。
 
 ```sh
-dotnet restore ImporterPc.slnx --locked-mode -p:EnableWindowsTargeting=true
-dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false -p:EnableWindowsTargeting=true
+dotnet build src/Ipc.Product -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet build src/Ipc.Fixture -p:RestoreLockedMode=true -m:1 -nr:false
 python3 scripts/seal.py --bin src/Ipc.Product/bin/Debug/net10.0
-# Windows WPF启动前也封装其同版输出：
+# 可选Supply桌面：明确选择Supply，构建后封装同版输出：
+dotnet build src/Ipc.Desktop -p:BusinessModule=Supply -p:EnableWindowsTargeting=true -p:RestoreLockedMode=true -m:1 -nr:false
 python3 scripts/seal.py --bin src/Ipc.Desktop/bin/Debug/net10.0-windows
 ```
 
@@ -53,6 +54,7 @@ Windows桌面用主屏箱码、双通道来源、固定提交及关闭动作执�
 先用`--help`读取真实覆盖。默认reconciliation包含原AC/进程、H04/A01/E07/E08/E11/E12及AC14/15；architecture、maintainability和health-profile是显式独立范围。
 
 ```sh
+dotnet build tests/Ipc.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --help
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --maintainability
 python3 -m unittest discover -s scripts -p 'test_extension_build.py' -v

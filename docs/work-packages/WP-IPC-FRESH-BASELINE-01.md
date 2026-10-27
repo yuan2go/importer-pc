@@ -8,7 +8,7 @@
 |---|---|---|
 | B1 | C14/C15/C18、smoke缺键和两处文案 | PR120已合并：e4dae94c9195793fa3e025c4026b786d0a454622；四项CI通过 |
 | B2 | C05～C13/C17/C20 | PR121已合并：ea996ce16a992a6d1c478e4aae3088f6dc8c82fe；四项CI通过 |
-| B3 | C01～C04/C16 | 基线与等价验证已实现；恢复与起停CI通过前不合并 |
+| B3 | C01～C04/C16 | PR122已合并：45004c4db17cc2dfbc54d046136a943862048740；四项CI通过 |
 
 ## B1源码核查
 
@@ -65,7 +65,7 @@ CapabilityClosure最后的配置提交使用管理授权后重新读取的完整
 
 起点main为6a55d9d537fb5365717b67c19d72374a4a52371b。B2合并后，B3先同步main；B3最终合并SHA和最终main验证以PR122及对应main push CI为准。B3前置提交cfb4ee546538d0812de8e14b731aaa1db04d8e18的四项CI均通过（run40458202564），包括四项数据库合并条件；后续直接调用同一Supply格式校验器的等价清理仍须最终提交CI通过，不能沿用旧PASS。
 
-以下按主实现文件、专属夹具及同文件变更块归属统计物理行；正数为净减，负数为净增。共用同步/其他夹具调整净增3行另计。源码、测试、脚本合计净减980行；33份当前Markdown净减351行。原说明归档新增2453行，不作为删减收益；新schema快照和工作包亦另计。
+以下按主实现文件、专属夹具及同文件变更块归属统计物理行；正数为净减，负数为净增。共用同步/其他夹具调整净增3行另计。源码、测试、脚本合计净减980行；33份当前Markdown净减350行。原说明归档新增2453行，不作为删减收益；新schema快照和工作包亦另计。
 
 |ID|处理|净减行|核实差异/保留边界|
 |---|---|---:|---|
@@ -86,7 +86,7 @@ CapabilityClosure最后的配置提交使用管理授权后重新读取的完整
 |C15|删除|40|station Upgrade/Rollback移除；备份恢复保留|
 |C16|折叠|131|实际涉及更多调用方；两份退休API测试随B2提前删除|
 |C17|折叠|35|当前组合、真实输入、字节身份与防伪PASS保留|
-|C18|重写/归档|351|实际33份当前说明，原字节与SHA归档|
+|C18|重写/归档|350|实际33份当前说明，原字节与SHA归档|
 |C20|删除|85|旧Sportmaster页面移除；共享Shell与另两业务页面保留|
 
 需用户自行处理：使用旧安装自己的登记卸载入口，核对并仅清理该项目旧数据/草稿/账号目录，再选择全新数据目录安装；不删除整个D盘、共享Machine根或其他站点。C23继续保留Win10 22H2和Win11，改成仅Win11不在本次执行范围。
@@ -94,3 +94,11 @@ CapabilityClosure最后的配置提交使用管理授权后重新读取的完整
 相邻发现仅记录：ImporterPc.Administrator.*、LegacyNamedCapabilities文件名及Ipc.Application.Contracts既有命名空间、platform_migrations/schema_history身份表名、LegacyConsumersUnverified原因名；它们仍有当前职责。DeploymentExtensions二参便利构造未纳入本轮。无参数默认验证套件仍有与当前物理完成合同不符的旧断言，不能将此次关键套件通过写成全量测试通过。
 
 回滚用正常反向提交PR，不重写main历史。按B3、B2、B1逆序回退代码并重新构建验证；Parcel10/Supply6不可通过旧程序降级读取，回退运行也必须全新数据目录。真实SDK/RCS、目标Win10/Win11工控机、现场及长期稳定运行另验；本机安装和既有站点未执行操作。
+
+## 最终main构建入口修正
+
+45004c4db17cc2dfbc54d046136a943862048740的首次main push验证（run40460004654）发现完整Solution的默认装配冲突：Installer默认Sportmaster，Desktop默认Supply，locked restore拒绝。后续快捷方式项因前置验证程序尚未编译而失败。首个验证失败记录保留，不记为PASS。
+
+完整Solution构建须明确BusinessModule=Sportmaster，并以SelfContained=false统一源码编译闭包；正式自包含介质仍由现有发布脚本单独构建和验证。本机执行该完整Release/locked构建通过，0警告0错误；随包文档测试3项通过。当前Supply指南改为明确构建Product、Fixture及所需验证/桌面工程。原build.sh仍有裸Solution组合问题，属于相邻发现，本轮不改脚本或产品默认值。
+
+此补充仅修改验证命令、当前指南和工作包/manifest，不再提升契约或业务版本。完成补充PR的CI和合并后，在新main再次验证完整构建与关键套件；不能以本机或先前PR结果代替。

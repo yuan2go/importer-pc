@@ -150,7 +150,7 @@ jobs:
           . ./scripts/project-environment.ps1
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
           if ($env:GITHUB_EVENT_NAME -eq 'push') {
-            dotnet build ImporterPc.slnx -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+            dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true

@@ -7,10 +7,9 @@ Supply是独立业务，不是旧版兼容入口。只支持全新安装和当�
 使用global.json固定SDK **10.0.402**。NuGet/传递依赖与内容哈希以各packages.lock.json为准；不改锁绕过还原。构建采用单节点，WPF交叉构建不证明Windows行为。
 
 ```sh
-./scripts/build.sh
-# 跨平台构建机需显式启用Windows目标：
-dotnet restore ImporterPc.slnx --locked-mode -p:EnableWindowsTargeting=true
-dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false -p:EnableWindowsTargeting=true
+dotnet build src/Ipc.Product -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet build src/Ipc.Fixture -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet build tests/Ipc.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 # 查看当前全部选择器和准确覆盖：
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --help
 # 本包新增风险；原恢复/资源按影响另选

@@ -19,7 +19,7 @@ dotnet build src/Ipc.Desktop -p:BusinessModule=Supply -p:EnableWindowsTargeting=
 python3 scripts/seal.py --bin src/Ipc.Desktop/bin/Debug/net10.0-windows
 ```
 
-也可用`bash scripts/build.sh`一次完成上述Supply默认构建、验证工程构建及两份封装；安装器仍使用正式发布入口。
+Windows Git Bash也可用`bash scripts/build.sh`一次完成Supply默认构建、验证工程构建及两份封装（先在父PowerShell会话加载project-environment.ps1）；macOS/Linux核心使用上面的独立工程命令。安装器仍使用正式发布入口。
 
 seal写实际模块SHA、配置和发布身份；二进制变更后重新封装，不跳过哈希校验。Supply.Contracts为2.0.0，外部参考合同SIMULATION-v1不变，Storage/MinimumReader=6/6。只使用全新数据根建库，非当前数据库拒绝，不接管开发遗留数据。
 

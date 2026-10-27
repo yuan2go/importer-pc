@@ -13,3 +13,5 @@
 默认套件同步补齐原请求查询的管理授权；观察验证等待实际Duplicate/Blocked记录，原始回包恢复验证等待AfterRawDurable故障边界后再检查工作终止，避免未开始工作就判定完成。本机纯策略19项、随包文档3项通过；Application验证工程Release/locked构建通过。实际运行只在隔离CI执行。
 
 提交、PR、CI及合并结果以本包PR和最终交付记录为准；不从旧提交转记PASS。Win10/Win11目标机、真实SDK/RCS和现场为NOT_RUN。回滚采用正常反向提交PR，不重写历史。
+
+首轮CI（40468133005）的Linux桌面跨编译在System.Diagnostics.EventLog引用包还原时NU1102失败，核心、Fixture和Supply验证已成功编译。完整Supply桌面构建改在Windows runner实际执行Git Bash入口；无参数默认套件继续独立在Linux隔离运行。没有修改NuGet锁、包版本或跳过桌面构建；Linux桌面跨编译不计PASS。

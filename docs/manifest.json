@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "4cbd83fdbf84bbc1963c84d57b7aa24933bd379e9571f27b3dcdd6564d94cee7",
-      "size_bytes": 25336,
-      "git_blob": "fcf9da2b92ee40844e8bde939d7ad0c1f39bb62d",
+      "sha256": "7b73d77924c6099a24c050fd6b92126d77273b440550b6c3b121dff69eb55797",
+      "size_bytes": 26636,
+      "git_blob": "099a0b3a09ab53a3a3d79941b65bb93b8e8a7777",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -45940,9 +45940,9 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "a7ca83f2152cb2d95ebdfeca1d306d8d886f1ae2aa385c70b66f00582fad9ae6",
-      "size_bytes": 10742,
-      "git_blob": "ce14b763e2f5de810304a0e6e423430537fc34c9",
+      "sha256": "5ef876b38964f36c2683979fdca6071f819fd2a2a622b9bf23db057945cea643",
+      "size_bytes": 10764,
+      "git_blob": "2dc8401a615d2b127615f6cd425bc872ef40c39b",
       "version": "audit02-implementation",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -46546,9 +46546,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/supply-getting-started.md",
-      "sha256": "a44d147ff1960cd5066bb59c868627400750b0c79fe38dfc440d18c348588e3b",
-      "size_bytes": 9064,
-      "git_blob": "77076a3032933b4a8cda34038770bf8a86e86e64"
+      "sha256": "f3ba3bb0291de13fcec343db9752bcd1fa8b13f7ea9aec575ecd88871bed0344",
+      "size_bytes": 9187,
+      "git_blob": "9f0cd43d071e52d9445750ad7bde96347c6ac3bf"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
@@ -102232,9 +102232,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current build/test entrypoint and station policy verification",
       "source": "WP-IPC-BUILD-TEST-FOLLOWUP-01",
-      "sha256": "5e31e8267f0c8d4afa876d98c28487de355a0734ead9070cba1eda7488506e6a",
-      "size_bytes": 2539,
-      "git_blob": "05e540cb6f584f012e98a7f8a33121aaf452ec66",
+      "sha256": "f6770f722bc3aecd15f1d13bf698fcc327f9451da78e86626063af6ad25d660c",
+      "size_bytes": 2919,
+      "git_blob": "2b370b3340debaf6b9dbfb49329132b193cd2287",
       "storage_scope": "public_repository"
     },
     {

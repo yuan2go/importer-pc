@@ -18,7 +18,7 @@ dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --maintai
 
 默认reconciliation包含原H04/A01/07/08/11/12/14/15与AC/进程基线；architecture是独立专用范围，不能从默认通过推断它也运行。operation-closure保护Q1/Q2每次接收责任和T3/重启；conformance保护CAS/失败保旧及冲突/部署；closure、review-followup、architecture分别覆盖来源时效/停止、组合资源及精确包/原请求集成。只运行受影响范围，日志尾部须有完整scope完成标记；--health-profile是确定性双源测量，不是生产节拍测试。
 
-`bash scripts/build.sh`构建并封装Supply参考的Product、Fixture、验证工程和匹配桌面，不包含其他业务安装器；完整Solution编译和正式发布使用各自明确的组合入口。
+Windows Git Bash中的`bash scripts/build.sh`构建并封装Supply参考的Product、Fixture、验证工程和匹配桌面，不包含其他业务安装器；完整Solution编译和正式发布使用各自明确的组合入口。
 
 ## 首次运行与操作
 

@@ -53,7 +53,7 @@ MVS目录必须包含MvCameraControl.dll、MVGigEVisionSDK.dll及同版完整依
 
 ## 包、安装与边界
 
-使用当前`src/Ipc.Drivers.Hikrobot.Mvs/extension.build.json`或既有MvCodeReader声明构建独立精确签名包；不把SDK放入ipcx、公共仓库或普通安装包。新MVS工程包版本1.0.0，原智能读码器当前2.0.1；当前精确组合声明已同步。新的Platform指纹/源变化须针对实际冻结宿主重建/签名，不复用旧包、旧资格或旧身份。
+使用当前`src/Ipc.Drivers.Hikrobot.Mvs/extension.build.json`或既有MvCodeReader声明构建独立精确签名包；不把SDK放入ipcx、公共仓库或普通安装包。新MVS工程包版本1.0.0，原智能读码器当前1.0.0；当前精确组合声明已同步。新的Platform指纹/源变化须针对实际冻结宿主重建/签名，不复用旧包、旧资格或旧身份。
 
 沿用`scripts/build-extension.py --definition <当前声明> --version <当前版本> --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新包.ipcx> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码先提交且干净。工程TestOnly签名只能用于Simulation。Production声明沿`extension.build.production.json`，仍须真实独立发布者、精确签名部署资格及原有受保护SDK文件政策；本包不生成或虚构Production批准，MVS采集源本身也不发布业务Ready。
 

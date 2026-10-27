@@ -17,7 +17,7 @@ static partial class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "2.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",

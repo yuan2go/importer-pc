@@ -39,7 +39,7 @@ static partial class SportmasterRcs
                     ? new() { ["entity.mode"] = "line" }
                     : new() { ["entity.mode"] = "line", ["device.ip"] = "127.0.0.1", ["device.port"] =
                         ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString() } }).ToArray();
-                var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "2.0.0",
+                var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0",
                     Parameters = new(Binding(peer.Endpoint).Parameters) { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" } };
                 var c = seed with { StationCode = "SYNTH-STATION",
                     Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding,
@@ -105,7 +105,7 @@ static partial class SportmasterRcs
     static async Task DeferredActivation(string workspace, string root)
     {
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "2.0.0" };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0" };
         var seed = new SportmasterFlow().InitialConfiguration();
         var oldBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "", ["request-id-count"] = "" } };
         var old = seed with { Mode = RunMode.Simulation, StationCode = "SYNTH-STATION", Wcs = oldBinding,

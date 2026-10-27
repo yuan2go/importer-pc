@@ -9,7 +9,7 @@ namespace Ipc.Drivers;
 // Explicit client/LF framing requested by the user. No commands or reconnect replay.
 public sealed class TcpLineObservationSource : IControlledObservationSource
 {
-    public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.1.0", "TCP-LINE-OBSERVATION-v1",
+    public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.0.0", "TCP-LINE-OBSERVATION-v1",
     [new("device.ip", "连接", "相机 IP 地址", "string", true, MaximumLength: 15),
      new("device.port", "连接", "相机端口", "integer", true, Minimum: 1, Maximum: 65535),
      new("keepalive-time-seconds", "连接存活", "TCP空闲探测时间（秒）", "integer", Default: "60", Minimum: 1, Maximum: 7200),

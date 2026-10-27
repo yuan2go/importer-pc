@@ -13,7 +13,7 @@ internal static class HikrobotSdkEditing
         config = config with { Wcs = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration().Wcs };
         var catalog = new ParcelCapabilityFactory(new(Path.Combine(workspace, "config/sportmaster"), root, null, null)).Catalog();
         var fields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Drivers.Hikrobot/parameters.json")));
-        var package = new PackageReference("hikrobot.idmvs-reader", "2.0.1", new('a', 64));
+        var package = new PackageReference("hikrobot.idmvs-reader", "1.0.0", new('a', 64));
         var sdk = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", package.Version, "HIKROBOT-IDMVS-OBSERVATION-v1", fields, new(), package, "idmvs-reader");
         catalog = catalog with { Providers = [.. catalog.Providers, sdk], Packages = [new(package, [])] };
         var draft = new StartupConfigurationDraft(config, catalog);

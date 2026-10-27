@@ -60,13 +60,5 @@
     "Minimum": 1048576,
     "Maximum": 33554432,
     "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。"
-  },
-  {
-    "Key": "bcr-code",
-    "Group": "设备 / 身份",
-    "Label": "心跳相机编码",
-    "Type": "string",
-    "MaximumLength": 256,
-    "Description": "仅供原RCS心跳映射；采集源不会因有编码而变成业务就绪。取格口相机编码仍独立。"
   }
 ]

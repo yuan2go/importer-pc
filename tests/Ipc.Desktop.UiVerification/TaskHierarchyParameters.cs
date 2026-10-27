@@ -16,7 +16,7 @@ static partial class Program
         var draft = new StartupConfigurationDraft(initial, catalog);
         var model = draft.CreateParameterEditor((policy, codes) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(policy, codes)));
         foreach (var (reader, i) in model.Readers.Select((r, i) => (r, i)))
-            foreach (var p in reader.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", "bcr-code" => "HEARTBEAT-" + i, _ => p.Value };
+            foreach (var p in reader.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", _ => p.Value };
         foreach (var component in model.Components.Where(ParameterOwnership.IsRcs))
         {
             component.Target = "http://192.0.2.10/rcs/sorter/api";
@@ -51,7 +51,7 @@ static partial class Program
             var expander = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明与诊断详情")); expander.IsExpanded = true;
             await Flush();
             Check(input.Text == "111" && model.Issues.Any(i => i.Path == right.InstanceId + "/device.ip"), "invalid input stays intact with its exact field issue");
-            Check(model.Readers[0].Parameters.Single(p => p.Field.Key == "bcr-code").Value == "HEARTBEAT-0" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "task and heartbeat camera codes remain independent in the shared candidate");
+            Check(model.Readers.All(r => r.Parameters.All(p => p.Field.Key != "bcr-code")) && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "one camera code is shared by task and heartbeat without a driver copy");
             Check(model.Policy.StationCode == "TASK-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-station-code").Value == "TASK-STATION", "task and heartbeat station identifiers use the same confirmed value");
         }
         if (interactive)

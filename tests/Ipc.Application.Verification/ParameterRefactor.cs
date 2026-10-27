@@ -38,7 +38,7 @@ static class ParameterRefactor
         var maintenance = new ParcelStartupMaintenance(missingLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch), () => { });
         var missing = await maintenance.ReadAsync();
         Check(missing.Candidate is { Mode: RunMode.Production, QueueCapacity: 64, TimeoutMs: 1500, MaximumOperations: 10000, StationCode: "station-01" } && missing.ConfigurationStatus == "MissingConfiguration" && !File.Exists(Path.Combine(missingPath, "business.json")), "missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime");
-        var bootstrapReaders = missing.Candidate!.Topology!.Readers.Select((r, i) => r with { Parameters = new() { ["device.ip"] = "192.0.2." + (11 + i), ["device.port"] = "9000", ["bcr-code"] = "HB" + i } }).ToArray();
+        var bootstrapReaders = missing.Candidate!.Topology!.Readers.Select((r, i) => r with { Parameters = new() { ["device.ip"] = "192.0.2." + (11 + i), ["device.port"] = "9000" } }).ToArray();
         var bootstrap = missing.Candidate with { Reader = bootstrapReaders[0], Topology = missing.Candidate.Topology with { Readers = bootstrapReaders }, BarcodeFilter = new("OK[0-9]+"),
             Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["source"] = "SYNTHETIC", ["locale"] = "en-US", ["zone-id"] = "1", ["project-id"] = "1", ["specified-chute"] = "false", ["request-id-base"] = "1000000", ["request-id-count"] = "100", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } } };
         var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
@@ -162,11 +162,10 @@ static partial class SportmasterRcs
             catch (InvalidDataException ex) when (ex.Message.Contains(expected, StringComparison.Ordinal)) { Console.WriteLine("PASS PARAM01: save-time static preflight rejects " + expected + " without constructing a component"); }
         }
         Reject(c with { StationCode = null }, "StationCode");
-        var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
-        var instances = devices.Select((r, i) => new ExtensionInstance("reader." + i, "test.reader", "test-reader", r.DeviceId, true, new() { ["bcr-code"] = "same" })).ToArray();
-        c = c with { Reader = devices[0], Topology = c.Topology with { Readers = devices }, Extensions = new([new("test.reader", "1.0.0", new string('a', 64))], instances) };
-        Reject(c, "distinct");
-        instances[1] = instances[1] with { Parameters = [] }; Reject(c, "bcr-code");
+        var duplicate = binding with { Parameters = new(binding.Parameters) { ["right-bcr-code"] = binding.Parameters["left-bcr-code"] } };
+        Reject(c with { Wcs = duplicate }, "distinct");
+        var missing = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "left-bcr-code")) };
+        Reject(c with { Wcs = missing }, "left-bcr-code");
         Reject(c with { Wcs = binding with { Target = "http://127.0.0.1:1/wrong" } }, "/rcs/sorter/api");
     }
 }

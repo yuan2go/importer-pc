@@ -29,7 +29,7 @@ static partial class SportmasterRcs
         var readers = c.Topology!.Readers.Select((r, i) => r with { Parameters = new()
         {
             ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(),
-            ["entity.mode"] = "line", ["bcr-code"] = (mask & (1 << i)) != 0 ? "" : "SYNTH-BCR-" + i
+            ["entity.mode"] = "line"
         } }).ToArray();
         var b = Binding(peer.Endpoint);
         return c with
@@ -38,7 +38,8 @@ static partial class SportmasterRcs
             Wcs = b with { Implementation = c.Wcs!.Implementation, Version = c.Wcs.Version, Parameters = new(b.Parameters)
             {
                 ["left-station-code"] = c.StationCode!, ["right-station-code"] = c.StationCode!,
-                ["heartbeat-interval-seconds"] = "1", ["zone-id"] = (mask & 4) != 0 ? "" : "71"
+                ["heartbeat-interval-seconds"] = "1", ["zone-id"] = (mask & 4) != 0 ? "" : "71",
+                ["left-bcr-code"] = (mask & 1) != 0 ? "" : "SYNTH-BCR-0", ["right-bcr-code"] = (mask & 2) != 0 ? "" : "SYNTH-BCR-1"
             } },
             DeferredConnections = readers.Where((_, i) => (mask & (1 << i)) != 0).Select(r => r.DeviceId)
                 .Concat((mask & 4) != 0 ? new[] { c.Wcs.InstanceId } : []).ToArray()
@@ -69,8 +70,8 @@ static partial class SportmasterRcs
             // A forgotten active identity still fails even if another camera is deferred.
             if ((mask & 4) == 0 && (mask & 3) != 3)
             {
-                var readers = c.Topology!.Readers.Select(r => r with { Parameters = new(r.Parameters!) { ["bcr-code"] = "" } }).ToArray();
-                try { validation.ValidateStructure(c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } }); throw new Exception("Missing active bcr-code accepted"); }
+                var missingCodes = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["left-bcr-code"] = "", ["right-bcr-code"] = "" } };
+                try { validation.ValidateStructure(c with { Wcs = missingCodes }); throw new Exception("Missing active bcr-code accepted"); }
                 catch (InvalidDataException) { Check(true, prefix + "missing active camera identity still fails closed"); }
             }
         }
@@ -102,7 +103,7 @@ static partial class SportmasterRcs
                     await Until(() => !peer.Requests.IsEmpty);
                     using var json = JsonDocument.Parse(peer.Requests.First().Body);
                     var data = json.RootElement.GetProperty("data").EnumerateArray().ToArray();
-                    var expected = c.Topology!.Readers.Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).Select(r => r.Parameters!["bcr-code"]);
+                    var expected = c.Topology!.Readers.Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).Select(r => c.Wcs!.Parameters[ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == r.DeviceId).Id + "-bcr-code"]);
                     Check(data.Select(x => x.GetProperty("params").GetProperty("bcrCode").GetString()).SequenceEqual(expected) &&
                         data.Select((x, i) => x.GetProperty("index").GetInt32() == i + 1).All(x => x), prefix + "heartbeat contains only configured identities with contiguous indexes");
                 }
@@ -193,12 +194,13 @@ static partial class SportmasterRcs
         var request = Wire.Encode(original.Wcs!.Request);
         int Destinations() => peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
         var sends = Destinations();
+        deferred = deferred with { Wcs = deferred.Wcs! with { Parameters = new(deferred.Wcs.Parameters) { ["left-bcr-code"] = "SYNTH-PENDING-NEW-CODE" } } };
         await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
         s = await app.SnapshotAsync();
         Check((await DeferredStage(app, deferred, "synthetic attempt to postpone original dependencies")).Status == "PendingRestart",
             "unknown original permits a reviewed Pending candidate, never an immediate target replacement");
         var reconnected = await ReconnectAfterMonitorDrain(app, () => app.ReconnectDeviceAsync(deferred.Wcs!.InstanceId));
-        Check(reconnected.Status == "Reconnected", "RCS reconnect uses original Effective while a deferred candidate is Pending; actual=" + reconnected.Status + "; reason=" + reconnected.Reason);
+        Check(reconnected.Status == "Reconnected", "RCS reconnect uses original Effective while new camera code and deferral are Pending; actual=" + reconnected.Status + "; reason=" + reconnected.Reason);
         s = await app.SnapshotAsync();
         Check(Wire.Encode(s.Operations.Single(o => o.Id == original.Id).Wcs!.Request) == request && Destinations() == sends,
             "reconnect does not retry Unknown or change request ID, payload, contract, target, hash or frozen configuration");

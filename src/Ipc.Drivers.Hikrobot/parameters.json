@@ -59,13 +59,5 @@
     "Minimum": 1048576,
     "Maximum": 67108864,
     "Description": "包含排队及正在交给Application的条码字符串和有界条目开销，默认16MiB，范围1～64MiB；超限故障围栏，不丢码后继续Ready。不是原图缓存。"
-  },
-  {
-    "Key": "bcr-code",
-    "Group": "设备 / 身份",
-    "Label": "RCS 相机编码",
-    "Type": "string",
-    "MaximumLength": 256,
-    "Description": "上报RCS心跳时必填。保存外部业务编码，保留大小写；不代替设备IP、序列号或内部DeviceId。"
   }
 ]

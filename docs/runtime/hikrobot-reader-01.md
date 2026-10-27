@@ -1,3 +1,5 @@
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK需IP/可选序列号，不使用TCP端口。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+
 # 海康 SDK 当前接入与诊断
 
 当前任务及验证状态见[SDK-BARCODE-02](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。本文件定义当前操作；旧驱动冻结介质、0帧/0码、原PASS/FAIL及SDK1.0.x步骤已按原字节[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)，不能转记当前源或目标型号。
@@ -21,7 +23,7 @@
 - MVS的`acquisition.trigger=existing/on/off`分别为沿用/要求已开启/要求已关闭，只读取并校验设备状态，不改触发、不发软件触发。`entity.mode`固定仅观察，正式作业不可选。现阶段没有有效的条码编码参数，不能把图像像素当作条码字节。
 - MVS `image.nodes`默认3、范围1～4；设置SDK输出队列为OneByOne，不选择丢旧取新。SDK内部另有其预分配，不能声称这就是进程全部内存。`image.maximum-payload-bytes`默认8MiB、范围1～32MiB；打开及每帧校验负载。应用每路至多借用一个SDK图像缓冲，不建立原图副本/存图/上传队列。丢包、序号断档/重置及格式不符故障围栏。
 - MvCodeReader的`entity.mode=observe-only/trigger`、严格`code.encoding`、条码观察`queue.capacity`默认128沿原用途；新增`queue.maximum-code-bytes`默认16MiB、范围1～64MiB，覆盖排队及正在处理的候选字符串和条目预算，不是原图预算。trigger仍须已有TriggerMode=On及可信实体/重连处置证据。
-- 心跳`bcr-code`与本位取格口编码分别维护，统一供包台编号继承当前系统候选。SDK页没有TCP端口、TCP keepalive或入站时限。
+- 每台相机只有一个相机编码，取格口与心跳共同读取RCS组件的本位映射；驱动不再声明独立bcr-code。切换SDK只重置连接参数，保留本相机编码。统一供包台编号继承当前系统候选。SDK页没有TCP端口、TCP keepalive或入站时限。
 
 选择其他连接方式先显示重置后果；“取消切换”保留原字段，“切换并重置参数”清空本实例参数并采用新schema默认值，须重新填写实际连接和心跳编码。另一相机及RCS取格口映射保留，不自动恢复旧提供者参数。未决定的选择阻止保存，首配/日常加密草稿保留此状态。整个编辑的取消沿既有配置账和未保存草稿流程。
 

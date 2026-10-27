@@ -12,7 +12,6 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
     public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.1.0", "TCP-LINE-OBSERVATION-v1",
     [new("device.ip", "连接", "相机 IP 地址", "string", true, MaximumLength: 15),
      new("device.port", "连接", "相机端口", "integer", true, Minimum: 1, Maximum: 65535),
-     new("bcr-code", "相机编码", "相机编码（心跳）", "string", MaximumLength: 256),
      new("keepalive-time-seconds", "连接存活", "TCP空闲探测时间（秒）", "integer", Default: "60", Minimum: 1, Maximum: 7200),
      new("keepalive-interval-seconds", "连接存活", "TCP探测间隔（秒）", "integer", Default: "10", Minimum: 1, Maximum: 600),
      new("keepalive-retry-count", "连接存活", "TCP探测次数", "integer", Default: "3", Minimum: 1, Maximum: 10),

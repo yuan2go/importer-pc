@@ -1,3 +1,5 @@
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK需IP/可选序列号，不使用TCP端口。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+
 > 2026-10-27 海康真实读码、SDK适用性与参数操作以 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md) 为当前入口。目标工业相机算法SDK与现场条件尚缺，原MvCodeReader连接/0码记录不代表本型号读码通过。
 
 > 2026-10-27 日志热生效调试模式与实时终端暂停以 [DEBUG-LOG-LIVE-01](work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md) 和[操作说明](runtime/debug-log-live-01.md)为准。作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。

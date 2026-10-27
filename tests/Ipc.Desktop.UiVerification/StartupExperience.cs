@@ -200,7 +200,7 @@ static partial class Program
             foreach (var connection in model.Readers.Concat(model.Components.Where(ParameterOwnership.IsRcs))) connection.ConfigureLater = false;
             model.Policy.StationCode = "SYNTHETIC";
             foreach (var (r, i) in model.Readers.Select((r, i) => (r, i)))
-                foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", "bcr-code" => "HB" + i, _ => p.Value };
+                foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in c.Parameters) p.Value = p.Field.Key switch
                 { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "SYNTHETIC", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };

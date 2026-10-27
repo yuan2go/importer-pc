@@ -117,7 +117,7 @@ static partial class Program
                         p.Value = p.Field.Key switch
                         {
                             "device.ip" => "127.0.0.1", "device.port" => (24990 + i).ToString(),
-                            "bcr-code" => (mask & (1 << i)) != 0 ? "" : "SYNTH-BCR-" + i, _ => p.Value
+                            _ => p.Value
                         };
                     Check(editor.ShowPage(2, i == 0 ? "左相机" : "右相机"), "camera page is reachable");
                     await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
@@ -130,7 +130,7 @@ static partial class Program
                     {
                         "zone-id" => (mask & 4) != 0 ? "" : "71", "project-id" => "83",
                         "source" => "SYNTH_READER", "locale" => "zh_CN", "specified-chute" => "false", "heartbeat-interval-seconds" => "5",
-                        "left-bcr-code" => "SYNTH-LEFT", "right-bcr-code" => "SYNTH-RIGHT",
+                        "left-bcr-code" => (mask & 1) != 0 ? "" : "SYNTH-LEFT", "right-bcr-code" => (mask & 2) != 0 ? "" : "SYNTH-RIGHT",
                         "request-id-base" => "810000000", "request-id-count" => "100000", _ => p.Value
                     };
                 Check(editor.ShowPage(3, "RCS 服务"), "RCS page is reachable");

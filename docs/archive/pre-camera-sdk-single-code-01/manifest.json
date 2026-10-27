@@ -1,0 +1,30 @@
+{
+  "SourceCommit": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+  "files": [
+    {
+      "original": "AGENTS.md",
+      "archive": "docs/archive/pre-camera-sdk-single-code-01/AGENTS.md.txt",
+      "sha256": "b3be28a7daf4a04368c51e0c6ce2b2f8b2e5ba9d7778e0cda373a4d5f3055497"
+    },
+    {
+      "original": "docs/design/parameter-settings-experience-02.md",
+      "archive": "docs/archive/pre-camera-sdk-single-code-01/docs__design__parameter-settings-experience-02.md.txt",
+      "sha256": "204ebe13deb469069897ab7fc900c200ab5ec9c68bf12ef3ba8fd36a650b22b9"
+    },
+    {
+      "original": "docs/runtime/hikrobot-reader-01.md",
+      "archive": "docs/archive/pre-camera-sdk-single-code-01/docs__runtime__hikrobot-reader-01.md.txt",
+      "sha256": "fcb6b14627791a092ae1249d3c28a16c3f9f4f257ebbea5086899a75bee95731"
+    },
+    {
+      "original": "docs/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md",
+      "archive": "docs/archive/pre-camera-sdk-single-code-01/docs__work-packages__WP-IPC-HIKROBOT-SDK-BARCODE-02.md.txt",
+      "sha256": "c54346d78059592a1b9071d34a695b5a14e3e72b1b76efc56168c785dedbe459"
+    },
+    {
+      "original": "docs/runtime/rcs-heartbeat-01.md",
+      "archive": "docs/archive/pre-camera-sdk-single-code-01/docs__runtime__rcs-heartbeat-01.md.txt",
+      "sha256": "5769c904921e80b2acf9b4ad06ae8e3af867557062415e2b034d81d37f1ebdcb"
+    }
+  ]
+}

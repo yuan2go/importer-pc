@@ -143,10 +143,15 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         foreach (var rcs in Components.Where(ParameterOwnership.IsRcs))
             if (rcs.Parameters.Where(p => p.Field.Key is "left-station-code" or "right-station-code").Any(p => p.Value != Policy.StationCode))
                 Issue("系统", "StationCode", "取格口和心跳的供包台编号尚未统一；请核对原值后填写同一个供包台编号。");
-        if (Components.Any(c => c.Bound && !c.ConfigureLater && ParameterOwnership.IsRcs(c)))
-            foreach (var duplicate in Readers.Where(d => !d.ConfigureLater).Select(d => (Draft: d, Code: d.Parameters.FirstOrDefault(p => p.Field.Key == "bcr-code")?.Value))
-                .Where(x => !string.IsNullOrWhiteSpace(x.Code)).GroupBy(x => x.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
-                Issue("驱动", duplicate.Draft.InstanceId + "/bcr-code", "左右相机的心跳编码 必须独立，不能重复。");
+        foreach (var rcs in Components.Where(c => c.Bound && !c.ConfigureLater && ParameterOwnership.IsRcs(c)))
+        {
+            var codes = Readers.Where(r => !r.ConfigureLater).Select(r =>
+                (Path: rcs.InstanceId + "/" + r.Role + "-bcr-code", Code: rcs.Parameters.SingleOrDefault(p => p.Field.Key == r.Role + "-bcr-code")?.Value)).ToArray();
+            foreach (var item in codes.Where(c => string.IsNullOrWhiteSpace(c.Code)))
+                Issue("驱动", item.Path, "请填写相机编码；本相机取格口与心跳共用这一编码。");
+            foreach (var duplicate in codes.Where(c => !string.IsNullOrWhiteSpace(c.Code)).GroupBy(c => c.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
+                Issue("驱动", duplicate.Path, "左右相机编码不能重复；取格口与心跳共用各自的编码。");
+        }
         if (category is not null)
             foreach (var issue in Issues.Where(i => i.Category != ParameterOwnership.CategoryName(category.Value)).ToArray()) Issues.Remove(issue);
         if (paths is not null)

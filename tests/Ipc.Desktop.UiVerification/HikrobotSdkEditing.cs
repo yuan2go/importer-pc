@@ -15,7 +15,29 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS SDK02 NATIVE " + reason); }
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        config = config with { Wcs = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration().Wcs };
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), evidence, null, null)).Catalog();
+        var missingCatalog = catalog with { Providers = catalog.Providers.Where(p => p.Package is null).ToArray(), Packages = [] };
+        var missingDraft = new StartupConfigurationDraft(config, missingCatalog);
+        foreach (var reader in missingDraft.Readers) reader.Provider = missingCatalog.Providers.Single(p => p.Implementation == "tcp-line");
+        var missingModel = missingDraft.CreateParameterEditor((p, c) => Task.FromResult(BarcodeFiltering.Select(p, c)));
+        var missingEditor = new ParameterSettingsControl();
+        bool installRequested = false;
+        missingEditor.PackageInstallationRequested += (_, _) => installRequested = true;
+        missingEditor.Model = missingModel;
+        var missingWindow = new Window { Title = "SDK 缺包合成验证", Content = missingEditor, Width = 1120, Height = 760 };
+        missingWindow.Show(); missingEditor.ShowPage(2, "左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); missingWindow.UpdateLayout();
+        try
+        {
+            var missingId = missingDraft.Readers[0].InstanceId;
+            Check(Descendants(missingEditor).OfType<TextBlock>().Any(t => AutomationProperties.GetAutomationId(t) == missingId + "/SdkAvailability" && t.Text.Contains("没有可选择")),
+                "missing signed SDK inventory is visible instead of claiming TCP is SDK");
+            var before = missingDraft.Capture();
+            Descendants(missingEditor).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == missingId + "/OpenPackageInstallation").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(installRequested && Wire.Encode(before) == Wire.Encode(missingDraft.Capture()) && ReferenceEquals(missingEditor.Model, missingModel),
+                "package installation entry preserves the same complete draft without activating a driver");
+        }
+        finally { CaptureInternal(evidence, "sdk-package-missing", missingEditor, lines); missingWindow.Close(); }
         var fields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot/parameters.json")));
         var package = new PackageReference("hikrobot.idmvs-reader", "2.0.1", new('a', 64));
         var sdk = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", package.Version,
@@ -25,6 +47,9 @@ static partial class Program
             Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot.Mvs/parameters.json"))), new(), mvsPackage, "mvs-acquisition");
         catalog = catalog with { Providers = [.. catalog.Providers, sdk, mvs], Packages = [new(package, []), new(mvsPackage, [])] };
         var draft = new StartupConfigurationDraft(config, catalog);
+        var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
+        rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value = "SYNTH-CAMERA-LEFT";
+        rcs.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value = "SYNTH-CAMERA-RIGHT";
         foreach (var (reader, index) in draft.Readers.Select((r, i) => (r, i)))
         {
             reader.Provider = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "tcp-line");
@@ -50,6 +75,9 @@ static partial class Program
             var names = Descendants(editor).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
             Check(left.Provider == sdk && !names.Contains(left.InstanceId + "/device.port") && names.Contains(left.InstanceId + "/device.serial") && names.Contains(left.InstanceId + "/entity.mode"), "SDK page replaces TCP fields and exposes entity policy");
             Check(Wire.Encode(right.CaptureRaw()) == rightBefore, "left change keeps right camera values intact");
+            Check(rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "SYNTH-CAMERA-LEFT" &&
+                Descendants(editor).OfType<TextBox>().Count(t => AutomationProperties.GetName(t) == rcs.InstanceId + "/left-bcr-code") == 1 &&
+                !names.Contains(left.InstanceId + "/bcr-code"), "one camera code editor survives transport changes without a heartbeat duplicate");
             var sdkIp = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == left.InstanceId + "/device.ip");
             sdkIp.Text = "192.0.2.999"; _ = editor.Model!.ValidateFields(2);
             Check(editor.NavigateTo(left.InstanceId + "/device.ip") && editor.Model.Issues.Any(i => i.Path == left.InstanceId + "/device.ip") && sdkIp.Text == "192.0.2.999", "invalid input is retained and error navigation reaches its field");
@@ -65,6 +93,8 @@ static partial class Program
                 !names.Contains(left.InstanceId + "/device.port") && !names.Contains(left.InstanceId + "/code.encoding"), "MVS acquisition displays actual trigger/image parameters without TCP or unused barcode encoding");
             Check(left.Parameters.Single(p => p.Field.Key == "entity.mode").Field.Choices!.SequenceEqual(["observe-only"]), "acquisition-only provider exposes no false production association option");
             Capture("sdk02-mvs");
+            Check(editor.NavigateTo(rcs.InstanceId + "/left-bcr-code"), "shared camera code navigates to the actual left camera page");
+            Capture("sdk02-single-camera-code");
             var startup = new ParameterSettingsControl { FirstConfiguration = true, Model = editor.Model }; window.Content = startup;
             startup.ShowPage(2, "左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             Check(Descendants(startup).OfType<FrameworkElement>().Any(e => AutomationProperties.GetName(e) == left.InstanceId + "/acquisition.trigger") &&

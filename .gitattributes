@@ -142,3 +142,7 @@ docs/runtime/evidence/deferred-heartbeat-01/** -text whitespace=cr-at-eol,-blank
 # Byte-preserved shortcut baseline, first failures and fixed code-page receipts.
 docs/runtime/evidence/unicode-shortcut-compatibility-01/original/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/installer-task-lookup-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Fresh-baseline archived guides keep canonical source-commit bytes.
+docs/archive/pre-fresh-baseline-01/** -text whitespace=cr-at-eol,-blank-at-eof
+docs/archive/pre-fresh-baseline-current-guides-01/** -text whitespace=cr-at-eol,-blank-at-eof

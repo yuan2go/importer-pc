@@ -42,7 +42,7 @@ B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract
 
 C16不再重建多代完整旧schema，只构造非当前身份输入验证只读拒绝；现有当前恢复、强杀、Unknown和原件责任测试继续执行。新增结构等价、实际WAL/FULL、独立从零运行时起停验证。历史ZIP、回执、发布和冻结证据未修改。`platform_migrations`/`schema_history`名称保留以避免无关消费标记改名，但仅含一条当前基线身份，无迁移步骤。
 
-B3本机定向验证：Application/Supply/WPF验证工程locked构建通过；纯结构及缺身份表拒绝14条与Python校验31项通过。CI增加当前基线/起停和缺索引拒绝用例；main合并后自动跑同一关键套件及完整Solution构建，避免在本机复用已安装机器状态。
+B3本机定向验证：Application/Supply/WPF验证工程locked构建通过；纯结构及缺身份表及畸形格式登记拒绝16条与Python校验31项通过。CI增加当前基线/起停和缺索引拒绝用例；main合并后自动跑同一关键套件及完整Solution构建，避免在本机复用已安装机器状态。
 B2第二轮定向CI发现CapabilityClosure合成夹具把同一相机/秤绑定左右两位，违反已保留的位置隔离守卫；已为每位构造独立合成端口，保留原测量、图像与Unknown断言。生产守卫未放宽。
 
 CapabilityClosure同时按当前PLC合同显式查询原请求完成事实后再验证图片释放；提交接受时先断言图片仍保留，生产发送/查询逻辑不变。
@@ -50,3 +50,5 @@ CapabilityClosure同时按当前PLC合同显式查询原请求完成事实后再
 B2后续CI核实：ApplicationArchitecture仍启动schema2升级夹具，改为schema1/2/4拒绝且配置字节不变、无建库；CapabilityClosure清单补齐当前角色绑定，使用实际AdmissionId关联测量，并保留未授权/过期会话拒绝业务的断言。受控源排入观察证据不等于实体准入。Windows发布遇CI临时磁盘设备不存在错误，重试验证，不降低发布检查。
 
 B2原报文断言按当前管理授权读取完整投影；普通操作员投影继续隐藏原payload/提供者参数。业务登录及未授权管理测试保持独立，未放开生产权限。
+
+随包文档复核另发现18份当前指南仍含旧数据库或升级指令，已按当前基线同步并保存来源提交的原字节/SHA；独立回执与历史PASS文件不改。批量锁更新误包含的3份历史probe锁文件已恢复起点原字节。

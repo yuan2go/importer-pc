@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "b0012087cf78eba4aa99b8841162c23fd61118ffc7b803ebd8107bc3eab19ccb",
-      "size_bytes": 10092,
-      "git_blob": "4a04b40a9524eba2a5d3cb6e0d0efab414aeaff5",
+      "sha256": "74305cec857fbd56b4a50662a0e83ae58856d48b008dc0e212f67ce8a5707324",
+      "size_bytes": 10335,
+      "git_blob": "98857f9ea043e69cff54050464f3a3134de7e343",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "165941153879fb8feb451d817d2a6cc4911afeafd30089e30c78446599c1ed5e",
-      "size_bytes": 8366,
-      "git_blob": "6c99883b7b425a503c0e3cb1bad7846316a43f64",
+      "sha256": "aeb97ff0f5ed218ddc1798d61ead24c918fe702938261ccdb75f5c6f63e71e93",
+      "size_bytes": 8460,
+      "git_blob": "4ad7627c238e1afd71984cbb6900e2548d1226dc",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "d1a0d45eb5de05095712d61a192df10f1dacc2ad25b1b50145c0d80f6e567740",
-      "size_bytes": 7873,
-      "git_blob": "ec4a4ff1dc0b4407fdfcaf8597d9e09b441e8b9e",
+      "sha256": "fef5b35db9494b610b8fd1bf2bb0fa3f627f83af0e9bc482715327905eeec3af",
+      "size_bytes": 8158,
+      "git_blob": "4ae4b368e32d46f2d889c9e86471aa024a67aa45",
       "storage_scope": "public_repository"
     },
     {
@@ -102188,9 +102188,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "51d3dfdf8f7985fc66310c06e9ef2f014a0be4e668aada4a025928f39db7d0f7",
-      "size_bytes": 4066,
-      "git_blob": "55d90cd93af1e9706033cea928c844fa57443cca",
+      "sha256": "0043605677d5319cb98234c1ba106fafe9ce6c4d7fb7b7a30d7d22e02b656c42",
+      "size_bytes": 4161,
+      "git_blob": "4a1a2e42e3f74f692dfa20a8c45380010b67c3da",
       "storage_scope": "public_repository"
     }
   ],

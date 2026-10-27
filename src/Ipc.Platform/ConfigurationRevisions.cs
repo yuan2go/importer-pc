@@ -91,7 +91,7 @@ public sealed class ConfigurationRevisions<T> where T : class
             var attempts = confirmation.Attempts.ToArray();
             attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted", Failure = "Process ended before resource startup confirmation" };
             var recovered = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? "ConfirmationRequired" : Current.Status,
-                Failure = "Effective startup interrupted; maintenance confirmation remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
+                Failure = "Effective startup interrupted; successful resource startup remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
             ExtensionStore.AtomicWrite(path, recovered); Current = recovered;
         }
         if (Current.Status != "ActivationInProgress") return;

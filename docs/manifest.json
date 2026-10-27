@@ -58094,9 +58094,9 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "0140748f2198952acf7ac365b84261e226cea884133adeb65d23d274bef4e79a",
-      "size_bytes": 13535,
-      "git_blob": "334aabc8d8f9a4e8ad59db1720db1e9da4fbf2cc",
+      "sha256": "db5b1971b102a3c4d09a6f6e083a7af49a7ea65a54c49a4f1f9d0464bcd0dfd3",
+      "size_bytes": 13538,
+      "git_blob": "02167ce68a977563fe5a26bc4d11d7813d161245",
       "previous_git_blob": "4278a10dbe760e34294c3b23f8c39d2d119778d5"
     },
     {
@@ -59068,9 +59068,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "29f970344b07a51a30ca639c19d000d637f959a88e99e4f824751472dac42ca7",
-      "size_bytes": 26398,
-      "git_blob": "6ab3674ddeb22c6ba9f1bcdaa91a7b204b358975"
+      "sha256": "313a818daf5c4b91be88f9ad4e1e9eb034fe39b8866bd73aea35ac7b72e04eab",
+      "size_bytes": 26974,
+      "git_blob": "59b0745064e0f74b285efab9c08d79b71701e479"
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialComponentReview.cs",
@@ -71597,9 +71597,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "a166ceef6a34dfc35036133ff78b7c9ba52cb956022c7b402e977c532a85d6c3",
-      "size_bytes": 18496,
-      "git_blob": "eb2df4ef6390c6c1d21b9a62f59d498f97975f5d"
+      "sha256": "51234aa62af8164ed3d7e6ca4686770099730caaec2e0b09c82c4f28655362bc",
+      "size_bytes": 17596,
+      "git_blob": "eb27777cfcbcb24943050f9fedd30db369383989"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Typography.cs",
@@ -101946,9 +101946,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "de176251fe59928e629f9253e78ed11b31f789ce72a3830cfa7f214f5bac4e79",
-      "size_bytes": 7297,
-      "git_blob": "90322c5af317dc113c0430ef9a63b7bd5599a0c0",
+      "sha256": "cb882e87e4bd624398eaee3f13ba398cb749e278eab3c91682b4d6a4c4520562",
+      "size_bytes": 7614,
+      "git_blob": "9bb16b3a2fbef4c7c44668f45b1c1d1f67a00bd4",
       "storage_scope": "public_repository"
     }
   ],

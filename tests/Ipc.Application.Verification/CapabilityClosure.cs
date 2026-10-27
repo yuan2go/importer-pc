@@ -229,7 +229,13 @@ static class CapabilityClosure
             await Command(app, "Pause"); var before = (await app.SnapshotAsync()).Configuration;
             Pass((await app.StageConfigurationAsync(before.Revision, before.Effective, "Synthetic directed configuration verification")).Status == "Rejected", "software pause alone grants no maintenance authority");
             Pass((await app.AuthorizeMaintenanceAsync("wrong")).Status == "Rejected" && (await ManagementModeFixture.Authorize(app)).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");
-            Pass((await app.StageConfigurationAsync(before.Revision, before.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification")).Status == "PendingRestart", "authenticated configuration forms pending revision and leaves original effective and parcel frozen");
+            var authorizedConfiguration = (await app.SnapshotAsync()).Configuration;
+            var staged = await app.StageConfigurationAsync(authorizedConfiguration.Revision, authorizedConfiguration.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification");
+            Pass(staged.Status == "PendingRestart", "authenticated configuration forms pending revision: " + staged.Status + "/" + staged.Reason);
+            var pending = (await app.SnapshotAsync()).Configuration;
+            Pass(pending.Pending?.TimeoutMs == 1800 && Wire.Encode(pending.Effective) == Wire.Encode(authorizedConfiguration.Effective) &&
+                (await app.SnapshotAsync()).Operations.Single().FrozenConfiguration.TimeoutMs == op.FrozenConfiguration.TimeoutMs,
+                "pending candidate leaves the original effective and admitted parcel frozen");
             Pass((await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Authenticated" && (await app.SnapshotAsync()).Operations.Single().Operator!.SessionId == op.Operator!.SessionId, "expired session replacement preserves admitted operator snapshot");
         }
         Console.WriteLine("PASS AC19 COMPLETE: independent entrances, weight/session guards, original images, two upload strategies, cleanup and nonblocking recovery");

@@ -72,9 +72,14 @@ static partial class Program
         Check(!vm.Left.DevicePresentation.Text.Contains("在线") && !vm.RcsPresentation.Text.Contains("在线"), "stale snapshot revokes camera and RCS online claims");
         probe.Project = null; await RefreshUntil(() => vm.Fresh);
         await ManagementModeFixture.Authorize(runtime); await vm.RefreshManagementModeAsync();
+        await RefreshUntil(() => vm.IsManagementMode);
         Click(window, "参数设置");
         for (int i = 0; i < 100 && !vm.HasLoadedConfiguration; i++) await Task.Delay(30);
         await vm.EnsureMaintenanceLoadedAsync(); await Flush(window);
+        // Configuration data can be ready before the asynchronously navigated
+        // native pane is mounted. Require the actual authorized page/editor.
+        await RefreshUntil(() => vm.IsManagementMode && vm.SelectedPage == "maintenance" &&
+            Descendants(window).OfType<ParameterSettingsControl>().Any());
         var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
         Check(!editor.ShowPage(3, "维护认证") && !editor.ShowPage(3, "身份认证"), "daily role-based legacy maintenance-only component is absent from the real directory");
         var model = editor.Model!; var login = model.Components.Single(c => c.Provider?.Implementation == "reference-login");

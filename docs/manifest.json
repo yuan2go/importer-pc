@@ -100901,9 +100901,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current workstation presentation, ordinary runtime entry and bounded dual log views",
       "source": "WP-IPC-WORKSTATION-STATUS-LOGS-01",
-      "sha256": "0af59952effc2e10aac528e078d338093ceb06a5b649b74e2c3d9c3e054434ff",
-      "size_bytes": 15685,
-      "git_blob": "880a3a0433bf29d5f8aa7e6e51ab51de6090a6c7",
+      "sha256": "5bc6999426519dcead7b5bed187e80409fa798020a24eb3d9461f6e63358d8c3",
+      "size_bytes": 16064,
+      "git_blob": "4f81dc76ef8c5fb2aef55fac70b7ffc59d0ce5f8",
       "storage_scope": "public_repository"
     },
     {
@@ -103552,9 +103552,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "0eac162604fa463b076ae816e94d2ffd3b229ed6f66d166a5f74adff7d004198",
-      "size_bytes": 15169,
-      "git_blob": "74247aaea5ca976c732c433c30e2aa63e81e8308",
+      "sha256": "3b58a3bb79c392724bf7d0c669188363024b807ba94e72699db3a5197337fbdb",
+      "size_bytes": 15719,
+      "git_blob": "3f58ad0dba4a0b97e0fe52f7b574dc501c6fd9e5",
       "storage_scope": "public_repository"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "0ed001cbe077b830714cdb2d88777f36c8c24ed61cbd278f44bc8e60466b9ba5",
-      "size_bytes": 5743,
-      "git_blob": "5592308f79ce54a22ffde9c5874adc8ec4fa4ff0",
+      "sha256": "d42ce16825116043b5e381404c5efeca6fcdb6c701083c020ddd8900e8f9a2dd",
+      "size_bytes": 6106,
+      "git_blob": "bf98134f1a24dde5737421495acf4d4f2dd96049",
       "storage_scope": "public_repository"
     },
     {

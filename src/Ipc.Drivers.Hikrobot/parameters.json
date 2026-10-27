@@ -11,10 +11,10 @@
   {
     "Key": "device.serial",
     "Group": "设备 / 身份",
-    "Label": "预期序列号（可选）",
+    "Label": "预期序列号（正式必填）",
     "Type": "string",
     "MaximumLength": 32,
-    "Description": "填写时同时验证IP与序列号；空值仍使用实际序列号防止同设备重复占用。"
+    "Description": "正式启用须填写并固定本位物理相机，IP只作连接地址；更换相机须更新并受控启用配置。模拟或独立诊断可留空，同一实例重连仍固定首次取得租约的序列号。"
   },
   {
     "Key": "entity.mode",

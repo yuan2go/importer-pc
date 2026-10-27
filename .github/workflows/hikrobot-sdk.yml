@@ -44,6 +44,16 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build tests/Ipc.Hikrobot.IndependentReview -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Hikrobot.IndependentReview/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build tests/Ipc.Hikrobot.LocalSimulation -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Hikrobot.LocalSimulation/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_application_compatibility.py
           exit $LASTEXITCODE
   native-parameter-editor:

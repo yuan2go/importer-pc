@@ -1,5 +1,7 @@
 # WP-IPC-HIKROBOT-SDK-BARCODE-02
 
+> 2026-10-27 审查后增量以 [HIKROBOT-HARDENING-01](WP-IPC-HIKROBOT-HARDENING-01.md) 为准。下述“可选序列号”只适用于Simulation/独立诊断；正式启用的SDK实例须配置固定序列号。原工程包、失败/PASS和现场未验边界保留原身份。
+
 2026-10-27；起点最新 main `52c7e58d87a5bfe452e77f22b543e1ee0cb124dd`。用户授权当前版本真实 SDK 读码、参数/首配、诊断与必要验证。原工作区未跟踪文件保留；PR125仅构建/station等另行修改，本轮独立 D 盘工作树，不合并或覆盖该分支。
 
 ## 当前唯一规则

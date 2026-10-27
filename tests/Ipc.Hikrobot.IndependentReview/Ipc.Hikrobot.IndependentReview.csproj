@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Access the reviewed drivers' existing friend surface; do not modify them. -->
+    <AssemblyName>Ipc.Drivers.Hikrobot.Probe</AssemblyName>
+    <ReviewedRoot Condition="'$(ReviewedRoot)' == ''">$(MSBuildThisFileDirectory)../..</ReviewedRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ipc.Platform"><HintPath>$(ReviewedRoot)/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll</HintPath></Reference>
+    <Reference Include="Ipc.Drivers"><HintPath>$(ReviewedRoot)/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll</HintPath></Reference>
+    <Reference Include="Ipc.Drivers.Hikrobot"><HintPath>$(ReviewedRoot)/src/Ipc.Drivers.Hikrobot/bin/Release/net10.0/Ipc.Drivers.Hikrobot.dll</HintPath></Reference>
+    <Reference Include="Ipc.Drivers.Hikrobot.Mvs"><HintPath>$(ReviewedRoot)/src/Ipc.Drivers.Hikrobot.Mvs/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Mvs.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

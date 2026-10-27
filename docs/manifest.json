@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "b3be28a7daf4a04368c51e0c6ce2b2f8b2e5ba9d7778e0cda373a4d5f3055497",
-      "size_bytes": 7898,
-      "git_blob": "4957e0a2ceca13fc566c7078d23f21054ed7d6e5",
+      "sha256": "8669d081b19b68b07f5faa4822e662d947acb9add67c81be85ff112fa768a927",
+      "size_bytes": 8445,
+      "git_blob": "35758b78314bf5547a2cc268efa9b3af4e622ca9",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",

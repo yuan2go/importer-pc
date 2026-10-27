@@ -8,7 +8,7 @@
 |---|---|---|
 | B1 | C14/C15/C18、smoke缺键和两处文案 | PR120已合并：e4dae94c9195793fa3e025c4026b786d0a454622；四项CI通过 |
 | B2 | C05～C13/C17/C20 | PR121已合并：ea996ce16a992a6d1c478e4aae3088f6dc8c82fe；四项CI通过 |
-| B3 | C01～C04/C16 | 基线与等价验证已实现；恢复与起停CI通过前不合并 |
+| B3 | C01～C04/C16 | PR122已合并：45004c4db17cc2dfbc54d046136a943862048740；四项CI通过 |
 
 ## B1源码核查
 
@@ -94,3 +94,11 @@ CapabilityClosure最后的配置提交使用管理授权后重新读取的完整
 相邻发现仅记录：ImporterPc.Administrator.*、LegacyNamedCapabilities文件名及Ipc.Application.Contracts既有命名空间、platform_migrations/schema_history身份表名、LegacyConsumersUnverified原因名；它们仍有当前职责。DeploymentExtensions二参便利构造未纳入本轮。无参数默认验证套件仍有与当前物理完成合同不符的旧断言，不能将此次关键套件通过写成全量测试通过。
 
 回滚用正常反向提交PR，不重写main历史。按B3、B2、B1逆序回退代码并重新构建验证；Parcel10/Supply6不可通过旧程序降级读取，回退运行也必须全新数据目录。真实SDK/RCS、目标Win10/Win11工控机、现场及长期稳定运行另验；本机安装和既有站点未执行操作。
+
+## 最终main构建入口修正
+
+45004c4db17cc2dfbc54d046136a943862048740的首次main push验证（run40460004654）发现完整Solution的默认装配冲突：Installer默认Sportmaster，Desktop默认Supply，locked restore拒绝。后续快捷方式项因前置验证程序尚未编译而失败。首个验证失败记录保留，不记为PASS。
+
+完整Solution构建须明确BusinessModule=Sportmaster，并以SelfContained=false统一源码编译闭包；正式自包含介质仍由现有发布脚本单独构建和验证。本机执行该完整Release/locked构建通过，0警告0错误；随包文档测试3项通过。当前Supply指南改为明确构建Product、Fixture及所需验证/桌面工程。原build.sh仍有裸Solution组合问题，属于相邻发现，本轮不改脚本或产品默认值。
+
+此补充仅修改验证命令、当前指南和工作包/manifest，不再提升契约或业务版本。完成补充PR的CI和合并后，在新main再次验证完整构建与关键套件；不能以本机或先前PR结果代替。

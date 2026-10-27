@@ -11,10 +11,11 @@ Windows先由维护安装既有机器策略，日常使用指定未提权账户�
 构建机需要`global.json`锁定的.NET SDK10.0.402、Python3、Git和OpenSSL（签名包时）。macOS/Linux只运行核心；WPF在Windows运行。首次还原需取得NuGet锁中的依赖，无网络/无包缓存时保持明确失败，不改锁绕过。
 
 ```sh
-dotnet restore ImporterPc.slnx --locked-mode -p:EnableWindowsTargeting=true
-dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false -p:EnableWindowsTargeting=true
+dotnet build src/Ipc.Product -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet build src/Ipc.Fixture -p:RestoreLockedMode=true -m:1 -nr:false
 python3 scripts/seal.py --bin src/Ipc.Product/bin/Debug/net10.0
-# Windows WPF启动前也封装其同版输出：
+# 可选Supply桌面：明确选择Supply，构建后封装同版输出：
+dotnet build src/Ipc.Desktop -p:BusinessModule=Supply -p:EnableWindowsTargeting=true -p:RestoreLockedMode=true -m:1 -nr:false
 python3 scripts/seal.py --bin src/Ipc.Desktop/bin/Debug/net10.0-windows
 ```
 

@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "936542a767d37b8db43257e2f77e0ca33ce9c1427feba94ebc8979037d240c5c",
-      "size_bytes": 23667,
-      "git_blob": "a81bbd38e49df43433e00b36d367735019b55bdc",
+      "sha256": "4d895dd162799f5967aa8c3ba8ac95e5f7f6ed961fb3ef9d7acfed276451a9b3",
+      "size_bytes": 23720,
+      "git_blob": "16b878b0f3aa6e96daf77f23143f6e16cf58a6d1",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -45940,9 +45940,9 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "95f5112aa28cc82f21bf1aaaa974091067b204586762d1eb69734ede8761de58",
-      "size_bytes": 10177,
-      "git_blob": "f1148f763f41b3d938dad1da6ebef236e2b83e85",
+      "sha256": "015e7486df36365a78d0d48face4639a8bceaa26378dc234e6c290a8bf6b4005",
+      "size_bytes": 10159,
+      "git_blob": "44efd7d2b481a7f36daaea4151f32410eb78bc73",
       "version": "audit02-implementation",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -46546,9 +46546,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/supply-getting-started.md",
-      "sha256": "34ea146dab2f97e32c7fb44aa1881250d314d89384850ebc8a82ae43f7926ccc",
-      "size_bytes": 8459,
-      "git_blob": "60d5ce20db856959351219ee771b3cda5b2f6d90"
+      "sha256": "cc3612e28f73ce14506ebfea500eaccd9be376e4051d5b21ddda27ea79e2ad23",
+      "size_bytes": 8586,
+      "git_blob": "585932841752bbb3ec7ab92d3a2a93524546c6de"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "2b667bc84d374a41548b47b5c11fb9366d05bb6114e2d988f922e76ae9d690be",
-      "size_bytes": 13201,
-      "git_blob": "bb5996859d31ac1eaeb9fcc6bb6ef1b8d5cee8b2",
+      "sha256": "4a1c12568f7128fab3a34a463791568ca300b42353dc9f29c05012e4ab0cbb40",
+      "size_bytes": 14259,
+      "git_blob": "019bfee082199eb0311e939b5ea5fc30bcc22a9c",
       "storage_scope": "public_repository"
     },
     {

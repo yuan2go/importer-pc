@@ -18,6 +18,8 @@ dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --maintai
 
 默认reconciliation包含原H04/A01/07/08/11/12/14/15与AC/进程基线；architecture是独立专用范围，不能从默认通过推断它也运行。operation-closure保护Q1/Q2每次接收责任和T3/重启；conformance保护CAS/失败保旧及冲突/部署；closure、review-followup、architecture分别覆盖来源时效/停止、组合资源及精确包/原请求集成。只运行受影响范围，日志尾部须有完整scope完成标记；--health-profile是确定性双源测量，不是生产节拍测试。
 
+Windows Git Bash中的`bash scripts/build.sh`构建并封装Supply参考的Product、Fixture、验证工程和匹配桌面，不包含其他业务安装器；完整Solution编译和正式发布使用各自明确的组合入口。
+
 ## 首次运行与操作
 
 [首次运行/首条合成参考作业](supply-getting-started.md)提供完整可执行步骤。源码启动在build后seal实际app/config；发布包已经seal，不手改product.json哈希。
@@ -74,7 +76,7 @@ python3 scripts/package-reference.py --target win-x64 --composition integration-
 
 包内release.json/PACKAGE.json/composition.lock.json/SHA256SUMS登记源/配置/模块/扩展身份；ZIP另算SHA。哈希不代替可信分发、签名或ACL。portable需.NET运行时，win-x64自包含但未实际Windows验收。解压新根后运行smoke.py、smoke-extension.py；实际输入为解压app/fixture，不将工作区运行冒称发布冒烟。
 
-Windows使用只读可信Program Files发布目录，提升维护会话运行protect-release.ps1、provision-runtime.ps1指定实际普通RuntimeAccount、provision-extensions.ps1配置受保护ProgramData包库/独立策略。随后该指定账户运行station.ps1 -Action Init/Run；机级租约/ACL缺失拒绝，不回退用户级。组件管理提升辅助程序只执行固定管理操作，UAC取消/ACL拒绝必须反馈失败。不要从Downloads可写目录提权。Windows基线为11 24H2/build26100+ x64，实际安装仍NOT_RUN。
+Windows使用只读可信Program Files发布目录，提升维护会话运行protect-release.ps1、provision-runtime.ps1指定实际普通RuntimeAccount、provision-extensions.ps1配置受保护ProgramData包库/独立策略。随后该指定账户运行station.ps1 -Action Init/Run；机级租约/ACL缺失拒绝，不回退用户级。组件管理提升辅助程序只执行固定管理操作，UAC取消/ACL拒绝必须反馈失败。不要从Downloads可写目录提权。station.ps1与GUI采用相同基础门禁：Windows内核10.0/build14393起、原生x64 OS和进程，Win10 22H2与Win11为优先目标，PowerShell7必需；目标系统和设备实际资格另验。未指定DataRoot时使用64位HKLM/Software/ImporterPc/Storage的Root/UserData/当前SID/data，安装时按本项目要求选择D盘；缺登记明确拒绝，不回落LOCALAPPDATA。Fixture使用所选DataRoot下独立SimulationFixture。
 
 ## 当前备份与恢复
 

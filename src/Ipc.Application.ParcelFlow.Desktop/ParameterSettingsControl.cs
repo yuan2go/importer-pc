@@ -47,7 +47,6 @@ public sealed partial class ParameterSettingsControl : UserControl
     sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null, FrameworkElement? Row = null);
     int? categoryScope;
     public event EventHandler? MaintenanceRequested;
-    public event EventHandler? PackageInstallationRequested;
     public event EventHandler? BackupRequested;
     public event EventHandler? DisplayPreferencesRequested;
     public ParameterSettingsControl()

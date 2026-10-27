@@ -29,7 +29,7 @@ static class BackupHealthRecovery
             try { await test(); }
             catch (Exception ex) { failures.Add(name + ": " + ex.GetType().Name + ": " + ex.Message); Console.WriteLine("FAIL BHR: " + failures[^1]); }
         }
-        ParcelConfiguration Config() => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { TimeoutMs = 200 };
+        ParcelConfiguration Config() => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { TimeoutMs = 200 };
         (ParcelRuntime App, BusinessLaunch Launch) Create(ParcelConfiguration c, string run)
         {
             var path = Path.Combine(root, run); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);

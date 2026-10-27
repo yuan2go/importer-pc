@@ -9,7 +9,7 @@ static class CurrentParameterAuthorityChecks
 {
     public static async Task Run(string workspace, string root)
     {
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
         config = config with { CapabilityInstances = ParcelBindings.All(config).Append(login).ToArray() };
         var folder = Path.Combine(root, "config"); Directory.CreateDirectory(folder); ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);

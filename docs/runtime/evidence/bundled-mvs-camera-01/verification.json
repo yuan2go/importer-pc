@@ -1,0 +1,397 @@
+{
+  "BaseCommit": "c5202ffc010ac2386a54ddde6520876a4855b8ab",
+  "Scope": "Current built-in SDK, fixed BAR/zh_CN and current UI/packaging; vendor bytes remain Git-external",
+  "AppVerified": [
+    "SDK candidate save/reload and duplicate physical identity",
+    "actual loopback RCS request BAR/zh_CN",
+    "heartbeat BAR/zh_CN",
+    "parameter common model",
+    "deferred/Unknown and P0 eight combinations",
+    "SDK identity/diagnostic hardening",
+    "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture",
+    "PGS01 current read-only observation mode, no dirty state on load, deferred Pending/Effective save",
+    "CommercialQuality current/freshness/recovery with explicit synthetic template",
+    "Current ABI/provider guard verification full VC01 with explicitly synthetic SM fixture; production authority remains required",
+    "StorageBaseline fresh current Simulation runtime with explicit isolated synthetic configuration"
+  ],
+  "NativeVerified": [
+    "SDK first/daily page and single camera code",
+    "full parameter-v3 after preserving nonselectable provider navigation anchor",
+    "parameter-guidance-startup full 7 deferral combinations and required real physical identity",
+    "Full StartupExperience after current SDK catalog/serial fixture and IPv4 inline feedback correction",
+    "Workstation status/logs full selector with bounded actual authorized-page/editor mount wait; all original draft/log/request assertions retained"
+  ],
+  "ActualSdk": {
+    "ApiVersion": "0x04080201",
+    "InitializationEnumerationFinalization": "PASS from protected bundled directory",
+    "Devices": 0,
+    "CameraOpenTriggerFramesBarcode": "NOT_RUN"
+  },
+  "PriorFailures": [
+    "API constant old record 0x04080202 refused unchanged current DLL; corrected from direct actual version",
+    "generated restore lock RID context corrected with distinct locked inputs",
+    "old source/locale UI assertion updated to absence plus remaining heartbeat help",
+    "diagnostic navigation anchor restored for nonselectable built-in provider; same draft assertions retained",
+    "AQA CI PGS substep still expected TCP line/automatic policy rewrite; updated current SDK readonly observation expectations, assertions retained",
+    "Native StartupExperience catalog assumed TCP/9.8.7; current SDK catalog and serial fixture updated; actual SDK provider was missing from existing inline canonical IPv4 rule and has been added without changing boundary validation",
+    "08dc2eaf CI seven checks passed; WSL01 observed configuration ready before native editor mount. Current bounded wait requires authorized maintenance page plus actual editor, without changing navigation or business guards"
+  ],
+  "Logs": [
+    {
+      "name": "bundled-mvs-app-build-final2.log",
+      "sha256": "066f36390c6923fc99b00fc5ccdaec4c8765c78e8e16d4d36411acd293a53986",
+      "bytes": 2176
+    },
+    {
+      "name": "bundled-mvs-app-build-final3.log",
+      "sha256": "3ec34bbded39c0e0ec40cf06ef5c390371189a83e5a0b190095e833cb567de43",
+      "bytes": 2057
+    },
+    {
+      "name": "bundled-mvs-app-build-final4.log",
+      "sha256": "ad2f711f9b61383ca6eb6e2f0d97507b6d41ff7ea0bb91d61f320f7a204a62ea",
+      "bytes": 2057
+    },
+    {
+      "name": "bundled-mvs-application-build-final.log",
+      "sha256": "d668fb590acdcb3a94c56812ba258ae4462f122d2b6cd7713c64fd362bf102ed",
+      "bytes": 2057
+    },
+    {
+      "name": "bundled-mvs-application-build-fixed.log",
+      "sha256": "3cc8cf2272f1d358b34aa4c277e000379e0ee67cf3c8f0802587476139d79e7c",
+      "bytes": 2057
+    },
+    {
+      "name": "bundled-mvs-application-build.log",
+      "sha256": "6e0d6b91fedec5cad5082b65a5654bb96fab8f13a941dff4a01cab1b4718454b",
+      "bytes": 2540
+    },
+    {
+      "name": "bundled-mvs-build-initial.log",
+      "sha256": "71b1be4dc80c9a1facee0e4009a9721b887b7ef21d093b6ec580206711830a70",
+      "bytes": 4532
+    },
+    {
+      "name": "bundled-mvs-build-second.log",
+      "sha256": "633b8323b9ea148528d84d849f1f621cd5382435acbde14fcbd4f0044eea8623",
+      "bytes": 2151
+    },
+    {
+      "name": "bundled-mvs-deferred-connections-current2.log",
+      "sha256": "0852ab55fbcbcebec8700b8c7b903c1204561584862abf7a5ec43c29a092c748",
+      "bytes": 14271
+    },
+    {
+      "name": "bundled-mvs-deferred-connections-final.log",
+      "sha256": "18bd3ab6d6ecbaf3e99a67e7fd1135b59b55754834c798a08d92b441737ef3b1",
+      "bytes": 1270
+    },
+    {
+      "name": "bundled-mvs-desktop-locked-current.log",
+      "sha256": "967b9573dd1908798894f89ae6b750d28efa78d47ca3ccf196067135a3a8ccb7",
+      "bytes": 3907
+    },
+    {
+      "name": "bundled-mvs-desktop-locked-final.log",
+      "sha256": "680e9bf38ee0335365f85be21d32ebf9307be6d101066ae633d4e5e27012d307",
+      "bytes": 2130
+    },
+    {
+      "name": "bundled-mvs-desktop-restore-current.log",
+      "sha256": "f09f43b1a6fa2eae7cb597a3a317564c6e7010642bb1d3a23a599ef7d6096572",
+      "bytes": 1844
+    },
+    {
+      "name": "bundled-mvs-editing.log",
+      "sha256": "9e0328ae5c974b942dd582ec46f8d61ce72e8856868b33a9b4a9056018a23f81",
+      "bytes": 809
+    },
+    {
+      "name": "bundled-mvs-hikrobot-hardening-current2.log",
+      "sha256": "eb24c8583edefcced73fd3e580601fa1cb842cffb8131bca18f03125ee73811b",
+      "bytes": 1483
+    },
+    {
+      "name": "bundled-mvs-hikrobot-sdk-editing-current.log",
+      "sha256": "908824b9bc395518ad3fde35a0fa17445811efb1193871d53e8a0d301399b6ba",
+      "bytes": 584
+    },
+    {
+      "name": "bundled-mvs-native-build-current.log",
+      "sha256": "13789c69bf5e5870805057e2726ddb354c92591614cfac2c42ef72987bcbcf73",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-native-build-final.log",
+      "sha256": "a4b50322d859ace91297e711b7a652d93a8d612821679b92e0456cfe76fc70db",
+      "bytes": 16956
+    },
+    {
+      "name": "bundled-mvs-native-build-final2.log",
+      "sha256": "2e8feb70c5776cb123c8359c0f49924483b9df578c7df4a79d8c497880bacd19",
+      "bytes": 2775
+    },
+    {
+      "name": "bundled-mvs-native-build-final3.log",
+      "sha256": "ef7a86a175b75221c90f1af9ae1626b25abef37298623fb56b105fc08a896bb8",
+      "bytes": 2319
+    },
+    {
+      "name": "bundled-mvs-native-build-final4.log",
+      "sha256": "33705237b4e6d918b7cbb33b71c25885233593be0a1f574861fa5bb125f1a931",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-native-build-final5.log",
+      "sha256": "e271d8ede9a9c4079969c74f0661b78eb84e50260c928e538eb9fe54b0491433",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-native-build-final6.log",
+      "sha256": "7931626569522b521a8dca4f8960715df90b879f7b93a5e93a55eb344d721a90",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-native-build-guidance.log",
+      "sha256": "1416cb5d07e6e745a65f8fb56495044ebdd90354307000be08eb0824b59aa2ec",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-native-build.log",
+      "sha256": "f08c7f943d0a18a0be37216d2dfca931b3e2bc08bcca35aa1c74a3e1467f8991",
+      "bytes": 2237
+    },
+    {
+      "name": "bundled-mvs-native-current.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-native-guidance-current.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-native-hikrobot-sdk-editing-final3.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-native-hikrobot-sdk-editing-final5.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-native-parameter-guidance-startup-final6.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-native-parameter-v3-final3.log",
+      "sha256": "e5e753ba377b33529fb53b7e9d59c0054f6e196d5e9139141327e5c5782ab1f0",
+      "bytes": 182
+    },
+    {
+      "name": "bundled-mvs-native-parameter-v3-final4.log",
+      "sha256": "e5e753ba377b33529fb53b7e9d59c0054f6e196d5e9139141327e5c5782ab1f0",
+      "bytes": 182
+    },
+    {
+      "name": "bundled-mvs-native-parameter-v3-final5.log",
+      "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+      "bytes": 275
+    },
+    {
+      "name": "bundled-mvs-native-parameter-v3-final6.log",
+      "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+      "bytes": 275
+    },
+    {
+      "name": "bundled-mvs-p0-deferred-current2.log",
+      "sha256": "ffd855fea68756e7e3e75e57ce304586057654cec0ad74ff62e4e31b4bace6bc",
+      "bytes": 13523
+    },
+    {
+      "name": "bundled-mvs-p0-deferred-current3.log",
+      "sha256": "bad37a8febb97d8a6b3f17cadd07befd522763db50f828132d96deb872ded063",
+      "bytes": 13322
+    },
+    {
+      "name": "bundled-mvs-parameter-refactor-final.log",
+      "sha256": "5e1cda19ba0d7c3001fae07c9edc3fbca3fdd3ce76a8658d238936b75489a134",
+      "bytes": 8345
+    },
+    {
+      "name": "bundled-mvs-probe-build-corrected.log",
+      "sha256": "7d003fea727552fb09f262a69c7168994ab5dd5470d311878cdc24428e5c91b4",
+      "bytes": 538
+    },
+    {
+      "name": "bundled-mvs-probe-build.log",
+      "sha256": "3d72cb39d2d9ea6cb4e31bb92ae8f557985919cb31cef98ecb22ba2dbc43a632",
+      "bytes": 823
+    },
+    {
+      "name": "bundled-mvs-probe-self-test.log",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436
+    },
+    {
+      "name": "bundled-mvs-python-compatibility.log",
+      "sha256": "3fc22603e080342799a6be242c75941657cf562cb0cfa88823522d51aa73d8f7",
+      "bytes": 120
+    },
+    {
+      "name": "bundled-mvs-python-delivery.log",
+      "sha256": "4e9613078fcdcbbc923dfdee630ee1e9661d35cdca08c98e4ef0c430c8a9a0ad",
+      "bytes": 108
+    },
+    {
+      "name": "bundled-mvs-python-installer.log",
+      "sha256": "48d61cd6e0039cc34033adefceaf538152c3f8fa1f2d9342fc008d4f737a2cf9",
+      "bytes": 110
+    },
+    {
+      "name": "bundled-mvs-rcs-heartbeat-final.log",
+      "sha256": "e45ffc578b78422fb29e990081fedcc4deac13e14f4ffee9e6d7cbc3087cafd4",
+      "bytes": 2226
+    },
+    {
+      "name": "bundled-mvs-restore-driver-current.log",
+      "sha256": "ff2d61f08c291d49128f3efef333d35367f566fb8b41832bafb86f3205dc0a5c",
+      "bytes": 237
+    },
+    {
+      "name": "bundled-mvs-restore-native.log",
+      "sha256": "ae39d9b0a122d2df94c234dd20e236741a2cbfefbb05773bfbc4b62e26e4eff7",
+      "bytes": 1782
+    },
+    {
+      "name": "bundled-mvs-restore-rid-corrected.log",
+      "sha256": "52dfdee150cee5988c03a25c91a9292ccf7627c2c533c4ef6b9e3330bb9256b5",
+      "bytes": 1827
+    },
+    {
+      "name": "bundled-mvs-restore-rid.log",
+      "sha256": "51364c153062d99e0c7d2ddc5c914a5c8c72a2f871c7686566d7057eed9ceb6b",
+      "bytes": 1831
+    },
+    {
+      "name": "bundled-mvs-runtime-policy.log",
+      "sha256": "180e1f6dc59a47d79d7f014a5b86badfe00aa87b7bf3cf472541ff3eeac42aa1",
+      "bytes": 106
+    },
+    {
+      "name": "bundled-mvs-sportmaster-rcs-current.log",
+      "sha256": "11bf46290eecdcd8e462453d8bd10224be5e17ae947d365a53dcedb584f8daa5",
+      "bytes": 14356
+    },
+    {
+      "name": "bundled-mvs-sportmaster-rcs-final.log",
+      "sha256": "2a4cd3836d11fbf3d266ba1997f949f33affaf7287d082c6a101d4e8b24b9057",
+      "bytes": 14215
+    },
+    {
+      "name": "native-run-corrected.log",
+      "sha256": "046c1e7e40f1614f2a16969b9a70c4c2f5f849a6fd194740b01451db07d26847",
+      "bytes": 265
+    },
+    {
+      "name": "native-run.log",
+      "sha256": "02bcb43f456eb3530edc9fbc38f53e08c761dea1cd0ec3d7b15f71b4baba646e",
+      "bytes": 477
+    },
+    {
+      "name": "provision.log",
+      "sha256": "69671982d28b084597165011ca3cde93b13f63a775559fe9eef12b576e8adf59",
+      "bytes": 47
+    },
+    {
+      "name": "update.log",
+      "sha256": "68adf67919d00a4ebe5699da4f3945f8e49ed10e008954e71dfcd06f3baddf12",
+      "bytes": 34
+    },
+    {
+      "name": "bundled-mvs-aqa-corrected.log",
+      "sha256": "d9c8fa7ecc8487142ecc0e3a58cdf428a6c03d8e3acdaa81a64f3f7a6a43490d",
+      "bytes": 9651
+    },
+    {
+      "name": "bundled-mvs-default-corrected.log",
+      "sha256": "640220bf8730b6c9a26ebf7985a15e1cc7d09b81ec3827f99c342efc4b27f14f",
+      "bytes": 6703
+    },
+    {
+      "name": "bundled-mvs-dynamic-fixture-build.log",
+      "sha256": "ee316cf19c73e1e6e79ed4c0a5604c79a1352ccecaa7e59073c4116ac264d1d3",
+      "bytes": 3331
+    },
+    {
+      "name": "bundled-mvs-pgs-current.log",
+      "sha256": "4dc4b28d5c4ed4d2c11cd742797e8c8769527f38078b0da8fa0b09ace8e2e447",
+      "bytes": 2439
+    },
+    {
+      "name": "bundled-mvs-startup-current2-build.log",
+      "sha256": "5c681bc6454352600993c70d9f843053dd4b71ba61867b9d5c42705538d6eb1f",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-startup-current2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-cq-current.log",
+      "sha256": "83c1ff0c12caa8104bd760857c20c662aabd1e8e1e40a07e91ea6ef916c1b35b",
+      "bytes": 4884
+    },
+    {
+      "name": "bundled-mvs-vc-current.log",
+      "sha256": "386ce6060d201e4a68f0f7978cef0be87866dd34bd98f8fa8451f88a599e5307",
+      "bytes": 4928
+    },
+    {
+      "name": "bundled-mvs-storage-current.log",
+      "sha256": "ea85c1487572b89a914b7f4e5b6dc33b77d255850452841ecebd78cb454b9589",
+      "bytes": 1327
+    },
+    {
+      "name": "bundled-mvs-batch-current-build3.log",
+      "sha256": "193e9fe43d07e87e2507b628773719def77d74da02dd7d5a58aa3f5e7d531ae1",
+      "bytes": 3178
+    },
+    {
+      "name": "bundled-mvs-batch-current.log",
+      "sha256": "4efaa6d3c83002f509e01e6cba7c1a58407caf986a5eb7d8019f6de50b9377cf",
+      "bytes": 1369
+    },
+    {
+      "name": "bundled-mvs-wsl-current-evidence.log",
+      "sha256": "ebedc652d29a5175eaf5e99d0489376cb2ae8e394bc5bc5fe2d7f16642b4f8a8",
+      "bytes": 4009
+    }
+  ],
+  "Build": "PASS affected desktop/helper locked build 0 warnings/0 errors",
+  "PackagingPython": "PASS installer 7, delivery 5, compatibility 16, runtime policy 3; actual 14-file copy/corrupt refusal also checked",
+  "LocalDefault": "Synthetic business segments passed; Windows Production segment BLOCKED by absent protected management authority; no broad Windows default PASS",
+  "IntermediateInstaller": {
+    "SourceCommit": "f2cd14284f43d322656083984c8a86ea2ac3aa6f",
+    "Sha256": "0ed546805a36e05372e9ad5a09ee80d812176b29734de57c530fc584133416af",
+    "Status": "BUILT with actual14 SDK; packaging startup guide correction follows"
+  },
+  "HistoricalInstaller489": {
+    "SourceCommit": "489eebf2ff9a8c79aa4fb43e2e7f44ea6c17d9a3",
+    "Sha256": "14da4f0fff1902239fdc39b0d0a5c93575d75174a3fd2b5a08a6973aa8c79086",
+    "ActualWindowsInstallation": "NOT_RUN; manual user installation",
+    "VendorRuntime": "actual14 reviewed SDK files bundled",
+    "FrozenNativeParameterV3": "PASS same exact source489eebf2; no provisioning or physical devices",
+    "Status": "superseded by current SDK IPv4 UI validation fix; retain original source and hashes"
+  },
+  "RemainingFixtureCorrections": [
+    "frozen batch preflight uses an explicit complete synthetic configuration instead of incomplete Production first-run template",
+    "standalone batch fixture requires explicit configuration source; protected real local installation/mode guard remains intact"
+  ],
+  "LocalFrozenCore": "BLOCKED at existing elevated restore requirement; no permission guard bypass, original FAIL retained. CI administrator fixture validates it separately."
+}

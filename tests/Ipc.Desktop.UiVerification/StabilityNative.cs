@@ -19,7 +19,7 @@ static partial class Program
     {
         void Check(bool value, string detail) { if (!value) throw new InvalidOperationException(detail); lines.Add("PASS STABILITY-WPF: " + detail); }
         var config = Path.Combine(evidence, "config"); Directory.CreateDirectory(config);
-        File.Copy(Path.Combine(root, "config/sportmaster/business.json"), Path.Combine(config, "business.json"));
+        File.Copy(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"), Path.Combine(config, "business.json"));
         var launch = new BusinessLaunch(config, Path.Combine(evidence, "data"), null, null);
         // The unfinished handoff is produced by the actual durable receive boundary.
         await using (var interrupted = new ParcelRuntime(launch, new SportmasterFlow(), new VisualFactory(launch, false))

@@ -12,7 +12,7 @@ static partial class Audit03
     static int failures;
     static void Check(bool condition, string message)
     { Console.WriteLine((condition ? "PASS A03: " : "FAIL A03: ") + message); if (!condition) failures++; }
-    static ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+    static ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
     static CapabilityBinding Scale(string id) => new("weight", "reference-weight", "1.0.0", id, "reference://weight/" + id, "PARCEL-REFERENCE-v1", []);
     static async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)
     {

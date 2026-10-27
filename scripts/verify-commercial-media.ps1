@@ -51,7 +51,9 @@ var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directo
 await LifecycleOptimization.Run(root, lifecycleEvidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false)
+var batchConfiguration = Path.Combine(evidence, "batch-synthetic-config"); Directory.CreateDirectory(batchConfiguration);
+File.Copy(Path.Combine(root, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json"), Path.Combine(batchConfiguration, "business.json"));
+var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), batchConfiguration, null, [], false)
     with { Shortcuts = new(false, false) };
 var planFile = Path.Combine(evidence, "deployment-plan.json"); File.WriteAllText(planFile, Wire.Encode(DeploymentBatch.Freeze(request)));
 var receipt = Path.Combine(evidence, "preflight.json");
@@ -60,7 +62,7 @@ var receiptHash = Wire.FileHash(receipt);
 _ = DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receipt, "--preflight"]);
 if (Environment.ExitCode == 0 || Wire.FileHash(receipt) != receiptHash) throw new Exception("Batch overwrote original receipt");
 Environment.ExitCode = 0;
-DeploymentBatchVerification.Run(inventory, Path.Combine(evidence, "batch-regressions"));
+DeploymentBatchVerification.Run(inventory, Path.Combine(evidence, "batch-regressions"), batchConfiguration);
 Console.WriteLine("PASS frozen native batch preflight and duplicate receipt refusal; no installation/device startup");
 '@
 [IO.File]::WriteAllText((Join-Path $Output 'Program.cs'), $entry)
@@ -74,6 +76,12 @@ $project = '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</Out
 $fixtureWorkspace = Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $fixtureWorkspace 'config/sportmaster') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $fixtureWorkspace 'config/sportmaster/business.json')
+$syntheticConfiguration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/sportmaster.synthetic.json')
+if ($LASTEXITCODE -ne 0) { throw 'Exact synthetic current execution fixture unavailable' }
+$syntheticFixtureRoot = Join-Path $fixtureWorkspace 'tests/Ipc.Application.Verification'
+New-Item -ItemType Directory -Path $syntheticFixtureRoot -Force | Out-Null
+[IO.File]::WriteAllLines((Join-Path $syntheticFixtureRoot 'sportmaster.synthetic.json'), [string[]]$syntheticConfiguration)
+
 & $Dotnet run --project (Join-Path $Output 'MediaVerification.csproj') -- $Media $fixtureWorkspace (Join-Path $Output 'synthetic-data') *> (Join-Path $Output 'RUN.log')
 $result = $LASTEXITCODE
 $unchanged = $true

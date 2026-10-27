@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -48,7 +48,7 @@ static partial class Program
         var local = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(first)!;
         var draft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(first)!;
         // Current-format imports are edits, not a way to transplant another machine's identity.
-        var reference = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var reference = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), launch.DataRoot, null, null)).Catalog();
         var legacyEditor = new StartupConfigurationDraft(reference, catalog);
         var legacyControl = new ParameterSettingsControl { FirstConfiguration = true, Model = legacyEditor.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };
@@ -105,7 +105,7 @@ static partial class Program
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {
             staticFactory.ValidateStructure(draft.Build());
-            Check(true, "new TCP and built-in RCS candidate passes real static factory validation without constructing ports");
+            Check(true, "current SDK and built-in RCS candidate passes real static factory validation without constructing ports");
         }
         var fake = new StartupMaintenanceProbe(local with { Candidate = draft.Build() });
         type.GetField("maintenance", flags)!.SetValue(first, fake);
@@ -200,10 +200,10 @@ static partial class Program
             foreach (var connection in model.Readers.Concat(model.Components.Where(ParameterOwnership.IsRcs))) connection.ConfigureLater = false;
             model.Policy.StationCode = "SYNTHETIC";
             foreach (var (r, i) in model.Readers.Select((r, i) => (r, i)))
-                foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.port" => "9000", _ => p.Value };
+                foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.serial" => "SYNTH-" + i, _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in c.Parameters) p.Value = p.Field.Key switch
-                { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "SYNTHETIC", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };
+                { "zone-id" or "project-id" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "SYNTHETIC", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs)) c.Target = "http://127.0.0.1:1/rcs/sorter/api";
         }
         bool Retry(Window w) => (bool)type.GetProperty("RetryRequested")!.GetValue(w)!;

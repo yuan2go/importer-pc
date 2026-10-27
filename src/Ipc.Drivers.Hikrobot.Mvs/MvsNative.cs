@@ -8,7 +8,7 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 internal static class MvsNative
 {
     internal const string Library = "MvCameraControl.dll";
-    internal const uint Version = 0x04080202, Mono8 = 0x01080001;
+    internal const uint Version = 0x04080201, Mono8 = 0x01080001;
     internal const int NoData = unchecked((int)0x80000007);
     internal const int DescriptorBytes = 636, FrameOutBytes = 328;
     [StructLayout(LayoutKind.Explicit, Size = 256)]

@@ -18,7 +18,7 @@ static class ApplicationArchitecture
     }
     public static async Task Run(string workspace, string root)
     {
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
         FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
         async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)
         {

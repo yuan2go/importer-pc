@@ -14,7 +14,7 @@ static partial class StabilityRemediation
     { if (!condition) throw new Exception("FAIL STABILITY01: " + message); Console.WriteLine("PASS STABILITY01: " + message); }
     static async Task Until(Func<bool> predicate)
     { var until = Stopwatch.StartNew(); while (!predicate()) { if (until.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException(); await Task.Delay(10); } }
-    static ParcelConfiguration Config(string workspace) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { QueueCapacity = 1, TimeoutMs = 30000 };
+    static ParcelConfiguration Config(string workspace) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { QueueCapacity = 1, TimeoutMs = 30000 };
     static BusinessLaunch Launch(string root, ParcelConfiguration c)
     { Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c); return new(root, Path.Combine(root, "data"), null, null); }
     static string DirectoryFor(BusinessLaunch launch, ParcelConfiguration c) => Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);

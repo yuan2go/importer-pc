@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><AssemblyName>Ipc.Drivers.Hikrobot.Mvs</AssemblyName><Version>1.0.0</Version></PropertyGroup>
-  <ItemGroup><Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference></ItemGroup>
-  <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences"><Error Condition="'$(IpcContractPath)' == '' Or !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/></Target>
+  <PropertyGroup><AssemblyName>Ipc.Drivers.Hikrobot.Mvs</AssemblyName><Version>1.0.0</Version><NuGetLockFilePath Condition="'$(IpcContractPath)' != ''">packages.extension.lock.json</NuGetLockFilePath></PropertyGroup>
+  <ItemGroup Condition="'$(IpcContractPath)' != ''"><Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference></ItemGroup>
+  <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences"><Error Condition="'$(IpcContractPath)' != '' And !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/></Target>
+  <ItemGroup Condition="'$(IpcContractPath)' == ''"><ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="parameters.json" LogicalName="Mvs.Parameters.json"/><EmbeddedResource Include="bundled-runtime.json" LogicalName="Mvs.Runtime.json"/></ItemGroup>
 </Project>

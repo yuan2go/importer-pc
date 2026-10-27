@@ -17,7 +17,7 @@ static class UxCommercialInputs
     }
     public static async Task Run(string workspace, string root)
     {
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var directory = Path.Combine(root, "config"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(root, "data"), null, null);
@@ -93,7 +93,7 @@ static class UxCommercialInputs
     }
     static async Task ReaderRebinding(string workspace, string root, bool changeDevice)
     {
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var directory = Path.Combine(root, "rebind-" + changeDevice, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
         var launch = new BusinessLaunch(directory, Path.Combine(root, "rebind-" + changeDevice, "data"), null, null); string original;
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new InputFactory(new ParcelCapabilityFactory(launch))))
@@ -122,7 +122,7 @@ static class UxCommercialInputs
     }
     static async Task UnknownOriginal(string workspace, string root)
     {
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var directory = Path.Combine(root, "unknown", "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(root, "unknown", "data"), null, null);
         var factory = new InputFactory(new ParcelCapabilityFactory(launch), true);

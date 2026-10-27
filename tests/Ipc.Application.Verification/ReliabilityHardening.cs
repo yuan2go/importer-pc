@@ -13,7 +13,7 @@ static partial class ReliabilityHardening
     static TaskCompletionSource Signal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
     static async Task Until(Func<bool> predicate)
     { var watch = Stopwatch.StartNew(); while (!predicate()) { if (watch.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException(); await Task.Delay(10); } }
-    static ParcelConfiguration Config(string workspace) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { TimeoutMs = 30000, QueueCapacity = 1 };
+    static ParcelConfiguration Config(string workspace) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { TimeoutMs = 30000, QueueCapacity = 1 };
     static BusinessLaunch Launch(string root, ParcelConfiguration c)
     { Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c); return new(root, Path.Combine(root, "data"), null, null); }
     static string Data(BusinessLaunch l, ParcelConfiguration c) => Path.Combine(l.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);

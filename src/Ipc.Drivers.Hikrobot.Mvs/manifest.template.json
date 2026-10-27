@@ -10,7 +10,7 @@
     {
       "Kind": "vendor-sdk",
       "Identity": "MvCameraControl.dll",
-      "Version": "4.8.2.2",
+      "Version": "4.8.2.1",
       "Evidence": "0CBCF8D1C9D9647CD3DBB6CE8E0C599EA514388F6E2345084BC1B16E9BE5119B",
       "Preload": [
         "MVGigEVisionSDK.dll"

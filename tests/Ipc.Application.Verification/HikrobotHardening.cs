@@ -11,7 +11,7 @@ internal static class HikrobotHardening
     internal static async Task Run(string workspace, string root)
     {
         Console.WriteLine("EvidenceRoot=" + root);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var readers = seed.Topology!.Readers.Select((r, n) => r with { Driver = "extension:identity-" + n }).ToArray();
         var instances = readers.Select((r, n) => new ExtensionInstance("identity-" + n,
             n == 0 ? "hikrobot.idmvs-reader" : "hikrobot.mvs-acquisition", "synthetic-module", r.DeviceId, true,

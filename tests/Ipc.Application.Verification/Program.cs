@@ -114,7 +114,7 @@ if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
-ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
 async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
 {

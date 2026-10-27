@@ -101,7 +101,7 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS INTERNAL " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null); var factory = new VisualFactory(launch, true);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };

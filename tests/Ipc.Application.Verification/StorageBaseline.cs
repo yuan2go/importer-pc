@@ -77,7 +77,9 @@ static class StorageBaseline
         catch (InvalidDataException ex) when (ex.Message.Contains("OriginalReplyIdentityMissing"))
         { Check(Wire.FileHash(broken) == before && !Directory.Exists(Path.Combine(brokenRoot, "receipts")), "missing identity table refuses without database writes or receipt directories"); }
         if (!smoke) return;
-        var launch = new BusinessLaunch(Path.Combine(workspace, "config/sportmaster"), Path.Combine(root, "fresh-runtime"), null, null);
+        var syntheticConfiguration = Path.Combine(root, "fresh-config"); Directory.CreateDirectory(syntheticConfiguration);
+        File.Copy(Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json"), Path.Combine(syntheticConfiguration, "business.json"));
+        var launch = new BusinessLaunch(syntheticConfiguration, Path.Combine(root, "fresh-runtime"), null, null);
         await using (var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
             await runtime.StartAsync(default);

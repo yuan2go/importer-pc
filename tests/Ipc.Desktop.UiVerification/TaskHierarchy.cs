@@ -16,7 +16,7 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS HIERARCHY " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var config = seed with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);

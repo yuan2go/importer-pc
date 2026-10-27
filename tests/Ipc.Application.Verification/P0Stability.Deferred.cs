@@ -17,11 +17,11 @@ static partial class SportmasterRcs
         var launch = new BusinessLaunch(Path.Combine(root, "config"), Path.Combine(root, "data"), null, null);
         await using var factory = new ParcelCapabilityFactory(launch, declaration, assembly);
         var candidate = new SportmasterFlow().InitialConfiguration() with { Mode = RunMode.Simulation };
-        var selected = factory.SelectedProviders(candidate).Where(x => x.Implementation == "tcp-line").ToArray();
-        Console.WriteLine("ProviderIdentity=" + Wire.Encode(new { Selected = selected, DescriptorVersion = Ipc.Drivers.TcpLineObservationSource.Descriptor.Version }));
-        Check(ParcelBindings.Readers(candidate).Count() == 2 && selected.Length == 1 && selected.All(x => x.Version == Ipc.Drivers.TcpLineObservationSource.Descriptor.Version), "normal selected TCP identity equals shipped descriptor");
+        var selected = factory.SelectedProviders(candidate).Where(x => x.Implementation == "hikrobot-mvs").ToArray();
+        Console.WriteLine("ProviderIdentity=" + Wire.Encode(new { Selected = selected, DescriptorVersion = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor.Version }));
+        Check(ParcelBindings.Readers(candidate).Count() == 2 && selected.Length == 1 && selected.All(x => x.Version == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor.Version), "normal selected SDK identity equals shipped descriptor");
         factory.ValidateStructure(candidate);
-        Check(true, "normal business compatibility accepts deferred TCP startup candidate without bypassing declaration");
+        Check(true, "normal business compatibility accepts deferred SDK startup candidate without bypassing declaration");
     }
     public static async Task DeferredMatrix(string workspace, string root)
     {
@@ -35,7 +35,7 @@ static partial class SportmasterRcs
             try
             {
                 var flow = new SportmasterFlow(); var seed = flow.InitialConfiguration();
-                var readers = seed.Topology!.Readers.Select((r, i) => r with { Parameters = (mask & (1 << i)) != 0
+                var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = (mask & (1 << i)) != 0
                     ? new() { ["entity.mode"] = "line" }
                     : new() { ["entity.mode"] = "line", ["device.ip"] = "127.0.0.1", ["device.port"] =
                         ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString() } }).ToArray();

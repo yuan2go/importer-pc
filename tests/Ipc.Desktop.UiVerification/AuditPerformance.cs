@@ -16,7 +16,7 @@ static partial class Program
     static async Task VerifyAuditPerformance(string root, string evidence, List<string> lines)
     {
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        File.Copy(Path.Combine(root, "config/sportmaster/business.json"), Path.Combine(configRoot, "business.json"));
+        File.Copy(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"), Path.Combine(configRoot, "business.json"));
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var startup = Stopwatch.StartNew();
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new VisualFactory(launch, false)) { RuntimeIdentityPreflight = () => { } };

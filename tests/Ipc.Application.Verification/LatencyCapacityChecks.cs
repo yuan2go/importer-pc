@@ -27,7 +27,7 @@ static class LatencyCapacityChecks
         void Check(bool value, string name, object evidence)
         { checks.Add(new { Name = name, Passed = value, Evidence = evidence }); Console.WriteLine((value ? "PASS " : "FAIL ") + name); if (!value) failed.Add(name); }
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { BackupSchedule = null };
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { BackupSchedule = null };
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(c));
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var factory = new BackupFactory(launch);

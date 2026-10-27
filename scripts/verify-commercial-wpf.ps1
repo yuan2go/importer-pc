@@ -53,6 +53,12 @@ $workspace=Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $workspace 'config/sportmaster') | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $workspace '.artifacts') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $workspace 'config/sportmaster/business.json')
+$syntheticConfiguration = & git -C $repo show ($fixtureSource + ':tests/Ipc.Application.Verification/sportmaster.synthetic.json')
+if ($LASTEXITCODE -ne 0) { throw 'Exact synthetic current configuration fixture unavailable' }
+$syntheticFixtureRoot = Join-Path $workspace 'tests/Ipc.Application.Verification'
+New-Item -ItemType Directory -Path $syntheticFixtureRoot -Force | Out-Null
+[IO.File]::WriteAllLines((Join-Path $syntheticFixtureRoot 'sportmaster.synthetic.json'), [string[]]$syntheticConfiguration)
+
 if ($ParameterV3) {
  foreach ($schema in @('src/Ipc.Drivers.Hikrobot/parameters.json','src/Ipc.Integrations.SportmasterRcs/parameters.json')) {
   $target=Join-Path $workspace $schema

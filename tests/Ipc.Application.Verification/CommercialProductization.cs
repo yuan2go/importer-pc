@@ -52,7 +52,7 @@ static class CommercialProductization
     public static async Task Run(string workspace, string root)
     {
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);

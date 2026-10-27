@@ -13,7 +13,7 @@ static class OptionalCapabilities
     {
         List<object> matrix = [];
         void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC18: " + message); Console.WriteLine("PASS AC18: " + message); }
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
         CapabilityBinding Binding(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/one", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         ParcelConfiguration Options(string id, bool login, bool weight, bool images) => Config(id) with
         {

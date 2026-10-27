@@ -28,7 +28,7 @@ static class VersionCompatibility
             var expectedVersion = project.Descendants("Version").Single().Value;
             Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == expectedVersion, flow.Id + " compiled business version and embedded declaration");
             var configDirectory = Path.Combine(root, flow.Id, "config"); Directory.CreateDirectory(configDirectory);
-            var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", flow.Id, "business.json")));
+            var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText((flow.Id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", flow.Id, "business.json"))));
             var launch = new BusinessLaunch(configDirectory, Path.Combine(root, flow.Id, "data"), null, null);
             var factory = new ParcelCapabilityFactory(launch, policy);
             factory.Validate(factory.Normalize(config));

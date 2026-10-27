@@ -9,7 +9,7 @@ using Ipc.Platform;
 static partial class SportmasterRcs
 {
     static ParcelConfiguration HeartbeatConfiguration(string workspace, CapabilityBinding binding) =>
-        Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with
+        Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with
         { StationCode = "SYNTH-STATION", Wcs = binding };
 
     public static async Task HeartbeatChecks(string workspace)
@@ -32,7 +32,7 @@ static partial class SportmasterRcs
             using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
             var data = envelope.GetProperty("data").EnumerateArray().ToArray();
             Check(exchange.Method == "POST" && exchange.ContentType.StartsWith("application/json", StringComparison.Ordinal) &&
-                envelope.GetProperty("source").GetString() == "TEST_READER" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN",
+                envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN",
                 "heartbeat uses the configured RCS endpoint and envelope with numeric version/requestId");
             Check(data.Length == 2 && data.Select((item, i) => item.GetProperty("index").GetInt32() == i + 1 &&
                 item.GetProperty("command").GetString() == "sorter.task.station_heartbeat" &&

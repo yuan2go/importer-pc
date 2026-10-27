@@ -15,7 +15,7 @@ static partial class Program
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS OPERATOR01 " + message); }
         var folder = Path.Combine(evidence, "operator-config"); Directory.CreateDirectory(folder);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "operator-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };

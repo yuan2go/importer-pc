@@ -29,7 +29,7 @@ static partial class Program
             first.Close();
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationId = "native-inherit-" + Wire.Id() };
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { StationId = "native-inherit-" + Wire.Id() };
         c = c with { CapabilityInstances = ParcelBindings.All(c).Append(new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" })).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);

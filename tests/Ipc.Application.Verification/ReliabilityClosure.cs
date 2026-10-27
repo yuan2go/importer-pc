@@ -18,7 +18,7 @@ static class ReliabilityClosure
     {
         List<string> failures = [];
         async Task Case(string name, Func<Task> run) { try { await run(); } catch (Exception e) { failures.Add(name + ": " + e.Message); Console.WriteLine("FAIL AC20 " + name + ": " + e.Message); } }
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
         CapabilityBinding B(string kind, string decision = "accept", string mode = "normal") => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/reliability20", "PARCEL-REFERENCE-v1", kind is "camera" or "upload" ? new() { ["decision"] = decision, ["reply-mode"] = mode } : []);
         async Task<(ParcelRuntime App, TestFactory Factory)> Open(ParcelConfiguration c, string name, bool blockCamera = false, bool blockWcs = false)
         {

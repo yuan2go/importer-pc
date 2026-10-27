@@ -16,7 +16,7 @@ static partial class ArchitectureQualityRemediation
 {
     static void Check(bool condition, string message)
     { if (!condition) throw new Exception("FAIL AQA01: " + message); Console.WriteLine("PASS AQA01: " + message); }
-    static ParcelConfiguration Config(string workspace, string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+    static ParcelConfiguration Config(string workspace, string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
     static BusinessLaunch Launch(string path) => new(path, Path.Combine(path, "data"), null, null);
     static string DirectoryFor(string path, ParcelConfiguration c) => Path.Combine(path, "data", c.Mode.ToString(), c.StationId, c.ApplicationId);
     static async Task<ParcelRuntime> Open(ParcelConfiguration c, string path, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)

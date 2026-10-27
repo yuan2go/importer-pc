@@ -1,8 +1,8 @@
 {
   "SchemaVersion": 3,
   "ApplicationId": "sportmaster",
-  "StationId": "reference-17",
-  "Mode": "Simulation",
+  "StationId": "station-01",
+  "Mode": "Production",
   "Weight": {
     "Source": "Disabled",
     "Unit": "Kg",
@@ -12,24 +12,29 @@
   },
   "Reader": {
     "Role": "parcel-reader",
-    "Driver": "manual",
+    "Driver": "hikrobot-mvs",
     "DeviceId": "sportmaster.camera.left",
     "Revision": "1",
-    "ReplayFile": null
+    "ReplayFile": null,
+    "Parameters": {
+      "entity.mode": "observe-only",
+      "acquisition.trigger": "existing",
+      "image.nodes": "3",
+      "image.maximum-payload-bytes": "8388608"
+    }
   },
   "Scale": null,
   "Wcs": {
     "Kind": "integration",
-    "Implementation": "reference-integration",
+    "Implementation": "sportmaster-rcs",
     "Version": "1.0.0",
     "InstanceId": "sportmaster.integration",
-    "Target": "reference://integration/sportmaster",
-    "Contract": "PARCEL-REFERENCE-v1",
+    "Target": "",
+    "Contract": "SPORTMASTER-RCS-SORTER-v1",
     "Parameters": {
-      "slot": "REFERENCE-07"
-    },
-    "Package": null,
-    "Module": null
+      "left-station-code": "station-01",
+      "right-station-code": "station-01"
+    }
   },
   "Plc": null,
   "Extensions": null,
@@ -43,17 +48,29 @@
     "Readers": [
       {
         "Role": "parcel-reader",
-        "Driver": "manual",
+        "Driver": "hikrobot-mvs",
         "DeviceId": "sportmaster.camera.left",
         "Revision": "1",
-        "ReplayFile": null
+        "ReplayFile": null,
+        "Parameters": {
+          "entity.mode": "observe-only",
+          "acquisition.trigger": "existing",
+          "image.nodes": "3",
+          "image.maximum-payload-bytes": "8388608"
+        }
       },
       {
         "Role": "parcel-reader",
-        "Driver": "manual",
+        "Driver": "hikrobot-mvs",
         "DeviceId": "sportmaster.camera.right",
         "Revision": "1",
-        "ReplayFile": null
+        "ReplayFile": null,
+        "Parameters": {
+          "entity.mode": "observe-only",
+          "acquisition.trigger": "existing",
+          "image.nodes": "3",
+          "image.maximum-payload-bytes": "8388608"
+        }
       }
     ],
     "Positions": [
@@ -71,5 +88,10 @@
     "ResidentHistory": 200,
     "MinimumFreeBytes": 67108864
   },
-  "StationCode": "SYNTHETIC-STATION"
+  "StationCode": "",
+  "DeferredConnections": [
+    "sportmaster.camera.left",
+    "sportmaster.camera.right",
+    "sportmaster.integration"
+  ]
 }

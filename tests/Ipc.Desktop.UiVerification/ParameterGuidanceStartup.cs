@@ -61,7 +61,7 @@ static partial class Program
             Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "StationCode"), "no second heartbeat station editor remains");
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
-            Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode")), "normal camera configuration needs no parcel association choice");
+            Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode") && t.IsEnabled), "current MVS acquisition has no editable business-association choice");
             var deferred = Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater");
             deferred.IsChecked = false; await Flush();
             Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "turning off deferred mode exposes required camera errors");
@@ -116,7 +116,7 @@ static partial class Program
                     foreach (var p in draft.Readers[i].Parameters)
                         p.Value = p.Field.Key switch
                         {
-                            "device.ip" => "127.0.0.1", "device.port" => (24990 + i).ToString(),
+                            "device.ip" => "192.0.2." + (10 + i), "device.serial" => "SYNTH-SERIAL-" + i,
                             _ => p.Value
                         };
                     Check(editor.ShowPage(2, i == 0 ? "左相机" : "右相机"), "camera page is reachable");
@@ -129,7 +129,7 @@ static partial class Program
                     p.Value = p.Field.Key switch
                     {
                         "zone-id" => (mask & 4) != 0 ? "" : "71", "project-id" => "83",
-                        "source" => "SYNTH_READER", "locale" => "zh_CN", "specified-chute" => "false", "heartbeat-interval-seconds" => "5",
+                        "specified-chute" => "false", "heartbeat-interval-seconds" => "5",
                         "left-bcr-code" => (mask & 1) != 0 ? "" : "SYNTH-LEFT", "right-bcr-code" => (mask & 2) != 0 ? "" : "SYNTH-RIGHT",
                         "request-id-base" => "810000000", "request-id-count" => "100000", _ => p.Value
                     };

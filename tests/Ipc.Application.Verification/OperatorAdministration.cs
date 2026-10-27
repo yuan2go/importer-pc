@@ -74,7 +74,7 @@ static class OperatorAdministration
         Check(!expiry.Status().Authorized && expiryGrant.IsCancellationRequested, "session expiry revokes authorization and pending task tokens");
         Check(File.ReadAllText(Path.Combine(root, "expiry/security/diagnostics/runtime.jsonl")).Contains("ManagementModeExpired"), "session expiry is recorded in the actual authentication journal");
         var configRoot = Path.Combine(root, "admin-config"); Directory.CreateDirectory(configRoot);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Login = null, StationId = "ops-" + Wire.Id() };
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, StationId = "ops-" + Wire.Id() };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), seed);
         var launch = new BusinessLaunch(configRoot, data, null, null);
         var factory = new CommercialProductization.SyntheticFactory(launch);

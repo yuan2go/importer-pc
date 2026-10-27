@@ -17,7 +17,7 @@ static partial class Program
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS WSL01 " + message); }
         async Task Flush(Window window) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var operatorBinding = new CapabilityBinding("login", "reference-login", "1.0.0", "operator", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
         config = config with { CapabilityInstances = ParcelBindings.All(config).Append(operatorBinding).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
@@ -72,9 +72,14 @@ static partial class Program
         Check(!vm.Left.DevicePresentation.Text.Contains("在线") && !vm.RcsPresentation.Text.Contains("在线"), "stale snapshot revokes camera and RCS online claims");
         probe.Project = null; await RefreshUntil(() => vm.Fresh);
         await ManagementModeFixture.Authorize(runtime); await vm.RefreshManagementModeAsync();
+        await RefreshUntil(() => vm.IsManagementMode);
         Click(window, "参数设置");
         for (int i = 0; i < 100 && !vm.HasLoadedConfiguration; i++) await Task.Delay(30);
         await vm.EnsureMaintenanceLoadedAsync(); await Flush(window);
+        // Configuration data can be ready before the asynchronously navigated
+        // native pane is mounted. Require the actual authorized page/editor.
+        await RefreshUntil(() => vm.IsManagementMode && vm.SelectedPage == "maintenance" &&
+            Descendants(window).OfType<ParameterSettingsControl>().Any());
         var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
         Check(!editor.ShowPage(3, "维护认证") && !editor.ShowPage(3, "身份认证"), "daily role-based legacy maintenance-only component is absent from the real directory");
         var model = editor.Model!; var login = model.Components.Single(c => c.Provider?.Implementation == "reference-login");

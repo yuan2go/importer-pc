@@ -49,7 +49,7 @@ static class RetentionQualification
     static async Task Seed(string workspace,string output)
     {
         if(Directory.Exists(output))throw new IOException("New seed directory required"); Directory.CreateDirectory(output);
-        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config/sportmaster/business.json"))) with
+        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with
         { StationId="retention-qualification", TimeoutMs=30000, Retention=new(200,67108864,HistoryDays:7) };
         RequireReference(c);
         var originalReaders=ParcelBindings.Readers(c);var prefix="retention.qualification."+Wire.Id();

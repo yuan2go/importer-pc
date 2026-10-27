@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
- <PropertyGroup><DefineConstants>$(DefineConstants);LATENCY_MEASUREMENT;P0_CRASH_HOOKS</DefineConstants></PropertyGroup>
+ <PropertyGroup><DefineConstants>$(DefineConstants);SPORTMASTER;LATENCY_MEASUREMENT;P0_CRASH_HOOKS</DefineConstants></PropertyGroup>
  <ItemGroup><Compile Include="../../src/Ipc.Desktop/DesktopCrashHooks.cs" Link="DesktopCrashHooks.cs"/></ItemGroup>
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting><NuGetLockFilePath>packages.sportmaster.lock.json</NuGetLockFilePath></PropertyGroup>
  <ItemGroup><Using Include="System.IO"/><Using Include="System.Net.Http"/><Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/><ProjectReference Include="../../src/Ipc.Application.Supply/Ipc.Application.Supply.csproj"/><Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/><ProjectReference Include="../../src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj"/><ProjectReference Include="../../src/Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../../src/Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../../src/Ipc.Integrations/Ipc.Integrations.csproj"/><ProjectReference Include="../../src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj"/><Page Include="../../src/Ipc.Desktop/Themes/Workstation.xaml" Link="Themes/Workstation.xaml"/></ItemGroup>
@@ -11,4 +11,4 @@
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>
  <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
-</ItemGroup></Project>
+</ItemGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/></ItemGroup></Project>

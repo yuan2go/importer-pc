@@ -31,7 +31,7 @@ static class CapabilityClosure
             !typeof(OperatorSession).Assembly.GetReferencedAssemblies().Any(x => x.Name!.StartsWith("Ipc.Application.", StringComparison.Ordinal)),
             "common capabilities live in Platform with current full names/constructor and no retired bridge and no Application assembly dependency");
         CapabilityBinding B(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/closure19", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
         async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null, bool authorizeManagement = true)
         {
             // Each current position owns a distinct camera/scale; the first-position

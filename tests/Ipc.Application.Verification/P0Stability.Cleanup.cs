@@ -64,7 +64,7 @@ static class P0Cleanup
     static async Task Case(string workspace, string root, string scenario, Dictionary<string, object> result)
     {
         Directory.CreateDirectory(root);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Retention = new(1, 67108864), TimeoutMs = 3000 };
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Retention = new(1, 67108864), TimeoutMs = 3000 };
         ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId);

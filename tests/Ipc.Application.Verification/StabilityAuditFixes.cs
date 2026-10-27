@@ -15,7 +15,7 @@ static class StabilityAuditFixes
     }
     public static void History(string workspace, string root)
     {
-        var configuration = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var configuration = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var fixture = Path.Combine(root, "request-originals");
         // Repository-only T1 originals and local unsent dispositions, no peer accepts,
         // raw receipts, physical outcomes, real entities or elapsed days are invented.

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Build a selected Application, its real WPF presentation, and its exact dependency closure."""
 import argparse
+import os
+from mvs_runtime import publish as publish_mvs
 import hashlib
 import json
 from pathlib import Path
@@ -28,6 +30,8 @@ p.add_argument('--composition', help='Existing composition matching the selected
 p.add_argument('--extension-package', type=Path, action='append', default=[], help='Exact signed offline Driver/Component package; repeat for its complete dependency closure')
 p.add_argument('--extension-trust', type=Path, help='Independent trust used only for static acceptance; never copied into the candidate')
 p.add_argument('--extension-check-host', type=Path, help='Runnable Assembly with byte-identical public DLLs for a Windows target')
+p.add_argument('--mvs-runtime', type=Path, default=os.environ.get('IPC_MVS_RUNTIME'), help='Build input: reviewed current x64 MVS GigE runtime; never an operator step')
+p.add_argument('--verification-without-vendor-runtime', action='store_true', default=os.environ.get('IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME') == '1', help='Explicit non-delivery verification medium when vendor files are unavailable')
 a = p.parse_args()
 root = Path(__file__).resolve().parent.parent
 output = a.output.resolve()
@@ -91,6 +95,8 @@ if a.target == 'win-x64':
         peer = output / 'desktop' / binary.name
         if peer.exists() and hashlib.sha256(binary.read_bytes()).digest() != hashlib.sha256(peer.read_bytes()).digest():
             raise ValueError('Console/helper and desktop bytes differ: ' + binary.name)
+if a.application == 'sportmaster' and a.target == 'win-x64':
+    provenance['VendorRuntime'] = publish_mvs(build_source, output, a.mvs_runtime, a.verification_without_vendor_runtime)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 publish_provenance(output, provenance)
 selection.update(business)
@@ -121,7 +127,8 @@ if a.target == 'win-x64':
         shutil.copyfile(build_source / 'scripts' / script, output / script)
 cleanup(build_source, extraction, artifacts, workspace)
 (output / 'APPLICATION-START.txt').write_text(
-    'Installed Sportmaster: Production first configuration; unpacked CLI configuration remains an explicit Simulation reference.\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
+    ('Sportmaster: current Production SDK configuration; cameras/RCS remain deferred until explicitly configured. Synthetic verification uses its separate test fixture.\n' if a.application == 'sportmaster' else 'Use the selected Application configuration.\n')
+    + 'Console: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose install/data folders and shortcuts; review then approve Windows UAC. Initial drivers are selected by the verified medium; no account name or trust-file entry is required. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nThe installer displays the new data directory under the configured machine storage root; same-format overwrite installs retain the registered data root; non-current formats require a fresh data directory. Installer selections are retained for both desktop and console. Use PRODUCT-OPERATIONS.md for protected custom roots, first configuration repair, system maintenance, current-format backup/restore and batch plans.\n' if a.target == 'win-x64' else '')
     + ('Sportmaster default native UI: desktop/Ipc.Desktop.exe (supply-station)\nUse LIFECYCLE-OPERATIONS.md for current native workflows and validation boundaries.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')

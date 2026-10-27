@@ -18,7 +18,7 @@ static partial class Program
     {
         void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); lines.Add("PASS UIR " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { TimeoutMs = 30000 };
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { TimeoutMs = 30000 };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, true);
@@ -160,8 +160,9 @@ static partial class Program
         window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout(); Capture("work-position-diagnostics", client);
         Click(window, "返回当前对象设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
         var directory = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "设置目录");
+        await Until(() => directory.SelectedItem?.ToString() == "左相机");
         Check(directory.SelectedItem?.ToString() == "左相机" && ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED",
-            "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate");
+            "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate: selected=" + directory.SelectedItem + "; same=" + ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) + "; station=" + station.Text);
         var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
         editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
         var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "QueueCapacity");
@@ -307,7 +308,7 @@ static partial class Program
         var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
+            ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["chute-code"] = "OLD-CHUTE", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
             ["left-station-code"] = "OLD-LEFT", ["right-station-code"] = "OLD-RIGHT", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
         });

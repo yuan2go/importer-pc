@@ -65283,9 +65283,9 @@
     },
     {
       "path": "docs/runtime/management-mode-01.md",
-      "sha256": "0f464e266f3a7de0b7b1d765343310db24b2a32d439fc1bfa6ac5a8f061252f7",
-      "size_bytes": 5120,
-      "git_blob": "3a6612edab0fd789e879365115f319cc1aca4bcd",
+      "sha256": "cd77e8a23a387e2376ab2d135da8335819f6b7b96e233b48153556e9050398bb",
+      "size_bytes": 3134,
+      "git_blob": "2dc632e0f4daca61b9a71e7edb754fdcbf49b13b",
       "version": "INSTALLER-FIRST-RUN-UI-02-bootstrap-layout",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "First protected management password approval routing and compact native startup window sizing",
@@ -69990,9 +69990,9 @@
     },
     {
       "path": "docs/runtime/dual-camera-communication-fix-01.md",
-      "sha256": "f749790d7a7bddcac2915c0ceae2e97f20708d3d37fe447a447adbc81f72281a",
-      "size_bytes": 12723,
-      "git_blob": "5db62f2369c66309d5531fbce5a9fe4da920b0ce",
+      "sha256": "680f1b2fe76d23d4362bc59a18f9615c7e8a6efa51b26acc23ab1e631c059cc9",
+      "size_bytes": 12732,
+      "git_blob": "3fbf363c1787b0bdd2a53995d7a80cd6db093197",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -74198,9 +74198,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "41c6d1dcbc72dcde60de1a5cc6bad1c998781414ba096117057a0acb068d8aeb",
-      "size_bytes": 6782,
-      "git_blob": "98040de06c87918e283fd111431a127d8fcc8ed6"
+      "sha256": "b3f855b257873d3bfb3556baa0294424e232bbf50a91b9b4168ef3ca656fdc04",
+      "size_bytes": 6759,
+      "git_blob": "4ab41cfb2f4bbbea7acd1d162ae0a24fe20a24d3"
     },
     {
       "path": "docs/runtime/evidence/win11-24x7-stability-remediation-01/COLLECTOR-FINAL-TESTS.log",
@@ -75567,9 +75567,9 @@
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
       "source": "User-approved PR105/main404e855 integration and protected complete-custody retest; original product5bb032d and a192b7f evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "6913b7764761875eea6b8f1f4a7dc05c06804717eddc72d341d8d6354ce0a7ef",
-      "size_bytes": 14589,
-      "git_blob": "b67b67f81ccbe5934ebe356ff6318bc09ef92519",
+      "sha256": "30ac4bc6fd491e1c831f304790a4bd910617871086167fd8b6ec0c7289083d84",
+      "size_bytes": 14601,
+      "git_blob": "bc3c6252e10308ac3e684802ce01b7653d313575",
       "pre_retention_maintenance_qualification_01_identity": {
         "git_blob": "4fff3ebf9af0d92fe3551af09875d3b259f72ce2",
         "sha256": "f648cb4baca22fc81784655e74b3925f5ed7067990690aeae6375107d0649587",
@@ -89516,9 +89516,9 @@
     },
     {
       "path": "docs/runtime/parameter-guidance-startup-01.md",
-      "sha256": "8b009d89c9ae101ef323d339c06ec893e62991cca0f61fa96f57766ecfdc85ed",
-      "size_bytes": 9891,
-      "git_blob": "b7049fc3498bf9b1f3ca1467d03a026908d76232",
+      "sha256": "fdcdfb450389d8abdd7a34a044970eedb2c6035c4cad744525f741c284d647fb",
+      "size_bytes": 3083,
+      "git_blob": "37344addab525194142bf31618e7e011a68d6387",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -96799,9 +96799,9 @@
       "purpose": "Measured latency/capacity work package",
       "source": "WP-IPC-LATENCY-CAPACITY-01; historical evidence preserves its SourceCommit",
       "storage_scope": "public_repository",
-      "sha256": "eb0ab1d5a1a6a4c4815ffad996310b0b58c3a82b8feff76ac87680ebd32389b2",
-      "size_bytes": 8043,
-      "git_blob": "010f2499750e722f8f9c081314f3b723696d484a"
+      "sha256": "fa9ed36e2e81180b2f7bd0a837e3c8f16c449daba4735103c37556668b9c9ce3",
+      "size_bytes": 8022,
+      "git_blob": "103f2545cb3074a9c64f5e15113db0e40feea549"
     },
     {
       "path": "docs/runtime/validation/latency-capacity-01.md",
@@ -100835,9 +100835,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current workstation presentation, ordinary runtime entry and bounded dual log views",
       "source": "WP-IPC-WORKSTATION-STATUS-LOGS-01",
-      "sha256": "73bd843e32066ab6e964c4d9e254f817c7dab4fe8214a8e5bcb30641819d2db4",
-      "size_bytes": 4336,
-      "git_blob": "6823ef4829bb77d1c6bcabc1139f4f1d1d61017a",
+      "sha256": "f49257d452506f517dd66b1681ba620048256499209781e4ca5f24fd16083e21",
+      "size_bytes": 4181,
+      "git_blob": "5e764a1f9dc7e96b117392f1c9b638f6dc8dae57",
       "storage_scope": "public_repository"
     },
     {
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "5a0dd4778f1614a232b324ee4ed3bfab6903ba2b2e3178f30b322948c65b7b0c",
-      "size_bytes": 9234,
-      "git_blob": "ac1032d74fb761d82512dcc42e8677c72f019e05",
+      "sha256": "41936c25fdcd7b16a53c46a8a612d5a8c1270d6ffbab2b2a493e2a486e410981",
+      "size_bytes": 9478,
+      "git_blob": "dab8aa3501640ff4c323c1d8ae96b6c16b724207",
       "storage_scope": "public_repository"
     },
     {
@@ -102188,9 +102188,42 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "0043605677d5319cb98234c1ba106fafe9ce6c4d7fb7b7a30d7d22e02b656c42",
-      "size_bytes": 4161,
-      "git_blob": "4a1a2e42e3f74f692dfa20a8c45380010b67c3da",
+      "sha256": "c6008f459eca74a533e8a54556dd724ed4a74717ef6e88f1ac855e03b9e35070",
+      "size_bytes": 4835,
+      "git_blob": "8b19c8a00bfc7d0874958db52d99ee27d35929df",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-fresh-baseline-current-guides-01/docs/runtime/management-mode-01.md.txt",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "0f464e266f3a7de0b7b1d765343310db24b2a32d439fc1bfa6ac5a8f061252f7",
+      "size_bytes": 5120,
+      "git_blob": "3a6612edab0fd789e879365115f319cc1aca4bcd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-fresh-baseline-current-guides-01/docs/runtime/parameter-guidance-startup-01.md.txt",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "8b009d89c9ae101ef323d339c06ec893e62991cca0f61fa96f57766ecfdc85ed",
+      "size_bytes": 9891,
+      "git_blob": "b7049fc3498bf9b1f3ca1467d03a026908d76232",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-fresh-baseline-current-guides-01/docs/runtime/workstation-status-logs-01.md.txt",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "73bd843e32066ab6e964c4d9e254f817c7dab4fe8214a8e5bcb30641819d2db4",
+      "size_bytes": 4336,
+      "git_blob": "6823ef4829bb77d1c6bcabc1139f4f1d1d61017a",
       "storage_scope": "public_repository"
     }
   ],

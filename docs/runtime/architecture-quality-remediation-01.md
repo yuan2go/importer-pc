@@ -24,7 +24,7 @@
 |AbandonUnsubmitted|Abandoned、未发送意图取消及命令回执同事务；随后原有持久释放/清理流程处理原图，崩溃不丢命令身份|
 |ContinuePrepared / ContinueUpload|发送前持久保存本次继续准入和命令回执；回执证明准入，不证明外部接受或物理完成。重启仍执行原件恢复屏障，不因重放命令自动发送|
 |ArchiveHistory|归档事实、永久身份及命令回执同事务；无候选时也保存核查回执。冗余原件文件在事务后清理|
-|ConfirmConfiguration / ConfirmRestore / ReconcileReceipt|跨文件或外部查询前先保存命令身份及Pending回执；完成时保存终结回执。中断则保留Pending，同ID返回该回执而不重新执行；快照AuxiliaryReasons显示CommandPending，沿CommandAdmitted审计核对原配置/交接/Query/资料责任，再以新命令显式处置；暂停排空并进入管理模式后，可用CloseInterruptedCommand（Owner=原Pending命令ID，Value=检查说明）记录Interrupted，不清除任何原业务守卫|
+|ConfirmRestore / ReconcileReceipt|跨文件或外部查询前先保存命令身份及Pending回执；完成时保存终结回执。中断则保留Pending，同ID返回该回执而不重新执行；快照AuxiliaryReasons显示CommandPending，沿CommandAdmitted审计核对原配置/交接/Query/资料责任，再以新命令显式处置；暂停排空并进入管理模式后，可用CloseInterruptedCommand（Owner=原Pending命令ID，Value=检查说明）记录Interrupted，不清除任何原业务守卫|
 
 同ID异内容始终先于CAS/业务守卫拒绝。显式检查仅将Pending转为Interrupted并保留新检查命令/管理证据。已完成回执不可改写；已返回的终结回执与后续重放一致。进行中请求可先读到Pending，最终回执按实际完成更新；Pending不是成功或外部未知结果已解除。中断身份不会自动恢复执行，不存在网络长事务。原冻结报文、目标、请求ID、发送尝试和回执资料责任保持。
 

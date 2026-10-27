@@ -90,6 +90,21 @@
       "Path": "docs/runtime/unicode-shortcut-compatibility-01.md",
       "Archive": "docs/runtime/unicode-shortcut-compatibility-01.md.txt",
       "Sha256": "E66E754A916A62ECFBB6794EA3CD47E3C3BB728039B4D1407348E2E2DC7432C1"
+    },
+    {
+      "Path": "docs/runtime/management-mode-01.md",
+      "Archive": "docs/runtime/management-mode-01.md.txt",
+      "Sha256": "0F464E266F3A7DE0B7B1D765343310DB24B2A32D439FC1BFA6AC5A8F061252F7"
+    },
+    {
+      "Path": "docs/runtime/workstation-status-logs-01.md",
+      "Archive": "docs/runtime/workstation-status-logs-01.md.txt",
+      "Sha256": "73BD843E32066AB6E964C4D9E254F817C7DAB4FE8214A8E5BCB30641819D2DB4"
+    },
+    {
+      "Path": "docs/runtime/parameter-guidance-startup-01.md",
+      "Archive": "docs/runtime/parameter-guidance-startup-01.md.txt",
+      "Sha256": "8B009D89C9AE101EF323D339C06EC893E62991CCA0F61FA96F57766ECFDC85ED"
     }
   ]
 }

@@ -51,4 +51,4 @@ dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sport
 D:/DevCache/importer-pc/tools/dotnet-counters.exe collect --format json --output D:/DevCache/importer-pc/new-counters --counters 'EventCounters\System.Runtime[alloc-rate,loh-size,gen-2-gc-count,time-in-gc,gc-heap-size]' -- dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --latency-capacity --latency-rows 600000 --latency-seconds 12 --latency-assert --latency-output D:/DevCache/importer-pc/new-latency-run
 ```
 
-输出根必须不存在；夹具先检查20GiB可用空间、预置中保留12GiB，不运行2592000。先所有构建/功能测试结束，再顺序采样，完整保留MEASUREMENTS/IDENTITY和counter JSON及hash。`--latency-assert`只断言稳态不重复Details/作业序列化，不给出任意绝对延迟阈值。基线旧二进制不包含后加断言，不得把参数传入成功当作旧版语义通过。
+输出根必须不存在；夹具先检查20GiB可用空间、预置中保留12GiB，不运行2592000。先所有构建/功能测试结束，再顺序采样，完整保留MEASUREMENTS/IDENTITY和counter JSON及hash。`--latency-assert`只断言稳态不重复Details/作业序列化，不给出任意绝对延迟阈值。只对当前二进制的实际执行记录结果，不重验历史介质。

@@ -1,0 +1,38 @@
+PASS DECODING: pool exhaustion cannot allocate beyond the configured resident byte budget
+PASS DECODING: exception/finally ownership supports exactly-once return and subsequent reuse
+PASS DECODING: candidate validation refuses excess memory, insufficient slots, unbounded regex, unversioned rules and missing trigger evidence
+PASS DECODING: selection requires one eligible full candidate; duplicate/high-quality codes, wrong symbology and no-code cannot be guessed; outcomes=,AmbiguousCodes,NoMatchingCode,NoMatchingCode
+PASS DECODING: malformed result geometry cannot turn incomplete decoder output into an accepted code
+PASS DECODING: fake camera → copied read-only pixels/timestamp → decoder → one observation per complete trigger, same barcode on new trigger is a new entity
+PASS DECODING: business readiness requires acquisition, successful self-test, exact trigger settings and valid rule together
+PASS DECODING: successful stop drains decoder and all copied/native buffers before releasing the physical lease
+PASS DECODING: observe-only never becomes a business entity even with a Ready decoder and valid selection rule
+PASS DECODING: decode queue overflow immediately returns SDK loans, counts separately from frame gaps and visibly blocks trigger business
+PASS DECODING: concurrent Stop joins one cancellation/drain/teardown and leaks no buffer or decoder owner
+PASS DECODING: uncooperative managed decoder cannot cause use-after-return; bounded stop fails with original ownership retained
+PASS DECODING: late cancelled decode is rejected and explicit stop retry releases the original frame once
+PASS DECODING: Dispose racing Stop cancels an in-flight decode without duplicate release or residual work
+PASS DECODING: failed synthetic image self-test refuses readiness before acquiring the camera
+PASS DECODING: exception: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: exception: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: timeout: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: timeout: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: trigger source mismatch cannot pass the readiness gate
+PASS DECODING: incomplete: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: incomplete: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: changed: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: changed: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: extra: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: extra: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: sdk-gap: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: sdk-gap: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: free-failure: fault remains latched, partial/late/corrupt input cannot become a new parcel and diagnostics omit decoder data
+PASS DECODING: free-failure: exception/timeout/failed SDK release returns copied buffers only after the owner ends
+PASS DECODING: conflicting frame candidates within one trigger produce one explicit NoRead, never a guessed waybill
+PASS DECODING: controlled reconnect increments epoch and rejects old registration results before application delivery
+PASS DECODING: new durable runtime generation dominates all prior connections; old health cannot reopen the new epoch
+PASS DECODING: offline denominator includes failures; wrong reads remain separate and nearest-rank percentiles are exact
+PASS DECODING: Mono8 directory plus independent truth yields expected correct/no-read/wrong-read and per-symbology totals
+PASS DECODING: supervised protocol transports pixels, metadata and bounded candidates without a camera or native library
+PASS DECODING: uncooperative isolated decoder is killed and actually reaped within deadline; no child/pipe remains after stop
+DECODING_SELF_TEST_PASS checks=37; synthetic only; real SDK/trigger/accuracy NOT_RUN

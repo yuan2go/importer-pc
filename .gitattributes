@@ -158,3 +158,6 @@ docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=c
 
 # Synthetic raw Mono8 pixels have exact byte lengths and no text normalization.
 tests/fixtures/mvs-replay/frames/*.mono8 -text
+
+# Preserve exact decoder verification output, including earlier failures.
+docs/runtime/evidence/mvs-decoding-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

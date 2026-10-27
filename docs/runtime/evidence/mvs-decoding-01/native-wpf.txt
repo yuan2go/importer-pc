@@ -1,0 +1,18 @@
+PASS BUNDLED SDK NATIVE fresh first setup uses built-in MVS without inventory
+PASS BUNDLED SDK NATIVE fixed source/locale have no editor
+PASS BUNDLED SDK NATIVE actual SDK IP/serial/trigger fields available
+PASS BUNDLED SDK NATIVE no TCP fields or separate driver installation
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE one shared camera code editor isolates left/right
+CAPTURE bundled-sdk-daily-left: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+PASS BUNDLED SDK NATIVE actual SDK IP/serial/trigger fields available
+PASS BUNDLED SDK NATIVE no TCP fields or separate driver installation
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE full candidate saves both SDK dictionaries
+PASS BUNDLED SDK NATIVE actual SDK IP/serial/trigger fields available
+PASS BUNDLED SDK NATIVE no TCP fields or separate driver installation
+PASS BUNDLED SDK NATIVE no separate driver-install action
+CAPTURE bundled-sdk-first-left: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+CAPTURE bundled-sdk-first-compact: 785.6x382.4 DIP, Windows DPI 1.25/1.25
+PASS BUNDLED SDK NATIVE compact first setup retains same full candidate
+BOUNDARY real WPF and built-in descriptors; synthetic values, no device/barcode/site acceptance

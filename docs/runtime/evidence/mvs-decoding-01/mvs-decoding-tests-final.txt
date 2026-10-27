@@ -1,0 +1,12 @@
+PASS DECODING: pool exhaustion cannot allocate beyond the configured resident byte budget
+PASS DECODING: exception/finally ownership supports exactly-once return and subsequent reuse
+PASS DECODING: candidate validation refuses excess memory, insufficient slots, unbounded regex, unversioned rules and missing trigger evidence
+PASS DECODING: selection requires one eligible full candidate; duplicate/high-quality codes, wrong symbology and no-code cannot be guessed; outcomes=,AmbiguousCodes,NoMatchingCode,NoMatchingCode
+PASS DECODING: malformed result geometry cannot turn incomplete decoder output into an accepted code
+Unhandled exception. System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at DecodingVerification.Until(Func`1 condition) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 12
+   at DecodingVerification.EndToEnd() in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 62
+   at DecodingVerification.EndToEnd() in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 76
+   at DecodingVerification.Run(String root) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 26
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\Program.cs:line 2
+   at Program.<Main>(String[] args)

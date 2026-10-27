@@ -1,0 +1,681 @@
+{
+  "SourceCommit": "8ae0bf531677771b210cfbab0824bb7f30db156c",
+  "BaseCommit": "d506f77c",
+  "DocumentationCleanupCommit": "2059479d",
+  "Environment": "Windows x64; .NET pinned by global.json; D-drive project environment; native WPF DPI 1.25",
+  "ExecutionIdentity": "Final test/build runs used the same source bytes committed here. No vendor SDK was loaded and no camera was controlled. Evidence-only changes follow this source commit.",
+  "Commands": [
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing",
+      "log": "mvs-verified-app-hikrobot-sdk-editing.txt",
+      "exitCode": 0,
+      "passLines": 8
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening",
+      "log": "mvs-verified-app-hikrobot-hardening.txt",
+      "exitCode": 0,
+      "passLines": 14
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup",
+      "log": "mvs-verified-app-parameter-guidance-startup.txt",
+      "exitCode": 0,
+      "passLines": 23
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-refactor",
+      "log": "mvs-verified-app-parameter-refactor.txt",
+      "exitCode": 0,
+      "passLines": 85
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --application-architecture",
+      "log": "mvs-verified-app-application-architecture.txt",
+      "exitCode": 0,
+      "passLines": 64
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02",
+      "log": "mvs-verified-app-reliability-02.txt",
+      "exitCode": 0,
+      "passLines": 66
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --deferred-connections",
+      "log": "mvs-verified-app-deferred-connections.txt",
+      "exitCode": 0,
+      "passLines": 130
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --station-single-camera",
+      "log": "mvs-verified-app-station-single-camera.txt",
+      "exitCode": 0,
+      "passLines": 52
+    },
+    {
+      "command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --rcs-timeout-errors",
+      "log": "mvs-verified-app-rcs-timeout-errors.txt",
+      "exitCode": 0,
+      "passLines": 57
+    }
+  ],
+  "OtherRuns": [
+    {
+      "command": "dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false",
+      "log": "mvs-full-build-final-2.txt",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "command": "dotnet build tests/Ipc.Drivers.Hikrobot.Probe -c Release -p:IpcContractPath=<workspace>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll -p:RestoreLockedMode=true -m:1 -nr:false",
+      "log": "mvs-probe-build-final-3.txt",
+      "exitCode": 0
+    },
+    {
+      "command": "dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test",
+      "log": "mvs-verified-probe-selftest.txt",
+      "exitCode": 0,
+      "checks": {
+        "reader": 46,
+        "mvs": 26,
+        "hardening": 16
+      }
+    },
+    {
+      "command": "dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --decoding-test .",
+      "log": "mvs-verified-decoding.txt",
+      "exitCode": 0,
+      "checks": 41
+    },
+    {
+      "command": "build locked Release tests/Ipc.Hikrobot.IndependentReview; dotnet tests/Ipc.Hikrobot.IndependentReview/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll",
+      "log": "mvs-verified-Ipc.Hikrobot.IndependentReview-tests.txt",
+      "exitCode": 0,
+      "checks": 20
+    },
+    {
+      "command": "build locked Release tests/Ipc.Hikrobot.LocalSimulation; dotnet tests/Ipc.Hikrobot.LocalSimulation/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll",
+      "log": "mvs-verified-Ipc.Hikrobot.LocalSimulation-tests.txt",
+      "exitCode": 0,
+      "checks": 7
+    },
+    {
+      "command": "build locked Release tests/Ipc.Desktop.UiVerification BusinessModule=Sportmaster SelfContained=false; dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --hikrobot-sdk-editing",
+      "log": "native-wpf.txt",
+      "exitCode": 0,
+      "checks": 14
+    },
+    {
+      "command": "dotnet publish tools/Ipc.Mvs.Replay -c Release -p:RestoreLockedMode=true -p:SelfContained=false -m:1 -nr:false -o D:/projects/mvs-replay-published",
+      "log": "mvs-replay-publish.txt",
+      "exitCode": 0
+    },
+    {
+      "command": "published Ipc.Mvs.Replay.exe --frames tests/fixtures/mvs-replay/frames --truth tests/fixtures/mvs-replay/truth.json --rules tests/fixtures/mvs-replay/rules.json --decoder synthetic --output <new D-drive report>; repeat with --decoder <published executable> --decoder-arg --synthetic-worker",
+      "log": "mvs-replay-process-smoke.txt",
+      "exitCode": 0
+    },
+    {
+      "command": "python -m unittest discover -s scripts -p test_application_compatibility.py",
+      "log": "mvs-verified-python-compatibility.txt",
+      "exitCode": 0
+    }
+  ],
+  "NotVerified": [
+    "vendor decoder and ABI",
+    "real accuracy/wrong reads",
+    "actual trigger counter and N-frame semantics",
+    "real camera pixels and sustained load",
+    "target IPC 24h/72h",
+    "real RCS/physical completion",
+    "installer/production qualification/signing"
+  ],
+  "Files": [
+    {
+      "path": "mvs-app-application-architecture.txt",
+      "sha256": "de17e88df768374bfabb9689b47e9b5c83fea60ba98731a8e8bc2c475ec21e33",
+      "bytes": 5589,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-deferred-connections.txt",
+      "sha256": "e5213a0765921b139939ce167c15598d29eeca38cda0afc5a112c1900faf5c48",
+      "bytes": 14390,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-hikrobot-hardening.txt",
+      "sha256": "5c07a6026ae3a4c35f7080beb4ebfdcf19ae3a1f4dc9b7657ed94a4ceebc3d66",
+      "bytes": 1483,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-hikrobot-sdk-editing.txt",
+      "sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc",
+      "bytes": 596,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-parameter-guidance-startup.txt",
+      "sha256": "ed048be984239d4f17b7307e26feb54a9d40b2d180e907f43ab79f4d05960e91",
+      "bytes": 2448,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-parameter-refactor.txt",
+      "sha256": "44a1ad35a3dbccd76b5383295cf7cc5d30ff1adcb7189091f3ed5a1dcbce2686",
+      "bytes": 8352,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-rcs-timeout-errors.txt",
+      "sha256": "dbb3f879d9aadd8aae1bfcb0f7dac9b4f9acd7f6153075cabb36c083d0b3ab30",
+      "bytes": 4730,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-reliability-02.txt",
+      "sha256": "83a6ac3ebccf66c8b4d9ab90a536fda8ea41c6dd668db95e0e503da1199dad8b",
+      "bytes": 8094,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-app-station-single-camera.txt",
+      "sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "bytes": 3431,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-baseline-build.txt",
+      "sha256": "4a12b1811d3e03a6dc35cf487127bb4497795e9be5dee0a1a8a7825c48620755",
+      "bytes": 5168,
+      "role": "baseline"
+    },
+    {
+      "path": "mvs-baseline-probe-build.txt",
+      "sha256": "1f8ec5ee9563e5c95a2093d2967dcfcbbf2f9d86cfd571df306d4f59d1964285",
+      "bytes": 1093,
+      "role": "baseline"
+    },
+    {
+      "path": "mvs-baseline-tests.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436,
+      "role": "baseline"
+    },
+    {
+      "path": "mvs-compile-1.txt",
+      "sha256": "ee6805aaca9c1dadc7e7115d6f2020111130501696eb1f216c67ac7d565b6af1",
+      "bytes": 1958,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-compile-2.txt",
+      "sha256": "8ed7195a09c4723a6ac550248a1c87b36f84e5f5bbe1cb0203dced79b354c749",
+      "bytes": 1000,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-1.txt",
+      "sha256": "dbf8f47ad0a836130101d0afde1f29ff2526cf06ee0b912e888123b3e1f8349d",
+      "bytes": 683,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-2.txt",
+      "sha256": "da96a97eaa8e00af1494d5e455e52f671415c38d71f13ab967dcbf2e1cc66c8c",
+      "bytes": 1449,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-3.txt",
+      "sha256": "37ac53ac75c71471c4590e08268f73c85071753573b41cb421e6b1fac87982f0",
+      "bytes": 1248,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-4.txt",
+      "sha256": "5e35632a8fbec18ce0e16e4fabf264b45364e12334f34c131b324e0da46cfe1e",
+      "bytes": 4577,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-final-2.txt",
+      "sha256": "8bf4c3dd4e5d37b812fa484189212ef687285c0fcd626d2fbd6618bbe52cc7ac",
+      "bytes": 5018,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-decoding-tests-final.txt",
+      "sha256": "a5bf7e0fbd12694a0a26b3a6c1a69479d41628c93313e9ce071ba0ea54c40fb7",
+      "bytes": 1592,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-existing-tests-1.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-existing-tests-final.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-full-build-1.txt",
+      "sha256": "e77c05f61aa9816732fbb51c92c4a225aaeff7d090690909d29bffd4a91496bd",
+      "bytes": 10041,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-full-build-2.txt",
+      "sha256": "0bd4e5101c6541c1c52af2c1fa543a16c827983e45484e15619be37318ab1bc5",
+      "bytes": 7769,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-full-build-final-2.txt",
+      "sha256": "dcacb2b5178f1c02ecd98eaf147f3a00863e252a9c8170678ca0c087870ac4d1",
+      "bytes": 7933,
+      "role": "final"
+    },
+    {
+      "path": "mvs-full-build-final.txt",
+      "sha256": "79f048c5d362da26b80e81afb22b0f54b7f9e8df3e1d6487d19e7300f5d33125",
+      "bytes": 7769,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-Ipc.Hikrobot.IndependentReview-build.txt",
+      "sha256": "ff0d5281c2a505252bb183813ee7e3c4c095ade2ec2df552241150442fd14015",
+      "bytes": 477,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-Ipc.Hikrobot.IndependentReview-tests.txt",
+      "sha256": "54d9aaf680d8e76d0ee5237b16cc081f2832213b287d013a784080ea5027005b",
+      "bytes": 1388,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-links-check.txt",
+      "sha256": "b0a7815b3cc40d52507dabbebf7550a1ce8fc6eccd9023ef4de645251298a286",
+      "bytes": 57,
+      "role": "final"
+    },
+    {
+      "path": "mvs-native-build.txt",
+      "sha256": "a68a6e1fd3dfc672ffd5545a551867d890a7eb0f96a9c143fe020d3d7c0bae79",
+      "bytes": 3002,
+      "role": "final"
+    },
+    {
+      "path": "mvs-native-sdk-tests.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-new-tests-build.txt",
+      "sha256": "56a14b2c2bef8e1db25ae6c6693d3394f026bd5033b35a3adfc589e205303a83",
+      "bytes": 1103,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-new-tests-build2.txt",
+      "sha256": "a41cdd9ab0a7e482f3f45b725657a344f97944d089033c705576439b019ad023",
+      "bytes": 673,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-new-tests-build3.txt",
+      "sha256": "6922b9cceb01de2bc41c1ba9a25bfca823734cd5928dffe62d53370f058dc0f8",
+      "bytes": 673,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-new-tests-build4.txt",
+      "sha256": "36b78005efcff264502b2ae8c4effa5e51a7f1199027570072bb8afe9b3ffe11",
+      "bytes": 837,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-new-tests-build5.txt",
+      "sha256": "da2b3d9ff51a8e008cb90c7951b662be2d9d9a6f84bbca2ae26724ef0c0ea973",
+      "bytes": 673,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-probe-build-final-3.txt",
+      "sha256": "6059bafecc728787b44dd2aaff21bb877085f76a91e87cb3c685a534b61f738e",
+      "bytes": 837,
+      "role": "final"
+    },
+    {
+      "path": "mvs-probe-build-final.txt",
+      "sha256": "4506e2900e4136dcb4c0880e8adbeb778088bd7804da416148e81d551e3febea",
+      "bytes": 673,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-probe-self-test-final.txt",
+      "sha256": "f864ccec9c427ead8a4704bcafbd6095f734a4eeda11510af41ab9b1bad201bd",
+      "bytes": 683,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-replay-build.txt",
+      "sha256": "8e77ee544df99318e92290b115219999ade4683e3ff694603bb71faa33c21326",
+      "bytes": 993,
+      "role": "development_receipt_not_final"
+    },
+    {
+      "path": "mvs-replay-process-smoke.txt",
+      "sha256": "3512f5b788e9f9c4f62e96291c1c960fbc36e6e8922fa46a1c4750c2d3d6e816",
+      "bytes": 51,
+      "role": "final"
+    },
+    {
+      "path": "mvs-replay-publish.txt",
+      "sha256": "d8f64860e4ec9ddae882f577950e43c02e06fe4fbe56a7205ccfbcb35dff07f4",
+      "bytes": 887,
+      "role": "final"
+    },
+    {
+      "path": "mvs-replay-smoke.txt",
+      "sha256": "3512f5b788e9f9c4f62e96291c1c960fbc36e6e8922fa46a1c4750c2d3d6e816",
+      "bytes": 51,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-application-architecture.txt",
+      "sha256": "699a3a018030396896df169309d1d1955af983a27b3a51086a517ff3b008f21c",
+      "bytes": 5589,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-deferred-connections.txt",
+      "sha256": "2b5d6ccbb0413ef06de52f873dcb25f2c0c43d9d93e016ed8678bdfe5be307a4",
+      "bytes": 14390,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-hikrobot-hardening.txt",
+      "sha256": "7ab46808d97c9c2170d451783fb21eed73412d63373ad50c2dbea9fe32ce9242",
+      "bytes": 1483,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-hikrobot-sdk-editing.txt",
+      "sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc",
+      "bytes": 596,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-parameter-guidance-startup.txt",
+      "sha256": "2395d49ed6f4e9f29b4ba077715c6f849c3e5f640563b1e0c7d15024e6b32501",
+      "bytes": 2448,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-parameter-refactor.txt",
+      "sha256": "c4ce2909231559af82d1f240ce248e998142a121693df750c4fe7d3b388f3d3c",
+      "bytes": 8352,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-rcs-timeout-errors.txt",
+      "sha256": "5068c54522d848261a3f0860cd3873504d9d2a61b10d28629193d937835a9243",
+      "bytes": 4730,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-reliability-02.txt",
+      "sha256": "f050ca04c42b7d807c96810945805bfcddfeefa668357431e166011a079990f2",
+      "bytes": 8101,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-app-station-single-camera.txt",
+      "sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "bytes": 3431,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-decoding.txt",
+      "sha256": "8bf4c3dd4e5d37b812fa484189212ef687285c0fcd626d2fbd6618bbe52cc7ac",
+      "bytes": 5018,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-Ipc.Hikrobot.IndependentReview-build.txt",
+      "sha256": "88e04b1161ef4de488d557a48fe5a92e1101c7116d5e7de68866b7ce289c1e00",
+      "bytes": 355,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-Ipc.Hikrobot.IndependentReview-tests.txt",
+      "sha256": "2383e96f37cb2dbd17bb307fac32d41fefb72c14313b11fc11cbe0ac4554840a",
+      "bytes": 1302,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-Ipc.Hikrobot.LocalSimulation-build.txt",
+      "sha256": "588443a07d5b08942fe2a5b1768ff9701b4632afe5fc3072eae9f5551e1fbf85",
+      "bytes": 469,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-Ipc.Hikrobot.LocalSimulation-tests.txt",
+      "sha256": "4d87c5599cd681de91cd35e68f1bec53ec0a867e3dfa24e5f6c9db75711a2043",
+      "bytes": 1908,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-probe-selftest.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436,
+      "role": "final"
+    },
+    {
+      "path": "mvs-verified-python-compatibility.txt",
+      "sha256": "98bc93c5722e77474b00f8789839fbc4a364fb52fa775f94477c2368987670c7",
+      "bytes": 120,
+      "role": "final"
+    },
+    {
+      "path": "native-wpf.txt",
+      "sha256": "286a97b494547ca62b0b5375c749e44d08c8eb7ef4219396f9a6a31323c32ec7",
+      "bytes": 1276,
+      "role": "final"
+    },
+    {
+      "path": "replay-synthetic.txt",
+      "sha256": "a3e008bec59c369b6b75c1e7d459c59c27da176a9eb1d8db7be0c16b0776cca5",
+      "bytes": 1397,
+      "role": "final_synthetic_report"
+    },
+    {
+      "path": "replay-process.txt",
+      "sha256": "ac6436e873b56b243a93065435a283eb3af91f9cb8d1d7c940fa6965bcfdc60a",
+      "bytes": 1403,
+      "role": "final_synthetic_report"
+    }
+  ],
+  "SourceFiles": [
+    {
+      "path": ".github/workflows/hikrobot-sdk.yml",
+      "gitBlob": "65a4d34d6f7e416e1b24c7ba906123966e371d30",
+      "sha256": "41891758e7790b4da8e2cd839ba08c83651825f9c2284993396a0131dd3e73ce"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "gitBlob": "6f2e34d3110acc51177750dafc23677b681af9e6",
+      "sha256": "34e0ad954f10af2de73e8c64c74e540030dc912670bfcec03eb25eac26b07d40"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+      "gitBlob": "5856eea2c75e5b22bcbe40aa599af34756bce934",
+      "sha256": "cee3de0bccdc006b42c766ef4eca1e8ed90dd5f8afe50dc469f962955852e482"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/BundledMvs.cs",
+      "gitBlob": "bb0b7f9f5e181f0862e7de80f304a0a9eb113647",
+      "sha256": "0323ade616b7eecb0ce863e6e7329fbf9d83f09dccadf3ce3bb518cc02001622"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodeMetrics.cs",
+      "gitBlob": "e06ddc1d9ace5e083e09872f30f987645e6f32fa",
+      "sha256": "d03d946ebb7281a5dfbd89a5c584fe3de8a688b4386e3f5b7d8dd792f8e7a0a7"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodeOptions.cs",
+      "gitBlob": "d2279f0c92a7873a23c82e7b30181abae75d5ed4",
+      "sha256": "301ee760d3da2f16e20a4acdc2abb02a1b6f6c8044be69d8a8dd564c3ddf5660"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodePipeline.cs",
+      "gitBlob": "bf1f058c964ebdfad00fa8d4d6c3fa2621f14d6b",
+      "sha256": "7bd132caa0f98a3a2442afd554029073a430227dfa26ed27cef9a0316d505d18"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecoderRunner.cs",
+      "gitBlob": "e98b1f01297a0c9e676e20b39d92a6fcd1dc55cd",
+      "sha256": "0f78b1cd171a001fdd53d1092b4ab4e9e4cb858f54f0128a7250f8011674f2a0"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/FramePool.cs",
+      "gitBlob": "6749ad70770fb9a111da6dbaaaf2092f62d2f3e9",
+      "sha256": "f8acd4c95dcc562c2e829db1086d345d2fa75e59bb6b1054c8523f3e8747c443"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/MvsDecoding.cs",
+      "gitBlob": "8820eed59165a7d3e10bc8b647526ee384133e99",
+      "sha256": "c7528bd40108d2752a72c28f3d420e153e973346dfe7874264572f61a17e81d8"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/OfflineReplay.cs",
+      "gitBlob": "1a3639ac99747828182479ed1cce2b65ca02279b",
+      "sha256": "3a9964026ec91a36b323f07471895a1a1d7372326fe03e90186ae69bb3c6fccf"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/ProcessFrameDecoder.cs",
+      "gitBlob": "abdd49ca413157db1ca93cd0bee0ba80f0bda9ef",
+      "sha256": "bbda5f69094aec328f802e6fe327be48ba8cee6ca2be6cd177fd0fe5388236a6"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "gitBlob": "1ed53869e0c17a9c0f587047f64ac193dfe0ba3b",
+      "sha256": "f9d16440fc4338582893d0750e53c396d732325902da26673dd7a056b6c8c61b"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsNative.cs",
+      "gitBlob": "7e8c8ae070aff1df016239c799f69f62c743bb96",
+      "sha256": "0647beca98de96b2be870d5812e4af6b4d61887df3a8b5fc1e6542992c780c4a"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/parameters.json",
+      "gitBlob": "6189939ede11d0ee4d4750c2b105b5752f46901f",
+      "sha256": "b9996c00d0f2cb94d42c3b9c9a0779bc256ca919c72681c361cf7d5edeab86bf"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/sdk-boundary.json",
+      "gitBlob": "0def4bd6164d0d6d5ebbe8f24a7a65e47c311baa",
+      "sha256": "2a6308ad4be76b5bab7949babd16d4696125657e20e26fffc62ffc68f1d8b167"
+    },
+    {
+      "path": "src/Ipc.Platform/FrameDecoding.cs",
+      "gitBlob": "497420423d0595ada61cda2adc785a111a15307a",
+      "sha256": "1756e8c0a9d719a470684b7c17ad170f5eb6e7b46e05f243f79ade3dd5f582dc"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationSession.cs",
+      "gitBlob": "ce447a28523b00783ad7371c678626c6c19d7e2f",
+      "sha256": "0d40e64c1b9d28dd01cacbc197620667fa38aad9a1c4eb6ca69a5e49dae89b4b"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
+      "gitBlob": "63d8b0fd91a9385843a2eb9dbc9b41dd252ef62f",
+      "sha256": "619b16bb55e8f83c9336d6a97f8498e6b3692b406481de9c7cb192a267970d12"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
+      "gitBlob": "b08bfb8229891cd96e6849217213e8e7f170c0e9",
+      "sha256": "9b8afc7ad50723e066df3ab32cb752e5ef8e1b5204dd2917ff190aeb50657cb6"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/DecodingVerification.cs",
+      "gitBlob": "654b7d2491313914b016db0142f8e9a4d56db2fa",
+      "sha256": "0d882c93d41d805997475ef41095e6442ecc3ce23e19dcccf74bcf2616246465"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Ipc.Drivers.Hikrobot.Probe.csproj",
+      "gitBlob": "81e505c6069138ab7b16cf241a23c612db7e88e7",
+      "sha256": "24c4f0f95fbed0d5b97bd47451272f640c0e8e0412aa92b77b4b72e9dcc1c99b"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
+      "gitBlob": "36f56f7d80641c9ffef5bcb3fca99efe93b698cb",
+      "sha256": "a8bb6f90cf6eb81080305202463272bc91648a80a681f3b33ec0c9a9978dfd1e"
+    },
+    {
+      "path": "tests/Support/ProgrammableDecoder.cs",
+      "gitBlob": "f90b60d48f7dd51e68f57b96a4478585e7f35a2a",
+      "sha256": "7f6c43ca1c7e4818a8a97478c9019dd8144d70d5d16aeee3a75beb6a475e1ca2"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/README.md",
+      "gitBlob": "a974ef1a4e55add7821eb4e2791aa8559fa70827",
+      "sha256": "16d586fef243b70d6fdcad0fc1d773095654d61ce14a98b0889117da48aa508b"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/1.mono8",
+      "gitBlob": "c98546f43a6c0b9d3523c85ef3905131a0919ab1",
+      "sha256": "3138bb9bc78df27c473ecfd1410f7bd45ebac1f59cf3ff9cfe4db77aab7aedd3"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/2.mono8",
+      "gitBlob": "8752011b5cb6940c75ebfec704a46bc93d5d74a2",
+      "sha256": "4f2e8d65483c641648cdb374ae9d8abd368d269e4ddffe092a8237b8162cddd6"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/3.mono8",
+      "gitBlob": "80e45982f7149f8479736be87d4fcb2577c3af3e",
+      "sha256": "79bd7d7fd684b399857c582b1b7172ddf277d4fe1b027ec52b28da3ae381e675"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/4.mono8",
+      "gitBlob": "c2e3fd73d91fba7333fbcdaa8f81331d024a1133",
+      "sha256": "f435f2420b50c70ec80865cf8e20b169874165fb8576b48633caf2a8176d2e4a"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/rules.json",
+      "gitBlob": "a495e090057b4d419f87b33872281300676cbe67",
+      "sha256": "3c060f94eff56fb829cbaace836168e7ad4a4046d626c49cdc052d4437429339"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/truth.json",
+      "gitBlob": "4bea3f1ad12f94feeccee1dc3fdb81b0b7e1a28e",
+      "sha256": "97c1aeec75b8fcc1f8790624f1cba9734f2208e5a10b09f188dbe2073f03ab11"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/Ipc.Mvs.Replay.csproj",
+      "gitBlob": "63a0e208b658e4470a6c19cd89977c179611eb91",
+      "sha256": "fef5e9ddf1ecb0c24012b565fb2b8958a6b96d99d4c295c9d6cf00ad0430cd4c"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/Program.cs",
+      "gitBlob": "f0bb942e6bdc3163f88b4a669cf75e58278459ca",
+      "sha256": "d81fdb49d16a66236c3cb0730c96e33dd519463b4ee4728f027d208f03d45da1"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/packages.lock.json",
+      "gitBlob": "d3394760eb968188ca1a5bd294fd80fcf73a4589",
+      "sha256": "5abed07f33f0cc839542fa96cdd6f2aaa31e9e330445e0dc89e14d0290adac8d"
+    }
+  ]
+}

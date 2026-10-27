@@ -1,0 +1,11 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Drivers.Hikrobot -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot\bin\Release\net10.0\Ipc.Drivers.Hikrobot.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Drivers.Hikrobot.Probe -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Probe.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.60

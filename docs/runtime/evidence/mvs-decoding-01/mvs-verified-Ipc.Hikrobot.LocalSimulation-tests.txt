@@ -1,0 +1,36 @@
+METRIC MVS cycles=100 starts=100 stops=100 destroys=100 freed=100 leases=100
+PASS MVS.100SequentialGenerationsReleaseEveryOwner
+METRIC Reader cycles=100 observations=100 rejectedOldCallbacks=99 stops=100 destroys=100 leases=100
+PASS Reader.100RestartsFenceOldCallbacks
+METRIC fault=disconnect simulatedDetectionMs=1027 starts=2 manualRecoveries=1
+PASS MVS.FaultAndExplicitRecovery.disconnect
+METRIC fault=address-changed simulatedDetectionMs=1021 starts=2 manualRecoveries=1
+PASS MVS.FaultAndExplicitRecovery.address-changed
+METRIC fault=acquire-throws simulatedDetectionMs=14 starts=2 manualRecoveries=1
+PASS MVS.FaultAndExplicitRecovery.acquire-throws
+METRIC overflow received=20 delivered=1 rejected=19 inFlight=0
+PASS Reader.BlockedConsumerHasExplicitOverflowAndConservedCounts
+RESOURCE {
+  "Phase": "paced-start",
+  "PrivateMemorySize64": 16728064,
+  "WorkingSet64": 43962368,
+  "Handles": 286,
+  "Threads": 16,
+  "ManagedBytes": 4390800,
+  "Note": "observed snapshot; no GC forced; not a soak or native-SDK leak test"
+}
+METRIC paced seconds=10.00 perSideProduced=170 leftDelivered=170 rightDelivered=170
+METRIC paced seconds=20.01 perSideProduced=340 leftDelivered=340 rightDelivered=340
+METRIC paced seconds=30.01 perSideProduced=510 leftDelivered=509 rightDelivered=509
+RESOURCE {
+  "Phase": "paced-end",
+  "PrivateMemorySize64": 14139392,
+  "WorkingSet64": 44191744,
+  "Handles": 292,
+  "Threads": 17,
+  "ManagedBytes": 1987648,
+  "Note": "observed snapshot; no GC forced; not a soak or native-SDK leak test"
+}
+METRIC paced perSide=510 returnedMetadata=1020 deliveredObservations=1020 candidateEntitiesPerSide=255; no pixels/decoder/Application/RCS exercised in this case
+PASS DualSources.PacedMetadataAndBarcodeResults17HzFor30Seconds
+LOCAL_SIMULATION_RESULT passed=7 failed=0 skipped=0; nativeDeviceCalls=0; realPixels=0; independentKnownFailuresNotWaived=true

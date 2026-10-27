@@ -1,0 +1,13 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj (用时 885 毫秒)。
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform\Ipc.Platform.csproj (用时 885 毫秒)。
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tools\Ipc.Mvs.Replay\Ipc.Mvs.Replay.csproj (用时 886 毫秒)。
+  Ipc.Platform -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Mvs.Replay -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tools\Ipc.Mvs.Replay\bin\Release\net10.0\Ipc.Mvs.Replay.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:07.50

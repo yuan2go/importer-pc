@@ -32,6 +32,8 @@ MVS仅采图，缺适用正式条码识别组件。只有真实连接/实际帧�
 
 每次启动执行内置 Code39 合成图自检。`ConfirmationSource` 分别报告 acquisitionHealthy、decoder、triggerVerified、selectionValid、entityMode、businessReady、规则身份和计数；序列号及条码不进入诊断。`Ipc.Mvs.Decoding` Meter 提供取帧/解码/无码/丢弃/旧代/SDK断档/失败、队列水位及耗时直方图，快照累计当前源对象生命周期；计时使用 Stopwatch。无码/歧义是观察，不是业务成功。故障保持，受控 Stop 后新 Epoch 再次自检；不自动重连。
 
+当前MVS入口只接收紧密排列的Mono8单图，长度必须等于宽×高；没有已知行填充合同就拒绝，不猜测跨度。通用解码端口及离线回放支持显式Stride。选择正则使用NonBacktracking，单次及整批预算均为100ms；选择超时按无码报告。
+
 主宿主使用现有事务账的 Revision 预留运行代次，再由 ObservationSession 增加连接代次；随机注册尾缀防恢复副本碰撞。未改变数据库 schema、原请求、TCP 提供者或生产资格。独立端口调用方也须提供新的受控注册身份，不能复用旧 Epoch。
 
 在新的 D 盘工作树执行：
@@ -46,3 +48,5 @@ dotnet build tools/Ipc.Mvs.Replay -c Release -p:RestoreLockedMode=true -m:1 -nr:
 ```
 
 回放命令、人工真值格式、指标分母与合成结果见[回放夹具说明](../../tests/fixtures/mvs-replay/README.md)。输入真实样本和输出报告只能放仓库外；应用采集不留存图像。Stop/Dispose 等待的是实际资源所有者，解码停止违约会失败并保有原帧/租约，不能将超时当作停止成功。相机 SDK 本身不可返回时继续沿原保有策略，本包未改其强制终止能力。
+
+本框架实际执行的构建、合成/原生验证及未验边界见[验证记录](evidence/mvs-decoding-01/README.md)。

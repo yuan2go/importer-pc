@@ -1,0 +1,53 @@
+{
+  "Mode": "SYNTHETIC_ONLY",
+  "Report": {
+    "Overall": {
+      "Total": 4,
+      "CorrectRead": 2,
+      "NoRead": 1,
+      "WrongRead": 1,
+      "Errors": 0,
+      "ReadRate": 0.75,
+      "CorrectReadRate": 0.5,
+      "NoReadRate": 0.25,
+      "WrongReadRate": 0.25,
+      "ErrorRate": 0,
+      "P50Milliseconds": 0.1568,
+      "P95Milliseconds": 13.9326,
+      "P99Milliseconds": 13.9326
+    },
+    "BySymbology": {
+      "Code39": {
+        "Total": 3,
+        "CorrectRead": 1,
+        "NoRead": 1,
+        "WrongRead": 1,
+        "Errors": 0,
+        "ReadRate": 0.6666666666666666,
+        "CorrectReadRate": 0.3333333333333333,
+        "NoReadRate": 0.3333333333333333,
+        "WrongReadRate": 0.3333333333333333,
+        "ErrorRate": 0,
+        "P50Milliseconds": 0.4613,
+        "P95Milliseconds": 13.9326,
+        "P99Milliseconds": 13.9326
+      },
+      "QR": {
+        "Total": 1,
+        "CorrectRead": 1,
+        "NoRead": 0,
+        "WrongRead": 0,
+        "Errors": 0,
+        "ReadRate": 1,
+        "CorrectReadRate": 1,
+        "NoReadRate": 0,
+        "WrongReadRate": 0,
+        "ErrorRate": 0,
+        "P50Milliseconds": 0.0724,
+        "P95Milliseconds": 0.0724,
+        "P99Milliseconds": 0.0724
+      }
+    },
+    "RuleIdentity": "synthetic-v1:FFEE6F2F783B57381AD7FFB8B03A9DBC72E273607D0CE6493EEC206860F44969"
+  }
+}

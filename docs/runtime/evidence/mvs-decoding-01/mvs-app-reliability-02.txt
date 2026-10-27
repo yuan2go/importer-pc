@@ -1,0 +1,175 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-fa9ca388617844a89248f681445699c1
+MEASURE H02 startup-stop wait_ms=215.18; retained=True; stops=1
+PASS H02: cancelled Stop waits for the real startup owner without stopping/disposal underneath it
+PASS H02: startup cancellation followed by disposal releases all application ownership
+PASS H02: old health callback reached the registration-check/publication interleaving
+PASS H02: old health publication cannot overwrite the new reconnect registration
+PASS H02: old observation registration is rejected after reconnect
+MEASURE H02 logs first_ms=811.35; two_pages_ms=187.61; first_scanned=3200; additional_scanned=400
+PASS H02: pagination preserves frozen order and original file/line/hash
+PASS H02: two subsequent pages scan at most their 400 original rows, not all 6000 rows
+PASS H02: rotation pins the old file object instead of following the new path
+PASS H02: indexed context preserves actual adjacency and original line numbers
+PASS H02: complete export passes every original hash and redacts all retained records
+PASS H02: same-length original mutation fails hash validation instead of serving cached text
+PASS H02: cache capacity preserves the final original record with explicit streaming notice
+PASS H02: dense streaming context retains original adjacency
+PASS H02: all dense snapshot originals remain exportable beyond metadata cache capacity
+MEASURE H02 dense_rows=131073; query_context_export_ms=28463.30; scanned=524291
+PASS H02: dispose context owns a real pinned file before cancellation
+PASS H02: dispose retains active file ownership while cancellation is pending
+PASS H02: dispose final read exit releases all pinned sources and selection CTS
+PASS H02: evict context owns a real pinned file before cancellation
+PASS H02: evict retains active file ownership while cancellation is pending
+PASS H02: evict final read exit releases all pinned sources and selection CTS
+PASS H02: revoke context owns a real pinned file before cancellation
+PASS H02: revoke retains active file ownership while cancellation is pending
+PASS H02: revoke final read exit releases all pinned sources and selection CTS
+PASS H02: both positions reached SQLite while an independent real write transaction owns the lock
+PASS H02: WAL history reader completes while both durable handoffs await the shared writer
+PASS H02: bounded write-lock failure returns no handoff success and creates no fictitious custody
+PASS H02: shared storage fault fences both positions, unlike a single camera connection failure
+PASS H02: after lock release and explicit restart a new source handoff is durable
+PASS H02: recovery has only the explicit new input; rejected source inputs are not silently replayed
+MEASURE H02 sqlite_lock_wait_ms=6195.14; history_query_ms=33.96; rejected=2; new_processed=1; durability=WAL/FULL unchanged
+PASS H02: slow handoff reached actual durable SQLite boundary
+PASS H02: Stop cancellation retains the in-flight durable handoff; successful handoff is drained to Interrupted without executing business
+PASS H02: real handoff/drain termination precedes connection and lease release
+MEASURE H02 handoff-stop wait_and_drain_ms=193.17; custody=Interrupted; external=0
+PASS H02: cycle 0 explicit new entity accepted
+PASS H02: cycle 0 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 0 disposal releases ownership before the next startup
+PASS H02: cycle 1 explicit new entity accepted
+PASS H02: cycle 1 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 1 disposal releases ownership before the next startup
+PASS H02: cycle 2 explicit new entity accepted
+PASS H02: cycle 2 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 2 disposal releases ownership before the next startup
+PASS H02: cycle 3 explicit new entity accepted
+PASS H02: cycle 3 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 3 disposal releases ownership before the next startup
+PASS H02: cycle 4 explicit new entity accepted
+PASS H02: cycle 4 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 4 disposal releases ownership before the next startup
+PASS H02: cycle 5 explicit new entity accepted
+PASS H02: cycle 5 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 5 disposal releases ownership before the next startup
+PASS H02: cycle 6 explicit new entity accepted
+PASS H02: cycle 6 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 6 disposal releases ownership before the next startup
+PASS H02: cycle 7 explicit new entity accepted
+PASS H02: cycle 7 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 7 disposal releases ownership before the next startup
+PASS H02: cycle 8 explicit new entity accepted
+PASS H02: cycle 8 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 8 disposal releases ownership before the next startup
+PASS H02: cycle 9 explicit new entity accepted
+PASS H02: cycle 9 actual stop drains reads, authority observers and both consumers
+PASS H02: cycle 9 disposal releases ownership before the next startup
+MEASURE H02 ten startup/query/stop/disposal cycles=[
+  {
+    "Cycle": 0,
+    "HandleCount": 398,
+    "Threads": 22,
+    "PrivateMemorySize64": 49668096,
+    "WorkingSet64": 99811328,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 339968
+  },
+  {
+    "Cycle": 1,
+    "HandleCount": 395,
+    "Threads": 22,
+    "PrivateMemorySize64": 41701376,
+    "WorkingSet64": 92217344,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 364544
+  },
+  {
+    "Cycle": 2,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 42635264,
+    "WorkingSet64": 93396992,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 376832
+  },
+  {
+    "Cycle": 3,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 43622400,
+    "WorkingSet64": 94724096,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 393216
+  },
+  {
+    "Cycle": 4,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 43347968,
+    "WorkingSet64": 94834688,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 405504
+  },
+  {
+    "Cycle": 5,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 43343872,
+    "WorkingSet64": 95551488,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 421888
+  },
+  {
+    "Cycle": 6,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 44138496,
+    "WorkingSet64": 96595968,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 434176
+  },
+  {
+    "Cycle": 7,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 47579136,
+    "WorkingSet64": 100466688,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 450560
+  },
+  {
+    "Cycle": 8,
+    "HandleCount": 397,
+    "Threads": 22,
+    "PrivateMemorySize64": 49004544,
+    "WorkingSet64": 102166528,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 471040
+  },
+  {
+    "Cycle": 9,
+    "HandleCount": 398,
+    "Threads": 22,
+    "PrivateMemorySize64": 46456832,
+    "WorkingSet64": 100323328,
+    "ReadOperations": 0,
+    "OwnedRuntimeResources": false,
+    "DbBytes": 487424
+  }
+]
+PASS H02: ten repeated ownership cycles preserve all accepted inputs without replay or duplicate entity execution
+MEASURE H02 time rollback_hours=12; monotonic_seconds=2; attempts=2; written=1
+PASS H02: wall-clock rollback cannot postpone the one-second diagnostic recovery interval
+PASS H02: wall-clock jump cannot bypass the monotonic recovery backoff
+PASS H02: existing health validity rejects future confirmations after rollback and expiry after forward jump

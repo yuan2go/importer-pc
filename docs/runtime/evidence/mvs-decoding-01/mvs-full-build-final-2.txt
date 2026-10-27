@@ -1,0 +1,55 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj (用时 2.11 秒)。
+  28 个项目(共 29 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Presentation.Wpf -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Presentation.Wpf\bin\Release\net10.0-windows\Ipc.Presentation.Wpf.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.DirectPlc.Desktop\bin\Release\net10.0-windows\Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.Inspection -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Inspection\bin\Release\net10.0\Ipc.Inspection.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.ParcelFlow.Desktop\bin\Release\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.WcsToPlc.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.WcsToPlc.Desktop\bin\Release\net10.0-windows\Ipc.Application.WcsToPlc.Desktop.dll
+  Ipc.Application.WcsToPlc -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\bin\Debug\net10.0\Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Assembly -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Assembly\bin\Release\net10.0\Ipc.Assembly.dll
+  Ipc.Components -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.Sportmaster.Desktop\bin\Release\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Desktop\bin\Release\net10.0-windows\Ipc.Desktop.dll
+  Ipc.Drivers -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Fixture -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Fixture\bin\Release\net10.0\Ipc.Fixture.dll
+  Ipc.Installer -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Installer\bin\Release\net10.0-windows\win-x64\Ipc.Installer.dll
+  Ipc.Integrations.SportmasterRcs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Integrations -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Platform -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Presentation.Wpf -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Presentation.Wpf\bin\Release\net10.0-windows\Ipc.Presentation.Wpf.dll
+  Ipc.Product -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Product\bin\Release\net10.0\Ipc.Product.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Integrations.SportmasterRcs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Application.Verification\bin\Release\net10.0\Ipc.Application.Verification.dll
+  Ipc.Installer.Verification -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Installer.Verification\bin\Release\net10.0\Ipc.Installer.Verification.dll
+  Ipc.Verification -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Verification\bin\Release\net10.0\Ipc.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:38.86

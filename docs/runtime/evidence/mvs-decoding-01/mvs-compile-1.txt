@@ -1,0 +1,17 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj (用时 754 毫秒)。
+  已还原 D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\Ipc.Drivers.Hikrobot.Probe.csproj (用时 754 毫秒)。
+  2 个项目(共 4 个)是最新的，无法还原。
+D:\tools\dotnet\sdk\10.0.402\Microsoft.Common.CurrentVersion.targets(2453,5): warning MSB3245: 未能解析此引用。未能找到程序集“Ipc.Platform”。请检查磁盘上是否存在该程序集。 如果您的代码需要此引用，则可能出现编译错误。 [D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj]
+D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj(4,74): error : Provide IpcContractPath from the exact frozen host delivery.
+  Ipc.Platform -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot.Mvs\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Mvs.dll
+
+生成失败。
+
+D:\tools\dotnet\sdk\10.0.402\Microsoft.Common.CurrentVersion.targets(2453,5): warning MSB3245: 未能解析此引用。未能找到程序集“Ipc.Platform”。请检查磁盘上是否存在该程序集。 如果您的代码需要此引用，则可能出现编译错误。 [D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj]
+D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\src\Ipc.Drivers.Hikrobot\Ipc.Drivers.Hikrobot.csproj(4,74): error : Provide IpcContractPath from the exact frozen host delivery.
+    1 个警告
+    1 个错误
+
+已用时间 00:00:06.45

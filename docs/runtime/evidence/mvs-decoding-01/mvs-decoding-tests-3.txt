@@ -1,0 +1,9 @@
+PASS DECODING: pool exhaustion cannot allocate beyond the configured resident byte budget
+PASS DECODING: exception/finally ownership supports exactly-once return and subsequent reuse
+PASS DECODING: candidate validation refuses excess memory, insufficient slots, unbounded regex, unversioned rules and missing trigger evidence
+Unhandled exception. System.InvalidOperationException: DECODING FAIL: selection requires one eligible full candidate; duplicate/high-quality codes, wrong symbology and no-code cannot be guessed
+   at DecodingVerification.Check(Boolean ok, String risk) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 11
+   at DecodingVerification.PoolAndSelection() in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 49
+   at DecodingVerification.Run(String root) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\DecodingVerification.cs:line 26
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-worktrees\mvs-decoding-framework-01\tests\Ipc.Drivers.Hikrobot.Probe\Program.cs:line 2
+   at Program.<Main>(String[] args)

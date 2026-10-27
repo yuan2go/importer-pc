@@ -34,6 +34,23 @@ static class CapabilityClosure
         ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
         async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)
         {
+            // Each current position owns a distinct camera/scale; the first-position
+            // anchors below remain the original samples used by these assertions.
+            if (c.Topology!.Positions.Length > 1 && (c.Scale is not null || c.Images is not null))
+            {
+                List<CapabilityBinding> instances = [.. c.CapabilityInstances ?? []];
+                var positions = c.Topology.Positions.Select((position, index) =>
+                {
+                    var scale = c.Scale; var camera = c.Images?.Camera;
+                    if (index != 0)
+                    {
+                        if (scale is not null) { scale = scale with { InstanceId = scale.InstanceId + "." + position.Id, Target = scale.Target + "/" + position.Id }; instances.Add(scale); }
+                        if (camera is not null) { camera = camera with { InstanceId = camera.InstanceId + "." + position.Id, Target = camera.Target + "/" + position.Id }; instances.Add(camera); }
+                    }
+                    return position with { ScaleInstanceId = scale?.InstanceId, CameraInstanceId = camera?.InstanceId };
+                }).ToArray();
+                c = c with { Topology = c.Topology with { Positions = positions }, CapabilityInstances = instances.ToArray() };
+            }
             var path = Path.Combine(root, run); Directory.CreateDirectory(path);
             ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
             var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new ParcelCapabilityFactory(launch);

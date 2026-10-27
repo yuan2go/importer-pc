@@ -43,3 +43,4 @@ B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract
 C16不再重建多代完整旧schema，只构造非当前身份输入验证只读拒绝；现有当前恢复、强杀、Unknown和原件责任测试继续执行。新增结构等价、实际WAL/FULL、独立从零运行时起停验证。历史ZIP、回执、发布和冻结证据未修改。`platform_migrations`/`schema_history`名称保留以避免无关消费标记改名，但仅含一条当前基线身份，无迁移步骤。
 
 B3本机定向验证：Application/Supply/WPF验证工程locked构建通过；纯结构13条与Python校验31项通过。CI增加当前基线/起停和缺索引拒绝用例；main合并后自动跑同一关键套件及完整Solution构建，避免在本机复用已安装机器状态。
+B2第二轮定向CI发现CapabilityClosure合成夹具把同一相机/秤绑定左右两位，违反已保留的位置隔离守卫；已为每位构造独立合成端口，保留原测量、图像与Unknown断言。生产守卫未放宽。

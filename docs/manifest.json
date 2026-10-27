@@ -59035,9 +59035,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "cdb0fef738cf81032215118d962ad3912d90aa0e0840c04bfadb138c5469cea1",
-      "size_bytes": 22877,
-      "git_blob": "eed9d597c90868c3623c464b5652e44a7e3de020"
+      "sha256": "e1c2d7810e5aece22c4694d323fa3830fea7d648b09f32ad076afabe4ed513c3",
+      "size_bytes": 24175,
+      "git_blob": "9f40d0d8c797cdb015d70bcd3725024767428680"
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialComponentReview.cs",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "d069c6ef5f57411fa7437e376023ef95297288b34235ae1979b98a35f5050b00",
-      "size_bytes": 6814,
-      "git_blob": "390f7089c1e479d309472e1f12fb451b3b8ee5a0",
+      "sha256": "0c04631fb3f069716264493545dc8c5ff7c46a863a0e09cb0e03590724c5f3f1",
+      "size_bytes": 7054,
+      "git_blob": "ed3d4a2b951c0c29449a6605b4de6cb72a7fb650",
       "storage_scope": "public_repository"
     },
     {

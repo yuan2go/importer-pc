@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "ef0832f7852c3ed1af509295495c1d269bf9a9da0f0bfc7f910b9c7da417f0ff",
-      "size_bytes": 9794,
-      "git_blob": "347bb359c10cde4cf684ee56a52a9691cb2a3f2c",
+      "sha256": "2b667bc84d374a41548b47b5c11fb9366d05bb6114e2d988f922e76ae9d690be",
+      "size_bytes": 13201,
+      "git_blob": "bb5996859d31ac1eaeb9fcc6bb6ef1b8d5cee8b2",
       "storage_scope": "public_repository"
     },
     {

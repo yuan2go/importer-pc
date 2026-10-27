@@ -61,4 +61,3 @@ public sealed class WaybillSelector
         return selected is null ? new(null, null, "NoMatchingCode") : new(selected.Text, selected.Symbology, null);
     }
 }
-

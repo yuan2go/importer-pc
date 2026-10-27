@@ -159,3 +159,5 @@ docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=c
 # Preserve the original design blob and bounded Windows regression receipts.
 docs/archive/pre-hikrobot-boundary-regressions-01/*.md.txt -text
 docs/runtime/evidence/hikrobot-boundary-regressions-01/*.txt -text whitespace=cr-at-eol
+# Preserve the original empty-input diagnostic's trailing space in this receipt.
+docs/runtime/evidence/hikrobot-boundary-regressions-01/app-parameter-refactor.txt whitespace=cr-at-eol,-blank-at-eol

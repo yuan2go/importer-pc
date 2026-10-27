@@ -81,7 +81,7 @@ static partial class ArchitectureQuality
         try { using var denied=new ParcelRepository(directory,c.ApplicationId);Check(false,"missing archived identity must refuse"); }
         catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityMissing"))
         { Check(Wire.FileHash(file)==missingArchiveHash && archivedHash.Length==64,"archived BLOB and main facts unchanged when current identity is missing"); }
-        // Model a prior-release false completion whose permanent identity index was absent.
+        // Current-format corrupt completion must refuse before reconstructing identities.
         var live=Config("direct-plc");var source=DirectoryFor("review-reply",live);var target=DirectoryFor("review-false-completion",live);Directory.CreateDirectory(target);
         foreach(var sourceFile in Directory.EnumerateFiles(source,"*",SearchOption.AllDirectories))
         {var destination=Path.Combine(target,Path.GetRelativePath(source,sourceFile));Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.Copy(sourceFile,destination);}
@@ -89,9 +89,9 @@ static partial class ArchitectureQuality
         using(var db=new SqliteConnection("Data Source="+badDb))
         {db.Open();using var q=db.CreateCommand();q.CommandText="DELETE FROM parcel_reply_identities; UPDATE parcel_operations SET body=json_set(body,'$.State','PhysicalCompleted','$.Plc.State','Accepted','$.Reason',NULL)";q.ExecuteNonQuery();}
         var raw=Directory.EnumerateFiles(Path.Combine(target,"receipts"),"*.json").ToDictionary(p=>p,Wire.FileHash);var before=Wire.FileHash(badDb);
-        try{await using var app=await Open(live,"review-false-completion");Check(false,"R01 inconsistent prior completion must refuse startup");}
+        try{using var repository=new ParcelRepository(target,live.ApplicationId);Check(false,"R01 inconsistent completion must refuse repository startup");}
         catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityMissing",StringComparison.Ordinal))
-        {Check(raw.All(p=>Wire.FileHash(p.Key)==p.Value)&&Wire.FileHash(badDb)==before,"R01 prior false completion refuses startup and rolls back repair without rewriting raw or inventing settlement");}
+        {Check(raw.All(p=>Wire.FileHash(p.Key)==p.Value)&&Wire.FileHash(badDb)==before,"R01 inconsistent completion refuses without rewriting raw, database or inventing settlement");}
     }
     static async Task ReviewMaintenance()
     {

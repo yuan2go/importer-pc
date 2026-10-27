@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media, [Parameter(Mandatory)][string]$Output, [string]$Dotnet = 'dotnet', [string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media, [Parameter(Mandatory)][string]$Output, [string]$Dotnet = 'dotnet')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 if (-not $IsWindows) { throw 'This fixture uses the actual Windows WPF/DPAPI binaries; run on Windows. It does not provision runtime policy or operate equipment.' }
@@ -9,8 +9,8 @@ $Output = [IO.Path]::GetFullPath($Output)
 if (Test-Path -LiteralPath $Output) { throw 'Choose a new evidence directory' }
 $release = Get-Content -LiteralPath (Join-Path $Media 'app/application-release.json') -Raw | ConvertFrom-Json
 if ($release.ApplicationId -ne 'sportmaster' -or $release.SourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Expected a frozen Sportmaster Windows medium' }
-if (-not $FixtureCommit) { $FixtureCommit = $release.SourceCommit }
-if ($FixtureCommit -notmatch '^[0-9a-f]{40}$') { throw 'FixtureCommit must be an explicit full Git commit identity' }
+$FixtureCommit = (& git -C $repository rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0 -or $release.SourceCommit -ne $FixtureCommit) { throw 'Only media built from the current commit can be verified; historical evidence remains frozen' }
 $inventory = @{}
 foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
     if ($line -notmatch '^([0-9A-Fa-f]{64})  (.+)$') { throw 'Invalid frozen inventory' }
@@ -21,14 +21,14 @@ foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
     $inventory[$relative] = $hash
 }
 New-Item -ItemType Directory -Path $Output | Out-Null
-# Test source comes from an explicit fixed commit (medium by default); never from working files.
+# Verify the current immutable commit and its exact published media together.
 $fixture = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/CommercialProductization.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'CommercialProductization.cs'), [string[]]$fixture)
 $administration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/OperatorAdministration.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'OperatorAdministration.cs'), [string[]]$administration)
-foreach ($dependency in @('CurrentConfigurationFixture.cs', 'SyntheticPriorStorage.cs', 'CurrentParameterAuthorityChecks.cs')) {
+foreach ($dependency in @('CurrentConfigurationFixture.cs', 'NonCurrentStorageFixture.cs', 'CurrentParameterAuthorityChecks.cs')) {
     $source = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/' + $dependency)
     if ($LASTEXITCODE -ne 0) { throw ('Frozen core fixture dependency is unavailable: ' + $dependency) }
     [IO.File]::WriteAllLines((Join-Path $Output $dependency), [string[]]$source)

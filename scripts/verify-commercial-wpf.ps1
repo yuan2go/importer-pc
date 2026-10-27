@@ -1,16 +1,16 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterGuidanceStartup,[switch]$ParameterShellPolish,[switch]$TaskHierarchy,[switch]$Win11Stability,[switch]$ReliabilityLogs,[switch]$WorkstationStatusLogs,[switch]$DebugLogLive,[switch]$StabilitySeedUpgrade,[switch]$InstallerFirstRunUi,[switch]$LifecycleUx,[string]$FixtureCommit)
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterGuidanceStartup,[switch]$ParameterShellPolish,[switch]$TaskHierarchy,[switch]$Win11Stability,[switch]$ReliabilityLogs,[switch]$WorkstationStatusLogs,[switch]$DebugLogLive,[switch]$StabilitySeedUpgrade,[switch]$InstallerFirstRunUi,[switch]$LifecycleUx)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
 $Output=[IO.Path]::GetFullPath($Output)
 if(Test-Path -LiteralPath $Output){throw 'New evidence directory required'}
-New-Item -ItemType Directory -Path $Output | Out-Null
 $repo=Split-Path $PSScriptRoot -Parent
 $release=Get-Content -LiteralPath (Join-Path $Media 'app/application-release.json') -Raw | ConvertFrom-Json
 if ($release.ApplicationId -ne 'sportmaster' -or $release.SourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Expected a frozen Sportmaster Windows medium' }
-if($FixtureCommit -and $FixtureCommit -notmatch '^[0-9a-f]{40}$'){throw 'An independent fixture requires its full immutable commit'}
-$fixtureSource=if($FixtureCommit){$FixtureCommit}else{$release.SourceCommit}
+$fixtureSource=(& git -C $repo rev-parse HEAD).Trim()
+if($LASTEXITCODE -ne 0 -or $release.SourceCommit -ne $fixtureSource){throw 'Only media built from the current commit can be verified; historical evidence remains frozen'}
+New-Item -ItemType Directory -Path $Output | Out-Null
 $inventory=@{}
 foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
  if($line -notmatch '^([0-9A-Fa-f]{64})  (.+)$'){throw 'Invalid frozen inventory'}
@@ -38,7 +38,7 @@ foreach($source in $sources){
  if($LASTEXITCODE -ne 0){throw 'Missing fixed native fixture'}
  [IO.File]::WriteAllLines((Join-Path $Output $source),[string[]]$content)
 }
-foreach ($coreSource in @('CommercialProductization.cs','CurrentConfigurationFixture.cs','SyntheticPriorStorage.cs')) {
+foreach ($coreSource in @('CommercialProductization.cs','CurrentConfigurationFixture.cs','NonCurrentStorageFixture.cs')) {
  $core=& git -C $repo show ($fixtureSource+':tests/Ipc.Application.Verification/'+$coreSource)
  if($LASTEXITCODE -ne 0){throw ('Missing frozen native fixture dependency: '+$coreSource)}
  [IO.File]::WriteAllLines((Join-Path $Output $coreSource),[string[]]$core)

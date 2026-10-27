@@ -140,6 +140,11 @@ static partial class SportmasterRcs
             using var copy = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(target, "sportmaster.db"), Pooling = false }.ToString());
             original.Open(); copy.Open(); original.BackupDatabase(copy);
             if (mutation.Length != 0) { using var q = copy.CreateCommand(); q.CommandText = mutation; q.ExecuteNonQuery(); }
+            foreach (var raw in Directory.EnumerateFiles(Path.Combine(source, "receipts"), "*.json"))
+            {
+                Directory.CreateDirectory(Path.Combine(target, "receipts"));
+                File.Copy(raw, Path.Combine(target, "receipts", Path.GetFileName(raw)));
+            }
         }
         var valid = Path.Combine(root, "current"); Clone(valid, "");
         string[] before;
@@ -150,16 +155,17 @@ static partial class SportmasterRcs
         foreach (var (name, mutation, version) in new[]
         {
             ("old-six", "UPDATE platform_migrations SET version=6", 6),
-            ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", 9),
-            ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", 9)
+            ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", 10),
+            ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", 10)
         })
         {
             var target = Path.Combine(root, name); Clone(target, mutation); var database = Path.Combine(target, "sportmaster.db"); var hash = Wire.FileHash(database);
+            var rawHashes = Directory.EnumerateFiles(Path.Combine(target, "receipts"), "*.json").ToDictionary(p => p, Wire.FileHash);
             var refused = false;
             try { using var denied = new ParcelRepository(target, "sportmaster"); }
-            catch (InvalidDataException) { refused = true; }
-            Check(refused && Wire.FileHash(database) == hash && NonCurrentStorageFixture.Version(database) == version && !Directory.Exists(Path.Combine(target, "receipts")),
-                "A03 " + name + " refuses before writes, owner backfill, receipt creation or format conversion");
+            catch (InvalidDataException ex) when (version != 10 || ex.Message.Contains("Original numeric request ownership missing or changed", StringComparison.Ordinal)) { refused = true; }
+            Check(refused && Wire.FileHash(database) == hash && NonCurrentStorageFixture.Version(database) == version && rawHashes.All(p => Wire.FileHash(p.Key) == p.Value),
+                "A03 " + name + " refuses without database/raw writes, owner backfill or format conversion");
         }
     }
     sealed class HoldFactory(string position) : IParcelCapabilityFactory

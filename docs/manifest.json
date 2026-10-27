@@ -53353,9 +53353,9 @@
     },
     {
       "path": "scripts/verify-commercial-media.ps1",
-      "sha256": "115169baec3c978dae6c7ee06198322336153776fcc7f89e5b43a02e6666947c",
-      "size_bytes": 8395,
-      "git_blob": "a1c74567e11b4ed0ea26c156cffcf745e3db6eef",
+      "sha256": "c53ad6495137b19962096a3b9561e512af4e4440a76784fcdf6c57195f306f6b",
+      "size_bytes": 8406,
+      "git_blob": "1aeb6ff75fd6fcace94b181ade2a46cfbcf80927",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -53375,9 +53375,9 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "af82a540d2ca5dc0a6ec0fda5f388cec3bf6dff2bc46eb20e610c6db923a3e50",
-      "size_bytes": 9824,
-      "git_blob": "52fc3d0f576b07ef70dafa8c721b858c74665b2b",
+      "sha256": "de6dbfaa20e87f8eb9a558eabaf368aa114da19ebe2f4b40571a140e92eeb660",
+      "size_bytes": 9819,
+      "git_blob": "5e36b1369bd6e154c148888b062fbad4f27a0510",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -54944,9 +54944,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs",
-      "sha256": "689006be3da5eaea9ecfc0c84e312fc6b829008f291836c8f7fd80d4c8e0e363",
-      "size_bytes": 9770,
-      "git_blob": "2ed2e4634f44cceaaa1f79a7b4ba3cd64b0e9909",
+      "sha256": "f4b2f993110daca8cd6dc123ef5024bf92cf52a003739f73c956d870349da8b2",
+      "size_bytes": 9837,
+      "git_blob": "75d1f384d7cb823e534594aafd9616b50f3b7f8a",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -59001,9 +59001,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "e1d863a974c034b2f5f9462c6ca917eb3aa5f09083fd9b6072c9e10137eda9b2",
-      "size_bytes": 16615,
-      "git_blob": "5cf463da3a60a40328c4d5c39987eaa199acdd03",
+      "sha256": "69c8928e7c8f690f3ab22280ed1d70f23f977c6669d2ffd3c2a584fdd929f11c",
+      "size_bytes": 17173,
+      "git_blob": "f475c0d5d290f0f08a4a0a96467516a9954c7133",
       "previous_git_blob": "3edd74374c520defe2d6abec0ef51d7bd006bfe4"
     },
     {
@@ -59277,9 +59277,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/ReviewClosure.cs",
-      "sha256": "8cba27c462ce3432f18eff0d1ee6531fe41653e10e082e03a47226fe6c178dbc",
-      "size_bytes": 24890,
-      "git_blob": "4310f36a43386f1b5f25659dce41a449fe41d4fd"
+      "sha256": "a1a68c9a65aa41b2ccf61283427f7befb3b129a27777b82664f60c3ebe6e3a44",
+      "size_bytes": 24880,
+      "git_blob": "50da212f2c29b5c2459c7b21ecd23ed032a11181"
     },
     {
       "path": "tests/Ipc.Application.Verification/ReviewRegressions.cs",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "c942c5900fe0c9320988280296e6e347ef24ff6c188707051da6e27746ba68d3",
-      "size_bytes": 8822,
-      "git_blob": "6c7cbdaedb085cc3512fd3f7bac83456d59887c1",
+      "sha256": "5a0dd4778f1614a232b324ee4ed3bfab6903ba2b2e3178f30b322948c65b7b0c",
+      "size_bytes": 9234,
+      "git_blob": "ac1032d74fb761d82512dcc42e8677c72f019e05",
       "storage_scope": "public_repository"
     },
     {

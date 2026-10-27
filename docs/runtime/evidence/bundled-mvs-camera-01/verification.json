@@ -7,7 +7,8 @@
     "heartbeat BAR/zh_CN",
     "parameter common model",
     "deferred/Unknown and P0 eight combinations",
-    "SDK identity/diagnostic hardening"
+    "SDK identity/diagnostic hardening",
+    "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture"
   ],
   "NativeVerified": [
     "SDK first/daily page and single camera code",
@@ -301,8 +302,29 @@
       "name": "update.log",
       "sha256": "68adf67919d00a4ebe5699da4f3945f8e49ed10e008954e71dfcd06f3baddf12",
       "bytes": 34
+    },
+    {
+      "name": "bundled-mvs-aqa-corrected.log",
+      "sha256": "d9c8fa7ecc8487142ecc0e3a58cdf428a6c03d8e3acdaa81a64f3f7a6a43490d",
+      "bytes": 9651
+    },
+    {
+      "name": "bundled-mvs-default-corrected.log",
+      "sha256": "640220bf8730b6c9a26ebf7985a15e1cc7d09b81ec3827f99c342efc4b27f14f",
+      "bytes": 6703
+    },
+    {
+      "name": "bundled-mvs-dynamic-fixture-build.log",
+      "sha256": "ee316cf19c73e1e6e79ed4c0a5604c79a1352ccecaa7e59073c4116ac264d1d3",
+      "bytes": 3331
     }
   ],
   "Build": "PASS affected desktop/helper locked build 0 warnings/0 errors",
-  "PackagingPython": "PASS installer 7, delivery 5, compatibility 16, runtime policy 3; actual 14-file copy/corrupt refusal also checked"
+  "PackagingPython": "PASS installer 7, delivery 5, compatibility 16, runtime policy 3; actual 14-file copy/corrupt refusal also checked",
+  "LocalDefault": "Synthetic business segments passed; Windows Production segment BLOCKED by absent protected management authority; no broad Windows default PASS",
+  "IntermediateInstaller": {
+    "SourceCommit": "f2cd14284f43d322656083984c8a86ea2ac3aa6f",
+    "Sha256": "0ed546805a36e05372e9ad5a09ee80d812176b29734de57c530fc584133416af",
+    "Status": "BUILT with actual14 SDK; packaging startup guide correction follows"
+  }
 }

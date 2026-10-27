@@ -12,7 +12,7 @@ static partial class ArchitectureQuality
     static int failures;
     static void Check(bool condition, string reason)
     { Console.WriteLine((condition ? "PASS AQ: " : "FAIL AQ: ") + reason); if (!condition) failures++; }
-    static ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+    static ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
     static async Task<ParcelRuntime> Open(ParcelConfiguration c, string name, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null, Action<ParcelRuntime>? beforeStart = null)
     {
         var path = Path.Combine(root, name); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);

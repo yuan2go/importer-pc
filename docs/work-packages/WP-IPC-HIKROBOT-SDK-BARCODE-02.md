@@ -54,3 +54,6 @@
 整合收口：开发起点`52c7e58d`，实施源码`9bfde2eb`；工作期间PR125进入main后已合并最新`36c55a58`，整合树`154fce47`。参数/延后连接及驱动定向重新通过，整合Sportmaster构建0警告/0错误。原生首配`--startup-experience`也通过；首次执行少传IPC_FROZEN_DESKTOP、独立驱动冻结构建首次少传IpcContractPath均被原守卫明确拒绝，补齐实际冻结路径后通过，未降低守卫。
 
 最终资源审查补强宿主健康通知异常隔离：通知失败明确报错，仍完成应有原生清理；原生清理失败仍保有原owner。增加2项定向断言，MVS当前26项。新增Windows CI沿用最新main已有长路径/保留文件名checkout设置，原门禁未替换。证据摘要/私有日志哈希见[runtime/evidence](../runtime/evidence/hikrobot-sdk-barcode-02/verification.json)。SDK枚举首次曾把DLL文件4.8.2.1误当API版本，校核MV_CC_GetSDKVersion后按真实4.8.2.2固定ABI，原失败仍保留；不是新增旧SDK兼容。
+
+
+冻结工程包：资源补强源码`443f75b1`，冻结宿主`154fce47`。MVS采集1.0.0与智能读码器2.0.1的工程TestOnly签名包均通过PASS_FROZEN_HOST_EXTENSION_CHECK，宿主及检查器字节未变；精确源码/契约/包/manifest/payload指纹见[冻结包回执](../runtime/evidence/hikrobot-sdk-barcode-02/frozen-packages.json)。这些是Git外D盘的Simulation工程包，不是现场安装介质、Production资格或真机读码证明。原9bfde2eb/整合前测试与包不倒写为本次冻结包。SDK/私钥/信任文件及二进制未进入Git。

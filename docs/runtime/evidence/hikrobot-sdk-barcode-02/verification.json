@@ -1,6 +1,6 @@
 {
   "Baseline": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
-  "SourceState": "driver implementation 9bfde2eb plus reviewed health notification isolation patch; final signed receipts identify exact source commits",
+  "SourceState": "driver source commits and frozen host are precisely recorded in frozen-packages.json; WPF is separately scoped synthetic working-tree evidence",
   "TargetBarcodeStatus": "BLOCKED: recognition component not obtained",
   "RealTargetFrames": "NOT_RUN on this host; user-supplied field MVS stream evidence remains separate",
   "RealSdkInitializationAndEnumeration": "PASS: MVS GetSDKVersion=0x04080202; 17 exports; 0 GigE devices; no barcode proof",
@@ -334,5 +334,6 @@
   "IntegratedMain": "36c55a58",
   "FrozenIntegratedHostSource": "154fce47",
   "MvsSyntheticChecks": 26,
-  "ReaderSyntheticChecks": 46
+  "ReaderSyntheticChecks": 46,
+  "FinalResourceIsolationSourceCommit": "443f75b106c0cd7bedefcf3622ae8d19332c16a8"
 }

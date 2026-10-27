@@ -32636,14 +32636,25 @@
       "git_blob": "3eed5c04c3b4c985d4728f971bd04cc095287f8c"
     },
     {
+      "path": "docs/runtime/evidence/hikrobot-sdk-barcode-02/frozen-packages.json",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "df86e00db581a41208b35512cb6380c43974f1108bfcd45cfa4bb7a13d4ad5c7",
+      "size_bytes": 3239,
+      "git_blob": "3fcc92d125ebe94511a9f90b034336f3c5f2d0b5",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/hikrobot-sdk-barcode-02/verification.json",
       "version": "hikrobot-sdk-barcode-02",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "8b396bcafada2c9124cc3b766d2431898c8eef7a8d7651bcad4984ca641c7dc2",
-      "size_bytes": 13453,
-      "git_blob": "680cdd66501726efaeb273c049ce26ce936d922c",
+      "sha256": "8d97a5bf189faed55a1a0abd8a2c053d390129399c470fada5781b171f6a1b9b",
+      "size_bytes": 13546,
+      "git_blob": "9fdcfbaf05197d305da013411610361c8cf27ba5",
       "storage_scope": "public_repository"
     },
     {
@@ -91707,9 +91718,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "97d9eea1322c1048cef52250fd23a5aedd1ca9548b32629cc758472dc2f168e8",
-      "size_bytes": 9622,
-      "git_blob": "5228d32b983a9683709cbf806a9dd5ff7c8c0e0f",
+      "sha256": "c54346d78059592a1b9071d34a695b5a14e3e72b1b76efc56168c785dedbe459",
+      "size_bytes": 10198,
+      "git_blob": "f6f88d466206196245999d916ca5b39cc6c93ef4",
       "storage_scope": "public_repository"
     },
     {

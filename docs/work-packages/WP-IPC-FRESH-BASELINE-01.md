@@ -33,3 +33,5 @@ C08观察与称重只暴露Controlled启动端口，驱动/替身/示例同步�
 本机验证：业务验证工程Release/locked通过；WPF编译发现缺System.IO引用，已修正后复验。运行时、机器租约、安装/设备相关验证交隔离CI，本机不接触已安装状态。独立扩展及剩余检查结果随PR记录。未处理的相邻标识：LegacyNamedCapabilities文件名和Ipc.Application.Contracts命名空间、DeploymentExtensions旧二参便利构造、ImporterPc.Administrator服务名称；后者是当前安装归属，不是旧路径。
 
 B2本机完成：三个Assembly、Application/Supply/WPF验证工程、三个示例扩展和海康包装Release/locked编译通过；Python发布校验31项通过。WPF测试共享Shell工厂曾返回错误基类，Supply两处调用仍用退休签名，均按当前端口修正后重新构建通过。
+
+B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract-boundaries发现CapabilityClosure仍断言退休五参构造存在，已改为当前六参存在且旧桥不存在，不削弱运行时断言。重新CI待记录。

@@ -1,0 +1,24 @@
+PASS fixed pool cannot grow when exhausted
+PASS rejection, cancellation and repeated release cannot leak a slot
+PASS copy owns its bytes after SDK buffer reuse and preserves source metadata
+PASS multiple matching candidates and unmatched candidates cannot become a guessed waybill
+PASS invalid candidate controls and unsupported backtracking rules fail closed
+PASS partial trigger group cannot publish an entity
+PASS fixed multi-frame physical trigger produces one complete result
+PASS cross-frame conflict cannot choose a convenient barcode
+PASS old startup results and a repeated physical trigger cannot create a new entity
+PASS deadline cannot pretend a cancellation-ignoring decoder released its view
+PASS actual decoder completion permits one cleanup
+PASS all frame ownership returns after cancellation, trigger rejection and decode timeout
+PASS business requires every independently supplied readiness gate
+PASS license loss latches failure and later success cannot silently resume business
+PASS old boot readiness cannot enable a restarted service
+PASS version, solution, node, trigger, selection and self-test failures each close readiness
+PASS bounded queue overflow is visible and classified separately from SDK frame loss
+PASS concurrent stop drains in-flight cancellation and returns each queue slot once
+PASS SDK frame discontinuity faults before another frame can enter the decode queue
+PASS SDK Free failure rejects its copied frame without leaking ownership
+PASS stop cannot release a copied frame still held by the SDK-return path
+PASS actual capture completion permits explicit stop retry
+PASS wrong reads and errors stay in the denominator and nearest-rank percentiles include every attempt
+PASS 23 reader core risk checks

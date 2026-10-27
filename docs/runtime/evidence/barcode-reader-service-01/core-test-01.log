@@ -1,0 +1,14 @@
+PASS fixed pool cannot grow when exhausted
+PASS rejection, cancellation and repeated release cannot leak a slot
+PASS copy owns its bytes after SDK buffer reuse and preserves source metadata
+PASS multiple matching candidates and unmatched candidates cannot become a guessed waybill
+PASS invalid candidate controls and unsupported backtracking rules fail closed
+PASS partial trigger group cannot publish an entity
+PASS fixed multi-frame physical trigger produces one complete result
+PASS cross-frame conflict cannot choose a convenient barcode
+PASS old startup results and a repeated physical trigger cannot create a new entity
+PASS deadline cannot pretend a cancellation-ignoring decoder released its view
+PASS actual decoder completion permits one cleanup
+PASS all frame ownership returns after cancellation, trigger rejection and decode timeout
+PASS wrong reads and errors stay in the denominator and nearest-rank percentiles include every attempt
+PASS 13 reader core risk checks

@@ -1,4 +1,4 @@
-> 独立读码服务内部设计：[BARCODE-READER-SERVICE-01](design/barcode-reader-service-01.md)。当前待协议租约裁决及实际 VM 方案 SDK 核验；不得据设计声明服务已就绪。
+> 独立读码服务：[工作包](work-packages/WP-IPC-BARCODE-READER-SERVICE-01.md)、[设计](design/barcode-reader-service-01.md)、[当前实施](runtime/barcode-reader-service-01.md)。当前待协议租约裁决及实际 VM 方案 SDK 核验；不得据设计声明服务已就绪。
 
 > 条码生产者统一接入：[BARCODE-PRODUCER-01](work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。[协议 v1](protocols/barcode-producer-v1.md)、[实现设计](design/barcode-producer-01.md)、[黄金对话](protocols/barcode-producer-v1.golden.json)、[运行说明](runtime/barcode-producer-01.md)、[验证回执](runtime/evidence/barcode-producer-01/README.md)。本型号由 PC 生产者解码，通过 TCP 接入；供包台内置 MVS 扩展限诊断，独立服务复用 MVS 采集不受此扩展用途限制。
 

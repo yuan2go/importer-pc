@@ -1,0 +1,65 @@
+{
+  "sourceCommit": "c2390cd987fa1c9b58612d8caf7817dfb08bdc8b",
+  "scope": "PARTIAL_CORE_ONLY",
+  "platform": "Windows 11 x64 / .NET 10.0.402",
+  "mainBuild": "PASS 0 warnings 0 errors",
+  "core": "PASS 23 synthetic risk checks",
+  "probe": "PASS reader 46 / MVS 30 / hardening 16 synthetic checks",
+  "realCamera": "NOT_RUN",
+  "vmSolutionSdk": "NOT_AVAILABLE",
+  "serviceHostTcpEndToEnd": "NOT_IMPLEMENTED",
+  "logs": [
+    {
+      "file": "core-build-01.log",
+      "sha256": "867011180e93c4785c30612cad3bc416d55baf38be0a6c3170c2fd993390373f"
+    },
+    {
+      "file": "core-build-02.log",
+      "sha256": "9c3370ff0a6396d405bfab47adaedb7bcdae907257d885d5fbce3e4cd9392311"
+    },
+    {
+      "file": "core-build-03.log",
+      "sha256": "0ccb78c62ef9b7428e79d89d2db9ba6d042950a4c973b0205a241115f840cac4"
+    },
+    {
+      "file": "core-test-01.log",
+      "sha256": "975e8e401aca6784ebe38914f3cc49d238335de9627d770a0a8d2c4290bd47b3"
+    },
+    {
+      "file": "core-test-03.log",
+      "sha256": "086102f45160fdb47529b507f3e0ae76ffd7c97aac6854c8f0e3146516901e18"
+    },
+    {
+      "file": "main-build-01.log",
+      "sha256": "3ab8f1648430320521e4b294c1faf5525baaa116df69bf102e67668c78983e04"
+    },
+    {
+      "file": "main-build-02.log",
+      "sha256": "858429e9138b3eaf76e6e443eada7cdc7cb0e648b3e1577673cef16c1ccdf310"
+    },
+    {
+      "file": "probe-build-01.log",
+      "sha256": "74ba3defaac3e3c17fd0b109296feba7974bde3995705ff7096af83fa0372179"
+    },
+    {
+      "file": "probe-build-02.log",
+      "sha256": "a7dc437988e90ba6496431be6aa33bcc6f87d488a396662ec81c2e91e0288efb"
+    },
+    {
+      "file": "probe-build-03.log",
+      "sha256": "2b108f20235e43fc9a8207e1ab5355bf3d1bff38171e931b569a453e493afe38"
+    },
+    {
+      "file": "probe-build-final.log",
+      "sha256": "94c6440ffb796a231b0dd3d471ddfa806b1d1117d775181dfaf45ce2075f9750"
+    },
+    {
+      "file": "probe-test-01.log",
+      "sha256": "d3ba58166952e4afdaf689a8158785f2f79146850c8c73d15f110958b51587f7"
+    },
+    {
+      "file": "probe-test-final.log",
+      "sha256": "d3ba58166952e4afdaf689a8158785f2f79146850c8c73d15f110958b51587f7"
+    }
+  ]
+}

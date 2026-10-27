@@ -199,7 +199,18 @@ static class CapabilityClosure
         {
             app.EmitReferenceWeight(sample); var s = await Wait(app, x => x.Operations.Single().Weight is not null);
             Pass(s.Paused && s.Operations.Single().Plc is null, "recovered original measurement cannot automatically authorize first PLC dispatch");
-            await ManagementModeFixture.Authorize(app); await Command(app, "Resume");
+            await ManagementModeFixture.Authorize(app);
+            var inputReceipt = await Command(app, "IngressResponsibilities");
+            using (var inputs = System.Text.Json.JsonDocument.Parse(inputReceipt.Reason))
+            {
+                foreach (var input in inputs.RootElement.EnumerateArray())
+                {
+                    var inspected = await Command(app, "InspectInterruptedIngress", input.GetProperty("Id").GetString(), "Synthetic original entity and interrupted input inspected; no replay");
+                    Pass(inspected.Status == "Persisted", "interrupted input requires explicit inspection before controlled continuation");
+                }
+            }
+            Pass(!(await app.SnapshotAsync()).BlockingReasons.Any(r => r.StartsWith("IngressInterrupted:", StringComparison.Ordinal)), "inspection clears only the original input barrier");
+            await Command(app, "Resume");
             var recovered = s.Operations.Single(); var revision = (await app.SnapshotAsync()).Revision;
             await app.CommandAsync(new(Wire.Id(), revision, "ContinuePrepared", recovered.Id, "Synthetic original parcel inspected after interrupted association"));
             s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted);

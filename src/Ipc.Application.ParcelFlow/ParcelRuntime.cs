@@ -100,7 +100,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             RecoveryFiles.RequireOrdinaryAncestors(configurationFile);
             if (new FileInfo(configurationFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("原配置账超出检查预算；保留原件恢复");
-            var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configurationFile));
+            var original = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configurationFile));
             if (original.Confirmation is { Required: false } or { Attempts.Length: > 0 } || original.Activation is not null)
                 throw new InvalidDataException("原配置账已有启动事实但业务库缺失；保留原账，通过完整备份恢复，不能创建空库抹去原责任");
         }
@@ -219,8 +219,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 startupConfiguration = null;
             }
             configuration.CompleteEffectiveStartup();
-            if (configuration.Current.Confirmation?.Required == true)
-                repository.Commit(null, "ConfigurationConfirmationRequired", "Resources started; current configuration retained; enter management mode and confirm current configuration revision/hash before admission", paused: true);
             CompleteConfigurationAudit("Activated");
             // Only a successful controlled activation applies the new policy.
             // Reconnect and Pending edits cannot change retention.

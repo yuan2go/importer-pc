@@ -37,7 +37,7 @@ public sealed partial class ParcelRepository
                 throw new InvalidDataException("Backup consumer custody differs");
         }
         RecoveryFiles.RequireOrdinaryAncestors(configPath);
-        var config = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configPath));
+        var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configPath));
         ValidateConsumerConfiguration(config.Effective, application, null);
         if (config.Pending is { } candidate) ValidateConsumerConfiguration(candidate, application, config.Effective);
         HashSet<PackageReference> required = [.. config.Effective.Extensions?.Packages ?? [], .. config.Pending?.Extensions?.Packages ?? []];

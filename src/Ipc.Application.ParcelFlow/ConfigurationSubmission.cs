@@ -22,7 +22,7 @@ public sealed partial class ParcelRuntime
             var hash = Wire.Hash(Wire.Encode(normalized));
             var file = Path.Combine(directory, "configuration.json");
             if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("Configuration envelope quota exceeded");
-            var actual = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
+            var actual = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(file));
             if (Wire.Encode(actual) != Wire.Encode(configuration.Current))
                 return new("Unknown", "磁盘账与运行所有者状态不同；保留原稿，进入受控启动核对", actual.Revision, hash);
             if (actual.Revision >= expectedRevision && actual.Pending is not null && Wire.Hash(Wire.Encode(actual.Pending)) == hash)

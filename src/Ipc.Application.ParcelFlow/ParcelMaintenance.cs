@@ -31,7 +31,7 @@ public sealed partial class ParcelRepository
         if (Path.GetFileName(database) != flow.Id + ".db") throw new InvalidDataException("Selected Application differs from original database");
         var version = ReadStorageVersion(database, flow.Id);
         var configuration = Path.Combine(directory, "configuration.json"); RecoveryFiles.RequireOrdinaryAncestors(configuration);
-        var config = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configuration));
+        var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configuration));
         var errors = flow.Validate(config.Effective);
         if (errors.Length != 0 || config.Pending is { } candidate && flow.Validate(candidate).Length != 0)
             throw new InvalidDataException("Original Effective/Pending configuration is invalid; retain original release and data");
@@ -108,7 +108,7 @@ public sealed partial class ParcelRepository
         if (!File.Exists(database)) throw new FileNotFoundException("Original database is required; no empty runtime is created", database);
         using var owner = new ResourceLease(directory, ["application-owner"]);
         var inspection = InspectMaintenanceCore(database, flow);
-        var config = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory, "configuration.json")));
+        var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
         ParcelRecovery.CreateBackup(directory, destination, config.Effective, config.Pending, inspection.DatabaseBytes,
             file => Database.Backup(db, file), registerBackup);

@@ -10,7 +10,8 @@
     "SDK identity/diagnostic hardening",
     "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture",
     "PGS01 current read-only observation mode, no dirty state on load, deferred Pending/Effective save",
-    "CommercialQuality current/freshness/recovery with explicit synthetic template"
+    "CommercialQuality current/freshness/recovery with explicit synthetic template",
+    "Current ABI/provider guard verification full VC01 with explicitly synthetic SM fixture; production authority remains required"
   ],
   "NativeVerified": [
     "SDK first/daily page and single camera code",
@@ -342,6 +343,11 @@
       "name": "bundled-mvs-cq-current.log",
       "sha256": "83c1ff0c12caa8104bd760857c20c662aabd1e8e1e40a07e91ea6ef916c1b35b",
       "bytes": 4884
+    },
+    {
+      "name": "bundled-mvs-vc-current.log",
+      "sha256": "386ce6060d201e4a68f0f7978cef0be87866dd34bd98f8fa8451f88a599e5307",
+      "bytes": 4928
     }
   ],
   "Build": "PASS affected desktop/helper locked build 0 warnings/0 errors",

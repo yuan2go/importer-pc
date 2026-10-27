@@ -30,3 +30,5 @@ f2cd1428已成功形成含实际SDK的单EXE，保留其SourceCommit与原日志
 最终本机安装器Source489eebf2，真实14库已内置；同源冻结Native ParameterV3通过。后续仅修正Application PGS01旧TCP行模式/自动改写断言为当前SDK只读观察策略；当前PGS01本机通过，不改产品代码或重标介质源码，手动安装仍NOT_RUN。
 
 649b5157门禁6项PASS；剩余current-contract的CommercialQuality动态配置路径、frozen首配的TCP/9.8.7目录假设已按当前SDK修正。原生首配进一步发现内置MVS未加入既有IPv4即时反馈分支，实际驱动边界原已严格拒绝非规范IP；已补入该分支，完整StartupExperience及CommercialQuality本机通过。489安装器保留原身份并被此次UI修复介质替代，不改原hash或扩张其PASS。
+
+同次current-contract日志还有flow.Id形式的SM夹具路径，已与其他当前合成调用方一致指向synthetic；完整VC01本机通过，保留ABI/实际版本/资源构造前拒绝与生产授权要求。此后仅测试/证据修正，正式产品源码仍20ea93a5。

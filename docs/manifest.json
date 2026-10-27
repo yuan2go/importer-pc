@@ -59402,9 +59402,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "f7e38970e7f2180e08657e66edebc1a3f85be9647dd7c3839336452ff5396cb3",
-      "size_bytes": 10592,
-      "git_blob": "753f01c511f50b4fc3a2a361d600197e860abf46",
+      "sha256": "b7957e93677ec1ea066b8f5bf078405807c60d3253506f0b7432f48a40690109",
+      "size_bytes": 10718,
+      "git_blob": "16502e57176ff6c548f0f3d5bb5fb45dafdc41e3",
       "pre_publication_no_test_git_blob": "20761f9966775cd3ee8d21f6076566b8e8a98b4f"
     },
     {
@@ -103552,9 +103552,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "187f5210f48f520b81f900b510d0c0b3119949f486986af3708600f08a1a40aa",
-      "size_bytes": 13792,
-      "git_blob": "1fe7c8e93be1071edddbe28506dfc7c3b3ca9c2c",
+      "sha256": "5dbcc757772104da3606e15271c9284abee07bca0f002c557e3e70e730d1e2b4",
+      "size_bytes": 14086,
+      "git_blob": "abd7a6412a2366dcdad6984766a429074d8a0624",
       "storage_scope": "public_repository"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "e63780645175b05c5b311db05d50d49cb5a808cf56d7b11fbd33cdbfb25406df",
-      "size_bytes": 4793,
-      "git_blob": "c693ce9043dc25b147073a1542e745944faa494b",
+      "sha256": "9d69e5319dbd0a5d60c49a9c549a25188342faca54502ff5f9ea3714cf1cf6e1",
+      "size_bytes": 5075,
+      "git_blob": "43ce4001d335acfd731973e2b47da070a12f03d4",
       "storage_scope": "public_repository"
     },
     {

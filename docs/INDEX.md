@@ -1,4 +1,4 @@
-> 条码生产者统一接入：[BARCODE-PRODUCER-01](work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。[协议 v1](protocols/barcode-producer-v1.md)、[实现设计](design/barcode-producer-01.md)、[黄金对话](protocols/barcode-producer-v1.golden.json)、[运行说明](runtime/barcode-producer-01.md)、[验证回执](runtime/evidence/barcode-producer-01/README.md)。本型号由 PC 生产者解码，通过 TCP 接入；MVS 限诊断。
+> 条码生产者统一接入：[BARCODE-PRODUCER-01](work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。[协议 v1](protocols/barcode-producer-v1.md)、[实现设计](design/barcode-producer-01.md)、[黄金对话](protocols/barcode-producer-v1.golden.json)、[运行说明](runtime/barcode-producer-01.md)、[验证回执](runtime/evidence/barcode-producer-01/README.md)。本型号由 PC 生产者解码，通过 TCP 接入；供包台内置 MVS 扩展限诊断，独立服务复用 MVS 采集不受此扩展用途限制。
 
 > 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
 
@@ -44,10 +44,6 @@
 | 外部决定与公开范围 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
 
 参数V3替代V2参数版式，作业/首配合同仍继承V2及后续用户纠偏。管理能力是管理模式，操作员身份独立；帮助与支持页面已删除。仓ID、生产线ID、统一供包台编号、7天新站默认、本机窗口偏好及相机/RCS独立延后按当前纠偏执行。配置保存不等于生效；待配置拒绝业务，Unknown不重发。
-
-## 本轮来源与状态
-
-[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113、PR112、PR111已合入main；PR108继续整合。实际源及验证见本轮工作包，不将分支PASS转记main。
 
 ## 历史证据与发布
 

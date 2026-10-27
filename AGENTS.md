@@ -1,4 +1,4 @@
-> 本型号 MV-PD010003-06M-12C 的生产输入是 PC 读码生产者提供的 TCP 文本行；供包台是客户端。MVS 仅用于独立采集诊断，不能作为生产条码来源。统一接入范围见 [BARCODE-PRODUCER-01](docs/work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。每台相机仍只有一个 RCS 编码，取格口与心跳共用；物理序列号与此编码分开。
+> 本型号 MV-PD010003-06M-12C 的生产输入是 PC 读码生产者提供的 TCP 文本行；供包台是客户端。供包台内置 MVS 扩展仅用于独立采集诊断，不能直接作为其生产条码来源；独立读码服务可复用 MVS 取帧，经解码后按既定 TCP 协议提供生产输入。统一接入范围见 [BARCODE-PRODUCER-01](docs/work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。每台相机仍只有一个 RCS 编码，取格口与心跳共用；物理序列号与此编码分开。
 
 > 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](docs/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
 

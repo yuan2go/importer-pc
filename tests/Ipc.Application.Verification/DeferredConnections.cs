@@ -215,22 +215,7 @@ static partial class SportmasterRcs
     }
 
     static async Task<BusinessReceipt> ReconnectAfterMonitorDrain(ParcelRuntime app, Func<Task<BusinessReceipt>> reconnect)
-    {
-        // Maintenance correctly rejects an in-flight service health call. Schedule
-        // this lifecycle assertion after the real monitor reservation drains;
-        // never weaken the guard, retry an unknown action or accept Rejected.
-        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var prior = app.BeforeMonitorProbe;
-        app.BeforeMonitorProbe = (_, token) => { entered.TrySetResult(); return release.Task.WaitAsync(token); };
-        try
-        {
-            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await DeferredWait(app, s => s.Availability!.Configure);
-            return await reconnect();
-        }
-        finally { app.BeforeMonitorProbe = prior; release.TrySetResult(); }
-    }
+        => await LifecycleOptimization.AfterMonitorDrain(app, reconnect);
 
     static IParcelCapabilityFactory DeferredFactory(BusinessLaunch launch) => OperatingSystem.IsWindows()
         ? new WindowsDeferredFixtureFactory(new ParcelCapabilityFactory(launch)) : new ParcelCapabilityFactory(launch);

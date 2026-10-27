@@ -519,6 +519,26 @@
       "name": "native-workstation-revocation-wait/WINDOWS-WPF.log",
       "sha256": "ebedc652d29a5175eaf5e99d0489376cb2ae8e394bc5bc5fe2d7f16642b4f8a8",
       "bytes": 4009
+    },
+    {
+      "name": "ci-second-failure-excerpt.log",
+      "sha256": "26f8ce98a28ac0b506d6c1246ba3a153395e7bbe7a769a2f4769f818c886b1b6",
+      "bytes": 3817
+    },
+    {
+      "name": "application-build-schedule-fixture.log",
+      "sha256": "1efdfb0df9b74dffc4f30d108773e505c323115acffd4fc13717bea0db94e816",
+      "bytes": 1933
+    },
+    {
+      "name": "lifecycle-ux-schedule-fixture.log",
+      "sha256": "2bcf238a7ffc273053c16012de01756042f9cee7dd815cad328726ddb67f4b25",
+      "bytes": 15062
+    },
+    {
+      "name": "deferred-connections-schedule-fixture.log",
+      "sha256": "8fc14a03272bf2adaa6e5e2fa6fdc0d5f72f642c254ffb65456a00465a956497",
+      "bytes": 14271
     }
   ],
   "InitialRemoteGate": {
@@ -530,5 +550,12 @@
       "management exit draft check; Dispatcher idle did not establish completed service-state refresh"
     ],
     "Resolution": "unique code assertion retained; await actual revoked mode/workstation then strictly assert same draft object/value and no notice; no product permission guard changed"
+  },
+  "SecondRemoteGate": {
+    "Head": "2440a36a05081d018c7a54b0945159d9a1b33f96",
+    "Result": "7 success; frozen-sportmaster failed at existing scheduled backup lifecycle fixture",
+    "Job": 122150310913,
+    "OriginalFailure": "successful schedule projection corresponds to a real complete recovery set",
+    "Resolution": "explicit schedule initialization; use actual NextDue; share pre-reservation monitor drain with existing reconnect fixture; invoke each scheduled action once; complete marker/capacity/original custody assertions unchanged; no backup runtime code changes"
   }
 }

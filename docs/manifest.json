@@ -90080,9 +90080,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
-      "sha256": "9523f778939508595dacf00c16de19a47785734d197c05b47a5e438f89355a8f",
-      "size_bytes": 18886,
-      "git_blob": "ad5220ad8670c75bc1201f92c6596b2f1a177d8e",
+      "sha256": "5d57a5fdc09278a54328c5218f7b4eb12a921dc74ac55b4f7ea1ca0cec7794b3",
+      "size_bytes": 18066,
+      "git_blob": "f3d9889d30092b1acbdadd897c5664c2c4f63701",
       "version": "camera-sdk-single-code-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -100066,9 +100066,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "1ac5c07e223a3863716bd9335e861adcc7a3af1462748cebc3e6e22b03e0c4c8",
-      "size_bytes": 20305,
-      "git_blob": "35da49f05dff7f32f44a70a166cba8c92636c43f"
+      "sha256": "a0e0267af99365a0ef808fbf78aa02c4a56ca29c23a0e4a62d8065a9b327bfb4",
+      "size_bytes": 21617,
+      "git_blob": "467cf3232e0a06deabea2d473ed944a76a92dfa9"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/DeploymentBatchVerification.cs",
@@ -102617,9 +102617,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "7f998a09c12f8de7cd492c2edf356369e106c7ee519a1c7266428a152de76f30",
-      "size_bytes": 20856,
-      "git_blob": "07c3609e66ebe26028c48b19a142b3a3cf3b83a4",
+      "sha256": "34db7c53db7f68584e7a3563c459991f04bfad95c01fa6040fcdb56c7c5c3fc7",
+      "size_bytes": 22124,
+      "git_blob": "a7b401ff27d5a1512778d37aa48d88fe7e66adfc",
       "storage_scope": "public_repository"
     },
     {
@@ -102628,9 +102628,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "7eb9ec834836da06d17f7c949f519ea0ac3e1b7863986b969d76441a2c499fe8",
-      "size_bytes": 4888,
-      "git_blob": "724440bb50ca2a2abb0ac0142c6f9339fc1f47c1",
+      "sha256": "a4a36b66c0a8a06d2ead3f7561101ecb3a9f3c608f5c2cdc548653d24a5245fc",
+      "size_bytes": 5561,
+      "git_blob": "2376af50ad3735e293d1c02003da390502e3701a",
       "storage_scope": "public_repository"
     },
     {

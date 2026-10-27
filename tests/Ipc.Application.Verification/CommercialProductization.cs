@@ -185,8 +185,8 @@ static class CommercialProductization
         var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
         await Reject<InvalidDataException>(() => legacyService.BackupAsync(legacyBackup), "non-current format refuses backup before creating output");
         Check(Wire.FileHash(legacyDatabase)==legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")), "non-current refusal preserves original bytes and creates no backup or fence");
-        await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "legacy root without original machine custody cannot be silently certified by copying a policy");
-        Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "legacy backup/repair never mints a new machine claim or a false source fence");
+        await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "current root without original machine custody cannot be certified by copying a policy");
+        Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "refused restore adoption never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
         Console.WriteLine("PASS COMM CORE COMPLETE");
     }
@@ -260,15 +260,15 @@ static class CommercialProductization
         Check(repairPlan.Allowed && File.Exists(Path.Combine(repairBackup + ".recovery", "COMPLETED.json")) && File.ReadAllBytes(Path.Combine(read.RuntimeDirectory!, "configuration.json")).SequenceEqual(originalBeforeRepair),
             "same-source repair can back up Unknown originals without changing the configuration or clearing responsibility");
         read = await service.StageAsync(read.ConfigurationHash, changed, "new target for future intents only");
-        // Reuse the actual lost-after-commit original as a DB7 upgrade fixture.
+        // A non-current format marker must refuse startup even with an original Unknown request.
         var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };
         var oldDirectory = Path.Combine(oldLaunch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId); Directory.CreateDirectory(oldDirectory);
         File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, c, null, "Effective", null)));
         NonCurrentStorageFixture.Create(oldDirectory,c.ApplicationId,7,original);
         var oldDatabase = Path.Combine(oldDirectory, c.ApplicationId + ".db"); var oldHash = Wire.FileHash(oldDatabase);
-        await using (var blockedUpgrade = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
-            await Reject<InvalidDataException>(() => blockedUpgrade.StartAsync(default), "DB7 Unknown remains on its original reader before the DB8 migration");
-        Check(Wire.FileHash(oldDatabase) == oldHash && NonCurrentStorageFixture.Version(oldDatabase) == 7, "refused DB7 upgrade preserves original request database and format");
+        await using (var refusedRuntime = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => refusedRuntime.StartAsync(default), "non-current format with Unknown responsibility refuses startup before recovery writes");
+        Check(Wire.FileHash(oldDatabase) == oldHash && NonCurrentStorageFixture.Version(oldDatabase) == 7, "non-current format refusal preserves original request database bytes and format identity");
         var reopenedFactory = new SyntheticFactory(launch);
         await using (var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } })
         {
@@ -277,7 +277,7 @@ static class CommercialProductization
                 "restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown");
         }
         // Reuse this new-site Unknown owner for machine-bound full-set handoff,
-        // rather than minting provenance for the separate legacy migration fixture.
+        // without minting provenance for the separate non-current refusal fixture.
         service.HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE";
         var backup = Path.Combine(root, "unknown-handoff-before.db"); await service.BackupAsync(backup);
         var target = Path.Combine(root, "unknown-handoff-before-root"); var plan = await service.PlanRestoreAsync(backup, target); await service.RestoreAsync(backup, plan.Destination, plan.BackupSha256);

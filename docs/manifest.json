@@ -57541,9 +57541,9 @@
     {
       "path": "src/Ipc.Installer/packages.sportmaster.win-x64.lock.json",
       "storage_scope": "public_repository",
-      "sha256": "6826d2f9fcc5b5e6e7dc4432d1fe7400ae9004d3cc9a693925d0263af79bd886",
-      "size_bytes": 18824,
-      "git_blob": "3d03aa0753e7aed2ee8aefe64b5d88f107af0c39",
+      "sha256": "13b6327d9f28051b3f5fd395add6fe0226ee70e7a8cc79629e63d964924ce781",
+      "size_bytes": 19020,
+      "git_blob": "14c5e6c29ee3d9ca28aa23b1b85abc39be6b1fa8",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "30a28d638674ef203227852b119a9fc3a428b1bc5e2678adb4ceae505b294b1b",
-      "size_bytes": 3319,
-      "git_blob": "4f6b1620bceda0390d504b10e1367bb8c94c8321",
+      "sha256": "b7311438ccd8e241bbae6abbe29554d098c8bbd5ee04a00acb92931b7928587c",
+      "size_bytes": 3538,
+      "git_blob": "ddf6d4564f9477e8ff81bcd701d1d3449d567a8b",
       "storage_scope": "public_repository"
     },
     {
@@ -103665,6 +103665,17 @@
       "sha256": "f68aa025a9ee000ad45710e514f7b68721b4dfb85227d7836c14543c86f53a73",
       "size_bytes": 1902,
       "git_blob": "b5c57bd8a24d466a02b4c504be420e4cf0c988a7",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Installer/packages.sportmaster.lock.json",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "13b6327d9f28051b3f5fd395add6fe0226ee70e7a8cc79629e63d964924ce781",
+      "size_bytes": 19020,
+      "git_blob": "14c5e6c29ee3d9ca28aa23b1b85abc39be6b1fa8",
       "storage_scope": "public_repository"
     }
   ],

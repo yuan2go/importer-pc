@@ -22,3 +22,5 @@
 
 
 首轮f52f825c远端五项构建相关门禁停于同一Application.Verification锁文件缺新增MVS项目引用；原job122206482407/282/002/406/496保留。同步测试默认packages.lock并以locked重建通过；不改测试或放宽locked。原生SDK参数门禁首轮通过。本机f52冻结实际SDK介质与后续仅测试锁修正分开记录。
+
+本机f52实际SDK ZIP已形成，原始单EXE封装在Installer自身新增MVS传递引用的RID锁处拒绝；同步Installer准确锁闭包后重建新源码介质，不复用混源EXE，首个失败日志保留。

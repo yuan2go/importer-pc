@@ -32,7 +32,7 @@ static class CapabilityClosure
             "common capabilities live in Platform with current full names/constructor and no retired bridge and no Application assembly dependency");
         CapabilityBinding B(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/closure19", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
-        async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)
+        async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null, bool authorizeManagement = true)
         {
             // Each current position owns a distinct camera/scale; the first-position
             // anchors below remain the original samples used by these assertions.
@@ -55,7 +55,15 @@ static class CapabilityClosure
             ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
             var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new ParcelCapabilityFactory(launch);
             var app = Create(c.ApplicationId, launch, wrap is null ? factory : wrap(factory));
-            try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }
+            try
+            {
+                await app.StartAsync(CancellationToken.None);
+                // Original payload and provider metadata are management-only projections.
+                // This grant never substitutes for the separate business operator login.
+                if (authorizeManagement) await ManagementModeFixture.Authorize(app);
+                return app;
+            }
+            catch { await app.DisposeAsync(); throw; }
         }
         async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
@@ -199,7 +207,7 @@ static class CapabilityClosure
             Pass((await app.SnapshotAsync()).Operations.Single().Plc!.Attempts == 1 && s.Operations.Single().Weight!.MeasurementId == sample.Id, "original sample survives restart and duplicate sample cannot cause another PLC attempt");
         }
         var sessionConfig = Config("sportmaster") with { Login = B("login"), SessionLifetimeMs = 200 };
-        await using (var app = await Open(sessionConfig, "session-expiry"))
+        await using (var app = await Open(sessionConfig, "session-expiry", authorizeManagement: false))
         {
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("session", "007", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var op = s.Operations.Single();
             await Task.Delay(240);

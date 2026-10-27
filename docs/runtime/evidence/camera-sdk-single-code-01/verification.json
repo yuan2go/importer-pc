@@ -711,5 +711,62 @@
         "bytes": 15184
       }
     ]
+  },
+  "OperatorMainIntegration": {
+    "Main": "ed07f0e12b070118cc12104947ebc02f14a44f66",
+    "SourceCommit": "65bd320cde8153356a1097ed51be5aab0799766f",
+    "NativeBuild": "PASS zero warnings/errors",
+    "Native": "PASS SDK edit, full parameter-v3, operator-workspace, workstation-status-logs",
+    "EntryReview": "PackageInstallationRequested still routes to existing technical tool index 6",
+    "FrozenPackages": "three 1.0.0 TestOnly/Simulation packages PASS with exact frozen Sportmaster checker",
+    "PriorRemoteHead": "88d69f69c74bce8497fb050cbb9ea5668bb564ab",
+    "PriorRemoteResult": "8/8 success before PR129 main integration; not transferred to final merge",
+    "Logs": [
+      {
+        "name": "native-build-operator-merged.log",
+        "sha256": "eb9893f69f982f7de411003ee835185f352cad11dc834e519cf20f11f9870507",
+        "bytes": 1986
+      },
+      {
+        "name": "frozen-sportmaster-final.log",
+        "sha256": "fce59471abad6cc40ea5efbbdfc010c2420f693cb02d961c0307ab32e1ec5976",
+        "bytes": 1485
+      },
+      {
+        "name": "native-operator-merged-hikrobot-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-operator-merged-operator-workspace.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-operator-merged-parameter-v3.log",
+        "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+        "bytes": 275
+      },
+      {
+        "name": "native-operator-merged-workstation-status-logs.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "package-sportmaster-final-idmvs.log",
+        "sha256": "a91b2341d41a74f68a0523780d1a8ef6c9929d0e632987e114a3f4337e0b6604",
+        "bytes": 10129
+      },
+      {
+        "name": "package-sportmaster-final-mvs.log",
+        "sha256": "1b9d91da7cb38197cade58de9d6d1736d29bb01bc3df891d523151ee1c96441a",
+        "bytes": 10397
+      },
+      {
+        "name": "package-sportmaster-final-rcs.log",
+        "sha256": "08561f06a9d67767f59e7f965483857d34d241c9dafe4c366866d4e2a550a920",
+        "bytes": 15182
+      }
+    ]
   }
 }

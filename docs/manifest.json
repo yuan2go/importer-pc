@@ -102650,9 +102650,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "7a15ae2f56384ea1975ec07d40ff8fa6f8376de217fac94ed7f96844236fadde",
-      "size_bytes": 28064,
-      "git_blob": "7d875b7107d7b6ba0af1bed6958e390bbc8f0f39",
+      "sha256": "13c20ff774277b9175a392822523ab448fbcde3751f99cce8447f5c632788bbc",
+      "size_bytes": 30399,
+      "git_blob": "19bc9877064ef44d8cb4f65bd067332f1f9a3e56",
       "storage_scope": "public_repository"
     },
     {
@@ -102661,9 +102661,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "9d8282ad3bf0094205cb38804438bb258a45a1d63389bb8ecba271a168830c62",
-      "size_bytes": 7246,
-      "git_blob": "faac5301553a5dbf13dd45bb0392744ce98cb1b2",
+      "sha256": "db75314f2d7220c2928a4c773f1fee56533df0381e540bd6b564e11a176b02cd",
+      "size_bytes": 7956,
+      "git_blob": "f689877e95ffd34aab70e77c2cc70532b465ff8b",
       "storage_scope": "public_repository"
     },
     {
@@ -103467,6 +103467,17 @@
       "sha256": "5f41a4bc866ad17c805c7ae7acf6b8cad4bd2b8c12f942dca3f72debdaa55624",
       "size_bytes": 9597,
       "git_blob": "0c628161e0709d1fc8b4c4ce7398c3150e370b93",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/camera-sdk-single-code-01/frozen-packages-final.json",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "a2b2e1bb46cdb0f3b83d5f63771d22f75ed84d0da4a2869b51f4cc906e8016ed",
+      "size_bytes": 4745,
+      "git_blob": "664bd28aa016c8273c435566e0eb1b4969a75c6e",
       "storage_scope": "public_repository"
     }
   ],

@@ -1,0 +1,88 @@
+{
+  "SourceCommit": "65bd320cde8153356a1097ed51be5aab0799766f",
+  "MergedMain": "ed07f0e12b070118cc12104947ebc02f14a44f66",
+  "Scope": "TestOnly Simulation only; exact frozen Sportmaster Ipc.Assembly; no Production qualification/installation/device acceptance",
+  "Packages": [
+    {
+      "Package": "mvs-final-single-code-1.0.0.ipcx",
+      "PackageSha256": "5df9cc1e0020a00526fa449387223cac14b1373e90dc51c5102fcf00c747646b",
+      "PluginSourceCommit": "6ce01fa84da99225efded80a65470721d426a2aa",
+      "PluginSourceSha256": "cbcbba0808be3ed9f070d24ecbcca547d9131826a989688a936c913a7f948477",
+      "DefinitionSha256": "62be081277def25a9bc4c3335e12545496231a0b46d5dce62dbd26c897812a4c",
+      "HostContractSha256": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a"
+      },
+      "Publisher": "sdk02-engineering",
+      "Version": "1.0.0",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "be672722e0a3a14c9e1f927cf7e03dde429e070aed8cb018be3b0a14d9aba130",
+      "TrustSha256": "295c237a001412af18cdc1fa1419431f07b598c7251a49c1febb0f075c811a4c",
+      "PayloadSha256": {
+        "Ipc.Drivers.Hikrobot.Mvs.dll": "7fc307b176a0796fd0e4538a85f53176a51fb7c759749dad1940de3904f67ede",
+        "sdk-boundary.json": "a78e8dfab83e6bd2e23ca0ef1bb4df9f0c2839c4bd8bf10eb674656b174f1ba3"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+      "VerifiedCameraCodeSchema": "single RCS mapping per camera; no driver duplicate"
+    },
+    {
+      "Package": "idmvs-final-single-code-1.0.0.ipcx",
+      "PackageSha256": "3a3df9d7159c8ab638c29270d64ceb170a82c0689a4aa31710ca0918960a65e6",
+      "PluginSourceCommit": "6ce01fa84da99225efded80a65470721d426a2aa",
+      "PluginSourceSha256": "acd72e76bb41268f0715b930e7a32f88f0b915f5d9bcfa3d89809a584cc88878",
+      "DefinitionSha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb",
+      "HostContractSha256": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a"
+      },
+      "Publisher": "sdk02-engineering",
+      "Version": "1.0.0",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "74646a881883341a398a9c48433eef82992bac12a35ca60ff76c48d35b2c1c09",
+      "TrustSha256": "295c237a001412af18cdc1fa1419431f07b598c7251a49c1febb0f075c811a4c",
+      "PayloadSha256": {
+        "Ipc.Drivers.Hikrobot.dll": "c9ba837ab2b92053f0fc14632d564e81480b6aceff330a6823300258062eb4fe",
+        "sdk-boundary.json": "74eaadb5896fbf81698d8096247b859812b83d97e24360cf6282e32914a80851"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+      "VerifiedCameraCodeSchema": "single RCS mapping per camera; no driver duplicate"
+    },
+    {
+      "Package": "rcs-final-single-code-1.0.0.ipcx",
+      "PackageSha256": "4206f58f11cbc83af93785284eff86f16395506bb4f23f21f434f7ff72cc21ae",
+      "PluginSourceCommit": "515013721ed80117a27a855f5b6c263bee221c9b",
+      "PluginSourceSha256": "36c9f87273222d086988fc9a77ddf1f2b00dc102c781f0530fddb6f7498d70ed",
+      "DefinitionSha256": "85c8161f20f4bf40339e2b30500851bd2e6ef3eca0743c506a57186e91303514",
+      "HostContractSha256": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "77e476449dd7fe38aadf5ce3b4a7c542725ceff88a713c7e2fb12d16bf223f8a",
+        "Ipc.Application.Contracts": "3c0089ac176f279ec8b3a5210010a285405261362efb5e3a6256955206b36ac2"
+      },
+      "Publisher": "sdk02-engineering",
+      "Version": "1.0.0",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "0dcb9143991e00b653e032469f203b6dfad8516121cd7a9848c94accd6b40f5d",
+      "TrustSha256": "295c237a001412af18cdc1fa1419431f07b598c7251a49c1febb0f075c811a4c",
+      "PayloadSha256": {
+        "Ipc.Integrations.SportmasterRcs.dll": "f324be0aa84bba15ea00fad2bfafe99e1c03c31a2291c1d037722875771af6a9"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+      "VerifiedCameraCodeSchema": "single RCS mapping per camera; no driver duplicate"
+    }
+  ]
+}

@@ -17,3 +17,5 @@
 首轮CI（40468133005）的Linux桌面跨编译在System.Diagnostics.EventLog引用包还原时NU1102失败，核心、Fixture和Supply验证已成功编译。完整Supply桌面构建改在Windows runner实际执行Git Bash入口；无参数默认套件继续独立在Linux隔离运行。没有修改NuGet锁、包版本或跳过桌面构建；Linux桌面跨编译不计PASS。
 
 第二轮无参数套件已通过三业务作业、PLC位置阻断/完成、恢复与称重，暴露Unknown目标比较混用了操作员脱敏投影和管理完整投影。原件改为授权后捕获，重启也在授权后比较；保留ActivationFailed及原请求字节/次数断言，并增加Pending候选保留断言。
+
+第三轮已通过Unknown原件/候选/单次执行检查，随后负向Production启动在非Windows上先被受保护持久化拒绝。测试显式接受该平台和精确错误消息组合，其他异常仍失败；Windows原有Production拒绝断言保留。

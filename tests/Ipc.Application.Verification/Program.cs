@@ -228,5 +228,7 @@ try { using var db = new ParcelRepository(mismatch, "sportmaster"); throw new Ex
 catch (InvalidDataException) { Pass(true, "changed application baseline checksum is rejected without overwriting identity"); }
 try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production"); throw new Exception("Production unexpectedly started"); }
 catch (InvalidDataException ex) { Pass(ex.Message.Contains("Production"), "Production rejects missing real SDK/protocol authority without fallback"); }
+catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
+{ Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }
 await ResourceRisks.Run(workspace, root);
 Console.WriteLine("PASS AC17 COMPLETE: full reference chains, identity, weight correlation, restart/unknown, old configuration and no repeated external action");

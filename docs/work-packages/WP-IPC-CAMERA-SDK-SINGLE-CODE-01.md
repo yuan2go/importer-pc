@@ -34,3 +34,6 @@ PR130首轮cb4e785f远端7/8通过；冻结门禁在V3旧“两个不同编码�
 
 
 main合入PR127后，51501372整合efd374dc的自有版本统一规则，保留双方最新纠偏并解决冲突；所有当前自有模块1.0.0，第三方SDK ABI不改。整合后locked Solution及原生验证构建0警告/0错误，SDK编辑、心跳、延后/Unknown、P0延后及完整生命周期通过；原生SDK编辑、完整参数V3及管理退出/工作台日志通过。三个当前工程包按真实Sportmaster装配入口Ipc.Assembly冻结复建并签名，全部静态检查通过；[新回执](../runtime/evidence/camera-sdk-single-code-01/frozen-packages-unified.json)保持SourceCommit与哈希，55ae旧回执仍只证明其形成时产物。首次调用漏workspace参数及一次误用Supply检查宿主的失败留Git外日志，纠正调用后重验，不修改校验器。当前Production程序及资格仍未改变；原始工程包、签名、SDK和现场数据不入Git。
+
+
+6ce01fa8继续整合最新main fdd24fa5（PR128），完整保留海康并发清理、固定物理身份及诊断脱敏守卫。当前正式SDK启用须预期序列号，模拟/独立诊断可省略；单一相机编码不等同物理序列号。顶部指引与切换/序列号提示同步该区别。整合后locked Solution零警告/错误，SDK编辑、身份/日志硬化、心跳、SDK Probe完整自测及原生SDK页通过。针对同一冻结Sportmaster宿主重建三个1.0.0 TestOnly包并核对真实manifest，全部通过；[最新精确回执](../runtime/evidence/camera-sdk-single-code-01/frozen-packages-current.json)与51501372等旧回执分开。现场条码识别组件、真机/真实RCS/Production部署条件仍未取得；本轮没有替换当前安装。

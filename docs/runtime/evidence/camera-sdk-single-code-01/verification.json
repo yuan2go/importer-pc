@@ -641,5 +641,75 @@
         "bytes": 15187
       }
     ]
+  },
+  "HardeningMainIntegration": {
+    "Main": "fdd24fa552136c6e1eceaf62aa66552744bd46d1",
+    "SourceCommit": "6ce01fa84da99225efded80a65470721d426a2aa",
+    "Build": "PASS locked Sportmaster solution; zero warnings/errors",
+    "Targeted": "PASS SDK editing, SDK identity/diagnostic hardening, heartbeat, native SDK form, complete SDK probe self-test",
+    "FrozenPackages": "PASS three 1.0.0 TestOnly/Simulation packages and exact manifest schemas",
+    "ProductionIdentity": "expected physical serial required; diagnostic/simulation may omit; one camera code remains shared",
+    "Logs": [
+      {
+        "name": "solution-build-hardened.log",
+        "sha256": "81a61f3bac552bd2ca1c926d13e501a30aabcebe5984de35e9067a0ee742190e",
+        "bytes": 5577
+      },
+      {
+        "name": "probe-build-hardened.log",
+        "sha256": "0012c4e70624208db90346cef71ad0cabd95ce410dca23cf3a8265fa7eb83be3",
+        "bytes": 767
+      },
+      {
+        "name": "probe-hardened-self-test.log",
+        "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+        "bytes": 7436
+      },
+      {
+        "name": "native-build-hardened.log",
+        "sha256": "4dfd87a3d20b3f15991f2235eba7e8fe386088e0ffa02f230a9c18cabbce167e",
+        "bytes": 1986
+      },
+      {
+        "name": "native-hardened-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "frozen-sportmaster-hardened.log",
+        "sha256": "6cb4b405bec350c6be2daccd5c0a987409516d2eb734b929faec2002bd3bd767",
+        "bytes": 1488
+      },
+      {
+        "name": "hardened-hikrobot-hardening.log",
+        "sha256": "b86dbf8ca32c7fb38b5d239842cee5bd8b63ce2bb3736e4c63e08a5ae27e1f78",
+        "bytes": 1483
+      },
+      {
+        "name": "hardened-hikrobot-sdk-editing.log",
+        "sha256": "70c966d130ec9947ff7f193f6f9bc4c6e8a50b9a3453ed42a75a7b6b8f7251b6",
+        "bytes": 1180
+      },
+      {
+        "name": "hardened-rcs-heartbeat.log",
+        "sha256": "aef00a1441e31a332bd56cc2b1182644c06ef5bb298752bb5cf5c5bc1b60faf0",
+        "bytes": 2226
+      },
+      {
+        "name": "package-sportmaster-hardened-idmvs.log",
+        "sha256": "c3860cc931197609ee643d70a30588c776915ef1fade053eba8a884c448887c2",
+        "bytes": 10132
+      },
+      {
+        "name": "package-sportmaster-hardened-mvs.log",
+        "sha256": "d60620dc61ccd13968d8427ba342b4f8a213923278410be46e712dd7cb155d1b",
+        "bytes": 10400
+      },
+      {
+        "name": "package-sportmaster-hardened-rcs.log",
+        "sha256": "cfc4ed5469a5129d3a7b8d9f81efef23a428672fcc4e4cb6aabb8b89b7836bfe",
+        "bytes": 15184
+      }
+    ]
   }
 }

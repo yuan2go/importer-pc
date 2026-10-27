@@ -119,7 +119,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // Mirror the installed Hikrobot driver's existing address-format rule
             // before review. This is local feedback, not a connection probe or a
             // replacement for Application/driver validation at the real boundary.
-            if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
+            if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" or "hikrobot-mvs" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
             {
                 if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip)
                     Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "请填写完整的 IPv4 地址，使用四段 0～255 的数字。", "ipv4-format"));

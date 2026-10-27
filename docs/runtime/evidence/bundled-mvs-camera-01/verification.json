@@ -9,12 +9,14 @@
     "deferred/Unknown and P0 eight combinations",
     "SDK identity/diagnostic hardening",
     "AQA01 full actual bounded queue/Unknown/resource/configuration confirmation with explicit current synthetic fixture",
-    "PGS01 current read-only observation mode, no dirty state on load, deferred Pending/Effective save"
+    "PGS01 current read-only observation mode, no dirty state on load, deferred Pending/Effective save",
+    "CommercialQuality current/freshness/recovery with explicit synthetic template"
   ],
   "NativeVerified": [
     "SDK first/daily page and single camera code",
     "full parameter-v3 after preserving nonselectable provider navigation anchor",
-    "parameter-guidance-startup full 7 deferral combinations and required real physical identity"
+    "parameter-guidance-startup full 7 deferral combinations and required real physical identity",
+    "Full StartupExperience after current SDK catalog/serial fixture and IPv4 inline feedback correction"
   ],
   "ActualSdk": {
     "ApiVersion": "0x04080201",
@@ -27,7 +29,8 @@
     "generated restore lock RID context corrected with distinct locked inputs",
     "old source/locale UI assertion updated to absence plus remaining heartbeat help",
     "diagnostic navigation anchor restored for nonselectable built-in provider; same draft assertions retained",
-    "AQA CI PGS substep still expected TCP line/automatic policy rewrite; updated current SDK readonly observation expectations, assertions retained"
+    "AQA CI PGS substep still expected TCP line/automatic policy rewrite; updated current SDK readonly observation expectations, assertions retained",
+    "Native StartupExperience catalog assumed TCP/9.8.7; current SDK catalog and serial fixture updated; actual SDK provider was missing from existing inline canonical IPv4 rule and has been added without changing boundary validation"
   ],
   "Logs": [
     {
@@ -324,6 +327,21 @@
       "name": "bundled-mvs-pgs-current.log",
       "sha256": "4dc4b28d5c4ed4d2c11cd742797e8c8769527f38078b0da8fa0b09ace8e2e447",
       "bytes": 2439
+    },
+    {
+      "name": "bundled-mvs-startup-current2-build.log",
+      "sha256": "5c681bc6454352600993c70d9f843053dd4b71ba61867b9d5c42705538d6eb1f",
+      "bytes": 2110
+    },
+    {
+      "name": "bundled-mvs-startup-current2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "bundled-mvs-cq-current.log",
+      "sha256": "83c1ff0c12caa8104bd760857c20c662aabd1e8e1e40a07e91ea6ef916c1b35b",
+      "bytes": 4884
     }
   ],
   "Build": "PASS affected desktop/helper locked build 0 warnings/0 errors",
@@ -334,11 +352,12 @@
     "Sha256": "0ed546805a36e05372e9ad5a09ee80d812176b29734de57c530fc584133416af",
     "Status": "BUILT with actual14 SDK; packaging startup guide correction follows"
   },
-  "CurrentInstaller": {
+  "HistoricalInstaller489": {
     "SourceCommit": "489eebf2ff9a8c79aa4fb43e2e7f44ea6c17d9a3",
     "Sha256": "14da4f0fff1902239fdc39b0d0a5c93575d75174a3fd2b5a08a6973aa8c79086",
     "ActualWindowsInstallation": "NOT_RUN; manual user installation",
     "VendorRuntime": "actual14 reviewed SDK files bundled",
-    "FrozenNativeParameterV3": "PASS same exact source489eebf2; no provisioning or physical devices"
+    "FrozenNativeParameterV3": "PASS same exact source489eebf2; no provisioning or physical devices",
+    "Status": "superseded by current SDK IPv4 UI validation fix; retain original source and hashes"
   }
 }

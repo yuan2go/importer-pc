@@ -54133,9 +54133,9 @@
       "version": "camera-sdk-single-code-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "3d1ef47dff8e362a005e50ac5b98b789b7adb7f060966099793b7a2a0be01509",
-      "size_bytes": 15516,
-      "git_blob": "2ce0bac4f87d052fe3860f5f3fc84bc1552de85a",
+      "sha256": "4852262b6c7cd67166da5c546f2dad44d4688484aa850ebe289bcd0374834726",
+      "size_bytes": 15534,
+      "git_blob": "e7424e8bba81aebaf0ed568e7a5c2ebd86fa044d",
       "pre_parameter_experience_01_identity": {
         "git_blob": "fe572e4abdd0586930cf1df2217f62c2c81c1b6f",
         "sha256": "3ed5ade470f9a6e26b9f55438a5bdc1df97041acdc13a0baa91e3d01b239564f",
@@ -59070,9 +59070,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "5b0c06dddb0f7f57379d0b72b84c9fa47280ac520927448b5ec3db84a19fbe49",
-      "size_bytes": 19122,
-      "git_blob": "88e004211659c950a3d980378ac1917b12091673"
+      "sha256": "3a2ad0edf2582fbc24e52be3a5ba889fcb1414d07549160a7728bb8105720063",
+      "size_bytes": 19243,
+      "git_blob": "3b6d85387ee063fc99a5ee94dbe5650c9ccbfbf9"
     },
     {
       "path": "tests/Ipc.Application.Verification/InstallerChangeGuards.cs",
@@ -62487,9 +62487,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
       "storage_scope": "public_repository",
-      "sha256": "9cbcdc8b88f8d0f2920af98134ead8c5804c71092afe82d827fb0377b57b213b",
-      "size_bytes": 29469,
-      "git_blob": "947e5e29713400bc7aca2657f4c9720eecd3f063",
+      "sha256": "fda6098fe92f26409642bc2441821d974e160b61a2a51396fc88fa64e111f775",
+      "size_bytes": 29421,
+      "git_blob": "a553c20132dca3b4115410fbc953b98b168073bc",
       "previous_git_blob": "dcc38bdffa244f0f5f6bcfd084e0df2437c52956"
     },
     {
@@ -70399,9 +70399,9 @@
       "purpose": "Authorized camera diagnostics and isolated verification; original boundaries retained",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "58a1709ac26044ed16f04907f09c456b74cf37a850c2c2acaaf65af29788e032",
-      "size_bytes": 5596,
-      "git_blob": "55c8764d65df912b0cce0979f0c3a2d4f5ac6d9a"
+      "sha256": "78a0b085d7e83a58d06804b998927cd088af9166585e434794aa28463d3089c3",
+      "size_bytes": 5565,
+      "git_blob": "aa2350b62fcaecabfe6cfca6a3e61c97d02f88a2"
     },
     {
       "path": "docs/runtime/evidence/dual-camera-communication-fix-01/first-configuration-ci/MEDIUM-SHA256SUMS",
@@ -103552,9 +103552,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "d3d761e2f146dc63a173e8358228d46795792ec83b78bf50e444fb55274030a7",
-      "size_bytes": 12759,
-      "git_blob": "92c0ee65d4731535f0265d25eea7b63388e979aa",
+      "sha256": "187f5210f48f520b81f900b510d0c0b3119949f486986af3708600f08a1a40aa",
+      "size_bytes": 13792,
+      "git_blob": "1fe7c8e93be1071edddbe28506dfc7c3b3ca9c2c",
       "storage_scope": "public_repository"
     },
     {
@@ -103563,9 +103563,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "554a8749c10bd59b6bfa52cfba7206aefa80a49b2c2f98d404120e0c2468c94e",
-      "size_bytes": 4344,
-      "git_blob": "e02a9190aa73cf83fac0d442085111f7cd34747a",
+      "sha256": "e63780645175b05c5b311db05d50d49cb5a808cf56d7b11fbd33cdbfb25406df",
+      "size_bytes": 4793,
+      "git_blob": "c693ce9043dc25b147073a1542e745944faa494b",
       "storage_scope": "public_repository"
     },
     {

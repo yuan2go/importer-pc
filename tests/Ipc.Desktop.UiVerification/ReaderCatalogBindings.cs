@@ -11,9 +11,9 @@ static partial class Program
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS READER-CATALOG " + text); }
         var initial = new SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.GetTempPath(), null, null)).Catalog();
-        var tcp = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "tcp-line");
-        var devices = initial.Topology!.Readers.Select((r, i) => r with { Parameters = new()
-        { ["device.ip"] = "192.0.2." + (11 + i), ["device.port"] = (9000 + i).ToString(), ["entity.mode"] = "observe-only" } }).ToArray();
+        var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs");
+        var devices = initial.Topology!.Readers.Select((r, i) => r with { Parameters = new(r.Parameters!)
+        { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-" + i, ["entity.mode"] = "observe-only" } }).ToArray();
         var candidate = initial with { Reader = devices[0], Topology = initial.Topology with { Readers = devices } };
         var original = Wire.Encode(candidate);
 
@@ -27,30 +27,28 @@ static partial class Program
             typeof(ParcelViewModel).GetMethod("LoadStructuredConfiguration", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(live, [c, inventory]);
             return [startup.Readers, live.ReaderDrafts.Select(r => r.Capability).ToArray()];
         }
-        foreach (var version in new[] { tcp.Version, "9.8.7" })
+        foreach (var readers in Editors(candidate, catalog))
         {
-            var inventory = catalog with { Providers = catalog.Providers.Select(p => p == tcp ? p with { Version = version } : p).ToArray() };
-            foreach (var readers in Editors(candidate, inventory))
+            Check(readers.Length == 2 && readers.All(r => r.Provider?.Implementation == sdk.Implementation && r.Provider.Version == sdk.Version && r.Provider.Package is null),
+                "startup and runtime resolve the actual current built-in SDK descriptor without a package or version substitution");
+            for (var i = 0; i < readers.Length; i++)
             {
-                Check(readers.Length == 2 && readers.All(r => r.Provider?.Version == version), "startup and runtime resolve the installed built-in TCP version " + version);
-                for (var i = 0; i < readers.Length; i++)
-                {
-                    var binding = readers[i].Build();
-                    Check(readers[i].Role == (i == 0 ? "left" : "right") && binding.Target == devices[i].DeviceId &&
-                        binding.Parameters["device.ip"] == devices[i].Parameters!["device.ip"] && binding.Parameters["device.port"] == devices[i].Parameters!["device.port"] &&
-                        binding.Parameters["entity.mode"] == "observe-only", "device, position, endpoint and observation-only mode survive catalog resolution for " + readers[i].Role);
-                }
+                var binding = readers[i].Build();
+                Check(readers[i].Role == (i == 0 ? "left" : "right") && binding.Target == devices[i].DeviceId &&
+                    binding.Parameters["device.ip"] == devices[i].Parameters!["device.ip"] && binding.Parameters["device.serial"] == devices[i].Parameters!["device.serial"] &&
+                    binding.Parameters["entity.mode"] == "observe-only" && !binding.Parameters.ContainsKey("device.port"),
+                    "SDK device, position, physical identity and observation policy survive current catalog resolution for " + readers[i].Role);
             }
         }
         foreach (var inventory in new[]
         {
-            catalog with { Providers = catalog.Providers.Where(p => p != tcp).ToArray() },
-            catalog with { Providers = catalog.Providers.Select(p => p == tcp ? p with { Contract = "UNSUPPORTED" } : p).ToArray() }
+            catalog with { Providers = catalog.Providers.Where(p => p != sdk).ToArray() },
+            catalog with { Providers = catalog.Providers.Select(p => p == sdk ? p with { Contract = "UNSUPPORTED" } : p).ToArray() }
         })
             foreach (var readers in Editors(candidate, inventory))
                 foreach (var reader in readers)
                 {
-                    Check(reader.Provider is null, "missing or incompatible TCP provider stays unresolved");
+                    Check(reader.Provider is null, "missing or incompatible SDK provider stays unresolved");
                     var blocked = false; try { reader.Build(); } catch (InvalidOperationException) { blocked = true; }
                     Check(blocked, "unresolved reader cannot build a savable binding");
                 }

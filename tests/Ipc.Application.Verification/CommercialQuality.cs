@@ -29,7 +29,7 @@ static class CommercialQuality
     }
     public static async Task Run(string workspace,string root,string[] args)
     {
-        ParcelConfiguration Config(string id)=>Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config",id,"business.json")));
+        ParcelConfiguration Config(string id)=>Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace,"config",id,"business.json"))));
         if(args.Contains("--commercial-quality") || args.Contains("--commercial-quality-current")) await Current(Config("sportmaster"),root);
         if(args.Contains("--commercial-quality") || args.Contains("--commercial-quality-freshness")) await Freshness(Config("sportmaster"),root);
         if(args.Contains("--commercial-quality") || args.Contains("--commercial-quality-recovery")) await Recovery(Config,root);

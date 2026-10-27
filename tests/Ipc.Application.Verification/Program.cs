@@ -139,15 +139,21 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     Pass((op.Wcs is not null) == (id != "direct-plc") && (op.Plc is not null) == (id != "sportmaster"), id + " owns exactly its actual required phases");
     Pass(op.ParcelCode == "000000123" && (id == "sportmaster" ? op.Weight is null : op.Weight is { Source: WeightSource.Configured, Value: 1.25m }), id + " code/weight origin preserved");
     Pass(app.EmitReference("parcel-one", "000000123", "reader-event-one"), "repeat observation callback explicitly queued");
-    await Task.Delay(100); Pass((await app.SnapshotAsync()).Operations.Length == 1, id + " duplicate callback/admission does not create another command");
-    Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
-    await Wait(app, x => x.Operations.Length == 2 && x.Operations.First().State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
-    await Wait(app, x => x.Operations.Length == 2 && x.Operations.All(o => o.State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted)));
+    s = await Wait(app, x => x.Inputs!.Any(i => i.Observation.SourceEventId == "reader-event-one" && i.Outcome == ParcelInputOutcome.Duplicate));
+    Pass(s.Operations.Length == 1, id + " duplicate callback/admission does not create another command");
     if (id != "sportmaster")
     {
+        Pass(!(await app.SnapshotAsync()).Availability!.Admit, id + " PLC acceptance retains the physical position until completion");
+        Pass(app.EmitReference("blocked-parcel", "000000123", "reader-event-blocked"), id + " blocked observation is queued for guarded admission");
+        s = await Wait(app, x => x.Inputs!.Any(i => i.Observation.SourceEventId == "reader-event-blocked" && i.Outcome == ParcelInputOutcome.Blocked));
+        Pass(s.Operations.Length == 1, id + " acceptance cannot admit another entity before physical completion");
+        Pass((await ManagementModeFixture.Authorize(app)).Status == "Authorized", id + " original completion query requires management authorization");
         await app.ReconcileAsync(op.Id); var completed = (await app.SnapshotAsync()).Operations.Single(x => x.Id == op.Id);
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
+    Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
+    await Wait(app, x => x.Operations.Length == 2 && x.Operations.Single(o => o.Id == op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PhysicalCompleted) &&
+        x.Operations.Single(o => o.Id != op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
     Pass((await Command(app, "Pause")).Status == "Persisted", id + " pause committed after both stage calls drain");
     Pass((await ManagementModeFixture.Authorize(app)).Status == "Authorized", id + " maintenance authentication explicitly confirmed");
     var prior = (await app.SnapshotAsync()).Configuration;
@@ -165,6 +171,7 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     Pass(rs.Paused && rs.Operations.Length == 2 && rs.Operations.Single(x => x.Id == op.Id).ConfigurationHash == op.ConfigurationHash, id + " restored application starts paused with original stage/configuration facts");
     if (id != "sportmaster")
     {
+        await ManagementModeFixture.Authorize(restored);
         var second = rs.Operations.First(x => x.Id != op.Id);
         Pass((await restored.ReconcileAsync(second.Id)).Status == nameof(ParcelState.PhysicalCompleted), id + " isolated restore queries the original independent peer location instead of a new empty receiver");
     }
@@ -201,22 +208,23 @@ await using (var app = await Open(lost, "lost"))
     var s = await app.SnapshotAsync(); var recovered = s.Operations.Single();
     Pass(s.Configuration.Status == "ActivationFailed" && s.Configuration.Effective.Plc!.Target == original.Plc!.Request.Binding.Target, "unresolved responsibility blocks changed configuration activation and retains old effective");
     Pass(Wire.Encode(recovered.Plc!.Request) == Wire.Encode(original.Plc!.Request) && Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request), "restart freezes both original stage identities/payloads/config/implementations");
+    await ManagementModeFixture.Authorize(app);
     var result = await app.ReconcileAsync(original.Id); s = await app.SnapshotAsync(); recovered = s.Operations.Single();
     Pass(result.Status == nameof(ParcelState.PhysicalCompleted) && recovered.Plc!.Attempts == 1 && recovered.Wcs!.Attempts == 1, "original PLC query resolves committed action without repeating either phase");
     await app.ReconcileAsync(original.Id); Pass((await app.SnapshotAsync()).Operations.Single().Plc!.Attempts == 1, "duplicate/late original query does not resubmit or count another action");
     var peer = Directory.EnumerateFiles(Path.Combine(root, "lost/data/Simulation/reference-peers"), original.Plc!.Request.Id + ".json", SearchOption.AllDirectories).Single();
     Pass(Wire.Decode<Ipc.Reference.Protocol.ReferencePeer.PeerEntry>(File.ReadAllText(peer)).Executions == 1, "independent durable PLC peer ledger contains one execution");
 }
-// Platform migration checksums and foreign application identity are enforced.
+// Current baseline checksums and foreign application identity are enforced.
 var mismatch = Path.Combine(root, "foreign-db"); Directory.CreateDirectory(mismatch);
 using (var db = new ParcelRepository(mismatch, "sportmaster")) { }
 File.Copy(Path.Combine(mismatch, "sportmaster.db"), Path.Combine(mismatch, "direct-plc.db"));
-try { using var db = new ParcelRepository(mismatch, "direct-plc"); throw new Exception("Foreign application migration accepted"); }
+try { using var db = new ParcelRepository(mismatch, "direct-plc"); throw new Exception("Foreign application database accepted"); }
 catch (InvalidDataException) { Pass(true, "foreign application database identity is rejected instead of being reinterpreted"); }
 using (var tamper = new SqliteConnection("Data Source=" + Path.Combine(mismatch, "sportmaster.db")))
 { tamper.Open(); using var c = tamper.CreateCommand(); c.CommandText = "UPDATE platform_migrations SET sha='changed'"; c.ExecuteNonQuery(); }
 try { using var db = new ParcelRepository(mismatch, "sportmaster"); throw new Exception("Changed SQL checksum accepted"); }
-catch (InvalidDataException) { Pass(true, "changed application migration checksum is rejected without overwriting history"); }
+catch (InvalidDataException) { Pass(true, "changed application baseline checksum is rejected without overwriting identity"); }
 try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production"); throw new Exception("Production unexpectedly started"); }
 catch (InvalidDataException ex) { Pass(ex.Message.Contains("Production"), "Production rejects missing real SDK/protocol authority without fallback"); }
 await ResourceRisks.Run(workspace, root);

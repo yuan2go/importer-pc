@@ -10,6 +10,35 @@ concurrency:
   group: sportmaster-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
+  build-test-entrypoints:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build and seal the default Supply reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/entrypoint-ci
+          bash scripts/build.sh 2>&1 | tee .artifacts/entrypoint-ci/build.log
+          python3 -c 'import json,pathlib; roots=["src/Ipc.Product/bin/Debug/net10.0", "src/Ipc.Desktop/bin/Debug/net10.0-windows"]; assert all(json.loads((pathlib.Path(p)/"config/product.json").read_text())["BusinessModule"]=="supply" for p in roots)'
+      - name: Run the application verification default with no arguments
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll 2>&1 | tee .artifacts/entrypoint-ci/default.log
+          grep -q 'PASS AC17 COMPLETE' .artifacts/entrypoint-ci/default.log
+      - name: Retain default entrypoint evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-test-entrypoints-${{ github.sha }}
+          path: .artifacts/entrypoint-ci/*.log
+          retention-days: 30
   current-contract-boundaries:
     # Current contracts only. Historical inputs are exercised as read-only refusals.
     # Linux uses canonical Git source bytes for the immutable SQL checks.
@@ -144,6 +173,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - name: Station script platform and storage policy without runtime
+        shell: pwsh
+        run: ./scripts/test-station.ps1
       - name: Isolated Simulation and owned process crash boundaries
         shell: pwsh
         run: |
@@ -155,7 +187,7 @@ jobs:
           }
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','installer-options','shortcut-lifecycle')) {
+          foreach ($case in @('windows-client-compatibility','stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','installer-options','shortcut-lifecycle')) {
             dotnet run --project tests/Ipc.Application.Verification -c Release --no-build -- . "--$case" *> ".artifacts/p0-stability/$case.log"
             if ($LASTEXITCODE) { Get-Content ".artifacts/p0-stability/$case.log"; exit $LASTEXITCODE }
           }

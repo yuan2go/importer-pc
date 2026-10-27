@@ -19,6 +19,8 @@ dotnet build src/Ipc.Desktop -p:BusinessModule=Supply -p:EnableWindowsTargeting=
 python3 scripts/seal.py --bin src/Ipc.Desktop/bin/Debug/net10.0-windows
 ```
 
+也可用`bash scripts/build.sh`一次完成上述Supply默认构建、验证工程构建及两份封装；安装器仍使用正式发布入口。
+
 seal写实际模块SHA、配置和发布身份；二进制变更后重新封装，不跳过哈希校验。Supply.Contracts为2.0.0，外部参考合同SIMULATION-v1不变，Storage/MinimumReader=6/6。只使用全新数据根建库，非当前数据库拒绝，不接管开发遗留数据。
 
 终端一启动合成本地接收端；终端二运行同版核心控制台：
@@ -28,7 +30,7 @@ dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:
 dotnet src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll --config src/Ipc.Product/bin/Debug/net10.0/config --data-root /new-reference/client --action serve
 ```
 
-fixture与`config/station.json`的Integration.Endpoint必须一致。默认参考端点以实际配置为准；改端点使用本地合成配置副本和同版封装，不把示例端口解释为现场地址。Windows已发布客户端先完成指定运行账户、ProgramData机器策略与ACL配置，使用候选自带`station.ps1`，不从可写Downloads目录提升权限。
+fixture与`config/station.json`的Integration.Endpoint必须一致。默认参考端点以实际配置为准；改端点使用本地合成配置副本和同版封装，不把示例端口解释为现场地址。Windows已发布客户端先完成指定运行账户、管理员登记的D盘机器存储根与ACL配置，使用候选自带`station.ps1`，不从可写Downloads目录提升权限。脚本缺省数据位置为登记Root/UserData/当前SID/data；无登记时要求安装配置或显式DataRoot，不回落LOCALAPPDATA。Fixture位于所选DataRoot下独立SimulationFixture，Win10 22H2与Win11继续作为优先目标。
 
 ## 第一条参考作业
 

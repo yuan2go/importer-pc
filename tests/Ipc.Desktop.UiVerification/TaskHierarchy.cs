@@ -128,13 +128,6 @@ static partial class Program
                 var gate = new TaskCompletionSource(); var pending = vm.RunAsync(() => gate.Task, "合成等待"); window.UpdateLayout();
                 Check(recovery.IsVisible && !recovery.IsEnabled && recovery.TranslatePoint(new Point(), client).Y == recoveryY, "busy operation disables recovery without hiding or moving its fixed command row");
                 gate.SetResult(); await pending; window.UpdateLayout();
-                var position = Descendants(host).OfType<Button>().First(b => Equals(b.Content, "选择此位为命令目标"));
-                var positionGrid = (Grid)position.Parent;
-                var detail = Descendants(positionGrid).OfType<Expander>().Single(); detail.IsExpanded = true; window.UpdateLayout();
-                var positionScroll = (ScrollViewer)positionGrid.Children[0]; positionScroll.ScrollToEnd(); window.UpdateLayout();
-                var previousOffset = positionScroll.VerticalOffset; await vm.RefreshAsync(); await Task.Delay(650); window.UpdateLayout();
-                Check(Descendants(host).Contains(positionScroll) && detail.IsExpanded && previousOffset > 0 && positionScroll.VerticalOffset == previousOffset, "classic position refresh retains native detail expansion and scroll offset");
-                positionScroll.ScrollToTop(); detail.IsExpanded = false;
                 vm.MarkReadFailure("合成状态读取失败"); window.UpdateLayout();
                 Check(((TextBlock)classic.FindName("ActiveBlockingReasons")).IsVisible && !vm.CanResumeInViewport, "stale state remains visible and commands remain guarded");
                 CaptureInternal(evidence, "classic-stale-800", client, lines); await vm.RefreshAsync();

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj" />
+    <Compile Include="../../tests/Support/ProgrammableDecoder.cs" Link="Synthetic/ProgrammableDecoder.cs" />
+  </ItemGroup>
+</Project>

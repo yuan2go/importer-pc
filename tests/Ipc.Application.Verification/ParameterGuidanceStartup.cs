@@ -35,9 +35,9 @@ static class ParameterGuidanceStartup
             ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs" && r.Parameters!["entity.mode"] == "observe-only"),
             "current built-in SDK candidate remains observation-only until a formal decoder and parcel boundary exist; quantity is absent");
         var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
-        Check(mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only"]) &&
+        Check(!mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only", "trigger"]) &&
             draft.Build().Reader.Parameters!["entity.mode"] == "observe-only" && initial.Reader.Parameters!["entity.mode"] == "observe-only",
-            "current SDK mode has only the read-only observation choice and candidate construction never activates parcel admission");
+            "decoder framework exposes explicit trigger configuration while untouched candidates and production defaults remain observe-only");
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
         using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";

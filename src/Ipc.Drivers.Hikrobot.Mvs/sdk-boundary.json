@@ -16,11 +16,14 @@
     "FrameOutBytes": 328,
     "FrameInfoOffset": 8,
     "TriggerOffset": 76,
-    "FrameLengthExOffset": 120
+    "FrameLengthExOffset": 120,
+    "DeviceTimestampHighOffset": 12,
+    "DeviceTimestampLowOffset": 16
   },
   "PixelFormat": "Mono8",
-  "BarcodeCapability": "Unavailable: applicable recognition component not obtained",
+  "BarcodeCapability": "Decoding port and bounded pipeline available; shipping decoder Unavailable until qualified vendor adapter supplied",
   "RawImagesPersisted": false,
   "ProductionBusinessReady": false,
-  "ApiVersionCorrection": "Direct current DLL invocation returned 0x04080201; prior 0x04080202 record was incorrect; entry SHA256/header ABI unchanged"
+  "ApiVersionCorrection": "Direct current DLL invocation returned 0x04080201; prior 0x04080202 record was incorrect; entry SHA256/header ABI unchanged",
+  "ManagedDecodeBoundary": "Ipc.Platform.IFrameDecoder; uncertain native cancellation requires supervised ProcessFrameDecoder; no vendor decoder bundled"
 }

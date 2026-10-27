@@ -117,6 +117,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         {
             var issues = ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor.Parameters, sdk.Parameters ?? []);
             if (issues.Length != 0) throw new InvalidDataException("驱动/" + sdk.DeviceId + ": " + string.Join("; ", issues));
+            _ = new Ipc.Drivers.Hikrobot.Mvs.MvsDecodeOptions(sdk.Parameters ?? []);
         }
 #endif
         ValidateHikrobotIdentities(c);

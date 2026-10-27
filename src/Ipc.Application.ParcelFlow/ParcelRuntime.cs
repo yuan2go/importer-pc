@@ -188,7 +188,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
-            foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            // The existing FULL transaction ledger reserves a monotonic runtime
+            // generation before any source starts. No new epoch file/schema or
+            // second persistence authority is introduced. Reconnect increments
+            // the session suffix; a nonce also fences restored database copies.
+            repository.Commit(null, "ObservationEpochReserved", "Reserve source runtime generation before registration");
+            foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader, repository.Revision));
             lock (startupOwnership)
             {
                 token.ThrowIfCancellationRequested();

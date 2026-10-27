@@ -23,7 +23,7 @@
 | 当前可靠性与输入责任 | [可靠性02](runtime/code-reliability-hardening-02.md)、[长稳运行](runtime/win11-24x7-stability-remediation-01.md) |
 | 历史维护 | [输入分页/完整预算](runtime/retention-ingress-02.md)、[完整维护最新证据](runtime/validation/retention-ingress-full-retest-03.md) |
 | 构建、部署与版本 | [运行入门](runtime/getting-started.md)、[Windows交付](runtime/windows-application-delivery.md)、[版本兼容](runtime/version-compatibility-01.md)、[D盘环境](runtime/d-drive-storage-20261021.md) |
-| 相机采集与解码 | [能力职责](design/hikrobot-reader-01.md)、[参数/安装/诊断](runtime/hikrobot-reader-01.md)、[单相机准入](runtime/station-single-camera-recovery-01.md) |
+| 相机采集与解码 | [解码设计](design/mvs-decoding-01.md)、[能力职责](design/hikrobot-reader-01.md)、[参数/安装/诊断](runtime/hikrobot-reader-01.md)、[单相机准入](runtime/station-single-camera-recovery-01.md) |
 | 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md) |
 | 外部决定与公开范围 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
 

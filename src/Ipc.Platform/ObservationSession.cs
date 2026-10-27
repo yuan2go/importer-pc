@@ -2,9 +2,19 @@ namespace Ipc.Platform;
 
 // One registration per physical source. Health and event callbacks remain fenced to
 // that registration even if a misbehaving old callback arrives after reconnect.
-public sealed class ObservationSession(IControlledObservationSource source)
+public sealed class ObservationSession
 {
-    string epoch = Wire.Id();
+    readonly IControlledObservationSource source;
+    readonly long durableGeneration;
+    long connectionGeneration;
+    string epoch;
+    public ObservationSession(IControlledObservationSource source, long durableGeneration = 0)
+    {
+        this.source = source; this.durableGeneration = durableGeneration;
+        if (durableGeneration < 0) throw new ArgumentOutOfRangeException(nameof(durableGeneration));
+        epoch = NextEpoch();
+    }
+    string NextEpoch() => $"{durableGeneration:D20}.{checked(++connectionGeneration):D20}.{Wire.Id()}";
     DeviceState? health;
     long sequence;
     readonly object publication = new();
@@ -49,7 +59,7 @@ public sealed class ObservationSession(IControlledObservationSource source)
     }
     public async Task ReconnectAsync(Func<Observation, bool> receive, CancellationToken token)
     {
-        lock (publication) { Volatile.Write(ref epoch, Wire.Id()); sequence = 0; Volatile.Write(ref health, null); }
+        lock (publication) { Volatile.Write(ref epoch, NextEpoch()); sequence = 0; Volatile.Write(ref health, null); }
         await source.StopAsync(token).ConfigureAwait(false);
         await StartAsync(receive, healthChanged, token).ConfigureAwait(false);
     }

@@ -27,7 +27,7 @@
       "on",
       "off"
     ],
-    "Description": "沿用设备设置不限定触发状态；选择要求开启或关闭时，仅核对设备已有设置。本软件不改变触发设置、不发送软件触发。缺少条码识别组件，任何选项都不创建包裹。"
+    "Description": "仅核对设备已有触发设置，不写设置、不发触发。trigger实体模式须明确on，并核对触发源与选择器。"
   },
   {
     "Key": "entity.mode",
@@ -36,10 +36,11 @@
     "Type": "choice",
     "Default": "observe-only",
     "Choices": [
-      "observe-only"
+      "observe-only",
+      "trigger"
     ],
-    "ReadOnly": true,
-    "Description": "当前只有真实采图，缺少条码识别组件；不会生成条码或供包作业。正式模式不可用。"
+    "ReadOnly": false,
+    "Description": "默认仅观察。触发业务需受信装配提供解码器、自检成功、核对触发源/选择器及版本化选择规则。当前内置装配未提供厂商解码器，仍拒绝trigger。"
   },
   {
     "Key": "image.nodes",
@@ -49,7 +50,7 @@
     "Default": "3",
     "Minimum": 1,
     "Maximum": 4,
-    "Description": "设置SDK输出图像的缓冲节点数，按顺序取图。SDK内部另有自身预分配；应用每路最多借用一帧，不复制或保留原图。"
+    "Description": "SDK内部队列独立有界；最多借用一帧。解码开启时复制到预分配池，归还SDK缓冲后才入解码队列。"
   },
   {
     "Key": "image.maximum-payload-bytes",
@@ -60,5 +61,149 @@
     "Minimum": 1048576,
     "Maximum": 33554432,
     "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。"
+  },
+  {
+    "Key": "decode.pool-size",
+    "Group": "解码 / 有界处理",
+    "Label": "预分配帧池大小",
+    "Type": "integer",
+    "Default": "4",
+    "Minimum": 3,
+    "Maximum": 32,
+    "Description": "池大小×单帧上限不得超过帧池字节预算；池必须另留采集与在途解码两槽。"
+  },
+  {
+    "Key": "decode.queue-capacity",
+    "Group": "解码 / 有界处理",
+    "Label": "解码队列容量",
+    "Type": "integer",
+    "Default": "2",
+    "Minimum": 1,
+    "Maximum": 30,
+    "Description": "队列满显式故障并计数，不等待解码、不覆盖帧；受控恢复后重启。"
+  },
+  {
+    "Key": "decode.maximum-pool-bytes",
+    "Group": "解码 / 有界处理",
+    "Label": "帧池字节预算",
+    "Type": "integer",
+    "Default": "67108864",
+    "Minimum": 1048576,
+    "Maximum": 268435456,
+    "Description": "启动前整池预分配；超过预算拒绝配置。SDK和隔离进程内存另计。"
+  },
+  {
+    "Key": "decode.timeout-ms",
+    "Group": "解码 / 有界处理",
+    "Label": "单帧解码时限（毫秒）",
+    "Type": "integer",
+    "Default": "500",
+    "Minimum": 10,
+    "Maximum": 30000,
+    "Description": "使用单调时钟；超时取消并阻断业务，原生不可取消算法须用受监督进程。"
+  },
+  {
+    "Key": "decode.stop-timeout-ms",
+    "Group": "解码 / 有界处理",
+    "Label": "解码取消排空时限（毫秒）",
+    "Type": "integer",
+    "Default": "2000",
+    "Minimum": 100,
+    "Maximum": 10000,
+    "Description": "只有真实调用完成或隔离进程退出才归还帧。超时保有所有权，允许明确重试清理。"
+  },
+  {
+    "Key": "trigger.frames-per-entity",
+    "Group": "解码 / 有界处理",
+    "Label": "每触发帧数",
+    "Type": "integer",
+    "Default": "1",
+    "Minimum": 1,
+    "Maximum": 16,
+    "Description": "仅在真实设备/现场确认后填写。收齐一触发的全部帧才产生一次观察；不能用条码或时间窗口定义实体。"
+  },
+  {
+    "Key": "trigger.complete-timeout-ms",
+    "Group": "解码 / 有界处理",
+    "Label": "触发完整性时限（毫秒）",
+    "Type": "integer",
+    "Default": "2000",
+    "Minimum": 100,
+    "Maximum": 60000,
+    "Description": "仅检查漏帧，不用于自动结束实体；不完整故障阻断。"
+  },
+  {
+    "Key": "trigger.expected-source",
+    "Group": "解码 / 触发合同",
+    "Label": "已核对的触发源枚举值",
+    "Type": "integer",
+    "Minimum": 0,
+    "Maximum": 65535,
+    "RequiredWhenKey": "entity.mode",
+    "RequiredWhenEquals": "trigger",
+    "Description": "须由真实设备合同给出，不提供生产默认。仅核对，不写相机。"
+  },
+  {
+    "Key": "trigger.expected-selector",
+    "Group": "解码 / 触发合同",
+    "Label": "已核对的触发选择器枚举值",
+    "Type": "integer",
+    "Minimum": 0,
+    "Maximum": 65535,
+    "RequiredWhenKey": "entity.mode",
+    "RequiredWhenEquals": "trigger",
+    "Description": "须由真实设备合同给出，不提供生产默认。仅核对，不写相机。"
+  },
+  {
+    "Key": "selection.version",
+    "Group": "解码 / 运单选择",
+    "Label": "运单选择规则版本",
+    "Type": "string",
+    "MaximumLength": 64,
+    "Description": "大小写精确匹配；规则版本与码制须显式声明，歧义拒绝。不改变Application最终业务校验。"
+  },
+  {
+    "Key": "selection.prefix",
+    "Group": "解码 / 运单选择",
+    "Label": "运单前缀",
+    "Type": "string",
+    "MaximumLength": 256,
+    "Description": "大小写精确匹配；规则版本与码制须显式声明，歧义拒绝。不改变Application最终业务校验。"
+  },
+  {
+    "Key": "selection.pattern",
+    "Group": "解码 / 运单选择",
+    "Label": "整串匹配正则",
+    "Type": "string",
+    "MaximumLength": 2048,
+    "Description": "大小写精确匹配；规则版本与码制须显式声明，歧义拒绝。不改变Application最终业务校验。"
+  },
+  {
+    "Key": "selection.symbologies",
+    "Group": "解码 / 运单选择",
+    "Label": "允许码制（逗号分隔）",
+    "Type": "string",
+    "MaximumLength": 2048,
+    "Description": "大小写精确匹配；规则版本与码制须显式声明，歧义拒绝。不改变Application最终业务校验。"
+  },
+  {
+    "Key": "selection.minimum-length",
+    "Group": "解码 / 有界处理",
+    "Label": "运单最小长度",
+    "Type": "integer",
+    "Default": "1",
+    "Minimum": 1,
+    "Maximum": 256,
+    "Description": "解码候选长度筛选。"
+  },
+  {
+    "Key": "selection.maximum-length",
+    "Group": "解码 / 有界处理",
+    "Label": "运单最大长度",
+    "Type": "integer",
+    "Default": "256",
+    "Minimum": 1,
+    "Maximum": 256,
+    "Description": "必须不小于最小长度，不截断候选。"
   }
 ]

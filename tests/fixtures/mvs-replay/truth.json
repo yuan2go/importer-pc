@@ -1,0 +1,34 @@
+[
+  {
+    "File": "1.mono8",
+    "Width": 8,
+    "Height": 8,
+    "Stride": 8,
+    "Text": "SYNTH-001",
+    "Symbology": "Code39"
+  },
+  {
+    "File": "2.mono8",
+    "Width": 8,
+    "Height": 8,
+    "Stride": 8,
+    "Text": "SYNTH-002",
+    "Symbology": "Code39"
+  },
+  {
+    "File": "3.mono8",
+    "Width": 8,
+    "Height": 8,
+    "Stride": 8,
+    "Text": "SYNTH-003",
+    "Symbology": "Code39"
+  },
+  {
+    "File": "4.mono8",
+    "Width": 8,
+    "Height": 8,
+    "Stride": 8,
+    "Text": "SYNTH-004",
+    "Symbology": "QR"
+  }
+]

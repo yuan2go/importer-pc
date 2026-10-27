@@ -25,6 +25,8 @@ public static class BundledMvs
     static readonly object resolverGate = new();
     static bool resolverSet;
     public static IControlledObservationSource Create(DeviceBinding binding)
+        => CreateWithDecoder(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), null);
+    internal static IControlledObservationSource CreateWithDecoder(ExtensionContext context, Func<IFrameDecoder>? decoderFactory)
     {
         lock (resolverGate)
         {
@@ -36,6 +38,6 @@ public static class BundledMvs
             }
         }
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
-        return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi());
+        return new MvsAcquisition(context, new MvsApi(), decoderFactory: decoderFactory);
     }
 }

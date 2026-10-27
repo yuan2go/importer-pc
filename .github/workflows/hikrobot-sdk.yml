@@ -44,6 +44,12 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --decoding-test $PWD
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build tools/Ipc.Mvs.Replay -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tools/Ipc.Mvs.Replay/bin/Release/net10.0/Ipc.Mvs.Replay.dll --frames tests/fixtures/mvs-replay/frames --truth tests/fixtures/mvs-replay/truth.json --rules tests/fixtures/mvs-replay/rules.json --decoder synthetic --output "$env:TEMP/mvs-replay-${{ github.sha }}.json"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening

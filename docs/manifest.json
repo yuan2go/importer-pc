@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01",
+  "work_package": "WP-IPC-MVS-DECODING-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "11f64ea9760ced5b3333aaccab9a613cd9d55705cc0051afc401a6632f235d22",
-      "size_bytes": 10811,
-      "git_blob": "e1fab20c12eea1f40fc5a2f56ce52381aa02b2bd",
+      "sha256": "ae19793b9e04c80ff7c8e52ec73b202b9a9b6576e25198d5e5e64c5a447603ab",
+      "size_bytes": 10939,
+      "git_blob": "53ed1fb4b5dc6e176721406efd72ccca0d66d3b7",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "aac726b41ba82d809021b4aad5f8c4395a3d022f7748156dc7f540d21f6a0a0d",
-      "size_bytes": 7345,
-      "git_blob": "659ab85b04c9d10d03fee28509b9733c2f0e786d",
+      "sha256": "68fb5aa082d35769c3ef56722c53e9e7c3f6c3d74c7a0a0e1d10b7fb35174789",
+      "size_bytes": 7389,
+      "git_blob": "2b03514ea94033534ac9d16abcbdf457bbd0f84d",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -7272,9 +7272,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "7a98b59add62f9bbfeca57ba5d2b54d01405b22a6a05ccf42c930b168f92ee98",
-      "size_bytes": 1385,
-      "git_blob": "01090cab4a2e3222f8d86fa8ea21cda3f185f4ac"
+      "sha256": "925a1dddda442eabaa00e1f597bb94b0725141827b5e3827450e7be7d838e3e9",
+      "size_bytes": 1477,
+      "git_blob": "42a2dd7da19f40e9d17c4cf275446fbca3648fda"
     },
     {
       "path": "docs/design/parallel-task-reconciliation-20261020-02.md",
@@ -45832,9 +45832,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "966abac1efda7f5d40e1475027a6d607fcb545b682a3cf8599214dc7fe9c4dfc",
-      "size_bytes": 3087,
-      "git_blob": "6ce2e7841376f9414d697da1bb636a2c5b43f4b7"
+      "sha256": "5ad805877a1e7a4e1268422cd8e9573951bfba4658d549a6c96ede4c998b25c8",
+      "size_bytes": 6603,
+      "git_blob": "9f76eb37a3b7188b9d9e96992b2df429d5862a7d"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -55062,9 +55062,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "sha256": "474e9074a228c881487a39d16cf491045a89e2f8abb9b733d60037eb91c50d24",
-      "size_bytes": 45981,
-      "git_blob": "7701e515767f5ba7340f6202e06134dd1c16ec79",
+      "sha256": "34e0ad954f10af2de73e8c64c74e540030dc912670bfcec03eb25eac26b07d40",
+      "size_bytes": 46446,
+      "git_blob": "6f2e34d3110acc51177750dafc23677b681af9e6",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -56511,9 +56511,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "98e474fab4aee7b3432ac9d2ae44e97bb4e60ea649f9a2aae47854628a8045ff",
-      "size_bytes": 45581,
-      "git_blob": "3914a87958d584760e94567e32e5c4a4bd6aec8f",
+      "sha256": "cee3de0bccdc006b42c766ef4eca1e8ed90dd5f8afe50dc469f962955852e482",
+      "size_bytes": 45666,
+      "git_blob": "5856eea2c75e5b22bcbe40aa599af34756bce934",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -58306,9 +58306,9 @@
     },
     {
       "path": "src/Ipc.Platform/ObservationSession.cs",
-      "sha256": "0ab6e0b3a92f89856fd582102477ff18e4b0b834eac7acf2d5ae3eb2f6648d94",
-      "size_bytes": 2852,
-      "git_blob": "24d9d24cce26ded37af33c795d174e59306f6a81",
+      "sha256": "0d40e64c1b9d28dd01cacbc197620667fa38aad9a1c4eb6ca69a5e49dae89b4b",
+      "size_bytes": 3338,
+      "git_blob": "ce447a28523b00783ad7371c678626c6c19d7e2f",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -58841,9 +58841,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "22641e324391695bacecf9f31cf065f72785747fcfc320f716ad6c6726d27e91",
-      "size_bytes": 32691,
-      "git_blob": "0f5cf4dad2d925f75aad59d29ada0fd7fd9feb83",
+      "sha256": "619b16bb55e8f83c9336d6a97f8498e6b3692b406481de9c7cb192a267970d12",
+      "size_bytes": 33448,
+      "git_blob": "63d8b0fd91a9385843a2eb9dbc9b41dd252ef62f",
       "previous_git_blob": "367817770a8fbf577ba622fe739dc1e31257df08"
     },
     {
@@ -59654,9 +59654,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "5d7320efee69a1bcdee5285b6f4e9540c48e788a71e8364b46d5844978b79c5d",
-      "size_bytes": 443,
-      "git_blob": "f4d5dc20c11af57828250b87a9a4aa6cca1648d9"
+      "sha256": "24c4f0f95fbed0d5b97bd47451272f640c0e8e0412aa92b77b4b72e9dcc1c99b",
+      "size_bytes": 542,
+      "git_blob": "81e505c6069138ab7b16cf241a23c612db7e88e7"
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/PolicyVerification.cs",
@@ -59676,9 +59676,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "9e75b5a0adbc76cbe55ccb6b66843d0c6efd3e5da06ca7ea87b52b4a5c0e0de6",
-      "size_bytes": 334,
-      "git_blob": "7cb2c8935b4b41d4602a5e31b2979c73b37a15fd"
+      "sha256": "a8bb6f90cf6eb81080305202463272bc91648a80a681f3b33ec0c9a9978dfd1e",
+      "size_bytes": 524,
+      "git_blob": "36f56f7d80641c9ffef5bcb3fca99efe93b698cb"
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
@@ -89587,9 +89587,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
-      "sha256": "b072ee7ecd01779e14aa6fc9b1a710502587befec896b2aebd690aad55123acb",
-      "size_bytes": 10468,
-      "git_blob": "267d7201eb99c590aceea5c5d20bf4afd82c7d62",
+      "sha256": "9b8afc7ad50723e066df3ab32cb752e5ef8e1b5204dd2917ff190aeb50657cb6",
+      "size_bytes": 10489,
+      "git_blob": "b08bfb8229891cd96e6849217213e8e7f170c0e9",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -102254,9 +102254,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "997871a0b9ec7964ce44b77c53e7719dbf196d0d66bd80064606d1f67dbae659",
-      "size_bytes": 4686,
-      "git_blob": "0de5e586c81aa6181d3d35a893c3191f28e46354",
+      "sha256": "41891758e7790b4da8e2cd839ba08c83651825f9c2284993396a0131dd3e73ce",
+      "size_bytes": 5344,
+      "git_blob": "65a4d34d6f7e416e1b24c7ba906123966e371d30",
       "storage_scope": "public_repository"
     },
     {
@@ -102375,9 +102375,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "1daa2751761ad14932ff2fe63cbe6fba51fd9da216aacda0899291767547a8cb",
-      "size_bytes": 13893,
-      "git_blob": "db68cba4987e76a72de6ed75e83fac9f427be124",
+      "sha256": "f9d16440fc4338582893d0750e53c396d732325902da26673dd7a056b6c8c61b",
+      "size_bytes": 16677,
+      "git_blob": "1ed53869e0c17a9c0f587047f64ac193dfe0ba3b",
       "storage_scope": "public_repository"
     },
     {
@@ -102386,9 +102386,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "ac32aa3d3383f21040b1aae1fb6b61c3ac97abe5daa2045bc04e495103746dc6",
-      "size_bytes": 10562,
-      "git_blob": "d3b509d53861d0a4ba1a8de59f61a83dcbd99246",
+      "sha256": "0647beca98de96b2be870d5812e4af6b4d61887df3a8b5fc1e6542992c780c4a",
+      "size_bytes": 10785,
+      "git_blob": "7e8c8ae070aff1df016239c799f69f62c743bb96",
       "storage_scope": "public_repository"
     },
     {
@@ -102463,9 +102463,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "63e82975b72aa4e3e233540f4b06f4de1afa90a405cfa1604b08c42714eb6b5d",
-      "size_bytes": 2259,
-      "git_blob": "0d08fc559dcd47da0b510f3710f6e01541dcaad3",
+      "sha256": "b9996c00d0f2cb94d42c3b9c9a0779bc256ca919c72681c361cf7d5edeab86bf",
+      "size_bytes": 7088,
+      "git_blob": "6189939ede11d0ee4d4750c2b105b5752f46901f",
       "storage_scope": "public_repository"
     },
     {
@@ -102474,9 +102474,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "bf291c084cef95fdfeaacd3efccea4a56dcc75b6f5b6806ba544d371f60201e9",
-      "size_bytes": 1041,
-      "git_blob": "ede8e0d2f29b9c933a6b34128ec55a6e1e0b3f41",
+      "sha256": "2a6308ad4be76b5bab7949babd16d4696125657e20e26fffc62ffc68f1d8b167",
+      "size_bytes": 1325,
+      "git_blob": "0def4bd6164d0d6d5ebbe8f24a7a65e47c311baa",
       "storage_scope": "public_repository"
     },
     {
@@ -103596,9 +103596,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "67181a7d8634b7c8183b255550f3f3a730eb69130dffea1b8ec224198b5874b5",
-      "size_bytes": 2235,
-      "git_blob": "c103772f59c60b059e31c25cae1b5304ead7434e",
+      "sha256": "0323ade616b7eecb0ce863e6e7329fbf9d83f09dccadf3ce3bb518cc02001622",
+      "size_bytes": 2442,
+      "git_blob": "bb0b7f9f5e181f0862e7de80f304a0a9eb113647",
       "storage_scope": "public_repository"
     },
     {
@@ -104051,6 +104051,259 @@
       "size_bytes": 6354,
       "git_blob": "6744944375d847f0abd31e2ead696937fb62e4b9",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/design/mvs-decoding-01.md",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "3b7cc09e580ce943545e2e7f46e4de00107a29c1082ff6def88d82c574b17e72",
+      "size_bytes": 5260,
+      "git_blob": "487109fbb0fbf7653a69796a4f4f65fb30fdb098",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-MVS-DECODING-01.md",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "9520956ba4077bc41e5b7c43984bcb296cd3f18b6a5a8e560b2d50504acab8e5",
+      "size_bytes": 888,
+      "git_blob": "184f3c2a1e10cdffa4184ec221d6ba1c8c2990ac",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodeMetrics.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "d03d946ebb7281a5dfbd89a5c584fe3de8a688b4386e3f5b7d8dd792f8e7a0a7",
+      "size_bytes": 2803,
+      "git_blob": "e06ddc1d9ace5e083e09872f30f987645e6f32fa",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodeOptions.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "301ee760d3da2f16e20a4acdc2abb02a1b6f6c8044be69d8a8dd564c3ddf5660",
+      "size_bytes": 7442,
+      "git_blob": "d2279f0c92a7873a23c82e7b30181abae75d5ed4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodePipeline.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "7bd132caa0f98a3a2442afd554029073a430227dfa26ed27cef9a0316d505d18",
+      "size_bytes": 11035,
+      "git_blob": "bf1f058c964ebdfad00fa8d4d6c3fa2621f14d6b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecoderRunner.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "0f78b1cd171a001fdd53d1092b4ab4e9e4cb858f54f0128a7250f8011674f2a0",
+      "size_bytes": 4328,
+      "git_blob": "e98b1f01297a0c9e676e20b39d92a6fcd1dc55cd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/FramePool.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "f8acd4c95dcc562c2e829db1086d345d2fa75e59bb6b1054c8523f3e8747c443",
+      "size_bytes": 1796,
+      "git_blob": "6749ad70770fb9a111da6dbaaaf2092f62d2f3e9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/MvsDecoding.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "c7528bd40108d2752a72c28f3d420e153e973346dfe7874264572f61a17e81d8",
+      "size_bytes": 2934,
+      "git_blob": "8820eed59165a7d3e10bc8b647526ee384133e99",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/OfflineReplay.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "3a9964026ec91a36b323f07471895a1a1d7372326fe03e90186ae69bb3c6fccf",
+      "size_bytes": 7022,
+      "git_blob": "1a3639ac99747828182479ed1cce2b65ca02279b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/ProcessFrameDecoder.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "bbda5f69094aec328f802e6fe327be48ba8cee6ca2be6cd177fd0fe5388236a6",
+      "size_bytes": 8363,
+      "git_blob": "abdd49ca413157db1ca93cd0bee0ba80f0bda9ef",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Platform/FrameDecoding.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "1756e8c0a9d719a470684b7c17ad170f5eb6e7b46e05f243f79ade3dd5f582dc",
+      "size_bytes": 1123,
+      "git_blob": "497420423d0595ada61cda2adc785a111a15307a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/DecodingVerification.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "0d882c93d41d805997475ef41095e6442ecc3ce23e19dcccf74bcf2616246465",
+      "size_bytes": 24263,
+      "git_blob": "654b7d2491313914b016db0142f8e9a4d56db2fa",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Support/ProgrammableDecoder.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "7f6c43ca1c7e4818a8a97478c9019dd8144d70d5d16aeee3a75beb6a475e1ca2",
+      "size_bytes": 2052,
+      "git_blob": "f90b60d48f7dd51e68f57b96a4478585e7f35a2a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/README.md",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "16d586fef243b70d6fdcad0fc1d773095654d61ce14a98b0889117da48aa508b",
+      "size_bytes": 2662,
+      "git_blob": "a974ef1a4e55add7821eb4e2791aa8559fa70827",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/1.mono8",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "3138bb9bc78df27c473ecfd1410f7bd45ebac1f59cf3ff9cfe4db77aab7aedd3",
+      "size_bytes": 64,
+      "git_blob": "c98546f43a6c0b9d3523c85ef3905131a0919ab1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/2.mono8",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "4f2e8d65483c641648cdb374ae9d8abd368d269e4ddffe092a8237b8162cddd6",
+      "size_bytes": 64,
+      "git_blob": "8752011b5cb6940c75ebfec704a46bc93d5d74a2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/3.mono8",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "79bd7d7fd684b399857c582b1b7172ddf277d4fe1b027ec52b28da3ae381e675",
+      "size_bytes": 64,
+      "git_blob": "80e45982f7149f8479736be87d4fcb2577c3af3e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/frames/4.mono8",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "f435f2420b50c70ec80865cf8e20b169874165fb8576b48633caf2a8176d2e4a",
+      "size_bytes": 64,
+      "git_blob": "c2e3fd73d91fba7333fbcdaa8f81331d024a1133",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/rules.json",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "3c060f94eff56fb829cbaace836168e7ad4a4046d626c49cdc052d4437429339",
+      "size_bytes": 164,
+      "git_blob": "a495e090057b4d419f87b33872281300676cbe67",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/fixtures/mvs-replay/truth.json",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "97c1aeec75b8fcc1f8790624f1cba9734f2208e5a10b09f188dbe2073f03ab11",
+      "size_bytes": 531,
+      "git_blob": "4bea3f1ad12f94feeccee1dc3fdb81b0b7e1a28e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/Ipc.Mvs.Replay.csproj",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "fef5e9ddf1ecb0c24012b565fb2b8958a6b96d99d4c295c9d6cf00ad0430cd4c",
+      "size_bytes": 347,
+      "git_blob": "63a0e208b658e4470a6c19cd89977c179611eb91",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/Program.cs",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "d81fdb49d16a66236c3cb0730c96e33dd519463b4ee4728f027d208f03d45da1",
+      "size_bytes": 3717,
+      "git_blob": "f0bb942e6bdc3163f88b4a669cf75e58278459ca",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tools/Ipc.Mvs.Replay/packages.lock.json",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "5abed07f33f0cc839542fa96cdd6f2aaa31e9e330445e0dc89e14d0290adac8d",
+      "size_bytes": 14130,
+      "git_blob": "d3394760eb968188ca1a5bd294fd80fcf73a4589",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -104130,7 +104383,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-MVS-DECODING-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -106911,5 +107164,13 @@
       "manifest_sha256": "1c4a5ea2aa4d56aa5feb0c4c268d7d1847f52714ffa137651126def7282f109e",
       "work_package": "WP-IPC-DEBUG-LOG-LIVE-01"
     }
-  ]
+  ],
+  "mvs_decoding_01": {
+    "design": "docs/design/mvs-decoding-01.md",
+    "default_decoder": "Unavailable",
+    "default_entity_mode": "observe-only",
+    "production_business_ready": false,
+    "vendor_decoder": "NOT_PROVIDED",
+    "real_accuracy_and_trigger_semantics": "NOT_RUN"
+  }
 }

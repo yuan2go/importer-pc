@@ -1,0 +1,11 @@
+{
+  "Version": "synthetic-v1",
+  "MinimumLength": 1,
+  "MaximumLength": 256,
+  "Prefix": "SYNTH-",
+  "Pattern": "",
+  "Symbologies": [
+    "Code39",
+    "QR"
+  ]
+}

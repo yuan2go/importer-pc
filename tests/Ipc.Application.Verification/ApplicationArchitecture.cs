@@ -43,6 +43,14 @@ static class ApplicationArchitecture
         }
         CapabilityBinding B(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".22", "reference://" + kind + "/22", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         var sport = Config("sportmaster"); var topology = sport.Topology!;
+        Dictionary<string, string> originalEpochs;
+        await using (var first = await Open(sport, "durable-observation-epoch"))
+            originalEpochs = (await first.SnapshotAsync()).Devices!.ToDictionary(d => d.DeviceId, d => d.Epoch);
+        await using (var restarted = await Open(sport, "durable-observation-epoch"))
+            Check((await restarted.SnapshotAsync()).Devices!.All(d =>
+                long.Parse(d.Epoch.Split('.')[0], System.Globalization.CultureInfo.InvariantCulture) >
+                long.Parse(originalEpochs[d.DeviceId].Split('.')[0], System.Globalization.CultureInfo.InvariantCulture)),
+                "actual runtime restart reserves a strictly greater durable observation generation before registering any reader");
         foreach (var bad in new[] {
             sport with { Topology = topology with { Readers = [topology.Readers[0], topology.Readers[0]] } },
             sport with { Topology = topology with { Positions = [topology.Positions[0], topology.Positions[1] with { ReaderDeviceId = topology.Readers[0].DeviceId }] } },

@@ -10,10 +10,9 @@ public sealed class MvsAcquisitionModule : IObservationExtension
     public IControlledObservationSource Create(ExtensionContext context) => new MvsAcquisition(context, new MvsApi());
 }
 
-// Real acquisition, deliberately unavailable as a barcode/business source until
-// the applicable vendor recognition component and its actual API are obtained.
-// No empty decoder, fabricated barcode or per-frame business observation exists.
-internal sealed class MvsAcquisition : IControlledObservationSource
+// One acquisition owner; optional qualified decoding owns only copied frames.
+// The shipping composition has no decoder and cannot open business admission.
+internal sealed partial class MvsAcquisition : IControlledObservationSource
 {
     readonly ExtensionContext context;
     readonly IMvsApi api;
@@ -37,16 +36,17 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     public string Phase { get { lock (gate) return phase; } }
     public long Frames { get { lock (gate) return frames; } }
     public string Failure { get { lock (gate) return failure; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:hikrobot-mvs; phase={phase}; frames={frames}; bytes={bytes}; decoder=Unavailable; businessReady=false; failure={failure}"; } }
-    internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null)
+    public string ConfirmationSource { get { lock (gate) return $"SDK:hikrobot-mvs; phase={phase}; frames={frames}; bytes={bytes}; {DecodeConfirmation}; failure={failure}"; } }
+    internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, Func<IFrameDecoder>? decoderFactory = null)
     {
-        this.context = context; this.api = api; this.phaseChanged = phaseChanged;
+        this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoderFactory = decoderFactory;
         this.acquireLease = acquireLease ?? (actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
         ip = context.Parameters.GetValueOrDefault("device.ip", ""); serial = context.Parameters.GetValueOrDefault("device.serial", "");
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
             throw new InvalidDataException("device.ip: explicit canonical IPv4 required");
-        if (context.Parameters.GetValueOrDefault("entity.mode", "observe-only") != "observe-only")
+        if (decoderFactory is null && context.Parameters.GetValueOrDefault("entity.mode", "observe-only") != "observe-only")
             throw new InvalidDataException("DecoderUnavailable: acquisition cannot create parcel admissions; entity.mode must be observe-only");
+        decodeOptions = new(context.Parameters);
         triggerRequirement = context.Parameters.GetValueOrDefault("acquisition.trigger", "existing");
         if (triggerRequirement is not ("existing" or "on" or "off")) throw new InvalidDataException("Unknown trigger requirement");
         nodes = int.Parse(context.Parameters.GetValueOrDefault("image.nodes", "3"), System.Globalization.CultureInfo.InvariantCulture);
@@ -58,8 +58,19 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     {
         // No SDK callback exists. All host work runs on lifecycle/acquisition tasks,
         // outside the metadata lock and after returning any acquired image buffer.
-        var now = DateTimeOffset.UtcNow;
-        health?.Invoke(new(DeviceId, Epoch, state, now, null, ConfirmationSource));
+        lock (healthPublication)
+        {
+            DeviceHealthConfirmation confirmation; Action<DeviceHealthConfirmation>? target;
+            lock (gate)
+            {
+                var now = DateTimeOffset.UtcNow;
+                if (state is DeviceHealth.Ready or DeviceHealth.Unknown)
+                    state = fenced ? DeviceHealth.Faulted : BusinessReady ? DeviceHealth.Ready : DeviceHealth.Unknown;
+                confirmation = new(DeviceId, epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource);
+                target = health;
+            }
+            target?.Invoke(confirmation);
+        }
     }
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
@@ -69,11 +80,19 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         try
         {
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
-            if (initialized || created || worker is not null || lease is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
-            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = 0; priorFrame = null; health = onHealth; stopping = null; }
+            if (initialized || created || worker is not null || lease is not null || pipeline is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
+            if (registeredEpoch == epoch) throw new InvalidOperationException("A new controlled epoch is required before restart");
+            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = 0; priorFrame = null; health = onHealth; stopping = null; acquisitionHealthy = triggerVerified = fenced = false;
+                decoderFailure = new(TaskCreationOptions.RunContinuationsAsynchronously); stopRequested = false; }
             try
             {
                 Publish(DeviceHealth.Connecting);
+                decoderHealthReporter = ReportDecoderFault(decoderFailure.Task);
+                if (decoderFactory is not null)
+                {
+                    pipeline = new(decodeOptions, decoderFactory, metrics, DeviceId, registeredEpoch, receive, DecoderChanged);
+                    await pipeline.StartAsync(token).ConfigureAwait(false);
+                }
                 await Task.Run(() =>
                 {
                     PhaseTo("initialize"); initialized = true; api.Initialize(); token.ThrowIfCancellationRequested();
@@ -90,18 +109,20 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                     var trigger = api.EnumValue("TriggerMode");
                     if (triggerRequirement == "on" && trigger != 1 || triggerRequirement == "off" && trigger != 0)
                         throw new InvalidDataException("Configured trigger requirement differs from device; no trigger settings were written");
+                    VerifyTrigger();
                     if (api.EnumValue("PixelFormat") != MvsNative.Mono8) throw new InvalidDataException("Current target acquisition requires existing Mono8; pixel format was not changed");
                     var payload = api.PayloadSize();
                     if (payload <= 0 || payload > maximumPayload) throw new InvalidDataException("PayloadSize exceeds configured image byte budget");
                     token.ThrowIfCancellationRequested(); PhaseTo("configure-sdk-buffers"); api.ConfigureBuffers((uint)nodes);
                     token.ThrowIfCancellationRequested(); PhaseTo("start-grabbing"); grabbing = true; api.Start(); token.ThrowIfCancellationRequested();
-                    cancel = new(); PhaseTo("acquiring-decoder-unavailable"); Publish(DeviceHealth.Unknown);
+                    if (Volatile.Read(ref stopRequested) || disposeRequested) throw new OperationCanceledException("MVS startup stopped");
+                    cancel = new(); lock (gate) acquisitionHealthy = true; PhaseTo("acquiring"); Publish(DeviceHealth.Unknown);
                     worker = Task.Run(() => Capture(cancel.Token));
                 }, token).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                lock (gate) failure = ex.GetType().Name + ": " + ex.Message;
+                lock (gate) { failure = "Mvs:" + ex.GetType().Name + (ex.Message.Contains("gap/reset", StringComparison.Ordinal) ? ": gap/reset" : ex.Message.Contains("disconnected", StringComparison.Ordinal) ? ": disconnected or identity changed" : ""); fenced = true; acquisitionHealthy = false; }
                 try { await StopCore().ConfigureAwait(false); }
                 catch (Exception stop) { throw new AggregateException("MVS startup/cleanup failed; original owner retained", ex, stop); }
                 throw;
@@ -114,25 +135,30 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         var poll = Stopwatch.StartNew();
         try
         {
-            while (!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested && !Volatile.Read(ref fenced))
             {
                 PhaseTo("get-image-buffer");
                 var frame = api.Acquire();
                 if (frame is not null)
                 {
+                    FramePool.FrameLease? copy = null;
                     try
                     {
                         ValidateFrame(frame, maximumPayload);
                         lock (gate)
                         {
                             if (priorFrame is { } prior && (frame.Number <= prior || frame.Number - prior != 1))
-                                throw new IOException("MVS frame sequence gap/reset; inspect acquisition load and original parcel before restart");
-                            priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length);
+                                { metrics.Gap(); throw new IOException("MVS frame sequence gap/reset; inspect acquisition load and original parcel before restart"); }
+                            priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length); metrics.Acquired();
                         }
-                        // DecoderUnavailable: no barcode candidate or Observation
-                        // is manufactured. Raw pixels never leave the native loan.
+                        copy = pipeline?.Copy(frame, Epoch);
                     }
-                    finally { PhaseTo("free-image-buffer"); api.Release(); }
+                    finally
+                    {
+                        try { PhaseTo("free-image-buffer"); api.Release(); }
+                        catch { copy?.Dispose(); throw; }
+                    }
+                    if (copy is not null) pipeline!.Submit(copy);
                 }
                 if (token.IsCancellationRequested) break;
                 if (poll.Elapsed >= TimeSpan.FromSeconds(1))
@@ -142,13 +168,14 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                         throw new IOException("MVS original camera disconnected or identity changed");
                     if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
                         throw new IOException("MVS device trigger setting changed");
-                    PhaseTo("acquiring-decoder-unavailable"); Publish(DeviceHealth.Unknown); poll.Restart();
+                    VerifyTrigger(); PhaseTo("acquiring"); Publish(DeviceHealth.Unknown); poll.Restart();
                 }
             }
         }
         catch (Exception ex)
         {
-            lock (gate) failure = ex.GetType().Name + ": " + ex.Message;
+            lock (gate) { failure = "Mvs:" + ex.GetType().Name + (ex.Message.Contains("gap/reset", StringComparison.Ordinal) ? ": gap/reset" : ex.Message.Contains("disconnected", StringComparison.Ordinal) ? ": disconnected or identity changed" : ""); fenced = true; acquisitionHealthy = false; }
+            pipeline?.Fail("AcquisitionFault");
             try { Publish(DeviceHealth.Faulted); }
             catch (Exception host) { lock (gate) failure += "; health receiver=" + host.GetType().Name; }
         }
@@ -156,7 +183,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     internal static void ValidateFrame(MvsFrame frame, int limit)
     {
         if (frame.Data == 0 || frame.Width == 0 || frame.Height == 0 || frame.PixelType != MvsNative.Mono8 || frame.Length == 0 || frame.Length > (ulong)limit ||
-            (ulong)frame.Width * frame.Height > frame.Length || frame.LostPackets != 0 || frame.ExtraType != 0 || frame.SubImages != 0)
+            (ulong)frame.Width * frame.Height != frame.Length || frame.LostPackets != 0 || frame.ExtraType != 0 || frame.SubImages != 0)
             throw new InvalidDataException("MVS image missing/oversized/incomplete or incompatible with current Mono8 single-image acquisition");
     }
     public Task StopAsync(CancellationToken token)
@@ -164,6 +191,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         Task owned;
         lock (gate)
         {
+            fenced = true; stopRequested = true; acquisitionHealthy = false;
             if (stopping is null || stopping.IsFaulted || stopping.IsCanceled)
             {
                 stopping = Task.Run(async () =>
@@ -177,13 +205,21 @@ internal sealed class MvsAcquisition : IControlledObservationSource
             }
             owned = stopping;
         }
+        pipeline?.Fence();
         return owned.WaitAsync(token);
     }
     async Task StopCore()
     {
+        lock (gate) { fenced = true; acquisitionHealthy = false; }
         cancel?.Cancel();
+        pipeline?.Fence();
         // Wait for the actual GetImageBuffer/health call, not a cancelled wrapper.
         if (worker is not null) await worker.ConfigureAwait(false);
+        if (pipeline is not null) await pipeline.StopAsync().ConfigureAwait(false);
+        pipeline = null;
+        decoderFailure?.TrySetResult(false);
+        if (decoderHealthReporter is not null) await decoderHealthReporter.ConfigureAwait(false);
+        decoderHealthReporter = null; decoderFailure = null;
         Exception? reportingFailure = null;
         void Report(DeviceHealth state)
         {
@@ -205,6 +241,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     }
     public ValueTask DisposeAsync()
     {
+        Task owned;
         lock (gate)
         {
             // Fence Start immediately, including while a prior native call is
@@ -214,11 +251,13 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                 disposal = Task.Run(async () =>
                 {
                     await lifecycle.WaitAsync().ConfigureAwait(false);
-                    try { await StopCore().ConfigureAwait(false); disposed = true; }
+                    try { await StopCore().ConfigureAwait(false); metrics.Dispose(); disposed = true; }
                     catch (Exception ex) { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; throw; }
                     finally { lifecycle.Release(); }
                 });
-            return new(disposal);
+            owned = disposal;
         }
+        pipeline?.Fence();
+        return new(owned);
     }
 }

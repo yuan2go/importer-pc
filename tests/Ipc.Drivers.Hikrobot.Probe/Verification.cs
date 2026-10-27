@@ -257,6 +257,29 @@ internal static class Verification
             Marshal.WriteInt32(codes, 4 + 4100, 1); Marshal.WriteByte(codes, 8, 0xff); bool encodingRejected = false;
             try { NativeMethods.CopyFrame(frame, new UTF8Encoding(false, true)); } catch (DecoderFallbackException) { encodingRejected = true; }
             Check(encodingRejected, "invalid configured encoding never replaces bytes into a valid code");
+
+            string DecodeCandidate(byte[] payload, Encoding codec)
+            {
+                Marshal.WriteInt32(codes, 1);
+                Marshal.WriteInt32(codes, 4 + 4100, payload.Length);
+                Marshal.Copy(payload, 0, codes + 8, payload.Length);
+                return NativeMethods.CopyFrame(frame, codec).Codes.Single();
+            }
+            var strictUtf8 = new UTF8Encoding(false, true);
+            var strictAscii = Encoding.GetEncoding("us-ascii", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback);
+            const string multibyte = "00\u4e2d\u6587\U0001F4E6 ";
+            Check(DecodeCandidate(Encoding.UTF8.GetBytes(multibyte + "\0"), strictUtf8) == multibyte,
+                "UTF-8 byte length retains multibyte characters, leading zeroes and trailing space");
+            Check(DecodeCandidate(Encoding.ASCII.GetBytes("000123 "), strictAscii) == "000123 ",
+                "explicit ASCII preserves leading zeroes and a non-NUL final byte");
+            bool asciiRejected = false;
+            try { DecodeCandidate([0x30, 0x80, 0x31], strictAscii); } catch (DecoderFallbackException) { asciiRejected = true; }
+            Check(asciiRejected, "strict ASCII rejects high bytes instead of replacing them into business text");
+            Check(DecodeCandidate([0x30, 0x00, 0x31, 0x20, 0x00], strictUtf8) == "0\0" + "1 ",
+                "embedded NUL retains the following bytes; only the final terminator is removed");
+            bool truncatedUtf8Rejected = false;
+            try { DecodeCandidate([0x30, 0xe4, 0xb8], strictUtf8); } catch (DecoderFallbackException) { truncatedUtf8Rejected = true; }
+            Check(truncatedUtf8Rejected, "incomplete multibyte sequence is rejected without replacement or truncation");
         }
         finally { Marshal.FreeHGlobal(frame); Marshal.FreeHGlobal(codes); }
     }

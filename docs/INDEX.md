@@ -22,6 +22,8 @@
 
 # 文档索引
 
+2026-10-28 海康ABI诊断、当前指引和测试增量见[HIKROBOT-BOUNDARY-REGRESSIONS-01](work-packages/WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01.md)及[实施记录](runtime/hikrobot-boundary-regressions-01.md)。沿用PR132单相机规则；不增加解码能力，不改变生产准入和历史验收。
+
 2026-10-27 当前自有产品版本统一为1.0.0，见[工作包](work-packages/WP-IPC-UNIFIED-VERSION-1-0-0.md)和[首次安装测试交付](runtime/unified-version-1-0-0.md)。本条替代旧当前版本号，历史证据、外部SDK/协议与数据格式保留原身份。
 
 当前构建与测试入口修复见[BUILD-TEST-FOLLOWUP-01](work-packages/WP-IPC-BUILD-TEST-FOLLOWUP-01.md)：Supply默认构建、无参数Application验证及station平台/存储规则。

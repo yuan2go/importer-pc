@@ -70,9 +70,11 @@ static class ResourceRisks
 
         // Returned raw survives a deliberately failed T3 and is consumed locally at restart.
         var rawLaunch = launch with { DataRoot = Path.Combine(root, "raw-data") };
+        var rawDurable = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var raw = new ParcelRuntime(rawLaunch, new WcsToPlcFlow(), new ParcelCapabilityFactory(rawLaunch))
-            { Boundary = point => { if (point == "AfterRawDurable") throw new IOException("AC17 injected T3 interruption after original raw became durable"); } };
+            { Boundary = point => { if (point == "AfterRawDurable") { rawDurable.TrySetResult(); throw new IOException("AC17 injected T3 interruption after original raw became durable"); } } };
         await raw.StartAsync(CancellationToken.None); raw.EmitReference("raw-parcel", "009", "raw-event");
+        await rawDurable.Task.WaitAsync(TimeSpan.FromSeconds(3));
         for (var n = 0; n < 100 && raw.HasActiveWork; n++) await Task.Delay(20);
         Pass(!raw.HasActiveWork, "injected T3 failure terminates worker visibly");
         try { await raw.DisposeAsync(); } catch (InvalidOperationException) { Pass(!raw.HasUnreleasedResources, "terminal failure remains reported after safe release"); }

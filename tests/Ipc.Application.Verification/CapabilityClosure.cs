@@ -79,6 +79,11 @@ static class CapabilityClosure
                 var payload = Wire.Decode<ParcelPayload>(stage.Request.Payload);
                 Pass(payload.Weight?.MeasurementId == measurement.Id && payload.Operator?.SessionId == op.Operator!.SessionId && payload.Image?.CaptureRequestId == op.Capture!.Request.Id, id + " adapter-bound original payload retains operator, measurement and acquisition");
             }
+            if (id != "sportmaster")
+            {
+                Pass(!op.ImageReleased, id + " accepted PLC submission retains original image until physical completion");
+                await app.ReconcileAsync(op.Id);
+            }
             await Wait(app, x => x.Operations.Single().ImageReleased);
             Pass(!File.Exists(Path.Combine(root, "entry-" + id, "data", "Simulation", c.StationId, id, op.Image!.RelativeFile)), id + " terminal upload releases bounded temporary bytes with durable release marker");
         }

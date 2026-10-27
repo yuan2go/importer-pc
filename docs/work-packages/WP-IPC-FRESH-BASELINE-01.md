@@ -37,3 +37,5 @@ B2本机完成：三个Assembly、Application/Supply/WPF验证工程、三个示
 B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract-boundaries发现CapabilityClosure仍断言退休五参构造存在，已改为当前六参存在且旧桥不存在，不削弱运行时断言。重新CI待记录。
 
 B2第二轮定向CI发现CapabilityClosure合成夹具把同一相机/秤绑定左右两位，违反已保留的位置隔离守卫；已为每位构造独立合成端口，保留原测量、图像与Unknown断言。生产守卫未放宽。
+
+CapabilityClosure同时按当前PLC合同显式查询原请求完成事实后再验证图片释放；提交接受时先断言图片仍保留，生产发送/查询逻辑不变。

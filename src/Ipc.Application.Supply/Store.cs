@@ -47,9 +47,7 @@ public sealed partial class SupplyStore : IDisposable
         var existing = File.Exists(Path);
         if (existing)
         {
-            var inspection = InspectReadOnly(Path);
-            if (!inspection.SelectedReaderCompatible)
-                throw new InvalidDataException($"Storage format {inspection.FormatVersion} is unsupported; only current format {CurrentFormatVersion} may run; original retained");
+            _ = InspectReadOnly(Path);
         }
         else Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
         db = Ipc.Platform.Storage.Database.Open(Path, create: !existing);
@@ -193,8 +191,7 @@ public sealed partial class SupplyStore : IDisposable
         alarm.Id, alarm.Code, alarm.Scope, alarm.ClearedAt is null ? 1 : 0, Wire.Encode(alarm));
     public static void RestoreVerified(string source, string destination)
     {
-        var inspection = InspectReadOnly(source);
-        if (!inspection.SelectedReaderCompatible) throw new InvalidDataException("Restore requires current storage format; original retained without migration");
+        _ = InspectReadOnly(source);
         if (File.Exists(destination) || File.Exists(destination + "-wal") || File.Exists(destination + "-shm") ||
             System.IO.Path.GetFullPath(source) == System.IO.Path.GetFullPath(destination))
             throw new IOException("Restore requires a new destination; original retained");

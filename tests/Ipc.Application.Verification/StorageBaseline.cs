@@ -47,6 +47,27 @@ static class StorageBaseline
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
         Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == 10 && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel10/Supply6");
+        foreach (var parcel in new[] { true, false })
+        {
+            var directory = Path.Combine(root, parcel ? "malformed-parcel-identity" : "malformed-supply-identity"); Directory.CreateDirectory(directory);
+            var file = Path.Combine(directory, parcel ? "sportmaster.db" : "station.db");
+            File.Copy(parcel ? Path.Combine(parcelRoot, "sportmaster.db") : supplyFile, file);
+            using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
+            {
+                db.Open(); using var c = db.CreateCommand();
+                c.CommandText = parcel ? "DROP TABLE platform_migrations; CREATE TABLE platform_migrations(unrecognized TEXT);" : "DROP TABLE schema_history; CREATE TABLE schema_history(unrecognized TEXT);";
+                c.ExecuteNonQuery();
+            }
+            var hash = Wire.FileHash(file);
+            try
+            {
+                if (parcel) { using var denied = new ParcelRepository(directory, "sportmaster"); }
+                else { using var denied = new SupplyStore(file); }
+                throw new Exception("Malformed format identity accepted");
+            }
+            catch (InvalidDataException ex) when (ex.Message.Contains("请使用全新数据目录"))
+            { Check(Wire.FileHash(file) == hash, "malformed " + (parcel ? "Parcel" : "Supply") + " identity refuses with fresh-directory guidance and unchanged database bytes"); }
+        }
         var brokenRoot = Path.Combine(root, "missing-index"); Directory.CreateDirectory(brokenRoot);
         var broken = Path.Combine(brokenRoot, "sportmaster.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), broken);
         using (var db = new SqliteConnection("Data Source=" + broken + ";Pooling=False"))

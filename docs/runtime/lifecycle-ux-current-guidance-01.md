@@ -1,4 +1,4 @@
-> 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](integration-20261026.md)。G01/G02及现场门槛保留。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
 > 批量部署回归整改以本次实际 SourceCommit、下述旧计划边界和[定向验证报告](validation/lifecycle-ux-optimization-01.md)为准。0a3d4152 及此前介质不作为本次修复证据；原 FAIL/PASS 保留原范围。
 
@@ -6,7 +6,7 @@
 
 2026-10-26 安装计划任务缺失处理与修复失败后的原操作保留见[定向修复](installer-task-lookup-01.md)。原结果未知/已提交时，修复失败继续核对原操作；只有可信核对明确未提交/失败才重新审阅新安装。下述历史来源与验收范围保持。
 
-适用于生命周期优化候选 Sportmaster1.13.0、DirectPlc/WcsToPlc1.7.0、Contracts1.19.0、DB9。开工 main `3a5b1d13`；实际冻结源码/版本/库存以本包ASSEMBLY.json、BUILD-INFO.json和SHA256SUMS为准；形成过程和验证边界见[验证报告](validation/lifecycle-ux-optimization-01.md)。[实现记录](lifecycle-ux-implementation-01.md)和[问题总账](../reviews/lifecycle-ux-reconciliation-01.md)保留每项来源。版本号不替代 SourceCommit/哈希，也不表示现场已升级。
+当前生命周期操作沿本次同源程序集执行。安装、运行、配置与恢复仍各守所有权及责任边界；历史实施与验证只见归档原件。
 
 ## 原件、介质和权限
 

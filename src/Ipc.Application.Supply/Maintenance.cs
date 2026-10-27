@@ -28,23 +28,28 @@ public sealed partial class SupplyStore
     }
     static int ReadFormat(SqliteConnection connection)
     {
-        if ((string?)MaintenanceScalar(connection, "PRAGMA integrity_check") != "ok")
-            throw new InvalidDataException("SQLite integrity check failed; original retained");
-        if (MaintenanceScalar(connection, "PRAGMA foreign_key_check") is not null)
-            throw new InvalidDataException("SQLite foreign key check failed; original retained");
         const string unsupported = "仅支持当前Supply 6数据库；原文件保留，请使用全新数据目录。";
-        using var command = connection.CreateCommand();
-        command.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name IN ('schema_history','storage_format')";
-        if (Convert.ToInt64(command.ExecuteScalar()) != 2) throw new InvalidDataException(unsupported);
-        command.CommandText = "SELECT id,checksum FROM schema_history";
-        using (var reader = command.ExecuteReader())
-            if (!reader.Read() || reader.GetInt32(0) != CurrentFormatVersion || reader.GetString(1) != Ipc.Platform.Storage.Database.BaselineHash(Schema) || reader.Read())
-                throw new InvalidDataException(unsupported);
-        command.CommandText = "SELECT id,version,minimum_reader FROM storage_format";
-        using (var reader = command.ExecuteReader())
-            if (!reader.Read() || reader.GetInt32(0) != 1 || reader.GetInt32(1) != CurrentFormatVersion || reader.GetInt32(2) != CurrentFormatVersion || reader.Read())
-                throw new InvalidDataException(unsupported);
-        return CurrentFormatVersion;
+        try
+        {
+            if ((string?)MaintenanceScalar(connection, "PRAGMA integrity_check") != "ok")
+                throw new InvalidDataException("SQLite integrity check failed; original retained");
+            if (MaintenanceScalar(connection, "PRAGMA foreign_key_check") is not null)
+                throw new InvalidDataException("SQLite foreign key check failed; original retained");
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name IN ('schema_history','storage_format')";
+            if (Convert.ToInt64(command.ExecuteScalar()) != 2) throw new InvalidDataException(unsupported);
+            command.CommandText = "SELECT id,checksum FROM schema_history";
+            using (var reader = command.ExecuteReader())
+                if (!reader.Read() || reader.GetInt32(0) != CurrentFormatVersion || reader.GetString(1) != Ipc.Platform.Storage.Database.BaselineHash(Schema) || reader.Read())
+                    throw new InvalidDataException(unsupported);
+            command.CommandText = "SELECT id,version,minimum_reader FROM storage_format";
+            using (var reader = command.ExecuteReader())
+                if (!reader.Read() || reader.GetInt32(0) != 1 || reader.GetInt32(1) != CurrentFormatVersion || reader.GetInt32(2) != CurrentFormatVersion || reader.Read())
+                    throw new InvalidDataException(unsupported);
+            return CurrentFormatVersion;
+        }
+        catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)
+        { throw new InvalidDataException(unsupported, ex); }
     }
     static StorageInspection InspectConnection(SqliteConnection connection, string sourcePath)
     {

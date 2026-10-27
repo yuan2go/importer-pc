@@ -1,6 +1,8 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 # 卡顿与容量批 · 运行与维护
 
-原独立包基于main a8cd4314；2026-10-26组合继承P0/Unicode/时间存储，统一SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9及SQL1–9不变。[工作包](../work-packages/WP-IPC-LATENCY-CAPACITY-01.md)及[本次回执](validation/latency-capacity-01.md)分别记录范围、基线和实际验证。旧独立介质/PASS守原身份；本轮组合只在[整合记录](integration-20261026.md)登记新源验证。保留维护通知的单调节拍，备份围栏内不清理冗余原件；恢复暂停、致命存储分类与gate外历史计数同时成立。
+当前容量、投影和WAL维护沿本次精确程序集验证。维护通知使用单调节拍，备份围栏内不清理冗余原件；恢复暂停、致命存储分类及gate外历史计数继续成立。历史测量不转记本轮PASS。
 
 ## 快照与详情
 

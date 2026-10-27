@@ -1,19 +1,6 @@
-> 双相机TCP当前生命周期与故障分类见[DUAL-CAMERA-COMMUNICATION-FIX-01](dual-camera-communication-fix-01.md)：启动有界接收与业务准入分开，明确连接失败按位隔离；原资源/SDK启动失败、配置、实体和原请求守卫保持。历史版本/协议/验收不倒写。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
-> 2026-10-24 当前源码基线：Application.Contracts ABI 1.17.0、Parcel DB9；业务版本以项目声明和冻结产物 SourceCommit 为准。下文1.10及更早版本/候选/未验记录保留形成时范围，不是当前ABI选择。当前管理授权见[管理模式](management-mode-01.md)，本轮整改见[工作包](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)。公共DLL精确字节变化仍需新的不可变扩展包，不复用历史签名身份。
-
-> 2026-10-20阶段裁决（历史）：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
-
-> 以下为前阶段形成时记录；当前操作以前述2026-10-20裁决为准。原增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
-
-> 历史商业化阶段版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
-> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
-
-> 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。
-
-> Sportmaster桌面新增第二套原生UI及 `--ui` 参数，见[运行指南](sportmaster-alternate-ui.md)。本页“本包不新增UI”仅描述架构22形成时范围；本次增量不改变其业务/拓扑/恢复规则。
-
-# Application架构22 · 运行和兼容指南
+# Application架构22 · 当前运行指南
 
 [现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
 
@@ -35,7 +22,7 @@ DirectPlc、WcsToPlc使用相同脚本分别--application direct-plc/wcs-to-plc�
 
 ## 完整拓扑配置
 
-ParcelConfiguration.SchemaVersion=3，Topology.Readers是DeviceBinding数组（稳定DeviceId、Driver、Role=parcel-reader、Revision）；Topology.Positions声明固定Id及ReaderDeviceId，可显式CameraInstanceId、ScaleInstanceId映射CapabilityInstances。Sportmaster必须left/right及两台reader；其他两个必须main和一台reader。缺失、重复、非法共享、类型错误、禁用和矛盾库存均拒绝。旧Reader/Scale/Images.Camera字段为第一个绑定的兼容锚点，必须保持一致，不能用它们覆盖集合。
+ParcelConfiguration.SchemaVersion=3，Topology.Readers是DeviceBinding数组（稳定DeviceId、Driver、Role=parcel-reader、Revision）；Topology.Positions声明固定Id及ReaderDeviceId，可显式CameraInstanceId、ScaleInstanceId映射CapabilityInstances。Sportmaster必须left/right及两台reader；其他两个必须main和一台reader。缺失、重复、非法共享、类型错误、禁用和矛盾库存均拒绝。Reader/Scale/Images.Camera字段表示第一位角色绑定，必须保持一致，不能用它们覆盖集合。
 
 Images.Camera启用采图；Images.Uploader=null为仅取图。有Uploader时Strategy=BeforeMain/Attached分别要求前置地址或独立后台责任；若协议要求图片地址，禁止仅取图或Attached。仅取图原件保留到主链终态/安全取消；未知采集/上传保留原件及独立接收责任。MaximumBytes、TotalBytes、MaximumPending控制临时原件容量，无长期图库或预览服务。
 
@@ -47,26 +34,25 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实及可省略Inputs）。Inputs每位最多一项，包含PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId和RecordedAt；原事实使用既有parcel_audit的InputObserved事件持久化，按持久seq恢复，不新增SQL或第二账。来源注册/epoch/sequence先隔离；旧会话、旧序号只审计不覆盖当前观察。同一有效会话的新输入因排队过期须持久化本次拒绝，不能沿用上一件已终结格口；不创建外部请求。观察失败不制造Operation；旧主链已终结时不再把旧成功当本次结果，未决责任继续受守卫。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
 
-每条JSON使用唯一Id；应用命令ExpectedRevision取提交时应用Revision，配置草稿与旧账确认必须保留加载时配置Revision及运行实例，不能由自动刷新改写其检查身份。合成左侧输入示例：
+每条JSON使用唯一Id；应用命令ExpectedRevision取提交时应用Revision，配置草稿与当前确认账必须保留加载时配置Revision及运行实例，不能由自动刷新改写其检查身份。合成左侧输入示例：
 
 ```json
 {"Id":"11111111111111111111111111111111","ExpectedRevision":0,"Kind":"EmitReferenceAt","Owner":"synthetic-parcel-1","Value":"{\"PositionId\":\"left\",\"Code\":\"000000917\"}"}
 ```
 
-右侧用right且新Admission/Source身份。相同条码不代表同一实体。旧EmitReference仅明确投递到第一个配置位，不能用于证明双位；新增EmitReferenceAt才是定位输入。非Simulation不接受合成输入。
+右侧用right且新Admission/Source身份。相同条码不代表同一实体。EmitReference仅明确投递到第一个配置位，不能用于证明双位；EmitReferenceAt用于定位输入。非Simulation不接受合成输入。
 
-IParcelApplication.EmitReferenceAt(positionId, admissionId, code, sourceEventId)和ReconnectDeviceAsync(deviceId)为实际契约，CLI对应EmitReferenceAt/ReconnectDevice。单侧重连要求软件暂停和维护认证，只替换该reader注册，不改另一位epoch或重发原请求。认证与维护仍走已选组件；有未结责任时保护原操作员，不在切页/换班时篡改原件。其他Pause/Resume/Reconcile/ContinuePrepared/ContinueUpload/AbandonUnsubmitted/Backup保持原守卫。
+IParcelApplication.EmitReferenceAt(positionId, admissionId, code, sourceEventId)和ReconnectDeviceAsync(deviceId)为实际契约，CLI对应EmitReferenceAt/ReconnectDevice。单侧重连要求软件暂停和维护认证，只替换该reader注册，不改另一位epoch或重发原请求。操作员认证走已选组件，管理授权走当前管理模式；有未结责任时保护原操作员，不在切页/换班时篡改原件。其他Pause/Resume/Reconcile/ContinuePrepared/ContinueUpload/AbandonUnsubmitted/Backup保持原守卫。
 
-StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。主链或外部动作未结/未知时激活拒绝；仅当本件外部业务已终结、每个缺raw发生均有已Committed的原Query权威依据时，可在保留独立资料责任的条件下过渡配置。该例外不释放原图、不归档作业、不退休原包；无依据的缺raw仍阻激活。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供schema3结构化草稿，完整保留reader、投递位、每位秤/相机及共享能力库存、Extensions和Retention；已安装提供者按精确身份选择，局部校验与完整候选校验分开。高级JSON与表单须显式加载草稿，不被轮询或另一入口隐式覆盖；保存仍提交完整候选及加载时修订CAS，禁止降版/丢失右位。schema1/2兼容编辑路径继续保留。维护的“结构化拓扑与策略”展示reader/位/角色绑定及全局策略，“能力库存与参数”编辑提供者及参数；“完整候选配置（高级）”默认只读，需显式从表单生成并切换，或把当前高级JSON加载回表单，沿用原草稿CAS。重新读取须显式替换本窗草稿。
+StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。主链或外部动作未结/未知时激活拒绝；仅当本件外部业务已终结、每个缺raw发生均有已Committed的原Query权威依据时，可在保留独立资料责任的条件下过渡配置。该例外不释放原图、不归档作业、不退休原包；无依据的缺raw仍阻激活。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供schema3结构化草稿，完整保留reader、投递位、每位秤/相机及共享能力库存、Extensions和Retention；已安装提供者按精确身份选择，局部校验与完整候选校验分开。高级JSON与表单须显式加载草稿，不被轮询或另一入口隐式覆盖；保存仍提交完整候选及加载时修订CAS，禁止降版/丢失右位。非schema3配置拒绝保存。维护的“结构化拓扑与策略”展示reader/位/角色绑定及全局策略，“能力库存与参数”编辑提供者及参数；“完整候选配置（高级）”默认只读，需显式从表单生成并切换，或把当前高级JSON加载回表单，沿用原草稿CAS。重新读取须显式替换本窗草稿。
 
-## 版本升级与原件
+## 当前格式与原件
 
-历史商业化阶段Application.Contracts ABI1.10.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
-配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
+从空数据目录一次创建Parcel 10基线。启动、只读检查、扩展消费者、备份及恢复只接受当前格式和基线哈希；缺失回包身份索引拒绝，不补写历史。当前配置schema3必须包含完整拓扑；发布登记仅schema2并核对实际业务程序集，源码开发入口不冒充正式发布。
 
-Parcel当前数据库9，SQL1～8及checksum保留；SQL9追加输入接收、查询投影及到期删除的永久身份凭据，操作见[长稳指南](win11-24x7-stability-remediation-01.md)。SQL8为首配修复、恢复交接和配置绑定备份策略的读者屏障；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障；SQL5将历史OutcomeReconciled恢复为Awaiting资料责任，SQL7保存数字请求永久唯一Owner、配置范围及恢复退役边界。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB9，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
+当前格式的备份经应用BackupAsync取得完整配置、一致SQLite快照、原回执、尚存原图及完成清单。恢复到全新隔离目录并暂停，保留机器来源、退役围栏和防双活。Unknown保持原报文、原目标、原实现及独立责任，不自动重发。WAL、synchronous=FULL和完整性校验保持。
 
-不得用改库、删除原件或强改迁移表作为部署升级步骤。新备份通过应用BackupAsync，包含完整配置、SQLite一致快照、原回执与尚存原图及完成清单；恢复到全新隔离目录，首次启动暂停。原请求、原WCS格口及PLC意图继续同T3事务，Unknown只查询原目标/实现，不盲重发。
+公共DLL变化后以实际Release重新编译业务、驱动与扩展，产生新的不可变包身份。完整包发布和当前格式覆盖安装仍须校验签名、清单、同源程序集及所有权。没有旧格式迁移或旧配置激活入口。
 
 ## 排空与边界
 
@@ -75,5 +61,3 @@ Parcel当前数据库9，SQL1～8及checksum保留；SQL9追加输入接收、�
 部分构造失败由工厂接管已构造资源，部分启动失败由runtime接管返回端口。Stop停止所有源、排空每位/附加/外呼，再释放共享资源；超时/清理异常保有租约及数据库，允许重复清理。不得把Stop超时或普通软件暂停当作设备已停。
 
 真实离场/复位、共享联锁、SDK关联、WCS/PLC批准合同及Windows实际UI/PowerShell/UAC/ACL仍分别BLOCKED/NOT_RUN。本轮参考逻辑证据不关闭历史D/RV，不声称旧HTML已修复或现场可上线。实际源码、产物与日志身份在本包结果记录。
-
-[RCS分拣任务组件](sportmaster-rcs-task.md)为Sportmaster显式可选适配器；默认参考组件保持可用。普通DB2～6先只读证明未结责任清偿才可升级7，不补造Query或改写原binding；专用custody CLI在逐发生权威依据/完整备份门禁下显式选择7，内部API原调用默认5保持兼容，已有7不降级。

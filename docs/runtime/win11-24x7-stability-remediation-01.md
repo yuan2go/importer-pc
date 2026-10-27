@@ -1,3 +1,5 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 > TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
 >
 > 崩溃闭环现由[P0-STABILITY-01/ST14](p0-stability-01.md#st14-崩溃闭环)实现全局钩子、受控WER、有限外部重启及SCM恢复；下文“未自动修改WER”描述原包形成时的实现。挂起/现场运维政策继续有效，新系统登记验收仍NOT_RUN，不能继承本页历史PASS。
@@ -6,7 +8,7 @@
 
 当前历史维护采用[输入分页及完整预算](retention-ingress-02.md)。最新完整规模与受保护CLI实测见[PR106记录](validation/retention-ingress-full-retest-03.md)；PR103超预算FAIL及后续UAC取消是历史证据，未被删除，也不再表示最新实现状态。2592000、目标工控机、真实设备和24h/72h仍单独待验。
 
-[工作包与R01–R12](../work-packages/WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md) · [设计](../design/win11-24x7-stability-remediation-01.md) · [原审查](../reviews/win11-24x7-stability-audit-01/README.md)。本阶段历史源码Sportmaster **1.12.0**、DirectPlc/WcsToPlc **1.6.0**、Application.Contracts **1.17.0**、Parcel **DB9**。当前可靠性增量见[代码可靠性02](code-reliability-hardening-02.md)，下述版本和验证保持前阶段身份。原SQL1～8/checksum、REQ/BR/CAPI/D/RV和旧媒介身份不改。实际冻结与验证身份在本页末尾关联的验证记录，不以本文或开发分支代替24h资格。
+当前可靠性与存储分别按本次程序集及Parcel 10基线验证；历史源码、冻结介质及24h资格记录保留原身份。真实设备和现场资格不能由结构等价证明替代。
 
 ## 输入、故障和关闭
 
@@ -40,7 +42,7 @@ $db = 'D:\ImporterPcData\Production\实际站标识\sportmaster\sportmaster.db'
 & "$release\app\Ipc.Assembly.exe" --action expire-history --file $db --sha256 '实际原库SHA256' --destination 'D:\ImporterPcBackups\维护时间.db'
 ```
 
-命令不启动reader/SDK/RCS。独占原库租约，检查已激活7～30天策略、暂停、DB9、预期hash及无未关闭WAL，完整校验原库/raw，先把可归档终态转同库原件并生成完整COMPLETED备份，再执行分批删除。只有主链终态有真实Committed raw依据、附加图像/上传已清、无未决回执/冲突/命令/输入，且最后业务变更早于期限，才删除明细。新DB9逐笔输入审计与接收账关联；到期已处理输入删除后保留接收ID/原哈希/终态凭据。旧未关联的审计不猜测归属删除。
+命令不启动reader/SDK/RCS。独占原库租约，检查已激活7～30天策略、暂停、Parcel 10、预期hash及无未关闭WAL，完整校验原库/raw，先把可归档终态转同库原件并生成完整COMPLETED备份，再执行分批删除。只有主链终态有真实Committed raw依据、附加图像/上传已清、无未决回执/冲突/命令/输入，且最后业务变更早于期限，才删除明细。新Parcel 10逐笔输入审计与接收账关联；到期已处理输入删除后保留接收ID/原哈希/终态凭据。旧未关联的审计不猜测归属删除。
 
 保留永久Admission/Observation/Position索引、回复哈希、测量ID/hash、数值请求owner/range/retirement和每次删除凭据。已删除实体再次输入明确Blocked；身份矛盾形成可见冲突。中断前事务无删除，中断后已提交凭据不撤销；使用当前hash重新检查可继续。备份里的旧明细仍存在，备份留存/销毁独立管理，不能把删除线上明细称作备份也已销毁。
 
@@ -62,7 +64,7 @@ $db = 'D:\ImporterPcData\Production\实际站标识\sportmaster\sportmaster.db'
 
 reserve是硬准入围栏；低于2×reserve提前提示。现场根据实测每小时增长G、维护响应时限T和备份/压缩成本设置reserve，至少覆盖G×T与恢复工作区，不能沿用64MiB技术默认宣称现场足够。备份继续暂停+管理授权+外呼排空的维护窗口；软件公开计划到期/失败，到期未做须纳入班次运维。恢复时间目标由现场确定，记录扫描校验、复制、启动复核、重新联调各阶段实际时长，未测为NOT_RUN。
 
-迁卷沿现有recovery-plan/restore及受保护部署接管：容量预检、完整hash、原根退役、防双活、原部署身份与新根隔离。旧备份不能退役含更新责任的新根，不能绕过恢复交接。DB9不能交旧DB8及更早读者；回退程序只可配原隔离备份按既有恢复门禁核对，禁止业务账倒退或号码复用。
+当前格式恢复使用recovery-plan/restore：容量预检、完整hash、原根退役、防双活、机器来源与新根隔离。较早备份不能退役含更新责任的根，不能绕过恢复交接。非当前数据库拒绝；禁止业务账倒退或号码复用。
 
 ## Windows运行政策和独立诊断
 
@@ -89,7 +91,7 @@ python scripts/stability-qualification.py analyze --collection D:/stability/新2
 
 `collect --smoke-seconds 30`只检查采集器，永远SMOKE_ONLY。正常段默认15分钟预热后连续24h；故障注入另开目录，不计入正常段；按风险执行72h及多次跨日。使用原[独立loopback负载脚本](../reviews/win11-24x7-stability-audit-01/verification/LOOPBACK-README.md)时保持127.0.0.1、双位独立节拍，负载总时长须覆盖预热+完整正常段+两端核对余量。socket-write只是来源写出，分析通过唯一合成条码/位与接收账逐笔核对；重复/多码/跨边界/缺失均单列，不静默丢弃。真实SDK来源需提供同等可关联的原来源日志后按其合同适配，不冒用合成条码结论。
 
-分析先校验COMPLETED全文件hash、DB完整性及DB9，再流式导出输入ID/原hash/来源Epoch/序列/去向，计算逐位排队和业务处理P95/P99/最大值。统计业务处理完成不代表RCS接受或物理完成；并发源日志/RCS日志/原业务账继续核对。采集提供UI延迟、worker状态、资源趋势、最老等待与节拍，仍需审查性能阈值、真实设备合同和故障恢复证据。工具只给COLLECTED_REQUIRES_RECONCILIATION或ANALYZED_REVIEW_REQUIRED，不自动授予生产PASS。
+分析先校验COMPLETED全文件hash、DB完整性及Parcel 10，再流式导出输入ID/原hash/来源Epoch/序列/去向，计算逐位排队和业务处理P95/P99/最大值。统计业务处理完成不代表RCS接受或物理完成；并发源日志/RCS日志/原业务账继续核对。采集提供UI延迟、worker状态、资源趋势、最老等待与节拍，仍需审查性能阈值、真实设备合同和故障恢复证据。工具只给COLLECTED_REQUIRES_RECONCILIATION或ANALYZED_REVIEW_REQUIRED，不自动授予生产PASS。
 
 当前没有完整24h/72h、目标8GB、多Windows版本和实际双SDK/RCS组合证据，这些资格均NOT_RUN/BLOCKED。规模预置与短时原生验证单独记录，不能累计或改标为长稳。
 

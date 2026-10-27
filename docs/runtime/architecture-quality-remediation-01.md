@@ -1,3 +1,5 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 # AQA01 架构质量整改 · 当前实现与验证入口
 
 用户授权在独立分支整改 AQA01-F01～F06，基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`（PR91）。原只读报告及失败记录保持原身份；本包不合并、不发布安装包、不操作生产设备。范围与验收见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。
@@ -14,7 +16,7 @@
 
 ## 命令持久化（F02）
 
-复用`parcel_commands`和原SQLite事务，SQL1～8及checksum不变：
+复用`parcel_commands`和SQLite事务，当前基线直接包含完整结构：
 
 |操作|持久化及重启规则|
 |---|---|
@@ -26,7 +28,7 @@
 
 同ID异内容始终先于CAS/业务守卫拒绝。显式检查仅将Pending转为Interrupted并保留新检查命令/管理证据。已完成回执不可改写；已返回的终结回执与后续重放一致。进行中请求可先读到Pending，最终回执按实际完成更新；Pending不是成功或外部未知结果已解除。中断身份不会自动恢复执行，不存在网络长事务。原冻结报文、目标、请求ID、发送尝试和回执资料责任保持。
 
-修复不能重建历史上从未保存的命令ID/内容，也不将历史业务事实改造成“已接收命令”。旧缺口仍须原证据核对；不伪造补账或重发旧请求。DB8现有数据无需新迁移；旧版升级/备份/未知责任屏障保持，旧介质按原SourceCommit使用。
+当前命令ID、内容和接受事实由原事务持久化，不伪造补账、不重发未知请求；从零建库直接包含当前接收责任结构。
 
 ## 离线引用与管理投影（F03、F04）
 
@@ -40,7 +42,7 @@
 
 真实CLI在stdin提供`ConfigureManagementPassword`、`EnterManagementMode`、`ExitManagementMode`，转发同一`IWorkstationAdministration`及既有批准政策，无默认密码、无命令行口令。`smoke-application.py`仅在全新隔离根随机设密，重启重新授权后核原报文/Query；口令不进入证据、argv或产品配置，受保护现场仍须原批准服务。可选恢复夹具明确选择既有AtAssociation策略；新增UntilDispatch过期重量阻止发送验证，生产守卫不改变。
 
-README、索引、入门、部署、Application、ABI与扩展指南的相关过期当前表述已整理，原字节/hash保存在[归档](../archive/pre-architecture-quality-remediation-01/README.md)。保存与开始作业分开、AQA01形成时DB8/Contracts1.16、Production首配及D盘登记优先分别说明；当前存储/ABI及接收责任由[长稳运行指南](win11-24x7-stability-remediation-01.md)替代，原AQA01验证身份保留。历史安装包和原Windows/现场状态不倒写。
+当前操作入口统一为从零安装工作包、运行入门及版本规则。历史整改与原Windows/现场记录见原字节归档，不转记本轮身份。
 
 业务版本Sportmaster **1.11.2**、DirectPlc/WcsToPlc **1.5.1**，对应项目与compositions同步。公共扩展ABI仍为Contracts **1.16.0**，DB **8**；本轮没有新公共DTO。产物仍以SourceCommit与文件SHA识别，不混用整套发布程序集或覆盖旧不可变扩展包。
 

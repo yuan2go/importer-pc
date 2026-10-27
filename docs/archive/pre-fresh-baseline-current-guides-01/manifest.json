@@ -1,0 +1,95 @@
+{
+  "SourceCommit": "8af9e48184318af508a3b6ebf24422d3bd73978d",
+  "Files": [
+    {
+      "Path": "docs/runtime/application-architecture-22.md",
+      "Archive": "docs/runtime/application-architecture-22.md.txt",
+      "Sha256": "40A737652DDD7E51D41FE11A8045156F7EED251055DEE3CF4D84A567B31CE718"
+    },
+    {
+      "Path": "docs/design/application-architecture-22.md",
+      "Archive": "docs/design/application-architecture-22.md.txt",
+      "Sha256": "6DA8D276CA42840892A199CC27B912DA541E2B23B7DA493EC349430667902EE5"
+    },
+    {
+      "Path": "docs/extensions/developer-guide.md",
+      "Archive": "docs/extensions/developer-guide.md.txt",
+      "Sha256": "378A535FEA8969A7FF76A0BC2502AC3B1B5AABA25F36D6E38542BEE3E9AF01BC"
+    },
+    {
+      "Path": "docs/runtime/supply-getting-started.md",
+      "Archive": "docs/runtime/supply-getting-started.md.txt",
+      "Sha256": "DB6923FE88134F51DA53D9230F378B78C1440B960D36E4803F924668CDA6E967"
+    },
+    {
+      "Path": "docs/extensions/supply-guide.md",
+      "Archive": "docs/extensions/supply-guide.md.txt",
+      "Sha256": "B32C49EF70CC681B2AA75F237BC424C95D9C4963FB8928EEA5F449F571DAE98B"
+    },
+    {
+      "Path": "docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "Archive": "docs/runtime/lifecycle-ux-current-guidance-01.md.txt",
+      "Sha256": "E3F8A9D2FCE17D63ACDA245427A67C9FCFFF6EA388C172B43FF220549DDA99EC"
+    },
+    {
+      "Path": "docs/runtime/time-storage-fault-01.md",
+      "Archive": "docs/runtime/time-storage-fault-01.md.txt",
+      "Sha256": "290EE16F3B323E75BE0322BCCA790F682589E7F529DD02C1ED3BA11A5651C5EB"
+    },
+    {
+      "Path": "docs/runtime/p0-stability-01.md",
+      "Archive": "docs/runtime/p0-stability-01.md.txt",
+      "Sha256": "F8AE7F50EB73243AEAC2AFEB405C8F364BF5797597421550B4FB040E2C8A6D6D"
+    },
+    {
+      "Path": "docs/runtime/code-reliability-hardening-02.md",
+      "Archive": "docs/runtime/code-reliability-hardening-02.md.txt",
+      "Sha256": "49520B9A4C205195878E984BD0ED6D37F25D75EE48D1BA7145C5179DA0FC7E76"
+    },
+    {
+      "Path": "docs/runtime/latency-capacity-01.md",
+      "Archive": "docs/runtime/latency-capacity-01.md.txt",
+      "Sha256": "C5BF1FBF67BFBF4E2EEDD10C4391F588CA1C930EEDCADB36785745CEDDEB78CA"
+    },
+    {
+      "Path": "docs/runtime/win11-24x7-stability-remediation-01.md",
+      "Archive": "docs/runtime/win11-24x7-stability-remediation-01.md.txt",
+      "Sha256": "BC699885EC183D3A4A11C851AB39C5FC4FB6CCD96FD3308125EA41C19316E9EE"
+    },
+    {
+      "Path": "docs/runtime/architecture-quality-remediation-01.md",
+      "Archive": "docs/runtime/architecture-quality-remediation-01.md.txt",
+      "Sha256": "E93310152A30ECF2BA7918699B7DA7216341700DA3C83F9158AB73D1F2BE609B"
+    },
+    {
+      "Path": "docs/runtime/commercial-productization-01-operations.md",
+      "Archive": "docs/runtime/commercial-productization-01-operations.md.txt",
+      "Sha256": "AE0BB08FA26690DCC3603C8589D309EBE67BA12FBCBD972637FB094D021147D1"
+    },
+    {
+      "Path": "docs/runtime/rcs-heartbeat-01.md",
+      "Archive": "docs/runtime/rcs-heartbeat-01.md.txt",
+      "Sha256": "A23B803B7DD2D34847F021C09119335B1FDB1FEAEB427EE669C81851D885078D"
+    },
+    {
+      "Path": "docs/runtime/hikrobot-reader-01.md",
+      "Archive": "docs/runtime/hikrobot-reader-01.md.txt",
+      "Sha256": "4F01237CE17157A1E87D28680EFFB04B0EE8610A904DA35D2DE4C979B6DD35E2"
+    },
+    {
+      "Path": "docs/runtime/dual-camera-communication-fix-01.md",
+      "Archive": "docs/runtime/dual-camera-communication-fix-01.md.txt",
+      "Sha256": "15393A1389D70FF2344F2A3260584367280FAED6FD2420255DF9A2D2D1F4720F"
+    },
+    {
+      "Path": "docs/runtime/startup-deployment-02.md",
+      "Archive": "docs/runtime/startup-deployment-02.md.txt",
+      "Sha256": "A81AB3346A50B620E761107104A385491888C7321BEECA27B162A199A355B90A"
+    },
+    {
+      "Path": "docs/runtime/unicode-shortcut-compatibility-01.md",
+      "Archive": "docs/runtime/unicode-shortcut-compatibility-01.md.txt",
+      "Sha256": "04340698798CCD726527E46EE0A31BCD5183F2C3F1BD6157E4A29DEBDA5B87F0"
+    }
+  ]
+}

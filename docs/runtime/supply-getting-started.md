@@ -1,4 +1,6 @@
-# Supply兼容产品：首次运行与首条参考作业
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
+# Supply：首次运行与首条参考作业
 
 Windows先由维护安装既有机器策略，日常使用指定未提权账户（允许UAC deny-only组身份）。当前源码的ProductRuntime在任何配置或持久资源初始化前复用统一身份门禁，直接运行Product/Assembly/WPF也适用；离线维护保留原授权，见[门禁补齐与验证边界](runtime-identity-preflight-02.md)。非Windows命令仅作开发模拟，不能证明Windows身份/ACL通过；旧媒介保持原固定源码。
 
@@ -16,7 +18,7 @@ python3 scripts/seal.py --bin src/Ipc.Product/bin/Debug/net10.0
 python3 scripts/seal.py --bin src/Ipc.Desktop/bin/Debug/net10.0-windows
 ```
 
-seal写实际模块SHA/配置/发布身份；二进制变更后重做，不能跳过哈希校验。当前契约1/SIMULATION-v1，Storage/MinimumReader=5/5。旧库需要[显式备份升级](operations.md)，不能把新根/换seed当旧部署迁移。首次合成开发使用全新数据根，避免与其他进程、候选、原数据库共享。
+seal写实际模块SHA、配置和发布身份；二进制变更后重新封装，不跳过哈希校验。Supply.Contracts为2.0.0，外部参考合同SIMULATION-v1不变，Storage/MinimumReader=6/6。只使用全新数据根建库，非当前数据库拒绝，不接管开发遗留数据。
 
 终端一启动合成本地接收端；终端二运行同版核心控制台：
 
@@ -72,7 +74,7 @@ python3 scripts/smoke.py --product /new-unpacked/app --fixture /new-unpacked/fix
 python3 scripts/smoke-extension.py --release /new-unpacked --output /new-evidence/extensions.json
 ```
 
-portable需要.NET10运行时；win-x64自包含仍需实际Windows。原始manifest/payload、公钥策略、独立插件源提交/哈希与宿主来源分别记录；新参考包1.0.4不覆盖旧1.0.0～1.0.3。候选成功不表示已安装、已激活、Windows通过或现场资格。
+portable需要.NET10运行时；win-x64自包含仍需实际Windows。原始manifest/payload、公钥策略、独立插件源提交/哈希与宿主来源分别记录；当前参考包3.0.0绑定本次宿主精确字节，不覆盖已有包身份。候选成功不表示已安装、已激活、Windows通过或现场资格。
 
 ## 常见阻断
 
@@ -88,4 +90,4 @@ portable需要.NET10运行时；win-x64自包含仍需实际Windows。原始mani
 |卸载LegacyConsumersUnverified/租约占用|盘点真实离线根/备份及未决原请求，等待实际Stop/查询/T3终止；不删租约绕过。|
 |停止超时/清理失败|保留当前进程资源诊断和原操作，不启动第二所有者；原任务终止后重试受控清理。|
 
-完整恢复、备份/升级/回退、新根隔离、Windows部署和解除依赖资料见[运行指南](operations.md)。
+当前格式完整备份/恢复、新根隔离、Windows部署和解除依赖资料见[运行指南](operations.md)。

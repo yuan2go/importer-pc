@@ -13,16 +13,21 @@ public sealed partial class ParcelRepository
     }
     static string RequireCurrentStorage(SqliteConnection db, string? application = null, SqliteTransaction? tx = null)
     {
-        using var c = db.CreateCommand(); c.Transaction = tx;
-        c.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
-        if (Convert.ToInt64(c.ExecuteScalar()) != 1) throw new InvalidDataException(UnsupportedStorage);
-        c.CommandText = "SELECT application,version,sha FROM platform_migrations";
-        using var r = c.ExecuteReader();
-        if (!r.Read()) throw new InvalidDataException(UnsupportedStorage);
-        var actual = r.GetString(0);
-        if (actual is not ("sportmaster" or "direct-plc" or "wcs-to-plc") || application is not null && actual != application ||
-            r.GetInt64(1) != CurrentStorageVersion || r.GetString(2) != Database.BaselineHash(Baseline) || r.Read())
-            throw new InvalidDataException(UnsupportedStorage);
-        return actual;
+        try
+        {
+            using var c = db.CreateCommand(); c.Transaction = tx;
+            c.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
+            if (Convert.ToInt64(c.ExecuteScalar()) != 1) throw new InvalidDataException(UnsupportedStorage);
+            c.CommandText = "SELECT application,version,sha FROM platform_migrations";
+            using var r = c.ExecuteReader();
+            if (!r.Read()) throw new InvalidDataException(UnsupportedStorage);
+            var actual = r.GetString(0);
+            if (actual is not ("sportmaster" or "direct-plc" or "wcs-to-plc") || application is not null && actual != application ||
+                r.GetInt64(1) != CurrentStorageVersion || r.GetString(2) != Database.BaselineHash(Baseline) || r.Read())
+                throw new InvalidDataException(UnsupportedStorage);
+            return actual;
+        }
+        catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)
+        { throw new InvalidDataException(UnsupportedStorage, ex); }
     }
 }

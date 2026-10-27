@@ -1,3 +1,5 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 > 2026-10-26 独立延后配置修复见[DEFERRED-HEARTBEAT-01](validation/deferred-heartbeat-01.md)：仅已配置相机参加心跳映射；全部相机延后时不启动心跳、不发送空批次。下文“全部Reader/缺编码拒绝”限于未延后的相机，原版本、报文和历史验证保持原身份。
 
 # RCS 周期心跳增量 · 2026-10-20
@@ -29,7 +31,7 @@ HTTP失败、断连、超时或重定向报告到原CapabilityHealth，不跟随
 
 ## 版本与交付
 
-RCS为1.2.0，公共Application.Contracts为1.11.0（新增可选运行配置端口及可省略StationCode，旧JSON缺省保持可读），Sportmaster为1.4.2。公共DLL指纹变化后新reference.parcel-capabilities声明2.2.6，DirectPlc/WcsToPlc兼容声明随新公共契约补丁到1.4.1；海康参数描述新包1.0.2。原包和历史介质不重签覆盖，旧请求继续引用其原精确包；不得用新包替代旧请求的原组件。Parcel仍DB8，无新SQL迁移。
+当前RCS包装版本2.0.0、Application.Contracts 3.0.0；外部RCS version1保持。公共DLL按实际指纹构建新包，不改冻结原请求。Parcel 10直接建立当前结构。
 
 构建和运行定向验证（仓库根目录，使用锁定.NET SDK10.0.402）：
 
@@ -45,7 +47,7 @@ python -m unittest discover -s scripts -p test_application_compatibility.py -v
 
 Windows本机模拟验证已通过：心跳26项、既有RCS121项、版本兼容56项、Application架构63项；Python兼容17项、发行指南2项；海康fake API自测26项。验证工程、Sportmaster WPF Release及装配宿主构建均为0警告/0错误。心跳覆盖默认/配置周期、双Reader合并、编码/时间/索引、HTTP失败/超时/重定向、停止/重连、业务编号隔离和缺配置拒绝。RCS签名包通过冻结宿主的实际extension-check；验签/精确哈希后从临时目录加载真实包，5项心跳/取格口/停止验证通过。Windows普通进程调用扩展安装被原有提权门禁拒绝，未绕过、未改机器信任/安装登记；临时验签包加载仅为测试夹具，不宣称受保护安装激活通过。
 
-开工原RCS回归在SQL7断言失败：main实际已用SQL8，本次保留严格版本断言并更新为8。后续Windows迁移夹具的辅助SQLite连接默认池化导致文件哈希读取共享冲突，改用不池化的检查连接，保留原字节/hash/SQL历史断言。旧兼容测试仍写1.3.3且漏列已存在海康包，按当前精确声明更新，继续拒绝旧包及篡改。RCS恢复夹具旧流程试图在未交接的恢复根直接准入；按当前DB8语义改为严格验证Resume拒绝、观察不产生请求，并直接调用实际编号分配器确认原范围退役、原归档编号保留；未移除恢复围栏或伪造交接。Application架构的原SQL7升级断言同样更新为8。
+历史回归、失败与版本演变见归档原件。本轮只验当前格式、原报文与号码退役，不运行旧迁移链。
 
 源码冻结为 `3f8a58ba32887df07f6a7817b64afa693f903c50`。Simulation RCS签名包SHA256为 `b2c7d2e794630d7bcdde70df6f0b602d35528581792efb863b23de7c36857e44`；独立TestOnly测试信任与私钥未提交。签名包绑定的公共Application.Contracts SHA256为 `e226bdc43103b496f29d21e399964ef6e35ce52dfff6f8e63975ace380fbeec3`。后续提交仅补充测试夹具及此验证记录，不将介质改标为后续文档提交。
 

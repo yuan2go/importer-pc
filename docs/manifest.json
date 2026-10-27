@@ -102628,9 +102628,20 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "d48e752a04876ede2acda7f0260e51961dbde3edb01e512a3585005296004774",
-      "size_bytes": 3657,
-      "git_blob": "3eafef6e40cd36632bc96e7d0eb2653350b47f8e",
+      "sha256": "fd70619aeef6dac280f2e4b024c1d2ce4fce4f43c487979ff75fe980bd9cd7c2",
+      "size_bytes": 4241,
+      "git_blob": "d186a2cc39abfb912dcdf61a27d370043b858a09",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/camera-sdk-single-code-01/frozen-packages.json",
+      "version": "camera-sdk-single-code-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; scoped engineering receipts",
+      "sha256": "8df72fe30be88765977db36cff35ff5c36897c6d28b9badfcd40963c3139d6c7",
+      "size_bytes": 4746,
+      "git_blob": "014a8890c80ba34ae22d15f48ef156ab700fbae0",
       "storage_scope": "public_repository"
     }
   ],

@@ -22,3 +22,6 @@ SDK经已安装的精确签名驱动包选择；源码合入或安装MVS客户�
 已执行：Sportmaster locked Solution及定向验证构建0警告/0错误；应用SDK编辑、参数共模、心跳实际环回HTTP、延后/Unknown原请求、RCS主链和8种延后矩阵通过。新增同一HTTP编码、倒置Reader数组仍按拓扑匹配，以及Pending更改相机编码不改Unknown原件的断言。原生SDK/缺包/单一编码、首配、延后首配和日常参数窗口通过，含1120×760、820×520及800×420 DIP，实际125%缩放。第一次原生测试因夹具在渲染后才注册事件找不到按钮，按实际页面先注册后设置模型修复后通过，原FAIL日志保留。回执和Git外日志哈希见[runtime/evidence](../runtime/evidence/camera-sdk-single-code-01/verification.json)。
 
 工程参数/操作链范围已闭合；SDK真实图像→条码组件尚缺，真机帧/读码、真实RCS及现场可用保持BLOCKED/NOT_RUN；历史SDK枚举和旧PASS不转记本源码。用户截图、实际SDK与私密日志留D盘Git外。当前运行介质未被静默替换，保存也不会自动启用SDK。
+
+
+源码提交55ae5867后冻结当前宿主，MVS、MvCodeReader和RCS三个当前独立工程签名包均通过PASS_FROZEN_HOST_EXTENSION_CHECK，宿主及检查器字节未变；读取实际签名包manifest再次确认两个SDK均不再声明bcr-code，RCS保留本位唯一映射。精确来源及哈希见[包回执](../runtime/evidence/camera-sdk-single-code-01/frozen-packages.json)。这些是Git外TestOnly/Simulation工程包，不是Production安装资格，不能直接装入当前Production代替正式SDK部署。本分支未覆盖并行PR127及海康加固工作树。

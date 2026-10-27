@@ -1,25 +1,3 @@
-> 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
-
-> 2026-10-27 用户再次纠偏以[内置MVS安装与参数](work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SM相机只使用内置SDK，首配与日常均显示SDK参数，安装软件即带运行依赖；下文独立驱动安装/TCP切换要求保留形成时范围，不再作为当前用户流程。真实识码和现场资格边界不变。
-
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
-
-> 2026-10-27 海康真实读码、SDK适用性与参数操作以 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md) 为当前入口。目标工业相机算法SDK与现场条件尚缺，原MvCodeReader连接/0码记录不代表本型号读码通过。
-
-> 作业记录与日志查询当前界面和验证入口见 [QUERY-FILTER-UX-01](runtime/query-filter-ux-01.md)。
-
-> 2026-10-27 查询布局与本地日期时间呈现以 [QUERY-FILTER-UX-01](work-packages/WP-IPC-QUERY-FILTER-UX-01.md) 为准；旧默认 UTC 输入和长时间摘要保留历史范围，查询合同不变。
-
-> 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
-
-> 2026-10-27 海康审查整改以 [HIKROBOT-HARDENING-01](work-packages/WP-IPC-HIKROBOT-HARDENING-01.md) 为当前增量：并发释放、原生清理、正式物理身份和诊断条码保护。SDK/解码边界继承 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)，原失败和历史验收不倒写。
-
-> 2026-10-27 日志热生效调试模式与实时终端暂停以 [DEBUG-LOG-LIVE-01](work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md) 和[操作说明](runtime/debug-log-live-01.md)为准。作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
-
-> 2026-10-26 RCS组件超时与异常展示：新增1.3.4、组件请求时限及拆包/message投影；明确超时后立即允许新扫码申请，原请求Unknown及记录保留。见[工作包](work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)与[运行及验证](runtime/rcs-timeout-errors-01.md)。历史接口及验收身份保留。
-
-> 2026-10-27 开发阶段统一当前契约：不再维护旧版本运行兼容；清理范围、原件保护和定向验证以 [CURRENT-CONTRACT-CLEANUP / 独立工作包](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md) 第0、9节为准。下文及旧版本说明中的迁移/兼容成功目标保留历史适用范围，当前精确装配、未知责任、权限和恢复守卫继续有效。
-
 # 文档索引
 
 2026-10-27 当前自有产品版本统一为1.0.0，见[工作包](work-packages/WP-IPC-UNIFIED-VERSION-1-0-0.md)和[首次安装测试交付](runtime/unified-version-1-0-0.md)。本条替代旧当前版本号，历史证据、外部SDK/协议与数据格式保留原身份。
@@ -30,15 +8,14 @@
 
 2026-10-26 首次安装计划任务缺失及修复失败状态：见[工作包](work-packages/WP-IPC-INSTALLER-TASK-LOOKUP-01.md)和[实施及定向验证](runtime/installer-task-lookup-01.md)。保留原安装登记，沿原系统入口修复，不重放安装。
 
-本索引区分当前规则、进行中的整合和历史证据。2026-10-26 起点 main 为 `a8cd4314`；最新整合状态只在[本轮工作包](work-packages/WP-IPC-INTEGRATION-20261026.md)记录，旧 PASS 不随合并迁移。
+本索引区分当前规则与按原 SourceCommit 保存的证据；当前代码以 main 为准，冻结 PASS 不随合并迁移。
 
 ## 当前规则与操作
 
 | 阅读目的 | 当前入口 |
 |---|---|
-| 本轮意图台账、时间线与执行顺序 | [INTEGRATION-20261026](work-packages/WP-IPC-INTEGRATION-20261026.md) |
 | 架构与职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
-| 当前合同、旧输入拒绝与原件保全 | [当前合同收口](runtime/current-contract-cleanup-01.md)、[工作包K01～K15](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md) |
+| 当前合同、旧输入拒绝与原件保全 | [当前合同收口](runtime/current-contract-cleanup-01.md) |
 | 管理模式与操作员权限 | [管理模式](runtime/management-mode-01.md)、[工作包](work-packages/WP-IPC-MANAGEMENT-MODE-01.md) |
 | 参数与首次启动 | [用户纠偏](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[延后映射/恢复](runtime/validation/deferred-heartbeat-01.md)、[参数共模](design/parameter-refactor-01.md) |
 | 参数设计 | [PARAM-UX-02](design/parameter-settings-experience-02.md)、[参数V3](ui/parameter-settings-v3-20261020/README.md)、[字段继承](design/parameter-inheritance-02.md) |
@@ -46,18 +23,17 @@
 | 当前可靠性与输入责任 | [可靠性02](runtime/code-reliability-hardening-02.md)、[长稳运行](runtime/win11-24x7-stability-remediation-01.md) |
 | 历史维护 | [输入分页/完整预算](runtime/retention-ingress-02.md)、[完整维护最新证据](runtime/validation/retention-ingress-full-retest-03.md) |
 | 构建、部署与版本 | [运行入门](runtime/getting-started.md)、[Windows交付](runtime/windows-application-delivery.md)、[版本兼容](runtime/version-compatibility-01.md)、[D盘环境](runtime/d-drive-storage-20261021.md) |
-| 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[Reader](runtime/hikrobot-reader-01.md)、[双相机](runtime/dual-camera-communication-fix-01.md) |
+| 相机采集与解码 | [能力职责](design/hikrobot-reader-01.md)、[参数/安装/诊断](runtime/hikrobot-reader-01.md)、[单相机准入](runtime/station-single-camera-recovery-01.md) |
+| 真实接口边界 | [RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md) |
 | 外部决定与公开范围 | [D决定](readiness/decision-pack.md)、[RV状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md) |
 
 参数V3替代V2参数版式，作业/首配合同仍继承V2及后续用户纠偏。管理能力是管理模式，操作员身份独立；帮助与支持页面已删除。仓ID、生产线ID、统一供包台编号、7天新站默认、本机窗口偏好及相机/RCS独立延后按当前纠偏执行。配置保存不等于生效；待配置拒绝业务，Unknown不重发。
 
-## 本轮来源与状态
-
-[PR108 生命周期七包](https://github.com/yuan2go/importer-pc/pull/108)、[PR110 P0](https://github.com/yuan2go/importer-pc/pull/110)、[PR111 卡顿容量](https://github.com/yuan2go/importer-pc/pull/111)、[PR112 时间存储](https://github.com/yuan2go/importer-pc/pull/112)、[PR113 快捷方式](https://github.com/yuan2go/importer-pc/pull/113)。PR110、PR113、PR112、PR111已合入main；PR108继续整合。实际源及验证见本轮工作包，不将分支PASS转记main。
-
 ## 历史证据与发布
 
 以下材料保留形成时事实，不能作为当前实现入口或将结果转记到新版本：
+
+- [整合意图台账](work-packages/WP-IPC-INTEGRATION-20261026.md)、[原合同核查K01～K15](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md)、[TCP双相机实施与证据](runtime/dual-camera-communication-fix-01.md)。TCP材料说明既有提供者，不是 MV-PD010003-06M-12C 的当前接入路线。
 
 - [清理前完整索引与README原字节](archive/pre-integration-20261026/README.md)，其中保存全部既有发布、设计与回执链接。
 - [SM1.11.1重测介质](runtime/clean-install-bootstrap-01.md)、[SM1.11.0管理模式验证](runtime/validation/management-mode-01.md)、[SM1.10.2发布](runtime/publication-pr82-pr86-20261022.md)、[SM1.6.1发布](runtime/publication-login-session-20261020.md)。这些均为历史介质，不代表最新main。

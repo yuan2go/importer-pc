@@ -1,6 +1,6 @@
 # 海康标准相机当前安装、参数与诊断
 
-当前规则：[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。目标MV-PD010003-06M-12C，Windows x64，版本1.0.0。原独立安装/TCP指引和历史验收保留在[归档](../archive/pre-bundled-mvs-camera-01/README.md)。
+目标 MV-PD010003-06M-12C，Windows x64，自有版本 1.0.0。当前装配是内置 MVS 采集；正式识别组件尚缺。参数的单一事实来源是 `src/Ipc.Drivers.Hikrobot.Mvs/parameters.json`，实际 ABI 与依赖身份见同目录 `sdk-boundary.json`、`bundled-runtime.json`。
 
 ## 安装与参数
 

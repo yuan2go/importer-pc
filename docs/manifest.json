@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "98059a33896709f9f811158fc30a5849a430bcab3d3517eff46cb074e02534eb",
-      "size_bytes": 11194,
-      "git_blob": "7fef5cc0cad427965c18a99198659019d0b1c593",
+      "sha256": "aac726b41ba82d809021b4aad5f8c4395a3d022f7748156dc7f540d21f6a0a0d",
+      "size_bytes": 7345,
+      "git_blob": "659ab85b04c9d10d03fee28509b9733c2f0e786d",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -7272,9 +7272,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "2b32affc1f3c72ff243e8fc810ead4bec3fbbc1af03c62beea9dc011a92e86ff",
-      "size_bytes": 3080,
-      "git_blob": "99b616624d79a24e31170b57d18e34a0db68b93d"
+      "sha256": "7a98b59add62f9bbfeca57ba5d2b54d01405b22a6a05ccf42c930b168f92ee98",
+      "size_bytes": 1385,
+      "git_blob": "01090cab4a2e3222f8d86fa8ea21cda3f185f4ac"
     },
     {
       "path": "docs/design/parallel-task-reconciliation-20261020-02.md",
@@ -7354,9 +7354,9 @@
     },
     {
       "path": "docs/design/sportmaster-task-redesign-01.md",
-      "sha256": "eb48c267b04f288b3c7266a6c7c1bcb30bee5816d146b02668ddbd8d32c2a792",
-      "size_bytes": 35720,
-      "git_blob": "87dc1827e9c1f5609cbad5e3f0f3607540614937",
+      "sha256": "362694500f989819c01ef3cd8bb507617d49dc8936d3507ad46aed22ce363787",
+      "size_bytes": 34591,
+      "git_blob": "116e53c355e2da30f108982fd8dfcd592b344262",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -45832,9 +45832,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "1b37eb1a6e1ebf4496f1cb9ca27071b2095a19781e53838a2d2b2133fb9c09b1",
-      "size_bytes": 3050,
-      "git_blob": "987fc31c5e129d0aed3d27308a7dcc8d84c706f6"
+      "sha256": "966abac1efda7f5d40e1475027a6d607fcb545b682a3cf8599214dc7fe9c4dfc",
+      "size_bytes": 3087,
+      "git_blob": "6ce2e7841376f9414d697da1bb636a2c5b43f4b7"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -60760,9 +60760,9 @@
       "purpose": "Bounded parameter inheritance and its explicit evidence",
       "source": "2026-10-21 parameter incremental refactor",
       "storage_scope": "public_repository",
-      "sha256": "50867fad290bc68f189a35eaf48cf97429004dc01e80ea2fbbc17b8d22b37883",
-      "size_bytes": 6218,
-      "git_blob": "7d3eb709841dd01296337634fd5cb66e5b5c2e24"
+      "sha256": "e6cbf0c29bb0598540bc7f09e2cadea240c250a81381bc1219d488a3f953dc32",
+      "size_bytes": 5397,
+      "git_blob": "68b57a10afd14e8d44142ced3e13a16a571d3ab1"
     },
     {
       "path": "docs/design/parameter-legacy-migration-02.csv",
@@ -78096,9 +78096,9 @@
     },
     {
       "path": "docs/runtime/code-reliability-hardening-02.md",
-      "sha256": "e573cb9269b6f1ebeee03cbc25c7f49239c5f3809c4bb5279df185d58b7895e1",
-      "size_bytes": 5229,
-      "git_blob": "c9689fafb27abff5084ad9d6c3033885bf14c46d",
+      "sha256": "2ee67ca52a431c75dc2fa1ec70e7202d6e850afdacc3cb4e98999a0aa5278c2e",
+      "size_bytes": 5462,
+      "git_blob": "2b51b35b8fc46c004827b4dda9587a183a0faaf2",
       "version": "pr104-main-integration-01",
       "status": "scoped_integration_or_separately_identified_evidence",
       "purpose": "Preserve PR103 original failed qualification and PR104 reliability work while synchronizing main",
@@ -102353,9 +102353,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "3d8d24a5ec2eea8f7004ada0f0fe4e27e3c528e52d2a494a33d59f879806040a",
-      "size_bytes": 11242,
-      "git_blob": "91e1f825493cdf6e47aa2a47e52a13a286a9b275",
+      "sha256": "725ade34ec7ecf0452d3348058efa5fcc778c50e904968435d7122dc6a305f1b",
+      "size_bytes": 10478,
+      "git_blob": "b11984d6f63c9e0deb750f4043b9661bafd3dfb7",
       "storage_scope": "public_repository"
     },
     {
@@ -103992,9 +103992,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Single-camera operation, management recovery and bounded UI validation",
       "source": "WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01; phased synthetic/Windows evidence, not device acceptance",
-      "sha256": "e04c19c1615855761a6ede7c4458a5b291d8eb11a0f6829c1850c47690b85950",
-      "size_bytes": 4860,
-      "git_blob": "e4a6521bae5e917cbd7d3901d0bcdfc1d062dfaf",
+      "sha256": "33716b11801345d458877741d0cfde274455588e4c4be028609affb2e0f24da1",
+      "size_bytes": 2961,
+      "git_blob": "281492c2f428f636cd97fe88c3d80907f1b973c2",
       "storage_scope": "public_repository"
     },
     {

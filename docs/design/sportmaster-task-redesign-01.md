@@ -91,16 +91,7 @@ UI 按人的任务组织字段，底层仍由 Application 持有业务参数、�
 
 ### 3.2 海康驱动实例的真实声明与参数
 
-| 字段 | 中文名称 / 控件 | 适用与校验 |
-|---|---|---|
-| `device.ip` | 相机 IPv4 地址 / 文本 | 必填，最长15；规范 IPv4，拒绝全零/全广播，无默认。修改客户端连接目标，不是写设备 IP。 |
-| `device.serial` | 预期序列号 / 文本 | 可选，最长32；空值仍使用实际序列号防重复占用。 |
-| `entity.mode` | 实体关联策略 / 枚举 | observe-only / trigger，现有默认前者；只观察不能准入业务。trigger 需要既有设备触发配置和资格证据，不是硬件触发开关。 |
-| `code.encoding` | 条码字节编码 / 枚举 | utf-8 / ascii，现有默认 utf-8；严格解码。 |
-| `queue.capacity` | 回调队列容量 / 整数 | 1–1024，现有默认128；与 Application 输入队列和作业容量分开。 |
-| `bcr-code` | 心跳相机编码 / 文本 | 当前海康描述已声明，最长256；RCS 心跳的上下文校验要求非空且各 Reader 不同。它是外部业务编码，不代替 IP、序列号或 DeviceId。 |
-
-来源：[海康当前参数描述](../../src/Ipc.Drivers.Hikrobot/parameters.json)、`HikrobotReader.cs`。前五项连接/采集参数继续继承，第六项 `bcr-code` 是已声明的心跳业务编码，不能继续写成“驱动只有五字段”或禁止使用真实声明。当前驱动仍没有端口、曝光、口令或复位参数；V1 的9000端口不使用。实例页把取格口映射和心跳编码按用途分组、显示冲突及来源，避免操作员误改同名字段；后续只有合同确认同义后才可合并编辑。未安装或不适用参数不混入当前表单。
+当前目标相机使用内置 MVS 采集。实例页按已选驱动的实际 schema 生成字段；参数、物理身份、业务就绪及依赖统一读取[海康运行说明](../runtime/hikrobot-reader-01.md)，不在页面设计复制另一份字段表。每台相机编码在对应实例页唯一编辑，取格口与心跳共用 RCS 本位映射，见[心跳规则](../runtime/rcs-heartbeat-01.md)。对象切换保留同一候选和未保存输入，错误定位到实际实例及字段。
 
 业务模块配置中的 Application 调用超时仍是全局预算，输入队列和未清偿作业容量也归当前模块；系统配置保留常驻历史、磁盘保留及备份策略。各字段保留原单位、含义和范围。依据 `src/Ipc.Application.Contracts/ParcelContracts.cs`、`ParcelMaintenance.cs`、`src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs`。非法数值文本不变0，未知字段不丢失，省略默认和字符串列表原意不被重排改写。
 

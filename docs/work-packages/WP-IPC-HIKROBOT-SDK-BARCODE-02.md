@@ -1,14 +1,10 @@
-> 2026-10-27 用户再次纠偏以[内置MVS安装与参数](WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SM相机只使用内置SDK，首配与日常均显示SDK参数，安装软件即带运行依赖；下文独立驱动安装/TCP切换要求保留形成时范围，不再作为当前用户流程。真实识码和现场资格边界不变。
-
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
-
 # WP-IPC-HIKROBOT-SDK-BARCODE-02
 
-> 2026-10-27 审查后增量以 [HIKROBOT-HARDENING-01](WP-IPC-HIKROBOT-HARDENING-01.md) 为准。下述“可选序列号”只适用于Simulation/独立诊断；正式启用的SDK实例须配置固定序列号。原工程包、失败/PASS和现场未验边界保留原身份。
+本文件保留原要求与原始验证身份。当前操作只读取[海康运行说明](../runtime/hikrobot-reader-01.md)，不将本文件的旧版本、SDK判断或页面要求用作当前配置。
 
 2026-10-27；起点最新 main `52c7e58d87a5bfe452e77f22b543e1ee0cb124dd`。用户授权当前版本真实 SDK 读码、参数/首配、诊断与必要验证。原工作区未跟踪文件保留；PR125仅构建/station等另行修改，本轮独立 D 盘工作树，不合并或覆盖该分支。
 
-## 当前唯一规则
+## 原工作包要求（形成时范围）
 
 复用既有四层架构、唯一完整候选、首配/日常共模、CAS、Pending/Effective及受控启用。左右物理身份按IP及可选序列号绑定，不按枚举下标。仅观察不创建作业，正式供包必须有可信包裹边界。同触发多帧不得变成多件、同码新实体仍独立、左右各自隔离。原RCS请求固定原报文/合同/目标，Unknown不自动重发。相机编码按CAMERA-SDK-SINGLE-CODE-01统一为本位唯一映射，取格口和心跳共用；统一供包台编号继承PARAMETER-GUIDANCE-STARTUP-01。
 
@@ -16,7 +12,7 @@
 
 原阶段设计/运行说明与参数快照见[编码前原件](../archive/pre-hikrobot-sdk-barcode-02/README.md)。旧“不改UI”、历史兼容/迁移目标不限制本任务；原SDK版本、0帧/0码、旧PASS/FAIL及D/RV不倒写。
 
-## 已核实的SDK边界
+## 原SDK核对证据
 
 - 本机MVS的Development文档为工业相机Windows SDK V4.8.1。真实头文件`MvCameraControl.h`提供`MV_CC_GetImageBuffer`/`MV_CC_FreeImageBuffer`成对采图等接口；`MV_CC_HB_Decode`用于无损压缩流解压成原始图像，不是条码识别。Development的Includes、DotNet、Samples、Bin以及Applications未找到MVIDCodeReader算法接口或开发包。
 - IDMVSSTD的Development.zip只包含`Modules/MvCodeReaderSDK`。官方`Modules/SDK Introduction.txt`独立列出MvCodeReaderSDK（智能读码器）、MVIDCodeReader（工业相机的一维/二维码及抠图算法）与MvLogisticsSDK，但本机压缩包未附后两者。
@@ -29,7 +25,7 @@
 
 未取得真实识别组件期间，采图会计数并正确归还原生缓冲，明确标记DecoderUnavailable、不生成假条码或供包作业，也不发布业务Ready；采集连接、真实条码与现场可用分别计证。
 
-## 实施与验证
+## 原实施与验证回执
 
 当前工程增量：
 

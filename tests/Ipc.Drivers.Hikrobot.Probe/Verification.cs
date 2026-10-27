@@ -150,6 +150,7 @@ internal static class Verification
         await ByteBudget();
         await DeadlineChecks();
         await MvsVerification.Run();
+        await HardeningVerification.Run();
         Console.WriteLine("SELF_TEST_PASS checks=" + checks);
     }
     static async Task CallbackIsolation()

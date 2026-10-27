@@ -25,9 +25,10 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     readonly int nodes, maximumPayload;
     IDisposable? lease;
     CancellationTokenSource? cancel;
-    Task? worker, stopping;
+    Task? worker, stopping, disposal;
     Action<DeviceHealthConfirmation>? health;
     bool initialized, created, opened, grabbing, disposed;
+    volatile bool disposeRequested;
     string phase = "not-started", epoch = "not-started", failure = "", physicalSerial = "";
     long frames, bytes;
     uint? priorFrame;
@@ -63,10 +64,11 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registeredEpoch);
+        ObjectDisposedException.ThrowIf(disposeRequested, this);
         await lifecycle.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            ObjectDisposedException.ThrowIf(disposed, this);
+            ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (initialized || created || worker is not null || lease is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
             lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = 0; priorFrame = null; health = onHealth; stopping = null; }
             try
@@ -79,6 +81,8 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                     var matches = api.Enumerate().Where(d => d.Ip == ip && (serial.Length == 0 || serial == d.Serial)).ToArray();
                     token.ThrowIfCancellationRequested();
                     if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial)) throw new InvalidDataException("Configured MVS IP/serial not uniquely discovered");
+                    if (physicalSerial.Length != 0 && physicalSerial != matches[0].Serial)
+                        throw new InvalidDataException("Original MVS physical serial changed; revise the approved device binding before replacement");
                     PhaseTo("lease"); lease = acquireLease(matches[0].Serial); physicalSerial = matches[0].Serial;
                     PhaseTo("create"); created = true; api.Create(matches[0]); token.ThrowIfCancellationRequested();
                     PhaseTo("open-exclusive"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
@@ -199,10 +203,22 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         if (reportingFailure is not null)
             throw new IOException("MVS native teardown completed; health receiver failed: " + reportingFailure.GetType().Name, reportingFailure);
     }
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
-        await StopAsync(default).ConfigureAwait(false);
-        await lifecycle.WaitAsync().ConfigureAwait(false);
-        try { disposed = true; } finally { lifecycle.Release(); }
+        lock (gate)
+        {
+            // Fence Start immediately, including while a prior native call is
+            // blocked. A failed dispose retains ownership and can be retried.
+            disposeRequested = true;
+            if (disposal is null || disposal.IsFaulted || disposal.IsCanceled)
+                disposal = Task.Run(async () =>
+                {
+                    await lifecycle.WaitAsync().ConfigureAwait(false);
+                    try { await StopCore().ConfigureAwait(false); disposed = true; }
+                    catch (Exception ex) { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; throw; }
+                    finally { lifecycle.Release(); }
+                });
+            return new(disposal);
+        }
     }
 }

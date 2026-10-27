@@ -326,31 +326,27 @@ static class SportmasterUi
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("failed pause initial read"));
         await ui.PauseAsync();
         Check(!ui.Fresh && ui.ReadStatus.Contains("failed pause initial read"), "Pause initial snapshot shares the alternate UI failure policy");
-        probe.Read = null; await ui.LoadConfigurationConfirmationAsync();
-        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("failed confirmation read"));
-        await ui.RunAsync(ui.ConfirmConfigurationAsync);
-        Check(!ui.Fresh && ui.ReadStatus.Contains("failed confirmation read"), "configuration confirmation snapshot shares the alternate UI failure policy");
         probe.Read = null; await ui.RefreshDisplayAsync();
-        foreach (var failurePath in new[] { "Pause", "ConfirmConfiguration" })
+        foreach (var failurePath in new[] { "Pause", "CommandRefresh" })
         {
             var oldSnapshot = ui.Snapshot!;
             var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
             probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
             probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("newer " + failurePath + " read failed"));
-            if (failurePath == "Pause") await ui.PauseAsync(); else await ui.RunAsync(ui.ConfirmConfigurationAsync);
+            if (failurePath == "Pause") await ui.PauseAsync(); else await ui.RunAsync(() => ui.CommandAsync("Resume"));
             oldRead.SetResult(oldSnapshot); await poll;
             Check(!ui.Fresh && !ui.Left.CanAdmit && ui.ReadStatus.Contains("newer " + failurePath),
                 "older poll success cannot undo newer failed " + failurePath + " read");
             probe.Read = null; await ui.RefreshDisplayAsync();
         }
-        foreach (var path in new[] { "Pause", "ConfirmConfiguration", "CommandRefresh" })
+        foreach (var path in new[] { "Pause", "CommandRefresh" })
         {
             var oldSnapshot = ui.Snapshot!;
             var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
             var newRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
             probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
             probe.Read = () => newRead.Task;
-            var action = path == "Pause" ? ui.PauseAsync() : path == "ConfirmConfiguration" ? ui.RunAsync(ui.ConfirmConfigurationAsync) : ui.RunAsync(() => ui.CommandAsync("Resume"));
+            var action = path == "Pause" ? ui.PauseAsync() : ui.RunAsync(() => ui.CommandAsync("Resume"));
             oldRead.SetResult(oldSnapshot); await poll;
             newRead.SetException(new IOException("newer " + path + " failed after older success")); await action;
             Check(!ui.Fresh && !ui.Left.CanAdmit && ui.ReadStatus.Contains("failed after older success"),

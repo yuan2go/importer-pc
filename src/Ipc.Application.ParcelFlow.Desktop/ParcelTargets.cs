@@ -163,42 +163,6 @@ public partial class ParcelViewModel
     public string EffectiveConfiguration => Snapshot is null ? "未加载" : Wire.Encode(Snapshot.Configuration.Effective);
     public string EffectiveConfigurationHeading => Snapshot?.Configuration.Confirmation is { Required: false } ? "最后确认 Effective" : "当前运行输入 · 尚待确认";
     public string PendingConfiguration => Snapshot?.Configuration.Pending is { } pending ? Wire.Encode(pending) : "无候选";
-    Guid? confirmationRuntimeId;
-    long? confirmationRevision;
-    string? confirmationEffectiveHash;
-    string configurationConfirmationReason = "";
-    public string ConfigurationConfirmationReason
-    { get => configurationConfirmationReason; set { configurationConfirmationReason = value; Changed(); Changed(nameof(CanConfirmConfiguration)); } }
-    public string ConfigurationConfirmationEvidence { get; private set; } = "读取待确认原账，核对原始记录、SHA256和当前运行输入后填写维护说明。";
-    public string ConfigurationConfirmationState => confirmationRevision is { } revision
-        ? "本窗确认资料基于运行实例 " + confirmationRuntimeId + " / 配置修订 " + revision +
-            (Snapshot?.RuntimeId != confirmationRuntimeId ? " · 运行实例已变，必须重新读取" : Snapshot?.Configuration.Revision != revision ? " · 当前修订已改变，旧资料提交将冲突；请核对后重新读取" : " · 自动刷新保留本次读取身份")
-        : "尚未读取待确认原账";
-    public bool CanConfirmConfiguration => CanConfigure && Snapshot?.Configuration.Confirmation?.Required == true &&
-        confirmationRuntimeId == Snapshot.RuntimeId && confirmationRevision is not null && !string.IsNullOrWhiteSpace(ConfigurationConfirmationReason);
-    public async Task LoadConfigurationConfirmationAsync()
-    {
-        await RefreshAsync();
-        var loaded = Snapshot ?? throw new InvalidOperationException("先读取当前应用投影");
-        var confirmation = loaded.Configuration.Confirmation ?? throw new InvalidOperationException("当前输入没有可核验确认资料；检查配置恢复状态");
-        confirmationRuntimeId = loaded.RuntimeId; confirmationRevision = loaded.Configuration.Revision; confirmationEffectiveHash = confirmation.EffectiveHash;
-        ConfigurationConfirmationEvidence = "运行实例：" + loaded.RuntimeId + "\n读取时配置修订：" + loaded.Configuration.Revision +
-            "\n来源 / 确认状态：" + confirmation.Source + " / " + confirmation.State +
-            "\n当前运行输入 SHA256：" + confirmation.EffectiveHash +
-            "\n资源启动尝试：\n" + Wire.Encode(confirmation.Attempts) +
-            "\n\n本次读取的实际运行输入：\n" + Wire.Encode(loaded.Configuration.Effective);
-        Changed(nameof(ConfigurationConfirmationEvidence)); Changed(nameof(ConfigurationConfirmationState)); Changed(nameof(CanConfirmConfiguration));
-    }
-    public async Task ConfirmConfigurationAsync()
-    { RequireFreshSnapshot();
-        if (confirmationRevision is not { } revision || confirmationRuntimeId is not { } runtime || confirmationEffectiveHash is null)
-            throw new InvalidOperationException("先读取并核对待确认原账");
-        var (_, current) = await ReadSnapshotWithIdAsync();
-        if (current.RuntimeId != runtime) throw new InvalidOperationException("运行实例已改变；重新读取原账，不自动推进旧确认资料");
-        var command = new BusinessCommand(Wire.Id(), current.Revision, "ConfirmConfiguration", runtime.ToString("N") + ":" + revision + ":" + confirmationEffectiveHash, ConfigurationConfirmationReason);
-        var receipt = await ServiceAsync(() => application.CommandAsync(command));
-        Message = receipt.Status + " · " + receipt.Reason;
-    }
     public string ReceiptOccurrenceId { get; set; } = "";
     string? inspectedRestoreId;
     public string RestoreInspection { get; private set; } = "完整恢复保持隔离。原机接管完成后读取交接证据；换机退役/权限/秘密/设备/资格/编号范围须真实交接。";
@@ -247,7 +211,7 @@ public partial class ParcelViewModel
     public bool HistoryLoaded => historyLoaded;
     void NotifyTargets()
     {
-        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(HistorySelectionState), nameof(HistoryQueryGuidance), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfigurationHeading), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
+        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(HistorySelectionState), nameof(HistoryQueryGuidance), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfigurationHeading) }) Changed(name);
         RefreshDetailsProjection();
         foreach (var (name, value) in new[] { (nameof(RequestHandover), RequestHandover), (nameof(EffectiveConfiguration), EffectiveConfiguration), (nameof(PendingConfiguration), PendingConfiguration) })
         {

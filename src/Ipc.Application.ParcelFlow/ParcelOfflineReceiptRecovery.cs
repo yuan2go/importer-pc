@@ -23,7 +23,7 @@ public static class ParcelOfflineReceiptRecovery
             throw new InvalidDataException("Nonempty original WAL requires its exact --wal-sha256; main file hash alone is incomplete");
         var version=ParcelRepository.ReadStorageVersion(database,definition.Id);
         if(version!=ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("仅支持当前第10版回执核对；原库保留，请使用全新数据目录。");
-        var envelope=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory,"configuration.json")));
+        var envelope=ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory,"configuration.json")));
         var c=envelope.Effective;
         _ = new ConfigurationRevisions<ParcelConfiguration>(Path.Combine(directory,"configuration.json"),c,definition.Validate);
         if(Path.GetFileName(directory)!=definition.Id||Directory.GetParent(directory)?.Name!=c.StationId||Directory.GetParent(directory)?.Parent?.Name!=c.Mode.ToString()||c.ApplicationId!=definition.Id)

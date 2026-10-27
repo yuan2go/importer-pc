@@ -26,7 +26,7 @@ static partial class ArchitectureQuality
             { Check(constructed==0 && File.ReadAllBytes(Authority(name)).SequenceEqual(bytes) && originals.All(p=>Wire.FileHash(p.Key)==p.Value),
                 "missing confirmation refuses before resources and preserves BOM, prior activation and original files; no inferred effectiveness"); }
         }
-        foreach (var obsoleteField in new[] { "OriginalEnvelopeBase64", "OriginalEnvelopeSha256" })
+        foreach (var obsoleteField in new[] { "OriginalEnvelopeBase64", "OriginalEnvelopeSha256", "Reason" })
         {
             var name = "unsupported-confirmation-field-" + obsoleteField;
             await using (var initial = await Open(c, name)) { }
@@ -44,15 +44,21 @@ static partial class ArchitectureQuality
         var failed=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Authority(failedName)));
         Check(failed.Confirmation is {Required:true,Source:"Seed",State:"Required"} && failed.Confirmation.Attempts is [{Outcome:"Failed",FinishedAt:not null}],
             "current seed retains failed resource attempt without claiming Effective");
-        var ledger=new ConfigurationRevisions<ParcelConfiguration>(Authority(failedName),c,new Ipc.Application.Sportmaster.SportmasterFlow().Validate);
-        try { ledger.ConfirmEffective(ledger.Current.Revision,ledger.Current.Confirmation!.EffectiveHash,"synthetic-admin","Cannot bypass failed resources");Check(false,"confirmation cannot bypass resource startup"); }
-        catch(InvalidOperationException) { Check(File.ReadAllText(Authority(failedName))==Wire.Encode(failed),"administrative confirmation cannot turn failed resources into success"); }
+        var legacyState = failed with { Confirmation = failed.Confirmation! with { State = "AwaitingMaintenance" } };
+        var legacyBytes = Wire.Encode(legacyState);
+        var retiredFile = Path.Combine(root, "retired-confirmation.json"); File.WriteAllText(retiredFile, legacyBytes);
+        var retiredHash = Wire.FileHash(retiredFile);
+        try { _ = new ConfigurationRevisions<ParcelConfiguration>(retiredFile,c,new Ipc.Application.Sportmaster.SportmasterFlow().Validate); Check(false,"retired manual confirmation state must refuse"); }
+        catch (InvalidDataException error) { Check(error.Message.Contains("全新数据目录") && Wire.FileHash(retiredFile) == retiredHash && File.ReadAllText(Authority(failedName)) == Wire.Encode(failed), "retired manual confirmation refuses; both rejected and failed-resource envelopes are unchanged"); }
         await using(var recovered=await Open(c,failedName))
         {
             var state=await recovered.SnapshotAsync();
             Check(state.Operations.Length == 0 && state.Configuration.Confirmation is {Required:false,State:"Confirmed",Source:"Seed"} &&
                 state.Configuration.Confirmation.Attempts.Select(a=>a.Outcome).SequenceEqual(new[]{"Failed","ResourcesStarted"}),
                 "current successful resource startup confirms its seed, retains failure history and starts no business request");
+            var retiredCommand = await recovered.CommandAsync(new(Wire.Id(),state.Revision,"ConfirmConfiguration",Value:"retired command"));
+            Check(retiredCommand.Status == "Rejected" && (await recovered.SnapshotAsync()).Revision == state.Revision,
+                "retired confirmation uses unknown-command refusal without writing a command or configuration");
         }
         var confirmed=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Authority(failedName)));
         try { await using var ignored=await Open(c,failedName,f=>new FailingConfirmationFactory(f));Check(false,"confirmed restart resource failure expected"); }

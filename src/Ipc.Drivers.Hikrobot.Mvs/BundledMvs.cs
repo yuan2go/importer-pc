@@ -24,7 +24,7 @@ public static class BundledMvs
     }, LazyThreadSafetyMode.ExecutionAndPublication);
     static readonly object resolverGate = new();
     static bool resolverSet;
-    public static IControlledObservationSource Create(DeviceBinding binding)
+    static void EnsureResolver()
     {
         lock (resolverGate)
         {
@@ -35,7 +35,26 @@ public static class BundledMvs
                 resolverSet = true;
             }
         }
+    }
+    public static IControlledObservationSource Create(DeviceBinding binding)
+    {
+        EnsureResolver();
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
         return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi());
+    }
+    public static MvsCaptureSession CreateCaptureSession(DeviceBinding binding, IMvsFrameSink sink,
+        Func<string, IDisposable> acquireOwnership)
+    {
+        ArgumentNullException.ThrowIfNull(sink); ArgumentNullException.ThrowIfNull(acquireOwnership);
+        var values = binding.Parameters ?? throw new InvalidDataException("MVS parameters required");
+        var serial = values.GetValueOrDefault("device.serial", "");
+        if (serial.Length is < 1 or > 32 || serial.Any(c => c is < '!' or > '~') ||
+            values.GetValueOrDefault("acquisition.trigger", "") != "on" ||
+            !values.ContainsKey("acquisition.trigger-source") || !values.ContainsKey("acquisition.trigger-selector"))
+            throw new InvalidDataException("Service capture requires explicit physical identity and trigger checks");
+        EnsureResolver();
+        // The service composition supplies the agreed ownership policy. This
+        // factory never silently disables or invents a second physical lease.
+        return new(new(binding.DeviceId, binding.DeviceId, values), new MvsApi(), acquireOwnership, frameSink: sink);
     }
 }

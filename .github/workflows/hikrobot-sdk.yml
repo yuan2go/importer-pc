@@ -60,6 +60,14 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_application_compatibility.py
           exit $LASTEXITCODE
+      - name: Verify standalone reader core with synthetic frames
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build services/BarcodeReader/Ipc.Reader.Verification -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet services/BarcodeReader/Ipc.Reader.Verification/bin/Release/net10.0/Ipc.Reader.Verification.dll
+          exit $LASTEXITCODE
   native-parameter-editor:
     runs-on: windows-2025
     timeout-minutes: 10

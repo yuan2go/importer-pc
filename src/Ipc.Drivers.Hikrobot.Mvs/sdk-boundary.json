@@ -16,7 +16,9 @@
     "FrameOutBytes": 328,
     "FrameInfoOffset": 8,
     "TriggerOffset": 76,
-    "FrameLengthExOffset": 120
+    "FrameLengthExOffset": 120,
+    "DeviceTimestampHighOffset": 12,
+    "DeviceTimestampLowOffset": 16
   },
   "PixelFormat": "Mono8",
   "BarcodeCapability": "Unavailable: applicable recognition component not obtained",

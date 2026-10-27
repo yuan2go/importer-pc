@@ -115,7 +115,58 @@ internal static class MvsVerification
             await Until(() => source.Failure.Length > 0);
             Check(invalid.Freed == 1 && source.Frames == 0, "invalid/incomplete frame is returned and never counted as a valid image or decoded barcode");
         }
+        await SharedCapture();
         Console.WriteLine("MVS_SELF_TEST_PASS checks=" + checks + "; synthetic native ports; real target frames/barcodes NOT_RUN");
+    }
+    static async Task SharedCapture()
+    {
+        var pixels = Marshal.AllocHGlobal(64);
+        try
+        {
+            Marshal.Copy(Enumerable.Range(0, 64).Select(i => (byte)i).ToArray(), 0, pixels, 64);
+            var api = new Fake(); var lease = new Lease(); var sink = new Sink(api);
+            await using (var session = new MvsCaptureSession(new("service.test", "", new Dictionary<string, string>() { ["device.ip"] = api.Ip }), api, _ => lease, frameSink: sink))
+            {
+                await session.StartControlledAsync("service-boot", _ => throw new Exception("No observation permitted"), _ => { }, default);
+                api.Frames.Enqueue(new(pixels, 8, 8, MvsNative.Mono8, 64, 1, 7, 0, DeviceTimestamp: 1234));
+                await Until(() => sink.Submitted == 1);
+                Check(sink.CopiedDuringLoan && sink.SubmittedAfterReturn && sink.Bytes?.SequenceEqual(Enumerable.Range(0, 64).Select(i => (byte)i)) == true &&
+                    sink.Frame.DeviceTimestamp == 1234 && sink.Frame.Trigger == 7,
+                    "shared capture copies source metadata and pixels during the loan but queues only after native Free");
+                await session.StopAsync(default);
+                Check(lease.Releases == 1 && !api.HasFrame, "shared service capture uses the same ordered owner teardown as diagnostics");
+            }
+            var failed = new Fake { FailFree = true }; var held = new Lease(); var rejected = new Sink(failed);
+            await using (var session = new MvsCaptureSession(new("service.test", "", new Dictionary<string, string>() { ["device.ip"] = failed.Ip }), failed, _ => held, frameSink: rejected))
+            {
+                await session.StartControlledAsync("failure-boot", _ => false, _ => { }, default);
+                failed.Frames.Enqueue(new(pixels, 8, 8, MvsNative.Mono8, 64, 1, 7, 0));
+                await Until(() => session.Failure.Length > 0);
+                Check(rejected.Rejected == 1 && rejected.Submitted == 0 && failed.HasFrame && held.Releases == 0,
+                    "native Free failure rejects the managed copy and retains the original native owner");
+                failed.FailFree = false; await session.StopAsync(default);
+            }
+            var mismatch = new Fake();
+            await using var configured = new MvsCaptureSession(new("service.test", "", new Dictionary<string, string>()
+            { ["device.ip"] = mismatch.Ip, ["acquisition.trigger-source"] = "1", ["acquisition.trigger-selector"] = "0" }), mismatch, _ => new Lease(), frameSink: new Sink(mismatch));
+            await Reject(() => configured.StartControlledAsync("mismatch", _ => false, _ => { }, default));
+            Check(!mismatch.Calls.Contains("start"), "mismatched actual trigger source is rejected before acquisition starts");
+        }
+        finally { Marshal.FreeHGlobal(pixels); }
+    }
+    sealed class Sink(Fake api) : IMvsFrameSink, IMvsFrameCopy
+    {
+        internal int Submitted, Rejected;
+        internal bool CopiedDuringLoan, SubmittedAfterReturn;
+        internal byte[]? Bytes;
+        internal MvsBorrowedFrame Frame;
+        public IMvsFrameCopy Copy(MvsBorrowedFrame frame, string registration)
+        {
+            CopiedDuringLoan = api.HasFrame; Frame = frame; Bytes = new byte[frame.Length];
+            Marshal.Copy(frame.Pixels, Bytes, 0, frame.Length); return this;
+        }
+        public void Submit() { SubmittedAfterReturn = !api.HasFrame; Interlocked.Increment(ref Submitted); }
+        public void Reject() => Interlocked.Increment(ref Rejected);
     }
     static async Task Reject(Func<Task> call)
     { try { await call(); } catch (Exception ex) when (ex is IOException or InvalidDataException or InvalidOperationException or AggregateException) { return; } throw new Exception("Expected retained/refused MVS result"); }

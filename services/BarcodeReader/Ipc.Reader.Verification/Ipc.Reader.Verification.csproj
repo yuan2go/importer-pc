@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Ipc.Reader.Core/Ipc.Reader.Core.csproj" /></ItemGroup>
+</Project>

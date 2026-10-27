@@ -58841,9 +58841,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "d35324266c9cbfb31865bef67b75ee0d0000c212586be0d35748ec44fd3e4ebb",
-      "size_bytes": 32622,
-      "git_blob": "29b76e819190eb3956c99529d182b17ef9fb3edf",
+      "sha256": "07ae2731d913083999c30e099f466c608045c1b0d9679a584d602858dbce4cc5",
+      "size_bytes": 32570,
+      "git_blob": "ab75cdef737cf19e981738e9d4ac20873d2e111d",
       "previous_git_blob": "367817770a8fbf577ba622fe739dc1e31257df08"
     },
     {
@@ -59035,9 +59035,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "dc208bfabad630cde2b95d2b338303af97f3f4ac127d7bae43a0184f839f4fde",
-      "size_bytes": 24412,
-      "git_blob": "bcc142255865803a0fac9aa22e654d643a4816e7"
+      "sha256": "05653be55e5db234f7f699833fc139f2d55d5f448d7ddfc57a499e5511ac34f5",
+      "size_bytes": 25161,
+      "git_blob": "a1d3168e11907df98594fb7114e344ae31798b11"
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialComponentReview.cs",
@@ -101891,9 +101891,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "ddd0e6317748e1caf99802d184b1fc38a018ffe9ad98de2473ac1676d6aa3f87",
-      "size_bytes": 7254,
-      "git_blob": "0d56002f6642fb18b1b735235d2dbb7b0bf70407",
+      "sha256": "7e89b7df835f7969c69ad9caf2987aeea70e8d776048c206da08751f13dd658c",
+      "size_bytes": 7675,
+      "git_blob": "8aec44cdbead122a77ddeeea6a8dc3f66423fda2",
       "storage_scope": "public_repository"
     },
     {

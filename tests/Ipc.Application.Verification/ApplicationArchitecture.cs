@@ -117,15 +117,18 @@ static class ApplicationArchitecture
             var s = await app.SnapshotAsync();
             Check(s.Paused && s.Operations.Length == 3 && s.Operations.Select(o => o.PositionId).Distinct().Count() == 2 && s.Operations.All(o => o.Wcs?.Attempts == 1), "restored complete multi-device backup starts isolated with original position/request responsibilities");
         }
-        var legacy = sport with { SchemaVersion = 2, Topology = null };
-        await using (var app = await Open(legacy, "configuration-upgrade"))
+        foreach (var schema in new[] { 1, 2, 4 })
         {
-            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); var s = await app.SnapshotAsync();
-            Check((await Stage(app, s.Configuration.Revision, sport)).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
-                "schema2 config is never guessed into two positions; full explicit schema3 candidate staged");
+            var nonCurrent = sport with { SchemaVersion = schema };
+            var path = Path.Combine(root, "configuration-refusal-" + schema);
+            try { await using var rejected = await Open(nonCurrent, "configuration-refusal-" + schema); throw new Exception("Non-current configuration accepted"); }
+            catch (InvalidDataException)
+            {
+                Check(File.ReadAllText(Path.Combine(path, "business.json")) == Wire.Encode(nonCurrent) &&
+                    !Directory.EnumerateFiles(path, "*.db", SearchOption.AllDirectories).Any(),
+                    "non-current configuration is refused without rewriting its bytes or creating a database: " + schema);
+            }
         }
-        await using (var app = await Open(legacy, "configuration-upgrade"))
-            Check((await app.SnapshotAsync()).Configuration.Effective.Topology?.Readers.Length == 2, "controlled restart explicitly activates schema2 to complete schema3 topology");
         foreach (var id in new[] { "direct-plc", "wcs-to-plc" })
         {
             await using var app = await Open(Config(id), "sequential-" + id);

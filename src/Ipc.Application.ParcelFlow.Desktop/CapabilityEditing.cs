@@ -143,17 +143,25 @@ public partial class ParcelViewModel
     public async Task LoadCapabilitiesAsync()
     {
         await RequireManagementModeAsync();
-        await RefreshAsync();
-        var loaded = Snapshot!;
+        var administration = (IWorkstationAdministration)application;
+        var authority = await ServiceAsync(administration.ManagementModeStatusAsync);
+        if (!authority.Authorized) throw new UnauthorizedAccessException("请先进入管理模式；未保存输入保留。");
+        // A concurrent refresh can supersede its caller before applying its
+        // result. Never construct an editable candidate from that older UI
+        // snapshot, which may still be the ordinary, redacted projection.
+        var loaded = await ServiceAsync(() => application.SnapshotAsync());
         var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
         var catalog = await ServiceAsync(() => application.CapabilitiesAsync());
-        await ReadEditorBaseline(loaded.Configuration.Revision);
+        var baseline = await ReadEditorBaseline(loaded.Configuration.Revision);
+        var currentAuthority = await ServiceAsync(administration.ManagementModeStatusAsync);
+        if (!currentAuthority.Authorized || currentAuthority != authority) throw new UnauthorizedAccessException("管理授权已变化，请重新读取参数；现有输入保留。");
+        if (c.SchemaVersion != 3 || c.Topology is null || c.MaintenanceLogin is not null)
+            throw new InvalidOperationException("配置格式不受支持，保留原件；请使用当前完整拓扑配置。");
         SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
         ApplyInstalledCatalog(catalog);
         CapabilityDrafts.Clear();
-        if (c.SchemaVersion != 3 || c.Topology is null || c.MaintenanceLogin is not null)
-            throw new InvalidOperationException("配置格式不受支持，保留原件；请使用当前完整拓扑配置。");
         LoadStructuredConfiguration(c, catalog);
+        editorConfigurationHash = baseline.Hash; availableEditorDraft = baseline.Draft; savedEditorHash = baseline.Draft?.DraftHash;
         Message = "已读取完整拓扑与能力库存；保存后待受控重启生效。";
     }
     public async Task SaveCapabilitiesAsync()

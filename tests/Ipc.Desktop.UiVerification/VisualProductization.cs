@@ -115,7 +115,7 @@ static partial class Program
         await RefreshClassicUntil(() => classicVm.Snapshot?.State == "PartiallyReady");
         Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
         probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
-            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = s.Configuration.Effective.MaintenanceLogin } } };
+            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = new("login", "reference-login", "1.0.0", "synthetic.login", "reference://synthetic-login", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "alice" }) } } };
         await RefreshClassicUntil(() => classicVm.Snapshot?.BlockingReasons.Contains("SYNTHETIC maintenance in progress") == true); classic.UpdateLayout();
         var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
         var login = (WrapPanel)classic.FindName("OperationalLogin");

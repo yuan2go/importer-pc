@@ -15,6 +15,13 @@ public static partial class ParcelConfigurationRules
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
+        // Validate the selected current RCS contract before startup can create a
+        // configuration ledger/database, not only when constructing its adapter.
+        foreach (var binding in ParcelBindings.All(c).Where(b => b.Contract == RcsRequestPolicy.Contract || b.Implementation == "sportmaster-rcs"))
+        {
+            try { _ = RcsRequestPolicy.TimeoutMs(binding); }
+            catch (InvalidDataException error) { e.Add(error.Message); }
+        }
         e.AddRange(ParcelConnectionSetup.Validate(c));
         if (c.SchemaVersion != 3 || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");

@@ -18,6 +18,7 @@ static class AdministratorBoundary
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS BROKER: " + text); }
         void Deny(Action action, string text) { try { action(); throw new Exception("Expected denial: " + text); } catch (UnauthorizedAccessException) { Check(true, text); } }
+        void Unsupported(Action action, string text) { try { action(); throw new Exception("Expected unsupported credentials: " + text); } catch (InvalidOperationException error) when (error.Message.Contains("旧管理凭据不受支持", StringComparison.Ordinal)) { Check(true, text); } }
         var relocation = Path.GetFullPath(Path.Combine(evidence, "relocation")); Directory.CreateDirectory(relocation);
         var legacy = Path.Combine(relocation, "legacy"); var target = Path.Combine(relocation, "target"); var retained = Path.Combine(relocation, "retained");
         Directory.CreateDirectory(legacy); Directory.CreateDirectory(target); Directory.CreateDirectory(retained);
@@ -137,11 +138,11 @@ static class AdministratorBoundary
             using(var output = new FileInfo(legacyFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { output.Write(System.Text.Encoding.UTF8.GetBytes(legacyJson)); output.Flush(true); }
             var legacyHash = Wire.FileHash(legacyFile); var mode = new LocalManagementMode(legacyRoot);
             Check(mode.InspectStatus().HasUnsupportedCredentials && !mode.InspectStatus().Authorized, "real protected legacy account credentials cannot silently become management mode");
-            Deny(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
+            Unsupported(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
             AsOrdinary(() =>
             {
                 var client = new LocalManagementMode(legacyRoot);
-                Deny(() => client.Enter(oldPassword), "ordinary token cannot use old software credentials");
+                Unsupported(() => client.Enter(oldPassword), "ordinary token cannot use old software credentials");
                 Deny(() => client.ConfigurePassword(newPassword), "ordinary token cannot replace old credentials through initial setup");
                 Check(!client.InspectStatus().Available && !client.InspectStatus().Authorized, "old protected credentials leave management unavailable");
             });

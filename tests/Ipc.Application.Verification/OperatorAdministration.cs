@@ -202,6 +202,7 @@ static class OperatorAdministration
         var afterUnknown = (await unknown.SnapshotAsync()).Operations.Single();
         Check(unsupported.Sends == 1 && afterUnknown.State == ParcelState.WcsUnknown && Wire.Encode(afterUnknown.Wcs!.Request) == Wire.Encode(original), "unsupported authoritative query and repeated input never resend or replace the frozen original request");
         await unknown.StopAsync(default);
+        await CurrentParameterAuthorityChecks.Run(workspace, Path.Combine(root, "parameter-authority"));
     }
     internal static async Task DelegatedOperationLifetime(string root)
     {

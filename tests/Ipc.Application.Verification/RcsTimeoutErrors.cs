@@ -138,6 +138,8 @@ static partial class SportmasterRcs
         {
             try { await using var rejected = new SportmasterRcsTaskService(binding with { Version = version }); throw new Exception("Old version accepted"); }
             catch (InvalidDataException) { Check(peer.Requests.Count == 0, "old component rejected before I/O: " + version); }
+            Check(new Ipc.Application.Sportmaster.SportmasterFlow().Validate(HeartbeatConfiguration(workspace, binding with { Version = version })).Any(x => x.Contains("RCS组件版本")),
+                "current configuration validation refuses old RCS before startup ledger/database writes: " + version);
         }
         foreach (var explicitTimeout in new[] { false, true })
         {

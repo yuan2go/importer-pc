@@ -152,7 +152,10 @@ static partial class Program
         try
         {
             var vm = window.ViewModel;
-            for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
+            for (var i = 0; i < 150 && !vm.IsManagementMode; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
+            check(vm.IsManagementMode, "current draft-close fixture observes its real management grant before navigation");
+            Click(window, "参数设置");
+            for (var i = 0; i < 150 && (!vm.HasLoadedConfiguration || vm.Busy || vm.SelectedPage != "maintenance"); i++) await Task.Delay(20);
             var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
             var settings = Descendants(page).OfType<ParameterSettingsControl>().Single();
             check(settings.ShowPage(1, "接收与等待限制"), "current business limits page is reachable");

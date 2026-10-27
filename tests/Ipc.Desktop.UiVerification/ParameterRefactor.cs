@@ -30,6 +30,7 @@ static partial class Program
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationId = "native-inherit-" + Wire.Id() };
+        c = c with { CapabilityInstances = ParcelBindings.All(c).Append(new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" })).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -105,7 +106,7 @@ static partial class Program
         var role = vm.ConfigurationRoles.Single(x => x.Role == "登录");
         var maintenanceBefore = Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin);
         login.SelectedItem = role.Choices.First(x => x.Capability is not null); window.UpdateLayout();
-        Check(vm.ParameterEditor.HasOperatorLogin && control.NavigateTo("SessionLifetimeMs") && Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin) == maintenanceBefore, "selecting operator login reveals its session policy and preserves independent maintenance binding");
+        Check(vm.ParameterEditor.HasOperatorLogin && control.NavigateTo("SessionLifetimeMs") && Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin) == maintenanceBefore, "selecting operator login reveals its session policy without creating the removed maintenance role");
         login.SelectedItem = role.Choices.First(x => x.Capability is null); window.UpdateLayout();
         Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
         Capture("parameters-login");

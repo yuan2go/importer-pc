@@ -185,8 +185,11 @@ static class CommercialProductization
         File.WriteAllText(Path.Combine(legacyDirectory,"configuration.json"),Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0,seed,null,"Effective",null)));
         var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{});
         var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
-        await Reject<InvalidDataException>(()=>legacyService.BackupAsync(legacyBackup),"old format refuses current writable backup/handoff path");
-        Check(Wire.FileHash(legacyDatabase)==legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")),"old handoff refusal preserves database and creates no source fence or success evidence");
+        await legacyService.BackupAsync(legacyBackup);
+        Check(Wire.FileHash(legacyDatabase)==legacyHash && ParcelRepository.ReadStorageVersion(legacyBackup,seed.ApplicationId)==7 && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")),"old format can be preserved by read-only complete backup without conversion or a source fence");
+        var refusedRestore = Path.Combine(root,"legacy-current-restore");
+        await Reject<InvalidDataException>(()=>legacyService.PlanRestoreAsync(legacyBackup,refusedRestore),"old backup refuses current writable restore planning");
+        Check(!Directory.Exists(refusedRestore) && Wire.FileHash(legacyDatabase)==legacyHash,"old restore refusal creates no target and preserves the source database");
         await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "legacy root without original machine custody cannot be silently certified by copying a policy");
         Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "legacy backup/repair never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");

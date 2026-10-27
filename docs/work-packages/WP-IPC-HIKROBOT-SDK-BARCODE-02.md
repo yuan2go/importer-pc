@@ -38,7 +38,7 @@
 | 范围 | 已执行结果及边界 |
 |---|---|
 | 工程构建 | Sportmaster全Solution指定BusinessModule=Sportmaster、SelfContained=false、locked构建通过，0警告/0错误；独立SDK Probe构建通过。 |
-| 驱动/资源 | MvCodeReader定向46断言、MVS采集24断言及两种原生签名/缺资格拒绝组通过。覆盖完整候选、同触发、多实体、队列/字节过载、迟到回调、阻塞宿主健康、Free/Stop/Close/Destroy/Finalize失败保有和实际停止后释放。均为显式合成原生端口，非真机读码。 |
+| 驱动/资源 | MvCodeReader定向46断言、MVS采集26断言及两种原生签名/缺资格拒绝组通过。覆盖完整候选、同触发、多实体、队列/字节过载、迟到回调、阻塞宿主健康、Free/Stop/Close/Destroy/Finalize失败保有和实际停止后释放。均为显式合成原生端口，非真机读码。 |
 | 当前参数/业务守卫 | `--hikrobot-sdk-editing`、`--parameter-refactor`、`--parameter-guidance-startup`、`--configuration-confirmation`、`--sportmaster-rcs`、`--rcs-timeout-errors`通过；装配策略15项通过。 |
 | 延后/原请求 | 首轮`--deferred-connections`在全量重连断言失败，诊断轮在Unknown/Pending下重连断言失败。定位到健康监测仍在保留服务调用时，真实维护守卫合法拒绝。夹具使用既有BeforeMonitorProbe在真实预留前排程并等待实际排空，再断言维护成功；未改生产守卫、未接受失败状态、未重试Unknown。修复后定向通过，原失败日志Git外保留并登记哈希。 |
 | Windows原生 | HWND/Dispatcher实际参数交互通过：明确切换/取消、字段替换、左右隔离、非法IP保留/定位、MVS仅采图状态、首配共模；1120×760与820×520 DIP，实际125%缩放。合成安装目录描述，无SDK/真实RCS/安装/UAC/目标工控机验收。 |
@@ -49,3 +49,8 @@
 工程实现：当前可做范围已完成，采集可构建/配置/联调；完整目标中的真实图像→条码组件接入仍BLOCKED，不能宣布整个工作包完成。工程验证：上述范围PASS，失败前样本保留。真机左右帧/真实条码/可信包裹关联：本机NOT_RUN/BLOCKED；用户已提供的现场MVS成功取流仍属用户现场证据，不转记本机或本源码读码验收。真实RCS/格口全链与现场可用：BLOCKED/NOT_RUN。
 
 需海康或供货商落实上列适用识别组件资料及必要许可后，按真实接口完成实际解码，再进行授权现场双机读码、同触发多帧/同码新包/左右同码、失联/过载/恢复及RCS格口核对。不无限追某个组件名称，也不以连接成功、采图或模拟结果替代识码。SDK二进制、现场配置、凭据和私密输出不提交，Production资格/权限/原请求守卫不降低。
+
+
+整合收口：开发起点`52c7e58d`，实施源码`9bfde2eb`；工作期间PR125进入main后已合并最新`36c55a58`，整合树`154fce47`。参数/延后连接及驱动定向重新通过，整合Sportmaster构建0警告/0错误。原生首配`--startup-experience`也通过；首次执行少传IPC_FROZEN_DESKTOP、独立驱动冻结构建首次少传IpcContractPath均被原守卫明确拒绝，补齐实际冻结路径后通过，未降低守卫。
+
+最终资源审查补强宿主健康通知异常隔离：通知失败明确报错，仍完成应有原生清理；原生清理失败仍保有原owner。增加2项定向断言，MVS当前26项。新增Windows CI沿用最新main已有长路径/保留文件名checkout设置，原门禁未替换。证据摘要/私有日志哈希见[runtime/evidence](../runtime/evidence/hikrobot-sdk-barcode-02/verification.json)。SDK枚举首次曾把DLL文件4.8.2.1误当API版本，校核MV_CC_GetSDKVersion后按真实4.8.2.2固定ABI，原失败仍保留；不是新增旧SDK兼容。

@@ -27,6 +27,21 @@ internal static class MvsVerification
             api.Frames.Enqueue(Frame(1)); await Until(() => source.Frames == 1);
             Check(source.Epoch == "mvs-two" && source.Failure.Length == 0, "explicit restart resets capture accounting without creating a new parcel");
         }
+        var hostFailedApi = new Fake(); var hostFailedLease = new Lease();
+        await using (var source = Source(hostFailedApi, hostFailedLease))
+        {
+            await source.StartControlledAsync("host-failure", _ => true, h =>
+            {
+                if (h.Health is DeviceHealth.Stopping or DeviceHealth.Stopped) throw new InvalidOperationException("Synthetic host failure");
+            }, default);
+            await Reject(() => source.StopAsync(default));
+            Check(source.Phase == "stopped" && source.Failure.Contains("health receiver failed") && hostFailedLease.Releases == 1 &&
+                hostFailedApi.Calls.TakeLast(4).SequenceEqual(["stop", "close", "destroy", "finalize"]),
+                "host health exception is explicit but cannot prevent successful native teardown");
+            await source.StopAsync(default);
+            Check(hostFailedLease.Releases == 1 && hostFailedApi.Calls.Count(c => c == "destroy") == 1,
+                "retry after host reporting failure never releases the original native owner twice");
+        }
         var retainedApi = new Fake { FailFree = true }; var retainedLease = new Lease();
         await using (var source = Source(retainedApi, retainedLease))
         {

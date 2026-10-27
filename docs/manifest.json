@@ -1831,9 +1831,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "3a2f83e07b8b88dfba35a1a879db29df6f4f0570ffa4d69eaf03c863ab8e60ce",
-      "size_bytes": 2858,
-      "git_blob": "789ce126a23b722e7865625d379da99d313d071c",
+      "sha256": "76594e5997bbe05ad89e104b77e2cc88ee24e026ea5e1385f29e54dd39084fb6",
+      "size_bytes": 3836,
+      "git_blob": "d2a4a1f61de9c07d5ed10e79638ce6629c7f2c8f",
       "storage_scope": "public_repository"
     },
     {
@@ -32641,9 +32641,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "58e5b3919719e15093e0c1f4b3393397082fdeeac85d5f716222998bfaccfc99",
-      "size_bytes": 4273,
-      "git_blob": "15f242661ee7d08e241c97494a2e33d53c293d6b",
+      "sha256": "8b396bcafada2c9124cc3b766d2431898c8eef7a8d7651bcad4984ca641c7dc2",
+      "size_bytes": 13453,
+      "git_blob": "680cdd66501726efaeb273c049ce26ce936d922c",
       "storage_scope": "public_repository"
     },
     {
@@ -91707,9 +91707,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "d104450d6b0a488b5cc42d9a0034b77335c02d6a813031e02e2c5c36254f5778",
-      "size_bytes": 8590,
-      "git_blob": "60e3726b6b9ad75b614fec6c84e3d0877128f8b8",
+      "sha256": "97d9eea1322c1048cef52250fd23a5aedd1ca9548b32629cc758472dc2f168e8",
+      "size_bytes": 9622,
+      "git_blob": "5228d32b983a9683709cbf806a9dd5ff7c8c0e0f",
       "storage_scope": "public_repository"
     },
     {
@@ -97958,9 +97958,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "7de59a276bee3d0ce77b570db13f8c3b52408d39a845f09f040835fa17ee9de9",
-      "size_bytes": 12405,
-      "git_blob": "7d5087dc02b4e4379e68b2e819af1d1f6da86a87",
+      "sha256": "864c9b2c4dc423e69ae3cc146cd6d399ef4087ed3f7479277a1b5212f8f6504c",
+      "size_bytes": 12951,
+      "git_blob": "82b86566da50b103d58f00b92cdb8156e052bbcd",
       "storage_scope": "public_repository"
     },
     {
@@ -102062,9 +102062,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "a43642dbb64b89253a40234a8ce734fb377a258b7bfab49287199e8adfd9a6c6",
-      "size_bytes": 10358,
-      "git_blob": "d81f9b88d28379c73341745fa7b4affc7b06fa40",
+      "sha256": "6eadddd8b95ef3d0e4575c1035b0fdd276f7fe991bd58f83e766cf4ed9270d34",
+      "size_bytes": 11434,
+      "git_blob": "a26e3509d7c561eb4d41b490a0a5c9e26dcf9e69",
       "storage_scope": "public_repository"
     },
     {

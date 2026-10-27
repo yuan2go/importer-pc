@@ -180,14 +180,24 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         cancel?.Cancel();
         // Wait for the actual GetImageBuffer/health call, not a cancelled wrapper.
         if (worker is not null) await worker.ConfigureAwait(false);
-        Publish(DeviceHealth.Stopping);
+        Exception? reportingFailure = null;
+        void Report(DeviceHealth state)
+        {
+            try { Publish(state); }
+            catch (Exception ex) { reportingFailure ??= ex; }
+        }
+        // A failed host notification must not prevent native teardown. Native
+        // errors still retain the original owner and stop at the failed step.
+        Report(DeviceHealth.Stopping);
         if (api.HasFrame) { PhaseTo("retry-free-original-buffer"); await Task.Run(api.Release).ConfigureAwait(false); }
         if (grabbing) { PhaseTo("stop-grabbing"); await Task.Run(api.Stop).ConfigureAwait(false); grabbing = false; }
         if (opened) { PhaseTo("close"); await Task.Run(api.Close).ConfigureAwait(false); opened = false; }
         if (created) { PhaseTo("destroy"); await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
         if (initialized) { PhaseTo("finalize"); await Task.Run(api.Shutdown).ConfigureAwait(false); initialized = false; }
         lease?.Dispose(); lease = null; worker = null; cancel?.Dispose(); cancel = null;
-        PhaseTo("stopped"); Publish(DeviceHealth.Stopped); health = null;
+        PhaseTo("stopped"); Report(DeviceHealth.Stopped); health = null;
+        if (reportingFailure is not null)
+            throw new IOException("MVS native teardown completed; health receiver failed: " + reportingFailure.GetType().Name, reportingFailure);
     }
     public async ValueTask DisposeAsync()
     {

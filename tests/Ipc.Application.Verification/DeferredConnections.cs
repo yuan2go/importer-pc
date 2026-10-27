@@ -118,8 +118,8 @@ static partial class SportmasterRcs
                 var before = await app.SnapshotAsync();
                 foreach (var id in c.DeferredConnections!)
                     Check((await app.ReconnectDeviceAsync(id)).Status == "Rejected", prefix + "explicit reconnect of " + id + " is rejected without enabling it");
-                var receipt = await app.ReconnectAsync();
-                Check(receipt.Status == (mask == 7 ? "Rejected" : "Reconnected"), prefix + "all-device reconnect selects only configured connections");
+                var receipt = await ReconnectAfterMonitorDrain(app, app.ReconnectAsync);
+                Check(receipt.Status == (mask == 7 ? "Rejected" : "Reconnected"), prefix + "all-device reconnect selects only configured connections; actual=" + receipt.Status + "; reason=" + receipt.Reason);
                 if (mask != 7) await AcceptConfigured(mask);
                 s = await app.SnapshotAsync();
                 Check(Wire.Encode(s.Configuration.Effective) == Wire.Encode(before.Configuration.Effective) && s.Operations.Length == 0 &&
@@ -197,7 +197,8 @@ static partial class SportmasterRcs
         s = await app.SnapshotAsync();
         Check((await DeferredStage(app, deferred, "synthetic attempt to postpone original dependencies")).Status == "PendingRestart",
             "unknown original permits a reviewed Pending candidate, never an immediate target replacement");
-        Check((await app.ReconnectDeviceAsync(deferred.Wcs!.InstanceId)).Status == "Reconnected", "RCS reconnect uses original Effective while a deferred candidate is Pending");
+        var reconnected = await ReconnectAfterMonitorDrain(app, () => app.ReconnectDeviceAsync(deferred.Wcs!.InstanceId));
+        Check(reconnected.Status == "Reconnected", "RCS reconnect uses original Effective while a deferred candidate is Pending; actual=" + reconnected.Status + "; reason=" + reconnected.Reason);
         s = await app.SnapshotAsync();
         Check(Wire.Encode(s.Operations.Single(o => o.Id == original.Id).Wcs!.Request) == request && Destinations() == sends,
             "reconnect does not retry Unknown or change request ID, payload, contract, target, hash or frozen configuration");
@@ -209,6 +210,24 @@ static partial class SportmasterRcs
             s.Operations.Single(o => o.Id == original.Id).Wcs is { State: StageState.Unknown } old && Wire.Encode(old.Request) == request && Destinations() == sends,
             "restart retains Unknown and original Effective; unresolved responsibility prevents pending deferral and automatic resend");
         await restarted.StopAsync(default);
+    }
+
+    static async Task<BusinessReceipt> ReconnectAfterMonitorDrain(ParcelRuntime app, Func<Task<BusinessReceipt>> reconnect)
+    {
+        // Maintenance correctly rejects an in-flight service health call. Schedule
+        // this lifecycle assertion after the real monitor reservation drains;
+        // never weaken the guard, retry an unknown action or accept Rejected.
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var prior = app.BeforeMonitorProbe;
+        app.BeforeMonitorProbe = (_, token) => { entered.TrySetResult(); return release.Task.WaitAsync(token); };
+        try
+        {
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await DeferredWait(app, s => s.Availability!.Configure);
+            return await reconnect();
+        }
+        finally { app.BeforeMonitorProbe = prior; release.TrySetResult(); }
     }
 
     static IParcelCapabilityFactory DeferredFactory(BusinessLaunch launch) => OperatingSystem.IsWindows()

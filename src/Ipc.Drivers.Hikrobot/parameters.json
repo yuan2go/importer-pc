@@ -51,6 +51,16 @@
     "Description": "有界队列；溢出锁定Faulted，检查原实体后显式重连。"
   },
   {
+    "Key": "queue.maximum-code-bytes",
+    "Group": "运行 / 容量",
+    "Label": "条码缓冲字节预算",
+    "Type": "integer",
+    "Default": "16777216",
+    "Minimum": 1048576,
+    "Maximum": 67108864,
+    "Description": "包含排队及正在交给Application的条码字符串和有界条目开销，默认16MiB，范围1～64MiB；超限故障围栏，不丢码后继续Ready。不是原图缓存。"
+  },
+  {
     "Key": "bcr-code",
     "Group": "设备 / 身份",
     "Label": "RCS 相机编码",

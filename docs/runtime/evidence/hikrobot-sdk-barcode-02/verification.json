@@ -1,0 +1,339 @@
+{
+  "Baseline": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
+  "SourceState": "driver source commits and frozen host are precisely recorded in frozen-packages.json; WPF is separately scoped synthetic working-tree evidence",
+  "TargetBarcodeStatus": "BLOCKED: recognition component not obtained",
+  "RealTargetFrames": "NOT_RUN on this host; user-supplied field MVS stream evidence remains separate",
+  "RealSdkInitializationAndEnumeration": "PASS: MVS GetSDKVersion=0x04080202; 17 exports; 0 GigE devices; no barcode proof",
+  "FieldRcsAndReadiness": "BLOCKED/NOT_RUN",
+  "Evidence": [
+    {
+      "name": "solution-build-current.log",
+      "sha256": "765b10eccd1b2fb6fc6b8986b63d7a0aef8e5b2941e722a5cc67248a0a3e08ef",
+      "bytes": 5577,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "driver-build-current.log",
+      "sha256": "81bb4117c1711e61c446549a352f6f9498fb3fee1987f13c0c2436d381225cd4",
+      "bytes": 538,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "driver-tests-current.log",
+      "sha256": "fd078545b7a2fe2dd85ce420dc66a91eddae641971564f6fcee54a0f4d28a62e",
+      "bytes": 5664,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "sdk-editing-current.log",
+      "sha256": "6a512353a0a45d9a3e16791d431ecfe419d071a1ca9e023299033d5ba210c006",
+      "bytes": 869,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "parameter-refactor.log",
+      "sha256": "b4dfb1b7af7df7c8bb884e080b9cdce2da8ef3571b2915ccd3ef467a71fa9038",
+      "bytes": 8340,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "parameter-guidance-startup.log",
+      "sha256": "fd59d1347a90e77094464d847a42a0241926ef4ccfab79a0a876985e690ee32e",
+      "bytes": 2414,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "configuration-confirmation.log",
+      "sha256": "0a6e2403ca5a69782a3b0fbd9e7b674301a0f54beac6367352e461a1dab26907",
+      "bytes": 2392,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "sportmaster-rcs.log",
+      "sha256": "5c48755439b061150d3a0533c5c3cbb32f0bd42e3c447dac2d6371f691a58dba",
+      "bytes": 14245,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "rcs-timeout-errors.log",
+      "sha256": "228d22b8008be9036949d80845fb69b31affa47a5d01c2d631d9ac59e48d2650",
+      "bytes": 4730,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "deferred-connections.log",
+      "sha256": "ea99fead1f463b2a5823357da75308387d17276a4835f58aeb86c741292cd10d",
+      "bytes": 5546,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "deferred-connections-diagnostic.log",
+      "sha256": "6ec3b2052af85be91da17686e2cb677c3a1298b6afe69036ba27902057568214",
+      "bytes": 15013,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "deferred-connections-final.log",
+      "sha256": "79db092f60d19158083bf2e6c0faf410404ae19706da320f3d7b4efc1d435784",
+      "bytes": 14262,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "assembly-policy-tests.log",
+      "sha256": "4c8998ad4820361c6073333e14b301bced27cbc60292de22acc92a44b7e89e1e",
+      "bytes": 119,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "native-reviewed/sdk02-change-review.png",
+      "sha256": "b4df91e48833f8fc86092207914a6fe4bfd7cc07f27ca6bbaadf7b15ac5ea7ec",
+      "bytes": 161223,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-compact.png",
+      "sha256": "f7eaf22e63094b15482d3c42579479ec67412ce00667bd1cabe5ec2b1443d6a9",
+      "bytes": 104074,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-mvs.png",
+      "sha256": "4bfe0e08f6eee7d193095559569f56a1b3ed62bd382299dec030175a95b49c66",
+      "bytes": 158746,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-standard.png",
+      "sha256": "77d9ebb1f48d48ba45d0a7d62bbf8a6f8fc7248bbbe6fe581f27a2245117ea23",
+      "bytes": 155044,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/WINDOWS-WPF.log",
+      "sha256": "deaf29709dca67d262760fc4454f7841b896b3077f78608fcdeddf316a2397a1",
+      "bytes": 1120,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "solution-build-integrated.log",
+      "sha256": "28b1813c1f63ae1580b58301c2793a6b8748b9dd1910b4e51aca6442ead2d5c7",
+      "bytes": 5577,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "application-build-integrated.log",
+      "sha256": "096f3cce7f513b823cda22e18c152afd9a2290a13f492067ace6483e07528c1e",
+      "bytes": 1933,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "hikrobot-sdk-editing-integrated.log",
+      "sha256": "6a512353a0a45d9a3e16791d431ecfe419d071a1ca9e023299033d5ba210c006",
+      "bytes": 869,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "deferred-connections-integrated.log",
+      "sha256": "c5d6e1299420b9207e8415903c338b85b0c68ee70bd08b31940fb7340139ddff",
+      "bytes": 14262,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "driver-build-frozen.log",
+      "sha256": "26f6d3f7dc38575e0cb546d1687958f0da247012c60856e2532bc68329b40a98",
+      "bytes": 2161,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "driver-build-frozen-corrected.log",
+      "sha256": "229350265946a9a4cb8d10367b4ebb42ba190635eb540057c73fd18c733bb365",
+      "bytes": 538,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "driver-tests-integrated.log",
+      "sha256": "fd078545b7a2fe2dd85ce420dc66a91eddae641971564f6fcee54a0f4d28a62e",
+      "bytes": 5664,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "driver-build-health-isolation.log",
+      "sha256": "24ba29b6c220621e1faf7f37c10c6b6734f42cd10b3614c69853b4ac1747c677",
+      "bytes": 538,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "driver-tests-health-isolation.log",
+      "sha256": "2ff1c4f868e661559dcb11f290c66b8147dafb95e66e543591a759f5b6885720",
+      "bytes": 5848,
+      "scope": "actual build/test log; failures preserved, see work package"
+    },
+    {
+      "name": "private-mvs-list.log",
+      "sha256": "cad4ce891695c4a59d03773ac4ae3396d52f537fdd58ca0618b62306581fc943",
+      "bytes": 451,
+      "scope": "private SDK metadata/no devices; not barcode proof"
+    },
+    {
+      "name": "private-mvs-exports-list.log",
+      "sha256": "a785dc6aa59feca61c0f3f5b0aa69334ccc06cad172c27a9a6967d4054d62c8d",
+      "bytes": 492,
+      "scope": "private SDK metadata/no devices; not barcode proof"
+    },
+    {
+      "name": "private-sdk-list.log",
+      "sha256": "2a6d14fb242d695d135ec60b6171da9a02ee668339855d892a501420efab9071",
+      "bytes": 405,
+      "scope": "private SDK metadata/no devices; not barcode proof"
+    },
+    {
+      "name": "native-startup/configuration-paused.png",
+      "sha256": "2e5be437ea3e75fb0d45fae7c38911f23c3411da2bbfa8ae273789737797d238",
+      "bytes": 13688,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/installer-complete.png",
+      "sha256": "1b61f262de2c8f692f314bc6348d533fc28a1e77e3bb6d73810da8ece55c6299",
+      "bytes": 49212,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/installer-confirmation.png",
+      "sha256": "c0ab529bd74d6fd49755840c645a6d7fd5c83393bb912d7ba3f01b0be1785d57",
+      "bytes": 81615,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/installer-options.png",
+      "sha256": "2fcd185647b7ef19de4c593118458c47b21a55a09d19399e93fd42247703ce6b",
+      "bytes": 74770,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/leaf-barcode-error.png",
+      "sha256": "32b10ae129964ade477cd86b9ff22a7709783765107d3c20fd4e8bdf96fee678",
+      "bytes": 107800,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-barcode.png",
+      "sha256": "e36d587a25e9b933cf04bcb5bf370e8c3b4784ea93c3ad256c4e087677b642cc",
+      "bytes": 95166,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-check-errors.png",
+      "sha256": "bcd6bf290232cc6103067f49b851d6fd509b59d99b70829d1cea10ca571db89e",
+      "bytes": 138396,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-chute-errors.png",
+      "sha256": "642c32410d14c04b2f9b1e62e9d7e5549c29f10111146c2a29638c4e3f47dfa5",
+      "bytes": 116270,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-data.png",
+      "sha256": "e2dd26c066653425a385df0d8dfe8443de8f4c52b6b7e9b67ebc865fbc081740",
+      "bytes": 121416,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-management-menu.png",
+      "sha256": "1ecf31058f0ef9e9a656bd87e265ef8c4abffa69b31d30285f8f0ee56d0c89bf",
+      "bytes": 11859,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-processing.png",
+      "sha256": "6fd6350c57ac5181c70f53fff72953e71bfb1d222a3379c541261febd59526b0",
+      "bytes": 136907,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-rcs.png",
+      "sha256": "18671ab40cc9a0844da9230ba37fae19c9aeed01730d94a3563020192e56e814",
+      "bytes": 117629,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-right-camera-error.png",
+      "sha256": "31e4fdf7bffaf0ab51c5dfa2a54235bc05e2a4b0399e591bd82eb8339aa883aa",
+      "bytes": 116704,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/refine-station.png",
+      "sha256": "7b74122be45048acb503937bc19cfaf811f4aa6db2d39b8e612b9e5eb394ea52",
+      "bytes": 102750,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-session-restored.png",
+      "sha256": "91f5cdad168f28209ada25d1eadee29f9c160c19dfb53b078dbc9cdbe1d72780",
+      "bytes": 138010,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-small.png",
+      "sha256": "53fee0ef95f1124993250ce84c0bfc5db9cba9af0785881d41c1543bb59593d6",
+      "bytes": 102107,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-step-1.png",
+      "sha256": "e36d587a25e9b933cf04bcb5bf370e8c3b4784ea93c3ad256c4e087677b642cc",
+      "bytes": 95166,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-step-2.png",
+      "sha256": "7b74122be45048acb503937bc19cfaf811f4aa6db2d39b8e612b9e5eb394ea52",
+      "bytes": 102750,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-step-3.png",
+      "sha256": "485ab0cdf6ee7dc29cb6f3b81d2e4f21b04df0851713e591900e6fcb39933c1a",
+      "bytes": 111992,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-step-4.png",
+      "sha256": "18671ab40cc9a0844da9230ba37fae19c9aeed01730d94a3563020192e56e814",
+      "bytes": 117629,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/startup-step-5.png",
+      "sha256": "de0b61b0a72a2f9b9ca7b7147032796cc9bde23116b3379d86ff85c54f765a1b",
+      "bytes": 120607,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/uninstall-result-complete.png",
+      "sha256": "12be9afc34eb5bc754fb258bb4b89f5e9caaaa6700d4f55777cdfd2ff170adf1",
+      "bytes": 45162,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/uninstall-result-restart.png",
+      "sha256": "e9b246624fc9a7d28339960e7a437d1f03a7449b3a6248c1cc090d9d7eec11e7",
+      "bytes": 49090,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    },
+    {
+      "name": "native-startup/WINDOWS-WPF.log",
+      "sha256": "b4cc45d00e4065f7bacb1c8287d51643fe4dc4698a231ca6e012e1eacede0cc3",
+      "bytes": 14974,
+      "scope": "actual HWND/Dispatcher synthetic startup; SDK/RCS/site NOT_RUN"
+    }
+  ],
+  "IntegratedMain": "36c55a58",
+  "FrozenIntegratedHostSource": "154fce47",
+  "MvsSyntheticChecks": 26,
+  "ReaderSyntheticChecks": 46,
+  "FinalResourceIsolationSourceCommit": "443f75b106c0cd7bedefcf3622ae8d19332c16a8"
+}

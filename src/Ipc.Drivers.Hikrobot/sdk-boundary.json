@@ -10,5 +10,9 @@
   "CodeLengthOffset": 4100,
   "MaximumCodes": 300,
   "MaximumCodeBytes": 4096,
-  "Semantics": "Read observations only. No SDK setting writes, software trigger, image retention, WCS or PLC calls. Trigger association requires independent deployment qualification and one-trigger-one-entity evidence."
+  "Semantics": "Read observations only. No SDK setting writes, software trigger, image retention, WCS or PLC calls. Trigger association requires independent deployment qualification and one-trigger-one-entity evidence.",
+  "DriverVersion": "2.0.1",
+  "DefaultCodeBufferBytes": 16777216,
+  "MaximumCodeBufferBytes": 67108864,
+  "TargetStandardCameraStatus": "BLOCKED: target acquisition/algorithm SDK not available; MvCodeReader evidence does not qualify MV-PD010003-06M-12C"
 }

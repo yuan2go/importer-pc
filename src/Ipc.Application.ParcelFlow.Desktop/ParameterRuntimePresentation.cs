@@ -37,6 +37,18 @@ public partial class ParcelViewModel
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
             if (reader.Driver == "tcp-line")
                 notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
+            if (extension?.PackageId == "hikrobot.idmvs-reader")
+            {
+                status = ready ? "SDK 连接已确认" : status;
+                notice += (notice.Length == 0 ? "" : "\n") + (extension.Parameters.GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
+                    ? "仅观察，不创建供包作业。连接确认不代表已经读到条码；请核对读码观察和设备适用性。"
+                    : "触发关联已选择；连接确认不证明包裹边界可信。读码、业务准入和本件RCS格口需分别核对。");
+            }
+            if (extension?.PackageId == "hikrobot.mvs-acquisition")
+            {
+                status = health?.Health == DeviceHealth.Faulted ? "采集故障；缺少条码识别组件" : "仅采图；缺少条码识别组件";
+                notice = "采集连接及帧计数在诊断中核对；尚未获得真实条码，不创建供包作业。取得适用识别组件并完成实际接入前，正式供包保持阻断。";
+            }
             if (IsManagementMode && health is not null)
                 evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
                     "\n连接周期：" + health.Epoch + " · 已处理序号：" + health.Sequence + "\n连接证据：" + health.Source;

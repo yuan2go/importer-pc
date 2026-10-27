@@ -61,7 +61,9 @@ static partial class Program
         selector.SelectedIndex = Enumerable.Range(0, selector.Items.Count).Single(i =>
             selector.Items[i]!.GetType().GetProperty("Provider")!.GetValue(selector.Items[i]) is CapabilityDescriptor provider && provider == currentRcs);
         legacyWindow.UpdateLayout();
-        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "old simulation configuration can explicitly select the current shipped RCS service and edit its actual address without changing station identity");
+        Check(legacyService.ProviderChangePending && legacyService.Provider != currentRcs, "selecting another service requires an explicit parameter reset decision");
+        Descendants(legacyControl).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == legacyService.InstanceId + "/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "current service selection applies after explicit reset while station identity is preserved");
         legacyWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
         var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AssemblyName>Ipc.Drivers.Hikrobot.Mvs</AssemblyName><Version>1.0.0</Version></PropertyGroup>
+  <ItemGroup><Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference></ItemGroup>
+  <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences"><Error Condition="'$(IpcContractPath)' == '' Or !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/></Target>
+</Project>

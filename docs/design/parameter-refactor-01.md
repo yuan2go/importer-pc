@@ -1,3 +1,5 @@
+> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
+
 > 2026-10-21 本轮所有权、旧参数继承和真实消费者以[继承增量](parameter-inheritance-02.md)及[迁移表](parameter-legacy-migration-02.csv)为准。原 PARAM-01 实施结果保留；本页旧字段摆放不覆盖本轮硬件驱动/外部服务职责裁决。
 
 > 2026-10-21 当前执行入口：PARAM-UX-02 / WP-IPC-PARAMETER-SETTINGS-02，参数采用 V3，复用已合并 PR78/79。下文“当前、待实施、不测试”均保留原阶段语境；不再定义当前布局或禁止本轮原生验证。

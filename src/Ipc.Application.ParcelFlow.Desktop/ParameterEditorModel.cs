@@ -110,6 +110,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         foreach (var draft in Readers.Concat(Components.Where(x => x.Bound || x.Enabled)))
         {
             var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
+            if (draft.ProviderChangePending) Issue(fieldCategory, draft.InstanceId + "/Provider", "请确认切换并重置参数，或取消切换；当前输入保留。");
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
             if (draft.ConfigureLater) continue;
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
@@ -118,7 +119,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // Mirror the installed Hikrobot driver's existing address-format rule
             // before review. This is local feedback, not a connection probe or a
             // replacement for Application/driver validation at the real boundary.
-            if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
+            if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
             {
                 if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip)
                     Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "请填写完整的 IPv4 地址，使用四段 0～255 的数字。", "ipv4-format"));

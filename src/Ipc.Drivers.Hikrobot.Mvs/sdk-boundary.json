@@ -1,0 +1,25 @@
+{
+  "SchemaVersion": 1,
+  "Sdk": "MVS",
+  "GetSdkVersion": "4.8.2.2 (0x04080202)",
+  "EntryFileVersion": "4.8.2.1",
+  "EntrySha256": "0CBCF8D1C9D9647CD3DBB6CE8E0C599EA514388F6E2345084BC1B16E9BE5119B",
+  "HeaderSha256": {
+    "MvCameraControl.h": "4C0B834F5FAC04E744CDE3EA1888B5442B9CA7EFA2E480BB5E52CA1397D5B64A",
+    "CameraParams.h": "A3BF05D4DF4101428F2EFB052577F0CFEBA0B27162B71EFB101F61C1573547B1"
+  },
+  "OfficialExample": "Development/Samples/C#/MvCameraControlNet_V2/General/Grab_GetImageBuffer",
+  "Abi": {
+    "DeviceBytes": 636,
+    "DeviceListBytes": 2056,
+    "FrameInfoBytes": 256,
+    "FrameOutBytes": 328,
+    "FrameInfoOffset": 8,
+    "TriggerOffset": 76,
+    "FrameLengthExOffset": 120
+  },
+  "PixelFormat": "Mono8",
+  "BarcodeCapability": "Unavailable: applicable recognition component not obtained",
+  "RawImagesPersisted": false,
+  "ProductionBusinessReady": false
+}

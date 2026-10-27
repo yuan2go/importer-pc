@@ -1,0 +1,61 @@
+{
+  "SchemaVersion": 1,
+  "HostSourceCommit": "154fce473571579f25c240e492e991e966b83cd1",
+  "Verification": "engineering TestOnly Simulation signatures and static frozen host checks only; NOT Production qualification or real barcode evidence",
+  "Packages": [
+    {
+      "Package": "hikrobot-mvs-acquisition-1.0.0-final.ipcx",
+      "PackageSha256": "1b990287008694bf5b71d7cfde45e1c92a87f27a82ca2a4787f5a15e3bd07fd5",
+      "PluginSourceCommit": "443f75b106c0cd7bedefcf3622ae8d19332c16a8",
+      "PluginSourceSha256": "a21389571e3832168020771764dcbf6c3a5322fbc6288fd1954feee97bf89518",
+      "DefinitionSha256": "62be081277def25a9bc4c3335e12545496231a0b46d5dce62dbd26c897812a4c",
+      "HostContractSha256": "d8fa603872d8aba996d5efa50675c97f21707ef9de2137c589a75019066bd0b1",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "d8fa603872d8aba996d5efa50675c97f21707ef9de2137c589a75019066bd0b1"
+      },
+      "Publisher": "sdk02-engineering",
+      "Version": "1.0.0",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "89a5afb8277b4f48b6a827b36a79ecbf0323f9859b8146264861cbd9e1de2a6f",
+      "TrustSha256": "295c237a001412af18cdc1fa1419431f07b598c7251a49c1febb0f075c811a4c",
+      "PayloadSha256": {
+        "Ipc.Drivers.Hikrobot.Mvs.dll": "5c5b2a5b979f367fe90518bda89260fca9c10a07701dbd7119193eed513d7dd0",
+        "sdk-boundary.json": "a78e8dfab83e6bd2e23ca0ef1bb4df9f0c2839c4bd8bf10eb674656b174f1ba3"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+      "LogSha256": "1036e76db6c0b4d84cdd42d8b8a6b8cb02e4567c76f4449d1c43bfe46afa106b"
+    },
+    {
+      "Package": "hikrobot-reader-2.0.1-integrated.ipcx",
+      "PackageSha256": "64ff8c2bf557762db79b4efb386fbb11a001e711a28a6a3bd0799d90a5bf34f3",
+      "PluginSourceCommit": "9bfde2eb35ae4908164c23a89655b2c79af96a7c",
+      "PluginSourceSha256": "b1d8cbeb20392a0fe87999255cfeda04cbd7e55c9fddbb592d83b0a0ee9ed013",
+      "DefinitionSha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb",
+      "HostContractSha256": "d8fa603872d8aba996d5efa50675c97f21707ef9de2137c589a75019066bd0b1",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "d8fa603872d8aba996d5efa50675c97f21707ef9de2137c589a75019066bd0b1"
+      },
+      "Publisher": "sdk02-engineering",
+      "Version": "2.0.1",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "891e9df07bd3b224087a9fb58de12d078fd0273dd90fe8d9a5f5e7de9592e3b7",
+      "TrustSha256": "295c237a001412af18cdc1fa1419431f07b598c7251a49c1febb0f075c811a4c",
+      "PayloadSha256": {
+        "Ipc.Drivers.Hikrobot.dll": "8ceb70812f972f5e488f8c310f2a2c32321e39d78441a6a0df15038609022c41",
+        "sdk-boundary.json": "a52bb250e394c773b91fca499a5323de7639fb4e0fd425d08fc88c1ebdff18ac"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+      "LogSha256": "f66601eaa22fdd4b9e634fc60a1f5695497d99bc5df53d2504001e658c8e421a"
+    }
+  ]
+}

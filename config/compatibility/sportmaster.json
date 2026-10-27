@@ -328,7 +328,7 @@
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "2.0.0",
+          "Version": "2.0.1",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
         },
         {
@@ -381,8 +381,126 @@
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "2.0.0",
+          "Version": "2.0.1",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.1.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "2.0.0",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "2.0.0",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        }
+      ]
+    },
+    {
+      "Id": "hikrobot-mvs-acquisition-engineering",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:hikrobot.mvs-acquisition/mvs-acquisition",
+          "Version": "1.0.0",
+          "Contract": "HIKROBOT-MVS-ACQUISITION-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "tcp-line",
+          "Version": "1.1.0",
+          "Contract": "TCP-LINE-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "2.0.0",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        }
+      ]
+    },
+    {
+      "Id": "hikrobot-mvs-acquisition-rcs-engineering",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:hikrobot.mvs-acquisition/mvs-acquisition",
+          "Version": "1.0.0",
+          "Contract": "HIKROBOT-MVS-ACQUISITION-v1"
         },
         {
           "Kind": "observation",

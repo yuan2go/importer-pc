@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "mvs-acquisition",
+    "Assembly": "Ipc.Drivers.Hikrobot.Mvs.dll",
+    "EntryType": "Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule",
+    "Kind": "observation",
+    "MaximumInstances": 2,
+    "ContractIdentity": "HIKROBOT-MVS-ACQUISITION-v1",
+    "Requirements": {
+      "BusinessAcceptance": false
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": false,
+      "ProtocolEvidence": "0CBCF8D1C9D9647CD3DBB6CE8E0C599EA514388F6E2345084BC1B16E9BE5119B"
+    }
+  }
+]

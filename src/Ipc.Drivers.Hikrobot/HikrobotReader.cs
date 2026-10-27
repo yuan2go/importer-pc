@@ -21,14 +21,18 @@ internal sealed class HikrobotReader : IControlledObservationSource
     readonly object gate = new();
     readonly string ip, entityMode, serial;
     readonly Encoding encoding;
-    readonly int capacity;
+    readonly int capacity, maximumCodeBytes;
+    long bufferedCodeBytes;
     Channel<Observation>? queue;
     CancellationTokenSource? cancel;
-    Task? consumer, heartbeat, stopTask;
+    Task? consumer, heartbeat, stopTask, faultReporter;
+    TaskCompletionSource<bool>? faultSignal;
+    readonly object healthPublication = new();
     Action<DeviceHealthConfirmation>? health;
     Func<Observation, bool>? receiver;
     IDisposable? physicalLease;
     readonly Func<string, IDisposable> acquireLease;
+    readonly Action<string>? phaseChanged;
     bool created, opened, grabbing, accepting, faulted, disposed;
     long sequence;
     string? connectedSerial;
@@ -37,16 +41,18 @@ internal sealed class HikrobotReader : IControlledObservationSource
     public string Epoch { get; private set; } = "not-started";
     public string ConfirmationSource { get { lock (gate) return "SDK:hikrobot-idmvs:" + context.InstanceId + "; epoch=" + Epoch +
         "; received=" + FramesReceived + "; delivered=" + FramesDelivered + "; rejected=" + FramesRejected + "; inFlight=" + FramesInFlight +
-        "; sequence=" + sequence + (LastFailure is null ? "" : "; failure=" + LastFailure); } }
+        "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; phase=" + Phase +
+        (LastFailure is null ? "" : "; failure=" + LastFailure); } }
+    public string Phase { get; private set; } = "not-started";
     public string? LastFailure { get; private set; }
     public long FramesReceived { get; private set; }
     public long FramesRejected { get; private set; }
     public long FramesDelivered { get; private set; }
     public long FramesInFlight { get { lock (gate) return FramesReceived - FramesDelivered - FramesRejected; } }
-    internal HikrobotReader(ExtensionContext context, IHikrobotApi api, Func<string, IDisposable>? acquireLease = null)
+    internal HikrobotReader(ExtensionContext context, IHikrobotApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null)
     {
-        this.context = context; this.api = api;
-        this.acquireLease = acquireLease ?? new Func<string, IDisposable>(actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-idmvs:" + actualSerial]));
+        this.context = context; this.api = api; this.phaseChanged = phaseChanged;
+        this.acquireLease = acquireLease ?? new Func<string, IDisposable>(actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
         ip = context.Parameters.GetValueOrDefault("device.ip", "");
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
             throw new InvalidDataException("Explicit canonical camera IPv4 required");
@@ -57,6 +63,8 @@ internal sealed class HikrobotReader : IControlledObservationSource
         encoding = charset switch { "utf-8" => new UTF8Encoding(false, true), "ascii" => Encoding.GetEncoding("us-ascii", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback), _ => throw new InvalidDataException("Unsupported explicit barcode encoding") };
         capacity = int.Parse(context.Parameters.GetValueOrDefault("queue.capacity", "128"), System.Globalization.CultureInfo.InvariantCulture);
         if (capacity is < 1 or > 1024) throw new InvalidDataException("Reader queue must be 1..1024");
+        maximumCodeBytes = int.Parse(context.Parameters.GetValueOrDefault("queue.maximum-code-bytes", "16777216"), System.Globalization.CultureInfo.InvariantCulture);
+        if (maximumCodeBytes is < 1048576 or > 67108864) throw new InvalidDataException("Reader code buffer budget must be 1..64 MiB");
     }
 
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
@@ -68,28 +76,35 @@ internal sealed class HikrobotReader : IControlledObservationSource
             ObjectDisposedException.ThrowIf(disposed, this);
             if (created || queue is not null) throw new InvalidOperationException("Previous reader registration still owns resources");
             lock (gate) { if (stopTask is { IsCompleted: false }) throw new InvalidOperationException("Original stop is still running; resources retained"); stopTask = null; }
-            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = 0; }
-            Confirm(DeviceHealth.Connecting);
+            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = 0;
+                faultSignal = new(TaskCreationOptions.RunContinuationsAsynchronously); }
+            // Exactly one fault publisher per registration. Native callbacks only
+            // fence local state and signal it; they never call host health code.
+            faultReporter = ReportFault(faultSignal.Task);
             try
             {
+                Confirm(DeviceHealth.Connecting);
                 await Task.Run(() =>
                 {
+                    SetPhase("enumerate");
                     var matches = api.Enumerate().Where(d => d.Ip == ip && (serial.Length == 0 || d.Serial == serial)).ToArray();
                     token.ThrowIfCancellationRequested();
                     if (matches.Length == 0) throw new ObservationConnectionException("ConfiguredReaderMissing", new IOException("Configured IP/serial not discovered"));
                     if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial)) throw new InvalidDataException("Configured IP/serial has ambiguous identity");
-                    physicalLease = acquireLease(matches[0].Serial);
+                    SetPhase("lease"); physicalLease = acquireLease(matches[0].Serial);
                     connectedSerial = matches[0].Serial;
-                    created = true; api.Create(matches[0]); token.ThrowIfCancellationRequested(); api.Open(); opened = true; token.ThrowIfCancellationRequested();
+                    created = true; SetPhase("create"); api.Create(matches[0]); token.ThrowIfCancellationRequested(); SetPhase("open"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
+                    SetPhase("read-trigger-mode");
                     var mode = api.TriggerMode(); token.ThrowIfCancellationRequested();
                     if (entityMode == "trigger" && mode != 1) throw new InvalidDataException("Trigger association needs existing TriggerMode=On; device settings were not changed");
                     queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, SingleWriter = false, FullMode = BoundedChannelFullMode.Wait });
                     cancel = new();
-                    api.Register(frame => OnFrame(frame, registeredEpoch), failure =>
+                    SetPhase("register-callbacks"); api.Register(frame => OnFrame(frame, registeredEpoch), failure =>
                     { lock (gate) if (Epoch == registeredEpoch) { if (failure is HikFrameRejectedException) { FramesReceived++; FramesRejected++; } Fault(failure); } }, encoding);
                     lock (gate) accepting = true;
-                    token.ThrowIfCancellationRequested(); grabbing = true; api.Start(); token.ThrowIfCancellationRequested();
-                    lock (gate) { if (faulted) throw new IOException(LastFailure); Confirm(DeviceHealth.Ready); }
+                    token.ThrowIfCancellationRequested(); grabbing = true; SetPhase("start-grabbing"); api.Start(); token.ThrowIfCancellationRequested();
+                    lock (gate) { if (faulted) throw new IOException(LastFailure); }
+                    SetPhase("receiving"); Confirm(DeviceHealth.Ready);
                     consumer = Task.Run(Consume); heartbeat = Task.Run(() => Heartbeat(cancel.Token));
                 }, token).ConfigureAwait(false);
             }
@@ -124,22 +139,28 @@ internal sealed class HikrobotReader : IControlledObservationSource
             var admission = "hik." + Wire.Hash(Epoch + ":" + frame.Channel + ":" + frame.Trigger)[..40].ToLowerInvariant();
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
                 entityMode == "trigger" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);
-            if (queue?.Writer.TryWrite(observation) != true) { FramesRejected++; Fault(new IOException("Reader ingress queue full; inspect parcel and reconnect explicitly; rejected source=" + source)); }
+            var bytes = CodeBytes(observation);
+            if (bytes > maximumCodeBytes - bufferedCodeBytes)
+            { FramesRejected++; Fault(new IOException("Reader code byte budget exceeded; inspect parcel and reconnect explicitly")); return; }
+            bufferedCodeBytes += bytes;
+            if (queue?.Writer.TryWrite(observation) != true) { bufferedCodeBytes -= bytes; FramesRejected++; Fault(new IOException("Reader ingress queue full; inspect parcel and reconnect explicitly; rejected source=" + source)); }
         }
     }
+    static long CodeBytes(Observation observation) => 1024L + observation.Codes.Sum(code => 32L + code.Length * 2L);
     async Task Consume()
     {
         try
         {
             await foreach (var observation in queue!.Reader.ReadAllAsync().ConfigureAwait(false))
             {
-                lock (gate) if (faulted) { FramesRejected++; continue; }
                 try
                 {
+                    lock (gate) if (faulted) { FramesRejected++; continue; }
                     if (receiver?.Invoke(observation) == true) { lock (gate) FramesDelivered++; }
                     else { lock (gate) FramesRejected++; Fault(new IOException("Application rejected reader ingress; acquisition fenced; source=" + observation.SourceEventId)); }
                 }
-                catch (Exception ex) { lock (gate) FramesRejected++; Fault(ex); }
+                catch (Exception ex) { lock (gate) FramesRejected++; Fault(new IOException("Application observation callback failed: " + ex.GetType().Name)); }
+                finally { lock (gate) bufferedCodeBytes -= CodeBytes(observation); }
             }
         }
         catch (Exception ex) { Fault(ex); }
@@ -159,7 +180,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
                 token.ThrowIfCancellationRequested();
                 var mode = api.TriggerMode(); token.ThrowIfCancellationRequested();
                 if (entityMode == "trigger" && mode != 1) throw new IOException("Device trigger policy changed; reconnect/qualification required");
-                lock (gate) if (!faulted && accepting) Confirm(DeviceHealth.Ready);
+                Confirm(DeviceHealth.Ready);
             }
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
@@ -167,10 +188,26 @@ internal sealed class HikrobotReader : IControlledObservationSource
     }
     void Confirm(DeviceHealth state)
     {
-        var now = DateTimeOffset.UtcNow;
-        // Driver liveness lease (two missed one-second polls), not an entity permit
-        // or a vendor-specified safety validity. Production needs independent proof.
-        health?.Invoke(new(DeviceId, Epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource));
+        // Serialize publications without holding the callback/ingress lock while
+        // executing arbitrary host code. Fault cannot be followed by stale Ready.
+        lock (healthPublication)
+        {
+            Action<DeviceHealthConfirmation>? target; DeviceHealthConfirmation confirmation;
+            lock (gate)
+            {
+                if (state == DeviceHealth.Ready && (faulted || !accepting)) return;
+                var now = DateTimeOffset.UtcNow; target = health;
+                confirmation = new(DeviceId, Epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource);
+            }
+            target?.Invoke(confirmation);
+        }
+    }
+    void SetPhase(string phase) { lock (gate) Phase = phase; phaseChanged?.Invoke(phase); }
+    async Task ReportFault(Task<bool> signal)
+    {
+        if (!await signal.ConfigureAwait(false)) return;
+        try { Confirm(DeviceHealth.Faulted); }
+        catch (Exception ex) { lock (gate) LastFailure += "; health receiver failed: " + ex.GetType().Name; }
     }
     void Fault(Exception failure)
     {
@@ -178,8 +215,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
         {
             if (faulted) return;
             faulted = true; accepting = false; LastFailure = failure.GetType().Name + ": " + failure.Message;
-            try { Confirm(DeviceHealth.Faulted); }
-            catch (Exception healthFailure) { LastFailure += "; health receiver failed: " + healthFailure.GetType().Name; }
+            faultSignal?.TrySetResult(true);
         }
     }
     public Task StopAsync(CancellationToken token)
@@ -206,23 +242,30 @@ internal sealed class HikrobotReader : IControlledObservationSource
     }
     async Task StopCore()
     {
-        lock (gate) { accepting = false; cancel?.Cancel(); if (health is not null) Confirm(DeviceHealth.Stopping); }
+        lock (gate) { accepting = false; cancel?.Cancel(); }
+        Confirm(DeviceHealth.Stopping);
         if (heartbeat is not null) await heartbeat.ConfigureAwait(false);
         // Callbacks finish their bounded copy before native StopGrabbing returns;
         // delegates remain rooted until DestroyHandle has succeeded.
         if (grabbing)
         {
-            try { await Task.Run(api.Stop).ConfigureAwait(false); grabbing = false; }
+            try { SetPhase("stop-grabbing"); await Task.Run(api.Stop).ConfigureAwait(false); grabbing = false; }
             catch (Exception ex) { Fault(ex); throw; }
         }
         queue?.Writer.TryComplete();
         if (consumer is not null) await consumer.ConfigureAwait(false);
-        if (opened) { await Task.Run(api.Close).ConfigureAwait(false); opened = false; }
-        if (created) { await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
+        else if (queue is not null)
+            while (queue.Reader.TryRead(out var rejected))
+                lock (gate) { FramesRejected++; bufferedCodeBytes -= CodeBytes(rejected); }
+        if (opened) { SetPhase("close"); await Task.Run(api.Close).ConfigureAwait(false); opened = false; }
+        if (created) { SetPhase("destroy"); await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
+        faultSignal?.TrySetResult(false);
+        if (faultReporter is not null) await faultReporter.ConfigureAwait(false);
         physicalLease?.Dispose(); physicalLease = null;
+        SetPhase("stopped"); Confirm(DeviceHealth.Stopped);
         lock (gate)
         {
-            Confirm(DeviceHealth.Stopped); health = null; receiver = null; queue = null; consumer = null; heartbeat = null;
+            health = null; receiver = null; queue = null; consumer = null; heartbeat = null; faultReporter = null; faultSignal = null;
             connectedSerial = null;
             cancel?.Dispose(); cancel = null;
         }

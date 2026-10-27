@@ -140,7 +140,7 @@ static partial class ArchitectureQuality
             await app.BackupAsync(Path.Combine(root,"legacy-before.backup.db"));
         }
         // Current-format restart keeps the proven main result and missing upload custody.
-        // Old projection conversion is separately refused by LegacyProjectionGuard.
+        // Format identity is checked before recovery writes.
         var database=Path.Combine(DirectoryFor(name,c),"sportmaster.db");
         await using(var app=await Open(c,name))
         {

@@ -97,6 +97,7 @@ public sealed class StartupConfigurationDraft
         {
             var prefix = "cap." + index + ".";
             values[prefix + "provider"] = draft.Provider is null ? "" : ProviderKey(draft.Provider);
+            values[prefix + "proposedProvider"] = draft.ProposedProvider is null ? "" : ProviderKey(draft.ProposedProvider);
             values[prefix + "target"] = draft.Target; values[prefix + "enabled"] = draft.Enabled.ToString(); values[prefix + "bound"] = draft.Bound.ToString();
             values[prefix + "configureLater"] = draft.ConfigureLater.ToString();
             foreach (var parameter in draft.Parameters) values[prefix + "parameter." + parameter.Field.Key] = parameter.Value;
@@ -124,6 +125,9 @@ public sealed class StartupConfigurationDraft
             if (v.TryGetValue(prefix + "bound", out var bound)) draft.Bound = bool.Parse(bound);
             if (v.TryGetValue(prefix + "configureLater", out var configureLater)) draft.ConfigureLater = bool.Parse(configureLater);
             foreach (var parameter in draft.Parameters) parameter.Value = v.GetValueOrDefault(prefix + "parameter." + parameter.Field.Key, parameter.Value);
+            draft.CancelProviderChange();
+            if (v.GetValueOrDefault(prefix + "proposedProvider") is { Length: > 0 } proposed)
+                draft.ProposeProvider(draft.Providers.SingleOrDefault(p => ProviderKey(p) == proposed) ?? throw new InvalidOperationException("待切换的精确提供者未安装；当前输入保留"));
         }
     }
     public StartupConfigurationDraft WithRestored(StartupEditorState state)
@@ -143,7 +147,7 @@ public sealed class StartupConfigurationDraft
         {
             var supported = after.Parameters.Select(p => p.Field.Key).ToHashSet();
             if (before.Parameters.Any(p => p.Value.Length > 0 && !supported.Contains(p.Field.Key)))
-                throw new InvalidOperationException("模板提供者无法保留 " + before.InstanceId + " 的本机参数；请先通过驱动/组件页面显式迁移，当前草稿不变。");
+                throw new InvalidOperationException("模板提供者与 " + before.InstanceId + " 的本机参数不匹配；请先在驱动/组件页面明确切换并重新配置，当前草稿不变。");
         }
         replacement.Restore(new(current.Values.Where(x => !x.Key.EndsWith(".provider", StringComparison.Ordinal) &&
             !state.Values.ContainsKey(x.Key)).ToDictionary(x => x.Key, x => x.Value)));

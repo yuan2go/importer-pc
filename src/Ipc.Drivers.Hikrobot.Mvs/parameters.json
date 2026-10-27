@@ -1,0 +1,72 @@
+[
+  {
+    "Key": "device.ip",
+    "Group": "设备 / 连接",
+    "Label": "相机 IPv4 地址",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 15,
+    "Description": "枚举并绑定明确IP，不使用枚举下标或修改相机IP。"
+  },
+  {
+    "Key": "device.serial",
+    "Group": "设备 / 身份",
+    "Label": "预期序列号（可选）",
+    "Type": "string",
+    "MaximumLength": 32,
+    "Description": "填写时同时验证IP及实际序列号；设备实际型号与固件在独立诊断枚举中核对。"
+  },
+  {
+    "Key": "acquisition.trigger",
+    "Group": "采集 / 触发",
+    "Label": "设备触发要求",
+    "Type": "choice",
+    "Default": "existing",
+    "Choices": [
+      "existing",
+      "on",
+      "off"
+    ],
+    "Description": "沿用设备设置不限定触发状态；选择要求开启或关闭时，仅核对设备已有设置。本软件不改变触发设置、不发送软件触发。缺少条码识别组件，任何选项都不创建包裹。"
+  },
+  {
+    "Key": "entity.mode",
+    "Group": "输入 / 实体关联",
+    "Label": "包裹关联方式",
+    "Type": "choice",
+    "Default": "observe-only",
+    "Choices": [
+      "observe-only"
+    ],
+    "ReadOnly": true,
+    "Description": "当前只有真实采图，缺少条码识别组件；不会生成条码或供包作业。正式模式不可用。"
+  },
+  {
+    "Key": "image.nodes",
+    "Group": "采集 / 缓冲",
+    "Label": "SDK 图像队列节点",
+    "Type": "integer",
+    "Default": "3",
+    "Minimum": 1,
+    "Maximum": 4,
+    "Description": "设置SDK输出图像的缓冲节点数，按顺序取图。SDK内部另有自身预分配；应用每路最多借用一帧，不复制或保留原图。"
+  },
+  {
+    "Key": "image.maximum-payload-bytes",
+    "Group": "采集 / 缓冲",
+    "Label": "单帧负载字节上限",
+    "Type": "integer",
+    "Default": "8388608",
+    "Minimum": 1048576,
+    "Maximum": 33554432,
+    "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。"
+  },
+  {
+    "Key": "bcr-code",
+    "Group": "设备 / 身份",
+    "Label": "心跳相机编码",
+    "Type": "string",
+    "MaximumLength": 256,
+    "Description": "仅供原RCS心跳映射；采集源不会因有编码而变成业务就绪。取格口相机编码仍独立。"
+  }
+]

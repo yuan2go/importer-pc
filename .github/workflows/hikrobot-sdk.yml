@@ -1,0 +1,66 @@
+name: Hikrobot current SDK boundaries
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  driver-and-configuration:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build current contract and SDK driver verification
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build tests/Ipc.Drivers.Hikrobot.Probe -c Release "-p:IpcContractPath=${{ github.workspace }}/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll" -p:RestoreLockedMode=true -m:1
+          exit $LASTEXITCODE
+      - name: Verify acquisition ownership, callback isolation and current schemas
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_application_compatibility.py
+          exit $LASTEXITCODE
+  native-parameter-editor:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build and run native synthetic SDK editing
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --hikrobot-sdk-editing
+          exit $LASTEXITCODE
+      - name: Retain synthetic HWND evidence
+        if: always()
+        shell: pwsh
+        run: |
+          $pointer='.artifacts/WINDOWS-WPF-EVIDENCE.txt'
+          if (Test-Path $pointer) {
+            New-Item -ItemType Directory -Path .artifacts/hikrobot-native -Force | Out-Null
+            Copy-Item -LiteralPath ((Get-Content $pointer -Raw).Trim()) -Destination .artifacts/hikrobot-native -Recurse
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hikrobot-native-${{ github.sha }}
+          path: .artifacts/hikrobot-native
+          retention-days: 14

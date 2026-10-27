@@ -1,0 +1,118 @@
+{
+  "Baseline": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
+  "SourceState": "reviewed working tree; frozen source to be appended",
+  "TargetBarcodeStatus": "BLOCKED: recognition component not obtained",
+  "RealTargetFrames": "NOT_RUN on this host; user-supplied field MVS stream evidence remains separate",
+  "RealSdkInitializationAndEnumeration": "PASS: MVS GetSDKVersion=0x04080202; 17 exports; 0 GigE devices; no barcode proof",
+  "FieldRcsAndReadiness": "BLOCKED/NOT_RUN",
+  "Evidence": [
+    {
+      "name": "solution-build-current.log",
+      "sha256": "765b10eccd1b2fb6fc6b8986b63d7a0aef8e5b2941e722a5cc67248a0a3e08ef",
+      "bytes": 5577,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "driver-build-current.log",
+      "sha256": "81bb4117c1711e61c446549a352f6f9498fb3fee1987f13c0c2436d381225cd4",
+      "bytes": 538,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "driver-tests-current.log",
+      "sha256": "fd078545b7a2fe2dd85ce420dc66a91eddae641971564f6fcee54a0f4d28a62e",
+      "bytes": 5664,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "sdk-editing-current.log",
+      "sha256": "6a512353a0a45d9a3e16791d431ecfe419d071a1ca9e023299033d5ba210c006",
+      "bytes": 869,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "parameter-refactor.log",
+      "sha256": "b4dfb1b7af7df7c8bb884e080b9cdce2da8ef3571b2915ccd3ef467a71fa9038",
+      "bytes": 8340,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "parameter-guidance-startup.log",
+      "sha256": "fd59d1347a90e77094464d847a42a0241926ef4ccfab79a0a876985e690ee32e",
+      "bytes": 2414,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "configuration-confirmation.log",
+      "sha256": "0a6e2403ca5a69782a3b0fbd9e7b674301a0f54beac6367352e461a1dab26907",
+      "bytes": 2392,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "sportmaster-rcs.log",
+      "sha256": "5c48755439b061150d3a0533c5c3cbb32f0bd42e3c447dac2d6371f691a58dba",
+      "bytes": 14245,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "rcs-timeout-errors.log",
+      "sha256": "228d22b8008be9036949d80845fb69b31affa47a5d01c2d631d9ac59e48d2650",
+      "bytes": 4730,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "deferred-connections.log",
+      "sha256": "ea99fead1f463b2a5823357da75308387d17276a4835f58aeb86c741292cd10d",
+      "bytes": 5546,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "deferred-connections-diagnostic.log",
+      "sha256": "6ec3b2052af85be91da17686e2cb677c3a1298b6afe69036ba27902057568214",
+      "bytes": 15013,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "deferred-connections-final.log",
+      "sha256": "79db092f60d19158083bf2e6c0faf410404ae19706da320f3d7b4efc1d435784",
+      "bytes": 14262,
+      "scope": "synthetic/build evidence; failures retained"
+    },
+    {
+      "name": "assembly-policy-tests.log",
+      "sha256": "4c8998ad4820361c6073333e14b301bced27cbc60292de22acc92a44b7e89e1e",
+      "bytes": 119,
+      "scope": "build/synthetic evidence"
+    },
+    {
+      "name": "native-reviewed/sdk02-change-review.png",
+      "sha256": "b4df91e48833f8fc86092207914a6fe4bfd7cc07f27ca6bbaadf7b15ac5ea7ec",
+      "bytes": 161223,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-compact.png",
+      "sha256": "f7eaf22e63094b15482d3c42579479ec67412ce00667bd1cabe5ec2b1443d6a9",
+      "bytes": 104074,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-mvs.png",
+      "sha256": "4bfe0e08f6eee7d193095559569f56a1b3ed62bd382299dec030175a95b49c66",
+      "bytes": 158746,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/sdk02-standard.png",
+      "sha256": "77d9ebb1f48d48ba45d0a7d62bbf8a6f8fc7248bbbe6fe581f27a2245117ea23",
+      "bytes": 155044,
+      "scope": "native WPF synthetic only"
+    },
+    {
+      "name": "native-reviewed/WINDOWS-WPF.log",
+      "sha256": "deaf29709dca67d262760fc4454f7841b896b3077f78608fcdeddf316a2397a1",
+      "bytes": 1120,
+      "scope": "native WPF synthetic only"
+    }
+  ]
+}

@@ -3,5 +3,6 @@
   <ItemGroup>
     <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>true</Private></Reference>
     <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/>
+    <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/>
   </ItemGroup>
 </Project>

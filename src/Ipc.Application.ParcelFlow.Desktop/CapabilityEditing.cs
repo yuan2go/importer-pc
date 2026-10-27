@@ -44,9 +44,10 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     {
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
         public bool ConfigureLater { get; init; }
+        public string? ProposedProviderIdentity { get; init; }
     }
     static string Identity(CapabilityDescriptor? p) => p is null ? "" : Wire.Encode(new { p.Kind, p.Implementation, p.Version, p.Contract, p.Package, p.Module });
-    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value)) { ConfigureLater = ConfigureLater };
+    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value)) { ConfigureLater = ConfigureLater, ProposedProviderIdentity = proposedProvider is null ? null : Identity(proposedProvider) };
     public static CapabilityDraft RestoreRaw(Saved state, CapabilityDescriptor[] providers)
     {
         var draft = new CapabilityDraft(state.Kind, providers, state.Original, state.Bound, state.Role);
@@ -59,10 +60,27 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         draft.InstanceId = state.Instance; draft.Target = state.Target; draft.Contract = state.Contract; draft.Enabled = state.Enabled;
         draft.ConfigureLater = state.ConfigureLater;
         foreach (var p in draft.Parameters) p.Value = state.Parameters.GetValueOrDefault(p.Field.Key, p.Value);
+        if (state.ProposedProviderIdentity is { } proposed)
+            draft.ProposeProvider(draft.Providers.SingleOrDefault(p => Identity(p) == proposed) ?? throw new InvalidOperationException("草稿中待切换的精确提供者缺失；原输入保留"));
         return draft;
     }
     public event PropertyChangedEventHandler? PropertyChanged;
     CapabilityDescriptor? provider;
+    CapabilityDescriptor? proposedProvider;
+    public CapabilityDescriptor? ProposedProvider => proposedProvider;
+    public bool ProviderChangePending => proposedProvider is not null;
+    public void ProposeProvider(CapabilityDescriptor selected)
+    {
+        if (!Providers.Contains(selected)) throw new InvalidOperationException("只能选择当前已安装的精确提供者");
+        proposedProvider = selected == Provider ? null : selected;
+        Notify(nameof(ProposedProvider)); Notify(nameof(ProviderChangePending));
+    }
+    public void CancelProviderChange() { proposedProvider = null; Notify(nameof(ProposedProvider)); Notify(nameof(ProviderChangePending)); }
+    public void ApplyProviderChange()
+    {
+        var selected = proposedProvider ?? throw new InvalidOperationException("尚未选择新的连接方式");
+        CancelProviderChange(); Provider = selected;
+    }
     public CapabilityDescriptor[] Providers { get; }
     public string Kind { get; }
     public string Role { get; }
@@ -88,6 +106,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         set
         {
             if (ReferenceEquals(provider, value)) return;
+            proposedProvider = null;
             provider = value; Parameters.Clear(); originalParameters.Clear(); preserveOmittedDefaults = false;
             if (value is not null) foreach (var parameter in value.Parameters) { var item = new CapabilityParameter(parameter, parameter.Default ?? ""); item.PropertyChanged += (_, _) => Notify(nameof(Parameters)); Parameters.Add(item); }
             Contract = value?.Contract ?? "";
@@ -106,6 +125,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     }
     public CapabilityBinding Build()
     {
+        if (ProviderChangePending) throw new InvalidOperationException(InstanceId + "/Provider: 请确认切换并重置参数，或取消切换；当前输入保留");
         if (originalBinding is not null && InstanceId != originalBinding.InstanceId) throw new InvalidOperationException("稳定实例身份只读；不能通过普通参数修改身份：" + originalBinding.InstanceId);
         var p = Provider ?? throw new InvalidOperationException("选择已安装的能力提供者：" + Kind);
         // Keep original insertion order and explicitly omitted defaults. Reordering

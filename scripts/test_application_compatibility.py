@@ -44,7 +44,8 @@ class CompatibilityTests(unittest.TestCase):
         versions = {'reference.parcel-capabilities': ('3.0.0', '2.2.8'),
                     'reference.barcode': ('3.0.0', '1.3.6'),
                     'sportmaster.rcs-task': ('2.0.0', '1.3.5'),
-                    'hikrobot.idmvs-reader': ('2.0.0', '1.0.4')}
+                    'hikrobot.idmvs-reader': ('2.0.1', '1.0.4'),
+                    'hikrobot.mvs-acquisition': ('1.0.0', '0.0.0')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
             for group in policy['ProviderSets']:

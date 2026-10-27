@@ -75,6 +75,7 @@ internal static class Verification
             await blocked.StartControlledAsync("overflow", _ => { entered.Set(); release.Wait(); return true; }, states.Enqueue, CancellationToken.None);
             blockedApi.Emit(1, 1, "SYNTHETIC-1"); if (!entered.Wait(5000)) throw new TimeoutException();
             blockedApi.Emit(2, 2, "SYNTHETIC-2"); blockedApi.Emit(3, 3, "SYNTHETIC-3");
+            await Until(() => states.Any(s => s.Health == DeviceHealth.Faulted));
             Check(states.Last().Health == DeviceHealth.Faulted && blocked.LastFailure!.Contains("queue full"), "bounded overflow faults instead of silently continuing Ready");
             var stopping = blocked.StopAsync(CancellationToken.None);
             await Until(() => blockedApi.Calls.Contains("stop"));
@@ -96,7 +97,7 @@ internal static class Verification
         await using (var connection = Reader(healthApi, new()))
         {
             await connection.StartControlledAsync("health", _ => true, healthStates.Enqueue, CancellationToken.None);
-            healthApi.FailHealth = true; await Until(() => connection.LastFailure is not null);
+            healthApi.FailHealth = true; await Until(() => healthStates.Any(h => h.Health == DeviceHealth.Faulted));
             Check(healthStates.Last().Health == DeviceHealth.Faulted, "failed real health roundtrip closes readiness without reconnect/retrigger");
         }
         var hungApi = new FakeApi(); var hungLease = new TestLease();
@@ -145,7 +146,77 @@ internal static class Verification
             Check(rejected.FramesReceived == 1 && rejected.FramesRejected == 1 && rejected.FramesInFlight == 0 && rejected.ConfirmationSource.Contains("malformed native frame"),
                 "native buffer rejection belongs to conservation and public reason");
         }
+        await CallbackIsolation();
+        await ByteBudget();
+        await DeadlineChecks();
+        await MvsVerification.Run();
         Console.WriteLine("SELF_TEST_PASS checks=" + checks);
+    }
+    static async Task CallbackIsolation()
+    {
+        var api = new FakeApi(); var lease = new TestLease();
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        await using var reader = Reader(api, lease);
+        await reader.StartControlledAsync("fault-publisher", _ => true, state =>
+        { if (state.Health == DeviceHealth.Faulted) { entered.Set(); release.Wait(); } }, default);
+        try
+        {
+            var callback = Task.Run(() => api.Failure!(new IOException("Synthetic SDK disconnect")));
+            await callback.WaitAsync(TimeSpan.FromSeconds(2));
+            Check(entered.Wait(2000), "fault reaches independent host publisher");
+            api.Emit(1, 1, "SYNTHETIC-LATE");
+            Check(reader.FramesRejected == 1 && reader.LastFailure is not null, "blocked host health cannot block native failure/frame callback or reopen ingress");
+            var stopping = reader.StopAsync(default);
+            Check(!stopping.IsCompleted && lease.Releases == 0, "stop retains owner while original health publication is in flight");
+            release.Set(); await stopping.WaitAsync(TimeSpan.FromSeconds(5));
+            Check(lease.Releases == 1 && reader.Phase == "stopped", "health drain precedes one physical owner release");
+        }
+        finally { release.Set(); }
+    }
+    static async Task ByteBudget()
+    {
+        var api = new FakeApi(); var lease = new TestLease();
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        await using var reader = new HikrobotReader(new("budget", "reader", new Dictionary<string, string>
+        { ["device.ip"] = "192.0.2.1", ["entity.mode"] = "trigger", ["queue.maximum-code-bytes"] = "1048576" }), api, _ => lease);
+        await reader.StartControlledAsync("bytes", _ => { entered.Set(); release.Wait(); return true; }, _ => { }, default);
+        try
+        {
+            var codes = Enumerable.Repeat(new string('X', 4096), 100).ToArray();
+            api.Frame!(new(1, 1, 0, 0, 0, 0, codes));
+            Check(entered.Wait(2000), "representative multi-candidate batch enters consumer");
+            api.Frame!(new(2, 2, 0, 0, 0, 0, codes));
+            Check(reader.LastFailure?.Contains("byte budget") == true && reader.FramesReceived == 2 && reader.FramesRejected == 1,
+                "byte budget includes blocked in-flight candidate strings before count capacity fills");
+            release.Set(); await reader.StopAsync(default);
+            Check(reader.FramesInFlight == 0 && reader.ConfirmationSource.Contains("bufferedBytes=0") && lease.Releases == 1,
+                "drained byte budget and observation conservation return to zero");
+        }
+        finally { release.Set(); }
+        var burst = new FakeApi(); var burstLease = new TestLease();
+        await using var startup = Reader(burst, burstLease);
+        burst.Starting = () => { burst.Emit(1, 1, "SYNTHETIC-FIRST"); throw new IOException("Synthetic native start failure after callback"); };
+        await Reject(() => startup.StartControlledAsync("start-burst", _ => throw new Exception("Must not deliver failed startup"), _ => { }, default));
+        Check(startup.FramesReceived == 1 && startup.FramesRejected == 1 && startup.FramesInFlight == 0 &&
+            startup.ConfirmationSource.Contains("bufferedBytes=0") && burstLease.Releases == 1, "startup callback is explicitly rejected and accounted when native Start fails before consumer creation");
+    }
+    static async Task DeadlineChecks()
+    {
+        var output = new ConcurrentQueue<string>(); var phase = "native-start";
+        using var deadline = new DiagnosticDeadline(TimeSpan.FromMilliseconds(30), () => phase, output.Enqueue);
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        var owned = Task.Run(() => { entered.Set(); release.Wait(); });
+        try
+        {
+            Check(entered.Wait(2000), "diagnostic owns blocked native-stage surrogate");
+            await Until(() => deadline.Expired);
+            Check(!owned.IsCompleted && deadline.Token.IsCancellationRequested && output.Single().Contains("phase=native-start") &&
+                output.Single().Contains("ownership=retained"), "overall deadline reports active phase without claiming native completion or releasing owner");
+            phase = "stop"; deadline.Stage(phase);
+            release.Set(); await owned.WaitAsync(TimeSpan.FromSeconds(2));
+            Check(output.Last().Contains("PHASE stop") && output.Last().Contains("deadlineExpired=True"), "teardown phase remains visible after overall budget expires");
+        }
+        finally { release.Set(); }
     }
     static HikrobotReader Reader(FakeApi api, TestLease lease, string mode = "trigger", int capacity = 128) => new(
         new("test", "reader", new Dictionary<string, string>() { ["device.ip"] = "192.0.2.1", ["entity.mode"] = mode, ["queue.capacity"] = capacity.ToString() }), api, _ => lease);
@@ -194,14 +265,14 @@ internal static class Verification
         public ConcurrentQueue<string> Calls = new(); public uint Mode = 1; public bool FailStop, FailHealth;
         public Action<HikFrame>? Frame;
         public Action<Exception>? Failure;
-        public Action? Enumerating;
+        public Action? Enumerating, Starting;
         public HikDevice[] Enumerate() { Enumerating?.Invoke(); return [new("192.0.2.1", "synthetic-camera", "synthetic", "synthetic", [])]; }
         public void Create(HikDevice device) => Calls.Enqueue("create");
         public void Open() => Calls.Enqueue("open");
         public uint TriggerMode() => FailHealth ? throw new IOException("Synthetic SDK health loss") : Mode;
         public void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding) { Frame = frame; Failure = failure; }
         public void Emit(uint trigger, uint frame, string code) => Frame!(new(trigger, frame, 0, 0, 0, 0, [code]));
-        public void Start() => Calls.Enqueue("start");
+        public void Start() { Calls.Enqueue("start"); Starting?.Invoke(); }
         public void Stop() { Calls.Enqueue("stop"); if (FailStop) throw new IOException("Synthetic native stop failure"); }
         public void Close() => Calls.Enqueue("close");
         public void Destroy() => Calls.Enqueue("destroy");

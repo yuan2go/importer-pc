@@ -19,13 +19,13 @@ internal static class PolicyVerification
             [new("device.ip", "device", "Camera IPv4", "string", true)]);
         var manifest = new ExtensionManifest(1, "test.native-reader", "1.0.0", "native-policy-test", "net10.0", "win-x64", 1,
             RunMode.Simulation, new('a', 40), [], [file], [module], [declaration], Wire.FileHash(typeof(ExtensionStore).Assembly.Location));
-        string Package(ExtensionManifest value)
+        string Package(ExtensionManifest value, ExtensionFile? artifact = null, byte[]? payload = null)
         {
             var archive = Path.Combine(root, Wire.Id() + ".ipcx");
             var bytes = Encoding.UTF8.GetBytes(Wire.Encode(value));
             using var zip = ZipFile.Open(archive, ZipArchiveMode.Create);
             void Entry(string name, byte[] content) { using var output = zip.CreateEntry(name).Open(); output.Write(content); }
-            Entry(file.Path, dll); Entry("manifest.json", bytes);
+            Entry(artifact?.Path ?? file.Path, payload ?? dll); Entry("manifest.json", bytes);
             Entry("manifest.sig", signer.SignData(bytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pss));
             return archive;
         }
@@ -78,6 +78,30 @@ internal static class PolicyVerification
             throw new InvalidOperationException("Expired/mismatched/missing-file native proof accepted");
         }
         Console.WriteLine("PASS: expired qualification, wrong prerequisite owner and missing native entry bytes rejected");
+        var mvsBytes = File.ReadAllBytes(typeof(Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule).Assembly.Location);
+        var mvsFile = new ExtensionFile("Ipc.Drivers.Hikrobot.Mvs.dll", mvsBytes.Length, Convert.ToHexString(SHA256.HashData(mvsBytes)));
+        var mvsDeclaration = new ExtensionPrerequisite("vendor-sdk", "MvCameraControl.dll", "4.8.2.2", new('B', 64)) { Preload = ["MVGigEVisionSDK.dll"] };
+        var mvsManifest = manifest with { Id = "test.mvs-acquisition", Files = [mvsFile], Prerequisites = [mvsDeclaration],
+            Modules = [new("mvs-acquisition", mvsFile.Path, "Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule", "observation", 2, [new("device.ip", "device", "Camera IPv4", "string", true)])] };
+        var mvsArchive = Package(mvsManifest, mvsFile, mvsBytes);
+        var mvsPackage = ExtensionPackages.Inspect(mvsArchive, trust, RunMode.Simulation);
+        bool missingMvsRejected = false;
+        try { ExtensionPackages.Inspect(Package(mvsManifest with { Prerequisites = [] }, mvsFile, mvsBytes), trust, RunMode.Simulation); }
+        catch (InvalidDataException) { missingMvsRejected = true; }
+        if (!missingMvsRejected) throw new InvalidOperationException("MVS native imports accepted without declaration");
+        var mvsDestination = store.PackageDirectory(mvsPackage.Reference); Directory.CreateDirectory(mvsDestination);
+        ExtensionPackages.ExtractVerified(mvsArchive, mvsDestination, trust, RunMode.Simulation, mvsPackage.PackageSha256);
+        ExtensionStore.AtomicWrite(Path.Combine(store.Root, "registrations", "mvs-test.json"), new ExtensionInstallation(
+            mvsPackage.Reference, mvsPackage.PackageSha256, mvsPackage.TrustSha256, Wire.Id(), DateTimeOffset.UtcNow, "Installed", "Synthetic MVS policy fixture"));
+        using (var loadingMvs = new ExtensionLoading(store))
+        {
+            await using var mvsSource = loadingMvs.Create(mvsPackage.Reference, mvsPackage.Manifest.Modules.Single(), new("mvs", mvsPackage.Reference.Id, "mvs-acquisition", "mvs-reader", true, new() { ["device.ip"] = "192.0.2.1" }));
+            bool refused = false;
+            try { await mvsSource.StartControlledAsync("mvs-missing-proof", _ => true, _ => { }, default); }
+            catch (InvalidDataException ex) when (ex.Message.Contains("qualification", StringComparison.OrdinalIgnoreCase)) { refused = true; }
+            if (!refused) throw new InvalidOperationException("MVS SDK loaded without independent qualification");
+        }
+        Console.WriteLine("PASS: MVS signed import boundary and real ALC missing-qualification refusal preserve current native policy");
         Console.WriteLine("NATIVE_POLICY_PASS");
     }
 }

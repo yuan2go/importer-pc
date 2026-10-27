@@ -133,11 +133,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requiresActiveQualification && ActivePackage(p.Manifest.Id)) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); }, deferredDevices);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
-            if (observationInstances.Where(x => x.PackageId == "hikrobot.idmvs-reader" && !deferredDevices.Contains(x.DeviceId)).GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
+            if (observationInstances.Where(x => x.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && !deferredDevices.Contains(x.DeviceId)).GroupBy(x => x.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
                 throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
             foreach (var instance in observationInstances.Where(i => !deferredDevices.Contains(i.DeviceId)))
             {
-                if (instance.PackageId == "hikrobot.idmvs-reader" && instance.Parameters.TryGetValue("device.ip", out var ip) &&
+                if (instance.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && instance.Parameters.TryGetValue("device.ip", out var ip) &&
                     (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255"))
                     throw new InvalidDataException("驱动/" + instance.Id + "/device.ip: 需要规范的设备IPv4地址");
             }

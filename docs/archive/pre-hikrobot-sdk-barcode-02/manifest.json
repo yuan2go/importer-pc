@@ -1,0 +1,25 @@
+{
+  "SourceCommit": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
+  "files": [
+    {
+      "source": "docs/design/hikrobot-reader-01.md",
+      "archive": "docs/archive/pre-hikrobot-sdk-barcode-02/docs__design__hikrobot-reader-01.md.txt",
+      "sha256": "bc7ad503a05ed44c57d54f01f29da7c5b1ddf0e341a1de314537be584e65bff3"
+    },
+    {
+      "source": "docs/runtime/hikrobot-reader-01.md",
+      "archive": "docs/archive/pre-hikrobot-sdk-barcode-02/docs__runtime__hikrobot-reader-01.md.txt",
+      "sha256": "6486de95dc4ddf4410e4485aac655ce7f344a8b5c3de356b97a353f29058d96e"
+    },
+    {
+      "source": "docs/design/parameter-refactor-01.md",
+      "archive": "docs/archive/pre-hikrobot-sdk-barcode-02/docs__design__parameter-refactor-01.md.txt",
+      "sha256": "a65a0f616e70cb515735856198abeb853673aa7965c233a20e27e54d86e4eabd"
+    },
+    {
+      "source": "docs/runtime/parameter-refactor-01.md",
+      "archive": "docs/archive/pre-hikrobot-sdk-barcode-02/docs__runtime__parameter-refactor-01.md.txt",
+      "sha256": "c43ce3fa654be9a8a4d8036fa9e2d287f8c90ddcf28bf7a2e94211f3d3ca8996"
+    }
+  ]
+}

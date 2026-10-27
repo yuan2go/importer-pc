@@ -1,6 +1,6 @@
 # 海康 SDK 当前接入与诊断
 
-当前任务及验证状态见[SDK-BARCODE-02](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。本文件定义当前操作；旧驱动冻结介质、0帧/0码、原PASS/FAIL及SDK1.0.x步骤已按原字节[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)，不能转记当前源或目标型号。
+当前任务及验证状态见[SDK-BARCODE-02](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)，并发释放、物理身份及诊断保护增量见[HARDENING-01](../work-packages/WP-IPC-HIKROBOT-HARDENING-01.md)。本文件定义当前操作；旧驱动冻结介质、0帧/0码、原PASS/FAIL及SDK1.0.x步骤已按原字节[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)，不能转记当前源或目标型号。
 
 ## 设备、采图与识码
 
@@ -17,7 +17,7 @@
 
 管理模式→参数设置→驱动→左相机/右相机，与独立首配共用完整候选。仅显示精确安装模块实际schema：
 
-- 两路分别填写`device.ip`及可选`device.serial`。相机实际型号/固件/序列号以诊断枚举及设备标识核对；套件名称不自动当作内部工业相机的枚举型号。
+- 两路分别填写`device.ip`，Production正式启用必须填写`device.serial`，左右不得绑定相同序列号。IP只作连接地址，物理身份固定到唯一完整候选；更换相机须审阅并受控启用新候选。Simulation/独立诊断可省略预期序列号，但同一源实例Stop/Start仍固定首次取得租约的实际序列号，这不提供跨进程保证。明确延后项可稍后配置且拒绝业务。实际型号/固件/序列号另以设备标识核对。
 - MVS的`acquisition.trigger=existing/on/off`分别为沿用/要求已开启/要求已关闭，只读取并校验设备状态，不改触发、不发软件触发。`entity.mode`固定仅观察，正式作业不可选。现阶段没有有效的条码编码参数，不能把图像像素当作条码字节。
 - MVS `image.nodes`默认3、范围1～4；设置SDK输出队列为OneByOne，不选择丢旧取新。SDK内部另有其预分配，不能声称这就是进程全部内存。`image.maximum-payload-bytes`默认8MiB、范围1～32MiB；打开及每帧校验负载。应用每路至多借用一个SDK图像缓冲，不建立原图副本/存图/上传队列。丢包、序号断档/重置及格式不符故障围栏。
 - MvCodeReader的`entity.mode=observe-only/trigger`、严格`code.encoding`、条码观察`queue.capacity`默认128沿原用途；新增`queue.maximum-code-bytes`默认16MiB、范围1～64MiB，覆盖排队及正在处理的候选字符串和条目预算，不是原图预算。trigger仍须已有TriggerMode=On及可信实体/重连处置证据。
@@ -50,6 +50,8 @@ MVS目录必须包含MvCameraControl.dll、MVGigEVisionSDK.dll及同版完整依
 退出码0表示所请求的枚举/诊断正常结束，不单独证明读码；1表示失败；124表示整体期限到达。MVS采集窗口正常结束返回3，明确表示仅采图、条码识别组件不可用。即使有帧也不报告已识码；0帧记录“未见触发/帧”，不据此推断设备不支持。健康Source含阶段、帧/字节计数、DecoderUnavailable及故障原因，不含图像或条码。
 
 ## 包、安装与边界
+
+两种SDK源的Dispose请求立即围栏新启动和读码回调，实际清理与Start/Stop串行；重复Dispose加入原任务，失败后可重试原清理阶段。停止健康通知异常不阻止可执行的清理，完成后仍明确报错；原生清理失败继续持有句柄、委托及租约。业务日志遮蔽条码字段、候选、嵌套及截断诊断片段；原始业务账/请求/回执保持不变。
 
 使用当前`src/Ipc.Drivers.Hikrobot.Mvs/extension.build.json`或既有MvCodeReader声明构建独立精确签名包；不把SDK放入ipcx、公共仓库或普通安装包。新MVS工程包版本1.0.0，原智能读码器当前2.0.1；当前精确组合声明已同步。新的Platform指纹/源变化须针对实际冻结宿主重建/签名，不复用旧包、旧资格或旧身份。
 

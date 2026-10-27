@@ -44,13 +44,13 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -97,55 +97,55 @@
         {
           "Kind": "weight",
           "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "login",
           "Implementation": "extension:reference.parcel-capabilities/parcel-login",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "camera",
           "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "upload",
           "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:reference.parcel-capabilities/strict-wcs",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "extension:reference.barcode/barcode-source",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "CONTROLLED-OBSERVATION-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -186,19 +186,19 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -239,49 +239,49 @@
         {
           "Kind": "weight",
           "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "login",
           "Implementation": "extension:reference.parcel-capabilities/parcel-login",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "camera",
           "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "upload",
           "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "extension:reference.barcode/barcode-source",
-          "Version": "3.0.0",
+          "Version": "1.0.0",
           "Contract": "CONTROLLED-OBSERVATION-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -328,19 +328,19 @@
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "2.0.1",
+          "Version": "1.0.0",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -381,25 +381,25 @@
         {
           "Kind": "observation",
           "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
-          "Version": "2.0.1",
+          "Version": "1.0.0",
           "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -452,13 +452,13 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
@@ -505,19 +505,19 @@
         {
           "Kind": "observation",
           "Implementation": "tcp-line",
-          "Version": "1.1.0",
+          "Version": "1.0.0",
           "Contract": "TCP-LINE-OBSERVATION-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "sportmaster-rcs",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         },
         {
           "Kind": "integration",
           "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
-          "Version": "2.0.0",
+          "Version": "1.0.0",
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]

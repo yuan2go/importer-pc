@@ -1,3 +1,5 @@
+> PR129 同步 main `fdd24fa5` 后的版本核对、原生复测及先前 CI 修正见[同步记录](evidence/query-filter-ux-01/main-sync.md)。开发阶段自有模块保持 1.0.0。
+
 # 作业记录与日志查询筛选体验
 
 2026-10-27，QUERY-FILTER-UX-01 接续 OPERATOR-WORKSTATION-01 / PR129。用户指出筛选条件混乱、机器格式时间难懂、日期框形态异常；本次调整两个真实 WPF 查询页，保留原查询、权限、取消和导出合同。

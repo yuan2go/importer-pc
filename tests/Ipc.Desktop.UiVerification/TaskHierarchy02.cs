@@ -33,6 +33,7 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS HIERARCHY02 " + reason); }
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
+        async Task Until(Func<bool> ready) { for (var i = 0; i < 200; i++) { await Flush(); if (ready()) return; await Task.Delay(25); } throw new TimeoutException("Native query state did not settle"); }
         var client = (Grid)window.FindName("ClientArea");
         var host = (ContentControl)window.FindName("PageHost");
         var ui = vm is SupplyStationViewModel ? "supply-station" : "classic";
@@ -132,13 +133,24 @@ static partial class Program
         Check(!slot.IsVisible && !station.Left.CanAdmit && !station.Left.CanContinue && station.Left.Status == "状态已失效", "stale snapshot hides actionable destination and preserves command guards");
         CaptureInternal(evidence, "supply-station-stale-1366", client, lines);
         probe.FailSnapshots = false; await RefreshUntil(() => vm.Fresh);
-        navigate("日志查询"); await Task.Delay(80); Click(host, "查询");
+        navigate("日志查询"); await Until(() => host.Content is SoftwareLogControl); await Flush();
+        var logs = (SoftwareLogControl)host.Content;
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var expectedFrom = DateTimeOffset.Parse(((TextBox)typeof(SoftwareLogControl).GetField("from", flags)!.GetValue(logs)!).Text);
+        var expectedTo = DateTimeOffset.Parse(((TextBox)typeof(SoftwareLogControl).GetField("to", flags)!.GetValue(logs)!).Text);
+        Click(host, "查询");
         var queryButton = Descendants(host).OfType<Button>().Single(b => Equals(b.Content, "查询"));
-        for (var i = 0; i < 100 && !queryButton.IsEnabled; i++) await Task.Delay(20);
+        await Until(() => queryButton.IsEnabled); await Flush();
         await SetClient(window, 800, 420); await Flush();
         var range = Descendants(host).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "日志当前查询范围");
         var advanced = Descendants(host).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出"));
-        Check(range.IsVisible && range.Text.StartsWith("已应用范围") && range.Text.Contains(DateTimeOffset.Now.ToString("zzz")) && Inside(range, client) && Inside(advanced, client), "collapsed advanced filters retain actual applied query range, explicit offset and reachable entry at minimum size");
+        var actualQuery = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", flags)!.GetValue(logs)!;
+        Check(actualQuery.From.EqualsExact(expectedFrom) && actualQuery.ToExclusive.EqualsExact(expectedTo) &&
+            range.IsVisible && range.Text.StartsWith("已应用范围") && range.Text.Contains(expectedFrom.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && range.Text.Contains(expectedTo.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && Inside(range, client),
+            "minimum query view displays local range while retaining both original query instants and explicit offsets");
+        advanced.BringIntoView(); await Flush();
+        Check(!advanced.IsExpanded && Inside(advanced, client) && Inside(range, client) && Inside(queryButton, client),
+            "collapsed advanced entry remains reachable through the single filter scroll without hiding query range or actions");
         var converted = (DateTimeOffset)new LocalTimestampConverter().Convert(new DateTimeOffset(2026, 10, 24, 8, 0, 0, TimeSpan.FromHours(-4)), typeof(DateTimeOffset), null!, System.Globalization.CultureInfo.InvariantCulture);
         Check(converted == new DateTimeOffset(2026, 10, 24, 12, 0, 0, TimeSpan.Zero) && converted.Offset == TimeZoneInfo.Local.GetUtcOffset(converted), "list conversion preserves instant and uses local offset for nonlocal records");
         CaptureInternal(evidence, "supply-station-log-range-800", client, lines);

@@ -80,7 +80,7 @@ static class OperatorAdministration
         var factory = new CommercialProductization.SyntheticFactory(launch);
         await using (var realCatalog = new ParcelCapabilityFactory(launch))
         {
-            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "2.0.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
+            Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.0.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
             await Reject<InvalidOperationException>(() => Task.Run(() => realCatalog.Validate(seed with { Mode = RunMode.Production })), "unprotected local mode state cannot satisfy production authentication capability");
         }
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };

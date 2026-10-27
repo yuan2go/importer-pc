@@ -4,7 +4,7 @@
 
 > 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
 
-> 2026-10-27 海康真实读码、SDK适用性与参数操作以 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md) 为当前入口。目标工业相机算法SDK与现场条件尚缺，原MvCodeReader连接/0码记录不代表本型号读码通过。
+> 2026-10-27 海康审查整改以 [HIKROBOT-HARDENING-01](work-packages/WP-IPC-HIKROBOT-HARDENING-01.md) 为当前增量：并发释放、原生清理、正式物理身份和诊断条码保护。SDK/解码边界继承 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)，原失败和历史验收不倒写。
 
 > 2026-10-27 日志热生效调试模式与实时终端暂停以 [DEBUG-LOG-LIVE-01](work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md) 和[操作说明](runtime/debug-log-live-01.md)为准。作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
 
@@ -13,6 +13,8 @@
 > 2026-10-27 开发阶段统一当前契约：不再维护旧版本运行兼容；清理范围、原件保护和定向验证以 [CURRENT-CONTRACT-CLEANUP / 独立工作包](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md) 第0、9节为准。下文及旧版本说明中的迁移/兼容成功目标保留历史适用范围，当前精确装配、未知责任、权限和恢复守卫继续有效。
 
 # 文档索引
+
+2026-10-27 当前自有产品版本统一为1.0.0，见[工作包](work-packages/WP-IPC-UNIFIED-VERSION-1-0-0.md)和[首次安装测试交付](runtime/unified-version-1-0-0.md)。本条替代旧当前版本号，历史证据、外部SDK/协议与数据格式保留原身份。
 
 当前构建与测试入口修复见[BUILD-TEST-FOLLOWUP-01](work-packages/WP-IPC-BUILD-TEST-FOLLOWUP-01.md)：Supply默认构建、无参数Application验证及station平台/存储规则。
 

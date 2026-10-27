@@ -19,7 +19,7 @@ static partial class SportmasterRcs
             { Default: "5000", Minimum: 100, Maximum: 30000, Unit: "毫秒" }, "request timeout schema has units, default and bounds");
         await CurrentRequestTimeoutChecks(workspace);
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "2.0.0", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
         foreach (var invalid in new[] { "0", "99", "30001", "1.5", "-1", "bad" })
         {
             try { await using var rejected = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = invalid } }); throw new Exception("Invalid timeout accepted"); }

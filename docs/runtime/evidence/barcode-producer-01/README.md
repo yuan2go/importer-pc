@@ -24,3 +24,5 @@
 原始失败没有删改：两次编译引用错误已修正；旧 Production 测试缺少实体证据/物理序列号时补充显式合成声明；旧测试试图在 Unknown 时延后读码源，被新守卫拒绝，现改为断言拒绝，并保留 RCS-only Pending、重启与原报文/次数不变的断言。早期原生截图暴露旧 SDK 路线提示，已纠正并在冻结截图重验。未删关键断言、吞异常或为通过放宽 Production。
 
 未验证：真实相机/SDK、真实读码平台或自研服务、实际触发与完整解码结果、外部进程释放相机、断连期间实物处置、真实 RCS/物理完成、目标 IPC 长稳、安装/签名/生产资格。没有操作设备、安装部署或批准投产。运行合同仍只见[协议](../../../protocols/barcode-producer-v1.md)、[设计](../../../design/barcode-producer-01.md)与[运行说明](../../barcode-producer-01.md)。
+
+裸 Windows CI 的原机级策略缺失失败及仅测试隔离修正见[补充回执](isolated-fixture-verification.json)。真实 ResourceLease 改在各次合成测试根使用；不再依赖开发机部署登记。生产代码/权限策略未改，barcode-producer、p0-deferred、deferred-connections 已在修正夹具上重新通过；原冻结介质仍保持上述 SourceCommit。

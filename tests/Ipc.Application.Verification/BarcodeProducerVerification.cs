@@ -227,7 +227,7 @@ internal static class BarcodeProducerVerification
         config = config with { Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["reply-mode"] = "lose-after-commit" } }, StationId = "producer-switch-" + Wire.Id() };
         var path = Path.Combine(root, "switch"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), config);
         var launch = new BusinessLaunch(path, Path.Combine(root, "switch-data"), null, null);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), OperatingSystem.IsWindows() ? new P0SimulationFactory(launch) : new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default);
         app.EmitReferenceAt("left", "synthetic.inflight", "0000123", "synthetic.event");
         await UntilAsync(async () => (await app.SnapshotAsync()).Operations.SingleOrDefault()?.State == ParcelState.WcsUnknown);
@@ -262,7 +262,7 @@ internal static class BarcodeProducerVerification
         c = c with { Reader = left, Topology = c.Topology! with { Readers = [left, c.Topology.Readers[1]] }, DeferredConnections = [c.Topology.Readers[1].DeviceId] };
         var path = Path.Combine(root, "admission-" + mode); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), OperatingSystem.IsWindows() ? new P0SimulationFactory(launch) : new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default); using var socket = await listener.AcceptTcpClientAsync();
         using var input = new StreamReader(socket.GetStream(), Encoding.UTF8, false, leaveOpen: true);
         var epoch = JsonNode.Parse((await input.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(3)))!)!["epoch"]!.GetValue<string>();

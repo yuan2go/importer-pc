@@ -234,12 +234,12 @@ static partial class SportmasterRcs
         => await LifecycleOptimization.AfterMonitorDrain(app, reconnect);
 
     static IParcelCapabilityFactory DeferredFactory(BusinessLaunch launch) => OperatingSystem.IsWindows()
-        ? new WindowsDeferredFixtureFactory(new ParcelCapabilityFactory(launch)) : new ParcelCapabilityFactory(launch);
+        ? new WindowsDeferredFixtureFactory(new ParcelCapabilityFactory(launch), Path.Combine(launch.DataRoot, "fixture-camera-leases")) : new ParcelCapabilityFactory(launch);
 
     // Windows developer machines need not be installed/provisioned to exercise
     // application state transitions. This fixture does not bypass protected paths
     // in production code. Linux CI exercises the unchanged real factory instead.
-    sealed class WindowsDeferredFixtureFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    sealed class WindowsDeferredFixtureFactory(ParcelCapabilityFactory inner, string leaseRoot) : IParcelCapabilityFactory
     {
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
@@ -249,7 +249,7 @@ static partial class SportmasterRcs
         {
             inner.Validate(c);
             var readers = ParcelBindings.Readers(c).ToDictionary(r => r.DeviceId, r => ParcelConnectionSetup.IsDeferred(c, r.DeviceId)
-                ? (IControlledObservationSource)new DeferredObservationSource(r.DeviceId) : new Ipc.Drivers.TcpLineObservationSource(r));
+                ? (IControlledObservationSource)new DeferredObservationSource(r.DeviceId) : new Ipc.Drivers.TcpLineObservationSource(r, key => new ResourceLease(leaseRoot, [key])));
             IWcsPort wcs = ParcelConnectionSetup.IsDeferred(c, c.Wcs!.InstanceId) ? new DeferredWcsPort(c.Wcs.InstanceId)
                 : new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs);
             if (wcs is IWcsRuntimeConfiguration runtime) runtime.ConfigureRuntime(c);

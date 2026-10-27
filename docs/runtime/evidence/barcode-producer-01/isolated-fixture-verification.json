@@ -1,0 +1,47 @@
+{
+  "RuntimeSourceCommit": "7c9c17d7d79440fae08dd7bd68d491db57588799",
+  "PriorHead": "237117a92dd5882bf2bfdf6986e58659f403c2aa",
+  "Reason": "Windows runner has no maintainer-installed policy; test-only composition uses actual ResourceLease under its isolated D test root. Production MachineRuntimePolicy and driver default acquisition are unchanged. Linux keeps the actual factory for new Application scenarios.",
+  "BuildExitCode": 0,
+  "CaseExitCodes": {
+    "barcode-producer": 0,
+    "p0-deferred": 0,
+    "deferred-connections": 0
+  },
+  "TestedWorkingTreeBlobs": [
+    {
+      "Path": "tests/Ipc.Application.Verification/P0SimulationFactory.cs",
+      "GitBlob": "6bf433a412ff1f014f1e67dadc262e2896da6e82"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
+      "GitBlob": "3096c2be8b128efb3d5f44496093a0a776ad86fb"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/BarcodeProducerVerification.cs",
+      "GitBlob": "56de713bb069bfc4e2f43a26ada7f2a8ed8a859f"
+    }
+  ],
+  "Files": [
+    {
+      "Path": "isolated-fixture-build.log",
+      "Sha256": "903ada7e2332323571ef20c11091774b65cbbc55381f0f39abddf9ab71b69417"
+    },
+    {
+      "Path": "barcode-producer-isolated-fixture.log",
+      "Sha256": "216664a2c8d1df276b6e68e3ac4ee367d6cef328b0845d0ee4c05af3220ccfa7"
+    },
+    {
+      "Path": "p0-deferred-isolated-fixture.log",
+      "Sha256": "79b555f2c6eb65d65652abc702bbcb8b6f7431b2389f3155dc3e462f57d7f6b8"
+    },
+    {
+      "Path": "deferred-connections-isolated-fixture.log",
+      "Sha256": "06155439c0b6a3bd90c7e577a37b2f83ac42f94a8a1ef138c2f02e23c89e16ea"
+    },
+    {
+      "Path": "initial-ci-driver.json",
+      "Sha256": "dc7a9f5bae48982e72c06658f3f2130948f3ef25ae91cc7a2662e8e6d711e61f"
+    }
+  ]
+}

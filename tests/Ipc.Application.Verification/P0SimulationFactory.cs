@@ -25,7 +25,7 @@ sealed class P0SimulationFactory(BusinessLaunch launch) : IParcelCapabilityFacto
         Validate(c);
         var readers = ParcelBindings.Readers(c).ToDictionary(r => r.DeviceId, r => ParcelConnectionSetup.IsDeferred(c, r.DeviceId)
             ? (IControlledObservationSource)new DeferredObservationSource(r.DeviceId)
-            : r.Driver == "tcp-line" ? new TcpLineObservationSource(r) : new ManualObservationSource(r.DeviceId));
+            : r.Driver == "tcp-line" ? new TcpLineObservationSource(r, key => new ResourceLease(Path.Combine(launch.DataRoot, "fixture-camera-leases"), [key])) : new ManualObservationSource(r.DeviceId));
         IWcsPort? wcs = c.Wcs is not { } b ? null : ParcelConnectionSetup.IsDeferred(c, b.InstanceId) ? new DeferredWcsPort(b.InstanceId)
             : b.Implementation == "sportmaster-rcs" ? new SportmasterRcsTaskService(b) : new ReferenceWcs(b, Path.Combine(launch.DataRoot, "synthetic-peer"));
         if (wcs is IWcsRuntimeConfiguration configured) configured.ConfigureRuntime(c);

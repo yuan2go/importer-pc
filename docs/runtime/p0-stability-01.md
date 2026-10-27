@@ -1,3 +1,5 @@
+> 本页为原实施与验证记录。当前条码生产者协议及运行规则由 [BARCODE-PRODUCER-01](../work-packages/WP-IPC-BARCODE-PRODUCER-01.md)统一定义；下文无握手/TCP直连相机/旧版本描述不覆盖当前接入。原验证身份保留。
+
 当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
 > 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。

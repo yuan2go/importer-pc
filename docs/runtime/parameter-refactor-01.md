@@ -1,8 +1,4 @@
-> 当前SDK安装和RCS常量以[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SDK随SM安装，首配/日常共模直接编辑SDK；source和locale不再属于可编辑参数。
-
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
-
-> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
+> 本型号当前 Reader 接入范围见 [BARCODE-PRODUCER-01](../work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。参数仍使用四类完整候选、首配/日常共模及受控启用；每台一个 RCS 共享编码。下文形成时字段与验证不定义当前生产者协议。
 
 > 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
 

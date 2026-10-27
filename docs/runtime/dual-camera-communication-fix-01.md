@@ -1,3 +1,5 @@
+> 本页为原实施与验证记录。当前条码生产者协议及运行规则由 [BARCODE-PRODUCER-01](../work-packages/WP-IPC-BARCODE-PRODUCER-01.md)统一定义；下文无握手/TCP直连相机/旧版本描述不覆盖当前接入。原验证身份保留。
+
 当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
 > TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。

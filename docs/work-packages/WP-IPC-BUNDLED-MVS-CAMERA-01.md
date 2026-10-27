@@ -1,3 +1,5 @@
+> 适用范围：本页保留原始要求、实现及验收身份。本型号的生产接入以 [BARCODE-PRODUCER-01](WP-IPC-BARCODE-PRODUCER-01.md) 为准；MVS 仅诊断，MvCodeReader 仅适用智能读码器。下文不作为本型号当前生产路线。
+
 # BUNDLED-MVS-CAMERA-01
 
 2026-10-27 用户明确纠偏：Sportmaster当前只有SDK连接，安装供包台即安装所需MVS运行依赖，不再要求另装签名驱动、库存/信任配置、退出首配再切换或TCP回退。版本仍1.0.0，起点main c5202ffc；本机原安装和当前未提交用户文件不覆盖。

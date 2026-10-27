@@ -1,3 +1,5 @@
+> 适用范围：本页保留原始要求、实现及验收身份。本型号的生产接入以 [BARCODE-PRODUCER-01](WP-IPC-BARCODE-PRODUCER-01.md) 为准；MVS 仅诊断，MvCodeReader 仅适用智能读码器。下文不作为本型号当前生产路线。
+
 # WP-IPC-HIKROBOT-READER-01
 
 用户要求：构建驱动接入已连接的 Sportmaster 海康相机。恢复执行日期2026-10-20；[编码前裁决](../design/hikrobot-reader-01.md)。

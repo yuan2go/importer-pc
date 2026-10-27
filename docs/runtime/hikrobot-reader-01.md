@@ -1,23 +1,19 @@
-# 海康标准相机当前安装、参数与诊断
+# 海康采集诊断与模块范围
 
-当前规则：[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。目标MV-PD010003-06M-12C，Windows x64，版本1.0.0。原独立安装/TCP指引和历史验收保留在[归档](../archive/pre-bundled-mvs-camera-01/README.md)。
+MV-PD010003-06M-12C 的生产输入为 PC 条码生产者的 TCP 文本行，范围见 [BARCODE-PRODUCER-01](../work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。本页只说明保留的 SDK 诊断能力，不定义生产接入协议。
 
-## 安装与参数
+## MVS 诊断
 
-当前SM安装包内置真实MVS采集驱动及核查的GigE原生闭包；无需另装驱动包、配置扩展信任或退出首配再切换。原生库不上传Git，离线构建输入来自获授权本机D盘。安装器按既有受保护部署完整性、所有权、指定运行账户及生命周期安装。不得依赖MVS客户端全机搜索路径，不修改PATH。
+`src/Ipc.Drivers.Hikrobot.Mvs` 使用 MVS 采图。ABI 为 `0x04080201`，入口 DLL 文件版本 4.8.2.1。14 个 x64 DLL 及 SDK-NOTICE.txt 的精确闭包按原生清单核查，禁止依赖全机 PATH、替换同名异字节库或绕过保护目录。SDK 字节只保留在获授权的 D 盘离线输入，不上传 Git。
 
-首次配置和日常管理参数共用同一完整候选。左右直接显示海康SDK、IP、预期序列号、触发要求、关联和有界采集缓冲；没有TCP端口/keepalive或TCP切换。公共模板无现场IP。每台只有一个相机编码，取格口与心跳共用；序列号是物理设备身份，不是第二个RCS编码。
+独立诊断先停生产者并确认相机释放。MVS 按规范 IP/预期物理序列号绑定，用 `device:hikrobot-gige:<serial>` 机级租约及 SDK 独占打开；不修改 IP/曝光/触发，不发软件触发。采集检查原像素/负载/触发条件，缓冲有界且逐帧归还。停止、归还或销毁失败保有原 owner 与租约；取消等待不代表相机已释放。
 
-相机和RCS可以明确稍后配置；未配置相机的位置不启动、不接包，另一台已就绪相机可独立作业。两台相机都未配置或RCS未配置仍拒绝新入场，见[当前单相机规则](station-single-camera-recovery-01.md)。保存候选后按原Pending/Effective受控重启启用。Production启用须预期物理序列号，左右不得重复，同一源实例重连不自动学习另一台设备。切换页面不重建连接，未保存输入保持同一候选。
+MVS 只报告连接和帧诊断，`entity.mode=observe-only`，始终不提供业务 Ready、不产生条码、包裹或 RCS 请求。诊断和生产者不得同时配置同一物理相机。外部读码平台不执行供包台机级租约；现场停止及释放确认必不可少。
 
-## 真实SDK与边界
+## 智能读码器模块
 
-当前ABI为MV_CC_GetSDKVersion=0x04080201，入口DLL文件版本4.8.2.1。14个已核查x64 DLL约10MiB，主入口MvCameraControl.dll、GigE预载MVGigEVisionSDK.dll，完整字节/hash、AMD64和保护目录逐项核验，整目录只允许当前清单，禁止同名异字节已加载模块。SDK模块及文件保持至进程退出，换库受控重启。SDK缓冲由实际GetImageBuffer/FreeImageBuffer成对归还；连接/停止/资源释放沿原加固实现。
+`src/Ipc.Drivers.Hikrobot`、MvCodeReader/IDMVS 资格材料和 Probe 仍有构建、工具及历史证据引用，因此保留但仅适用于其真实智能读码器型号。不得用于本标准工业相机，不得将既有枚举/0码记录改标为本型号读码验收。
 
-MVS仅采图，缺适用正式条码识别组件。只有真实连接/实际帧才能分别报告连接/帧；不把图像解压、模拟码或连通当识码成功。当前仅观察，不创建包裹或RCS作业，健康不发布业务Ready。正式算法仍需厂家提供适用组件、x64运行库、真实接口文档/示例与必要许可，不限定组件名称。
+## 验证边界
 
-## 构建与必要核验
-
-开发侧正常本机交付使用package-application.py的--mvs-runtime指向已核查的14库及SDK-NOTICE.txt目录；这不是安装用户的操作。缺文件/字节变化/非AMD64/缺许可告知应拒绝正式介质。CI无厂商文件时仅可显式生成VERIFICATION_ONLY_VENDOR_ABSENT验证介质，不宣称SDK已内置或可正式交付。
-
-安装内置字节随application-release与安装介质清单一起校验。参数可读不证明SDK已加载；连接诊断、实际帧、算法、RCS与现场分别记录。仅枚举初始化验证不打开或触发相机，不证明真实读码。
+工程使用 `tests/Ipc.Drivers.Hikrobot.Probe` 的合成原生端口验证资源生命周期和拒绝条件。真实 SDK 加载/枚举、真机帧、生产者解码、实体关联、RCS 与现场分别计证。历史结果见各原工作包和回执，不继承到新源码。

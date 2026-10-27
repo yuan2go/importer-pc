@@ -1,3 +1,5 @@
+> 适用范围：本页保留原始要求、实现及验收身份。本型号的生产接入以 [BARCODE-PRODUCER-01](WP-IPC-BARCODE-PRODUCER-01.md) 为准；MVS 仅诊断，MvCodeReader 仅适用智能读码器。下文不作为本型号当前生产路线。
+
 > 2026-10-27 用户再次纠偏以[内置MVS安装与参数](WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SM相机只使用内置SDK，首配与日常均显示SDK参数，安装软件即带运行依赖；下文独立驱动安装/TCP切换要求保留形成时范围，不再作为当前用户流程。真实识码和现场资格边界不变。
 
 # CAMERA-SDK-SINGLE-CODE-01

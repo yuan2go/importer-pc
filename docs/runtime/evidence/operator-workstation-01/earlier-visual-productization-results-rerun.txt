@@ -1,0 +1,26 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing while rejecting the removed Sportmaster profile
+PASS native diagnostics initially folds scanning contents and infrequent maintenance tools
+PASS native read-only diagnostics binds both connection explanations while preserving shared facts and identities in support copy
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused=True, busy=False, receipt=Persisted · Application command committed, feedback=操作已提交；请核对当前应用状态。
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner; left=ResolvingWcs, right=SlotResolved, paused=False, resolves=2
+PASS left and right resolve independent operations on the shared live Application
+PASS classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand
+PASS classic and default share the friendly receipt projection while preserving the complete technical receipt
+PASS partial readiness is translated without changing the authoritative state or permissions
+PASS active blockers and optional operator login remain visible while technical diagnostics are collapsed
+PASS workstation shows actionable human guidance and required login while preserving all original blockers
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS technical detail is absent from the daily position
+PASS active native window grants initial keyboard focus before the refresh retention experiment
+PASS repeated native snapshots retain focus, barcode selection, position scroll and unsaved inspection
+FAIL System.InvalidOperationException: 已有历史查询进行中
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.LoadHistoryPageAsync(Int32 targetPage, Boolean newSelection) in D:\projects\importer-pc-worktrees\operator-workstation-01\src\Ipc.Application.ParcelFlow.Desktop\ParcelTargets.cs:line 83
+   at Ipc.Application.ParcelFlow.Desktop.ParcelViewModel.LoadHistoryAsync(Boolean next) in D:\projects\importer-pc-worktrees\operator-workstation-01\src\Ipc.Application.ParcelFlow.Desktop\ParcelTargets.cs:line 80
+   at Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel.OpenHistoryAsync(String operationId) in D:\projects\importer-pc-worktrees\operator-workstation-01\src\Ipc.Application.Sportmaster.Desktop\SupplyStationViewModel.cs:line 111
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 152
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 298
+   at Program.<>c__DisplayClass30_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\Program.cs:line 86

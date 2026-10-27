@@ -1,0 +1,15 @@
+PASS PS05 Chinese pause/mode presentation preserves original application facts
+PASS PS05 unchanged native form disables save without requiring authentication
+PASS PS05 forced empty review remains non-submittable and creates no revision
+PASS PS05 live context updates preserve native selection and enable edited save before authorization
+PASS PS05 runtime context is derived from Effective rather than edited values
+CAPTURE v3-left-running: 1365.6x768 DIP; scale=1.25,1.25
+PASS PS05 selected camera opens its native diagnostics with visible object context
+PASS PS05 camera diagnostics provides a direct action for the matching connection
+CAPTURE v3-object-diagnostics: 1365.6x768 DIP; scale=1.25,1.25
+FAIL System.InvalidOperationException: Sequence contains no matching element
+   at System.Linq.ThrowHelper.ThrowNoMatchException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)
+   at Program.VerifyParameterV3(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\ParameterV3.cs:line 58
+   at Program.VerifyParameterV3(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\ParameterV3.cs:line 161
+   at Program.<>c__DisplayClass30_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\Program.cs:line 80

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-HIKROBOT-SDK-BARCODE-02",
+  "work_package": "WP-IPC-OPERATOR-WORKSTATION-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "74305cec857fbd56b4a50662a0e83ae58856d48b008dc0e212f67ce8a5707324",
-      "size_bytes": 10335,
-      "git_blob": "98857f9ea043e69cff54050464f3a3134de7e343",
+      "sha256": "e8623f73b05e424db830bc0ac342367b64df536a218250aea609c40c9034304c",
+      "size_bytes": 10496,
+      "git_blob": "1b9076d5619b19d5cc78f26998eb79efe3c16eda",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "7b73d77924c6099a24c050fd6b92126d77273b440550b6c3b121dff69eb55797",
-      "size_bytes": 26636,
-      "git_blob": "099a0b3a09ab53a3a3d79941b65bb93b8e8a7777",
+      "sha256": "9c773f03ab631034884df099c94d5554d447eebff7c3b5d165244db0124bc6b2",
+      "size_bytes": 26765,
+      "git_blob": "324e30f0f2350716065c3d61aa0367f8b9394f19",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1964,9 +1964,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "642287c6e31ae1f78851ea85c611e65c3a2c561ea9ef4483ecd19fc0b866e8ab",
-      "size_bytes": 2739,
-      "git_blob": "250285ce0133cf426ed0f3463d1f676adc9e1a9d",
+      "sha256": "c4be6df83afcd14c4df35ab48716241e3d4d145bc98e567b9f7639d9a488776b",
+      "size_bytes": 2847,
+      "git_blob": "a70893f6b8b990e385b7a7b9763b00926ec096a0",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "176453eb6b67609bcd2771ee85ec1cda2aaefb4fee4089e4fca121217d29d636",
-      "size_bytes": 8928,
-      "git_blob": "9c2ba5aeb0339e86de8c062d70122925a112e60f",
+      "sha256": "fb7070cde1f5c02a530fae995ebdacc61698a0a9ecd6d0f377c394efbec6a90d",
+      "size_bytes": 9151,
+      "git_blob": "d99530e3dc21228be73b26eedfb2c7cb4d98fba1",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -53375,9 +53375,9 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "de6dbfaa20e87f8eb9a558eabaf368aa114da19ebe2f4b40571a140e92eeb660",
-      "size_bytes": 9819,
-      "git_blob": "5e36b1369bd6e154c148888b062fbad4f27a0510",
+      "sha256": "daf2966273f80f2fdecf0f018e816251f87c97fa92417b6866c00e5ddafbe477",
+      "size_bytes": 9919,
+      "git_blob": "178b5c074400e24d367dcc070bf71cc59afd41fe",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -55306,9 +55306,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
       "storage_scope": "public_repository",
-      "sha256": "b04e38ed1cf3a75a52036b7472ada1243d9f63ea5a39be17639e525409b2de95",
-      "size_bytes": 15907,
-      "git_blob": "667552bab0b5041d0cbc887343c4e496870d2549",
+      "sha256": "1c2cdafa7d799fc56fb7a5fc49d5f39ddf2eeb38bb2e3a39b0b7a1ec0d3a2050",
+      "size_bytes": 11181,
+      "git_blob": "7f64401161e8bd6fb291ccb24bc567e5dc37d283",
       "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
@@ -55340,9 +55340,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "4406cb6f927bc96d3efeaba045969bf2f65b5b6d3e739a2c21448da05e6d7753",
-      "size_bytes": 29055,
-      "git_blob": "20f10a7cd469f0fe9c796899226d4ec3c5223637",
+      "sha256": "af913c5d25edce47d774dd557a5d8d4cca7dbf9de545a56aa71cf7e1e99f30eb",
+      "size_bytes": 29889,
+      "git_blob": "fd2713ebef27d274a932d79f9d3618a5041cbd96",
       "previous_git_blob": "a36a60ec0f506ed0a158fe26770f9182fc67c295",
       "pre_publication_no_test_git_blob": "e4d3941ec6b55ee2c84166063de5232d1827ef4e",
       "pre_parameter_settings_v3_source_identity": {
@@ -55362,9 +55362,9 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
-      "sha256": "d3e03bd4969e738fc9f4d6d62a59cbe5322852633e0b86c31b643b6d569f4c7f",
-      "size_bytes": 12727,
-      "git_blob": "f195d46d8c3f76db05a0fcf07fb54e138a07fa03",
+      "sha256": "c5c8245543aa7b310681ee8a46c2d3f6902cff4e5013db3a18fd084c8abcbbb3",
+      "size_bytes": 13009,
+      "git_blob": "a281c3d6c2f45d2cfc1db1d43b4f966bd68ea211",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -55385,9 +55385,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
       "storage_scope": "public_repository",
-      "sha256": "c99dd38afb3514d56453d3dc250418d6921625a6f99a04e4a6836b6729e67eca",
-      "size_bytes": 16777,
-      "git_blob": "a8cc67ac2067b25a6d97a60c7ca942e405583fdd",
+      "sha256": "8e77d164c38c929a1dda12f76277d0a5f9988c645948acd6b85f143fb9ee1e4f",
+      "size_bytes": 17179,
+      "git_blob": "6683ee55720a6a618f46dfdc96ce3a7684337037",
       "previous_git_blob": "63bdfd8d733e71cfbc157fd71deb3df55003bbc4",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "4e0db0b810312c5488ec588d18398dcc182f6da5",
@@ -55404,9 +55404,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "56290af0ae03cc6a41b18ed37470ef5418759a2e7bd01485d1a3c8485d3f4279",
-      "size_bytes": 13054,
-      "git_blob": "ff95cff08be0ebcc12ab1125e7083c5c5c0881b6",
+      "sha256": "8777f90200c246ecd9d758d4b2900e5de9c41241e460d5f73f0c76c2e1f80066",
+      "size_bytes": 13095,
+      "git_blob": "2dd8cf22b7d849c7f19704f266875ba6cc4a6e1f",
       "previous_git_blob": "f4dde3c9a7ed91f31f00510127ac71794efe3da0",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "b7f98e60c23630e8bd54de626a15087c39c2c513",
@@ -59572,15 +59572,15 @@
       "purpose": "Native typography evidence and bounded validation",
       "source": "WP-IPC-TYPOGRAPHY-01; actual per-file source in controlled-review/RESULT.json",
       "storage_scope": "public_repository",
-      "sha256": "481df55522a825dc21ca8f579c97346c1e4f2254291d0ea1d384f52cf117e406",
-      "size_bytes": 18578,
-      "git_blob": "0c6e203387910d670832896bafc109200f4f2c0c"
+      "sha256": "18c3bfd5bf1dd61af350b50ceca5dc4b2a976c10a2ccc433e2b1f2470f8882e6",
+      "size_bytes": 18681,
+      "git_blob": "81dbed1527ab2cdc3aebcecd51febfba075a5887"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "7dfd5575e1cb43c8ccdc857b8cbe60c934c82d833fb75f98c53287e23e5346e6",
-      "size_bytes": 22833,
-      "git_blob": "4e1dd1287488139bf0d6fa451a1e908927d245a3",
+      "sha256": "d788b12bb2ea89e037bf40a1dc92c4ec4816b6cb5dc0d1eabeef7d174d8cb515",
+      "size_bytes": 22951,
+      "git_blob": "436d580880b173f5fea6dbfc55db3a848278977c",
       "version": "hikrobot-sdk-barcode-02",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -59625,9 +59625,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "8c6f5feec9193120a5daa78d5a92fd3814b009100725d01c498a939d35af6d25",
-      "size_bytes": 34256,
-      "git_blob": "2b6316b17a98b5e9acad29c19cf8e3b3272675ad",
+      "sha256": "1c7757a253a89e5132e950e8e8ba7c092915adaf83c50751104154528d5e43db",
+      "size_bytes": 34342,
+      "git_blob": "ff02bdb389b00b9942e550481176ba4a9d3e8b93",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -100835,9 +100835,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current workstation presentation, ordinary runtime entry and bounded dual log views",
       "source": "WP-IPC-WORKSTATION-STATUS-LOGS-01",
-      "sha256": "f49257d452506f517dd66b1681ba620048256499209781e4ca5f24fd16083e21",
-      "size_bytes": 4181,
-      "git_blob": "5e764a1f9dc7e96b117392f1c9b638f6dc8dae57",
+      "sha256": "dc3bc0880ab23d0f81a073da72456e08a2fa7c1f3cdcf4f7a852f200af6cd8ed",
+      "size_bytes": 4407,
+      "git_blob": "0788151b1fe78998f10b180de70cd3ee5cedf561",
       "storage_scope": "public_repository"
     },
     {
@@ -100857,9 +100857,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current workstation presentation, ordinary runtime entry and bounded dual log views",
       "source": "WP-IPC-WORKSTATION-STATUS-LOGS-01",
-      "sha256": "0ffd1c233821b358cc15dfd6f7fdb9fab189fa8540f1ab1d9cd70dd0a080e3a5",
-      "size_bytes": 2921,
-      "git_blob": "4aac43c57ff16c77328ad9e1f955ed462172ea1d",
+      "sha256": "4ac6cc150888a6ea0089f2eebdf0389c9b834376f1b0fc143abfd08505c93c0a",
+      "size_bytes": 3130,
+      "git_blob": "3943cf9ce89b63ed6179fb3ea6e3226a1cf4c4c6",
       "storage_scope": "public_repository"
     },
     {
@@ -102533,6 +102533,237 @@
       "size_bytes": 11434,
       "git_blob": "a26e3509d7c561eb4d41b490a0a5c9e26dcf9e69",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/README.md",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "8e155420f14b5d31a896814b859e4a2dcb5f1f225efc1ba9e716016bc86a5094",
+      "size_bytes": 3001,
+      "git_blob": "ddcf8709b2fd8ab260c702bbb1543b6bce7a3132",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/build.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "5330ce00a93584a480b22e974f47a7c558f8da4fb8f947bf661fe9542b454460",
+      "size_bytes": 2545,
+      "git_blob": "e77e22e3cd98d04dbaa1d424c1169467159c03bd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-operator-workspace-results.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "bae8b5e9e8972dbb26dfd1e918944b6ba904e26884ac7c6147dd81bd8f07523d",
+      "size_bytes": 3611,
+      "git_blob": "a5fe25d07e1aa10829215b653c394fea601cf033",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-parameter-v3-only-results.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "cdc0be410b2821903b62ee6922327c40eea5be1b3f2700e81c36e2d0ef5cfc3c",
+      "size_bytes": 1534,
+      "git_blob": "c39657ffaeeb06f3749ee5db41e2924fd3b841de",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-publish-attempt-rid.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "dc27faf80750b4f7933b9444c09c0478e3fa24b2ff01a97744d2959cfd236268",
+      "size_bytes": 11210,
+      "git_blob": "14ac3c160c3f1c8f9db124a82abf9569a57a6b63",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-visual-productization-results-final.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "10bf8870851ca654b8ff4d73c5dcccefb7097aea5a2dd7ba5f159a39b0d63427",
+      "size_bytes": 6015,
+      "git_blob": "b30211c7eb0b3c882f11a249779092e8b58d271c",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-visual-productization-results-rerun.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "28edccec631bdf132e2836fc438b8a1438430e75ce35fd842bda01119aae63a8",
+      "size_bytes": 3495,
+      "git_blob": "6a797164d350921ebd6769ae5e4c0f1831da330f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/earlier-visual-productization-results.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "41d1c68aee889595ad31a1217449cae1290a0dc345b5c85c7a4fec8e32762233",
+      "size_bytes": 1309,
+      "git_blob": "40b9148f2777b4405fd111f26db6f77d7dc8d904",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/management-mode.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "1a2e61ad48e9d834f75eafd8b6e53e99f1ee49a18084f9afa8a786d26ea11bb5",
+      "size_bytes": 5830,
+      "git_blob": "ac6e1cc923828a5bcb8db0c2bf2f128351c4958f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/operator-workspace.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "46d9a382749117d5223241e20ce536b669bc3ddb54d188260540329ffc8651ba",
+      "size_bytes": 3089,
+      "git_blob": "b945353144ba72a11d160522a1a1c2483ae7f434",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/parameter-v3.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "fa0cb9c493df7b2d9891f3666761e0dc834f05a4825d6636cc1e64622927c649",
+      "size_bytes": 3170,
+      "git_blob": "0136eef71a767ead84f3eda03820d559d25c28ba",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/publish.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "dc890fec54a1c40d6b94e54acd3834f0be23f269e8e08cd5d893b5c35bf41d3f",
+      "size_bytes": 5068,
+      "git_blob": "770a79a4cc28d2071bd46690b14b280d64ca5d4c",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/task-hierarchy-chain.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "509303876b5045802d0342cb4134c99123996c3f5c3c1bf2803c46ea78f25d56",
+      "size_bytes": 5535,
+      "git_blob": "c62147e528ef26b2030317dc5ced679034c9c2ec",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/verification.json",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "8c92a07d831ec993fe91ef34aec9d3188b86b35023bad7f3151889f2f0295892",
+      "size_bytes": 4573,
+      "git_blob": "a341e007467c2f3195b1b37d1f6f82075520c3d6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/visual-productization.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "8d601526030ad70296bf30e431599db19184e9161aff35448b38d4e909c862dc",
+      "size_bytes": 12206,
+      "git_blob": "ba9a82dd977b2311df836e81a960f6bf1bd82efc",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/operator-workstation-01/workstation-status-logs.txt",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "932f3945138acba291ac57848a809f2e03b82b301c04b520eb5bf772e7ebe4b4",
+      "size_bytes": 3864,
+      "git_blob": "28057873aef6ff9807614b4cab78862992ed24cd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/operator-workstation-01.md",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "47c5e213941194c53362c631abb1853f2a27fe39f991f435363335483d14861d",
+      "size_bytes": 5060,
+      "git_blob": "1d78149b810f689aae613e341e80d30cf676cc6f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "4b642405eef6acd9df2b18aaf9bc2bbfdd427e12d25e12385f35ca5ffb2d56e6",
+      "size_bytes": 2087,
+      "git_blob": "903b35d771a392d8fe0af1e76d995be35287accd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/OperatorWorkspacePresentation.cs",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "254de03792a83752891f5a39502d4cfe74acfcaf3c0b1022f47aee9b15b446c3",
+      "size_bytes": 10505,
+      "git_blob": "d26b371e2e82171155393cab14f5164d21fba965",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.OperatorWorkspace.cs",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "8a3d53d6f986b4805b9f1095b529c6f5fe31551e03757c5d5b6ce1a9f5fb3e8e",
+      "size_bytes": 4118,
+      "git_blob": "9c048a20aece00e26239256d71a895a811e26415",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorWorkspace.cs",
+      "version": "operator-workstation-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Operator UI and maintenance diagnosis with bounded native verification",
+      "source": "WP-IPC-OPERATOR-WORKSTATION-01; earlier evidence retains original scope",
+      "sha256": "1ad41de5d76f11b2a54dcdf6039a0b89fea52579a9ccf26feb60a3772b5c6bb3",
+      "size_bytes": 10889,
+      "git_blob": "6f19297cec81856676571ace6822690033ff9ee2",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -102612,7 +102843,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -105393,5 +105624,9 @@
       "manifest_sha256": "1c4a5ea2aa4d56aa5feb0c4c268d7d1847f52714ffa137651126def7282f109e",
       "work_package": "WP-IPC-DEBUG-LOG-LIVE-01"
     }
-  ]
+  ],
+  "operator_workstation_01_previous_context": {
+    "work_package": "WP-IPC-HIKROBOT-SDK-BARCODE-02",
+    "commit": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8"
+  }
 }

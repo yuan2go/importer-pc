@@ -1,0 +1,127 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing while rejecting the removed Sportmaster profile
+PASS native diagnostics initially folds scanning contents and infrequent maintenance tools
+PASS native read-only diagnostics binds both connection explanations while preserving shared facts and identities in support copy
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused=True, busy=False, receipt=Persisted · Application command committed, feedback=操作已提交；请核对当前应用状态。
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner; left=ResolvingWcs, right=SlotResolved, paused=False, resolves=2
+PASS left and right resolve independent operations on the shared live Application
+PASS classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand
+PASS classic and default share the friendly receipt projection while preserving the complete technical receipt
+PASS partial readiness is translated without changing the authoritative state or permissions
+PASS active blockers and optional operator login remain visible while technical diagnostics are collapsed
+PASS workstation shows actionable human guidance and required login while preserving all original blockers
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS technical detail is absent from the daily position
+PASS active native window grants initial keyboard focus before the refresh retention experiment
+PASS repeated native snapshots retain focus, barcode selection, position scroll and unsaved inspection
+PASS native visual history uses the complete real fixed-range contract rather than the snapshot fallback
+PASS fixed history query actions include first/previous pages; each cancellation is visible only for its active operation
+PASS expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows=80/True, row=40, rowBottom=76.80000000000001, scroll=562.4, detail=False; buttons=查询:44/True/38.400000000000006|清除筛选:44/True/38.400000000000006|首屏:44/True/38.400000000000006|上一页:44/True/38.400000000000006|下一页:44/True/38.400000000000006|导出表格…:44/True/38.400000000000006
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS native calendar editor preserves the original wall time and explicit nonlocal UTC offset
+PASS invalid native time propagates as invalid input instead of retaining an older query time
+PASS rejected native date invalidates the bound history filter and removes the stale calendar selection
+PASS calendar dismissal and clock edits cannot restore a rejected date or broaden the query
+PASS explicitly selecting the original date corrects the error with the current clock and offset
+PASS valid typed date corrects the rejected value without reviving an older time or offset
+PASS native clear-time action removes both exact time boundaries
+PASS closing filter editing restores records and original command ownership without a new query or selection reset
+PASS native history row and command owner survive live snapshot refresh
+PASS compact history initially folds task details rather than hiding query results
+PASS history recovery actions remain fixed and fully visible at minimum client size while long inspection details scroll
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS page navigation preserves existing controls and independent drafts
+PASS ordinary more menu has no auxiliary-window action
+PASS programmatically attached native view retains the same Application and device lifetime
+PASS rejected input distinguishes recognition from validation and retains the original owner: 本次识别失败 · 未取得包裹号
+PASS rejected input distinguishes recognition from validation and retains the original owner: 本次识别未通过校验
+PASS rejected input distinguishes recognition from validation and retains the original owner: 本次识别失败 · 多个候选码
+PASS Unknown/rejection never reuse a slot and retain the original request owner
+PASS failed snapshot invalidates displayed slot and new commands without clearing original responsibility
+SIZE window=900x520 client=885.6x482.4 DPI=1.25
+PASS compact recovery actions remain in actual client area
+MINIMUM 左投递位 barcode=36 slot=48 actionsBottom=288.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+PASS primary barcode and slot fit the body viewport without scrolling at the minimum client
+PASS compact recovery actions remain in actual client area
+MINIMUM 右投递位 barcode=36 slot=48 actionsBottom=288.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+PASS primary barcode and slot fit the body viewport without scrolling at the minimum client
+PASS supply-station actual client 1440.0x768.0 supports reflow target (1440, 768)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS supply-station (1440, 768) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=452; barcode=12,26.4,586.4,72
+PASS failure cause and next step remain visible at every supported size
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=452; barcode=12,26.4,586.4,72
+PASS failure cause and next step remain visible at every supported size
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 1600.0x900.0 supports reflow target (1600, 900)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS supply-station (1600, 900) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=584; barcode=12,26.4,666.4,72
+PASS failure cause and next step remain visible at every supported size
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=584; barcode=12,26.4,666.4,72
+PASS failure cause and next step remain visible at every supported size
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 1100.0x600.0 supports reflow target (1100, 600)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS supply-station (1100, 600) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=308; barcode=12,26.4,496,72
+PASS failure cause and next step remain visible at every supported size
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=308; barcode=12,26.4,495.2,72
+PASS failure cause and next step remain visible at every supported size
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 911.2x512.0 supports reflow target (911, 512)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS supply-station (911, 512) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=236; barcode=76,0,354.4,48
+PASS failure cause and next step remain visible at every supported size
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=236; barcode=76,0,353.6,48
+PASS failure cause and next step remain visible at every supported size
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual client 800.0x420.0 supports reflow target (800, 420)
+PASS both positions expose actual barcode and result controls
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS supply-station (800, 420) barcode/result remains inside actual client without scrolling the entire page
+PASS long leading-zero barcode remains fully selectable for copy
+PASS unadmitted input with Unknown original cannot expose a destination
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=144; barcode=76,0,281.6,48
+PASS failure cause and next step remain visible at every supported size
+PASS failed-input barcode remains inside the body viewport beside retained original responsibility; unavailable destination stays hidden; body=144; barcode=76,0,281.6,48
+PASS failure cause and next step remain visible at every supported size
+PASS both retained Unknown responsibilities remain visible alongside the new input rejection
+PASS independent Pause remains enabled and reachable
+PASS supply-station actual subminimum client protects and requests software Pause
+PASS supply-station recovered space retains protection without automatic Resume
+PASS supply-station explicit view confirmation clears only geometry protection
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+NOT_RUN physical touch, hardware, mixed-monitor DPI, UAC installation and site acceptance.

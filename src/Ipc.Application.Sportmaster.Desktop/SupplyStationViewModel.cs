@@ -7,7 +7,7 @@ using Ipc.Platform;
 namespace Ipc.Application.Sportmaster.Desktop;
 
 // Presentation only. Every fact/permission comes from the existing application contract.
-public sealed class SupplyStationViewModel : ParcelViewModel
+public sealed partial class SupplyStationViewModel : ParcelViewModel
 {
     string selectedPage = "workstation";
     bool isTight;
@@ -73,11 +73,13 @@ public sealed class SupplyStationViewModel : ParcelViewModel
             if (e.PropertyName is nameof(IsCompact) or nameof(IsTight) or nameof(Busy)) { Left.NotifyLayout(); Right.NotifyLayout(); }
             if (e.PropertyName == nameof(SelectedPage)) SetFeedbackContext(SelectedPage);
             if (e.PropertyName == nameof(TaskFeedback)) Changed(nameof(WorkFeedback));
+            if (e.PropertyName is nameof(Busy) or nameof(IsManagementMode)) NotifyOperatorWorkspace();
         };
     }
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
+        NotifyOperatorWorkspace();
         foreach(var name in new[]{nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode),nameof(RcsServiceStatus),nameof(RcsPresentation)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
@@ -160,7 +162,12 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string AttentionReason => !owner.Fresh ? "旧任务信息不可用于当前投递。" : InputUnadmitted ? ParcelPresentation.InputReason(Input!) +
         (Input!.Outcome == ParcelInputOutcome.Blocked && BlockingReasons.Length > 0 ? " 当前：" +
             (HasUncertainOriginal ? "原作业结果待核对。" : BlockingReasons) : "") :
-        Operation is { } op && !CurrentTaskAvailable ? ParcelPresentation.RcsException(op) ?? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : BlockingReasons;
+        Operation is { } op && !CurrentTaskAvailable ? ParcelPresentation.RcsException(op) ?? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : Operation is null ? IdleReason : BlockingReasons;
+    string IdleReason => owner.Snapshot is not { } s ? "等待状态读取。" :
+        ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? "相机尚未配置，请维护人员完成相机设置。" :
+        s.Configuration.Effective.Wcs is { } w && ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId) ? "RCS 尚未配置，请维护人员完成服务设置。" :
+        s.Paused ? "供包已暂停。" : s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Admit == true ? "" :
+        "本位尚未满足供包条件，请维护人员查看诊断。";
     public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);
     WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
         ? Operation!.Wcs!.Replies.LastOrDefault(r => r.BusinessAccepted == true && r.RequestId == Operation.Wcs.Request.Id &&
@@ -206,7 +213,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时",
         ParcelState.WcsUnknown => "结果待核对",
         ParcelState.WcsRejected => "业务拒绝",
-        _ => Presentation.Text
+        _ => Operation is null && IdleReason.Length > 0 ? "暂不能供包" : Presentation.Text
     };
     public string OriginalResultSummary => InputUnadmitted && Operation is { } op ? "原件保留 · " +
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
@@ -223,7 +230,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelPresentation.RcsTimedOut(Operation) ? "RCS请求超时，请重新扫描。" :
         HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
-        BlockingReasons.Length > 0 ? "暂不能供包，请联系维护人员检查。" : "读码后自动获取任务，无需逐包确认。";
+        BlockingReasons.Length > 0 ? "请维护人员查看本位诊断。" : "读码后自动获取任务，无需逐包确认。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";

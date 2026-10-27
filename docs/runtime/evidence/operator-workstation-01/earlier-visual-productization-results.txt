@@ -1,0 +1,7 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing while rejecting the removed Sportmaster profile
+FAIL System.InvalidOperationException: native diagnostics initially folds both position identities and shared evidence
+   at Program.<>c__DisplayClass64_0.<VerifyVisualProductization>g__Check|0(Boolean condition, String message) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 19
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 49
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 302
+   at Program.<>c__DisplayClass30_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-worktrees\operator-workstation-01\tests\Ipc.Desktop.UiVerification\Program.cs:line 86

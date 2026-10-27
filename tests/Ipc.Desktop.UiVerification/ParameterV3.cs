@@ -51,12 +51,13 @@ static partial class Program
         Check(vm.ParameterRuntimeSummary(target).Contains("运行地址") && !vm.ParameterRuntimeSummary(target).Contains("SYNTHETIC-EDIT"), "runtime context is derived from Effective rather than edited values");
         Capture("v3-left-running");
         Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "连接诊断")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
-        var objectDetails = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "当前对象运行详情"));
-        Check(objectDetails.IsVisible && !objectDetails.IsExpanded, "camera diagnostics exposes its full context through the current disclosure");
-        objectDetails.IsExpanded = true; window.UpdateLayout();
-        Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.Text.StartsWith("左相机\n")), "selected camera opens its existing native diagnostics with exact object context");
+        Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "左相机"), "selected camera opens its native diagnostics with visible object context");
+        Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "设置左相机")), "camera diagnostics provides a direct action for the matching connection");
         Capture("v3-object-diagnostics");
-        Click(window, "返回当前对象设置"); window.UpdateLayout(); editor.NavigateTo("StationCode");
+        Click(window, "返回当前对象设置");
+        for (var wait = 0; wait < 100 && (vm.SelectedPage != "maintenance" || vm.Busy); wait++) await Task.Delay(20);
+        Check(vm.SelectedPage == "maintenance" && !vm.Busy, "object settings return completes its authority and load checks");
+        window.UpdateLayout(); editor.NavigateTo("StationCode");
         Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");

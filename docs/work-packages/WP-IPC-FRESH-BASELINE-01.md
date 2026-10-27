@@ -35,3 +35,5 @@ C08观察与称重只暴露Controlled启动端口，驱动/替身/示例同步�
 B2本机完成：三个Assembly、Application/Supply/WPF验证工程、三个示例扩展和海康包装Release/locked编译通过；Python发布校验31项通过。WPF测试共享Shell工厂曾返回错误基类，Supply两处调用仍用退休签名，均按当前端口修正后重新构建通过。
 
 B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract-boundaries发现CapabilityClosure仍断言退休五参构造存在，已改为当前六参存在且旧桥不存在，不削弱运行时断言。重新CI待记录。
+
+B2第二轮定向CI发现CapabilityClosure合成夹具把同一相机/秤绑定左右两位，违反已保留的位置隔离守卫；已为每位构造独立合成端口，保留原测量、图像与Unknown断言。生产守卫未放宽。

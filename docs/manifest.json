@@ -45832,9 +45832,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
       "storage_scope": "public_repository",
-      "sha256": "539702f0beba66e96014dfe3a763fd5117e9b45df14b1b391c6cc604ba80f44d",
+      "sha256": "124c0b9be94077c92e5ed78f9304ac1ad599a23c27ea398053c68b8772ebbe59",
       "size_bytes": 9316,
-      "git_blob": "97952977e3806bedbd110f0902fa360ea8b6a380"
+      "git_blob": "35141bb7f6a2875f110feb7523c516c05c5b302e"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -102650,9 +102650,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "34db7c53db7f68584e7a3563c459991f04bfad95c01fa6040fcdb56c7c5c3fc7",
-      "size_bytes": 22124,
-      "git_blob": "a7b401ff27d5a1512778d37aa48d88fe7e66adfc",
+      "sha256": "a76661a63df2945ae152080a901515005f48a1b79a45c66c9e3576d9327d14f6",
+      "size_bytes": 25358,
+      "git_blob": "81b96a406da3d323943da548edb732e3d173f96a",
       "storage_scope": "public_repository"
     },
     {
@@ -102661,9 +102661,20 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "a4a36b66c0a8a06d2ead3f7561101ecb3a9f3c608f5c2cdc548653d24a5245fc",
-      "size_bytes": 5561,
-      "git_blob": "2376af50ad3735e293d1c02003da390502e3701a",
+      "sha256": "a00753031c9735cf01c13c64a8cbf5e07bd4bc28869770691caadedbb11be622",
+      "size_bytes": 6464,
+      "git_blob": "7ec729aa0f477584698bb2f615c6e2d22be47bc3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/camera-sdk-single-code-01/frozen-packages-unified.json",
+      "version": "stability-integration-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
+      "sha256": "47867cef6e0212d173b11041821513b6a665d1e24eac1abdbab378f7cfda363a",
+      "size_bytes": 4786,
+      "git_blob": "1a3015c1a9aaff8e0af9a44df61151d7951a5fa9",
       "storage_scope": "public_repository"
     }
   ],

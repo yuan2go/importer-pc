@@ -557,5 +557,89 @@
     "Job": 122150310913,
     "OriginalFailure": "successful schedule projection corresponds to a real complete recovery set",
     "Resolution": "explicit schedule initialization; use actual NextDue; share pre-reservation monitor drain with existing reconnect fixture; invoke each scheduled action once; complete marker/capacity/original custody assertions unchanged; no backup runtime code changes"
+  },
+  "LatestMainIntegration": {
+    "Main": "fdd24fa552136c6e1eceaf62aa66552744bd46d1",
+    "SourceCommit": "515013721ed80117a27a855f5b6c263bee221c9b",
+    "Build": "PASS 0 warnings/0 errors",
+    "TargetedApplication": "PASS SDK editor, heartbeat, deferred/Unknown, P0 deferred, lifecycle",
+    "Native": "PASS SDK editing, full parameter-v3, workstation-status-logs",
+    "FrozenPackages": "all three current modules 1.0.0 PASS using frozen Sportmaster checker",
+    "InitialInvocationFailuresPreserved": [
+      "unified-hikrobot-sdk-editing.log: workspace argument omitted",
+      "package-unified-rcs.log: Supply checker correctly refused unregistered public contract; corrected to Sportmaster Ipc.Assembly"
+    ],
+    "Logs": [
+      {
+        "name": "solution-build-unified.log",
+        "sha256": "1e7b0d29d518a16be8bbb791238277d9c8de03b2b429106b4ef538d209879d4e",
+        "bytes": 8362
+      },
+      {
+        "name": "native-build-unified.log",
+        "sha256": "88d80e83e175632b68f084ff73525f97da7de85d9e7756132a15bf10ebae1b64",
+        "bytes": 2111
+      },
+      {
+        "name": "frozen-sportmaster-unified.log",
+        "sha256": "6877c80e89d0a2892149a48e373dd94eadb574d3aa48c2984abd00f3773afd82",
+        "bytes": 1487
+      },
+      {
+        "name": "unified-deferred-connections-valid.log",
+        "sha256": "7c5e9c1ed5e80c8479395b8cf4e373096e854c73513241eb13703733eeea8c66",
+        "bytes": 14271
+      },
+      {
+        "name": "unified-hikrobot-sdk-editing-valid.log",
+        "sha256": "70c966d130ec9947ff7f193f6f9bc4c6e8a50b9a3453ed42a75a7b6b8f7251b6",
+        "bytes": 1180
+      },
+      {
+        "name": "unified-lifecycle-ux-valid.log",
+        "sha256": "00cd93848965f1e3a2834dc335b81365ddd51d0390d615548cd391a5cd66219b",
+        "bytes": 15062
+      },
+      {
+        "name": "unified-p0-deferred-valid.log",
+        "sha256": "265f6e3830d8f6a3be64dc35c8a8ec23a033bc0fb2fd2a5001d2cce07e6e0a43",
+        "bytes": 13321
+      },
+      {
+        "name": "unified-rcs-heartbeat-valid.log",
+        "sha256": "4f13628b717b3bf43f2fa222bd367f1ec022c3ea6904daafce859e1032cfd54e",
+        "bytes": 2226
+      },
+      {
+        "name": "native-unified-hikrobot-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-unified-parameter-v3.log",
+        "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+        "bytes": 275
+      },
+      {
+        "name": "native-unified-workstation-status-logs.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "package-sportmaster-unified-idmvs.log",
+        "sha256": "d7230c10b38af86848544e6ed84ea44a753948e8ec2989dcb58f25b87f67a687",
+        "bytes": 9893
+      },
+      {
+        "name": "package-sportmaster-unified-mvs.log",
+        "sha256": "54d4480ce52774a1132ffbc9696a153cb4ebd9dc1304f677efebf3f4d14dc1cc",
+        "bytes": 10169
+      },
+      {
+        "name": "package-sportmaster-unified-rcs.log",
+        "sha256": "c94da540d2241f57cd20122f952fe8afed4952f17efe13ef8456e87c2f5133b8",
+        "bytes": 15187
+      }
+    ]
   }
 }

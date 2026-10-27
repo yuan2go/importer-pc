@@ -11,7 +11,7 @@
 | 当前模块 | 实际职责与状态 |
 |---|---|
 | `hikrobot.mvs-acquisition/mvs-acquisition` 1.0.0 | 目标标准相机的实际MVS GigE采集。SDK函数返回4.8.2.2，DLL文件版本4.8.2.1；只支持此当前ABI。枚举、按IP/可选序列号独占打开、读取触发/Mono8/PayloadSize、有限SDK节点、GetImageBuffer/FreeImageBuffer成对取图、连接诊断及停止已实现。尚缺适用条码识别组件；不生成观察/条码/作业，健康保持Unknown（无业务有效期）。 |
-| `hikrobot.idmvs-reader/idmvs-reader` 2.0.1 | 既有智能读码器MvCodeReader 2.0.0.4回调条码链。保留实际使用场景，不当作目标标准型已获支持的证据。回调之外消费，观察队列条数加字节预算。 |
+| `hikrobot.idmvs-reader/idmvs-reader` 1.0.0 | 既有智能读码器MvCodeReader 2.0.0.4回调条码链。保留实际使用场景，不当作目标标准型已获支持的证据。回调之外消费，观察队列条数加字节预算。 |
 
 两者是当前实际SDK模块，不能互为旧版本回退，不做TCP参数转换或旧配置兼容。目标标准型当前采用MVS采集链，补入适用识别组件后才能完成条码链。MVS `MV_CC_HB_Decode`仅把无损压缩流解压为像素；没有条码含义。客户端手册没有某个SDK名称不能证明组件不存在，也不限定识别组件必须叫某个名称。
 

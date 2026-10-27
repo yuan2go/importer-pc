@@ -334,20 +334,20 @@
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[2.0.0, )"
+          "Ipc.Platform": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[3.0.0, )",
-          "Ipc.Platform.Storage": "[2.0.0, )"
+          "Ipc.Application.Contracts": "[1.0.0, )",
+          "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.wcstoplc": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.ParcelFlow": "[2.0.0, )"
+          "Ipc.Application.ParcelFlow": "[1.0.0, )"
         }
       },
       "ipc.components": {
@@ -366,7 +366,7 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
-          "Ipc.Supply.Contracts": "[2.0.0, )"
+          "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {
@@ -378,7 +378,7 @@
       "ipc.platform.storage": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[2.0.0, )",
+          "Ipc.Platform": "[1.0.0, )",
           "Microsoft.Data.Sqlite": "[10.0.13, )",
           "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
         }
@@ -386,20 +386,20 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[3.0.0, )"
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "Ipc.Supply": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform.Storage": "[2.0.0, )",
-          "Ipc.Supply.Contracts": "[2.0.0, )"
+          "Ipc.Platform.Storage": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "Ipc.Supply.Contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[2.0.0, )"
+          "Ipc.Platform": "[1.0.0, )"
         }
       }
     },

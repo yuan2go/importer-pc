@@ -7,7 +7,7 @@ namespace Ipc.Application.Contracts;
 public static class RcsRequestPolicy
 {
     public const string Contract = "SPORTMASTER-RCS-SORTER-v1";
-    public const string ComponentVersion = "2.0.0";
+    public const string ComponentVersion = "1.0.0";
     public const int DefaultTimeoutMs = 5000, MinimumTimeoutMs = 100, MaximumTimeoutMs = 30000;
     static readonly HashSet<string> Parameters = new([
         "source", "locale", "zone-id", "project-id", "specified-chute", "request-id-base", "request-id-count",

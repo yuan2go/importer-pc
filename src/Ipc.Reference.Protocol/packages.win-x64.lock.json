@@ -289,7 +289,7 @@
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[2.0.0, )"
+          "Ipc.Platform": "[1.0.0, )"
         }
       },
       "ipc.platform": {

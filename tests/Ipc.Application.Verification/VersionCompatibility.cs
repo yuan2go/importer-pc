@@ -71,7 +71,7 @@ static class VersionCompatibility
             Write(release); Check(); Pass(true, "schema2 binds actual compiled version, binary and declaration bytes");
             await using var maintenanceFactory = new ParcelCapabilityFactory(launch, policy, assembly);
             Pass(maintenanceFactory.ReadPublishedRelease(directory).BusinessVersion == expectedVersion, "protected maintenance accepts actual schema2 business release");
-            Write(release with { BusinessVersion = "1.0.0" }); Reject(Check, "wrong declared business version rejected");
+            Write(release with { BusinessVersion = "9.0.0" }); Reject(Check, "wrong declared business version rejected");
             Reject(() => maintenanceFactory.ReadPublishedRelease(directory), "protected maintenance rejects wrong business version");
             Write(release with { SchemaVersion = 1 }); Reject(Check, "new compiled business cannot downgrade to release schema1");
             Reject(() => maintenanceFactory.ReadPublishedRelease(directory), "protected maintenance rejects schema1 downgrade");

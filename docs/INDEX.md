@@ -8,6 +8,8 @@
 
 # 文档索引
 
+2026-10-27 当前自有产品版本统一为1.0.0，见[工作包](work-packages/WP-IPC-UNIFIED-VERSION-1-0-0.md)和[首次安装测试交付](runtime/unified-version-1-0-0.md)。本条替代旧当前版本号，历史证据、外部SDK/协议与数据格式保留原身份。
+
 当前构建与测试入口修复见[BUILD-TEST-FOLLOWUP-01](work-packages/WP-IPC-BUILD-TEST-FOLLOWUP-01.md)：Supply默认构建、无参数Application验证及station平台/存储规则。
 
 当前唯一规则：[从零安装工作包](work-packages/WP-IPC-FRESH-BASELINE-01.md)、[运行入门](runtime/getting-started.md)、[精确格式规则](runtime/version-compatibility-01.md)、[基线结构等价证据](verification/fresh-baseline-01/README.md)。此前指南的迁移步骤已移入[首批原字节归档](archive/pre-fresh-baseline-01/README.md)与[随包指南原字节归档](archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前运行。

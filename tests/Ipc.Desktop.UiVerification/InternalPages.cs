@@ -129,7 +129,7 @@ static partial class Program
         ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; window.UpdateLayout(); CaptureInternal(evidence, "history-filters-800", client, lines);
         Check(((ScrollViewer)history.FindName("HistoryFilterScroll")).ScrollableHeight > 0 && rows.ActualHeight >= 72, "long filters scroll locally while retaining query actions and results");
         await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Right); window.UpdateLayout(); CaptureInternal(evidence, "diagnostics-1366", client, lines);
-        Check(Descendants(window).OfType<TextBox>().Any(t => AutomationProperties.GetName(t) == "业务状态"), "diagnostics labels the actual state instead of exposing unlabeled values");
+        Check(Descendants(window).OfType<TextBlock>().Any(t => t.Text == "右相机") && Descendants(window).OfType<TextBlock>().Any(t => t.Text == vm.RightConnectionDiagnosis), "diagnostics labels the selected camera and binds its actual human-readable state");
         await SetClient(window, 800, 420); CaptureInternal(evidence, "diagnostics-800", client, lines);
         Click(window, "返回作业"); await vm.RefreshAsync();
         Check(ids == (vm.Left.Operation!.Id, vm.Right.Operation!.Id) && calls == (factory.Resolves, factory.Queries), "query and diagnostic navigation retain both original operation identities and issue no new business calls");
@@ -180,7 +180,7 @@ static partial class Program
         // content assertion after a bounded wait for that actual presentation.
         for (var i = 0; i < 250 && !Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text), "selected row detail preserves the exact original record");
-        Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "时间、更多筛选、上下文与导出")).IsExpanded = true; window.UpdateLayout();
+        Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出")).IsExpanded = true; window.UpdateLayout();
         Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
         window.Width = 800 + window.ActualWidth - control.ActualWidth;
         window.Height = 420 + window.ActualHeight - control.ActualHeight;

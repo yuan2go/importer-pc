@@ -21,6 +21,20 @@ public partial class ParcelViewModel
     public bool CanExportHistory => !historyLoading && !HistoryExportRunning && historySelection is not null && !HistoryFiltersChanged;
     public string AppliedHistoryRange => historySelection is not { } s ? "尚无固定查询范围" :
         $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {PositionName(s.Filter.Position)} · 状态 {(s.Filter.State is { } state ? ChineseInterfaceText.Status(state.ToString()) : "全部")} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页";
+    public string HistoryRangeSummary
+    {
+        get
+        {
+            if (historySelection is not { } s) return "尚未查询，请选择条件后点击查询。";
+            var parts = new List<string>(); var f = s.Filter;
+            parts.Add(f.From is null && f.ToExclusive is null ? "不限时间" : QueryTime.Display(f.From?.ToString("O") ?? "", "起点不限") + " 至 " + QueryTime.Display(f.ToExclusive?.ToString("O") ?? "", "终点不限") + "（本机时间）");
+            if (f.Barcode is not null) parts.Add("条码 " + f.Barcode);
+            if (f.Position is not null) parts.Add(PositionName(f.Position));
+            if (f.State is { } state) parts.Add(ChineseInterfaceText.Status(state.ToString()));
+            if (f.RequestId is not null) parts.Add("请求 " + f.RequestId);
+            return "本次查询：" + string.Join(" · ", parts) + " · 第 " + (historyPageIndex + 1) + " 页";
+        }
+    }
     public static string PositionName(string? id) => id switch { null or "" => "全部", "left" => "左投递位", "right" => "右投递位", "main" => "主投递位", _ => id };
     public sealed record HistoryPositionChoice(string Id, string Label);
     readonly HashSet<string> historicalPositions = [];
@@ -46,7 +60,7 @@ public partial class ParcelViewModel
         {
             if (string.IsNullOrWhiteSpace(s)) return null;
             if (s.Length > 64 || !Regex.IsMatch(s, @"(Z|[+-]\d{2}:\d{2})$") || !DateTimeOffset.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out var value))
-                throw new InvalidOperationException("时间须含明确时区，例如2026-10-19T08:00:00+08:00；结束时间不包含在范围内");
+                throw new InvalidOperationException("时间无效，请重新选择日期和时间；精确输入需包含时区。");
             return value;
         }
         return new(Optional(HistoryBarcode), Optional(HistoryPosition), HistoryState.Length == 0 ? null : Enum.Parse<ParcelState>(HistoryState), Time(HistoryFrom), Time(HistoryToExclusive), Optional(HistoryRequest));

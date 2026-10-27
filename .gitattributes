@@ -149,3 +149,6 @@ docs/archive/pre-fresh-baseline-current-guides-01/** -text whitespace=cr-at-eol,
 
 # Preserve this work package's native test receipts, including earlier failures.
 docs/runtime/evidence/operator-workstation-01/*.txt -text whitespace=cr-at-eol
+
+# Preserve query UX verification receipts without newline normalization.
+docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol

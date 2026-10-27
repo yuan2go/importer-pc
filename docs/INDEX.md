@@ -1,3 +1,7 @@
+> 作业记录与日志查询当前界面和验证入口见 [QUERY-FILTER-UX-01](runtime/query-filter-ux-01.md)。
+
+> 2026-10-27 查询布局与本地日期时间呈现以 [QUERY-FILTER-UX-01](work-packages/WP-IPC-QUERY-FILTER-UX-01.md) 为准；旧默认 UTC 输入和长时间摘要保留历史范围，查询合同不变。
+
 > 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
 
 > 2026-10-27 海康真实读码、SDK适用性与参数操作以 [HIKROBOT-SDK-BARCODE-02](work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md) 为当前入口。目标工业相机算法SDK与现场条件尚缺，原MvCodeReader连接/0码记录不代表本型号读码通过。

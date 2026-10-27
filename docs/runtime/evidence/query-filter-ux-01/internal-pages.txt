@@ -1,0 +1,55 @@
+CAPTURE workstation-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL query uses the real application history selection
+CAPTURE history-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+CAPTURE history-selected-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL full barcode query preserves leading zeros and distinct entities
+PASS INTERNAL clear filters updates fields without changing the previous fixed result range
+CAPTURE history-empty: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL empty query has no invented records
+CAPTURE history-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL compact history result stays inside the native client: height=83.2, top=262.4, client=420
+PASS INTERNAL compact history keeps a complete header and at least one full result row
+CAPTURE history-filters-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL long filters scroll locally while retaining query actions and results
+CAPTURE diagnostics-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL diagnostics labels the selected camera and binds its actual human-readable state
+CAPTURE diagnostics-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL query and diagnostic navigation retain both original operation identities and issue no new business calls
+PASS INTERNAL daily parameter editor uses the same per-leaf guard
+CAPTURE daily-parameter-error-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS INTERNAL daily editor continues after correction
+PASS INTERNAL revocation blocks restricted workspace and retains only process draft input
+PASS LOG-UI only a real pending task exposes an enabled cancellation action
+CAPTURE logs-pending: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI cancel completes without a fabricated result or commit claim
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI technical query failure stays in collapsed diagnostic detail
+CAPTURE logs-failed: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI empty authoritative result disables paging
+CAPTURE logs-empty: 820x620 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI failed paging does not commit or skip the requested offset on retry
+PASS LOG-UI selected row detail preserves the exact original record
+PASS LOG-UI changed input invalidates the prior snapshot before export or paging
+PASS LOG-UI log regression uses the actual 800x420 DIP client
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI compact detail temporarily owns the filter space
+CAPTURE logs-compact-detail-before-query: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI query restores keyword/level controls and draft after clearing detail
+CAPTURE logs-compact-filters-after-query: 800.0000000000001x420 DIP, Windows DPI 1.25/1.25
+PASS LOG-UI compact detail temporarily owns the filter space
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI paging restores keyword/level controls and draft after clearing detail
+PASS LOG-UI compact detail temporarily owns the filter space
+PASS LOG-UI filter change restores keyword/level controls and draft after clearing detail
+PASS LOG-UI restored filters retain snapshot invalidation
+PASS LOG-UI query state settles after cancellation/failure/success
+PASS LOG-UI compact detail temporarily owns the filter space
+PASS LOG-UI unload and return restores keyword/level controls and draft after clearing detail
+PASS LOG-UI return requires a fresh query before export
+Native WPF HWND/Dispatcher, synthetic data/ports only. Production devices, installation and OS DPI changes NOT_RUN.

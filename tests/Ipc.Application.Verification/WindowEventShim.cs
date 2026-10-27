@@ -117,6 +117,8 @@ namespace Ipc.Application.Sportmaster.Desktop
     public class SupplyStationPosition { public object? DataContext { get; set; } }
     public partial class SupplyStationWindow
     {
+        readonly System.Windows.Controls.Grid workContent = new();
+        void BuildOperatorWorkspace() { workContent.Children.Add(work); }
         readonly System.Windows.Controls.Grid ClientArea = new();
         readonly System.Windows.Controls.ContentControl PageHost = new();
         readonly System.Windows.Controls.PasswordBox LoginProof = new();

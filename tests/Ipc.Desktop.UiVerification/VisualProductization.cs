@@ -181,8 +181,8 @@ static partial class Program
             await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
-            var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");
-            Check(clock.Text == "08:09:10" && offset.Text == "+05:30", "native calendar editor preserves the original wall time and explicit nonlocal UTC offset");
+            Check(clock.Text == DateTimeOffset.Parse("2026-10-19T08:09:10+05:30").ToLocalTime().ToString("HH:mm:ss") && dateInput.Timestamp == "2026-10-19T08:09:10+05:30",
+                "native calendar shows local time while retaining the original nonlocal instant and offset");
             clock.Text = "25:99:00";
             Check(dateInput.Timestamp.Contains("25:99:00") && vm.HistoryFrom.Contains("25:99:00"), "invalid native time propagates as invalid input instead of retaining an older query time");
             dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
@@ -192,16 +192,16 @@ static partial class Program
                 "rejected native date invalidates the bound history filter and removes the stale calendar selection");
             var invalidTimestamp = dateInput.Timestamp;
             calendarDate.IsDropDownOpen = true; await Task.Delay(80); calendarDate.IsDropDownOpen = false; await Task.Delay(80);
-            clock.Text = "09:10:11"; offset.Text = "+08:00";
+            clock.Text = "09:10:11";
             Check(dateInput.Timestamp == invalidTimestamp && vm.HistoryFrom == invalidTimestamp,
                 "calendar dismissal and clock edits cannot restore a rejected date or broaden the query");
             Capture("history-invalid-date-1100");
             calendarDate.SelectedDate = new DateTime(2026, 10, 19);
-            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+            Check(dateInput.Timestamp == new DateTimeOffset(new DateTime(2026, 10, 19, 9, 10, 11)).ToString("yyyy-MM-dd'T'HH:mm:sszzz") && vm.HistoryFrom == dateInput.Timestamp,
                 "explicitly selecting the original date corrects the error with the current clock and offset");
             calendarDate.Text = "not-a-date";
             calendarDate.Text = "2026-10-19";
-            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+            Check(dateInput.Timestamp == new DateTimeOffset(new DateTime(2026, 10, 19, 9, 10, 11)).ToString("yyyy-MM-dd'T'HH:mm:sszzz") && vm.HistoryFrom == dateInput.Timestamp,
                 "valid typed date corrects the rejected value without reviving an older time or offset");
             Click(history, "不限时间"); Check(vm.HistoryFrom.Length == 0 && vm.HistoryToExclusive.Length == 0, "native clear-time action removes both exact time boundaries");
             Capture("history-filters-1100"); filter.IsExpanded = false;

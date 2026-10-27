@@ -10,4 +10,12 @@
  </Style>
  <Style x:Key="QueryCellText" TargetType="TextBlock"><Setter Property="Margin" Value="8,0"/><Setter Property="TextWrapping" Value="NoWrap"/><Setter Property="TextTrimming" Value="CharacterEllipsis"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="ToolTip" Value="{Binding Text,RelativeSource={RelativeSource Self}}"/></Style>
 <Style x:Key="QueryCodeText" TargetType="TextBlock" BasedOn="{StaticResource QueryCellText}"><Setter Property="FontFamily" Value="{x:Static type:UiTypography.Code}"/></Style>
+ <Style x:Key="QueryDatePicker" TargetType="DatePicker">
+  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Height" Value="44"/><Setter Property="BorderBrush" Value="#C9D2DE"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Background" Value="White"/>
+  <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="DatePicker"><Border x:Name="Frame" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="3"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="44"/></Grid.ColumnDefinitions>
+   <DatePickerTextBox x:Name="PART_TextBox" MinHeight="0" Padding="8,0" BorderThickness="0" Background="Transparent" VerticalContentAlignment="Center" FontSize="{TemplateBinding FontSize}"/>
+   <Button x:Name="PART_Button" Grid.Column="1" Content="日历" MinHeight="0" MinWidth="0" Padding="0" FontSize="{x:Static type:UiTypography.Label}" Background="Transparent" BorderThickness="0" ToolTip="选择日期"/>
+   <Popup x:Name="PART_Popup" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"/>
+  </Grid></Border><ControlTemplate.Triggers><Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Frame" Property="BorderBrush" Value="#185FBC"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="Frame" Property="Background" Value="#F3F5F7"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+ </Style>
 </ResourceDictionary>

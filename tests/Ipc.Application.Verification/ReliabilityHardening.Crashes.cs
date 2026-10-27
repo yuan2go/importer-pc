@@ -121,7 +121,7 @@ static partial class ReliabilityHardening
             var database = Path.Combine(Data(launch, c), "sportmaster.db");
             Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 2, cut + " independent left/right inputs both retain durable receipt identities");
             VerifyInputLedger(database, Path.Combine(path, "source.json"), Path.Combine(path, "input-before.json"));
-            using (var originals = new ParcelRepository(Data(launch, c), "sportmaster", 9))
+            using (var originals = new ParcelRepository(Data(launch, c), "sportmaster"))
                 File.WriteAllText(Path.Combine(path, "before-recovery.json"), Wire.Encode(originals.Load()));
             int calls = 0;
             var factory = new WrappedFactory(new(launch), p => new WrappedWcs(p) { Resolve = (r, t) => { Interlocked.Increment(ref calls); throw new Exception("Recovery attempted external resend"); } });

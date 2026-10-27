@@ -5,8 +5,8 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && Effective.DeferredConnections is not { Length: > 0 } && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
-        !stopping.IsCancellationRequested && !backupInProgress && (overload == 0 || Effective.SchemaVersion >= 3);
-    bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
+        !stopping.IsCancellationRequested && !backupInProgress;
+    bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(PositionReady);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
@@ -26,8 +26,7 @@ public sealed partial class ParcelRuntime
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress;
     bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
-        !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && (Effective.SchemaVersion >= 3 ? !MainTerminated(x) :
-            WeightPending(x) || !MainTerminated(x) && x.FrozenConfiguration.Images is not null && x.Capture?.State != StageState.Accepted));
+        !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
     bool CanAdmit() => positions.Keys.Any(CanAdmit);
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {

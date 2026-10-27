@@ -58,8 +58,6 @@ internal sealed class HikrobotReader : IControlledObservationSource
         capacity = int.Parse(context.Parameters.GetValueOrDefault("queue.capacity", "128"), System.Globalization.CultureInfo.InvariantCulture);
         if (capacity is < 1 or > 1024) throw new InvalidDataException("Reader queue must be 1..1024");
     }
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token) =>
-        throw new InvalidOperationException("Use host registered connection epoch");
 
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {

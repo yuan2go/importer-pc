@@ -8,7 +8,7 @@ static class CurrentConfigurationFixture
         ConfigurationActivationAttempt? Activation=null, ConfigurationEffectiveConfirmation? Confirmation=null,
         ConfigurationInitialRepair? InitialRepair=null,bool Confirmed=true) where T:class =>
         new(Revision,Effective,Pending,Status,Failure,Activation,
-            Confirmation ?? new("Seed",Wire.Hash(Wire.Encode(Effective)),!Confirmed,Confirmed ? "Confirmed" : "Required",null,null,
+            Confirmation ?? new("Seed",Wire.Hash(Wire.Encode(Effective)),!Confirmed,Confirmed ? "Confirmed" : "Required",
                 Confirmed ? [new("synthetic-current-startup",DateTimeOffset.UtcNow,DateTimeOffset.UtcNow,"ResourcesStarted")] : [],
                 ConfirmedBy:Confirmed ? "synthetic-fixture" : null,ConfirmedAt:Confirmed ? DateTimeOffset.UtcNow : null),InitialRepair);
 }

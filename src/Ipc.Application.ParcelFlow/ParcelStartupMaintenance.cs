@@ -51,7 +51,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     {
         if (original.ApplicationId != candidate.ApplicationId || original.StationId != candidate.StationId || original.Mode != candidate.Mode)
             throw new InvalidDataException("原Application、站和模式不能由启动修复改变");
-        if (original.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("不得降级或摊平原拓扑");
+        if (candidate.SchemaVersion != 3) throw new InvalidDataException("不得降级或摊平原拓扑");
     }
     public Task<StartupClassification> ClassifyAsync()
     {

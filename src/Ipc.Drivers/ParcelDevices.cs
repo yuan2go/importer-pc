@@ -23,12 +23,18 @@ public sealed class ReferenceWeightSource(CapabilityBinding binding) : IControll
     public string InstanceId => binding.InstanceId;
     public Task StartAsync(CancellationToken token)
     { token.ThrowIfCancellationRequested(); lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); running = true; } return Task.CompletedTask; }
-    public Task StartMeasurementsAsync(Func<WeightMeasurement, bool> receiver, CancellationToken token)
-    { token.ThrowIfCancellationRequested(); lock (gate) { if (!running || receive is not null) throw new InvalidOperationException("Scale is stopped/already registered"); receive = receiver; } return Task.CompletedTask; }
     public Task StartControlledMeasurementsAsync(string registeredEpoch, Func<WeightObservation, bool> receiver, CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
+        if (string.IsNullOrWhiteSpace(registeredEpoch)) throw new ArgumentException("Registered epoch required", nameof(registeredEpoch));
         long sequence = 0;
-        return StartMeasurementsAsync(m => receiver(new(registeredEpoch, Interlocked.Increment(ref sequence), m)), token);
+        lock (gate)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (!running || receive is not null) throw new InvalidOperationException("Scale is stopped/already registered");
+            receive = m => receiver(new(registeredEpoch, Interlocked.Increment(ref sequence), m));
+        }
+        return Task.CompletedTask;
     }
     public bool Emit(WeightMeasurement measurement)
     { lock (gate) { return running && measurement.DeviceId == binding.Target && receive?.Invoke(measurement) == true; } }

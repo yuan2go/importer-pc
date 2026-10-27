@@ -9,6 +9,8 @@ string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
 var data = Get("--data-root", Path.Combine(WindowsStoragePaths.UserRoot, "data"));
 var action = Get("--action", "snapshot");
+if (action is not ("snapshot" or "serve" or "export" or "backup" or "preflight" or "restore" or "extension-check" or "extension-install" or "extension-recover" or "extension-uninstall" or "extension-inspect" or "extension-list"))
+    throw new ArgumentException("Unknown action; use the current version and a new data directory");
 if (action == "extension-check")
 {
     var allowed = new[] { "--action", "--mode", "--file", "--extension-trust", "--dependency-files" };
@@ -67,7 +69,6 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
     }
     return;
 }
-if (action == "upgrade") throw new InvalidDataException("旧格式升级不受支持；原数据库与发行保留。");
 if (action is "backup" or "preflight" or "restore")
 {
     // Maintenance must obey the same fixed Windows account and protected machine policy

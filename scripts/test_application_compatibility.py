@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], {'sportmaster': '2.0.0', 'direct-plc': '2.0.0', 'wcs-to-plc': '2.0.0'}[application])
+            self.assertEqual(version['BusinessVersion'], {'sportmaster': '3.0.0', 'direct-plc': '3.0.0', 'wcs-to-plc': '3.0.0'}[application])
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -41,10 +41,10 @@ class CompatibilityTests(unittest.TestCase):
 
     def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
         root = Path(__file__).resolve().parent.parent
-        versions = {'reference.parcel-capabilities': ('2.2.8', '2.2.7'),
-                    'reference.barcode': ('1.3.6', '1.3.5'),
-                    'sportmaster.rcs-task': ('1.3.5', '1.3.4'),
-                    'hikrobot.idmvs-reader': ('1.0.4', '1.0.3')}
+        versions = {'reference.parcel-capabilities': ('3.0.0', '2.2.8'),
+                    'reference.barcode': ('3.0.0', '1.3.6'),
+                    'sportmaster.rcs-task': ('2.0.0', '1.3.5'),
+                    'hikrobot.idmvs-reader': ('2.0.0', '1.0.4')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
             for group in policy['ProviderSets']:
@@ -170,31 +170,17 @@ class CompatibilityTests(unittest.TestCase):
                 run.finish({'OptionalFeatures':False,'AttachedUpload':False,'OperationId':'not-observed','State':'PlcAccepted'})
             self.assertNotEqual(json.loads(output.read_bytes())['Status'],'PASS')
 
-    def test_input_event_cannot_be_dropped_by_record_schema_downgrade(self):
+    def test_noncurrent_records_refuse_without_changing_any_file(self):
         with tempfile.TemporaryDirectory() as temporary:
             base=Path(temporary); root=base/'package'; root.mkdir()
             config, _, identity=self.fixture(root)
             output=base/'run.json'; self.completed_run(output,root,config,identity)
-            r=json.loads(output.read_bytes()); self.assertEqual(r['SchemaVersion'],3)
-            r['SchemaVersion']=1; output.write_text(json.dumps(r))
-            with self.assertRaisesRegex(ValueError,'schema'): verify_record(output,root)
-
-    def test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            base=Path(temporary); root=base/'package'; root.mkdir()
-            config, _, identity=self.fixture(root)
-            output=base/'run.json'; self.completed_run(output,root,config,identity)
-            r=json.loads(output.read_bytes()); events=base/r['EventsFile']
-            rows=[json.loads(line) for line in events.read_text().splitlines()]
-            events.write_text('\n'.join(json.dumps(row) for row in rows if row['Value'].get('Status')!='CombinationInput')+'\n')
-            r['SchemaVersion']=1; r['EventsSha256']=sha(events); output.write_text(json.dumps(r))
-            original=output.read_bytes()
-            with self.assertRaisesRegex(ValueError,'historical'): verify_record(output,root)
-            verify_record(output,root,trusted_record_sha256=sha(output),historical_audit=True); self.assertEqual(output.read_bytes(),original)
-            r['EffectiveConfiguration']['Plc']['Target']='reference://another'
-            r['EffectiveConfigurationSha256']=object_sha(r['EffectiveConfiguration']); r['Providers']=selected_providers(r['EffectiveConfiguration'])
-            output.write_text(json.dumps(r))
-            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root,trusted_record_sha256=sha(output),historical_audit=True)
+            record=json.loads(output.read_bytes())
+            for schema in (1, 2, 999):
+                output.write_text(json.dumps(dict(record,SchemaVersion=schema)))
+                originals={p:p.read_bytes() for p in base.rglob('*') if p.is_file()}
+                with self.assertRaisesRegex(ValueError,'schema3'): verify_record(output,root)
+                self.assertEqual({p:p.read_bytes() for p in base.rglob('*') if p.is_file()}, originals)
 
     def test_schema3_preserves_valid_before_main_and_attached_journeys(self):
         config=json.loads((Path(__file__).resolve().parent.parent/'config/optional/direct-plc/business.json').read_bytes())
@@ -250,22 +236,6 @@ class CompatibilityTests(unittest.TestCase):
                 output.write_text(json.dumps(changed))
                 with self.assertRaisesRegex(ValueError,'qualification|Command|endpoint|mode'): verify_record(output,root)
 
-    def test_schema2_requires_trusted_original_record_hash(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            base=Path(temporary); root=base/'package'; root.mkdir()
-            config, _, identity=self.fixture(root)
-            output=base/'run.json'; self.completed_run(output,root,config,identity)
-            record=json.loads(output.read_bytes());record['SchemaVersion']=2
-            rows=[json.loads(line) for line in (base/record['EventsFile']).read_text().splitlines()]
-            rows[0]['Value']['Binding']=__import__('application_compatibility').run_input(record)
-            (base/record['EventsFile']).write_text(''.join(json.dumps(row)+'\n' for row in rows))
-            record['EventsSha256']=sha(base/record['EventsFile']);output.write_text(json.dumps(record))
-            anchor=sha(output);original=output.read_bytes()
-            with self.assertRaisesRegex(ValueError,'historical'):verify_record(output,root)
-            verify_record(output,root,trusted_record_sha256=anchor,historical_audit=True)
-            record['Command']=['not-executed'];output.write_text(json.dumps(record))
-            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root,trusted_record_sha256=anchor,historical_audit=True)
-            self.assertNotEqual(output.read_bytes(),original)
 
 
 if __name__ == '__main__': unittest.main()

@@ -40,12 +40,6 @@ public static class ParcelStartupServices
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
-    public static Task<UnusedSimulationRelocation> CompleteUnusedSimulationRelocationAsync(string original, string expectedOriginHash)
-    {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原安装登记。");
-        return Core(new(current.ConfigurationDirectory, current.DataRoot, null, null), installer: true).CompleteUnusedSimulationRelocationAsync(original, expectedOriginHash);
-    }
     public static string DefaultRuntimeAccount(bool currentUserOnly = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
@@ -319,9 +313,9 @@ public static class ParcelStartupServices
     {
         _ = WindowsDeploymentSetup.ConfigurationFiles(request.ConfigurationSource);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(request.ConfigurationSource, "business.json")));
-        if (c.SchemaVersion is not (1 or 2 or 3) || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode) ||
+        if (c.SchemaVersion != 3 || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode) ||
             c.Mode != request.Mode || c.ApplicationId != request.ApplicationId || c.ApplicationId != ApplicationId)
-            throw new InvalidDataException("Invalid Application seed identity/schema/mode; retain the original configuration");
+            throw new InvalidDataException("安装种子身份或格式无效；仅支持当前schema3，原文件保留，请使用全新数据目录");
         var errors = ParcelAssembly.Definition().Validate(c);
         // Retaining the reviewed original only admits maintenance; runtime admission remains independent.
         var retainingOriginal = deployed is { LifecycleState: "Installed" } && deployed.ApplicationId == c.ApplicationId && !request.RepairSeed &&

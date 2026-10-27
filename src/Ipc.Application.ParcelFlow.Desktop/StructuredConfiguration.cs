@@ -368,7 +368,7 @@ public partial class ParcelViewModel
     {
         if (configurationAuthority != "高级JSON") throw new InvalidOperationException("先切换到高级JSON编辑来源");
         RequireDraftRevision(); var sourceJson = ConfigurationDraft; var c = Wire.Decode<ParcelConfiguration>(sourceJson);
-        if (c.SchemaVersion < 3 || c.Topology is null) throw new InvalidOperationException("此入口需要schema3完整拓扑；旧schema1/2使用原表单");
+        if (c.SchemaVersion != 3 || c.Topology is null) throw new InvalidOperationException("仅支持当前schema3完整拓扑；请使用全新数据目录");
         var catalog = installedCatalog ?? throw new InvalidOperationException("先读取安装清单");
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(c));
         if (validation.Status != "Validated") { Message = "JSON未切换到表单：" + validation.Status + " · " + validation.Reason; return; }

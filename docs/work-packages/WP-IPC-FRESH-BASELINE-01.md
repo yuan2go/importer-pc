@@ -6,8 +6,8 @@
 
 | 批次 | 范围 | 状态 |
 |---|---|---|
-| B1 | C14/C15/C18、smoke缺键和两处文案 | 实施中 |
-| B2 | C05～C13/C17/C20 | 待实施 |
+| B1 | C14/C15/C18、smoke缺键和两处文案 | PR120已合并：e4dae94c9195793fa3e025c4026b786d0a454622；四项CI通过 |
+| B2 | C05～C13/C17/C20 | 当前实现；CI待记录 |
 | B3 | C01～C04/C16 | 待实施；须旧链规范化schema与新基线等价、Parcel10/Supply6、恢复测试及干净起停冒烟全部满足后才合并 |
 
 ## B1源码核查
@@ -21,3 +21,15 @@ C18原指南中classic、旧库升级、MaintenanceLogin及历史资格重验指
 各批在此追加实际源、定向测试、CI和合并SHA，不把历史PASS转记。系统安装、HKLM、SCM、已安装站点及真实设备操作本机NOT_RUN。源码回滚使用反向提交并重新CI；B3数据格式不可通过回退程序降级读取，使用全新目录。
 
 B1本机验证：桌面验证工程Release/locked构建0警告0错误；随包文档3项测试通过；station.ps1语法检查通过；直接执行smoke可选能力实际表达式，三个当前Parcel模板均通过。首次辅助检查误遍历Inspection模板得到Wcs缺键，限定本脚本支持的三个Parcel模板后通过，未修改Inspection。无产品/安装/设备运行。CI及合并待记录。
+
+## B2当前契约收口
+
+C05退休迁移API及孤立收据保存删除；未知CLI命令在任何运行时创建前统一拒绝。C06当前schema3路径直接执行，左右位、称重、图像原件责任不变。C07删除类型转发及旧构造桥；Platform/Supply契约与实现升2.0.0，Application契约与三个业务升3.0.0，受控驱动RCS/海康包装升2.0.0，参考包升3.0.0。外部RCS version1、SDK原生签名不变。所有项目锁文件仅更新本地Project依赖版本，外部包contentHash不变；正式构包继续按实际二进制产生新ABI和包哈希，不改冻结包。
+
+C08观察与称重只暴露Controlled启动端口，驱动/替身/示例同步编译。C09正式发布只接受schema2且必须提供实际业务程序集；无发布登记的源码开发入口保留。C10确认账不再接受旧OriginalEnvelope字段，InitialRepair原件保留。C11当前编辑草稿live-v2完整字段必填，先验证临时模型再替换输入；CAS不变。C12只删C→D旧模拟目录接管；通用备份恢复来源证明和退役围栏是当前正确性机制，核实后保留。C13种子只接受schema3，retainingOriginal夹具改为当前未完成配置并验证旧schema拒绝不写文件。C17只验当前schema3记录/拓扑/能力组合及实际输入字节，旧验收参数和三个旧记录用例折叠为拒绝测试。C20删除Sportmaster旧Workstation及VM声明，两处测试使用共享Shell；另外两个业务页面不变。
+
+源码与审计差异：ParcelMachineOrigin通用恢复证明仍有当前写入者，不能全部删除；InitialRepair与当前不完整种子仍可达。C16两份仅服务退休升级API的测试提前随B2删除以保持编译，其他库夹具在B3处理。发现Product CLI未知动作原来会落入snapshot，已统一未知动作拒绝。新增测试覆盖缺草稿字段、旧确认账字段拒绝且字节不变。
+
+本机验证：业务验证工程Release/locked通过；WPF编译发现缺System.IO引用，已修正后复验。运行时、机器租约、安装/设备相关验证交隔离CI，本机不接触已安装状态。独立扩展及剩余检查结果随PR记录。未处理的相邻标识：LegacyNamedCapabilities文件名和Ipc.Application.Contracts命名空间、DeploymentExtensions旧二参便利构造、ImporterPc.Administrator服务名称；后者是当前安装归属，不是旧路径。
+
+B2本机完成：三个Assembly、Application/Supply/WPF验证工程、三个示例扩展和海康包装Release/locked编译通过；Python发布校验31项通过。WPF测试共享Shell工厂曾返回错误基类，Supply两处调用仍用退休签名，均按当前端口修正后重新构建通过。

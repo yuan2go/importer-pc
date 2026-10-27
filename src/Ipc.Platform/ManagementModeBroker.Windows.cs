@@ -36,13 +36,6 @@ public static partial class ManagementModeBroker
         if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。");
         if (!Call<ManagementModeStatus>(root, new("Status")).Configured) throw new InvalidOperationException("请先设置管理密码，完成管理模式配置后再开始业务。");
     }
-    public static void RequireUnprovisionedInstaller(string root)
-    {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        var status = IsManaged(root) ? Call<ManagementModeStatus>(root, new("Status")) : null;
-        if (status is null || status.Configured || status.HasUnsupportedCredentials)
-            throw new UnauthorizedAccessException("此旧模拟目录迁移仅允许安装维护在首次设置管理密码前执行；已配置管理密码的部署使用原授权完整恢复流程。");
-    }
     [SupportedOSPlatform("windows")]
     static void RequireServer(string root, SafePipeHandle pipe)
     {

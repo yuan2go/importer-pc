@@ -26,6 +26,18 @@ static partial class ArchitectureQuality
             { Check(constructed==0 && File.ReadAllBytes(Authority(name)).SequenceEqual(bytes) && originals.All(p=>Wire.FileHash(p.Key)==p.Value),
                 "missing confirmation refuses before resources and preserves BOM, prior activation and original files; no inferred effectiveness"); }
         }
+        foreach (var obsoleteField in new[] { "OriginalEnvelopeBase64", "OriginalEnvelopeSha256" })
+        {
+            var name = "unsupported-confirmation-field-" + obsoleteField;
+            await using (var initial = await Open(c, name)) { }
+            var json = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Authority(name)))!;
+            json["Confirmation"]![obsoleteField] = null;
+            File.WriteAllText(Authority(name), json.ToJsonString());
+            var bytes = File.ReadAllBytes(Authority(name));
+            try { _ = new ConfigurationRevisions<ParcelConfiguration>(Authority(name), c, new Ipc.Application.Sportmaster.SportmasterFlow().Validate); Check(false, "noncurrent confirmation must refuse"); }
+            catch (InvalidDataException error)
+            { Check(error.Message.Contains("全新数据目录") && File.ReadAllBytes(Authority(name)).SequenceEqual(bytes), "obsolete confirmation fields refuse even when null and preserve exact bytes"); }
+        }
         const string failedName="confirmation-seed-failed";
         try { await using var ignored=await Open(c,failedName,f=>new FailingConfirmationFactory(f));Check(false,"seed startup must fail"); }
         catch(InvalidOperationException error) when(error.Message=="Synthetic Create failure") { }

@@ -19,7 +19,7 @@ static partial class Program
     // This fixture is not a Sportmaster launch profile or a production fallback.
     static ShellWindow CreateSharedShellForVerification(IParcelApplication application, string? view = null) =>
         new(new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"),
-            () => new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"), () => new Workstation(), view, "standard");
+            () => new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"), () => new System.Windows.Controls.UserControl(), view, "standard");
     [STAThread]
     public static int Main(string[] args)
     {

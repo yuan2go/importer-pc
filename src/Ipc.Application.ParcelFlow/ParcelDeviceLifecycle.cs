@@ -78,7 +78,7 @@ public sealed partial class ParcelRuntime
                         if (selectedReaders.Any(r => r.Source.DeviceId == DeviceKey(port))) continue; // Reader owns the shared physical capture session.
                         await DeviceCallAsync(DeviceKey(port), async () =>
                         {
-                            if (port is IWeightSource scale)
+                            if (port is IControlledWeightSource scale)
                             {
                                 scaleEpochs.TryRemove(scale.InstanceId, out _);
                                 await scale.StopAsync(budget.Token).ConfigureAwait(false); await scale.StartAsync(budget.Token).ConfigureAwait(false);

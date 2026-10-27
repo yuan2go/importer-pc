@@ -68,6 +68,20 @@ static class ParameterInheritance
             await vm.SaveIncompleteEditorAsync(); vm.DisplayNameDraft = "changed"; vm.TargetEfficiencyDraft = "1";
             await vm.ContinueIncompleteEditorAsync();
             Check(vm.DisplayNameDraft == "未应用草稿" && vm.TargetEfficiencyDraft == "0" && vm.HasUnsavedDisplayPreferences && vm.StationDisplaySummary.Contains("1800"), "encrypted editor draft preserves invalid display input without applying it or creating another configuration account");
+            var access = (IParcelConfigurationDraftApplication)app;
+            var originalDraft = (await access.ReadEditorDraftAsync())!;
+            var draftFile = Directory.EnumerateFiles(launch.DataRoot, "editor-draft.bin", SearchOption.AllDirectories).Single();
+            foreach (var key in new[] { "display.identity", "display.name", "display.target", "policy.TimeoutMs" })
+            {
+                var values = new Dictionary<string, string>(originalDraft.Editor.Values); values.Remove(key);
+                var malformed = await access.SaveEditorDraftAsync(originalDraft.BaseConfigurationHash, originalDraft.DraftHash, new(values));
+                var bytes = File.ReadAllBytes(draftFile); var before = vm.ConfigurationDraft;
+                try { await vm.ContinueIncompleteEditorAsync(); Check(false, "incomplete old draft must refuse"); }
+                catch (InvalidDataException)
+                { Check(File.ReadAllBytes(draftFile).SequenceEqual(bytes) && vm.ConfigurationDraft == before, "missing required draft field preserves encrypted bytes and current input"); }
+                originalDraft = await access.SaveEditorDraftAsync(originalDraft.BaseConfigurationHash, malformed.DraftHash, originalDraft.Editor);
+            }
+            await vm.ContinueIncompleteEditorAsync();
             var changes = vm.GetConfigurationChangeItems();
             Check(changes.Any(x => x.Path == "BarcodeExclusionPattern" && x.Category == "业务模块") && changes.Any(x => x.Path == "DiagnosticLogDays" && x.Category == "系统"), "review uses the same business/system field paths as navigation and errors");
             await vm.SaveStructuredConfigurationAsync(); var saved = await app.SnapshotAsync();

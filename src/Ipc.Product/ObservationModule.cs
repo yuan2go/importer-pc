@@ -3,11 +3,11 @@ using Ipc.Platform;
 using Ipc.Supply;
 namespace Ipc.Product;
 
-sealed class ObservationModule(StationApplication application, IObservationSource[] sources, int capacity) : IRuntimeModule, IRuntimeOwnership
+sealed class ObservationModule(StationApplication application, IControlledObservationSource[] sources, int capacity) : IRuntimeModule, IRuntimeOwnership
 {
     public string Id => "observations";
     public string[] Dependencies => [];
-    public IObservationSource[] Sources => sources;
+    public IControlledObservationSource[] Sources => sources;
     public int SourceStartAttempts { get; private set; }
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     Task? worker, healthWorker;
@@ -16,8 +16,8 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
     sealed record SourceHealth(DeviceHealthConfirmation? Confirmation = null, TaskCompletionSource? Fence = null);
     readonly Channel<SourceHealth> healthQueue = Channel.CreateBounded<SourceHealth>(new BoundedChannelOptions(Math.Max(8, sources.Length * 2)) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     readonly Dictionary<string, string> registeredEpochs = [];
-    readonly HashSet<IObservationSource> sourceOwners = [], disposedSources = [];
-    readonly Dictionary<IObservationSource, Task> sourceStops = [], sourceDisposals = [];
+    readonly HashSet<IControlledObservationSource> sourceOwners = [], disposedSources = [];
+    readonly Dictionary<IControlledObservationSource, Task> sourceStops = [], sourceDisposals = [];
     bool sourceInputDisposed;
     Task? sourceInputDisposal;
     public bool HasActiveWork
@@ -71,17 +71,16 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
         foreach (var source in sources) await StartSourceAsync(source, token).ConfigureAwait(false);
         await FlushHealthAsync(token).ConfigureAwait(false);
     }
-    async Task StartSourceAsync(IObservationSource source, CancellationToken token)
+    async Task StartSourceAsync(IControlledObservationSource source, CancellationToken token)
     {
-        if (source is not IControlledObservationSource controlled) throw new InvalidDataException("Source lacks runtime-owned epoch and reliable confirmation contract: " + source.DeviceId);
         var previous = registeredEpochs.GetValueOrDefault(source.DeviceId, "not-connected");
         var epoch = Wire.Id();
-        await application.RegisterDeviceEpochAsync(source.DeviceId, previous, epoch, controlled.ConfirmationSource).ConfigureAwait(false);
+        await application.RegisterDeviceEpochAsync(source.DeviceId, previous, epoch, source.ConfirmationSource).ConfigureAwait(false);
         registeredEpochs[source.DeviceId] = epoch;
         sourceStops.Remove(source);
         lock (ingress) sourceOwners.Add(source); // Partial Start failure still owns its registration.
         SourceStartAttempts++;
-        await controlled.StartControlledAsync(epoch, Receive, Health, token).ConfigureAwait(false);
+        await source.StartControlledAsync(epoch, Receive, Health, token).ConfigureAwait(false);
     }
     bool Receive(Observation observation)
     {
@@ -131,7 +130,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
         }
         finally { lifecycle.Release(); }
     }
-    async Task StopSourceAsync(IObservationSource source, CancellationToken token)
+    async Task StopSourceAsync(IControlledObservationSource source, CancellationToken token)
     {
         // A timed-out adapter call is still running, not cancelled. Reuse that exact task;
         // never launch another Stop or a new registration while it owns callbacks.

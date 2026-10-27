@@ -109,7 +109,7 @@ public sealed partial class ParcelRepository
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
         if (ReadStorageVersion(database, flow.Id) != 9) throw new InvalidDataException("Use the matching DB9 release; retention never performs a schema upgrade");
         phase("InitializeRepository");
-        using var repository = new ParcelRepository(directory, flow.Id, 9, false, cancellationToken);
+        using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
         phase("ValidateOriginal");
         using (var integrity = repository.db.CreateCommand())

@@ -71,8 +71,6 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
     // Numerically identical ports must share the same physical resource key.
     public static string EndpointIdentity(DeviceBinding binding) => binding.Parameters!["device.ip"] + ":" +
         int.Parse(binding.Parameters["device.port"], System.Globalization.CultureInfo.InvariantCulture).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> onHealth, CancellationToken token) =>
-        throw new InvalidOperationException("Use the application-registered connection epoch");
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registeredEpoch);

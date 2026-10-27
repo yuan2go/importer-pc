@@ -16,7 +16,7 @@ public sealed partial class ParcelRuntime
     { ParcelStage.Wcs => ParcelState.WcsUnknown, ParcelStage.Plc => ParcelState.PlcUnknown, _ => ParcelState.ImageUnknown };
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
-    bool CanDispatch(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && Effective.DeferredConnections is not { Length: > 0 } && PositionMaintenanceClear(op.PositionId ?? "main") && !op.RecoveryRequired && !HasIdentityConflict(op.PositionId ?? "main") && !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || Effective.SchemaVersion >= 3 && !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
+    bool CanDispatch(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && Effective.DeferredConnections is not { Length: > 0 } && PositionMaintenanceClear(op.PositionId ?? "main") && !op.RecoveryRequired && !HasIdentityConflict(op.PositionId ?? "main") && !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
         SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
         !repository.PendingReceipts().Any(x => x.Operation == op.Id && !(op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Stage == "image-upload")) &&
         Enum.GetValues<ParcelStage>().Where(kind => !(kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached))
@@ -91,7 +91,7 @@ public sealed partial class ParcelRuntime
     }
     bool ValidImageReply(ParcelOperation op, ParcelStage kind, ParcelImage? image)
     {
-        if (image is null || op.FrozenConfiguration.SchemaVersion >= 3 && image.Acquisition != op.Acquisition) return false;
+        if (image is null || image.Acquisition != op.Acquisition) return false;
         try { _ = ReadImage(op, image); }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException) { return false; }
         return kind == ParcelStage.Capture ? image.UploadedUri is null : op.Image is { } captured &&

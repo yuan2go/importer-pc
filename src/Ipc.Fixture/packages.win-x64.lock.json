@@ -52,7 +52,7 @@
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[2.0.0, )"
         }
       },
       "ipc.drivers": {
@@ -65,7 +65,7 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
-          "Ipc.Supply.Contracts": "[1.0.0, )"
+          "Ipc.Supply.Contracts": "[2.0.0, )"
         }
       },
       "ipc.platform": {
@@ -74,13 +74,13 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[2.0.0, )"
+          "Ipc.Application.Contracts": "[3.0.0, )"
         }
       },
       "Ipc.Supply.Contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[2.0.0, )"
         }
       }
     },

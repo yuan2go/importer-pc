@@ -182,13 +182,10 @@ public partial class ParcelViewModel
         var loaded = Snapshot ?? throw new InvalidOperationException("先读取当前应用投影");
         var confirmation = loaded.Configuration.Confirmation ?? throw new InvalidOperationException("当前输入没有可核验确认资料；检查配置恢复状态");
         confirmationRuntimeId = loaded.RuntimeId; confirmationRevision = loaded.Configuration.Revision; confirmationEffectiveHash = confirmation.EffectiveHash;
-        var original = confirmation.OriginalEnvelopeBase64 is { } bytes
-            ? System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(bytes)).TrimStart('\uFEFF')
-            : "新部署种子无旧账；首次资源成功启动后由应用确认。";
         ConfigurationConfirmationEvidence = "运行实例：" + loaded.RuntimeId + "\n读取时配置修订：" + loaded.Configuration.Revision +
             "\n来源 / 确认状态：" + confirmation.Source + " / " + confirmation.State +
-            "\n当前运行输入 SHA256：" + confirmation.EffectiveHash + "\n原账字节 SHA256：" + (confirmation.OriginalEnvelopeSha256 ?? "无旧账") +
-            "\n资源启动尝试：\n" + Wire.Encode(confirmation.Attempts) + "\n\n原始配置账（只读展示；原始字节在权威账中保留）：\n" + original +
+            "\n当前运行输入 SHA256：" + confirmation.EffectiveHash +
+            "\n资源启动尝试：\n" + Wire.Encode(confirmation.Attempts) +
             "\n\n本次读取的实际运行输入：\n" + Wire.Encode(loaded.Configuration.Effective);
         Changed(nameof(ConfigurationConfirmationEvidence)); Changed(nameof(ConfigurationConfirmationState)); Changed(nameof(CanConfirmConfiguration));
     }

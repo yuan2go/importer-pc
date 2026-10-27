@@ -11,12 +11,6 @@ public sealed record StorageInspection(int FormatVersion, int MinimumReader, int
     bool Quarantined, string[] UpgradeBlockers);
 public sealed record StorageBackupReceipt(string BackupId, string Sha256, DateTimeOffset CreatedAt,
     StorageInspection Source, StorageInspection Backup);
-public sealed record MaintenanceReleaseIdentity(string ExecutableSha256, string ProgramAssemblySha256,
-    string ReleaseManifestSha256, Dictionary<string, string> ConfigurationSha256);
-public sealed record StorageUpgradeReceipt(string OperationId, string Status, DateTimeOffset StartedAt,
-    StorageBackupReceipt Backup, MaintenanceReleaseIdentity PreviousRelease, MaintenanceReleaseIdentity SelectedRelease,
-    int DestinationFormat, string? Failure = null);
-
 public sealed partial class SupplyStore
 {
     // id1/schema and id2/SemanticFormatMigration are immutable historical contracts.
@@ -209,20 +203,4 @@ public sealed partial class SupplyStore
         if (fromFormat is 1 or 2 or 3) Apply(4, ConformanceFormatMigration);
         if (fromFormat is >= 1 and <= 4) Apply(5, OperationFormatMigration);
     }
-    static void SaveMaintenanceReceipt(string path, StorageUpgradeReceipt receipt, bool create)
-    {
-        if (create)
-        {
-            using var output = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough);
-            output.Write(Encoding.UTF8.GetBytes(Wire.Encode(receipt))); output.Flush(true); return;
-        }
-        var temporary = path + "." + Wire.Id() + ".new";
-        using (var output = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
-        { output.Write(Encoding.UTF8.GetBytes(Wire.Encode(receipt))); output.Flush(true); }
-        File.Move(temporary, path, true);
-    }
-    // Recognize the former entry point only to refuse it before creating a backup, receipt or writer.
-    public static StorageUpgradeReceipt UpgradeVerified(string source, string destinationBackup, string operationReceipt,
-        MaintenanceReleaseIdentity previousRelease, MaintenanceReleaseIdentity selectedRelease) =>
-        throw new InvalidDataException("Storage upgrades are unsupported during development; preserve the original database and release");
 }

@@ -48,7 +48,7 @@ public sealed class OperatorSession
 public sealed record AcquisitionIdentity(string DeviceId, string Epoch, string SourceEventId, string AdmissionId, DateTimeOffset ObservedAt);
 
 public sealed record WeightObservation(string Epoch, long Sequence, WeightMeasurement Measurement);
-public interface IControlledWeightSource : IWeightSource
+public interface IControlledWeightSource : ICapabilityPort
 {
     Task StartControlledMeasurementsAsync(string registeredEpoch, Func<WeightObservation, bool> receive, CancellationToken token);
 }

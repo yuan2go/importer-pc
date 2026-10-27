@@ -24,9 +24,6 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     public string Epoch { get; private set; } = Wire.Id();
     public int StartCount { get; private set; }
     public string ConfirmationSource => confirmationSource;
-    // Compatibility for isolated synthetic callers; ProductRuntime uses the registered path.
-    public Task StartAsync(Func<Observation, bool> receiver, Action<string, string, DeviceHealth> onHealth, CancellationToken token) =>
-        StartControlledAsync(Wire.Id(), receiver, x => onHealth(x.DeviceId, x.Epoch, x.Health), token);
     public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receiver, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -168,8 +165,6 @@ public sealed class FileReplaySource(string deviceId, string file) : IControlled
     public string DeviceId => source.DeviceId;
     public string Epoch => source.Epoch;
     public string ConfirmationSource => source.ConfirmationSource;
-    public Task StartAsync(Func<Observation, bool> receiver, Action<string, string, DeviceHealth> health, CancellationToken token) =>
-        StartControlledAsync(Wire.Id(), receiver, x => health(x.DeviceId, x.Epoch, x.Health), token);
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receiver, Action<DeviceHealthConfirmation> health, CancellationToken token)
     {
         if (new FileInfo(file).Length > 1_000_000) throw new InvalidDataException("Replay exceeds size limit");

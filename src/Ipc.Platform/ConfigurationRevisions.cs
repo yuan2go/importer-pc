@@ -1,8 +1,9 @@
 namespace Ipc.Platform;
 
 public sealed record ConfigurationActivationAttempt(string Id, DateTimeOffset StartedAt, DateTimeOffset? FinishedAt = null, string? Outcome = null, string? Failure = null);
+[System.Text.Json.Serialization.JsonUnmappedMemberHandling(System.Text.Json.Serialization.JsonUnmappedMemberHandling.Disallow)]
 public sealed record ConfigurationEffectiveConfirmation(string Source, string EffectiveHash, bool Required, string State,
-    string? OriginalEnvelopeBase64, string? OriginalEnvelopeSha256, ConfigurationActivationAttempt[] Attempts,
+    ConfigurationActivationAttempt[] Attempts,
     string? ConfirmedBy = null, string? Reason = null, DateTimeOffset? ConfirmedAt = null);
 public sealed record ConfigurationInitialRepair(string Id, string OriginalEnvelopeBase64, string OriginalEnvelopeSha256,
     string EffectiveHash, string CandidateHash, string Actor, string Reason, DateTimeOffset At);
@@ -19,11 +20,16 @@ public sealed class ConfigurationRevisions<T> where T : class
     {
         this.path = path; this.validate = validate;
         var loadedEnvelope = File.Exists(path) ? File.ReadAllBytes(path) : null;
-        Current = loadedEnvelope is not null ? Wire.Decode<ConfigurationRevision<T>>(DecodeEnvelope(loadedEnvelope)) : new(0, seed, null, "ConfirmationRequired", null,
-            Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", null, null, []));
+        Current = loadedEnvelope is not null ? ReadCurrentEnvelope(loadedEnvelope) : new(0, seed, null, "ConfirmationRequired", null,
+            Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", []));
         RequireValid(Current.Effective);
         PrepareEffectiveConfirmation();
         if (!File.Exists(path)) ExtensionStore.AtomicWrite(path, Current);
+    }
+    static ConfigurationRevision<T> ReadCurrentEnvelope(byte[] bytes)
+    {
+        try { return Wire.Decode<ConfigurationRevision<T>>(DecodeEnvelope(bytes)); }
+        catch (System.Text.Json.JsonException error) { throw new InvalidDataException("配置账不是当前格式；原文件保留，请使用全新数据目录。", error); }
     }
     static string DecodeEnvelope(byte[] bytes)
     {
@@ -119,7 +125,6 @@ public sealed class ConfigurationRevisions<T> where T : class
                 existing.Source != "Seed" ||
                 existing.State is not ("Required" or "InProgress" or "AwaitingMaintenance" or "Confirmed") ||
                 existing.Required == (existing.State == "Confirmed") || existing.Attempts is null ||
-                existing.OriginalEnvelopeBase64 is not null || existing.OriginalEnvelopeSha256 is not null ||
                 existing.State == "InProgress" && existing.Attempts.LastOrDefault() is not { FinishedAt: null } ||
                 existing.State == "AwaitingMaintenance" && existing.Attempts.LastOrDefault() is not { Outcome: "ResourcesStarted", FinishedAt: not null })
                 throw new InvalidDataException("Effective confirmation metadata or preserved envelope identity is invalid");

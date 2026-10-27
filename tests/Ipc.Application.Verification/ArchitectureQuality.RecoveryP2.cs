@@ -46,7 +46,7 @@ static partial class ArchitectureQuality
         if(sameBytes) early=early with{BusinessAccepted=true,Image=image with{UploadedUri="reference://upload/p2"}};
         var changed=early with{BusinessAccepted=true,Image=image with{UploadedUri="reference://upload/p2"},Evidence="Changed bytes under evicted original ID"};
         if(sameBytes)changed=early;
-        using(var repo=new ParcelRepository(directory,c.ApplicationId,version))
+        using(var repo=new ParcelRepository(directory,c.ApplicationId))
         {
             repo.Commit(op,"P2SyntheticFixture","Current schema with frozen original receipts");
             foreach(var stage in new[]{op.Capture,op.Wcs}.OfType<StageFact>())foreach(var reply in stage.Replies)
@@ -65,7 +65,7 @@ static partial class ArchitectureQuality
         var calls=0;var database=Path.Combine(directory,c.ApplicationId+".db");var backup=Path.Combine(root,name+".backup.db");
         var result=await ParcelOfflineReceiptRecovery.RecoverAsync(database,Wire.FileHash(database),backup,original,"/synthetic/original-release", "Controlled duplicate identity investigation",new SportmasterFlow(),
             (_,_,_,_)=>{calls++;return Task.FromResult<StageReply?>(changed);},expectedWalHash:WalHash(database));
-        using(var repo=new ParcelRepository(directory,c.ApplicationId,sameBytes?targetStorageVersion:version))
+        using(var repo=new ParcelRepository(directory,c.ApplicationId))
         {
             var after=repo.Load().Single();repo.ValidateRawInventory();
             if(sameBytes)

@@ -36,8 +36,7 @@ public sealed partial class ParcelRuntime
         BackupScheduleStatus = null,
         Configuration = s.Configuration with
         {
-            Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null,
-            Confirmation = s.Configuration.Confirmation is null ? null : s.Configuration.Confirmation with { OriginalEnvelopeBase64 = null }
+            Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null
         },
         Operations = s.Operations.Select(OperatorOperation).ToArray(),
         // TCP evidence contains actual endpoints for management diagnostics only.

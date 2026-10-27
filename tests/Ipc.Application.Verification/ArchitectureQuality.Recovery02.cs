@@ -165,7 +165,6 @@ static partial class ArchitectureQuality
         await using(var app=await Open(c,name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"independent missing raw/image custody survives restart after outcome query");
         await CurrentCustody07Checks(c);
         await CurrentOfflineRecoveryCuts(c);
-        await LegacyProjection02Checks(c,before.Id);
         await Relocation02Checks(c);
         await LegacyConflict02Checks();
     }
@@ -176,7 +175,7 @@ static partial class ArchitectureQuality
         await using (var app = await Open(c, "current-db8-offline-custody", factory => new FaultFactory(factory) { EmptyUploadQuery = true }))
             await Wait(app, snapshot => snapshot.Operations.Single(x => x.AdmissionId == "unrelated-right").ImageReleased);
         var database = Path.Combine(directory, "sportmaster.db"); string occurrence; ParcelOperation original;
-        using (var repository = new ParcelRepository(directory, "sportmaster", 9))
+        using (var repository = new ParcelRepository(directory, "sportmaster"))
         {
             original = repository.Load().Single(x => x.AdmissionId == "interrupted-attached");
             occurrence = repository.PendingReceipts().Single(x => x.Operation == original.Id && x.Stage == "image-upload" && x.Reply is null).Id;
@@ -195,23 +194,9 @@ static partial class ArchitectureQuality
             "current SQL9 offline receipt recovery performs one original Query and returns SQL9 without a post-query downgrade failure");
         await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
             "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        using var readback = new ParcelRepository(directory, "sportmaster", 9); var current = readback.Load().Single(x => x.Id == original.Id);
+        using var readback = new ParcelRepository(directory, "sportmaster"); var current = readback.Load().Single(x => x.Id == original.Id);
         Check(calls == 1 && current.Wcs!.Attempts == 1 && current.Upload!.Attempts == 1 && !current.ImageReleased && readback.ReceiptById(occurrence) is { State: "Awaiting", RawHash: null, QueryOccurrence: not null },
             "repeated SQL9 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
-    }
-    static async Task LegacyProjection02Checks(ParcelConfiguration c,string id)
-    {
-        var directory=DirectoryFor("legacy-db3-repair",c); ParcelRecovery.Restore(Path.Combine(root,"legacy-before.backup.db"),directory);
-        var database=Path.Combine(directory,"sportmaster.db");
-        using(var db=new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Pooling = false }.ToString()))
-        {
-            db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:old-version') WHERE id=$id"; q.Parameters.AddWithValue("$id",id); q.ExecuteNonQuery();
-            q.CommandText=SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
-        }
-        var hash=Wire.FileHash(database); var backup=Path.Combine(root,"legacy-repair-preserved.db");
-        try { ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Inspect synthetic old projection");Check(false,"old projection repair must refuse"); }
-        catch(InvalidDataException){Check(Wire.FileHash(database)==hash && !File.Exists(backup) && !Directory.Exists(backup+".recovery") && ParcelRepository.ReadStorageVersion(database,"sportmaster")==3,"old projection repair refuses before backup/writes and preserves missing custody");}
-        await Task.CompletedTask;
     }
     static async Task LegacyConflict02Checks()
     {

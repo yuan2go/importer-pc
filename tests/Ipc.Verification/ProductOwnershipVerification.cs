@@ -138,8 +138,6 @@ sealed class ProductProbeSource(string deviceId, string failure) : IControlledOb
     public int DisposeCount { get; private set; }
     public bool Active { get; private set; }
     public bool Disposed { get; private set; }
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token) =>
-        StartControlledAsync(Wire.Id(), receive, x => health(x.DeviceId, x.Epoch, x.Health), token);
     public Task StartControlledAsync(string epoch, Func<Observation, bool> callback, Action<DeviceHealthConfirmation> health, CancellationToken token)
     {
         Epoch = epoch; receive = callback; Active = true; var now = DateTimeOffset.UtcNow;

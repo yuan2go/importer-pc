@@ -330,7 +330,6 @@ static class ApplicationArchitecture
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-        public Task StartMeasurementsAsync(Func<WeightMeasurement, bool> r, CancellationToken t) => inner.StartMeasurementsAsync(r, t);
         public Task StartControlledMeasurementsAsync(string e, Func<WeightObservation, bool> r, CancellationToken t)
         { callback = r; epoch = e; return inner.StartControlledMeasurementsAsync(e, r, t); }
         public bool Emit(WeightMeasurement m) => ((ISyntheticWeightInput)inner).Emit(m);
@@ -348,7 +347,6 @@ static class ApplicationArchitecture
         public string DeviceId => inner.DeviceId;
         public string Epoch => inner.Epoch;
         public string ConfirmationSource => inner.ConfirmationSource;
-        public Task StartAsync(Func<Observation, bool> r, Action<string, string, DeviceHealth> h, CancellationToken t) => throw new NotSupportedException();
         public Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t)
         { receive = r; health = h; Starts++; if (failStart) throw new IOException("Injected second-reader start failure"); return inner.StartControlledAsync(e, r, h, t); }
         public bool Emit(string kind, string admissionId, string[]? codes = null, int? quantity = null, string? sourceId = null) => ((ISyntheticObservationInput)inner).Emit(kind, admissionId, codes ?? [], quantity, sourceId ?? Wire.Id());

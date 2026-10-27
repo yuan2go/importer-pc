@@ -15,8 +15,6 @@ sealed class DeferredObservationSource(string deviceId) : IControlledObservation
         health(new(DeviceId, Epoch, DeviceHealth.Unknown, DateTimeOffset.UtcNow, null, ConfirmationSource));
         return Task.CompletedTask;
     }
-    public Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token)
-        => StartControlledAsync(Wire.Id(), receive, h => health(h.DeviceId, h.Epoch, h.Health), token);
     public Task StopAsync(CancellationToken token) => Task.CompletedTask;
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

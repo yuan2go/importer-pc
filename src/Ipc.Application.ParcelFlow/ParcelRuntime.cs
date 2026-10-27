@@ -200,7 +200,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
             worker = Task.WhenAll(positionWorkers.Values);
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
-            foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
+            foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
             {
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
@@ -220,7 +220,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             configuration.CompleteEffectiveStartup();
             if (configuration.Current.Confirmation?.Required == true)
-                repository.Commit(null, "ConfigurationConfirmationRequired", "Resources started; original legacy envelope retained; authenticate maintenance and confirm current configuration revision/hash before admission", paused: true);
+                repository.Commit(null, "ConfigurationConfirmationRequired", "Resources started; current configuration retained; enter management mode and confirm current configuration revision/hash before admission", paused: true);
             CompleteConfigurationAudit("Activated");
             // Only a successful controlled activation applies the new policy.
             // Reconnect and Pending edits cannot change retention.
@@ -258,19 +258,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader }
         .OfType<ICapabilityPort>().Concat(ports?.Devices?.Values ?? []).DistinctBy(p => p.InstanceId);
     ICapabilityPort Capability(string instance) => CapabilityPorts().Single(p => p.InstanceId == instance);
-    async Task RegisterScaleAsync(IWeightSource scale, CancellationToken token)
+    async Task RegisterScaleAsync(IControlledWeightSource scale, CancellationToken token)
     {
         var registration = Wire.Id(); scaleEpochs[scale.InstanceId] = registration; scaleSequences[scale.InstanceId] = 0;
-        if (scale is IControlledWeightSource controlled)
-            await controlled.StartControlledMeasurementsAsync(registration, o => o.Epoch == registration && scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration &&
-                Enqueue(new ParcelMeasurement(scale.InstanceId, o.Epoch, o.Sequence, o.Measurement)), token).ConfigureAwait(false);
-        else
-        {
-            if (Effective.SchemaVersion >= 3) throw new InvalidDataException("Schema3 scale requires controlled epoch/sequence measurement capability");
-            long sequence = 0;
-            await scale.StartMeasurementsAsync(m => scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration && Enqueue(new ParcelMeasurement(scale.InstanceId, registration, Interlocked.Increment(ref sequence), m)), token).ConfigureAwait(false);
-        }
+        await scale.StartControlledMeasurementsAsync(registration, o => o.Epoch == registration && scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration &&
+            Enqueue(new ParcelMeasurement(scale.InstanceId, o.Epoch, o.Sequence, o.Measurement)), token).ConfigureAwait(false);
     }
+
     bool Enqueue(object item)
     {
         if (Volatile.Read(ref accepting) == 0) return false;
@@ -448,7 +442,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
             Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
-            PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null, BarcodeSelection: selection);
+            PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection);
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);

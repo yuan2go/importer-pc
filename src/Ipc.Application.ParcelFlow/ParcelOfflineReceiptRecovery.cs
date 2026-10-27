@@ -30,7 +30,7 @@ public static class ParcelOfflineReceiptRecovery
             throw new InvalidDataException("Original deployment identity differs");
         var dataRoot=Directory.GetParent(directory)!.Parent!.Parent!.FullName;
         if(registerBackup is null && (c.Extensions?.Packages.Length>0||envelope.Pending?.Extensions?.Packages.Length>0)) throw new InvalidDataException("Extension backup consumer registration required");
-        using(var repository=new ParcelRepository(directory,definition.Id,9,false,token,ParcelBindings.Positions(c).Select(p=>p.Id).ToArray()))
+        using(var repository=new ParcelRepository(directory,definition.Id,token,ParcelBindings.Positions(c).Select(p=>p.Id).ToArray()))
         {
             var pending=repository.PendingReceipts().SingleOrDefault(x=>x.Id==occurrence);
             if (pending.Id is null) throw new InvalidDataException("Original pending receipt occurrence unavailable");
@@ -82,7 +82,7 @@ public static class ParcelOfflineReceiptRecovery
             repository.ValidateRawInventory();
             Boundary?.Invoke("AfterReceiptRecovery");
         }
-        using var readback=new ParcelRepository(directory,definition.Id,9,false,token,ParcelBindings.Positions(c).Select(p=>p.Id).ToArray());
+        using var readback=new ParcelRepository(directory,definition.Id,token,ParcelBindings.Positions(c).Select(p=>p.Id).ToArray());
         return new{Status="OutcomeCheckedCustodyRetained",DatabaseVersion=readback.StorageVersion,OriginalOccurrence=occurrence,Raw=readback.ReceiptById(occurrence),Pending=readback.PendingReceipts().Length,Backup=backup,OriginalQueryOnly=true,OriginalSubmitAttemptsUnchanged=true};
     }
     static string OutcomeDetail(string original,string query,ParcelOperation before,string reason,string backup,string release) =>

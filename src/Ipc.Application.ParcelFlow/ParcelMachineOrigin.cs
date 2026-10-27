@@ -26,26 +26,6 @@ internal static class ParcelMachineOrigin
         Require(directory, c);
     }
     internal static void Require(string directory, ParcelConfiguration c) => Require(directory, c, new HashSet<string>(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal));
-    internal static string RebindUnusedSimulationDirectory(string original, string target, ParcelConfiguration c, string expectedOriginHash, string? runtimeSid = null)
-    {
-        if (!OperatingSystem.IsWindows() || c.Mode != RunMode.Simulation) throw new InvalidOperationException("仅处理同机尚未供包的旧模拟目录；生产/已作业数据沿原完整恢复与接管流程。");
-        var sourceFile = Path.Combine(original, FileName); var targetFile = Path.Combine(target, FileName);
-        RecoveryFiles.RequireOrdinaryAncestors(sourceFile); RecoveryFiles.RequireOrdinaryAncestors(targetFile);
-        if (Wire.FileHash(sourceFile) != expectedOriginHash) throw new InvalidDataException("原机器来源密文在核对后变化。");
-        var origin = Wire.Decode<Origin>(ProtectedDraftPayload.Read(sourceFile));
-        if (origin.SchemaVersion != 1 || origin.Application != c.ApplicationId || origin.Station != c.StationId || origin.Mode != c.Mode || origin.PortableSynthetic || !Guid.TryParseExact(origin.Id, "N", out _))
-            throw new InvalidDataException("原模拟机器身份不符；不能补盖新身份。");
-        target = Path.GetFullPath(target);
-        if (!string.Equals(WindowsStoragePaths.CanonicalDirectory(origin.Directory), target, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("原逻辑目录未指向本次同一物理目标；不能将任意复制目录当作原机。");
-        var current = Wire.Decode<Origin>(ProtectedDraftPayload.Read(targetFile));
-        if (current == (origin with { Directory = target })) return origin.Id; // Resume after the locator was durably written.
-        if (Wire.FileHash(targetFile) != expectedOriginHash) throw new InvalidDataException("目标机器来源不是原密文，保留原件核对。");
-        // Keep the SAME opaque machine identity. This is an approved empty simulation
-        // directory relocation, never EnsureNew on a pre-existing ledger or a fresh claim.
-        ProtectedDraftPayload.Write(targetFile, Wire.Encode(origin with { Directory = target }), false, runtimeSid);
-        Require(target, c); return origin.Id;
-    }
     static void Require(string directory, ParcelConfiguration c, HashSet<string> visited)
     {
         directory = Path.GetFullPath(directory);

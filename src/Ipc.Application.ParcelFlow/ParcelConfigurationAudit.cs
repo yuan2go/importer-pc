@@ -22,7 +22,7 @@ public sealed partial class ParcelRuntime
             if (stopped || configuration is null) return new("NotReady", "Application unavailable", repository?.Revision ?? 0);
             var errors = definition.Validate(candidate); if (errors.Length != 0) return new("Rejected", string.Join("; ", errors), repository!.Revision);
             RequireSameIdentity(Effective, candidate);
-            if (Effective.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("Topology schema flattening forbidden");
+            if (candidate.SchemaVersion != 3) throw new InvalidDataException("Topology schema flattening forbidden");
             candidate = factory.Normalize(candidate); factory.ValidateStructure(candidate);
             return new("Validated", "Complete candidate validated; no saved revision or activation", repository!.Revision);
         }

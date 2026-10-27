@@ -22,24 +22,18 @@ public sealed record DeviceHealthConfirmation(string DeviceId, string Epoch, Dev
 public sealed record Observation(string Id, string DeviceId, string Epoch, string SourceEventId, long Sequence,
     string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? CandidateIssue = null);
-public interface IObservationSource : IAsyncDisposable
+// Runtime owns epoch registration; callbacks cannot replace the accepted epoch.
+public interface IControlledObservationSource : IAsyncDisposable
 {
     string DeviceId { get; }
     string Epoch { get; }
-    Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token);
-    Task StopAsync(CancellationToken token);
-}
-// The runtime owns epoch registration. Drivers cannot replace the accepted epoch by sending a
-// different health/observation value; reconnect must stop the old registration first.
-public interface IControlledObservationSource : IObservationSource
-{
     string ConfirmationSource { get; }
     Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive,
         Action<DeviceHealthConfirmation> health, CancellationToken token);
+    Task StopAsync(CancellationToken token);
 }
 
-// Service targets are not devices. Legacy DeviceState-shaped WCS health remains readable
-// only for the original dedicated assembly; new typed integrations use this projection.
+// Service targets are not devices; integrations publish their own health.
 public enum ServiceStatus { Ready, Unavailable, Stopping, Stopped, Unknown }
 public sealed record ServiceState(string TargetId, string TargetRevision, ServiceStatus Status,
     DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Source)

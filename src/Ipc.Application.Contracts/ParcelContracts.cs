@@ -37,7 +37,7 @@ public interface IWcsPort : ICapabilityPort
     Task<StageReply> ResolveSlotAsync(FrozenRequest request, CancellationToken token);
     Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token);
 }
-public interface IWeightExtension { IWeightSource Create(CapabilityBinding binding); }
+public interface IWeightExtension { IControlledWeightSource Create(CapabilityBinding binding); }
 public interface IPlcExtension { IPlcPort Create(CapabilityBinding binding); }
 public interface IWcsExtension { IWcsPort Create(CapabilityBinding binding); }
 public interface ISyntheticWeightInput { bool Emit(WeightMeasurement measurement); }

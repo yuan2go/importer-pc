@@ -321,7 +321,6 @@ static class DualCameraCommunication
         public string? Failure => (inner as TcpLineObservationSource)?.LastFailure;
         public Func<Observation, bool>? Previous, Current;
         public string DeviceId => inner.DeviceId; public string Epoch => inner.Epoch; public string ConfirmationSource => inner.ConfirmationSource;
-        public Task StartAsync(Func<Observation, bool> r, Action<string, string, DeviceHealth> h, CancellationToken t) => throw new NotSupportedException();
         public async Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t)
         {
             Previous = Current; Current = r;

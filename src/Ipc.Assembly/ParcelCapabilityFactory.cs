@@ -315,7 +315,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     internal ApplicationRelease ReadPublishedRelease(string appRoot)
     {
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
-        ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts), businessAssembly);
+        ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts), businessAssembly ?? throw new InvalidDataException("Published verification requires the actual business assembly"));
         return release;
     }
     public async Task<BusinessReceipt> InstallAsync(string file, string sha256)
@@ -438,8 +438,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
         Dictionary<string, ICapabilityPort> devicePorts = [];
         foreach (var scaleBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "weight"))
-            devicePorts.Add(scaleBinding.InstanceId, Own<IWeightSource>(scaleBinding, () => new ReferenceWeightSource(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
-        var weight = c.Scale is null ? null : (IWeightSource)devicePorts[c.Scale.InstanceId];
+            devicePorts.Add(scaleBinding.InstanceId, Own<IControlledWeightSource>(scaleBinding, () => new ReferenceWeightSource(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
+        var weight = c.Scale is null ? null : (IControlledWeightSource)devicePorts[c.Scale.InstanceId];
         #if DIRECTPLC
         IWcsPort? wcs = null;
         #else

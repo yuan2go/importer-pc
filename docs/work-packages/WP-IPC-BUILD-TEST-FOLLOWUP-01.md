@@ -15,3 +15,5 @@
 提交、PR、CI及合并结果以本包PR和最终交付记录为准；不从旧提交转记PASS。Win10/Win11目标机、真实SDK/RCS和现场为NOT_RUN。回滚采用正常反向提交PR，不重写历史。
 
 首轮CI（40468133005）的Linux桌面跨编译在System.Diagnostics.EventLog引用包还原时NU1102失败，核心、Fixture和Supply验证已成功编译。完整Supply桌面构建改在Windows runner实际执行Git Bash入口；无参数默认套件继续独立在Linux隔离运行。没有修改NuGet锁、包版本或跳过桌面构建；Linux桌面跨编译不计PASS。
+
+第二轮无参数套件已通过三业务作业、PLC位置阻断/完成、恢复与称重，暴露Unknown目标比较混用了操作员脱敏投影和管理完整投影。原件改为授权后捕获，重启也在授权后比较；保留ActivationFailed及原请求字节/次数断言，并增加Pending候选保留断言。

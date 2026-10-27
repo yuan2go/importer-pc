@@ -59150,9 +59150,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "fe1969bdf27902fb14ee9c2b0701ae87e566354e967b813249e268d0c3007851",
-      "size_bytes": 26318,
-      "git_blob": "c40ee8c609970366fd4cdcfd32529518f6daa6f2",
+      "sha256": "1031d08909f0330395db63af749cb61006cc7480465a32b0914081f1ee5202f0",
+      "size_bytes": 26495,
+      "git_blob": "a04c930ec0b0a61fc21fd9b1bf723e08313d18a9",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -102232,9 +102232,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Current build/test entrypoint and station policy verification",
       "source": "WP-IPC-BUILD-TEST-FOLLOWUP-01",
-      "sha256": "f6770f722bc3aecd15f1d13bf698fcc327f9451da78e86626063af6ad25d660c",
-      "size_bytes": 2919,
-      "git_blob": "2b370b3340debaf6b9dbfb49329132b193cd2287",
+      "sha256": "54c5983e4a72243e8d668e8845324cc0b4a78e05b5e5ccc0da40b8e643e1be11",
+      "size_bytes": 3247,
+      "git_blob": "45be2f140e8a1e391e030db8aa7173db82c1827d",
       "storage_scope": "public_repository"
     },
     {

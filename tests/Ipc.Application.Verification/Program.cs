@@ -199,16 +199,17 @@ await using (var app = await Open(lost, "lost"))
 {
     app.EmitReference("lost-parcel", "00099", "lost-event"); var s = await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.PlcUnknown); original = s.Operations.Single();
     Pass(original.Wcs?.State == StageState.Accepted && original.Plc?.Attempts == 1 && original.Slot == "REFERENCE-07", "WCS acceptance and original PLC intention survive lost PLC reply");
-    await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); s = await app.SnapshotAsync();
+    await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); s = await app.SnapshotAsync(); original = s.Operations.Single();
     var changed = s.Configuration.Effective with { Plc = s.Configuration.Effective.Plc! with { Target = "reference://plc/new-target" } };
     Pass((await app.StageConfigurationAsync(s.Configuration.Revision, changed, "Synthetic directed configuration verification")).Status == "PendingRestart", "changed target saved only as pending");
 }
 await using (var app = await Open(lost, "lost"))
 {
-    var s = await app.SnapshotAsync(); var recovered = s.Operations.Single();
-    Pass(s.Configuration.Status == "ActivationFailed" && s.Configuration.Effective.Plc!.Target == original.Plc!.Request.Binding.Target, "unresolved responsibility blocks changed configuration activation and retains old effective");
-    Pass(Wire.Encode(recovered.Plc!.Request) == Wire.Encode(original.Plc!.Request) && Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request), "restart freezes both original stage identities/payloads/config/implementations");
     await ManagementModeFixture.Authorize(app);
+    var s = await app.SnapshotAsync(); var recovered = s.Operations.Single();
+    Pass(s.Configuration.Status == "ActivationFailed" && s.Configuration.Effective.Plc!.Target == original.Plc!.Request.Binding.Target &&
+        s.Configuration.Pending?.Plc?.Target == "reference://plc/new-target", "unresolved responsibility blocks changed configuration activation, retains old effective and preserves pending candidate; status=" + s.Configuration.Status);
+    Pass(Wire.Encode(recovered.Plc!.Request) == Wire.Encode(original.Plc!.Request) && Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request), "restart freezes both original stage identities/payloads/config/implementations");
     var result = await app.ReconcileAsync(original.Id); s = await app.SnapshotAsync(); recovered = s.Operations.Single();
     Pass(result.Status == nameof(ParcelState.PhysicalCompleted) && recovered.Plc!.Attempts == 1 && recovered.Wcs!.Attempts == 1, "original PLC query resolves committed action without repeating either phase");
     await app.ReconcileAsync(original.Id); Pass((await app.SnapshotAsync()).Operations.Single().Plc!.Attempts == 1, "duplicate/late original query does not resubmit or count another action");

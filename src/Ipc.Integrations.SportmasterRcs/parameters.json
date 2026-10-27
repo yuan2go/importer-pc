@@ -66,10 +66,11 @@
   {
     "Key": "left-bcr-code",
     "Group": "RCS 分拣任务",
-    "Label": "左位读码器编号",
+    "Label": "左相机编码",
     "Type": "string",
-    "Required": true,
-    "MaximumLength": 256
+    "Required": false,
+    "MaximumLength": 256,
+    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
   },
   {
     "Key": "right-station-code",
@@ -82,10 +83,11 @@
   {
     "Key": "right-bcr-code",
     "Group": "RCS 分拣任务",
-    "Label": "右位读码器编号",
+    "Label": "右相机编码",
     "Type": "string",
-    "Required": true,
-    "MaximumLength": 256
+    "Required": false,
+    "MaximumLength": 256,
+    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
   },
   {
     "Key": "specified-chute",
@@ -129,6 +131,6 @@
     "Maximum": 3600,
     "MaximumLength": 4,
     "Unit": "秒",
-    "Description": "默认5秒，受控重启后生效。供包台编码读取系统StationCode，相机编码读取各Reader驱动参数bcr-code；超时不重发旧心跳。"
+    "Description": "默认5秒，受控重启后生效。供包台编码读取系统StationCode，相机编码读取本组件同一份left-bcr-code/right-bcr-code；取格口与心跳共用，不重发旧心跳。"
   }
 ]

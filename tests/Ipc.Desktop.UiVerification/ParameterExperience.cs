@@ -48,7 +48,7 @@ static partial class Program
         var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
         var visualConfig = config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices },
             Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true,
-                new() { ["device.ip"] = "192.0.2." + (21 + i), ["bcr-code"] = "HEART-" + i })).ToArray()) };
+                new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) };
         probe.Catalog = new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]);
         probe.Project = s => s with { Configuration = s.Configuration with { Effective = visualConfig }, Health =
             [new(binding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")] };

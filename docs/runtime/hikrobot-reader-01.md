@@ -1,3 +1,5 @@
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+
 # 海康 SDK 当前接入与诊断
 
 当前任务及验证状态见[SDK-BARCODE-02](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)，并发释放、物理身份及诊断保护增量见[HARDENING-01](../work-packages/WP-IPC-HIKROBOT-HARDENING-01.md)。本文件定义当前操作；旧驱动冻结介质、0帧/0码、原PASS/FAIL及SDK1.0.x步骤已按原字节[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)，不能转记当前源或目标型号。
@@ -9,7 +11,7 @@
 | 当前模块 | 实际职责与状态 |
 |---|---|
 | `hikrobot.mvs-acquisition/mvs-acquisition` 1.0.0 | 目标标准相机的实际MVS GigE采集。SDK函数返回4.8.2.2，DLL文件版本4.8.2.1；只支持此当前ABI。枚举、按IP/可选序列号独占打开、读取触发/Mono8/PayloadSize、有限SDK节点、GetImageBuffer/FreeImageBuffer成对取图、连接诊断及停止已实现。尚缺适用条码识别组件；不生成观察/条码/作业，健康保持Unknown（无业务有效期）。 |
-| `hikrobot.idmvs-reader/idmvs-reader` 2.0.1 | 既有智能读码器MvCodeReader 2.0.0.4回调条码链。保留实际使用场景，不当作目标标准型已获支持的证据。回调之外消费，观察队列条数加字节预算。 |
+| `hikrobot.idmvs-reader/idmvs-reader` 1.0.0 | 既有智能读码器MvCodeReader 2.0.0.4回调条码链。保留实际使用场景，不当作目标标准型已获支持的证据。回调之外消费，观察队列条数加字节预算。 |
 
 两者是当前实际SDK模块，不能互为旧版本回退，不做TCP参数转换或旧配置兼容。目标标准型当前采用MVS采集链，补入适用识别组件后才能完成条码链。MVS `MV_CC_HB_Decode`仅把无损压缩流解压为像素；没有条码含义。客户端手册没有某个SDK名称不能证明组件不存在，也不限定识别组件必须叫某个名称。
 
@@ -21,7 +23,7 @@
 - MVS的`acquisition.trigger=existing/on/off`分别为沿用/要求已开启/要求已关闭，只读取并校验设备状态，不改触发、不发软件触发。`entity.mode`固定仅观察，正式作业不可选。现阶段没有有效的条码编码参数，不能把图像像素当作条码字节。
 - MVS `image.nodes`默认3、范围1～4；设置SDK输出队列为OneByOne，不选择丢旧取新。SDK内部另有其预分配，不能声称这就是进程全部内存。`image.maximum-payload-bytes`默认8MiB、范围1～32MiB；打开及每帧校验负载。应用每路至多借用一个SDK图像缓冲，不建立原图副本/存图/上传队列。丢包、序号断档/重置及格式不符故障围栏。
 - MvCodeReader的`entity.mode=observe-only/trigger`、严格`code.encoding`、条码观察`queue.capacity`默认128沿原用途；新增`queue.maximum-code-bytes`默认16MiB、范围1～64MiB，覆盖排队及正在处理的候选字符串和条目预算，不是原图预算。trigger仍须已有TriggerMode=On及可信实体/重连处置证据。
-- 心跳`bcr-code`与本位取格口编码分别维护，统一供包台编号继承当前系统候选。SDK页没有TCP端口、TCP keepalive或入站时限。
+- 每台相机只有一个相机编码，取格口与心跳共同读取RCS组件的本位映射；驱动不再声明独立bcr-code。切换SDK只重置连接参数，保留本相机编码。统一供包台编号继承当前系统候选。SDK页没有TCP端口、TCP keepalive或入站时限。
 
 选择其他连接方式先显示重置后果；“取消切换”保留原字段，“切换并重置参数”清空本实例参数并采用新schema默认值，须重新填写实际连接和心跳编码。另一相机及RCS取格口映射保留，不自动恢复旧提供者参数。未决定的选择阻止保存，首配/日常加密草稿保留此状态。整个编辑的取消沿既有配置账和未保存草稿流程。
 
@@ -53,7 +55,7 @@ MVS目录必须包含MvCameraControl.dll、MVGigEVisionSDK.dll及同版完整依
 
 两种SDK源的Dispose请求立即围栏新启动和读码回调，实际清理与Start/Stop串行；重复Dispose加入原任务，失败后可重试原清理阶段。停止健康通知异常不阻止可执行的清理，完成后仍明确报错；原生清理失败继续持有句柄、委托及租约。业务日志遮蔽条码字段、候选、嵌套及截断诊断片段；原始业务账/请求/回执保持不变。
 
-使用当前`src/Ipc.Drivers.Hikrobot.Mvs/extension.build.json`或既有MvCodeReader声明构建独立精确签名包；不把SDK放入ipcx、公共仓库或普通安装包。新MVS工程包版本1.0.0，原智能读码器当前2.0.1；当前精确组合声明已同步。新的Platform指纹/源变化须针对实际冻结宿主重建/签名，不复用旧包、旧资格或旧身份。
+使用当前`src/Ipc.Drivers.Hikrobot.Mvs/extension.build.json`或既有MvCodeReader声明构建独立精确签名包；不把SDK放入ipcx、公共仓库或普通安装包。新MVS工程包版本1.0.0，原智能读码器当前1.0.0；当前精确组合声明已同步。新的Platform指纹/源变化须针对实际冻结宿主重建/签名，不复用旧包、旧资格或旧身份。
 
 沿用`scripts/build-extension.py --definition <当前声明> --version <当前版本> --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新包.ipcx> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码先提交且干净。工程TestOnly签名只能用于Simulation。Production声明沿`extension.build.production.json`，仍须真实独立发布者、精确签名部署资格及原有受保护SDK文件政策；本包不生成或虚构Production批准，MVS采集源本身也不发布业务Ready。
 

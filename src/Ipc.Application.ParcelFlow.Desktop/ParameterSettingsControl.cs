@@ -47,6 +47,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null, FrameworkElement? Row = null);
     int? categoryScope;
     public event EventHandler? MaintenanceRequested;
+    public event EventHandler? PackageInstallationRequested;
     public event EventHandler? BackupRequested;
     public event EventHandler? DisplayPreferencesRequested;
     public ParameterSettingsControl()
@@ -205,7 +206,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             var hint = Text(help); hint.FontSize = UiTypography.Label; hint.Margin = new(0, 4, 0, 0);
             // Identity/connection explanations are on demand. Entity admission and
             // required constraints remain inline; errors always stay next to the field.
-            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "bcr-code" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
+            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
             {
                 control.ToolTip = help;
                 page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));
@@ -217,9 +218,12 @@ public sealed partial class ParameterSettingsControl : UserControl
         var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
         if (draft is not null && path != draft.InstanceId + "/ConfigureLater" && !path.EndsWith("-station-code", StringComparison.Ordinal))
         {
-            void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
-            PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.ConfigureLater)) RefreshRequirement(); };
+            var cameraCode = path.Split('/').Last() is "left-bcr-code" or "right-bcr-code";
+            var camera = cameraCode ? Model!.Readers.SingleOrDefault(r => path.EndsWith("/" + r.Role + "-bcr-code", StringComparison.Ordinal)) : null;
+            void RefreshRequirement() => caption.Text = draft.ConfigureLater || cameraCode && (!draft.Bound || camera is null || camera.ConfigureLater) ? label.TrimEnd(' ', '*') : label;
+            PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(CapabilityDraft.ConfigureLater) or nameof(CapabilityDraft.Bound)) RefreshRequirement(); };
             draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
+            if (camera is not null) { camera.PropertyChanged += changed; unsubscribe.Add(() => camera.PropertyChanged -= changed); }
         }
         field.SizeChanged += (_, _) =>
         {

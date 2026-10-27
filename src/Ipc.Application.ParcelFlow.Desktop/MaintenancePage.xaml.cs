@@ -25,6 +25,7 @@ public partial class MaintenancePage : UserControl
         MainParameterEditor.SelectedPageChanged += (_, _) => UpdateParameterNavigation();
         MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
+        MainParameterEditor.PackageInstallationRequested += (_, _) => ShowTechnicalTool(6);
         MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(8);
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
         MainParameterEditor.DiagnosticsRequested += (_, target) =>

@@ -16,11 +16,14 @@ internal static class RcsConfigurationValidation
             throw new InvalidDataException("RCS heartbeat requires an explicit system StationCode and distinct configured reader DeviceIds");
         string BcrCode(DeviceBinding reader)
         {
-            // Manual input is explicitly synthetic and has no hardware driver parameters.
-            if (reader.Driver == "manual" && configuration.Mode == RunMode.Simulation) return reader.DeviceId;
-            var instance = configuration.Extensions?.Instances.SingleOrDefault(x => "extension:" + x.Id == reader.Driver && x.DeviceId == reader.DeviceId && x.Enabled);
-            var code = reader.Driver == "tcp-line" ? reader.Parameters?.GetValueOrDefault("bcr-code") : instance?.Parameters.GetValueOrDefault("bcr-code");
-            return ValidCode(code) ? code! : throw new InvalidDataException("RCS heartbeat requires bcr-code in the selected reader driver's configuration: " + reader.DeviceId);
+            var positions = ParcelBindings.Positions(configuration).Where(p => p.ReaderDeviceId == reader.DeviceId).ToArray();
+            if (positions.Length != 1 || positions[0].Id is not ("left" or "right"))
+                throw new InvalidDataException("RCS camera code requires one explicit left/right position per reader: " + reader.DeviceId);
+            var key = positions[0].Id + "-bcr-code";
+            var code = configuration.Wcs?.Contract == Contract ? configuration.Wcs.Parameters.GetValueOrDefault(key) : null;
+            // One component-owned mapping is also frozen in every destination
+            // request. Driver selection/parameters cannot supply a second code.
+            return ValidCode(code) ? code! : throw new InvalidDataException("RCS requires the shared camera code: " + key);
         }
         // Keep topology identity checks above even for deferred readers. Only an
         // explicitly configured reader participates in the heartbeat contract;
@@ -30,7 +33,7 @@ internal static class RcsConfigurationValidation
             .Where(r => configuration.Extensions?.Instances.SingleOrDefault(i => "extension:" + i.Id == r.Driver && i.DeviceId == r.DeviceId)?.Enabled != false)
             .Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();
         if (mapping.Select(p => p.Bcr).Distinct(StringComparer.Ordinal).Count() != mapping.Length)
-            throw new InvalidDataException("RCS heartbeat reader bcr-code values must be distinct");
+            throw new InvalidDataException("RCS shared camera code values must be distinct");
         return mapping;
     }
     static bool ValidCode(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 256 && !value.Any(char.IsControl);

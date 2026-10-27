@@ -129,7 +129,7 @@ static partial class Program
         var package = new PackageReference("hikrobot.idmvs-reader", "1.0.3", new string('a', 64));
         var fields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot/parameters.json")));
         var descriptor = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", "1.0.3", "HIKROBOT-IDMVS-OBSERVATION-v1", fields, new(), package, "idmvs-reader");
-        var driverConfig = c with { Extensions = new([package], c.Topology!.Readers.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, "idmvs-reader", r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i), ["bcr-code"] = "BCR" + i })).ToArray()) };
+        var driverConfig = c with { Extensions = new([package], c.Topology!.Readers.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, "idmvs-reader", r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) };
         var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray(); driverConfig = driverConfig with { Reader = devices[0], Topology = c.Topology with { Readers = devices } };
         var offline = new StartupConfigurationDraft(driverConfig, new([descriptor], [package.Id], Packages: [new(package, [])]));
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();

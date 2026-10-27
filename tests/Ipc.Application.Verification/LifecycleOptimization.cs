@@ -28,6 +28,8 @@ static class LifecycleOptimization
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } })
         {
             await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
+            await app.CheckScheduledBackupAsync(DateTimeOffset.UtcNow);
+            var due = (await app.SnapshotAsync()).BackupScheduleStatus?.NextDue ?? throw new InvalidOperationException("Backup schedule was not initialized");
             for (var i = 0; i < 153; i++)
             {
                 Check(app.EmitReferenceAt(i % 2 == 0 ? "left" : "right", "lia-entity-" + i, "00001234", "lia-event-" + i), "actual ingress admitted distinct same-code entity " + i);
@@ -64,10 +66,13 @@ static class LifecycleOptimization
             uncertain = (await app.QueryHistoryAsync(selection, long.MaxValue, 200)).Items[1].Operation;
             var handover = ParcelViewModel.Handover(oldest, true); var ordinary = ParcelViewModel.Handover(oldest, false); var sends = factory.Sends;
             Check(handover.Contains(oldest.Wcs!.Request.Id) && handover.Contains(oldest.AdmissionId) && ordinary.Contains("禁止重投") && !ordinary.Contains("原目标指纹") && !handover.Contains(oldest.Wcs.Request.Payload) && factory.Sends == sends, "handover names exact original entity/request while excluding payload and causing no external call");
-            await Pause(app); await app.CheckScheduledBackupAsync(DateTimeOffset.UtcNow.AddMinutes(16));
+            await Pause(app);
+            await AfterMonitorDrain(app, async () => { await app.CheckScheduledBackupAsync(due.AddMinutes(1)); return true; });
             var success = (await app.SnapshotAsync()).BackupScheduleStatus!;
-            Check(success.LastSuccessfulBackup is not null && File.Exists(success.LastSuccessfulBackup + ".recovery/COMPLETED.json"), "successful schedule projection corresponds to a real complete recovery set");
-            await app.CheckScheduledBackupAsync(DateTimeOffset.UtcNow.AddMinutes(32)); var failed = (await app.SnapshotAsync()).BackupScheduleStatus!;
+            Check(success.LastSuccessfulBackup is not null && File.Exists(success.LastSuccessfulBackup + ".recovery/COMPLETED.json"),
+                "successful schedule projection corresponds to a real complete recovery set; outcome=" + success.Outcome + "; detail=" + success.Detail);
+            await AfterMonitorDrain(app, async () => { await app.CheckScheduledBackupAsync(due.AddMinutes(17)); return true; });
+            var failed = (await app.SnapshotAsync()).BackupScheduleStatus!;
             Check(failed.Outcome.StartsWith("Failed:") && failed.LastSuccessfulAt == success.LastSuccessfulAt && failed.LastSuccessfulBackup == success.LastSuccessfulBackup && Directory.EnumerateDirectories(backupRoot, "*.recovery").Count() == 1, "capacity failure preserves the last success and all original recovery sets");
             await app.ExitManagementModeAsync(); Check((await app.SnapshotAsync()).BackupScheduleStatus is null, "ordinary snapshot hides restricted backup paths and state");
             await Reject<UnauthorizedAccessException>(() => app.CapabilitiesAsync(), "direct parameter catalog read rejects revoked authority");
@@ -140,6 +145,22 @@ static class LifecycleOptimization
     {
         for (var i = 0; i < 20; i++) { var s = await app.SnapshotAsync(); var r = await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); if (r.Status != "Conflict") { if (r.Status != "Persisted") throw new Exception(r.Reason); return; } }
         throw new TimeoutException("Pause CAS");
+    }
+    internal static async Task<T> AfterMonitorDrain<T>(ParcelRuntime app, Func<Task<T>> action)
+    {
+        // Reuse the real pre-reservation seam. Never relax the runtime fence or
+        // retry a possibly accepted action to turn a busy outcome into success.
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var prior = app.BeforeMonitorProbe;
+        app.BeforeMonitorProbe = (_, token) => { entered.TrySetResult(); return release.Task.WaitAsync(token); };
+        try
+        {
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await Wait(app, s => s.Availability!.Configure);
+            return await action();
+        }
+        finally { app.BeforeMonitorProbe = prior; release.TrySetResult(); }
     }
     static void Installation(string root)
     {

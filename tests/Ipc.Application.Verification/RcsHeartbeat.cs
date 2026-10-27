@@ -37,8 +37,8 @@ static partial class SportmasterRcs
             Check(data.Length == 2 && data.Select((item, i) => item.GetProperty("index").GetInt32() == i + 1 &&
                 item.GetProperty("command").GetString() == "sorter.task.station_heartbeat" &&
                 item.GetProperty("params").GetProperty("stationCode").GetString() == config.StationCode &&
-                item.GetProperty("params").GetProperty("bcrCode").GetString() == config.Topology!.Readers[i].DeviceId).All(x => x),
-                "one batch uses system StationCode and every synthetic manual reader identity with distinct indexes, without destination mapping copies");
+                item.GetProperty("params").GetProperty("bcrCode").GetString() == config.Wcs!.Parameters[config.Topology!.Positions.Single(p => p.ReaderDeviceId == config.Topology.Readers[i].DeviceId).Id + "-bcr-code"]).All(x => x),
+                "one batch uses system StationCode and the same per-camera mapping as destination requests, including synthetic readers");
             var timestamp = data[0].GetProperty("params").GetProperty("timestamp").GetInt64();
             Check(Math.Abs(timestamp - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) < 2000 &&
                 data.All(i => i.GetProperty("params").GetProperty("timestamp").GetInt64() == timestamp), "batch timestamp is numeric UTC Unix milliseconds");
@@ -75,6 +75,11 @@ static partial class SportmasterRcs
             var reply = await service.RequestDestinationAsync(original with { IntegrationRequest = prepared }, default);
             Check(prepared.RequestId == 810000007 && reply.BusinessAccepted == true && reply.PhysicalCompleted != true,
                 "heartbeat neither consumes durable destination IDs nor changes destination acceptance semantics");
+            using (var destination = JsonDocument.Parse(prepared.Body))
+            using (var heartbeat = JsonDocument.Parse(peer.Requests.First(r => r.Body.Contains("station_heartbeat", StringComparison.Ordinal)).Body))
+                Check(destination.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() ==
+                    heartbeat.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString(),
+                    "actual destination and heartbeat HTTP bodies use the same camera code");
             await service.StopAsync(default); count = peer.Requests.Count; await Task.Delay(1300);
             Check(peer.Requests.Count == count, "stopped component performs no later scheduled requests");
         }
@@ -83,7 +88,12 @@ static partial class SportmasterRcs
             try { await using var service = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = invalid } }); throw new Exception("Invalid interval accepted"); }
             catch (InvalidDataException) { Check(true, "invalid interval refused: " + invalid); }
         }
-        await using (var service = new SportmasterRcsTaskService(binding))
+        var sharedBinding = binding with { Parameters = new(binding.Parameters) { ["left-bcr-code"] = "SYNTH-NEW-BCR" } };
+        config = HeartbeatConfiguration(workspace, sharedBinding);
+        var reversed = RcsConfigurationValidation.HeartbeatMapping(config with { Topology = config.Topology! with { Readers = config.Topology.Readers.Reverse().ToArray() } });
+        Check(reversed[0].Bcr == sharedBinding.Parameters["right-bcr-code"] && reversed[1].Bcr == sharedBinding.Parameters["left-bcr-code"],
+            "camera codes bind by explicit topology position, never reader enumeration order");
+        await using (var service = new SportmasterRcsTaskService(sharedBinding))
         {
             var readers = config.Topology!.Readers;
             try { service.ConfigureRuntime(config with { StationCode = null }); throw new Exception("Missing station code accepted"); }
@@ -91,15 +101,16 @@ static partial class SportmasterRcs
             try { service.ConfigureRuntime(config with { Topology = config.Topology with { Readers = [readers[0], readers[0]] } }); throw new Exception("Duplicate reader code accepted"); }
             catch (InvalidDataException) { Check(true, "duplicate driver codes refuse configuration"); }
             var hardware = readers[0] with { Driver = "extension:synthetic-reader" };
-            var instance = new ExtensionInstance("synthetic-reader", "synthetic.reader", "reader", hardware.DeviceId, true, new() { ["bcr-code"] = "SYNTH-NEW-BCR" });
-            var selected = config with { StationCode = "SYNTH-NEW-STATION", Topology = config.Topology with { Readers = [hardware] }, Extensions = new([], [instance]) };
-            try { service.ConfigureRuntime(selected with { Extensions = new([], [instance with { Parameters = new() }]) }); throw new Exception("Missing driver code accepted"); }
-            catch (InvalidDataException) { Check(true, "hardware reader without driver bcr-code refuses configuration"); }
+            var instance = new ExtensionInstance("synthetic-reader", "synthetic.reader", "reader", hardware.DeviceId, true, new() { });
+            var selected = config with { Wcs = sharedBinding, StationCode = "SYNTH-NEW-STATION", Topology = config.Topology with { Readers = [hardware] }, Extensions = new([], [instance]) };
+            var missing = sharedBinding with { Parameters = new(sharedBinding.Parameters.Where(p => p.Key != "left-bcr-code")) };
+            try { _ = RcsConfigurationValidation.HeartbeatMapping(selected with { Wcs = missing }); throw new Exception("Missing shared camera code accepted"); }
+            catch (InvalidDataException ex) when (ex.Message.Contains("left-bcr-code")) { Check(true, "active hardware reader without shared camera code refuses configuration"); }
             service.ConfigureRuntime(selected);
             var count = peer.Requests.Count; await service.StartAsync(default); await Until(() => peer.Requests.Count > count);
             using var json = JsonDocument.Parse(peer.Requests.Last().Body); var data = json.RootElement.GetProperty("data");
             Check(data.GetArrayLength() == 1 && data[0].GetProperty("params").GetProperty("stationCode").GetString() == "SYNTH-NEW-STATION" &&
-                data[0].GetProperty("params").GetProperty("bcrCode").GetString() == "SYNTH-NEW-BCR", "effective system and driver edits determine the next runtime's heartbeat");
+                data[0].GetProperty("params").GetProperty("bcrCode").GetString() == "SYNTH-NEW-BCR", "effective station and shared camera mapping determine the next runtime heartbeat without driver code copies");
         }
         var collision = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "0", ["request-id-count"] = long.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture) } };
         await using (var service = new SportmasterRcsTaskService(collision))

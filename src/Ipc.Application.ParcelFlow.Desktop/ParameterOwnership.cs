@@ -2,7 +2,8 @@ using System.ComponentModel;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 // Display/edit ownership only. Storage continues to use the component's declared
-// schema, including both legacy position keys. Frozen requests are never projected.
+// schema. Each position has one camera code shared by requests and heartbeat.
+// Frozen requests are never projected.
 public static class ParameterOwnership
 {
     public static bool IsRcs(CapabilityDraft draft) => draft.Kind == "integration" && draft.Contract == "SPORTMASTER-RCS-SORTER-v1";

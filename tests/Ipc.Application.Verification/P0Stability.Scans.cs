@@ -19,7 +19,7 @@ static partial class SportmasterRcs
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, binding);
         var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["bcr-code"] = "TEST-LEFT-READER" } }).ToArray();
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
         Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);

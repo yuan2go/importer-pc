@@ -313,7 +313,7 @@ static partial class Program
         });
         var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
         var draft = new StartupConfigurationDraft(config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices },
-            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i), ["bcr-code"] = "HEART-" + i })).ToArray()) },
+            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) },
             new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]));
         var model = draft.CreateParameterEditor(runtime.TestBarcodeFilterAsync); var control = new ParameterSettingsControl { Model = model };
         window.Content = control; window.Width = 1366; window.Height = 768; window.UpdateLayout();
@@ -328,7 +328,10 @@ static partial class Program
         check(model.ValidateFields(), "corrected synthetic provider candidate passes field checks before normal-form captures");
         control.NavigateTo("rcs.one/quantity"); window.UpdateLayout(); capture("parameters-business-rules", control);
         control.NavigateTo("reader.1/device.ip"); window.UpdateLayout(); capture("parameters-right-driver", control);
-        check(Descendants(control).OfType<TextBox>().Any(t => t.Text == "HEART-1") && Descendants(control).OfType<TextBox>().Any(t => t.Text == "TAKE-R"), "right driver displays distinct heart and take-chute encodings");
+        check(Descendants(control).OfType<TextBox>().Count(t => t.Text == "TAKE-R") == 1 &&
+            draft.Readers[1].Parameters.All(p => p.Field.Key != "bcr-code") &&
+            !Descendants(control).OfType<FrameworkElement>().Any(t => AutomationProperties.GetName(t) == "reader.1/bcr-code"),
+            "right camera displays one shared request/heartbeat code and no driver code copy");
         control.NavigateTo("rcs.one/Target"); window.UpdateLayout(); capture("parameters-rcs-component", control);
         check(!Descendants(control).OfType<TextBox>().Any(t => !t.IsReadOnly && t.Text == "71"), "moved system values are read-only references on the RCS object");
         var template = StartupSiteTemplates.Export("sportmaster", draft.Capture());
@@ -342,10 +345,10 @@ static partial class Program
         check(localBefore.Values.All(x => draft.Capture().Values.GetValueOrDefault(x.Key) == x.Value), "failed template import leaves the entire current draft untouched");
         rcsDraft.Target = "http://192.0.2.10/other";
         rcsDraft.Parameters.Single(p => p.Field.Key == "request-id-base").Value = (long.MaxValue - 1).ToString();
-        draft.Readers[1].Parameters.Single(p => p.Field.Key == "bcr-code").Value = "HEART-0";
+        rcsDraft.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value = rcsDraft.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value;
         check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "rcs.one/Target") &&
-            model.Issues.Any(i => i.Path == "rcs.one/request-id-count") && model.Issues.Count(i => i.Path.EndsWith("/bcr-code")) == 2,
-            "endpoint, overflowing request range and duplicated heartbeat identities locate exact editable fields");
+            model.Issues.Any(i => i.Path == "rcs.one/request-id-count") && model.Issues.Count(i => i.Path.EndsWith("-bcr-code")) == 2,
+            "endpoint, overflowing request range and duplicated shared camera codes locate exact editable fields");
         control.NavigateTo("rcs.one/Target"); capture("parameters-errors", control);
         await System.Windows.Threading.Dispatcher.Yield();
     }

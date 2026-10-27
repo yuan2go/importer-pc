@@ -84,8 +84,13 @@ static partial class Program
             "current operator authentication retains its own purpose and Chinese label without an obsolete management role");
         loginRole.Selection = originalLogin;
         var draft = vm.StructuredPolicy!; draft.TimeoutMs = "29000";
-        await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync(); await Flush(window);
-        Check(vm.SelectedPage == "workstation" && ReferenceEquals(draft, vm.StructuredPolicy) && draft.TimeoutMs == "29000" && !vm.HasManagementNotice && !vm.Message.Contains("管理授权已结束"), "mode exit protects the exact draft and removes the routine banner");
+        await runtime.ExitManagementModeAsync();
+        // A newer timer refresh can supersede this explicit management read.
+        // Dispatcher idle alone does not await that service result. Wait for
+        // actual revocation/navigation, then assert the original draft object.
+        await RefreshUntil(() => !vm.IsManagementMode && vm.SelectedPage == "workstation");
+        Check(vm.SelectedPage == "workstation" && ReferenceEquals(draft, vm.StructuredPolicy) && draft.TimeoutMs == "29000" && !vm.HasManagementNotice && !vm.Message.Contains("管理授权已结束"),
+            $"mode exit protects the exact draft and removes the routine banner; page={vm.SelectedPage}; sameDraft={ReferenceEquals(draft, vm.StructuredPolicy)}; timeout={draft.TimeoutMs}; notice={vm.HasManagementNotice}; message={vm.Message}");
         Check(ChineseInterfaceText.Notice("Global software pause") == "供包已暂停" && !ChineseInterfaceText.Notice("Production NotReady: exact deployment qualification missing/expired").Contains("Production"), "pause and deployment reasons use Chinese display copy");
         Check(vm.HistoryPositionChoices.Where(x => x.Id is "left" or "right").All(x => !x.Label.Contains(x.Id)), "history labels hide internal left/right values");
         foreach (var ui in new[] { "classic", "supply-station" })

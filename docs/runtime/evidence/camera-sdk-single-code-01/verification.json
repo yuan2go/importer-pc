@@ -1,0 +1,772 @@
+{
+  "BaseCommit": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+  "SourceScope": "reviewed working tree; build/test logs are separately scoped, not Production/site acceptance",
+  "ObservedInstalledSource": "bc771150f5d6",
+  "ObservedProtectedSdkStoreAndTrust": "not provisioned; no selectable MVS package",
+  "Build": "PASS Sportmaster locked build; 0 warnings/0 errors",
+  "Application": [
+    "hikrobot-sdk-editing",
+    "parameter-refactor",
+    "rcs-heartbeat (wire code equality/topology binding)",
+    "deferred-connections (Pending code does not change Unknown original)",
+    "sportmaster-rcs",
+    "p0-deferred"
+  ],
+  "Native": [
+    "SDK missing/installed forms and single code (final)",
+    "parameter-guidance-startup (attempt2)",
+    "startup-experience (attempt2)",
+    "task-hierarchy-parameters (final)",
+    "full parameter-v3 gate cases after correcting current single-code expectation",
+    "workstation-status-logs with actual revocation wait and unchanged draft identity assertion"
+  ],
+  "InitialNativeFailure": "attempt1 SDK fixture subscribed installation callback after rendering; original FAIL kept; fixture order corrected to match actual MaintenancePage, no assertion/guard removed",
+  "NativeConditions": "real HWND/Dispatcher; standard/compact; actual DPI=1.25; synthetic descriptors/candidates/loopback HTTP only",
+  "RealSdkFramesAndBarcodes": "NOT_RUN; applicable recognition component still missing",
+  "RealRcsAndSite": "NOT_RUN; application not installed/reconfigured, no actual device commands sent",
+  "Evidence": [
+    {
+      "name": "application-build-final.log",
+      "sha256": "4512c3c30ea2f055eb35ad7b696a95081ac6213644ec144a5cce34277718452b",
+      "bytes": 1933
+    },
+    {
+      "name": "application-build-updated.log",
+      "sha256": "641709f33032bd3d052b8e8952c00889a4e67f5cb6f44d3df9d0fe13f54cf0f2",
+      "bytes": 1933
+    },
+    {
+      "name": "application-build.log",
+      "sha256": "3a8c348dfc6a38d6025c46cfe6fa0e99e39f75ef5a949a456f36e6be0e393464",
+      "bytes": 1933
+    },
+    {
+      "name": "deferred-connections.log",
+      "sha256": "d688958980b23e8da54a5abb4554bca3455a5c8be83b2928d493d4ade3d2e3a0",
+      "bytes": 14271
+    },
+    {
+      "name": "hikrobot-sdk-editing.log",
+      "sha256": "70c966d130ec9947ff7f193f6f9bc4c6e8a50b9a3453ed42a75a7b6b8f7251b6",
+      "bytes": 1180
+    },
+    {
+      "name": "native-build-attempt2.log",
+      "sha256": "38ba509f0a1e2f31705f8948580f228ba313887df48d61f2e555133b7eb49d78",
+      "bytes": 1986
+    },
+    {
+      "name": "native-build-final.log",
+      "sha256": "3f03ed322c1a117823bf117a6dd3aa05c77dff155e45f6f25498523d5abb381c",
+      "bytes": 1986
+    },
+    {
+      "name": "native-build.log",
+      "sha256": "f821708ea313068c726f7633b87bda1fd30414b99009eaa1926d1257cbcc6a92",
+      "bytes": 1986
+    },
+    {
+      "name": "native-hikrobot-sdk-editing/sdk-package-missing.png",
+      "sha256": "45bb702b9ab6e3bf8118f08502206bef1716f1755f63b32348a2679dcefa4760",
+      "bytes": 173896
+    },
+    {
+      "name": "native-hikrobot-sdk-editing/WINDOWS-WPF.log",
+      "sha256": "ab6e547ec959f5413f13f146406e70521a7c384b260bf0b13f3443e09121cfe2",
+      "bytes": 676
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk-package-missing.png",
+      "sha256": "9a295e2c54ce8958cd05002fc6a980b3b6a29006b1ea866a3ede7b20581b6e6d",
+      "bytes": 173538
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk02-change-review.png",
+      "sha256": "3c627f15d8d25fc03e0689fb5f74b73cc907d98124b1f0cfdd43d281b6beee31",
+      "bytes": 179410
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk02-compact.png",
+      "sha256": "8e5b57b95cc640acff241c91dab3d94f601f2598b4517e99bb55a38ab1d9aca0",
+      "bytes": 106146
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk02-mvs.png",
+      "sha256": "469bbcff314ea8096394fad2e890eeab45deb713803eab8118f5b5307ca7e9c9",
+      "bytes": 161127
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk02-single-camera-code.png",
+      "sha256": "43b4f0f0ec363513bb4859b7dc549de986a54aeea7ee5342292b02d738fd881d",
+      "bytes": 161163
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/sdk02-standard.png",
+      "sha256": "7e3b8a02176c586763c7e0a5d28846e216803bace1868ea641b569d75b73bfc9",
+      "bytes": 157690
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-attempt2/WINDOWS-WPF.log",
+      "sha256": "6689420f573484f5d7ea8d2d051280929cd1e9ede1e4cae9bb5d56d828085f46",
+      "bytes": 1629
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-console-attempt2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-console.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk-package-missing.png",
+      "sha256": "262f20133ec460c273b04f201492d019d621bf4ff033021357d3ec2fae6bf9d9",
+      "bytes": 173768
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk02-change-review.png",
+      "sha256": "5ed947ea6c1ce8a2cb441b2f464afb7d7929e03fe593a87fa61fbecdad98f523",
+      "bytes": 179665
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk02-compact.png",
+      "sha256": "7019d6f762bd88ae0a4f5f8ac3eadbca9dd137a509b3c19beff11cd83bac4920",
+      "bytes": 106509
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk02-mvs.png",
+      "sha256": "22f33cbd0324f1ecd645293a9e3c96dfaba3cd4cb0120c6559cdbe60618bd2c1",
+      "bytes": 161197
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk02-single-camera-code.png",
+      "sha256": "a0a1cfd7312264d81afc7e6e548e9803c89f0a70b5b168cc429f700ca15ffdbb",
+      "bytes": 161233
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/sdk02-standard.png",
+      "sha256": "7e3b8a02176c586763c7e0a5d28846e216803bace1868ea641b569d75b73bfc9",
+      "bytes": 157690
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final/WINDOWS-WPF.log",
+      "sha256": "6689420f573484f5d7ea8d2d051280929cd1e9ede1e4cae9bb5d56d828085f46",
+      "bytes": 1629
+    },
+    {
+      "name": "native-hikrobot-sdk-editing-final-console.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/deferred-left-active-rcs.png",
+      "sha256": "931f638a51880aa06e4d3ec0a8d79c1d0964ec42e7e11b173da8e783eda14b5f",
+      "bytes": 79279
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-RCS 服务-1092.png",
+      "sha256": "2ac3bf45896dc8658795b849779582e516080d5c69f78c37843850987cf9361e",
+      "bytes": 118406
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-RCS 服务-1366.png",
+      "sha256": "b1551debc822f3eaf99171a72747cc8850b29cf4e3423125ad71822f58f7ce3b",
+      "bytes": 158976
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-RCS 服务-800.png",
+      "sha256": "ef1811a237dcecd768ef26649ff6272d72ebe392511a64ea8a898917b6d71d44",
+      "bytes": 70653
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-workstation-fullscreen.png",
+      "sha256": "6c91fc70c827352e014ccab6c5ce4f098fa0e73abbf40fc65193c153f9ce722c",
+      "bytes": 94546
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-供包台标识-1092.png",
+      "sha256": "565ad47b4a297356198e4aa51385a14aabcc486195ee09d222d1d6b182e67154",
+      "bytes": 89066
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-供包台标识-1366.png",
+      "sha256": "09af515e57b79e43674982af8442b365d11c2a3906048d55829f572b43d429fd",
+      "bytes": 99294
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-供包台标识-800.png",
+      "sha256": "cb0004951dcfd3ffee325421ea286a49516c7828224d400aaa801c215e35f6e7",
+      "bytes": 74605
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-左相机-1092.png",
+      "sha256": "716931e22d6f2b1ee3e7eb0385c2d1b00ed9c0461ed27448affb77e4e79d1d0c",
+      "bytes": 152403
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-左相机-1366.png",
+      "sha256": "a662a33063f7734da23062adfe9df1f97a2e803ebb980e924f431b6fa112f21d",
+      "bytes": 198897
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-左相机-800.png",
+      "sha256": "5d0d996723e4ac3902d12233dcd9e6925bb0df20503ea703992eb618a06ca5a8",
+      "bytes": 105606
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-接收与等待限制-1092.png",
+      "sha256": "b1924e0098b27c276023157c5dfeba9c804b94903403bda7823b19d7a0259c83",
+      "bytes": 120910
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-接收与等待限制-1366.png",
+      "sha256": "c4d6481dbcf1e9b870a6ba25b16d4bc6e547f46b817ea2294e3b4ead06ab31c9",
+      "bytes": 130030
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-接收与等待限制-800.png",
+      "sha256": "cb65c0693b1751a81b15f96c2c7c87df331ec820b7e5696270e06c701e7b80b4",
+      "bytes": 107233
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-数据与记录-1092.png",
+      "sha256": "90247c2b67dbae2468ae2bfb7d9b03c5dc4ca92e6508cca51f9d139f38932b37",
+      "bytes": 117238
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-数据与记录-1366.png",
+      "sha256": "d3d6962af59f4324765f75c69c9b24d532e2d92a9afc2b61bca52a62ef4a1de8",
+      "bytes": 133391
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-数据与记录-800.png",
+      "sha256": "12da945c0c567e6883de62cec928229abb1fc95c2c99accceae8a1a129b4601d",
+      "bytes": 76976
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-显示偏好-1092.png",
+      "sha256": "a0711c930164a2c3868db4dfa5436cb64ae9d56c206b0698cad15e4272b6645e",
+      "bytes": 89341
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-显示偏好-1366.png",
+      "sha256": "156ae3b9e4ce446921ab9a50b610da72807f692e0ec2ff481091abdb96c382e1",
+      "bytes": 99665
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-显示偏好-800.png",
+      "sha256": "20367ce96cbe4fcf049adee6923c81a69146d7d3df198ab810b903a3a80816aa",
+      "bytes": 70194
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-格口请求-1092.png",
+      "sha256": "67e6567632fbbab26f14f539c2ff72369c7fd059a0c70b27d4438bc6b77c070e",
+      "bytes": 129305
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-格口请求-1366.png",
+      "sha256": "9558982e393f25313f7c23aa1b6079dc458f9c446c3b757f71cd2dc6b23455dc",
+      "bytes": 140956
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/pgs-格口请求-800.png",
+      "sha256": "6055585701a90d622c463b1d3020526a6ffdd4755fb29ca9badb8927af4bd980",
+      "bytes": 99307
+    },
+    {
+      "name": "native-parameter-guidance-startup-attempt2/WINDOWS-WPF.log",
+      "sha256": "1d05a95f1932cddad8b9d20cc7cd5f2882ac9a8a02c63214b1e4c67654413238",
+      "bytes": 8024
+    },
+    {
+      "name": "native-parameter-guidance-startup-console-attempt2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "native-startup-experience-attempt2/configuration-paused.png",
+      "sha256": "2e5be437ea3e75fb0d45fae7c38911f23c3411da2bbfa8ae273789737797d238",
+      "bytes": 13688
+    },
+    {
+      "name": "native-startup-experience-attempt2/installer-complete.png",
+      "sha256": "1b61f262de2c8f692f314bc6348d533fc28a1e77e3bb6d73810da8ece55c6299",
+      "bytes": 49212
+    },
+    {
+      "name": "native-startup-experience-attempt2/installer-confirmation.png",
+      "sha256": "3156d67093a13b2c27d4c27ab6112a974adb12704159f0359bc7278e403c5d16",
+      "bytes": 81521
+    },
+    {
+      "name": "native-startup-experience-attempt2/installer-options.png",
+      "sha256": "2fcd185647b7ef19de4c593118458c47b21a55a09d19399e93fd42247703ce6b",
+      "bytes": 74770
+    },
+    {
+      "name": "native-startup-experience-attempt2/leaf-barcode-error.png",
+      "sha256": "32b10ae129964ade477cd86b9ff22a7709783765107d3c20fd4e8bdf96fee678",
+      "bytes": 107800
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-barcode.png",
+      "sha256": "e36d587a25e9b933cf04bcb5bf370e8c3b4784ea93c3ad256c4e087677b642cc",
+      "bytes": 95166
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-check-errors.png",
+      "sha256": "48afd2c5bb71a7041536c4ec74542a7da77fa4fda0bb07155bb60ef755def8b3",
+      "bytes": 138355
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-chute-errors.png",
+      "sha256": "642c32410d14c04b2f9b1e62e9d7e5549c29f10111146c2a29638c4e3f47dfa5",
+      "bytes": 116270
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-data.png",
+      "sha256": "e2dd26c066653425a385df0d8dfe8443de8f4c52b6b7e9b67ebc865fbc081740",
+      "bytes": 121416
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-management-menu.png",
+      "sha256": "81a41230f1126093a5ded2234ae3db7a6e3addd0a0b2e910dccea7c20778b93c",
+      "bytes": 11483
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-processing.png",
+      "sha256": "6fd6350c57ac5181c70f53fff72953e71bfb1d222a3379c541261febd59526b0",
+      "bytes": 136907
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-rcs.png",
+      "sha256": "18671ab40cc9a0844da9230ba37fae19c9aeed01730d94a3563020192e56e814",
+      "bytes": 117629
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-right-camera-error.png",
+      "sha256": "1c0b615238bca1ebb0b8425c4aa6fe77cd2a903d43212b50b6d4dd957d5398c9",
+      "bytes": 150222
+    },
+    {
+      "name": "native-startup-experience-attempt2/refine-station.png",
+      "sha256": "7b74122be45048acb503937bc19cfaf811f4aa6db2d39b8e612b9e5eb394ea52",
+      "bytes": 102750
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-session-restored.png",
+      "sha256": "213c4edce905f95fb4a55e6ac88db376c5f47bda21b6c20f3bff184056baabd5",
+      "bytes": 138015
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-small.png",
+      "sha256": "8a4dd0ed7c710fd54be92b3a4d42813359f739846b896daae1979616cfdbd6cd",
+      "bytes": 102106
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-step-1.png",
+      "sha256": "e36d587a25e9b933cf04bcb5bf370e8c3b4784ea93c3ad256c4e087677b642cc",
+      "bytes": 95166
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-step-2.png",
+      "sha256": "7b74122be45048acb503937bc19cfaf811f4aa6db2d39b8e612b9e5eb394ea52",
+      "bytes": 102750
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-step-3.png",
+      "sha256": "34e49f7e1aa6ca6abcc15cdd171ecd6585ac1ba2ff91729973add4822a0a7657",
+      "bytes": 153767
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-step-4.png",
+      "sha256": "18671ab40cc9a0844da9230ba37fae19c9aeed01730d94a3563020192e56e814",
+      "bytes": 117629
+    },
+    {
+      "name": "native-startup-experience-attempt2/startup-step-5.png",
+      "sha256": "a49a86b21823c998703046fb7c0bff329972afcbf3252b00d4ebeea7fa647322",
+      "bytes": 120612
+    },
+    {
+      "name": "native-startup-experience-attempt2/uninstall-result-complete.png",
+      "sha256": "a1ff38efafdb226e6fa5117f02d55f0bf4db8abe555e22a297e4afd684bc9982",
+      "bytes": 45082
+    },
+    {
+      "name": "native-startup-experience-attempt2/uninstall-result-restart.png",
+      "sha256": "614a508d252303a20da06bccf1f8bfde18f6384699997b3d920f9a6b2d39e40d",
+      "bytes": 49010
+    },
+    {
+      "name": "native-startup-experience-attempt2/WINDOWS-WPF.log",
+      "sha256": "b4cc45d00e4065f7bacb1c8287d51643fe4dc4698a231ca6e012e1eacede0cc3",
+      "bytes": 14974
+    },
+    {
+      "name": "native-startup-experience-console-attempt2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-right-error-800.png",
+      "sha256": "d16f911326193796a2e4c5681aa9f7678a3a10079c686040504255e955a5c1ae",
+      "bytes": 115594
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-供包台标识-1366.png",
+      "sha256": "cafcc693573f8156dfb0913166f6c64b6429a6a7af151504cf790b56269c9a59",
+      "bytes": 99872
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-供包台标识-800.png",
+      "sha256": "431d8f2d5e6a6f5aa2643b682993671ca65e7fef849f1dc96b40750c5893b7ef",
+      "bytes": 74042
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-右相机-1366.png",
+      "sha256": "bffc7bc484f45a7cd97746048dc2f3ae8c1bace57c670d3fcdafa60fae581eec",
+      "bytes": 189499
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-右相机-800.png",
+      "sha256": "ceaea45038d40f9b62b7b943f3215e9088150eeb9c938354adfb5ca54312f963",
+      "bytes": 119073
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-左相机-1366.png",
+      "sha256": "9e0d1b63dfca61ca89d007692336c76ff8eae14a5443ac6132ea3040da8c6696",
+      "bytes": 189289
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/parameters-左相机-800.png",
+      "sha256": "be4944bf1df3ba2bf03335b3f735b209ce754e607d4be9d5ea4e3ab983b2f032",
+      "bytes": 120115
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final/WINDOWS-WPF.log",
+      "sha256": "24a0737118f02b56a5bd04eb8eab585dcdba2ba3a4d10bbc15da4c8985d569e1",
+      "bytes": 1393
+    },
+    {
+      "name": "native-task-hierarchy-parameters-final-console.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "p0-deferred.log",
+      "sha256": "b0a46c35fb640395442aa0fcf4bf26622f82af0fbcf077f1d28cfe507c7ce7c9",
+      "bytes": 13321
+    },
+    {
+      "name": "parameter-refactor.log",
+      "sha256": "73e538d671ba6a103139dff9ce9f0a10844c266064632f442ecad6642696fae1",
+      "bytes": 8345
+    },
+    {
+      "name": "rcs-heartbeat-final.log",
+      "sha256": "75dc2f948c555b42542d1d6c1e642520a3776fb87a176c2ef1cb05319f5cd309",
+      "bytes": 2226
+    },
+    {
+      "name": "rcs-heartbeat.log",
+      "sha256": "e97f686a277b0d45e597425577bbf76feb9fda8a7fa5f2ad561004ab13067d20",
+      "bytes": 2133
+    },
+    {
+      "name": "sdk-editing.log",
+      "sha256": "6a512353a0a45d9a3e16791d431ecfe419d071a1ca9e023299033d5ba210c006",
+      "bytes": 869
+    },
+    {
+      "name": "solution-build.log",
+      "sha256": "9d8ac3913b83afbe062059a760e058ba05d0d58104c0d1724afb24d276e1f26e",
+      "bytes": 5577
+    },
+    {
+      "name": "sportmaster-rcs.log",
+      "sha256": "742dc641cfd2217114eb880875c379390ef0a1bf9dca2033856fff7458f9f03c",
+      "bytes": 14215
+    },
+    {
+      "name": "ci-initial-failure-excerpt.log",
+      "sha256": "2585b1a89d33e2b836e21f906f5ab961b3703261481bb36f7832b1825780b273",
+      "bytes": 7996
+    },
+    {
+      "name": "native-build-gate-fixes.log",
+      "sha256": "a8733bbfa5f4185c5acd97980b1307da892e48d49ba30fd437ec40489994d275",
+      "bytes": 1986
+    },
+    {
+      "name": "native-parameter-v3-gate/WINDOWS-WPF.log",
+      "sha256": "7285701af2b31da80e94235098148394373f224c1dabf2aee536301e841a38bd",
+      "bytes": 27735
+    },
+    {
+      "name": "native-workstation-status-logs-gate/WINDOWS-WPF.log",
+      "sha256": "cbc72a4044a37b4303720e55f2d831085d775a49b008f444e6dd6f0f56dae839",
+      "bytes": 3831
+    },
+    {
+      "name": "native-build-revocation-wait.log",
+      "sha256": "f3ba9772b7a826f158f40a3f9cfa3510fe17987b5a2a4e85680fa130e5730828",
+      "bytes": 1986
+    },
+    {
+      "name": "native-workstation-revocation-wait/WINDOWS-WPF.log",
+      "sha256": "ebedc652d29a5175eaf5e99d0489376cb2ae8e394bc5bc5fe2d7f16642b4f8a8",
+      "bytes": 4009
+    },
+    {
+      "name": "ci-second-failure-excerpt.log",
+      "sha256": "26f8ce98a28ac0b506d6c1246ba3a153395e7bbe7a769a2f4769f818c886b1b6",
+      "bytes": 3817
+    },
+    {
+      "name": "application-build-schedule-fixture.log",
+      "sha256": "1efdfb0df9b74dffc4f30d108773e505c323115acffd4fc13717bea0db94e816",
+      "bytes": 1933
+    },
+    {
+      "name": "lifecycle-ux-schedule-fixture.log",
+      "sha256": "2bcf238a7ffc273053c16012de01756042f9cee7dd815cad328726ddb67f4b25",
+      "bytes": 15062
+    },
+    {
+      "name": "deferred-connections-schedule-fixture.log",
+      "sha256": "8fc14a03272bf2adaa6e5e2fa6fdc0d5f72f642c254ffb65456a00465a956497",
+      "bytes": 14271
+    }
+  ],
+  "InitialRemoteGate": {
+    "Head": "cb4e785f665889ff5be129a63c11a1a62a99b509",
+    "Result": "7 success; frozen-sportmaster failed",
+    "Run": "https://github.com/yuan2go/importer-pc/actions/runs/40490759324",
+    "Failures": [
+      "obsolete assertion requiring distinct heart/take-chute codes",
+      "management exit draft check; Dispatcher idle did not establish completed service-state refresh"
+    ],
+    "Resolution": "unique code assertion retained; await actual revoked mode/workstation then strictly assert same draft object/value and no notice; no product permission guard changed"
+  },
+  "SecondRemoteGate": {
+    "Head": "2440a36a05081d018c7a54b0945159d9a1b33f96",
+    "Result": "7 success; frozen-sportmaster failed at existing scheduled backup lifecycle fixture",
+    "Job": 122150310913,
+    "OriginalFailure": "successful schedule projection corresponds to a real complete recovery set",
+    "Resolution": "explicit schedule initialization; use actual NextDue; share pre-reservation monitor drain with existing reconnect fixture; invoke each scheduled action once; complete marker/capacity/original custody assertions unchanged; no backup runtime code changes"
+  },
+  "LatestMainIntegration": {
+    "Main": "fdd24fa552136c6e1eceaf62aa66552744bd46d1",
+    "SourceCommit": "515013721ed80117a27a855f5b6c263bee221c9b",
+    "Build": "PASS 0 warnings/0 errors",
+    "TargetedApplication": "PASS SDK editor, heartbeat, deferred/Unknown, P0 deferred, lifecycle",
+    "Native": "PASS SDK editing, full parameter-v3, workstation-status-logs",
+    "FrozenPackages": "all three current modules 1.0.0 PASS using frozen Sportmaster checker",
+    "InitialInvocationFailuresPreserved": [
+      "unified-hikrobot-sdk-editing.log: workspace argument omitted",
+      "package-unified-rcs.log: Supply checker correctly refused unregistered public contract; corrected to Sportmaster Ipc.Assembly"
+    ],
+    "Logs": [
+      {
+        "name": "solution-build-unified.log",
+        "sha256": "1e7b0d29d518a16be8bbb791238277d9c8de03b2b429106b4ef538d209879d4e",
+        "bytes": 8362
+      },
+      {
+        "name": "native-build-unified.log",
+        "sha256": "88d80e83e175632b68f084ff73525f97da7de85d9e7756132a15bf10ebae1b64",
+        "bytes": 2111
+      },
+      {
+        "name": "frozen-sportmaster-unified.log",
+        "sha256": "6877c80e89d0a2892149a48e373dd94eadb574d3aa48c2984abd00f3773afd82",
+        "bytes": 1487
+      },
+      {
+        "name": "unified-deferred-connections-valid.log",
+        "sha256": "7c5e9c1ed5e80c8479395b8cf4e373096e854c73513241eb13703733eeea8c66",
+        "bytes": 14271
+      },
+      {
+        "name": "unified-hikrobot-sdk-editing-valid.log",
+        "sha256": "70c966d130ec9947ff7f193f6f9bc4c6e8a50b9a3453ed42a75a7b6b8f7251b6",
+        "bytes": 1180
+      },
+      {
+        "name": "unified-lifecycle-ux-valid.log",
+        "sha256": "00cd93848965f1e3a2834dc335b81365ddd51d0390d615548cd391a5cd66219b",
+        "bytes": 15062
+      },
+      {
+        "name": "unified-p0-deferred-valid.log",
+        "sha256": "265f6e3830d8f6a3be64dc35c8a8ec23a033bc0fb2fd2a5001d2cce07e6e0a43",
+        "bytes": 13321
+      },
+      {
+        "name": "unified-rcs-heartbeat-valid.log",
+        "sha256": "4f13628b717b3bf43f2fa222bd367f1ec022c3ea6904daafce859e1032cfd54e",
+        "bytes": 2226
+      },
+      {
+        "name": "native-unified-hikrobot-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-unified-parameter-v3.log",
+        "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+        "bytes": 275
+      },
+      {
+        "name": "native-unified-workstation-status-logs.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "package-sportmaster-unified-idmvs.log",
+        "sha256": "d7230c10b38af86848544e6ed84ea44a753948e8ec2989dcb58f25b87f67a687",
+        "bytes": 9893
+      },
+      {
+        "name": "package-sportmaster-unified-mvs.log",
+        "sha256": "54d4480ce52774a1132ffbc9696a153cb4ebd9dc1304f677efebf3f4d14dc1cc",
+        "bytes": 10169
+      },
+      {
+        "name": "package-sportmaster-unified-rcs.log",
+        "sha256": "c94da540d2241f57cd20122f952fe8afed4952f17efe13ef8456e87c2f5133b8",
+        "bytes": 15187
+      }
+    ]
+  },
+  "HardeningMainIntegration": {
+    "Main": "fdd24fa552136c6e1eceaf62aa66552744bd46d1",
+    "SourceCommit": "6ce01fa84da99225efded80a65470721d426a2aa",
+    "Build": "PASS locked Sportmaster solution; zero warnings/errors",
+    "Targeted": "PASS SDK editing, SDK identity/diagnostic hardening, heartbeat, native SDK form, complete SDK probe self-test",
+    "FrozenPackages": "PASS three 1.0.0 TestOnly/Simulation packages and exact manifest schemas",
+    "ProductionIdentity": "expected physical serial required; diagnostic/simulation may omit; one camera code remains shared",
+    "Logs": [
+      {
+        "name": "solution-build-hardened.log",
+        "sha256": "81a61f3bac552bd2ca1c926d13e501a30aabcebe5984de35e9067a0ee742190e",
+        "bytes": 5577
+      },
+      {
+        "name": "probe-build-hardened.log",
+        "sha256": "0012c4e70624208db90346cef71ad0cabd95ce410dca23cf3a8265fa7eb83be3",
+        "bytes": 767
+      },
+      {
+        "name": "probe-hardened-self-test.log",
+        "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+        "bytes": 7436
+      },
+      {
+        "name": "native-build-hardened.log",
+        "sha256": "4dfd87a3d20b3f15991f2235eba7e8fe386088e0ffa02f230a9c18cabbce167e",
+        "bytes": 1986
+      },
+      {
+        "name": "native-hardened-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "frozen-sportmaster-hardened.log",
+        "sha256": "6cb4b405bec350c6be2daccd5c0a987409516d2eb734b929faec2002bd3bd767",
+        "bytes": 1488
+      },
+      {
+        "name": "hardened-hikrobot-hardening.log",
+        "sha256": "b86dbf8ca32c7fb38b5d239842cee5bd8b63ce2bb3736e4c63e08a5ae27e1f78",
+        "bytes": 1483
+      },
+      {
+        "name": "hardened-hikrobot-sdk-editing.log",
+        "sha256": "70c966d130ec9947ff7f193f6f9bc4c6e8a50b9a3453ed42a75a7b6b8f7251b6",
+        "bytes": 1180
+      },
+      {
+        "name": "hardened-rcs-heartbeat.log",
+        "sha256": "aef00a1441e31a332bd56cc2b1182644c06ef5bb298752bb5cf5c5bc1b60faf0",
+        "bytes": 2226
+      },
+      {
+        "name": "package-sportmaster-hardened-idmvs.log",
+        "sha256": "c3860cc931197609ee643d70a30588c776915ef1fade053eba8a884c448887c2",
+        "bytes": 10132
+      },
+      {
+        "name": "package-sportmaster-hardened-mvs.log",
+        "sha256": "d60620dc61ccd13968d8427ba342b4f8a213923278410be46e712dd7cb155d1b",
+        "bytes": 10400
+      },
+      {
+        "name": "package-sportmaster-hardened-rcs.log",
+        "sha256": "cfc4ed5469a5129d3a7b8d9f81efef23a428672fcc4e4cb6aabb8b89b7836bfe",
+        "bytes": 15184
+      }
+    ]
+  },
+  "OperatorMainIntegration": {
+    "Main": "ed07f0e12b070118cc12104947ebc02f14a44f66",
+    "SourceCommit": "65bd320cde8153356a1097ed51be5aab0799766f",
+    "NativeBuild": "PASS zero warnings/errors",
+    "Native": "PASS SDK edit, full parameter-v3, operator-workspace, workstation-status-logs",
+    "EntryReview": "PackageInstallationRequested still routes to existing technical tool index 6",
+    "FrozenPackages": "three 1.0.0 TestOnly/Simulation packages PASS with exact frozen Sportmaster checker",
+    "PriorRemoteHead": "88d69f69c74bce8497fb050cbb9ea5668bb564ab",
+    "PriorRemoteResult": "8/8 success before PR129 main integration; not transferred to final merge",
+    "Logs": [
+      {
+        "name": "native-build-operator-merged.log",
+        "sha256": "eb9893f69f982f7de411003ee835185f352cad11dc834e519cf20f11f9870507",
+        "bytes": 1986
+      },
+      {
+        "name": "frozen-sportmaster-final.log",
+        "sha256": "fce59471abad6cc40ea5efbbdfc010c2420f693cb02d961c0307ab32e1ec5976",
+        "bytes": 1485
+      },
+      {
+        "name": "native-operator-merged-hikrobot-sdk-editing.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-operator-merged-operator-workspace.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "native-operator-merged-parameter-v3.log",
+        "sha256": "ab513227e561fab62ce7710368595833b0536081998b83fb09ac28bb03433d49",
+        "bytes": 275
+      },
+      {
+        "name": "native-operator-merged-workstation-status-logs.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "name": "package-sportmaster-final-idmvs.log",
+        "sha256": "a91b2341d41a74f68a0523780d1a8ef6c9929d0e632987e114a3f4337e0b6604",
+        "bytes": 10129
+      },
+      {
+        "name": "package-sportmaster-final-mvs.log",
+        "sha256": "1b9d91da7cb38197cade58de9d6d1736d29bb01bc3df891d523151ee1c96441a",
+        "bytes": 10397
+      },
+      {
+        "name": "package-sportmaster-final-rcs.log",
+        "sha256": "08561f06a9d67767f59e7f965483857d34d241c9dafe4c366866d4e2a550a920",
+        "bytes": 15182
+      }
+    ]
+  }
+}

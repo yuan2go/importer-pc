@@ -133,7 +133,7 @@ static partial class SportmasterRcs
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
         var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["bcr-code"] = "TEST-LEFT-READER" } }).ToArray();
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers }, DeferredConnections = null };
         var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
@@ -251,7 +251,6 @@ static partial class SportmasterRcs
         {
             binding with { Target = "http://127.0.0.1/synthetic-other-api" },
             binding with { Contract = "UNKNOWN-CONTRACT" },
-            binding with { Parameters = new(binding.Parameters.Where(x => x.Key != "left-bcr-code")) },
             binding with { Parameters = new(binding.Parameters) { ["specified-chute"] = "true" } },
             binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = long.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture) } },
             binding with { Parameters = new(binding.Parameters) { ["request-id-count"] = "0" } }
@@ -260,6 +259,12 @@ static partial class SportmasterRcs
         {
             try { await using var rejected = new SportmasterRcsTaskService(value); throw new Exception("Invalid RCS binding accepted"); }
             catch (InvalidDataException) { Check(peer.Requests.Count == count, "invalid endpoint/contract/mapping/chute/range configuration rejects before an external call"); }
+        }
+        var missingCameraCode = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "left-bcr-code")) };
+        await using (var missingService = new SportmasterRcsTaskService(missingCameraCode))
+        {
+            try { missingService.PrepareRequest(Request(missingCameraCode), 1); throw new Exception("Missing camera code sent"); }
+            catch (InvalidDataException) { Check(peer.Requests.Count == count, "missing active camera mapping refuses preparation before HTTP"); }
         }
         var specified = binding with { Parameters = new(binding.Parameters) { ["specified-chute"] = "true", ["chute-code"] = "SYNTH-EXPLICIT" } };
         await using var explicitService = new SportmasterRcsTaskService(specified); var explicitRequest = Request(specified);

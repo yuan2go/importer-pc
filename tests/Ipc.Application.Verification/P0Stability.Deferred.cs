@@ -38,7 +38,7 @@ static partial class SportmasterRcs
                 var readers = seed.Topology!.Readers.Select((r, i) => r with { Parameters = (mask & (1 << i)) != 0
                     ? new() { ["entity.mode"] = "line" }
                     : new() { ["entity.mode"] = "line", ["device.ip"] = "127.0.0.1", ["device.port"] =
-                        ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString(), ["bcr-code"] = "SYNTH-BCR-" + i } }).ToArray();
+                        ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString() } }).ToArray();
                 var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0",
                     Parameters = new(Binding(peer.Endpoint).Parameters) { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" } };
                 var c = seed with { StationCode = "SYNTH-STATION",
@@ -96,7 +96,7 @@ static partial class SportmasterRcs
         var baseline = new SportmasterFlow().InitialConfiguration();
         var disabled = new ExtensionInstance("disabled", "synthetic.reader", "reader", "synthetic.disabled", false, new());
         var extensionReader = new DeviceBinding("parcel-reader", "extension:disabled", disabled.DeviceId, "1");
-        var selection = baseline with { StationCode = "SYNTH-STATION", Reader = extensionReader, Topology = baseline.Topology! with { Readers = [extensionReader] }, DeferredConnections = null, Extensions = new([], [disabled]) };
+        var selection = baseline with { StationCode = "SYNTH-STATION", Reader = extensionReader, Topology = baseline.Topology! with { Readers = [extensionReader], Positions = [new("left", extensionReader.DeviceId)] }, DeferredConnections = null, Extensions = new([], [disabled]) };
         Check(RcsConfigurationValidation.HeartbeatMapping(selection).Length == 0, "explicitly disabled extension reader is not a heartbeat participant");
         try { RcsConfigurationValidation.HeartbeatMapping(selection with { Extensions = new([], [disabled with { Enabled = true }]) }); throw new Exception("active reader without bcr-code accepted"); }
         catch (InvalidDataException) { Check(true, "enabling the same reader restores mandatory bcr-code validation"); }

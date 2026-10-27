@@ -165,7 +165,7 @@ static class CommercialProductization
             "complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input");
         var dbFiles = Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash);
         var plan = await service.PlanChangeAsync("Upgrade", Path.Combine(root, "pre-upgrade.db"));
-        Check(plan.Allowed && dbFiles.OrderBy(x => x.Key).SequenceEqual(Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash).OrderBy(x => x.Key)), "upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes");
+        Check(plan.Allowed && dbFiles.OrderBy(x => x.Key).SequenceEqual(Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash).OrderBy(x => x.Key)), "current-format overwrite-install preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes");
         var template = StartupSiteTemplates.Export(seed.ApplicationId, editor.Capture());
         Check(template.Defaults.Values.Keys.All(k => !k.EndsWith(".target") && !k.Contains(".parameter.") && !k.StartsWith("policy.Backup")), "new-site template excludes stable devices, endpoints, secrets, numeric ranges and original backup path");
         // A foreign recovery marker must close the explicit repair route before any write.

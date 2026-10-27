@@ -55,7 +55,7 @@ static partial class ArchitectureQuality
         await using (var app = await Open(db5,"db5-unknown"))
         { app.EmitReference("db5-original","00085","db5-source"); await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.WcsUnknown); }
         await RefuseNonCurrentStorage("db5-unknown",db5,storageVersion:5);
-        // A different frozen implementation is rejected at the same pre-migration
+        // A different frozen implementation is rejected at the same pre-write
         // boundary. This fixture retains the real original requests and replies.
         var changed=Config("sportmaster") with { Wcs=Config("sportmaster").Wcs! with { Parameters=new(Config("sportmaster").Wcs!.Parameters){["reply-mode"]="lose-after-commit"} } };
         var changedName="db4-old-implementation";
@@ -72,7 +72,7 @@ static partial class ArchitectureQuality
         {
             writer.Open();using var q=writer.CreateCommand();q.CommandText="PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; UPDATE parcel_meta SET revision=revision+1";q.ExecuteNonQuery();
             var dbHash=StableOpenFixtureHash(walDb);var walHash=StableOpenFixtureHash(walDb+"-wal");var configHash=Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"));
-            try {await using var unexpected=await Open(changed,walName);Check(false,"nonempty WAL unresolved upgrade must refuse");}
+            try {await using var unexpected=await Open(changed,walName);Check(false,"non-current database with nonempty WAL must refuse");}
             catch(InvalidDataException ex){Check(ex.Message.Contains("全新数据目录")&&StableOpenFixtureHash(walDb)==dbHash&&StableOpenFixtureHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
         }
         var settled=Config("sportmaster");var terminal="db4-terminal";
@@ -99,7 +99,7 @@ static partial class ArchitectureQuality
             }
             await Task.Delay(20);
         }
-        throw new TimeoutException("Legacy maintenance guard did not settle; no successful receipt inferred");
+        throw new TimeoutException("Current maintenance guard did not settle; no successful receipt inferred");
     }
     static async Task NonCurrentPositionChecks(int schema, bool previouslyRecovered)
     {
@@ -151,7 +151,7 @@ static partial class ArchitectureQuality
         await StoragePreflightChecks();
         foreach(var schema in new[]{1,2})foreach(var recovered in new[]{false,true})await NonCurrentPositionChecks(schema,recovered);
         await TopologyFormatChecks();
-        if(failures!=0)throw new Exception("Upgrade/conflict closure failures: "+failures);
+        if(failures!=0)throw new Exception("Storage format/conflict guard failures: "+failures);
         Console.WriteLine("PASS STORAGE FORMAT GUARDS COMPLETE");
     }
 }

@@ -1,0 +1,47 @@
+{
+  "SourceCommit": "32ca2ab7f1ed7984b59ab8adece12bf045d88b90",
+  "Change": "Metrics registration occurs only after configuration validation; logical device.id distinguishes per-source meters. No decoding, trigger, frame ownership, replay, native or application behavior changed.",
+  "Verified": [
+    "full solution locked Release build: 0 warnings, 0 errors",
+    "Probe locked Release build",
+    "existing reader46/MVS26/hardening16 and boundary policy",
+    "decoding risk checks41"
+  ],
+  "OtherEvidence": "verification.json retains its original 8ae0bf53 identity; application/native/replay receipts are not relabeled.",
+  "Files": [
+    {
+      "path": "mvs-metrics-decoding.txt",
+      "sha256": "8bf4c3dd4e5d37b812fa484189212ef687285c0fcd626d2fbd6618bbe52cc7ac",
+      "bytes": 5018
+    },
+    {
+      "path": "mvs-metrics-final-build.txt",
+      "sha256": "3e4930047cabb827fe86dd9ce9005268a50f536532586ca2ee506b7637c3c4b4",
+      "bytes": 7769
+    },
+    {
+      "path": "mvs-metrics-probe-build.txt",
+      "sha256": "2684981a173e8acfd1b9f8d6c5a8936864b1a96b134c59ef373601d5800a970f",
+      "bytes": 837
+    },
+    {
+      "path": "mvs-metrics-selftest.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "bytes": 7436
+    }
+  ],
+  "SourceFiles": [
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/DecodeMetrics.cs",
+      "sha256": "187506181fcbd1e5027a6878fbf819c079e097341387c4067d8937e61aa5ecf4"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/Decoding/MvsDecoding.cs",
+      "sha256": "87656e5859d7050b30671c5fadfc7fcc7eb5fb0bf5df0dc9771e0d3434cf9e05"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "sha256": "8abbfbb201f6af9136d7fac191fba137d91189ff599b0b12e80f1efc931c71ac"
+    }
+  ]
+}

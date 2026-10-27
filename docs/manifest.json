@@ -104069,9 +104069,20 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS decoding framework and bounded verification",
       "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
-      "sha256": "71d7363f96f5bdca9dcb28723ecfa2a191cad3acbe7cef909f851f58335a2c59",
-      "size_bytes": 2658,
-      "git_blob": "6a2270eb207ef82f5a1bea0a00f814246f99a7d9",
+      "sha256": "159cfe12d70c8f669737c8aab3cf9e4865570a93258de0a4660b8f51ab9aa7fd",
+      "size_bytes": 2986,
+      "git_blob": "ba95d47bef99255dfdb6e9875892d5ddd6123b9f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-decoding-01/metrics-resource-verification.json",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "a88753cf5b0a58b69c1befbbcae1c094eb83ed2036d4dc24cf377e7942469bc6",
+      "size_bytes": 1803,
+      "git_blob": "35861d4026e766ab53d9c1f4f27202ba4b5d35dc",
       "storage_scope": "public_repository"
     },
     {
@@ -104391,6 +104402,50 @@
       "sha256": "b0a7815b3cc40d52507dabbebf7550a1ce8fc6eccd9023ef4de645251298a286",
       "size_bytes": 57,
       "git_blob": "dae7cf6579bea4d61cdfd1c6c76fb94cc5d2e5a6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-decoding-01/mvs-metrics-decoding.txt",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "8bf4c3dd4e5d37b812fa484189212ef687285c0fcd626d2fbd6618bbe52cc7ac",
+      "size_bytes": 5018,
+      "git_blob": "7ff5184e2c2a676986199074323b175397b6fcb7",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-decoding-01/mvs-metrics-final-build.txt",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "3e4930047cabb827fe86dd9ce9005268a50f536532586ca2ee506b7637c3c4b4",
+      "size_bytes": 7769,
+      "git_blob": "8696e79a0b550ecd93b517892cc86990c41d05f4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-decoding-01/mvs-metrics-probe-build.txt",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "2684981a173e8acfd1b9f8d6c5a8936864b1a96b134c59ef373601d5800a970f",
+      "size_bytes": 837,
+      "git_blob": "11d45c45d8141c90f86b5214b7541783cedaa726",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-decoding-01/mvs-metrics-selftest.txt",
+      "version": "mvs-decoding-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MVS decoding framework and bounded verification",
+      "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "size_bytes": 7436,
+      "git_blob": "7c69391b9f28397448db66e39ec8c0a025f01c1e",
       "storage_scope": "public_repository"
     },
     {

@@ -2,6 +2,8 @@
 
 实现源码 `8ae0bf53`，基线 main `d506f77c`；文档清理独立提交 `2059479d`。本目录仅合成测试、构建日志及哈希，原始失败也保留；机器清单见 [verification.json](verification.json)。设计只在[解码设计](../../../design/mvs-decoding-01.md)，运行命令见[SDK操作说明](../../hikrobot-reader-01.md)。
 
+指标资源修复 `32ca2ab7` 在构造校验成功后才注册Meter，并加入逻辑device.id区分双路。该提交重新通过完整解决方案构建、Probe构建、原海康套件及41项解码检查，见[独立补证](metrics-resource-verification.json)；其余验证保留原源码身份，没有重标旧回执。
+
 | 验证 | 结果与边界 |
 |---|---|
 | 完整 Sportmaster 解决方案、Probe、独立审查、生命周期模拟、原生 WPF 工程 | locked Release 构建成功，0警告、0错误 |

@@ -1,3 +1,5 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 > TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
 
 # Sportmaster 双相机通信与现场诊断
@@ -9,17 +11,17 @@
 ## 已证实与实施
 
 1. **首帧竞态已隔离复现。** 原Application在Reader启动、能力探测和配置确认后才开放入队，TCP连接后立即读码，合法首帧会被误判为入队拒绝并断线。现使用同一按位有界队列：启动前仅开放接收，消费者等待启动终态，`SharedReady`仍要求完整运行态。启动确认前不准入、不生成请求；失败/取消后排空为`StartupIngressBlocked`持久审计，要求核对原输入，不自动补发。队列满沿用独立过载标记、位围栏与人工检查，未改成静默丢弃。
-2. **单侧连接失败原本终止整个Application启动。** 驱动已围栏并清理的ObservationConnectionException（TCP连接IO/Socket/Timeout）现在保留该位Faulted并继续启动独立Reader；另一位仍须通过自身与共享能力全部守卫。配置、SDK装配、存储或公共能力失败不被当作可忽略相机问题。配置激活确认的是已选运行修订和资源启动终态，不代表全部相机/业务就绪；快照中的位健康与Availability继续决定业务。需要旧账人工确认的配置仍须原完整健康检查，不能借单侧隔离绕过。
+2. **单侧连接失败原本终止整个Application启动。** 驱动已围栏并清理的ObservationConnectionException（TCP连接IO/Socket/Timeout）现在保留该位Faulted并继续启动独立Reader；另一位仍须通过自身与共享能力全部守卫。配置、SDK装配、存储或公共能力失败不被当作可忽略相机问题。配置激活确认的是已选运行修订和资源启动终态，不代表全部相机/业务就绪；快照中的位健康与Availability继续决定业务。当前配置仅在资源启动流程成功后自动确认；单侧隔离不能绕过其余准入条件。
 3. **TCP健康竞争风险（静态证实，原窗口未强行重现）。** 原监测线程的`Poll`与`Available`组合可能与读取线程竞争：可读数据被读取线程消费后，Available为0不能独立证明EOF。现由唯一读取线程判断EOF/接收错误；周期确认仅表达本地传输会话尚未发现失败。没有相机应用层心跳，不能承诺静默断网立即被识别。
 4. **诊断缺口已补齐。** 驱动输出有界、不含条码/原始协议字节的健康Source，复用ObservationSession及RuntimeJournal，仅记录连接状态转换，不逐次健康续期刷屏。读码、业务输入、原请求仍是原来的独立权威。管理重连中的SocketException返回MaintenanceIncomplete，保留资源和原责任；外部取消不误报成功。
 
 ## 当前协议和资源规则
 
-成功交给Application现已先写入DB9输入接收账；驱动Ready、内存入队、持久接收、Admitted和完成分别计证。队列满/异常/停止的逐笔残留与独立worker进展见[长稳指南](win11-24x7-stability-remediation-01.md)。本地Ready仍不能证明静默远端存活。
+成功交给Application现已先写入Parcel 10输入接收账；驱动Ready、内存入队、持久接收、Admitted和完成分别计证。队列满/异常/停止的逐笔残留与独立worker进展见[长稳指南](win11-24x7-stability-remediation-01.md)。本地Ready仍不能证明静默远端存活。
 
 供包台是TCP客户端，主动连配置IPv4/端口，不发送握手或测试业务报文。严格UTF-8；LF结束，也接受CRLF；正文最多4096字节，不含LF及可选的末尾CR。拆包（含UTF-8拆字节）和多行粘包按顺序处理。空行、控制字符、非法编码、超长行和不完整帧EOF均围栏连接；不截断、不替换乱码、不跳过坏帧继续声称健康。EOF即使无半帧也表示RemoteClosed。连接未建立时实际端点可能为空，仅保留ConfiguredRemote，不根据路由查询伪造已用源端点。没有新增应用读超时、自动重连/重放、源IP绑定或新配置字段。五秒连接预算是既有行为，预算超时现在明确分类为ConnectTimeout；调用方取消仍为ConnectCancelled。
 
-默认`entity.mode=observe-only`：形成UncorrelatedRead观察，不能建立包裹准入。`line`须现场确认一行一个实体并满足原Production资格；同码两行有不同实体身份，不按条码合并。旧配置格式、默认模式和字段不变。构造时复制连接参数，外部草稿修改不能改变当前套接字。
+默认`entity.mode=observe-only`：形成UncorrelatedRead观察，不能建立包裹准入。`line`须现场确认一行一个实体并满足原Production资格；同码两行有不同实体身份，不按条码合并。当前显式模式与字段按配置校验。构造时复制连接参数，外部草稿修改不能改变当前套接字。
 
 读取线程不跨Application回调持有驱动锁，启动时也不在启动调用栈内执行读码回调。Stop关闭套接字、取消并等待读取及本地确认任务；取消等待时保留任务/CTS及所有权，下次显式Stop继续排空，禁止重叠Start。Dispose和Start/Stop共用生命周期串行边界。Application原机级资源租约、规范化IP/数字端口独占、注册Epoch、单调Sequence、位内顺序、位间独立、停止屏障及失败保有机制继续使用。
 

@@ -1,8 +1,10 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 # 代码可靠性02 · 运行与维护
 
 2026-10-25与PR103/main的同步见[集成及验证身份](validation/pr104-main-integration-01.md)。本次保留1.12.1/1.6.1可靠性源码和全部历史证据；60.48万完整维护FAIL、259.2万未运行和60.48万恢复UAC取消继续有效。输入分页与命令预算修复在独立PR105，本次合并不包含或验收该修复。
 
-[工作包](../work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md) · [设计](../design/code-reliability-hardening-02.md) · [验证与身份](validation/code-reliability-hardening-02.md)。本增量继承稳定性01/DB9；Sportmaster 1.12.1、DirectPlc/WcsToPlc 1.6.1、Application.Contracts 1.17.0，SQL1～9及checksum未改。发布介质以其独立SourceCommit和文件清单为准。
+当前可靠性约束与数据库格式分开验证；历史问题卡及运行回执保留原SourceCommit，不能作为本轮通过证据。
 
 ## 所有权与恢复
 
@@ -28,9 +30,9 @@ RuntimeJournal故障重探测用单调经过时间，时钟回拨不推迟恢复
 
 ## 升级、回退和复现
 
-停止旧实例并确认真实资源排空，保存原业务目录和原介质，再部署完整同源发布目录，不能只拷贝个别DLL。没有新数据库迁移；既有DB9及永久防重、未决请求不删除。未决原请求绑定实现hash；若升级后的能力与原请求不兼容，启动按既有守卫拒绝，须使用匹配的原介质核查、处置，不能改hash或批量重投绕过。
+覆盖安装同数据格式或同版修复前，完整停止并确认真实资源排空，使用完整同源发布目录，不能只替换个别DLL。只有当前Parcel 10/Supply 6允许读取。当前未决请求保持精确实现、原报文和原责任；不改hash或批量重投。
 
-回退同样完整停止后使用保留的旧完整介质和当前DB9账；不得用旧备份覆盖现账制造重复机会。历史冻结介质保持原版本/SourceCommit。程序集或扩展变更仍服从现有精确兼容和签名策略。
+源码回滚使用正常反向提交并重新构建验证。非当前数据库不能交给回滚程序读取；首次安装清理后使用全新数据目录，不能用备份覆盖较新责任账。
 
 Windows先执行`. ./scripts/project-environment.ps1`。真实代码的独立验证入口为`dotnet run --project tests/Ipc.Application.Verification -c Release -- . --reliability-02`和`--h02-crashes`；后者由外部控制器强杀测试子进程，独立来源/模拟HTTP接收账及退出结果写入输出的EvidenceRoot。原生WPF用`tests/Ipc.Desktop.UiVerification`的`--reliability-logs`；冻结介质用`scripts/verify-commercial-wpf.ps1 -Media <介质> -Output <新D盘目录> -ReliabilityLogs`。
 

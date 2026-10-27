@@ -1,6 +1,6 @@
 # 作业状态、管理入口与日志双视图
 
-2026-10-27，范围为[WORKSTATION-STATUS-LOGS-01](../work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md)，起始main `e70b8ece`。用户四张截图只用于定位，未上传；本目录后续截图均使用隔离合成数据与端口。
+历史实施、版本和验收原件见[归档](../archive/pre-fresh-baseline-current-guides-01/README.md)；原PASS只属于原SourceCommit。当前仅支持从零安装、当前格式建库；非当前输入保留原件并拒绝，请使用全新数据目录。
 
 ## V2对照与修复
 
@@ -18,7 +18,7 @@
 
 两套宿主都拒绝直接进入未授权的参数/日志页面。顶部管理密码仍控制临时管理模式，退出/到期的任务取消、日志失效、草稿保护和重新验证后续办保持。原授权结束常驻长提示已移除；实际操作失败仍反馈。
 
-“维护认证”是历史MaintenanceLogin模拟组件，与当前本机管理密码无关。原过滤只识别首配角色，日常库存对象由角色引用标识，导致漏出。现在按真实引用隐藏维护专用组件，完整候选及旧绑定保留；同时承担操作员登录的组件保留其实际用途，目录名称只显示操作员登录。
+管理密码属于受保护的本机管理服务，不是能力目录中的登录组件。目录仅按当前实际用途展示操作员登录，完整候选与业务身份守卫保持。
 
 ## 日志使用
 
@@ -38,4 +38,4 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 # 既有回归：--task-hierarchy、--management-mode、--reliability-logs
 ```
 
-冻结介质入口 `scripts/verify-commercial-wpf.ps1 -WorkstationStatusLogs` 已加入现有Windows CI。原D/RV、SDK、资格、现场条件保持；不自动安装或合并PR。最终同源身份、实际结果、初次失败与截图见[证据](evidence/workstation-status-logs-01/README.md)。
+冻结介质入口 `scripts/verify-commercial-wpf.ps1 -WorkstationStatusLogs` 已加入现有Windows CI。原D/RV、SDK、资格、现场条件保持；不自动安装或合并PR。历史同源身份、实际结果、初次失败与截图见[证据](evidence/workstation-status-logs-01/README.md)。

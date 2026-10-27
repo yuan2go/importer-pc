@@ -7,7 +7,7 @@ static class AlignmentDataVerification
 {
     public static async Task Run(string root, string url, string workspace)
     {
-        await LegacyMigration(root, workspace);
+        await CurrentFormatGate(root);
         Console.WriteLine("PASS A01 old formats refuse mutation; read-only custody/backup retain frozen originals and current restore isolation");
         var cfg = Rig.Config(url, demand: 1); var directory = Path.Combine(root, "alignment-data");
         string sessionId, operationId, originalPayload, originalHash; ContextSnapshot context; TaskSnapshot task;
@@ -53,84 +53,27 @@ static class AlignmentDataVerification
         Console.WriteLine("PASS A01 independent semantic fixture, task/request/restart/history consistency and unique acceptance");
     }
 
-    internal const string Schema1Checksum = "D4CED2B811DFF4D3D66DC66C431B9DCC8C75F491CA30F10A2E5507AAD741C981";
-    internal const string Format2Checksum = "4C1BBC06BAF48D95D464867131CD63BFD7048DAC64515B07916652497B60A897";
-    internal const string Format3Checksum = "AF01C0A2D5AE4FEB3481E4E703C0BC544CC746FD044736CD8A5B3D86B661FD25";
-    const string Format2Migration = "CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);\nINSERT INTO storage_format VALUES(1,2,2);";
-
-    public static Task LegacyMigration(string root, string workspace)
+    public static Task CurrentFormatGate(string root)
     {
-        var fixtures = Path.Combine(workspace, "tests/Ipc.Verification/fixtures");
-        // Git checkout line endings are not part of the pinned historical SQL fixture.
-        var schema = File.ReadAllText(Path.Combine(fixtures, "schema1.sql")).Replace("\r\n", "\n");
-        Assert(Wire.Hash(schema) == Schema1Checksum && Wire.Hash(Format2Migration) == Format2Checksum, "Historical schema1 and format2 SQL independently pinned");
-        var original = Wire.Decode<BusinessRequest>(File.ReadAllText(Path.Combine(fixtures, "simulation-v1-request.json")));
-        var responseText = File.ReadAllText(Path.Combine(fixtures, "simulation-v1-response.json")).TrimEnd();
-        var oldResponse = Wire.Decode<IntegrationResponse>(responseText);
-        Assert(oldResponse.Context is null && oldResponse.Task is null && Wire.Encode(oldResponse) == responseText, "Old receipt optional fields remain absent and bytes unchanged");
-        string Legacy(string name, int format = 1, bool active = false)
+        var directory = Path.Combine(root, "current-storage"); Directory.CreateDirectory(directory);
+        var source = Path.Combine(directory, "station.db"); using (var store = new SupplyStore(source)) { }
+        Assert(SupplyStore.InspectReadOnly(source).FormatVersion == 6, "Fresh Supply baseline is format6");
+        var backup = Path.Combine(root, "current-backup.db"); var receipt = SupplyStore.BackupReadOnly(source, backup);
+        Assert(receipt.Sha256 == Wire.FileHash(backup) && receipt.Backup.FormatVersion == 6, "Current backup binds exact bytes and format");
+        foreach (var format in Enumerable.Range(1,5).Append(7))
         {
-            var path = Path.Combine(root, name + ".db");
-            using var db = Open(path);
-            Exec(db, schema); Exec(db, "CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL)");
-            Exec(db, "INSERT INTO schema_history VALUES(1,$a,$b)", Schema1Checksum, DateTimeOffset.UtcNow.ToString("O"));
-            if (format >= 2)
-            {
-                Exec(db, Format2Migration); Exec(db, "INSERT INTO schema_history VALUES(2,$a,$b)", Format2Checksum, DateTimeOffset.UtcNow.ToString("O"));
-            }
-            if (format >= 3)
-            {
-                Exec(db, "UPDATE storage_format SET version=3,minimum_reader=3 WHERE id=1;");
-                Exec(db, "INSERT INTO schema_history VALUES(3,$a,$b)", Format3Checksum, DateTimeOffset.UtcNow.ToString("O"));
-            }
-            if (format >= 4)
-            {
-                Exec(db, "CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL); CREATE INDEX response_conflicts_request ON response_conflicts(request); UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;");
-                Exec(db, "INSERT INTO schema_history VALUES(4,$a,$b)", ConformanceVerification.Format4Checksum, DateTimeOffset.UtcNow.ToString("O"));
-            }
-            var sessionText = "{\"Id\":\"" + original.SessionId + "\",\"Barcode\":\"000001\",\"Status\":\"" + (active ? "Active" : "Closed") + "\"}";
-            Exec(db, "INSERT INTO sessions VALUES($a,$b)", original.SessionId, sessionText);
-            Exec(db, "INSERT INTO operations VALUES($a,$b,'left',$c,$d)", original.OwnerId, original.SessionId, DateTimeOffset.UtcNow.ToString("O"),
-                "{\"Id\":\"" + original.OwnerId + "\",\"SessionId\":\"" + original.SessionId + "\",\"Lane\":\"left\",\"Barcode\":\"000123\"}");
-            Exec(db, "INSERT INTO requests VALUES($a,$b,$c,$d,$e,$f,$g)", original.Id, original.OwnerId, original.SessionId, original.Kind.ToString(), original.IntentKey, original.Status.ToString(), Wire.Encode(original));
-            return path;
+            var file = Path.Combine(root,"noncurrent-"+format+".db"); File.Copy(source,file);
+            using (var db = Open(file)) Exec(db,"UPDATE schema_history SET id=$a; UPDATE storage_format SET version=$a,minimum_reader=$a",format);
+            var before = Wire.FileHash(file); var destination = Path.Combine(root,"rejected-"+format,"station.db");
+            Throws(() => SupplyStore.InspectReadOnly(file)); Throws(() => { using var denied = new SupplyStore(file); });
+            Throws(() => SupplyStore.BackupReadOnly(file,destination)); Throws(() => SupplyStore.RestoreVerified(file,destination));
+            Assert(Wire.FileHash(file)==before && !Directory.Exists(Path.GetDirectoryName(destination)), "Non-current format refuses before changing bytes or creating destination");
         }
-        foreach (var format in new[] { 1, 2, 3, 4 })
+        foreach (var sql in new[]{"UPDATE schema_history SET checksum='changed'", "INSERT INTO schema_history VALUES(7,'extra','synthetic')", "UPDATE storage_format SET minimum_reader=99"})
         {
-            var source = Legacy("legacy-format" + format, format); var before = Wire.FileHash(source);
-            var inspection = SupplyStore.InspectReadOnly(source);
-            Assert(inspection.FormatVersion == format && inspection.MinimumReader == format && !inspection.SelectedReaderCompatible && !inspection.ExplicitUpgradeSupported, "Read-only inspection identifies format" + format);
-            Throws(() => { using var denied = new SupplyStore(source); });
-            Assert(Wire.FileHash(source) == before, "Inspection and default startup refusal do not mutate original format" + format);
-            var backup = Path.Combine(root, "original-format" + format + "-backup.db");
-            var backupReceipt = SupplyStore.BackupReadOnly(source, backup);
-            Assert(backupReceipt.Source.FormatVersion == format && backupReceipt.Backup.FormatVersion == format && backupReceipt.Sha256 == Wire.FileHash(backup), "Backup receipt binds original format and physical SHA");
-            Assert(Wire.FileHash(source) == before && SupplyStore.InspectReadOnly(backup).FormatVersion == format, "Backup preserves source and is original-reader compatible");
-            using (var reader = Open(backup))
-            {
-                using var command = reader.CreateCommand(); command.CommandText = "SELECT count(*) FROM schema_history WHERE id>" + format;
-                Assert(Convert.ToInt32(command.ExecuteScalar()) == 0, "Selected historical reader recognizes its own original-format backup");
-            }
-            var restore = Path.Combine(root, "legacy-format" + format + "-restore", "station.db");
-            Throws(()=>SupplyStore.RestoreVerified(backup,restore));
-            Assert(!File.Exists(restore) && !Directory.Exists(Path.GetDirectoryName(restore)),"old backup restore refuses before creating destination");
-            using(var reader=Open(backup))
-            { using var command=reader.CreateCommand();command.CommandText="SELECT json FROM requests WHERE id=$id";command.Parameters.AddWithValue("$id",original.Id);
-              Assert((string)command.ExecuteScalar()! == Wire.Encode(original),"read-only original backup retains exact request identity/payload/contract/target"); }
-        }
-        foreach (var damage in new[] { "future-format", "future-migration", "wrong-checksum" })
-        {
-            var future = Legacy(damage, 2);
-            using (var db = Open(future)) Exec(db, damage switch
-            {
-                "future-format" => "UPDATE storage_format SET version=4,minimum_reader=4",
-                "future-migration" => "INSERT INTO schema_history VALUES(4,'future','2099-01-01T00:00:00Z')",
-                _ => "UPDATE schema_history SET checksum='tampered' WHERE id=2"
-            });
-            var hash = Wire.FileHash(future); var destination = Path.Combine(root, damage + "-restore", "station.db");
-            Throws(() => SupplyStore.InspectReadOnly(future)); Throws(() => { using var rejected = new SupplyStore(future); });
-            Throws(() => SupplyStore.RestoreVerified(future, destination));
-            Assert(Wire.FileHash(future) == hash && !File.Exists(destination) && !Directory.Exists(Path.GetDirectoryName(destination)), "Future/unknown/checksum evidence refused before restore output and source write: " + damage);
+            var file=Path.Combine(root,Wire.Id()+".db"); File.Copy(source,file); using(var db=Open(file))Exec(db,sql);
+            var before=Wire.FileHash(file); Throws(()=>SupplyStore.InspectReadOnly(file)); Throws(()=>{using var denied=new SupplyStore(file);});
+            Assert(Wire.FileHash(file)==before,"Corrupt baseline identity refuses without writes");
         }
         return Task.CompletedTask;
     }

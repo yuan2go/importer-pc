@@ -39,14 +39,13 @@ static partial class ArchitectureQuality
             await app.ReconcileAsync(original.Id);var after=(await app.SnapshotAsync()).Operations.Single();
             Check(after.Plc!.State==StageState.Conflict && after.State!=ParcelState.PhysicalCompleted && after.Plc.Attempts==1,"R01 changed old reply ID becomes Conflict after 65 queries without resending Submit");
         }
-        // A prior DB4 release may already have committed recovery without indexing the raw.
-        using(var db=new SqliteConnection("Data Source="+Path.Combine(directory,c.ApplicationId+".db")))
-        {db.Open();using var q=db.CreateCommand();q.CommandText="DELETE FROM parcel_reply_identities WHERE request=$r";q.Parameters.AddWithValue("$r",reply.RequestId);q.ExecuteNonQuery();}
-        await using(var app=await Open(c,"review-reply"))
-        {
-            using var db=new SqliteConnection("Data Source="+Path.Combine(directory,c.ApplicationId+".db"));db.Open();using var q=db.CreateCommand();q.CommandText="SELECT hash FROM parcel_reply_identities WHERE request=$r AND id=$id";q.Parameters.AddWithValue("$r",reply.RequestId);q.Parameters.AddWithValue("$id",reply.Id);
-            Check(q.ExecuteScalar() as string==Wire.Hash(Wire.Encode(reply)),"R01 existing DB4 committed raw backfills earliest reply identity while preserving recorded Conflict");
-        }
+        var missingFile=Path.Combine(directory,c.ApplicationId+".db");
+        using(var db=new SqliteConnection("Data Source="+missingFile+";Pooling=False"))
+        { db.Open();using var q=db.CreateCommand();q.CommandText="DELETE FROM parcel_reply_identities WHERE request=$r";q.Parameters.AddWithValue("$r",reply.RequestId);q.ExecuteNonQuery(); }
+        var missingHash=Wire.FileHash(missingFile);var originalRaw=Directory.EnumerateFiles(Path.Combine(directory,"receipts")).ToDictionary(p=>p,Wire.FileHash);
+        try { using var denied=new ParcelRepository(directory,c.ApplicationId);Check(false,"missing current identity must refuse"); }
+        catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityMissing"))
+        { Check(Wire.FileHash(missingFile)==missingHash && originalRaw.All(p=>Wire.FileHash(p.Key)==p.Value),"missing current identity refuses before any database/raw write"); }
         using(var custody=new ParcelRepository(Path.Combine(root,"review-foreign-request"),c.ApplicationId))
         {
             custody.Commit(original,"SyntheticOriginal","synthetic");var occurrence=custody.BeginReceipt(original,original.Plc!,"Query");var foreign=reply with {RequestId=Wire.Id()};custody.StoreRaw(occurrence,foreign);
@@ -78,12 +77,11 @@ static partial class ArchitectureQuality
             db.Open();using var q=db.CreateCommand();q.CommandText="SELECT raw_hash FROM parcel_archived_receipts WHERE id IN (SELECT id FROM parcel_receipts WHERE operation=$op)";q.Parameters.AddWithValue("$op",original.Id);archivedHash=(string)q.ExecuteScalar()!;
             q.CommandText="DELETE FROM parcel_reply_identities WHERE request=$request";q.Parameters.AddWithValue("$request",original.Wcs!.Request.Id);q.ExecuteNonQuery();
         }
-        await using(var app=await Open(c,"review-archived-identities"))
-        {
-            using var custody=new ParcelRepository(directory,c.ApplicationId);
-            Check(custody.OriginalReplyHash(original.Wcs!.Request.Id,original.Wcs.Replies.Single().Id)==archivedHash&&(await app.OperationAsync(original.Id))!.State==ParcelState.SlotResolved,"R01 archived original BLOB repairs missing DB4 identity without unarchiving or changing main facts");
-        }
-        // Model a prior-release false completion whose permanent identity index was absent.
+        var missingArchiveHash=Wire.FileHash(file);
+        try { using var denied=new ParcelRepository(directory,c.ApplicationId);Check(false,"missing archived identity must refuse"); }
+        catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityMissing"))
+        { Check(Wire.FileHash(file)==missingArchiveHash && archivedHash.Length==64,"archived BLOB and main facts unchanged when current identity is missing"); }
+        // Current-format corrupt completion must refuse before reconstructing identities.
         var live=Config("direct-plc");var source=DirectoryFor("review-reply",live);var target=DirectoryFor("review-false-completion",live);Directory.CreateDirectory(target);
         foreach(var sourceFile in Directory.EnumerateFiles(source,"*",SearchOption.AllDirectories))
         {var destination=Path.Combine(target,Path.GetRelativePath(source,sourceFile));Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.Copy(sourceFile,destination);}
@@ -91,9 +89,9 @@ static partial class ArchitectureQuality
         using(var db=new SqliteConnection("Data Source="+badDb))
         {db.Open();using var q=db.CreateCommand();q.CommandText="DELETE FROM parcel_reply_identities; UPDATE parcel_operations SET body=json_set(body,'$.State','PhysicalCompleted','$.Plc.State','Accepted','$.Reason',NULL)";q.ExecuteNonQuery();}
         var raw=Directory.EnumerateFiles(Path.Combine(target,"receipts"),"*.json").ToDictionary(p=>p,Wire.FileHash);var before=Wire.FileHash(badDb);
-        try{await using var app=await Open(live,"review-false-completion");Check(false,"R01 inconsistent prior completion must refuse startup");}
-        catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityConflict",StringComparison.Ordinal))
-        {Check(raw.All(p=>Wire.FileHash(p.Key)==p.Value)&&Wire.FileHash(badDb)==before,"R01 prior false completion refuses startup and rolls back repair without rewriting raw or inventing settlement");}
+        try{using var repository=new ParcelRepository(target,live.ApplicationId);Check(false,"R01 inconsistent completion must refuse repository startup");}
+        catch(InvalidDataException ex) when(ex.Message.Contains("OriginalReplyIdentityMissing",StringComparison.Ordinal))
+        {Check(raw.All(p=>Wire.FileHash(p.Key)==p.Value)&&Wire.FileHash(badDb)==before,"R01 inconsistent completion refuses without rewriting raw, database or inventing settlement");}
     }
     static async Task ReviewMaintenance()
     {
@@ -169,7 +167,7 @@ static partial class ArchitectureQuality
         using(var supply=new Ipc.Supply.SupplyStore(supplyDb))
             supply.Commit(supply.Load(),"SyntheticOfflineConsumer","deployment","synthetic",config:new(Wire.Id(),"seed",supplyConfig,"synthetic","Effective","",DateTimeOffset.UtcNow));
         var supplyHash=Wire.FileHash(supplyDb);var parcelHash=Wire.FileHash(database);
-        Check(ExtensionConsumerReaders.Inspect(supplyDb).Length==0&&ExtensionConsumerReaders.Inspect(database).Length==0&&Wire.FileHash(supplyDb)==supplyHash&&Wire.FileHash(database)==parcelHash,"R04 actual Supply format5 and Parcel DB4 dispatch to owning readers without mutation");
+        Check(ExtensionConsumerReaders.Inspect(supplyDb).Length==0&&ExtensionConsumerReaders.Inspect(database).Length==0&&Wire.FileHash(supplyDb)==supplyHash&&Wire.FileHash(database)==parcelHash,"R04 current Supply6 and Parcel10 dispatch to owning readers without mutation");
         using(var supply=new Ipc.Supply.SupplyStore(supplyDb))
             supply.Commit(supply.Load(),"SyntheticPendingConsumer","deployment","synthetic",config:new(Wire.Id(),"seed",supplyConfig with {Extensions=new([package],[])},"synthetic","PendingActivation","",DateTimeOffset.UtcNow));
         Check(ExtensionConsumerReaders.Inspect(supplyDb).Contains(package),"R04 mixed-reader dispatch preserves legacy Supply Pending package responsibility");

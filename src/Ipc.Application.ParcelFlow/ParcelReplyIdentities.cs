@@ -22,10 +22,15 @@ public sealed partial class ParcelRepository
     }
     void ValidateDurableReplyIdentities()
     {
-        // DB4 previously could commit recovered bytes without this index. Stream all
-        // original occurrences, including archived BLOBs, in their durable order.
-        // No business facts or original response bytes are rewritten by this repair.
-        using var tx = db.BeginTransaction();
+        // Current writers atomically persist the identity with durable raw bytes.
+        // Missing identity is corruption, never a request to reconstruct history.
+        using (var schema = db.CreateCommand())
+        {
+            schema.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='parcel_reply_identities'";
+            if (Convert.ToInt64(schema.ExecuteScalar()) != 1)
+                throw new InvalidDataException("OriginalReplyIdentityMissing: 当前回包身份索引缺失；原件保留，请使用全新数据目录。");
+        }
+        using var tx = db.BeginTransaction(deferred: true);
         using var rows = db.CreateCommand(); rows.Transaction = tx;
         rows.CommandText = "SELECT id,request,operation,stage,state,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable') ORDER BY rowid";
         using var reader = rows.ExecuteReader();
@@ -44,7 +49,8 @@ public sealed partial class ParcelRepository
             }
             var reply = Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
             if (Wire.Hash(Wire.Encode(reply)) != reader.GetString(5)) throw new InvalidDataException("Original reply hash differs: " + id);
-            RegisterReplyIdentity(reader.GetString(1), reply, tx);
+            if (OriginalReplyHash(reader.GetString(1), reply.Id) is null)
+                throw new InvalidDataException("OriginalReplyIdentityMissing: 当前回包身份索引缺失；原件保留，请使用全新数据目录。");
             if (reader.GetString(4) != "Committed" || reply.RequestId == reader.GetString(1) && OriginalReplyHash(reader.GetString(1), reply.Id) == Wire.Hash(Wire.Encode(reply))) continue;
             var operation = ReadOperation(reader.GetString(2)) ?? throw new InvalidDataException("Original reply operation unavailable");
             var stage = reader.GetString(3) switch
@@ -56,6 +62,6 @@ public sealed partial class ParcelRepository
             if (stage?.Request.Id != reader.GetString(1) || stage.State != StageState.Conflict)
                 throw new InvalidDataException("OriginalReplyIdentityConflict: committed facts lack the original contradiction responsibility; preserve all raw bytes and use controlled investigation: " + id);
         }
-        Boundary?.Invoke("BeforeReplyIdentityRepairCommit"); tx.Commit();
+        tx.Commit();
     }
 }

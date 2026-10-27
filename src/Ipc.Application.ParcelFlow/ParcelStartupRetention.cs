@@ -24,7 +24,7 @@ public sealed partial class ParcelStartupMaintenance : IStartupRetentionMaintena
         ParcelMaintenanceInspection inspection;
         try { inspection = ParcelRepository.InspectMaintenanceCore(database, definition, token); }
         catch (SqliteException) when (token.IsCancellationRequested) { throw new OperationCanceledException(token); }
-        if (!inspection.Paused || inspection.DatabaseVersion != 9 || File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length != 0) throw new InvalidOperationException("先暂停并完全停止同版软件，确认WAL已收拢；不在线清理或升级数据库");
+        if (!inspection.Paused || inspection.DatabaseVersion != ParcelRepository.CurrentStorageVersion || File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length != 0) throw new InvalidOperationException("先暂停并完全停止同版软件，确认WAL已收拢；不在线清理或升级数据库");
         var databaseHash = Wire.FileHash(database, token); Authorize();
         var identity = Wire.Hash(Wire.Encode(new { state.Hash, databaseHash, destination, effective.Retention.HistoryDays }));
         return Task.FromResult(new StartupRetentionPlan(identity, state.Hash, databaseHash, destination, effective.Retention.HistoryDays.Value,

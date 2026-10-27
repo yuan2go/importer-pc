@@ -7,30 +7,12 @@ namespace Ipc.Supply;
 // These are local maintenance receipts. Database/backup and receipt paths may contain
 // private operational information and are not diagnostic exports or publication assets.
 public sealed record StorageInspection(int FormatVersion, int MinimumReader, int SelectedReader,
-    bool SelectedReaderCompatible, bool ExplicitUpgradeSupported, int PendingRequests, int OpenSessions,
-    bool Quarantined, string[] UpgradeBlockers);
+    bool SelectedReaderCompatible, int PendingRequests, int OpenSessions,
+    bool Quarantined, string[] RecoveryBlockers);
 public sealed record StorageBackupReceipt(string BackupId, string Sha256, DateTimeOffset CreatedAt,
     StorageInspection Source, StorageInspection Backup);
 public sealed partial class SupplyStore
 {
-    // id1/schema and id2/SemanticFormatMigration are immutable historical contracts.
-    // New input-validity/source-health JSON requires a reader that knows format3.
-    const string ClosureFormatMigration = """
-        UPDATE storage_format SET version=3,minimum_reader=3 WHERE id=1;
-        """;
-
-    const string ConformanceFormatMigration = """
-        CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
-        CREATE INDEX response_conflicts_request ON response_conflicts(request);
-        UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;
-        """;
-
-    const string OperationFormatMigration = """
-        CREATE TABLE receipt_occurrences(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),status TEXT NOT NULL,json TEXT NOT NULL);
-        CREATE INDEX receipt_occurrences_request ON receipt_occurrences(request,status);
-        UPDATE storage_format SET version=5,minimum_reader=5 WHERE id=1;
-        """;
-
     static SqliteConnection OpenMaintenance(string path, SqliteOpenMode mode)
     {
         if (!File.Exists(path) || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
@@ -46,53 +28,28 @@ public sealed partial class SupplyStore
     }
     static int ReadFormat(SqliteConnection connection)
     {
-        if ((string?)MaintenanceScalar(connection, "PRAGMA integrity_check") != "ok")
-            throw new InvalidDataException("SQLite integrity check failed; original retained");
-        if (MaintenanceScalar(connection, "PRAGMA foreign_key_check") is not null)
-            throw new InvalidDataException("SQLite foreign key check failed; original retained");
-        using var command = connection.CreateCommand();
-        command.CommandText = "SELECT id,checksum FROM schema_history ORDER BY id";
-        using var reader = command.ExecuteReader();
-        var migrations = new Dictionary<int, string>();
-        while (reader.Read()) migrations.Add(reader.GetInt32(0), reader.GetString(1));
-        reader.Close();
-        if (migrations.Count == 0 || migrations.GetValueOrDefault(1) != Wire.Hash(Schema) ||
-            migrations.Keys.Any(id => id is < 1 or > CurrentFormatVersion))
-            throw new InvalidDataException("Unknown schema or checksum; original retained");
-        var format = 1;
-        if (migrations.TryGetValue(2, out var second))
+        const string unsupported = "仅支持当前Supply 6数据库；原文件保留，请使用全新数据目录。";
+        try
         {
-            if (second != Wire.Hash(SemanticFormatMigration)) throw new InvalidDataException("Format2 migration checksum mismatch; original retained");
-            format = 2;
-        }
-        if (migrations.TryGetValue(3, out var third))
-        {
-            if (format != 2 || third != Wire.Hash(ClosureFormatMigration)) throw new InvalidDataException("Format3 migration checksum mismatch; original retained");
-            format = 3;
-        }
-        if (migrations.TryGetValue(4, out var fourth))
-        {
-            if (format != 3 || fourth != Wire.Hash(ConformanceFormatMigration)) throw new InvalidDataException("Format4 migration checksum mismatch; original retained");
-            format = 4;
-        }
-        if (migrations.TryGetValue(5, out var fifth))
-        {
-            if (format != 4 || fifth != Wire.Hash(OperationFormatMigration)) throw new InvalidDataException("Format5 migration checksum mismatch; original retained");
-            format = 5;
-        }
-        var hasStorageFormat = MaintenanceScalar(connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'") is not null;
-        if (format == 1)
-        {
-            if (hasStorageFormat) throw new InvalidDataException("Storage format has no matching migration evidence; original retained");
-        }
-        else
-        {
+            if ((string?)MaintenanceScalar(connection, "PRAGMA integrity_check") != "ok")
+                throw new InvalidDataException("SQLite integrity check failed; original retained");
+            if (MaintenanceScalar(connection, "PRAGMA foreign_key_check") is not null)
+                throw new InvalidDataException("SQLite foreign key check failed; original retained");
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name IN ('schema_history','storage_format')";
+            if (Convert.ToInt64(command.ExecuteScalar()) != 2) throw new InvalidDataException(unsupported);
+            command.CommandText = "SELECT id,checksum FROM schema_history";
+            using (var reader = command.ExecuteReader())
+                if (!reader.Read() || reader.GetInt32(0) != CurrentFormatVersion || reader.GetString(1) != Ipc.Platform.Storage.Database.BaselineHash(Schema) || reader.Read())
+                    throw new InvalidDataException(unsupported);
             command.CommandText = "SELECT id,version,minimum_reader FROM storage_format";
-            using var values = command.ExecuteReader();
-            if (!values.Read() || values.GetInt32(0) != 1 || values.GetInt32(1) != format || values.GetInt32(2) != format || values.Read())
-                throw new InvalidDataException("Storage format and migration evidence disagree; original retained");
+            using (var reader = command.ExecuteReader())
+                if (!reader.Read() || reader.GetInt32(0) != 1 || reader.GetInt32(1) != CurrentFormatVersion || reader.GetInt32(2) != CurrentFormatVersion || reader.Read())
+                    throw new InvalidDataException(unsupported);
+            return CurrentFormatVersion;
         }
-        return format;
+        catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)
+        { throw new InvalidDataException(unsupported, ex); }
     }
     static StorageInspection InspectConnection(SqliteConnection connection, string sourcePath)
     {
@@ -111,9 +68,6 @@ public sealed partial class SupplyStore
                 if (request.Status != status || !Enum.IsDefined(request.Kind)) throw new InvalidDataException("Request status/kind evidence invalid");
                 if (status is RequestStatus.Prepared or RequestStatus.Dispatching or RequestStatus.Unknown) pending++;
             }
-        if (format >= 4)
-            pending += Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status NOT IN ('Prepared','Dispatching','Unknown') AND (id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain'))"));
-        if (format >= 5)
         {
             command.CommandText = "SELECT id,request,status,json FROM receipt_occurrences";
             using var receipts = command.ExecuteReader();
@@ -157,7 +111,7 @@ public sealed partial class SupplyStore
         if (File.Exists(receiptFence) && Wire.Decode<string[]>(File.ReadAllText(receiptFence)).Length > 0) blockers.Add("ReceiptPersistenceRecoveryRequired");
         var ingress = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-ingress");
         if (Directory.Exists(ingress) && Directory.EnumerateFiles(ingress).Any()) blockers.Add("ReceiptPersistenceRecoveryRequired");
-        return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion, false,
+        return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion,
             pending, open, quarantined, blockers.ToArray());
     }
     public static StorageInspection InspectReadOnly(string path)
@@ -176,7 +130,7 @@ public sealed partial class SupplyStore
         using var connection = OpenMaintenance(fullSource, SqliteOpenMode.ReadOnly);
         var inspection = InspectConnection(connection, fullSource);
         var rawCustody = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fullSource)!, "receipt-ingress");
-        if ((!owned && inspection.UpgradeBlockers.Contains("ReceiptPersistenceRecoveryRequired")) || Directory.Exists(rawCustody) && Directory.EnumerateFiles(rawCustody).Any())
+        if ((!owned && inspection.RecoveryBlockers.Contains("ReceiptPersistenceRecoveryRequired")) || Directory.Exists(rawCustody) && Directory.EnumerateFiles(rawCustody).Any())
             throw new InvalidOperationException("Recover receipt custody in its original data root before database-only backup; evidence files must not be omitted");
         var directory = System.IO.Path.GetDirectoryName(fullDestination)!; Directory.CreateDirectory(directory);
         var temporary = System.IO.Path.Combine(directory, "." + System.IO.Path.GetFileName(fullDestination) + "." + Wire.Id() + ".unverified");
@@ -188,19 +142,5 @@ public sealed partial class SupplyStore
         var receipt = new StorageBackupReceipt(Wire.Id(), Wire.FileHash(temporary), DateTimeOffset.UtcNow, inspection, saved);
         File.Move(temporary, fullDestination); // Does not replace a concurrently created output.
         return receipt;
-    }
-    static void ApplyForwardMigrations(SqliteConnection connection, SqliteTransaction transaction, int fromFormat)
-    {
-        void Apply(int id, string sql)
-        {
-            using var command = connection.CreateCommand(); command.Transaction = transaction; command.CommandText = sql; command.ExecuteNonQuery();
-            command.CommandText = "INSERT INTO schema_history VALUES($id,$checksum,$at)";
-            command.Parameters.AddWithValue("$id", id); command.Parameters.AddWithValue("$checksum", Wire.Hash(sql));
-            command.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); command.ExecuteNonQuery();
-        }
-        if (fromFormat == 1) Apply(2, SemanticFormatMigration);
-        if (fromFormat is 1 or 2) Apply(3, ClosureFormatMigration);
-        if (fromFormat is 1 or 2 or 3) Apply(4, ConformanceFormatMigration);
-        if (fromFormat is >= 1 and <= 4) Apply(5, OperationFormatMigration);
     }
 }

@@ -1,10 +1,12 @@
-> 2026-10-26整合：当前组合继承PR110及PR113差量，统一SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。进程监督默认关闭，显式启用后的永久故障Block及恢复先暂停保持；普通手动启动不被改成自动供包。下述旧基线/版本/CI状态保留形成时身份，本轮实际结果见[整合执行记录](integration-20261026.md)。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
-> 2026-10-26恢复暂停补缺：监督子进程在原Application Paused账写入软件暂停后才接收；没有既有Unknown/输入的首次写前故障重启也不自动恢复供包。仅显式Resume沿原守卫解除暂停，不清Unknown、不重放。续修SM1.16.1、DirectPlc/WcsToPlc1.10.1、Contracts1.20.0，DB9不变；[补缺证据](validation/stability-integration-02.md)。下文1.16.0及原PASS均保留历史来源。
+进程监督默认关闭；显式启用后的永久故障Block和恢复先暂停保持，手动启动不自动供包。
+
+监督子进程在原Application账持久化软件暂停后接收；首次写前故障重启也不自动恢复供包。仅显式Resume沿原守卫解除暂停，不清Unknown、不重放。
 
 # 时间与存储故障分级 · 运行说明
 
-本包F0 main a8cd431456f73e83040f75a0c5e3cc1423440d1b，原3a5b1d13已前进。SM1.16.0、DirectPlc/WcsToPlc1.10.0、Contracts1.20.0预留以避开并行PR110/111版本；DB9/SQL1–9不变。[工作包](../work-packages/WP-IPC-TIME-STORAGE-FAULT-01.md)、[问题卡/本次证据](validation/time-storage-fault-01.md)、[全仓UTC清单](time-storage-fault-01-utc-inventory.md)分别计证，不移动旧PASS。
+单调时钟、存储故障分级及恢复暂停按当前实现执行；问题卡、UTC清单和历史结果保留各自身份。
 
 ## 时间来源
 

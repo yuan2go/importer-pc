@@ -1,0 +1,110 @@
+{
+  "SourceCommit": "8af9e48184318af508a3b6ebf24422d3bd73978d",
+  "Files": [
+    {
+      "Path": "docs/runtime/application-architecture-22.md",
+      "Archive": "docs/runtime/application-architecture-22.md.txt",
+      "Sha256": "EB5F18A9B7C70E576C2D8C8C96EB46EDF858852F89D25AB76F1DAC66999DAAF1"
+    },
+    {
+      "Path": "docs/design/application-architecture-22.md",
+      "Archive": "docs/design/application-architecture-22.md.txt",
+      "Sha256": "8DD1D2D476B171B98804A87879078B280E56484E595A7FC5BA8C10EAFF69C44A"
+    },
+    {
+      "Path": "docs/extensions/developer-guide.md",
+      "Archive": "docs/extensions/developer-guide.md.txt",
+      "Sha256": "6A8AA4CC9C7D2DD1951898F2FF6E61FAE3941165F1B1D29528358510C2169226"
+    },
+    {
+      "Path": "docs/runtime/supply-getting-started.md",
+      "Archive": "docs/runtime/supply-getting-started.md.txt",
+      "Sha256": "EE5180DEBCC108EE92556B2BDA8F353FE133D3B3133D5214E6DF59D1486E8FEE"
+    },
+    {
+      "Path": "docs/extensions/supply-guide.md",
+      "Archive": "docs/extensions/supply-guide.md.txt",
+      "Sha256": "CE0D5F67607E3E9B5D8D1685FC3D362563272DB15DD411BCF810830D5860E4FB"
+    },
+    {
+      "Path": "docs/runtime/lifecycle-ux-current-guidance-01.md",
+      "Archive": "docs/runtime/lifecycle-ux-current-guidance-01.md.txt",
+      "Sha256": "7EAE9F9C746D42FED072AA7F39C5C8411F943C8CDDF679F78917312B98403925"
+    },
+    {
+      "Path": "docs/runtime/time-storage-fault-01.md",
+      "Archive": "docs/runtime/time-storage-fault-01.md.txt",
+      "Sha256": "2B766AFD1F8E4321CFFDA99FD4F19D056AF2DD17EFB6A942AA69A229BD2290CD"
+    },
+    {
+      "Path": "docs/runtime/p0-stability-01.md",
+      "Archive": "docs/runtime/p0-stability-01.md.txt",
+      "Sha256": "2AA2AED95CF5C3E790DE7745474B2F6AD5879B386C0B459715F437F78388CCF7"
+    },
+    {
+      "Path": "docs/runtime/code-reliability-hardening-02.md",
+      "Archive": "docs/runtime/code-reliability-hardening-02.md.txt",
+      "Sha256": "85227E5AF5B14490AD81ED5C64821607706BAE47C84A84E5B2AB67E353C3B4C2"
+    },
+    {
+      "Path": "docs/runtime/latency-capacity-01.md",
+      "Archive": "docs/runtime/latency-capacity-01.md.txt",
+      "Sha256": "213B6B2918CE1614F7D2CDE5A0B98990BEA6882FF9E77CA81C89722F1880B2C9"
+    },
+    {
+      "Path": "docs/runtime/win11-24x7-stability-remediation-01.md",
+      "Archive": "docs/runtime/win11-24x7-stability-remediation-01.md.txt",
+      "Sha256": "23EDFF8AD7B28D5ED2DE47612BCB9EAECD00F624E07576990AD7920EA7CDB7AA"
+    },
+    {
+      "Path": "docs/runtime/architecture-quality-remediation-01.md",
+      "Archive": "docs/runtime/architecture-quality-remediation-01.md.txt",
+      "Sha256": "E971BEA5F1FAEDC2DEA427D54187709F8AE04A36A5D8D2746B72E614E45FB390"
+    },
+    {
+      "Path": "docs/runtime/commercial-productization-01-operations.md",
+      "Archive": "docs/runtime/commercial-productization-01-operations.md.txt",
+      "Sha256": "B257554D4AD369DA2CE039B4EEF2B9BD6151A678E2C1D9C48E9EFA8A4F39B7E7"
+    },
+    {
+      "Path": "docs/runtime/rcs-heartbeat-01.md",
+      "Archive": "docs/runtime/rcs-heartbeat-01.md.txt",
+      "Sha256": "BA14A3A934B0BDE63385C8E3FC7CE55ACC48D4E0CC1C48FA284A9D73F970CECB"
+    },
+    {
+      "Path": "docs/runtime/hikrobot-reader-01.md",
+      "Archive": "docs/runtime/hikrobot-reader-01.md.txt",
+      "Sha256": "6A642084012833824C4DBB741E0CC642938669C6EBE53E1011D8D336521C24C0"
+    },
+    {
+      "Path": "docs/runtime/dual-camera-communication-fix-01.md",
+      "Archive": "docs/runtime/dual-camera-communication-fix-01.md.txt",
+      "Sha256": "3E7B37D00DE5C8D38608AB119247110C8612FF370E25C5193AF8C273D4D78287"
+    },
+    {
+      "Path": "docs/runtime/startup-deployment-02.md",
+      "Archive": "docs/runtime/startup-deployment-02.md.txt",
+      "Sha256": "1DBB7E5B72292830067D97E8AEEF9C9FB4473B11FA14B7B9A8DB00FFA8D68CC4"
+    },
+    {
+      "Path": "docs/runtime/unicode-shortcut-compatibility-01.md",
+      "Archive": "docs/runtime/unicode-shortcut-compatibility-01.md.txt",
+      "Sha256": "E66E754A916A62ECFBB6794EA3CD47E3C3BB728039B4D1407348E2E2DC7432C1"
+    },
+    {
+      "Path": "docs/runtime/management-mode-01.md",
+      "Archive": "docs/runtime/management-mode-01.md.txt",
+      "Sha256": "0F464E266F3A7DE0B7B1D765343310DB24B2A32D439FC1BFA6AC5A8F061252F7"
+    },
+    {
+      "Path": "docs/runtime/workstation-status-logs-01.md",
+      "Archive": "docs/runtime/workstation-status-logs-01.md.txt",
+      "Sha256": "73BD843E32066AB6E964C4D9E254F817C7DAB4FE8214A8E5BCB30641819D2DB4"
+    },
+    {
+      "Path": "docs/runtime/parameter-guidance-startup-01.md",
+      "Archive": "docs/runtime/parameter-guidance-startup-01.md.txt",
+      "Sha256": "8B009D89C9AE101EF323D339C06EC893E62991CCA0F61FA96F57766ECFDC85ED"
+    }
+  ]
+}

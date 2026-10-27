@@ -337,8 +337,8 @@ def analyze(args):
     try:
         if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
             raise ValueError('Database integrity failed; preserve originals')
-        if db.execute('SELECT max(version) FROM platform_migrations').fetchone()[0] != 9:
-            raise ValueError('Requires matching DB9 backup')
+        if db.execute('SELECT max(version) FROM platform_migrations').fetchone()[0] != 10:
+            raise ValueError('Requires current DB10 backup; use a fresh data directory')
         if not collection.get('NormalStart') or not collection.get('NormalEnd'):
             raise ValueError('No complete observed normal interval to analyze')
         params = (collection['RuntimeId'].replace('-', ''), collection['NormalStart'], collection['NormalEnd'])

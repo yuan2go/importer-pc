@@ -15,7 +15,7 @@
 4. 阅读摘要，点击安装并响应固定helper的Windows授权。复制、备份、原责任检查和受保护登记沿原机制；真实结果读回后才显示完成。未知结果停止重复安装，固定操作核对闭环待LIA-01完善。
 5. 完成页可选择打开供包台；正常运行使用原合法非提权入口，不依赖cwd。已有配置和唯一配置账保留。首配当前规则见上方入口，连接可明确延后但不能获得业务资格。
 
-实际安装前停止原实例；安装 helper 持原应用所有权锁，无法取得时拒绝切换。升级前保全完整备份和原责任，DB2～6仍按匹配发布的维护/升级规则处理。程序并排部署不等于回滚数据库；旧程序不能打开已升级的库。
+实际安装前停止原实例；安装 helper 持原应用所有权锁，无法取得时拒绝切换。同数据格式覆盖安装前保全完整备份和原责任。只接受Parcel 10；非当前格式请使用全新数据目录，不执行接管或迁移。
 
 若取消 UAC，关闭提示后可重试。若媒介损坏，使用可信完整媒介重新运行 Setup。若机级政策损坏/丢失且存在租约，或原 SID 不匹配，错误明确保留现场材料；不得删除政策/租约。源于安全身份不明确的故障不能由向导猜测改权修复。
 
@@ -27,7 +27,7 @@
 
 维护界面无需业务 Start 成功，不构造 reader/SDK/外部端口。它读取原 Effective/Pending 和原修订，展示身份、状态、扩展诊断，提供现有能力参数、调用超时、队列/作业容量和基本重量策略的表单。站、模式、拓扑、提供者版本及设备身份保持原值。修改后先校验，填写维护原因，再保存待生效修订。
 
-Windows 保存使用已安装的受保护匹配 helper 提升；日常业务不提升。操作员业务登录与管理模式分开，受限离线修复仍须现有管理模式及精确请求授权，Windows管理员身份不能代替它。helper 收到固定操作与散列固定的请求，取得同一 application-owner 锁后重新核对原账 hash/CAS。精确原配置字节与变更记录落在原目录 `startup-maintenance/<operation>/`；沿唯一 configuration.json 保存 Pending，Effective、DB、原请求和原件不改。DB 格式检查使用临时 DB+WAL 副本，避免 SQLite 只读连接在原目录创建 sidecar；Windows临时副本使用 `WindowsStoragePaths.MachineRoot/maintenance-workspaces`，本机沿HKLM配置的D盘受保护根，所在卷需容纳副本及保留空间；完成后删除本次临时副本。当前 `ParcelStartupMaintenance.StageCore` 接受匹配DB9，原DB8/7→8说明保留历史归档。旧库按匹配发布清偿并受控迁移；离线检查/备份不迁移原库。
+Windows 保存使用已安装的受保护匹配 helper 提升；日常业务不提升。操作员业务登录与管理模式分开，受限离线修复仍须现有管理模式及精确请求授权，Windows管理员身份不能代替它。helper 收到固定操作与散列固定的请求，取得同一 application-owner 锁后重新核对原账 hash/CAS。精确原配置字节与变更记录落在原目录 `startup-maintenance/<operation>/`；沿唯一 configuration.json 保存 Pending，Effective、DB、原请求和原件不改。DB 格式检查使用临时 DB+WAL 副本，避免 SQLite 只读连接在原目录创建 sidecar；Windows临时副本使用 `WindowsStoragePaths.MachineRoot/maintenance-workspaces`，本机沿HKLM配置的D盘受保护根，所在卷需容纳副本及保留空间；完成后删除本次临时副本。当前 `ParcelStartupMaintenance.StageCore` 只接受Parcel 10；非当前格式明确拒绝并保持原件，使用全新数据目录。
 
 保存成功只表示 Pending 已读回。正常启动仍执行原责任、确认、资源启动和 Production 守卫；不会因修复自动 Resume、改写旧请求或重发 Unknown。配置已被其他维护修改时保留草稿并报冲突，须重新读取比较。
 

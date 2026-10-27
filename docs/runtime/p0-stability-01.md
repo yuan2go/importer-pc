@@ -1,3 +1,5 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 > 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
 
 # P0稳定性修复运行说明
@@ -27,7 +29,7 @@ dotnet run --project tests/Ipc.Application.Verification -c Release -- . --p0-def
 
 原始BLOB缺失/损坏、Committed原hash缺失、可读spool的hash矛盾均抛出完整性故障并沿原路径停供。启动原件及回复身份核验优先使用已校验的数据库归档原件，临时不可读的冗余副本不会单独阻止启动；活动/未归档原件的必要校验不放宽。
 
-`dotnet run --project tests/Ipc.Application.Verification -c Release -- . --p0-cleanup`覆盖Windows独占句柄、继续输入、解锁自动清理、三类损坏和单调退避。共享Parcel改动同时进入DirectPlc/WcsToPlc1.8.0，DB9/SQL1–9保持原字节。
+`dotnet run --project tests/Ipc.Application.Verification -c Release -- . --p0-cleanup`覆盖Windows独占句柄、继续输入、解锁自动清理、三类损坏和单调退避。
 
 ## ST06 TCP存活（第一阶段）
 
@@ -47,7 +49,7 @@ TCP驱动1.1.0在连接前启用SO_KEEPALIVE；参数`keepalive-time-seconds=60`
 
 ## ST14 崩溃闭环
 
-现行实现覆盖全局异常、外部进程监督及安装系统登记；业务内部观察器仍不重启、不重放、不强制GC。Supply共用全局异常钩子；自启动/监督登记仅覆盖本包三个Parcel产品；本轮组合为SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9/SQL1–9不变，原分支验证仍归其原版本。
+现行实现覆盖全局异常、外部进程监督及安装系统登记；业务观察器不重启、不重放、不强制GC。Supply共用全局异常钩子，自启动/监督登记覆盖三个Parcel产品。
 
 桌面构造时注册AppDomain、TaskScheduler及WPF Dispatcher钩子。致命异常记录版本、SourceCommit、进程、实例、连接Epoch、最近状态及有界进度预览，日志同步Flush(true)后调用RaiseFailFastException，退出码0xE0000014；UI异常不继续执行。任务未观察异常只计数、每秒最多一条采样日志，不启动任何业务恢复。日志沿已有轮转；落盘失败不伪造成功，native异常参数标识是否刷盘。诊断目录沿受保护D盘存储锚；目录不可写、磁盘挂起、堆损坏等情形仍可能无法取得托管日志，不能承诺所有native崩溃都有完整上下文。
 

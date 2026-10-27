@@ -56,7 +56,7 @@ static partial class ArchitectureQuality
         await OverloadChecks();
         await ConfigurationChecks();
         await UiDraftCasChecks();
-        Migration3Checks();
+        NonCurrentFormatRefusalChecks();
     }
     static async Task UiDraftCasChecks()
     {
@@ -76,25 +76,25 @@ static partial class ArchitectureQuality
         try { await using var refused = await Open(unsupported, "unsupported-ui-cas"); throw new Exception("Old form accepted"); }
         catch (InvalidDataException) { Check(Wire.Encode(unsupported) == original, "old schema is refused without converting the candidate; current two-window CAS checks above remain authoritative"); }
     }
-    static void Migration3Checks()
+    static void NonCurrentFormatRefusalChecks()
     {
         var c = Config("direct-plc") with { SchemaVersion = 2, Topology = null, Retention = null, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = B("weight") };
         var path = Path.Combine(root, "exact-legacy3"); Directory.CreateDirectory(path);
         var original = new ParcelOperation(Wire.Id(), "legacy3-original", "00091", Wire.Hash("legacy3-observation"), DateTimeOffset.UtcNow,
             Wire.Hash(Wire.Encode(c)), c, new() { [c.Scale!.InstanceId] = new string('A', 64) }, c.Weight, null, ParcelState.WaitingWeight,
             null, null, null, "Original pre-upgrade same-parcel weight wait");
-        SyntheticPriorStorage.Create(path,"direct-plc",3,original);
+        NonCurrentStorageFixture.Create(path,"direct-plc",3,original);
         string body;
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; body = (string)q.ExecuteScalar()!; }
-        try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "DB3 unresolved originals must reject migration before changing reader marker"); }
-        catch (InvalidDataException ex) { Check(ex.Message.Contains("不受支持"), "DB3 unresolved originals refuse before any format conversion"); }
+        try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "non-current DB3 identity must be refused before any write"); }
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录"), "DB3 unresolved originals refuse before any format conversion"); }
         using(var readOnly=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=Path.Combine(path,"direct-plc.db"),Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString()))
         {readOnly.Open();using var q=readOnly.CreateCommand();q.CommandText="SELECT body FROM parcel_operations";Check((string)q.ExecuteScalar()! == body,"old request JSON remains byte-identical through read-only inspection");}
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         {
             db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)q.ExecuteScalar()! == 3, "DB3 rejection preserves original migration identity instead of stranding unknown responsibility");
+            Check((long)q.ExecuteScalar()! == 3, "DB3 rejection preserves original format identity instead of stranding unknown responsibility");
             q.CommandText = "UPDATE parcel_operations SET body=$body";
             q.Parameters.AddWithValue("$body", Wire.Encode(original with { State = ParcelState.Abandoned, Reason = "Synthetic old-release inspected local cancellation; no request attempted" })); q.ExecuteNonQuery();
         }

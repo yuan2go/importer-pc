@@ -190,13 +190,13 @@ static partial class ArchitectureQuality
         var release = Path.GetDirectoryName(typeof(ArchitectureQuality).Assembly.Location)!;
         var first = await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-first.backup.db"), occurrence, release,
             "Synthetic current-schema offline query; retain original missing raw", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 9 && Wire.Encode(first).Contains("\"DatabaseVersion\": 9", StringComparison.Ordinal),
-            "current SQL9 offline receipt recovery performs one original Query and returns SQL9 without a post-query downgrade failure");
+        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 10 && Wire.Encode(first).Contains("\"DatabaseVersion\": 10", StringComparison.Ordinal),
+            "current DB10 offline receipt recovery performs one original Query and returns DB10 without a post-query downgrade failure");
         await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
             "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
         using var readback = new ParcelRepository(directory, "sportmaster"); var current = readback.Load().Single(x => x.Id == original.Id);
         Check(calls == 1 && current.Wcs!.Attempts == 1 && current.Upload!.Attempts == 1 && !current.ImageReleased && readback.ReceiptById(occurrence) is { State: "Awaiting", RawHash: null, QueryOccurrence: not null },
-            "repeated SQL9 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
+            "repeated DB10 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
     }
     static async Task LegacyConflict02Checks()
     {

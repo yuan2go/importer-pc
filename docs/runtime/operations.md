@@ -1,6 +1,6 @@
 # 当前Supply运行维护
 
-Supply是独立业务，不是旧版兼容入口。只支持全新安装和当前格式5建库；非当前格式拒绝，请使用全新数据目录。历史说明见[原件归档](../archive/pre-fresh-baseline-01/README.md)。SIMULATION-v1及真实外部协议、身份和持久化保证保持。
+Supply是独立业务，不是旧版兼容入口。只支持全新安装和当前格式6建库；非当前格式拒绝，请使用全新数据目录。历史说明见[原件归档](../archive/pre-fresh-baseline-01/README.md)。SIMULATION-v1及真实外部协议、身份和持久化保证保持。
 
 ## 构建和定向验证
 

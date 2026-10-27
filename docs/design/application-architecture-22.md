@@ -1,20 +1,16 @@
-> AQA01/PR92复核：本文的Application所有权与业务拓扑继续有效；当前实现版本为Sportmaster1.12.0、DirectPlc/WcsToPlc1.6.0、Contracts1.17.0、Parcel DB9，SQL1～8保持并追加9。本轮复核及证据见[整改说明](../runtime/architecture-quality-remediation-01.md)。下文2026-10-20及22形成时的软件版本和验证保持历史身份，不是当前程序集版本。修订前原字节见[归档](../archive/pre-aqa01-pr92-review/README.md)。
-
-> 2026-10-20形成时操作裁决：[审查整改](../runtime/sportmaster-audit-remediation-01.md)使用业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
-
-> 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；原历史结果和D/RV保持。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
 
 # Application架构22 · 现行增量
 
-WP-IPC-APPLICATION-ARCHITECTURE-22，开工main ea881293c888a824f26c9f9fa07352a22786206b，无开放PR。此设计在业务代码前形成。19/20及PR20/21的原请求、资格、原图、备份与健康修复继承；历史原字节见[归档](../archive/pre-application-architecture-22/README.md)。本包替代本轮TOPOLOGY/PREVIEW/UI补充任务，不新增页面/图片展示/DirectPlc UI。
+当前实施和格式规则见[运行说明](../runtime/application-architecture-22.md)及[从零安装工作包](../work-packages/WP-IPC-FRESH-BASELINE-01.md)。
 
 ## 所有权与拓扑
 
-构建只选择一个Application，同一实例服务所属页面。Sportmaster明确两个独立投递位left/right、两个独立reader；每位扫码→WCS有效格口→应用结果，不调PLC。DirectPlc和WcsToPlc明确一个main投递位、一个reader，按配置关联本件重量，然后分别PLC或WCS→PLC。旧Supply共享箱/数量/AGV规则仅在原业务适用。
+构建只选择一个Application，同一实例服务所属页面。Sportmaster明确两个独立投递位left/right、两个独立reader；每位扫码→WCS有效格口→应用结果，不调PLC。DirectPlc和WcsToPlc明确一个main投递位、一个reader，按配置关联本件重量，然后分别PLC或WCS→PLC。Supply的箱/数量/AGV规则仅在该业务适用。
 
 Application声明角色、数量、绑定和完成规则。Platform保持通用设备会话、资源、会话、配置、契约机制；驱动提供采集/PLC，组件提供认证/WCS/上传。WCS字段、单位、缺省操作人、认证和响应转换归组件；PLC地址、编码和握手归驱动。无登录不造操作人。
 
-新配置schema3增加Topology（Readers、Positions）。Position稳定ID映射ReaderDeviceId；设备/投递位/采集/Admission/Operation/Request各自独立。Reader旧字段仅为兼容锚点，必须等于第一个拓扑reader，不构成第二权威。称重和取图绑定可在Position显式选择实例，能力库存与绑定保持同一修订；重复设备/角色/占用、非法设备共享、错kind或未启用拒绝。
+当前配置schema3使用Topology（Readers、Positions）。Position稳定ID映射ReaderDeviceId；设备/投递位/采集/Admission/Operation/Request各自独立。Reader字段是第一位角色绑定，必须等于第一个拓扑reader，不构成第二权威。称重和取图绑定可在Position显式选择实例，能力库存与绑定保持同一修订；重复设备/角色/占用、非法设备共享、错kind或未启用拒绝。
 
 ## 调度与状态作用域
 
@@ -30,12 +26,12 @@ Application声明角色、数量、绑定和完成规则。Platform保持通用�
 
 多设备部分构造失败由工厂保有已构造资源；启动失败由runtime保有全部已返回端口。Stop逐设备停止回调，排空每位任务、附加任务和外部调用后停共享能力；任一超时/异常保持数据库/包/设备租约，重试清理。不因超时宣告已停。
 
-## 配置与兼容
+## 配置、格式与验证
 
-同一CAS/Pending/Effective，所有绑定受控重启生效；在途冻结原位、实际reader、操作人、配置和实现。已接纳原件不随Pending变化。旧schema1/2保持显式单reader历史模式，不自动推断Sportmaster左右；采用schema3必须提交完整拓扑。旧UI不能编辑schema3结构，配置保持只读并拒绝保存；运行/快照契约保持兼容。
+同一CAS/Pending/Effective账管理完整schema3候选，绑定受控重启后生效；失败保持原有效配置。在途冻结位置、reader、操作员、报文、配置及实现，不随Pending变化。当前未完成种子的InitialRepair和retainingOriginal保留原件，非当前schema拒绝。编辑草稿live-v2所有当前字段必填，校验成功才替换窗口输入。
 
-22形成时追加数据库迁移3，后续归档阶段追加4，PR26修复追加5；RCS追加6，审查03追加7，此后追加8，本轮追加9接收责任、历史投影与到期凭据；各次迁移均保留此前SQL及checksum原字节，当前为DB9/SQL1～9。DB5将缺raw资料责任与已确认业务结果分开，修复旧OutcomeReconciled责任与归档引用；不反填历史拓扑或改原请求/hash。进入新存储版本前先检查旧业务及资料责任，普通启动仍拒绝无法证明兼容的旧外部动作。旧DB2/3 Attached污染场景由[现行维护入口](../runtime/architecture-quality-closure-01.md)取得离线所有权、完整备份并以匹配原发布只Query原请求；仅确认外部业务已终结且各缺raw均有权威依据后，由recover-legacy-receipt CLI显式升级当前DB9（旧API默认DB5），资料、原图及包引用持续保留。旧代码已释放原图只能如实登记缺口，不伪造恢复。配置2→3仍通过完整候选与CAS显式完成；旧schema2保持历史语义。配置旧账未知须成功启动资源并由维护身份确认；新公共DLL字节变化要求新不可变包，不重签/覆盖旧包。
+Parcel 10与Supply 6从零建库；无历史迁移链、旧格式解释器或回包索引补写。数据库版本、基线哈希、完整性与原件责任分别校验；非当前格式拒绝且文件字节不变。完整备份/恢复、崩溃与强杀恢复、Unknown及独立接收责任继续有效。
 
-## 验证与交付
+观察与称重只有受控注册端口。所有调用端、驱动、测试替身与示例按当前契约编译；外部RCS version1、厂商SDK签名及SIMULATION-v1语义不变。
 
-复用真实Application/ParcelCapabilityFactory入口和tests/Ipc.Application.Verification。新增--application-architecture覆盖双位交错、顺序供包、错绑/重连/局部共享故障、仅取图/上传/身份/重量、部分失败/排空、CAS/迁移/备份恢复。只跑受影响既有回归、必要WPF兼容构建、实际三选装portable包解压启动。Windows UI/UAC/ACL/设备实际NOT_RUN，真实SDK/WCS/PLC/采集/现场BLOCKED，D/RV不改。本包开发分支提交PR，不合并。
+定向验证覆盖当前成功路径、非当前格式只读拒绝、基线等价、原始回包/Unknown及崩溃恢复。结构证据见[快照比对](../verification/fresh-baseline-01/README.md)；Windows CI、真实SDK和现场验收分开记录，原D/RV不由本轮测试自动关闭。

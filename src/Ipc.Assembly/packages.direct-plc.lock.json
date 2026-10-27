@@ -340,14 +340,14 @@
       "ipc.application.directplc": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.ParcelFlow": "[1.0.0, )"
+          "Ipc.Application.ParcelFlow": "[2.0.0, )"
         }
       },
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
           "Ipc.Application.Contracts": "[3.0.0, )",
-          "Ipc.Platform.Storage": "[1.0.0, )"
+          "Ipc.Platform.Storage": "[2.0.0, )"
         }
       },
       "ipc.components": {
@@ -385,7 +385,7 @@
       "Ipc.Supply": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform.Storage": "[1.0.0, )",
+          "Ipc.Platform.Storage": "[2.0.0, )",
           "Ipc.Supply.Contracts": "[2.0.0, )"
         }
       },

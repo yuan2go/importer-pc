@@ -57,14 +57,14 @@ static class CommercialProductization
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
         await InitialConfiguration(seed, root);
-        // Current DB9 and complete unconfirmed metadata precede a deliberately failed first startup.
+        // Current DB10 and complete unconfirmed metadata precede a deliberately failed first startup.
         using (var prior = new ParcelRepository(directory, seed.ApplicationId)) { }
         File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, seed, null, "ConfirmationRequired", null, Confirmed:false)));
         ParcelRuntime Runtime(bool fail = true) => new(launch, new SportmasterFlow(), new SyntheticFactory(launch, fail)) { RuntimeIdentityPreflight = () => { } };
         Console.WriteLine("Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.");
         await using (var broken = Runtime()) await Reject<InvalidOperationException>(() => broken.StartAsync(default), "original unconfirmed configuration fails resource construction");
         var file = Path.Combine(directory, "configuration.json");
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(directory, seed.ApplicationId + ".db"), seed.ApplicationId) == 9, "current DB9 remains current after failed initial resources and retains the repair route");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(directory, seed.ApplicationId + ".db"), seed.ApplicationId) == 10, "current DB10 remains current after failed initial resources and retains the repair route");
         var original = File.ReadAllBytes(file);
         var authority = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
         Check(authority.Confirmation is { Required: true } && authority.Confirmation.Attempts.Last().Outcome == "Failed", "failed startup is durable and does not confirm Effective");
@@ -165,7 +165,7 @@ static class CommercialProductization
             "complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input");
         var dbFiles = Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash);
         var plan = await service.PlanChangeAsync("Upgrade", Path.Combine(root, "pre-upgrade.db"));
-        Check(plan.Allowed && dbFiles.OrderBy(x => x.Key).SequenceEqual(Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash).OrderBy(x => x.Key)), "upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes");
+        Check(plan.Allowed && dbFiles.OrderBy(x => x.Key).SequenceEqual(Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash).OrderBy(x => x.Key)), "current-format overwrite-install preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes");
         var template = StartupSiteTemplates.Export(seed.ApplicationId, editor.Capture());
         Check(template.Defaults.Values.Keys.All(k => !k.EndsWith(".target") && !k.Contains(".parameter.") && !k.StartsWith("policy.Backup")), "new-site template excludes stable devices, endpoints, secrets, numeric ranges and original backup path");
         // A foreign recovery marker must close the explicit repair route before any write.
@@ -178,16 +178,13 @@ static class CommercialProductization
         await Unknown(seed, root);
         var legacyLaunch = launch with { DataRoot = Path.Combine(root, "legacy-handoff-data") };
         var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
-        var legacyDatabase=SyntheticPriorStorage.Create(legacyDirectory,seed.ApplicationId,7);
+        var legacyDatabase=NonCurrentStorageFixture.Create(legacyDirectory,seed.ApplicationId,7);
         File.WriteAllText(Path.Combine(legacyDirectory,"configuration.json"),Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0,seed,null,"Effective",null)));
         var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{})
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "prior-scratch-" + Wire.Id())).FullName };
         var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
-        await legacyService.BackupAsync(legacyBackup);
-        Check(Wire.FileHash(legacyDatabase)==legacyHash && ParcelRepository.ReadStorageVersion(legacyBackup,seed.ApplicationId)==7 && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")),"old format can be preserved by read-only complete backup without conversion or a source fence");
-        var refusedRestore = Path.Combine(root,"legacy-current-restore");
-        await Reject<InvalidDataException>(()=>legacyService.PlanRestoreAsync(legacyBackup,refusedRestore),"old backup refuses current writable restore planning");
-        Check(!Directory.Exists(refusedRestore) && Wire.FileHash(legacyDatabase)==legacyHash,"old restore refusal creates no target and preserves the source database");
+        await Reject<InvalidDataException>(() => legacyService.BackupAsync(legacyBackup), "non-current format refuses backup before creating output");
+        Check(Wire.FileHash(legacyDatabase)==legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")), "non-current refusal preserves original bytes and creates no backup or fence");
         await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "legacy root without original machine custody cannot be silently certified by copying a policy");
         Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "legacy backup/repair never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
@@ -267,11 +264,11 @@ static class CommercialProductization
         var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };
         var oldDirectory = Path.Combine(oldLaunch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId); Directory.CreateDirectory(oldDirectory);
         File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, c, null, "Effective", null)));
-        SyntheticPriorStorage.Create(oldDirectory,c.ApplicationId,7,original);
+        NonCurrentStorageFixture.Create(oldDirectory,c.ApplicationId,7,original);
         var oldDatabase = Path.Combine(oldDirectory, c.ApplicationId + ".db"); var oldHash = Wire.FileHash(oldDatabase);
         await using (var blockedUpgrade = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidDataException>(() => blockedUpgrade.StartAsync(default), "DB7 Unknown remains on its original reader before the DB8 migration");
-        Check(Wire.FileHash(oldDatabase) == oldHash && ParcelRepository.ReadStorageVersion(oldDatabase, c.ApplicationId) == 7, "refused DB7 upgrade preserves original request database and format");
+        Check(Wire.FileHash(oldDatabase) == oldHash && NonCurrentStorageFixture.Version(oldDatabase) == 7, "refused DB7 upgrade preserves original request database and format");
         var reopenedFactory = new SyntheticFactory(launch);
         await using (var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } })
         {

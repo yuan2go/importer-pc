@@ -196,15 +196,11 @@ static class HardeningVerification
             contract.ValidateResponse(original, response);
             await using var h = await Rig.New(root, url);
             using var db = new SqliteConnection("Data Source=" + h.Store.Path); db.Open(); using var sql = db.CreateCommand(); sql.CommandText = "SELECT count(*) FROM schema_history";
-            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 4, "Historical migrations retained and format4 appended");
-            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=1";
-            Assert((string?)sql.ExecuteScalar() == Wire.Hash(File.ReadAllText(Path.Combine(fixtures, "schema1.sql"))), "Original schema1 SQL checksum is unchanged");
-            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=2";
-            Assert((string?)sql.ExecuteScalar() == AlignmentDataVerification.Format2Checksum, "Historical format2 checksum is unchanged");
-            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=3";
-            Assert((string?)sql.ExecuteScalar() == AlignmentDataVerification.Format3Checksum, "Historical format3 checksum is unchanged");
+            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 1, "One current baseline identity only");
+            sql.CommandText = "SELECT id FROM schema_history";
+            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 6, "Current baseline6");
             sql.CommandText = "SELECT version || ':' || minimum_reader FROM storage_format WHERE id=1";
-            Assert((string?)sql.ExecuteScalar() == "4:4", "Format4 records a matching minimum reader");
+            Assert((string?)sql.ExecuteScalar() == "6:6", "Current format and minimum reader agree");
         });
         await Check("same alarm code retains independent owners and recovery", async () =>
         {

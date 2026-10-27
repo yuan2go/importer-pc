@@ -24,21 +24,21 @@ static partial class ArchitectureQuality
         string originalOccurrence;
         using(var repo=new ParcelRepository(sourceDirectory,c.ApplicationId))originalOccurrence=repo.PendingReceipts().Single(x=>x.Stage=="image-upload").Id;
         File.Move(Path.Combine(sourceDirectory,"receipts",originalOccurrence+".json"),Path.Combine(root,"p2-original-upload-preserved.json"));
-        foreach(var version in new[]{9})foreach(var local in new[]{false,true})
+        foreach(var local in new[]{false,true})
         {
-            try { await OfflineIdentityP2(sourceDirectory,c,version,local); }
-            catch(Exception ex){Check(false,$"P2 DB{version} local={local}: {ex.GetType().Name}: {ex.Message}");}
+            try { await OfflineIdentityP2(sourceDirectory,c,local); }
+            catch(Exception ex){Check(false,$"P2 current storage local={local}: {ex.GetType().Name}: {ex.Message}");}
         }
-        foreach(var local in new[]{false,true}) await OfflineIdentityP2(sourceDirectory,c,9,local,sameBytes:true);
+        foreach(var local in new[]{false,true}) await OfflineIdentityP2(sourceDirectory,c,local,sameBytes:true);
 
         try { await DurableBasisP2(c,originalOccurrence); }
         catch(Exception ex){Check(false,"P2 durable basis: "+ex);}
         if(failures!=0)throw new Exception("Recovery P2 failures: "+failures);
         Console.WriteLine("PASS RECOVERY P2 COMPLETE");
     }
-    static async Task OfflineIdentityP2(string source,ParcelConfiguration c,int version,bool local,bool sameBytes=false,int targetStorageVersion=9)
+    static async Task OfflineIdentityP2(string source,ParcelConfiguration c,bool local,bool sameBytes=false)
     {
-        var name=$"p2-identity-v{version}-local{local}-same{sameBytes}-target{targetStorageVersion}";var directory=DirectoryFor(name,c);Directory.CreateDirectory(directory);
+        var name=$"p2-current-identity-local{local}-same{sameBytes}";var directory=DirectoryFor(name,c);Directory.CreateDirectory(directory);
         ParcelOperation op;using(var repo=new ParcelRepository(source,c.ApplicationId))op=repo.Load().Single();
         ExtensionStore.AtomicWrite(Path.Combine(directory,"configuration.json"),CurrentConfigurationFixture.Create<ParcelConfiguration>(1,c,null,"Effective",null));
         var image=op.Image!;var imageFile=Path.Combine(directory,image.RelativeFile);Directory.CreateDirectory(Path.GetDirectoryName(imageFile)!);File.Copy(Path.Combine(source,image.RelativeFile),imageFile);
@@ -58,7 +58,7 @@ static partial class ArchitectureQuality
                 op=op with{Upload=op.Upload with{State=sameBytes?StageState.Accepted:StageState.Unknown,Replies=sameBytes&&replies.Count>64?replies.Take(1).Concat(replies.TakeLast(62)).ToArray():replies.TakeLast(64).ToArray()},Image=sameBytes?early.Image:op.Image,RecoveryRequired=false};
                 var id=repo.BeginReceipt(op,op.Upload,"Query");repo.StoreRaw(id,reply);repo.Commit(op,"P2QueryOriginal","Distinct durable nonterminal observation",occurrence:id);
             }
-            Check(!op.Upload.Replies.Any(r=>r.Id==early.Id),$"P2 DB{version} original ID evicted from 64-reply projection");
+            Check(!op.Upload.Replies.Any(r=>r.Id==early.Id),$"P2 current storage original ID evicted from 64-reply projection");
             if(local){var query=repo.BeginReceipt(op,op.Upload,"Query");repo.StoreRaw(query,changed);}
             repo.ValidateRawInventory();
         }
@@ -70,10 +70,10 @@ static partial class ArchitectureQuality
             var after=repo.Load().Single();repo.ValidateRawInventory();
             if(sameBytes)
             {
-                Check(repo.StorageVersion==targetStorageVersion&&Wire.Encode(result).Contains("OutcomeCheckedCustodyRetained")&&after.Upload!.State==StageState.Accepted&&repo.PendingReceipts().Length==1&&repo.HasReceiptOutcomeBasis(original)&&calls==(local?0:1),$"P2 same-ID/same-bytes local={local} remains idempotent in the current format with original missing raw retained");
+                Check(repo.StorageVersion==ParcelRepository.CurrentStorageVersion&&Wire.Encode(result).Contains("OutcomeCheckedCustodyRetained")&&after.Upload!.State==StageState.Accepted&&repo.PendingReceipts().Length==1&&repo.HasReceiptOutcomeBasis(original)&&calls==(local?0:1),$"P2 same-ID/same-bytes local={local} remains idempotent in the current format with original missing raw retained");
                 return;
             }
-            Check(Wire.Encode(result).Contains("Conflict")&&after.Upload!.State==StageState.Conflict&&repo.StorageVersion==version,$"P2 DB{version} local={local} rejects changed permanent identity before acceptance/upgrade");
+            Check(Wire.Encode(result).Contains("Conflict")&&after.Upload!.State==StageState.Conflict&&repo.StorageVersion==ParcelRepository.CurrentStorageVersion,$"P2 current storage local={local} rejects changed permanent identity before acceptance");
             Check(calls==(local?0:1)&&repo.ReceiptById(original) is{State:"Awaiting",RawHash:null,QueryOccurrence:null}&&!after.ImageReleased&&File.Exists(imageFile)&&File.Exists(backup+".recovery/COMPLETED.json"),"P2 identity conflict retains original missing raw, image and full backup without another local Query");
             Check(Wire.Encode(after.Upload!.Request)==Wire.Encode(op.Upload.Request)&&after.Upload.Attempts==1&&after.Wcs!.Attempts==1&&repo.ReceiptResponsibilities(op.Id).Any(r=>r.Source=="Query"&&r.State=="Committed"&&r.RawHash==Wire.Hash(Wire.Encode(changed))),"P2 conflict retains contradictory raw and frozen submit identity/counts");
         }

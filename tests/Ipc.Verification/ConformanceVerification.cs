@@ -12,11 +12,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 static class ConformanceVerification
 {
-    public static string Format4Checksum => Wire.Hash("""
-        CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
-        CREATE INDEX response_conflicts_request ON response_conflicts(request);
-        UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;
-        """);
     static void Assert(bool value, string reason) { if (!value) throw new Exception("AC14: " + reason); Console.WriteLine("PASS AC14 " + reason); }
     static void Sql(string path, string sql)
     { using var db = new SqliteConnection("Data Source=" + path); db.Open(); using var command = db.CreateCommand(); command.CommandText = sql; command.ExecuteNonQuery(); }
@@ -33,7 +28,7 @@ static class ConformanceVerification
         await Notifications(root, url);
         await HeadlessOwnership(root, url);
         await HealthAndConsumers(root, url, workspace);
-        await AlignmentDataVerification.LegacyMigration(root, workspace);
+        await AlignmentDataVerification.CurrentFormatGate(root);
         Console.WriteLine("PASS AC14 CONFORMANCE COMPLETE: A01-A04/R01-R03 core; WINDOWS_NOT_RUN");
     }
     static async Task Conflicts(string root, string url)

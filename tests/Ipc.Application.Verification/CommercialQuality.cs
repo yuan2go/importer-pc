@@ -116,7 +116,7 @@ static class CommercialQuality
             using(var db5=new ParcelRepository(fixture,"direct-plc"))
             {db5.Commit(legacy,"Abandoned","Original inspected cancellation with historical stale flag"); if(archived)db5.Archive([legacy.Id],"Synthetic historical archive");}
             using(var db6=new ParcelRepository(fixture,"direct-plc"))
-                Check(db6.StorageVersion==9 && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"current DB9 resident/archive terminal recovery flag repairs without reactivating history");
+                Check(db6.StorageVersion==10 && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"current DB10 resident/archive terminal recovery flag repairs without reactivating history");
         }
         var sportDirectory=Path.Combine(root,"sport-restarted-unknown");
         await using(var app=await Open(config("sportmaster"),sportDirectory,true))
@@ -160,7 +160,7 @@ static class CommercialQuality
             using(var upgraded=new ParcelRepository(directory,terminal.FrozenConfiguration.ApplicationId))
                 Check(upgraded.ReadOperation(legacy.Id) is{RecoveryRequired:false} repaired &&
                     Wire.Encode(repaired with{RecoveryRequired=true})==original && upgraded.ArchivedCount==(archived?1:0),
-                    "proven original terminal receipt clears only stale flag in current DB9 resident/archive");
+                    "proven original terminal receipt clears only stale flag in current DB10 resident/archive");
             using var sql=new SqliteConnection("Data Source="+Path.Combine(directory,terminal.FrozenConfiguration.ApplicationId+".db"));sql.Open();
             using var audit=sql.CreateCommand();audit.CommandText="SELECT detail FROM parcel_audit WHERE event='TerminalRecoveryConverged'";
             using var json=System.Text.Json.JsonDocument.Parse((string)audit.ExecuteScalar()!);
@@ -179,8 +179,8 @@ static class CommercialQuality
             };
             using(var db=new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId))Seed(db,op,variant!="missing-raw");
             using var reopened = new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId);
-            Check(Wire.Encode(reopened.ReadOperation(op.Id)) == Wire.Encode(op) && reopened.StorageVersion == 9,
-                variant+" current DB9 retains unresolved original and recovery flag without inventing terminal proof or migrating storage");
+            Check(Wire.Encode(reopened.ReadOperation(op.Id)) == Wire.Encode(op) && reopened.StorageVersion == 10,
+                variant+" current DB10 retains unresolved original and recovery flag without inventing terminal proof or migrating storage");
         }
         static void Seed(ParcelRepository db,ParcelOperation op,bool raw)
         {

@@ -101,7 +101,7 @@ static class ReliabilityClosure
         foreach (var validity in new[] { WeightValidity.UntilDispatch, WeightValidity.AtAssociation })
             await Case("weight original validity " + validity, async () =>
             {
-                var c = Config("wcs-to-plc") with { SchemaVersion = validity == WeightValidity.UntilDispatch ? 1 : 2, WeightValidity = validity == WeightValidity.UntilDispatch ? null : validity, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 100), Scale = B("weight") };
+                var c = Config("wcs-to-plc") with { SchemaVersion = 3, WeightValidity = validity, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 100), Scale = B("weight") };
                 var (app, f) = await Open(c, "validity-" + validity, blockWcs: true); await using var owned = app;
                 f.Wcs!.BlockSubmit = true; app.EmitReference("original", "005", Wire.Id()); await Wait(app, x => x.Operations.Length == 1);
                 app.EmitReferenceWeight(new(Wire.Id(), "original", c.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
@@ -123,32 +123,6 @@ static class ReliabilityClosure
                     Check(s.Operations.Single().Weight!.MeasurementId == op.Weight!.MeasurementId && s.Operations.Single().Plc!.Attempts == 1, "reference association-valid policy continues immutable original measurement without reweighing");
                 }
             });
-        await Case("legacy upgrade preserves unresolved originals", async () =>
-        {
-            var c = Config("direct-plc") with { SchemaVersion = 1, WeightValidity = null, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = B("weight") };
-            var (app, _) = await Open(c, "legacy-upgrade");
-            app.EmitReference("legacy", "006", Wire.Id()); await Wait(app, x => x.Operations.Length == 1); await app.DisposeAsync();
-            var file = Path.Combine(root, "legacy-upgrade/data/Simulation", c.StationId, "direct-plc/direct-plc.db");
-            string originalBody, originalChecksum;
-            using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + file))
-            {
-                db.Open(); using var command = db.CreateCommand(); command.CommandText = SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DROP INDEX parcel_receipts_pending; DROP INDEX parcel_receipts_operation; DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
-                command.CommandText = "SELECT body FROM parcel_operations"; originalBody = (string)command.ExecuteScalar()!;
-                command.CommandText = "SELECT sha FROM platform_migrations WHERE version=1"; originalChecksum = (string)command.ExecuteScalar()!;
-            }
-            try { var (unexpected, _) = await Open(c, "legacy-upgrade"); await unexpected.DisposeAsync(); throw new Exception("Unsettled legacy root was upgraded"); }
-            catch (InvalidDataException ex) { Check(ex.Message.Contains("LegacyUnsettled"), "unsettled schema1 refuses upgrade before losing access by the matching old host"); }
-            using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + file))
-            {
-                db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-                Check((long)command.ExecuteScalar()! == 1, "rejected upgrade preserves original schema1 reader access");
-                command.CommandText = "SELECT body FROM parcel_operations"; Check((string)command.ExecuteScalar()! == originalBody, "rejected upgrade leaves original operation bytes intact");
-                command.CommandText = "SELECT sha FROM platform_migrations WHERE version=1"; Check((string)command.ExecuteScalar()! == originalChecksum, "original SQL1 checksum remains intact");
-                command.CommandText = "DELETE FROM parcel_operations"; command.ExecuteNonQuery(); // Synthetic fixture only: represent an empty legacy root, never a recovery procedure.
-            }
-            using var upgraded = new ParcelRepository(Path.GetDirectoryName(file)!, "direct-plc");
-            Check(upgraded.Load().Length == 0, "settled legacy root accepts additive migration2/3/4 without changing migration1");
-        });
         await Case("Application delivery capability compatibility", () =>
         {
             var c = Config("direct-plc");

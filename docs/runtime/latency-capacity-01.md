@@ -1,6 +1,8 @@
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
 # 卡顿与容量批 · 运行与维护
 
-原独立包基于main a8cd4314；2026-10-26组合继承P0/Unicode/时间存储，统一SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9及SQL1–9不变。[工作包](../work-packages/WP-IPC-LATENCY-CAPACITY-01.md)及[本次回执](validation/latency-capacity-01.md)分别记录范围、基线和实际验证。旧独立介质/PASS守原身份；本轮组合只在[整合记录](integration-20261026.md)登记新源验证。保留维护通知的单调节拍，备份围栏内不清理冗余原件；恢复暂停、致命存储分类与gate外历史计数同时成立。
+当前容量、投影和WAL维护沿本次精确程序集验证。维护通知使用单调节拍，备份围栏内不清理冗余原件；恢复暂停、致命存储分类及gate外历史计数继续成立。历史测量不转记本轮PASS。
 
 ## 快照与详情
 
@@ -49,4 +51,4 @@ dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sport
 D:/DevCache/importer-pc/tools/dotnet-counters.exe collect --format json --output D:/DevCache/importer-pc/new-counters --counters 'EventCounters\System.Runtime[alloc-rate,loh-size,gen-2-gc-count,time-in-gc,gc-heap-size]' -- dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --latency-capacity --latency-rows 600000 --latency-seconds 12 --latency-assert --latency-output D:/DevCache/importer-pc/new-latency-run
 ```
 
-输出根必须不存在；夹具先检查20GiB可用空间、预置中保留12GiB，不运行2592000。先所有构建/功能测试结束，再顺序采样，完整保留MEASUREMENTS/IDENTITY和counter JSON及hash。`--latency-assert`只断言稳态不重复Details/作业序列化，不给出任意绝对延迟阈值。基线旧二进制不包含后加断言，不得把参数传入成功当作旧版语义通过。
+输出根必须不存在；夹具先检查20GiB可用空间、预置中保留12GiB，不运行2592000。先所有构建/功能测试结束，再顺序采样，完整保留MEASUREMENTS/IDENTITY和counter JSON及hash。`--latency-assert`只断言稳态不重复Details/作业序列化，不给出任意绝对延迟阈值。只对当前二进制的实际执行记录结果，不重验历史介质。

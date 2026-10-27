@@ -12,7 +12,7 @@ public sealed record ParcelMaintenanceProvider(string InstanceId, string Impleme
 public sealed record ParcelMaintenanceInspection(string Application, string Station, RunMode Mode, int DatabaseVersion,
     long Revision, bool Paused, long Resident, long Archived, long Unsettled, long PendingReceipts, long IdentityConflicts,
     long DatabaseBytes, long CustodyBytes, string DatabaseSha256, string? WalSha256, string ConfigurationSha256,
-    bool OrdinaryUpgradeAllowed, string[] Reasons, DateTimeOffset At, string BusinessVersion, string SourceIdentity, string ApplicationContractSha256, int ConfigurationSchema, ParcelMaintenanceProvider[] Providers);
+    bool ResponsibilitiesSettled, string[] Reasons, DateTimeOffset At, string BusinessVersion, string SourceIdentity, string ApplicationContractSha256, int ConfigurationSchema, ParcelMaintenanceProvider[] Providers);
 
 // Offline application-owned operations. No runtime, source, SDK or external port starts.
 public sealed partial class ParcelRepository
@@ -42,13 +42,13 @@ public sealed partial class ParcelRepository
         using var tx = db.BeginTransaction(deferred: true);
         long Scalar(string sql) { using var c = db.CreateCommand(); c.Transaction = tx; c.CommandText = sql; return Convert.ToInt64(c.ExecuteScalar()); }
         var resident = Scalar("SELECT count(*) FROM parcel_operations");
-        var archived = version >= 4 ? Scalar("SELECT count(*) FROM parcel_archives") : 0;
+        var archived = Scalar("SELECT count(*) FROM parcel_archives");
         var pending = Scalar("SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Committed','NoReply')");
-        var conflicts = version >= 4 ? Scalar("SELECT count(*) FROM parcel_identity_conflicts WHERE acknowledged=0") : 0;
+        var conflicts = Scalar("SELECT count(*) FROM parcel_identity_conflicts WHERE acknowledged=0");
         long unsettled = 0;
         using (var c = db.CreateCommand())
         {
-            c.Transaction = tx; c.CommandText = "SELECT body,NULL FROM parcel_operations" + (version >= 4 ? " UNION ALL SELECT body,body_hash FROM parcel_archives" : "");
+            c.Transaction = tx; c.CommandText = "SELECT body,NULL FROM parcel_operations UNION ALL SELECT body,body_hash FROM parcel_archives";
             using var r = c.ExecuteReader();
             while (r.Read())
             {
@@ -66,8 +66,7 @@ public sealed partial class ParcelRepository
         using (var c = db.CreateCommand())
         {
             c.Transaction = tx;
-            c.CommandText = version >= 4 ? "SELECT r.id,r.raw_hash,a.body FROM parcel_receipts r LEFT JOIN parcel_archived_receipts a ON a.id=r.id WHERE r.raw_hash IS NOT NULL OR r.state='Committed'" :
-                "SELECT id,raw_hash,NULL FROM parcel_receipts WHERE raw_hash IS NOT NULL OR state='Committed'";
+            c.CommandText = "SELECT r.id,r.raw_hash,a.body FROM parcel_receipts r LEFT JOIN parcel_archived_receipts a ON a.id=r.id WHERE r.raw_hash IS NOT NULL OR r.state='Committed'";
             using var r = c.ExecuteReader();
             while (r.Read())
             {
@@ -80,7 +79,7 @@ public sealed partial class ParcelRepository
             }
         }
         var reasons = new List<string>();
-        if (version >= 9 && Scalar("SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')") != 0)
+        if (Scalar("SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')") != 0)
             reasons.Add("Original input custody requires matching-release inspection; never replay accepted source input");
         if (invalidRaw != 0) reasons.Add("Original receipt bytes missing/changed: " + invalidRaw);
         if (unsettled != 0) reasons.Add("Original business/image/recovery responsibilities require matching-release settlement");

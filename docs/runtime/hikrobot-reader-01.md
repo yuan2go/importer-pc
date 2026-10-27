@@ -1,4 +1,6 @@
-> 当前驱动1.0.4：保留bcr-code和原SDK ABI，补缺单机分类、真实native停止所有权及帧守恒。源码修复/替身测试不等于实际SDK双机资格，见[长稳指南](win11-24x7-stability-remediation-01.md)。原1.0.1～1.0.3介质和证据保持身份。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+
+当前驱动包装2.0.0保留bcr-code及SDK原生ABI，观察源仅走受控端口；单机分类、native停止所有权和帧守恒继续有效。真实SDK双机资格另验。
 
 # 海康读码驱动 · 运行与验证
 
@@ -6,11 +8,11 @@
 
 ## 实现与依赖
 
-独立工程 [Ipc.Drivers.Hikrobot](../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj)，原生 ABI 声明与 SDK 接管在 NativeMethods.cs，观察、队列、健康和句柄生命周期在 HikrobotReader.cs；无WPF、SQLite、WCS、PLC依赖。唯一公共依赖为冻结宿主的 Ipc.Platform.dll。目标Windows x64 / .NET10，编译SDK10.0.402；厂商ABI边界固定MvCodeReader 2.0.0.4（原包SDK证据不扩张到本轮1.0.4），仅GigE，版本不符拒绝。ABI事实记录在 [sdk-boundary.json](../../src/Ipc.Drivers.Hikrobot/sdk-boundary.json)，无第三方SDK正文或二进制。
+独立工程 [Ipc.Drivers.Hikrobot](../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj)，原生 ABI 声明与 SDK 接管在 NativeMethods.cs，观察、队列、健康和句柄生命周期在 HikrobotReader.cs；无WPF、SQLite、WCS、PLC依赖。唯一公共依赖为冻结宿主的 Ipc.Platform.dll。目标Windows x64 / .NET10，编译SDK10.0.402；厂商ABI边界固定MvCodeReader 2.0.0.4（原包SDK证据不扩张到当前包装2.0.0），仅GigE，版本不符拒绝。ABI事实记录在 [sdk-boundary.json](../../src/Ipc.Drivers.Hikrobot/sdk-boundary.json)，无第三方SDK正文或二进制。
 
 Platform新增 [NativeSdkBoundary](../../src/Ipc.Platform/NativeSdkBoundary.cs)，原独立签名部署资格仍是本地SDK文件的批准权威；ParcelCapabilityFactory传递已验证的原资格。原ExtensionLoading构造入口保留，无资格仍拒绝原生SDK启动。SDK文件锁和已加载版本保持至进程退出，不能靠卸载托管扩展热换原生库。静态接受不等于安装、运行资格或现场批准。
 
-当前Sportmaster业务包1.12.0，继承 `hikrobot-engineering` / `hikrobot-rcs-engineering` 精确提供者组合，允许精确reader 1.0.4与原内建参考能力/可选原RCS组合；没有批准新生产组合。当前Application.Contracts1.17.0、Parcel DB9；SQL1～8及原请求语义不变。Platform字节改变：新扩展必须针对实际冻结宿主重新构建/签名，旧精确包和未决请求不得覆盖或换身份。Supply/其他Application不自动继承此产品组合资格。
+当前Sportmaster业务3.0.0、Application.Contracts 3.0.0、海康包装2.0.0，精确组合见config/compatibility；没有新增Production资格。新扩展匹配本次宿主公共DLL，不改变原请求精确身份。
 
 ## 先做独立连接验证
 
@@ -36,7 +38,7 @@ dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Debug/net10.0/Ipc.Drivers.Hikrobot.P
 ## 接入现有Application
 
 1. 选择同版冻结宿主，按原安装/维护流程准备指定账户、机级租约、独立信任和只读扩展Store。不要修改当前生产配置或在活动原请求上切换实现。
-2. 原 `scripts/build-extension.py` 使用 `--definition src/Ipc.Drivers.Hikrobot/extension.build.json --version 1.0.4 --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新ipcx路径> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码须已提交且干净。此声明为Simulation组合，真实相机输入仍为SDK来源；不是合成数据，也不是Production资格。生产构建用 `extension.build.production.json`，必须有独立非TestOnly发布者和完整真实组合批准；本轮未生成生产签名或批准。
+2. 原 `scripts/build-extension.py` 使用 `--definition src/Ipc.Drivers.Hikrobot/extension.build.json --version 2.0.0 --contract <冻结宿主/Ipc.Platform.dll> --check-host <冻结宿主/Ipc.Assembly.dll> --output <新ipcx路径> --key <Git外私钥> --publisher <受信发布者> --trust <独立信任>`。源码须已提交且干净。此声明为Simulation组合，真实相机输入仍为SDK来源；不是合成数据，也不是Production资格。生产构建用 `extension.build.production.json`，必须有独立非TestOnly发布者和完整真实组合批准；本轮未生成生产签名或批准。
 3. 按原签名安装流程安装包。在现有维护页选择 `hikrobot.idmvs-reader/idmvs-reader`，实例填 `device.ip`；可选 `device.serial` 锁定预期序列号。驱动不含左右逻辑；原Reader的 `Driver=extension:<实例Id>`、`DeviceId` 与实例一致，由原schema3拓扑绑定本业务位置。单台设备的实际序列号机级租约防止多个别名双占。
 4. 默认 `entity.mode=observe-only`，向Application报告 `UncorrelatedRead`，保留码观察但不创建业务作业。只有取得一触发一实体、同触发多帧、计数器重置和重连后原实体处置证据，才显式选择 `trigger`；设备本来须已TriggerMode=On。UTF-8/ASCII为显式严格编码，不自动猜测。IP之外的字段都有安全默认，无需修改驱动源码。
 5. 保存完整候选配置，经原CAS/受控重启激活。包含必需SDK的组合，即使Simulation也要有原签名 DeploymentQualification。`Prerequisites`必须绑定实际精确Package和manifest中 `vendor-sdk/MvCodeReaderCtrl.dll/2.0.0.4` 声明，`Files`包含整个SDK目录全部DLL的绝对路径/hash（最多64）。保留manifest中 `Preload=[MVGigEVision.dll,MvSmtDevCtrl.dll]` 的精确顺序并随声明签名；只初始化这两个传输依赖及主DLL，其余DLL仅作安装字节校验/锁定；原生依赖限定本目录和System32，无PATH/工作目录修改。文件及祖先必须符合既有受保护程序路径/ACL政策；本地任意可写目录不能冒充批准的SDK安装。使用原 `scripts/sign-deployment-qualification.py` 离线签署已批准文档，不生成虚构批准人或现场证据。

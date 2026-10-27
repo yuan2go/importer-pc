@@ -1,0 +1,14 @@
+PASS RCS20: mask 0 resumes only with RCS and at least one ready camera
+PASS RCS20: configured left accepts its own synthetic observation
+PASS RCS20: single camera completes one actual loopback RCS request
+PASS RCS20: Application recovery requires a new management login
+PASS RCS20: recovery preserves original request and sends no duplicate
+PASS RCS20: independent position admits the Unknown recovery fixture
+Unhandled exception. System.TimeoutException: Single-camera state did not converge
+   at SportmasterRcs.<>c__DisplayClass45_1.<<SingleCamera>g__Wait|3>d.MoveNext() in D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\tests\Ipc.Application.Verification\StationSingleCamera.cs:line 63
+--- End of stack trace from previous location ---
+   at SportmasterRcs.SingleCamera(String workspace, String root) in D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\tests\Ipc.Application.Verification\StationSingleCamera.cs:line 85
+   at SportmasterRcs.SingleCamera(String workspace, String root) in D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\tests\Ipc.Application.Verification\StationSingleCamera.cs:line 93
+   at SportmasterRcs.SingleCamera(String workspace, String root) in D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\tests\Ipc.Application.Verification\StationSingleCamera.cs:line 93
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

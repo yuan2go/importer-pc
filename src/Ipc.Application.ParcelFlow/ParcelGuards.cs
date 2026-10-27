@@ -4,12 +4,12 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && Effective.DeferredConnections is not { Length: > 0 } && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
+    bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && !backupInProgress;
     bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(PositionReady);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
-    bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
+    bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
@@ -18,7 +18,7 @@ public sealed partial class ParcelRuntime
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
         CanSendUpload(op) && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
         (!factory.Requirements(op.FrozenConfiguration.Images.Uploader!).MeasuredWeight || WeightReady(op));
-    bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && Effective.DeferredConnections is not { Length: > 0 } && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
+    bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective) && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
         !repository!.Paused && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
     bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) &&
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&

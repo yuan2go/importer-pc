@@ -7,18 +7,26 @@ namespace Ipc.Application.Sportmaster.Desktop;
 // Read-only wording and navigation hints. Application remains the command authority.
 public sealed partial class SupplyStationViewModel
 {
-    public string[] MissingConnections => Snapshot is not { } s ? [] :
-        new[] { (Left.ReaderId, "左相机"), (Right.ReaderId, "右相机"), (s.Configuration.Effective.Wcs?.InstanceId ?? "", "RCS") }
-        .Where(x => ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, x.Item1)).Select(x => x.Item2).ToArray();
+    public string[] MissingConnections
+    {
+        get
+        {
+            if (Snapshot is not { } s) return [];
+            var missing = new List<string>(); var c = s.Configuration.Effective;
+            if (!ParcelBindings.Readers(c).Any(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId))) missing.Add("左相机或右相机（配置一台即可）");
+            if (c.Wcs is null || ParcelConnectionSetup.IsDeferred(c, c.Wcs.InstanceId)) missing.Add("RCS");
+            return missing.ToArray();
+        }
+    }
     public bool ShowSetupGuidance => Fresh && MissingConnections.Length > 0 &&
         !Left.HasCurrentInput && !Right.HasCurrentInput && Snapshot?.Positions?.Any(p => p.Admit) != true &&
         Snapshot?.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) != true;
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
-    public string SetupInstruction => "请维护人员补齐连接参数，保存并重启使配置生效，再检查是否可以供包。";
+    public string SetupInstruction => "至少配置并启用一台相机，以及 RCS 服务。保存并重启后，可使用已就绪相机对应的投递位。";
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停供包" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit)
-            ? positions.All(p => p.Admit) ? "可以供包" : "部分位置暂不能供包" : "暂不能供包";
+            ? positions.All(p => p.Admit) ? "可以供包" : string.Join("、", positions.Where(p => p.Admit).Select(p => p.Id == "left" ? "左投递位" : p.Id == "right" ? "右投递位" : p.Id)) + "可以供包" : "暂不能供包";
     public string OperatorNotice => !Fresh ? "等待状态恢复，请勿依据旧格口投递。" :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
@@ -43,9 +51,16 @@ public sealed partial class SupplyStationViewModel
     {
         if (!Fresh || Snapshot is not { } s) return "状态读取已中断。先恢复状态读取，再检查相机连接。";
         if (ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, position.ReaderId))
-            return "连接尚未配置。请填写相机连接参数，保存并重启。";
+            return "此相机暂未启用；可使用另一台已就绪相机。需要启用时填写连接参数，保存并重启。";
         var device = s.Devices?.SingleOrDefault(d => d.DeviceId == position.ReaderId);
         if (device is null) return "尚未收到相机状态，原因未确认。请核对驱动参数并查看日志。";
+        if (device.Health == DeviceHealth.Unknown && device.Source.Contains("decoder=Unavailable", StringComparison.Ordinal))
+        {
+            var frameText = device.Source.Split(';').Select(x => x.Trim()).FirstOrDefault(x => x.StartsWith("frames=", StringComparison.Ordinal));
+            return long.TryParse(frameText?[7..], out var frames) && frames > 0
+                ? $"已收到相机图像（{frames}帧），但尚未接入条码识别，暂不能供包。请核对该型号配套的识码算法组件。"
+                : "MVS已开始等待图像，尚未收到帧；条码识别也尚未接入。请先核对触发、采图及配套识码算法。";
+        }
         if (device.IsValid(DateTimeOffset.UtcNow)) return s.Configuration.Effective.Mode == RunMode.Simulation
             ? "当前为模拟连接；真实相机尚未验证。" : "相机连接已确认；能否供包还需满足本位业务条件。";
         return device.Health switch

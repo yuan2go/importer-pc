@@ -12,6 +12,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var reader in m.Readers)
         {
             var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "");
+            if (m.ApplicationId == "sportmaster") page.Body.Children.Add(Text("左右相机至少配置并启用一台即可。未配置的位置不接包，不影响另一台已就绪相机。"));
             Capability(page, reader);
         }
         if (m.Readers.Length == 0)

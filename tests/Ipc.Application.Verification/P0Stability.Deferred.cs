@@ -67,7 +67,7 @@ static partial class SportmasterRcs
                     await using var app = new ParcelRuntime(launch, flow, new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
                     await app.StartAsync(default);
                     var snapshot = await app.SnapshotAsync();
-                    Check(snapshot.Operations.Length == 0 && (mask == 0 || !snapshot.Availability!.Admit && !snapshot.Availability.Resume), "deferred dependencies never admit or fabricate operations");
+                    Check(snapshot.Operations.Length == 0 && (!ParcelConnectionSetup.BlocksWork(c) || !snapshot.Availability!.Admit && !snapshot.Availability.Resume), "shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations");
                     foreach (var reader in readers.Where(r => ParcelConnectionSetup.IsDeferred(c, r.DeviceId)))
                         Check(snapshot.Devices!.Single(d => d.DeviceId == reader.DeviceId).Health != DeviceHealth.Ready, "deferred reader remains unavailable");
                     await app.StopAsync(default);

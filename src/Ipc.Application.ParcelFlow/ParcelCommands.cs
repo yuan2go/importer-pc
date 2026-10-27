@@ -25,7 +25,7 @@ public sealed partial class ParcelRuntime
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
             RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
-            if (Effective.DeferredConnections is { Length: > 0 } deferred)
+            if (ParcelConnectionSetup.BlocksWork(Effective) && Effective.DeferredConnections is { Length: > 0 } deferred)
                 reasons.Add("连接待配置：" + string.Join("、", deferred.Select(id => Effective.Wcs?.InstanceId == id ? "RCS" : ParcelBindings.Positions(Effective).Single(p => p.ReaderDeviceId == id).Id == "left" ? "左相机" : "右相机")) + "。可进入参数设置；完成连接后保存并受控重启，当前不接收新包裹。");
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);

@@ -92,8 +92,10 @@ static partial class SportmasterRcs
             {
                 await app.StartAsync(default); await AcceptConfigured(mask);
                 var s = await app.SnapshotAsync();
-                Check(!s.Availability!.Admit && !s.Availability.Resume && s.Operations.Length == 0 && s.Configuration.Confirmation?.Required == false,
-                    prefix + "runtime opens and confirms configuration while deferral blocks admission");
+                var allowed = !ParcelConnectionSetup.BlocksWork(c);
+                if (allowed) s = await DeferredWait(app, x => x.Availability!.Resume);
+                Check((allowed ? s.Availability!.Resume : !s.Availability!.Admit && !s.Availability.Resume) && s.Operations.Length == 0 && s.Configuration.Confirmation?.Required == false,
+                    prefix + "runtime confirms configuration and requires RCS plus at least one configured ready camera");
                 for (var i = 0; i < 2; i++)
                     if ((mask & (1 << i)) != 0)
                         Check(!cameras[i].Pending() && s.Devices!.Single(d => d.DeviceId == c.Topology!.Readers[i].DeviceId).Health != DeviceHealth.Ready,

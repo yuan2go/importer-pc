@@ -1,3 +1,5 @@
+> 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](docs/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
+
 > 2026-10-27 用户再次纠偏以[内置MVS安装与参数](docs/work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SM相机只使用内置SDK，首配与日常均显示SDK参数，安装软件即带运行依赖；下文独立驱动安装/TCP切换要求保留形成时范围，不再作为当前用户流程。真实识码和现场资格边界不变。
 
 > 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](docs/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。

@@ -51,6 +51,7 @@ static partial class Program
                 if (args.Contains("--stability-seed-upgrade"))
                     VerifyPreservedSeedUpgrade(Path.GetDirectoryName(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"))!, evidence,
                         (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
+                else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
                 else if (args.Contains("--debug-log-live")) await VerifyDebugLogLive(root, evidence, lines);

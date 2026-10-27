@@ -42,6 +42,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     });
     public Task ExitManagementModeAsync()
         => OwnedAdministration(_ => { Management.Exit(); Diagnostic("管理模式", "已退出管理模式"); return Task.FromResult(true); });
+    public Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => OwnedAdministration(_ => { Management.ResetPassword(rootPassword, newPassword); Diagnostic("管理模式", "管理密码已恢复，原授权已撤销"); return Task.FromResult(true); });
     public Task ChangeManagementPasswordAsync(string password) => OwnedAdministration(_ => { Management.ChangePassword(password); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); return Task.FromResult(true); });
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)
         => OwnedRead(t => Logs.QueryAsync(query, selection, offset, t), token);

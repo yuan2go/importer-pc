@@ -1,3 +1,5 @@
+> 管理密码恢复和菜单以[当前纠偏](station-single-camera-recovery-01.md)为准：用户指定固定根密码用于本机重置，旧会话与委托随重置撤销。旧 G02 未定恢复政策保留历史范围。
+
 # 管理模式 · 当前操作与实现
 
 历史实施、版本和验收原件见[归档](../archive/pre-fresh-baseline-current-guides-01/README.md)；原PASS只属于原SourceCommit。当前仅支持从零安装、当前格式建库；非当前输入保留原件并拒绝，请使用全新数据目录。

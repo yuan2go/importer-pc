@@ -13,6 +13,7 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }
 if (args.Contains("--hikrobot-hardening")) { await HikrobotHardening.Run(workspace, root); return; }
 if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; }

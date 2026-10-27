@@ -108,7 +108,7 @@ public static partial class ManagementModeBroker
                 var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
                 bool installer = false; string? windowsSid = null;
                 pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); windowsSid = client.User?.Value; if(request.Action == "ConfigurePassword") installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
-                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword";
+                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "ResetPassword";
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
                 try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid), budget.Token).ConfigureAwait(false); }
                 finally { if (expensive) passwordWork.Release(); }

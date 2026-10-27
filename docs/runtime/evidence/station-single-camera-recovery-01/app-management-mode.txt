@@ -1,0 +1,82 @@
+EvidenceRoot=D:\projects\importer-pc-worktrees\station-single-camera-recovery-01\.artifacts\operator-admin-70b4fc41402144b19f928f3770e76538
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: new setup rejects out-of-range or control-character passwords without creating a credential
+PASS OPS: rejected new passwords leave the original unconfigured state
+PASS OPS: five repeated numeric characters can configure and enter the real management authority
+PASS OPS: changing to fewer than five characters is rejected by the same service policy
+PASS OPS: rejected password replacement preserves the current grant and credential
+PASS OPS: five-digit replacement revokes old authorization and authenticates only the new password
+PASS OPS: numeric passwords are not persisted in plaintext
+PASS OPS: no default management password opens the mode
+PASS OPS: direct service calls reject before management-password setup
+PASS OPS: initial management-password setup cannot overwrite an existing password
+PASS OPS: credential file contains salted hashes rather than passwords
+PASS OPS: configured-mode marker exposes unavailable status and prevents setup
+PASS OPS: missing configured mode credentials cannot be silently replaced
+PASS OPS: invalid credential grants no session 0
+PASS OPS: invalid credential grants no session 1
+PASS OPS: invalid credential grants no session 2
+PASS OPS: invalid credential grants no session 3
+PASS OPS: invalid credential grants no session 4
+PASS OPS: persisted login lockout survives a new authenticator
+PASS OPS: real password hash authentication succeeds
+PASS OPS: a copied helper ticket cannot change its server-bound request hash
+PASS OPS: a helper ticket cannot extend its server-bound expiry
+PASS OPS: a helper ticket cannot mint another one-use authorization
+PASS OPS: helper proof cannot borrow or forge a different management-mode session
+PASS OPS: elevated helper delegation is single-use rather than Windows-only authorization
+PASS OPS: helper authorization is bound to the exact original maintenance request
+PASS OPS: changing the one mode password immediately revokes pending tasks and the original mode
+PASS OPS: password replacement invalidates already-issued helper delegation
+PASS OPS: old password stops working and the replacement re-enters management mode without a username
+PASS OPS: one management password is changed only from an active mode
+PASS OPS: normal management mode API has one password and no account enumeration or maintenance
+PASS OPS: old account ledger is unavailable and cannot grant management mode
+PASS OPS: first setup refuses old credentials without replacement
+PASS OPS: old password is never interpreted as a current management password
+PASS OPS: rejection preserves old bytes and creates no replacement credential
+PASS OPS: current management API has no old account conversion entry
+PASS OPS: missing current credential with a configured marker fails closed
+PASS OPS: configured marker prevents first-setup bypass after current credential removal
+PASS OPS: session expiry revokes authorization and pending task tokens
+PASS OPS: session expiry is recorded in the actual authentication journal
+PASS OPS: actual package-less RCS requirements reject unsupported authoritative query
+PASS OPS: unprotected local mode state cannot satisfy production authentication capability
+PASS OPS: entering management mode never creates or changes a parcel operator
+PASS OPS: management mode entry and parameter catalog reads do not pause feeding
+PASS OPS: management-authorized configuration save still requires pause and drain
+PASS OPS: optional operator login disabled still protects parameter reads
+PASS OPS: operator snapshot cannot expose the editable provider configuration
+PASS OPS: direct candidate validation rejects inactive management mode
+PASS OPS: direct save cannot reuse a revoked mode grant
+PASS OPS: grep query is bounded to 200 records per page
+PASS OPS: query results redact sensitive values before exposure
+PASS OPS: context uses original adjacent records across rotations, not previous/next matches
+PASS OPS: full original exception stacks survive query and context
+PASS OPS: export traverses every match beyond the current page
+PASS OPS: exports include original source/query range and exclude credentials
+PASS OPS: time-range export includes nonmatching records
+PASS OPS: overlapping original contexts export once without duplicates
+PASS OPS: export cannot write into managed business/log sources
+PASS OPS: existing export files remain protected
+PASS OPS: cancelled exports do not publish partial success
+PASS OPS: failed and cancelled exports clean partial files
+PASS OPS: invalid regex is reported without a shell invocation
+PASS OPS: catastrophic regex terminates under a per-record timeout
+PASS OPS: revoked sessions cannot read previously opened context
+PASS OPS: revoked sessions cannot export an old selection
+PASS OPS: both feeding positions advance correctly while querying logs without the business gate: 
+PASS OPS: streaming complete export and another admitted parcel both finish without sharing the business lock
+PASS OPS: audit setup confirms the actual pause receipt: BusinessReceipt { Status = Persisted, Reason = Application command committed, Revision = 16 }
+PASS OPS: audit setup waits for paused, authorized and drained configuration availability: Software admission paused; this is not an emergency stop
+PASS OPS: management mode preserves the existing unified save and complete-candidate guard for an unchanged revision; receipt=BusinessReceipt { Status = Unchanged, Reason = No configuration changes; Effective and revision retained, Revision = 19 }
+PASS OPS: parameter audit records a separate management-mode grant without inventing an operator account
+PASS OPS: operator authentication remains its own real provider session
+PASS OPS: exiting and re-entering management mode cannot rewrite the operator or an in-flight frozen parcel identity
+PASS OPS: lost reply retains one original unknown request
+PASS OPS: unsupported authoritative query and repeated input never resend or replace the frozen original request
+PASS PARAM-AUTH ordinary snapshot omits editable inventory
+PASS PARAM-AUTH authorized editor reads complete application configuration even when UI projection remains redacted; optional login is not silently bound
+PASS PARAM-AUTH distinct grants remain distinct even with identical expiry timestamps
+PASS PARAM-AUTH a delayed catalogue cannot publish an editor under a different management grant

@@ -14,7 +14,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); } }
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
-    public string Station => StationDisplaySummary;
+    public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待供包台配置";
     public string TopologyStatus => "左 / 右独立投递位 · 扫码 → 上游格口";
     public string RcsServiceStatus
     {

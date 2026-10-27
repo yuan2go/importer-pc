@@ -15,7 +15,6 @@ public sealed class ManagementModeMenu : Button
     public string UnauthorizedLabel { get => unauthorizedLabel; set { unauthorizedLabel = value; Refresh(); } }
     public event RoutedEventHandler? ModeActionRequested;
     readonly TextBlock label = new();
-    readonly MenuItem state = new() { IsEnabled = false };
     readonly MenuItem expires = new() { IsEnabled = false };
     readonly MenuItem action = new();
     readonly ContextMenu menu = new() { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
@@ -28,7 +27,7 @@ public sealed class ManagementModeMenu : Button
         content.Children.Add(label);
         content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L4,4 L8,0"), Width = 8, Height = 4, Stroke = Foreground, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
         Content = content;
-        menu.Items.Add(state); menu.Items.Add(expires); menu.Items.Add(new Separator()); menu.Items.Add(action);
+        menu.Items.Add(expires); menu.Items.Add(action);
         action.Click += (_, _) => ModeActionRequested?.Invoke(this, new RoutedEventArgs());
         ContextMenu = menu; Refresh();
         System.Windows.Automation.AutomationProperties.SetName(this, "管理模式菜单");
@@ -42,10 +41,9 @@ public sealed class ManagementModeMenu : Button
         if (label is null) return;
         var current = Status;
         label.Text = !current.Available ? "管理不可用" : current.Authorized ? "管理模式" : UnauthorizedLabel;
-        state.Header = !current.Available ? "管理授权服务不可用" : current.Authorized ? "管理权限已开启" : "管理权限未开启";
         expires.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed;
         expires.Header = current.ExpiresAt is { } end ? "将于 " + end.ToLocalTime().ToString("HH:mm") + " 自动退出" : "";
-        action.Header = current.Authorized ? "退出管理模式" : current.Configured || current.HasUnsupportedCredentials ? "重新验证" : "设置管理密码";
+        action.Header = current.Authorized ? "退出管理模式" : current.Configured || current.HasUnsupportedCredentials ? "进入管理模式" : "设置管理密码";
         action.IsEnabled = current.Available;
     }
 }

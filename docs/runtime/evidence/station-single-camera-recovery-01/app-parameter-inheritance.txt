@@ -1,0 +1,44 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-795e64b7b30a4b06b058d29d6bd01c95
+PASS PARAM-INHERIT: old single-pattern bytes and fingerprint remain unchanged
+PASS PARAM-INHERIT: allow/exclude returns precise candidate reasons and freezes both rules in fingerprint
+PASS PARAM-INHERIT: excluded-only observations reject; repeated valid entries never manufacture uniqueness
+PASS PARAM-INHERIT: exclusion matches the entire code rather than a substring
+PASS PARAM-INHERIT: invalid exclusion is field-addressable and pathological exclusion exhausts the same bounded budget
+PASS PARAM-INHERIT: exclusion never bypasses candidate completeness
+PASS PARAM-INHERIT: observation has consistent physical/service ownership
+PASS PARAM-INHERIT: weight has consistent physical/service ownership
+PASS PARAM-INHERIT: plc has consistent physical/service ownership
+PASS PARAM-INHERIT: camera has consistent physical/service ownership
+PASS PARAM-INHERIT: login has consistent physical/service ownership
+PASS PARAM-INHERIT: upload has consistent physical/service ownership
+PASS PARAM-INHERIT: integration has consistent physical/service ownership
+PASS PARAM-INHERIT: log retention deletes only expired diagnostic rotations, preserving recent diagnostics and authoritative/evidence files
+PASS PARAM-INHERIT: first and daily editors round-trip the same complete candidate including exclusion and retention
+PASS PARAM-INHERIT: display preferences persist through the existing local preference mechanism: 本机显示已应用；运行配置修订未改变
+PASS PARAM-INHERIT: display has real consumers, preserves drafts during snapshots and never creates a runtime revision
+PASS PARAM-INHERIT: a new window reads the saved per-station display preference
+PASS PARAM-INHERIT: invalid display input remains editable without changing the active preference
+PASS PARAM-INHERIT: actual exclusion creates no business operation or external request
+PASS PARAM-INHERIT: shared encrypted draft retains optional raw display values while SM no longer treats removed display inputs as unsaved work
+PASS PARAM-INHERIT: missing required draft field preserves encrypted bytes and current input
+PASS PARAM-INHERIT: missing required draft field preserves encrypted bytes and current input
+PASS PARAM-INHERIT: missing required draft field preserves encrypted bytes and current input
+PASS PARAM-INHERIT: missing required draft field preserves encrypted bytes and current input
+PASS PARAM-INHERIT: review uses the same business/system field paths as navigation and errors
+PASS PARAM-INHERIT: new rules save as Pending while the active rule and original request stay frozen
+PASS PARAM-INHERIT: restart activates the exact saved policy without rewriting original requests
+PASS PARAM-INHERIT: invalid lower weight bound targets the original lower field without erasing input: 
+PASS PARAM-INHERIT: invalid lower weight bound targets the original lower field without erasing input: bad
+PASS PARAM-INHERIT: invalid lower weight bound targets the original lower field without erasing input: -1
+PASS PARAM-INHERIT: invalid lower weight bound targets the original lower field without erasing input: 1.0001
+PASS PARAM-INHERIT: invalid upper weight bound still targets the upper field
+PASS PARAM-INHERIT: an applicable Application can bind a second instance of the same driver without changing the reader
+PASS PARAM-INHERIT: removing a driver referenced by a position is still forbidden
+PASS PARAM-INHERIT: unbound candidate removal preserves the original default driver and installed packages
+PASS PARAM-INHERIT: out-of-range stable measurement remains rejected with diagnostic reason and no PLC request
+PASS PARAM-INHERIT: out-of-range samples never extend the deadline and timeout never substitutes a default weight
+PASS PARAM-INHERIT: inclusive range boundaries preserve stability and measurement identity checks
+PASS PARAM-INHERIT: configured weight outside the business range is rejected before runtime
+PASS PARAM-INHERIT: timeout recovery requires explicit inspected disposition through Application guards
+PASS PARAM-INHERIT: next same-code entity accepts its own in-range measurement and never reuses the rejected parcel measurement
+PASS PARAM-INHERIT: rejected first measurement survives restart and changed same-ID sample creates an identity conflict before any request

@@ -10,33 +10,34 @@ public sealed partial class SupplyStore : IDisposable
     SqliteTransaction? current;
     public string Path { get; }
     public Action<object>? Journal { get; set; }
-    public const int CurrentFormatVersion = 5;
-    // This forward migration intentionally makes schema1 readers refuse new JSON semantics.
-    const string SemanticFormatMigration = """
-        CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
-        INSERT INTO storage_format VALUES(1,2,2);
-        """;
+    public const int CurrentFormatVersion = 6;
     const string Schema = """
-        CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL);
-        CREATE TABLE sessions(id TEXT PRIMARY KEY,json TEXT NOT NULL);
-        CREATE TABLE operations(id TEXT PRIMARY KEY,session TEXT NOT NULL REFERENCES sessions(id),lane TEXT NOT NULL,created TEXT NOT NULL,json TEXT NOT NULL);
-        CREATE INDEX operations_history ON operations(session,lane,created);
-        CREATE TABLE observations(id TEXT PRIMARY KEY,device TEXT NOT NULL,epoch TEXT NOT NULL,source TEXT NOT NULL,operation TEXT REFERENCES operations(id),json TEXT NOT NULL,UNIQUE(device,epoch,source));
-        CREATE TABLE admissions(id TEXT PRIMARY KEY,operation TEXT NOT NULL REFERENCES operations(id));
-        CREATE TABLE requests(id TEXT PRIMARY KEY,owner TEXT NOT NULL,session TEXT NOT NULL REFERENCES sessions(id),kind TEXT NOT NULL,intent TEXT NOT NULL UNIQUE,status TEXT NOT NULL,json TEXT NOT NULL);
-        CREATE TABLE outbox(request TEXT PRIMARY KEY REFERENCES requests(id),state TEXT NOT NULL,claimed TEXT);
-        CREATE INDEX outbox_state ON outbox(state);
-        CREATE INDEX requests_owner ON requests(owner);
-        CREATE INDEX requests_status ON requests(status);
-        CREATE TABLE attempts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),ordinal INTEGER NOT NULL,json TEXT NOT NULL,UNIQUE(request,ordinal));
-        CREATE TABLE responses(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
         CREATE TABLE acceptance(request TEXT PRIMARY KEY REFERENCES requests(id),evidence TEXT NOT NULL UNIQUE,operation TEXT NOT NULL REFERENCES operations(id),quantity INTEGER NOT NULL CHECK(quantity>0));
+        CREATE TABLE admissions(id TEXT PRIMARY KEY,operation TEXT NOT NULL REFERENCES operations(id));
         CREATE TABLE alarms(id TEXT PRIMARY KEY,code TEXT NOT NULL,scope TEXT NOT NULL,active INTEGER NOT NULL,json TEXT NOT NULL);
-        CREATE INDEX alarms_active ON alarms(active,scope);
+        CREATE TABLE attempts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),ordinal INTEGER NOT NULL,json TEXT NOT NULL,UNIQUE(request,ordinal));
         CREATE TABLE audit(id TEXT PRIMARY KEY,owner TEXT NOT NULL,at TEXT NOT NULL,json TEXT NOT NULL);
-        CREATE INDEX audit_owner ON audit(owner,at);
         CREATE TABLE commands(id TEXT PRIMARY KEY,hash TEXT NOT NULL,receipt TEXT NOT NULL);
         CREATE TABLE configs(id TEXT PRIMARY KEY,status TEXT NOT NULL,json TEXT NOT NULL);
+        CREATE TABLE observations(id TEXT PRIMARY KEY,device TEXT NOT NULL,epoch TEXT NOT NULL,source TEXT NOT NULL,operation TEXT REFERENCES operations(id),json TEXT NOT NULL,UNIQUE(device,epoch,source));
+        CREATE TABLE operations(id TEXT PRIMARY KEY,session TEXT NOT NULL REFERENCES sessions(id),lane TEXT NOT NULL,created TEXT NOT NULL,json TEXT NOT NULL);
+        CREATE TABLE outbox(request TEXT PRIMARY KEY REFERENCES requests(id),state TEXT NOT NULL,claimed TEXT);
+        CREATE TABLE receipt_occurrences(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),status TEXT NOT NULL,json TEXT NOT NULL);
+        CREATE TABLE requests(id TEXT PRIMARY KEY,owner TEXT NOT NULL,session TEXT NOT NULL REFERENCES sessions(id),kind TEXT NOT NULL,intent TEXT NOT NULL UNIQUE,status TEXT NOT NULL,json TEXT NOT NULL);
+        CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
+        CREATE TABLE responses(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
+        CREATE TABLE sessions(id TEXT PRIMARY KEY,json TEXT NOT NULL);
+        CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL);
+        CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
+        CREATE INDEX alarms_active ON alarms(active,scope);
+        CREATE INDEX audit_owner ON audit(owner,at);
+        CREATE INDEX operations_history ON operations(session,lane,created);
+        CREATE INDEX outbox_state ON outbox(state);
+        CREATE INDEX receipt_occurrences_request ON receipt_occurrences(request,status);
+        CREATE INDEX requests_owner ON requests(owner);
+        CREATE INDEX requests_status ON requests(status);
+        CREATE INDEX response_conflicts_request ON response_conflicts(request);
+        INSERT INTO storage_format VALUES(1,6,6);
         """;
     public SupplyStore(string path)
     {
@@ -59,8 +60,7 @@ public sealed partial class SupplyStore : IDisposable
                 using var tx = db.BeginTransaction();
                 Exec("CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL);", tx);
                 Exec(Schema, tx);
-                Exec("INSERT INTO schema_history VALUES(1,$a,$b)", tx, Wire.Hash(Schema), DateTimeOffset.UtcNow.ToString("O"));
-                ApplyForwardMigrations(db, tx, 1);
+                Exec("INSERT INTO schema_history VALUES(6,$a,$b)", tx, Ipc.Platform.Storage.Database.BaselineHash(Schema), DateTimeOffset.UtcNow.ToString("O"));
                 tx.Commit();
             }
             ValidateStorageFormat(db);

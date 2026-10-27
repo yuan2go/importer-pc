@@ -101,7 +101,7 @@ static class ReliabilityClosure
         foreach (var validity in new[] { WeightValidity.UntilDispatch, WeightValidity.AtAssociation })
             await Case("weight original validity " + validity, async () =>
             {
-                var c = Config("wcs-to-plc") with { SchemaVersion = validity == WeightValidity.UntilDispatch ? 1 : 2, WeightValidity = validity == WeightValidity.UntilDispatch ? null : validity, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 100), Scale = B("weight") };
+                var c = Config("wcs-to-plc") with { SchemaVersion = 3, WeightValidity = validity, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 100), Scale = B("weight") };
                 var (app, f) = await Open(c, "validity-" + validity, blockWcs: true); await using var owned = app;
                 f.Wcs!.BlockSubmit = true; app.EmitReference("original", "005", Wire.Id()); await Wait(app, x => x.Operations.Length == 1);
                 app.EmitReferenceWeight(new(Wire.Id(), "original", c.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow));
@@ -132,7 +132,7 @@ static class ReliabilityClosure
             string originalBody, originalChecksum;
             using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + file))
             {
-                db.Open(); using var command = db.CreateCommand(); command.CommandText = SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DROP INDEX parcel_receipts_pending; DROP INDEX parcel_receipts_operation; DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
+                db.Open(); using var command = db.CreateCommand(); command.CommandText = "UPDATE platform_migrations SET version=1"; command.ExecuteNonQuery();
                 command.CommandText = "SELECT body FROM parcel_operations"; originalBody = (string)command.ExecuteScalar()!;
                 command.CommandText = "SELECT sha FROM platform_migrations WHERE version=1"; originalChecksum = (string)command.ExecuteScalar()!;
             }

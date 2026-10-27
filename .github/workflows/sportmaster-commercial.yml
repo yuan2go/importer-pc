@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           mkdir -p .artifacts/current-contract-ci
           failed=0
-          for case in application-architecture parameter-inheritance capability-closure architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode; do
+          for case in storage-baseline review-closure application-architecture parameter-inheritance capability-closure architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode; do
             if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
           for case in current-contracts architecture conformance operation-closure closure data extensions maintainability review-followup followup; do
@@ -67,7 +67,7 @@ jobs:
         run: |
           set -o pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
-          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --upgrade-conflict-closure 2>&1 | tee history-upgrade-boundaries.log
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --storage-format-guards 2>&1 | tee storage-format-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress 2>&1 | tee retention-ingress.log
           python3 -m unittest discover -s scripts -p test_stability_qualification.py -v 2>&1 | tee stability-collector.log
       - name: Exercise dual-camera startup failure and cancellation ownership
@@ -105,7 +105,7 @@ jobs:
             reliability-02-crashes.log
             aqa01-boundaries.log
             stability-boundaries.log
-            history-upgrade-boundaries.log
+            storage-format-boundaries.log
             retention-ingress.log
             stability-collector.log
             dual-camera-boundaries.log

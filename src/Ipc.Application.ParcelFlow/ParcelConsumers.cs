@@ -14,18 +14,7 @@ public sealed partial class ParcelRepository
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
         using var tx = db.BeginTransaction(deferred: true);
         using var c = db.CreateCommand(); c.Transaction = tx;
-        c.CommandText = "SELECT application,version,sha FROM platform_migrations ORDER BY version";
-        string? application = null; int version = 0;
-        using (var r = c.ExecuteReader())
-        {
-            while (r.Read())
-            {
-                application ??= r.GetString(0); version++;
-                if (r.GetString(0) != application || version > migrations.Length || r.GetInt64(1) != version || r.GetString(2) != Wire.Hash(migrations[version - 1].Sql))
-                    throw new InvalidDataException("Unknown/changed consumer migration; use matching release for inspection");
-            }
-        }
-        if (application is not ("sportmaster" or "direct-plc" or "wcs-to-plc") || version < 1) throw new InvalidDataException("Unknown consumer application; matching application reader required");
+        var application = RequireCurrentStorage(db, tx: tx);
         var configPath = Path.Combine(Path.GetDirectoryName(database)!, "configuration.json");
         if (Directory.Exists(database + ".recovery"))
         {
@@ -45,7 +34,7 @@ public sealed partial class ParcelRepository
         if (Convert.ToInt64(c.ExecuteScalar()) != 0) throw new InvalidDataException("Unknown consumer receipt responsibility; use matching release");
         c.CommandText = "SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
         HashSet<string> pendingReceipts = []; using (var r = c.ExecuteReader()) while (r.Read()) pendingReceipts.Add(r.GetString(0));
-        c.CommandText = version >= 4 ? "SELECT body FROM parcel_operations UNION ALL SELECT body FROM parcel_archives WHERE id IN (SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable'))" : "SELECT body FROM parcel_operations";
+        c.CommandText = "SELECT body FROM parcel_operations UNION ALL SELECT body FROM parcel_archives WHERE id IN (SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable'))";
         using (var r = c.ExecuteReader()) while (r.Read())
         {
             var op = Wire.Decode<ParcelOperation>(r.GetString(0));

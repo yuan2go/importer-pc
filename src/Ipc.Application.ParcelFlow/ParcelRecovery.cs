@@ -31,7 +31,7 @@ public static partial class ParcelRecovery
         if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source) != manifest.DatabaseHash ||
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
-        if (ParcelRepository.ReadStorageVersion(source, manifest.Application) != 9) throw new InvalidDataException("恢复只支持当前第9版数据库；原备份保持不变。");
+        if (ParcelRepository.ReadStorageVersion(source, manifest.Application) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("恢复只支持当前第10版数据库；原备份保持不变。");
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();

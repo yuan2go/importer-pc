@@ -22,7 +22,7 @@ public static class ParcelOfflineReceiptRecovery
         if(File.Exists(wal)&&new FileInfo(wal).Length>0 && (!ExtensionSchema.IsHash(expectedWalHash)||Wire.FileHash(wal)!=expectedWalHash))
             throw new InvalidDataException("Nonempty original WAL requires its exact --wal-sha256; main file hash alone is incomplete");
         var version=ParcelRepository.ReadStorageVersion(database,definition.Id);
-        if(version!=9) throw new InvalidDataException("仅支持当前第9版回执核对；保留旧库，不转换格式。");
+        if(version!=ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("仅支持当前第10版回执核对；原库保留，请使用全新数据目录。");
         var envelope=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory,"configuration.json")));
         var c=envelope.Effective;
         _ = new ConfigurationRevisions<ParcelConfiguration>(Path.Combine(directory,"configuration.json"),c,definition.Validate);

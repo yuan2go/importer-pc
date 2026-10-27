@@ -68,7 +68,7 @@ source_paths = SOURCE_PATHS
 source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', *source_paths], cwd=source_root, text=True).strip()
 if a.require_clean_source and source_changes:
     raise ValueError('Publication requires committed runtime/configuration/packaging inputs')
-release = dict(WorkPackage='WP-IPC-APPLICATION-CONVERGENCE-17', SchemaVersion=1, ReleaseVersion='APPLICATION-CONVERGENCE-17', StorageVersion=5, MinimumReader=5, ContractVersion='SIMULATION-v1', ExtensionContract=1, ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
+release = dict(WorkPackage='WP-IPC-APPLICATION-CONVERGENCE-17', SchemaVersion=1, ReleaseVersion='APPLICATION-CONVERGENCE-17', StorageVersion=6, MinimumReader=6, ContractVersion='SIMULATION-v1', ExtensionContract=1, ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
                SourceCommit=source_commit if not source_changes else None, WorkingTree=bool(source_changes), GitBase=source_commit,
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')

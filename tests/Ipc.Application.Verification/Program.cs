@@ -17,7 +17,8 @@ if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environ
 if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
 if (args.Contains("--time-storage-runtime-child")) { var i=Array.IndexOf(args,"--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace,args[i+1],args[i+2]); return; }
 if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Supervisor(root); return; }
-if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
+if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; } await AtomicStorageChecks.Run(root); return; }
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); return; }
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--stability-audit-fixes")) { await StabilityAuditFixes.Run(workspace, root); return; }
@@ -78,8 +79,7 @@ if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspa
 if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
-if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--historical-db4-upgrade"); await ArchitectureQuality.HistoricalDb4UpgradeChecks(workspace,root,Path.GetFullPath(args[i+1])); return; }
-if (args.Contains("--upgrade-conflict-closure")) { await ArchitectureQuality.UpgradeConflictClosureChecks(workspace,root); return; }
+if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace,root); return; }
 
 if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--sportmaster-rcs-signed"); await SportmasterRcs.SignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }

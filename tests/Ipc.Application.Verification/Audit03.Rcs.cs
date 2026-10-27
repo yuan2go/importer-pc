@@ -145,11 +145,11 @@ static partial class SportmasterRcs
         string[] before;
         using (var current = new ParcelRepository(valid, "sportmaster")) before = current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
         using (var reopened = new ParcelRepository(valid, "sportmaster"))
-            Check(reopened.StorageVersion == 9 && reopened.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
+            Check(reopened.StorageVersion == 10 && reopened.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
                 "A03 current resident/archive restart preserves every original numeric ID and frozen request");
         foreach (var (name, mutation, version) in new[]
         {
-            ("old-six", SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version>=7", 6),
+            ("old-six", "UPDATE platform_migrations SET version=6", 6),
             ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", 9),
             ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", 9)
         })
@@ -158,7 +158,7 @@ static partial class SportmasterRcs
             var refused = false;
             try { using var denied = new ParcelRepository(target, "sportmaster"); }
             catch (InvalidDataException) { refused = true; }
-            Check(refused && Wire.FileHash(database) == hash && ParcelRepository.ReadStorageVersion(database, "sportmaster") == version && !Directory.Exists(Path.Combine(target, "receipts")),
+            Check(refused && Wire.FileHash(database) == hash && NonCurrentStorageFixture.Version(database) == version && !Directory.Exists(Path.Combine(target, "receipts")),
                 "A03 " + name + " refuses before writes, owner backfill, receipt creation or format conversion");
         }
     }

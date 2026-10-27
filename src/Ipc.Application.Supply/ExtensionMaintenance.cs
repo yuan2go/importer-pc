@@ -16,16 +16,16 @@ public sealed partial class SupplyStore
         using var transaction = connection.BeginTransaction(deferred: true);
         using var command = connection.CreateCommand(); command.Transaction = transaction;
         command.CommandText = "SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown')" +
-            (inspection.FormatVersion >= 4 ? " OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')" : "");
-        var receiptPredicate = inspection.FormatVersion >= 5 ? " OR id IN (SELECT request FROM receipt_occurrences WHERE " + ReceiptResponsibilityRules.UnresolvedSql("status") + ")" : "";
+            " OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')";
+        var receiptPredicate = " OR id IN (SELECT request FROM receipt_occurrences WHERE " + ReceiptResponsibilityRules.UnresolvedSql("status") + ")";
         command.CommandText += receiptPredicate;
-        var pending = Convert.ToInt64(command.ExecuteScalar()) != 0 || inspection.UpgradeBlockers.Contains("ReceiptPersistenceRecoveryRequired");
+        var pending = Convert.ToInt64(command.ExecuteScalar()) != 0 || inspection.RecoveryBlockers.Contains("ReceiptPersistenceRecoveryRequired");
         command.CommandText = pending ? "SELECT json FROM configs" : "SELECT json FROM configs WHERE status IN ('Effective','PendingActivation')";
         using var reader = command.ExecuteReader(); List<PackageReference> packages = [];
         while (reader.Read()) packages.AddRange(Wire.Decode<ConfigRevision>(reader.GetString(0)).Content.Extensions?.Packages ?? []);
         reader.Close();
         command.CommandText = "SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown')" +
-            (inspection.FormatVersion >= 4 ? " OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')" : "");
+            " OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')";
         command.CommandText += receiptPredicate;
         using var requests = command.ExecuteReader();
         while (requests.Read()) if (Wire.Decode<BusinessRequest>(requests.GetString(0)).Implementation?.Package is { } package) packages.Add(package);

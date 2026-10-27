@@ -11,11 +11,6 @@ using Microsoft.Data.Sqlite;
 
 static class OperationClosureVerification
 {
-    public static string Format5Checksum => Wire.Hash("""
-        CREATE TABLE receipt_occurrences(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),status TEXT NOT NULL,json TEXT NOT NULL);
-        CREATE INDEX receipt_occurrences_request ON receipt_occurrences(request,status);
-        UPDATE storage_format SET version=5,minimum_reader=5 WHERE id=1;
-        """);
     static void Assert(bool condition, string text)
     { if (!condition) throw new Exception("AC15 " + text); Console.WriteLine("PASS AC15 " + text); }
     static void Sql(string path, string sql)

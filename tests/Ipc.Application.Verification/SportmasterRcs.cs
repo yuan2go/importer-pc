@@ -109,7 +109,7 @@ static partial class SportmasterRcs
         await RuntimeChecks(workspace, root, peer);
         MigrationChecks(workspace, root);
         await NumericIdentityHistoryChecks(workspace,root,peer);
-        Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and SQL6 custody transitions");
+        Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and current custody transitions");
     }
     static async Task ConfirmedScanFlow(string workspace, string root, Peer peer)
     {
@@ -204,7 +204,7 @@ static partial class SportmasterRcs
             var s=await Wait(app,x=>x.Inputs?.Any(i=>i.Observation.AdmissionId=="numeric-restored-blocked")==true);
             Check(resume.Status=="Rejected"&&s.Paused&&s.BlockingReasons.Any(r=>r.StartsWith("RestoreHandoffRequired",StringComparison.Ordinal))&&
                 !s.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked")&&peer.Requests.Count==posts,
-                "restored DB9 remains isolated before handoff; attempted admission cannot create a request or POST");
+                "restored DB10 remains isolated before handoff; attempted admission cannot create a request or POST");
             using var repository = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId),c.ApplicationId);
             await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
             var range = preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!)!;
@@ -423,7 +423,7 @@ static partial class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 9, "actual ParcelRuntime startup retains SQL7 numeric ownership with current SQL9 input custody semantics");
+            Check((long)command.ExecuteScalar()! == 10, "actual ParcelRuntime startup retains numeric ownership with current DB10 input custody semantics");
         }
 
     }
@@ -444,27 +444,18 @@ static partial class SportmasterRcs
         }
         var raw=File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json"));
         using(var reopened=new ParcelRepository(current,"sportmaster"))
-            Check(reopened.StorageVersion==9 && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
+            Check(reopened.StorageVersion==10 && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
                 reopened.PendingReceipts().Length==2 && reopened.ReceiptById(durable) is {State:"RawDurable"} &&
                 reopened.ReceiptById(awaiting) is {State:"Awaiting",RawHash:null} && File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json")).SequenceEqual(raw),
-                "current SQL9 restart retains frozen Unknown, independent custody, raw bytes and one send");
-        // Test-only materialization of immutable historical SQL. No old writer remains in the product.
-        var migrations=(Ipc.Platform.Storage.DatabaseMigration[])typeof(ParcelRepository).GetField("migrations",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static)!.GetValue(null)!;
-        foreach(var version in Enumerable.Range(2,7))
+                "current DB10 restart retains frozen Unknown, independent custody, raw bytes and one send");
+        foreach(var version in Enumerable.Range(1,9).Append(11))
         {
-            var directory=Path.Combine(root,"unsupported-sql"+version);Directory.CreateDirectory(directory);
-            var file=Path.Combine(directory,"sportmaster.db");
-            using(var db=Ipc.Platform.Storage.Database.Open(file,true))
-            {
-                Ipc.Platform.Storage.Database.Migrate(db,"sportmaster",migrations.Take(version).ToArray());
-                using var command=db.CreateCommand();command.CommandText="INSERT INTO parcel_operations VALUES($id,$admission,$observation,$body)";
-                command.Parameters.AddWithValue("$id",operation.Id);command.Parameters.AddWithValue("$admission",operation.AdmissionId);
-                command.Parameters.AddWithValue("$observation",operation.ObservationId);command.Parameters.AddWithValue("$body",Wire.Encode(operation));command.ExecuteNonQuery();
-            }
+            var directory=Path.Combine(root,"unsupported-format"+version);
+            var file=NonCurrentStorageFixture.Create(directory,"sportmaster",version,operation);
             var original=Wire.FileHash(file);var receipt=Path.Combine(directory,"original-receipt.json");File.WriteAllBytes(receipt,raw);
             try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Historical SQL accepted"); }
             catch(InvalidDataException)
-            { Check(Wire.FileHash(file)==original && File.ReadAllBytes(receipt).SequenceEqual(raw) && ParcelRepository.ReadStorageVersion(file,"sportmaster")==version && !Directory.Exists(Path.Combine(directory,"receipts")),
+            { Check(Wire.FileHash(file)==original && File.ReadAllBytes(receipt).SequenceEqual(raw) && NonCurrentStorageFixture.Version(file)==version && !Directory.Exists(Path.Combine(directory,"receipts")),
                 "SQL"+version+" refuses before writes/receipt directories; original request and raw remain exact"); }
         }
         foreach(var damage in new[]{"future","foreign","checksum"})
@@ -474,9 +465,9 @@ static partial class SportmasterRcs
             using(var db=new SqliteConnection("Data Source="+file+";Pooling=False"))
             {
                 db.Open();using var command=db.CreateCommand();command.CommandText=damage switch{
-                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',10,'future')",
+                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',11,'future')",
                     "foreign"=>"UPDATE platform_migrations SET application='another-business'",
-                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=9"};command.ExecuteNonQuery();
+                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=10"};command.ExecuteNonQuery();
             }
             var hash=Wire.FileHash(file);
             try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Damaged identity accepted"); }

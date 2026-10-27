@@ -47,7 +47,7 @@ public sealed partial class ParcelStartupMaintenance
         }
         var inspection = ParcelRepository.InspectMaintenance(copy.Database, definition);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
-        var allowed = purpose is "Backup" or "Repair" || inspection.OrdinaryUpgradeAllowed && markers.Length == 0;
+        var allowed = purpose is "Backup" or "Repair" || inspection.ResponsibilitiesSettled && markers.Length == 0;
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
             Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。"), state.Hash, destination);
     }

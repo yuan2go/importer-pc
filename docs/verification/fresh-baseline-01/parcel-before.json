@@ -1,0 +1,380 @@
+{
+  "SourceCommit": "4e3748159af2599878e57329f887098b1c6be927",
+  "Schema": [
+    {
+      "Type": "index",
+      "Name": "parcel_archives_recovery",
+      "Table": "parcel_archives",
+      "Sql": "CREATE INDEX parcel_archives_recovery ON parcel_archives(id) WHERE json_extract(body,\u0027$.RecoveryRequired\u0027)=1"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_audit_input_operation",
+      "Table": "parcel_audit",
+      "Sql": "CREATE INDEX parcel_audit_input_operation ON parcel_audit(json_extract(detail,\u0027$.OperationId\u0027)) WHERE event=\u0027InputObserved\u0027 AND json_valid(detail)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_audit_owner_at",
+      "Table": "parcel_audit",
+      "Sql": "CREATE INDEX parcel_audit_owner_at ON parcel_audit(owner,at)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_commands_pending",
+      "Table": "parcel_commands",
+      "Sql": "CREATE INDEX parcel_commands_pending ON parcel_commands(id) WHERE json_extract(receipt,\u0027$.Status\u0027)=\u0027Pending\u0027"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_barcode",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_barcode ON parcel_history_projection(barcode,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_capture",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_capture ON parcel_history_projection(capture,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_observed",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_observed ON parcel_history_projection(observed,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_plc",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_plc ON parcel_history_projection(plc,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_position",
+      "Table": "parcel_history_index",
+      "Sql": "CREATE INDEX parcel_history_position ON parcel_history_index(position,seq)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_state",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_state ON parcel_history_projection(state,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_upload",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_upload ON parcel_history_projection(upload,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_history_wcs",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE INDEX parcel_history_wcs ON parcel_history_projection(wcs,id)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_ingress_pending",
+      "Table": "parcel_ingress",
+      "Sql": "CREATE INDEX parcel_ingress_pending ON parcel_ingress(state,position,received_at)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_ingress_session",
+      "Table": "parcel_ingress",
+      "Sql": "CREATE INDEX parcel_ingress_session ON parcel_ingress(session,received_at,position)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_operations_recovery",
+      "Table": "parcel_operations",
+      "Sql": "CREATE INDEX parcel_operations_recovery ON parcel_operations(id) WHERE json_extract(body,\u0027$.RecoveryRequired\u0027)=1"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_receipts_operation",
+      "Table": "parcel_receipts",
+      "Sql": "CREATE INDEX parcel_receipts_operation ON parcel_receipts(operation)"
+    },
+    {
+      "Type": "index",
+      "Name": "parcel_receipts_pending",
+      "Table": "parcel_receipts",
+      "Sql": "CREATE INDEX parcel_receipts_pending ON parcel_receipts(state,operation,stage)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_archive_versions",
+      "Table": "parcel_archive_versions",
+      "Sql": "CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash))"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_archived_receipts",
+      "Table": "parcel_archived_receipts",
+      "Sql": "CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_archives",
+      "Table": "parcel_archives",
+      "Sql": "CREATE TABLE parcel_archives(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL,body_hash TEXT NOT NULL,archived_at TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_audit",
+      "Table": "parcel_audit",
+      "Sql": "CREATE TABLE parcel_audit(seq INTEGER PRIMARY KEY AUTOINCREMENT,at TEXT NOT NULL,event TEXT NOT NULL,owner TEXT NOT NULL,detail TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_commands",
+      "Table": "parcel_commands",
+      "Sql": "CREATE TABLE parcel_commands(id TEXT PRIMARY KEY,hash TEXT NOT NULL,receipt TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_commercial_semantics",
+      "Table": "parcel_commercial_semantics",
+      "Sql": "CREATE TABLE parcel_commercial_semantics(version INTEGER PRIMARY KEY CHECK(version=8),description TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_configuration_audit",
+      "Table": "parcel_configuration_audit",
+      "Sql": "CREATE TABLE parcel_configuration_audit(id TEXT PRIMARY KEY,body TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_history_index",
+      "Table": "parcel_history_index",
+      "Sql": "CREATE TABLE parcel_history_index(seq INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,position TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_history_projection",
+      "Table": "parcel_history_projection",
+      "Sql": "CREATE TABLE parcel_history_projection(id TEXT PRIMARY KEY,barcode TEXT,state TEXT,observed REAL,wcs TEXT,plc TEXT,upload TEXT,capture TEXT,accepted INTEGER,unknown INTEGER,physical INTEGER,attempts INTEGER)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_identity_conflicts",
+      "Table": "parcel_identity_conflicts",
+      "Sql": "CREATE TABLE parcel_identity_conflicts(id TEXT PRIMARY KEY,body TEXT NOT NULL,acknowledged INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_ingress",
+      "Table": "parcel_ingress",
+      "Sql": "CREATE TABLE parcel_ingress(id TEXT PRIMARY KEY,position TEXT NOT NULL,received_at TEXT NOT NULL,state TEXT NOT NULL,body TEXT NOT NULL,body_hash TEXT NOT NULL,detail TEXT,session TEXT NOT NULL,started_at TEXT,completed_at TEXT,queue_ms REAL,processing_ms REAL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_ingress_audits",
+      "Table": "parcel_ingress_audits",
+      "Sql": "CREATE TABLE parcel_ingress_audits(input TEXT NOT NULL,seq INTEGER NOT NULL,PRIMARY KEY(input,seq))"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_integration_id_owners",
+      "Table": "parcel_integration_id_owners",
+      "Sql": "CREATE TABLE parcel_integration_id_owners(id INTEGER PRIMARY KEY CHECK(id\u003E0),operation TEXT NOT NULL UNIQUE,request TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_integration_id_ranges",
+      "Table": "parcel_integration_id_ranges",
+      "Sql": "CREATE TABLE parcel_integration_id_ranges(binding_hash TEXT PRIMARY KEY,first_id INTEGER NOT NULL CHECK(first_id\u003E0),last_id INTEGER NOT NULL CHECK(last_id\u003E=first_id))"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_integration_id_restores",
+      "Table": "parcel_integration_id_restores",
+      "Sql": "CREATE TABLE parcel_integration_id_restores(identity TEXT PRIMARY KEY,ceiling INTEGER NOT NULL CHECK(ceiling\u003E=0))"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_integration_semantics",
+      "Table": "parcel_integration_semantics",
+      "Sql": "CREATE TABLE parcel_integration_semantics(version INTEGER PRIMARY KEY CHECK(version=6),description TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_measurements",
+      "Table": "parcel_measurements",
+      "Sql": "CREATE TABLE parcel_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_meta",
+      "Table": "parcel_meta",
+      "Sql": "CREATE TABLE parcel_meta(id INTEGER PRIMARY KEY CHECK(id=1),revision INTEGER NOT NULL,paused INTEGER NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_operations",
+      "Table": "parcel_operations",
+      "Sql": "CREATE TABLE parcel_operations(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_overload_ack",
+      "Table": "parcel_overload_ack",
+      "Sql": "CREATE TABLE parcel_overload_ack(identity TEXT PRIMARY KEY,command TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_receipt_custody",
+      "Table": "parcel_receipt_custody",
+      "Sql": "CREATE TABLE parcel_receipt_custody(occurrence TEXT PRIMARY KEY,query_occurrence TEXT,observed_at TEXT NOT NULL,evidence TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_receipts",
+      "Table": "parcel_receipts",
+      "Sql": "CREATE TABLE parcel_receipts(id TEXT PRIMARY KEY,operation TEXT NOT NULL,stage TEXT NOT NULL,request TEXT NOT NULL,source TEXT NOT NULL,state TEXT NOT NULL,raw_hash TEXT)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_reply_identities",
+      "Table": "parcel_reply_identities",
+      "Sql": "CREATE TABLE parcel_reply_identities(request TEXT NOT NULL,id TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(request,id))"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_retention_runs",
+      "Table": "parcel_retention_runs",
+      "Sql": "CREATE TABLE parcel_retention_runs(id TEXT PRIMARY KEY,at TEXT NOT NULL,days INTEGER NOT NULL,cutoff TEXT NOT NULL,backup_hash TEXT NOT NULL,summary TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_retired_inputs",
+      "Table": "parcel_retired_inputs",
+      "Sql": "CREATE TABLE parcel_retired_inputs(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,state TEXT NOT NULL,at TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_retired_measurements",
+      "Table": "parcel_retired_measurements",
+      "Sql": "CREATE TABLE parcel_retired_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body_hash TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_retired_operations",
+      "Table": "parcel_retired_operations",
+      "Sql": "CREATE TABLE parcel_retired_operations(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,at TEXT NOT NULL,run TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_semantics",
+      "Table": "parcel_semantics",
+      "Sql": "CREATE TABLE parcel_semantics(version INTEGER PRIMARY KEY CHECK(version=2),description TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "parcel_topology_semantics",
+      "Table": "parcel_topology_semantics",
+      "Sql": "CREATE TABLE parcel_topology_semantics(version INTEGER PRIMARY KEY CHECK(version=3),description TEXT NOT NULL)"
+    },
+    {
+      "Type": "table",
+      "Name": "platform_migrations",
+      "Table": "platform_migrations",
+      "Sql": "CREATE TABLE platform_migrations(application TEXT NOT NULL,version INTEGER NOT NULL,sha TEXT NOT NULL,PRIMARY KEY(application,version))"
+    },
+    {
+      "Type": "trigger",
+      "Name": "parcel_archives_projection_insert",
+      "Table": "parcel_archives",
+      "Sql": "CREATE TRIGGER parcel_archives_projection_insert AFTER INSERT ON parcel_archives BEGIN INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,\u0027$.ParcelCode\u0027),json_extract(NEW.body,\u0027$.State\u0027),julianday(json_extract(NEW.body,\u0027$.ObservedAt\u0027)),json_extract(NEW.body,\u0027$.Wcs.Request.Id\u0027),json_extract(NEW.body,\u0027$.Plc.Request.Id\u0027),json_extract(NEW.body,\u0027$.Upload.Request.Id\u0027),json_extract(NEW.body,\u0027$.Capture.Request.Id\u0027),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Accepted\u0027,0),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Plc.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Upload.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Capture.State\u0027)=\u0027Unknown\u0027,0),json_extract(NEW.body,\u0027$.State\u0027)=\u0027PhysicalCompleted\u0027,coalesce(json_extract(NEW.body,\u0027$.Wcs.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Plc.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Upload.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Capture.Attempts\u0027),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts; END"
+    },
+    {
+      "Type": "trigger",
+      "Name": "parcel_archives_projection_update",
+      "Table": "parcel_archives",
+      "Sql": "CREATE TRIGGER parcel_archives_projection_update AFTER UPDATE ON parcel_archives BEGIN INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,\u0027$.ParcelCode\u0027),json_extract(NEW.body,\u0027$.State\u0027),julianday(json_extract(NEW.body,\u0027$.ObservedAt\u0027)),json_extract(NEW.body,\u0027$.Wcs.Request.Id\u0027),json_extract(NEW.body,\u0027$.Plc.Request.Id\u0027),json_extract(NEW.body,\u0027$.Upload.Request.Id\u0027),json_extract(NEW.body,\u0027$.Capture.Request.Id\u0027),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Accepted\u0027,0),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Plc.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Upload.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Capture.State\u0027)=\u0027Unknown\u0027,0),json_extract(NEW.body,\u0027$.State\u0027)=\u0027PhysicalCompleted\u0027,coalesce(json_extract(NEW.body,\u0027$.Wcs.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Plc.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Upload.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Capture.Attempts\u0027),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts; END"
+    },
+    {
+      "Type": "trigger",
+      "Name": "parcel_operations_projection_insert",
+      "Table": "parcel_operations",
+      "Sql": "CREATE TRIGGER parcel_operations_projection_insert AFTER INSERT ON parcel_operations BEGIN INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,\u0027$.ParcelCode\u0027),json_extract(NEW.body,\u0027$.State\u0027),julianday(json_extract(NEW.body,\u0027$.ObservedAt\u0027)),json_extract(NEW.body,\u0027$.Wcs.Request.Id\u0027),json_extract(NEW.body,\u0027$.Plc.Request.Id\u0027),json_extract(NEW.body,\u0027$.Upload.Request.Id\u0027),json_extract(NEW.body,\u0027$.Capture.Request.Id\u0027),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Accepted\u0027,0),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Plc.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Upload.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Capture.State\u0027)=\u0027Unknown\u0027,0),json_extract(NEW.body,\u0027$.State\u0027)=\u0027PhysicalCompleted\u0027,coalesce(json_extract(NEW.body,\u0027$.Wcs.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Plc.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Upload.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Capture.Attempts\u0027),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts; END"
+    },
+    {
+      "Type": "trigger",
+      "Name": "parcel_operations_projection_update",
+      "Table": "parcel_operations",
+      "Sql": "CREATE TRIGGER parcel_operations_projection_update AFTER UPDATE ON parcel_operations BEGIN INSERT INTO parcel_history_projection(id,barcode,state,observed,wcs,plc,upload,capture,accepted,unknown,physical,attempts) VALUES(NEW.id,json_extract(NEW.body,\u0027$.ParcelCode\u0027),json_extract(NEW.body,\u0027$.State\u0027),julianday(json_extract(NEW.body,\u0027$.ObservedAt\u0027)),json_extract(NEW.body,\u0027$.Wcs.Request.Id\u0027),json_extract(NEW.body,\u0027$.Plc.Request.Id\u0027),json_extract(NEW.body,\u0027$.Upload.Request.Id\u0027),json_extract(NEW.body,\u0027$.Capture.Request.Id\u0027),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Accepted\u0027,0),coalesce(json_extract(NEW.body,\u0027$.Wcs.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Plc.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Upload.State\u0027)=\u0027Unknown\u0027,0) OR coalesce(json_extract(NEW.body,\u0027$.Capture.State\u0027)=\u0027Unknown\u0027,0),json_extract(NEW.body,\u0027$.State\u0027)=\u0027PhysicalCompleted\u0027,coalesce(json_extract(NEW.body,\u0027$.Wcs.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Plc.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Upload.Attempts\u0027),0)\u002Bcoalesce(json_extract(NEW.body,\u0027$.Capture.Attempts\u0027),0)) ON CONFLICT(id) DO UPDATE SET barcode=excluded.barcode,state=excluded.state,observed=excluded.observed,wcs=excluded.wcs,plc=excluded.plc,upload=excluded.upload,capture=excluded.capture,accepted=excluded.accepted,unknown=excluded.unknown,physical=excluded.physical,attempts=excluded.attempts; END"
+    }
+  ],
+  "Identities": {
+    "platform_migrations": [
+      [
+        "sportmaster",
+        1,
+        "5BCF728E13981F3A845E35EB72B599AE2AF21D538775C9569AEA1A3A2DA959E9"
+      ],
+      [
+        "sportmaster",
+        2,
+        "2B2F8BBA2436B4FE8F6E707C1301FB3111B33F973322EFBCA3364F3B4062FACA"
+      ],
+      [
+        "sportmaster",
+        3,
+        "6C4B9064D29E2D856C63BFD5BAA9BCAD706B076277F0BE901B37710F4E2E3FBC"
+      ],
+      [
+        "sportmaster",
+        4,
+        "764E60F97F86634B5788BB4DC3735ACBED645F556315F4B1AB73805DF951A079"
+      ],
+      [
+        "sportmaster",
+        5,
+        "49BF292620A6E0EC61A49925575CD6675D902D6A2F7DA516C29AE528733F6B76"
+      ],
+      [
+        "sportmaster",
+        6,
+        "2F17584848ABBA6EF4395F65A282518369FCBE9242966772FA8A56269E0DEE0A"
+      ],
+      [
+        "sportmaster",
+        7,
+        "B5A637F5CECB0064132B69F620851FACFEBB461ADE7DE55E6B8D1E73B100E333"
+      ],
+      [
+        "sportmaster",
+        8,
+        "70F2962478B8547C46690202B5A31886BEEA4B15EB430D0755781B7869B18764"
+      ],
+      [
+        "sportmaster",
+        9,
+        "FCE0069C8FF6F5B74F2EB22F696CC2B062C71B8653215D447A22FECB8643F89E"
+      ]
+    ],
+    "parcel_meta": [
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "parcel_integration_semantics": [
+      [
+        6,
+        "Frozen external wire intents and original HTTP receipts; UnpackRequired holds the original position"
+      ]
+    ],
+    "parcel_commercial_semantics": [
+      [
+        8,
+        "Explicit initial repair, protected restore handoff and configuration-bound backup schedule; prior readers must refuse"
+      ]
+    ]
+  },
+  "JournalMode": "wal"
+}

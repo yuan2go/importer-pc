@@ -83,12 +83,12 @@ static partial class ArchitectureQuality
         var original = new ParcelOperation(Wire.Id(), "legacy3-original", "00091", Wire.Hash("legacy3-observation"), DateTimeOffset.UtcNow,
             Wire.Hash(Wire.Encode(c)), c, new() { [c.Scale!.InstanceId] = new string('A', 64) }, c.Weight, null, ParcelState.WaitingWeight,
             null, null, null, "Original pre-upgrade same-parcel weight wait");
-        SyntheticPriorStorage.Create(path,"direct-plc",3,original);
+        NonCurrentStorageFixture.Create(path,"direct-plc",3,original);
         string body;
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; body = (string)q.ExecuteScalar()!; }
         try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "DB3 unresolved originals must reject migration before changing reader marker"); }
-        catch (InvalidDataException ex) { Check(ex.Message.Contains("不受支持"), "DB3 unresolved originals refuse before any format conversion"); }
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录"), "DB3 unresolved originals refuse before any format conversion"); }
         using(var readOnly=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=Path.Combine(path,"direct-plc.db"),Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString()))
         {readOnly.Open();using var q=readOnly.CreateCommand();q.CommandText="SELECT body FROM parcel_operations";Check((string)q.ExecuteScalar()! == body,"old request JSON remains byte-identical through read-only inspection");}
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))

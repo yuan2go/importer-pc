@@ -95,9 +95,9 @@ if (action is "backup" or "preflight" or "restore")
     if (action == "preflight")
     {
         var inspection = SupplyStore.InspectReadOnly(dbPath);
-        Console.WriteLine(Wire.Encode(new { Status = inspection.UpgradeBlockers.Length == 0 ? "ReadOnlyInspectionCompleted" : "Blocked",
+        Console.WriteLine(Wire.Encode(new { Status = inspection.RecoveryBlockers.Length == 0 ? "ReadOnlyInspectionCompleted" : "Blocked",
             Inspection = inspection, Launch = "NOT_RUN" }));
-        if (inspection.UpgradeBlockers.Length != 0) Environment.ExitCode = 2;
+        if (inspection.RecoveryBlockers.Length != 0) Environment.ExitCode = 2;
     }
     else if (action == "backup")
     {

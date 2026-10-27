@@ -107,7 +107,7 @@ public sealed partial class ParcelRepository
         var envelope = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
-        if (ReadStorageVersion(database, flow.Id) != 9) throw new InvalidDataException("Use the matching DB9 release; retention never performs a schema upgrade");
+        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Use the current DB10 format; use a fresh data directory");
         phase("InitializeRepository");
         using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
@@ -144,7 +144,7 @@ public sealed partial class ParcelRepository
     }
     internal ParcelRetentionResult ExpireHistoryCore(FlowDefinition flow, int days, DateTimeOffset now, string backupHash, Action authority)
     {
-        if (days is < 7 or > 30 || !Paused || StorageVersion != 9) throw new InvalidOperationException("Invalid retention maintenance state");
+        if (days is < 7 or > 30 || !Paused || StorageVersion != ParcelRepository.CurrentStorageVersion) throw new InvalidOperationException("Invalid retention maintenance state");
         var cutoff = now.AddDays(-days); var run = Wire.Id(); long removed = 0, inputs = 0, cursor = 0;
         PrepareRetentionCommandOwners();
         using (var start = db.CreateCommand())

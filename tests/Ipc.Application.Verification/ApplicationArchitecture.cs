@@ -240,36 +240,18 @@ static class ApplicationArchitecture
             await Command(app, "Pause"); Check((await Command(app, "AbandonUnsubmitted", s.Operations.Single().Id, "SYNTHETIC inspected removal")).Status == "Persisted", "capture-only unsubmitted parcel safely cancelled through actual command guard");
             s = await Wait(app, x => x.Operations.Single().ImageReleased); Check(s.Operations.Single().Upload is null && s.Operations.Single().Plc is null, "safe cancellation releases capture-only bytes without inventing upload or main execution");
         }
-        await VerifyMigration(root);
+        await VerifyStorageGate(root);
 
 
         Console.WriteLine("PASS AA22 COMPLETE");
     }
-    static async Task VerifyMigration(string root)
+    static Task VerifyStorageGate(string root)
     {
-        var path = Path.Combine(root, "migration"); Directory.CreateDirectory(path);
-        SyntheticPriorStorage.Create(path,"sportmaster",2);
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
-        {
-            db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "INSERT INTO parcel_receipts VALUES('pending','original','wcs-slot','request','Submit','Awaiting',NULL)"; cmd.ExecuteNonQuery();
-        }
-        try { using var rejected = new ParcelRepository(path, "sportmaster"); throw new Exception("migration accepted unresolved original"); }
-        catch (InvalidDataException e) { Check(e.Message.Contains("不受支持"), "database2 unresolved originals block before migration3"); }
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
-        {
-            db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 2, "blocked upgrade preserves SQL2 identity and checksum history");
-            cmd.CommandText = "UPDATE parcel_receipts SET state='NoReply'"; cmd.ExecuteNonQuery();
-        }
-        var originalHash=Wire.FileHash(Path.Combine(path,"sportmaster.db"));
-        try{using var denied=new ParcelRepository(path,"sportmaster");Check(false,"settled old schema must still refuse");}
-        catch(InvalidDataException){Check(Wire.FileHash(Path.Combine(path,"sportmaster.db"))==originalHash,"settled prior format remains byte-identical");}
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
-        {
-            db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 2, "settled database2 retains its exact original SQL identity without a new writer marker");
-        }
-        await Task.CompletedTask;
+        var path=Path.Combine(root,"noncurrent-storage"); var file=NonCurrentStorageFixture.Create(path,"sportmaster",9);
+        var hash=Wire.FileHash(file);
+        try { using var denied=new ParcelRepository(path,"sportmaster"); Check(false,"non-current storage accepted"); }
+        catch(InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && Wire.FileHash(file)==hash,"non-current storage refuses before writes with fresh-directory guidance"); }
+        return Task.CompletedTask;
     }
     sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false, bool retainOnStop = false) : IParcelCapabilityFactory
     {

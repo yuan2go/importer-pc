@@ -52,6 +52,9 @@ internal sealed partial class MvsAcquisition : IControlledObservationSource
         nodes = int.Parse(context.Parameters.GetValueOrDefault("image.nodes", "3"), System.Globalization.CultureInfo.InvariantCulture);
         maximumPayload = int.Parse(context.Parameters.GetValueOrDefault("image.maximum-payload-bytes", "8388608"), System.Globalization.CultureInfo.InvariantCulture);
         if (nodes is < 1 or > 4 || maximumPayload is < 1048576 or > 33554432) throw new InvalidDataException("Image nodes must be 1..4 and payload budget 1..32 MiB");
+        // Register process-wide instruments only after construction validation;
+        // a rejected configuration has no disposable source owner.
+        metrics = new(context.DeviceId);
     }
     void PhaseTo(string value) { lock (gate) phase = value; phaseChanged?.Invoke(value); }
     void Publish(DeviceHealth state)

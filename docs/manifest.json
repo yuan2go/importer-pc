@@ -102375,9 +102375,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "f9d16440fc4338582893d0750e53c396d732325902da26673dd7a056b6c8c61b",
-      "size_bytes": 16677,
-      "git_blob": "1ed53869e0c17a9c0f587047f64ac193dfe0ba3b",
+      "sha256": "8abbfbb201f6af9136d7fac191fba137d91189ff599b0b12e80f1efc931c71ac",
+      "size_bytes": 16867,
+      "git_blob": "917ed68f3a00a09a613591545b338a8b9774b43a",
       "storage_scope": "public_repository"
     },
     {
@@ -104784,9 +104784,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS decoding framework and bounded verification",
       "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
-      "sha256": "d03d946ebb7281a5dfbd89a5c584fe3de8a688b4386e3f5b7d8dd792f8e7a0a7",
-      "size_bytes": 2803,
-      "git_blob": "e06ddc1d9ace5e083e09872f30f987645e6f32fa",
+      "sha256": "187506181fcbd1e5027a6878fbf819c079e097341387c4067d8937e61aa5ecf4",
+      "size_bytes": 2927,
+      "git_blob": "c773d36cf10aca5294d31d3825e8d4e9063790fd",
       "storage_scope": "public_repository"
     },
     {
@@ -104839,9 +104839,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS decoding framework and bounded verification",
       "source": "docs/design/mvs-decoding-01.md; evidence retains its own SourceCommit",
-      "sha256": "c7528bd40108d2752a72c28f3d420e153e973346dfe7874264572f61a17e81d8",
-      "size_bytes": 2934,
-      "git_blob": "8820eed59165a7d3e10bc8b647526ee384133e99",
+      "sha256": "87656e5859d7050b30671c5fadfc7fcc7eb5fb0bf5df0dc9771e0d3434cf9e05",
+      "size_bytes": 2926,
+      "git_blob": "00e31549bbb63c422b3b8c07a8c114572e9ce951",
       "storage_scope": "public_repository"
     },
     {

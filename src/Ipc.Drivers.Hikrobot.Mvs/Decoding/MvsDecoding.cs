@@ -15,7 +15,7 @@ internal sealed partial class MvsAcquisition
 {
     readonly Func<IFrameDecoder>? decoderFactory;
     readonly MvsDecodeOptions decodeOptions;
-    readonly DecodeMetrics metrics = new();
+    readonly DecodeMetrics metrics;
     readonly object healthPublication = new();
     DecodePipeline? pipeline;
     Task? decoderHealthReporter;

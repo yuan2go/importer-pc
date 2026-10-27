@@ -7,12 +7,13 @@ public sealed record DecodeStatistics(long Acquired, long Decoded, long NoRead, 
 
 internal sealed class DecodeMetrics : IDisposable
 {
-    readonly Meter meter = new("Ipc.Mvs.Decoding", "1.0.0");
+    readonly Meter meter;
     readonly Histogram<double> duration;
     long acquired, decoded, noRead, dropped, stale, gaps, failures;
     int depth, highWater;
-    public DecodeMetrics()
+    public DecodeMetrics(string device)
     {
+        meter = new(new MeterOptions("Ipc.Mvs.Decoding") { Version = "1.0.0", Tags = [new KeyValuePair<string, object?>("device.id", device)] });
         // Capture performs only atomic increments. Metrics listeners run when
         // polling, never synchronously on the SDK loan/copy path.
         meter.CreateObservableCounter("mvs.frames", () => new[]

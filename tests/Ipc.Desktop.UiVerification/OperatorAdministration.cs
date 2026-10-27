@@ -38,7 +38,7 @@ static partial class Program
         Check(formatted.Contains(rawRecord) && formatted.Contains("SyntheticException\n   at Source.Stack()"), "raw context preserves Windows path escapes while decoding actual multiline exception values separately");
         lines.Add("Native WPF HWND/Dispatcher, synthetic ports and data. No real device or RCS calls.");
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var factory = new VisualFactory(launch, true);

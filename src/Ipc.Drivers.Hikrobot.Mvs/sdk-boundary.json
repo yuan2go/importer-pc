@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Sdk": "MVS",
-  "GetSdkVersion": "4.8.2.2 (0x04080202)",
+  "GetSdkVersion": "4.8.2.1 (0x04080201)",
   "EntryFileVersion": "4.8.2.1",
   "EntrySha256": "0CBCF8D1C9D9647CD3DBB6CE8E0C599EA514388F6E2345084BC1B16E9BE5119B",
   "HeaderSha256": {
@@ -21,5 +21,6 @@
   "PixelFormat": "Mono8",
   "BarcodeCapability": "Unavailable: applicable recognition component not obtained",
   "RawImagesPersisted": false,
-  "ProductionBusinessReady": false
+  "ProductionBusinessReady": false,
+  "ApiVersionCorrection": "Direct current DLL invocation returned 0x04080201; prior 0x04080202 record was incorrect; entry SHA256/header ABI unchanged"
 }

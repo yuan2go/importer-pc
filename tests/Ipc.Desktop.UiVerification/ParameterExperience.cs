@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -19,7 +19,7 @@ static partial class Program
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS EXPERIENCE " + message); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationCode = "SYNTHETIC-STATION" };
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { StationCode = "SYNTHETIC-STATION" };
         var operatorBinding = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator-spare", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
         config = config with { CapabilityInstances = ParcelBindings.All(config).Concat([operatorBinding, operatorBinding with { InstanceId = "login.1", Target = "reference://operator-current" }]).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
@@ -41,7 +41,7 @@ static partial class Program
         var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
+            ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
             ["left-station-code"] = "SYNTHETIC-COMMON", ["right-station-code"] = "SYNTHETIC-COMMON", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
         });
@@ -75,11 +75,10 @@ static partial class Program
                 Check(first.ActualWidth >= 240 && first.ActualHeight >= 36, "readable address dimensions at " + size + ": " + first.RenderSize);
                 if (size.Item1 == 1366 && item.Item3 == "rcs")
                 {
-                    var source = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/source");
-                    Check(!Descendants(control).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "最多 64 个字符") &&
-                        AutomationProperties.GetHelpText(source).Contains("64") && source.ToolTip is string tooltip && tooltip.Contains("64") && tooltip.Contains("RCS"),
-                        "usage and character limits remain accessible together without a separate routine limit line in the form");
+                    Check(!Boxes().Any(b => AutomationProperties.GetName(b) is "rcs.one/source" or "rcs.one/locale"), "fixed protocol envelope values have no configuration input");
                     var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
+                    Check(AutomationProperties.GetHelpText(heartbeat).Contains("3600") && heartbeat.ToolTip is string tooltip && tooltip.Contains("3600") && tooltip.Contains("RCS"),
+                        "remaining heartbeat usage and range stay accessible in help and tooltip");
                     var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
                     control.NavigateTo("rcs.one/heartbeat-interval-seconds"); window.UpdateLayout();
                     heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));

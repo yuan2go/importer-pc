@@ -26,7 +26,7 @@ static partial class SportmasterRcs
     static ParcelConfiguration DeferredCandidate(TcpListener[] cameras, Peer peer, int mask)
     {
         var c = new SportmasterFlow().InitialConfiguration();
-        var readers = c.Topology!.Readers.Select((r, i) => r with { Parameters = new()
+        var readers = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
         {
             ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(),
             ["entity.mode"] = "line"

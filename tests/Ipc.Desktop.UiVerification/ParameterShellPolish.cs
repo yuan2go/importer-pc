@@ -30,7 +30,7 @@ static partial class Program
             lines.Add($"CAPTURE {name}: {bounds.Width}x{bounds.Height} DIP, actual Windows DPI {dpi.DpiScaleX}/{dpi.DpiScaleY}");
         }
         var directory = Path.Combine(evidence, "config"); Directory.CreateDirectory(directory);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var config = seed with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(evidence, "data"), null, null);

@@ -74,6 +74,12 @@ $project = '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</Out
 $fixtureWorkspace = Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $fixtureWorkspace 'config/sportmaster') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $fixtureWorkspace 'config/sportmaster/business.json')
+$syntheticConfiguration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/sportmaster.synthetic.json')
+if ($LASTEXITCODE -ne 0) { throw 'Exact synthetic current execution fixture unavailable' }
+$syntheticFixtureRoot = Join-Path $fixtureWorkspace 'tests/Ipc.Application.Verification'
+New-Item -ItemType Directory -Path $syntheticFixtureRoot -Force | Out-Null
+[IO.File]::WriteAllLines((Join-Path $syntheticFixtureRoot 'sportmaster.synthetic.json'), [string[]]$syntheticConfiguration)
+
 & $Dotnet run --project (Join-Path $Output 'MediaVerification.csproj') -- $Media $fixtureWorkspace (Join-Path $Output 'synthetic-data') *> (Join-Path $Output 'RUN.log')
 $result = $LASTEXITCODE
 $unchanged = $true

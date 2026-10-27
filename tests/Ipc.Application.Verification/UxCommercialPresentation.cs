@@ -19,7 +19,7 @@ static class UxCommercialPresentation
     }
     public static async Task Run(string workspace, string root)
     {
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var directory = Path.Combine(root, "ux-presentation"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);

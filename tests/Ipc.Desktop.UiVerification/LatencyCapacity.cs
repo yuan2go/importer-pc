@@ -28,7 +28,7 @@ static partial class Program
         var free = new DriveInfo(Path.GetPathRoot(output)!).AvailableFreeSpace;
         if (free < 20L * 1024 * 1024 * 1024) throw new IOException("20GiB fixture/backup reserve required");
         var config = Path.Combine(output, "config"); Directory.CreateDirectory(config);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with
         { MaximumOperations = 2000, Retention = new(800, 67108864, HistoryDays: 7), BackupSchedule = null };
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(c));
         var launch = new BusinessLaunch(config, Path.Combine(output, "data"), null, null);

@@ -1,21 +1,5 @@
 [
   {
-    "Key": "source",
-    "Group": "RCS 分拣任务",
-    "Label": "协议来源",
-    "Type": "string",
-    "Required": true,
-    "MaximumLength": 64
-  },
-  {
-    "Key": "locale",
-    "Group": "RCS 分拣任务",
-    "Label": "协议语言",
-    "Type": "string",
-    "Required": true,
-    "MaximumLength": 64
-  },
-  {
     "Key": "zone-id",
     "Group": "RCS 分拣任务",
     "Label": "区域数字标识",

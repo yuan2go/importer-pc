@@ -29,7 +29,7 @@ static class DualCameraCommunication
     {
         using var leftListener = new TcpListener(IPAddress.Loopback, 0); leftListener.Start();
         using var rightListener = new TcpListener(IPAddress.Loopback, 0); rightListener.Start();
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var rs = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
         { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
         c = c with { Reader = rs[0], Topology = c.Topology with { Readers = rs } };
@@ -220,7 +220,7 @@ static class DualCameraCommunication
     static async Task StartupOverload(string workspace, string path)
     {
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var r = TcpBinding(listener) with { DeviceId = c.Reader.DeviceId };
         c = c with { QueueCapacity = 1, Reader = r, Topology = c.Topology! with { Readers = [r, c.Topology!.Readers[1]] } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
@@ -242,7 +242,7 @@ static class DualCameraCommunication
     static async Task FailedStartup(string workspace, string path, bool cancel)
     {
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var r = TcpBinding(listener) with { DeviceId = c.Reader.DeviceId };
         c = c with { Reader = r, Topology = c.Topology! with { Readers = [r, c.Topology!.Readers[1]] } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
@@ -282,7 +282,7 @@ static class DualCameraCommunication
     {
         using var unavailable = new TcpListener(IPAddress.Loopback, 0); unavailable.Start();
         using var good = new TcpListener(IPAddress.Loopback, 0); good.Start();
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var rs = new[] { TcpBinding(unavailable) with { DeviceId = c.Topology!.Readers[0].DeviceId }, TcpBinding(good) with { DeviceId = c.Topology!.Readers[1].DeviceId } };
         unavailable.Stop(); c = c with { Reader = rs[0], Topology = c.Topology with { Readers = rs } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);

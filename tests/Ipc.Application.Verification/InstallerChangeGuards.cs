@@ -15,7 +15,7 @@ static class InstallerChangeGuards
             try { await action(); } catch (InvalidOperationException) { rejected = true; }
             Check(rejected, message);
         }
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         foreach (var unknown in new[] { false, true })
         {
             var config = Path.Combine(root, unknown ? "unknown-config" : "settled-config"); Directory.CreateDirectory(config);

@@ -15,7 +15,7 @@ static partial class Program
 {
     static async Task VerifyReliabilityLogs(string root, string evidence, List<string> lines)
     {
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot); ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         // Match the existing frozen native fixtures: exercise real Application,

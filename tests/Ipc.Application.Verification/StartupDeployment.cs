@@ -10,7 +10,7 @@ static class StartupDeployment
     public static async Task Run(string workspace, string root)
     {
         var config = Path.Combine(root, "independent-config"); Directory.CreateDirectory(config);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
         // A broken optional inventory must not prevent reading/editing built-in settings.
         File.WriteAllText(Path.Combine(config, "extension-store.json"), "{broken optional inventory");

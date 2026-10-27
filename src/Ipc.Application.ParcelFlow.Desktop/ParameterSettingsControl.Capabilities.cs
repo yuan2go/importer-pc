@@ -65,12 +65,18 @@ public sealed partial class ParameterSettingsControl
             Field(Form(page), "配置状态", deferred, "勾选后可先进入软件；此连接不启动，相关作业保持阻断。填写完成后取消勾选，保存并重启以启用连接。", draft.InstanceId + "/ConfigureLater", page);
         }
         RuntimeSummary(page, draft);
+        if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
+        {
+            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-mvs" ? "海康 SDK（随软件安装）" : "此候选不适用于当前内置SDK，请使用当前首配模板", IsReadOnly = true, MinHeight = 40 };
+            Field(Form(page), "相机连接", identity, null, draft.InstanceId + "/Provider", page);
+            locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
+        }
         if (draft.Role == "default-scale")
         {
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var choices = draft.Providers.Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
         if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null)
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
@@ -113,23 +119,6 @@ public sealed partial class ParameterSettingsControl
         {
             var issue = Text("缺少对应驱动或组件，请安装匹配的程序包。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); return;
         }
-        if (draft.Kind == "observation" && Model!.ApplicationId == "sportmaster" &&
-            !draft.Providers.Any(p => p.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition"))
-        {
-            var availability = Text("当前没有可选择的海康标准相机 SDK 驱动。安装 MVS 客户端或更新主程序不会自动安装本软件的独立驱动包；请核对签名驱动包、安装库存和信任配置。" +
-                (FirstConfiguration ? "可先保存草稿并退出，由维护人员安装后重新进入首配。" : "安装后重新读取能力库存，再明确切换并填写参数。"));
-            availability.Foreground = Brush("#915300");
-            AutomationProperties.SetAutomationId(availability, draft.InstanceId + "/SdkAvailability");
-            page.Body.Children.Add(availability);
-            if (!FirstConfiguration && PackageInstallationRequested is not null)
-            {
-                var install = new Button { Content = "查看驱动包安装", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 40, Margin = new(0, 0, 0, 12) };
-                AutomationProperties.SetAutomationId(install, draft.InstanceId + "/OpenPackageInstallation");
-                install.Click += (_, _) => PackageInstallationRequested?.Invoke(this, EventArgs.Empty); page.Body.Children.Add(install);
-            }
-        }
-        if (draft.Kind == "observation" && draft.Provider.Implementation == "tcp-line")
-            page.Body.Children.Add(Text("当前连接方式为 TCP/IP，下面的端口和 TCP 探测参数仅用于此方式。海康 SDK 连接仍需 IP 地址定位设备，但不使用这些 TCP 参数；安装适用驱动后，在上方明确切换为 SDK。"));
         if (FirstConfiguration && (draft.Kind == "observation" && draft.Provider.Implementation == "manual" || draft.Kind == "integration" && draft.Provider.Implementation == "reference-integration"))
         {
             var missing = Text(draft.Kind == "observation"
@@ -138,8 +127,8 @@ public sealed partial class ParameterSettingsControl
             missing.Foreground = Brush("#915300"); page.Body.Children.Add(missing); return;
         }
         var isRcs = ParameterOwnership.IsRcs(draft);
-        if (draft.Provider.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition")
-            page.Body.Children.Add(Text("此驱动通过 MVS SDK 采集图像，连接和实际帧仍需在诊断中核对；尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
+        if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
+            page.Body.Children.Add(Text("海康 SDK 随供包台软件安装，通过 IP 和预期序列号连接相机；实际连接与帧请在诊断中核对。尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
         if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader")
             page.Body.Children.Add(Text("此驱动使用智能读码器 SDK，尚未验证适用于 MV-PD010003-06M-12C 标准型套件。标准型使用MVS采集链路，识别组件仍待接入；采图成功不表示已经识码。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
@@ -170,7 +159,7 @@ public sealed partial class ParameterSettingsControl
                 foreach (var mapping in mappings) Parameter(codeForm, page, mapping.Component, mapping.Parameter);
             }
         }
-        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Provider.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "采集缓冲" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
+        if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "采集缓冲" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
 
         if (draft.Kind == "observation" && draft.Provider.Implementation == "manual")
         {
@@ -216,7 +205,7 @@ public sealed partial class ParameterSettingsControl
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var required = p.Field.Required || cameraCodeRequired || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
         var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
-        var help = draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
+        var help = draft.Provider?.Implementation == "hikrobot-mvs" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (p.IsSensitive)
         {

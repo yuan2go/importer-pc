@@ -15,7 +15,7 @@ static partial class Program
     {
         void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); lines.Add("PASS LIA-NATIVE " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), c);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         ParcelRuntime Make() => new(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };

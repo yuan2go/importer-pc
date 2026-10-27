@@ -21,7 +21,7 @@ static class LatencyStorageChecks
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
         const long reserve = 16777216;
         var retention = new ParcelRetentionPolicy(200, reserve, HistoryDays: 7) { WarningFreeBytes = reserve * 4, CriticalFreeBytes = reserve * 2, WalWarningBytes = 1048576, WalCheckpointSeconds = 1 };
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Retention = retention };
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Retention = retention };
         Check(ConfigurationPolicyDraft.From(c).ApplyParameters(c).Retention == retention, "ordinary parameter save retains advanced capacity/WAL policy in the same candidate");
         Check(new SportmasterFlow().Validate(c with { Retention = retention with { WarningFreeBytes = reserve } }).Length != 0, "misordered warning and admission thresholds are rejected");
         Check(!Wire.Encode(new ParcelRetentionPolicy()).Contains("WarningFreeBytes"), "absent monitoring options preserve old serialized policy bytes");

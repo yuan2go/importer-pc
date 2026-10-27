@@ -11,7 +11,7 @@ static class LatencyProjectionChecks
     {
         void Check(bool ok, string name) { if (!ok) throw new Exception("FAIL " + name); Console.WriteLine("PASS " + name); }
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(c));
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };

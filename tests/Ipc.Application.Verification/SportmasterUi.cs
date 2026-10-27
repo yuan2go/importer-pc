@@ -52,7 +52,7 @@ static class SportmasterUi
             throw new Exception("Invalid launch arguments unexpectedly accepted: " + string.Join(" ", args));
         }
 
-        var configuration = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var configuration = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         async Task<ParcelRuntime> Open(ParcelConfiguration config, string run, bool loseSecondLeft = false)
         {
             var directory = Path.Combine(root, run); Directory.CreateDirectory(directory);

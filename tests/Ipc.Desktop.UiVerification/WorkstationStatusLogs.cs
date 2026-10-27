@@ -17,7 +17,7 @@ static partial class Program
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS WSL01 " + message); }
         async Task Flush(Window window) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var operatorBinding = new CapabilityBinding("login", "reference-login", "1.0.0", "operator", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
         config = config with { CapabilityInstances = ParcelBindings.All(config).Append(operatorBinding).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);

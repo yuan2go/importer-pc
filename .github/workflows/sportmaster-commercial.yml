@@ -4,6 +4,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main, codex/p0-stability-01]
+env:
+  IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
 permissions:
   contents: read
 concurrency:

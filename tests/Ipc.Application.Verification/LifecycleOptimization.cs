@@ -18,7 +18,7 @@ static class LifecycleOptimization
         await LogLifetime(root);
         var backupRoot = Path.Combine(root, "scheduled-backups"); Directory.CreateDirectory(backupRoot);
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
-        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with
         { MaximumOperations = 1000, Retention = new(200, 67108864, HistoryDays: 7), BackupSchedule = new(backupRoot, 15, 1) };
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), c);
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);

@@ -29,10 +29,10 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS CHAIN " + reason); }
         await using var peer = new HierarchyRcsPeer();
         var configRoot = Path.Combine(evidence, "chain-config"); Directory.CreateDirectory(configRoot);
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
-            ["source"] = "SYNTHETIC-HIERARCHY", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
+            ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",
             ["left-station-code"] = "TASK-STATION", ["right-station-code"] = "TASK-STATION", ["left-bcr-code"] = "TASK-LEFT", ["right-bcr-code"] = "TASK-RIGHT"
         });

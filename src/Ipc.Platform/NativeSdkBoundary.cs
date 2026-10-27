@@ -4,8 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace Ipc.Platform;
 
-// A vendor DLL is an installed, independently qualified prerequisite, never a package
-// payload or an arbitrary search-path override. No change to PATH/current directory.
+// External vendor DLLs retain their independently qualified prerequisite policy.
+// The current built-in SDK is pinned by its embedded product inventory and installed
+// with the protected application. Both share exact native ownership/loading checks.
 public static class NativeSdkBoundary
 {
     public static ExtensionPrerequisite RequireDeclaration(ExtensionManifest manifest, string library)
@@ -48,6 +49,22 @@ public static class NativeSdkBoundary
         var proof = qualification.Prerequisites.SingleOrDefault(p => p.Package == package && Wire.Encode(p.Declaration) == Wire.Encode(declaration))
             ?? throw new InvalidDataException("Native SDK qualification belongs to another package/declaration");
         return LoadFiles(proof.Files, library, declaration.Preload ?? []);
+    }
+
+    // Built-in current product dependency: pinned by its assembly's embedded inventory,
+    // not an independently installed extension or a fabricated deployment approval.
+    public static nint LoadBundledFiles(Assembly owner, string relativeDirectory, ExtensionFile[] files, string library, string[] preload)
+    {
+        if (!ExtensionPackages.SafePath(relativeDirectory) || files.Length is < 1 or > 64 ||
+            files.Any(f => !ExtensionPackages.SafePath(f.Path) || Path.GetFileName(f.Path) != f.Path || !ExtensionSchema.IsHash(f.Sha256) || f.Length <= 0))
+            throw new InvalidDataException("Invalid bundled SDK inventory");
+        var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(owner.Location)!, relativeDirectory));
+        var qualified = files.Select(f => {
+            var path = Path.Combine(root, f.Path);
+            if (!File.Exists(path) || new FileInfo(path).Length != f.Length) throw new InvalidDataException("Bundled SDK missing/changed: " + f.Path);
+            return new QualificationFile(path, f.Sha256);
+        }).ToArray();
+        return LoadFiles(qualified, library, preload);
     }
 
     internal static nint LoadFiles(QualificationFile[] files, string library, string[] preload)

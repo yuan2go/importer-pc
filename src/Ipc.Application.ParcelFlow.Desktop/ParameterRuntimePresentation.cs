@@ -30,7 +30,7 @@ public partial class ParcelViewModel
             var extension = effective.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = effective.Extensions?.Packages.SingleOrDefault(x => x.Id == extension?.PackageId);
             identity = package is null ? reader.Driver : package.Id + " @ " + package.Version;
-            address = reader.Parameters?.GetValueOrDefault("device.ip") is { } tcpIp ? tcpIp + ":" + reader.Parameters.GetValueOrDefault("device.port") : extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
+            address = reader.Parameters?.GetValueOrDefault("device.ip") is { } tcpIp ? reader.Driver == "tcp-line" ? tcpIp + ":" + reader.Parameters.GetValueOrDefault("device.port") : tcpIp : extension?.Parameters.GetValueOrDefault("device.ip") ?? "未声明 IP · " + device;
             var health = snapshot.Devices?.SingleOrDefault(x => x.DeviceId == device);
             ready = health?.IsValid(now) == true;
             status = ready ? reader.Driver == "tcp-line" ? "TCP 已连接" : "设备已确认" : "未就绪";
@@ -44,7 +44,7 @@ public partial class ParcelViewModel
                     ? "仅观察，不创建供包作业。连接确认不代表已经读到条码；请核对读码观察和设备适用性。"
                     : "触发关联已选择；连接确认不证明包裹边界可信。读码、业务准入和本件RCS格口需分别核对。");
             }
-            if (extension?.PackageId == "hikrobot.mvs-acquisition")
+            if (reader.Driver == "hikrobot-mvs" || extension?.PackageId == "hikrobot.mvs-acquisition")
             {
                 status = health?.Health == DeviceHealth.Faulted ? "采集故障；缺少条码识别组件" : "仅采图；缺少条码识别组件";
                 notice = "采集连接及帧计数在诊断中核对；尚未获得真实条码，不创建供包作业。取得适用识别组件并完成实际接入前，正式供包保持阻断。";

@@ -59,7 +59,7 @@ static class TimeStorageProcessChecks
         Directory.CreateDirectory(root);
         if (mode != "recover")
         {
-            var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Login = null, BackupSchedule = null };
+            var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, BackupSchedule = null };
             ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), source);
         }
         var launch = mode == "recover"

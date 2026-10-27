@@ -45,7 +45,7 @@ static partial class SportmasterRcs
                 partial.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal), "body-read timeout retains the original prefix and no assigned chute");
         }
 
-        var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         async Task<ParcelRuntime> Open(string name, CapabilityBinding selected)
         {
             var directory = Path.Combine(root, name); Directory.CreateDirectory(directory);

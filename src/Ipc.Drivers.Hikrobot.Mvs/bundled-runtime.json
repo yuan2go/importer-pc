@@ -1,0 +1,80 @@
+{
+  "SchemaVersion": 1,
+  "Abi": "0x04080201",
+  "Entry": "MvCameraControl.dll",
+  "Preload": [
+    "MVGigEVisionSDK.dll"
+  ],
+  "Files": [
+    {
+      "Path": "GCBase_MD_VC120_v3_0_MV.dll",
+      "Length": 114072,
+      "Sha256": "68BE43B752C4E5EBEBA2E3FDBF50C73BCC796E139753390DB7EF35DB14F983BB"
+    },
+    {
+      "Path": "GenApi_MD_VC120_v3_0_MV.dll",
+      "Length": 1003928,
+      "Sha256": "909DD59FD43543AD0714579C20E13900F2905ACACD02CE2E3748FF1D3B9B5D78"
+    },
+    {
+      "Path": "Log_MD_VC120_v3_0_MV.dll",
+      "Length": 58264,
+      "Sha256": "C5BF9BBBA54397C8134FB17BFDA5E408D5207C3870BAE8FE9030ADCB67ED4E84"
+    },
+    {
+      "Path": "MVGigEVisionSDK.dll",
+      "Length": 746904,
+      "Sha256": "E80D1DA7BCD76393608F66D2CED2228091CF78AD2BC997053BFC0C5EECF2DC34"
+    },
+    {
+      "Path": "MathParser_MD_VC120_v3_0_MV.dll",
+      "Length": 52632,
+      "Sha256": "305AE6ADD2EE46C9F6158D5146798A55C70573604B8A1587FD99B11A8DA5F8D4"
+    },
+    {
+      "Path": "MvCameraControl.dll",
+      "Length": 1576344,
+      "Sha256": "0CBCF8D1C9D9647CD3DBB6CE8E0C599EA514388F6E2345084BC1B16E9BE5119B"
+    },
+    {
+      "Path": "MvRender.dll",
+      "Length": 189848,
+      "Sha256": "DD1CB8397E82120E3CFE4FE379041AE782D5B487F80EB98C499880E1C304C00A"
+    },
+    {
+      "Path": "NodeMapData_MD_VC120_v3_0_MV.dll",
+      "Length": 129432,
+      "Sha256": "99B23EDC8B9323E64659349A38F8A3027E2635F842596A9469A03C5C91492F3A"
+    },
+    {
+      "Path": "XmlParser_MD_VC120_v3_0_MV.dll",
+      "Length": 731544,
+      "Sha256": "36445C957BC81868764B852719AC9AE041310C116BD4FA8A035A8B9AF3A3D926"
+    },
+    {
+      "Path": "libmmd.dll",
+      "Length": 3249568,
+      "Sha256": "6142BDE15261BD7177252AA8F716560A5344004E1B97A0B3C6280FC10D22829B"
+    },
+    {
+      "Path": "msvcp120.dll",
+      "Length": 659616,
+      "Sha256": "92FAEDD18A29E1BD2DD27A1D805EA5AA3E73B954A625AF45A74F49D49506D20F"
+    },
+    {
+      "Path": "msvcr100.dll",
+      "Length": 830616,
+      "Sha256": "A87A3BEEC9E7C7CCC1DB553D51C033B9A4FF223A3EA57241A22E601D778CBF56"
+    },
+    {
+      "Path": "msvcr120.dll",
+      "Length": 963240,
+      "Sha256": "D28C7AB34842B6149609BD4E6B566DDAB8B891F0D5062480A253EF20A6A2CAAA"
+    },
+    {
+      "Path": "pthreadVC2.dll",
+      "Length": 82944,
+      "Sha256": "0E6AF724609EF6846982EF717013426C359C455FFF324E906D8D55C8BB88D16E"
+    }
+  ]
+}

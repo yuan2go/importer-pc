@@ -1,0 +1,21 @@
+{
+  "source": "c5202ffc010ac2386a54ddde6520876a4855b8ab",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "88bf51068d9a7a80222068e504efa209e09e5a25be74de04d20ae310de7e0fda"
+    },
+    {
+      "path": "docs/runtime/hikrobot-reader-01.md",
+      "sha256": "0df1a5266e6977ed17e4b90b72e47beb688f66e2c5ff98f205c1154b212e72c7"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md",
+      "sha256": "db75314f2d7220c2928a4c773f1fee56533df0381e540bd6b564e11a176b02cd"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md",
+      "sha256": "6fadddaab984029b4c755f410db14d5be222e800d640b0e61058a5d1ca02f753"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ static partial class SportmasterRcs
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
     static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
-        ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
+        ["zone-id"] = "71", ["project-id"] = "83",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
         ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER"
     });
@@ -70,7 +70,7 @@ static partial class SportmasterRcs
                 var actual = peer.Requests.Last();
                 Check(peer.Requests.Count == postCount + 1 && actual.Body == frozen.IntegrationRequest.Body && Wire.Hash(actual.Body) == frozen.IntegrationRequest.BodyHash && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
                 using var body = JsonDocument.Parse(actual.Body); var envelope = body.RootElement; var item = envelope.GetProperty("data").EnumerateArray().Single(); var p = item.GetProperty("params");
-                Check(envelope.GetProperty("source").GetString() == "TEST_READER" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
+                Check(envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
                     envelope.GetProperty("requestId").GetInt64() == 810000007 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
                     p.GetProperty("zoneId").GetInt32() == 71 && p.GetProperty("projectId").GetInt32() == 83 && p.GetProperty("loadCode").GetString() == "SYNTH-0001" &&
                     p.GetProperty("stationCode").GetString() == "TEST-LEFT" && p.GetProperty("bcrCode").GetString() == "TEST-LEFT-READER" && !p.GetProperty("specifiedChute").GetBoolean() &&
@@ -165,7 +165,7 @@ static partial class SportmasterRcs
         await using(var first=new SportmasterRcsTaskService(a))await using(var second=new SportmasterRcsTaskService(b))
             Check(first.PrepareRequest(Request(a),1).RequestId==second.PrepareRequest(Request(b),2).RequestId,"rebase arithmetic reproduces the original numeric-ID collision; application must guard durable allocations");
         var name="rcs-numeric-history";var configPath=Path.Combine(root,name,"config");Directory.CreateDirectory(configPath);
-        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config/sportmaster/business.json"))) with{Wcs=Binding(peer.Endpoint),TimeoutMs=1500};
+        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with{Wcs=Binding(peer.Endpoint),TimeoutMs=1500};
         ExtensionStore.AtomicWrite(Path.Combine(configPath,"business.json"),c);
         var data=Path.Combine(root,name,"data");var directory=Path.Combine(data,"Simulation",c.StationId,c.ApplicationId);
         async Task<ParcelRuntime> Open(string dataRoot)
@@ -280,7 +280,7 @@ static partial class SportmasterRcs
         var module = verified.Manifest.Modules.Single(x => x.Id == "sportmaster-rcs-task");
         Check(module.Kind == "integration" && module.ContractIdentity == SportmasterRcsTaskService.Contract && module.Requirements is { Query: false, BusinessAcceptance: true }, "signed package verifies exact integration contract and explicitly declares no original-query capability");
         var binding = Binding(peer.Endpoint) with { Implementation = "extension:" + installed.Package.Id + "/" + module.Id, Version = installed.Package.Version, Package = installed.Package, Module = module.Id };
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Wcs = binding, Extensions = new([installed.Package], []), TimeoutMs = 1500 };
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Wcs = binding, Extensions = new([installed.Package], []), TimeoutMs = 1500 };
         async Task<ParcelRuntime> Open(string run)
         {
             var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory);
@@ -324,7 +324,7 @@ static partial class SportmasterRcs
     }
     static async Task RuntimeChecks(string workspace, string root, Peer peer)
     {
-        var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var rcs = Binding(peer.Endpoint);
         var config = template with { Wcs = rcs with { Parameters = new(rcs.Parameters) { ["request-timeout-ms"] = "1000" } }, TimeoutMs = 1500 };
         async Task<ParcelRuntime> Open(string run)
@@ -434,7 +434,7 @@ static partial class SportmasterRcs
     }
     static void MigrationChecks(string workspace,string root)
     {
-        var config=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config/sportmaster/business.json")));
+        var config=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var request=Request(config.Wcs!);
         var reply=new StageReply(Wire.Id(),request.Id,request.PayloadHash,true,null,null,null,null,"Synthetic original unknown",DateTimeOffset.UtcNow);
         var stage=new StageFact(request,StageState.Unknown,1,[reply],"Original outcome unknown");

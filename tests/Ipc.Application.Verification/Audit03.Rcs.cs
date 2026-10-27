@@ -19,7 +19,7 @@ static partial class SportmasterRcs
             store = new ExtensionStore(Path.Combine(root, "signed-rcs-store"), Wire.Decode<ExtensionTrust>(File.ReadAllText(trustFile!)), RunMode.Simulation, Path.Combine(root, "signed-rcs-leases"));
             signed = store.Install(packageFile, Wire.FileHash(packageFile)).Package;
         }
-        var standard = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var standard = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         foreach (var delayedPosition in new[] { "left", "right" })
         {
             var binding = Binding(peer.Endpoint);

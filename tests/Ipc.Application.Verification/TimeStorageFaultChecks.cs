@@ -60,7 +60,7 @@ static class TimeStorageFaultChecks
         var checks = new List<object>(); var failures = new List<string>();
         void Check(bool ok, string name, object data)
         { checks.Add(new { Name = name, Passed = ok, Data = data }); Console.WriteLine((ok ? "PASS " : "FAIL ") + name); if (!ok) failures.Add(name); }
-        var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Login = null, BackupSchedule = null };
+        var source = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, BackupSchedule = null };
         BusinessLaunch Launch(string name)
         { var d = Path.Combine(root, name); Directory.CreateDirectory(d); ExtensionStore.AtomicWrite(Path.Combine(d, "business.json"), source); return new(d, Path.Combine(d, "data"), null, null); }
         const BindingFlags hidden = BindingFlags.Instance | BindingFlags.NonPublic;

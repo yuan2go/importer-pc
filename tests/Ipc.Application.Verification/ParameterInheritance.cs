@@ -41,7 +41,7 @@ static class ParameterInheritance
         List<string> failures = [];
         await using (var journal = new RuntimeJournal(journalPath, failures.Add)) { journal.ConfigureRetention(2); journal.Write(new { Synthetic = true }); }
         Check(failures.Count == 0 && !File.Exists(Path.Combine(journalPath, "runtime.jsonl.1")) && File.ReadAllText(Path.Combine(journalPath, "runtime.jsonl.2")) == "recent" && File.Exists(Path.Combine(journalPath, "parcel.db")) && File.Exists(Path.Combine(journalPath, "evidence.jpg")), "log retention deletes only expired diagnostic rotations, preserving recent diagnostics and authoritative/evidence files");
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { StationId = "inherit-" + Wire.Id(), BarcodeFilter = rule, Retention = new(200, 67108864, 2) };
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { StationId = "inherit-" + Wire.Id(), BarcodeFilter = rule, Retention = new(200, 67108864, 2) };
         var oldReaders = ParcelBindings.Readers(seed); var isolated = oldReaders.Select((r, i) => r with { DeviceId = "inherit." + Wire.Id() + "." + i }).ToArray();
         seed = seed with { Reader = isolated[0], Topology = seed.Topology! with { Readers = isolated, Positions = seed.Topology.Positions.Select(p => p with { ReaderDeviceId = isolated[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
         var path = Path.Combine(root, "inherit-sportmaster"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), seed);

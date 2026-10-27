@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -48,7 +48,7 @@ static partial class Program
         var local = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(first)!;
         var draft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(first)!;
         // Current-format imports are edits, not a way to transplant another machine's identity.
-        var reference = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        var reference = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), launch.DataRoot, null, null)).Catalog();
         var legacyEditor = new StartupConfigurationDraft(reference, catalog);
         var legacyControl = new ParameterSettingsControl { FirstConfiguration = true, Model = legacyEditor.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };

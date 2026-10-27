@@ -90,7 +90,8 @@
         "application.sportmaster",
         "drivers",
         "integrations",
-        "optional-components"
+        "optional-components",
+        "driver.hikrobot-mvs"
       ],
       "delivery": "core"
     },
@@ -179,6 +180,14 @@
       "contract": 1,
       "dependencies": [
         "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    "driver.hikrobot-mvs": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
       ],
       "delivery": "core"
     }

@@ -14,7 +14,7 @@ internal sealed class RcsTaskOptions
     internal readonly string? ChuteCode;
     internal readonly int HeartbeatIntervalSeconds;
     internal readonly int RequestTimeoutMs;
-    internal static readonly string[] RequiredKeys = ["source", "locale", "zone-id", "project-id", "specified-chute",
+    internal static readonly string[] RequiredKeys = ["zone-id", "project-id", "specified-chute",
         "request-id-base", "request-id-count", "left-station-code", "right-station-code"];
 
     internal RcsTaskOptions(CapabilityBinding binding)
@@ -28,8 +28,8 @@ internal sealed class RcsTaskOptions
         Endpoint = endpoint;
         if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(["left-bcr-code", "right-bcr-code", "chute-code", "heartbeat-interval-seconds", "request-timeout-ms"]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
-        foreach (var key in RequiredKeys) _ = Text(key, key is "source" or "locale" ? 64 : 256);
-        Source = Text("source", 64); Locale = Text("locale", 64);
+        foreach (var key in RequiredKeys) _ = Text(key, 256);
+        Source = "BAR"; Locale = "zh_CN";
         ZoneId = Number("zone-id", 1, long.MaxValue); ProjectId = Number("project-id", 1, long.MaxValue);
         RequestIdBase = Number("request-id-base", 0, long.MaxValue - 1);
         RequestIdCount = Number("request-id-count", 1, long.MaxValue - RequestIdBase);

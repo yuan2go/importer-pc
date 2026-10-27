@@ -56152,9 +56152,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "3ad12d10b1a8974c7c0309759f1eba07c804f18007b17eb79daf299fea4b865a",
-      "size_bytes": 21662,
-      "git_blob": "2878f71666970048c1bf7acdb620310c396aad5f"
+      "sha256": "74b99b2114e7dbbacf6f875682269e5f1bd46dbf6fd64022948b4cd156fefec6",
+      "size_bytes": 21419,
+      "git_blob": "cb419d95975483f11d97a1a539eecdb559f7d0a0"
     },
     {
       "path": "src/Ipc.Application.Supply/SupplyConfiguration.cs",

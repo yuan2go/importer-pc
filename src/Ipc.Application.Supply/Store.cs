@@ -61,15 +61,10 @@ public sealed partial class SupplyStore : IDisposable
                 Exec("INSERT INTO schema_history VALUES(6,$a,$b)", tx, Ipc.Platform.Storage.Database.BaselineHash(Schema), DateTimeOffset.UtcNow.ToString("O"));
                 tx.Commit();
             }
-            ValidateStorageFormat(db);
+            _ = ReadFormat(db);
             Exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000; PRAGMA wal_autocheckpoint=1000;");
         }
         catch { db.Dispose(); throw; }
-    }
-    static void ValidateStorageFormat(SqliteConnection connection)
-    {
-        if (ReadFormat(connection) != CurrentFormatVersion)
-            throw new InvalidDataException("Storage format incompatible with selected product");
     }
     SqliteCommand Sql(string sql, SqliteTransaction? tx, params object?[] values)
     {

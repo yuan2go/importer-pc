@@ -327,7 +327,10 @@ static partial class Program
         check(model.ValidateFields(), "corrected synthetic provider candidate passes field checks before normal-form captures");
         control.NavigateTo("rcs.one/quantity"); window.UpdateLayout(); capture("parameters-business-rules", control);
         control.NavigateTo("reader.1/device.ip"); window.UpdateLayout(); capture("parameters-right-driver", control);
-        check(Descendants(control).OfType<TextBox>().Any(t => t.Text == "HEART-1") && Descendants(control).OfType<TextBox>().Any(t => t.Text == "TAKE-R"), "right driver displays distinct heart and take-chute encodings");
+        check(Descendants(control).OfType<TextBox>().Count(t => t.Text == "TAKE-R") == 1 &&
+            draft.Readers[1].Parameters.All(p => p.Field.Key != "bcr-code") &&
+            !Descendants(control).OfType<FrameworkElement>().Any(t => AutomationProperties.GetName(t) == "reader.1/bcr-code"),
+            "right camera displays one shared request/heartbeat code and no driver code copy");
         control.NavigateTo("rcs.one/Target"); window.UpdateLayout(); capture("parameters-rcs-component", control);
         check(!Descendants(control).OfType<TextBox>().Any(t => !t.IsReadOnly && t.Text == "71"), "moved system values are read-only references on the RCS object");
         var template = StartupSiteTemplates.Export("sportmaster", draft.Capture());

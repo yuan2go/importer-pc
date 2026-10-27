@@ -25,3 +25,6 @@ SDK经已安装的精确签名驱动包选择；源码合入或安装MVS客户�
 
 
 源码提交55ae5867后冻结当前宿主，MVS、MvCodeReader和RCS三个当前独立工程签名包均通过PASS_FROZEN_HOST_EXTENSION_CHECK，宿主及检查器字节未变；读取实际签名包manifest再次确认两个SDK均不再声明bcr-code，RCS保留本位唯一映射。精确来源及哈希见[包回执](../runtime/evidence/camera-sdk-single-code-01/frozen-packages.json)。这些是Git外TestOnly/Simulation工程包，不是Production安装资格，不能直接装入当前Production代替正式SDK部署。本分支未覆盖并行PR127及海康加固工作树。
+
+
+PR130首轮cb4e785f远端7/8通过；冻结门禁在V3旧“两个不同编码”断言及管理退出草稿检查失败，原运行40490759324与本地CI节选保留。V3改为严格核对一个共享编码输入和无驱动副本；管理状态刷新具有代际抑制，单等Dispatcher空闲未等待服务返回，夹具改为观察实际撤销/返回作业后仍严格核对同一草稿对象、29000原输入及无例行告示，未修改生产权限守卫。完整V3和工作台/日志定向本地通过，另行推送远端门禁；不把首轮FAIL改写为PASS。上述改动只在测试及记录，55ae5867冻结包原身份不变。

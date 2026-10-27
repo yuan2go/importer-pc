@@ -6,7 +6,7 @@
 
 复用 TCP 分帧、Observation/DeviceHealth、Application 准入、唯一配置账、机级资源租约、原请求和受控恢复机制。两档协议共用 UTF-8/LF 和 4096 字节正文围栏。MVS 扩展只保留独立诊断用途，不发布业务 Ready。MvCodeReader 模块、其资格说明和测试只适用于智能读码器，不能用于本型号。
 
-协议规格与设计说明在清理提交之后、编码之前建立为本包唯一设计来源；运行说明引用规格，不复制协议。
+唯一设计来源：[协议 v1](../protocols/barcode-producer-v1.md)、[实现设计](../design/barcode-producer-01.md)；[黄金对话](../protocols/barcode-producer-v1.golden.json)由两侧共用。运行说明引用规格，不复制协议。
 
 ## 交付条件
 

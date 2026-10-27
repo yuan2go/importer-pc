@@ -1,0 +1,290 @@
+{
+  "protocol": "BARCODE-PRODUCER-LINE-v1",
+  "epoch": "11111111111111111111111111111111",
+  "expected": {
+    "producerId": "synthetic.reader",
+    "producerVersion": "1.0.0",
+    "cameraSerial": "SYNTHETIC-01",
+    "configHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "clientOpen": {
+    "type": "open",
+    "version": 1,
+    "epoch": "11111111111111111111111111111111"
+  },
+  "clientArm": {
+    "type": "arm",
+    "version": 1,
+    "epoch": "11111111111111111111111111111111",
+    "bootId": "22222222222222222222222222222222",
+    "sequence": 10,
+    "trigger": 5
+  },
+  "cases": [
+    {
+      "name": "new-trigger-same-code",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"heartbeat\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":12,\"trigger\":6}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":13,\"trigger\":7,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "ok",
+      "risk": "同码不同触发不能丢掉第二实体；心跳不创建实体"
+    },
+    {
+      "name": "zero-and-multiple-candidates",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[]}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":12,\"trigger\":7,\"codes\":[\"001\",\"002\"]}"
+      ],
+      "outcome": "ok",
+      "risk": "不能隐藏失败触发或截断候选伪造唯一条码"
+    },
+    {
+      "name": "identity-producerId",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"other.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "HandshakeIdentityMismatch",
+      "risk": "错误生产者/相机/配置禁止进入业务"
+    },
+    {
+      "name": "identity-producerVersion",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"9.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "HandshakeIdentityMismatch",
+      "risk": "错误生产者/相机/配置禁止进入业务"
+    },
+    {
+      "name": "identity-cameraSerial",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"OTHER-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "HandshakeIdentityMismatch",
+      "risk": "错误生产者/相机/配置禁止进入业务"
+    },
+    {
+      "name": "identity-configHash",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "HandshakeIdentityMismatch",
+      "risk": "错误生产者/相机/配置禁止进入业务"
+    },
+    {
+      "name": "old-epoch",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"33333333333333333333333333333333\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "EpochMismatch",
+      "risk": "旧连接数据不能跨注册准入"
+    },
+    {
+      "name": "wrong-version",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":2,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "ProtocolVersion",
+      "risk": "未协商版本拒绝"
+    },
+    {
+      "name": "event-before-hello",
+      "serverLines": [
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "UnexpectedMessage",
+      "risk": "握手前条码不得准入"
+    },
+    {
+      "name": "event-before-ready",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "UnexpectedMessage",
+      "risk": "未确认新触发边界不得准入"
+    },
+    {
+      "name": "ready-baseline-change",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":5}"
+      ],
+      "outcome": "HandshakeBaselineMismatch",
+      "risk": "握手间触发不能隐式丢失"
+    },
+    {
+      "name": "hello-twice",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}"
+      ],
+      "outcome": "UnexpectedMessage",
+      "risk": "不能热换身份"
+    },
+    {
+      "name": "gap",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"heartbeat\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":13,\"trigger\":6}"
+      ],
+      "outcome": "SequenceGap",
+      "risk": "序号异常不能继续发布健康"
+    },
+    {
+      "name": "duplicate",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"heartbeat\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6}"
+      ],
+      "outcome": "SequenceDuplicate",
+      "risk": "序号异常不能继续发布健康"
+    },
+    {
+      "name": "rollback",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"heartbeat\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":6}"
+      ],
+      "outcome": "SequenceRollback",
+      "risk": "序号异常不能继续发布健康"
+    },
+    {
+      "name": "trigger-repeat",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":12,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "TriggerDiscontinuity",
+      "risk": "同触发多帧不得创建第二实体"
+    },
+    {
+      "name": "trigger-gap",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":7,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "TriggerDiscontinuity",
+      "risk": "缺少失败触发结果须封锁"
+    },
+    {
+      "name": "heartbeat-trigger-change",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}",
+        "{\"type\":\"heartbeat\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":12,\"trigger\":7}"
+      ],
+      "outcome": "TriggerDiscontinuity",
+      "risk": "不能由心跳跳过未发布触发"
+    },
+    {
+      "name": "boot-change",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"44444444444444444444444444444444\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "BootMismatch",
+      "risk": "重启不能在旧会话继续"
+    },
+    {
+      "name": "late-epoch",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"33333333333333333333333333333333\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "EpochMismatch",
+      "risk": "旧Epoch迟到不能恢复业务"
+    },
+    {
+      "name": "unknown-field",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5,\"extra\":true}"
+      ],
+      "outcome": "ProtocolFields",
+      "risk": "拒绝未定义协议含义"
+    },
+    {
+      "name": "duplicate-field",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5,\"sequence\":10}"
+      ],
+      "outcome": "ProtocolFields",
+      "risk": "拒绝歧义JSON"
+    },
+    {
+      "name": "fraction",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11.0,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "ProtocolNumber",
+      "risk": "精确整数不允许浮点转换/溢出绕过"
+    },
+    {
+      "name": "exponent",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":1.1e1,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "ProtocolNumber",
+      "risk": "精确整数不允许浮点转换/溢出绕过"
+    },
+    {
+      "name": "negative",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":-1,\"trigger\":6,\"codes\":[\"0000123\"]}"
+      ],
+      "outcome": "ProtocolNumber",
+      "risk": "精确整数不允许浮点转换/溢出绕过"
+    },
+    {
+      "name": "barcode-control",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"ABC\\u0000DEF\"]}"
+      ],
+      "outcome": "ProtocolCodes",
+      "risk": "转义不能绕过控制字节围栏"
+    },
+    {
+      "name": "too-many-codes",
+      "serverLines": [
+        "{\"type\":\"hello\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"producerId\":\"synthetic.reader\",\"producerVersion\":\"1.0.0\",\"cameraSerial\":\"SYNTHETIC-01\",\"configHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"ready\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":10,\"trigger\":5}",
+        "{\"type\":\"event\",\"version\":1,\"epoch\":\"11111111111111111111111111111111\",\"bootId\":\"22222222222222222222222222222222\",\"sequence\":11,\"trigger\":6,\"codes\":[\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\",\"A\"]}"
+      ],
+      "outcome": "ProtocolCodes",
+      "risk": "完整候选预算不能变截断成功"
+    },
+    {
+      "name": "malformed-json",
+      "serverLines": [
+        "{bad}"
+      ],
+      "outcome": "ProtocolJson",
+      "risk": "坏帧封锁"
+    }
+  ]
+}

@@ -6,6 +6,8 @@
 
 # 文档索引
 
+当前唯一规则：[从零安装工作包](work-packages/WP-IPC-FRESH-BASELINE-01.md)、[运行入门](runtime/getting-started.md)、[精确格式规则](runtime/version-compatibility-01.md)。此前指南的迁移步骤已移入[原字节归档](archive/pre-fresh-baseline-01/README.md)，不用于当前运行。
+
 2026-10-26 首次安装计划任务缺失及修复失败状态：见[工作包](work-packages/WP-IPC-INSTALLER-TASK-LOOKUP-01.md)和[实施及定向验证](runtime/installer-task-lookup-01.md)。保留原安装登记，沿原系统入口修复，不重放安装。
 
 本索引区分当前规则、进行中的整合和历史证据。2026-10-26 起点 main 为 `a8cd4314`；最新整合状态只在[本轮工作包](work-packages/WP-IPC-INTEGRATION-20261026.md)记录，旧 PASS 不随合并迁移。

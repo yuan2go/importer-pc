@@ -34,7 +34,7 @@ public static partial class ManagementModeBroker
     public static void RequireProduction(string root)
     {
         if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。");
-        if (!Call<ManagementModeStatus>(root, new("Status")).Configured) throw new InvalidOperationException("请先设置管理密码；旧版凭据须先完成一次性转换，未开放生产业务。");
+        if (!Call<ManagementModeStatus>(root, new("Status")).Configured) throw new InvalidOperationException("请先设置管理密码，完成管理模式配置后再开始业务。");
     }
     public static void RequireUnprovisionedInstaller(string root)
     {

@@ -1,0 +1,77 @@
+{
+  "SourceCommit": "6a55d9d537fb5365717b67c19d72374a4a52371b",
+  "files": [
+    {
+      "path": "README.md",
+      "archive": "README.md.txt",
+      "sha256": "78ea2ac6166ca472fedc0657ccf70ff02e9e5615120210996ea56e2a537650aa",
+      "bytes": 2557
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs__INDEX.md.txt",
+      "sha256": "6566e6a57e073181667003114ff9c5c4ce119aa7cf74ab8c01ca3cd48df5abc2",
+      "bytes": 7977
+    },
+    {
+      "path": "docs/runtime/getting-started.md",
+      "archive": "docs__runtime__getting-started.md.txt",
+      "sha256": "f25227d0e79f9d1a78b0c49728e7f3b4992a1d1c50264dc99e925eb209a97d29",
+      "bytes": 6863
+    },
+    {
+      "path": "docs/runtime/version-compatibility-01.md",
+      "archive": "docs__runtime__version-compatibility-01.md.txt",
+      "sha256": "d214934e0d1535d3e719173ed84b7f23ae2343bce85627c8458169cb81874990",
+      "bytes": 7384
+    },
+    {
+      "path": "docs/runtime/sportmaster-rcs-task.md",
+      "archive": "docs__runtime__sportmaster-rcs-task.md.txt",
+      "sha256": "e746b53de3efdf52ebfcd534f9e1b89e6132eea65c938dfee19c6531f4618db1",
+      "bytes": 10335
+    },
+    {
+      "path": "docs/runtime/windows-application-delivery.md",
+      "archive": "docs__runtime__windows-application-delivery.md.txt",
+      "sha256": "a11c2b2f03312d000351f7bec51dd049d64e10e5692f8951e99b96f0438bfcea",
+      "bytes": 13929
+    },
+    {
+      "path": "docs/runtime/d-drive-storage-20261021.md",
+      "archive": "docs__runtime__d-drive-storage-20261021.md.txt",
+      "sha256": "cf5c2b017ca1a49b408331c38e1103d1540b3d5503e9873c97da281e41459246",
+      "bytes": 6719
+    },
+    {
+      "path": "docs/runtime/application-capability-19.md",
+      "archive": "docs__runtime__application-capability-19.md.txt",
+      "sha256": "3575da947378a48e26ea12ad8b3d6c31ba4a07d6fc737bf7ec05a4124c1bb5f4",
+      "bytes": 14719
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "archive": "docs__runtime__operations.md.txt",
+      "sha256": "476e9e13923e302df57f5bb8ef564b38303cb78c4556f781e04abdd40669ea8e",
+      "bytes": 12299
+    },
+    {
+      "path": "docs/runtime/current-contract-cleanup-01.md",
+      "archive": "docs__runtime__current-contract-cleanup-01.md.txt",
+      "sha256": "bf49baf610a32f2dab7bc71b00d00e3c9414d3df34f0d2ed214501c9ce4c6199",
+      "bytes": 10181
+    },
+    {
+      "path": "docs/runtime/parameter-refactor-01.md",
+      "archive": "docs__runtime__parameter-refactor-01.md.txt",
+      "sha256": "faa1cecdd4d871ee44c6b25b09a6f7ed4672369e88b890ba59aa831bfdff2efd",
+      "bytes": 18385
+    },
+    {
+      "path": "docs/design/parameter-refactor-01.md",
+      "archive": "docs__design__parameter-refactor-01.md.txt",
+      "sha256": "f5da275649ed86b7c593520aca21a89d19fafbaf96f976237d316c0eb0ffc1d4",
+      "bytes": 13645
+    }
+  ]
+}

@@ -79,7 +79,7 @@ def run(evidence):
             scale_right = dict(c['Scale'], InstanceId='weight.smoke.right', Target='reference://weight/smoke/right')
             c['Topology']['Positions'][0].update(CameraInstanceId=c['Images']['Camera']['InstanceId'], ScaleInstanceId=c['Scale']['InstanceId'])
             c['Topology']['Positions'][1].update(CameraInstanceId=camera_right['InstanceId'], ScaleInstanceId=scale_right['InstanceId'])
-            c['CapabilityInstances'] = [b for b in [c['Scale'], scale_right, c['Wcs'], c['Plc'], c['Login'], c['MaintenanceLogin'], c['Images']['Camera'], camera_right, c['Images']['Uploader']] if b]
+            c['CapabilityInstances'] = [b for b in [c['Scale'], scale_right, c['Wcs'], c['Plc'], c['Login'], c['Images']['Camera'], camera_right, c['Images']['Uploader']] if b]
         if peer_url:
             for bound in [c['Wcs'], c['Plc'], c['Images']['Uploader']]:
                 if bound: bound['Parameters']['endpoint'] = peer_url+'parcel-reference/'

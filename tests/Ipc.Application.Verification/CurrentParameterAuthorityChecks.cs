@@ -19,6 +19,8 @@ static class CurrentParameterAuthorityChecks
         var ordinary = await app.SnapshotAsync();
         Check(ordinary.Configuration.Effective.CapabilityInstances is null, "ordinary snapshot omits editable inventory");
         var vm = new PinnedOperatorProjection(app, ordinary); await vm.RefreshAsync();
+        var fixedNow = DateTimeOffset.UtcNow;
+        LocalManagementMode.ForRoot(launch.DataRoot).Clock = () => fixedNow;
         await ManagementModeFixture.Authorize(app);
         await vm.LoadCapabilitiesAsync();
         var candidate = vm.BuildStructuredConfiguration();
@@ -29,7 +31,14 @@ static class CurrentParameterAuthorityChecks
         var proxy = DispatchProxy.Create<IManagementParcelFixture, HeldCatalogue>(); var held = (HeldCatalogue)(object)proxy; held.Inner = app;
         var pendingVm = new ParcelViewModel(proxy, "合成参数授权", "synthetic", "sportmaster");
         var pending = pendingVm.LoadCapabilitiesAsync(); await held.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        try { await app.ExitManagementModeAsync(); await ManagementModeFixture.Authorize(app); }
+        try
+        {
+            var before = await app.ManagementModeStatusAsync();
+            await app.ExitManagementModeAsync(); await ManagementModeFixture.Authorize(app);
+            var after = await app.ManagementModeStatusAsync();
+            Check(before.ExpiresAt == after.ExpiresAt && before.SessionId is not null && after.SessionId is not null && before.SessionId != after.SessionId,
+                "distinct grants remain distinct even with identical expiry timestamps");
+        }
         finally { held.Release.TrySetResult(); }
         var refused = false;
         try { await pending; } catch (UnauthorizedAccessException) { refused = true; }

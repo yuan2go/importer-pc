@@ -116,7 +116,7 @@ public sealed partial class LocalManagementMode
         switch (request.Action)
         {
             case "Status":
-                var status = Status(); return authenticated ? status : status with { Active = false, ExpiresAt = null };
+                var status = Status(); return authenticated ? status : status with { Active = false, ExpiresAt = null, SessionId = null };
             case "ConfigurePassword":
                 if (!installer) throw new ManagementModeBootstrapRequiredException("首次设置管理密码须由Windows安装维护批准；进入管理模式仍须验证本次设置的密码。");
                 ConfigurePassword(request.Password ?? ""); return true;

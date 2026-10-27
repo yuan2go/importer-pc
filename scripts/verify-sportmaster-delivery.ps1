@@ -35,7 +35,12 @@ foreach($case in @(@('core','verify-commercial-media.ps1'),@('wpf','verify-comme
   $result=Get-Content -LiteralPath (Join-Path $directory 'RESULT.json') -Raw|ConvertFrom-Json
   if($result.Status -ne 'PASS'){throw 'Frozen journey did not pass'}
   $row.Status='PASS';$row.Reason=$result.Scope;$row.Evidence=@(Evidence $directory)
- } catch {$failed=$true;$row.Status='FAIL';$row.Reason=$_.Exception.Message;$row.Evidence=if(Test-Path -LiteralPath $directory){@(Evidence $directory)}else{@()}}
+ } catch {
+  $failed=$true;$row.Status='FAIL';$row.Reason=$_.Exception.Message;$row.Evidence=if(Test-Path -LiteralPath $directory){@(Evidence $directory)}else{@()}
+  Write-Output ("Frozen journey " + $case[0] + " failed: " + $row.Reason)
+  $failureLog=Join-Path $directory 'RUN.log'
+  if(Test-Path -LiteralPath $failureLog){Get-Content -LiteralPath $failureLog -Tail 18}
+ }
  # Retain each completed/failed result immediately; another journey may still run.
  $plan|ConvertTo-Json -Depth 12|Set-Content -LiteralPath (Join-Path $Output 'acceptance.json') -Encoding utf8NoBOM
 }

@@ -183,7 +183,8 @@ static class CommercialProductization
         var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
         var legacyDatabase=SyntheticPriorStorage.Create(legacyDirectory,seed.ApplicationId,7);
         File.WriteAllText(Path.Combine(legacyDirectory,"configuration.json"),Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0,seed,null,"Effective",null)));
-        var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{});
+        var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{})
+        { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "prior-scratch-" + Wire.Id())).FullName };
         var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
         await legacyService.BackupAsync(legacyBackup);
         Check(Wire.FileHash(legacyDatabase)==legacyHash && ParcelRepository.ReadStorageVersion(legacyBackup,seed.ApplicationId)==7 && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")),"old format can be preserved by read-only complete backup without conversion or a source fence");

@@ -145,7 +145,7 @@ public partial class ParcelViewModel
         await RequireManagementModeAsync();
         var administration = (IWorkstationAdministration)application;
         var authority = await ServiceAsync(administration.ManagementModeStatusAsync);
-        if (!authority.Authorized) throw new UnauthorizedAccessException("请先进入管理模式；未保存输入保留。");
+        if (!authority.Authorized || string.IsNullOrWhiteSpace(authority.SessionId)) throw new UnauthorizedAccessException("请先进入管理模式；未保存输入保留。");
         // A concurrent refresh can supersede its caller before applying its
         // result. Never construct an editable candidate from that older UI
         // snapshot, which may still be the ordinary, redacted projection.

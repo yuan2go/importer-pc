@@ -7,6 +7,26 @@ static class CurrentContractVerification
 {
     public static async Task Run(string root, string url)
     {
+        await using (var fixture = await Rig.New(root, url))
+        {
+            fixture.AutoConfirmSyntheticHealth = false;
+            var config = fixture.ConfigValue; var now = DateTimeOffset.UtcNow;
+            var fact = new IntegrationHealthFact("builtin.reference", "requests", config.Version, new string('B', 64), config.Integration,
+                Wire.Id(), 1, ServiceStatus.Ready, now, now.AddSeconds(5), null);
+            await fixture.App.SetIntegrationHealthAsync([fact]);
+            var ready = await fixture.App.SnapshotAsync();
+            Check(ready.State.IntegrationHealth is null && ready.State.IntegrationServiceHealth is { } service && service.IsValid(now) &&
+                service.ConfirmedAt == fact.ConfirmedAt && service.ValidUntil == fact.ValidUntil && ready.State.ServiceHealth["requests"] == fact &&
+                !ready.Admit.Reasons.Any(x => x.StartsWith("Wcs", StringComparison.Ordinal)),
+                "current builtin requests health reaches the same service authority and guard as an extension, retaining exact source validity");
+            var opened = await fixture.Command("OpenContext", value: "000001");
+            Check(opened.RequestId is not null && fixture.Store.Requests().Length == 1, "current builtin health permits one explicit original context request");
+            now = DateTimeOffset.UtcNow;
+            await fixture.App.SetIntegrationHealthAsync([fact with { Sequence = 2, ConfirmedAt = now, ValidUntil = now.AddSeconds(5), Status = ServiceStatus.Unavailable }]);
+            var unavailable = await fixture.App.SnapshotAsync();
+            Check(unavailable.State.IntegrationServiceHealth?.Status == ServiceStatus.Unavailable && unavailable.Admit.Reasons.Any(x => x.StartsWith("Wcs", StringComparison.Ordinal)),
+                "builtin unavailability still blocks the current business guard");
+        }
         foreach (var kind in new[] { "fence", "missing-reservation" })
         {
             var directory = Path.Combine(root, "current-refusal-" + kind);

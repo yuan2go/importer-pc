@@ -55,7 +55,7 @@ static class ReferenceJourneyVerification
         await using (var first = NewRuntime())
         {
             await first.StartAsync(CancellationToken.None); Assert(first.Diagnostics.Count == 0, "First runtime starts");
-            await Wait(first, s => s.State.Devices.Values.All(x => x.IsValid(DateTimeOffset.UtcNow)) && s.State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true, "startup-source-health-ready");
+            await Wait(first, s => s.State.Devices.Values.All(x => x.IsValid(DateTimeOffset.UtcNow)) && s.State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true, "startup-source-health-ready");
             await Command(first, "Login", value: "maintenance");
             await Command(first, "OpenContext", value: "000001");
             boxId = (await Wait(first, s => s.State.Session?.Status == SessionStatus.Active, "box-validated")).State.Session!.Id;
@@ -89,7 +89,7 @@ static class ReferenceJourneyVerification
             await second.StartAsync(CancellationToken.None); Assert(second.Diagnostics.Count == 0, "Controlled restart succeeds");
             var restored = await second.Application!.SnapshotAsync();
             Assert(restored.State.Actor is null && restored.State.Session?.Id == boxId && restored.Requests.Single(x => x.Id == original.Id).Status == RequestStatus.Unknown, "Identity reset and same original Unknown after restart");
-            await Wait(second, s => s.State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true, "restart-source-health-confirmed");
+            await Wait(second, s => s.State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true, "restart-source-health-confirmed");
             await Command(second, "Login", value: "maintenance");
             await second.ReconcileAsync(original.Id);
             await Wait(second, s => s.State.Lanes["right"].Status == OperationStatus.Accepted && s.AcceptedQuantity == 6, "original-authoritative-query-unique-acceptance");
@@ -107,7 +107,7 @@ static class ReferenceJourneyVerification
         await using (var final = NewRuntime())
         {
             await final.StartAsync(CancellationToken.None); Assert(final.Diagnostics.Count == 0, "Second controlled restart succeeds");
-            await Wait(final, s => s.State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true, "final-restart-source-health-confirmed");
+            await Wait(final, s => s.State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true, "final-restart-source-health-confirmed");
             await Command(final, "Login", value: "maintenance");
             var history = await final.Application!.QueryHistoryAsync(new());
             Assert(history.TotalCount == 2 && history.Items.All(x => x.Session.Status == SessionStatus.Closed), "Both closed boxes remain queryable after restart");

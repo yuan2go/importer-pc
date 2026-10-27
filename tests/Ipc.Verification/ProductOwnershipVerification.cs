@@ -39,7 +39,7 @@ static class ProductOwnershipVerification
             await runtime.StartAsync(CancellationToken.None);
             Assert(runtime.Diagnostics.Count == 0 && runtime.SourceStartAttempts == 2, "Actual Product owns both controlled source registrations");
             var app = runtime.Application!;
-            await Wait(async () => (await app.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+            await Wait(async () => (await app.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
             async Task Command(string kind, string? value = null)
             {
                 var snapshot = await app.SnapshotAsync();

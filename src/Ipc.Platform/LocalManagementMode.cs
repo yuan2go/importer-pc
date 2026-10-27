@@ -6,7 +6,11 @@ using System.Text.Json.Serialization;
 namespace Ipc.Platform;
 
 public sealed record ManagementModeStatus(bool Configured, bool Active, DateTimeOffset? ExpiresAt, bool HasUnsupportedCredentials = false, bool Available = true)
-{ public bool Authorized => Active && ExpiresAt > DateTimeOffset.UtcNow; }
+{
+    public bool Authorized => Active && ExpiresAt > DateTimeOffset.UtcNow;
+    // Non-secret audit identity. Equal expiry timestamps are not the same grant.
+    public string? SessionId { get; init; }
+}
 public sealed record ManagementModeEvidence(string SessionId, DateTimeOffset EnteredAt, DateTimeOffset ExpiresAt)
 { [JsonIgnore] public string AuditActor => "management-mode." + SessionId; }
 public sealed record ManagementModeDelegation(string Token, string SessionId, string RequestHash, DateTimeOffset ExpiresAt, string Id);
@@ -111,7 +115,7 @@ public sealed partial class LocalManagementMode
             using var held = LockStore(); var s = Read();
             if (active && !ValidSession(s))
             { try { Save(s, revoked.IsCancellationRequested || Now >= expires ? "ManagementModeExpired" : "ManagementModeRevoked"); } finally { Revoke(); } }
-            return new(s.Credential is not null, active, active ? expires : null);
+            return new(s.Credential is not null, active, active ? expires : null) { SessionId = active ? sessionId : null };
         }
     }
     public ManagementModeStatus InspectStatus() => Remote ? RemoteStatus() : Status();

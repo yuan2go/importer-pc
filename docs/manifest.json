@@ -53353,9 +53353,9 @@
     },
     {
       "path": "scripts/verify-commercial-media.ps1",
-      "sha256": "b0c34907fa7b41b972bf7c8960515e8d5aa6bf8c2472536f4c6cd5b8152bf216",
-      "size_bytes": 8352,
-      "git_blob": "60ab15473eb0f55f1cb80653e5bd7ba789d00447",
+      "sha256": "115169baec3c978dae6c7ee06198322336153776fcc7f89e5b43a02e6666947c",
+      "size_bytes": 8395,
+      "git_blob": "a1c74567e11b4ed0ea26c156cffcf745e3db6eef",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -56646,9 +56646,9 @@
       "purpose": "First protected management password approval routing and compact native startup window sizing",
       "source": "WP-IPC-INSTALLER-FIRST-RUN-UI-02; code c6c5cd5285631e1e4ba5ac3990cfff641ff75d49; Windows125% native and read-only actual System broker preflight; actual new UAC approval/install/devices NOT_RUN",
       "storage_scope": "public_repository",
-      "sha256": "930d02e466f80b76789e7fedfe91978eede708fac398904d6244b46cf5909e78",
-      "size_bytes": 53929,
-      "git_blob": "d3208063d9a4b11b7ed6a1f0d51bf407a4795697",
+      "sha256": "60c2b0ab35c7b93aa4e0f98d3bac9cce0e309fd4c26756dc9a7b43c5a1ecd1e6",
+      "size_bytes": 54072,
+      "git_blob": "24fc04458020bc7f1c1c3ac498a923ef396e1065",
       "previous_git_blob": "c07c5a48336e8f7f8d0830bc7901ebb25dc07f31",
       "pre_publication_no_test_git_blob": "57a650b6b3ff5a862e64c1ea9c0c7118db2bdfe8"
     },
@@ -100234,9 +100234,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "d518f2094bacd338e8fcf246864942e55e31aa3494e24cbac315b4eb6e2a4ace",
-      "size_bytes": 13499,
-      "git_blob": "1aa4889daa074f317032a3387fbd185a809abf2f"
+      "sha256": "a6705aefb038ec14487a147e4c57486f4826c7023b7ea1bb5a5d0b04382105da",
+      "size_bytes": 14827,
+      "git_blob": "d69b37b228d66abcc027a3bb0df08bf9b7a42ad6"
     },
     {
       "path": "tests/Ipc.Deployment.Verification/Ipc.Deployment.Verification.csproj",
@@ -101586,9 +101586,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "9e2077f67a618e84010cc1058fd017819ed05cbeda8b28c055f502551d1bb531",
-      "size_bytes": 10072,
-      "git_blob": "58bb9881a92384040bbd46f9e1d3caa7b518fa04",
+      "sha256": "bf49baf610a32f2dab7bc71b00d00e3c9414d3df34f0d2ed214501c9ce4c6199",
+      "size_bytes": 10181,
+      "git_blob": "00e4510a3001c7f7a663dfeca153ecbcfb58b557",
       "storage_scope": "public_repository"
     },
     {
@@ -101762,9 +101762,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "422be3e92028650b4ab7e3eab2080d3c72c79f2d8a41113bd17e6db73056d7b8",
-      "size_bytes": 53025,
-      "git_blob": "372280a0b46ad677f07f9763ad64653afea1d9c2",
+      "sha256": "cbe4a9bdc77e76e6309e114b6b7e57e48b82597a2cf3d3abf056798c78363b3d",
+      "size_bytes": 53136,
+      "git_blob": "a5c71e8e7ef0e0a8aba9317de92a0793841cc8a7",
       "storage_scope": "public_repository"
     },
     {

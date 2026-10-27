@@ -51,7 +51,8 @@ var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directo
 await LifecycleOptimization.Run(root, lifecycleEvidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false);
+var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false)
+    with { Shortcuts = new(false, false) };
 var planFile = Path.Combine(evidence, "deployment-plan.json"); File.WriteAllText(planFile, Wire.Encode(DeploymentBatch.Freeze(request)));
 var receipt = Path.Combine(evidence, "preflight.json");
 if (!DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receipt, "--preflight"]) || Environment.ExitCode != 0) throw new Exception("Frozen media batch preflight failed");

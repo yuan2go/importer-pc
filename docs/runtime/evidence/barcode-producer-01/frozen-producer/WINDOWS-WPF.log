@@ -1,0 +1,11 @@
+PASS PRODUCER NATIVE daily form exposes the safe default and explicit business-mode choice
+PASS PRODUCER NATIVE missing entity/disconnect evidence is located before save review
+PASS PRODUCER NATIVE complete explicit producer settings pass local form validation
+CAPTURE producer-daily-sequenced: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+PASS PRODUCER NATIVE left edits never enable right-side parcel admission
+PASS PRODUCER NATIVE navigation preserves the complete reviewed candidate and evidence
+PASS PRODUCER NATIVE first setup reuses the same explicit producer contract and candidate
+CAPTURE producer-first-sequenced: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+PASS PRODUCER NATIVE compact form can scroll to evidence without clipping the input or losing the candidate
+CAPTURE producer-first-compact-evidence: 785.6x382.4 DIP, Windows DPI 1.25/1.25
+BOUNDARY: HWND/Dispatcher and synthetic parameters only; no real camera, producer or RCS

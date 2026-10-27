@@ -1,0 +1,144 @@
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: new-trigger-same-code: 同码不同触发不能丢掉第二实体；心跳不创建实体
+PASS PRODUCER: same code, independent trigger identities; heartbeats create no entity
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: zero-and-multiple-candidates: 不能隐藏失败触发或截断候选伪造唯一条码
+PASS PRODUCER: zero/multiple results remain complete for Application filtering
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: identity-producerId: 错误生产者/相机/配置禁止进入业务
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: identity-producerVersion: 错误生产者/相机/配置禁止进入业务
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: identity-cameraSerial: 错误生产者/相机/配置禁止进入业务
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: identity-configHash: 错误生产者/相机/配置禁止进入业务
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: old-epoch: 旧连接数据不能跨注册准入
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: wrong-version: 未协商版本拒绝
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: event-before-hello: 握手前条码不得准入
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: event-before-ready: 未确认新触发边界不得准入
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: ready-baseline-change: 握手间触发不能隐式丢失
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: hello-twice: 不能热换身份
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: gap: 序号异常不能继续发布健康
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: duplicate: 序号异常不能继续发布健康
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: rollback: 序号异常不能继续发布健康
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: trigger-repeat: 同触发多帧不得创建第二实体
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: trigger-gap: 缺少失败触发结果须封锁
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: heartbeat-trigger-change: 不能由心跳跳过未发布触发
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: boot-change: 重启不能在旧会话继续
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: late-epoch: 旧Epoch迟到不能恢复业务
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: unknown-field: 拒绝未定义协议含义
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: duplicate-field: 拒绝歧义JSON
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: fraction: 精确整数不允许浮点转换/溢出绕过
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: exponent: 精确整数不允许浮点转换/溢出绕过
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: negative: 精确整数不允许浮点转换/溢出绕过
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: barcode-control: 转义不能绕过控制字节围栏
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: arm preserves the producer's frozen baseline
+PASS PRODUCER: too-many-codes: 完整候选预算不能变截断成功
+PASS PRODUCER: client open challenges this registration
+PASS PRODUCER: malformed-json: 坏帧封锁
+PASS PRODUCER: business mode requires explicit evidence
+PASS PRODUCER: sequenced cannot use uncorrelated line policy
+PASS PRODUCER: heartbeat timeout cannot precede agreed delivery tolerance
+PASS PRODUCER: physical aliases cannot evade lease/configuration identity
+PASS PRODUCER: plain cannot pretend to validate handshake identity
+PASS PRODUCER: old plain endpoint defaults to observation, never silently enables business
+PASS PRODUCER: formal plain endpoint requires a physical camera identity
+PASS PRODUCER: different TCP endpoints cannot configure two producers for one camera
+PASS PRODUCER: MVS diagnostic and TCP production cannot configure the same camera
+PASS PRODUCER: first setup and daily model never promote observation to line mode
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: SequenceGap fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: SequenceDuplicate fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: SequenceRollback fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: HandshakeIdentityMismatch fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: EpochMismatch fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: TriggerDiscontinuity fences business, counts the cause and retires the original epoch
+PASS PRODUCER: fault diagnostics expose no barcode or physical serial
+PASS PRODUCER: fault never automatically reconnects or replays inputs
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: a silent peer cannot remain indefinitely Connecting
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: barcode traffic cannot hide a stalled producer heartbeat
+PASS PRODUCER: socket connect alone cannot publish sequenced Ready
+PASS PRODUCER: hello/arm alone cannot admit a parcel
+PASS PRODUCER: ready plus valid heartbeat establishes health without inventing an entity
+PASS PRODUCER: original callback reached the real reader task
+PASS PRODUCER: cancelled Stop keeps the physical camera lease until the original callback drains
+PASS PRODUCER: a cancelled drain cannot start a second owner
+PASS PRODUCER: actual completed Stop releases the shared MVS diagnostic lease
+PASS PRODUCER: real Application cannot admit before the producer handshake
+PASS PRODUCER: healthy observe-only source remains visible but cannot enable business or create a request
+PASS PRODUCER: real Application cannot admit before the producer handshake
+PASS PRODUCER: same barcode in two valid triggers creates two independent, single-attempt requests
+PASS PRODUCER: source sequence fault closes Application admission without a compensating request
+PASS PRODUCER: an in-flight entity prevents saving a new producer even after pause and management authorization
+PASS PRODUCER: original unknown is reconciled by its original query contract
+PASS PRODUCER: settled responsibilities allow an explicitly reviewed producer candidate
+PASS PRODUCER: controlled reconnect remains available using Effective
+PASS PRODUCER: Pending is not hot-applied; reconnect preserves pause and original request bytes/attempt count
+PASS PRODUCER COMPLETE; loopback/synthetic only, real camera/producer/site NOT_RUN

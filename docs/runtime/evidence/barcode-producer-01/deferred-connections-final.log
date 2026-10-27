@@ -1,0 +1,140 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-54e427097dc04a9db987c44589468afc
+WINDOWS: isolated loopback port composition; protected machine lease/installed runtime acceptance is not asserted. Production preflight uses the real factory.
+PASS RCS20: deferred mask 1: editor accepts independently deferred fields
+PASS RCS20: deferred mask 1: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 1: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 1: missing active camera identity still fails closed
+PASS RCS20: deferred mask 1: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 1: deferred camera 0 has no TCP session or Ready state
+PASS RCS20: deferred mask 1: heartbeat contains only configured identities with contiguous indexes
+PASS RCS20: deferred mask 1: explicit reconnect of sportmaster.reader.left is rejected without enabling it
+PASS RCS20: deferred mask 1: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 1: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 1: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 1: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 1: Pending does not enable sportmaster.reader.left through reconnect
+PASS RCS20: deferred mask 1: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 1: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 1: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 1: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 2: editor accepts independently deferred fields
+PASS RCS20: deferred mask 2: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 2: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 2: missing active camera identity still fails closed
+PASS RCS20: deferred mask 2: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 2: deferred camera 1 has no TCP session or Ready state
+PASS RCS20: deferred mask 2: heartbeat contains only configured identities with contiguous indexes
+PASS RCS20: deferred mask 2: explicit reconnect of sportmaster.reader.right is rejected without enabling it
+PASS RCS20: deferred mask 2: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 2: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 2: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 2: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 2: Pending does not enable sportmaster.reader.right through reconnect
+PASS RCS20: deferred mask 2: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 2: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 2: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 2: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 3: editor accepts independently deferred fields
+PASS RCS20: deferred mask 3: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 3: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 3: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 3: deferred camera 0 has no TCP session or Ready state
+PASS RCS20: deferred mask 3: deferred camera 1 has no TCP session or Ready state
+PASS RCS20: deferred mask 3: deferred RCS or zero configured readers sends no empty heartbeat and reports unavailable
+PASS RCS20: deferred mask 3: explicit reconnect of sportmaster.reader.left is rejected without enabling it
+PASS RCS20: deferred mask 3: explicit reconnect of sportmaster.reader.right is rejected without enabling it
+PASS RCS20: deferred mask 3: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 3: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 3: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 3: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 3: Pending does not enable sportmaster.reader.left through reconnect
+PASS RCS20: deferred mask 3: Pending does not enable sportmaster.reader.right through reconnect
+PASS RCS20: deferred mask 3: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 3: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 3: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 3: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 4: editor accepts independently deferred fields
+PASS RCS20: deferred mask 4: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 4: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 4: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 4: deferred RCS or zero configured readers sends no empty heartbeat and reports unavailable
+PASS RCS20: deferred mask 4: explicit reconnect of sportmaster.integration is rejected without enabling it
+PASS RCS20: deferred mask 4: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 4: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 4: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 4: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 4: Pending does not enable sportmaster.integration through reconnect
+PASS RCS20: deferred mask 4: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 4: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 4: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 4: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 5: editor accepts independently deferred fields
+PASS RCS20: deferred mask 5: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 5: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 5: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 5: deferred camera 0 has no TCP session or Ready state
+PASS RCS20: deferred mask 5: deferred RCS or zero configured readers sends no empty heartbeat and reports unavailable
+PASS RCS20: deferred mask 5: explicit reconnect of sportmaster.reader.left is rejected without enabling it
+PASS RCS20: deferred mask 5: explicit reconnect of sportmaster.integration is rejected without enabling it
+PASS RCS20: deferred mask 5: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 5: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 5: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 5: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 5: Pending does not enable sportmaster.reader.left through reconnect
+PASS RCS20: deferred mask 5: Pending does not enable sportmaster.integration through reconnect
+PASS RCS20: deferred mask 5: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 5: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 5: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 5: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 6: editor accepts independently deferred fields
+PASS RCS20: deferred mask 6: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 6: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 6: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 6: deferred camera 1 has no TCP session or Ready state
+PASS RCS20: deferred mask 6: deferred RCS or zero configured readers sends no empty heartbeat and reports unavailable
+PASS RCS20: deferred mask 6: explicit reconnect of sportmaster.reader.right is rejected without enabling it
+PASS RCS20: deferred mask 6: explicit reconnect of sportmaster.integration is rejected without enabling it
+PASS RCS20: deferred mask 6: all-device reconnect selects only configured connections; actual=Reconnected; reason=Selected lifecycle completed; software paused=True; current health is required before dependent work
+PASS RCS20: deferred mask 6: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 6: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 6: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 6: Pending does not enable sportmaster.reader.right through reconnect
+PASS RCS20: deferred mask 6: Pending does not enable sportmaster.integration through reconnect
+PASS RCS20: deferred mask 6: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 6: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 6: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 6: restored left/right same-code scans remain separate original requests with quantity one
+PASS RCS20: deferred mask 7: editor accepts independently deferred fields
+PASS RCS20: deferred mask 7: actual Production first-run preflight agrees with editor; qualification remains separate
+PASS RCS20: deferred mask 7: initial save preserves candidate without sessions, network requests or a business database
+PASS RCS20: deferred mask 7: runtime confirms configuration and requires RCS plus at least one configured ready camera
+PASS RCS20: deferred mask 7: deferred camera 0 has no TCP session or Ready state
+PASS RCS20: deferred mask 7: deferred camera 1 has no TCP session or Ready state
+PASS RCS20: deferred mask 7: deferred RCS or zero configured readers sends no empty heartbeat and reports unavailable
+PASS RCS20: deferred mask 7: explicit reconnect of sportmaster.reader.left is rejected without enabling it
+PASS RCS20: deferred mask 7: explicit reconnect of sportmaster.reader.right is rejected without enabling it
+PASS RCS20: deferred mask 7: explicit reconnect of sportmaster.integration is rejected without enabling it
+PASS RCS20: deferred mask 7: all-device reconnect selects only configured connections; actual=Rejected; reason=没有已配置的连接可重连；请完成参数并保存，受控重启后生效。
+PASS RCS20: deferred mask 7: reconnect preserves Effective and deferred epochs, with no parcel request or fabricated readiness
+PASS RCS20: deferred mask 7: reconnect never acquires a deferred device session
+PASS RCS20: deferred mask 7: completed parameters use the existing Pending revision
+PASS RCS20: deferred mask 7: Pending does not enable sportmaster.reader.left through reconnect
+PASS RCS20: deferred mask 7: Pending does not enable sportmaster.reader.right through reconnect
+PASS RCS20: deferred mask 7: Pending does not enable sportmaster.integration through reconnect
+PASS RCS20: deferred mask 7: saved completion retains old Effective and no deferred session is opened
+PASS RCS20: deferred mask 7: controlled restart activates and confirms completed configuration
+PASS RCS20: deferred mask 7: restored runtime uses both configured heartbeat identities
+PASS RCS20: deferred mask 7: restored left/right same-code scans remain separate original requests with quantity one
+Unhandled exception. System.InvalidOperationException: {
+  "Status": "Rejected",
+  "Reason": "ProducerSwitchBlocked: inspect and settle in-flight parcels and original input/request responsibilities before switching a producer",
+  "Revision": 23
+}
+   at SportmasterRcs.DeferredStage(ParcelRuntime app, ParcelConfiguration candidate, String reason) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 186
+   at SportmasterRcs.DeferredOriginalCustody(ParcelRuntime app, BusinessLaunch launch, Peer peer, TcpClient camera, ParcelConfiguration deferred) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 202
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 160
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 162
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 164
+   at SportmasterRcs.DeferredConnectionChecks(String workspace, String root) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\DeferredConnections.cs:line 22
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\Program.cs:line 50
+   at Program.<Main>(String[] args)

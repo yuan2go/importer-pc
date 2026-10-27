@@ -1,0 +1,22 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.ParcelFlow\ParcelCommands.cs(175,118): error CS1061: “ParcelRepository”未包含“UnresolvedIngress”的定义，并且找不到可接受第一个“ParcelRepository”类型参数的可访问扩展方法“UnresolvedIngress”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+  Ipc.Reference.Protocol -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Drivers.Hikrobot.Mvs\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Mvs.dll
+
+生成失败。
+
+D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.ParcelFlow\ParcelCommands.cs(175,118): error CS1061: “ParcelRepository”未包含“UnresolvedIngress”的定义，并且找不到可接受第一个“ParcelRepository”类型参数的可访问扩展方法“UnresolvedIngress”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-worktrees\tcp-producer-contract-01\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:11.91

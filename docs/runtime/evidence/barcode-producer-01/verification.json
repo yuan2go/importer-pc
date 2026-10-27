@@ -1,0 +1,572 @@
+{
+  "SourceCommit": "7c9c17d7d79440fae08dd7bd68d491db57588799",
+  "ImplementationCommit": "e6439f4a6518a754825c256827fadbe652243f94",
+  "Status": "PASS_WITH_EXPLICIT_NOT_RUN",
+  "Environment": "environment.json",
+  "RuntimeSourceIdentity": "All final passing core and native checks use these runtime bytes. Native fixture and frozen-media launcher updates are in 7c9c17d7. Earlier attempts remain separately named and are not relabelled as final evidence.",
+  "GoldenCases": 28,
+  "FinalApplicationLogs": [
+    "barcode-producer-final2.log",
+    "deferred-connections-verified.log",
+    "hikrobot-hardening-verified.log",
+    "p0-deferred-final2.log",
+    "p0-rcs-final2.log",
+    "architecture-quality-remediation-final2.log",
+    "sportmaster-rcs-final2.log",
+    "dual-camera-communication-delivery.log",
+    "hikrobot-sdk-editing-delivery.log",
+    "p0-provider-identity-delivery.log",
+    "p0-tcp-components-delivery.log",
+    "p0-tcp-delivery.log",
+    "parameter-guidance-startup-delivery.log",
+    "parameter-refactor-delivery.log",
+    "rcs-timeout-errors-delivery.log",
+    "station-single-camera-delivery.log"
+  ],
+  "Build": "solution-final.log",
+  "Probe": "probe-self-test.log",
+  "Python": [
+    "test_release_documents.py.log",
+    "test_application_compatibility.py.log"
+  ],
+  "Native": [
+    "native-barcode-producer.log",
+    "native-hikrobot-sdk-editing.log",
+    "native-parameter-guidance.log"
+  ],
+  "FrozenResults": [
+    "frozen-producer/RESULT.json",
+    "frozen-startup/RESULT.json"
+  ],
+  "VerificationMedium": {
+    "SourceCommit": "7c9c17d7d79440fae08dd7bd68d491db57588799",
+    "Sha256": "49f3b88d3332a3e37f38b7d997e7410ccf5883a736bb5833c21e78d7bc30c079",
+    "InventorySha256": "e911253c2c806b425508f8871e4bdd677f45af5e298c1c44f68e7fb8a15812b7",
+    "VendorRuntime": "OMITTED_EXPLICITLY",
+    "Path": ".artifacts/barcode-producer/verification-final-win-x64.zip",
+    "ShippedBinaryInGit": false
+  },
+  "OriginalFailures": {
+    "implementation-build.log": "Invalid repository method reference UnresolvedIngress; corrected to existing HasInterruptedIngress.",
+    "test-build.log": "Incorrect test API ExecuteAsync; corrected to CommandAsync.",
+    "deferred-connections.log": "Old production plain fixture omitted physical identity; synthetic serial declared.",
+    "deferred-connections-final.log": "New guard correctly refused reader deferral with Unknown; test now asserts refusal and retains RCS-only Pending/custody checks.",
+    "p0-deferred-verified.log": "Production matrix lacked explicit synthetic camera.serial; fixtures corrected without weakening validation."
+  },
+  "NotRun": [
+    "target MV-PD010003-06M-12C and real SDK",
+    "Hikrobot platform or actual sequenced service",
+    "physical trigger completeness and camera release",
+    "real RCS or physical completion",
+    "installation/provisioning/signing/production qualification",
+    "target IPC long-duration operation"
+  ],
+  "SourceBlobs": [
+    {
+      "Path": ".github/workflows/hikrobot-sdk.yml",
+      "GitBlob": "46bb0aaf7747ea8775200e1e741f65fc6e41725e"
+    },
+    {
+      "Path": "config/sportmaster/business.json",
+      "GitBlob": "ac34cf63d9c962d5d4670cb0cc79e206a165ebdf"
+    },
+    {
+      "Path": "scripts/package-application.py",
+      "GitBlob": "b11524f1ae7d80a76ab95abe7ee724d9a157566a"
+    },
+    {
+      "Path": "scripts/release_documents.py",
+      "GitBlob": "93332d59e3b7eaa9d72a4d0557eac5148da1f017"
+    },
+    {
+      "Path": "scripts/verify-commercial-wpf.ps1",
+      "GitBlob": "fa8a9c1ca69060f19ec09dac7071ea56719ff685"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
+      "GitBlob": "1afcaadbe6d69a79a8cda5c10b6351a176d8fdf3"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationChangeReview.cs",
+      "GitBlob": "727327cd6b385b1eafe1ef8ca8439a5c0bac5817"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
+      "GitBlob": "3d0c70482cf04912ba76bc9921a9a5b84cc1eb47"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs",
+      "GitBlob": "1cab27376083cf76fdec576eb2ea016f3f3217c3"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
+      "GitBlob": "5086f8a11abc5de5a78cffeb3917c8c622dc9cbb"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "GitBlob": "fbf82c3b17e7c84250ee0887993eadbf4750e16c"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "GitBlob": "2d834d0aafe2fb68eb5edb7d6fe05e5e94b23120"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "GitBlob": "3b3d3c3b97220a3559e6042400e3653c9fdf27db"
+    },
+    {
+      "Path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "GitBlob": "ee80a982f31848ff26750eeaae16f27dbbc29c60"
+    },
+    {
+      "Path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+      "GitBlob": "d9647f33edba495afd079ddc5a9691bd25c45039"
+    },
+    {
+      "Path": "src/Ipc.Drivers/AssemblyInfo.cs",
+      "GitBlob": "986449b42c45a1be5d2f501dbbf11a9e0b498a90"
+    },
+    {
+      "Path": "src/Ipc.Drivers/BarcodeProducerConfiguration.cs",
+      "GitBlob": "99f74681c6d2faa1c780d25f03a0efd50d10446c"
+    },
+    {
+      "Path": "src/Ipc.Drivers/SequencedBarcodeProtocol.cs",
+      "GitBlob": "a63f8aac3bc29b967916b16636e0c5841749ce5b"
+    },
+    {
+      "Path": "src/Ipc.Drivers/TcpLineObservationSource.cs",
+      "GitBlob": "27bd1d0b2339c3c15a36b2f7f3bcf9df0175ffb3"
+    },
+    {
+      "Path": "src/Ipc.Drivers/TcpProducerDiagnostics.cs",
+      "GitBlob": "7dc4060f573f231d1e503497be14d0f08487cd0f"
+    },
+    {
+      "Path": "src/Ipc.Platform/DiagnosticText.cs",
+      "GitBlob": "b7039188a1902061c682c07f5f8c3ec80cd3176a"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs",
+      "GitBlob": "bef51ece00c3170517d90596a3ba3152c2a71350"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/BarcodeProducerVerification.cs",
+      "GitBlob": "ab90ec84b251ddd97902b016d8bab054d4b694be"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/DeferredConnections.cs",
+      "GitBlob": "138fb0170d8fde8b6fd3a706ee7ccfc9224cca87"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/DualCameraCommunication.cs",
+      "GitBlob": "a086c18ff7a1558bd2265527c640e5f0e8837749"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/HikrobotHardening.cs",
+      "GitBlob": "e4673a90044af26cd97add6b43e453fb4f4d89b7"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/HikrobotSdkEditing.cs",
+      "GitBlob": "db31e982900995c5367424f655cb261b6b59c94f"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/P0Stability.Deferred.cs",
+      "GitBlob": "c9cd3b9bb914e40925441e5b512c8db99682d67f"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/P0Stability.Scans.cs",
+      "GitBlob": "497c0cdd904a4d5b0966e03935028ed027fd853d"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/P0Stability.Tcp.cs",
+      "GitBlob": "d014413ad107222d1d7dba6c3c5025e390d1cb4d"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
+      "GitBlob": "510cb83830f1eb2cf9deb3f4e9b3053a6bbf2ed7"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/Program.cs",
+      "GitBlob": "8c921cfd96b83c331058b9d2ca7f594729b1bd3b"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/RcsTimeoutRescan.cs",
+      "GitBlob": "271ea35bec6dc62c834241a5c68576d0cefba22d"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
+      "GitBlob": "e0d48beaf19dddd8a34e186b3804d5de4877d3ba"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/BarcodeProducerEditing.cs",
+      "GitBlob": "5efdc4a808ceba7eacb14ea3a3b9b89f47f14f52"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/HikrobotSdkEditing.cs",
+      "GitBlob": "2a97a189e84175aa154fd9df940611ece6f02ef4"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
+      "GitBlob": "d68146963a334fe7ca739e47dd458499a0401fc8"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "GitBlob": "b5a6a3ec726bdef6e53249ad4bc4fd2a4298618d"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/ReaderCatalogBindings.cs",
+      "GitBlob": "5a6ab04c7ce62882249a9477b62bcd61cf68a63d"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
+      "GitBlob": "692a25c1995ca8b92d9f03d15f1d83f1478ef8bd"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/TcpLineReader.cs",
+      "GitBlob": "0c272c983574f1afcedd8f056f894ce62d916297"
+    }
+  ],
+  "Files": [
+    {
+      "Path": "architecture-quality-remediation-final2.log",
+      "Sha256": "1f88ad219fb462bfbe646e772923e6993aacedf09c7db3dd0c48daf3763efc67",
+      "Bytes": 9651
+    },
+    {
+      "Path": "barcode-producer-final.log",
+      "Sha256": "ff9c1596df43eb3e05e91bc2bf7521e82ea738a2ebb02323b0ef125498b6d9e8",
+      "Bytes": 10095
+    },
+    {
+      "Path": "barcode-producer-final2.log",
+      "Sha256": "216664a2c8d1df276b6e68e3ac4ee367d6cef328b0845d0ee4c05af3220ccfa7",
+      "Bytes": 10971
+    },
+    {
+      "Path": "barcode-producer-verified.log",
+      "Sha256": "ff9c1596df43eb3e05e91bc2bf7521e82ea738a2ebb02323b0ef125498b6d9e8",
+      "Bytes": 10095
+    },
+    {
+      "Path": "barcode-producer.log",
+      "Sha256": "ff9c1596df43eb3e05e91bc2bf7521e82ea738a2ebb02323b0ef125498b6d9e8",
+      "Bytes": 10095
+    },
+    {
+      "Path": "baseline-build.log",
+      "Sha256": "0ca95d13bb769f8b3796fd1f77f3a8b5696c09cc73755a0527c36111068568ef",
+      "Bytes": 5136
+    },
+    {
+      "Path": "deferred-connections-final.log",
+      "Sha256": "2c764c420978f122f7f4412e705e39e2394bcac0211defc2a9abe83c49aaac6f",
+      "Bytes": 15506
+    },
+    {
+      "Path": "deferred-connections-verified.log",
+      "Sha256": "e9b518896e09d122e5e48d94b899d6e056effa8b0333bafff9471812e479fc6a",
+      "Bytes": 14483
+    },
+    {
+      "Path": "deferred-connections.log",
+      "Sha256": "dbf71bf2658b8019f74ac96ca88b5ded9c1fd480e675c25cd7bc79b6a90313af",
+      "Bytes": 1653
+    },
+    {
+      "Path": "dual-camera-communication-delivery.log",
+      "Sha256": "7e7782fc5ca45672a86d0b8df06a9af6dde2e5afb3be020f5be35a80f525527c",
+      "Bytes": 6580
+    },
+    {
+      "Path": "dual-camera-communication.log",
+      "Sha256": "99c15147e70247b9c5e14e50f5f41ba4e1314e154b2b6a1dc7cea67e7f85f128",
+      "Bytes": 6580
+    },
+    {
+      "Path": "environment.json",
+      "Sha256": "bac26eb508096c271a163f87d6989bb8268eae22c18a0798cac0fabc74e6c8ca",
+      "Bytes": 453
+    },
+    {
+      "Path": "final-app-build.log",
+      "Sha256": "6b3b4f6d92f023e0d39eab704dc217de75df4d2e23f019236e74a11d78e9df75",
+      "Bytes": 2926
+    },
+    {
+      "Path": "frozen-producer/producer-daily-sequenced.png",
+      "Sha256": "b318cf063ec96e89b6cd229ef8774ee5152652ea02acd10bf24f61fa618c4304",
+      "Bytes": 157830
+    },
+    {
+      "Path": "frozen-producer/producer-first-compact-evidence.png",
+      "Sha256": "1c182b4dba3f18dbd73175868d38a63f70c0d3d589ad6c1381f46f69154ccd67",
+      "Bytes": 88153
+    },
+    {
+      "Path": "frozen-producer/producer-first-sequenced.png",
+      "Sha256": "2c94b4b9f5d13af3ce99ec611ccc1af122de5af9f9cc22abbf8718df7ca8aa2a",
+      "Bytes": 150289
+    },
+    {
+      "Path": "frozen-producer/RESULT.json",
+      "Sha256": "9f648d708a88adaa30ad48f8559677733d721368dbfbcfb3b96ad23685ab796b",
+      "Bytes": 3433
+    },
+    {
+      "Path": "frozen-producer/RUN.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "frozen-producer/WINDOWS-WPF.log",
+      "Sha256": "6b90c0a47ebecf4af711fc5d68231594ef41f4b0ee568bd8679375ab5cacf931",
+      "Bytes": 947
+    },
+    {
+      "Path": "frozen-producer.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "frozen-startup/RESULT.json",
+      "Sha256": "9f648d708a88adaa30ad48f8559677733d721368dbfbcfb3b96ad23685ab796b",
+      "Bytes": 3433
+    },
+    {
+      "Path": "frozen-startup/RUN.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "frozen-startup/startup-small.png",
+      "Sha256": "c074131d3112452c762207ee5b1e992753e77583f1397db06152844eda6be803",
+      "Bytes": 102391
+    },
+    {
+      "Path": "frozen-startup/WINDOWS-WPF.log",
+      "Sha256": "fb2cd3eb3793aaf1f10a93e98fe6a950fa88aadbe59a19dc951cf69c7f32b012",
+      "Bytes": 14516
+    },
+    {
+      "Path": "frozen-startup.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "hikrobot-hardening-verified.log",
+      "Sha256": "6b5c4131c383fcbb9a38358d1c0072c71ff4dd454e72b699398e45faf98970d4",
+      "Bytes": 1483
+    },
+    {
+      "Path": "hikrobot-hardening.log",
+      "Sha256": "6aa16e4f0663a1caae3e2a09b37e24af833417923ec3cf6d9986caf4147618ca",
+      "Bytes": 1483
+    },
+    {
+      "Path": "hikrobot-sdk-editing-delivery.log",
+      "Sha256": "29b0e768eba3378d791567c5f798b46ad094e4aa5e54b24d3429915e271d4f7d",
+      "Bytes": 605
+    },
+    {
+      "Path": "hikrobot-sdk-editing.log",
+      "Sha256": "29b0e768eba3378d791567c5f798b46ad094e4aa5e54b24d3429915e271d4f7d",
+      "Bytes": 605
+    },
+    {
+      "Path": "implementation-build.log",
+      "Sha256": "0b71c3bc06e1a6bbe88e83ed541bd3c64ead90e16ed5c1c71af5642a5a7fa8ba",
+      "Bytes": 2860
+    },
+    {
+      "Path": "native-barcode-producer.log",
+      "Sha256": "6b90c0a47ebecf4af711fc5d68231594ef41f4b0ee568bd8679375ab5cacf931",
+      "Bytes": 947
+    },
+    {
+      "Path": "native-build-02.log",
+      "Sha256": "f93355cb3fe5c304bf3b37066f5e31959e91ae6ddf7790aaca7cc660da973978",
+      "Bytes": 2814
+    },
+    {
+      "Path": "native-build.log",
+      "Sha256": "7371a7c161aaaa5ec9a9063cf43b7f62b7c1c43c0ec571ff824fb551105a610c",
+      "Bytes": 2983
+    },
+    {
+      "Path": "native-hikrobot-sdk-editing.log",
+      "Sha256": "e6621e447e275ed8d967ce9215b685aa7c36c636167b40592b7d40865c88aa4b",
+      "Bytes": 1284
+    },
+    {
+      "Path": "native-parameter-guidance.log",
+      "Sha256": "81cc5b003095f291fdddcaf8aa9b7603aa97d5afec9abd0212c7f1c442fe8c4f",
+      "Bytes": 8051
+    },
+    {
+      "Path": "native-producer.log",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": "native-startup-build.log",
+      "Sha256": "ca1fa5df9d6e1cf19e2683f340943c3b02d069f03ee04c4aab50bc9470cd300d",
+      "Bytes": 2814
+    },
+    {
+      "Path": "p0-deferred-final2.log",
+      "Sha256": "4af611f57a2aaca6c36f07f5aa10d512ae35ef9cf9bc59194f2e70979ff2ebf4",
+      "Bytes": 13713
+    },
+    {
+      "Path": "p0-deferred-verified.log",
+      "Sha256": "1063074b3b330f94df14006aceb47b7f7fe4fb09b1b90c1cb7bf573bc584572d",
+      "Bytes": 25299
+    },
+    {
+      "Path": "p0-provider-identity-delivery.log",
+      "Sha256": "175ba275fd4b95bcae71255797fceda8e45bb4ed94911d3e71ed74190198746c",
+      "Bytes": 506
+    },
+    {
+      "Path": "p0-provider-identity.log",
+      "Sha256": "e2565deedb96b74a38a09c9afda88829a1c20abde0285c5c33750cb2bb2d8009",
+      "Bytes": 506
+    },
+    {
+      "Path": "p0-rcs-final2.log",
+      "Sha256": "b16e266ea721460cc2989571e16b25849649b064e9222901164a9d69d9f98a26",
+      "Bytes": 664
+    },
+    {
+      "Path": "p0-tcp-components-delivery.log",
+      "Sha256": "c476bfd0a382d8434a741f6d71f18cbf00c5c7090994398de30f10557006f164",
+      "Bytes": 3988
+    },
+    {
+      "Path": "p0-tcp-components.log",
+      "Sha256": "353f0cec3ef317e61a37f409c854e684cee53d9f077f729c5906a1724b28f32e",
+      "Bytes": 3988
+    },
+    {
+      "Path": "p0-tcp-delivery.log",
+      "Sha256": "fa590509e25cdf8e906ca4637b9a32a0f7894a85df6d5fad42ae931612aa4cf7",
+      "Bytes": 1193
+    },
+    {
+      "Path": "p0-tcp.log",
+      "Sha256": "4f9d9cbbb1c03340b11647eba249ecbf3e91f610c0c256e69fac02d7bbfabae2",
+      "Bytes": 1194
+    },
+    {
+      "Path": "parameter-guidance-startup-delivery.log",
+      "Sha256": "e91e71f7b2f712e205d0684f6535a4651ea5f3b84a7b597c18ab41673f72d3a0",
+      "Bytes": 2433
+    },
+    {
+      "Path": "parameter-guidance-startup.log",
+      "Sha256": "fd94cdcea112144dab9d48366d37cdeff9e3d77284162b4fa195d5f887298f73",
+      "Bytes": 2433
+    },
+    {
+      "Path": "parameter-refactor-delivery.log",
+      "Sha256": "102042f6ba76a08de24dfe177760d2d95fd9955735179e0e04306fb51509c2ee",
+      "Bytes": 8352
+    },
+    {
+      "Path": "parameter-refactor.log",
+      "Sha256": "b14e9e3e03cb2a08f38113ff72e0e7696d1159f70ed6ea9bbff96ef0f74f9d4b",
+      "Bytes": 8352
+    },
+    {
+      "Path": "probe-build.log",
+      "Sha256": "27a8cc6d082c50407b5ad35af79d8fae653766336fe34bcdf6b855293a5c1452",
+      "Bytes": 1087
+    },
+    {
+      "Path": "probe-self-test.log",
+      "Sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "Bytes": 7436
+    },
+    {
+      "Path": "producer-01.log",
+      "Sha256": "36b772a2e37d57b095b1f90c2277146936e6a5e2bc9ad550e565184b3628c156",
+      "Bytes": 9638
+    },
+    {
+      "Path": "publication-final.log",
+      "Sha256": "8ca1aa123a06d6c46a307cdc332bfaa71062fed87172e81e7772a88a61ac6a5b",
+      "Bytes": 8551
+    },
+    {
+      "Path": "publication.log",
+      "Sha256": "2492e1b73d2790943763a12d1816ac879e273add3ed9b8e08b26c24c037d5977",
+      "Bytes": 8567
+    },
+    {
+      "Path": "rcs-timeout-errors-delivery.log",
+      "Sha256": "c5c984ee5e3e50968df4f0ab24baae8b52271beb96dc50d7f108e5cabc34d582",
+      "Bytes": 4730
+    },
+    {
+      "Path": "rcs-timeout-errors.log",
+      "Sha256": "f9526e4c4e193c6743dbd780524a3717c02bbdd3f1b742527fc94b363e42895d",
+      "Bytes": 4730
+    },
+    {
+      "Path": "solution-build-01.log",
+      "Sha256": "54fa20da3643b7bbe244f1c13299bf4d321db9279e6b0a3695fe4369e96c3053",
+      "Bytes": 9697
+    },
+    {
+      "Path": "solution-build-02.log",
+      "Sha256": "8da9ad1117efc50ff903e1e62f70841cab110f15f11017c9ca86bdd3531d4afc",
+      "Bytes": 7723
+    },
+    {
+      "Path": "solution-final.log",
+      "Sha256": "7bfc86c9b243d9a48376469136af880833ac8a7228acebd7f347447f6a00bb5c",
+      "Bytes": 7723
+    },
+    {
+      "Path": "sportmaster-rcs-final2.log",
+      "Sha256": "c8002088027e7a8520201be37fcbf02a9e03a66cb3b9c76360fb575aadce3f9d",
+      "Bytes": 14215
+    },
+    {
+      "Path": "station-single-camera-delivery.log",
+      "Sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "Bytes": 3431
+    },
+    {
+      "Path": "station-single-camera.log",
+      "Sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "Bytes": 3431
+    },
+    {
+      "Path": "test-build-02.log",
+      "Sha256": "fc693d19f166ab046fb9c63840bd38dd9d5f16e116b10c5e6be58f259547359a",
+      "Bytes": 2761
+    },
+    {
+      "Path": "test-build-03.log",
+      "Sha256": "0a63427f21fab126f254916aa643b87dca1a730e9e06e7ffd7d26cd7bc56c310",
+      "Bytes": 2761
+    },
+    {
+      "Path": "test-build.log",
+      "Sha256": "46523e7021999390c12b43166d6fec5fc1813b5dce3c7fd128798902812a22d7",
+      "Bytes": 3562
+    },
+    {
+      "Path": "test_application_compatibility.py.log",
+      "Sha256": "1d4d0fea37a1f080bbc6e7c76d14a29406a3b99862020ab2ab5aeaba369f4bea",
+      "Bytes": 120
+    },
+    {
+      "Path": "test_release_documents.py.log",
+      "Sha256": "8bd1c2f81368d96bc02d45d9182c71a25ea75d6d40f5dd0ce0fc6ca5a8caee6d",
+      "Bytes": 106
+    }
+  ]
+}

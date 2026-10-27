@@ -1,4 +1,4 @@
-> 条码生产者统一接入：[BARCODE-PRODUCER-01](work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。[协议 v1](protocols/barcode-producer-v1.md)、[实现设计](design/barcode-producer-01.md)、[黄金对话](protocols/barcode-producer-v1.golden.json)、[运行说明](runtime/barcode-producer-01.md)。本型号由 PC 生产者解码，通过 TCP 接入；MVS 限诊断。
+> 条码生产者统一接入：[BARCODE-PRODUCER-01](work-packages/WP-IPC-BARCODE-PRODUCER-01.md)。[协议 v1](protocols/barcode-producer-v1.md)、[实现设计](design/barcode-producer-01.md)、[黄金对话](protocols/barcode-producer-v1.golden.json)、[运行说明](runtime/barcode-producer-01.md)、[验证回执](runtime/evidence/barcode-producer-01/README.md)。本型号由 PC 生产者解码，通过 TCP 接入；MVS 限诊断。
 
 > 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
 

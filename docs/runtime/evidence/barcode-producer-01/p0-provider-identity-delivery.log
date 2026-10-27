@@ -1,0 +1,14 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-e7473bcb0b9b4ddc96b5f114d2ac7f13
+ProviderIdentity={
+  "Selected": [
+    {
+      "Kind": "observation",
+      "Implementation": "tcp-line",
+      "Version": "1.0.0",
+      "Contract": "TCP-LINE-OBSERVATION-v1"
+    }
+  ],
+  "DescriptorVersion": "1.0.0"
+}
+PASS RCS20: normal selected TCP identity equals shipped descriptor
+PASS RCS20: normal business compatibility accepts deferred TCP startup candidate without bypassing declaration

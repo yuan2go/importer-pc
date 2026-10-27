@@ -1,0 +1,52 @@
+PASS RCS20: mask 0 resumes only with RCS and at least one ready camera
+PASS RCS20: configured left accepts its own synthetic observation
+PASS RCS20: single camera completes one actual loopback RCS request
+PASS RCS20: Application recovery requires a new management login
+PASS RCS20: recovery preserves original request and sends no duplicate
+PASS RCS20: independent position admits the Unknown recovery fixture
+PASS RCS20: replacement password enters for Unknown recovery verification
+PASS RCS20: root recovery preserves Unknown identity, frozen request and its sole send attempt
+PASS RCS20: mask 1 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 1 never starts or admits the unconfigured camera
+PASS RCS20: configured right accepts its own synthetic observation
+PASS RCS20: single camera completes one actual loopback RCS request
+PASS RCS20: Application recovery requires a new management login
+PASS RCS20: recovery preserves original request and sends no duplicate
+PASS RCS20: mask 2 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 2 never starts or admits the unconfigured camera
+PASS RCS20: configured left accepts its own synthetic observation
+PASS RCS20: single camera completes one actual loopback RCS request
+PASS RCS20: Application recovery requires a new management login
+PASS RCS20: recovery preserves original request and sends no duplicate
+PASS RCS20: mask 3 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 3 never starts or admits the unconfigured camera
+PASS RCS20: mask 3 never starts or admits the unconfigured camera
+PASS RCS20: mask 4 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 5 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 5 never starts or admits the unconfigured camera
+PASS RCS20: mask 6 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 6 never starts or admits the unconfigured camera
+PASS RCS20: mask 7 resumes only with RCS and at least one ready camera
+PASS RCS20: mask 7 never starts or admits the unconfigured camera
+PASS RCS20: mask 7 never starts or admits the unconfigured camera
+PASS RECOVERY01 root recovery cannot replace first setup
+PASS RECOVERY01 ordinary password grants a real session
+PASS RECOVERY01 wrong root rejects recovery
+PASS RECOVERY01 failed recovery preserves credential and current grant
+PASS RECOVERY01 replacement uses the real password policy
+PASS RECOVERY01 invalid replacement does not overwrite the original credential
+PASS RECOVERY01 successful recovery revokes the existing session
+PASS RECOVERY01 old delegated maintenance authority is revoked
+PASS RECOVERY01 only the replacement password authenticates
+PASS RECOVERY01 root password is not a management login password
+PASS RECOVERY01 recovery retains a non-secret audit and salted credential
+PASS RECOVERY01 wrong recovery attempt 0
+PASS RECOVERY01 wrong recovery attempt 1
+PASS RECOVERY01 wrong recovery attempt 2
+PASS RECOVERY01 wrong recovery attempt 3
+PASS RECOVERY01 wrong recovery attempt 4
+PASS RECOVERY01 recovery lock persists across service instances
+PASS RECOVERY01 recovery lock does not disable the ordinary valid password
+PASS RECOVERY01 recovery works after the bounded lock expires
+PASS RECOVERY01 recovery refuses a missing configured credential ledger
+PASS RECOVERY01 missing-ledger failure preserves original bytes

@@ -1,0 +1,13 @@
+{
+  "SourceCommit": "7c9c17d7d79440fae08dd7bd68d491db57588799",
+  "Windows": "Microsoft Windows NT 10.0.22631.0",
+  "Architecture": "X64",
+  "Dotnet": "10.0.402",
+  "WorkingDirectory": "D:\\projects\\importer-pc-worktrees\\tcp-producer-contract-01",
+  "VerificationOnly": true,
+  "RealCamera": "NOT_RUN",
+  "RealProducer": "NOT_RUN",
+  "RealRcs": "NOT_RUN",
+  "ProductionQualification": "NOT_RUN",
+  "VendorRuntime": "OMITTED_EXPLICITLY"
+}

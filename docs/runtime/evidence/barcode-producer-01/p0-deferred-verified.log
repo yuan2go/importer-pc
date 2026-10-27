@@ -1,0 +1,305 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-f115374490b34240b1e399a3606de497
+PASS RCS20: matrix 0 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 0 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u0022613739EDE34F45525BF35FD10AC81D460C1355771D2C6DF9E88FC7C4E43C845F\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:31:58.810296\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 1 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 1 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u00229C1DFDB16E252D842DAB9F9779A588F4861216247B27804179FB900F1E15FBF9\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:32:01.2541848\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 2 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+PASS RCS20: runtime and preflight use the identical mapping
+MATRIX 2 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u002251F13BF7FCF0BB374885C858189DB1218163891E8503860B42D8119F5905E6DA\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:32:02.7431705\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 3 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "3207966047E635E760DEEFD4F3EE66DB47CB881DCB47994263D69839DFD176F9",
+  "At": "2026-10-27T19:32:04.2289442+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: mapping excludes deferred readers
+PASS RCS20: zero active readers send no heartbeat; active readers send one batch
+MATRIX 3 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS",
+  "Heartbeat": "PASS"
+}
+PASS RCS20: matrix 4 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+MATRIX 4 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u0022C7A36D0C7B8B69DAB86A1E53BE36718585C1B8108F23231825258FBC8C0820F5\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:32:05.6928863\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 5 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+MATRIX 5 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u00221EF02255B95CE4C0427729773355E6CCC0C937791027C1F2C1E0FCBCA75C6BA3\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:32:05.8989905\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 6 field validation
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+MATRIX 6 {
+  "Fields": "PASS",
+  "Joint": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Check": "Exception: FAIL RCS20: matrix joint check {\r\n  \u0022CandidateHash\u0022: \u0022EFC0FCC7DA33BF2EC7054C0886C24FF05320D00E413337ADB62750FBAA34AEAA\u0022,\r\n  \u0022At\u0022: \u00222026-10-27T19:32:06.0796379\u002B00:00\u0022,\r\n  \u0022Checks\u0022: [\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7ED3\\u6784\\u4E0E\\u4E1A\\u52A1\\u5B57\\u6BB5\u0022,\r\n      \u0022Status\u0022: \u0022PASS\u0022,\r\n      \u0022Reason\u0022: \u0022\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u7CBE\\u786E\\u5305\\u4E0E\\u53C2\\u6570\\u95ED\\u5305\u0022,\r\n      \u0022Status\u0022: \u0022FAIL\u0022,\r\n      \u0022Reason\u0022: \u0022camera.serial: require a canonical expected physical identity (value omitted)\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u90E8\\u7F72\\u8D44\\u683C\\u4E0E\\u63D0\\u4EA4\\u6761\\u4EF6\u0022,\r\n      \u0022Status\u0022: \u0022BLOCKED\u0022,\r\n      \u0022Reason\u0022: \u0022\\u751F\\u4EA7\\u6A21\\u5F0F\\u7F3A\\u5C11\\u53D7\\u4FDD\\u62A4\\u7684\\u7BA1\\u7406\\u6A21\\u5F0F\\u6388\\u6743\\u670D\\u52A1\\uFF1B\\u8BF7\\u4F7F\\u7528\\u540C\\u7248\\u5B89\\u88C5\\u5668\\u5B89\\u88C5\\u6216\\u4FEE\\u590D\\u3002\u0022\r\n    },\r\n    {\r\n      \u0022Layer\u0022: \u0022\\u771F\\u5B9E\\u8FDE\\u63A5\\u4E0E\\u5B9E\\u4F53\\u8BB8\\u53EF\u0022,\r\n      \u0022Status\u0022: \u0022NOT_RUN\u0022,\r\n      \u0022Reason\u0022: \u0022\\u672C\\u5165\\u53E3\\u4E0D\\u542F\\u52A8\\u8BBE\\u5907\\u6216\\u53D1\\u9001\\u4E1A\\u52A1\\u8BF7\\u6C42\\uFF1B\\u672A\\u63D0\\u4F9B\\u6279\\u51C6\\u7684\\u72EC\\u7ACB\\u63A2\\u6D4B\\u5408\\u540C\u0022\r\n    }\r\n  ]\r\n}",
+  "Save": "InvalidDataException: camera.serial: require a canonical expected physical identity (value omitted)",
+  "Start": "PASS"
+}
+PASS RCS20: matrix 7 field validation
+PASS RCS20: matrix joint check {
+  "CandidateHash": "3938C963464A656510E874B2504031C0F3FDF924204D8E31CD6D282DADABAFE1",
+  "At": "2026-10-27T19:32:06.2737956+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "PASS",
+      "Reason": "\u9759\u6001\u68C0\u67E5\uFF1B\u672A\u52A0\u8F7D\u6A21\u5757/SDK"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+}
+PASS RCS20: matrix saved candidate exact
+PASS RCS20: shared missing dependencies block admission; an optional unconfigured camera does not fabricate operations
+PASS RCS20: deferred reader remains unavailable
+PASS RCS20: deferred reader remains unavailable
+MATRIX 7 {
+  "Fields": "PASS",
+  "Joint": "PASS",
+  "Check": "PASS",
+  "Save": "PASS",
+  "Start": "PASS"
+}
+Unhandled exception. System.Exception: FAIL RCS20: all eight deferred combinations: 0/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 0/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "613739EDE34F45525BF35FD10AC81D460C1355771D2C6DF9E88FC7C4E43C845F",
+  "At": "2026-10-27T19:31:58.810296+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 0/Save: camera.serial: require a canonical expected physical identity (value omitted) | 1/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 1/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "9C1DFDB16E252D842DAB9F9779A588F4861216247B27804179FB900F1E15FBF9",
+  "At": "2026-10-27T19:32:01.2541848+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 1/Save: camera.serial: require a canonical expected physical identity (value omitted) | 2/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 2/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "51F13BF7FCF0BB374885C858189DB1218163891E8503860B42D8119F5905E6DA",
+  "At": "2026-10-27T19:32:02.7431705+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 2/Save: camera.serial: require a canonical expected physical identity (value omitted) | 4/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 4/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "C7A36D0C7B8B69DAB86A1E53BE36718585C1B8108F23231825258FBC8C0820F5",
+  "At": "2026-10-27T19:32:05.6928863+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 4/Save: camera.serial: require a canonical expected physical identity (value omitted) | 5/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 5/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "1EF02255B95CE4C0427729773355E6CCC0C937791027C1F2C1E0FCBCA75C6BA3",
+  "At": "2026-10-27T19:32:05.8989905+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 5/Save: camera.serial: require a canonical expected physical identity (value omitted) | 6/Joint: camera.serial: require a canonical expected physical identity (value omitted) | 6/Check: FAIL RCS20: matrix joint check {
+  "CandidateHash": "EFC0FCC7DA33BF2EC7054C0886C24FF05320D00E413337ADB62750FBAA34AEAA",
+  "At": "2026-10-27T19:32:06.0796379+00:00",
+  "Checks": [
+    {
+      "Layer": "\u7ED3\u6784\u4E0E\u4E1A\u52A1\u5B57\u6BB5",
+      "Status": "PASS",
+      "Reason": ""
+    },
+    {
+      "Layer": "\u7CBE\u786E\u5305\u4E0E\u53C2\u6570\u95ED\u5305",
+      "Status": "FAIL",
+      "Reason": "camera.serial: require a canonical expected physical identity (value omitted)"
+    },
+    {
+      "Layer": "\u90E8\u7F72\u8D44\u683C\u4E0E\u63D0\u4EA4\u6761\u4EF6",
+      "Status": "BLOCKED",
+      "Reason": "\u751F\u4EA7\u6A21\u5F0F\u7F3A\u5C11\u53D7\u4FDD\u62A4\u7684\u7BA1\u7406\u6A21\u5F0F\u6388\u6743\u670D\u52A1\uFF1B\u8BF7\u4F7F\u7528\u540C\u7248\u5B89\u88C5\u5668\u5B89\u88C5\u6216\u4FEE\u590D\u3002"
+    },
+    {
+      "Layer": "\u771F\u5B9E\u8FDE\u63A5\u4E0E\u5B9E\u4F53\u8BB8\u53EF",
+      "Status": "NOT_RUN",
+      "Reason": "\u672C\u5165\u53E3\u4E0D\u542F\u52A8\u8BBE\u5907\u6216\u53D1\u9001\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u672A\u63D0\u4F9B\u6279\u51C6\u7684\u72EC\u7ACB\u63A2\u6D4B\u5408\u540C"
+    }
+  ]
+} | 6/Save: camera.serial: require a canonical expected physical identity (value omitted)
+   at SportmasterRcs.Check(Boolean value, String message) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 19
+   at SportmasterRcs.DeferredMatrix(String workspace, String root) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\P0Stability.Deferred.cs:line 95
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc-worktrees\tcp-producer-contract-01\tests\Ipc.Application.Verification\Program.cs:line 37
+   at Program.<Main>(String[] args)

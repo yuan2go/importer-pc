@@ -1,0 +1,42 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-527ca14144fc4cae9fd03f1d78e7fbd1
+ST06 FIN {
+  "KeepAlive": 1,
+  "ConfigurableDeadline": true,
+  "TcpKeepAliveTime": 1,
+  "TcpKeepAliveInterval": 1,
+  "TcpKeepAliveRetryCount": 2,
+  "FaultDetected": true,
+  "ElapsedMs": 240.8305,
+  "EpochRetired": true,
+  "LastFailure": "RemoteClosed",
+  "ObservationCount": 1,
+  "AutoReconnected": false
+}
+ST06 RST {
+  "KeepAlive": 1,
+  "ConfigurableDeadline": true,
+  "TcpKeepAliveTime": 1,
+  "TcpKeepAliveInterval": 1,
+  "TcpKeepAliveRetryCount": 2,
+  "FaultDetected": true,
+  "ElapsedMs": 32.3899,
+  "EpochRetired": true,
+  "LastFailure": "RemoteClosed",
+  "ObservationCount": 1,
+  "AutoReconnected": false
+}
+ST06 silent-forwarder {
+  "KeepAlive": 1,
+  "ConfigurableDeadline": true,
+  "TcpKeepAliveTime": 1,
+  "TcpKeepAliveInterval": 1,
+  "TcpKeepAliveRetryCount": 2,
+  "LocalTimerRenewedReady": false,
+  "FaultDetected": true,
+  "ElapsedMs": 2023.2934,
+  "EpochRetired": true,
+  "LastFailure": "LivenessExpired",
+  "ObservationCount": 1,
+  "AutoReconnected": false
+}
+PASS ST06 FIN/RST/silent-forwarder, kernel socket options, no timer renewal or replay

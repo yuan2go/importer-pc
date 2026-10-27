@@ -1,0 +1,53 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-bb3a95afac194d64b0fba2ea9fe1a823
+PASS DCC01: split: connecting sends no handshake or application data
+PASS DCC01: split: complete valid frame retained without transport failure
+PASS DCC01: split UTF8 and coalesced LF/CRLF retain order and distinct same-code entities
+PASS DCC01: split: stop drains reading and local-confirmation tasks
+PASS DCC01: observe: connecting sends no handshake or application data
+PASS DCC01: observe: complete valid frame retained without transport failure
+PASS DCC01: observe-only never invents an entity boundary
+PASS DCC01: observe: stop drains reading and local-confirmation tasks
+PASS DCC01: max-lf: connecting sends no handshake or application data
+PASS DCC01: max-lf: complete valid frame retained without transport failure
+PASS DCC01: max-lf: stop drains reading and local-confirmation tasks
+PASS DCC01: max-crlf: connecting sends no handshake or application data
+PASS DCC01: max-crlf: complete valid frame retained without transport failure
+PASS DCC01: max-crlf: stop drains reading and local-confirmation tasks
+PASS DCC01: long: connecting sends no handshake or application data
+PASS DCC01: long: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: long: stop drains reading and local-confirmation tasks
+PASS DCC01: utf8: connecting sends no handshake or application data
+PASS DCC01: utf8: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: utf8: stop drains reading and local-confirmation tasks
+PASS DCC01: empty: connecting sends no handshake or application data
+PASS DCC01: empty: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: empty: stop drains reading and local-confirmation tasks
+PASS DCC01: control: connecting sends no handshake or application data
+PASS DCC01: control: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: control: stop drains reading and local-confirmation tasks
+PASS DCC01: partial: connecting sends no handshake or application data
+PASS DCC01: partial: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: partial: stop drains reading and local-confirmation tasks
+PASS DCC01: eof: connecting sends no handshake or application data
+PASS DCC01: eof: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: eof: stop drains reading and local-confirmation tasks
+PASS DCC01: reject: connecting sends no handshake or application data
+PASS DCC01: reject: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: reject: stop drains reading and local-confirmation tasks
+PASS DCC01: throw: connecting sends no handshake or application data
+PASS DCC01: throw: typed failure fences subsequent frames without truncation
+PASS DCC01: failure evidence omits raw data and never auto-reconnects
+PASS DCC01: throw: stop drains reading and local-confirmation tasks
+PASS DCC01: blocked callback allows bounded Stop cancellation without pretending drain completed
+PASS DCC01: cancelled stop retains original resource ownership and refuses overlapping start
+PASS DCC01: explicit drain permits controlled new epoch
+PASS DCC01: physical endpoint remains exclusive across device aliases and numeric port spellings
+PASS DCC01: health refreshes and valid data update current evidence without transition-log flooding or mutable-draft rebinding
+PASS ST06 existing protocol, stop ownership and confirmation assertions unchanged

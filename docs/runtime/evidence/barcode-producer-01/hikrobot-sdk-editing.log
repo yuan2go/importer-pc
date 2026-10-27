@@ -1,0 +1,9 @@
+PASS BUNDLED SDK: explicit diagnostic candidate resolves two built-in SDK readers without extension setup
+PASS BUNDLED SDK: one current SDK descriptor is registered
+PASS BUNDLED SDK: SDK schema excludes TCP and duplicate code
+PASS BUNDLED SDK: SDK schema excludes TCP and duplicate code
+PASS BUNDLED SDK: RCS envelope constants are not parameters
+PASS BUNDLED SDK: save preserves SDK parameters without extension deployment
+PASS BUNDLED SDK: reload isolates left and right
+PASS BUNDLED SDK: built-in duplicate physical identity rejected
+BOUNDARY model only; native SDK/frame/barcode/site NOT_RUN

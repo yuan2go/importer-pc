@@ -1,0 +1,24 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-e49c141e102b4c70828d8877a2df210e
+PASS PGS01: new stations default to seven days and explicitly deferred left/right/RCS connections
+PASS PGS01: the actual offline first-run checker accepts deferred Production connections without starting them
+PASS PGS01: first-run persistence saves the explicit Production candidate without creating device sessions or a substitute business database
+PASS PGS01: incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added
+PASS PGS01: current TCP producer candidate remains observation-only until an explicit parcel boundary is declared; quantity is absent
+PASS PGS01: current producer mode offers explicit trigger selection and candidate construction never activates parcel admission
+PASS PGS01: one deliberate station edit updates both request identities and heartbeat while leaving the original configuration unchanged
+PASS PGS01: conflicting historical station identifiers require an explicit common choice
+PASS PGS01: activating an incomplete camera restores required field validation
+PASS PGS01: raw startup drafts preserve deferred connections and incomplete input
+PASS PGS01: old omitted retention and connection fields keep their prior semantics
+PASS PGS01: an older unfinished installer seed receives first-run defaults in the editable candidate without modifying the seed or existing deployment policy
+PASS PGS01: unknown deferred identities are rejected by Application rules
+PASS PGS01: removing deferred state restores real adapter configuration validation
+PASS PGS01: deferred RCS refuses obsolete quantity before opening resources
+PASS PGS01: actual runtime opens with incomplete connections but refuses resume and admission
+PASS PGS01: pending dependencies report unavailable health with an actionable configuration reason
+PASS PGS01: deferred sources expose no simulated input fallback
+PASS PGS01: loading the current SDK daily editor leaves the observation policy and effective candidate unchanged, without quantity or false dirty state
+PASS PGS01: daily deferred-state edits participate in dirty tracking and save review
+PASS PGS01: the daily editor preserves the same complete deferred candidate
+PASS PGS01: daily deferred configuration saves through the existing Pending revision without applying it or creating requests
+PASS PGS01 COMPLETE

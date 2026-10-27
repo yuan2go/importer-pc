@@ -155,3 +155,6 @@ docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol
 
 # Preserve station recovery test receipts, including failures.
 docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol
+
+# Preserve original synthetic barcode producer verification receipts.
+docs/runtime/evidence/barcode-producer-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

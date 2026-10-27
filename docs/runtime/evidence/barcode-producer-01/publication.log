@@ -1,0 +1,54 @@
+Retained build workspace on failure: D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.25 秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 40 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 46 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj (用时 40 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 43 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 57 毫秒)。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Drivers.Hikrobot.Mvs\release\Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\.artifacts\barcode-producer\verification-e6439f4a-win-x64\app\
+  正在确定要还原的项目…
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Presentation.Wpf\Ipc.Presentation.Wpf.csproj (用时 611 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 886 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 778 毫秒)。
+  已还原 D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 787 毫秒)。
+  13 个项目(共 17 个)是最新的，无法还原。
+  Ipc.Platform -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Drivers.Hikrobot.Mvs -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Drivers.Hikrobot.Mvs\release\Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Assembly -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Presentation.Wpf -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Presentation.Wpf\release\Ipc.Presentation.Wpf.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> D:\DevCache\importer-pc\temp\ipc-publication-xyr0rbmb\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc-worktrees\tcp-producer-contract-01\.artifacts\barcode-producer\verification-e6439f4a-win-x64\desktop\
+{"Package": "D:\\projects\\importer-pc-worktrees\\tcp-producer-contract-01\\.artifacts\\barcode-producer\\verification-e6439f4a-win-x64.zip", "Sha256": "6820e6e60bd65553418b596e702ec64e076bfdedb742c98905c081e654713ec5", "SourceCommit": "e6439f4a6518a754825c256827fadbe652243f94", "Application": "sportmaster", "Target": "win-x64", "BusinessVersion": "1.0.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "6E50B39E6EAAC72748D065DF1F4E54E2A1D409F41916E2CBD912A39C2D8FEF75"}

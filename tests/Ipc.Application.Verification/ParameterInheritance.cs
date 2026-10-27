@@ -67,7 +67,7 @@ static class ParameterInheritance
             await vm.RefreshAsync(); vm.StructuredPolicy!.BarcodeExclusionPattern = "OK00[1-3]"; vm.StructuredPolicy.DiagnosticLogDays = "3"; vm.ConfigurationReason = "Synthetic inheritance revision";
             await vm.SaveIncompleteEditorAsync(); vm.DisplayNameDraft = "changed"; vm.TargetEfficiencyDraft = "1";
             await vm.ContinueIncompleteEditorAsync();
-            Check(vm.DisplayNameDraft == "未应用草稿" && vm.TargetEfficiencyDraft == "0" && vm.HasUnsavedDisplayPreferences && vm.StationDisplaySummary.Contains("1800"), "encrypted editor draft preserves invalid display input without applying it or creating another configuration account");
+            Check(vm.DisplayNameDraft == "未应用草稿" && vm.TargetEfficiencyDraft == "0" && !vm.HasUnsavedDisplayPreferences && vm.StationDisplaySummary.Contains("1800"), "shared encrypted draft retains optional raw display values while SM no longer treats removed display inputs as unsaved work");
             var access = (IParcelConfigurationDraftApplication)app;
             var originalDraft = (await access.ReadEditorDraftAsync())!;
             var draftFile = Directory.EnumerateFiles(launch.DataRoot, "editor-draft.bin", SearchOption.AllDirectories).Single();

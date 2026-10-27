@@ -74,8 +74,8 @@ public sealed partial class ParameterSettingsControl
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
         Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "完整备份包含数据库和同名恢复目录，两者须一起保留。关闭计划时不提交备份配置，本次输入可留在草稿中；既有完整恢复集保留。参数模板不包含数据库和恢复目录。");
-        var display = Page(0, "显示偏好", "仅影响本机显示。");
-        if (RuntimeContext is { } runtime)
+        var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
+        if (m.ApplicationId != "sportmaster" && RuntimeContext is { } runtime)
         {
             form = Form(display);
             var name = Input(form, "站点显示名称", runtime, "DisplayNameDraft", "DisplayNameDraft", display, "选填，最多64字。");
@@ -86,7 +86,7 @@ public sealed partial class ParameterSettingsControl
             var feedback = Text(""); feedback.SetBinding(TextBlock.TextProperty, new Binding("DisplayPreferenceStatus") { Source = runtime });
             AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); display.Body.Children.Add(feedback);
         }
-        display.Body.Children.Add(Text("简体中文 · 浅色"));
+        if (m.ApplicationId != "sportmaster") display.Body.Children.Add(Text("简体中文 · 浅色"));
         display.Body.Children.Add(Text("窗口布局", true));
         var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, DisplayMemberPath = "Label", SelectedValuePath = "Mode", MinHeight = 40 };
         var modeStatus = Text("");
@@ -115,7 +115,7 @@ public sealed partial class ParameterSettingsControl
             change.Click += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty); display.Body.Children.Add(change);
         }
         else display.Body.Children.Add(Text("完成首次配置后，可在作业窗口调整本机布局。"));
-        Technical(display, "本机显示", "PresentationPreferences", "按当前 Windows 用户保存，不进入业务配置修订；工作台保留本地标识。目标效率不改变输送速度、节拍或实际产量；不会启动设备或恢复新入场。");
+        Technical(display, "本机显示", "PresentationPreferences", "按当前 Windows 用户保存窗口打开方式与布局，不进入业务配置修订；不会启动设备或恢复新入场。");
     }
     sealed record WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode Mode, string Label);
     void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)

@@ -39,7 +39,7 @@ public sealed partial class LocalManagementMode
     sealed record Delegation(string Id, string TokenHash, string RequestHash, string SessionId, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false,
         DateTimeOffset? OperationUntil = null);
     sealed record Store(int SchemaVersion, Credential? Credential, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
-        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null);
+        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null, int RecoveryFailures = 0, DateTimeOffset RecoveryLockedUntil = default);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
     public LocalManagementMode(string root) : this(root, false) { }
     internal LocalManagementMode(string root, bool serviceAuthority)

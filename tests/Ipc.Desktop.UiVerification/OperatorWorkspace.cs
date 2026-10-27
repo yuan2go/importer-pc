@@ -38,7 +38,7 @@ static partial class Program
             Positions = s.Positions!.Select(p => p with { Admit = false, BlockingReasons = ["连接待配置"] }).ToArray(),
             BlockingReasons = ["连接待配置：左相机、右相机、RCS。"] };
         probe.Project = Deferred; await Until(() => vm.ShowSetupGuidance);
-        Check(vm.SetupItems == "左相机、右相机、RCS" && vm.SetupHeading.Contains("3"), "unconfigured guide lists the exact missing connection count");
+        Check(vm.SetupItems == "左相机或右相机（配置一台即可）、RCS" && vm.SetupHeading.Contains("2"), "unconfigured guide lists the exact missing connection count");
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2); await Flush();
@@ -50,11 +50,18 @@ static partial class Program
         }
         await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Left); await Flush();
         Check(vm.SelectedPage == "diagnostics" && !vm.CanReconnectConfigured && vm.ReconnectHint.Contains("尚无已配置"), "unconfigured diagnostics disable reconnect with a specific reason");
-        Check(vm.LeftConnectionDiagnosis.Contains("尚未配置") && vm.RightConnectionDiagnosis.Contains("尚未配置") && vm.RcsConnectionDiagnosis.Contains("尚未配置"), "each connection explains missing configuration instead of Unknown");
+        Check(vm.LeftConnectionDiagnosis.Contains("暂未启用") && vm.RightConnectionDiagnosis.Contains("暂未启用") && vm.RcsConnectionDiagnosis.Contains("尚未配置"), "each connection explains missing configuration instead of Unknown");
         foreach (var label in new[] { "设置左相机", "设置右相机", "设置RCS" }) Check(Descendants(window).OfType<Button>().Single(b => Equals(b.Content, label)).IsVisible, label + " is directly available");
         var diagnosticText = string.Join("\n", Descendants(window).OfType<TextBlock>().Where(t => t.IsVisible).Select(t => t.Text));
         Check(!diagnosticText.Contains("sportmaster.reader") && !diagnosticText.Contains("Health:") && !diagnosticText.Contains("原配置账") && !diagnosticText.Contains("工作集"), "default diagnostics use human labels; original identifiers remain available for support copy");
         Check(vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "support copy preserves exact diagnostic identity");
+        probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == vm.Left.ReaderId ? d with { Health = DeviceHealth.Unknown, Source = "SDK:hikrobot-mvs; phase=acquiring-decoder-unavailable; frames=12; bytes=75497472; decoder=Unavailable; businessReady=false" } : d).ToArray() };
+        await Until(() => vm.LeftConnectionDiagnosis.Contains("12帧"));
+        Check(vm.LeftConnectionDiagnosis.Contains("尚未接入条码识别") && !vm.LeftConnectionDiagnosis.Contains("连接已确认"), "received MVS images are distinguished from a usable barcode decoder");
+        probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == vm.Left.ReaderId ? d with { Health = DeviceHealth.Unknown, Source = "SDK:hikrobot-mvs; phase=acquiring-decoder-unavailable; frames=0; decoder=Unavailable; businessReady=false" } : d).ToArray() };
+        await Until(() => vm.LeftConnectionDiagnosis.Contains("尚未收到帧"));
+        Check(vm.LeftConnectionDiagnosis.Contains("核对触发"), "zero-image MVS state identifies the trigger/acquisition check");
+        probe.Project = Deferred; await Until(() => vm.ShowSetupGuidance);
         vm.Message = "合成重连失败，请检查网络"; await Flush();
         Check(Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("合成重连失败")), "diagnostics exposes scoped action failures when its redundant global status banner is hidden");
         vm.Message = ""; await Flush();
@@ -97,7 +104,7 @@ static partial class Program
             Check(!vm.Left.SlotAvailable && vm.Right.SlotAvailable && !vm.ShowSetupGuidance, scenario + " hides the current left destination and retains the healthy right result");
             CaptureInternal(evidence, "operator-" + scenario, client, lines);
         }
-        probe.Project = s => Deferred(s); await Until(() => vm.MissingConnections.Length == 3);
+        probe.Project = s => Deferred(s); await Until(() => vm.MissingConnections.Length == 2);
         Check(!vm.ShowSetupGuidance, "configuration guide never covers an existing current parcel");
         probe.FailSnapshots = true; vm.MarkReadFailure("Synthetic read failure"); await Flush();
         Check(!vm.ShowSetupGuidance && !vm.CanReconnectConfigured && !vm.Left.SlotAvailable, "stale state revokes guide, reconnect and destination claims");

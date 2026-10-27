@@ -152,3 +152,6 @@ docs/runtime/evidence/operator-workstation-01/*.txt -text whitespace=cr-at-eol
 
 # Preserve query UX verification receipts without newline normalization.
 docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol
+
+# Preserve station recovery test receipts, including failures.
+docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol

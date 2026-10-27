@@ -6,6 +6,12 @@ namespace Ipc.Application.Contracts;
 public static class ParcelConnectionSetup
 {
     public static bool IsDeferred(ParcelConfiguration c, string identity) => c.DeferredConnections?.Contains(identity, StringComparer.Ordinal) == true;
+    public static bool BlocksWork(ParcelConfiguration c)
+    {
+        if (c.DeferredConnections is not { Length: > 0 }) return false;
+        if (c.ApplicationId != "sportmaster") return true;
+        return c.Wcs is null || IsDeferred(c, c.Wcs.InstanceId) || !ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId));
+    }
     public static bool HasActiveConnections(ParcelConfiguration c) => ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId)) ||
         ParcelBindings.Bound(c).Any(b => !IsDeferred(c, b.InstanceId));
     public static string[] Validate(ParcelConfiguration c)

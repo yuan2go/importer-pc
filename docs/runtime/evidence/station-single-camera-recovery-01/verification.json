@@ -1,0 +1,175 @@
+{
+  "base_commit": "0a5074b13ffb3977abb066c4734ceba775b07f67",
+  "meaning": "Current source blob identities and actual phased synthetic/Windows test receipts; not hardware acceptance",
+  "sources": {
+    ".github/workflows/sportmaster-commercial.yml": "c01002209a8b9cded8dcbb1290f98d5e20ac8631",
+    "scripts/verify-commercial-wpf.ps1": "c501ad2d70730fef0ace414b409b00ae52d8e880",
+    "src/Ipc.Application.Contracts/ParcelConnectionSetup.cs": "52da1279538ba2d5f30f91c5171da14f5e18ab43",
+    "src/Ipc.Application.Contracts/WorkstationAdministration.cs": "5e0f250ec04e34b4433129e6a53f7940fde9476b",
+    "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeMenu.cs": "d31970cf0d247527144c7877360d13f48d222f98",
+    "src/Ipc.Application.ParcelFlow.Desktop/ManagementModeWindow.cs": "b1a7b12fc8ca2e00211ff3325e6d4783bd4df201",
+    "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs": "a067e09548d15a24feb9c1e746f71c54a1bbe358",
+    "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs": "3c3b9f73819ad20a66f3b95e16d7bcb593a564d1",
+    "src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs": "f9fdf43698197c8b051ffcc809a11a2a87d78939",
+    "src/Ipc.Application.ParcelFlow/ParcelAdministration.cs": "947acb8e7b460fc28a17ad8b666c62e018eabeef",
+    "src/Ipc.Application.ParcelFlow/ParcelCommands.cs": "c8b114333600d2043d589aadb49e0af6b48dd05a",
+    "src/Ipc.Application.ParcelFlow/ParcelGuards.cs": "99b74a13744b0ec91b054822e02494230963b21f",
+    "src/Ipc.Application.ParcelFlow/ParcelImages.cs": "07e7c26fe791911e7dcdec462c2e1adfc9eadab5",
+    "src/Ipc.Application.ParcelFlow/ParcelManagementMode.cs": "a85354f676d7ba6ff51be66a9376c3b19f69b6b1",
+    "src/Ipc.Application.Sportmaster.Desktop/OperatorWorkspacePresentation.cs": "a2718c67807f4dda5acbd42ef9cfb0729900e51f",
+    "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs": "cbda8535b425f8b8d5844a472198851d1ee95d40",
+    "src/Ipc.Platform/LocalManagementMode.cs": "aa8be05b381901232c25dc5bf43d4c8fde33408e",
+    "src/Ipc.Platform/ManagementModeBroker.Protocol.cs": "fcd6483ad6d7c800ab16edaf776ded4491372a6e",
+    "src/Ipc.Platform/ManagementModeBroker.Windows.cs": "51314a85e25efdd4cb8e724978d082afd923855d",
+    "tests/Ipc.Application.Verification/AdministratorBoundary.cs": "7a64002f1e5cc7a48a31d8c5a6124b778b4e358b",
+    "tests/Ipc.Application.Verification/DeferredConnections.cs": "f15357b7de603d7ddb908cb70a1a7151c1ca185a",
+    "tests/Ipc.Application.Verification/P0Stability.Deferred.cs": "709cc6a68f7b96e5af1a4e6a92c64f74803fa9ae",
+    "tests/Ipc.Application.Verification/ParameterInheritance.cs": "5d7a9338fab07631f2f7b4bb6541a24d9c0e40b7",
+    "tests/Ipc.Application.Verification/Program.cs": "5d7c4045e8f9c3928e6c27a93b1d32799e04b575",
+    "tests/Ipc.Desktop.UiVerification/OperatorAdministration.cs": "57a0dad3f760ef8f81eccd247fde0f8e30ad9c6c",
+    "tests/Ipc.Desktop.UiVerification/OperatorWorkspace.cs": "936f080cbd132e4bed1c756f18a09ae1dd526fbe",
+    "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs": "f4f65c1ad9973ad95e2d493c34aab9ff9357718e",
+    "tests/Ipc.Desktop.UiVerification/Program.cs": "e11dd976007610bad645cc72eca544e9adb5d802",
+    "tests/Ipc.Drivers.Hikrobot.Probe/packages.lock.json": "3b5d53b64180b759d4cd4c1db1eb9d8173780f53",
+    "src/Ipc.Application.ParcelFlow.Desktop/ManagementPasswordRecoveryWindow.cs": "0afcc0bedb23d5e4d30ae470a18db75cf4c2d4a9",
+    "src/Ipc.Platform/LocalManagementMode.PasswordRecovery.cs": "baccae39cacd58c736c32e634ba76948f0decdde",
+    "tests/Ipc.Application.Verification/StationSingleCamera.cs": "8b6c20eedfb15e41aa7e4adfc8689c7d4e06847c",
+    "tests/Ipc.Desktop.UiVerification/StationSettings.cs": "6744944375d847f0abd31e2ead696937fb62e4b9"
+  },
+  "receipts": [
+    {
+      "path": "app-station-single-camera.txt",
+      "sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "pass_lines": 52,
+      "failure_receipt": false
+    },
+    {
+      "path": "app-parameter-inheritance.txt",
+      "sha256": "b056c2a498928f51601acf25ab4a1ca0f59bed54118fd79510d0fce0d0aefbaf",
+      "pass_lines": 43,
+      "failure_receipt": false
+    },
+    {
+      "path": "app-deferred-connections.txt",
+      "sha256": "c2ccda5890911d005706f711f50631e9827584e14d693f9d23ae47923f526571",
+      "pass_lines": 130,
+      "failure_receipt": false
+    },
+    {
+      "path": "app-management-mode.txt",
+      "sha256": "c01d3d3ac1e8521e0890dedc11cd32bf6ad71ccb40bd90ec4f1719a72242d0cc",
+      "pass_lines": 81,
+      "failure_receipt": false
+    },
+    {
+      "path": "app-rcs-timeout-errors.txt",
+      "sha256": "6fe7732ab9f87157a6e9afaba7c147190abc783190a203a4122659aff8e97a26",
+      "pass_lines": 57,
+      "failure_receipt": false
+    },
+    {
+      "path": "station-settings.txt",
+      "sha256": "d7ae2e7cd95d4db7f978bf012587f4fbfdb2cb77eec13255e23d02c6487b6e9d",
+      "pass_lines": 6,
+      "failure_receipt": false
+    },
+    {
+      "path": "operator-workspace.txt",
+      "sha256": "ec423669253026629250fa6aa8bc5469500d36e8ff4e3c29b35ed6f7be73200a",
+      "pass_lines": 32,
+      "failure_receipt": false
+    },
+    {
+      "path": "management-mode.txt",
+      "sha256": "3f4d75a647632e6024f578e9bbcefb8b9bb883081df98870d04f210a4be77287",
+      "pass_lines": 57,
+      "failure_receipt": false
+    },
+    {
+      "path": "parameter-v3.txt",
+      "sha256": "d8fadcfbd1754e527d3f4bfd1676415ccf3b321bf07b8936ff092fc76fa908ee",
+      "pass_lines": 238,
+      "failure_receipt": false
+    },
+    {
+      "path": "parameter-guidance-startup.txt",
+      "sha256": "83dc7809d642569eea20e122b4bc0490b30ad59b2d9ae87dde9f4d3095b32105",
+      "pass_lines": 88,
+      "failure_receipt": false
+    },
+    {
+      "path": "application-build.txt",
+      "sha256": "ea67de7ad2abdf1c10a6f5ae5a231816fc51f91bbc5e2a3759098f5f236a958c",
+      "pass_lines": 0,
+      "failure_receipt": false
+    },
+    {
+      "path": "native-build.txt",
+      "sha256": "2078a3f7b5cc0c9b13094a92f353d7d91f5aea4c5475cd68d686532f0e274fa9",
+      "pass_lines": 0,
+      "failure_receipt": false
+    },
+    {
+      "path": "first-application-build-failure.txt",
+      "sha256": "0e42a61a2ef4b0fe65e6d8adca1f3cf2e9d3daf47bb2f00fadf5ef71aa35fed3",
+      "pass_lines": 0,
+      "failure_receipt": true
+    },
+    {
+      "path": "first-native-build-failure.txt",
+      "sha256": "23910f7c4faf4ab0c779e235b9ec765bbf3fc7cc6ea7c9c51baf14e7676093d5",
+      "pass_lines": 0,
+      "failure_receipt": true
+    },
+    {
+      "path": "operator-workspace-first-failure.txt",
+      "sha256": "721860e5f3d824de55128d6d17d63b323a20999419182b9310d2608ab6aae197",
+      "pass_lines": 26,
+      "failure_receipt": true
+    },
+    {
+      "path": "deferred-first-failure.txt",
+      "sha256": "393447659bbcf90380a9ee91e61c002dd27cdce65033444f5b3ecea4e82bf742",
+      "pass_lines": 4,
+      "failure_receipt": true
+    },
+    {
+      "path": "unknown-fixture-first-failure.txt",
+      "sha256": "1e12c309f4968923cc5182a9152aee728986e68470aa7cab437ecfb37333db74",
+      "pass_lines": 11,
+      "failure_receipt": true
+    },
+    {
+      "path": "unknown-timeout-fixture-failure.txt",
+      "sha256": "d4169caf31ab581b975650dd99b55ee1d1907f63469fef5fa3408c0ba16abdde",
+      "pass_lines": 6,
+      "failure_receipt": true
+    },
+    {
+      "path": "hikrobot-first-build-failure.txt",
+      "sha256": "927329eb8f6134160535e605e13f24a102896ebfa8badf7e6a27f734db2a4a01",
+      "pass_lines": 0,
+      "failure_receipt": true
+    },
+    {
+      "path": "hikrobot-build.txt",
+      "sha256": "382b490b6a8ecd2f69ccf9c14bc8fdc547f844c677c30fb421bb1179fef5d89b",
+      "pass_lines": 0,
+      "failure_receipt": false
+    },
+    {
+      "path": "hikrobot-self-test.txt",
+      "sha256": "e6f7cb595dc460be378c4f9043e15f4383d9cc87339e20b180e3148c84f2d7e7",
+      "pass_lines": 94,
+      "failure_receipt": false
+    },
+    {
+      "path": "mvs-runtime-tests.txt",
+      "sha256": "231723deef2a0b09547cb0e8428e065e8993964532323ce7413de74478073b6b",
+      "pass_lines": 0,
+      "failure_receipt": false
+    }
+  ],
+  "hardware": "NOT_RUN",
+  "protected_system_broker": "CI_REQUIRED"
+}

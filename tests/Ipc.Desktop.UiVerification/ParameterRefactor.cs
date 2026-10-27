@@ -87,19 +87,13 @@ static partial class Program
         var days = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DiagnosticLogDays"); days.Text = "0";
         vm.ParameterEditor!.ValidateFields(); Check(control.FocusFirstIssue() && days.IsKeyboardFocused && days.Text == "0", "log retention error focuses the exact field and preserves invalid input");
         days.Text = "14"; vm.ParameterEditor.ValidateFields(); Capture("parameters-retention");
-        Check(control.NavigateTo("DisplayNameDraft"), "local display preferences are reachable in the single directory"); window.UpdateLayout();
-        var displayName = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DisplayNameDraft");
-        var efficiency = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "TargetEfficiencyDraft");
-        displayName.Text = "合成供包台";
-        displayName.Focus();
-        Check(displayName.MoveFocus(new System.Windows.Input.TraversalRequest(System.Windows.Input.FocusNavigationDirection.Next)) && efficiency.IsKeyboardFocused,
-            "native forward keyboard traversal reaches target efficiency after display name");
-        efficiency.Text = "2400";
-        Check(vm.HasUnsavedDisplayPreferences, "native display input participates in the close guard before explicit apply");
+        control.ShowPage(0, "显示偏好"); window.UpdateLayout();
+        Check(!Descendants(control).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM removes display-only name and efficiency inputs");
+        var opening = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x) == "WindowOpeningMode");
+        Check(opening.IsVisible && opening.Focus(), "window opening preference is visible and accepts keyboard focus");
         var configRevision = vm.Snapshot!.Configuration.Revision;
-        Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "应用本机显示")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        Check(!vm.HasUnsavedDisplayPreferences, "explicit local apply clears only the display draft state; " + vm.DisplayPreferenceStatus);
-        Check(vm.StationDisplaySummary.Contains("合成供包台") && vm.StationDisplaySummary.Contains("2400 件/小时") && vm.Snapshot.Configuration.Revision == configRevision, "native display action updates its consumer independently of runtime save");
+        Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "保存打开方式")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot.Configuration.Revision == configRevision, "local window preference does not create a business revision or hidden display draft");
         Capture("parameters-display");
         Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");
         var login = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x) == "OperatorLogin");

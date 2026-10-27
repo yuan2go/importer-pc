@@ -8,6 +8,7 @@ public interface IManagementMode
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
+    Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => throw new NotSupportedException("当前管理服务不支持密码恢复，请使用同版软件。");
 }
 public interface IWorkstationAdministration
 {
@@ -16,6 +17,7 @@ public interface IWorkstationAdministration
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
+    Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => throw new NotSupportedException("当前管理服务不支持密码恢复，请使用同版软件。");
     Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token);
     Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token);
     Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token);

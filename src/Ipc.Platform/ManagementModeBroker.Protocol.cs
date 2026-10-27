@@ -6,7 +6,8 @@ namespace Ipc.Platform;
 
 public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? Password = null,
     string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? NewPassword = null);
 public sealed record ManagementModeRpcReply(JsonElement Value, string? Error = null, string? Code = null);
 public sealed record ManagementModeSessionGrant(string SessionId, string Token, DateTimeOffset ExpiresAt);
 
@@ -120,6 +121,7 @@ public sealed partial class LocalManagementMode
             case "ConfigurePassword":
                 if (!installer) throw new ManagementModeBootstrapRequiredException("首次设置管理密码须由Windows安装维护批准；进入管理模式仍须验证本次设置的密码。");
                 ConfigurePassword(request.Password ?? ""); return true;
+            case "ResetPassword": ResetPassword(request.Password ?? "", request.NewPassword ?? ""); return true;
             case "Enter":
                 if (!Enter(request.Password ?? "")) return null;
                 return new ManagementModeSessionGrant(sessionId, sessionSecret, expires);

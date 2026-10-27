@@ -1,0 +1,41 @@
+PASS OPERATOR01 unconfigured guide lists the exact missing connection count
+PASS OPERATOR01 configuration action fits the guide at 1366
+PASS OPERATOR01 guide replaces empty panels and duplicate status banner at 1366
+CAPTURE operator-unconfigured-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 configuration action fits the guide at 800
+PASS OPERATOR01 guide replaces empty panels and duplicate status banner at 800
+CAPTURE operator-unconfigured-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 unconfigured diagnostics disable reconnect with a specific reason
+PASS OPERATOR01 each connection explains missing configuration instead of Unknown
+PASS OPERATOR01 设置左相机 is directly available
+PASS OPERATOR01 设置右相机 is directly available
+PASS OPERATOR01 设置RCS is directly available
+PASS OPERATOR01 default diagnostics use human labels; original identifiers remain available for support copy
+PASS OPERATOR01 support copy preserves exact diagnostic identity
+PASS OPERATOR01 received MVS images are distinguished from a usable barcode decoder
+PASS OPERATOR01 zero-image MVS state identifies the trigger/acquisition check
+PASS OPERATOR01 diagnostics exposes scoped action failures when its redundant global status banner is hidden
+CAPTURE operator-diagnostics-unconfigured: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 diagnostic action opens the exact right camera in the existing editor
+PASS OPERATOR01 daily position has no technical or nested recovery accordion
+PASS OPERATOR01 valid destination fits without scrolling at 1366
+PASS OPERATOR01 daily position has no technical or nested recovery accordion
+PASS OPERATOR01 valid destination fits without scrolling at 1366
+CAPTURE operator-normal-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 daily position has no technical or nested recovery accordion
+PASS OPERATOR01 valid destination fits without scrolling at 800
+PASS OPERATOR01 daily position has no technical or nested recovery accordion
+PASS OPERATOR01 valid destination fits without scrolling at 800
+CAPTURE operator-normal-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 ordinary refresh retains barcode focus and text selection
+PASS OPERATOR01 no-read hides the current left destination and retains the healthy right result
+CAPTURE operator-no-read: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 duplicate hides the current left destination and retains the healthy right result
+CAPTURE operator-duplicate: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 unknown hides the current left destination and retains the healthy right result
+CAPTURE operator-unknown: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR01 configuration guide never covers an existing current parcel
+PASS OPERATOR01 stale state revokes guide, reconnect and destination claims
+PASS OPERATOR01 ordinary operator cannot enter maintenance diagnostics
+PASS OPERATOR01 all presentation and navigation scenarios preserve the frozen original request
+Native Windows WPF with synthetic data. Normal results use Application; deferred/error examples are explicitly projected display fixtures. Real equipment, production release and user/site validation NOT_RUN.

@@ -28,6 +28,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 $administration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/OperatorAdministration.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'OperatorAdministration.cs'), [string[]]$administration)
+foreach ($dependency in @('CurrentConfigurationFixture.cs', 'SyntheticPriorStorage.cs', 'CurrentParameterAuthorityChecks.cs')) {
+    $source = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/' + $dependency)
+    if ($LASTEXITCODE -ne 0) { throw ('Frozen core fixture dependency is unavailable: ' + $dependency) }
+    [IO.File]::WriteAllLines((Join-Path $Output $dependency), [string[]]$source)
+}
 $batch = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Deployment.Verification/DeploymentBatchVerification.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen deployment batch fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'DeploymentBatchVerification.cs'), [string[]]$batch)

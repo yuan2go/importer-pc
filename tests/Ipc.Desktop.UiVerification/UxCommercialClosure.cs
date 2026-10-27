@@ -144,9 +144,10 @@ static partial class Program
         try { Presentation.Create(runtime, null, null, "classic"); }
         catch (ArgumentException) { refusedClassic = true; }
         check(refusedClassic, "removed Sportmaster profile refuses instead of creating another UI path");
-        var stops = 0; var decisions = 0;
+        var stops = 0; var decisions = 0; var exitDecisions = 0;
         var window = (SupplyStationWindow)Presentation.Create(runtime, "sportmaster-maintenance", null,
             stopOwner: async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
+        window.ConfirmOwnerExit = _ => { exitDecisions++; return true; };
         void Decision(bool discard) => window.ConfirmDiscardDrafts = _ => { decisions++; return discard; };
         window.Show();
         try
@@ -167,15 +168,15 @@ static partial class Program
                 "current validation rejects invalid numeric input while retaining the exact unsaved text");
             Decision(false); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.TimeoutMs && vm.HasUnsavedConfiguration,
+            check(exitDecisions == 1 && decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.TimeoutMs && vm.HasUnsavedConfiguration,
                 "canceled close preserves invalid input and the live owner without discarding the draft");
             editor.Text = (int.Parse(before) + 1).ToString(); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(decisions == 2 && stops == 0 && window.IsVisible && policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
+            check(exitDecisions == 2 && decisions == 2 && stops == 0 && window.IsVisible && policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
                 "native close commits pending current text before the discard decision and preserves it by default");
             Decision(true); window.Close();
             for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
-            check(!window.IsVisible && stops == 1, "explicit discard exits native Closing and stops the actual Application once");
+            check(exitDecisions == 3 && decisions == 3 && !window.IsVisible && stops == 1, "explicit discard exits native Closing and stops the actual Application once");
         }
         finally
         {

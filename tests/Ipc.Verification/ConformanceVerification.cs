@@ -209,10 +209,24 @@ static class ConformanceVerification
         runtime.StartHeadlessNotifications(async (_, _) => { entered.TrySetResult(); await release.Task; });
         async Task Command(string kind, string? owner = null, string? value = null)
         {
-            var snapshot = await runtime.Application!.SnapshotAsync(); var result = await runtime.CommandAsync(new(Wire.Id(), snapshot.State.Revision, kind, owner, value));
-            Assert(result.Status == "Persisted", "headless Product command " + kind);
+            var id = Wire.Id(); CommandReceipt? result = null;
+            // A health publication may win the revision CAS. Only that explicit
+            // pre-write refusal may refresh the revision; never retry a persisted,
+            // guarded, unknown or failed business operation.
+            await Wait(async () =>
+            {
+                var snapshot = await runtime.Application!.SnapshotAsync();
+                result = await runtime.CommandAsync(new(id, snapshot.State.Revision, kind, owner, value));
+                return result.Status != "Conflict";
+            });
+            Assert(result!.Status == "Persisted", "headless Product command " + kind + ": " + result.Status + "/" + result.Reason);
         }
-        await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+        await Wait(async () =>
+        {
+            var state = (await runtime.Application!.SnapshotAsync()).State; var now = DateTimeOffset.UtcNow;
+            return state.Devices.Count == config.Devices.Length && state.Devices.Values.All(x => x.IsValid(now)) &&
+                state.IntegrationServiceHealth is { } health && health.ValidityReason(now) is null;
+        });
         await Command("Login", value:"maintenance"); await Command("OpenContext",value:"000001");
         await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Session?.Status == SessionStatus.Active);
         await runtime.EmitAsync("left","Enter"); await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Lanes.ContainsKey("left"));

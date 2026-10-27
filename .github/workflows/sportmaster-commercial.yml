@@ -28,13 +28,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .artifacts/current-contract-ci
+          failed=0
           for case in architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode; do
-            dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"
+            if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
           for case in current-contracts architecture conformance operation-closure closure data; do
-            dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"
+            if ! dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"; then failed=1; fi
           done
-          PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log
+          if ! PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log; then failed=1; fi
+          # Collect independent failures without turning any failure into PASS.
+          exit "$failed"
       - name: Retain current contract evidence including failures
         if: always()
         uses: actions/upload-artifact@v4

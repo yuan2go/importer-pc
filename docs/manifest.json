@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "a235899fdcc85c3bf49c99327c1a453336f1116747f6a722fc34f0f6f0827ded",
-      "size_bytes": 22811,
-      "git_blob": "c7e09576d1b9b4967cb90ae56fb189ff5f74e7c4",
+      "sha256": "89840f6eaa198b7742009d34b3a92c35963d7ee47e2efebcf2992222a7eb63e8",
+      "size_bytes": 23007,
+      "git_blob": "5ca74adeeed054627a4a8517ebbe23e62998d4d1",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -53353,9 +53353,9 @@
     },
     {
       "path": "scripts/verify-commercial-media.ps1",
-      "sha256": "d98e66f585ea69ea9cb2365bb8b51284c666efc61428f428483e0e2329a0290c",
-      "size_bytes": 7923,
-      "git_blob": "752f37a68fe2c360edfc1c8d954773157b73a7a2",
+      "sha256": "b0c34907fa7b41b972bf7c8960515e8d5aa6bf8c2472536f4c6cd5b8152bf216",
+      "size_bytes": 8352,
+      "git_blob": "60ab15473eb0f55f1cb80653e5bd7ba789d00447",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -59515,9 +59515,9 @@
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
-      "sha256": "b235a74cf84a8c7934b002f6b54bd945d488eecae1488353e121763a7c7870b9",
-      "size_bytes": 26894,
-      "git_blob": "f8c0700d3f2795c92699390d70cd7bbde09817f6"
+      "sha256": "bf7f51aca94d99857849b4e6ed918060ee69b7bd74b539c6dee0541b4368f986",
+      "size_bytes": 27749,
+      "git_blob": "b6a413098fc737510dc09808786b05cfc89416b7"
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
@@ -59736,9 +59736,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "43bba34f0dd22075b05fbe458e8dd4128f48c837d6e2a43fe3fc972db3028569",
-      "size_bytes": 28957,
-      "git_blob": "193a078af817a557bcb746968d3aa6867ba480ce",
+      "sha256": "429ae0cf9f93a7db7639d1e49670aab2807ec3d95bca5d6d307e2c23a75a437e",
+      "size_bytes": 29138,
+      "git_blob": "c8dfbfa564eea74d8623415fbaac8a41f7d523c0",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7d2b140df1a7a8d11518c4232c9df3853c946c3e",
         "sha256": "0c3a3922962cebdd116f7f0f714e5e792a0ae943de046f26ff3c6ced0a767ff4",
@@ -59958,9 +59958,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "95a1bc56960dd81b7eacfc779ed005605715bab3cfa2ae9a880161664e16f50b",
-      "size_bytes": 37850,
-      "git_blob": "29b850f6675541ecf7ff15695eeee08edf97ea8e"
+      "sha256": "e0d62a634fdb4b50699e4cf38369605c371a6625fc69785fc3ad2f8191316d43",
+      "size_bytes": 38548,
+      "git_blob": "fc792b32a9112a5fd625b99d546f3e2f28ada049"
     },
     {
       "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
@@ -95156,9 +95156,9 @@
       "purpose": "P0 stability implementation and synthetic verification",
       "source": "WP-IPC-P0-STABILITY-01; no historical qualification inherited",
       "storage_scope": "public_repository",
-      "sha256": "fd2a855bb30b143862f634024047185704f83b05e0214c9d9b9018c7a01a7df2",
-      "size_bytes": 2852,
-      "git_blob": "e7f3081cd506f4e2f5f6ffca3c1de005a99adb09"
+      "sha256": "ea77216b03bbd4b920c98d7fddfabd99969ddca1103f1475feff54b6e03bcbf7",
+      "size_bytes": 2976,
+      "git_blob": "90e70d715ad5e75d2d3226a097355587783b787d"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/P0CrashHooks.cs",

@@ -63,8 +63,9 @@ public static class ParcelStartupServices
 
     internal static WindowsDeploymentRequest RevalidateDeployment(DeploymentMedia media, WindowsDeploymentRequest original)
     {
-        // Re-observe every reviewed input; the original operation is an identity,
-        // not a new action. Legacy null identities stay null, including on the wire.
+        WindowsDeploymentSetup.RequireCurrentInstallationRequest(original);
+        // Re-observe every reviewed input while retaining the original operation.
+        // Revalidation cannot mint missing identities or shortcut decisions.
         var reviewed = ReviewCore(media, original.RuntimeAccountSid, original.DataRoot, original.ConfigurationSource,
             original.TrustFile, original.Packages.Keys.ToArray(), original.RepairSeed, original.ProgramRoot, original.OperationId)
             with { ChangePlanIdentity = original.ChangePlanIdentity, BackupDestination = original.BackupDestination, Shortcuts = original.Shortcuts, Recovery = original.Recovery };
@@ -157,6 +158,7 @@ public static class ParcelStartupServices
     }
     internal static void RequireMatchingInstalledReceipt(WindowsDeploymentRequest request, DeploymentLocation location)
     {
+        WindowsDeploymentSetup.RequireCurrentInstallationRequest(request);
         if (location.ApplicationId != request.ApplicationId || location.LifecycleState != "Installed" || location.SourceCommit != request.SourceCommit || location.RuntimeAccountSid != request.RuntimeAccountSid ||
             location.Shortcuts != request.Shortcuts || (location.Recovery ?? new DesktopRecoveryOptions()) != (request.Recovery ?? new DesktopRecoveryOptions()) || location.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request)) ||
             !string.Equals(Path.GetFullPath(location.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase))

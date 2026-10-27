@@ -34,14 +34,12 @@ public sealed partial class ParcelRepository
     }
     long IntegrationRequestIdFloor()
     {
-        if (StorageVersion < 7) return lastIntegrationRequestId;
         using var c = db.CreateCommand();
         c.CommandText = "SELECT max(value) FROM (SELECT coalesce(max(id),0) value FROM parcel_integration_id_owners UNION ALL SELECT coalesce(max(ceiling),0) value FROM parcel_integration_id_restores)";
         return Math.Max(lastIntegrationRequestId, Convert.ToInt64(c.ExecuteScalar()));
     }
     internal void RegisterIntegrationRequestRanges(IWcsRequestPreparer preparer, IEnumerable<ParcelConfiguration> configurations, string? restoreIdentity)
     {
-        if (StorageVersion < 7) throw new InvalidDataException("Numeric range retirement requires the current database reader");
         // Include old resident and archived bindings: a restored backup must never
         // reuse the unobserved tail that the lost source might already have sent.
         // A deferred configuration is an unfinished candidate, not an allocated
@@ -79,7 +77,7 @@ public sealed partial class ParcelRepository
     }
     void RegisterIntegrationRequestOwner(ParcelOperation operation, SqliteTransaction transaction)
     {
-        if (StorageVersion < 7 || operation.Wcs?.Request.IntegrationRequest is not { } numeric) return;
+        if (operation.Wcs?.Request.IntegrationRequest is not { } numeric) return;
         var request = operation.Wcs.Request;
         if (numeric.RequestId <= 0 || string.IsNullOrWhiteSpace(request.Id))
             throw new InvalidDataException("Invalid original numeric request ID or request owner; retain original intent");
@@ -97,18 +95,19 @@ public sealed partial class ParcelRepository
         c.CommandText = "INSERT INTO parcel_integration_id_owners VALUES($id,$op,$request,$hash)";
         c.Parameters.AddWithValue("$op", operation.Id); c.Parameters.AddWithValue("$request", request.Id); c.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(request))); c.ExecuteNonQuery();
     }
-    void BackfillIntegrationRequestOwners()
+    void ValidateIntegrationRequestOwners()
     {
-        if (StorageVersion < 7) return;
-        using var tx = db.BeginTransaction();
-        // A late invalid original rolls back every owner backfilled in this pass.
         long maximum = 0;
-        foreach (var operation in UpgradeOperations())
+        foreach (var operation in OriginalOperations())
         {
-            RegisterIntegrationRequestOwner(operation, tx);
-            if (operation.Wcs?.Request.IntegrationRequest is { } numeric) maximum = Math.Max(maximum, numeric.RequestId);
+            if (operation.Wcs?.Request.IntegrationRequest is not { } numeric) continue;
+            var request = operation.Wcs.Request;
+            using var command = db.CreateCommand(); command.CommandText = "SELECT operation,request,request_hash FROM parcel_integration_id_owners WHERE id=$id";
+            command.Parameters.AddWithValue("$id", numeric.RequestId); using var row = command.ExecuteReader();
+            if (!row.Read() || row.GetString(0) != operation.Id || row.GetString(1) != request.Id || row.GetString(2) != Wire.Hash(Wire.Encode(request)))
+                throw new InvalidDataException("Original numeric request ownership missing or changed; retain database without backfill");
+            maximum = Math.Max(maximum, numeric.RequestId);
         }
-        tx.Commit();
         lastIntegrationRequestId = maximum;
     }
 }

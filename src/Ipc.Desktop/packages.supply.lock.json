@@ -325,13 +325,6 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
-      "ipc.adapters": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Drivers": "[1.0.0, )",
-          "Ipc.Integrations": "[1.0.0, )"
-        }
-      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -341,7 +334,7 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.16.0, )",
+          "Ipc.Application.Contracts": "[2.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
@@ -378,15 +371,16 @@
       "ipc.product": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Adapters": "[1.0.0, )",
           "Ipc.Application.ParcelFlow": "[1.0.0, )",
+          "Ipc.Drivers": "[1.1.0, )",
+          "Ipc.Integrations": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
       },
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.16.0, )"
+          "Ipc.Application.Contracts": "[2.0.0, )"
         }
       },
       "Ipc.Supply": {

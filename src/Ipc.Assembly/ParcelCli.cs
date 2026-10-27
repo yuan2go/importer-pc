@@ -83,30 +83,24 @@ static class ParcelCli
                 ? ParcelRepository.ExportDiagnostics(database, map["--destination"], definition) : ParcelRepository.InspectMaintenance(database, definition)));
             return true;
         }
-        if (map["--action"] == "recover-legacy-receipt")
+        if (map["--action"] == "recover-receipt")
         {
+            MachineRuntimePolicy.RequireExtensionInstallerAuthority();
             var directory=Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
             var dataRoot=Directory.GetParent(directory)!.Parent!.Parent!.FullName;
-            using var cancellation=new CancellationTokenSource();
+            using var cancellation=new CancellationTokenSource(TimeSpan.FromMinutes(2));
             var factory=new ParcelCapabilityFactory(new(directory,dataRoot,null,null));
             try
             {
-                Console.WriteLine(Wire.Encode(ParcelLegacyReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
+                Console.WriteLine(Wire.Encode(ParcelOfflineReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
                     (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
-                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:9).GetAwaiter().GetResult())); return true;
+                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256")).GetAwaiter().GetResult()));
+                return true;
             }
             finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }
-        if (map["--action"] == "repair-main-projection")
-        {
-            var sourceDirectory = Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
-            var dataRoot = Directory.GetParent(sourceDirectory)!.Parent!.Parent!.FullName;
-            var launch = new BusinessLaunch(sourceDirectory, dataRoot, null, null);
-            var factory = new ParcelCapabilityFactory(launch);
-            try { Console.WriteLine(Wire.Encode(new { Status = "MainProjectionRepair", Repaired = ParcelRepository.RepairLegacyMain(map["--file"], map["--sha256"], map["--destination"], ParcelAssembly.Definition(), map["--reason"], (database, config) => { factory.Normalize(config); factory.RegisterBackup(database, config); }), ExternalCalls = 0 })); }
-            finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
-            return true;
-        }
+        if (map["--action"] is "recover-legacy-receipt" or "repair-main-projection")
+            throw new InvalidDataException("旧格式迁移命令不受支持；原数据保留，不执行查询、修复或升级。");
         if (map["--action"] == "recovery-plan")
         { Console.WriteLine(Wire.Encode(ParcelRecovery.PlanRestore(map["--file"], map["--destination"]))); return true; }
         if (map["--action"] == "restore")

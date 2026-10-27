@@ -14,9 +14,8 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); } }
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
-    public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
     public string Station => StationDisplaySummary;
-    public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅主位，未启用双位" : "左 / 右独立投递位 · 扫码 → 上游格口";
+    public string TopologyStatus => "左 / 右独立投递位 · 扫码 → 上游格口";
     public string RcsServiceStatus
     {
         get
@@ -79,7 +78,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
-        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode),nameof(RcsServiceStatus),nameof(RcsPresentation)})Changed(name);
+        foreach(var name in new[]{nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode),nameof(RcsServiceStatus),nameof(RcsPresentation)})Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
@@ -138,7 +137,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     readonly SupplyStationViewModel owner;
     public event PropertyChangedEventHandler? PropertyChanged;
     public string PositionId { get; private set; }
-    public string Heading => PositionId == "main" ? "单读码兼容位" : requestedPosition == "left" ? "左投递位" : "右投递位";
+    public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
     public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
@@ -249,8 +248,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     internal void NotifyLayout() { PropertyChanged?.Invoke(this, new(nameof(IsCompact))); PropertyChanged?.Invoke(this, new(nameof(IsTight))); PropertyChanged?.Invoke(this, new(nameof(SlotFontSize))); PropertyChanged?.Invoke(this, new(nameof(CanStartOperation))); }
     internal void Update(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
-        var legacy = snapshot?.Configuration.Effective.Topology is null;
-        PositionId = legacy && requestedPosition == "left" ? "main" : requestedPosition;
+        PositionId = requestedPosition;
         var position = snapshot?.Positions?.SingleOrDefault(x => x.Id == PositionId);
         var binding = snapshot is null ? null : ParcelBindings.Positions(snapshot.Configuration.Effective).SingleOrDefault(x => x.Id == PositionId);
         ReaderId = binding?.ReaderDeviceId ?? "未配置";

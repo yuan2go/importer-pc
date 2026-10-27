@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], {'sportmaster': '1.17.0', 'direct-plc': '1.11.0', 'wcs-to-plc': '1.11.0'}[application])
+            self.assertEqual(version['BusinessVersion'], {'sportmaster': '2.0.0', 'direct-plc': '2.0.0', 'wcs-to-plc': '2.0.0'}[application])
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -43,7 +43,7 @@ class CompatibilityTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
         versions = {'reference.parcel-capabilities': ('2.2.8', '2.2.7'),
                     'reference.barcode': ('1.3.6', '1.3.5'),
-                    'sportmaster.rcs-task': ('1.3.4', '1.3.3'),
+                    'sportmaster.rcs-task': ('1.3.5', '1.3.4'),
                     'hikrobot.idmvs-reader': ('1.0.4', '1.0.3')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
@@ -189,12 +189,12 @@ class CompatibilityTests(unittest.TestCase):
             events.write_text('\n'.join(json.dumps(row) for row in rows if row['Value'].get('Status')!='CombinationInput')+'\n')
             r['SchemaVersion']=1; r['EventsSha256']=sha(events); output.write_text(json.dumps(r))
             original=output.read_bytes()
-            with self.assertRaisesRegex(ValueError,'trusted'): verify_record(output,root)
-            verify_record(output,root,trusted_record_sha256=sha(output)); self.assertEqual(output.read_bytes(),original)
+            with self.assertRaisesRegex(ValueError,'historical'): verify_record(output,root)
+            verify_record(output,root,trusted_record_sha256=sha(output),historical_audit=True); self.assertEqual(output.read_bytes(),original)
             r['EffectiveConfiguration']['Plc']['Target']='reference://another'
             r['EffectiveConfigurationSha256']=object_sha(r['EffectiveConfiguration']); r['Providers']=selected_providers(r['EffectiveConfiguration'])
             output.write_text(json.dumps(r))
-            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root,trusted_record_sha256=sha(output))
+            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root,trusted_record_sha256=sha(output),historical_audit=True)
 
     def test_schema3_preserves_valid_before_main_and_attached_journeys(self):
         config=json.loads((Path(__file__).resolve().parent.parent/'config/optional/direct-plc/business.json').read_bytes())
@@ -261,10 +261,10 @@ class CompatibilityTests(unittest.TestCase):
             (base/record['EventsFile']).write_text(''.join(json.dumps(row)+'\n' for row in rows))
             record['EventsSha256']=sha(base/record['EventsFile']);output.write_text(json.dumps(record))
             anchor=sha(output);original=output.read_bytes()
-            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root)
-            verify_record(output,root,trusted_record_sha256=anchor)
+            with self.assertRaisesRegex(ValueError,'historical'):verify_record(output,root)
+            verify_record(output,root,trusted_record_sha256=anchor,historical_audit=True)
             record['Command']=['not-executed'];output.write_text(json.dumps(record))
-            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root,trusted_record_sha256=anchor)
+            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root,trusted_record_sha256=anchor,historical_audit=True)
             self.assertNotEqual(output.read_bytes(),original)
 
 

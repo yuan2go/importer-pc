@@ -42,14 +42,13 @@ public sealed partial class SupplyStore : IDisposable
     {
         Path = System.IO.Path.GetFullPath(path);
         // An existing database is inspected through a read-only connection BEFORE opening a
-        // writer or changing journal settings. Older formats require the explicit maintenance
-        // upgrade, including its original-format backup and durable operation receipt.
+        // writer or changing journal settings. Unsupported formats are retained without conversion.
         var existing = File.Exists(Path);
         if (existing)
         {
             var inspection = InspectReadOnly(Path);
             if (!inspection.SelectedReaderCompatible)
-                throw new InvalidDataException($"Storage format {inspection.FormatVersion} requires an explicit backed-up upgrade to {CurrentFormatVersion}; original retained");
+                throw new InvalidDataException($"Storage format {inspection.FormatVersion} is unsupported; only current format {CurrentFormatVersion} may run; original retained");
         }
         else Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
         db = Ipc.Platform.Storage.Database.Open(Path, create: !existing);
@@ -195,23 +194,18 @@ public sealed partial class SupplyStore : IDisposable
     public static void RestoreVerified(string source, string destination)
     {
         var inspection = InspectReadOnly(source);
+        if (!inspection.SelectedReaderCompatible) throw new InvalidDataException("Restore requires current storage format; original retained without migration");
         if (File.Exists(destination) || File.Exists(destination + "-wal") || File.Exists(destination + "-shm") ||
             System.IO.Path.GetFullPath(source) == System.IO.Path.GetFullPath(destination))
             throw new IOException("Restore requires a new destination; original retained");
         // Persist isolation BEFORE exposing restored bytes. Source/backup bytes are never
-        // upgraded: only the explicitly requested isolated restore copy may move forward.
+        // changed: an explicitly requested current-format copy remains quarantined.
         var directory = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(destination))!; Directory.CreateDirectory(directory);
         using (var marker = new FileStream(System.IO.Path.Combine(directory, "restore-quarantine"), FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
         {
             marker.Write(System.Text.Encoding.UTF8.GetBytes("Restored snapshot may lag external effects; reconcile before admission")); marker.Flush(true);
         }
         BackupReadOnly(source, destination);
-        if (!inspection.SelectedReaderCompatible)
-        {
-            using var target = OpenMaintenance(destination, SqliteOpenMode.ReadWrite);
-            using var tx = target.BeginTransaction();
-            ApplyForwardMigrations(target, tx, inspection.FormatVersion); tx.Commit();
-        }
         using var restored = new SupplyStore(destination); var state = restored.Load(); state.Quarantined = true; state.Revision++;
         restored.Commit(state, "RestoreIsolation", state.Session?.Id ?? "station", "offline-restore", "External ledger/inventory reconciliation required; source backup retained in original format");
     }

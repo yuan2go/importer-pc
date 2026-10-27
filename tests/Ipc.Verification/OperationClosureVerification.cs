@@ -45,7 +45,7 @@ static class OperationClosureVerification
         string requestId;
         await using (var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance))
         {
-            await runtime.StartAsync(CancellationToken.None); Assert(runtime.Application is not null && runtime.Diagnostics.Count == 0, "real ProductRuntime starts controlled query endpoint");
+            await runtime.StartAsync(CancellationToken.None); Assert(runtime.Application is not null && runtime.Diagnostics.Count == 0, "real ProductRuntime starts controlled query endpoint: " + string.Join("; ", runtime.Diagnostics));
             var app = runtime.Application!;
             async Task Command(string kind, string? value = null)
             {

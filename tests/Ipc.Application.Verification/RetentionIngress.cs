@@ -210,7 +210,7 @@ static class RetentionIngress
         {
             var directory = Path.Combine(root, "budget-" + phase); var path = Create(directory, 10);
             var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with { Retention = new(200, 67108864, HistoryDays: 7) };
-            ExtensionStore.AtomicWrite(Path.Combine(directory, "configuration.json"), new ConfigurationRevision<ParcelConfiguration>(1, c, null, "Active", null));
+            ExtensionStore.AtomicWrite(Path.Combine(directory, "configuration.json"), CurrentConfigurationFixture.Create<ParcelConfiguration>(1, c, null, "Active", null));
             var backup = Path.Combine(root, "budget-" + phase + ".db"); var before = Wire.FileHash(path); using var cancellation = new CancellationTokenSource();
             try
             {

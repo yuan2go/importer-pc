@@ -30,14 +30,14 @@ static partial class Program
         await using var peer = new HierarchyRcsPeer();
         var configRoot = Path.Combine(evidence, "chain-config"); Directory.CreateDirectory(configRoot);
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.3.2", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.3.5", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
-            ["source"] = "SYNTHETIC-HIERARCHY", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
+            ["source"] = "SYNTHETIC-HIERARCHY", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",
             ["left-station-code"] = "TASK-STATION", ["right-station-code"] = "TASK-STATION", ["left-bcr-code"] = "TASK-LEFT", ["right-bcr-code"] = "TASK-RIGHT"
         });
         var config = seed with { Wcs = binding, BarcodeFilter = new("^[0-9]+$"), TimeoutMs = 10000,
-            Login = seed.MaintenanceLogin! with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
+            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "chain-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new HierarchyRcsFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -164,13 +164,19 @@ static partial class Program
         await transport.PauseEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
         Click(window, "作业记录"); await Flush();
         transport.ReleasePause.TrySetResult(); await pendingPause; await Flush();
-        Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("暂停供包") && vm.HasGlobalOperationFeedback, "real persisted pause receipt arrives after navigation and remains visible on the receiving page");
+        // The committed receipt and the UI projection are separate facts. A newer
+        // timer/history refresh may supersede Pause's own read; await its actual projection.
+        await Until(() => vm.Snapshot!.Paused);
+        Check(vm.Snapshot!.Paused && vm.GlobalOperationFeedback.Contains("暂停供包") && vm.HasGlobalOperationFeedback, "real persisted pause receipt arrives after navigation and remains visible on the receiving page; paused=" + vm.Snapshot.Paused + "; fresh=" + vm.Fresh + "; feedback=" + vm.GlobalOperationFeedback + "; receipt=" + Wire.Encode(transport.Receipts.Last()));
         await Record("late-pause-history-800");
         var history = Descendants(window).OfType<HistoryPage>().Single();
         var rows = (DataGrid)history.FindName("HistoryRows");
         var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
+        var scaleY = System.Windows.Media.VisualTreeHelper.GetDpi(rows).DpiScaleY;
+        var rowBottomPixels = Math.Round((firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight) * scaleY);
+        var viewportPixels = Math.Round(rows.ActualHeight * scaleY);
         Check(Inside(rows, client) && firstRow.ActualHeight >= 32 &&
-            firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight,
+            rowBottomPixels <= viewportPixels,
             $"minimum history viewport retains a complete result row with late pause receipt and unresolved custody visible: grid={rows.ActualHeight:F2}, rowTop={firstRow.TranslatePoint(new Point(), rows).Y:F2}, rowHeight={firstRow.ActualHeight:F2}, inside={Inside(rows, client)}");
         transport.HoldPause = false; Click(window, "日志查询"); await Flush();
         // Keep unresolved old receipt out of a new global intent; real Resume is rejected

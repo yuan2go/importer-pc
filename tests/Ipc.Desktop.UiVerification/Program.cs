@@ -15,15 +15,21 @@ using Ipc.Platform;
 // Run on Windows: exercises actual WPF resource loading, navigation and window ownership.
 static partial class Program
 {
+    // Exercise the shared current Shell used by DirectPlc/WcsToPlc directly.
+    // This fixture is not a Sportmaster launch profile or a production fallback.
+    static ShellWindow CreateSharedShellForVerification(IParcelApplication application, string? view = null) =>
+        new(new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"),
+            () => new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"), () => new Workstation(), view, "standard");
     [STAThread]
     public static int Main(string[] args)
     {
+        if (args.Contains("--operator-administration")) { Console.Error.WriteLine("Unsupported verification argument; use --management-mode"); return 2; }
 #if P0_CRASH_HOOKS
         if (args.FirstOrDefault() == "--p0-dispatcher-child") return P0Dispatcher.Child(args[1]);
         if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
 #endif
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = (args.Contains("--task-redesign") || (args.Contains("--management-mode") || args.Contains("--operator-administration")))
+        var evidence = (args.Contains("--task-redesign") || args.Contains("--management-mode"))
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
             : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
@@ -65,7 +71,7 @@ static partial class Program
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
                 else if (args.Contains("--installer-first-run-ui")) await VerifyInstallerFirstRunUi(root, evidence, lines);
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
-                else if ((args.Contains("--management-mode") || args.Contains("--operator-administration"))) await VerifyOperatorAdministration(root, evidence, lines);
+                else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
                 else if (args.Contains("--parameter-shell-polish")) await VerifyParameterShellPolish(root, evidence, lines, args.Contains("--baseline"));
                 else if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
@@ -91,7 +97,7 @@ static partial class Program
         void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        config = config with { Login = config.MaintenanceLogin! with
+        config = config with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with
         { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
@@ -108,11 +114,11 @@ static partial class Program
             var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
             var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
             var stops = 0; var stopCalls = 0; var failNextStop = false;
-            var classic = Presentation.Create(application, null, null, "classic");
+            var classic = CreateSharedShellForVerification(application);
             var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { stopCalls++; if (failNextStop) { failNextStop = false; throw new IOException("SYNTHETIC owner stop failed"); } await runtime.StopAsync(CancellationToken.None); stops++; });
             classic.Show(); alternate.Show(); await Task.Delay(1200);
-            Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
-            Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
+            Check(classic is ShellWindow && alternate.ViewModel.Fresh, "shared Shell and current Sportmaster window load actual resources and snapshots");
+            Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two current windows share the same actual Application");
             Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
             ((ParcelViewModel)classic.DataContext).OperatorSubject = "alice";
             await ((ParcelViewModel)classic.DataContext).RunAsync(() => ((ParcelViewModel)classic.DataContext).LoginAsync("SIMULATION_ONLY"), "原生参考登录");
@@ -164,7 +170,7 @@ static partial class Program
                 Check(actions.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight,
                     "position recovery actions stay within the effective client area under diagnostic backlog");
             }
-            await VerifyClientGeometry(classic, (ParcelViewModel)classic.DataContext, probe, evidence, "classic", Check);
+            await VerifyClientGeometry(classic, (ParcelViewModel)classic.DataContext, probe, evidence, "shared-shell", Check);
             await VerifyClientGeometry(alternate, alternate.ViewModel, probe, evidence, "supply-station", Check);
             probe.Project = null; await alternate.ViewModel.RefreshDisplayAsync();
             Click(alternate, "辅助窗口"); await Task.Delay(200);
@@ -187,13 +193,13 @@ static partial class Program
                 "owner retry stops business once and leaves closed auxiliary timer stopped");
             classic.Close();
         }
-        await VerifyLegacyDraftClose(evidence, config, Check, syntheticIdentity);
+        await VerifyCurrentDraftClose(evidence, config, Check, syntheticIdentity);
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
     }
     static void Click(DependencyObject root, string name)
     {
-        if (root is SupplyStationWindow or ShellWindow)
-            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", _ => name };
+        if (root is ShellWindow)
+            name = name switch { "设备与维护" or "参数配置" => "参数设置", _ => name };
         if (root is SupplyStationWindow station)
         {
             if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }

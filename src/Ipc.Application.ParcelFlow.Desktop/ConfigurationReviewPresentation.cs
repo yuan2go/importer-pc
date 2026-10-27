@@ -12,7 +12,6 @@ public sealed record ConfigurationChangeItem(string Category, string Object, str
 // Stage/Inspect, the original revision, runtime identity or submission guards.
 public partial class ParcelViewModel
 {
-    public System.Windows.Visibility LegacyPolicyVisibility => CanEditLegacyConfiguration ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     string? reviewedConfigurationSignature;
     ParcelConfiguration? configurationReviewBaseline;
     ConfigurationChangeItem[] reviewedConfigurationChanges = [];
@@ -33,7 +32,6 @@ public partial class ParcelViewModel
     {
         "高级JSON" => Wire.Decode<ParcelConfiguration>(ConfigurationDraft),
         "结构化表单" => BuildStructuredConfiguration(),
-        "旧版表单" => BuildLegacyConfiguration(),
         _ => throw new InvalidOperationException("先读取当前设置；输入保留。")
     };
     public async Task<bool> PrepareConfigurationReviewAsync()

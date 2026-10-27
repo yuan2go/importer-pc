@@ -8,7 +8,6 @@ public interface IManagementMode
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
-    Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword);
 }
 public interface IWorkstationAdministration
 {
@@ -17,7 +16,6 @@ public interface IWorkstationAdministration
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
-    Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword);
     Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token);
     Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token);
     Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token);

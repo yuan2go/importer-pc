@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
@@ -10,11 +8,6 @@ using Microsoft.Data.Sqlite;
 static class StabilityAuditFixes
 {
     static void Check(bool ok, string message) { if (!ok) throw new Exception(message); Console.WriteLine("PASS AUDIT-FIX02 " + message); }
-    static void Invoke(ParcelRepository repository, string method)
-    {
-        try { typeof(ParcelRepository).GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(repository, null); }
-        catch (TargetInvocationException e) when (e.InnerException is not null) { ExceptionDispatchInfo.Capture(e.InnerException).Throw(); }
-    }
     public static async Task Run(string workspace, string root)
     {
         History(workspace, root);
@@ -82,25 +75,25 @@ static class StabilityAuditFixes
             Check(repository.IntegrationBudget(new(1, 100)).PermanentHighWater == 2, "resident and archived numeric originals retain the allocation floor");
             repository.Backup(Path.Combine(root, "verified-originals.db"));
         }
-        // Paired measurement of the exact old validators plus the same canonical
-        // owner pass versus the new entry. The fixture remains repository-only.
+        // Measure the current public open/preflight, not removed migration helpers.
+        // Reopening must validate the same original rows without backfilling them.
         var scale = Path.Combine(root, "scale-originals"); const int count = 2000;
         using (var repository = new ParcelRepository(scale, "sportmaster"))
         {
             for (var i = 1; i <= count; i++) repository.Commit(Operation(i), "SyntheticUnsubmittedDisposition", "{}");
-            List<object> samples = [];
-            foreach (var order in new[] { new[] { "old", "new" }, new[] { "new", "old" }, new[] { "old", "new" } })
-                foreach (var path in order)
-                {
-                    var watch = Stopwatch.StartNew();
-                    if (path == "old") { Invoke(repository, "ValidateIntegrationRequestHistory"); Invoke(repository, "BackfillIntegrationRequestOwners"); }
-                    else Invoke(repository, "InitializeIntegrationRequestHistory");
-                    samples.Add(new { Path = path, Milliseconds = watch.Elapsed.TotalMilliseconds });
-                }
-            ExtensionStore.AtomicWrite(Path.Combine(root, "HISTORY-PAIRED.json"), new { Rows = count, Samples = samples,
-                Scope = "Repository-only generated T1 originals; same owner/hash checks; not runtime/physical/24h qualification", RuntimeSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location) });
-            Check(repository.IntegrationBudget(new(1, count + 100)).PermanentHighWater == count, "paired validation preserves the permanent numeric floor");
         }
+        var scaleDatabase = Path.Combine(scale, "sportmaster.db"); var originalHash = Wire.FileHash(scaleDatabase);
+        List<object> samples = [];
+        for (var i = 0; i < 3; i++)
+        {
+            var watch = Stopwatch.StartNew();
+            using (var repository = new ParcelRepository(scale, "sportmaster"))
+                Check(repository.IntegrationBudget(new(1, count + 100)).PermanentHighWater == count, "current reopen preserves the permanent numeric floor");
+            samples.Add(new { Path = "current-public-open", Milliseconds = watch.Elapsed.TotalMilliseconds });
+            Check(Wire.FileHash(scaleDatabase) == originalHash, "current preflight preserves original database bytes without owner backfill");
+        }
+        ExtensionStore.AtomicWrite(Path.Combine(root, "HISTORY-CURRENT.json"), new { Rows = count, Samples = samples,
+            Scope = "Repository-only generated T1 originals; current owner/hash checks; not runtime/physical/24h qualification", RuntimeSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location) });
     }
     public static async Task Maintenance(string root)
     {

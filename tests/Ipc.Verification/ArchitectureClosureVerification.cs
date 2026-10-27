@@ -272,6 +272,20 @@ static class ArchitectureClosureVerification
                 Services = configuration.Extensions.Services!.Select(x => x with { Parameters = new(x.Parameters) { ["metadata.label"] = "new-parameters" } }).ToArray(),
                 Ports = configuration.Extensions.Ports!.Select(x => x with { Target = newTarget }).ToArray() } };
         var router = new IntegrationRuntime(changed, manager); router.Initialize();
+        var missingIdentity = original with { Implementation = null }; var frozenMissing = Wire.Encode(missingIdentity);
+        var entriesBefore = router.Diagnostics.Length;
+        foreach (var queryOnly in new[] { false, true })
+        {
+            var refused = false;
+            try
+            {
+                if (queryOnly) await router.QueryAsync(missingIdentity, CancellationToken.None);
+                else await router.ExecuteAsync(missingIdentity, CancellationToken.None);
+            }
+            catch (InvalidDataException error) when (error.Message.Contains("implementation identity is missing", StringComparison.Ordinal)) { refused = true; }
+            Assert(refused && router.Diagnostics.Length == entriesBefore && Wire.Encode(missingIdentity) == frozenMissing,
+                "missing frozen implementation refuses before constructing a replacement route or executing/querying any port; original bytes retained");
+        }
         var queried = await router.QueryAsync(original, CancellationToken.None);
         Assert(queried?.Result == "Accepted", "old query uses original installed implementation/parameters/receiver despite changed active target and package");
         router.ValidateResponse(original, queried!);

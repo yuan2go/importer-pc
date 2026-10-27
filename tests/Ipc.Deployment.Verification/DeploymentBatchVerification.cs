@@ -18,7 +18,8 @@ public static class DeploymentBatchVerification
         using var identity = WindowsIdentity.GetCurrent();
         var runtimeSid = identity.User!.Value;
         var data = Path.Combine(evidence, "never-installed-data");
-        var original = ParcelStartupServices.Review(media, runtimeSid, data, seed, null, [], false);
+        var original = ParcelStartupServices.Review(media, runtimeSid, data, seed, null, [], false)
+            with { Shortcuts = new(false, false) };
         var plan = DeploymentBatch.Freeze(original);
         var planFile = Path.Combine(evidence, "plan.json"); File.WriteAllText(planFile, Wire.Encode(plan));
         var planHash = Wire.FileHash(planFile);
@@ -36,6 +37,20 @@ public static class DeploymentBatchVerification
         }
         string Save(string name, WindowsDeploymentRequest request)
         { var file = Path.Combine(evidence, name + ".plan.json"); File.WriteAllText(file, Wire.Encode(DeploymentBatch.Freeze(request))); return file; }
+        string RejectedPlan(string name, WindowsDeploymentRequest request)
+        {
+            var bytes = Wire.Encode(request); var refused = false;
+            try { _ = DeploymentBatch.Freeze(request); } catch (InvalidDataException) { refused = true; }
+            Check(refused && Wire.Encode(request) == bytes, name + ": invalid plan was frozen or changed");
+            refused = false;
+            try { _ = ParcelStartupServices.RevalidateDeployment(media, request); } catch (InvalidDataException) { refused = true; }
+            Check(refused && Wire.Encode(request) == bytes, name + ": invalid plan was revalidated or changed");
+            // Serialize adversarial external input directly, without making the
+            // current writer manufacture an unsupported plan for the test.
+            var file = Path.Combine(evidence, name + ".plan.json");
+            File.WriteAllText(file, Wire.Encode(new WindowsDeploymentPlan(1, Wire.Hash(bytes), request)));
+            return file;
+        }
 
         for (var i = 0; i < 3; i++)
         {
@@ -69,10 +84,10 @@ public static class DeploymentBatchVerification
                 _ = Invoke("guid-" + prefix, numericPlan, 0);
             }
         }
-        Check(WindowsDeploymentSetup.IsInstallationOperationId("lia-original"), "Previously accepted named operation rejected");
+        Check(WindowsDeploymentSetup.IsInstallationOperationId("lia-original"), "Current named operation grammar rejected");
         foreach (var invalid in new[] { "", "../escape", "0invalid", new string('0', 32), new string('0', 33), "0123456789ABCDEF0123456789ABCDEF01" })
             Check(!WindowsDeploymentSetup.IsInstallationOperationId(invalid), "Unsafe/noncanonical operation accepted");
-        cases.Add("canonical-guid-all-sixteen-leading-digits-and-old-safe-name-compatible");
+        cases.Add("canonical-guid-all-sixteen-leading-digits-and-current-named-identities");
 
         var receiptFile = Path.Combine(evidence, "preflight-0.json"); var receiptHash = Wire.FileHash(receiptFile);
         Check(DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receiptFile, "--preflight"]), "Duplicate receipt entry not handled");
@@ -92,30 +107,34 @@ public static class DeploymentBatchVerification
         _ = Invoke("stale-registration", staleRegistration, 2); cases.Add("stale-registration-cas-refused-without-changing-machine-registration");
         var wrongMode = Save("wrong-mode", original with { Mode = original.Mode == RunMode.Simulation ? RunMode.Production : RunMode.Simulation });
         _ = Invoke("wrong-mode", wrongMode, 2); cases.Add("changed-mode-refused-by-complete-request-comparison");
-        var invalidOperation = Save("invalid-operation", original with { OperationId = "../escape" });
+        var invalidOperation = RejectedPlan("invalid-operation", original with { OperationId = "../escape" });
         _ = Invoke("invalid-operation", invalidOperation, 2); cases.Add("invalid-operation-identity-refused");
         var tampered = Path.Combine(evidence, "tampered.plan.json");
         File.WriteAllText(tampered, Wire.Encode(plan with { Deployment = original with { DataRoot = data + "-changed" } }));
         _ = Invoke("tampered", tampered, 2); cases.Add("tampered-plan-hash-refused");
 
-        var legacy = original with { OperationId = null }; var legacyHash = Wire.Hash(Wire.Encode(legacy));
-        Check(!Wire.Encode(legacy).Contains("\"OperationId\"", StringComparison.Ordinal), "Legacy wire gained an identity");
-        var legacyFile = Save("legacy", legacy);
-        for (var i = 0; i < 2; i++)
+        foreach (var (name, unsupported) in new[] { ("missing-identity", original with { OperationId = null }), ("missing-shortcuts", original with { Shortcuts = null }) })
         {
-            var checkedLegacy = ParcelStartupServices.RevalidateDeployment(media, legacy);
-            Check(checkedLegacy.OperationId is null && Wire.Hash(Wire.Encode(checkedLegacy)) == legacyHash, "Legacy review minted an identity");
-            Check(Invoke("legacy-preflight-" + i, legacyFile, 0)["PlanSha256"]!.GetValue<string>() == legacyHash, "Legacy preflight changed hash");
+            var unsupportedFile = RejectedPlan(name, unsupported); var unsupportedHash = Wire.FileHash(unsupportedFile);
+            for (var i = 0; i < 2; i++) _ = Invoke(name + "-preflight-" + i, unsupportedFile, 2);
+            _ = Invoke(name + "-submit", unsupportedFile, 2, preflight: false);
+            Check(Wire.FileHash(unsupportedFile) == unsupportedHash && !Directory.Exists(data), name + ": refusal changed original plan or created deployment data");
+            cases.Add(name + "-refused-at-freeze-revalidation-preflight-submit-original-bytes-retained");
         }
-        Check(Invoke("legacy-submit", legacyFile, 2, preflight: false)["Status"]!.GetValue<string>() == "LegacyPlanNeedsReview", "Legacy plan executed instead of requiring an explicit new review");
-        cases.Add("legacy-null-identity-preserved-readonly-and-new-submit-refused");
 
         // The real registration remains untouched. Exercise the same receipt
         // guard used by committed re-entry and normal installation completion.
         var committed = new DeploymentLocation(original.ApplicationId, original.SourceCommit, media.Root, seed, original.DataRoot,
             original.RuntimeAccountSid, DeploymentPlanIdentity: plan.PlanSha256, Shortcuts: original.Shortcuts);
         ParcelStartupServices.RequireMatchingInstalledReceipt(original, committed);
-        ParcelStartupServices.RequireMatchingInstalledReceipt(legacy, committed with { DeploymentPlanIdentity = legacyHash });
+        foreach (var unsupported in new[] { original with { OperationId = null }, original with { Shortcuts = null } })
+        {
+            var refused = false;
+            try { ParcelStartupServices.RequireMatchingInstalledReceipt(unsupported, committed with { DeploymentPlanIdentity = Wire.Hash(Wire.Encode(unsupported)), Shortcuts = unsupported.Shortcuts }); }
+            catch (InvalidDataException) { refused = true; }
+            Check(refused, "Unsupported plan was acknowledged as an installed operation");
+        }
+        cases.Add("installed-receipt-cannot-certify-missing-identity-or-shortcut-selection");
         foreach (var changed in new[]
         {
             committed with { DataRoot = original.DataRoot + "-migrated" },
@@ -159,6 +178,6 @@ public static class DeploymentBatchVerification
         File.WriteAllText(Path.Combine(evidence, "BATCH-RESULT.json"), Wire.Encode(new { Status = "PASS", MediaSourceCommit = media.SourceCommit,
             BatchBinarySha256 = Wire.FileHash(typeof(DeploymentBatch).Assembly.Location), PlatformBinarySha256 = Wire.FileHash(typeof(WindowsDeploymentSetup).Assembly.Location),
             original.OperationId, plan.PlanSha256, Cases = cases, Installation = "NOT_RUN", MachineRegistrationMutation = "NOT_RUN", Equipment = "NOT_RUN", Scope = "Readonly actual batch entry and synthetic journal fence; not a deployment success" }));
-        Console.WriteLine("PASS deployment batch identity, integrity, legacy boundary, original receipt and original-operation fences (" + cases.Count + " cases); no installation/device startup");
+        Console.WriteLine("PASS deployment batch identity, integrity, unsupported input refusal, original receipt and original-operation fences (" + cases.Count + " cases); no installation/device startup");
     }
 }

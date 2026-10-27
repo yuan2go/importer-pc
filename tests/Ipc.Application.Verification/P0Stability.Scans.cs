@@ -14,7 +14,7 @@ static partial class SportmasterRcs
     public static async Task P0ScanRegression(string workspace, string root)
     {
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.3" };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.5" };
         binding.Parameters.Remove("quantity");
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, binding);
@@ -47,13 +47,20 @@ static partial class SportmasterRcs
             Check(persisted.Count == 3 && persisted.All(o => o.Wcs is { Attempts: 1 } && peer.Requests.Count(p => p.Body == o.Wcs.Request.IntegrationRequest!.Body) == 1), "durable frozen body equals the actual sole HTTP request; normal UI remains redacted");
         }
         var legacy = binding with { Parameters = new(binding.Parameters) { ["quantity"] = "7" } };
-        await using var service = new SportmasterRcsTaskService(legacy);
-        service.ConfigureRuntime(HeartbeatConfiguration(workspace, legacy)); await service.StartAsync(default);
-        var request = Request(legacy); var prepared = service.PrepareRequest(request, 99);
+        var previousRequests = peer.Requests.Count; var refused = false;
+        try { await using var unsupported = new SportmasterRcsTaskService(legacy); }
+        catch (InvalidDataException) { refused = true; }
+        Check(refused && peer.Requests.Count == previousRequests, "obsolete quantity parameter refuses before any business send");
+        await using var service = new SportmasterRcsTaskService(binding);
+        service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding)); await service.StartAsync(default);
+        var request = Request(binding); var prepared = service.PrepareRequest(request, 99);
         var body = prepared.Body.Replace("\"quantity\":1", "\"quantity\":7", StringComparison.Ordinal);
         var frozen = request with { IntegrationRequest = prepared with { Body = body, BodyHash = Wire.Hash(body) } };
         var original = Wire.Encode(frozen);
-        await service.RequestDestinationAsync(frozen, default);
-        Check(Wire.Encode(frozen) == original && peer.Requests.Last().Body == body, "existing legacy frozen quantity and exact wire bytes unchanged");
+        refused = false;
+        try { await service.RequestDestinationAsync(frozen, default); }
+        catch (InvalidDataException) { refused = true; }
+        Check(refused && Wire.Encode(frozen) == original && peer.Requests.Count == previousRequests,
+            "unsupported frozen quantity preserves original bytes and refuses execution without resending or rewriting");
     }
 }

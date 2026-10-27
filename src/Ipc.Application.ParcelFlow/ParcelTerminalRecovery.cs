@@ -79,7 +79,6 @@ public sealed partial class ParcelRepository
         // Keyset iteration keeps history bounded and leaves archived owners archived.
         foreach(var table in new[]{"parcel_operations","parcel_archives"})
         {
-            if(table=="parcel_archives" && StorageVersion<4)continue;
             string after="";
             while(true)
             {
@@ -94,10 +93,10 @@ public sealed partial class ParcelRepository
                 }
                 after=id; var original=Wire.Decode<ParcelOperation>(body);
                 if(!HasTerminalRecoveryBasis(original,application))continue;
-                if(!inventoryValidated && StorageVersion>=4){ValidateRawInventory(); inventoryValidated=true;}
+                if(!inventoryValidated){ValidateRawInventory(); inventoryValidated=true;}
                 var repaired=Wire.Encode(original with{RecoveryRequired=false});
                 using var tx=db.BeginTransaction();
-                if(table=="parcel_archives" && StorageVersion>=5)
+                if(table=="parcel_archives")
                 {
                     using var retain=db.CreateCommand(); retain.Transaction=tx;
                     retain.CommandText="INSERT OR IGNORE INTO parcel_archive_versions SELECT id,body_hash,body,archived_at FROM parcel_archives WHERE id=$id";

@@ -15,5 +15,4 @@ public sealed class ParcelManagementMode(string dataRoot, Func<string, Task>? bo
     public Task<bool> EnterManagementModeAsync(string password) => Task.Run(() => Authority.Enter(password));
     public Task ExitManagementModeAsync() => Task.Run(Authority.Exit);
     public Task ChangeManagementPasswordAsync(string password) => Task.Run(() => Authority.ChangePassword(password));
-    public Task<bool> ConvertLegacyManagementCredentialsAsync(string oldAccount, string oldPassword, string newPassword) => Task.Run(() => Authority.ConvertLegacyCredentials(oldAccount, oldPassword, newPassword));
 }

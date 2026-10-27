@@ -11,36 +11,38 @@ static partial class ArchitectureQuality
     {
         workspace = source; root = evidence; failures = 0;
         var package = new PackageReference("inventory.reference", "1.0.0", new string('A', 64));
-        foreach (var schema in new[] { 1, 2, 3 })
+        foreach(var oldSchema in new[]{1,2})foreach(var scope in inventoryScopes)
+        {var old=InventorySeed(oldSchema);InspectInventoryCase(oldSchema,scope,"unsupported-format",old,old,null);}
+        foreach (var schema in new[] { 3 })
         {
             var seed = InventorySeed(schema);
-            var plc = seed.Plc!; var maintenance = seed.MaintenanceLogin!;
+            var plc = seed.Plc!; var unbound = new CapabilityBinding("login","reference-login","1.0.0","inventory.unbound-login","reference://inventory/login","PARCEL-REFERENCE-v1",new(){["subjects"]="synthetic"});
             var bound = plc with { Package = package, Module = "parcel-plc", Implementation = "extension:" + package.Id + "/parcel-plc" };
             var spare = plc with { InstanceId = "inventory.spare" };
             (string Name, ParcelConfiguration Candidate)[] invalid =
             [
-                ("duplicate-identical", seed with { CapabilityInstances = [plc, maintenance, plc] }),
-                ("duplicate-hidden-package", seed with { CapabilityInstances = [plc, maintenance, bound] }),
-                ("role-mirror-conflict", seed with { CapabilityInstances = [plc with { Target = "reference://inventory/other" }, maintenance] }),
-                ("unbound-duplicate", seed with { CapabilityInstances = [plc, maintenance, spare, spare with { Contract = "DIFFERENT" }] }),
-                ("dangling-package", seed with { CapabilityInstances = [plc, maintenance, bound with { InstanceId = "inventory.spare" }] }),
-                ("disabled-dangling-package", seed with { CapabilityInstances = [plc, maintenance, bound with { InstanceId = "inventory.spare", Enabled = false }] }),
-                ("module-without-package", seed with { CapabilityInstances = [plc, maintenance, spare with { Module = "parcel-plc" }] }),
+                ("duplicate-identical", seed with { CapabilityInstances = [plc, unbound, plc] }),
+                ("duplicate-hidden-package", seed with { CapabilityInstances = [plc, unbound, bound] }),
+                ("role-mirror-conflict", seed with { CapabilityInstances = [plc with { Target = "reference://inventory/other" }, unbound] }),
+                ("unbound-duplicate", seed with { CapabilityInstances = [plc, unbound, spare, spare with { Contract = "DIFFERENT" }] }),
+                ("dangling-package", seed with { CapabilityInstances = [plc, unbound, bound with { InstanceId = "inventory.spare" }] }),
+                ("disabled-dangling-package", seed with { CapabilityInstances = [plc, unbound, bound with { InstanceId = "inventory.spare", Enabled = false }] }),
+                ("module-without-package", seed with { CapabilityInstances = [plc, unbound, spare with { Module = "parcel-plc" }] }),
                 ("package-version-mismatch", seed with { Plc = bound with { Version = "2.0.0" }, Extensions = new([package], []) }),
                 ("invalid-package-identity", seed with { Plc = bound with { Package = package with { Id = "INVALID" }, Implementation = "extension:INVALID/parcel-plc" }, Extensions = new([package with { Id = "INVALID" }], []) }),
-                ("unknown-kind", seed with { CapabilityInstances = [plc, maintenance, spare with { Kind = "future-kind" }] })
+                ("unknown-kind", seed with { CapabilityInstances = [plc, unbound, spare with { Kind = "future-kind" }] })
             ];
             foreach (var scope in inventoryScopes)
             {
                 foreach (var test in invalid)
                     InspectInventoryCase(schema, scope, test.Name, seed, test.Candidate, null);
                 InspectInventoryCase(schema, scope, "valid-no-inventory", seed, seed, []);
-                InspectInventoryCase(schema, scope, "valid-role-mirrors", seed, seed with { CapabilityInstances = [plc, maintenance] }, []);
-                var exact = seed with { Plc = bound, CapabilityInstances = [bound, maintenance], Extensions = new([package], []) };
+                InspectInventoryCase(schema, scope, "valid-role-mirrors", seed, seed with { CapabilityInstances = [plc, unbound] }, []);
+                var exact = seed with { Plc = bound, CapabilityInstances = [bound, unbound], Extensions = new([package], []) };
                 InspectInventoryCase(schema, scope, "valid-exact-package", seed, exact, [package]);
             }
             // Exercise real Application validation/CAS and a real accepted main chain.
-            await using var app = await Open(seed with { CapabilityInstances = [plc, maintenance] }, "inventory-live-" + schema);
+            await using var app = await Open(seed with { CapabilityInstances = [plc, unbound] }, "inventory-live-" + schema);
             await Maintenance(app); var before = (await app.SnapshotAsync()).Configuration;
             var candidate = invalid.Single(x => x.Name == "duplicate-hidden-package").Candidate;
             Check(new DirectPlcFlow().Validate(candidate).Length != 0, "R03 schema" + schema + " Application format rejects raw inventory before deduplication");
@@ -73,7 +75,7 @@ static partial class ArchitectureQuality
                     ParcelState.Prepared, null, null, null, null);
                 store.Commit(operation, "SyntheticOriginalPrepared", "Immutable offline consumer regression fixture; never sent");
             }
-        ExtensionStore.AtomicWrite(Path.Combine(directory, "configuration.json"), new ConfigurationRevision<ParcelConfiguration>(1,
+        ExtensionStore.AtomicWrite(Path.Combine(directory, "configuration.json"), CurrentConfigurationFixture.Create<ParcelConfiguration>(1,
             scope == "Effective" ? candidate : seed, scope == "Pending" ? candidate : null, scope == "Pending" ? "PendingRestart" : "Effective", null));
     }
     static void InspectInventoryCase(int schema, string scope, string name, ParcelConfiguration seed, ParcelConfiguration candidate, PackageReference[]? expected)
@@ -102,7 +104,7 @@ static partial class ArchitectureQuality
             Check((await app.InstallCapabilityAsync(packageFile, Wire.FileHash(packageFile))).Status == "Installed", "R03 exact signed package installed for isolated legacy consumer guard");
             var package = store.Inventory().Single().Package; var legacy = InventorySeed(schema);
             var hidden = legacy.Plc! with { Package = package, Module = "parcel-plc", Version = package.Version, Implementation = "extension:" + package.Id + "/parcel-plc" };
-            var ambiguous = legacy with { CapabilityInstances = [legacy.Plc!, legacy.MaintenanceLogin!, hidden] };
+            var ambiguous = legacy with { CapabilityInstances = [legacy.Plc!, hidden] };
             var consumer = Path.Combine(path, "offline-original"); WriteInventoryConsumer(consumer, seed, ambiguous, scope);
             var database = Path.Combine(consumer, seed.ApplicationId + ".db"); var configuration = Path.Combine(consumer, "configuration.json");
             store.RegisterConsumer(database); var dbBytes = File.ReadAllBytes(database); var configBytes = File.ReadAllBytes(configuration);

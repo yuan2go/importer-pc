@@ -22,16 +22,13 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public bool HasOperatorLogin => OperatorLoginRole is { } role ? role.Selection.Capability is not null
         : Components.Any(c => c.Role == "operator-login" && c.Bound);
     public IReadOnlyList<CapabilityRoleDraft> ComponentRoles { get; } = componentRoles ?? [];
-    public bool IsLegacyMaintenanceOnly(CapabilityDraft component) => (component.Role == "maintenance-auth" ||
-        ComponentRoles.Any(r => r.Role == "维护认证" && ReferenceEquals(r.Selection.Capability, component))) &&
-        !ComponentRoles.Any(r => r.Role != "维护认证" && ReferenceEquals(r.Selection.Capability, component));
     // Display existing role ownership without changing the inventory or bindings.
     public string ComponentLabel(CapabilityDraft component)
     {
-        var roles = ComponentRoles.Where(r => r.Role != "维护认证" && ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
+        var roles = ComponentRoles.Where(r => ReferenceEquals(r.Selection.Capability, component)).Select(r => r.Role switch
         { "登录" => "操作员登录", "默认秤" => "默认称重", _ => r.Role }).ToArray();
         return roles.Length > 0 ? string.Join(" / ", roles) : component.Role switch
-        { "maintenance-auth" => "维护认证", "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => ChineseInterfaceText.CapabilityKind(component.Kind) + (Components.Count(x => x.Kind == component.Kind) > 1 ? "（" + (Array.IndexOf(Components, component) + 1) + "）" : "") };
+        { "operator-login" => "操作员登录", "default-scale" => "默认称重", _ => (component.Kind == "login" ? "操作员登录（未绑定）" : ChineseInterfaceText.CapabilityKind(component.Kind)) + (Components.Count(x => x.Kind == component.Kind) > 1 ? "（" + (Array.IndexOf(Components, component) + 1) + "）" : "") };
     }
     public string ComponentName(CapabilityDraft component)
     {
@@ -110,7 +107,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             catch (Exception ex) when (ex is ArgumentException or NotSupportedException or System.IO.PathTooLongException)
             { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
         }
-        foreach (var draft in Readers.Concat(Components.Where(x => x.Bound || !x.LegacyBindingEditable && x.Enabled)))
+        foreach (var draft in Readers.Concat(Components.Where(x => x.Bound || x.Enabled)))
         {
             var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }

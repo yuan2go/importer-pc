@@ -40,23 +40,36 @@ public sealed partial class StationApplication
     void RecoverReceiptFence()
     {
         if (File.Exists(ReceiptFence))
-        {
-            // Format4 did not identify each occurrence. Preserve the exact original file
-            // and conservatively import responsibility; any one raw cannot prove coverage.
-            foreach (var requestId in Wire.Decode<string[]>(File.ReadAllText(ReceiptFence)))
-            {
-                var request = store.Request(requestId) ?? throw new InvalidDataException("Legacy fence without original request");
-                var id = "legacy-" + Wire.Hash(requestId);
-                if (store.ReceiptOccurrence(id) is null)
-                    store.Commit(state, "LegacyReceiptCoverageUnknown", requestId, "recovery", id,
-                        occurrence: new(id, requestId, null, "format4-fence-coverage-unknown", Now, ReceiptResponsibilityRules.RawUnavailable));
-            }
-            File.Move(ReceiptFence, ReceiptFence + ".legacy-" + Wire.Id());
-        }
+            throw new InvalidDataException("Unsupported receipt fence; original file and request responsibility retained");
     }
     sealed record ReceiptIngress(string Id, string RequestId, SendAttempt? Attempt, IntegrationResponse Response, DateTimeOffset ReceivedAt);
     string ReceiptDirectory => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "receipt-ingress");
     string ReceiptFile(string id) => System.IO.Path.Combine(ReceiptDirectory, id + ".json");
+    void ValidateReceiptInputs()
+    {
+        RecoverReceiptFence();
+        if (Directory.Exists(ReceiptDirectory))
+            foreach (var file in Directory.GetFiles(ReceiptDirectory)) _ = ReadReceiptIngress(file);
+    }
+    (ReceiptIngress Ingress, BusinessRequest Original, ReceiptResponsibility Occurrence) ReadReceiptIngress(string file)
+    {
+        var ingress = Wire.Decode<ReceiptIngress>(File.ReadAllText(file));
+        if (System.IO.Path.GetFileName(file) != ingress.Id + ".json") throw new InvalidDataException("Interrupted receipt custody requires inspection; original retained");
+        var original = store.Request(ingress.RequestId) ?? throw new InvalidDataException("Receipt custody has no original request");
+        contract.ValidateResponse(original, ingress.Response);
+        var occurrence = store.ReceiptOccurrence(ingress.Id) ?? throw new InvalidDataException("Receipt occurrence reservation missing; raw original retained without replay");
+        if (occurrence.RequestId != original.Id || occurrence.AttemptId != ingress.Attempt?.Id ||
+            occurrence.Status is not (ReceiptResponsibilityRules.AwaitingResponse or ReceiptResponsibilityRules.RawUnavailable or ReceiptResponsibilityRules.Committed) ||
+            occurrence.Status == ReceiptResponsibilityRules.Committed && occurrence.Response != ingress.Response)
+            throw new InvalidDataException("Receipt reservation or committed raw identity differs; originals retained");
+        if (ingress.Attempt is { } attempt)
+        {
+            var stored = store.Attempts(original.Id).SingleOrDefault(x => x.Id == attempt.Id);
+            if (stored is null || stored.RequestId != attempt.RequestId || stored.Ordinal != attempt.Ordinal || stored.StartedAt != attempt.StartedAt)
+                throw new InvalidDataException("Receipt original send attempt identity differs; originals retained");
+        }
+        return (ingress, original, occurrence);
+    }
     ReceiptIngress CaptureReceipt(BusinessRequest request, SendAttempt? attempt, IntegrationResponse response, ReceiptResponsibility occurrence)
     {
         var ingress = new ReceiptIngress(occurrence.Id, request.Id, attempt, response, Now);
@@ -70,16 +83,7 @@ public sealed partial class StationApplication
         if (Directory.Exists(ReceiptDirectory))
             foreach (var file in Directory.GetFiles(ReceiptDirectory))
             {
-                var ingress = Wire.Decode<ReceiptIngress>(File.ReadAllText(file));
-                if (System.IO.Path.GetFileName(file) != ingress.Id + ".json") throw new InvalidDataException("Interrupted receipt custody requires inspection; original retained");
-                var original = store.Request(ingress.RequestId) ?? throw new InvalidDataException("Receipt custody has no original request");
-                contract.ValidateResponse(original, ingress.Response);
-                var occurrence = store.ReceiptOccurrence(ingress.Id);
-                if (occurrence is null) // preserved format4 ingress, independently replayable
-                {
-                    occurrence = new(ingress.Id, original.Id, ingress.Attempt?.Id, "format4-raw-replay", ingress.ReceivedAt, ReceiptResponsibilityRules.AwaitingResponse);
-                    store.Commit(state, "LegacyReceiptRawAcquired", original.Id, "recovery", ingress.Id, occurrence: occurrence);
-                }
+                var (ingress, original, occurrence) = ReadReceiptIngress(file);
                 if (occurrence.Status != ReceiptResponsibilityRules.Committed) PersistResponse(original, ingress.Attempt, ingress.Response, ingress);
                 else if (occurrence.Response != ingress.Response) throw new InvalidDataException("Committed receipt and raw custody differ; originals retained");
                 File.Delete(file);

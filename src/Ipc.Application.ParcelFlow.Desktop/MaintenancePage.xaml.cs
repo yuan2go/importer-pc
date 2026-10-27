@@ -25,7 +25,7 @@ public partial class MaintenancePage : UserControl
         MainParameterEditor.SelectedPageChanged += (_, _) => UpdateParameterNavigation();
         MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
-        MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(9);
+        MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(8);
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
         MainParameterEditor.DiagnosticsRequested += (_, target) =>
         {
@@ -110,7 +110,6 @@ public partial class MaintenancePage : UserControl
     void BackToSettings_Click(object sender, RoutedEventArgs e) => ShowParameterEditor();
     void ShowParameterEditor()
     {
-        if (DataContext is ParcelViewModel { CanEditLegacyConfiguration: true }) { ShowTechnicalTool(5); return; }
         if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
         TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
         BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "更改保留在当前草稿中"; UpdateParameterNavigation();
@@ -119,10 +118,9 @@ public partial class MaintenancePage : UserControl
     public void ShowTechnicalTool(int index)
     {
         if (index < 0 || index >= TechnicalTabs.Items.Count) throw new ArgumentOutOfRangeException(nameof(index));
-        if (index == 5 && DataContext is ParcelViewModel { LegacyPolicyVisibility: Visibility.Collapsed }) return;
         TechnicalTabs.SelectedIndex = index; TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
-        BackToSettings.Visibility = index == 5 && DataContext is ParcelViewModel { CanEditLegacyConfiguration: true } || index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;
-        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中 / 原配置账核对", "已安装模块描述", "能力实例库存", "旧版兼容参数", "原机恢复后核对", "安装与卸载组件", "原作业与接收责任", "创建完整备份", "设置模板" }[index]; UpdateParameterNavigation();
+        BackToSettings.Visibility = index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;
+        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中 / 原配置账核对", "已安装模块描述", "能力实例库存", "原机恢复后核对", "安装与卸载组件", "原作业与接收责任", "创建完整备份", "设置模板" }[index]; UpdateParameterNavigation();
     }
     public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
     void ReviewChanges_Click(object sender, RoutedEventArgs e)

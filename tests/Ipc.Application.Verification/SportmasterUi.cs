@@ -73,7 +73,7 @@ static class SportmasterUi
             Check(ReferenceEquals(classic.Application, app) && ReferenceEquals(ui.Application, app) && ReferenceEquals(auxiliary.Application, app) &&
                 classic.Snapshot!.RuntimeId == ui.Snapshot!.RuntimeId && auxiliary.Snapshot!.RuntimeId == initial.RuntimeId,
                 "classic, alternate and auxiliary models share the actual application and runtime identity");
-            Check(ui.Fresh && !ui.Legacy && ui.Left.PositionId == "left" && ui.Right.PositionId == "right" && ui.Left.CanAdmit && ui.Right.CanAdmit,
+            Check(ui.Fresh && ui.Left.PositionId == "left" && ui.Right.PositionId == "right" && ui.Left.CanAdmit && ui.Right.CanAdmit,
                 "schema3 projects two independently admissible real positions");
             ui.Left.ParcelCode = ui.Right.ParcelCode = "000000123";
             var leftAdmission = ui.Left.AdmissionId; var rightAdmission = ui.Right.AdmissionId;
@@ -159,22 +159,16 @@ static class SportmasterUi
             Check(ui.Left.Slot == "未取得" && ui.Left.Status.Contains("明确拒绝") && ui.Left.Operation!.Wcs!.State == StageState.Rejected && ui.Right.Operation is null,
                 "real WCS rejection remains distinct from Unknown or slot acceptance");
         }
-        await using (var app = await Open(configuration with { SchemaVersion = 2, Topology = null }, "ui-legacy"))
-        {
-            var ui = new SupplyStationViewModel(app); await ui.RefreshDisplayAsync();
-            Check(ui.Legacy && ui.Left.PositionId == "main" && ui.Left.CanAdmit && !ui.Right.CanAdmit && ui.Right.Operation is null && ui.Right.Status == "未启用",
-                "schema2 explicitly maps single main to left and disables unsupported right");
-            await ui.EmitPositionAsync(ui.Left); await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); await ui.RefreshDisplayAsync();
-            await ui.EmitPositionAsync(ui.Right); await Task.Delay(40);
-            Check(ui.Left.Operation is not null && ui.Right.Operation is null && ui.Right.Recent.Length == 0 && (await app.SnapshotAsync()).Operations.Length == 1,
-                "legacy UI never mirrors one operation into a second physical position or admits right");
-        }
+        var unsupported = configuration with { SchemaVersion = 2, Topology = null };
+        var originalUnsupported = Wire.Encode(unsupported);
+        try { await using var refused = await Open(unsupported, "ui-unsupported"); throw new Exception("Old single-reader topology accepted"); }
+        catch (InvalidDataException) { Check(Wire.Encode(unsupported) == originalUnsupported, "old single-reader input is preserved and rejected before it can impersonate a left physical position"); }
         var leftScale = new CapabilityBinding("weight", "reference-weight", "1.0.0", "smui.weight.left", "reference://weight/smui/left", "PARCEL-REFERENCE-v1", []);
         var rightScale = leftScale with { InstanceId = "smui.weight.right", Target = "reference://weight/smui/right" };
         var measured = configuration with
         {
             Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = leftScale,
-            CapabilityInstances = [leftScale, rightScale, configuration.Wcs!, configuration.MaintenanceLogin!],
+            CapabilityInstances = [leftScale, rightScale, configuration.Wcs!],
             Topology = configuration.Topology! with { Positions = configuration.Topology.Positions.Select(p => p with { ScaleInstanceId = p.Id == "left" ? leftScale.InstanceId : rightScale.InstanceId }).ToArray() }
         };
         string recoveryLeft, recoveryRight;
@@ -456,9 +450,10 @@ static class SportmasterUi
         public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
+    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder, ICurrentHistoryFixtureForwarder
     {
         public IParcelApplication InnerAdministration => inner;
+        public IParcelHistorySessionApplication HistoryService => (IParcelHistorySessionApplication)inner;
         Func<Task<ParcelSnapshot>>? read;
         TaskCompletionSource readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Func<Task<ParcelSnapshot>>? Read { get => read; set { read = value; readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously); } }

@@ -9,7 +9,7 @@ public static class DeploymentShortcuts
 {
     public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop)
     {
-        var options = location.Shortcuts ?? new(true, false); // Historical installation defaults.
+        var options = location.Shortcuts ?? throw new InvalidDataException("部署缺少明确的快捷方式选项；保留原登记并使用当前安装计划。");
         var business = location.ApplicationId switch { "sportmaster" => "SM供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => location.ApplicationId };
         var id = "菜鸟供包台 · " + business + " · " + location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
         var target = System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
@@ -65,15 +65,6 @@ public static class DeploymentShortcuts
     public static void Remove(DeploymentLocation location, string programs, string desktop)
     {
         var files = Plan(location with { Shortcuts = new(true, true) }, programs, desktop).ToList();
-        var legacyId = location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
-        files.Add(new(System.IO.Path.Combine(desktop, "菜鸟供包台 · " + legacyId + ".lnk"),
-            System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), "", location.ReleaseRoot));
-        foreach (var name in new[] { "运行", "启动修复", "安装维护" })
-        {
-            var entry = files.Single(link => System.IO.Path.GetFileName(link.Path).EndsWith(" · " + name + ".lnk", StringComparison.Ordinal));
-            foreach (var folder in new[] { "菜鸟供包台", "Importer PC" })
-                files.Add(entry with { Path = System.IO.Path.Combine(programs, folder, legacyId + " · " + name + ".lnk") });
-        }
         foreach (var entry in files)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path);

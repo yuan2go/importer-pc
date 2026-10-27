@@ -76,17 +76,6 @@
     },
     "MaximumBytes": 4194304
   },
-  "MaintenanceLogin": {
-    "Kind": "login",
-    "Implementation": "reference-login",
-    "Version": "1.0.0",
-    "InstanceId": "maintenance",
-    "Target": "reference://maintenance",
-    "Contract": "PARCEL-REFERENCE-v1",
-    "Parameters": {
-      "subjects": "maintenance"
-    }
-  },
   "WeightValidity": "AtAssociation",
   "Topology": {
     "Readers": [
@@ -161,17 +150,6 @@
       "Contract": "PARCEL-REFERENCE-v1",
       "Parameters": {
         "subjects": "alice,bob"
-      }
-    },
-    {
-      "Kind": "login",
-      "Implementation": "reference-login",
-      "Version": "1.0.0",
-      "InstanceId": "maintenance",
-      "Target": "reference://maintenance",
-      "Contract": "PARCEL-REFERENCE-v1",
-      "Parameters": {
-        "subjects": "maintenance"
       }
     },
     {

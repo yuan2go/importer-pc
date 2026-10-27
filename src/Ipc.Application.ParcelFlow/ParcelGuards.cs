@@ -63,7 +63,7 @@ public sealed partial class ParcelRuntime
     {
         var bindings = position is null ? ParcelBindings.Bound(Effective) : new[] { Effective.Wcs, Effective.Plc, Effective.Login,
             ParcelBindings.Scale(Effective, position), ParcelBindings.Camera(Effective, position), Effective.Images?.Strategy == UploadStrategy.Attached ? null : Effective.Images?.Uploader }.OfType<CapabilityBinding>();
-        return bindings.Where(b => b.InstanceId != Effective.MaintenanceLogin?.InstanceId).All(b =>
+        return bindings.All(b =>
             capabilityHealth.TryGetValue(b.InstanceId, out var h) && h.Ready && h.ConfirmedAt <= DateTimeOffset.UtcNow && h.ValidUntil > DateTimeOffset.UtcNow);
     }
     void ExpireWeights()

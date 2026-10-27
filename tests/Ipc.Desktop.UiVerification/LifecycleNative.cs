@@ -86,6 +86,7 @@ static partial class Program
             if (replacement is not null) await replacement.DisposeAsync();
             if (window.IsVisible) { window.ReopenOwnerAsync = null; window.ConfirmOwnerExit = _ => true; window.ConfirmDiscardDrafts = _ => true; failStop = false; window.Close(); await Task.Delay(100); }
         }
+        await VerifyCurrentDraftClose(evidence, c, Check, syntheticIdentity: true);
         lines.Add("BOUNDARY actual WPF/HWND/Dispatcher + real Application/SQLite; explicit synthetic ports and identity. UAC/system install/reboot/real SDK/RCS/target-touch/field NOT_RUN.");
         await VerifyRemovalPresentation();
         async Task CloseCompleted(Func<bool> done)

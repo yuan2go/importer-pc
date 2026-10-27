@@ -25,7 +25,7 @@ static class CommercialQuality
         var launch=new BusinessLaunch(directory,Path.Combine(directory,"data"),null,null);
         var inner=new ParcelCapabilityFactory(launch);
         var app=new ParcelRuntime(launch,Flow(config.ApplicationId),timestamp?new TimestampFactory(inner):inner);
-        try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }
+        try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
     }
     public static async Task Run(string workspace,string root,string[] args)
     {
@@ -65,8 +65,9 @@ static class CommercialQuality
     static async Task Freshness(ParcelConfiguration config,string root)
     {
         await using var app=await Open(config,Path.Combine(root,"freshness"));
+        await Wait(app, s => s.Availability?.Admit == true);
         var probe=new SportmasterUi.SnapshotProbe(app); var vm=new ParcelViewModel(probe,"classic","sportmaster");
-        await vm.RefreshAsync(); Check(vm.CanAdmit && vm.Status=="Ready","real initial snapshot ready");
+        await vm.RefreshAsync(); Check(vm.CanAdmit && vm.Snapshot!.State=="Ready" && vm.Status=="作业就绪","real initial snapshot ready");
         probe.Read=()=>Task.FromException<ParcelSnapshot>(new IOException("synthetic read failure"));
         await vm.RunAsync(vm.RefreshAsync);
         Check(!vm.CanAdmit && !vm.CanResume && !vm.CanConfigure && vm.Status.Contains("失效") && !vm.Health.Contains("就绪"),"classic failed read invalidates Ready, health and new actions");
@@ -82,7 +83,7 @@ static class CommercialQuality
         await Task.Delay(3100);
         Check(!vm.CanAdmit && !vm.CanResume && vm.Status.Contains("失效"),"pending read does not renew last success deadline");
         pending.SetResult(await app.SnapshotAsync()); await read;
-        Check(vm.Fresh && vm.Snapshot!.Paused && vm.Status==vm.Snapshot.State && vm.CanResume,"new successful snapshot restores permitted actions");
+        Check(vm.Fresh && vm.Snapshot!.Paused && !vm.Status.Contains("失效") && vm.CanResume,"new successful snapshot restores permitted actions: " + Wire.Encode(new {vm.Fresh, vm.Snapshot!.Paused, vm.Status, vm.CanResume, vm.Busy, vm.Snapshot.State, vm.Snapshot.Availability}));
         var old=new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read=()=>old.Task; var oldRead=vm.RefreshAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3)); probe.Read=null; await vm.RefreshAsync();
         old.SetException(new IOException("late old failure")); try {await oldRead;} catch(IOException){}
@@ -112,10 +113,10 @@ static class CommercialQuality
         foreach(var archived in new[]{false,true})
         {
             var fixture=Path.Combine(root,"db5-abandoned-"+archived); var legacy=abandoned with{RecoveryRequired=true};
-            using(var db5=new ParcelRepository(fixture,"direct-plc",5))
+            using(var db5=new ParcelRepository(fixture,"direct-plc"))
             {db5.Commit(legacy,"Abandoned","Original inspected cancellation with historical stale flag"); if(archived)db5.Archive([legacy.Id],"Synthetic historical archive");}
-            using(var db6=new ParcelRepository(fixture,"direct-plc",6))
-                Check(db6.StorageVersion==6 && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"DB5 resident/archive terminal recovery flag repairs without reactivating history");
+            using(var db6=new ParcelRepository(fixture,"direct-plc"))
+                Check(db6.StorageVersion==9 && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"current DB9 resident/archive terminal recovery flag repairs without reactivating history");
         }
         var sportDirectory=Path.Combine(root,"sport-restarted-unknown");
         await using(var app=await Open(config("sportmaster"),sportDirectory,true))
@@ -140,26 +141,26 @@ static class CommercialQuality
             {
                 var recovered=(await app.SnapshotAsync()).Operations.Single(); Check(recovered.RecoveryRequired && recovered.State==ParcelState.PlcAccepted,id+" acceptance remains unresolved across restart");
                 await app.ReconcileAsync(recovered.Id); var terminal=(await app.SnapshotAsync()).Operations.Single();
-                LegacyTerminalChecks(terminal,before,root);
+                CurrentTerminalChecks(terminal,before,root);
                 Check(terminal.State==ParcelState.PhysicalCompleted && !terminal.RecoveryRequired && terminal.Plc!.Attempts==1 && Wire.Encode(terminal.Plc.Request)==Wire.Encode(before.Plc!.Request),id+" original authoritative query terminates recovery without resending or changing payload");
             }
         }
     }
-    static void LegacyTerminalChecks(ParcelOperation terminal,ParcelOperation accepted,string root)
+    static void CurrentTerminalChecks(ParcelOperation terminal,ParcelOperation accepted,string root)
     {
         foreach(var archived in new[]{false,true})
         {
             var directory=Path.Combine(root,"legacy-terminal-"+terminal.FrozenConfiguration.ApplicationId+"-"+archived);
             var legacy=terminal with{RecoveryRequired=true}; string original=Wire.Encode(legacy);
-            using(var db=new ParcelRepository(directory,terminal.FrozenConfiguration.ApplicationId,5))
+            using(var db=new ParcelRepository(directory,terminal.FrozenConfiguration.ApplicationId))
             {
                 Seed(db,legacy,true);
                 if(archived)db.Archive([legacy.Id],"Synthetic original completed archive");
             }
-            using(var upgraded=new ParcelRepository(directory,terminal.FrozenConfiguration.ApplicationId,6))
+            using(var upgraded=new ParcelRepository(directory,terminal.FrozenConfiguration.ApplicationId))
                 Check(upgraded.ReadOperation(legacy.Id) is{RecoveryRequired:false} repaired &&
                     Wire.Encode(repaired with{RecoveryRequired=true})==original && upgraded.ArchivedCount==(archived?1:0),
-                    "proven original terminal receipt clears only stale flag in DB5 resident/archive");
+                    "proven original terminal receipt clears only stale flag in current DB9 resident/archive");
             using var sql=new SqliteConnection("Data Source="+Path.Combine(directory,terminal.FrozenConfiguration.ApplicationId+".db"));sql.Open();
             using var audit=sql.CreateCommand();audit.CommandText="SELECT detail FROM parcel_audit WHERE event='TerminalRecoveryConverged'";
             using var json=System.Text.Json.JsonDocument.Parse((string)audit.ExecuteScalar()!);
@@ -167,7 +168,7 @@ static class CommercialQuality
         }
         foreach(var variant in new[]{"accepted","unknown","missing-raw","conflict","unproved-abandon"})
         {
-            var directory=Path.Combine(root,"legacy-refuse-"+terminal.FrozenConfiguration.ApplicationId+"-"+variant);
+            var directory=Path.Combine(root,"current-unsettled-"+terminal.FrozenConfiguration.ApplicationId+"-"+variant);
             var op=variant switch
             {
                 "accepted"=>accepted with{RecoveryRequired=true},
@@ -176,10 +177,10 @@ static class CommercialQuality
                 "unproved-abandon"=>terminal with{RecoveryRequired=true,State=ParcelState.Abandoned,Plc=null,Wcs=null,Capture=null,Reason="Unsubmitted parcel inspected and removed: synthetic unproved label"},
                 _=>terminal with{RecoveryRequired=true}
             };
-            using(var db=new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId,5))Seed(db,op,variant!="missing-raw");
-            var database=Path.Combine(directory,op.FrozenConfiguration.ApplicationId+".db");var hash=Wire.FileHash(database);
-            try {using var upgrade=new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId,6);throw new Exception("Unsafe upgrade accepted: "+variant);}
-            catch(InvalidDataException error){Check(error.Message.Contains("LegacyUnsettled") && Wire.FileHash(database)==hash,variant+" retains original DB5 bytes and refuses future marker");}
+            using(var db=new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId))Seed(db,op,variant!="missing-raw");
+            using var reopened = new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId);
+            Check(Wire.Encode(reopened.ReadOperation(op.Id)) == Wire.Encode(op) && reopened.StorageVersion == 9,
+                variant+" current DB9 retains unresolved original and recovery flag without inventing terminal proof or migrating storage");
         }
         static void Seed(ParcelRepository db,ParcelOperation op,bool raw)
         {

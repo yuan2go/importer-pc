@@ -67,7 +67,8 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
     }
     return;
 }
-if (action is "backup" or "preflight" or "restore" or "upgrade")
+if (action == "upgrade") throw new InvalidDataException("旧格式升级不受支持；原数据库与发行保留。");
+if (action is "backup" or "preflight" or "restore")
 {
     // Maintenance must obey the same fixed Windows account and protected machine policy
     // before creating a restore destination, opening a database or acquiring a data lease.
@@ -102,24 +103,6 @@ if (action is "backup" or "preflight" or "restore" or "upgrade")
         var destination = Get("--file", "backup.db"); RegisterRecoveryCopy(station.Mode, dbPath, destination);
         Console.WriteLine(Wire.Encode(SupplyStore.BackupReadOnly(dbPath, destination)));
     }
-    else
-    {
-        if (!map.TryGetValue("--previous-release", out var previous) || !map.TryGetValue("--target-release", out var selected) || !map.ContainsKey("--file"))
-            throw new InvalidDataException("Explicit upgrade requires --previous-release, --target-release and new --file backup");
-        var selectedIdentity = ReleaseIdentity(selected);
-        if (selectedIdentity.ProgramAssemblySha256 != Wire.FileHash(typeof(ProductRuntime).Assembly.Location) ||
-            !string.Equals(Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(Path.Combine(selected, "app", "config")).TrimEnd(Path.DirectorySeparatorChar), OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
-            throw new InvalidDataException("Upgrade must execute the selected release program and configuration");
-        var previousIdentity = ReleaseIdentity(previous);
-        // Changing station identity/mode/root must be a separate reviewed migration, not
-        // silently selecting a different database while backing up an unrelated station.
-        var previousStation = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(previous, "app", "config", "station.json")));
-        if (previousStation.StationId != station.StationId || previousStation.Mode != station.Mode)
-            throw new InvalidDataException("Previous and selected station identity/mode differ; controlled migration required");
-        var file = map["--file"];
-        RegisterRecoveryCopy(station.Mode, dbPath, file);
-        Console.WriteLine(Wire.Encode(SupplyStore.UpgradeVerified(dbPath, file, Get("--receipt", file + ".upgrade.json"), previousIdentity, selectedIdentity)));
-    }
     return;
 }
 void RegisterRecoveryCopy(RunMode mode, string source, string destination)
@@ -133,33 +116,6 @@ void RegisterRecoveryCopy(RunMode mode, string source, string destination)
     }
     var manager = new ExtensionStore(paths.Root, Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile)), mode, MachineRuntimePolicy.ResolveLeaseRoot(null));
     manager.RegisterConsumer(destination);
-}
-MaintenanceReleaseIdentity ReleaseIdentity(string release)
-{
-    var app = Path.Combine(release, "app");
-    var configuration = new Dictionary<string, string>();
-    foreach (var name in new[] { "product.json", "station.json", "presentation.json" })
-        configuration.Add(name, Wire.FileHash(Path.Combine(app, "config", name)));
-    var executable = File.Exists(Path.Combine(app, "Ipc.Product.exe")) ? Path.Combine(app, "Ipc.Product.exe") : Path.Combine(app, "Ipc.Product");
-    // Portable published hosts use the native apphost name without .exe. Record its real
-    // bytes, never create a fake Windows executable to get an upgrade receipt.
-    foreach (var line in File.ReadAllLines(Path.Combine(release, "SHA256SUMS")))
-    {
-        if (line.Length < 67 || line.Substring(64, 2) != "  ") throw new InvalidDataException("Invalid release checksum list");
-        var relative = line[66..];
-        if (Path.IsPathRooted(relative) || relative.Split('/','\\').Any(x => x is ".." or "." or "")) throw new InvalidDataException("Unsafe release checksum path");
-        var file = Path.GetFullPath(Path.Combine(release, relative));
-        var cursor = Path.GetFullPath(release);
-        foreach (var part in relative.Split('/','\\'))
-        {
-            cursor = Path.Combine(cursor, part);
-            if (File.GetAttributes(cursor).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked release checksum path; source retained");
-        }
-        if (!Wire.FileHash(file).Equals(line[..64], StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("Release checksum mismatch; source retained: " + relative);
-    }
-    return new(Wire.FileHash(executable), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
-        Wire.FileHash(Path.Combine(release, "SHA256SUMS")), configuration);
 }
 var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout"), ExtensionRoot: map.GetValueOrDefault("--extension-root"), ExtensionTrustFile: map.GetValueOrDefault("--extension-trust")));
 var runtime = host.Services.GetRequiredService<ProductRuntime>();

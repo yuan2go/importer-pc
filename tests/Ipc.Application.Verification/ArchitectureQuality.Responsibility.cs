@@ -68,16 +68,13 @@ static partial class ArchitectureQuality
         await secondWindow.SaveConfigurationAsync();
         await vm.RefreshAsync(); vm.ConfigurationDraft = Wire.Encode(oldDraft with { TimeoutMs = 1802 }); vm.ConfigurationReason = "Synthetic older editor after automatic refresh";
         await vm.SaveConfigurationAsync(); var after = await app.SnapshotAsync();
-        Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.Message.StartsWith("Rejected") && vm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
+        Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.ConfigurationSubmissionOutcome == "Conflict" && !vm.HasUnconfirmedConfigurationSubmission, "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
         Check(secondWindow.Message.StartsWith("PendingRestart") && Wire.Encode(after.Configuration.Pending) == Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }) && vm.ConfigurationDraft == Wire.Encode(oldDraft with { TimeoutMs = 1802 }),
             "two real window VMs retain conflicting draft and preserve the complete other position/instance topology");
-        var legacy = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
-        await using var oldFormApp = await Open(legacy, "legacy-ui-cas"); await Maintenance(oldFormApp);
-        var oldVm = new ParcelViewModel(oldFormApp, "Quality", "Legacy compatibility"); await oldVm.RefreshAsync(); await oldVm.LoadCapabilitiesAsync(); var oldLoaded = oldVm.Snapshot!;
-        await oldFormApp.StageConfigurationAsync(oldLoaded.Configuration.Revision, oldLoaded.Configuration.Effective with { TimeoutMs = 1801 }, "Synthetic concurrent legacy editor");
-        await oldVm.RefreshAsync(); oldVm.DraftWaitMs += 1; oldVm.ConfigurationReason = "Synthetic older legacy form after refresh"; await oldVm.SaveCapabilitiesAsync();
-        var oldAfter = await oldFormApp.SnapshotAsync();
-        Check(oldAfter.Configuration.Revision == oldLoaded.Configuration.Revision + 1 && oldAfter.Configuration.Pending!.TimeoutMs == 1801 && oldVm.Message.StartsWith("Rejected") && oldVm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "legacy parameter form also preserves loaded draft CAS instead of borrowing refreshed server revision");
+        var unsupported = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
+        var original = Wire.Encode(unsupported);
+        try { await using var refused = await Open(unsupported, "unsupported-ui-cas"); throw new Exception("Old form accepted"); }
+        catch (InvalidDataException) { Check(Wire.Encode(unsupported) == original, "old schema is refused without converting the candidate; current two-window CAS checks above remain authoritative"); }
     }
     static void Migration3Checks()
     {
@@ -86,21 +83,24 @@ static partial class ArchitectureQuality
         var original = new ParcelOperation(Wire.Id(), "legacy3-original", "00091", Wire.Hash("legacy3-observation"), DateTimeOffset.UtcNow,
             Wire.Hash(Wire.Encode(c)), c, new() { [c.Scale!.InstanceId] = new string('A', 64) }, c.Weight, null, ParcelState.WaitingWeight,
             null, null, null, "Original pre-upgrade same-parcel weight wait");
-        using (var old = new ParcelRepository(path, "direct-plc", 3)) old.Commit(original, "LegacySyntheticObserved", "Explicit original DB3 fixture");
+        SyntheticPriorStorage.Create(path,"direct-plc",3,original);
         string body;
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "direct-plc.db")))
+        using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; body = (string)q.ExecuteScalar()!; }
         try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "DB3 unresolved originals must reject migration before changing reader marker"); }
-        catch (InvalidDataException ex) { Check(ex.Message.Contains("LegacyUnsettled"), "DB3 unresolved originals retain matching old-release settlement path before DB4 migration"); }
-        using (var old = new ParcelRepository(path, "direct-plc", 3)) Check(Wire.Encode(old.Load().Single()) == body, "rejected DB3 upgrade leaves original JSON readable by unchanged DB3 reader");
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "direct-plc.db")))
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("不受支持"), "DB3 unresolved originals refuse before any format conversion"); }
+        using(var readOnly=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=Path.Combine(path,"direct-plc.db"),Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString()))
+        {readOnly.Open();using var q=readOnly.CreateCommand();q.CommandText="SELECT body FROM parcel_operations";Check((string)q.ExecuteScalar()! == body,"old request JSON remains byte-identical through read-only inspection");}
+        using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         {
             db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT max(version) FROM platform_migrations";
             Check((long)q.ExecuteScalar()! == 3, "DB3 rejection preserves original migration identity instead of stranding unknown responsibility");
             q.CommandText = "UPDATE parcel_operations SET body=$body";
             q.Parameters.AddWithValue("$body", Wire.Encode(original with { State = ParcelState.Abandoned, Reason = "Synthetic old-release inspected local cancellation; no request attempted" })); q.ExecuteNonQuery();
         }
-        using (var upgraded = new ParcelRepository(path, "direct-plc")) Check(upgraded.Load().Single().Id == original.Id, "settled DB3 upgrade retains original history under additive DB4 facilities");
+        var settledHash=Wire.FileHash(Path.Combine(path,"direct-plc.db"));
+        try{using var denied=new ParcelRepository(path,"direct-plc");Check(false,"settled old format must refuse");}
+        catch(InvalidDataException){Check(Wire.FileHash(Path.Combine(path,"direct-plc.db"))==settledHash,"explicit old local settlement still cannot authorize schema conversion");}
     }
     static async Task OverloadChecks()
     {

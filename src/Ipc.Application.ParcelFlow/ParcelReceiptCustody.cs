@@ -9,8 +9,7 @@ public sealed partial class ParcelRepository
     string? CustodyQuery(string occurrence)
     {
         using var c = db.CreateCommand();
-        c.CommandText = StorageVersion >= 5 ? "SELECT query_occurrence FROM parcel_receipt_custody WHERE occurrence=$id" :
-            "SELECT json_extract(detail,'$.QueryOccurrence') FROM parcel_audit WHERE event IN ('ReceiptOutcomeKnown','ReceiptOutcomeReconciled') AND json_valid(detail) AND json_extract(detail,'$.OriginalOccurrence')=$id ORDER BY seq DESC LIMIT 1";
+        c.CommandText = "SELECT query_occurrence FROM parcel_receipt_custody WHERE occurrence=$id";
         c.Parameters.AddWithValue("$id",occurrence); return c.ExecuteScalar() as string;
     }
     public bool HasReceiptOutcomeBasis(string occurrence)
@@ -25,13 +24,12 @@ public sealed partial class ParcelRepository
         if (File.Exists(file)) bytes=File.ReadAllBytes(file);
         else
         {
-            if (StorageVersion<4) return false;
             using var archived=db.CreateCommand(); archived.CommandText="SELECT body FROM parcel_archived_receipts WHERE id=$id"; archived.Parameters.AddWithValue("$id",id);
             if (archived.ExecuteScalar() is not byte[] raw) return false; bytes=raw;
         }
         if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes))!=hash) throw new InvalidDataException("Outcome Query original bytes changed");
         var reply=Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
-        var op=StorageVersion<4 ? Load().SingleOrDefault(x=>x.Id==operation) : ReadOperation(operation);
+        var op=ReadOperation(operation);
         var fact=stage switch { "image-upload"=>op?.Upload,"image-capture"=>op?.Capture,"wcs-slot"=>op?.Wcs,"plc-submit"=>op?.Plc,_=>null };
         if (op is null || fact is null) return false;
         var frozen=fact.Request;
@@ -62,55 +60,8 @@ public sealed partial class ParcelRepository
     bool ExternalWorkComplete(ParcelOperation op,string application) => (!op.RecoveryRequired || HasTerminalRecoveryBasis(op,application)) &&
         (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application=="sportmaster" && op.State==ParcelState.SlotResolved) &&
         new[]{op.Wcs,op.Plc,op.Capture,op.Upload}.OfType<StageFact>().All(s=>s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
-    bool LegacyCustodyUpgradeEligible(string application)
-    {
-        using var states = db.CreateCommand();
-        states.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Awaiting','RawDurable','OutcomeReconciled','Committed','NoReply')";
-        if ((long)states.ExecuteScalar()! != 0) return false;
-        // Stream history and each owner's outstanding occurrences: total historical
-        // queries do not become an unbounded in-memory upgrade inventory.
-        foreach (var op in UpgradeOperations())
-        {
-            if (!ExternalWorkComplete(op,application)) return false;
-            var hasCustody = false;
-            foreach (var id in UpgradeReceiptIds(op.Id))
-            {
-                if (!hasCustody && (op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached || !HasMainReceiptCustody(op))) return false;
-                hasCustody = true;
-                if (ReceiptById(id) is not { Stage: "image-upload", RawHash: null } ||
-                    File.Exists(Path.Combine(rawRoot,id+".json")) || !HasReceiptOutcomeBasis(id)) return false;
-            }
-            if (!hasCustody && op.FrozenConfiguration.Images is not null && !op.ImageReleased) return false;
-        }
-        using var orphan = db.CreateCommand();
-        orphan.CommandText = "SELECT count(*) FROM parcel_receipts r WHERE state IN ('Awaiting','RawDurable','OutcomeReconciled') AND NOT EXISTS(SELECT 1 FROM parcel_operations o WHERE o.id=r.operation)" +
-            (StorageVersion >= 4 ? " AND NOT EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=r.operation)" : "");
-        return (long)orphan.ExecuteScalar()! == 0;
-    }
-    IEnumerable<string> UpgradeReceiptIds(string operation)
-    {
-        using var c = db.CreateCommand();
-        c.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$op AND state IN ('Awaiting','RawDurable','OutcomeReconciled')";
-        c.Parameters.AddWithValue("$op",operation);
-        using var r = c.ExecuteReader(); while (r.Read()) yield return r.GetString(0);
-    }
-    public static void UpgradeCustodyOnly(string directory,string application,int targetStorageVersion=5)
-    {
-        // Caller holds the application owner and has created a full backup. No sources
-        // are constructed here. Ordinary startup does not opt into this old-reader transition.
-        if (targetStorageVersion is not (5 or 6 or 7 or 8 or 9)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
-        var file=Path.Combine(directory,application+".db");var version=ReadStorageVersion(file,application);
-        using(var original=new ParcelRepository(directory,application,version))
-        {
-            original.ValidateRawInventory();
-            if(!original.LegacyCustodyUpgradeEligible(application))throw new InvalidDataException("Legacy external/custody proof incomplete; original reader marker retained");
-        }
-        using var upgraded=new ParcelRepository(directory,application,Math.Max(version,targetStorageVersion),allowCustodyUpgrade:true);
-        upgraded.ValidateRawInventory();
-        foreach(var pending in upgraded.PendingReceipts())
-            if (!upgraded.HasReceiptOutcomeBasis(pending.Id)) throw new InvalidDataException("Unproved legacy original; preserve matching old reader and custody");
-        upgraded.Commit(null,"LegacyCustodyUpgraded","External work confirmed by original implementation; original missing raw/image/package custody remains pending",paused:true);
-    }
+    public static void UpgradeCustodyOnly(string directory, string application, int targetStorageVersion = 9) =>
+        throw new InvalidDataException("旧格式保管责任迁移不受支持；保留原件。");
 }
 public sealed partial class ParcelRuntime
 {

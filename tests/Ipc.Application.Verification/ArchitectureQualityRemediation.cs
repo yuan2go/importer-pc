@@ -55,8 +55,9 @@ static partial class ArchitectureQualityRemediation
         await ReceiptCommandBoundaries(workspace, Path.Combine(root, "receipt-commands"));
         await ExpiredWeight(workspace, Path.Combine(root, "expired-weight"));
         await TcpConsumersAndProjection(workspace, Path.Combine(root, "tcp"));
-        foreach (var boundary in new[] { "AfterAbandonedDurable", "AfterImageReleaseDurable", "AfterContinuationAdmitted", "AfterCommandAdmitted", "AfterConfigurationConfirmed", "AfterArchiveCommit" })
+        foreach (var boundary in new[] { "AfterAbandonedDurable", "AfterImageReleaseDurable", "AfterContinuationAdmitted", "AfterArchiveCommit" })
             await CommandCrash(workspace, Path.Combine(root, boundary), boundary);
+        await ArchitectureQuality.ConfigurationConfirmationChecks(workspace,Path.Combine(root,"current-configuration-boundaries"));
         Console.WriteLine("PASS AQA01 COMPLETE");
     }
     static async Task ExpiredWeight(string workspace, string path)
@@ -194,23 +195,14 @@ static partial class ArchitectureQualityRemediation
     public static async Task CrashChild(string workspace, string path, string boundary)
     {
         if (boundary.StartsWith("ReceiptQuery", StringComparison.Ordinal)) { await ReceiptQueryChild(workspace, path, boundary); return; }
-        var c = Config(workspace, boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed" or "AfterArchiveCommit" ? "sportmaster" : "direct-plc");
-        if (c.ApplicationId == "direct-plc") c = c with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = Binding("weight"), Images = new(Binding("camera"), null) };
-        if (boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed")
-        {
-            await using (var first = await Open(c, path)) { }
-            ExtensionStore.AtomicWrite(Path.Combine(DirectoryFor(path, c), "configuration.json"), new ConfigurationRevision<ParcelConfiguration>(17, c, null, "Effective", null));
-        }
+        if (boundary is not ("AfterAbandonedDurable" or "AfterImageReleaseDurable" or "AfterContinuationAdmitted" or "AfterArchiveCommit"))
+            throw new ArgumentException("Unsupported current command boundary");
+        var c = Config(workspace,boundary=="AfterArchiveCommit" ? "sportmaster" : "direct-plc");
+        if(c.ApplicationId=="direct-plc")c=c with{Weight=new(WeightSource.Measured,WeightUnit.Kg,3),Scale=Binding("weight"),Images=new(Binding("camera"),null)};
         var app = await Open(c, path);
         var password = Environment.GetEnvironmentVariable("IPC_AQA01_FIXTURE_PASSWORD") ?? throw new InvalidOperationException("Missing isolated fixture credential");
         await app.ConfigureManagementPasswordAsync(password); Check(await app.EnterManagementModeAsync(password), "child uses real management service");
         string kind; string? owner;
-        if (boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed")
-        {
-            var s = await Wait(app, x => x.Availability?.Configure == true); kind = "ConfirmConfiguration";
-            owner = s.RuntimeId.ToString("N") + ":" + s.Configuration.Revision + ":" + s.Configuration.Confirmation!.EffectiveHash;
-        }
-        else
         {
             app.EmitReference("crash-parcel", "777", "crash-source");
             var s = await Wait(app, x => boundary == "AfterArchiveCommit" ? x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved : x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted);
@@ -250,25 +242,13 @@ static partial class ArchitectureQualityRemediation
         using (var repo = new ParcelRepository(DirectoryFor(path, c), c.ApplicationId))
         {
             original = repo.PriorCommand(command) ?? throw new Exception("Durable business state has no command identity");
-            Check(original.Status == (boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed" ? "Pending" : "Persisted"), "command identity survives atomic local commit or interrupted cross-resource action");
+            Check(original.Status == "Persisted", "command identity survives atomic local commit or interrupted cross-resource action");
         }
         await using var app = await Open(c, path);
         Check(await app.CommandAsync(command) == original, "same-content replay returns exact stored receipt after restart: " + boundary);
         Check((await app.CommandAsync(command with { Value = "changed" })).Status == "Rejected", "same ID changed content rejected before revision or guard: " + boundary);
         var snapshot = await app.SnapshotAsync();
-        if (boundary is "AfterCommandAdmitted" or "AfterConfigurationConfirmed")
-        {
-            Check(snapshot.AuxiliaryReasons!.Any(x => x.Contains("CommandPending:" + command.Id)) && snapshot.Configuration.Confirmation!.Required == (boundary == "AfterCommandAdmitted"), "interrupted identity visible alongside actual file confirmation state; replay does not re-confirm");
-            Check((await Command(app, "CloseInterruptedCommand", command.Id, "unauthorized inspection")).Status == "Rejected", "ordinary mode cannot close an interrupted command");
-            Check(await app.EnterManagementModeAsync(password), "real parent management re-entry after child crash");
-            await Wait(app, x => x.Availability?.Configure == true);
-            var beforeInspection = await app.SnapshotAsync();
-            var inspected = await Command(app, "CloseInterruptedCommand", command.Id, "Synthetic inspection of original configuration; no business outcome asserted", drain: true);
-            Check(inspected.Status == "Persisted" && (await app.CommandAsync(command)).Status == "Interrupted" &&
-                Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(beforeInspection.Configuration) &&
-                !(await app.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("CommandPending:" + command.Id)), "explicit guarded inspection closes only command responsibility, retaining configuration and original guards");
-        }
-        else if (boundary == "AfterArchiveCommit") Check((await app.HistoryAsync()).Items.Single().Archived, "archive and command identity share one committed transaction");
+        if (boundary == "AfterArchiveCommit") Check((await app.HistoryAsync()).Items.Single().Archived, "archive and command identity share one committed transaction");
         else
             Check(snapshot.Operations.Single().Plc is null && (boundary == "AfterContinuationAdmitted" ? snapshot.Operations.Single().RecoveryRequired : snapshot.Operations.Single().State == ParcelState.Abandoned && snapshot.Operations.Single().ImageReleased),
                 "replay never creates PLC; recovery retains explicit inspection or completes durable image cleanup");

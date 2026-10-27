@@ -65,7 +65,9 @@ static class ParameterGuidanceStartup
         catch (InvalidDataException) { Check(true, "removing deferred state restores real adapter configuration validation"); }
         var c = draft.Build() with { Mode = RunMode.Simulation, StationId = "deferred-" + Wire.Id() };
         var oldReaders = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Parameters = new(r.Parameters!) { ["entity.mode"] = "observe-only" } }).ToArray();
-        c = c with { Reader = oldReaders[0], Topology = c.Topology with { Readers = oldReaders }, Wcs = c.Wcs! with { Parameters = new(c.Wcs!.Parameters) { ["quantity"] = "7" } } };
+        c = c with { Reader = oldReaders[0], Topology = c.Topology with { Readers = oldReaders } };
+        try { factory.ValidateStructure(c with { Wcs = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["quantity"] = "7" } } }); throw new Exception("旧数量参数被待配置状态绕过"); }
+        catch (InvalidDataException) { Check(true, "deferred RCS refuses obsolete quantity before opening resources"); }
         Directory.CreateDirectory(launch.ConfigurationDirectory); ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), c);
         await using (var app = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
@@ -83,8 +85,8 @@ static class ParameterGuidanceStartup
             var scanCandidate = vm.BuildStructuredConfiguration();
             var policySnapshot = await app.SnapshotAsync();
             Check(vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "line" &&
-                scanCandidate.Wcs?.Parameters.ContainsKey("quantity") == false && policySnapshot.Configuration.Effective.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" && policySnapshot.Configuration.Effective.Wcs?.Parameters.GetValueOrDefault("quantity") == "7",
-                "legacy scan policy is an explicit saveable reviewed candidate, while Effective retains its original observe-only mode and quantity");
+                scanCandidate.Wcs?.Parameters.ContainsKey("quantity") == false && policySnapshot.Configuration.Effective.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" && policySnapshot.Configuration.Effective.Wcs?.Parameters.ContainsKey("quantity") == false,
+                "scan admission policy is an explicit reviewed candidate; original mode remains unchanged and no obsolete quantity is introduced");
             foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.port" => "9000", _ => p.Value };
             vm.ReaderDrafts[0].Capability.ConfigureLater = false;
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");

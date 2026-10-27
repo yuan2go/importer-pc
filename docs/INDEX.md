@@ -2,6 +2,8 @@
 
 > 2026-10-26 RCS组件超时与异常展示：新增1.3.4、组件请求时限及拆包/message投影；明确超时后立即允许新扫码申请，原请求Unknown及记录保留。见[工作包](work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)与[运行及验证](runtime/rcs-timeout-errors-01.md)。历史接口及验收身份保留。
 
+> 2026-10-27 开发阶段统一当前契约：不再维护旧版本运行兼容；清理范围、原件保护和定向验证以 [CURRENT-CONTRACT-CLEANUP / 独立工作包](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md) 第0、9节为准。下文及旧版本说明中的迁移/兼容成功目标保留历史适用范围，当前精确装配、未知责任、权限和恢复守卫继续有效。
+
 # 文档索引
 
 2026-10-26 首次安装计划任务缺失及修复失败状态：见[工作包](work-packages/WP-IPC-INSTALLER-TASK-LOOKUP-01.md)和[实施及定向验证](runtime/installer-task-lookup-01.md)。保留原安装登记，沿原系统入口修复，不重放安装。
@@ -14,6 +16,7 @@
 |---|---|
 | 本轮意图台账、时间线与执行顺序 | [INTEGRATION-20261026](work-packages/WP-IPC-INTEGRATION-20261026.md) |
 | 架构与职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
+| 当前合同、旧输入拒绝与原件保全 | [当前合同收口](runtime/current-contract-cleanup-01.md)、[工作包K01～K15](work-packages/WP-IPC-RCS-TIMEOUT-INDEPENDENT-REVIEW-02.md) |
 | 管理模式与操作员权限 | [管理模式](runtime/management-mode-01.md)、[工作包](work-packages/WP-IPC-MANAGEMENT-MODE-01.md) |
 | 参数与首次启动 | [用户纠偏](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[延后映射/恢复](runtime/validation/deferred-heartbeat-01.md)、[参数共模](design/parameter-refactor-01.md) |
 | 参数设计 | [PARAM-UX-02](design/parameter-settings-experience-02.md)、[参数V3](ui/parameter-settings-v3-20261020/README.md)、[字段继承](design/parameter-inheritance-02.md) |

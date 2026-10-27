@@ -26,17 +26,10 @@ public sealed partial class StationApplication
                 // requests is Supply's actual dependency. Other ports have no declared
                 // business consumer; their failures remain independently visible diagnostics.
                 if (fact.Port != "requests") continue;
-                if (binding is not null)
-                {
-                    next.IntegrationHealth = null;
-                    next.IntegrationServiceHealth = new(fact.Target.Id, fact.Target.Revision, fact.Status, fact.ConfirmedAt, fact.ValidUntil, "integration:" + fact.InstanceId);
-                }
-                else
-                {
-                    next.IntegrationServiceHealth = null;
-                    next.IntegrationHealth = new(fact.Target.Id, fact.Target.Revision, 0, fact.Status == ServiceStatus.Ready ? DeviceHealth.Ready : DeviceHealth.Disconnected,
-                        fact.ConfirmedAt, fact.ConfirmedAt, fact.ValidUntil, "SIMULATION:loopback-health");
-                }
+                // Builtin and extension services publish the same current
+                // authority. Do not reclassify a service as a legacy device.
+                next.IntegrationHealth = null;
+                next.IntegrationServiceHealth = new(fact.Target.Id, fact.Target.Revision, fact.Status, fact.ConfirmedAt, fact.ValidUntil, "integration:" + fact.InstanceId);
                 next.Blocks.RemoveAll(x => x.Code == "WcsUnavailable" && x.Source == "transport");
                 if (fact.Status != ServiceStatus.Ready) SetBlock(next, "WcsUnavailable", "station", "transport", fact.Target.Revision, "transport-health");
             }

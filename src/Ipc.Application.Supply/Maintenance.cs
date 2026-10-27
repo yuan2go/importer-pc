@@ -163,7 +163,7 @@ public sealed partial class SupplyStore
         if (File.Exists(receiptFence) && Wire.Decode<string[]>(File.ReadAllText(receiptFence)).Length > 0) blockers.Add("ReceiptPersistenceRecoveryRequired");
         var ingress = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-ingress");
         if (Directory.Exists(ingress) && Directory.EnumerateFiles(ingress).Any()) blockers.Add("ReceiptPersistenceRecoveryRequired");
-        return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion, format < CurrentFormatVersion,
+        return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion, false,
             pending, open, quarantined, blockers.ToArray());
     }
     public static StorageInspection InspectReadOnly(string path)
@@ -221,41 +221,8 @@ public sealed partial class SupplyStore
         { output.Write(Encoding.UTF8.GetBytes(Wire.Encode(receipt))); output.Flush(true); }
         File.Move(temporary, path, true);
     }
+    // Recognize the former entry point only to refuse it before creating a backup, receipt or writer.
     public static StorageUpgradeReceipt UpgradeVerified(string source, string destinationBackup, string operationReceipt,
-        MaintenanceReleaseIdentity previousRelease, MaintenanceReleaseIdentity selectedRelease)
-    {
-        var inspection = InspectReadOnly(source);
-        if (inspection.UpgradeBlockers.Length != 0)
-            throw new InvalidOperationException("Upgrade blocked; original retained: " + string.Join(", ", inspection.UpgradeBlockers));
-        if (File.Exists(operationReceipt)) throw new IOException("Upgrade requires a new operation receipt filename");
-        var backup = BackupReadOnly(source, destinationBackup);
-        var receipt = new StorageUpgradeReceipt(Wire.Id(), "BackupVerifiedAwaitingUpgrade", DateTimeOffset.UtcNow,
-            backup, previousRelease, selectedRelease, CurrentFormatVersion);
-        // This durable evidence precedes opening a writer. Receipt failure cannot upgrade source.
-        SaveMaintenanceReceipt(operationReceipt, receipt, true);
-        try
-        {
-            using var connection = OpenMaintenance(source, SqliteOpenMode.ReadWrite);
-            var before = InspectConnection(connection, source);
-            if (before.FormatVersion != inspection.FormatVersion || before.UpgradeBlockers.Length != 0)
-                throw new InvalidOperationException("Source changed after backup; retained source/backup; rerun maintenance with a new identity");
-            using (var transaction = connection.BeginTransaction())
-            {
-                ApplyForwardMigrations(connection, transaction, inspection.FormatVersion);
-                transaction.Commit();
-            }
-            ValidateStorageFormat(connection);
-            receipt = receipt with { Status = inspection.SelectedReaderCompatible ? "CompatibleFormatRetained" : "ForwardMigrationCommitted" };
-            SaveMaintenanceReceipt(operationReceipt, receipt, false);
-            return receipt;
-        }
-        catch (Exception failure)
-        {
-            // A failure after Commit may leave the newer format in place. Never claim rollback
-            // or successful launch; the original-format verified backup remains the recovery input.
-            try { SaveMaintenanceReceipt(operationReceipt, receipt with { Status = "UpgradeFailedInspectBeforeRetry", Failure = failure.GetType().Name + ": " + failure.Message }, false); }
-            catch (Exception receiptFailure) { throw new AggregateException("Upgrade and maintenance receipt update failed; source/backup/initial receipt retained", failure, receiptFailure); }
-            throw;
-        }
-    }
+        MaintenanceReleaseIdentity previousRelease, MaintenanceReleaseIdentity selectedRelease) =>
+        throw new InvalidDataException("Storage upgrades are unsupported during development; preserve the original database and release");
 }

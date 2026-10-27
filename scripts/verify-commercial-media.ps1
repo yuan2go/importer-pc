@@ -28,6 +28,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 $administration = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/OperatorAdministration.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen administrator/log fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'OperatorAdministration.cs'), [string[]]$administration)
+foreach ($dependency in @('CurrentConfigurationFixture.cs', 'SyntheticPriorStorage.cs', 'CurrentParameterAuthorityChecks.cs')) {
+    $source = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/' + $dependency)
+    if ($LASTEXITCODE -ne 0) { throw ('Frozen core fixture dependency is unavailable: ' + $dependency) }
+    [IO.File]::WriteAllLines((Join-Path $Output $dependency), [string[]]$source)
+}
 $batch = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Deployment.Verification/DeploymentBatchVerification.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen deployment batch fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'DeploymentBatchVerification.cs'), [string[]]$batch)
@@ -46,7 +51,8 @@ var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directo
 await LifecycleOptimization.Run(root, lifecycleEvidence);
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false);
+var request = ParcelStartupServices.Review(inventory, identity.User!.Value, Path.Combine(evidence, "batch-new-data"), Path.Combine(media, "app", "config"), null, [], false)
+    with { Shortcuts = new(false, false) };
 var planFile = Path.Combine(evidence, "deployment-plan.json"); File.WriteAllText(planFile, Wire.Encode(DeploymentBatch.Freeze(request)));
 var receipt = Path.Combine(evidence, "preflight.json");
 if (!DeploymentBatch.Handle(["--deployment-plan", planFile, "--receipt", receipt, "--preflight"]) || Environment.ExitCode != 0) throw new Exception("Frozen media batch preflight failed");

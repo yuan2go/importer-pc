@@ -17,9 +17,9 @@ static partial class SportmasterRcs
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
         Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(p => p.Key == "request-timeout-ms") is
             { Default: "5000", Minimum: 100, Maximum: 30000, Unit: "毫秒" }, "request timeout schema has units, default and bounds");
-        await LegacyRequestTimeoutChecks(workspace);
+        await CurrentRequestTimeoutChecks(workspace);
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.4", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.5", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
         foreach (var invalid in new[] { "0", "99", "30001", "1.5", "-1", "bad" })
         {
             try { await using var rejected = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = invalid } }); throw new Exception("Invalid timeout accepted"); }
@@ -66,8 +66,8 @@ static partial class SportmasterRcs
             var omitted = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) };
             ParcelOperation WithBinding(CapabilityBinding value) => op with { Wcs = op.Wcs! with { Request = op.Wcs.Request with { Binding = value } } };
             Check(new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) == 5000 &&
-                new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted with { Version = "1.3.3" }), ParcelStage.Wcs) == 100,
-                "omitted new-component timeout matches its displayed default while predecessor bindings keep their original budget");
+                new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != 100,
+                "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
             Check(view.Left.AttentionReason == "RCS请求超时，请重新扫描。" && view.Left.OperatorInstruction.Contains("重新扫描", StringComparison.Ordinal) &&
                 view.Left.NextStep.Contains("重新扫描", StringComparison.Ordinal) && view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
@@ -130,21 +130,51 @@ static partial class SportmasterRcs
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");
     }
 
-    static async Task LegacyRequestTimeoutChecks(string workspace)
+    static async Task CurrentRequestTimeoutChecks(string workspace)
     {
-        foreach (var version in new[] { "1.3.2", "1.3.3" })
+        await using var peer = new Peer { Mode = "delayed-assignment" };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs" };
+        foreach (var version in new[] { "1.3.2", "1.3.3", "1.3.4" })
         {
-            await using var peer = new Peer { Mode = "legacy-delayed-assignment" };
-            var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = version };
-            await using var service = new SportmasterRcsTaskService(binding);
-            service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
-            await service.StartAsync(default);
-            var request = Request(binding);
-            request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
-            using var callerBudget = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var response = await service.ResolveSlotAsync(request, callerBudget.Token);
-            Check(response.BusinessAccepted == true && response.Slot == "SYNTH-CHUTE" && peer.Requests.Count == 1,
-                "legacy " + version + " accepts the original delayed assignment beyond five seconds under its caller budget, without resending");
+            try { await using var rejected = new SportmasterRcsTaskService(binding with { Version = version }); throw new Exception("Old version accepted"); }
+            catch (InvalidDataException) { Check(peer.Requests.Count == 0, "old component rejected before I/O: " + version); }
+            Check(new Ipc.Application.Sportmaster.SportmasterFlow().Validate(HeartbeatConfiguration(workspace, binding with { Version = version })).Any(x => x.Contains("RCS组件版本")),
+                "current configuration validation refuses old RCS before startup ledger/database writes: " + version);
         }
+        foreach (var explicitTimeout in new[] { false, true })
+        {
+            var selected = explicitTimeout ? binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "10000" } } : binding;
+            await using var service = new SportmasterRcsTaskService(selected);
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, selected)); await service.StartAsync(default);
+            var request = Request(selected); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
+            using var caller = new CancellationTokenSource(10000);
+            var before = peer.Requests.Count; var watch = Stopwatch.StartNew();
+            if (explicitTimeout)
+                Check((await service.ResolveSlotAsync(request, caller.Token)).BusinessAccepted == true && watch.ElapsedMilliseconds >= 5000,
+                    "explicit ten-second budget accepts a valid response beyond five seconds");
+            else
+            {
+                try { await service.ResolveSlotAsync(request, caller.Token); throw new Exception("Default budget extended by caller"); }
+                catch (TimeoutException) { Check(watch.ElapsedMilliseconds >= 4500 && watch.ElapsedMilliseconds < 8000, "default five-second deadline overrides a ten-second caller budget"); }
+            }
+            Check(peer.Requests.Count == before + 1, "one request per frozen intent without retries");
+        }
+        peer.Mode = "assigned";
+        var slowBinding = binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "15000" } };
+        int connects = 0;
+        await using var slowConnect = new SportmasterRcsTaskService(slowBinding, async (context, token) =>
+        {
+            Interlocked.Increment(ref connects);
+            await Task.Delay(10500, token);
+            var socket = new System.Net.Sockets.Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            try { await socket.ConnectAsync(context.DnsEndPoint, token); return new System.Net.Sockets.NetworkStream(socket, ownsSocket: true); }
+            catch { socket.Dispose(); throw; }
+        });
+        slowConnect.ConfigureRuntime(HeartbeatConfiguration(workspace, slowBinding)); await slowConnect.StartAsync(default);
+        var slowRequest = Request(slowBinding); slowRequest = slowRequest with { IntegrationRequest = slowConnect.PrepareRequest(slowRequest, 1) };
+        var originalBytes = Wire.Encode(slowRequest); var sends = peer.Requests.Count; var slowWatch = Stopwatch.StartNew();
+        Check((await slowConnect.RequestDestinationAsync(slowRequest, default)).BusinessAccepted == true && slowWatch.ElapsedMilliseconds >= 10000 &&
+            connects == 1 && peer.Requests.Count == sends + 1 && Wire.Encode(slowRequest) == originalBytes,
+            "controlled connection beyond ten seconds respects the configured total deadline and immutable once-send request");
     }
 }

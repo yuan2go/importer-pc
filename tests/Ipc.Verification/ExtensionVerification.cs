@@ -212,7 +212,7 @@ static class ExtensionVerification
             var s = await runtime.Application!.SnapshotAsync(); var receipt = await runtime.CommandAsync(new(Wire.Id(), s.State.Revision, kind, owner, value));
             Assert(receipt.Status == "Persisted", kind + " " + receipt.Status + ": " + receipt.Reason); return receipt;
         }
-        await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+        await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
         await Command("Login", value: "maintenance");
         var windowA = Wire.Id(); var windowB = Wire.Id();
         await runtime.SetWindowAreaAsync(windowA, true); await runtime.SetWindowAreaAsync(windowB, true);
@@ -246,7 +246,7 @@ static class ExtensionVerification
         Assert(blocked.Status == "RejectedByGuard", "Outstanding Unknown/box responsibility prevents activation");
         await runtime.DisposeAsync();
         runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance); await runtime.StartAsync(CancellationToken.None);
-        await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+        await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
         await Command("Login", value: "maintenance"); await runtime.ReconcileAsync(unknown.Id);
         var detail = (await runtime.Application!.DetailsAsync(unknown.OwnerId)).Single(x => x.Request.Id == unknown.Id);
         Assert(detail.Request.Status == RequestStatus.Accepted && detail.Request.Payload == unknown.Payload && detail.Request.PayloadHash == unknown.PayloadHash && detail.Request.Binding == unknown.Binding && detail.Attempts.Length == 1,
@@ -262,7 +262,7 @@ static class ExtensionVerification
         await using (var candidate = new ProductRuntime(cleanBoot, NullLogger<ProductRuntime>.Instance))
         {
             await candidate.StartAsync(CancellationToken.None); Assert(candidate.Diagnostics.Count == 0, "Clean upgrade station starts");
-            await Wait(async () => (await candidate.Application!.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+            await Wait(async () => (await candidate.Application!.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
             var s = await candidate.Application!.SnapshotAsync(); var login = await candidate.CommandAsync(new(Wire.Id(), s.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Candidate login " + login.Status + login.Reason);
             var failed = clean with { Version = "CLEAN-FAIL", Extensions = clean.Extensions! with { Packages = [upgrade], Instances = clean.Extensions!.Instances.Select(x => x with { Parameters = new(x.Parameters) { ["fault.fail-start"] = "true" } }).ToArray() } };
             s = await candidate.Application.SnapshotAsync(); var saved = await candidate.CommandAsync(new(Wire.Id(), s.State.Revision, "SaveConfig", clean.Version, Wire.Encode(failed))); Assert(saved.Status == "Persisted", "Failed-start candidate saved");
@@ -274,7 +274,7 @@ static class ExtensionVerification
         await using (var fallback = new ProductRuntime(cleanBoot, NullLogger<ProductRuntime>.Instance))
         {
             await fallback.StartAsync(CancellationToken.None); Assert(fallback.Diagnostics.Count == 0 && fallback.Configuration!.Version == clean.Version, "Next controlled start preserves previous Effective");
-            await Wait(async () => (await fallback.Application!.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+            await Wait(async () => (await fallback.Application!.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
             var s = await fallback.Application!.SnapshotAsync(); var login = await fallback.CommandAsync(new(Wire.Id(), s.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Fallback login " + login.Status + login.Reason);
             var revisions = await fallback.Application.ConfigsAsync(); Assert(revisions.Any(x => x.Status == "ActivationFailed" && x.Content.Version == "CLEAN-FAIL"), "Failure receipt retained, not overwritten as success");
             var upgraded = clean with { Version = "CLEAN-UPGRADE", Extensions = clean.Extensions! with { Packages = [upgrade] } };
@@ -288,7 +288,7 @@ static class ExtensionVerification
         await using (var upgraded = new ProductRuntime(cleanBoot, NullLogger<ProductRuntime>.Instance))
         {
             await upgraded.StartAsync(CancellationToken.None); Assert(upgraded.Diagnostics.Count == 0 && upgraded.Configuration!.Version == "CLEAN-UPGRADE" && upgraded.Configuration.Extensions!.Packages.Single() == upgrade, "New exact package becomes Effective after successful controlled initialization");
-            var app = upgraded.Application!; await Wait(async () => (await app.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+            var app = upgraded.Application!; await Wait(async () => (await app.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
             var s = await app.SnapshotAsync(); var login = await upgraded.CommandAsync(new(Wire.Id(), s.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Upgrade login " + login.Status + login.Reason);
             var disabled = upgraded.Configuration! with { Version = "CLEAN-DISABLED", Extensions = new([], []), Devices = upgraded.Configuration!.Devices.Select(x => x with { Driver = "manual" }).ToArray() };
             s = await app.SnapshotAsync(); var save = await upgraded.CommandAsync(new(Wire.Id(), s.State.Revision, "SaveConfig", upgraded.Configuration.Version, Wire.Encode(disabled))); Assert(save.Status == "Persisted", "Disable/unbind package as one deployment: " + save.Status + ": " + save.Reason);
@@ -298,7 +298,7 @@ static class ExtensionVerification
         await using (var disabled = new ProductRuntime(cleanBoot, NullLogger<ProductRuntime>.Instance))
         {
             await disabled.StartAsync(CancellationToken.None); Assert(disabled.Diagnostics.Count == 0 && disabled.Configuration!.Version == "CLEAN-DISABLED", "Disabled deployment starts core sources, no extension loading");
-            var app = disabled.Application!; await Wait(async () => (await app.SnapshotAsync()).State.IntegrationHealth?.IsValid(DateTimeOffset.UtcNow) == true);
+            var app = disabled.Application!; await Wait(async () => (await app.SnapshotAsync()).State.IntegrationServiceHealth?.IsValid(DateTimeOffset.UtcNow) == true);
             var s = await app.SnapshotAsync(); var login = await disabled.CommandAsync(new(Wire.Id(), s.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Fence login");
             var fenced = clean with { Version = "CLEAN-FENCED", Extensions = clean.Extensions! with { Packages = [upgrade] } };
             s = await app.SnapshotAsync(); var save = await disabled.CommandAsync(new(Wire.Id(), s.State.Revision, "SaveConfig", disabled.Configuration!.Version, Wire.Encode(fenced))); Assert(save.Status == "Persisted", "Pre-uninstall validated draft");

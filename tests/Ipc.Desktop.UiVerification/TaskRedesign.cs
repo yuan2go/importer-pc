@@ -100,7 +100,10 @@ static partial class Program
         probe.Project = WithTasks; await vm.RefreshAsync();
         await VerifyClientGeometry(window, vm, probe, evidence, "supply-station-v2", Check);
         probe.Project = WithTasks; await vm.RefreshAsync(); await SetClient(window, 1366, 768); Capture("work-assigned-1366", client);
-        Click(window, "作业记录"); await Task.Delay(120); await vm.OpenHistoryAsync(vm.Left.Operation!.Id);
+        Click(window, "作业记录");
+        for (var i = 0; i < 300 && (vm.HistoryLoading || vm.Busy); i++) await Task.Delay(20);
+        Check(!vm.HistoryLoading && !vm.Busy, "initial current history session drains before selecting an original operation");
+        await vm.OpenHistoryAsync(vm.Left.Operation!.Id);
         Check(vm.Selected?.Id == vm.Left.Operation.Id && ParcelViewModel.DestinationSummary(WithTasks(vm.Snapshot!).Operations.Single(o => o.Id == vm.Selected.Id)).Contains("0007-left"), "history keeps selected original ownership and exposes added response fields");
         Capture("history", client);
         Click(window, "诊断与恢复"); window.UpdateLayout();
@@ -303,7 +306,7 @@ static partial class Program
         var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
+            ["source"] = "SYNTHETIC", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["chute-code"] = "OLD-CHUTE", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
             ["left-station-code"] = "OLD-LEFT", ["right-station-code"] = "OLD-RIGHT", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
         });

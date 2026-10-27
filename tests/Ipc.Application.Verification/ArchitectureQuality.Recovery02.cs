@@ -13,7 +13,7 @@ static partial class ArchitectureQuality
         var c = Config("sportmaster");
         var left = B("camera") with { Target = c.Topology!.Readers[0].DeviceId };
         var right = left with { InstanceId = "quality.camera.right", Target = c.Topology.Readers[1].DeviceId };
-        return c with { Images = new(left, B("upload"), Strategy: UploadStrategy.Attached), CapabilityInstances = [c.Wcs!, c.MaintenanceLogin!, left, right, B("upload")],
+        return c with { Images = new(left, B("upload"), Strategy: UploadStrategy.Attached), CapabilityInstances = [c.Wcs!, left, right, B("upload")],
             Topology = c.Topology with { Positions = [c.Topology.Positions[0], c.Topology.Positions[1] with { CameraInstanceId = right.InstanceId }] } };
     }
     public static async Task UploadCrashChild(string source, string path)
@@ -23,6 +23,7 @@ static partial class ArchitectureQuality
         var launch = new BusinessLaunch(path,Path.Combine(path,"data"),null,null);
         var crash = new UploadCrashFactory(new ParcelCapabilityFactory(launch));
         var app = new ParcelRuntime(launch,new SportmasterFlow(),crash); await app.StartAsync(default);
+        await ManagementModeFixture.Authorize(app);
         app.EmitReferenceAt("left","interrupted-attached","00017","interrupted-source");
         await crash.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         var s = await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved);
@@ -101,6 +102,7 @@ static partial class ArchitectureQuality
     {
         var name="real-upload-crash"; var path=Path.Combine(root,name); var c=InterruptedConfig();
         var psi=new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput=true,RedirectStandardError=true };
+        ManagementModeFixture.ShareWith(psi);
         foreach(var arg in new[]{typeof(ArchitectureQuality).Assembly.Location,workspace,"--upload-crash-child",path}) psi.ArgumentList.Add(arg);
         using(var child=Process.Start(psi)!)
         { var output=child.StandardOutput.ReadToEndAsync(); var error=child.StandardError.ReadToEndAsync(); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error); Check(child.ExitCode==74,"real process stops inside upload after independent receiver commit and before response custody"); }
@@ -137,16 +139,15 @@ static partial class ArchitectureQuality
             await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
             await app.BackupAsync(Path.Combine(root,"legacy-before.backup.db"));
         }
-        // An actual old stored projection: retain stage/raw originals, alter only the old
-        // overall State/Reason exactly as the pre-fix recovery used to do.
+        // Current-format restart keeps the proven main result and missing upload custody.
+        // Old projection conversion is separately refused by LegacyProjectionGuard.
         var database=Path.Combine(DirectoryFor(name,c),"sportmaster.db");
-        using(var db=new SqliteConnection("Data Source="+database))
-        { db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:legacy-attached') WHERE id=$id"; q.Parameters.AddWithValue("$id",before.Id); q.ExecuteNonQuery(); }
         await using(var app=await Open(c,name))
         {
             var restored=await app.OperationAsync(before.Id);
-            Check(restored!.State==ParcelState.SlotResolved && restored.Reason is null && Wire.Encode(restored.Wcs)==Wire.Encode(before.Wcs) && Wire.Encode(restored.Upload!.Request)==Wire.Encode(before.Upload!.Request),
-                "old polluted Blocked projection is recovered from original committed main raw without rewriting requests");
+            Check(restored!.State==ParcelState.SlotResolved && restored.Reason==before.Reason && Wire.Encode(restored.Wcs)==Wire.Encode(before.Wcs) && Wire.Encode(restored.Upload!.Request)==Wire.Encode(before.Upload!.Request),
+                "current restart retains the committed main projection without rewriting original requests or missing upload custody");
+            await app.ExitManagementModeAsync();
             var denied=await Command(app,"ReconcileReceipt",occurrence,"Must authenticate first"); Check(denied.Status=="Rejected","missing receipt recovery requires paused authenticated maintenance");
             await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
             var result=await Command(app,"ReconcileReceipt",occurrence,"Original receiver queried; authoritative upload result and image verified");
@@ -163,6 +164,7 @@ static partial class ArchitectureQuality
         }
         await using(var app=await Open(c,name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"independent missing raw/image custody survives restart after outcome query");
         await CurrentCustody07Checks(c);
+        await CurrentOfflineRecoveryCuts(c);
         await LegacyProjection02Checks(c,before.Id);
         await Relocation02Checks(c);
         await LegacyConflict02Checks();
@@ -174,7 +176,7 @@ static partial class ArchitectureQuality
         await using (var app = await Open(c, "current-db8-offline-custody", factory => new FaultFactory(factory) { EmptyUploadQuery = true }))
             await Wait(app, snapshot => snapshot.Operations.Single(x => x.AdmissionId == "unrelated-right").ImageReleased);
         var database = Path.Combine(directory, "sportmaster.db"); string occurrence; ParcelOperation original;
-        using (var repository = new ParcelRepository(directory, "sportmaster", 8))
+        using (var repository = new ParcelRepository(directory, "sportmaster", 9))
         {
             original = repository.Load().Single(x => x.AdmissionId == "interrupted-attached");
             occurrence = repository.PendingReceipts().Single(x => x.Operation == original.Id && x.Stage == "image-upload" && x.Reply is null).Id;
@@ -187,47 +189,38 @@ static partial class ArchitectureQuality
             await uploader.StartAsync(token); return await uploader.QueryAsync(request, token);
         }
         var release = Path.GetDirectoryName(typeof(ArchitectureQuality).Assembly.Location)!;
-        var first = await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-first.backup.db"), occurrence, release,
+        var first = await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-first.backup.db"), occurrence, release,
             "Synthetic current-schema offline query; retain original missing raw", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 8 && Wire.Encode(first).Contains("\"DatabaseVersion\": 8", StringComparison.Ordinal),
-            "current SQL8 offline receipt recovery performs one original Query and returns SQL8 without a post-query downgrade failure");
-        await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
+        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 9 && Wire.Encode(first).Contains("\"DatabaseVersion\": 9", StringComparison.Ordinal),
+            "current SQL9 offline receipt recovery performs one original Query and returns SQL9 without a post-query downgrade failure");
+        await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
             "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        using var readback = new ParcelRepository(directory, "sportmaster", 8); var current = readback.Load().Single(x => x.Id == original.Id);
+        using var readback = new ParcelRepository(directory, "sportmaster", 9); var current = readback.Load().Single(x => x.Id == original.Id);
         Check(calls == 1 && current.Wcs!.Attempts == 1 && current.Upload!.Attempts == 1 && !current.ImageReleased && readback.ReceiptById(occurrence) is { State: "Awaiting", RawHash: null, QueryOccurrence: not null },
-            "repeated SQL8 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
+            "repeated SQL9 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
     }
     static async Task LegacyProjection02Checks(ParcelConfiguration c,string id)
     {
         var directory=DirectoryFor("legacy-db3-repair",c); ParcelRecovery.Restore(Path.Combine(root,"legacy-before.backup.db"),directory);
         var database=Path.Combine(directory,"sportmaster.db");
-        using(var db=new SqliteConnection("Data Source="+database))
+        using(var db=new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Pooling = false }.ToString()))
         {
             db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:old-version') WHERE id=$id"; q.Parameters.AddWithValue("$id",id); q.ExecuteNonQuery();
             q.CommandText=SyntheticPriorStorage.RemoveNine + "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
         }
         var hash=Wire.FileHash(database); var backup=Path.Combine(root,"legacy-repair-preserved.db");
-        Check(ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Offline original receipt custody checked")==1 && File.Exists(backup+".recovery/COMPLETED.json"),"offline old-schema repair creates a full original recovery set before changing derived main projection");
-        using(var repo=new ParcelRepository(directory,"sportmaster",3))
-        { var op=repo.Load().Single(o=>o.Id==id); Check(op.State==ParcelState.SlotResolved && repo.PendingReceipts().Length>0,"DB3 repair preserves original schema, source requests and missing upload custody barrier"); }
-        try { using var upgraded=new ParcelRepository(directory,"sportmaster"); Check(false,"old uncompleted attachment cannot bypass upgrade barrier"); }
-        catch(InvalidDataException e){ Check(e.Message.Contains("LegacyUnsettled") && ParcelRepository.ReadStorageVersion(database,"sportmaster")==3,"projection repair cannot authorize incompatible old capability or migrate unresolved responsibility"); }
+        try { ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Inspect synthetic old projection");Check(false,"old projection repair must refuse"); }
+        catch(InvalidDataException){Check(Wire.FileHash(database)==hash && !File.Exists(backup) && !Directory.Exists(backup+".recovery") && ParcelRepository.ReadStorageVersion(database,"sportmaster")==3,"old projection repair refuses before backup/writes and preserves missing custody");}
+        await Task.CompletedTask;
     }
     static async Task LegacyConflict02Checks()
     {
         var c = Config("sportmaster"); var name = "legacy-conflict";
         await using (var app = await Open(c, name)) await Maintenance(app);
-        using (var repo = new ParcelRepository(DirectoryFor(name,c),c.ApplicationId))
-            repo.Commit(null,"IdentityConflict","Observation/admission identity reused with changed content or position; original retained");
-        string conflict;
-        await using (var app = await Open(c,name))
-        {
-            var s = await app.SnapshotAsync(); conflict=s.IdentityConflicts!.Single().Id;
-            Check(s.Paused && s.Positions!.All(p=>!p.Admit),"unscoped historical conflict audit becomes explicit inspection responsibility rather than silently cleared history");
-            await Maintenance(app); await Command(app,"AcknowledgeIdentityConflict",conflict,"Legacy source and both positions inspected; no inferred entity rewrite");
-            await Command(app,"Resume"); Check((await app.SnapshotAsync()).Positions!.All(p=>p.Admit),"legacy unknown-scope conflict has an authorized audited release path");
-        }
-        await using (var app = await Open(c,name)) Check((await app.SnapshotAsync()).IdentityConflicts!.Length==0,"acknowledged legacy audit identity is not re-armed on every restart");
+        using(var repo=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId)) repo.Commit(null,"IdentityConflict","Legacy synthetic audit without scope");
+        var originalFiles=CustodyFiles(name,c);
+        try {await using var app=await Open(c,name);Check(false,"old unscoped conflict must refuse");}
+        catch(InvalidDataException){Check(originalFiles.All(p=>Wire.FileHash(p.Key)==p.Value),"old conflict audit is retained without synthesized identities or a force-clear path");}
         await using (var app = await Open(c,"same-position-conflict"))
         {
             app.EmitReferenceAt("left","local-conflict","001","local-conflict-1"); await Wait(app,s=>s.Operations.Any(o=>o.State==ParcelState.SlotResolved));

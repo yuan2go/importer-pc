@@ -13,12 +13,11 @@ public static class ReferenceProduct
          new("supply-contracts", "contracts", "1.0.0", 1, ["platform"], "Ipc.Supply.Contracts.dll"),
          new("supply", "application", "1.0.0", 1, ["supply-contracts", "platform-storage"], "Ipc.Supply.dll"),
          new("platform-storage", "platform", "1.0.0", 1, ["platform"], "Ipc.Platform.Storage.dll"),
-         new("application-contracts", "contracts", "1.0.0", 1, ["platform"], "Ipc.Application.Contracts.dll"),
+         new("application-contracts", "contracts", "2.0.0", 2, ["platform"], "Ipc.Application.Contracts.dll"),
          new("reference-protocol", "fixture", "1.0.0", 1, ["application-contracts"], "Ipc.Reference.Protocol.dll"),
          new("drivers", "drivers", "1.0.0", 1, ["reference-protocol"], "Ipc.Drivers.dll"),
          new("integrations", "integrations", "1.0.0", 1, ["reference-protocol", "supply-contracts"], "Ipc.Integrations.dll"),
-         new("adapters", "compatibility", "1.0.0", 1, ["drivers", "integrations"], "Ipc.Adapters.dll"),
-         new("product", "product", "1.0.0", 1, ["supply", "adapters"], "Ipc.Product.dll")],
+         new("product", "product", "1.0.0", 1, ["supply", "drivers", "integrations"], "Ipc.Product.dll")],
         SupplyViews.Installed.ToArray(), ["standard", "compact"],
         [new("manual", RunMode.Simulation), new("replay", RunMode.Simulation)]);
     static readonly IReadOnlyDictionary<string, Func<DeviceBinding, string, IObservationSource>> sourceFactories =

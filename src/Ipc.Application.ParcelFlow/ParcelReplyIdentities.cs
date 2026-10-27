@@ -7,7 +7,6 @@ public sealed partial class ParcelRepository
 {
     void RegisterReplyIdentity(string request, StageReply reply, SqliteTransaction tx)
     {
-        if (StorageVersion < 4) return;
         using var identity = db.CreateCommand(); identity.Transaction = tx;
         // Keep the first durable bytes. ApplyReply compares a later duplicate against
         // this authority and records Conflict rather than replacing its identity.
@@ -23,7 +22,6 @@ public sealed partial class ParcelRepository
     }
     void ValidateDurableReplyIdentities()
     {
-        if (StorageVersion < 4) return;
         // DB4 previously could commit recovered bytes without this index. Stream all
         // original occurrences, including archived BLOBs, in their durable order.
         // No business facts or original response bytes are rewritten by this repair.

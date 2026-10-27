@@ -14,15 +14,21 @@ public sealed class ConfigurationRevisions<T> where T : class
 {
     readonly string path;
     readonly Func<T, string[]> validate;
-    readonly byte[]? loadedEnvelope;
     public ConfigurationRevision<T> Current { get; private set; }
     public ConfigurationRevisions(string path, T seed, Func<T, string[]> validate)
     {
         this.path = path; this.validate = validate;
-        loadedEnvelope = File.Exists(path) ? File.ReadAllBytes(path) : null;
-        Current = loadedEnvelope is not null ? Wire.Decode<ConfigurationRevision<T>>(File.ReadAllText(path)) : new(0, seed, null, "Effective", null);
+        var loadedEnvelope = File.Exists(path) ? File.ReadAllBytes(path) : null;
+        Current = loadedEnvelope is not null ? Wire.Decode<ConfigurationRevision<T>>(DecodeEnvelope(loadedEnvelope)) : new(0, seed, null, "ConfirmationRequired", null,
+            Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", null, null, []));
         RequireValid(Current.Effective);
+        PrepareEffectiveConfirmation();
         if (!File.Exists(path)) ExtensionStore.AtomicWrite(path, Current);
+    }
+    static string DecodeEnvelope(byte[] bytes)
+    {
+        var text = new System.Text.UTF8Encoding(false, true).GetString(bytes);
+        return text.Length > 0 && text[0] == '\uFEFF' ? text[1..] : text;
     }
     void RequireValid(T value)
     { var errors = validate(value); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors)); }
@@ -104,33 +110,22 @@ public sealed class ConfigurationRevisions<T> where T : class
             Current.Confirmation is { } confirmation ? confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed", ConfirmedBy = "resource-startup", ConfirmedAt = DateTimeOffset.UtcNow } : null, Current.InitialRepair);
         ExtensionStore.AtomicWrite(path, next); Current = next;
     }
-    // Opt-in for resource-owning applications. Supply keeps its existing Activate contract.
-    // An old Effective is an assertion, not proof that its resources ever started.
+    // Validation only. Missing evidence on an existing envelope cannot acquire invented startup authority.
     public void PrepareEffectiveConfirmation()
     {
         if (Current.Confirmation is { } existing)
         {
             if (existing.EffectiveHash != Wire.Hash(Wire.Encode(Current.Effective)) ||
-                existing.Source is not ("Seed" or "LegacyEnvelope" or "PriorActivation") ||
+                existing.Source != "Seed" ||
                 existing.State is not ("Required" or "InProgress" or "AwaitingMaintenance" or "Confirmed") ||
                 existing.Required == (existing.State == "Confirmed") || existing.Attempts is null ||
-                existing.Source != "Seed" && (existing.OriginalEnvelopeBase64 is null || existing.OriginalEnvelopeSha256 is null) ||
+                existing.OriginalEnvelopeBase64 is not null || existing.OriginalEnvelopeSha256 is not null ||
                 existing.State == "InProgress" && existing.Attempts.LastOrDefault() is not { FinishedAt: null } ||
-                existing.State == "AwaitingMaintenance" && existing.Attempts.LastOrDefault() is not { Outcome: "ResourcesStarted", FinishedAt: not null } ||
-                existing.OriginalEnvelopeBase64 is { } original && (existing.OriginalEnvelopeSha256 is null ||
-                    Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Convert.FromBase64String(original))) != existing.OriginalEnvelopeSha256))
+                existing.State == "AwaitingMaintenance" && existing.Attempts.LastOrDefault() is not { Outcome: "ResourcesStarted", FinishedAt: not null })
                 throw new InvalidDataException("Effective confirmation metadata or preserved envelope identity is invalid");
             return;
         }
-        var confirmed = Current.Activation is { Outcome: "Activated", FinishedAt: not null };
-        var source = loadedEnvelope is null ? "Seed" : confirmed ? "PriorActivation" : "LegacyEnvelope";
-        var confirmation = new ConfigurationEffectiveConfirmation(source, Wire.Hash(Wire.Encode(Current.Effective)), !confirmed,
-            confirmed ? "Confirmed" : "Required", loadedEnvelope is null ? null : Convert.ToBase64String(loadedEnvelope),
-            loadedEnvelope is null ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(loadedEnvelope)), [],
-            confirmed ? "prior-successful-activation" : null, ConfirmedAt: confirmed ? Current.Activation!.FinishedAt : null);
-        var next = Current with { Revision = Current.Revision + 1, Confirmation = confirmation,
-            Status = !confirmed && Current.Pending is null ? "ConfirmationRequired" : Current.Status };
-        ExtensionStore.AtomicWrite(path, next); Current = next;
+        throw new InvalidDataException("配置缺少当前启动确认信息；保留原文件，不能从旧状态推断已生效。");
     }
     public void BeginEffectiveStartup()
     {
@@ -172,7 +167,9 @@ public sealed class ConfigurationRevisions<T> where T : class
             RequireValid(candidate);
             if (!applicationBarrier(candidate)) throw new InvalidOperationException("Application activation barrier is closed");
             preflight(candidate);
-            var next = new ConfigurationRevision<T>(Current.Revision + 1, candidate, null, "Effective", null);
+            var next = Current with { Revision = Current.Revision + 1, Effective = candidate, Pending = null, Status = "Effective", Failure = null,
+                Confirmation = Current.Confirmation! with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed",
+                    ConfirmedBy = "application-preflight", ConfirmedAt = DateTimeOffset.UtcNow } };
             ExtensionStore.AtomicWrite(path, next); Current = next;
         }
         catch (Exception ex)

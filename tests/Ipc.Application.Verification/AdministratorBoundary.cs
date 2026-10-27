@@ -18,6 +18,7 @@ static class AdministratorBoundary
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS BROKER: " + text); }
         void Deny(Action action, string text) { try { action(); throw new Exception("Expected denial: " + text); } catch (UnauthorizedAccessException) { Check(true, text); } }
+        void Unsupported(Action action, string text) { try { action(); throw new Exception("Expected unsupported credentials: " + text); } catch (InvalidOperationException error) when (error.Message.Contains("旧管理凭据不受支持", StringComparison.Ordinal)) { Check(true, text); } }
         var relocation = Path.GetFullPath(Path.Combine(evidence, "relocation")); Directory.CreateDirectory(relocation);
         var legacy = Path.Combine(relocation, "legacy"); var target = Path.Combine(relocation, "target"); var retained = Path.Combine(relocation, "retained");
         Directory.CreateDirectory(legacy); Directory.CreateDirectory(target); Directory.CreateDirectory(retained);
@@ -136,20 +137,24 @@ static class AdministratorBoundary
             var legacyJson = System.Text.Json.JsonSerializer.Serialize(new { Accounts = new[] { new { Name = "old-maintainer", Salt = Convert.ToBase64String(salt), Hash = Convert.ToBase64String(System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(oldPassword, salt, 600000, System.Security.Cryptography.HashAlgorithmName.SHA256, 32)), Enabled = true } }, Failures = 0, LockedUntil = DateTimeOffset.MinValue });
             using(var output = new FileInfo(legacyFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { output.Write(System.Text.Encoding.UTF8.GetBytes(legacyJson)); output.Flush(true); }
             var legacyHash = Wire.FileHash(legacyFile); var mode = new LocalManagementMode(legacyRoot);
-            Check(mode.InspectStatus().NeedsLegacyConversion && !mode.InspectStatus().Authorized, "real protected legacy account credentials cannot silently become management mode");
-            Deny(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
+            Check(mode.InspectStatus().HasUnsupportedCredentials && !mode.InspectStatus().Authorized, "real protected legacy account credentials cannot silently become management mode");
+            Unsupported(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
             AsOrdinary(() =>
             {
                 var client = new LocalManagementMode(legacyRoot);
-                Check(!client.ConvertLegacyCredentials("old-maintainer", "wrong", newPassword), "ordinary-token legacy conversion still requires the real original password");
-                Check(client.ConvertLegacyCredentials("old-maintainer", oldPassword, newPassword) && !client.InspectStatus().Authorized, "ordinary-token verified legacy conversion creates one mode password without opening a grant");
-                Check(client.Enter(newPassword) && client.InspectStatus().Authorized, "converted protected mode uses a password-only ordinary-token entry");
-                var token = client.Require(); client.ChangePassword(newPassword + "-changed");
-                Check(token.IsCancellationRequested && !client.InspectStatus().Authorized, "protected password replacement cancels the original mode and its pending authority");
-                Deny(() => client.ConvertLegacyCredentials("old-maintainer", oldPassword, newPassword), "retained old credentials cannot reset an already converted management mode");
+                Unsupported(() => client.Enter(oldPassword), "ordinary token cannot use old software credentials");
+                Deny(() => client.ConfigurePassword(newPassword), "ordinary token cannot replace old credentials through initial setup");
+                Check(!client.InspectStatus().Available && !client.InspectStatus().Authorized, "old protected credentials leave management unavailable");
             });
-            Check(Wire.FileHash(legacyFile) == legacyHash, "real protected conversion preserves the original legacy ciphertext/hash ledger bytes");
-            Check(mode.Enter(newPassword + "-changed"), "source mode can enter with its converted replacement password before migration");
+            Check(Wire.FileHash(legacyFile) == legacyHash, "protected refusal retains the old credential ledger byte-for-byte");
+            // Test-only provisioning of a separate current credential, not a product migration path.
+            File.Move(legacyFile, legacyFile + ".fixture-preserved");
+            mode.ConfigurePassword(newPassword);
+            File.Move(legacyFile + ".fixture-preserved", legacyFile);
+            Check(mode.Enter(newPassword), "new current password enters mode independently of historical bytes");
+            var currentToken = mode.Require(); mode.ChangePassword(newPassword + "-changed");
+            Check(currentToken.IsCancellationRequested && !mode.InspectStatus().Authorized, "current password replacement cancels original authorization");
+            Check(mode.Enter(newPassword + "-changed"), "current credential is active before the existing protected deployment migration test");
             var sourceModeFile=Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot),"management-mode.json");
             Check(JsonNode.Parse(File.ReadAllText(sourceModeFile))!["SessionHash"] is not null, "migration fixture starts with a real active source grant");
             var copiedGrant=mode.Delegate(new string('A',64));

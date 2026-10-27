@@ -5,8 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace Ipc.Platform;
 
-public sealed record ManagementModeStatus(bool Configured, bool Active, DateTimeOffset? ExpiresAt, bool NeedsLegacyConversion = false, bool Available = true)
-{ public bool Authorized => Active && ExpiresAt > DateTimeOffset.UtcNow; }
+public sealed record ManagementModeStatus(bool Configured, bool Active, DateTimeOffset? ExpiresAt, bool HasUnsupportedCredentials = false, bool Available = true)
+{
+    public bool Authorized => Active && ExpiresAt > DateTimeOffset.UtcNow;
+    // Non-secret audit identity. Equal expiry timestamps are not the same grant.
+    public string? SessionId { get; init; }
+}
 public sealed record ManagementModeEvidence(string SessionId, DateTimeOffset EnteredAt, DateTimeOffset ExpiresAt)
 { [JsonIgnore] public string AuditActor => "management-mode." + SessionId; }
 public sealed record ManagementModeDelegation(string Token, string SessionId, string RequestHash, DateTimeOffset ExpiresAt, string Id);
@@ -36,8 +40,6 @@ public sealed partial class LocalManagementMode
         DateTimeOffset? OperationUntil = null);
     sealed record Store(int SchemaVersion, Credential? Credential, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
         string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null);
-    sealed record LegacyCredential(string Name, string Salt, string Hash, bool Enabled);
-    sealed record LegacyStore(LegacyCredential[] Accounts, int Failures, DateTimeOffset LockedUntil);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
     public LocalManagementMode(string root) : this(root, false) { }
     internal LocalManagementMode(string root, bool serviceAuthority)
@@ -65,27 +67,18 @@ public sealed partial class LocalManagementMode
         try { if (Convert.FromBase64String(credential.Salt).Length != 32 || Convert.FromBase64String(credential.Hash).Length != 32) throw new InvalidDataException("管理密码哈希格式损坏，保留原件修复。"); }
         catch (FormatException error) { throw new InvalidDataException("管理密码哈希损坏，保留原件修复。", error); }
     }
-    LegacyStore ReadLegacy()
-    {
-        DeploymentPaths.RequireOrdinaryAncestors(legacyPath);
-        if (new FileInfo(legacyPath).Length > 1024 * 1024) throw new InvalidDataException("旧版凭据超出预算，保留原件修复。");
-        var s = JsonSerializer.Deserialize<LegacyStore>(File.ReadAllText(legacyPath)) ?? throw new InvalidDataException("旧版凭据损坏，不能作为首次设置覆盖。");
-        if (s.Accounts is null || s.Accounts.Length is < 1 or > 64 || !s.Accounts.Any(a => a.Enabled) || s.Accounts.Select(a => a.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != s.Accounts.Length) throw new InvalidDataException("旧版凭据无效，保留原件修复。");
-        foreach(var credential in s.Accounts) ValidateStoredCredential(new(credential.Salt, credential.Hash));
-        return s;
-    }
     Store Read()
     {
         if (!File.Exists(path))
         {
             if (File.Exists(markerPath)) throw new InvalidDataException("已设置的管理密码文件缺失，禁止重新设置覆盖；请由安装维护修复原件。");
-            if (File.Exists(legacyPath)) { var legacy = ReadLegacy(); return new(2, null, legacy.Failures, legacy.LockedUntil, []); }
+            if (File.Exists(legacyPath)) throw new InvalidDataException("旧管理凭据不受支持；请保留原件，禁止转换或重新设置覆盖。");
             if (File.Exists(Path.Combine(directory, "PROVISIONED"))) throw new InvalidDataException("旧版已配置凭据缺失，禁止按首次设置覆盖。");
             return new(2, null, 0, default, []);
         }
         if (new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("管理模式凭据超出限制，保留原件修复。");
         var s = JsonSerializer.Deserialize<Store>(File.ReadAllText(path)) ?? throw new InvalidDataException("管理模式凭据损坏。");
-        if (s.SchemaVersion != 2 || s.Audit is null || s.Audit.Length > 512 || s.Delegations?.Length > 1024 || s.Credential is null && (File.Exists(markerPath) || !File.Exists(legacyPath))) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
+        if (s.SchemaVersion != 2 || s.Audit is null || s.Audit.Length > 512 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
         if(s.Credential is not null) ValidateStoredCredential(s.Credential);
         return s;
     }
@@ -117,10 +110,12 @@ public sealed partial class LocalManagementMode
         if (Remote) { lock (sync) { if (remoteStatusKnown && !active) return new(knownConfigured, false, null, knownLegacy, knownAvailable); } return RemoteStatus(); }
         lock (sync)
         {
+            if (!File.Exists(path) && (File.Exists(legacyPath) || File.Exists(markerPath) || File.Exists(Path.Combine(directory, "PROVISIONED"))))
+            { Revoke(); return new(false, false, null, true, false); }
             using var held = LockStore(); var s = Read();
             if (active && !ValidSession(s))
             { try { Save(s, revoked.IsCancellationRequested || Now >= expires ? "ManagementModeExpired" : "ManagementModeRevoked"); } finally { Revoke(); } }
-            return new(s.Credential is not null, active, active ? expires : null, s.Credential is null && File.Exists(legacyPath));
+            return new(s.Credential is not null, active, active ? expires : null) { SessionId = active ? sessionId : null };
         }
     }
     public ManagementModeStatus InspectStatus() => Remote ? RemoteStatus() : Status();
@@ -185,22 +180,6 @@ public sealed partial class LocalManagementMode
         if (Remote) { Rpc<bool>(new("ChangePassword", Password: password)); lock (sync) Revoke(); return; }
         Require(); var replacement = Create(password);
         lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期。"); } Save(s with { Credential = replacement, SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementPasswordChanged"); Revoke(); }
-    }
-    public bool ConvertLegacyCredentials(string name, string oldPassword, string newPassword)
-    {
-        if (Remote) return Rpc<bool>(new("ConvertLegacy", LegacyAccount: name, Password: oldPassword, NewPassword: newPassword));
-        if (name.Length > 64 || oldPassword.Length > 256) return false;
-        LegacyCredential? legacyCredential; string legacyHash;
-        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null || File.Exists(markerPath)) throw new UnauthorizedAccessException("已转换的管理密码不可再次覆盖。"); CheckLock(s, Now); var old = ReadLegacy(); legacyCredential = old.Accounts.SingleOrDefault(a => a.Enabled && a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); legacyHash = Wire.FileHash(legacyPath); }
-        var verified = Verify(oldPassword, legacyCredential is null ? null : new(legacyCredential.Salt, legacyCredential.Hash));
-        var replacement = verified ? Create(newPassword) : null;
-        lock (sync)
-        {
-            using var held = LockStore(); var s = Read(); CheckLock(s, Now);
-            if (s.Credential is not null || File.Exists(markerPath) || Wire.FileHash(legacyPath) != legacyHash) throw new InvalidOperationException("原凭据在转换期间变化，不能覆盖。");
-            if (!verified) { Failed(s, "LegacyManagementConversionFailed"); return false; }
-            MarkConfigured(); Save(s with { Credential = replacement, Failures = 0, LockedUntil = default, SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "LegacyManagementCredentialsConverted", name); Revoke(); return true;
-        }
     }
     public ManagementModeDelegation Delegate(string requestHash) => IssueDelegation(requestHash, null);
     // The two-minute ticket is only admission. Once consumed, this exact

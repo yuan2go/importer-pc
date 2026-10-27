@@ -9,7 +9,8 @@ static partial class SportmasterRcs
     public static async Task P0UnknownRestart(string workspace, string root)
     {
         await using var peer = new Peer { Mode = "timeout" };
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.3" }; binding.Parameters.Remove("quantity");
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.3.5" }; binding.Parameters.Remove("quantity");
+        binding.Parameters["request-timeout-ms"] = "1000"; // Current explicit deadline must expire before the 2.5 s reply.
         var c = HeartbeatConfiguration(workspace, binding);
         Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);

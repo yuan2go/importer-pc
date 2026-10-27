@@ -13,6 +13,11 @@ static class VersionCompatibility
         void Pass(bool condition, string why) { if (!condition) throw new Exception("FAIL VC01: " + why); Console.WriteLine("PASS VC01: " + why); }
         void Reject(Action action, string why)
         { try { action(); } catch (InvalidDataException) { Pass(true, why); return; } throw new Exception("FAIL VC01 accepted: " + why); }
+        var observationOnly = Wire.Decode<ExtensionManifest>("{\"SchemaVersion\":1,\"ContractMajor\":1,\"Modules\":[{\"Kind\":\"observation\"}]}");
+        var currentHost = Wire.FileHash(typeof(IObservationExtension).Assembly.Location);
+        Pass(ExtensionContractCompatibility.Accepts(observationOnly with { HostContractSha256 = currentHost }), "exact current public ABI fingerprint accepted");
+        foreach (var unsupported in new[] { "259CD65594630D5A48D4EB0CB5E28B9C2603403BBB42D50B63D9696203024E8D", new string('A', 64) })
+            Pass(!ExtensionContractCompatibility.Accepts(observationOnly with { HostContractSha256 = unsupported }), "Delivery12/unknown ABI fingerprint refused even for observation-only contract1 modules");
         FlowDefinition[] flows = [new SportmasterFlow(), new DirectPlcFlow(), new WcsToPlcFlow()];
         foreach (var flow in flows)
         {
@@ -86,10 +91,14 @@ static class VersionCompatibility
             await using var runtime = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch, policy));
             await runtime.StartAsync(CancellationToken.None);
             var before = await runtime.SnapshotAsync();
-            await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause"));
+            for(var pauseAttempt=0;pauseAttempt<100 && !before.Paused;pauseAttempt++)
+            { await runtime.CommandAsync(new(Wire.Id(),before.Revision,"Pause"));await Task.Delay(10);before=await runtime.SnapshotAsync(); }
+            Pass(before.Paused,"explicit pause is persisted before configuration validation");
             await ManagementModeFixture.Authorize(runtime);
             before = await runtime.SnapshotAsync();
+            for(var settle=0;settle<100 && before.Availability?.Configure!=true;settle++){await Task.Delay(10);before=await runtime.SnapshotAsync();}
             var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }), "Verify incompatible provider version rejection");
+            Console.WriteLine("VC01 stage="+Wire.Encode(rejected));
             Pass(rejected.Status == "Rejected" && rejected.Reason.Contains("not declared compatible", StringComparison.Ordinal) && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance reaches compatibility rejection without replacing Effective/Pending");
         }
         Console.WriteLine("PASS VC01 COMPLETE");

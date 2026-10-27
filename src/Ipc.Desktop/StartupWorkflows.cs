@@ -335,9 +335,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     gateLayout = !allowed;
                 }
                 managementMenu.Status = identity;
-                administratorLogin.Content = allowed ? "退出管理模式" : !identity.Configured && !identity.NeedsLegacyConversion ? "设置管理密码" : "进入管理模式…";
+                administratorLogin.Content = allowed ? "退出管理模式" : !identity.Configured && !identity.HasUnsupportedCredentials ? "设置管理密码" : "进入管理模式…";
                 administratorLogin.IsEnabled = identity.Available && !Busy;
-                gateTitle.Text = !identity.Available ? "管理授权服务不可用" : !identity.Configured && !identity.NeedsLegacyConversion ? "配置前，请先设置管理密码" : manuallyExited ? "管理模式已退出" : seenAuthorization ? "管理权限已到期，请重新验证后继续" : "配置前，请进入管理模式";
+                gateTitle.Text = !identity.Available ? "管理授权服务不可用" : !identity.Configured && !identity.HasUnsupportedCredentials ? "配置前，请先设置管理密码" : manuallyExited ? "管理模式已退出" : seenAuthorization ? "管理权限已到期，请重新验证后继续" : "配置前，请进入管理模式";
                 gateDescription.Text = !identity.Available ? "请使用同版安装器检查管理服务。原输入仅在当前进程中保留，尚未保存或应用。" : seenAuthorization ? "当前未保存输入仅保留在此进程中。重新验证管理密码后可继续，失权期间不能保存或应用。" : "管理密码用于保护参数设置，与操作员账号、Windows 授权分别验证。检查和编辑不会启动设备。";
                 WorkflowBody.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
                 AuthorizationGate.Visibility = allowed ? Visibility.Collapsed : Visibility.Visible;

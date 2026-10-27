@@ -340,14 +340,14 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.21.0, )",
+          "Ipc.Application.Contracts": "[2.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.21.0, )",
+          "Ipc.Application.Contracts": "[2.0.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
@@ -366,7 +366,7 @@
       "ipc.assembly": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Sportmaster": "[1.17.0, )",
+          "Ipc.Application.Sportmaster": "[2.0.0, )",
           "Ipc.Components": "[1.0.0, )",
           "Ipc.Drivers": "[1.1.0, )",
           "Ipc.Integrations": "[1.0.0, )",
@@ -421,7 +421,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.21.0, )"
+          "Ipc.Application.Contracts": "[2.0.0, )"
         }
       },
       "Ipc.Supply": {

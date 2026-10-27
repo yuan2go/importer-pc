@@ -89,7 +89,7 @@ public static partial class WindowsDeploymentSetup
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (request.OperationId is not null && !IsInstallationOperationId(request.OperationId)) throw new InvalidDataException("Invalid installation operation identity");
+        RequireCurrentInstallationRequest(request);
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");

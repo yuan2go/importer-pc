@@ -20,7 +20,11 @@ public static class DeploymentBatch
         throw new OriginalOperationExistsException(operationFile);
     }
 
-    public static WindowsDeploymentPlan Freeze(WindowsDeploymentRequest request) => new(1, Wire.Hash(Wire.Encode(request)), request);
+    public static WindowsDeploymentPlan Freeze(WindowsDeploymentRequest request)
+    {
+        WindowsDeploymentSetup.RequireCurrentInstallationRequest(request);
+        return new(1, Wire.Hash(Wire.Encode(request)), request);
+    }
     public static bool Handle(string[] args)
     {
         if (args.FirstOrDefault() != "--deployment-plan") return false;
@@ -38,7 +42,7 @@ public static class DeploymentBatch
             ownsReceipt = true;
             if (new FileInfo(args[1]).Length > 8 * 1024 * 1024) throw new InvalidDataException("部署计划超出预算");
             var plan = Wire.Decode<WindowsDeploymentPlan>(File.ReadAllText(args[1])); var request = plan.Deployment ?? throw new InvalidDataException("缺少逐站部署参数");
-            if (plan.SchemaVersion != 1 || plan.PlanSha256 != Wire.Hash(Wire.Encode(request)) || request.ApplicationId != ParcelStartupServices.ApplicationId || request.Packages is null || request.Packages.Count > 128 || request.ConfigurationHashes is null || request.OperationId is not null && !WindowsDeploymentSetup.IsInstallationOperationId(request.OperationId))
+            if (plan.SchemaVersion != 1 || plan.PlanSha256 != Wire.Hash(Wire.Encode(request)) || request.ApplicationId != ParcelStartupServices.ApplicationId || request.Packages is null || request.Packages.Count > 128 || request.ConfigurationHashes is null || !WindowsDeploymentSetup.IsInstallationOperationId(request.OperationId ?? "") || request.Shortcuts is null)
                 throw new InvalidDataException("部署计划格式/身份不匹配");
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Windows安装计划不能在portable运行");
             var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
@@ -55,19 +59,12 @@ public static class DeploymentBatch
                 Environment.ExitCode = 0; return true;
             }
             _ = ParcelStartupServices.RevalidateDeployment(media, request);
-            if (request.OperationId is not null) RequireUnsubmittedOperation(WindowsDeploymentSetup.InstallationOperationFile(request));
+            RequireUnsubmittedOperation(WindowsDeploymentSetup.InstallationOperationFile(request));
             var components = DeploymentComponentReviewing.Inspect(request);
             if (args.Length == 5)
             { Result(new { Status = "PreflightPassed", PlanSha256 = plan.PlanSha256, request.OperationId, request.ApplicationId, request.SourceCommit, Components = components, DeviceOrBusinessStarted = false }); code = 0; }
             else
             {
-                if (request.OperationId is null)
-                {
-                    // A legacy plan can be checked or recognised as already
-                    // committed above, but cannot acquire a fresh identity here.
-                    Result(new { Status = "LegacyPlanNeedsReview", plan.PlanSha256, ExitCode = 2, OriginalDataRetained = true });
-                    Environment.ExitCode = 2; return true;
-                }
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority(); // No hidden elevation or bypass in unattended execution.
                 ParcelStartupServices.ExecuteBatchInstall(request).GetAwaiter().GetResult();
                 var installed = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new IOException("缺少安装提交回执");

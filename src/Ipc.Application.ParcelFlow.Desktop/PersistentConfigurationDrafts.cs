@@ -7,11 +7,11 @@ public partial class ParcelViewModel
 {
     string? editorConfigurationHash, savedEditorHash;
     StartupSavedDraft? availableEditorDraft;
-    async Task ReadEditorBaseline(long revision)
+    async Task<(string? Hash, StartupSavedDraft? Draft)> ReadEditorBaseline(long revision)
     {
-        if (application is not IParcelConfigurationDraftApplication access) return;
-        editorConfigurationHash = await ServiceAsync(() => access.ConfigurationEditorHashAsync(revision));
-        availableEditorDraft = await ServiceAsync(access.ReadEditorDraftAsync); savedEditorHash = availableEditorDraft?.DraftHash;
+        if (application is not IParcelConfigurationDraftApplication access) return (null, null);
+        var hash = await ServiceAsync(() => access.ConfigurationEditorHashAsync(revision));
+        return (hash, await ServiceAsync(access.ReadEditorDraftAsync));
     }
     public async Task SaveIncompleteEditorAsync()
     {

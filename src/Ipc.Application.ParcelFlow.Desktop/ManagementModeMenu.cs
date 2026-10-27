@@ -45,7 +45,7 @@ public sealed class ManagementModeMenu : Button
         state.Header = !current.Available ? "管理授权服务不可用" : current.Authorized ? "管理权限已开启" : "管理权限未开启";
         expires.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed;
         expires.Header = current.ExpiresAt is { } end ? "将于 " + end.ToLocalTime().ToString("HH:mm") + " 自动退出" : "";
-        action.Header = current.Authorized ? "退出管理模式" : current.Configured || current.NeedsLegacyConversion ? "重新验证" : "设置管理密码";
+        action.Header = current.Authorized ? "退出管理模式" : current.Configured || current.HasUnsupportedCredentials ? "重新验证" : "设置管理密码";
         action.IsEnabled = current.Available;
     }
 }

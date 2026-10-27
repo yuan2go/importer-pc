@@ -18,7 +18,16 @@ static class InstallerOptions
         var request = new WindowsDeploymentRequest(root, "sportmaster", location.SourceCommit, location.RuntimeAccountSid, location.DataRoot, location.ConfigurationDirectory, RunMode.Simulation, null, null, []);
         Check(!Wire.Encode(request).Contains("Shortcuts") && !Wire.Encode(location).Contains("Shortcuts"), "legacy requests and registrations omit absent option without changing stored plan hashes");
         Check(Wire.Encode(Wire.Decode<WindowsDeploymentRequest>(Wire.Encode(request))) == Wire.Encode(request), "legacy request wire bytes round trip unchanged");
-        Check(DeploymentShortcuts.Plan(location, programs, desktop).Length == 3, "historical registration retains three Start Menu entries and no desktop entry");
+        foreach (var unsupported in new[] { request with { Shortcuts = new(false, false) }, request with { OperationId = Guid.NewGuid().ToString("N") } })
+        {
+            var original = Wire.Encode(unsupported); var refused = false;
+            try { WindowsDeploymentSetup.RequireCurrentInstallationRequest(unsupported); }
+            catch (InvalidDataException) { refused = true; }
+            Check(refused && Wire.Encode(unsupported) == original && !Directory.Exists(programs) && !Directory.Exists(desktop),
+                "missing operation identity or explicit shortcut choices cannot become a current deployment plan and leave inputs untouched");
+        }
+        try { DeploymentShortcuts.Plan(location, programs, desktop); throw new Exception("Missing choices accepted"); }
+        catch (InvalidDataException) { Check(!Directory.Exists(programs) && !Directory.Exists(desktop), "absent shortcut choice refuses without creating or deleting links"); }
         foreach (var menu in new[] { false, true }) foreach (var icon in new[] { false, true })
         {
             var selected = new DeploymentShortcutOptions(menu, icon);
@@ -61,7 +70,7 @@ static class InstallerOptions
             var legacy = Path.Combine(desktop, "菜鸟供包台 · sportmaster · aaaaaaaa · 12345678.lnk");
             using (var legacyLink = new ShellLinkFile()) { legacyLink.TargetPath = Path.Combine(chosen.ReleaseRoot, "desktop", "Ipc.Desktop.exe"); legacyLink.Save(legacy); }
             DeploymentShortcuts.Remove(chosen, programs, desktop);
-            Check(!File.Exists(legacy) && File.Exists(stable.Path), "legacy suffixed entry is removed by exact ownership without deleting current stable entry");
+            Check(File.Exists(legacy) && File.Exists(stable.Path), "unregistered historical name and current stable entry are preserved when removing the prior registration");
             DeploymentShortcuts.Remove(upgraded, programs, desktop);
             DeploymentShortcuts.Create(chosen, programs, desktop);
             var conflict = DeploymentShortcuts.Plan(chosen, programs, desktop).Last();

@@ -7,20 +7,29 @@ public static partial class ParcelConfigurationRules
 {
     public static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles)
     {
+        if (c.SchemaVersion != 3 || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
+        if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
         List<string> e = [];
         if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
             return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
+        // Validate the selected current RCS contract before startup can create a
+        // configuration ledger/database, not only when constructing its adapter.
+        foreach (var binding in ParcelBindings.All(c).Where(b => b.Contract == RcsRequestPolicy.Contract || b.Implementation == "sportmaster-rcs"))
+        {
+            try { _ = RcsRequestPolicy.TimeoutMs(binding); }
+            catch (InvalidDataException error) { e.Add(error.Message); }
+        }
         e.AddRange(ParcelConnectionSetup.Validate(c));
-        if (c.SchemaVersion is not (1 or 2 or 3) || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
+        if (c.SchemaVersion != 3 || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");
-        if (c.SchemaVersion == 1 && c.WeightValidity is not null || c.SchemaVersion >= 2 && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("Weight validity requires explicit configuration schema 2; legacy schema 1 retains UntilDispatch");
+        if (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value)) e.Add("重量有效期必须明确配置。");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
         if (c.Retention is { } retention && (retention.ResidentHistory is < 1 or > 10000 || retention.MinimumFreeBytes is < 1048576 or > 1099511627776)) e.Add("Invalid resident history/storage reserve policy");
-        if (c.Retention?.DiagnosticLogDays is < 1 or > 3650) e.Add("Retention.DiagnosticLogDays: 诊断日志保留须为1～3650天，或留空使用原轮转策略");
-        if (c.Retention?.HistoryDays is < 7 or > 30) e.Add("Retention.HistoryDays: 已结历史保留须为7～30天；旧配置留空不删除");
+        if (c.Retention?.DiagnosticLogDays is < 1 or > 3650) e.Add("Retention.DiagnosticLogDays: 诊断日志保留须为1～3650天，或留空按容量轮转");
+        if (c.Retention?.HistoryDays is < 7 or > 30) e.Add("Retention.HistoryDays: 已结历史保留须为7～30天；留空不按天清理");
         if (c.Retention is { } capacity)
         {
             var critical = capacity.CriticalFreeBytes ?? capacity.MinimumFreeBytes * 2;
@@ -57,14 +66,13 @@ public static partial class ParcelConfigurationRules
     }
     static string[] ValidateTopology(ParcelConfiguration c, string[] positionRoles)
     {
-        if (c.SchemaVersion < 3) return c.Topology is null ? [] : ["Topology requires explicit schema3"];
         List<string> errors = [];
         if (c.Topology is not { Readers: { Length: > 0 and <= 8 }, Positions: { Length: > 0 and <= 8 } } t ||
             t.Readers.Any(x => x is null) || t.Positions.Any(x => x is null)) return ["Schema3 requires complete bounded device topology"];
         if (!t.Positions.Select(x => x.Id).Order().SequenceEqual(positionRoles.Order())) errors.Add("Application position roles/count differ from its declared topology");
         if (t.Readers.Length != positionRoles.Length || t.Readers.Select(x => x.DeviceId).Distinct().Count() != t.Readers.Length ||
             t.Positions.Select(x => x.ReaderDeviceId).Distinct().Count() != t.Positions.Length) errors.Add("Readers cannot be missing, duplicated or shared across positions");
-        if (Wire.Encode(c.Reader) != Wire.Encode(t.Readers[0])) errors.Add("Legacy Reader anchor must equal first topology reader; flattening is forbidden");
+        if (Wire.Encode(c.Reader) != Wire.Encode(t.Readers[0])) errors.Add("Primary Reader anchor must equal first topology reader; flattening is forbidden");
         if (t.Readers.Any(x => x.Role != "parcel-reader" || !ExtensionSchema.IsId(x.DeviceId) || string.IsNullOrWhiteSpace(x.Driver) || string.IsNullOrWhiteSpace(x.Revision)) ||
             t.Positions.Any(x => !ExtensionSchema.IsId(x.Id) || !t.Readers.Any(d => d.DeviceId == x.ReaderDeviceId))) errors.Add("Invalid reader role/identity or position binding");
         var all = ParcelBindings.All(c);
@@ -79,7 +87,7 @@ public static partial class ParcelConfigurationRules
         {
             if (c.Images is not null && ParcelBindings.Camera(c, t.Positions[0].Id)?.InstanceId != c.Images.Camera.InstanceId ||
                 c.Scale is not null && ParcelBindings.Scale(c, t.Positions[0].Id)?.InstanceId != c.Scale.InstanceId)
-                errors.Add("Legacy camera/scale anchor must match first position binding");
+                errors.Add("Default camera/scale anchor must match first position binding");
             foreach (var kind in new[] { "camera", "weight" })
             {
                 var used = t.Positions.Select(p => kind == "camera" ? ParcelBindings.Camera(c, p.Id) : ParcelBindings.Scale(c, p.Id)).OfType<CapabilityBinding>().ToArray();

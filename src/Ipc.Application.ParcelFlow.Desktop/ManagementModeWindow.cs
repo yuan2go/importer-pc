@@ -12,11 +12,11 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed class ManagementModeWindow : Window
 {
     public ManagementModeWindow(IWorkstationAdministration service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ConvertLegacyManagementCredentialsAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync) { }
     public ManagementModeWindow(IManagementMode service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ConvertLegacyManagementCredentialsAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync) { }
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
-        Func<Task> exit, Func<string, Task> change, Func<string, string, string, Task<bool>> convert)
+        Func<Task> exit, Func<string, Task> change)
     {
         Title = "管理模式"; Width = 520; Height = 480; MinWidth = 360; MinHeight = 280;
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -24,11 +24,6 @@ public sealed class ManagementModeWindow : Window
         var body = new StackPanel(); layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var heading = new TextBlock { Text = "管理模式", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis }; body.Children.Add(heading);
         var state = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) }; body.Children.Add(state);
-        var legacy = new StackPanel { Visibility = Visibility.Collapsed }; body.Children.Add(legacy);
-        legacy.Children.Add(new TextBlock { Text = "旧版凭据转换（仅升级一次）", FontWeight = UiTypography.Emphasis });
-        legacy.Children.Add(new TextBlock { Text = "验证原凭据后设置统一管理密码，原账号账保留为历史。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 4, 0, 12) });
-        var oldName = new TextBox { Name = "LegacyManagementAccount", MaxLength = 64, MinHeight = 44 }; legacy.Children.Add(new Label { Content = "旧版账号", Target = oldName, Padding = new(0) }); legacy.Children.Add(oldName);
-        var oldProof = new PasswordBox { Name = "LegacyManagementPassword", MaxLength = 256, MinHeight = 44 }; legacy.Children.Add(new Label { Content = "旧版密码", Target = oldProof, Padding = new(0), Margin = new(0, 8, 0, 0) }); legacy.Children.Add(oldProof);
         var passwordFields = new StackPanel(); body.Children.Add(passwordFields);
         var proof = new PasswordBox { Name = "ManagementPassword", MaxLength = 256, MinHeight = 44 };
         var proofLabel = new Label { Content = "管理密码", Target = proof, Padding = new(0), Margin = new(0, 8, 0, 0) }; passwordFields.Children.Add(proofLabel); passwordFields.Children.Add(proof);
@@ -54,7 +49,7 @@ public sealed class ManagementModeWindow : Window
         var cancel = new Button { Content = "取消", MinHeight = 44, MinWidth = 88, Margin = new(12, 0, 0, 0), IsCancel = true }; actions.Children.Insert(0, cancel); cancel.Margin = new(0, 0, 12, 0); cancel.Click += (_, _) => Close();
         var show = new CheckBox { Content = "显示密码", Margin = new(0, 8, 0, 0) }; passwordFields.Children.Add(show);
         var revealed = new List<(PasswordBox Secret, TextBox Plain)>();
-        foreach (var secret in new[] { proof, confirm, oldProof, next, nextConfirm })
+        foreach (var secret in new[] { proof, confirm, next, nextConfirm })
         {
             var parent = (Panel)secret.Parent; var index = parent.Children.IndexOf(secret); parent.Children.Remove(secret);
             var host = new Grid(); var plain = new TextBox { MaxLength = 256, Visibility = Visibility.Collapsed, MinHeight = 44 }; AutomationProperties.SetName(plain, "显示" + secret.Name);
@@ -76,17 +71,16 @@ public sealed class ManagementModeWindow : Window
         {
             var previous = current; current = await status();
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
-            Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.NeedsLegacyConversion ? "转换旧版管理凭据" : current.Configured ? "验证管理密码" : "设置管理密码";
-            state.Text = !current.Available ? "管理模式服务不可用，请使用同版安装器修复。原输入保留。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n操作员账号和在途作业保持。" : current.NeedsLegacyConversion ? "此部署有旧版凭据，先完成一次性转换。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
-            var preferredHeight = current.NeedsLegacyConversion ? 680 : current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 380 : 480;
+            Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? "验证管理密码" : "设置管理密码";
+            state.Text = current.HasUnsupportedCredentials ? "检测到不受支持或缺失的凭据。请保留原部署和凭据文件，由部署负责人处理；不能重新设置覆盖。" : !current.Available ? "管理模式服务不可用，请使用同版安装器修复。原输入保留。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n操作员账号和在途作业保持。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
+            var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 380 : 480;
             if (lastPreferredHeight != preferredHeight) { Height = Math.Min(preferredHeight, MaxHeight); lastPreferredHeight = preferredHeight; }
             body.IsEnabled = true; leave.IsEnabled = current.Available;
-            passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available; legacy.IsEnabled = current.Available;
+            passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available;
             confirmation.Visibility = !current.Configured ? Visibility.Visible : Visibility.Collapsed; rules.Visibility = confirmation.Visibility;
             recoveryPolicy.Visibility = current.Configured ? Visibility.Visible : Visibility.Collapsed;
-            legacy.Visibility = current.NeedsLegacyConversion ? Visibility.Visible : Visibility.Collapsed;
-            proofLabel.Content = current.NeedsLegacyConversion ? "新管理密码" : "管理密码";
-            enterButton.Content = current.NeedsLegacyConversion ? "转换并进入管理模式" : current.Configured ? "进入管理模式" : "设置并继续";
+            proofLabel.Content = "管理密码";
+            enterButton.Content = current.Configured ? "进入管理模式" : "设置并继续";
             enterButton.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; enterButton.IsEnabled = current.Available;
             leave.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed; changeTools.Visibility = leave.Visibility;
         }
@@ -99,14 +93,13 @@ public sealed class ManagementModeWindow : Window
         }
         enterButton.Click += async (_, _) =>
         {
-            var password = proof.Password; var repeated = confirm.Password; var oldPassword = oldProof.Password;
+            var password = proof.Password; var repeated = confirm.Password;
             await Run(async () =>
             {
                 var fresh = await status();
                 if (!fresh.Available) throw new UnauthorizedAccessException("管理服务不可用，请检查安装状态。");
                 if (!fresh.Configured && password != repeated) throw new InvalidDataException("两次管理密码不一致，请重新输入。");
-                if (fresh.NeedsLegacyConversion) { if (!await convert(oldName.Text, oldPassword, password)) throw new UnauthorizedAccessException("旧版凭据不正确，未转换或覆盖原密码。"); }
-                else if (!fresh.Configured)
+                if (!fresh.Configured)
                 {
                     feedback.Text = "正在设置管理密码；如出现 Windows 授权窗口，请确认。";
                     await configure(password);

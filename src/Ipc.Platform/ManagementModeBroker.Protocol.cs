@@ -4,8 +4,8 @@ using System.Text.Json;
 
 namespace Ipc.Platform;
 
-public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? LegacyAccount = null, string? Password = null,
-    string? NewPassword = null, string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
+public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? Password = null,
+    string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null);
 public sealed record ManagementModeRpcReply(JsonElement Value, string? Error = null, string? Code = null);
 public sealed record ManagementModeSessionGrant(string SessionId, string Token, DateTimeOffset ExpiresAt);
@@ -73,7 +73,7 @@ public sealed partial class LocalManagementMode
         try
         {
             var status = Rpc<ManagementModeStatus>(new("Status"));
-            lock (sync) { remoteStatusKnown = true; knownConfigured = status.Configured; knownLegacy = status.NeedsLegacyConversion; knownAvailable = status.Available; if (!status.Authorized) Revoke(); }
+            lock (sync) { remoteStatusKnown = true; knownConfigured = status.Configured; knownLegacy = status.HasUnsupportedCredentials; knownAvailable = status.Available; if (!status.Authorized) Revoke(); }
             return status;
         }
         catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException or InvalidOperationException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
@@ -116,14 +116,13 @@ public sealed partial class LocalManagementMode
         switch (request.Action)
         {
             case "Status":
-                var status = Status(); return authenticated ? status : status with { Active = false, ExpiresAt = null };
+                var status = Status(); return authenticated ? status : status with { Active = false, ExpiresAt = null, SessionId = null };
             case "ConfigurePassword":
                 if (!installer) throw new ManagementModeBootstrapRequiredException("首次设置管理密码须由Windows安装维护批准；进入管理模式仍须验证本次设置的密码。");
                 ConfigurePassword(request.Password ?? ""); return true;
             case "Enter":
                 if (!Enter(request.Password ?? "")) return null;
                 return new ManagementModeSessionGrant(sessionId, sessionSecret, expires);
-            case "ConvertLegacy": return ConvertLegacyCredentials(request.LegacyAccount ?? "", request.Password ?? "", request.NewPassword ?? "");
             case "ValidateDelegation":
                 ValidateDelegation(request.Grant ?? throw new UnauthorizedAccessException("维护授权缺失。"), request.RequestHash ?? "", request.Consume); return true;
             case "Exit": if (authenticated) Exit(); return true;

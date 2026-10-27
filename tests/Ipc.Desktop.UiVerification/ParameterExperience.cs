@@ -20,7 +20,8 @@ static partial class Program
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS EXPERIENCE " + message); }
         var folder = Path.Combine(evidence, "config"); Directory.CreateDirectory(folder);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json"))) with { StationCode = "SYNTHETIC-STATION" };
-        config = config with { MaintenanceLogin = new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" }) };
+        var operatorBinding = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator-spare", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" });
+        config = config with { CapabilityInstances = ParcelBindings.All(config).Concat([operatorBinding, operatorBinding with { InstanceId = "login.1", Target = "reference://operator-current" }]).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -54,9 +55,8 @@ static partial class Program
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
-        var historicalMaintenance = vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability;
-        Check((historicalMaintenance is null || model.IsLegacyMaintenanceOnly(historicalMaintenance)) && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
-            "daily directory hides historical maintenance-only authentication while retaining the complete candidate");
+        Check(!vm.ConfigurationRoles.Any(r => r.Role == "维护认证") && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
+            "current candidate and daily directory contain no obsolete maintenance authentication role");
         window.UpdateLayout();
         Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
             ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
@@ -116,13 +116,12 @@ static partial class Program
         Check(vm.ParameterRuntimeSummary(new("reader.0", devices[0].DeviceId, "左相机")).Contains("运行状态未知"), "stale evidence is never rendered as confirmed");
         if (!baseline)
         {
-            vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync();
+            Check(!vm.NewCapabilityKinds.Contains("login"), "existing current login inventory does not offer another duplicate login instance");
             var role = vm.ConfigurationRoles.Single(r => r.Role == "登录");
             var priorRole = role.Selection;
             role.Selection = role.Choices.Single(c => c.Capability?.InstanceId == "login.1");
             var original = role.Selection;
-            var historicalBinding = vm.ConfigurationRoles.Single(r => r.Role == "维护认证").Selection.Capability;
-            var replacement = role.Choices.Single(c => ReferenceEquals(c.Capability, historicalBinding));
+            var replacement = role.Choices.Single(c => c.Capability?.InstanceId == "operator-spare");
             replacement.Capability!.Provider = original.Capability!.Provider;
             control.ShowPage(3, "操作员登录"); window.UpdateLayout();
             var directory = Descendants(control).OfType<ListBox>().Single(b => b.Name == "ParameterDirectory");
@@ -131,7 +130,7 @@ static partial class Program
             var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
             target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
             role.Selection = replacement; window.UpdateLayout();
-            Check(directory.SelectedItem?.ToString()?.StartsWith("身份认证", StringComparison.Ordinal) == true &&
+            Check(directory.SelectedItem?.ToString()?.StartsWith("操作员登录（未绑定）", StringComparison.Ordinal) == true &&
                 !directory.SelectedItem.ToString()!.Contains(original.Capability.InstanceId, StringComparison.Ordinal) &&
                 directory.Items.Cast<object>().Count(p => p.ToString() == "操作员登录") == 1,
                 "role reassignment relabels old and new component directory entries immediately");

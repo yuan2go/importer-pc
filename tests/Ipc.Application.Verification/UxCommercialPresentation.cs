@@ -147,7 +147,7 @@ static class UxCommercialPresentation
         try { await vm.LoadHistoryAsync(); } catch (InvalidOperationException) { overlapRefused = true; }
         Check(overlapRefused && calls == 1 && vm.HistoryLoading && vm.HistoryStatus.Contains("读取"), "history retains one real in-flight owner and rejects overlapping reads");
         vm.CancelHistoryRead(); first.SetResult(new([new(1, false, a)], null)); await older;
-        Check(vm.HistoryItems.Length == 0 && !vm.HistoryLoading, "cancelled legacy history read cannot publish its late page after real drain");
+        Check(vm.HistoryItems.Length == 0 && !vm.HistoryLoading, "cancelled current session cannot publish its late page after real drain");
         var newer = vm.LoadHistoryAsync(); await entered.WaitAsync(TimeSpan.FromSeconds(2));
         second.SetResult(new([new(2, false, b)], null)); await newer;
         Check(vm.HistoryItems.Single().Operation.Id == b.Id && !vm.HistoryLoading, "late history result cannot replace newer page or busy state");
@@ -277,11 +277,21 @@ public class UxPresentationProbe : DispatchProxy
     {
         "SnapshotAsync" => Read(),
         "ManagementModeStatusAsync" => ManagementStatus(),
-        "HistoryAsync" => History((long)args![0]!),
+        "SelectHistoryAsync" => Task.FromResult(new ParcelHistorySelection((ParcelHistoryFilter)args![0]!, 2)),
+        "ReadHistoryPageAsync" => ReadPage((long)args![1]!, (CancellationToken)args[3]!),
+        "ReadHistoryMetricsAsync" => CurrentRead(new ParcelHistoryMetrics(0, 0, 0, 0, 0, 0), (CancellationToken)args![1]!),
+        "HistoryPositionIdsAsync" => CurrentRead(new[] { "left", "right" }, (CancellationToken)args![1]!),
         "OperationAsync" => ReadOperation((string)args![0]!),
         "ReconcileAsync" => Reconcile((string)args![0]!),
         "CommandAsync" => Command((BusinessCommand)args![0]!),
         _ => throw new InvalidOperationException("Unexpected presentation service " + method.Name)
     };
+    async Task<ParcelHistoryPage> ReadPage(long before, CancellationToken token)
+    {
+        // Model a provider that completes its real read after cancellation; the
+        // UI must retain read ownership and discard the late result.
+        var page = await History(before); token.ThrowIfCancellationRequested(); return page;
+    }
+    static Task<T> CurrentRead<T>(T value, CancellationToken token) { token.ThrowIfCancellationRequested(); return Task.FromResult(value); }
     async Task<ParcelOperation?> ReadOperation(string id) => (await Read()).Operations.SingleOrDefault(x => x.Id == id);
 }

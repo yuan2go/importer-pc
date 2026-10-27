@@ -8,7 +8,7 @@
 |---|---|---|
 | B1 | C14/C15/C18、smoke缺键和两处文案 | PR120已合并：e4dae94c9195793fa3e025c4026b786d0a454622；四项CI通过 |
 | B2 | C05～C13/C17/C20 | 当前实现；CI待记录 |
-| B3 | C01～C04/C16 | 待实施；须旧链规范化schema与新基线等价、Parcel10/Supply6、恢复测试及干净起停冒烟全部满足后才合并 |
+| B3 | C01～C04/C16 | 基线与等价验证已实现；恢复与起停CI通过前不合并 |
 
 ## B1源码核查
 
@@ -35,3 +35,11 @@ C08观察与称重只暴露Controlled启动端口，驱动/替身/示例同步�
 B2本机完成：三个Assembly、Application/Supply/WPF验证工程、三个示例扩展和海康包装Release/locked编译通过；Python发布校验31项通过。WPF测试共享Shell工厂曾返回错误基类，Supply两处调用仍用退休签名，均按当前端口修正后重新构建通过。
 
 B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract-boundaries发现CapabilityClosure仍断言退休五参构造存在，已改为当前六参存在且旧桥不存在，不削弱运行时断言。重新CI待记录。
+
+## B3基线与门禁
+
+实际旧链规范化快照与当前基线对比见[等价证明](../verification/fresh-baseline-01/README.md)。Parcel10/Supply6一次建库，迁移执行器与多代解释删除。当前读者在打开写连接前拒绝非当前身份，缺回包索引明确拒绝且原文/哈希/冲突校验保留。Supply/Parcel维护结果移除退休升级字段，当前责任阻断仍保护备份恢复和包卸载。Platform.Storage/ParcelFlow升2.0.0，Supply升3.0.0，项目锁与组合同步；本批不再次改Application.Contracts版本。
+
+C16不再重建多代完整旧schema，只构造非当前身份输入验证只读拒绝；现有当前恢复、强杀、Unknown和原件责任测试继续执行。新增结构等价、实际WAL/FULL、独立从零运行时起停验证。历史ZIP、回执、发布和冻结证据未修改。`platform_migrations`/`schema_history`名称保留以避免无关消费标记改名，但仅含一条当前基线身份，无迁移步骤。
+
+B3本机定向验证：Application/Supply/WPF验证工程locked构建通过；纯结构13条与Python校验31项通过。CI增加当前基线/起停和缺索引拒绝用例；main合并后自动跑同一关键套件及完整Solution构建，避免在本机复用已安装机器状态。

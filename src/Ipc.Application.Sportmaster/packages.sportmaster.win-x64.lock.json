@@ -341,7 +341,7 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Application.Contracts": "[3.0.0, )",
-          "Ipc.Platform.Storage": "[1.0.0, )"
+          "Ipc.Platform.Storage": "[2.0.0, )"
         }
       },
       "ipc.platform": {

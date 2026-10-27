@@ -7,8 +7,8 @@
 | 对象 | 唯一当前输入 |
 |---|---|
 | Parcel配置 | schema3，显式拓扑、重量有效期和当前管理模式 |
-| Parcel数据库 | 当前格式9，空目录初始化或同格式再次打开；B3切换身份前不宣称新基线已完成 |
-| Supply数据库 | 当前格式5，空目录初始化或同格式再次打开 |
+| Parcel数据库 | 当前格式10，空目录一次建基线；只读门禁后才能再次打开 |
+| Supply数据库 | 当前格式6，空目录一次建基线；只读门禁后才能再次打开 |
 | 正式Application发布 | application-release.json schema2，实际BusinessAssembly、BusinessVersion、CompatibilitySha256 |
 | 当前组合验证 | schema3记录，实际CombinationInput、进程事件、候选及配置字节身份 |
 | Windows和外部接口 | 继续执行Windows客户端门禁、RCS协议和厂商SDK要求；不是自有旧版本兼容 |
@@ -22,3 +22,5 @@ python scripts/application_compatibility.py --record D:/evidence/current-run.jso
 ```
 
 源码开发允许无发布manifest；正式发布验证必须携带实际业务程序集。哈希证明内容一致，可信渠道、签名、运行测试和现场批准各自独立。新源码不能借用历史PASS。新增能力须同源发布、完整候选/CAS、受控重启及实际组合验证；原请求始终冻结原实现和报文。
+
+基线等价证据见[SQLite结构比对](../verification/fresh-baseline-01/README.md)。Parcel保留47个当前结构对象；Supply保留26个。历史格式标识表和多步执行器删除；platform_migrations/schema_history只存一条当前身份，不执行升级。

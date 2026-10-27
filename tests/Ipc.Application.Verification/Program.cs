@@ -13,12 +13,12 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; }
 if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environment.Exit(int.Parse(args[Array.IndexOf(args,"--time-storage-exit-child")+1])); return; }
 if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
 if (args.Contains("--time-storage-runtime-child")) { var i=Array.IndexOf(args,"--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace,args[i+1],args[i+2]); return; }
 if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Supervisor(root); return; }
-if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root);
-if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; } await AtomicStorageChecks.Run(root); return; }
+if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); return; }
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--stability-audit-fixes")) { await StabilityAuditFixes.Run(workspace, root); return; }

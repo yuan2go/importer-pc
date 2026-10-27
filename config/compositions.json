@@ -8,7 +8,7 @@
       "delivery": "core"
     },
     "supply": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "contract": 1,
       "dependencies": [
         "supply-contracts",
@@ -134,7 +134,7 @@
       "delivery": "core"
     },
     "platform-storage": {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "contract": 1,
       "dependencies": [
         "platform"

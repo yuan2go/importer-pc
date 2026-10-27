@@ -31,7 +31,7 @@ public sealed partial class ParcelStartupMaintenance
         using var sourceCopy = CopyForMaintenance(source);
         using var targetCopy = CopyForMaintenance(target);
         if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion || ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)
-            throw new InvalidDataException("原机接管要求两根均为DB9：先在原根按新发布清偿并受控迁移，再创建/恢复新的完整备份，防止不认识退役围栏的旧程序启动原根");
+            throw new InvalidDataException("恢复交接要求两根均为当前DB10；非当前格式请使用全新数据目录，原件保留");
         ParcelMachineOrigin.Require(source, c);
         if (!manifest.Files.ContainsKey(ParcelMachineOrigin.FileName)) throw new InvalidDataException("该备份没有原机器来源保管证据，保持隔离；不能事后给旧备份补盖证明");
         if (ParcelRepository.HandoffDatabaseIdentity(sourceCopy.Database) != ParcelRepository.HandoffDatabaseIdentity(targetCopy.Database) ||

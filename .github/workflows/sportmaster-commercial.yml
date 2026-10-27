@@ -1,11 +1,13 @@
 name: Sportmaster commercial engineering
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main, codex/p0-stability-01]
 permissions:
   contents: read
 concurrency:
-  group: sportmaster-${{ github.event.pull_request.number }}
+  group: sportmaster-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   current-contract-boundaries:
@@ -146,6 +148,10 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
+          if ($env:GITHUB_EVENT_NAME -eq 'push') {
+            dotnet build ImporterPc.slnx -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           foreach ($case in @('stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','installer-options','shortcut-lifecycle')) {

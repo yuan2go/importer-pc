@@ -1,1 +1,1 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Ipc.Application.Contracts/Ipc.Application.Contracts.csproj"/><ProjectReference Include="../Ipc.Platform.Storage/Ipc.Platform.Storage.csproj"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><Version>2.0.0</Version></PropertyGroup><ItemGroup><ProjectReference Include="../Ipc.Application.Contracts/Ipc.Application.Contracts.csproj"/><ProjectReference Include="../Ipc.Platform.Storage/Ipc.Platform.Storage.csproj"/></ItemGroup></Project>

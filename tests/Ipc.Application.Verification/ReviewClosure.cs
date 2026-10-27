@@ -167,7 +167,7 @@ static partial class ArchitectureQuality
         using(var supply=new Ipc.Supply.SupplyStore(supplyDb))
             supply.Commit(supply.Load(),"SyntheticOfflineConsumer","deployment","synthetic",config:new(Wire.Id(),"seed",supplyConfig,"synthetic","Effective","",DateTimeOffset.UtcNow));
         var supplyHash=Wire.FileHash(supplyDb);var parcelHash=Wire.FileHash(database);
-        Check(ExtensionConsumerReaders.Inspect(supplyDb).Length==0&&ExtensionConsumerReaders.Inspect(database).Length==0&&Wire.FileHash(supplyDb)==supplyHash&&Wire.FileHash(database)==parcelHash,"R04 actual Supply format5 and Parcel DB4 dispatch to owning readers without mutation");
+        Check(ExtensionConsumerReaders.Inspect(supplyDb).Length==0&&ExtensionConsumerReaders.Inspect(database).Length==0&&Wire.FileHash(supplyDb)==supplyHash&&Wire.FileHash(database)==parcelHash,"R04 current Supply6 and Parcel10 dispatch to owning readers without mutation");
         using(var supply=new Ipc.Supply.SupplyStore(supplyDb))
             supply.Commit(supply.Load(),"SyntheticPendingConsumer","deployment","synthetic",config:new(Wire.Id(),"seed",supplyConfig with {Extensions=new([package],[])},"synthetic","PendingActivation","",DateTimeOffset.UtcNow));
         Check(ExtensionConsumerReaders.Inspect(supplyDb).Contains(package),"R04 mixed-reader dispatch preserves legacy Supply Pending package responsibility");

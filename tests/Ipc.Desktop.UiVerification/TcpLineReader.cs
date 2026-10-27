@@ -26,7 +26,7 @@ static partial class Program
         foreach (var scenario in new[] { "framing", "observe", "overflow", "invalid-utf8", "partial-eof", "reject" })
         {
             using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-            var binding = new DeviceBinding("parcel-reader", "tcp-line", "synthetic.camera", "1") { Parameters = new() { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = scenario == "observe" ? "observe-only" : "line" } };
+            var binding = new DeviceBinding("parcel-reader", "tcp-line", "synthetic.camera", "1") { Parameters = new() { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = scenario == "observe" ? "observe-only" : "line", ["entity.evidence"] = "Synthetic one line per new entity; no replay after disconnect" } };
             await using var source = new TcpLineObservationSource(binding);
             var observations = new ConcurrentQueue<Observation>(); var states = new ConcurrentQueue<DeviceHealth>();
             await source.StartControlledAsync("synthetic-epoch", o => { observations.Enqueue(o); return scenario != "reject"; }, h => states.Enqueue(h.Health), default);

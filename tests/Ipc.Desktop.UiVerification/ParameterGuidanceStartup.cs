@@ -61,7 +61,7 @@ static partial class Program
             Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "StationCode"), "no second heartbeat station editor remains");
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
-            Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode") && t.IsEnabled), "current MVS acquisition has no editable business-association choice");
+            Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode") && t.IsEnabled && t.SelectedItem?.ToString() == "observe-only"), "current TCP producer defaults to observation with an explicit business-association choice");
             var deferred = Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater");
             deferred.IsChecked = false; await Flush();
             Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "turning off deferred mode exposes required camera errors");
@@ -116,7 +116,7 @@ static partial class Program
                     foreach (var p in draft.Readers[i].Parameters)
                         p.Value = p.Field.Key switch
                         {
-                            "device.ip" => "192.0.2." + (10 + i), "device.serial" => "SYNTH-SERIAL-" + i,
+                            "device.ip" => "192.0.2." + (10 + i), "device.serial" or "camera.serial" => "SYNTH-SERIAL-" + i, "device.port" => (24000 + i).ToString(),
                             _ => p.Value
                         };
                     Check(editor.ShowPage(2, i == 0 ? "左相机" : "右相机"), "camera page is reachable");

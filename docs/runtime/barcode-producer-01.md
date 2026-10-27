@@ -59,6 +59,6 @@
 
 ## 开发验证入口
 
-Windows 命令先运行 `. ./scripts/project-environment.ps1`。完整解决方案：`dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false`。构建 `tests/Ipc.Application.Verification` 后运行其 DLL，参数 `. --barcode-producer` 验证黄金协议、loopback、业务准入与切换；`. --p0-tcp`、`. --p0-tcp-components` 验证原 plain 围栏。原生配置执行 `tests/Ipc.Desktop.UiVerification` 的 `. --barcode-producer`。
+Windows 命令先运行 `. ./scripts/project-environment.ps1`。完整解决方案：`dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false`。构建 `tests/Ipc.Application.Verification` 后运行其 DLL，参数 `. --barcode-producer` 验证黄金协议、loopback、业务准入与切换；`. --p0-tcp`、`. --p0-tcp-components` 验证原 plain 围栏。原生配置执行 `tests/Ipc.Desktop.UiVerification` 的 `. --barcode-producer`。冻结 Windows 介质用 `./scripts/verify-commercial-wpf.ps1 -Media <介质目录> -Output <全新证据目录> -BarcodeProducer`，实际加载发布 DLL，检查首配/日常参数和窄窗滚动。
 
 本机 Windows/loopback/合成证据不证明真实读码平台、自研服务、MV-PD010003-06M-12C、工控机连续运行或真实 RCS 合同可用。投产仍需真实身份/哈希、触发完整性、外部独占释放、断线实物处置与现场验收。读码服务实现、平台现场设置和生产签名资格不在本包范围。

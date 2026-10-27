@@ -152,6 +152,11 @@ public sealed partial class ParcelRuntime
     }
     static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
         ? stage with { State = StageState.Cancelled, Failure = "Inspected local cancellation before any external attempt" } : stage;
+    static bool ProducerSelectionChanged(ParcelConfiguration before, ParcelConfiguration after) =>
+        Wire.Encode(ParcelBindings.Readers(before).ToArray()) != Wire.Encode(ParcelBindings.Readers(after).ToArray()) ||
+        Wire.Encode(before.Extensions?.Instances) != Wire.Encode(after.Extensions?.Instances) ||
+        !ParcelBindings.Readers(before).Select(r => ParcelConnectionSetup.IsDeferred(before, r.DeviceId))
+            .SequenceEqual(ParcelBindings.Readers(after).Select(r => ParcelConnectionSetup.IsDeferred(after, r.DeviceId)));
     public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate, string? reason = null)
     {
         await gate.WaitAsync().ConfigureAwait(false);
@@ -168,6 +173,9 @@ public sealed partial class ParcelRuntime
             var errors = definition.Validate(candidate);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             RequireSameIdentity(Effective, candidate); candidate = factory.Normalize(candidate);
+            if (ProducerSelectionChanged(Effective, candidate) && (operations.Values.Any(op => !IsSettled(op)) ||
+                positionQueues.Values.Any(q => q.Reader.Count != 0) || interruptedPositions.Count != 0 || positions.Keys.Any(repository.HasInterruptedIngress)))
+                throw new InvalidOperationException("ProducerSwitchBlocked: inspect and settle in-flight parcels and original input/request responsibilities before switching a producer");
             using var configurationUse = factory.ProtectConfiguration(candidate);
             audit = audit with { CandidateHash = Wire.Hash(Wire.Encode(candidate)), Candidate = candidate };
             repository.Commit(null, "ConfigurationCandidateNormalized", Wire.Encode(audit), configurationAudit: audit);

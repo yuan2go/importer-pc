@@ -134,7 +134,7 @@ static partial class ArchitectureQualityRemediation
         {
             var c = Config(workspace, "sportmaster");
             var readers = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
-            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listeners[i].LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listeners[i].LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" } }).ToArray();
             c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
             await using var app = await Open(c, path);
             using var left = await listeners[0].AcceptTcpClientAsync(); using var right = await listeners[1].AcceptTcpClientAsync();

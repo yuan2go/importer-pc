@@ -18,7 +18,7 @@ static partial class SportmasterRcs
             Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
         var c = HeartbeatConfiguration(workspace, binding) with { TimeoutMs = 1500 };
         var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" } }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
         var directory = Path.Combine(root, "timeout-rescan"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);

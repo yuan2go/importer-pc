@@ -9,9 +9,11 @@ internal static class HikrobotSdkEditing
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); Console.WriteLine("PASS BUNDLED SDK: " + reason); }
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
+        var diagnostics = config.Topology!.Readers.Select(r => r with { Driver = "hikrobot-mvs" }).ToArray();
+        config = config with { Reader = diagnostics[0], Topology = config.Topology with { Readers = diagnostics } };
         var catalog = new ParcelCapabilityFactory(new(Path.Combine(workspace, "config/sportmaster"), root, null, null)).Catalog();
         var draft = new StartupConfigurationDraft(config, catalog);
-        Check(draft.Readers.All(r => r.Provider?.Implementation == "hikrobot-mvs" && r.Provider.Package is null), "fresh candidate resolves two real built-in SDK readers without extension setup");
+        Check(draft.Readers.All(r => r.Provider?.Implementation == "hikrobot-mvs" && r.Provider.Package is null), "explicit diagnostic candidate resolves two built-in SDK readers without extension setup");
         Check(catalog.Providers.Count(p => p.Implementation == "hikrobot-mvs") == 1, "one current SDK descriptor is registered");
         foreach (var (reader, i) in draft.Readers.Select((r, i) => (r, i))) {
             reader.Parameters.Single(p => p.Field.Key == "device.ip").Value = "192.0.2." + (10+i);

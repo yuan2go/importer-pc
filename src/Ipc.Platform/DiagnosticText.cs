@@ -10,9 +10,9 @@ public static class DiagnosticText
     static readonly Regex sensitiveKey = new("password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
     // Only disposable diagnostic copies are transformed. Never call this on
     // authoritative observations, frozen request bodies or original receipts.
-    static readonly Regex barcodeKey = new("^(?:parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code|codes|candidates)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
+    static readonly Regex barcodeKey = new("^(?:parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code|(?:camera|device|physical|expected)[._-]?serial|serial(?:number)?|codes|candidates)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
     static readonly Regex sensitiveValue = new(
-        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential|parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+|(?<=://)[^/@\s]+:[^/@\s]+@""",
+        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential|parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code|(?:camera|device|physical|expected)[._-]?serial|serial(?:number)?)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+|(?<=://)[^/@\s]+:[^/@\s]+@""",
         RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
     static readonly Regex partialCandidates = new("[\"']?(?:codes|candidates)[\"']?\\s*[:=]\\s*\\[", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
     static string Text(string value) => partialCandidates.IsMatch(value) ? "[含条码候选的诊断片段已隐藏]" :

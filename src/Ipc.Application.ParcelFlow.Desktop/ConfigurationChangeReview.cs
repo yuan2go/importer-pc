@@ -10,7 +10,9 @@ public partial class ParcelViewModel
     {
         if (structuredBase is null) throw new InvalidOperationException("先读取完整配置；当前输入保留。");
         var candidate = configurationAuthority == "高级JSON" ? Wire.Decode<ParcelConfiguration>(ConfigurationDraft) : BuildStructuredConfiguration();
-        return DraftRevisionState + "\n" + ConfigurationEditorState + "\n\n" +
+        var producerChange = Wire.Encode(ParcelBindings.Readers(structuredBase).ToArray()) != Wire.Encode(ParcelBindings.Readers(candidate).ToArray());
+        var producerNotice = producerChange ? "生产者切换：先处置在途包裹，停止原生产者并确认相机与旧缓冲已释放；请在变更原因中登记确认依据。保存后受控重启，新连接不补发旧事件。\n\n" : "";
+        return producerNotice + DraftRevisionState + "\n" + ConfigurationEditorState + "\n\n" +
             "影响范围：以下是相对于本窗原读取候选的完整字段路径；参数值请在对应对象或高级文本核对。保存后仍待受控重启，旧请求固定原报文。\n\n" +
             DescribeConfigurationChanges(structuredBase, candidate);
     }

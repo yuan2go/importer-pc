@@ -120,6 +120,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
 #endif
         ValidateHikrobotIdentities(c);
+        ValidateProducerBindings(c);
         var tcpReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
         foreach (var tcp in tcpReaders) Ipc.Drivers.TcpLineObservationSource.Validate(tcp);
         if (tcpReaders.GroupBy(r => Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)).Any(g => g.Count() > 1))
@@ -262,6 +263,22 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             selected.Add(new("observation", "extension:" + package.Id + "/" + module.Id, package.Version, module.ContractIdentity ?? "CONTROLLED-OBSERVATION-v1"));
         }
         return selected.Distinct().ToArray();
+    }
+    internal static void ValidateProducerBindings(ParcelConfiguration c)
+    {
+        var readers = ParcelBindings.Readers(c).ToArray();
+        foreach (var reader in readers.Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)))
+        {
+            TcpLineObservationSource.Validate(reader);
+            BarcodeProducerConfiguration.Validate(reader, c.Mode == RunMode.Production);
+        }
+        var identities = readers.Where(r => r.Driver is "tcp-line" or "hikrobot-mvs")
+            .Select(r => r.Parameters?.GetValueOrDefault(r.Driver == "tcp-line" ? "camera.serial" : "device.serial"))
+            .Concat((c.Extensions?.Instances ?? []).Where(i => i.Enabled && (i.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition") &&
+                readers.Any(r => r.Driver == "extension:" + i.Id)).Select(i => i.Parameters.GetValueOrDefault("device.serial")))
+            .Where(s => !string.IsNullOrWhiteSpace(s));
+        if (identities.GroupBy(s => s, StringComparer.Ordinal).Any(g => g.Count() > 1))
+            throw new InvalidDataException("camera.serial: a physical camera may have only one producer or diagnostic instance");
     }
     internal static void ValidateHikrobotIdentities(ParcelConfiguration c)
     {

@@ -36,7 +36,9 @@ public partial class ParcelViewModel
             status = ready ? reader.Driver == "tcp-line" ? "TCP 已连接" : "设备已确认" : "未就绪";
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
             if (reader.Driver == "tcp-line")
-                notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
+                notice += (notice.Length == 0 ? "" : "\n") + (reader.Parameters?.GetValueOrDefault("profile", "plain") == "sequenced"
+                    ? "sequenced：握手与连续序号、生产者心跳均须有效；故障后暂停并核对原包裹，再受控重连。"
+                    : "plain：丢失不可检测，静默断网可能延后发现；没有生产者握手或业务心跳；一行一实体须有明确证据。");
             if (extension?.PackageId == "hikrobot.idmvs-reader")
             {
                 status = ready ? "SDK 连接已确认" : status;

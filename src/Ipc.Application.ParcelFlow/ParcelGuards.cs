@@ -9,7 +9,15 @@ public sealed partial class ParcelRuntime
     bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(PositionReady);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
-    bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
+    bool ReaderAllowsBusiness(string position)
+    {
+        var reader = ParcelBindings.Readers(Effective).Single(r => r.DeviceId == positions[position].ReaderDeviceId);
+        if (reader.Driver == "hikrobot-mvs") return false;
+        if (reader.Driver != "tcp-line") return true;
+        return reader.Parameters?.GetValueOrDefault("entity.mode", "observe-only") is "trigger" or "line" &&
+            !string.IsNullOrWhiteSpace(reader.Parameters.GetValueOrDefault("entity.evidence"));
+    }
+    bool PositionReady(string position) => ReaderAllowsBusiness(position) && SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));

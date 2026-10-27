@@ -126,6 +126,14 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 else if (ip is "0.0.0.0" or "255.255.255.255")
                     Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "此地址不能用于相机连接，请填写具体相机地址。", "ipv4-address"));
             }
+            if (draft.Provider.Implementation == "tcp-line")
+            {
+                var mode = values.GetValueOrDefault("entity.mode", "observe-only");
+                if (mode != "observe-only" && string.IsNullOrWhiteSpace(values.GetValueOrDefault("entity.evidence")))
+                    Issue("驱动", draft.InstanceId + "/entity.evidence", "启用业务前，请填写一行或触发对应一个新实体、完整结果及断线处置的证据引用。");
+                if (values.GetValueOrDefault("profile", "plain") == "sequenced" && mode == "line")
+                    Issue("驱动", draft.InstanceId + "/entity.mode", "sequenced 请选择触发关联或仅观察。");
+            }
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "供包台编号不一致；请核对原值后填写本站共同使用的编号。");
             if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))

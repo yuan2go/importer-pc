@@ -46,6 +46,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --barcode-producer
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet build tests/Ipc.Hikrobot.IndependentReview -c Release -p:RestoreLockedMode=true -m:1
@@ -86,6 +88,8 @@ jobs:
           dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --hikrobot-sdk-editing
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --barcode-producer
           exit $LASTEXITCODE
       - name: Retain synthetic HWND evidence
         if: always()

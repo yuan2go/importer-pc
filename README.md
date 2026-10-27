@@ -11,6 +11,7 @@ C#/.NET 10 Windows 工位客户端。Platform 提供机制，Application 拥有�
 | 首配、参数与延后连接 | [参数用途与启动](docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[独立延后修复](docs/runtime/validation/deferred-heartbeat-01.md) |
 | 安装、卸载与生命周期 | [当前操作指南](docs/runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](docs/runtime/lifecycle-ux-implementation-01.md) |
 | 历史维护与恢复 | [维护运行](docs/runtime/retention-ingress-02.md)、[完整维护证据](docs/runtime/validation/retention-ingress-full-retest-03.md) |
+| 条码生产者 plain / sequenced | [连接与切换](docs/runtime/barcode-producer-01.md)、[协议与黄金对话](docs/protocols/barcode-producer-v1.md) |
 | 架构与扩展 | [框架](docs/design/framework.md)、[决策](docs/design/framework-decisions.md)、[扩展开发](docs/extensions/developer-guide.md) |
 | 供包员主页与维护诊断 | [本轮实现与验证边界](docs/runtime/operator-workstation-01.md) |
 | 界面基线 | [参数V3](docs/ui/parameter-settings-v3-20261020/README.md)、[作业与首配V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)、[字体规范](docs/design/typography-01.md) |

@@ -12,6 +12,8 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS BUNDLED SDK NATIVE " + reason); }
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
+        var diagnostics = config.Topology!.Readers.Select(r => r with { Driver = "hikrobot-mvs" }).ToArray();
+        config = config with { Reader = diagnostics[0], Topology = config.Topology with { Readers = diagnostics } };
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root,"config/sportmaster"),evidence,null,null)).Catalog();
         var draft = new StartupConfigurationDraft(config,catalog);
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
@@ -22,7 +24,7 @@ static partial class Program
             draft.Readers[i].Parameters.Single(p=>p.Field.Key=="device.ip").Value="192.0.2."+(10+i);
             draft.Readers[i].Parameters.Single(p=>p.Field.Key=="device.serial").Value="SYNTH-"+i;
         }
-        Check(draft.Readers.All(r=>r.Provider?.Implementation=="hikrobot-mvs"&&r.Provider.Package is null),"fresh first setup uses built-in MVS without inventory");
+        Check(draft.Readers.All(r=>r.Provider?.Implementation=="hikrobot-mvs"&&r.Provider.Package is null),"explicit diagnostic setup uses built-in MVS without inventory");
         Check(rcs.Parameters.All(p=>p.Field.Key is not ("source" or "locale")),"fixed source/locale have no editor");
         var model=draft.CreateParameterEditor((p,c)=>Task.FromResult(BarcodeFiltering.Select(p,c)));
         var editor=new ParameterSettingsControl { Model=model };

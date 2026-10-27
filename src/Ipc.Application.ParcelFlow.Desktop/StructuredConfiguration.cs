@@ -239,13 +239,11 @@ public partial class ParcelViewModel
         StructuredPolicy = policy; StructuredPolicy.PropertyChanged += (_, _) => EditorChanged();
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
-        var scanPolicyChanged = c.ApplicationId == "sportmaster" &&
-            ParcelBindings.Readers(c).Any(r => r.Driver == "tcp-line" && r.Parameters?.GetValueOrDefault("entity.mode", "observe-only") != "line");
         AcceptEditorBaseline();
-        if (c.StationCode is null || scanPolicyChanged)
+        if (c.StationCode is null)
         {
             savedEditorSignature = "";
-            validationState = scanPolicyChanged ? "已准备每次扫码一个包裹的候选，请核对并保存；原配置和旧请求保留" : "系统缺省值已补入候选，待明确保存；原账未修改";
+            validationState = "系统缺省值已补入候选，待明确保存；原账未修改";
         }
         RebuildParameterEditor(); NotifyConfigurationEditorState();
     }

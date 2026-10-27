@@ -28,8 +28,8 @@ static partial class SportmasterRcs
         var c = new SportmasterFlow().InitialConfiguration();
         var readers = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
         {
-            ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(),
-            ["entity.mode"] = "line"
+            ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(), ["camera.serial"] = "SYNTHETIC-DEFERRED-" + i,
+            ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect"
         } }).ToArray();
         var b = Binding(peer.Endpoint);
         return c with
@@ -199,8 +199,22 @@ static partial class SportmasterRcs
         deferred = deferred with { Wcs = deferred.Wcs! with { Parameters = new(deferred.Wcs.Parameters) { ["left-bcr-code"] = "SYNTH-PENDING-NEW-CODE" } } };
         await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
         s = await app.SnapshotAsync();
-        Check((await DeferredStage(app, deferred, "synthetic attempt to postpone original dependencies")).Status == "PendingRestart",
-            "unknown original permits a reviewed Pending candidate, never an immediate target replacement");
+        BusinessReceipt? switchAttempt = null;
+        await Until(async () =>
+        {
+            var state = await app.SnapshotAsync();
+            if (!state.Availability!.Configure) return false;
+            switchAttempt = await app.StageConfigurationAsync(state.Configuration.Revision, deferred, "synthetic producer deferral with unknown original");
+            return switchAttempt.Reason != "Pause and authenticate maintenance before configuration";
+        });
+        Check(switchAttempt is { Status: "Rejected" } && switchAttempt.Reason!.Contains("ProducerSwitchBlocked") &&
+            (await app.SnapshotAsync()).Configuration.Pending is null,
+            "unknown original refuses producer deferral before any Pending mutation");
+        // Keep the original RCS custody scenario: only RCS is deferred, with the
+        // existing reader bindings and reader availability left intact.
+        deferred = deferred with { DeferredConnections = [deferred.Wcs!.InstanceId] };
+        Check((await DeferredStage(app, deferred, "synthetic RCS-only pending deferral")).Status == "PendingRestart",
+            "unknown original permits a reviewed RCS-only Pending candidate, never an immediate target replacement");
         var reconnected = await ReconnectAfterMonitorDrain(app, () => app.ReconnectDeviceAsync(deferred.Wcs!.InstanceId));
         Check(reconnected.Status == "Reconnected", "RCS reconnect uses original Effective while new camera code and deferral are Pending; actual=" + reconnected.Status + "; reason=" + reconnected.Reason);
         s = await app.SnapshotAsync();
@@ -210,7 +224,7 @@ static partial class SportmasterRcs
         await using var restarted = new ParcelRuntime(launch, new SportmasterFlow(), DeferredFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await restarted.StartAsync(default); await Task.Delay(1200);
         s = await restarted.SnapshotAsync();
-        Check(s.Configuration.Effective.DeferredConnections is null && s.Configuration.Pending?.DeferredConnections?.Length == 3 &&
+        Check(s.Configuration.Effective.DeferredConnections is null && s.Configuration.Pending?.DeferredConnections?.SequenceEqual(new[] { deferred.Wcs!.InstanceId }) == true &&
             s.Operations.Single(o => o.Id == original.Id).Wcs is { State: StageState.Unknown } old && Wire.Encode(old.Request) == request && Destinations() == sends,
             "restart retains Unknown and original Effective; unresolved responsibility prevents pending deferral and automatic resend");
         await restarted.StopAsync(default);

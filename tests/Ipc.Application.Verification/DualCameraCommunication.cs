@@ -31,7 +31,7 @@ static class DualCameraCommunication
         using var rightListener = new TcpListener(IPAddress.Loopback, 0); rightListener.Start();
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var rs = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" } }).ToArray();
         c = c with { Reader = rs[0], Topology = c.Topology with { Readers = rs } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
@@ -125,7 +125,7 @@ static class DualCameraCommunication
         throw new TimeoutException("Command did not drain");
     }
     static DeviceBinding TcpBinding(TcpListener listener) => new("parcel-reader", "tcp-line", "synthetic.camera", "1")
-    { Parameters = new() { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } };
+    { Parameters = new() { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" } };
     static async Task Until(Func<bool> condition)
     { for (var i = 0; i < 250 && !condition(); i++) await Task.Delay(10); if (!condition()) throw new TimeoutException("TCP evidence wait"); }
     static async Task Protocols()

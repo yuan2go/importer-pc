@@ -15,7 +15,7 @@ static class P0Tcp
         foreach (var scenario in new[] { "FIN", "RST", "silent-forwarder" })
         {
             using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-            var p = new Dictionary<string, string> { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" };
+            var p = new Dictionary<string, string> { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" };
             var configured = TcpLineObservationSource.Descriptor.Parameters.Any(x => x.Key == "liveness-timeout-seconds");
             if (configured)
             {

@@ -6,7 +6,7 @@
 
 `TcpLineObservationSource` 保留唯一套接字/分帧/停止实现；profile 选择纯条码解释或 sequenced 状态机。协议解释器只接受有界完整行，产生握手回复或完整事件，不引用业务/数据库/UI。状态为 AwaitHello → AwaitReady → Streaming → Faulted/Stopped。所有超时/协议错误撤销有效期，不允许坏帧后继续正常读码。接收和监测共用状态锁；不跨 Application 输入回调持锁。Stop 必须实际排空任务才释放物理租约，取消等待保有资源。
 
-`ObservationSession` 保有注册 Epoch；驱动再检查 wire epoch/boot/sequence/trigger。wire sequence 包含心跳，Observation 序号可跳过心跳值，但源状态机先完成连续性判断；平台不臆断通用观察必须逐号连续。AdmissionId 由 boot/trigger 派生，SourceEventId 由 boot/sequence 派生，与条码无关；plain 使用本次注册加本地行序号，跨重连重复不可识别的限制必须明示。
+`ObservationSession` 保有注册 Epoch；驱动再检查 wire epoch/boot/sequence/trigger。wire sequence 包含心跳，Observation 序号可跳过心跳值，但源状态机先完成连续性判断；平台不臆断通用观察必须逐号连续。AdmissionId 由稳定 Reader.DeviceId/boot/trigger 派生，SourceEventId 由 Reader.DeviceId/boot/sequence 派生，与条码和连接 Epoch 无关。同一多相机服务的 boot 相同也不会合并左右实体；原触发不能靠换 Epoch 变成新实体。plain 使用本次注册加本地行序号，跨重连重复不可识别的限制必须明示。
 
 Application 保有准入与原请求责任。Ready 有效期来自真实握手/心跳，observe-only 在业务就绪守卫和 Observation.Kind 两层阻断。候选校验使用既有提供者 schema 和装配校验；没有第二配置账。每位故障仅阻断依赖该位的业务，共享 RCS/存储等守卫继续适用。
 

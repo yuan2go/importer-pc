@@ -133,7 +133,7 @@ static partial class SportmasterRcs
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
         var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line", ["entity.evidence"] = "Synthetic fixture: one line per new entity; no replay after disconnect" } }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers }, DeferredConnections = null };
         var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);

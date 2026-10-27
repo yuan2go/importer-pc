@@ -14,7 +14,7 @@ static partial class SportmasterRcs
     public static async Task P0ScanRegression(string workspace, string root)
     {
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "2.0.0" };
+        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0" };
         binding.Parameters.Remove("quantity");
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, binding);

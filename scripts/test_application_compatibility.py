@@ -4,11 +4,26 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from application_compatibility import CombinationRun, object_sha, read_business, require_combination, selected_providers, sha, verify_record
 from composition import resolve
 
 
 class CompatibilityTests(unittest.TestCase):
+    def test_first_release_versions_cover_all_owned_modules(self):
+        root = Path(__file__).resolve().parent.parent
+        default = ET.parse(root/'Directory.Build.props').findtext('.//Version')
+        self.assertEqual(default, '1.0.0')
+        for project in (root/'src').glob('*/*.csproj'):
+            for version in ET.parse(project).findall('.//Version'):
+                if 'Condition' not in version.attrib:
+                    self.assertEqual(version.text, default, str(project))
+        composition = json.loads((root/'config/compositions.json').read_bytes())
+        self.assertEqual({c['version'] for c in composition['components'].values()}, {default})
+        for policy in (root/'config/compatibility').glob('*.json'):
+            providers = json.loads(policy.read_bytes())['ProviderSets']
+            self.assertEqual({p['Version'] for group in providers for p in group['Providers']}, {default})
+
     def completed_run(self, output, root, config, identity):
         optional=bool(config.get('Images'))
         attached=bool(optional and config['Images'].get('Strategy','BeforeMain')=='Attached')
@@ -32,7 +47,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], {'sportmaster': '3.0.0', 'direct-plc': '3.0.0', 'wcs-to-plc': '3.0.0'}[application])
+            self.assertEqual(version['BusinessVersion'], '1.0.0')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -41,10 +56,10 @@ class CompatibilityTests(unittest.TestCase):
 
     def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
         root = Path(__file__).resolve().parent.parent
-        versions = {'reference.parcel-capabilities': ('3.0.0', '2.2.8'),
-                    'reference.barcode': ('3.0.0', '1.3.6'),
-                    'sportmaster.rcs-task': ('2.0.0', '1.3.5'),
-                    'hikrobot.idmvs-reader': ('2.0.1', '1.0.4'),
+        versions = {'reference.parcel-capabilities': ('1.0.0', '2.2.8'),
+                    'reference.barcode': ('1.0.0', '1.3.6'),
+                    'sportmaster.rcs-task': ('1.0.0', '1.3.5'),
+                    'hikrobot.idmvs-reader': ('1.0.0', '1.0.4'),
                     'hikrobot.mvs-acquisition': ('1.0.0', '0.0.0')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())

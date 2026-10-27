@@ -283,13 +283,13 @@
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[2.0.0, )"
+          "Ipc.Platform": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[3.0.0, )",
+          "Ipc.Application.Contracts": "[1.0.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },

@@ -17,7 +17,7 @@ static partial class Program
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), evidence, null, null)).Catalog();
         var fields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot/parameters.json")));
-        var package = new PackageReference("hikrobot.idmvs-reader", "2.0.1", new('a', 64));
+        var package = new PackageReference("hikrobot.idmvs-reader", "1.0.0", new('a', 64));
         var sdk = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", package.Version,
             "HIKROBOT-IDMVS-OBSERVATION-v1", fields, new(), package, "idmvs-reader");
         var mvsPackage = new PackageReference("hikrobot.mvs-acquisition", "1.0.0", new('b', 64));

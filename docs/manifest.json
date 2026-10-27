@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "d15cd47c7e09acc9d58484c26b10b39c515d83ea94830632e5d76c47cabab678",
-      "size_bytes": 23411,
-      "git_blob": "2abacd8353edd8aa7c2ae211888cbb0960c5684f",
+      "sha256": "936542a767d37b8db43257e2f77e0ca33ce9c1427feba94ebc8979037d240c5c",
+      "size_bytes": 23667,
+      "git_blob": "a81bbd38e49df43433e00b36d367735019b55bdc",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -58933,9 +58933,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "7e38ca807277259872afccc2a7d029415b88dd7a3616d2f75513b7855d808336",
-      "size_bytes": 13353,
-      "git_blob": "4ddc3399d4d27c563eaa22e74c2628d19f7f26e1"
+      "sha256": "a5a2728046c74b88931b801d180a153ff3d06d8999095db7554eb6407bcd5e95",
+      "size_bytes": 13293,
+      "git_blob": "a46b1b1517a643a22cf15fbb8224de5819de97b8"
     },
     {
       "version": "MANAGEMENT-MODE-01",

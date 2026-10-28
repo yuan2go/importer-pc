@@ -16,11 +16,13 @@ public sealed record InstallationPreparationProgress(string Stage, string File, 
 public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
+    internal Func<DeploymentLocation, uint> LaunchDesktop { get; set; } = location => OrdinaryRuntimeProcess.LaunchForCurrentUser(
+        Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), ["--after-install"], location.ReleaseRoot);
     internal Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
     internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
     internal Func<WindowsDeploymentRequest, Task> RepairRegistration { get; set; } = request =>
-        ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)));
+        ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)), request);
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
@@ -46,6 +48,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) };
     bool selectedStartMenu = true, selectedDesktop = true;
     int step;
+    string installationKind = "安装";
     double optionsHeight = 560;
     readonly Button next, back, records, cancel, inspect, resumeRemoval, repairCommitted;
     InstallationInspection? originalInspection;
@@ -165,7 +168,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) });
             Note("安装提交期间无法安全取消，请等待结果。"); return;
         }
-        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "核对以下选项后开始安装。", _ => "菜鸟供包台已安装。" });
+        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。核对以下选项后开始。", _ => "菜鸟供包台已安装。" });
         if (step == 0)
         {
             preparationProgress.IsIndeterminate = prepareMedia is null;
@@ -183,7 +186,10 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon); Row("快捷方式", shortcuts);
-            if (current is not null) Note("本次升级保留原数据目录；安装前仍须检查原责任并完成完整备份。");
+            installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
+            if (current is not null) Message("本次操作：" + installationKind + "。原账户、数据和配置将保留。");
+            if (current is not null) Note("本次" + installationKind + "保留原账户、数据目录和配置；先核对原责任并完成所需完整备份。" +
+                (current.LifecycleState != "Installed" ? "重新安装不会代替原卸载清理，也不会清除原业务记录。" : ""));
             if (preflightError.Length != 0)
             {
                 var detail = new TextBox { Text = preflightError, IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
@@ -199,7 +205,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
             Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
-            if (r.BackupDestination is not null) { Section("升级检查"); Note("安装前检查原责任并完成备份。有阻断时停止升级；失败结果以实际安装记录为准。"); Summary("备份位置", r.BackupDestination); }
+            if (r.BackupDestination is not null) { Section("原责任与备份"); Note("执行前检查原责任并完成备份。有阻断时停止；失败结果以实际安装记录为准。"); Summary("备份位置", r.BackupDestination); }
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             Note("安装需要 Windows 授权。应用管理密码与 Windows 授权分别验证。"); next.Content = "安装";
         }
@@ -271,6 +277,15 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     }
     protected override void OperationFailed(Exception error)
     {
+        if (step == 3 && installed is not null)
+        {
+            string details;
+            try { details = DiagnosticText.Protect(error.Message); }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { details = "启动诊断无法安全显示，请核对启动记录。"; }
+            Message("安装已完成，但打开供包台未成功。可点击完成重试打开，或取消勾选后关闭。\n" + details);
+            Status.Foreground = Brushes.Firebrick;
+            return;
+        }
         if (step == 2 || installing)
         {
             // Only a trusted original-operation inspection can release Unknown.
@@ -345,8 +360,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (runAfter.IsChecked == true)
             {
                 if (!ParcelStartupServices.IsRuntimeAccount(installed!)) throw new InvalidOperationException("请登录指定运行账户后运行程序");
-                var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(installed!.ReleaseRoot, "desktop", "Ipc.Desktop.exe")) { UseShellExecute = true, WorkingDirectory = installed.ReleaseRoot }; start.ArgumentList.Add("--after-install");
-                System.Diagnostics.Process.Start(start); Launched = true;
+                _ = LaunchDesktop(installed!); Launched = true;
             }
             Busy = false; Close();
         }

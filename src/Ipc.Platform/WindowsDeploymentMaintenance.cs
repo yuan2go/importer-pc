@@ -34,15 +34,43 @@ public static partial class WindowsDeploymentSetup
         key.Flush();
     }
     [SupportedOSPlatform("windows")]
-    public static void RepairSystemRegistration(string application, string expectedHash)
+    public static void RepairSystemRegistration(string application, string expectedHash, Action<DeploymentLocation>? repairShortcuts = null)
+        => RepairSystemRegistrationCore(application, expectedHash, (location, _) => repairShortcuts?.Invoke(location), null);
+    [SupportedOSPlatform("windows")]
+    public static void RepairCommittedInstallation(WindowsDeploymentRequest original, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts)
+        => RepairSystemRegistrationCore(original.ApplicationId, expectedHash, repairShortcuts, original);
+    [SupportedOSPlatform("windows")]
+    static void RepairSystemRegistrationCore(string application, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts, WindowsDeploymentRequest? original)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查维护计划");
         var location = Current(application) ?? throw new InvalidDataException("No authoritative deployment");
+        InstallationInspection? inspection = null; string? operation = null, archive = null;
+        if (original is not null)
+        {
+            operation = InstallationOperationFile(original);
+            MachineRuntimePolicy.RequireProtectedEvidence(operation);
+            if (new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("原安装回执超出读取预算");
+            inspection = ProjectInstallation(original, File.ReadAllText(operation), location);
+            if (inspection.Status is not ("Completed" or "CommittedNeedsSystemRepair") || inspection.Location is null)
+                throw new InvalidOperationException("原安装尚无可核验的已提交登记；保留原操作，不修复其他安装");
+            if (inspection.Previous is { } previous) _ = TrustedProgramRoots.RequireBoundary(previous.ReleaseRoot);
+            if (inspection.Status != "Completed")
+            {
+                var hash = Wire.FileHash(operation); archive = operation + ".pre-system-repair-" + hash[..12] + ".json";
+                if (File.Exists(archive))
+                { MachineRuntimePolicy.RequireProtectedEvidence(archive); if (Wire.FileHash(archive) != hash) throw new InvalidDataException("原失败回执归档不一致；保留原件"); }
+                else WriteProtectedBytes(archive, File.ReadAllBytes(operation), new SecurityIdentifier(location.RuntimeAccountSid), overwrite: false);
+            }
+        }
         if (location.LifecycleState == "Installed") _ = DeploymentMedia.Inspect(location.ReleaseRoot, application);
+        if (location.LifecycleState == "Installed") repairShortcuts(location, inspection?.Previous);
         ProjectInstalledApplication(location);
         if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(location);
+        if (original is not null && inspection is { Status: "CommittedNeedsSystemRepair" })
+            WriteProtected(operation!, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(original), inspection.ChangePlanIdentity,
+                Location = location, inspection.Previous, BusinessStarted = false, RepairedFromStatus = inspection.Status, SystemRepairArchive = archive }, new SecurityIdentifier(location.RuntimeAccountSid));
     }
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     static extern bool MoveFileEx(string path, string? target, int flags);

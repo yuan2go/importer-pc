@@ -106,7 +106,8 @@ public static class ParcelStartupServices
     }
     public static IStartupMaintenance Maintenance(BusinessLaunch launch) => new ElevatedMaintenance(launch);
     internal static async Task ExecuteBatchInstall(WindowsDeploymentRequest request) => _ = await ExecuteAsync(new("Install", Deployment: request));
-    public static async Task RepairRegistrationAsync(string expectedRegistrationHash) => _ = await ElevateAsync(new("RepairSystem", ExpectedHash: expectedRegistrationHash));
+    public static async Task RepairRegistrationAsync(string expectedRegistrationHash, WindowsDeploymentRequest? original = null)
+        => _ = await ElevateAsync(new("RepairSystem", ExpectedHash: expectedRegistrationHash, Deployment: original));
     public static async Task<StartupChangePreview> ReviewDeploymentAsync(WindowsDeploymentRequest request, string destination) =>
         Wire.Decode<StartupChangePreview>(await ElevateAsync(new("ReviewDeployment", Destination: destination, Deployment: request)) ?? throw new IOException("缺少原部署预检回执"));
     public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash, string plan, string backup) =>
@@ -252,8 +253,14 @@ public static class ParcelStartupServices
                 break;
             case "RepairSystem":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                WindowsDeploymentSetup.RepairSystemRegistration(ApplicationId, request.ExpectedHash!);
-                if (WindowsDeploymentSetup.Current(ApplicationId) is { LifecycleState: "Installed" } repaired) CreateShortcuts(repaired);
+                if (request.Deployment is { } originalInstall)
+                {
+                    if (originalInstall.ApplicationId != ApplicationId) throw new InvalidDataException("原安装不属于本 Application");
+                    WindowsDeploymentSetup.RepairCommittedInstallation(originalInstall, request.ExpectedHash!, (location, previous) =>
+                    { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); });
+                }
+                else WindowsDeploymentSetup.RepairSystemRegistration(ApplicationId, request.ExpectedHash!, location =>
+                { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location); });
                 break;
             case "Uninstall":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();

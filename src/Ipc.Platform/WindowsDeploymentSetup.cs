@@ -183,12 +183,15 @@ public static partial class WindowsDeploymentSetup
     }
     [SupportedOSPlatform("windows")]
     static void WriteProtected<T>(string path, T value, SecurityIdentifier sid)
+        => WriteProtectedBytes(path, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(value)), sid);
+    [SupportedOSPlatform("windows")]
+    static void WriteProtectedBytes(string path, byte[] bytes, SecurityIdentifier sid, bool overwrite = true)
     {
         DeploymentPaths.RequireOrdinaryAncestors(path);
         var temporary = path + "." + Wire.Id() + ".new";
         using (var output = new FileInfo(temporary).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(sid)))
-        { output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(value))); output.Flush(true); }
-        File.Move(temporary, path, true);
+        { output.Write(bytes); output.Flush(true); }
+        File.Move(temporary, path, overwrite);
     }
     public static string[] ConfigurationFiles(string root)
     {

@@ -33,11 +33,13 @@ static class ParameterGuidanceStartup
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
             ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-idmvs" && r.Parameters!["entity.mode"] == "trigger"),
-            "current built-in SDK candidate remains observation-only until a formal decoder and parcel boundary exist; quantity is absent");
+            "current built-in reader selects the confirmed external-trigger parcel policy; quantity is absent");
         var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
-        Check(mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only"]) &&
+        Check(!mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only", "trigger"]) &&
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "acquisition.mode").Value == "external-trigger" &&
+            draft.Build().DeferredConnections!.Contains(initial.Reader.DeviceId) &&
             draft.Build().Reader.Parameters!["entity.mode"] == "trigger" && initial.Reader.Parameters!["entity.mode"] == "trigger",
-            "current SDK mode has only the read-only observation choice and candidate construction never activates parcel admission");
+            "current SDK declares observation and trigger association; explicit trigger profile remains deferred and editing never starts acquisition");
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
         using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";

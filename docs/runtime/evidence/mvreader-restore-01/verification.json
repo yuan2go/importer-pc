@@ -64,5 +64,10 @@
     }
   ],
   "SolutionBuild": "PASS: Sportmaster Release/SelfContained=false, locked, serial MSBuild; zero warnings/errors",
-  "BuildSourceNotes": "Final code additionally includes device identity in trigger admission hashes and rejects software/self-trigger external sources; driver regression rerun after these changes."
+  "BuildSourceNotes": "Final code additionally includes device identity in trigger admission hashes and rejects software/self-trigger external sources; driver regression rerun after these changes.",
+  "FirstCiFailure": {
+    "Run": 40630506807,
+    "Head": "43c0f9ce",
+    "Reason": "ParameterGuidanceStartup retained an obsolete MVS-only read-only mode assertion. Updated to assert the new explicit trigger profile, both declared choices and continued deferred connection; no runtime guard changed."
+  }
 }

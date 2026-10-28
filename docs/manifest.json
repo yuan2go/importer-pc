@@ -56659,9 +56659,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "3934c82cd51b62552a9b2b1ea3afd08ad34a3091664aaac1343e394743d731c9",
-      "size_bytes": 18140,
-      "git_blob": "339b2b5833689aa70097cd628b1e7d86cec7824f",
+      "sha256": "7f198f56d6c87dc3e9b49fc0e6ea4b538d206174bf7ed4e5e74340352c9a541c",
+      "size_bytes": 18282,
+      "git_blob": "f2801f1a9d3ea119cd7ed767d3fa3c4c72598949",
       "previous_git_blob": "30d534ab772c1d66aa63d74952c99a44e09c7dd5"
     },
     {
@@ -57026,9 +57026,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "a3fc606f026d33b87d151bd675947420b740425c0a211231759494179d81b967",
-      "size_bytes": 18524,
-      "git_blob": "26ac89a4259267337bf08d1ae8dfe9c813b784f0",
+      "sha256": "2e1e84791d35034205a4cc0f9f713d2d9b379322ecb15f0027d5eb8d524aa9f6",
+      "size_bytes": 18713,
+      "git_blob": "268dd13e94a7dda3fef4e1c72453edf9c0d42ac4",
       "previous_git_blob": "887764b5625270209112e34de4e0e03def26ead6"
     },
     {
@@ -89587,9 +89587,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
-      "sha256": "26734bf1e13a548378d78d5ec78aca9ea9ba26f3bd7a7156ae1a5623eb63a18c",
-      "size_bytes": 10455,
-      "git_blob": "e9e622fd5f6f783dc1b22e7c58458beb05509e10",
+      "sha256": "0d5b8663a2c985cb26f2d13cdcd1bb3beb711fd078988ed35ab6351f4ec46bfe",
+      "size_bytes": 10659,
+      "git_blob": "9b45a7fffa8251c89ead9c640fd6e3d278ec5c81",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -104168,9 +104168,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "e6e99c423c189234dd8e8945576488597d09e0c6e4cbae089bc1ba988a10084d",
-      "size_bytes": 3220,
-      "git_blob": "5612370698540e26c027295e00b1659270ac67b2",
+      "sha256": "37165de89785ad49e835bb9bc992596dcf019cebb8a8ed56dc68240dd8361a45",
+      "size_bytes": 3527,
+      "git_blob": "e7ae0615afa5242886fa64fa0987d711ee094712",
       "storage_scope": "public_repository"
     },
     {
@@ -104260,6 +104260,28 @@
       "size_bytes": 4008,
       "git_blob": "6f2ee8f2f522b68f96b53d12ead4b4c779647e37",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.sportmaster.lock.json",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader locked dependency closure",
+      "source": "MVCODEREADER-RESTORE-01",
+      "storage_scope": "public_repository",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984,
+      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot/packages.sportmaster.win-x64.lock.json",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader locked dependency closure",
+      "source": "MVCODEREADER-RESTORE-01",
+      "storage_scope": "public_repository",
+      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
+      "size_bytes": 14238,
+      "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

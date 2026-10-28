@@ -87,13 +87,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     async Task StartCoreAsync(CancellationToken token)
     {
         RuntimeIdentityPreflight();
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")));
+        var seed = Wire.Decode<ParcelConfiguration>(StartupStorage(() => File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")), "SeedRead"));
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));
         seed = factory.Normalize(seed);
         directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, Id);
-        lease = new(directory, ["application-owner"]);
-        if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
+        lease = StartupStorage(() => new ResourceLease(directory, ["application-owner"]), "OwnerLease");
         var configurationFile = Path.Combine(directory, "configuration.json");
+        try
+        {
+        if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
         if (!File.Exists(configurationFile) && File.Exists(Path.Combine(directory, Id + ".db")))
             throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不允许使用种子补建配置账");
         if (!File.Exists(Path.Combine(directory, Id + ".db")) && File.Exists(configurationFile))
@@ -116,7 +118,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 foreach (var position in priorPositions.EnumerateArray()) overloadedPositions.TryAdd(position.GetString()!, 0);
         }
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
-        configuration = new(configurationFile, seed, definition.Validate);
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        { StorageFailed(error, "StartupFiles"); throw; }
+        configuration = new(configurationFile, seed, definition.Validate, error => StorageFailed(error, "ConfigurationPersistence"));
         ValidateDeploymentIdentity(seed);
         // Validate the current storage identity and reply index before
         // configuration confirmation or recovery can write to the current store.

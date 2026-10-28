@@ -1,3 +1,5 @@
+> 2026-10-29 整合续做：ST08/ST14 的监督连续性与存储启动边界见[WT024收口](../runtime/integration-20261028-supervisor-storage.md)。下文原源、FAIL/PASS及外部资格保持形成时范围。
+
 # 时间与存储故障分级 · TIME-STORAGE-FAULT-01
 
 F0：2026-10-26 main a8cd431456f73e83040f75a0c5e3cc1423440d1b；3a5b1d13是原线索。PR108/110/111未合并，四份原工作区附件不动。独立D盘工作树codex/time-storage-fault-01。原DB9/SQL1–9、历史冻结报文/PASS/SourceCommit不改；新根Simulation/合成故障，不改系统时钟、机器政策或真实工位。

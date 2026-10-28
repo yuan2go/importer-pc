@@ -65,11 +65,15 @@ static class InstalledLifecycleWindows
         WindowsDeploymentRequest Request(DeploymentMedia media) => new(media.Root, appId, media.SourceCommit, sid.Value, dataRoot, seedRoot,
             RunMode.Simulation, null, null, [], ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(seed) }, ProgramRoot: programRoot,
             ExpectedRegistrationHash: File.Exists(WindowsDeploymentSetup.Registration(appId)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) : null,
-            Shortcuts: new(true, true), OperationId: Wire.Id());
+            Shortcuts: new(true, true), OperationId: Wire.Id()) { Recovery = new() };
         DeploymentLocation Install(WindowsDeploymentRequest request, Action<DeploymentLocation>? project = null, Action<WindowsInstallationStage>? progress = null)
             => WindowsDeploymentSetup.Install(request, _ => { }, _ => { }, project ?? Project, progress);
         var firstRequest = Request(mediaA); var first = Install(firstRequest); prior = first;
         Check(WindowsDeploymentSetup.InspectInstallation(firstRequest).Status == "Completed" && first.LifecycleState == "Installed", "fresh protected install commits one authoritative deployment and complete receipt");
+        var supervisionRoot = DesktopRecoverySupervisor.StateDirectory(first);
+        var initialLedger = Wire.FileHash(Path.Combine(supervisionRoot,"state.json"));
+        Check(File.ReadAllText(Path.Combine(supervisionRoot,"state.json")).Contains("New"), "trusted first installation publishes complete initial supervision without enabling automatic launch");
+        Directory.Move(supervisionRoot,supervisionRoot+".retained");
         var data = Path.Combine(dataRoot, "original-request.json"); File.WriteAllText(data, "SYNTHETIC original request and response custody");
         var dataHash = Wire.FileHash(data); var configHash = Wire.FileHash(Path.Combine(first.ConfigurationDirectory, "business.json"));
         var rootsFile = Path.Combine(machine, "trusted-program-roots.json"); var rootsHash = Wire.FileHash(rootsFile);
@@ -78,6 +82,20 @@ static class InstalledLifecycleWindows
         Check(repair.ReleaseRoot != first.ReleaseRoot && repair.DataRoot == first.DataRoot && repair.ConfigurationDirectory == first.ConfigurationDirectory &&
             Wire.FileHash(data) == dataHash && Wire.FileHash(Path.Combine(repair.ConfigurationDirectory, "business.json")) == configHash && Wire.FileHash(rootsFile) == rootsHash,
             "same-source reinstall keeps account/data/configuration and does not rewrite unchanged trusted roots");
+        Check(!Directory.Exists(supervisionRoot),"disabled reinstall does not recreate a missing supervision directory");
+        var recoveryRefusalHash=Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
+        try { Install(Request(mediaA) with {Recovery=new(Enabled:true)});throw new Exception("Missing previous supervision accepted"); }
+        catch(IOException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId))==recoveryRefusalHash&&!Directory.Exists(supervisionRoot),"enabling an existing installation refuses missing supervision before registration changes"); }
+        Directory.Move(supervisionRoot+".retained",supervisionRoot);
+        Check(Wire.FileHash(Path.Combine(supervisionRoot,"state.json"))==initialLedger,"original supervision bytes retained across disabled reinstall");
+        var migrationTarget=Path.Combine(dataParent,appId+"-restored");WindowsDeploymentSetup.PrepareRestoreDataRoot(migrationTarget);
+        using(var migration=WindowsDeploymentSetup.PrepareRecoveryMigration(repair,migrationTarget,Wire.FileHash(WindowsDeploymentSetup.Registration(appId))))
+        {
+            var refused=false;try{Install(Request(mediaA));}catch(IOException){refused=true;}
+            Check(refused && Wire.FileHash(WindowsDeploymentSetup.Registration(appId))==recoveryRefusalHash &&
+                Wire.FileHash(Path.Combine(DesktopRecoverySupervisor.StateDirectory(repair with {DataRoot=migrationTarget}),"state.json"))==initialLedger,
+                "prepared migration holds actual protected deployment writer lease before any business source fence");
+        }
         VerifyShortcuts(repair); VerifyOrdinary(repair, "repair"); prior = repair;
         var before = Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
         var failed = Request(mediaB);
@@ -126,7 +144,9 @@ static class InstalledLifecycleWindows
         using (var arp = hklm.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + appId))
             Check(arp is null, "retired deployment is removed from the real Windows installed-product projection");
         Check(WindowsDeploymentSetup.InspectRemoval(appId).RemainingFiles!.Contains("foreign-evidence.txt"), "post-uninstall inspection observes actual unlisted remnants without deleting them");
+        Directory.Move(supervisionRoot,supervisionRoot+".retired-retained");
         var reinstall = Install(Request(mediaB)); prior = reinstall;
+        Check(!Directory.Exists(supervisionRoot),"disabled reinstall after real retirement preserves missing supervision instead of fabricating a new budget");
         VerifyShortcuts(reinstall); VerifyOrdinary(reinstall, "reinstall-after-remove");
         Check(reinstall.ConfigurationDirectory == first.ConfigurationDirectory && Wire.FileHash(data) == dataHash && File.Exists(foreign), "uninstall then reinstall retains original seed/data/evidence and starts with ordinary privileges again");
         _ = WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, d => DeploymentShortcuts.Remove(d, menu, desktop));

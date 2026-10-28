@@ -20,6 +20,7 @@ static class TimeStorageProcessChecks
     {
         var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic-account")
         { Recovery = new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+            DesktopRecoverySupervisor.InitializeNewDeployment(location);
         var launches = 0;
         Process Launch()
         {
@@ -72,6 +73,13 @@ static class TimeStorageProcessChecks
         using var diagnostics = new CrashDiagnostics(Path.Combine(root, "fatal-diagnostics"), "synthetic-ST08", typeof(TimeStorageProcessChecks).Assembly.GetCustomAttributes(false).OfType<System.Reflection.AssemblyInformationalVersionAttribute>().Single().InformationalVersion);
         using var stop = new CancellationTokenSource();
         var monitor = RuntimeFatalMonitor.RunAsync(app, diagnostics, stop.Token);
+        if (mode == "startup-permanent")
+        {
+            var seedFile=Path.Combine(root,"business.json");File.Move(seedFile,seedFile+".retained");Directory.CreateDirectory(seedFile);
+            try { await app.StartAsync(default); }
+            catch (UnauthorizedAccessException) { await monitor.WaitAsync(TimeSpan.FromSeconds(8)); }
+            throw new Exception("Startup permanent fault did not terminate through the fatal monitor");
+        }
         await app.StartAsync(default);
         if (mode == "recover")
         {
@@ -128,11 +136,12 @@ static class TimeStorageProcessChecks
     }
     public static async Task Processes(string workspace, string root)
     {
-        foreach (var mode in new[] { "budget-empty", "budget", "ambiguous", "permanent" })
+        foreach (var mode in new[] { "budget-empty", "budget", "ambiguous", "permanent", "startup-permanent" })
         {
             var childRoot = Path.Combine(root, mode); var launches = 0;
             var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(childRoot, "release"), childRoot, Path.Combine(childRoot, "data"), "synthetic-account")
             { Recovery = new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+            DesktopRecoverySupervisor.InitializeNewDeployment(location);
             Process Launch()
             {
                 var scenario = launches++ == 0 ? mode : "recover";
@@ -142,18 +151,18 @@ static class TimeStorageProcessChecks
             }
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(30)); var elapsed = Stopwatch.StartNew();
             var result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: _ => Launch(), cancellationToken: deadline.Token);
-            if (mode != "permanent")
+            if (mode is not ("permanent" or "startup-permanent"))
             {
                 using var observed = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(childRoot, "recovery-admission.json")));
                 if (!observed.RootElement.GetProperty("Paused").GetBoolean() || observed.RootElement.GetProperty("AdmittingPositions").GetInt32() != 0)
                     throw new Exception("FAIL supervised recovery must retain global pause before any position can admit; mode=" + mode);
             }
-            if (mode == "permanent" ? result != 77 || launches != 1 : result != 0 || launches != 2)
+            if (mode is "permanent" or "startup-permanent" ? result != 77 || launches != 1 : result != 0 || launches != 2)
                 throw new Exception("FAIL ST08 process closure " + mode + "; launches=" + launches + "; supervisor=" + result);
             var text = string.Join("\n", Directory.GetFiles(Path.Combine(childRoot, "fatal-diagnostics"), "*", SearchOption.AllDirectories).Select(File.ReadAllText));
-            if (!text.Contains("Storage.IngressCustody.") || !text.Contains("SourceCommit") || !text.Contains("Epochs") || !text.Contains("RecentState"))
+            if (!text.Contains(mode=="startup-permanent" ? "Storage.SeedRead.Unrecoverable" : "Storage.IngressCustody.") || !text.Contains("SourceCommit") || !text.Contains("Epochs") || !text.Contains("RecentState"))
                 throw new Exception("Missing flushed version/commit/instance/epoch/state fatal storage diagnostic");
-            if (mode == "permanent" && !File.Exists(Path.Combine(DesktopRecoverySupervisor.StateDirectory(location), "alert.json"))) throw new Exception("Missing permanent failure alert");
+            if (mode is ("permanent" or "startup-permanent") && !File.Exists(Path.Combine(DesktopRecoverySupervisor.StateDirectory(location), "alert.json"))) throw new Exception("Missing permanent failure alert");
             Console.WriteLine("PASS ST08 process closure " + mode + "; launches=" + launches + "; supervisor=" + result + "; elapsedMs=" + elapsed.ElapsedMilliseconds);
         }
     }

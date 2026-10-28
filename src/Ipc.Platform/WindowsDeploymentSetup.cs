@@ -24,7 +24,9 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentLocation? Current(string application)
     {
         var file = Registration(application);
-        if (!File.Exists(file)) return null;
+        try { _ = File.GetAttributes(file); }
+        catch (FileNotFoundException) { return null; }
+        catch (DirectoryNotFoundException) { return null; }
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var current = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
         if (current.ApplicationId != application) throw new InvalidDataException("Existing deployment identity differs");
@@ -116,10 +118,12 @@ public static partial class WindowsDeploymentSetup
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var before = Current(request.ApplicationId);
-        if ((File.Exists(Registration(request.ApplicationId)) ? Wire.FileHash(Registration(request.ApplicationId)) : null) != request.ExpectedRegistrationHash)
+        if ((before is null ? null : Wire.FileHash(Registration(request.ApplicationId))) != request.ExpectedRegistrationHash)
             throw new InvalidOperationException("部署登记在计划审阅后变化；重新审阅，不覆盖并行安装");
         if (before is not null && (!string.Equals(Path.GetFullPath(before.DataRoot), data, StringComparison.OrdinalIgnoreCase) || before.RuntimeAccountSid != request.RuntimeAccountSid))
             throw new InvalidDataException("升级保留原账户和数据根；位置/账户迁移须走完整恢复流程");
+        if (before is not null && (before.Recovery?.Enabled == true || request.Recovery?.Enabled == true))
+            DesktopRecoverySupervisor.RequireExistingState(before);
         var requiredBytes = checked(media.Files.Keys.Sum(n => new FileInfo(Path.Combine(media.Root, n)).Length) + 67108864);
         if (new DriveInfo(Path.GetPathRoot(vendor)!).AvailableFreeSpace < requiredBytes) throw new IOException("程序目标卷空间不足");
         var operation = request.OperationId is null ? Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".setup-" + Wire.Id() + ".json") : InstallationOperationFile(request);
@@ -155,6 +159,8 @@ public static partial class WindowsDeploymentSetup
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts)
                 { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
+            if (before is null && request.ExpectedRegistrationHash is null && location.Recovery is not null)
+                DesktopRecoverySupervisor.InitializeNewDeployment(location);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);

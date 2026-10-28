@@ -91,10 +91,11 @@ public sealed class ResourceLease : IDisposable
     readonly List<FileStream> locks = [];
     readonly string[] resources;
     public string[] Resources => locks.Count == resources.Length ? resources.ToArray() : [];
-    public ResourceLease(string root, IEnumerable<string> resources)
+    public ResourceLease(string root, IEnumerable<string> resources) : this(root, resources, createDirectory: true) { }
+    internal ResourceLease(string root, IEnumerable<string> resources, bool createDirectory)
     {
         this.resources = resources.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
-        Directory.CreateDirectory(root);
+        if (createDirectory) Directory.CreateDirectory(root);
         try
         {
             foreach (var resource in this.resources)

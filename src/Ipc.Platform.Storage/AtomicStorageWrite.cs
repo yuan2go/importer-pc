@@ -16,7 +16,7 @@ public static partial class AtomicStorageWrite
 {
     internal static Action<string>? PhaseForVerification { get; set; }
     public static bool IsUnrecoverable(Exception error) => error is InvalidDataException or UnauthorizedAccessException ||
-        error is SqliteException sql && (sql.SqliteErrorCode is 1 or 11 or 13 or 17 or 19 or 26 || sql.SqliteExtendedErrorCode is 8202 or 8458) ||
+        error is SqliteException sql && (sql.SqliteErrorCode is 1 or 3 or 8 or 11 or 13 or 17 or 19 or 23 or 26 || sql.SqliteExtendedErrorCode is 8202 or 8458) ||
         error is IOException io && (io.HResult & 0xffff) is 39 or 112 or 1392 or 1393;
     static bool Transient(Exception error) => !IsUnrecoverable(error) &&
         (error is SqliteException sql && sql.SqliteErrorCode is 5 or 6 or 10 || error is IOException and not StorageWriteFailure);
@@ -61,7 +61,8 @@ public static partial class AtomicStorageWrite
                     catch (Exception rollback)
                     { throw new StorageWriteFailure(IsUnrecoverable(error) || IsUnrecoverable(rollback) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain,
                         attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, new AggregateException(error, rollback)); }
-                    if (!Transient(error)) throw new StorageWriteFailure(StorageFailureKind.Unrecoverable, attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
+                    if (!Transient(error)) throw new StorageWriteFailure(IsUnrecoverable(error) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain,
+                        attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
                     if (attempts >= 32 || Stopwatch.GetElapsedTime(started) >= budget)
                         throw new StorageWriteFailure(StorageFailureKind.RetryBudgetExceeded, attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
                     Delay(started, budget, attempts);

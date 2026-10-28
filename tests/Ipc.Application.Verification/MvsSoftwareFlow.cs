@@ -165,7 +165,7 @@ static partial class SportmasterRcs
             if (bundled) { var actual = inner.Create(c); Source = (MvsAcquisition)actual.Reader; return actual; }
             var mapped = c.Topology!.Readers.Select(r => r with { Driver = "manual", Parameters = null }).ToArray();
             var reference = c with { Reader = mapped.Single(r => r.DeviceId == c.Reader.DeviceId), Topology = c.Topology with { Readers = mapped } };
-            var ports = inner.Create(reference);
+            var ports = new P0SimulationFactory(launch).Create(reference);
             var readers = new Dictionary<string, IControlledObservationSource>(ports.Readers!);
             readers[c.Reader.DeviceId].DisposeAsync().AsTask().GetAwaiter().GetResult();
             Source = new(new(c.Reader.DeviceId, c.Reader.DeviceId, c.Reader.Parameters!), fake is null ? new MvsApi() : fake,

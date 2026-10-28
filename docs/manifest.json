@@ -57541,9 +57541,9 @@
     {
       "path": "src/Ipc.Installer/packages.sportmaster.win-x64.lock.json",
       "storage_scope": "public_repository",
-      "sha256": "61606cfb0ebae9473249b2a0aec716026ab4db91fee08b6aedcd1248eb3793db",
-      "size_bytes": 17974,
-      "git_blob": "5a0f4e095408dc556e1df4bc9abed61da24f2c0d",
+      "sha256": "a75e6e37b5acc40acc46fd8c956496437e7c9f6bd16cec60b0c50e628a959a23",
+      "size_bytes": 19648,
+      "git_blob": "f8a3c73bbde4384befe1e84b73fb7de3fe8ebda4",
       "version": "typography-01",
       "status": "current_source_or_specification",
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
@@ -103629,9 +103629,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
-      "size_bytes": 13984,
-      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
+      "sha256": "737576f29c7b0488c721054bb70079397f37d7e2bdec378566f14837d9c3c8ab",
+      "size_bytes": 14216,
+      "git_blob": "045bf3af49a2c61bb1b9457274276f957c799939",
       "storage_scope": "public_repository"
     },
     {
@@ -104432,9 +104432,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "63984e2550a757faa3e77a5d52eee8a876e581ea8c42f46280f57a528d1283e4",
-      "size_bytes": 3161,
-      "git_blob": "00c50ac6f1d413521c233c1443c0c2b611038df4",
+      "sha256": "c03b5ca6ec0d38c7102b233995e58ade6b140534f7dc767d61659cacb06c7838",
+      "size_bytes": 3485,
+      "git_blob": "3bd1edbf554bd05a0445d8376310ede3807cc541",
       "storage_scope": "public_repository"
     },
     {
@@ -104509,9 +104509,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "e7977f11af3ff78df1248f9700161f492df7a6a77cb47ea819f452402e19026e",
-      "size_bytes": 16272,
-      "git_blob": "5d93a6a962c7532514b12ec5c0556b5cfcd1f876",
+      "sha256": "4f0aa39cae82acfb742190e8292a301959904d56034aaa06e259bd16964497e7",
+      "size_bytes": 16298,
+      "git_blob": "58da421f471a7e16972e6d9672667ec5df4fb4e1",
       "storage_scope": "public_repository"
     }
   ],

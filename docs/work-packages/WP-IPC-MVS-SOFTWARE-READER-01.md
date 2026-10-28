@@ -17,3 +17,5 @@ D-MVS-SOFTWARE-01：本轮用户批准MVS＋软件识别及RCS去重口径；不
 - RV-MVS-SOFTWARE-04：PASS，既有驱动46项自检、RCS超时/响应错误/重启Unknown原请求不重发检查、参数延后和单相机守卫；本地服务协议/冲突/去重/错配/拒绝/形状检查通过。
 - RV-MVS-SOFTWARE-05：BLOCKED_ENVIRONMENT，默认身份守卫在当前提升权限账号按设计拒绝启动；全部RCS回归在进入未注入Simulation前置接口的运行时夹具时同样被阻断。适配器协议部分及独立RCS错误/恢复套件已验证，不伪造整套PASS。未改Windows账号、全机UAC或正式权限。
 - RV-MVS-SOFTWARE-06：安装器和冻结介质生成、依赖核对及启动结果单独随实际SourceCommit交付；普通账号正式客户端和真实现场RCS仍不由本轮模拟验收替代。
+
+2026-10-28增量：CI无机级策略的合成夹具复用既有P0SimulationFactory，不再从合成测试创建正式机级租约；实际随包真机仍用默认工厂和原机器策略。补齐便携构建的全局锁文件及安装器完整Sportmaster闭包，保持RestoreLockedMode=true，不跳过或删除断言。

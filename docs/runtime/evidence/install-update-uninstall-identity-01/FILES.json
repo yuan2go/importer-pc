@@ -1,0 +1,136 @@
+{
+  "SourceCommit": "221f058333258622b9150f9d2d77c4346c4bb6f5",
+  "Files": [
+    {
+      "File": "desktop-build-first-failure.log",
+      "Bytes": 4068,
+      "Sha256": "7ce410b0979a9320cdedafa40aaeee9728ac1e8f9b586ef8f6cdea159d1021f9"
+    },
+    {
+      "File": "frozen-broker/RESULT.json",
+      "Bytes": 451,
+      "Sha256": "e6801f7268988390e5b89e678e0361432fdf59dc8ef7f09f7339e1abd7ce97a1"
+    },
+    {
+      "File": "frozen-broker/RUN.log",
+      "Bytes": 4509,
+      "Sha256": "21d506e4b41e097ec4f108f6934cd61c4567c2fc08598cd2d12d4a05c69597a8"
+    },
+    {
+      "File": "frozen-first-run/RESULT.json",
+      "Bytes": 3433,
+      "Sha256": "20eac53fb5c49e694158cb4967e7991f1b62ba8132569f66cbd8dd6dd8a9dbd2"
+    },
+    {
+      "File": "frozen-first-run/RUN.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "frozen-first-run/WINDOWS-WPF.log",
+      "Bytes": 13484,
+      "Sha256": "6e9aba6db0984589dc1cf6dfdcd759997867879ad97c98139f46ff468ed42345"
+    },
+    {
+      "File": "frozen-startup/installer-complete-launch-failed.png",
+      "Bytes": 68211,
+      "Sha256": "bed827d4e818e018a3751bd1baee48a3138ec84be676df4cce78298944cf7129"
+    },
+    {
+      "File": "frozen-startup/installer-reinstall-confirmation.png",
+      "Bytes": 61473,
+      "Sha256": "00cd3ec11648a67588b12cea2e6c039d77b4f5c29f7c8e2c90d989dceb814a0e"
+    },
+    {
+      "File": "frozen-startup/RESULT.json",
+      "Bytes": 3433,
+      "Sha256": "20eac53fb5c49e694158cb4967e7991f1b62ba8132569f66cbd8dd6dd8a9dbd2"
+    },
+    {
+      "File": "frozen-startup/RUN.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "frozen-startup/uninstall-rechecked-compact.png",
+      "Bytes": 36136,
+      "Sha256": "684da8c7b30f0888eeca0235320054ba51c9ff4387cd46a78d6d6861892e116a"
+    },
+    {
+      "File": "frozen-startup/WINDOWS-WPF.log",
+      "Bytes": 21170,
+      "Sha256": "6fabff3bd83099f465f6d167e9b9dab2f8847a5df40db7d2fea901e08123afa1"
+    },
+    {
+      "File": "installed-lifecycle-first-failure.log",
+      "Bytes": 783,
+      "Sha256": "5e048986183150c4314fbdf71393a52682d5e442ce75acc2b450c860fa3680b4"
+    },
+    {
+      "File": "installed-lifecycle-windows.log",
+      "Bytes": 5498,
+      "Sha256": "8c6a934a9fce7993d93116ec0fabe22e3c2ef8bac7442772c774a4eca12c3191"
+    },
+    {
+      "File": "installer-change-guards.log",
+      "Bytes": 806,
+      "Sha256": "c00d52c1e4aefdf2e5ddcf7de3c5e10b9a69acd9fc16dd347024e814a96458a5"
+    },
+    {
+      "File": "installer-smoke.json",
+      "Bytes": 232,
+      "Sha256": "e659111b327bad7d1b0333cab1562b3fe0022e1c47c70839f99357ab29e0f09e"
+    },
+    {
+      "File": "INSTALLER.json",
+      "Bytes": 789,
+      "Sha256": "f1423d3fb08d64fcedfe3752d6423530ed7be51298d614d178e0e59b2cf100e4"
+    },
+    {
+      "File": "lifecycle-ux.log",
+      "Bytes": 15062,
+      "Sha256": "81fffa357b884cfebd91872a189436daaea6f669ffa185c0580cc9385fe4ea4e"
+    },
+    {
+      "File": "native-lifecycle-build-selection-WINDOWS-WPF.log",
+      "Bytes": 915,
+      "Sha256": "6d3b5064139151bc132e71b16d9fd154db19c184ff9fef7d6dc44c9c3e94a470"
+    },
+    {
+      "File": "native-lifecycle-first-failure.log",
+      "Bytes": 1014,
+      "Sha256": "9e37ba8e4bee3cec5a3629dfb968469141eda9282389f719ee0dc31d90f042e6"
+    },
+    {
+      "File": "native-lifecycle-WINDOWS-WPF.log",
+      "Bytes": 2590,
+      "Sha256": "91092f3bdabc51bbd5cc3f272a326c0e41c3b3664b067fff42f8fb84383be036"
+    },
+    {
+      "File": "ordinary-runtime-startup.log",
+      "Bytes": 489,
+      "Sha256": "ef694f7b2047713c1fbb1a7ca52610cbaeb2a62be3cfeee9e10e10e79b2b5dd3"
+    },
+    {
+      "File": "p0-supervisor.log",
+      "Bytes": 1560,
+      "Sha256": "0e6fe66f2a16632c368fc1a8114c6f329f4c77bae08739cce263a5cf18584dc0"
+    },
+    {
+      "File": "README.md",
+      "Bytes": 3162,
+      "Sha256": "e393e88d67516ddb5f300fe1b427cbc75d2e9fbdb093748b6cc1f9fbe5f68f95"
+    },
+    {
+      "File": "runtime-identity.log",
+      "Bytes": 1736,
+      "Sha256": "2845efcbc34a8475d0598e1c6bf09f40e67f08abef8406bfafb15133693a21a1"
+    },
+    {
+      "File": "windows-runtime-setup.log",
+      "Bytes": 357,
+      "Sha256": "6d5ac816629b9ccd68d29f0e8e6abc39da657e961270574a4c2279c6969e7051"
+    }
+  ],
+  "Boundary": "Actual Windows kernel/SCM/native WPF with isolated synthetic products and ports; original sportmaster replacement, reboot queue, physical devices and site NOT_RUN"
+}

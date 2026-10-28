@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "0a0f3e9fa248888261173fdfbac5850db3867a466d187af5549db3f670dcb09e",
-      "size_bytes": 11107,
-      "git_blob": "1a9f17aca6a3cb1e115effe981bf3c29af300d93",
+      "sha256": "ea37ac9fd0e124c2ab52d13788bf6f1ca198109ff0a6aa88ea8a6850d52675f5",
+      "size_bytes": 10995,
+      "git_blob": "dc3bf8bda9089328ca77d689486102e52be57949",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -104053,6 +104053,28 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/evidence/install-update-uninstall-identity-01/FILES.json",
+      "version": "install-update-uninstall-identity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
+      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
+      "sha256": "dfb71a24dbd00f18ccba4c71f5614c78b83894209e882ffe3acd11baafce5782",
+      "size_bytes": 4509,
+      "git_blob": "7e85f0c810bdc13508367de6e18a2dca8defdb03",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/install-update-uninstall-identity-01/INSTALLER.json",
+      "version": "install-update-uninstall-identity-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
+      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
+      "sha256": "f1423d3fb08d64fcedfe3752d6423530ed7be51298d614d178e0e59b2cf100e4",
+      "size_bytes": 789,
+      "git_blob": "1f9e8cc1832a05dea8f393f20a97961163206cd1",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/install-update-uninstall-identity-01/README.md",
       "version": "install-update-uninstall-identity-01",
       "status": "current_source_or_synthetic_evidence",
@@ -104080,9 +104102,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
       "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "8937e243a1286302e9edd976d4e301aac5a34de4ba5c208345cc24043ef417cc",
-      "size_bytes": 443,
-      "git_blob": "c1b3c14bd38402b5e281e3044abe367dd54a5562",
+      "sha256": "e6801f7268988390e5b89e678e0361432fdf59dc8ef7f09f7339e1abd7ce97a1",
+      "size_bytes": 451,
+      "git_blob": "13a4941af63a66eefe4574e86521149edce5eecc",
       "storage_scope": "public_repository"
     },
     {
@@ -104102,9 +104124,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
       "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "8d93f11f7dec6f265aaf46d1737559594a14bfdb6b722d9f3b71f1946965b636",
-      "size_bytes": 3338,
-      "git_blob": "7c804d5d58220eab0ba95640fa83cf038e116cbd",
+      "sha256": "20eac53fb5c49e694158cb4967e7991f1b62ba8132569f66cbd8dd6dd8a9dbd2",
+      "size_bytes": 3433,
+      "git_blob": "18c2c3d45f84db2dc55feb85b922ce90eeb16b6b",
       "storage_scope": "public_repository"
     },
     {
@@ -104135,9 +104157,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
       "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "8d93f11f7dec6f265aaf46d1737559594a14bfdb6b722d9f3b71f1946965b636",
-      "size_bytes": 3338,
-      "git_blob": "7c804d5d58220eab0ba95640fa83cf038e116cbd",
+      "sha256": "20eac53fb5c49e694158cb4967e7991f1b62ba8132569f66cbd8dd6dd8a9dbd2",
+      "size_bytes": 3433,
+      "git_blob": "18c2c3d45f84db2dc55feb85b922ce90eeb16b6b",
       "storage_scope": "public_repository"
     },
     {
@@ -104234,9 +104256,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
       "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "9201746337b976d83667177bc4db0ba2be02376982c2951aad80b97b9dde4e2e",
-      "size_bytes": 226,
-      "git_blob": "56f9b810646e2754949a87552cd15a8debc3c967",
+      "sha256": "e659111b327bad7d1b0333cab1562b3fe0022e1c47c70839f99357ab29e0f09e",
+      "size_bytes": 232,
+      "git_blob": "1e0298ebffbb8d7c51282660929f566ba3c38b15",
       "storage_scope": "public_repository"
     },
     {

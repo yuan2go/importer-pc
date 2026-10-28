@@ -17,6 +17,19 @@
     "Description": "正式启用须填写并固定本位物理相机，IP只作连接地址；更换相机须更新并受控启用配置。模拟或独立诊断可留空，同一实例重连仍固定首次取得租约的序列号。"
   },
   {
+    "Key": "acquisition.mode",
+    "Group": "采集 / 触发",
+    "Label": "采集模式",
+    "Type": "choice",
+    "Default": "existing",
+    "Choices": [
+      "existing",
+      "external-trigger",
+      "continuous"
+    ],
+    "Description": "作业使用现场一包一次的外部触发；仅切换 TriggerMode，不猜测或改写硬件触发源。连续采集关闭触发，只用于观察诊断。沿用设备设置时不写参数。"
+  },
+  {
     "Key": "entity.mode",
     "Group": "输入 / 实体关联",
     "Label": "实体关联策略",

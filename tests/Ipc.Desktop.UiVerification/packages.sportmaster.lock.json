@@ -369,6 +369,12 @@
           "Ipc.Reference.Protocol": "[1.0.0, )"
         }
       },
+      "ipc.drivers.hikrobot": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
+        }
+      },
       "ipc.drivers.hikrobot.mvs": {
         "type": "Project",
         "dependencies": {

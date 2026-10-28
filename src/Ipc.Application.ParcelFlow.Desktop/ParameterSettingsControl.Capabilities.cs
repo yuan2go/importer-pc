@@ -68,7 +68,7 @@ public sealed partial class ParameterSettingsControl
         RuntimeSummary(page, draft);
         if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
         {
-            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-mvs" ? "海康 SDK（随软件安装）" : "此候选不适用于当前内置SDK，请使用当前首配模板", IsReadOnly = true, MinHeight = 40 };
+            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-idmvs" ? "海康读码 SDK（MvCodeReader，随软件安装）" : "当前候选使用 MVS 采图；请切换为海康读码 SDK 并核对参数", IsReadOnly = true, MinHeight = 40 };
             Field(Form(page), "相机连接", identity, null, draft.InstanceId + "/Provider", page);
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
         }
@@ -77,8 +77,8 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
-        if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null)
+        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-idmvs").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null || !choices.Any(c => c.Provider == draft.Provider))
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
             var providerForm = Form(page);
@@ -130,8 +130,8 @@ public sealed partial class ParameterSettingsControl
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
             page.Body.Children.Add(Text("海康 SDK 随供包台软件安装，通过 IP 和预期序列号连接相机；实际连接与帧请在诊断中核对。尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
-        if (draft.Provider.Implementation == "extension:hikrobot.idmvs-reader/idmvs-reader")
-            page.Body.Children.Add(Text("此驱动使用智能读码器 SDK，尚未验证适用于 MV-PD010003-06M-12C 标准型套件。标准型使用MVS采集链路，识别组件仍待接入；采图成功不表示已经识码。"));
+        if (draft.Provider.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader")
+            page.Body.Children.Add(Text("通过 MvCodeReader SDK 接收相机返回的完整条码候选。作业使用现场一包一次的外部触发，并按触发序号防止重复申请；同码新触发是新包裹。请先关闭占用相机的旧客户端或设备工具。实际识码与 RCS 结果在作业和诊断中分别核对。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
         if (isRcs)

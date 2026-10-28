@@ -13,6 +13,7 @@ internal static class Verification
     internal static async Task Run()
     {
         BufferChecks();
+        await RestorationVerification.Run();
         await PolicyVerification.Run();
         var api = new FakeApi(); var lease = new TestLease();
         var received = new ConcurrentQueue<Observation>(); var health = new ConcurrentQueue<DeviceHealthConfirmation>();
@@ -263,7 +264,7 @@ internal static class Verification
     internal sealed class TestLease : IDisposable { public int Releases; public void Dispose() => Releases++; }
     internal sealed class FakeApi : IHikrobotApi
     {
-        public ConcurrentQueue<string> Calls = new(); public uint Mode = 1; public bool FailStop, FailHealth;
+        public ConcurrentQueue<string> Calls = new(); public uint Mode = 1, Source; public bool FailConfigure; public bool FailStop, FailHealth;
         public Action<HikFrame>? Frame;
         public Action<Exception>? Failure;
         public Action? Enumerating, Starting;
@@ -271,6 +272,8 @@ internal static class Verification
         public void Create(HikDevice device) => Calls.Enqueue("create");
         public void Open() => Calls.Enqueue("open");
         public uint TriggerMode() => FailHealth ? throw new IOException("Synthetic SDK health loss") : Mode;
+        public uint TriggerSource() => Source;
+        public void ConfigureAcquisition(string mode) { Calls.Enqueue("configure:" + mode); if (FailConfigure) throw new IOException("Synthetic configuration failure"); if (mode == "external-trigger" && Source == 7) throw new InvalidDataException("Software is not an external trigger"); Mode = mode == "continuous" ? 0u : 1u; }
         public void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding) { Frame = frame; Failure = failure; }
         public void Emit(uint trigger, uint frame, string code) => Frame!(new(trigger, frame, 0, 0, 0, 0, [code]));
         public void Start() { Calls.Enqueue("start"); Starting?.Invoke(); }

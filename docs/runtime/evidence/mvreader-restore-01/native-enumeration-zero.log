@@ -1,0 +1,7 @@
+PHASE load-sdk; elapsedMs=13; deadlineExpired=False
+PHASE load:MVGigEVision.dll; elapsedMs=25; deadlineExpired=False
+PHASE load:MvSmtDevCtrl.dll; elapsedMs=40; deadlineExpired=False
+PHASE load:MvCodeReaderCtrl.dll; elapsedMs=68; deadlineExpired=False
+PHASE enumerate; elapsedMs=77; deadlineExpired=False
+SDK=MvCodeReader 2.0.0.4; GigE count=0
+PHASE finished; elapsedMs=1086; deadlineExpired=False

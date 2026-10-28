@@ -287,7 +287,7 @@ public partial class ParcelViewModel
         {
             var b = readerBindings[i];
             if (b.Target != x.Original.DeviceId || !b.Enabled) throw new InvalidOperationException("读码稳定DeviceId只读且必须启用；设备迁移需独立受控部署");
-            return x.Original with { Driver = b.Package is null ? b.Implementation : "extension:" + b.InstanceId, Parameters = b.Implementation is "tcp-line" or "hikrobot-mvs" ? b.Parameters : null };
+            return x.Original with { Driver = b.Package is null ? b.Implementation : "extension:" + b.InstanceId, Parameters = b.Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" ? b.Parameters : null };
         }).ToArray();
         var oldReaderIds = ReaderDrafts.Select(x => x.Original.Driver).Where(x => x.StartsWith("extension:", StringComparison.Ordinal)).Select(x => x[10..]).ToHashSet();
         var instances = (c.Extensions?.Instances ?? []).Where(x => !oldReaderIds.Contains(x.Id)).Concat(readerBindings.Where(x => x.Package is not null).Select(x => new ExtensionInstance(x.InstanceId, x.Package!.Id, x.Module!, x.Target, x.Enabled, x.Parameters))).ToArray();

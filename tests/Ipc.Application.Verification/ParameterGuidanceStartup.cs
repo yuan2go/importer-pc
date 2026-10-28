@@ -32,11 +32,11 @@ static class ParameterGuidanceStartup
             "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
-            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs" && r.Parameters!["entity.mode"] == "observe-only"),
+            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-idmvs" && r.Parameters!["entity.mode"] == "trigger"),
             "current built-in SDK candidate remains observation-only until a formal decoder and parcel boundary exist; quantity is absent");
         var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
         Check(mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only"]) &&
-            draft.Build().Reader.Parameters!["entity.mode"] == "observe-only" && initial.Reader.Parameters!["entity.mode"] == "observe-only",
+            draft.Build().Reader.Parameters!["entity.mode"] == "trigger" && initial.Reader.Parameters!["entity.mode"] == "trigger",
             "current SDK mode has only the read-only observation choice and candidate construction never activates parcel admission");
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);

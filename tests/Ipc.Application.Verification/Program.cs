@@ -88,6 +88,7 @@ if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
 if (args.Contains("--rcs-heartbeat-signed")) { var i = Array.IndexOf(args, "--rcs-heartbeat-signed"); await SportmasterRcs.HeartbeatSignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
+if (args.Contains("--mvreader-flow")) { await SportmasterRcs.MvCodeReaderFlow(workspace, root); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }

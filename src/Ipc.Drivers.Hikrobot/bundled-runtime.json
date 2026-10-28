@@ -1,0 +1,186 @@
+{
+  "SchemaVersion": 1,
+  "Abi": "0x02000004",
+  "Entry": "MvCodeReaderCtrl.dll",
+  "Preload": [
+    "MVGigEVision.dll",
+    "MvSmtDevCtrl.dll"
+  ],
+  "Files": [
+    {
+      "Path": "avutil-57.dll",
+      "Length": 934912,
+      "Sha256": "31FB9724ADA7A4D710E4FE4A55043443EAAEA2BD7D7D70389CBCC24E374E58CF"
+    },
+    {
+      "Path": "CLAllSerial_MD_VC120_v3_0_MV.dll",
+      "Length": 41984,
+      "Sha256": "53E24CD08C5EDB81655325CD0C2F3720CC88E0D879F2471D4694241D22005543"
+    },
+    {
+      "Path": "CLProtocol_MD_VC120_v3_0_MV.dll",
+      "Length": 131584,
+      "Sha256": "33E1FCD1DF3C6841870D548B52B8E7A71B63B6AF5D597FCFC2D925ECA9AC431E"
+    },
+    {
+      "Path": "CLSerCOM.dll",
+      "Length": 123392,
+      "Sha256": "7A9A326F9A6D1B8E8F0381F2117653067BFECB43341000E946AF435B4E8FF31C"
+    },
+    {
+      "Path": "CodeReaderSdkConfig.ini",
+      "Length": 680,
+      "Sha256": "E286E02159C09DDC8F9088C0D7BF8E1E94FF700497FB4CE1A94B70799D6CC116"
+    },
+    {
+      "Path": "CommonParameters.ini",
+      "Length": 4426,
+      "Sha256": "09FD02EC89061347D1077F65C5B33A42DF2C4EAB24221A3AC3A31ADAB1AAEA4D"
+    },
+    {
+      "Path": "FormatConversion.dll",
+      "Length": 3010048,
+      "Sha256": "2D8D0A39D2B111938FD5EB17FB0521CE611BDE5682CADB2B2E2EBBE5022AB4BC"
+    },
+    {
+      "Path": "GCBase_MD_VC120_v3_0_MV.dll",
+      "Length": 99840,
+      "Sha256": "083D5A34D4583927414425683FD9970DBC910A69C51F088AB281E117B18F4B6D"
+    },
+    {
+      "Path": "GenApi_MD_VC120_v3_0_MV.dll",
+      "Length": 1003008,
+      "Sha256": "B58BD108839806E3E91995CDBE6E443F71B76FE6AD909DE962FFA2940CF9DFDB"
+    },
+    {
+      "Path": "hlog.dll",
+      "Length": 1267200,
+      "Sha256": "8D4B83F9816B1F380CD27BA8A44D7E0E8CBD2AE39D22CE8E9CB4E7C3F62A153E"
+    },
+    {
+      "Path": "hpr.dll",
+      "Length": 150016,
+      "Sha256": "564F661A49ACA8BF168EB58FB448187ADF532DB42CCA3766D296BA05B889FADB"
+    },
+    {
+      "Path": "libmmd.dll",
+      "Length": 3249568,
+      "Sha256": "6142BDE15261BD7177252AA8F716560A5344004E1B97A0B3C6280FC10D22829B"
+    },
+    {
+      "Path": "libwinpthread-1.dll",
+      "Length": 60356,
+      "Sha256": "E2BA208EDFBE1032A9A2AC3D4F949CBE5B3EE7B5C6E8EB5CD7FC0BA2B78D4F32"
+    },
+    {
+      "Path": "log4cpp_MD_VC120_v3_0_MV.dll",
+      "Length": 237056,
+      "Sha256": "D7A357EA20AF5F186AAA3CF2CA86BD1686B1E651074A6F29EF57FE47B8A46E9F"
+    },
+    {
+      "Path": "log4cxx.properties",
+      "Length": 2475,
+      "Sha256": "54EA9AC9EEFFD5A5EC0E2DA111185C1B0B04129DBEE40B33E6ED2B0F4C6F5F89"
+    },
+    {
+      "Path": "Log_MD_VC120_v3_0_MV.dll",
+      "Length": 44544,
+      "Sha256": "3FE8DB945C07725F284D22CAFA125DA57502572A56086062EC64C5EB4C1A20AA"
+    },
+    {
+      "Path": "MathParser_MD_VC120_v3_0_MV.dll",
+      "Length": 38912,
+      "Sha256": "678CC6F4912B736CFBDE2A6EAED37C1DAC3848356F5FA43427EB95E5AD55EB9B"
+    },
+    {
+      "Path": "MediaProcess.dll",
+      "Length": 5053440,
+      "Sha256": "BF6E0C2E253D628D310EBD5D6AAF204A59759ED7F33EB1FBDD598B72038C811E"
+    },
+    {
+      "Path": "msvcp120.dll",
+      "Length": 659616,
+      "Sha256": "92FAEDD18A29E1BD2DD27A1D805EA5AA3E73B954A625AF45A74F49D49506D20F"
+    },
+    {
+      "Path": "msvcp90.dll",
+      "Length": 851456,
+      "Sha256": "10859F06F41144FA32CF5DA223511F85FE349B1D76471EF65F0395DAC606EF63"
+    },
+    {
+      "Path": "msvcr100.dll",
+      "Length": 830616,
+      "Sha256": "A87A3BEEC9E7C7CCC1DB553D51C033B9A4FF223A3EA57241A22E601D778CBF56"
+    },
+    {
+      "Path": "msvcr120.dll",
+      "Length": 963240,
+      "Sha256": "D28C7AB34842B6149609BD4E6B566DDAB8B891F0D5062480A253EF20A6A2CAAA"
+    },
+    {
+      "Path": "msvcr90.dll",
+      "Length": 627200,
+      "Sha256": "E11CE4B90DB815359B2D76F95F623FC26924C5A254F0540224FA6FEB623817E5"
+    },
+    {
+      "Path": "MvCodeReaderCtrl.dll",
+      "Length": 512512,
+      "Sha256": "25583FA5EADCD42F06FF02B756DF569A9A469DABF3AEC3E948C94461C95704F7"
+    },
+    {
+      "Path": "MVGigEVision.dll",
+      "Length": 570368,
+      "Sha256": "4600129624088C6B21B95C3CEC961FE3A5B51FAE77F763B0AA3B861C1A557E32"
+    },
+    {
+      "Path": "MvSmtDevCtrl.dll",
+      "Length": 1257984,
+      "Sha256": "C1E8F7870C5B9C75709FC9D6883686F0B10C8DFE1509B8D5E4697505655DECD5"
+    },
+    {
+      "Path": "MvVirtualCodeReaderCtrl.dll",
+      "Length": 339456,
+      "Sha256": "7AD6F3E81A36CEEAC60BDAEAC8D2DD80D1C451761ED43DC8846903CE6CBE65AE"
+    },
+    {
+      "Path": "MvZip.dll",
+      "Length": 165376,
+      "Sha256": "38B3322F69928435D16F1FCBFACEE7FB139C400E45C7584DF602C1CBB921A384"
+    },
+    {
+      "Path": "NodeMapData_MD_VC120_v3_0_MV.dll",
+      "Length": 115712,
+      "Sha256": "BC7CC95C221AC1596A9615D755D78F2DCBDA7E3020B7BEF85C5E2C034D6AD6DC"
+    },
+    {
+      "Path": "pthreadGC2.dll",
+      "Length": 185976,
+      "Sha256": "0250C506A0D79B1D0F2DCF2682BCD6F1E46F8ECC1D952B2357AB23CD463ACC02"
+    },
+    {
+      "Path": "pthreadVC2.dll",
+      "Length": 82944,
+      "Sha256": "0E6AF724609EF6846982EF717013426C359C455FFF324E906D8D55C8BB88D16E"
+    },
+    {
+      "Path": "svml_dispmd.dll",
+      "Length": 9160632,
+      "Sha256": "86567C3432A669C9489558B7410B7440D432650F30D878C997E621DAEA218CF9"
+    },
+    {
+      "Path": "swscale-6.dll",
+      "Length": 646656,
+      "Sha256": "F77D8CF86C879421EC3A4AE04B7613E96672D71CAD4A4F25687E297B30C1262D"
+    },
+    {
+      "Path": "VirXMLParse.dll",
+      "Length": 184320,
+      "Sha256": "22A0C1C50B2DF0DAAD8AE42D7E28D5349B51D57099D03D20DA6A1859886F2B27"
+    },
+    {
+      "Path": "XmlParser_MD_VC120_v3_0_MV.dll",
+      "Length": 696832,
+      "Sha256": "7B6ECED4DC1F4BD7D4AA3CFFF4E93ABC9EB01360891013BDBEBF96CDB564A70A"
+    }
+  ]
+}

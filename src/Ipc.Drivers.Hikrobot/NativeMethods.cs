@@ -32,6 +32,9 @@ internal static class NativeMethods
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CODEREADER_StartGrabbing(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CODEREADER_StopGrabbing(nint handle);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CODEREADER_GetEnumValue(nint handle, string key, nint value);
+    [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CODEREADER_SetEnumValue(nint handle, string key, uint value);
+    [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CODEREADER_SetIntValue(nint handle, string key, long value);
+    [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CODEREADER_GetOptimalPacketSize(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CODEREADER_RegisterImageCallBackEx2(nint handle, FrameCallback callback, nint user);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CODEREADER_RegisterExceptionCallBack(nint handle, ExceptionCallback callback, nint user);
 
@@ -78,6 +81,8 @@ internal interface IHikrobotApi
     void Create(HikDevice device);
     void Open();
     uint TriggerMode();
+    uint TriggerSource() => throw new NotSupportedException("Trigger source query unavailable");
+    void ConfigureAcquisition(string mode) => throw new NotSupportedException("Acquisition setting unavailable");
     void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding);
     void Start();
     void Stop();
@@ -134,10 +139,24 @@ internal sealed class HikrobotApi : IHikrobotApi
         finally { Marshal.FreeHGlobal(memory); }
     }
     public void Open() => NativeMethods.Check(NativeMethods.MV_CODEREADER_OpenDevice(handle), "OpenDevice");
-    public uint TriggerMode()
+    public uint TriggerMode() => EnumValue("TriggerMode");
+    public uint TriggerSource() => EnumValue("TriggerSource");
+    public void ConfigureAcquisition(string mode)
+    {
+        // Only an explicitly selected profile writes these nodes. Never guess a
+        // physical input line, change exposure/code types, or send TriggerSoftware.
+        if (mode == "external-trigger" && TriggerSource() is 7 or 9)
+            throw new InvalidDataException("外部触发需要相机已有的硬件触发源；当前为软件或设备自触发，请先在设备工具中核对实际接线和触发源");
+        if (mode is not ("continuous" or "external-trigger")) throw new InvalidDataException("Unknown acquisition profile");
+        NativeMethods.Check(NativeMethods.MV_CODEREADER_SetEnumValue(handle, "TriggerMode", mode == "continuous" ? 0u : 1u), "Set TriggerMode");
+        var packetSize = NativeMethods.MV_CODEREADER_GetOptimalPacketSize(handle);
+        if (packetSize <= 0) throw new IOException("GetOptimalPacketSize failed: 0x" + unchecked((uint)packetSize).ToString("X8"));
+        NativeMethods.Check(NativeMethods.MV_CODEREADER_SetIntValue(handle, "GevSCPSPacketSize", packetSize), "Set GevSCPSPacketSize");
+    }
+    uint EnumValue(string key)
     {
         var memory = Marshal.AllocHGlobal(280);
-        try { Marshal.Copy(new byte[280], 0, memory, 280); NativeMethods.Check(NativeMethods.MV_CODEREADER_GetEnumValue(handle, "TriggerMode", memory), "Get TriggerMode"); return unchecked((uint)Marshal.ReadInt32(memory)); }
+        try { Marshal.Copy(new byte[280], 0, memory, 280); NativeMethods.Check(NativeMethods.MV_CODEREADER_GetEnumValue(handle, key, memory), "Get " + key); return unchecked((uint)Marshal.ReadInt32(memory)); }
         finally { Marshal.FreeHGlobal(memory); }
     }
     public void Register(Action<HikFrame> frame, Action<Exception> failure, Encoding encoding)

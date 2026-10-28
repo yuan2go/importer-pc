@@ -78,7 +78,8 @@ public static class NativeSdkBoundary
         var loadOrder = preload.Append(library).Select(name => dlls.SingleOrDefault(f => Path.GetFileName(f.Path) == name)
             ?? throw new InvalidDataException("Declared SDK transport lacks qualified installed bytes")).ToArray();
         var directory = Path.GetDirectoryName(target.Path)!;
-        if (!Path.IsPathFullyQualified(directory) || dlls.Any(f => !string.Equals(Path.GetDirectoryName(f.Path), directory, StringComparison.OrdinalIgnoreCase)) ||
+        if (files.Length > 64 || files.Select(f => Path.GetFileName(f.Path)).Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length ||
+            !Path.IsPathFullyQualified(directory) || files.Any(f => !string.Equals(Path.GetDirectoryName(f.Path), directory, StringComparison.OrdinalIgnoreCase)) ||
             Directory.GetFiles(directory, "*.dll").Any(f => !dlls.Any(d => string.Equals(d.Path, f, StringComparison.OrdinalIgnoreCase))))
             throw new InvalidDataException("Entire native DLL directory must be qualified together");
         lock (gate)
@@ -87,18 +88,23 @@ public static class NativeSdkBoundary
             bool loadAttempted = false;
             try
             {
-                foreach (var file in dlls)
+                foreach (var file in files)
                 {
                     DeploymentQualifications.VerifyInstalledFile(file);
-                    using (var process = System.Diagnostics.Process.GetCurrentProcess())
-                        foreach (System.Diagnostics.ProcessModule module in process.Modules)
-                            if (string.Equals(module.ModuleName, Path.GetFileName(file.Path), StringComparison.OrdinalIgnoreCase) &&
-                                !string.Equals(DeploymentQualifications.FileHash(module.FileName), file.Sha256, StringComparison.OrdinalIgnoreCase))
-                                throw new InvalidDataException("Another native DLL with the same basename is already loaded; restart with the qualified SDK");
-                    if (loaded.TryGetValue(Path.GetFileName(file.Path), out var prior) && !string.Equals(prior.Hash, file.Sha256, StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidDataException("Native DLL version conflict; controlled process restart required");
+                    var native = file.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
+                    if (native)
+                    {
+                        using (var process = System.Diagnostics.Process.GetCurrentProcess())
+                            foreach (System.Diagnostics.ProcessModule module in process.Modules)
+                                if (string.Equals(module.ModuleName, Path.GetFileName(file.Path), StringComparison.OrdinalIgnoreCase) &&
+                                    !string.Equals(DeploymentQualifications.FileHash(module.FileName), file.Sha256, StringComparison.OrdinalIgnoreCase))
+                                    throw new InvalidDataException("Another native DLL with the same basename is already loaded; restart with the qualified SDK");
+                        if (loaded.TryGetValue(Path.GetFileName(file.Path), out var prior) && !string.Equals(prior.Hash, file.Sha256, StringComparison.OrdinalIgnoreCase))
+                            throw new InvalidDataException("Native DLL version conflict; controlled process restart required");
+                    }
                     if (!holds.ContainsKey(file.Path)) acquired.Add(file.Path, new(file.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
                     if (!string.Equals(DeploymentQualifications.FileHash(file.Path), file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Native bytes changed during acquisition");
+                    if (!native) continue; // SDK configuration is pinned too, never treated as a PE.
                     // Separate read cursor so reconnect cannot inherit PEReader's prior position.
                     using var inspection = new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.Read);
                     using var pe = new System.Reflection.PortableExecutable.PEReader(inspection);

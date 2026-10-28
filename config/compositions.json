@@ -91,7 +91,8 @@
         "drivers",
         "integrations",
         "optional-components",
-        "driver.hikrobot-mvs"
+        "driver.hikrobot-mvs",
+        "driver.hikrobot-idmvs"
       ],
       "delivery": "core"
     },
@@ -184,6 +185,14 @@
       "delivery": "core"
     },
     "driver.hikrobot-mvs": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    "driver.hikrobot-idmvs": {
       "version": "1.0.0",
       "contract": 1,
       "dependencies": [

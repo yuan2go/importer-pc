@@ -1,0 +1,68 @@
+{
+  "WorkPackage": "MVCODEREADER-RESTORE-01",
+  "BaseCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
+  "Date": "2026-10-28",
+  "DriverPortTests": "PASS: 46 inherited reader, 26 MVS, 16 hardening and 9 restoration checks; synthetic native ports",
+  "ParameterModel": "PASS: current built-in provider and isolated identities",
+  "NativeParameters": "PASS: actual WPF/Dispatcher, daily/first, standard/compact, 125 percent; synthetic values",
+  "DependencyPolicy": "PASS: 21 Python checks",
+  "ActualSdk": "PASS: real MvCodeReader 2.0.0.4 load/enumerate, zero devices; not camera reading",
+  "LocalApplicationFlow": "BLOCKED: existing runtime ordinary-account gate rejected elevated host; no guard modified. Scheduled Limited retained High token; reduced-token child failed to initialize. Full loopback flow is retained as an explicit CI selector.",
+  "PhysicalCamera": "NOT_RUN: only WLAN on this computer; user confirms legacy same-camera reading",
+  "FieldRcsAndPhysical": "NOT_RUN",
+  "Logs": [
+    {
+      "Path": "driver-self-test.log",
+      "Sha256": "a17454943b83851f91008be6c87a482e11b5919b570485786fe5566cb7a6fc4a"
+    },
+    {
+      "Path": "sdk-parameters.log",
+      "Sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc"
+    },
+    {
+      "Path": "native-enumeration-zero.log",
+      "Sha256": "d9c41138159f4ce3c2b63e2c378bfa4a877b3c2c542f71953923a124d6a6606a"
+    },
+    {
+      "Path": "dependency-policy.log",
+      "Sha256": "28c6e6eb89a83614bcd6abb1a9047de4629400532e4f8487560b3adcecb5104b"
+    },
+    {
+      "Path": "native-sdk-parameters.log",
+      "Sha256": "c4793cf06674350736469a21d71d92bb4d95bfd69e86c8ecffd54baf6af5e605"
+    },
+    {
+      "Path": "driver-self-test-final.log",
+      "Sha256": "f83de2bde0bac43ef07848d151764ea6c3f6c03a4215656670548c041770fa3a"
+    }
+  ],
+  "OriginalFailureHashes": [
+    {
+      "Name": "mvreader-build-01.log",
+      "Sha256": "88ce32546686be8d9e1e3a791febf9c6c1b60cc23268d2b68789091bc3f6ae02",
+      "Scope": "Retained locally; original failure not converted to PASS"
+    },
+    {
+      "Name": "mvreader-build-02.log",
+      "Sha256": "94f7b4ff8c08c70af88e5f7f2230a9ff70526e5b4740a445f791aada24a2b592",
+      "Scope": "Retained locally; original failure not converted to PASS"
+    },
+    {
+      "Name": "mvreader-build-03.log",
+      "Sha256": "f2d9be77c438eca62a51403ad51be34ca23cc4538f440a982f7b1d18734b29b2",
+      "Scope": "Retained locally; original failure not converted to PASS"
+    },
+    {
+      "Name": "mvreader-flow-01.log",
+      "Sha256": "c89af5d034af801ce1dd7bed01dc863d8734b3d639555fcb64f2c963c427f97f",
+      "Scope": "Retained locally; original failure not converted to PASS"
+    },
+    {
+      "Name": "mvreader-rcs-01.log",
+      "Sha256": "115267a5ea630d6e540f85a2bc11fede2e4fac13cdc189fcbe94f1e69d50aab4",
+      "Scope": "Retained locally; original failure not converted to PASS"
+    }
+  ],
+  "SolutionBuild": "PASS: Sportmaster Release/SelfContained=false, locked, serial MSBuild; zero warnings/errors",
+  "BuildSourceNotes": "Final code additionally includes device identity in trigger admission hashes and rejects software/self-trigger external sources; driver regression rerun after these changes."
+}

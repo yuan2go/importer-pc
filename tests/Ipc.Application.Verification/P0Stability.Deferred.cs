@@ -17,7 +17,7 @@ static partial class SportmasterRcs
         var launch = new BusinessLaunch(Path.Combine(root, "config"), Path.Combine(root, "data"), null, null);
         await using var factory = new ParcelCapabilityFactory(launch, declaration, assembly);
         var candidate = new SportmasterFlow().InitialConfiguration() with { Mode = RunMode.Simulation };
-        var selected = factory.SelectedProviders(candidate).Where(x => x.Implementation == "hikrobot-mvs").ToArray();
+        var selected = factory.SelectedProviders(candidate).Where(x => x.Implementation == "hikrobot-idmvs").ToArray();
         Console.WriteLine("ProviderIdentity=" + Wire.Encode(new { Selected = selected, DescriptorVersion = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor.Version }));
         Check(ParcelBindings.Readers(candidate).Count() == 2 && selected.Length == 1 && selected.All(x => x.Version == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor.Version), "normal selected SDK identity equals shipped descriptor");
         factory.ValidateStructure(candidate);

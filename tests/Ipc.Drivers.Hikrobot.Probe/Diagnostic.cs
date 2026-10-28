@@ -13,8 +13,8 @@ internal static class Diagnostic
             var hasTimeout = count >= 2 && args[^2] == "--timeout-seconds";
             var timeout = hasTimeout ? int.Parse(args[^1], System.Globalization.CultureInfo.InvariantCulture) : 0;
             if (hasTimeout) count -= 2;
-            if (count != 2 && count != 4 || args[0] is not ("--list" or "--connect") ||
-                args[0] == "--list" && count != 2 || args[0] == "--connect" && count != 4)
+            if (count != 2 && count != 4 || args[0] is not ("--list" or "--connect" or "--connect-triggered" or "--connect-continuous") ||
+                args[0] == "--list" && count != 2 || args[0] != "--list" && count != 4)
                 throw new ArgumentException("--list SDK_DIRECTORY [--timeout-seconds 1..120] | --connect SDK_DIRECTORY CAMERA_IP SECONDS(1..60) [--timeout-seconds 1..120]");
             var capture = count == 4 ? int.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture) : 0;
             if (count == 4 && capture is < 1 or > 60) throw new ArgumentException("Capture must be 1..60 seconds");
@@ -65,7 +65,8 @@ internal static class Diagnostic
             foreach (var device in devices) Console.WriteLine(Wire.Encode(new { device.Ip, device.Model, device.Firmware, SerialHash = Wire.Hash(device.Serial) }));
             if (options.Command == "--list") return 0;
             var leaseRoot = Path.Combine(Path.GetTempPath(), "ipc-hikrobot-diagnostic-leases");
-            reader = new(new("diagnostic", "diagnostic.reader", new Dictionary<string, string> { ["device.ip"] = options.Ip! }), new HikrobotApi(),
+            var profile = options.Command switch { "--connect-triggered" => "external-trigger", "--connect-continuous" => "continuous", _ => "existing" };
+            reader = new(new("diagnostic", "diagnostic.reader", new Dictionary<string, string> { ["device.ip"] = options.Ip!, ["acquisition.mode"] = profile, ["entity.mode"] = options.Command == "--connect-triggered" ? "trigger" : "observe-only" }), new HikrobotApi(),
                 serial => new ResourceLease(leaseRoot, ["device:hikrobot-gige:" + serial]), deadline.Stage);
             int observations = 0, codes = 0;
             deadline.Stage("start");
@@ -86,9 +87,9 @@ internal static class Diagnostic
             }
             Console.WriteLine(Wire.Encode(new { Observations = observations, Codes = codes, reader.FramesReceived, reader.FramesRejected, reader.LastFailure,
                 ReadStatus = codes > 0 ? "DecodedCandidatesObserved" : observations > 0 ? "FramesWithoutCodes" : "NoFramesOrTriggers",
-                Mode = "observe-only", ExternalRequests = 0, DeviceSettingsChanged = false, TargetModelQualified = false }));
+                Mode = profile, ExternalRequests = 0, DeviceSettingsChanged = profile != "existing", TargetModelQualified = false }));
             if (reader.LastFailure is not null) throw new IOException(reader.LastFailure);
-            return deadline.Expired ? 124 : 0;
+            return deadline.Expired ? 124 : codes == 0 ? 3 : 0;
         }
         catch (OperationCanceledException) when (deadline.Expired) { return 124; }
         catch (Exception ex)

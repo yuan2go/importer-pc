@@ -34,26 +34,26 @@ static partial class Program
         for (var i = 0; i < 150 && (vm.Busy || !vm.HasLoadedConfiguration); i++) await Task.Delay(20);
         var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
         var control = (ParameterSettingsControl)page.FindName("MainParameterEditor");
-        var package = new PackageReference("hikrobot.idmvs-reader", "1.0.3", new string('a', 64));
-        var readerFields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot/parameters.json")));
-        var rcsFields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
-        var reader = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", "1.0.3", "HIKROBOT-IDMVS-OBSERVATION-v1", readerFields, new(), package, "idmvs-reader");
-        var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
+        var currentCatalog = new Ipc.Assembly.ParcelCapabilityFactory(launch).Catalog();
+        var reader = currentCatalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
+        var rcs = currentCatalog.Providers.Single(p => p.Kind == "integration" && p.Implementation == "sportmaster-rcs");
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
             ["zone-id"] = "71", ["project-id"] = "83",
             ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
             ["left-station-code"] = "SYNTHETIC-COMMON", ["right-station-code"] = "SYNTHETIC-COMMON", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
         });
-        var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
-        var visualConfig = config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices },
-            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true,
-                new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) };
-        probe.Catalog = new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]);
+        var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = reader.Implementation,
+            Parameters = new() { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-" + i,
+                ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
+        var visualConfig = config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices } };
+        probe.Catalog = new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], []);
         probe.Project = s => s with { Configuration = s.Configuration with { Effective = visualConfig }, Health =
             [new(binding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")] };
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
+        var leftReader = model.Readers.Single(r => r.Role == "left");
+        var cameraAddressPath = leftReader.InstanceId + "/device.ip";
         Check(ReferenceEquals(control.Model, model) && !vm.HasUnsavedConfiguration, "full schema uses the real shared editor and clean save baseline");
         Check(!vm.ConfigurationRoles.Any(r => r.Role == "维护认证") && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
             "current candidate and daily directory contain no obsolete maintenance authentication role");
@@ -71,7 +71,7 @@ static partial class Program
                 Capture(item.Item3 + "-" + size.Item1);
                 var save = (Button)page.FindName("SaveChanges"); var bounds = save.TransformToAncestor(client).TransformBounds(new Rect(save.RenderSize));
                 Check(bounds.Bottom <= client.ActualHeight + 1 && bounds.Right <= client.ActualWidth + 1 && save.ActualHeight >= 44, "save remains visible with full schema at " + size);
-                var first = Boxes().First(b => AutomationProperties.GetName(b) == (item.Item3 == "camera" ? "reader.0/device.ip" : "rcs.one/Target"));
+                var first = Boxes().First(b => AutomationProperties.GetName(b) == (item.Item3 == "camera" ? cameraAddressPath : "rcs.one/Target"));
                 Check(first.ActualWidth >= 240 && first.ActualHeight >= 36, "readable address dimensions at " + size + ": " + first.RenderSize);
                 if (size.Item1 == 1366 && item.Item3 == "rcs")
                 {
@@ -92,19 +92,19 @@ static partial class Program
             }
         }
         await SetClient(window, 1366, 768);
-        control.NavigateTo("reader.0/device.ip"); var ip = Boxes().Single(b => AutomationProperties.GetName(b) == "reader.0/device.ip");
+        Check(control.NavigateTo(cameraAddressPath), "current SDK camera address remains directly reachable"); var ip = Boxes().Single(b => AutomationProperties.GetName(b) == cameraAddressPath);
         ip.Text = "192.0.2.999"; ip.Select(2, 4); await vm.RefreshAsync(); window.UpdateLayout();
         Check(vm.HasUnsavedConfiguration && ((Button)page.FindName("SaveChanges")).IsEnabled, "full schema edit updates the real save footer before validation");
         Check(ip.Text == "192.0.2.999" && ip.SelectionLength == 4, "snapshot preserves raw invalid IP and selection");
-        Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
+        Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == cameraAddressPath), "invalid IPv4 rejected and localized before review"); control.FocusFirstIssue(); Capture("field-error");
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })
-        { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == "reader.0/device.ip"), "driver canonical address rule retained: " + invalid); }
+        { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == cameraAddressPath), "driver canonical address rule retained: " + invalid); }
         ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 服务"); model.ValidateFields();
         control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
         Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
         if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-count").IsVisible, "request range fields remain ordinary form inputs rather than hidden diagnostics");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
-        Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetName(b) == "reader.0/device.ip")) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
+        Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetName(b) == cameraAddressPath)) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
         control.ShowPage(0, "供包台标识"); window.UpdateLayout(); Capture("system");
         model.Policy.BackupEnabled = true; model.Policy.BackupDirectory = @"D:\Synthetic\Station-Backup\Daily-Recovery";
         control.ShowPage(0, "自动备份"); window.UpdateLayout(); Capture("backup");
@@ -112,7 +112,7 @@ static partial class Program
             Boxes().Single(b => AutomationProperties.GetName(b) == "BackupIntervalMinutes").ActualWidth * 2, "backup path receives its own wide row");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
         vm.MarkReadFailure("SYNTHETIC 状态读取中断，请检查连接"); window.UpdateLayout(); Capture("stale");
-        Check(vm.ParameterRuntimeSummary(new("reader.0", devices[0].DeviceId, "左相机")).Contains("运行状态未知"), "stale evidence is never rendered as confirmed");
+        Check(vm.ParameterRuntimeSummary(new(leftReader.InstanceId, devices[0].DeviceId, "左相机")).Contains("运行状态未知"), "stale evidence is never rendered as confirmed");
         if (!baseline)
         {
             Check(!vm.NewCapabilityKinds.Contains("login"), "existing current login inventory does not offer another duplicate login instance");

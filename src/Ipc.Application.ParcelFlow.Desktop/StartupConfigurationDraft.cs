@@ -50,6 +50,7 @@ public sealed class StartupConfigurationDraft
         }).ToArray();
         foreach (var item in Readers.Concat(Capabilities)) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId) ||
             initializeDefaults && c.ApplicationId == "sportmaster" && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
+        if (c.ApplicationId == "sportmaster") foreach (var reader in Readers) reader.UseSimpleCameraConfiguration();
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
@@ -63,7 +64,7 @@ public sealed class StartupConfigurationDraft
         var readerBindings = Readers.Select(d => d.BuildReader(c.ApplicationId)).ToArray();
         var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
             Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
-            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" ? readerBindings[i].Parameters : null }).ToArray();
+            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" ? readerBindings[i].Parameters : null }).ToArray();
         var instances = readerBindings.Where(b => b.Package is not null).Select(b => new ExtensionInstance(b.InstanceId, b.Package!.Id, b.Module!, b.Target, b.Enabled, b.Parameters)).ToArray();
         var roots = replacements.Values.Concat(readerBindings).Select(b => b.Package).OfType<PackageReference>().Distinct().ToArray();
         var packages = roots.Length == 0 ? [] : ParcelViewModel.ResolvePackageClosure(roots, catalog.Packages ?? []);

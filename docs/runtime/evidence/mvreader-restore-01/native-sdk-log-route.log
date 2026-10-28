@@ -1,0 +1,8 @@
+PHASE load-sdk; elapsedMs=12; deadlineExpired=False
+PHASE load:MVGigEVision.dll; elapsedMs=150; deadlineExpired=False
+PHASE load:MvSmtDevCtrl.dll; elapsedMs=153; deadlineExpired=False
+PHASE load:MvCodeReaderCtrl.dll; elapsedMs=171; deadlineExpired=False
+PHASE enumerate; elapsedMs=177; deadlineExpired=False
+SDK=MvCodeReader 2.0.0.4; GigE count=0
+PHASE finished; elapsedMs=1148; deadlineExpired=False
+PASS actual SDK initialized with reviewed working-directory profile; process-configured D log exists; original C log absent. Zero cameras, no actual barcode reading.

@@ -1,0 +1,14 @@
+[
+  {
+    "Path": "docs/runtime/hikrobot-reader-01.md",
+    "SourceCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
+    "Sha256": "1b37eb1a6e1ebf4496f1cb9ca27071b2095a19781e53838a2d2b2133fb9c09b1",
+    "Archive": "docs__runtime__hikrobot-reader-01.md.txt"
+  },
+  {
+    "Path": "docs/design/hikrobot-reader-01.md",
+    "SourceCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
+    "Sha256": "2b32affc1f3c72ff243e8fc810ead4bec3fbbc1af03c62beea9dc011a92e86ff",
+    "Archive": "docs__design__hikrobot-reader-01.md.txt"
+  }
+]

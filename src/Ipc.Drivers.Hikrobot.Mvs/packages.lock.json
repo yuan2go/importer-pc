@@ -2,6 +2,12 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
+      "ZXingCpp": {
+        "type": "Direct",
+        "requested": "[0.5.3, )",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
+      },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
         "resolved": "10.0.13",

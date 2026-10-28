@@ -15,6 +15,7 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
+if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }
 if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }
 if (args.Contains("--hikrobot-hardening")) { await HikrobotHardening.Run(workspace, root); return; }
@@ -90,6 +91,7 @@ if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
 if (args.Contains("--rcs-heartbeat-signed")) { var i = Array.IndexOf(args, "--rcs-heartbeat-signed"); await SportmasterRcs.HeartbeatSignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
+if (args.Contains("--mvreader-flow")) { await SportmasterRcs.MvCodeReaderFlow(workspace, root); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }

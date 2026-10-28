@@ -118,7 +118,7 @@ public static class ChineseInterfaceText
         WeightUnit.Kg => "千克", WeightUnit.G => "克",
         WeightValidity.UntilDispatch => "发送前持续有效", WeightValidity.AtAssociation => "关联时有效",
         UploadStrategy.BeforeMain => "主请求前上传", UploadStrategy.Attached => "附加上传",
-        "line" => "每行一个包裹", "observe-only" => "仅观察", "trigger" => "触发关联", "utf-8" => "通用字符编码", "ascii" => "基础英文字符编码",
+        "external-trigger" => "外部触发（一包一次）", "continuous" => "连续采集", "line" => "每行一个包裹", "observe-only" => "仅观察", "read-result" => "每次识别结果上报（RCS去重）", "trigger" => "触发关联", "utf-8" => "通用字符编码", "ascii" => "基础英文字符编码",
         "existing" => "沿用设备设置", "on" => "要求设备已开启", "off" => "要求设备已关闭",
         "true" => "启用", "false" => "关闭", "normal" => "正常返回", "unavailable" => "不可用",
         "lose-after-commit" => "提交后丢失回执", "accept" => "接受", "reject" => "拒绝", _ => value?.ToString() ?? "未设置"

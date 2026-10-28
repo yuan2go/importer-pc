@@ -10,9 +10,9 @@
   "CodeLengthOffset": 4100,
   "MaximumCodes": 300,
   "MaximumCodeBytes": 4096,
-  "Semantics": "Read observations only. No SDK setting writes, software trigger, image retention, WCS or PLC calls. Trigger association requires independent deployment qualification and one-trigger-one-entity evidence.",
+  "Semantics": "Ex2 callback copies complete bounded barcode candidates to Application. Explicit external-trigger profile configures TriggerMode=On and GigE packet size; continuous profile configures Off for observation only. No IP/exposure/code-type writes or software-trigger commands. Trigger identity requires one-trigger-one-entity evidence.",
   "DriverVersion": "1.0.0",
   "DefaultCodeBufferBytes": 16777216,
   "MaximumCodeBufferBytes": 67108864,
-  "TargetStandardCameraStatus": "BLOCKED: target acquisition/algorithm SDK not available; MvCodeReader evidence does not qualify MV-PD010003-06M-12C"
+  "TargetStandardCameraStatus": "User confirms both legacy SDK clients read codes from the same target. Current implementation real device frames/barcodes and trigger association still require validation."
 }

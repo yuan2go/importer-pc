@@ -1,0 +1,8 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-7e99215addbf4ef0996c7a752121141d
+PASS RCS20: real reader pipeline routes SDK candidates into Application/SQLite and three independent RCS requests for a burst of identical decoded codes
+PASS RCS20: exact redelivery of one SDK result retains one request
+PASS RCS20: each distinct recognized frame, including the same barcode and the other camera, makes an independent RCS request
+PASS RCS20: subsequent scans preserve the original frozen request bytes
+PASS RCS20: no-code callback is recorded as rejected input without a fabricated task
+PASS RCS20: late native callback cannot create a task after controlled shutdown
+MVCODEREADER_FLOW_PASS synthetic native port, real reader/application/SQLite/HTTP; physical camera and field RCS NOT_RUN

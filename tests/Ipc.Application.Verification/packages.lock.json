@@ -331,6 +331,11 @@
         "resolved": "10.0.13",
         "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
       },
+      "ZXingCpp": {
+        "type": "Transitive",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
+      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -374,10 +379,17 @@
           "Ipc.Reference.Protocol": "[1.0.0, )"
         }
       },
-      "ipc.drivers.hikrobot.mvs": {
+      "ipc.drivers.hikrobot": {
         "type": "Project",
         "dependencies": {
           "Ipc.Platform": "[1.0.0, )"
+        }
+      },
+      "ipc.drivers.hikrobot.mvs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )",
+          "ZXingCpp": "[0.5.3, )"
         }
       },
       "ipc.integrations": {

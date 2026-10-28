@@ -1,0 +1,8 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-a83ac313be9248468865371b888145bf
+PASS RCS20: real reader pipeline routes SDK candidates into Application/SQLite and one loopback RCS destination request
+PASS RCS20: another frame from the original trigger does not make another request
+PASS RCS20: same barcode on a new trigger and the other camera creates independent parcels without barcode-based merging
+PASS RCS20: subsequent scans preserve the original frozen request bytes
+PASS RCS20: no-code callback is recorded as rejected input without a fabricated task
+PASS RCS20: late native callback cannot create a task after controlled shutdown
+MVCODEREADER_FLOW_PASS synthetic native port, real reader/application/SQLite/HTTP; camera and physical trigger NOT_RUN

@@ -48,10 +48,13 @@ def publish(root, output, source):
         fonts.append(notice)
     sdk = output / 'app/vendor/hikrobot-mvs/SDK-BUNDLE.json'
     sdk_record = json.loads(sdk.read_text()) if sdk.is_file() else None
+    reader_sdk = output / 'app/vendor/hikrobot-idmvs/SDK-BUNDLE.json'
+    reader_record = json.loads(reader_sdk.read_text()) if reader_sdk.is_file() else None
     record = dict(SchemaVersion=1, SourceCommit=source, Source='Resolved app deps.json and restored NuGet nuspec metadata',
                   Packages=records, BundledFonts=fonts, RuntimeNoticeFiles=[p.relative_to(output).as_posix() for area in ('app', 'desktop') for p in (output / area).rglob('*')
                       if p.is_file() and p.name.lower() in ('license.txt', 'thirdpartynotices.txt')],
                   ExternalPrerequisites=['PowerShell 7 only for explicit advanced .ps1 scripts; native Setup/Run/Maintenance do not require it', 'Optional diagnose-camera-network.ps1 supports Windows PowerShell 5.1; read-only by default', 'Approved vendor SDK/driver/runtime only for a qualified real combination'],
+                  VendorBarcodeSdkRedistribution=reader_record or 'Not included in this verification medium',
                   VendorSdkRedistribution=sdk_record or 'Not included in this selected/verification medium',
                   ProductLicense='No project-wide commercial license grant is inferred from third-party package declarations')
     (output / 'DEPENDENCIES.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

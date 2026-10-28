@@ -1,3 +1,5 @@
+> 2026-10-28 当前读码恢复以 [MVCODEREADER-RESTORE-01](../work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md) 为准：用户确认同机旧客户端使用两套 SDK 均可读码，优先复用 MvCodeReader 与现场一包一次触发。下文 MVS 仅采图和原验证保留原范围；未回填真机成功。
+
 # 单相机、窗口显示与管理密码恢复
 
 工作包：[STATION-SINGLE-CAMERA-RECOVERY-01](../work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)。开发阶段自有产品版本保持 1.0.0。

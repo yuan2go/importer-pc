@@ -34,7 +34,8 @@ def publish(source, output, runtime, verification_only=False):
                   Files=inventory['Files'], Preload=inventory['Preload'],
                   NoticeSha256=hashlib.sha256(notice.read_bytes()).hexdigest(),
                   RedistributionScope='User-authorized local offline delivery; no public vendor-binary upload',
-                  BarcodeRecognition='COMPONENT_UNAVAILABLE', BusinessReady=False)
+                  BarcodeRecognition='ZXingCpp-0.5.3_ENGINE-3.1.1_MONO8', BusinessReady=False,
+                  BusinessBoundary='Decoder capability only; actual configuration/Application/RCS guards still apply')
     for area in ('app', 'desktop'):
         destination = output / area / 'vendor/hikrobot-mvs'
         destination.mkdir(parents=True)

@@ -68,7 +68,7 @@ public sealed partial class ParcelRepository
         var readers = ParcelBindings.Readers(configuration);
         foreach (var reader in readers)
         {
-            if (reader.Driver is "manual" or "tcp-line" or "hikrobot-mvs") continue;
+            if (reader.Driver is "manual" or "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs") continue;
             var instance = deployment?.Instances.SingleOrDefault(i => "extension:" + i.Id == reader.Driver);
             if (instance is null || !instance.Enabled || instance.DeviceId != reader.DeviceId || deployment!.Packages.Count(p => p.Id == instance.PackageId) != 1)
                 throw new InvalidDataException("Dangling/unknown reader extension reference; retain packages");

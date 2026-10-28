@@ -44,6 +44,7 @@ SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
     'docs/runtime/hikrobot-reader-01.md': 'HIKROBOT-READER.md',
+    'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md',
     'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md'}
 
 ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}

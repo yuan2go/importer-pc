@@ -36,6 +36,7 @@ internal static class MvsNative
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_CloseDevice(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_DestroyHandle(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_StartGrabbing(nint handle);
+    [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CC_SetEnumValue(nint handle, string key, uint value);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_StopGrabbing(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_SetImageNodeNum(nint handle, uint count);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_SetGrabStrategy(nint handle, uint strategy);
@@ -58,6 +59,7 @@ internal interface IMvsApi
     void Create(MvsDevice device);
     void Open();
     uint EnumValue(string key);
+    void SetEnumValue(string key, uint value) => throw new NotSupportedException("This port cannot configure continuous acquisition");
     long PayloadSize();
     void ConfigureBuffers(uint nodes);
     void Start();
@@ -128,6 +130,7 @@ internal sealed class MvsApi : IMvsApi
         frameOut = Marshal.AllocHGlobal(MvsNative.FrameOutBytes);
     }
     public void Open() => MvsNative.Check(MvsNative.MV_CC_OpenDevice(handle, 1, 0), "OpenDevice exclusive");
+    public void SetEnumValue(string key, uint value) => MvsNative.Check(MvsNative.MV_CC_SetEnumValue(handle, key, value), "Set " + key);
     long ReadValue(string key, int bytes, bool integer)
     {
         var memory = Marshal.AllocHGlobal(bytes);

@@ -1,5 +1,7 @@
 # 海康诊断与边界回归
 
+> 下文“仅采图”描述仅属于该ABI回归形成时范围；当前MVS软件识别路线见[SDK整合记录](integration-20261028-sdk.md)，不回写以下历史源码身份与验证结果。
+
 工作包：[HIKROBOT-BOUNDARY-REGRESSIONS-01](../work-packages/WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01.md)。本轮继承main `d506f77`的内置MVS与单相机规则，只修ABI拒绝诊断、当前指引及测试；自有版本保持1.0.0。MVS仍仅采图，缺正式算法不发布业务Ready或条码作业。
 
 实现及被测源码：`2f668db0a1bf6650e5088ac63dcf6158e52b81ac`。测试在该提交形成前的同字节工作树执行，原日志、逐项命令、源Git blob及SHA256见[验证清单](evidence/hikrobot-boundary-regressions-01/verification.json)；随后的验证发布只更新文档。起点`d506f77`的3项打包基线单独登记，不转记为本次新增测试结果。

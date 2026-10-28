@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Ipc.Drivers.Hikrobot.Mvs;
 using Ipc.Platform;
 
-internal static class MvsVerification
+internal static partial class MvsVerification
 {
     static int checks;
     static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException("MVS FAIL: " + text); checks++; Console.WriteLine("PASS MVS: " + text); }
@@ -115,6 +115,7 @@ internal static class MvsVerification
             await Until(() => source.Failure.Length > 0);
             Check(invalid.Freed == 1 && source.Frames == 0, "invalid/incomplete frame is returned and never counted as a valid image or decoded barcode");
         }
+        await SoftwareBoundaries();
         Console.WriteLine("MVS_SELF_TEST_PASS checks=" + checks + "; synthetic native ports; real target frames/barcodes NOT_RUN");
     }
     static async Task Reject(Func<Task> call)
@@ -135,7 +136,7 @@ internal static class MvsVerification
         public MvsDevice[] Enumerate() => [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])];
         public void Create(MvsDevice device) => Call("create");
         public void Open() => Call("open");
-        public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : 0;
+        public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? 2u : 0;
         public long PayloadSize() => 6291456;
         public void ConfigureBuffers(uint nodes) => Call("buffers");
         public void Start() => Call("start");

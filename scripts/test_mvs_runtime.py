@@ -66,7 +66,7 @@ class BundledRuntimeInputValidation(unittest.TestCase):
     def test_synthetic_control_copies_exact_bytes_without_barcode_readiness(self):
         record = publish(self.source, self.output, self.runtime)
         self.assertFalse(record['BusinessReady'])
-        self.assertEqual(record['BarcodeRecognition'], 'COMPONENT_UNAVAILABLE')
+        self.assertEqual(record['BarcodeRecognition'], 'ZXingCpp-0.5.3_ENGINE-3.1.1_MONO8')
         self.assertEqual(record['Abi'], 'SYNTHETIC-NOT-A-SDK')
         for area in ('app', 'desktop'):
             destination = self.output / area / 'vendor/hikrobot-mvs'

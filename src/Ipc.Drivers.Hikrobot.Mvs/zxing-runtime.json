@@ -1,0 +1,10 @@
+{
+  "Package": "ZXingCpp",
+  "Version": "0.5.3",
+  "Engine": "3.1.1",
+  "File": {
+    "Path": "ZXing.dll",
+    "Length": 3149312,
+    "Sha256": "1550C1AB6529C2F977BEBAC3F4BF218CA7F932C6CB5B1089121787FE16449C78"
+  }
+}

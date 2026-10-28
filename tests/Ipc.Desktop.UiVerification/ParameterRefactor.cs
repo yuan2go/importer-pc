@@ -119,18 +119,19 @@ static partial class Program
             Check(control.ActualWidth > 600 && control.ActualHeight > 100 && Descendants(control).OfType<ScrollViewer>().Any(s => s.IsVisible && s.ViewportHeight > 0), "parameter fields remain scrollable at " + size);
         }
         Capture("parameters-compact");
-        // Actual versioned descriptor, synthetic installed-catalog fixture; no SDK is loaded.
-        var package = new PackageReference("hikrobot.idmvs-reader", "1.0.3", new string('a', 64));
-        var fields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Drivers.Hikrobot/parameters.json")));
-        var descriptor = new CapabilityDescriptor("observation", "extension:hikrobot.idmvs-reader/idmvs-reader", "1.0.3", "HIKROBOT-IDMVS-OBSERVATION-v1", fields, new(), package, "idmvs-reader");
-        var driverConfig = c with { Extensions = new([package], c.Topology!.Readers.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, "idmvs-reader", r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) };
-        var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray(); driverConfig = driverConfig with { Reader = devices[0], Topology = c.Topology with { Readers = devices } };
-        var offline = new StartupConfigurationDraft(driverConfig, new([descriptor], [package.Id], Packages: [new(package, [])]));
+        // Current built-in descriptor and synthetic identities; no SDK is loaded.
+        var catalog = new Ipc.Assembly.ParcelCapabilityFactory(launch).Catalog();
+        var descriptor = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
+        var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = descriptor.Implementation,
+            Parameters = new() { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-" + i } }).ToArray();
+        var driverConfig = c with { Reader = devices[0], Topology = c.Topology with { Readers = devices } };
+        var offline = new StartupConfigurationDraft(driverConfig, catalog);
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();
-        Check(offlineEditor.NavigateTo("reader.0/device.ip"), "left driver address is reachable by its stable field path"); window.UpdateLayout();
+        Check(offlineEditor.NavigateTo(offline.Readers[0].InstanceId + "/device.ip"), "left driver address is reachable by its stable field path"); window.UpdateLayout();
         var leftIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
-        Check(leftIp.Text == "192.0.2.21" && offline.Readers.Length == 2 && offline.Readers[0].Provider == offline.Readers[1].Provider, "fixed two readers use one package and display only the selected object's parameters");
-        Check(offlineEditor.NavigateTo("reader.1/device.ip"), "right instance is directly addressable by stable field path");
+        Check(leftIp.Text == "192.0.2.21" && offline.Readers.Length == 2 && offline.Readers[0].Provider == descriptor && offline.Readers[0].Provider == offline.Readers[1].Provider,
+            "fixed two readers use the current SDK descriptor and display only the selected object's parameters");
+        Check(offlineEditor.NavigateTo(offline.Readers[1].InstanceId + "/device.ip"), "right instance is directly addressable by stable field path");
         await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         var rightIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
         Check(rightIp.Text == "192.0.2.22" && !ReferenceEquals(leftIp, rightIp), "object selection preserves distinct native editors and initial addresses");

@@ -37,11 +37,12 @@ public partial class ParcelViewModel
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
             if (reader.Driver == "tcp-line")
                 notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
-            if (extension?.PackageId == "hikrobot.idmvs-reader")
+            if (reader.Driver is "hikrobot-idmvs" or "hikrobot-mvs-reader" || extension?.PackageId == "hikrobot.idmvs-reader")
             {
                 status = ready ? "SDK 连接已确认" : status;
-                notice += (notice.Length == 0 ? "" : "\n") + (extension.Parameters.GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
+                notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
                     ? "仅观察，不创建供包作业。连接确认不代表已经读到条码；请核对读码观察和设备适用性。"
+                    : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
                     : "触发关联已选择；连接确认不证明包裹边界可信。读码、业务准入和本件RCS格口需分别核对。");
             }
             if (reader.Driver == "hikrobot-mvs" || extension?.PackageId == "hikrobot.mvs-acquisition")

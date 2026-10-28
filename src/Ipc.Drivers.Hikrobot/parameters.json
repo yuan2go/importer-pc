@@ -17,16 +17,30 @@
     "Description": "正式启用须填写并固定本位物理相机，IP只作连接地址；更换相机须更新并受控启用配置。模拟或独立诊断可留空，同一实例重连仍固定首次取得租约的序列号。"
   },
   {
+    "Key": "acquisition.mode",
+    "Group": "采集 / 触发",
+    "Label": "采集模式",
+    "Type": "choice",
+    "Default": "existing",
+    "Choices": [
+      "existing",
+      "external-trigger",
+      "continuous"
+    ],
+    "Description": "连续采集关闭触发，直接接收相机识别结果。外部触发为可选现场模式；沿用设备设置时不写参数。"
+  },
+  {
     "Key": "entity.mode",
     "Group": "输入 / 实体关联",
-    "Label": "实体关联策略",
+    "Label": "读码结果处理",
     "Type": "choice",
     "Default": "observe-only",
     "Choices": [
       "observe-only",
+      "read-result",
       "trigger"
     ],
-    "Description": "observe-only只报告不可准入的观察。trigger须已有TriggerMode=On，且部署资格证明一触发一实体、重复帧及重连实体处置；驱动不改变触发设置。"
+    "Description": "read-result为本现场确认的每个独立识别帧上报一次，相同条码也上报，由RCS去重；帧身份是读码请求身份，不证明物理包裹数量或完成。observe-only不创建请求。trigger仅适用另有已确认一触发一实体的现场。"
   },
   {
     "Key": "code.encoding",

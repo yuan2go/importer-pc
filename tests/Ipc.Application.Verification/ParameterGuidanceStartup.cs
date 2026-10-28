@@ -32,12 +32,14 @@ static class ParameterGuidanceStartup
             "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
-            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs" && r.Parameters!["entity.mode"] == "observe-only"),
-            "current built-in SDK candidate remains observation-only until a formal decoder and parcel boundary exist; quantity is absent");
+            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs-reader" && r.Parameters!["entity.mode"] == "read-result"),
+            "current built-in reader selects the confirmed per-result RCS policy without PLC; quantity is absent");
         var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
-        Check(mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only"]) &&
-            draft.Build().Reader.Parameters!["entity.mode"] == "observe-only" && initial.Reader.Parameters!["entity.mode"] == "observe-only",
-            "current SDK mode has only the read-only observation choice and candidate construction never activates parcel admission");
+        Check(!mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["read-result", "observe-only"]) &&
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "acquisition.trigger").Value == "off" &&
+            draft.Build().DeferredConnections!.Contains(initial.Reader.DeviceId) &&
+            draft.Build().Reader.Parameters!["entity.mode"] == "read-result" && initial.Reader.Parameters!["entity.mode"] == "read-result",
+            "current SDK declares per-result reporting; continuous capture remains deferred and editing never starts acquisition");
         var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
         using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";
@@ -47,15 +49,15 @@ static class ParameterGuidanceStartup
         using (var shared = new CommonStationParameter(left, right, draft.Policy))
             Check(shared.Value == "" && !editor.ValidateFields() && editor.Issues.Any(i => i.Path == "StationCode"), "conflicting historical station identifiers require an explicit common choice");
         left.Value = right.Value;
-        draft.Readers[0].ConfigureLater = false;
+        draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial").Value="SYNTH-PARTIAL";
         Check(!editor.ValidateFields() && editor.Issues.Any(i => i.Path.EndsWith("/device.ip")), "activating an incomplete camera restores required field validation");
-        draft.Readers[0].ConfigureLater = true;
+        draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial").Value="";
         var state = draft.Capture(); draft.Readers[0].ConfigureLater = false; draft.Restore(state);
         Check(draft.Readers[0].ConfigureLater && draft.WithRestored(state).Build().DeferredConnections?.Length == 3, "raw startup drafts preserve deferred connections and incomplete input");
         var legacy = initial with { Retention = null, DeferredConnections = null };
         var legacyDraft = new StartupConfigurationDraft(legacy, factory.Catalog());
-        Check(legacyDraft.Policy.DiagnosticLogDays == "" && legacyDraft.Policy.HistoryDays == "" && legacyDraft.Readers.All(r => !r.ConfigureLater),
-            "old omitted retention and connection fields keep their prior semantics");
+        Check(legacyDraft.Policy.DiagnosticLogDays == "" && legacyDraft.Policy.HistoryDays == "" && legacyDraft.Readers.All(r => r.ConfigureLater),
+            "old omitted retention stays unchanged while empty cameras use the current implicit omission rule");
         var unfinished = new StartupConfigurationDraft(legacy, factory.Catalog(), initializeDefaults: true);
         Check(unfinished.Policy.DiagnosticLogDays == "7" && unfinished.Policy.HistoryDays == "7" && unfinished.Readers.All(r => r.ConfigureLater) && legacy.Retention is null,
             "an older unfinished installer seed receives first-run defaults in the editable candidate without modifying the seed or existing deployment policy");
@@ -84,13 +86,13 @@ static class ParameterGuidanceStartup
             await ManagementModeFixture.Authorize(app); await vm.LoadCapabilitiesAsync();
             var scanCandidate = vm.BuildStructuredConfiguration();
             var policySnapshot = await app.SnapshotAsync();
-            Check(!vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" &&
+            Check(vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "read-result" &&
                 scanCandidate.Wcs?.Parameters.ContainsKey("quantity") == false && policySnapshot.Configuration.Effective.Reader.Parameters?.GetValueOrDefault("entity.mode") == "observe-only" && policySnapshot.Configuration.Effective.Wcs?.Parameters.ContainsKey("quantity") == false,
-                "loading the current SDK daily editor leaves the observation policy and effective candidate unchanged, without quantity or false dirty state");
-            foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.port" => "9000", _ => p.Value };
+                "current fixed reporting policy is an unsaved reviewable change; effective historical observation policy remains unchanged");
+            foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.serial" => "SYNTH-SERIAL-0", _ => p.Value };
             vm.ReaderDrafts[0].Capability.ConfigureLater = false;
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");
-            vm.ReaderDrafts[0].Capability.ConfigureLater = true;
+            foreach(var p in vm.ReaderDrafts[0].Capability.Parameters.Where(p=>p.Field.Key is "device.ip" or "device.serial")) p.Value="";
             Check(vm.BuildStructuredConfiguration().DeferredConnections?.Length == 3, "the daily editor preserves the same complete deferred candidate");
             vm.StructuredPolicy!.QueueCapacity = "65"; vm.ConfigurationReason = "synthetic deferred revision";
             await vm.SaveStructuredConfigurationAsync();

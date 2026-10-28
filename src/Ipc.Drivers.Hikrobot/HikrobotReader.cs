@@ -4,6 +4,7 @@ using System.Threading.Channels;
 using Ipc.Platform;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Ipc.Drivers.Hikrobot.Probe")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Ipc.Application.Verification")]
 namespace Ipc.Drivers.Hikrobot;
 
 internal sealed class HikFrameRejectedException(Exception inner) : IOException("Native frame rejected before managed delivery: " + inner.Message, inner);
@@ -19,7 +20,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
     readonly IHikrobotApi api;
     readonly SemaphoreSlim lifecycle = new(1, 1);
     readonly object gate = new();
-    readonly string ip, entityMode, serial;
+    readonly string ip, entityMode, serial, acquisitionMode;
     readonly Encoding encoding;
     readonly int capacity, maximumCodeBytes;
     long bufferedCodeBytes;
@@ -42,14 +43,18 @@ internal sealed class HikrobotReader : IControlledObservationSource
     public string Epoch { get; private set; } = "not-started";
     public string ConfirmationSource { get { lock (gate) return "SDK:hikrobot-idmvs:" + context.InstanceId + "; epoch=" + Epoch +
         "; received=" + FramesReceived + "; delivered=" + FramesDelivered + "; rejected=" + FramesRejected + "; inFlight=" + FramesInFlight +
-        "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; phase=" + Phase +
+        "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; codes=" + CodesReceived + "; emptyResultsIgnored=" + EmptyResultsIgnored + "; noCodeFrames=" + NoCodeFrames + "; multiCodeFrames=" + MultipleCodeFrames + "; acquisition=" + acquisitionMode + "; phase=" + Phase +
         (LastFailure is null ? "" : "; failure=" + LastFailure); } }
     public string Phase { get; private set; } = "not-started";
     public string? LastFailure { get; private set; }
     public long FramesReceived { get; private set; }
     public long FramesRejected { get; private set; }
     public long FramesDelivered { get; private set; }
-    public long FramesInFlight { get { lock (gate) return FramesReceived - FramesDelivered - FramesRejected; } }
+    public long CodesReceived { get; private set; }
+    public long NoCodeFrames { get; private set; }
+    public long EmptyResultsIgnored { get; private set; }
+    public long MultipleCodeFrames { get; private set; }
+    public long FramesInFlight { get { lock (gate) return FramesReceived - FramesDelivered - FramesRejected - EmptyResultsIgnored; } }
     internal HikrobotReader(ExtensionContext context, IHikrobotApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged;
@@ -59,7 +64,11 @@ internal sealed class HikrobotReader : IControlledObservationSource
             throw new InvalidDataException("Explicit canonical camera IPv4 required");
         serial = context.Parameters.GetValueOrDefault("device.serial", "");
         entityMode = context.Parameters.GetValueOrDefault("entity.mode", "observe-only");
-        if (entityMode is not ("observe-only" or "trigger")) throw new InvalidDataException("Unknown entity association policy");
+        if (entityMode is not ("observe-only" or "read-result" or "trigger")) throw new InvalidDataException("Unknown entity association policy");
+        acquisitionMode = context.Parameters.GetValueOrDefault("acquisition.mode", "existing");
+        if (acquisitionMode is not ("existing" or "continuous" or "external-trigger")) throw new InvalidDataException("Unknown acquisition profile");
+        if (acquisitionMode == "continuous" && entityMode == "trigger")
+            throw new InvalidDataException("连续采集不提供硬件触发身份；请选择逐帧读码上报或仅观察");
         var charset = context.Parameters.GetValueOrDefault("code.encoding", "utf-8");
         encoding = charset switch { "utf-8" => new UTF8Encoding(false, true), "ascii" => Encoding.GetEncoding("us-ascii", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback), _ => throw new InvalidDataException("Unsupported explicit barcode encoding") };
         capacity = int.Parse(context.Parameters.GetValueOrDefault("queue.capacity", "128"), System.Globalization.CultureInfo.InvariantCulture);
@@ -78,7 +87,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (created || queue is not null) throw new InvalidOperationException("Previous reader registration still owns resources");
             lock (gate) { if (stopTask is { IsCompleted: false }) throw new InvalidOperationException("Original stop is still running; resources retained"); stopTask = null; }
-            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = 0;
+            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = CodesReceived = NoCodeFrames = EmptyResultsIgnored = MultipleCodeFrames = 0;
                 faultSignal = new(TaskCreationOptions.RunContinuationsAsynchronously); }
             // Exactly one fault publisher per registration. Native callbacks only
             // fence local state and signal it; they never call host health code.
@@ -99,9 +108,13 @@ internal sealed class HikrobotReader : IControlledObservationSource
                     boundSerial ??= matches[0].Serial;
                     connectedSerial = matches[0].Serial;
                     created = true; SetPhase("create"); api.Create(matches[0]); token.ThrowIfCancellationRequested(); SetPhase("open"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
+                    if (acquisitionMode != "existing")
+                    { SetPhase("configure-acquisition"); api.ConfigureAcquisition(acquisitionMode); token.ThrowIfCancellationRequested(); }
                     SetPhase("read-trigger-mode");
                     var mode = api.TriggerMode(); token.ThrowIfCancellationRequested();
                     if (entityMode == "trigger" && mode != 1) throw new InvalidDataException("Trigger association needs existing TriggerMode=On; device settings were not changed");
+                    if (acquisitionMode == "continuous" && mode != 0 || acquisitionMode == "external-trigger" && (mode != 1 || api.TriggerSource() is 7 or 9))
+                        throw new InvalidDataException("相机采集设置读回与所选模式不一致，未开始采集");
                     queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, SingleWriter = false, FullMode = BoundedChannelFullMode.Wait });
                     cancel = new();
                     SetPhase("register-callbacks"); api.Register(frame => OnFrame(frame, registeredEpoch), failure =>
@@ -130,6 +143,16 @@ internal sealed class HikrobotReader : IControlledObservationSource
             if (Epoch != registeredEpoch) return; // Old epoch remains outside this registration's accounting.
             FramesReceived++;
             if (!accepting || faulted || disposeRequested) { FramesRejected++; return; }
+            CodesReceived += frame.Codes.Length;
+            if (frame.Codes.Length == 0)
+            {
+                NoCodeFrames++;
+                // In the approved triggerless flow an empty video frame has no
+                // successful recognition to report. Keep diagnostics, not a
+                // durable business input for every blank continuous frame.
+                if (entityMode == "read-result") { EmptyResultsIgnored++; return; }
+            }
+            if (frame.Codes.Length > 1) MultipleCodeFrames++;
             if (entityMode == "trigger")
             {
                 if (triggers.TryGetValue(frame.Channel, out var prior) && frame.Trigger < prior)
@@ -139,11 +162,12 @@ internal sealed class HikrobotReader : IControlledObservationSource
                 triggers[frame.Channel] = frame.Trigger;
             }
             var source = $"c{frame.Channel}.f{frame.Frame}.e{frame.Event}.t{frame.Trigger}.s{frame.TimestampHigh:x8}{frame.TimestampLow:x8}";
-            // Trigger is a candidate entity boundary only under the explicit policy;
-            // observe-only cannot create a business Read, even if codes are present.
-            var admission = "hik." + Wire.Hash(Epoch + ":" + frame.Channel + ":" + frame.Trigger)[..40].ToLowerInvariant();
+            // User-approved read-result policy sends each distinct SDK result to RCS,
+            // including repeated codes. It identifies a read request, not a physical parcel.
+            // Exact redelivery of the same SDK frame keeps the original request identity.
+            var admission = "hik." + Wire.Hash(DeviceId + ":" + Epoch + ":" + (entityMode == "read-result" ? "read:" + source : "trigger:" + frame.Channel + ":" + frame.Trigger))[..40].ToLowerInvariant();
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
-                entityMode == "trigger" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);
+                entityMode is "trigger" or "read-result" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);
             var bytes = CodeBytes(observation);
             if (bytes > maximumCodeBytes - bufferedCodeBytes)
             { FramesRejected++; Fault(new IOException("Reader code byte budget exceeded; inspect parcel and reconnect explicitly")); return; }
@@ -185,6 +209,8 @@ internal sealed class HikrobotReader : IControlledObservationSource
                 token.ThrowIfCancellationRequested();
                 var mode = api.TriggerMode(); token.ThrowIfCancellationRequested();
                 if (entityMode == "trigger" && mode != 1) throw new IOException("Device trigger policy changed; reconnect/qualification required");
+                if (acquisitionMode == "continuous" && mode != 0 || acquisitionMode == "external-trigger" && (mode != 1 || api.TriggerSource() is 7 or 9))
+                    throw new IOException("相机采集模式或外部触发源已改变，请核对原包裹并受控重连");
                 Confirm(DeviceHealth.Ready);
             }
         }

@@ -11,7 +11,7 @@ static partial class Program
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS READER-CATALOG " + text); }
         var initial = new SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.GetTempPath(), null, null)).Catalog();
-        var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs");
+        var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
         var devices = initial.Topology!.Readers.Select((r, i) => r with { Parameters = new(r.Parameters!)
         { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-" + i, ["entity.mode"] = "observe-only" } }).ToArray();
         var candidate = initial with { Reader = devices[0], Topology = initial.Topology with { Readers = devices } };
@@ -36,8 +36,8 @@ static partial class Program
                 var binding = readers[i].Build();
                 Check(readers[i].Role == (i == 0 ? "left" : "right") && binding.Target == devices[i].DeviceId &&
                     binding.Parameters["device.ip"] == devices[i].Parameters!["device.ip"] && binding.Parameters["device.serial"] == devices[i].Parameters!["device.serial"] &&
-                    binding.Parameters["entity.mode"] == "observe-only" && !binding.Parameters.ContainsKey("device.port"),
-                    "SDK device, position, physical identity and observation policy survive current catalog resolution for " + readers[i].Role);
+                    binding.Parameters["entity.mode"] == "read-result" && binding.Parameters["acquisition.trigger"] == "off" && !binding.Parameters.ContainsKey("device.port"),
+                    "SDK device, position and physical identity survive resolution while current fixed reporting defaults apply only to the candidate for " + readers[i].Role);
             }
         }
         foreach (var inventory in new[]

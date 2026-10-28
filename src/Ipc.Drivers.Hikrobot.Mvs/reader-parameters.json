@@ -1,0 +1,77 @@
+[
+  {
+    "Key": "device.ip",
+    "Group": "设备 / 连接",
+    "Label": "相机 IPv4 地址",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 15,
+    "Description": "枚举并绑定明确IP，不使用枚举下标或修改相机IP。"
+  },
+  {
+    "Key": "device.serial",
+    "Group": "设备 / 身份",
+    "Label": "预期序列号（正式必填）",
+    "Type": "string",
+    "MaximumLength": 32,
+    "Description": "正式启用固定本位物理相机；模拟或独立诊断可省略。同一实例重连仍固定原序列号。"
+  },
+  {
+    "Key": "acquisition.trigger",
+    "Group": "采集 / 触发",
+    "Label": "设备触发要求",
+    "Type": "choice",
+    "Default": "off",
+    "Choices": [
+      "existing",
+      "on",
+      "off"
+    ],
+    "Description": "本现场连续采集要求已关闭触发。只核对，不修改相机接线或触发源。"
+  },
+  {
+    "Key": "entity.mode",
+    "Group": "输入 / 实体关联",
+    "Label": "读码结果处理",
+    "Type": "choice",
+    "Default": "read-result",
+    "Choices": [
+      "read-result",
+      "observe-only"
+    ],
+    "ReadOnly": false,
+    "Description": "逐次识别结果上报RCS，相同条码也上报，由RCS去重；识别身份不证明物理数量或完成。仅观察不创建作业。"
+  },
+  {
+    "Key": "image.nodes",
+    "Group": "采集 / 缓冲",
+    "Label": "SDK 图像队列节点",
+    "Type": "integer",
+    "Default": "3",
+    "Minimum": 1,
+    "Maximum": 4,
+    "Description": "有界SDK图像队列。应用只借用一帧，复制到单帧识别缓冲后立即归还；已识别结果同步交持久输入账，不按条码去重。"
+  },
+  {
+    "Key": "image.maximum-payload-bytes",
+    "Group": "采集 / 缓冲",
+    "Label": "单帧负载字节上限",
+    "Type": "integer",
+    "Default": "8388608",
+    "Minimum": 1048576,
+    "Maximum": 33554432,
+    "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。"
+  },
+  {
+    "Key": "code.encoding",
+    "Group": "识别 / 编码",
+    "Label": "条码字符编码",
+    "Type": "choice",
+    "Default": "utf-8",
+    "Choices": [
+      "utf-8",
+      "ascii"
+    ],
+    "Description": "严格解码原始条码字节，不替换非法字符；不按条码内容去重。"
+  }
+]

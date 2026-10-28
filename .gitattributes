@@ -164,3 +164,7 @@ docs/archive/pre-hikrobot-boundary-regressions-01/*.md.txt -text
 docs/runtime/evidence/hikrobot-boundary-regressions-01/*.txt -text whitespace=cr-at-eol
 # Preserve the original empty-input diagnostic's trailing space in this receipt.
 docs/runtime/evidence/hikrobot-boundary-regressions-01/app-parameter-refactor.txt whitespace=cr-at-eol,-blank-at-eol
+
+# Keep PR137's original native receipts and their empty diagnostic fields intact.
+docs/runtime/evidence/mvreader-restore-01/native-startup-final.log -text whitespace=cr-at-eol,-blank-at-eol
+docs/runtime/evidence/mvreader-restore-01/native-startup-per-result.log -text whitespace=cr-at-eol,-blank-at-eol

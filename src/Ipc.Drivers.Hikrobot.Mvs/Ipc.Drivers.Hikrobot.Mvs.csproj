@@ -1,7 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><AssemblyName>Ipc.Drivers.Hikrobot.Mvs</AssemblyName><Version>1.0.0</Version><NuGetLockFilePath Condition="'$(IpcContractPath)' != ''">packages.extension.lock.json</NuGetLockFilePath></PropertyGroup>
-  <ItemGroup Condition="'$(IpcContractPath)' != ''"><Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference></ItemGroup>
-  <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences"><Error Condition="'$(IpcContractPath)' != '' And !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/></Target>
-  <ItemGroup Condition="'$(IpcContractPath)' == ''"><ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/></ItemGroup>
-  <ItemGroup><EmbeddedResource Include="parameters.json" LogicalName="Mvs.Parameters.json"/><EmbeddedResource Include="bundled-runtime.json" LogicalName="Mvs.Runtime.json"/></ItemGroup>
+  <PropertyGroup>
+    <AssemblyName>Ipc.Drivers.Hikrobot.Mvs</AssemblyName>
+    <Version>1.0.0</Version>
+    <NuGetLockFilePath Condition="'$(IpcContractPath)' != ''">packages.extension.lock.json</NuGetLockFilePath>
+    <DefineConstants Condition="'$(IpcContractPath)' != ''">$(DefineConstants);MVS_ACQUISITION_EXTENSION</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IpcContractPath)' != ''">
+    <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference>
+    <Compile Remove="SoftwareDecoder.cs"/>
+  </ItemGroup>
+  <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(IpcContractPath)' != '' And !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/>
+  </Target>
+  <ItemGroup Condition="'$(IpcContractPath)' == ''">
+    <ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/>
+    <PackageReference Include="ZXingCpp" Version="0.5.3"/>
+    <Content Include="$(NuGetPackageRoot)/zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll" Link="vendor/zxing-cpp/ZXing.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="parameters.json" LogicalName="Mvs.Parameters.json"/>
+    <EmbeddedResource Include="bundled-runtime.json" LogicalName="Mvs.Runtime.json"/>
+    <EmbeddedResource Include="reader-parameters.json" LogicalName="Mvs.ReaderParameters.json"/>
+    <EmbeddedResource Include="zxing-runtime.json" LogicalName="Mvs.ZxingRuntime.json"/>
+  </ItemGroup>
 </Project>

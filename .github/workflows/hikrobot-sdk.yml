@@ -44,7 +44,11 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-software-flow
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --ordinary-runtime-startup
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -57,6 +61,8 @@ jobs:
           dotnet tests/Ipc.Hikrobot.LocalSimulation/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_mvs_runtime.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_mvreader_runtime.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_application_compatibility.py
           exit $LASTEXITCODE

@@ -8,6 +8,7 @@ static class CurrentContractVerification
 {
     public static async Task Run(string root, string url)
     {
+        await ReceiptPreflightVerification.Run(root, url);
         CorruptDatabaseRefusal(root);
         await using (var fixture = await Rig.New(root, url))
         {
@@ -55,14 +56,11 @@ static class CurrentContractVerification
             else ExtensionStore.AtomicWrite(file, new { Id = id, RequestId = original.Id, Attempt = attempt, Response = response, ReceivedAt = DateTimeOffset.UtcNow });
             var database = Path.Combine(directory, "station.db");
             var databaseHash = Wire.FileHash(database); var fileHash = Wire.FileHash(file);
-            using (var store = new SupplyStore(database))
-            {
-                var originalBytes = Wire.Encode(store.Request(original.Id)); var stateBytes = Wire.Encode(store.Load());
-                var refused = false;
-                try { await using var invalid = new StationApplication(store, config, new SimulationRequestContract(config)); }
-                catch (InvalidDataException error) when (error.Message.Contains(kind == "fence" ? "Unsupported receipt fence" : "reservation missing", StringComparison.Ordinal)) { refused = true; }
-                Check(refused && originalBytes == Wire.Encode(store.Request(original.Id)) && stateBytes == Wire.Encode(store.Load()), kind + " refuses before startup/recovery writes; original request and state unchanged");
-            }
+            var originalRows = ReceiptPreflightVerification.LogicalRows(database);
+            var refused = false;
+            try { using var invalid = new SupplyStore(database, new SimulationRequestContract(config)); }
+            catch (InvalidDataException error) when (error.Message.Contains(kind == "fence" ? "Unsupported receipt fence" : "reservation missing", StringComparison.Ordinal)) { refused = true; }
+            Check(refused && originalRows == ReceiptPreflightVerification.LogicalRows(database), kind + " refuses before startup/recovery writes; original request and state unchanged");
             Check(Wire.FileHash(database) == databaseHash && Wire.FileHash(file) == fileHash, kind + " retains exact database and raw-file bytes");
             if (validRaw is not null) Check(Wire.FileHash(validRaw) == validRawHash, "later unsupported raw does not partially replay or delete an earlier valid reserved receipt");
 
@@ -70,10 +68,10 @@ static class CurrentContractVerification
             router.Initialize(); var missing = original with { Implementation = null }; var frozen = Wire.Encode(missing); var entries = router.Diagnostics.Length;
             foreach (var queryOnly in new[] { false, true })
             {
-                var refused = false;
+                var missingRefused = false;
                 try { if (queryOnly) await router.QueryAsync(missing, default); else await router.ExecuteAsync(missing, default); }
-                catch (InvalidDataException error) when (error.Message.Contains("frozen implementation identity is missing", StringComparison.Ordinal)) { refused = true; }
-                Check(refused && Wire.Encode(missing) == frozen && router.Diagnostics.Length == entries, "missing frozen implementation refuses Execute/Query before borrowing the changed target or constructing another route");
+                catch (InvalidDataException error) when (error.Message.Contains("frozen implementation identity is missing", StringComparison.Ordinal)) { missingRefused = true; }
+                Check(missingRefused && Wire.Encode(missing) == frozen && router.Diagnostics.Length == entries, "missing frozen implementation refuses Execute/Query before borrowing the changed target or constructing another route");
             }
         }
     }

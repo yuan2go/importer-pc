@@ -55,10 +55,14 @@ if (args.FirstOrDefault() == "--extension-interrupt")
     installation.Install(args[3], Wire.FileHash(args[3]));
     throw new InvalidOperationException("Requested abrupt installation boundary not reached");
 }
+if (args.FirstOrDefault() == "--receipt-preflight-child")
+{
+    await ReceiptPreflightVerification.Child(args); return;
+}
 if (args.FirstOrDefault() == "--child")
 {
     var dir = args[1]; var point = args[2]; var cfg = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(dir, "config.json")));
-    var injection = new FaultInjection { CrashAt = point is "BeforeT1" or "AfterT1" or "AfterT2" or "AfterT3" or "T3Committed" ? point : null, FailT3 = point == "T3Failure" };
+    var injection = new FaultInjection { CrashAt = point is "BeforeT1" or "AfterT1" or "AfterT2" or "AfterT3" or "T3Committed" or "ReceiptFlushed" ? point : null, FailT3 = point == "T3Failure" };
     await using var h = await Rig.Open(dir, cfg, injection);
     await h.Command("OpenContext", value: "000001");
     var claim = await h.App.ClaimAsync();
@@ -118,6 +122,7 @@ try
     if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (selector == "--current-contracts") await CurrentContractVerification.Run(root, url);
+    if (selector == "--receipt-preflight-product") await ReceiptPreflightVerification.Product(root, url);
     if (selector == "--query-fixture") await OperationClosureVerification.QueryEndpointLifetime(root, url);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
@@ -564,9 +569,10 @@ sealed class Rig : IAsyncDisposable
     public static StationConfig Config(string url, int demand = 120, int timeout = 500) => new(1, "SIM-" + Wire.Id(), "SIM-1", RunMode.Simulation,
         [new("left", "manual", "L-" + Wire.Id(), "1"), new("right", "manual", "R-" + Wire.Id(), "1")], new("loopback", "1", "SIMULATION-v1", url), TimeoutMs: timeout, FixtureDemand: demand);
     public static Task<Rig> New(string root, string url, int demand = 120, int timeout = 500) => Open(Path.Combine(root, Wire.Id()), Config(url, demand, timeout));
-    public static async Task<Rig> Open(string directory, StationConfig config, FaultInjection? faults = null, TimeProvider? clock = null)
+    public static async Task<Rig> Open(string directory, StationConfig config, FaultInjection? faults = null, TimeProvider? clock = null, IRequestContract? requestContract = null)
     {
-        var store = new SupplyStore(Path.Combine(directory, "station.db")); var app = new StationApplication(store, config, new SimulationRequestContract(config), faults, clock);
+        var contract = requestContract ?? new SimulationRequestContract(config);
+        var store = new SupplyStore(Path.Combine(directory, "station.db"), contract); var app = new StationApplication(store, config, contract, faults, clock);
         var h = new Rig { Store = store, App = app, ConfigValue = config, Port = new LoopbackIntegration(config), Clock = clock ?? TimeProvider.System };
         // Child crash injection is armed only after startup/identity setup, at the business window.
         var crash = faults?.CrashAt; if (faults is not null) faults.CrashAt = null;

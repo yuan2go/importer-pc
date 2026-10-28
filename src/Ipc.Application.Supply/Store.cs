@@ -39,17 +39,12 @@ public sealed partial class SupplyStore : IDisposable
         CREATE INDEX response_conflicts_request ON response_conflicts(request);
         INSERT INTO storage_format VALUES(1,6,6);
         """;
-    public SupplyStore(string path)
+    public SupplyStore(string path, IRequestContract? recoveryContract = null)
     {
         Path = System.IO.Path.GetFullPath(path);
-        // An existing database is inspected through a read-only connection BEFORE opening a
-        // writer or changing journal settings. Unsupported formats are retained without conversion.
-        var existing = File.Exists(Path);
-        if (existing)
-        {
-            _ = InspectReadOnly(Path);
-        }
-        else Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
+        // Validate the complete receipt set before any writer, journal change or new database.
+        var existing = ValidateBeforeWrite(Path, recoveryContract);
+        if (!existing) Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
         db = Ipc.Platform.Storage.Database.Open(Path, create: !existing);
         try
         {

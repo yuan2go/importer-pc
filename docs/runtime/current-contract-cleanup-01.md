@@ -1,3 +1,5 @@
+> 2026-10-29 WT001续修：当前Supply 6的完整原始回执预检已前移到写连接与配置激活之前；本机当前合同57条PASS，Product本机验证受存储策略限制。范围、真实崩溃WAL及CI入口见[本轮记录](integration-20261028-supply-preflight.md)。下文原实施记录保留形成时来源。
+
 # 当前版本与从零安装规则
 
 工作包：[FRESH-BASELINE-01](../work-packages/WP-IPC-FRESH-BASELINE-01.md)。这是开发中的第一版，没有外部旧版用户；只支持当前版本从零安装、从零建库。任何非当前格式都明确拒绝，请使用全新数据目录。不迁移旧库、旧配置、账号或草稿，不提供旧入口桥接。原实施报告及K01～K15历史结论见[原件归档](../archive/pre-fresh-baseline-01/README.md)，冻结证据不改写。

@@ -139,7 +139,7 @@ jobs:
             if ! python3 -c 'import pathlib,sys; assert chr(34)+"--"+sys.argv[1]+chr(34) in pathlib.Path("tests/Ipc.Application.Verification/Program.cs").read_text(), "Unknown verification selector"' "$case"; then failed=1; continue; fi
             if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
-          for case in current-contracts query-fixture architecture conformance operation-closure closure data extensions maintainability review-followup followup; do
+          for case in current-contracts receipt-preflight-product query-fixture architecture conformance operation-closure closure data extensions maintainability review-followup followup; do
             if ! dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"; then failed=1; fi
           done
           if ! PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log; then failed=1; fi

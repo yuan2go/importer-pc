@@ -22,7 +22,10 @@ static partial class SportmasterRcs
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
         var launch = new BusinessLaunch(config, Path.Combine(root, "mvreader-data"), null, null);
         var factory = new MvReaderFactory(new ParcelCapabilityFactory(launch));
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        // Same isolated Simulation preflight seam used by P0SimulationFactory tests.
+        // No Windows policy, real SDK, production state or device is touched.
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
+            { RuntimeIdentityPreflight = () => { if (seed.Mode != RunMode.Simulation) throw new InvalidOperationException("Synthetic flow only"); } };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         await Wait(app, s => s.Positions!.All(p => p.Admit));
         var left = factory.Apis[readers[0].DeviceId]; var right = factory.Apis[readers[1].DeviceId];
@@ -59,6 +62,7 @@ static partial class SportmasterRcs
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c)
         {
+            if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Synthetic native factory only");
             foreach (var reader in ParcelBindings.Readers(c)) BundledHikrobot.ValidateBinding(reader);
             ParcelCapabilityFactory.ValidateHikrobotIdentities(c);
             inner.Validate(ReferenceReaders(c));

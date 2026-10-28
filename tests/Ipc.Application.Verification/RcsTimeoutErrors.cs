@@ -45,28 +45,32 @@ static partial class SportmasterRcs
                 partial.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal), "body-read timeout retains the original prefix and no assigned chute");
         }
 
+        // Input custody and JIT work must fit the synthetic admission age. The
+        // component deadline remains three times the generic service budget.
+        const int genericRuntimeBudget = 500, componentRuntimeDeadline = 1500;
+        var runtimeTimeoutBinding = binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = componentRuntimeDeadline.ToString(System.Globalization.CultureInfo.InvariantCulture) } };
         var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         async Task<ParcelRuntime> Open(string name, CapabilityBinding selected)
         {
             var directory = Path.Combine(root, name); Directory.CreateDirectory(directory);
-            ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), template with { Wcs = selected, TimeoutMs = 100 });
+            ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), template with { Wcs = selected, TimeoutMs = genericRuntimeBudget });
             var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
             // Isolated Simulation only; production entry points retain the machine identity check.
             var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
             try { await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
         }
         peer.Mode = "timeout";
-        await using (var app = await Open("timeout-presentation", binding))
+        await using (var app = await Open("timeout-presentation", runtimeTimeoutBinding))
         {
             var watch = Stopwatch.StartNew(); var before = peer.Requests.Count;
             app.EmitReferenceAt("left", "timeout-original", "SYNTH-0001", Wire.Id());
             var s = await Wait(app, x => x.Operations.Any(o => o.State == ParcelState.WcsUnknown)); var op = s.Operations.Single();
-            Check(watch.ElapsedMilliseconds >= 250 && watch.Elapsed < TimeSpan.FromSeconds(2) && op.Wcs!.Attempts == 1 && peer.Requests.Count == before + 1,
+            Check(watch.ElapsedMilliseconds >= componentRuntimeDeadline - 50 && watch.Elapsed < TimeSpan.FromSeconds(3) && op.Wcs!.Attempts == 1 && peer.Requests.Count == before + 1,
                 "configured RCS deadline overrides the shorter generic service budget and retains one attempt");
             var omitted = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) };
             ParcelOperation WithBinding(CapabilityBinding value) => op with { Wcs = op.Wcs! with { Request = op.Wcs.Request with { Binding = value } } };
             Check(new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) == 5000 &&
-                new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != 100,
+                new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
             Check(view.Left.AttentionReason == "RCS请求超时，请重新扫描。" && view.Left.OperatorInstruction.Contains("重新扫描", StringComparison.Ordinal) &&

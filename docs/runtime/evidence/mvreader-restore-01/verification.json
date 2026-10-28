@@ -7,33 +7,59 @@
   "NativeParameters": "PASS: actual WPF/Dispatcher, daily/first, standard/compact, 125 percent; synthetic values",
   "DependencyPolicy": "PASS: 21 Python checks",
   "ActualSdk": "PASS: real MvCodeReader 2.0.0.4 load/enumerate, zero devices; not camera reading",
-  "LocalApplicationFlow": "BLOCKED: existing runtime ordinary-account gate rejected elevated host; no guard modified. Scheduled Limited retained High token; reduced-token child failed to initialize. Full loopback flow is retained as an explicit CI selector.",
+  "LocalApplicationFlow": "PASS: synthetic IHikrobotApi -> actual reader/Application/SQLite/loopback HTTP; per-trigger deduplication, same-code new trigger, camera isolation, frozen bytes, no-code and post-stop rejection. Explicit Simulation-only fixture uses the existing runtime identity preflight seam; no production policy or guard changed.",
   "PhysicalCamera": "NOT_RUN: only WLAN on this computer; user confirms legacy same-camera reading",
   "FieldRcsAndPhysical": "NOT_RUN",
   "Logs": [
     {
       "Path": "driver-self-test.log",
-      "Sha256": "a17454943b83851f91008be6c87a482e11b5919b570485786fe5566cb7a6fc4a"
+      "Sha256": "0ac7c89c9168600212969bc211079625dd8d2b3e4ba54b577abf3471339c471a",
+      "OriginalLocalSha256": "a17454943b83851f91008be6c87a482e11b5919b570485786fe5566cb7a6fc4a"
     },
     {
       "Path": "sdk-parameters.log",
-      "Sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc"
+      "Sha256": "034541cfe727f73db20a4f6486d7c4dbd00291df29a91a121d556680ba2b3333",
+      "OriginalLocalSha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc"
     },
     {
       "Path": "native-enumeration-zero.log",
-      "Sha256": "d9c41138159f4ce3c2b63e2c378bfa4a877b3c2c542f71953923a124d6a6606a"
+      "Sha256": "03f8b8a4fa3c074d79de5f4aa8ec9c57b6f5f9b7e13536339262d287b41e7f1a",
+      "OriginalLocalSha256": "d9c41138159f4ce3c2b63e2c378bfa4a877b3c2c542f71953923a124d6a6606a"
     },
     {
       "Path": "dependency-policy.log",
-      "Sha256": "28c6e6eb89a83614bcd6abb1a9047de4629400532e4f8487560b3adcecb5104b"
+      "Sha256": "c61db5867763d3c8bf40fc8c9d75c52f3603365707d47be78d4a11e90095e175",
+      "OriginalLocalSha256": "28c6e6eb89a83614bcd6abb1a9047de4629400532e4f8487560b3adcecb5104b"
     },
     {
       "Path": "native-sdk-parameters.log",
-      "Sha256": "c4793cf06674350736469a21d71d92bb4d95bfd69e86c8ecffd54baf6af5e605"
+      "Sha256": "0fecaaf27c59c905cb125921c04669303f2541cfa62c07fab7a04eef1c25c543",
+      "OriginalLocalSha256": "c4793cf06674350736469a21d71d92bb4d95bfd69e86c8ecffd54baf6af5e605"
     },
     {
       "Path": "driver-self-test-final.log",
-      "Sha256": "f83de2bde0bac43ef07848d151764ea6c3f6c03a4215656670548c041770fa3a"
+      "Sha256": "0262836a0ed2163f4ebf9159290cfdd88cd66b9b3ff41ccf19786a25a7874963",
+      "OriginalLocalSha256": "f83de2bde0bac43ef07848d151764ea6c3f6c03a4215656670548c041770fa3a"
+    },
+    {
+      "Path": "application-loopback-final.log",
+      "Sha256": "18f0a8d4e59c0ffa6034cbd734220ff7236813501474c136462fb88adf5de00e",
+      "OriginalLocalSha256": "499e8604fcd29dbf72fa35066537484f71c5db0d6d4aa35237232b7c984560ed"
+    },
+    {
+      "Path": "rcs-timeout-final.log",
+      "Sha256": "fd7596b2fcb331bef988cd7edffad8aa9f51382311a9823d0fa31dee50cc26e5",
+      "OriginalLocalSha256": "9485ef3ae09050bed3dac52ed9a9c034b10a0d3ffad480c95b9cf56534760c9c"
+    },
+    {
+      "Path": "packaged-sdk-zero.log",
+      "Sha256": "9a9f286b405d436c110853da4bbb4e4796875b68bfa8e246a864f6c62912c32f",
+      "OriginalLocalSha256": "043f905c153354b30128f69679a5731f74c89a78c9200f2004037941a5f6836b"
+    },
+    {
+      "Path": "native-startup-final.log",
+      "Sha256": "810583f32b1320504f97dbecbe2f9a378d2c24c4bb2d9a201bde2cf650de4243",
+      "OriginalLocalSha256": "8be2e0810f8b257789be34a2e74294e724a72b3905401432b023396467b57903"
     }
   ],
   "OriginalFailureHashes": [
@@ -69,5 +95,37 @@
     "Run": 40630506807,
     "Head": "43c0f9ce",
     "Reason": "ParameterGuidanceStartup retained an obsolete MVS-only read-only mode assertion. Updated to assert the new explicit trigger profile, both declared choices and continued deferred connection; no runtime guard changed."
+  },
+  "RcsTimeoutRegression": "PASS: full timeout/error and rescan/restart suite locally. Synthetic generic admission budget 500ms and component deadline 1500ms preserve the 3:1 override assertion and all no-resend/late-response checks; original 100ms fixture expired its input during 169ms cold ingress on Windows CI.",
+  "NativeStartupRegression": "PASS: actual WPF parameter guidance/startup, explicit trigger choices, independent deferred combinations, preflight and full-screen/Escape/F11; 125 percent DPI.",
+  "PackagedSdk": "PASS: load/enumerate MvCodeReader 2.0.0.4 from the actual frozen delivery vendor directory; zero devices. Not physical reading.",
+  "Ci3669": {
+    "Run": 40630806782,
+    "Head": "3669d43625bfcb4588754c311ed04749a797504b",
+    "Passed": [
+      "build-test-entrypoints",
+      "supply-build-entrypoint",
+      "aqa01-boundaries",
+      "current-contract-boundaries including --mvreader-flow"
+    ],
+    "OriginalFailures": {
+      "p0-stability-boundaries": "ObservationExpired: synthetic input age 169ms exceeded generic 100ms before any request. Corrected fixture timing; component override and no-resend assertions retained.",
+      "frozen-sportmaster": "Freeze succeeded; native PGS assertion still required historical MVS-only read-only association. Updated to assert declared MvCodeReader choices, external profile and continued deferred configuration."
+    },
+    "SdkRun": 40630806791,
+    "SdkConclusion": "PASS: driver/configuration and native parameter editor"
+  },
+  "LocalDelivery": {
+    "SourceCommit": "3669d43625bfcb4588754c311ed04749a797504b",
+    "Installer": "CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
+    "InstallerBytes": 271584940,
+    "InstallerSha256": "04f6c6ba08ec22661c7eb08dbacc2d14073108ee3886703f27ffbcc6c88c3c6e",
+    "MediaBytes": 166885374,
+    "MediaSha256": "78bfac17eb5baf0162fbe7a6c357080d67bc0857e28cc33243affb026ca8da96",
+    "DependencyCopiesVerified": 70,
+    "SdkScope": "Local offline delivery only; no vendor binaries in Git or public artifacts",
+    "Authenticode": "NOT_SIGNED",
+    "WindowsInstallation": "NOT_RUN",
+    "LaterChanges": "Only verification fixtures and documentation; installer retains its actual SourceCommit"
   }
 }
